@@ -153,6 +153,18 @@ public class DefaultPlayerBridge implements IPlayerBridge
         return (IRemote)  Proxy.newProxyInstance(implementor.getClass().getClassLoader(), classes, goih);
         
     }
+
+    /**
+     * TODO: Method Description.
+     * @param change
+     * @see games.strategy.engine.gamePlayer.IPlayerBridge#addChange(games.strategy.engine.data.Change)
+     */
+    @Override
+    public void addChange(Change change)
+    {
+        // TODO Auto-generated method stub
+        
+    }
     
 }
 

@@ -22,6 +22,7 @@ package games.strategy.engine.gamePlayer;
 
 import java.util.Properties;
 
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.message.IRemote;
 
@@ -59,6 +60,14 @@ public interface IPlayerBridge
      */
     public String getStepName();
 
+    /**
+     * Add a change to game data. Use this rather than changing gameData
+     * directly since this method allows us to send the changes to other
+     * machines.
+     * 
+     * @param aChange
+     */
+    public void addChange(Change aChange);
     /**
      * Get the properties for the current step.
      */

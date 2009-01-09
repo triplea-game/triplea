@@ -522,12 +522,14 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
      */
     public static Map<Unit, Unit> mapTransports(Route route, Collection<Unit> units, Collection<Unit> transportsToLoad, boolean isload)
     {
+        //TODO COMCO need to finish this for unloads
         if (isload)
             return mapTransportsToLoad(units, transportsToLoad);
         if (MoveValidator.isUnload(route))
             return mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits());
         return mapTransportsAlreadyLoaded(units, units);
     }
+    
     /**
      * returns a map of unit -> bomber. returns null if no mapping can be
      * done either because there is not sufficient transport capacity or because
@@ -536,6 +538,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
      */
     public static Map<Unit, Unit> mapBombers(Route route, Collection<Unit> units, Collection<Unit> bombersToLoad)
     {
+        //TODO COMCO 
         //if (MoveValidator.isLoad(route))
             return mapBombersToLoad(units, bombersToLoad);
         /*if (MoveValidator.isUnload(route))

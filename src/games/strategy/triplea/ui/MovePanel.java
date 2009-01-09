@@ -20,12 +20,16 @@
 
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
@@ -36,6 +40,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.triplea.delegate.TripleADelegateBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
@@ -853,7 +858,7 @@ public class MovePanel extends ActionPanel
      * 
      * If null is returned, the move should be cancelled.
      */
-  //TODO COMCO model after this
+
     private Collection<Unit> getTransportsToLoad(final Route route, final Collection<Unit> unitsToLoad, boolean disablePrompts)
     {
         if (!MoveValidator.isLoad(route))
@@ -1242,8 +1247,8 @@ public class MovePanel extends ActionPanel
             {
                 m_mouseLastUpdatePoint = me.getMapPoint();
                 Route route = getRoute(getFirstSelectedTerritory(), t);
-                //TODO COMCO add load of bombers here!
-
+                
+                //Load Bombers with paratroops
                 if(isParatroopers(getCurrentPlayer()) && Match.someMatch(m_selectedUnits, Matches.UnitIsStrategicBomber))
                 {     
                 	final PlayerID player = getCurrentPlayer();
@@ -1256,13 +1261,11 @@ public class MovePanel extends ActionPanel
                 	
                 	if(unitsToLoad.size() > 0)
                 	{                	
-                		Collection<Unit> bombers = getBombersToLoad(route, unitsToLoad, player);
+                		Collection<Unit> bombers = getLoadedBombers(route, unitsToLoad, player);
                 		m_selectedUnits.addAll(bombers);
                 	}                    
                 }
-                
-                //TODO COMCO END
-                
+                                
                 updateUnitsThatCanMoveOnRoute(m_selectedUnits, route);
                 updateRouteAndMouseShadowUnits(route);
             }
@@ -1275,8 +1278,8 @@ public class MovePanel extends ActionPanel
          * 
          * If null is returned, the move should be cancelled.
          */
-      //TODO COMCO model after this
-        private Collection<Unit> getBombersToLoad(final Route route, final Collection<Unit> unitsToLoad, PlayerID player)
+
+        public Collection<Unit> getLoadedBombers(final Route route, final Collection<Unit> unitsToLoad, PlayerID player)
         {
         	CompositeMatch<Unit> candidateBombersMatch = new CompositeMatchAnd<Unit>();
             candidateBombersMatch.add(Matches.UnitIsStrategicBomber);
@@ -1316,19 +1319,22 @@ public class MovePanel extends ActionPanel
             Set<Unit> defaultSelections = new HashSet<Unit>();
             
             //Load capable bombers>
-            //Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, availableUnits, capableBombers, true);
             Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, availableUnits, capableBombers, true);
+            Collection<Unit> loadedUnits = new ArrayList<Unit>();
             for (Unit unit : unitsToCapableBombers.keySet())
             {
                 Unit bomber = unitsToCapableBombers.get(unit);
                 int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
                 availableCapacityMap.add(bomber, (-1 * unitCost));
                 defaultSelections.add(bomber);
-kev
 
                 List<Unit> singleCollection = new ArrayList<Unit>();
                 singleCollection.add(unit);
-            	//Collection<Unit> singleCollection = new ArrayList<Unit>();
+ kev               //TODO COMCO works for IDelegateBridge, MoveDelegate
+                Change change = m_transportTracker.loadTransportChange((TripleAUnit) bomber, unit, player);
+                m_bridge.addChange(change);
+                
+            	//Set the dependents
                 if (m_dependentUnits.get(bomber) != null)
                 	m_dependentUnits.get(bomber).addAll(singleCollection);
                 else
@@ -1343,7 +1349,7 @@ kev
                 public boolean match(Collection<Unit> units)
                 {
                     Collection<Unit> bombers = Match.getMatches(units, Matches.UnitIsStrategicBomber);
-                    // prevent too many transports from being selected
+                    // prevent too many bombers from being selected
                     return (bombers.size() <= Math.min(unitsToLoad.size(), candidateBombers.size()));
                 }
             };
@@ -1364,152 +1370,10 @@ kev
                 JOptionPane.PLAIN_MESSAGE, null, null, null);
             if (option != JOptionPane.OK_OPTION)
                 return Collections.emptyList();
-
-            //All bombers to load are selected... add the dependents.
-            Collection<Unit> loadedParatroops = new ArrayList<Unit>();
             
-            for (Unit unit : unitsToCapableBombers.keySet())
-            {
-            	Collection<Unit> singleCollection = new ArrayList<Unit>();
-            	singleCollection.add(unit);
-            	loadedParatroops.add(unit);
-            	
-                Unit bomber = unitsToCapableBombers.get(unit);
-                if (m_dependentUnits.get(bomber) != null)
-                	m_dependentUnits.get(bomber).addAll(singleCollection);
-                else
-                    m_dependentUnits.put(bomber, singleCollection);
-            }
-            
-            return chooser.getSelected(true);
-            
-/*
- * 
- * 
- * 
- * 
- */
-        	/*Collection<Unit> startOwnedUnits = route.getStart().getUnits().getUnits();
-           	//unitsToLoad = Match.getMatches(startOwnedUnits,Matches.UnitIsInfantry);
-
-            final PlayerID unitOwner = getUnitOwner(unitsToLoad);
-            //TODO COMCO add bombers carrying paratroops to mustMoveWith
-            MustMoveWithDetails startMustMoveWith = MoveValidator.getMustMoveWith(route.getStart(), startOwnedUnits, getData(), unitOwner);
-
-            int minTransportCost = 2;
-            for(Unit unit : unitsToLoad)
-            {
-                minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
-            }
-
-            CompositeMatch<Unit> candidateBombersMatch = new CompositeMatchAnd<Unit>();
-            candidateBombersMatch.add(Matches.UnitIsStrategicBomber);
-            candidateBombersMatch.add(Matches.unitIsOwnedBy(unitOwner));
-
-            final List<Unit> candidateBombers = Match.getMatches(startOwnedUnits, candidateBombersMatch);
-
-            // remove bombers that don't have enough capacity
-            Iterator<Unit> bomberIter = candidateBombers.iterator();
-            while (bomberIter.hasNext())
-            {
-                Unit bomber = bomberIter.next();
-                int capacity = getTransportTracker().getAvailableCapacity(bomber);
-                if (capacity < minTransportCost)
-                    bomberIter.remove();
-            }
-
-            // sort bombers in preferred load order
-            sortTransportsToLoad(candidateBombers, route);
-
-            List<Unit> availableUnits = new ArrayList<Unit>(unitsToLoad);
-
-            IntegerMap<Unit> availableCapacityMap = new IntegerMap<Unit>();
-            for (Unit bomber : candidateBombers)
-            {
-                int capacity = getTransportTracker().getAvailableCapacity(bomber);
-                availableCapacityMap.put(bomber, capacity);
-            }
-
-            Set<Unit> defaultSelections = new HashSet<Unit>();
-
-            Collection<Unit> capableBombers = new ArrayList<Unit>(candidateBombers);
-
-            // only allow incapable transports for updateUnitsThatCanMoveOnRoute
-            //  so that we can have a nice UI error shown if these transports 
-            //  are selected, since it may not be obvious
-            //TODO remove bombers already loaded here
-            Collection<Unit> incapableBombers = Match.getMatches(capableBombers, Matches.transportCannotUnload(route.getEnd()));
-            capableBombers.removeAll(incapableBombers);
-
-            // First, load capable bombers
-            Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, availableUnits, capableBombers, true);
-            for (Unit unit : unitsToCapableBombers.keySet())
-            {
-                Unit bomber = unitsToCapableBombers.get(unit);
-                int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
-                availableCapacityMap.add(bomber, (-1 * unitCost));
-                defaultSelections.add(bomber);
-            }
-            availableUnits.removeAll(unitsToCapableBombers.keySet());
-
-            candidateBombers.removeAll(incapableBombers);
-
-            //all the same type, dont ask unless we have more than 1 unit type
-            if(UnitSeperator.categorize(candidateBombers, startMustMoveWith.getMustMoveWith(), true, false).size() == 1 
-                            && unitsToLoad.size() == 1     )
-                return candidateBombers;
-
-            // If we've filled all transports, then no user intervention is required.
-            // It is possible to make "wrong" decisions if there are mixed unit types and
-            //   mixed transport categories, but there is no UI to manage that anyway.
-            //   Players will need to load incrementally in such cases.
-            if (defaultSelections.containsAll(candidateBombers))
-            {
-                boolean spaceLeft = false;
-                for (Unit bomber : candidateBombers)
-                {
-                    int capacity = availableCapacityMap.getInt(bomber);
-                    if (capacity >= minTransportCost)
-                    {
-                        spaceLeft = true;
-                        break;
-                    }
-                }
-                if (!spaceLeft)
-                    return candidateBombers;
-            }
-            
-            // the match criteria to ensure that chosen transports will match selected units
-            Match<Collection<Unit>> transportsToLoadMatch = new Match<Collection<Unit>>()
-            {
-                public boolean match(Collection<Unit> units)
-                {
-                    Collection<Unit> bombers = Match.getMatches(units, Matches.UnitIsStrategicBomber);
-                    // prevent too many transports from being selected
-                    return (bombers.size() <= Math.min(unitsToLoad.size(), candidateBombers.size()));
-                }
-            };
-
-            UnitChooser chooser = new UnitChooser(candidateBombers, 
-                defaultSelections, 
-                startMustMoveWith.getMustMoveWith(), 
-                categorizeMovement true, 
-                m_bridge.getGameData(), 
-                allowTwoHit false, 
-                getMap().getUIContext(), 
-                transportsToLoadMatch);
-
-            chooser.setTitle("Load bombers with paratroops");
-            int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
-                chooser, "What bombers do you want to load",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE, null, null, null);
-            if (option != JOptionPane.OK_OPTION)
-                return Collections.emptyList();
-
-
-            return chooser.getSelected(false);*/
+            return chooser.getSelected(true);            
         }
+        
         private void deselectUnits(List<Unit> units, Territory t, MouseDetails me)
         {         
 
