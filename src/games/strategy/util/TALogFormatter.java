@@ -15,6 +15,7 @@ package games.strategy.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
@@ -27,6 +28,8 @@ import java.util.logging.LogRecord;
 public class TALogFormatter extends Formatter
 {
     
+    private boolean m_showDates = false;
+    
     /**
      * 
      */
@@ -34,6 +37,11 @@ public class TALogFormatter extends Formatter
     {
 
      
+    }
+    
+    public void setShowDates(boolean aVal)
+    {
+        m_showDates = aVal;
     }
 
     /* 
@@ -51,6 +59,10 @@ public class TALogFormatter extends Formatter
            shortName = record.getLoggerName().substring(record.getLoggerName().lastIndexOf('.') + 1, record.getLoggerName().length());
        
        StringBuilder builder = new StringBuilder();
+       if(m_showDates) {
+           builder.append(new Date());
+           builder.append("");
+       }
        builder.append(record.getLevel());
        builder.append(" [");
        builder.append(Thread.currentThread().getName());

@@ -131,9 +131,11 @@ public class LobbyServer
             
             int port = Integer.parseInt(System.getProperty(PORT, "3303"));
             
-            
+            System.out.println("Trying to listen on port:" + port);
             LobbyServer server = new LobbyServer( port);
 
+            
+            System.out.println("Starting database");
             //initialize the databse
             Database.getConnection().close();
             

@@ -30,8 +30,11 @@ public class RotatingLogFileHandler extends FileHandler
 
     public RotatingLogFileHandler() throws IOException, SecurityException
     {
-        super(logFile, Integer.parseInt(System.getProperty(LOG_FILE_SIZE_PROP, DEFAULT_SIZE)), 10, true);
-        setFormatter(new TALogFormatter());
+        super(logFile, Integer.parseInt(System.getProperty(LOG_FILE_SIZE_PROP, DEFAULT_SIZE)), 10, true);        
+        TALogFormatter logFormatter = new TALogFormatter();
+        logFormatter.setShowDates(true);
+        setFormatter(logFormatter);
+        
     }
 
 }

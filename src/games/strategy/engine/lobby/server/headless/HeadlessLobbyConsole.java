@@ -93,7 +93,7 @@ public class HeadlessLobbyConsole
         
             }
         
-        }, "Headloess console eval print loop");
+        }, "Headless console eval print loop");
         t.start();
     }
     
@@ -109,9 +109,11 @@ public class HeadlessLobbyConsole
             {
                 String command = in.readLine();
                 process(command.trim());
-            } catch (IOException e)
+            } 
+            catch(Throwable t)
             {
-                throw new IllegalStateException(e);
+                t.printStackTrace();
+                t.printStackTrace(out);
             }
         }
         
