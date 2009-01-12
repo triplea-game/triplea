@@ -210,11 +210,19 @@ public class MovePerformer implements Serializable
                 Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, units, transportsToLoad);
                 markTransportsMovement(transporting, route);
                 
-                
+                CompositeChange change = new CompositeChange(moveChange);
                 //actually move the units
-                Change remove = ChangeFactory.removeUnits(route.getStart(), units);
-                Change add = ChangeFactory.addUnits(route.getEnd(), arrivingUnits[0]);
-                CompositeChange change = new CompositeChange(moveChange, add, remove);
+                Change remove = null;
+                Change add = null;
+                
+                if(route.getStart() != null && route.getEnd() != null)
+                    {
+                    ChangeFactory.addUnits(route.getEnd(), arrivingUnits[0]);
+                    remove = ChangeFactory.removeUnits(route.getStart(), units);
+                    change.add(add,remove);
+                    }
+                //add the transporting change too... 
+                //CompositeChange change = new CompositeChange(moveChange, add, remove);
                 m_bridge.addChange(change);
 
                 m_currentMove.addChange(change);
@@ -245,8 +253,11 @@ public class MovePerformer implements Serializable
         Territory routeStart = (Territory) route.getStart();
 		TerritoryAttachment taRouteStart = TerritoryAttachment.get(routeStart);        	
         Territory routeEnd = (Territory) route.getEnd();
-		TerritoryAttachment taRouteEnd = TerritoryAttachment.get(routeEnd);
+		TerritoryAttachment taRouteEnd = null;
 
+        if(routeEnd != null)
+            taRouteEnd = TerritoryAttachment.get(routeEnd);
+        
         Iterator iter = units.iterator();
         while (iter.hasNext())
         {

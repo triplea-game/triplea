@@ -38,6 +38,7 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveDelegate;
+import games.strategy.triplea.delegate.MovePerformer;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.TripleADelegateBridge;
@@ -1252,6 +1253,8 @@ public class MovePanel extends ActionPanel
                 if(isParatroopers(getCurrentPlayer()) && Match.someMatch(m_selectedUnits, Matches.UnitIsStrategicBomber))
                 {     
                 	final PlayerID player = getCurrentPlayer();
+                	/*if(route.getEnd() == null)
+                	    route.add(t);*/
                 	
                 	CompositeMatch<Unit> unitsToLoadMatch = new CompositeMatchAnd<Unit>();
                 		unitsToLoadMatch.add(Matches.UnitIsInfantry);
@@ -1284,7 +1287,7 @@ public class MovePanel extends ActionPanel
         	CompositeMatch<Unit> candidateBombersMatch = new CompositeMatchAnd<Unit>();
             candidateBombersMatch.add(Matches.UnitIsStrategicBomber);
             candidateBombersMatch.add(Matches.unitIsOwnedBy(player));
-            
+                        
             //Get the list of all owned bombers in the starting terr
             final List<Unit> candidateBombers = Match.getMatches(route.getStart().getUnits().getUnits(), candidateBombersMatch);
             
@@ -1318,8 +1321,10 @@ public class MovePanel extends ActionPanel
             List<Unit> availableUnits = new ArrayList<Unit>(unitsToLoad);
             Set<Unit> defaultSelections = new HashSet<Unit>();
             
-            //Load capable bombers>
+            //Load capable bombers by default>
             Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, availableUnits, capableBombers, true, player);
+            
+            
             Collection<Unit> loadedUnits = new ArrayList<Unit>();
             m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
             List<Unit> singleCollection = new ArrayList<Unit>();
@@ -1329,12 +1334,9 @@ public class MovePanel extends ActionPanel
                 int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
                 availableCapacityMap.add(bomber, (-1 * unitCost));
                 defaultSelections.add(bomber);
-
+                
                 //List<Unit> singleCollection = new ArrayList<Unit>();
                 singleCollection.add(unit);
-kev                //TODO COMCO works for IDelegateBridge, MoveDelegate
-                /*Change change = m_transportTracker.loadTransportChange((TripleAUnit) bomber, unit, player);
-                m_bridge.addChange(change);*/
                 
             	//Set the dependents
                 if (m_dependentUnits.get(bomber) != null)
@@ -1349,22 +1351,21 @@ kev                //TODO COMCO works for IDelegateBridge, MoveDelegate
                 getCurrentPlayer());
             
             availableUnits.removeAll(unitsToCapableBombers.keySet());
-            
-            // the match criteria to ensure that chosen transports will match selected units
+
+            // prevent too many bombers from being selected
             Match<Collection<Unit>> transportsToLoadMatch = new Match<Collection<Unit>>()
             {
                 public boolean match(Collection<Unit> units)
                 {
                     Collection<Unit> bombers = Match.getMatches(units, Matches.UnitIsStrategicBomber);
-                    // prevent too many bombers from being selected
                     return (bombers.size() <= Math.min(unitsToLoad.size(), candidateBombers.size()));
                 }
             };
 
+            //Allow player to select which to load.
             UnitChooser chooser = new UnitChooser(candidateBombers, 
                 defaultSelections, 
-                //m_dependentUnits, 
-                m_mustMoveWithDetails.getMustMoveWith(),
+                m_dependentUnits, /*m_mustMoveWithDetails.getMustMoveWith(),*/
                 /*categorizeMovement*/ true, 
                 m_bridge.getGameData(), 
                 /*allowTwoHit*/ false, 
@@ -1378,8 +1379,24 @@ kev                //TODO COMCO works for IDelegateBridge, MoveDelegate
                 JOptionPane.PLAIN_MESSAGE, null, null, null);
             if (option != JOptionPane.OK_OPTION)
                 return Collections.emptyList();
+
             
-            return chooser.getSelected(true);            
+            for(Unit unit : Match.getMatches(chooser.getSelected(true),Matches.UnitIsInfantry))
+            {
+                UnitAttachment ua = UnitAttachment.get(unit.getType());
+                ua.setIsParatroop("true");
+            }
+            
+            return chooser.getSelected(true); 
+            
+            //TODO COMCO some variant of this might work upon moving the inf
+            //String loadBombers = getDelegate().loadBombers(availableUnits, route, capableBombers);
+            //String loadBombers = MoveDelegate.loadBombers(availableUnits, route, capableBombers, player, getData());
+            
+            //String loadBombers = MoveDelegate.move(availableUnits, route, capableBombers);
+            //UndoableMove currentMove = new UndoableMove(getData(), unitsToLoad, route);
+            //MovePerformer.moveUnits(availableUnits, route, player, capableBombers, currentMove);
+                       
         }
         
         private void deselectUnits(List<Unit> units, Territory t, MouseDetails me)

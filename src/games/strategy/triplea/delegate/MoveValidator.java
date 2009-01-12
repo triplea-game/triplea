@@ -132,8 +132,14 @@ public class MoveValidator
         UnitAttachment ua = UnitAttachment.get(unit.getType());
         PlayerID player = unit.getOwner();
         
-    	TerritoryAttachment taStart = TerritoryAttachment.get(route.getStart());
-    	TerritoryAttachment taEnd = TerritoryAttachment.get(route.getEnd());
+    	TerritoryAttachment taStart = null;
+    	TerritoryAttachment taEnd = null;
+    	
+    	if(route.getStart() != null)
+    	    taStart = TerritoryAttachment.get(route.getStart());
+    	if(route.getEnd() != null)
+    	    taEnd = TerritoryAttachment.get(route.getEnd());
+    	
         if(ua.isAir())
         {
         	if (taStart != null && taStart.isAirBase())        	
@@ -338,7 +344,9 @@ public class MoveValidator
     }
 
     public static boolean isLoad(Route route)
-    {
+    {   //kev added the if
+        if(route.getLength() == 0)
+            return false;
         return !route.getStart().isWater() && route.getEnd().isWater();
     }
 
@@ -920,7 +928,7 @@ public class MoveValidator
             return result.setErrorReturnResult("Not enough units in starting territory");
 
         //make sure transports in the destination
-        if (!route.getEnd().getUnits().containsAll(transportsToLoad))
+        if (route.getEnd() != null && !route.getEnd().getUnits().containsAll(transportsToLoad))
             return result.setErrorReturnResult("Transports not found in route end");
 
         if (!isEditMode)
@@ -1023,7 +1031,7 @@ public class MoveValidator
 
         //make sure that no non sea non transportable no carriable units
         //end at sea
-        if (route.getEnd().isWater())
+        if (route.getEnd() != null && route.getEnd().isWater())
         {
             for (Unit unit : MoveValidator.getUnitsThatCantGoOnWater(units))
                 result.addDisallowedUnit("Not all units can end at water",unit);
@@ -1057,7 +1065,7 @@ public class MoveValidator
         }
 //COMCOWICH This is a bug in 4th ed rules.... should allow multiple AA in a territory in 4th ed.
         //only allow aa into a land territory if one already present.
-        if (!isFourthEdition(data) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
+        if (!isFourthEdition(data) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd() != null && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
                 && !route.getEnd().isWater())
         {
             for (Unit unit : Match.getMatches(units, Matches.UnitIsAA))

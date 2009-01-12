@@ -345,6 +345,59 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
         return null;
     }
+    public String loadBombers(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded)
+    {        
+        PlayerID player = getUnitOwner(units);
+        MoveValidationResult result = MoveValidator.validateMove(units, 
+                                                                 route, 
+                                                                 player, 
+                                                                 transportsThatCanBeLoaded,
+                                                                 m_nonCombat,
+                                                                 m_movesToUndo,
+                                                                 m_data);
+
+        StringBuilder errorMsg = new StringBuilder(100);
+
+        int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
+
+        String numErrorsMsg = numProblems > 0 ? ("; "+ numProblems + " " + MyFormatter.pluralize("error", numProblems) + " not shown") : "";
+
+        if (result.hasError())
+            return errorMsg.append(result.getError()).append(numErrorsMsg).toString();
+
+        if (result.hasDisallowedUnits())
+            return errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString();
+        
+        if (result.hasUnresolvedUnits())
+            return errorMsg.append(result.getUnresolvedUnitWarning(0)).append(numErrorsMsg).toString();
+
+        // allow user to cancel move if aa guns will fire
+        AAInMoveUtil aaInMoveUtil = new AAInMoveUtil();
+        aaInMoveUtil.initialize(m_bridge, m_data);
+        Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAAWillFire(route, units);
+        if(!aaFiringTerritores.isEmpty())
+        {
+            if(!getRemotePlayer().confirmMoveInFaceOfAA(aaFiringTerritores))
+                return null;
+        }
+        
+        //do the move
+        UndoableMove currentMove = new UndoableMove(m_data, units, route);
+
+        /*String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " loaded on bombers in " + route.getStart().getName();
+        m_bridge.getHistoryWriter().startEvent(transcriptText);
+        
+        MoveDescription description = new MoveDescription(units, route);
+        m_bridge.getHistoryWriter().setRenderingData(description);*/
+
+        
+        /*m_tempMovePerformer = new MovePerformer();
+        m_tempMovePerformer.initialize(this, m_data, m_bridge);
+        m_tempMovePerformer.moveUnits(units, route, player, transportsThatCanBeLoaded, currentMove);
+        m_tempMovePerformer = null;*/
+
+        return null;
+    }
     
     void updateUndoableMoves(UndoableMove currentMove)
     {
@@ -507,6 +560,8 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
      */
     public static Map<Unit, Unit> mapTransports(Route route, Collection<Unit> units, Collection<Unit> transportsToLoad)
     {
+        if(Match.someMatch(transportsToLoad, Matches.UnitIsStrategicBomber))
+            return mapTransportsToLoad(units, Match.getMatches(transportsToLoad, Matches.UnitIsStrategicBomber));
         if (MoveValidator.isLoad(route))
             return mapTransportsToLoad(units, transportsToLoad);
         if (MoveValidator.isUnload(route))
