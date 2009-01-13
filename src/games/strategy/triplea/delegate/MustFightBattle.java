@@ -34,6 +34,7 @@ import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -281,7 +282,32 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
         }
+        //Set the dependent paratroopers so they die if the bomber dies.
+        //TODO validate for multiple bombers
+        if(isParatroopers(m_attacker))
+        {
+            Collection<Unit> bombers = Match.getMatches(units, Matches.UnitIsStrategicBomber);
+            Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsParatroop);
+          //Load capable bombers by default>
+            Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, paratroops, bombers, true, m_attacker);
+            
+            HashMap<Unit, Collection<Unit>> dependentUnits = new HashMap<Unit, Collection<Unit>>();
+            List<Unit> singleCollection = new ArrayList<Unit>();
+            for (Unit unit : unitsToCapableBombers.keySet())
+            {
+                Unit bomber = unitsToCapableBombers.get(unit);                
+                singleCollection.add(unit);
+                
+                //Set the dependents
+                if (dependentUnits.get(bomber) != null)
+                    dependentUnits.get(bomber).addAll(singleCollection);
+                else
+                    dependentUnits.put(bomber, singleCollection);
+            }
 
+            dependencies.putAll(dependentUnits);
+        }
+        
         addDependentUnits(dependencies);
         return change;
     }
@@ -1952,6 +1978,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             m_defendingUnits.removeAll(killed);
         else
             m_attackingUnits.removeAll(killed);
+               
     }
 
     private void fireNavalBombardment(IDelegateBridge bridge)
@@ -1995,6 +2022,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	return games.strategy.triplea.Properties.getFourthEdition(m_data);
     }
     
+    private boolean isParatroopers(PlayerID player)    
+    {
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        return ta.hasParatroopers();
+    }    
+
     /**
      * @return
      */
@@ -2154,7 +2187,17 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 {
                     notifyCasualtiesAA(bridge);
                     removeCasualties(m_casualties, false, false, bridge);
-                    
+                    //TODO COMCO uncomment for later testing perhaps to remove paratroops from dependents
+                    /*if(isParatroopers(m_attacker))
+                    {
+                        Collection<Unit> paratroops = Match.getMatches(m_attackingUnits, Matches.UnitIsParatroop);
+                        
+                        CompositeChange change = new CompositeChange();
+                        for (Unit unit: paratroops)
+                            change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY ) );
+                        
+                        bridge.addChange(change);
+                    }*/
                 }
                 
             };
@@ -2181,9 +2224,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             // NEW VERSION
             
 
-            //send attacker the dice roll so he can see what the dice are while he
-            // waits for
-            //attacker to select casualties
+            //send defender the dice roll so he can see what the dice are while he
+            // waits for attacker to select casualties
             getDisplay(bridge).notifyDice(m_battleID,  m_dice, SELECT_AA_CASUALTIES);
            
             Collection<Unit> attackable = Match.getMatches(m_attackingUnits,
@@ -2211,12 +2253,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 return;
             
             getDisplay(bridge).casualtyNotification(m_battleID, SELECT_AA_CASUALTIES, m_dice, m_attacker, new ArrayList<Unit>(m_casualties), Collections.<Unit>emptyList(), m_dependentUnits);
-            
+                        
             getRemote(m_attacker, bridge).confirmOwnCasualties(m_battleID, "Press space to continue");
             Runnable r = new Runnable()
             {
                 public void run()
-                {
+                {   
                     try
                     {
                         getRemote(m_defender, bridge).confirmEnemyCasualties(m_battleID, "Press space to continue", m_attacker);
@@ -2345,11 +2387,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return;
 
         //get the transported units        
-        if (battleSite.isWater())
-        {            
+        /*if (battleSite.isWater())
+        {*/            
             Collection<Unit> dependent = getDependentUnits(killed);
             killed.addAll(dependent);
-        }
+        //}
         
         Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
         m_killed.addAll(killed);

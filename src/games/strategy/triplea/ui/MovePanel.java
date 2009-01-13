@@ -1324,8 +1324,6 @@ public class MovePanel extends ActionPanel
             //Load capable bombers by default>
             Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, availableUnits, capableBombers, true, player);
             
-            
-            Collection<Unit> loadedUnits = new ArrayList<Unit>();
             m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
             List<Unit> singleCollection = new ArrayList<Unit>();
             for (Unit unit : unitsToCapableBombers.keySet())
@@ -1388,14 +1386,6 @@ public class MovePanel extends ActionPanel
             }
             
             return chooser.getSelected(true); 
-            
-            //TODO COMCO some variant of this might work upon moving the inf
-            //String loadBombers = getDelegate().loadBombers(availableUnits, route, capableBombers);
-            //String loadBombers = MoveDelegate.loadBombers(availableUnits, route, capableBombers, player, getData());
-            
-            //String loadBombers = MoveDelegate.move(availableUnits, route, capableBombers);
-            //UndoableMove currentMove = new UndoableMove(getData(), unitsToLoad, route);
-            //MovePerformer.moveUnits(availableUnits, route, player, capableBombers, currentMove);
                        
         }
         

@@ -14,7 +14,9 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -79,7 +81,9 @@ public class MovePerformer implements Serializable
     {
         
         m_currentMove = currentMove;
-        populateStack(units, route, id, transportsToLoad);
+        Collection<Unit> toLoad = new ArrayList<Unit>();
+       
+        populateStack(units, route, id, toLoad);
 
         m_executionStack.execute(m_bridge, m_data);
     }
@@ -204,9 +208,7 @@ public class MovePerformer implements Serializable
 
                 //mark movement
                 Change moveChange = markMovementChange(units, route);
-                
-                //TODO, put units in owned transports first
-                //TODO COMCO- should look into this while I'm at it
+
                 Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, units, transportsToLoad);
                 markTransportsMovement(transporting, route);
                 
@@ -216,13 +218,13 @@ public class MovePerformer implements Serializable
                 Change add = null;
                 
                 if(route.getStart() != null && route.getEnd() != null)
-                    {
+                {
                     ChangeFactory.addUnits(route.getEnd(), arrivingUnits[0]);
                     remove = ChangeFactory.removeUnits(route.getStart(), units);
+                    add = ChangeFactory.addUnits(route.getEnd(), units);
                     change.add(add,remove);
-                    }
-                //add the transporting change too... 
-                //CompositeChange change = new CompositeChange(moveChange, add, remove);
+                }
+                
                 m_bridge.addChange(change);
 
                 m_currentMove.addChange(change);
@@ -244,6 +246,12 @@ public class MovePerformer implements Serializable
 
     }
     
+    private static boolean isParatroopers(PlayerID player)    
+    {
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        return ta.hasParatroopers();
+    }    
+
     private Change markMovementChange(Collection<Unit> units, Route route)
     {
         CompositeChange change = new CompositeChange();
