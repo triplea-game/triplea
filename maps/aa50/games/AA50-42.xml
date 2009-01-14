@@ -1878,9 +1878,9 @@
         </initialize>
 
         <propertyList>
-                <!-- Use 4hth Edition Rules -->
-                <property name="4th Edition" value="true" editable="false">
-                        <boolean/>
+                
+                <property name="AA50 Tech Model" value="true" editable="false">
+                	<boolean/>
                 </property>
                 
 				<!-- Use Submersible Subs-->

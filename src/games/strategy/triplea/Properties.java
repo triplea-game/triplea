@@ -164,6 +164,21 @@ public class Properties implements Constants
 		 }
 	 }
 
+     /*
+      * Can the player select the type of technology they are rolling for
+      */
+     public static boolean getAA50TechModel(GameData data)
+     {
+         try
+         {
+             return ( (Boolean) data.getProperties().get(AA50_Tech_Model) ).booleanValue();
+         }
+         catch(Exception e)
+         {
+             return false;
+         }
+     }
+	 
 	 /*
 	  * Are transports restricted from unloading in multiple territories in a turn
 	  */

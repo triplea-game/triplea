@@ -44,6 +44,7 @@ public class TechPanel extends ActionPanel
 {
     private JLabel m_actionLabel = new JLabel();
     private TechRoll m_techRoll;
+    private int m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
 
     /** Creates new BattlePanel */
     public TechPanel(GameData data, MapPanel map)
@@ -62,9 +63,19 @@ public class TechPanel extends ActionPanel
                 removeAll();
                 m_actionLabel.setText(id.getName() + " Tech Roll");
                 add(m_actionLabel);
-                add(new JButton(GetTechRollsAction));
-                add(new JButton(DontBother));
+                
+                if(isAA50TechModel())
+                {
+                    add(new JButton(GetTechTokenAction));
+                    add(new JButton(JustRollTech));
 
+                }
+                else
+                {
+                    add(new JButton(GetTechRollsAction));
+                    add(new JButton(DontBother));
+                }
+                
                 getData().acquireReadLock();
                 try
                 {
@@ -106,6 +117,7 @@ public class TechPanel extends ActionPanel
         getData().acquireReadLock();
         try
         {
+            //TODO COMCO need to make changes here for AA50 probably
             Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(getCurrentPlayer());
             Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData());
             return Util.difference(allAdvances, currentAdvances);
@@ -123,6 +135,7 @@ public class TechPanel extends ActionPanel
         public void actionPerformed(ActionEvent event)
         {
             TechAdvance advance = null;
+           
             if (isFourthEdition() || isSelectableTechRoll())
             {
                 List<TechAdvance> available = getAvailableTechs();
@@ -159,7 +172,7 @@ public class TechPanel extends ActionPanel
 
         }
     };
-
+    
     private Action DontBother = new AbstractAction("Done")
     {
         public void actionPerformed(ActionEvent event)
@@ -169,7 +182,63 @@ public class TechPanel extends ActionPanel
             
         }
     };
+    
+    private Action GetTechTokenAction = new AbstractAction("Buy Tech Tokens...")
+    {
+        public void actionPerformed(ActionEvent event)
+        {            
+            //m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
+            //Notify user if there are no more techs to acheive
+            List<TechAdvance> available = getAvailableTechs();
+            if (available.isEmpty())
+            {
+                JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
+                getCurrentPlayer().getResources().removeResource(getData().getResourceList().getResource(Constants.TECH_TOKENS), m_currTokens);
+                return;
+            }
 
+            int ipcs = getCurrentPlayer().getResources().getQuantity(Constants.IPCS);
+            
+            String message = "Purchase Tech Tokens";
+            TechTokenPanel techTokenPanel = new TechTokenPanel(ipcs, m_currTokens);
+            int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techTokenPanel, message, JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE, null);
+            if (choice != JOptionPane.OK_OPTION)
+                return;
+
+            int quantity = techTokenPanel.getValue();
+            
+            m_currTokens += quantity;
+            getCurrentPlayer().getResources().addResource(getData().getResourceList().getResource(Constants.TECH_TOKENS), quantity);
+     
+            m_techRoll = new TechRoll(null, m_currTokens);
+            release();
+
+        }
+    };
+
+    private Action JustRollTech = new AbstractAction("Roll Current Tokens")
+    {
+        public void actionPerformed(ActionEvent event)
+        {
+            m_techRoll = new TechRoll(null, m_currTokens);
+            release();
+            
+          //TODO COMCO this will display the two charts for which a successful roll will be chosen
+            /*
+            TechAdvance advance = null;
+            JList list = new JList(new Vector<TechAdvance>(available));
+            JPanel panel = new JPanel();
+            panel.setLayout(new BorderLayout());
+            panel.add(list, BorderLayout.CENTER);
+            panel.add(new JLabel("Select which tech chart you want to roll for"), BorderLayout.NORTH);
+            list.setSelectedIndex(0);
+            JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart", JOptionPane.PLAIN_MESSAGE);
+            advance = (TechAdvance) list.getSelectedValue();
+            */
+        }
+    };
+    
 }
 
 class TechRollPanel extends JPanel
@@ -213,4 +282,56 @@ class TechRollPanel extends JPanel
     {
         return m_textField.getValue();
     }
+}
+
+class TechTokenPanel extends JPanel
+{
+    int m_ipcs;
+    JLabel m_left = new JLabel();
+    JLabel m_right = new JLabel();
+    ScrollableTextField m_textField;
+
+    TechTokenPanel(int ipcs, int currTokens)
+    {
+        setLayout(new GridBagLayout());
+        m_ipcs = ipcs;
+        JLabel title = new JLabel("Select the number of tech tokens to purchase:");
+        title.setBorder(new javax.swing.border.EmptyBorder(5, 5, 5, 5));
+        m_textField = new ScrollableTextField(0, ipcs / Constants.TECH_ROLL_COST);
+        m_textField.addChangeListener(m_listener);
+        JLabel costLabel = new JLabel("x5");
+        setLabel(ipcs);
+        setTokens(currTokens);
+        int space = 0;
+        add(title, new GridBagConstraints(0, 0, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, space, space), 0, 0));
+        add(m_textField, new GridBagConstraints(0, 1, 1, 1, 0.5, 1, GridBagConstraints.EAST, GridBagConstraints.NONE,
+                new Insets(8, 10, space, space), 0, 0));
+        add(costLabel, new GridBagConstraints(1, 1, 1, 1, 0.5, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 5, space, 2), 0, 0));
+        add(m_left, new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 5, space, space), 0, 0));
+        add(m_right, new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 120, space, space), 0, 0));
+    }
+
+    private void setLabel(int ipcs)
+    {
+        m_left.setText("Left to spend:" + ipcs);
+    }
+
+    private void setTokens(int tokens)
+    {
+        m_right.setText("Current token count:" + tokens);
+    }
+    
+    private ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
+    {
+        public void changedValue(ScrollableTextField stf)
+        {
+            setLabel(m_ipcs - (Constants.TECH_ROLL_COST * m_textField.getValue()));
+        }
+    };
+
+    public int getValue()
+    {
+        return m_textField.getValue();
+    }
+
 }

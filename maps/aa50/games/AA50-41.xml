@@ -587,6 +587,7 @@
         
         <resourceList>
                 <resource name="IPCs"/>
+                <resource name="techTokens"/>                
         </resourceList>
 
         
@@ -2044,6 +2045,14 @@
 						<resourceGiven player="Italians" resource="IPCs" quantity="10"/>
 						<resourceGiven player="Chinese" resource="IPCs" quantity="0"/>
 						<resourceGiven player="Americans" resource="IPCs" quantity="40"/>
+						
+                        <resourceGiven player="Germans" resource="techTokens" quantity="0"/>
+                        <resourceGiven player="Russians" resource="techTokens" quantity="0"/>
+						<resourceGiven player="Japanese" resource="techTokens" quantity="0"/>
+						<resourceGiven player="British" resource="techTokens" quantity="0"/>
+						<resourceGiven player="Italians" resource="techTokens" quantity="0"/>
+						<resourceGiven player="Chinese" resource="techTokens" quantity="0"/>
+						<resourceGiven player="Americans" resource="techTokens" quantity="0"/>
                 </resourceInitialize>
         </initialize>
 
@@ -2121,7 +2130,12 @@
                 </property>
                 
                 
-<!--COMCO rules testing-->                
+<!--COMCO rules testing-->
+
+                <property name="AA50 Tech Model" value="true" editable="false">
+                	<boolean/>
+                </property>
+                
                 <property name="Sub Control Sea Zone Restricted" value="true" editable="false">
                 	<boolean/>
                 </property>

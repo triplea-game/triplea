@@ -218,7 +218,27 @@ public class EditDelegate implements IDelegate, IEditDelegate
        
         return null;
     }
+//TODO COMCO use this to change player tech tokens
+    public String changeTechTokens(PlayerID player, int newTotal)
+    {
+        String result = null;
+        if (null != (result = checkEditMode())) 
+            return result;
 
+        Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
+        int oldTotal = player.getResources().getQuantity(ipcs);
+
+        if (oldTotal == newTotal)
+            return "New token total is unchanged";
+        if (newTotal < 0)
+            return "New token total is invalid";
+
+        logEvent("Changing tech tokens for "+player.getName()+" from "+oldTotal+" to "+newTotal, null);
+        m_bridge.addChange(ChangeFactory.changeResourcesChange(player, ipcs, (newTotal - oldTotal)));
+       
+        return null;
+    }
+    
     public String addComment(String message)
     {
 

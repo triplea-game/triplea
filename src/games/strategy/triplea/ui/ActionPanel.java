@@ -60,7 +60,12 @@ public abstract class ActionPanel extends JPanel
     {
         return games.strategy.triplea.Properties.getFourthEdition(m_data);
     }
-    
+
+    public final boolean isAA50TechModel()
+    {
+        return games.strategy.triplea.Properties.getAA50TechModel(m_data);
+    }
+
     public final boolean isRestrictedPurchase()
     {
         return games.strategy.triplea.Properties.getPlacementRestrictedByFactory(m_data);

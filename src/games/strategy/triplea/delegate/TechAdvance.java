@@ -39,6 +39,7 @@ public abstract class TechAdvance implements java.io.Serializable
     private static List<TechAdvance> s_4thEditionAdvances;
     private static List<TechAdvance> s_AnnivEditionAdvances;
     //private static List<TechAdvance> s_AnnivEditionAdvancesAirNaval;
+    //private static List<TechAdvance> s_AnnivEditionAdvancesLandProduction;
 
     public static final TechAdvance JET_POWER = new JetPowerAdvance();
     public static final TechAdvance SUPER_SUBS = new SuperSubsAdvance();
