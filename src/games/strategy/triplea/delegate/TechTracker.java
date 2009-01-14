@@ -105,12 +105,29 @@ public class TechTracker implements java.io.Serializable
 
 
     return rVal;
-
-
-
-
   }
+  
+  public static Collection<TechAdvance> getTechCategories(PlayerID id)
+  {
+    Collection<TechAdvance> rVal = new ArrayList<TechAdvance>();
+    TechAttachment attatchment = TechAttachment.get(id);
 
+    if(attatchment.hasSuperSub() && attatchment.hasJetPower() && attatchment.hasShipyards() && 
+                    attatchment.hasAARadar() && attatchment.hasLongRangeAir() && attatchment.hasHeavyBomber())
+    {
+      rVal.add(TechAdvance.AIR_NAVAL_ADVANCES);
+    }
+
+    if(attatchment.hasImprovedArtillerySupport() && attatchment.hasRocket() && attatchment.hasParatroopers() &&
+                    attatchment.hasIncreasedFactoryProduction() && attatchment.hasWarBonds() && attatchment.hasMechanizedInfantry())
+    {
+      rVal.add(TechAdvance.LAND_PRODUCTION_ADVANCES);
+    }
+    
+    return rVal;
+  }
+  
+  
   public static synchronized void addAdvance(PlayerID player, GameData data, IDelegateBridge bridge, TechAdvance advance)
   {
     Change attatchmentChange = ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "true", advance.getProperty());

@@ -32,6 +32,7 @@ import games.strategy.triplea.ui.TechPanel;
 import games.strategy.util.Util;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.io.Serializable;
 import java.util.*;
 
@@ -62,6 +63,8 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
 
     private HashMap<PlayerID, Collection> m_techs;
 
+    private TechAdvance m_techCategory;
+    
     /** Creates new TechnolgoyDelegate */
     public TechnologyDelegate()
     {
@@ -136,8 +139,8 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         if(techHits > 0 && isAA50TechModel())
         {
             //TODO COMCO display the two charts for which a successful roll will be chosen
-            List<TechAdvance> available = TechPanel.getAvailableTechCategories(m_data, m_player);
-                        
+            TechPanel techPanel = new TechPanel(m_data, null);
+            m_techCategory = techPanel.getAvailableTechCategories();                        
         }
 
         m_bridge.getHistoryWriter().setRenderingData(
@@ -223,7 +226,15 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
 
     private Collection<TechAdvance> getTechAdvances(int hits)
     {
-        List<TechAdvance> available = getAvailableAdvances();
+        List<TechAdvance> available = new ArrayList<TechAdvance>();
+        if(isAA50TechModel())
+        {
+            available = getAvailableAdvancesForCategory(m_techCategory);
+        } 
+        else
+        {
+            available = getAvailableAdvances();
+        }
         if (available.isEmpty())
             return Collections.emptyList();
         if (hits >= available.size())
@@ -265,6 +276,16 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         return available;
     }
 
+    private List<TechAdvance> getAvailableAdvancesForCategory(TechAdvance techCategory)
+    {
+        Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data, techCategory);
+        Collection<TechAdvance> playersAdvances = TechTracker.getTechAdvances(m_bridge
+                .getPlayerID());
+
+        List<TechAdvance> available = Util.difference(allAdvances, playersAdvances);
+        return available;
+    }
+    
     public String getName()
     {
         return m_name;
