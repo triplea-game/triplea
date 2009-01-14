@@ -28,10 +28,17 @@ import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.ui.TechPanel;
 import games.strategy.util.Util;
 
+import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.*;
+
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  * Logic for dealing with player tech rolls. This class requires the
@@ -86,11 +93,11 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
     {
         return games.strategy.triplea.Properties.getFourthEdition(m_data);
     }
-/*
+
     private boolean isAA50TechModel()
     {
         return games.strategy.triplea.Properties.getAA50TechModel(m_data);
-    }*/
+    }
 
     private boolean isSelectableTechRoll()
     {
@@ -115,7 +122,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         else
             random = m_bridge.getRandom(Constants.MAX_DICE, techRolls, annotation);
         int techHits = getTechHits(random);
-        //TODO COMCO here's where the actual roll happens
+
         boolean selectableTech = isSelectableTechRoll() || isFourthEdition();
         String directedTechInfo = selectableTech ? " for "
                 + techToRollFor : "";
@@ -125,18 +132,14 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
                         + MyFormatter.asDice(random) + directedTechInfo
                         + " and gets " + techHits + " "
                         + MyFormatter.pluralize("hit", techHits));
-      //TODO COMCO display the two charts for which a successful roll will be chosen
-        /*
-        TechAdvance advance = null;
-        JList list = new JList(new Vector<TechAdvance>(available));
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.add(list, BorderLayout.CENTER);
-        panel.add(new JLabel("Select which tech chart you want to roll for"), BorderLayout.NORTH);
-        list.setSelectedIndex(0);
-        JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart", JOptionPane.PLAIN_MESSAGE);
-        advance = (TechAdvance) list.getSelectedValue();
-        */
+        
+        if(techHits > 0 && isAA50TechModel())
+        {
+            //TODO COMCO display the two charts for which a successful roll will be chosen
+            List<TechAdvance> available = TechPanel.getAvailableTechCategories(m_data, m_player);
+                        
+        }
+
         m_bridge.getHistoryWriter().setRenderingData(
                 new DiceRoll(random, techHits, 5, true));
 

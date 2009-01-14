@@ -129,6 +129,38 @@ public class TechPanel extends ActionPanel
     }
 
 
+    public static List<TechAdvance> getAvailableTechCategories(GameData data, PlayerID player)
+    {
+        TechAdvance advance = null;
+        JList list = new JList(new Vector<TechAdvance>(available));
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.add(list, BorderLayout.CENTER);
+        panel.add(new JLabel("Select which tech chart you want to roll for"), BorderLayout.NORTH);
+        list.setSelectedIndex(0);
+        JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart", JOptionPane.PLAIN_MESSAGE);
+        advance = (TechAdvance) list.getSelectedValue();
+        
+        
+        
+        
+        
+        
+        
+        data.acquireReadLock();
+        try
+        {
+            //TODO COMCO need to make changes here for AA50 probably
+            Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(player);
+            Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(data);
+            return Util.difference(allAdvances, currentAdvances);
+        }
+        finally 
+        {
+            data().releaseReadLock();
+        }
+    }
+
 
     private Action GetTechRollsAction = new AbstractAction("Roll Tech...")
     {
