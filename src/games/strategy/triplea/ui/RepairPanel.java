@@ -127,8 +127,7 @@ public class RepairPanel extends JPanel
                     TerritoryAttachment ta = TerritoryAttachment.get(terr);
                     int unitProduction = ta.getUnitProduction();
                     int IPCProduction = ta.getProduction();
-                                        
-                    //TODO COMCO add in the extra 2 for advanced industrial tech and handle 1/2 price repairs
+
                     if(unitProduction < IPCProduction)
                     {
                         Rule rule = new Rule(rRule, player, m_uiContext, terr);
@@ -220,7 +219,6 @@ public class RepairPanel extends JPanel
             int quantity = rule.getQuantity();
             if (quantity != 0)
             {
-                //TODO COMCO perhaps append terr name.
                 prod.put(rule, quantity);
             }
         }

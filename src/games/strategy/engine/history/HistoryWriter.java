@@ -248,8 +248,6 @@ public class HistoryWriter implements java.io.Serializable
         
         s_logger.log(Level.FINE, "Adding change:" + change);
 
-        //COMCO- changed this to eliminate firstrun exceptions when pre-loading TRNs
-        //if (!isCurrentEvent())
         if (!isCurrentEvent() && !isCurrentStep())
         {
             new IllegalStateException("Not in an event, but trying to add change:" + change + " current is:" + m_current).printStackTrace(System.out);

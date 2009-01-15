@@ -115,9 +115,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
    * Returns an error code, or null if all is good.
    */
   public String purchase(IntegerMap<ProductionRule> productionRules)
-  {
-	  //TODO COMCO maybe some purchase code here.
-	  
+  {	  
     IntegerMap<Resource> costs = getCosts(productionRules);
     IntegerMap<NamedAttachable> results = getResults(productionRules);
 

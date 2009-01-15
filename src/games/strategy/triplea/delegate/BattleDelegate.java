@@ -175,8 +175,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         
         Map<Territory, Collection<Battle>> adjBombardment = getPossibleBombardingTerritories();
         Iterator<Territory> territories = adjBombardment.keySet().iterator();
-        
-        //Boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(m_data);
+
         while (territories.hasNext())
         {
             Territory t = territories.next();
@@ -193,9 +192,6 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
                         Battle battle = selectBombardingBattle(u, t, battles);
                         if (battle != null)
                         {
-                    		//TODO COMCO add a message
-                        	/*if (bombardRestricted && battle.getBombardingUnits().size() >= battle.getAmphibiousLandAttackers().size())
-                        		continue;*/
                             battle.addBombardingUnit(u);
                         }
                     }
@@ -249,7 +245,6 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
     {    	
     	Boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(m_data);
         // If only one battle to select from just return that battle
-        //TODO comco- Removed the limitation to have not moved
     	//boolean hasNotMoved = TripleAUnit.get(u).getAlreadyMoved() == 0;
         //if ((battles.size() == 1) && !hasNotMoved)
         if ((battles.size() == 1))
@@ -301,7 +296,6 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         seaWithOwnAndEnemy.add(Matches.territoryHasUnitsOwnedBy(m_bridge.getPlayerID()));
         seaWithOwnAndEnemy.add(Matches.territoryHasEnemyUnits(m_bridge.getPlayerID(), m_data));
 
-        //COMCO can we ignore transport only forces
         boolean ignoreTransports = isIgnoreTransportInMovement(m_data);
         boolean ignoreSubs = isIgnoreSubInMovement(m_data);
         

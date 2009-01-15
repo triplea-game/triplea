@@ -283,7 +283,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
         }
         //Set the dependent paratroopers so they die if the bomber dies.
-        //TODO validate for multiple bombers
+        //TODO COMCO validate for multiple bombers
         if(isParatroopers(m_attacker))
         {
             Collection<Unit> bombers = Match.getMatches(units, Matches.UnitIsStrategicBomber);
@@ -2147,7 +2147,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         m_stack.push(new FireAA());
     }
 
-    //TODO - changes here to support AA firing in attacked territory only
     class FireAA implements IExecutable
     {
         private DiceRoll m_dice;

@@ -218,7 +218,7 @@ public class EditDelegate implements IDelegate, IEditDelegate
        
         return null;
     }
-//TODO COMCO use this to change player tech tokens
+
     public String changeTechTokens(PlayerID player, int newTotal)
     {
         String result = null;

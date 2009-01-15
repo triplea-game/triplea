@@ -238,8 +238,6 @@ class HeavyBomberAdvance extends TechAdvance
 
 }
 
-
-//TODO COMCO repeat for Enhanced Shipyards?
 class IndustrialTechnologyAdvance extends TechAdvance
 {
     public String getName()

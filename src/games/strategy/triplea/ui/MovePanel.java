@@ -1250,7 +1250,7 @@ public class MovePanel extends ActionPanel
                 Route route = getRoute(getFirstSelectedTerritory(), t);
                 
                 //Load Bombers with paratroops
-                if(isParatroopers(getCurrentPlayer()) && Match.someMatch(m_selectedUnits, Matches.UnitIsStrategicBomber))
+                if(!m_nonCombat && isParatroopers(getCurrentPlayer()) && Match.someMatch(m_selectedUnits, Matches.UnitIsStrategicBomber))
                 {     
                 	final PlayerID player = getCurrentPlayer();
                 	/*if(route.getEnd() == null)

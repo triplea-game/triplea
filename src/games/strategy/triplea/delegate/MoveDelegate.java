@@ -580,7 +580,6 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         //TODO COMCO need to finish this for unloads
         if (isload)
         {
-          //TODO COMCO works for IDelegateBridge, MoveDelegate
             /*TransportTracker transportTracker = new TransportTracker();
             IDelegateBridge a_bridge;
             a_bridge = new TripleADelegateBridge(aBridge, gameData);
@@ -601,12 +600,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
      */
     public static Map<Unit, Unit> mapBombers(Route route, Collection<Unit> units, Collection<Unit> bombersToLoad)
     {
-        //TODO COMCO 
-        //if (MoveValidator.isLoad(route))
             return mapBombersToLoad(units, bombersToLoad);
-        /*if (MoveValidator.isUnload(route))
-            return mapBombersAlreadyLoaded(units, route.getStart().getUnits().getUnits());
-        return mapBombersAlreadyLoaded(units, units);*/
     }
     /**
      * Returns a map of unit -> transport. Unit must already be loaded in the
@@ -755,9 +749,9 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                     transportIndex = 0;
                 
                 Unit transport = (Unit) transportIter.next();
-                //TODO COMCO need to read the transport cost dynamically in the future.
                 //int capacity = transportTracker.getAvailableCapacity(transport);
-                int capacity = 2;
+                UnitAttachment ua = UnitAttachment.get(transport.getType());
+                int capacity = ua.getTransportCapacity();
                 capacity -= addedLoad.getInt(transport);
                 if (capacity >= cost)
                 {
@@ -882,25 +876,6 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         m_ipcsLost = state.m_ipcsLost;
         m_tempMovePerformer = state.m_tempMovePerformer;
     }
-
-    /**
-     * TODO: Method Description.
-     * @param units
-     * @param route
-     * @param thatCanBeLoaded
-     * @param thatCanBeLoaded2
-     * @return
-     * @see games.strategy.triplea.delegate.remote.IMoveDelegate#move(java.util.Collection, games.strategy.engine.data.Route, java.util.Collection, java.util.Collection)
-     */
-    /*@Override
-    public String move(Collection<Unit> units,
-                       Route route,
-                       Collection<Unit> thatCanBeLoaded)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-*/
 }
 
 class MoveState implements Serializable

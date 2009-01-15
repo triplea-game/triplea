@@ -64,7 +64,6 @@ public class EditPanel extends ActionPanel
     private TripleAFrame m_frame;
     private Action m_addUnitsAction;
     private Action m_delUnitsAction;
-    //TODO COMCO add a tech token change action
     private Action m_changeIPCsAction;
     private Action m_changeTerritoryOwnerAction;
     private Action m_currentAction = null;

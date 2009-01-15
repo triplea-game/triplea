@@ -57,9 +57,8 @@ public class MoveValidator
     public static final String TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT = "Transport cannot both load AND unload after being in combat";
     public static final String UNESCORTED_UNITS_WILL_DIE_IN_COMBAT = "Unescorted units will die in combat";
     private static int m_mechanizedSupportAvail = 0;
-    private static int m_paratroopsAvail = 0;
-
-    private Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<Unit, Collection<Unit>>();    
+    //private static int m_paratroopsAvail = 0;
+    
     /**
      * Tests the given collection of units to see if they have the movement neccessary
      * to move.
@@ -69,8 +68,6 @@ public class MoveValidator
     public static boolean hasEnoughMovement(Collection<Unit> units, Route route)
     {
         getMechanizedSupportAvail(route);
-        //TODO COMCO may not need this
-        getParatroopsAvail(route);
         
         for (Unit unit : units)
         {
@@ -81,7 +78,6 @@ public class MoveValidator
     }
 
     /**
-     * TODO: Method description.
      * @param route
      */
     private static void getMechanizedSupportAvail(Route route)
@@ -89,22 +85,6 @@ public class MoveValidator
         PlayerID player = route.getStart().getData().getSequence().getStep().getPlayerID();
         Collection<Unit> ownedUnits = route.getStart().getUnits().getMatches(Matches.unitIsOwnedBy(player));
         m_mechanizedSupportAvail = Match.countMatches(ownedUnits, Matches.UnitIsArmour);
-    }
-    
-    /**
-     * TODO: Method description.
-     * @param route
-     */
-    private static void getParatroopsAvail(Route route)
-    {
-        PlayerID player = route.getStart().getData().getSequence().getStep().getPlayerID();
-
-        Collection<Unit> ownedUnits = route.getStart().getUnits().getMatches(Matches.unitIsOwnedBy(player));
-        
-        CompositeMatch<Unit> ownedInfantry = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), 
-                        Matches.UnitIsLand, Matches.UnitCanBeTransported, Matches.UnitIsNotAA, Matches.UnitIsNotArmour);
-        
-        m_paratroopsAvail = Match.countMatches(ownedUnits, ownedInfantry);
     }
     
     public static boolean hasEnoughMovement(Collection<Unit> units, int length)
@@ -126,8 +106,7 @@ public class MoveValidator
     public static boolean hasEnoughMovement(Unit unit, Route route)
     {
         getMechanizedSupportAvail(route);
-        getParatroopsAvail(route);
-     
+             
         int left = TripleAUnit.get(unit).getMovementLeft();  
         UnitAttachment ua = UnitAttachment.get(unit.getType());
         PlayerID player = unit.getOwner();
@@ -187,17 +166,20 @@ public class MoveValidator
         }
 
         //TODO COMCO add rule to allow non-combat paratroops
-        if(isParatroopers(player) && ua.isStrategicBomber())
+        /*if(isParatroopers(player) && ua.isStrategicBomber())
         {
             if (stepName.getDisplayName().equals("Combat Move"))
-            {                
-                if (m_paratroopsAvail > 0)
+            {   
+                Collection<Unit> ownedUnits = route.getStart().getUnits().getMatches(Matches.unitIsOwnedBy(player));
+                
+                CompositeMatch<Unit> ownedInfantry = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), 
+                                Matches.UnitIsLand, Matches.UnitCanBeTransported, Matches.UnitIsNotAA, Matches.UnitIsNotArmour);
+                
+                if(Match.countMatches(ownedUnits, ownedInfantry)>0)
                 {
-                    //TODO may need to ignore loaded paratroops
                 }
-            }
-            
-        }
+            }            
+        }*/
             
         if(left == -1 || left < route.getLength())
             return false;
@@ -1059,8 +1041,7 @@ public class MoveValidator
         //make sure that we dont send aa guns to attack
         if (Match.someMatch(units, Matches.UnitIsAA))
         {
-            //TODO
-            //dont move if some were conquered
+            //TODO dont move if some were conquered
 
             for (int i = 0; i < route.getLength(); i++)
             {
@@ -1074,7 +1055,7 @@ public class MoveValidator
                 }
             }
         }
-//COMCOWICH This is a bug in 4th ed rules.... should allow multiple AA in a territory in 4th ed.
+        //TODO This is a bug in 4th ed rules.... should allow multiple AA in a territory in 4th ed.
         //only allow aa into a land territory if one already present.
         if (!isFourthEdition(data) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd() != null && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
                 && !route.getEnd().isWater())
@@ -1428,14 +1409,15 @@ public class MoveValidator
         {
             Collection<Unit> bombers = Match.getMatches(units, Matches.UnitIsStrategicBomber);
             Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsParatroop);
-            
+
+            //Set the bombers' dependents
             Iterator<Unit> bombersIter = bombers.iterator();
             while (bombersIter.hasNext())
             {
                 Unit bomber = bombersIter.next();
                 Collection<Unit> dependents = transportTracker.transporting(bomber);
             }
-            
+            //Set the paratroops as dependents
             Iterator<Unit> paratroopIter = paratroops.iterator();
             while (paratroopIter.hasNext())
             {
@@ -1644,18 +1626,40 @@ public class MoveValidator
                                                            PlayerID player, 
                                                            Collection<Unit> transportsToLoad,
                                                            MoveValidationResult result)
-    {
-        if(nonCombat)
-            return result.setErrorReturnResult("Paratroops may not move during NonCombat");
+    {        
+        if(!isParatroopers(player))
+            return result;
+
+        if (Match.noneMatch(units, Matches.UnitIsParatroop))
+            return result;
         
         if (Match.noneMatch(units, Matches.UnitIsAir))
             return result;
         
+        if(nonCombat)
+            return result.setErrorReturnResult("Paratroops may not move during NonCombat");
+
+        
         if (!getEditMode(data))
         {
+            //TODO using just allied territories causes it to go to LALA land when moving to water
+            //if (Matches.isTerritoryAllied(player, data).match(route.getEnd()))
+            if (Matches.isTerritoryFriendly(player, data).match(route.getEnd()))
+            {
+                CompositeMatch<Unit> paratroopNBombers = new CompositeMatchOr<Unit>();
+                paratroopNBombers.add(Matches.UnitIsStrategicBomber);
+                paratroopNBombers.add(Matches.UnitIsParatroop);
+                for (Unit unit : Match.getMatches(units, paratroopNBombers))
+                {
+                    result.setErrorReturnResult("Paratroops must advance to battle");
+                }
+                return result;
+            }
+            
             for(int i = 0; i < route.getLength() - 1; i++)
             {
                 Territory current = route.at(i);
+                
                 if(!Matches.isTerritoryFriendly(player, data).match(current))
                     return result.setErrorReturnResult("Must stop paratroops in first enemy territory");
             }

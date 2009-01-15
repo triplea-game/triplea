@@ -165,7 +165,6 @@ public class TechTracker implements java.io.Serializable
     return TechAttachment.get(player).hasIndustrialTechnology();
   }
 
-  //Comco not really sure about these
   public static boolean hasDestroyerBombard(PlayerID player)
   {
     return TechAttachment.get(player).hasDestroyerBombard();
