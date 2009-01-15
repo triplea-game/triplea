@@ -367,7 +367,10 @@ public class UnitAttachment extends DefaultAttachment
     {
       
       if(TechTracker.hasJetFighter(player))
-        return m_defense + 1;
+          if(isAA50TechModel(player.getData()))
+              return m_attack + 1;
+          else
+              return m_defense + 1;
     }
     if(m_isSub && TechTracker.hasSuperSubs(player))
     {
@@ -454,6 +457,11 @@ public class UnitAttachment extends DefaultAttachment
 
 
 
+  }
+
+  private boolean isAA50TechModel(GameData data)
+  {
+      return games.strategy.triplea.Properties.getAA50TechModel(data);
   }
 
   public String toString()

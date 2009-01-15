@@ -44,7 +44,7 @@ public class TechPanel extends ActionPanel
 {
     private JLabel m_actionLabel = new JLabel();
     private TechRoll m_techRoll;
-    private int m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
+    private int m_currTokens = 0;
 
     /** Creates new BattlePanel */
     public TechPanel(GameData data, MapPanel map)
@@ -117,7 +117,6 @@ public class TechPanel extends ActionPanel
         getData().acquireReadLock();
         try
         {
-            //TODO COMCO need to make changes here for AA50 probably
             Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(getCurrentPlayer());
             Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData());
             return Util.difference(allAdvances, currentAdvances);
@@ -129,14 +128,14 @@ public class TechPanel extends ActionPanel
     }
 
 
-    public TechAdvance getAvailableTechCategories()
+    public TechAdvance getAvailableTechCategories(PlayerID player)
     {
         getData().acquireReadLock();
         List<TechAdvance> techCategories;
         try
         {
-            Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(getCurrentPlayer());
-            Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData());
+            Collection<TechAdvance> currentAdvances = TechTracker.getTechCategories(player);
+            Collection<TechAdvance> allAdvances = TechAdvance.getTechCategories(getData());
             techCategories = Util.difference(allAdvances, currentAdvances);
         }
         finally 
@@ -215,7 +214,7 @@ public class TechPanel extends ActionPanel
     {
         public void actionPerformed(ActionEvent event)
         {            
-            //m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
+            m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
             //Notify user if there are no more techs to acheive
             List<TechAdvance> available = getAvailableTechs();
             if (available.isEmpty())

@@ -424,6 +424,13 @@ public class BattleTracker implements java.io.Serializable
                 bridge.addChange(add);
                 if (changeTracker != null)
                     changeTracker.addChange(add);
+              //remove all the tokens  of the captured player
+                Resource tokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
+                int m_currTokens = whoseCapital.getResources().getQuantity(Constants.TECH_TOKENS);
+                Change removeTokens = ChangeFactory.changeResourcesChange(whoseCapital, tokens, -m_currTokens);
+                bridge.addChange(removeTokens);
+                if (changeTracker != null)
+                    changeTracker.addChange(removeTokens);                
             }
         }
 

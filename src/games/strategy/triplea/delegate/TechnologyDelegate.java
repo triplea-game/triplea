@@ -138,9 +138,12 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         
         if(techHits > 0 && isAA50TechModel())
         {
-            //TODO COMCO display the two charts for which a successful roll will be chosen
+            //Display the two charts for which a successful roll will be chosen
             TechPanel techPanel = new TechPanel(m_data, null);
-            m_techCategory = techPanel.getAvailableTechCategories();                        
+            m_techCategory = techPanel.getAvailableTechCategories(m_player);
+            //remove all the tokens  //TODO also do if capital captured
+            int m_currTokens = m_player.getResources().getQuantity(Constants.TECH_TOKENS);
+            m_player.getResources().removeResource(m_data.getResourceList().getResource(Constants.TECH_TOKENS), m_currTokens);
         }
 
         m_bridge.getHistoryWriter().setRenderingData(
@@ -227,9 +230,11 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
     private Collection<TechAdvance> getTechAdvances(int hits)
     {
         List<TechAdvance> available = new ArrayList<TechAdvance>();
-        if(isAA50TechModel())
+        if(hits > 0 && isAA50TechModel())
         {
             available = getAvailableAdvancesForCategory(m_techCategory);
+            if (hits>1)
+                hits=1;
         } 
         else
         {

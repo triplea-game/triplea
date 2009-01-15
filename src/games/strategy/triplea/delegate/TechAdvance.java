@@ -40,7 +40,8 @@ public abstract class TechAdvance implements java.io.Serializable
     private static List<TechAdvance> s_AnnivEditionAdvances;
     private static List<TechAdvance> s_AirNavalAdvances;
     private static List<TechAdvance> s_LandProductionAdvances;
-
+    private static List<TechAdvance> s_AnnivAdvanceCategories;
+    
     public static final TechAdvance JET_POWER = new JetPowerAdvance();
     public static final TechAdvance SUPER_SUBS = new SuperSubsAdvance();
     public static final TechAdvance LONG_RANGE_AIRCRAFT = new LongRangeAircraftAdvance();
@@ -75,13 +76,18 @@ public abstract class TechAdvance implements java.io.Serializable
         else
             return s_3rdEditionAdvances;       
     }
-
+    
     public static List<TechAdvance> getTechAdvances(GameData data, TechAdvance techCategory)
     {        
         if(techCategory.equals(TechAdvance.AIR_NAVAL_ADVANCES))
             return s_AirNavalAdvances;  
         else
             return s_LandProductionAdvances;
+    }
+
+    public static List<TechAdvance> getTechCategories(GameData data)
+    {
+        return s_AnnivAdvanceCategories;
     }
     //initialize the advances, note s_advances is made unmodifiable
     static
@@ -153,6 +159,13 @@ public abstract class TechAdvance implements java.io.Serializable
         s_LandProductionAdvances.add(MECHANIZED_INFANTRY);
         s_LandProductionAdvances = Collections.unmodifiableList(s_LandProductionAdvances);
         
+        /*
+         * Anniversary Edition Land/Production Tech Categories
+         */
+        s_AnnivAdvanceCategories = new ArrayList<TechAdvance>();
+        s_AnnivAdvanceCategories.add(AIR_NAVAL_ADVANCES);
+        s_AnnivAdvanceCategories.add(LAND_PRODUCTION_ADVANCES);
+        s_AnnivAdvanceCategories = Collections.unmodifiableList(s_AnnivAdvanceCategories);
     }
 
     public abstract String getName();
