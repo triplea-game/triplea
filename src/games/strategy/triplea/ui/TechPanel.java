@@ -45,7 +45,8 @@ public class TechPanel extends ActionPanel
     private JLabel m_actionLabel = new JLabel();
     private TechRoll m_techRoll;
     private int m_currTokens = 0;
-
+    private int m_quantity;
+    
     /** Creates new BattlePanel */
     public TechPanel(GameData data, MapPanel map)
     {
@@ -191,10 +192,12 @@ public class TechPanel extends ActionPanel
                 return;
 
             int quantity = techRollPanel.getValue();
+                        
             if (advance == null)
-                m_techRoll = new TechRoll(null, quantity);
+                m_techRoll = new TechRoll(null, quantity);            
             else
                 m_techRoll = new TechRoll(advance, quantity);
+            
             release();
 
         }
@@ -233,22 +236,29 @@ public class TechPanel extends ActionPanel
             if (choice != JOptionPane.OK_OPTION)
                 return;
 
-            int quantity = techTokenPanel.getValue();
+            m_quantity = techTokenPanel.getValue();
             
-            m_currTokens += quantity;
-            getCurrentPlayer().getResources().addResource(getData().getResourceList().getResource(Constants.TECH_TOKENS), quantity);
+            m_currTokens += m_quantity;
+            getCurrentPlayer().getResources().addResource(getData().getResourceList().getResource(Constants.TECH_TOKENS), m_quantity);
      
-            m_techRoll = new TechRoll(null, m_currTokens);
+            m_techRoll = new TechRoll(null, m_currTokens, m_quantity);
+            m_techRoll.setNewTokens(m_quantity);
+            
             release();
 
         }
     };
 
-    private Action JustRollTech = new AbstractAction("Roll Current Tokens")
+    private Action JustRollTech = new AbstractAction("Done/Roll Current Tokens")
     {
         public void actionPerformed(ActionEvent event)
         {
-            m_techRoll = new TechRoll(null, m_currTokens);
+            m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
+            //If this player has tokens, roll them.
+            if(m_currTokens > 0)
+                m_techRoll = new TechRoll(null, m_currTokens);
+            else
+                m_techRoll = null;
             release();            
         }
     };

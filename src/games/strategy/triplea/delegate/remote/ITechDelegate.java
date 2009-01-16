@@ -30,5 +30,5 @@ public interface ITechDelegate extends IRemote
      *               rolling for certain techs (ie third edition)
      * @return TechResults.  If the tech could not be rolled, then a message saying why.
      */
-    public TechResults rollTech(int rollCount, TechAdvance techToRollFor);
+    public TechResults rollTech(int rollCount, TechAdvance techToRollFor, int newTokens);
 }

@@ -1741,11 +1741,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
     }
 
     /**
-     * Check for Air on Subs only and submerge subs
+     * Submerge attacking/defending SUBS if they're alone OR with TRNS against only AIRCRAFT
      * @param bridge
      * @param player
      * @param defender
      */
+    //TODO COMCO this should probably be named checkAirVsSubsOnly and submerge subs if they're alone or with trns only
     private void checkAirOnlyOnSubs(IDelegateBridge bridge)
     {
 	    //if All attackers are AIR submerge any defending subs
@@ -1796,6 +1797,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 m_attackingUnits, true, true, bridge, "Defenders fire, ");
     }
     
+    //If there are no attacking DDs but defending SUBs, fire AIR at non-SUB forces ONLY
     private void attackAirOnNonSubs(IDelegateBridge bridge)
     {
         if (m_defendingUnits.size() == 0)
@@ -1803,18 +1805,18 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         if(!Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer) && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
         {	        	
-	        Collection<Unit> units = Match.getMatches(m_attackingUnits, Matches.UnitIsAir);
-	        units.addAll(Match.getMatches(m_attackingWaitingToDie, Matches.UnitIsAir));
+	        Collection<Unit> airUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsAir);
+	        airUnits.addAll(Match.getMatches(m_attackingWaitingToDie, Matches.UnitIsAir));
 	        // Only attacker can fire, allies can't.
-	        Collection<Unit> ownedUnits = Match.getMatches(units, Matches.unitIsOwnedBy(m_attacker));        
+	        Collection<Unit> ownedAirUnits = Match.getMatches(airUnits, Matches.unitIsOwnedBy(m_attacker));        
 	
-	        if (ownedUnits.isEmpty())
+	        if (ownedAirUnits.isEmpty())
 	            return;
 	        
-	        Collection<Unit> enemyUnits = Match.getMatches(m_defendingUnits, Matches.UnitIsNotSub);
+	        Collection<Unit> enemyUnitsNotSubs = Match.getMatches(m_defendingUnits, Matches.UnitIsNotSub);
 	
-	        fire(m_defender.getName() + SELECT_CASUALTIES, ownedUnits,
-	        		enemyUnits, false, true, bridge, "Attackers aircraft fire,");
+	        fire(m_defender.getName() + SELECT_CASUALTIES, ownedAirUnits,
+	            enemyUnitsNotSubs, false, true, bridge, "Attackers aircraft fire,");
         }
     }
 
@@ -1825,13 +1827,19 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         if(!Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer) && Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
         {	        	
-	        Collection<Unit> units = Match.getMatches(m_defendingUnits, Matches.UnitIsAir);      
+	        Collection<Unit> units = Match.getMatches(m_defendingUnits, Matches.UnitIsAir); 
+            Collection<Unit> enemyUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsNotSub);
+            //keep fighters from firing if there are only SUBs left
+            if(enemyUnits.isEmpty())
+            {
+	            units.removeAll(units);
+            }
+	        
+	        
 	        units.addAll(Match.getMatches(m_defendingWaitingToDie, Matches.UnitIsAir));
 	        
 	        if (units.isEmpty())
 	            return;
-	        
-	        Collection<Unit> enemyUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsNotSub);
 	
 	        fire(m_defender.getName() + SELECT_CASUALTIES, units,
 	        		enemyUnits, true, true, bridge, "Defenders aircraft fire,");
@@ -1839,7 +1847,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     }
 
     
-    
+//If there are no attacking DDs, but defending SUBs, remove attacking AIR as they've already fired- otherwise fire all attackers.     
     private void attackNonSubs(IDelegateBridge bridge)
     {
 
@@ -1851,7 +1859,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         units.addAll(Match.getMatches(m_attackingWaitingToDie,
                 Matches.UnitIsNotSub));
         //if restricted, remove aircraft from attackers
-        if (isAirAttackSubRestricted() && m_battleSite.isWater() && !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer))
+        if (isAirAttackSubRestricted() && m_battleSite.isWater() && !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer) && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
         {
         	units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
         }

@@ -164,7 +164,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         {
             ITechDelegate techDelegate = (ITechDelegate) m_bridge.getRemote();
             TechResults techResults = techDelegate.rollTech(
-                    techRoll.getRolls(), techRoll.getTech());
+                    techRoll.getRolls(), techRoll.getTech(), techRoll.getNewTokens());
 
             if (techResults.isError())
             {

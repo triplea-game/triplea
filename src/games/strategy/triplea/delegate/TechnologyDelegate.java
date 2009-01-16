@@ -106,14 +106,17 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
     {
         return games.strategy.triplea.Properties.getSelectableTechRoll(m_data);
     }
-
-    public TechResults rollTech(int techRolls, TechAdvance techToRollFor)
+ 
+    public TechResults rollTech(int techRolls, TechAdvance techToRollFor, int newTokens)
     {
-        boolean canPay = checkEnoughMoney(techRolls);
+        
+        //boolean canPay = checkEnoughMoney(techRolls);
+        boolean canPay = checkEnoughMoney(newTokens);
         if (!canPay)
             return new TechResults("Not enough money to pay for that many tech rolls");
 
-        chargeForTechRolls(techRolls);
+        //chargeForTechRolls(techRolls);
+        chargeForTechRolls(newTokens);
         String annotation = m_player.getName() + " rolling for tech.";
         int[] random;
         if (EditDelegate.getEditMode(m_data))
@@ -141,7 +144,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
             //Display the two charts for which a successful roll will be chosen
             TechPanel techPanel = new TechPanel(m_data, null);
             m_techCategory = techPanel.getAvailableTechCategories(m_player);
-            //remove all the tokens  //TODO also do if capital captured
+            //remove all the tokens  
             int m_currTokens = m_player.getResources().getQuantity(Constants.TECH_TOKENS);
             m_player.getResources().removeResource(m_data.getResourceList().getResource(Constants.TECH_TOKENS), m_currTokens);
         }

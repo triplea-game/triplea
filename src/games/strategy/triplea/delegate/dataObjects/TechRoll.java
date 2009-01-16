@@ -24,12 +24,20 @@ import games.strategy.triplea.delegate.TechAdvance;
 public class TechRoll
 {
     private final TechAdvance m_tech;
-    private final int m_rolls;
-    
+    private  int m_rolls;
+    private  int m_newTokens;
+
     public TechRoll(TechAdvance advance, int rolls)
     {
         m_rolls = rolls;
-        m_tech = advance;  
+        m_tech = advance;
+    }
+    
+    public TechRoll(TechAdvance advance, int rolls, int newTokens)
+    {
+        m_rolls = rolls;
+        m_tech = advance;
+        m_newTokens = newTokens;
     }
     
     public int getRolls()
@@ -40,5 +48,15 @@ public class TechRoll
     public TechAdvance getTech()
     {
         return m_tech;
+    }
+    
+    public int getNewTokens()
+    {
+        return m_newTokens;
+    }
+
+    public void setNewTokens(int tokens)
+    {
+        this.m_newTokens = tokens;
     }
 }
