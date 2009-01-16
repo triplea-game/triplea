@@ -545,7 +545,7 @@ public class StrategicBombingRaidBattle implements Battle
 
             	// Record production lost
             	DelegateFinder.moveDelegate(m_data).ipcsLost(m_battleSite, cost);
-            	kev
+            	
             	Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
             	bridge.addChange(change);
             }
