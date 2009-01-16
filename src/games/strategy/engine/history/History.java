@@ -99,7 +99,7 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
           return null;
 
        List<Change> changes = m_changes.subList( Math.min(firstChange, lastChange), Math.max(firstChange, lastChange  ) );
-
+kev
        Change compositeChange = new CompositeChange(changes);
        if(lastChange >= firstChange )
        {

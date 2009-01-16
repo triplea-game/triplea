@@ -410,12 +410,16 @@ public class DiceRoll implements Externalizable
     private static boolean isImprovedArtillerySupport(PlayerID player)
     {
         TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        if(ta == null)
+        	return false;
         return ta.hasImprovedArtillerySupport();     
     }
 
     private static boolean isAARadar(PlayerID player)
     {
         TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        if(ta == null)
+        	return false;
         return ta.hasAARadar();     
     }
 

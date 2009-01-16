@@ -560,7 +560,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
      */
     public static Map<Unit, Unit> mapTransports(Route route, Collection<Unit> units, Collection<Unit> transportsToLoad)
     {
-        if(Match.someMatch(transportsToLoad, Matches.UnitIsStrategicBomber))
+        if(transportsToLoad != null && Match.someMatch(transportsToLoad, Matches.UnitIsStrategicBomber))
             return mapTransportsToLoad(units, Match.getMatches(transportsToLoad, Matches.UnitIsStrategicBomber));
         if (MoveValidator.isLoad(route))
             return mapTransportsToLoad(units, transportsToLoad);

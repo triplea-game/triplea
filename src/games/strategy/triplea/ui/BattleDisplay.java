@@ -1032,6 +1032,8 @@ class BattleModel extends DefaultTableModel
     private static boolean isImprovedArtillerySupport(PlayerID player)
     {
         TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        if(ta == null)
+        	return false;
         return ta.hasImprovedArtillerySupport();     
     }
 }

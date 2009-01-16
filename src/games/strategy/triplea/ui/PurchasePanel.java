@@ -263,6 +263,8 @@ public class PurchasePanel extends ActionPanel
   private boolean isIncreasedFactoryProduction(PlayerID player)    
   {
       TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+      if(ta == null)
+      	return false;
       return ta.hasIncreasedFactoryProduction();
   }
   

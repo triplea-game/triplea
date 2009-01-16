@@ -1802,6 +1802,8 @@ public class MovePanel extends ActionPanel
     private static boolean isParatroopers(PlayerID player)    
     {
         TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        if(ta == null)
+        	return false;
         return ta.hasParatroopers();
     }    
 

@@ -175,6 +175,8 @@ public class Matches
         {
             Unit unit = (Unit) obj;
             UnitAttachment ua = UnitAttachment.get(unit.getType());
+            if(ua == null)
+            	return false;
             return ua.isStrategicBomber();
         }
     };
