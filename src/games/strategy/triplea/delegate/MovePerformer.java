@@ -81,9 +81,12 @@ public class MovePerformer implements Serializable
     {
         
         m_currentMove = currentMove;
-        Collection<Unit> toLoad = new ArrayList<Unit>();
-       
-        populateStack(units, route, id, toLoad);
+        
+        /*Collection<Unit> toLoad = new ArrayList<Unit>();       
+        toLoad = transportsToLoad;
+        populateStack(units, route, id, toLoad);*/
+
+        populateStack(units, route, id, transportsToLoad);
 
         m_executionStack.execute(m_bridge, m_data);
     }

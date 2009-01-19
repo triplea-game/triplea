@@ -1253,6 +1253,7 @@ public class MoveValidator
         {
             Territory territory = (Territory) candidates.next();
             Route candidateRoute = data.getMap().getRoute(route.getEnd(), territory, canMoveThrough);
+
             if(candidateRoute == null)
                 continue;
             Integer distance = new Integer(candidateRoute.getLength());
@@ -1267,6 +1268,12 @@ public class MoveValidator
             
             //how much spare capacity do they have?
             int extraCapacity = MoveValidator.carrierCapacity(unitsAtLocation) - MoveValidator.carrierCost(ownedUnitsAtLocation);
+            if(territory.equals(route.getStart()))
+                
+            {
+                extraCapacity += MoveValidator.carrierCost(units);
+            }
+            
             extraCapacity = Math.max(0, extraCapacity);
             
             // check carrierMustMoveWith, and reserve carrier capacity for allied planes as required
@@ -1285,7 +1292,8 @@ public class MoveValidator
           
             //If the territory is within the maxMovement
             if (route.getLength() < maxMovement)
-            	carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost - MoveValidator.carrierCost(units));
+            	carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost);
+            //carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost - MoveValidator.carrierCost(units));
             else 
             {            	
             	//Can move OWNED carriers to get them.

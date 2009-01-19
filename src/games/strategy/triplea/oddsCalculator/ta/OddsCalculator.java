@@ -286,9 +286,8 @@ class DummyPlayer extends AbstractAI
         return null;
     }
 
-
-
-    public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
+    //Added new collection autoKilled to handle killing units prior to casualty selection
+    public CasualtyDetails selectCasualties(Collection<Unit> autoKilled, Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
     {
         List<Unit> rDamaged = new ArrayList<Unit>();
         List<Unit> rKilled = new ArrayList<Unit>();
@@ -330,7 +329,7 @@ class DummyPlayer extends AbstractAI
         CasualtyDetails m2 = new CasualtyDetails(rKilled, rDamaged, false);
         return m2;
     }
-
+    
     public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
     {
         throw new UnsupportedOperationException();

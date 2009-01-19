@@ -406,10 +406,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties(java.lang.String, java.util.Collection, java.util.Map, int, java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.List)
+     * Added new collection autoKilled to handle killing units prior to casualty selection
      */
-    public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
+
+    public CasualtyDetails selectCasualties(Collection<Unit> autoKilled, Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
     {
-        return m_ui.getBattlePanel().getCasualties(selectFrom, dependents, count, message, dice,hit, defaultCasualties, battleID);
+        return m_ui.getBattlePanel().getCasualties(autoKilled, selectFrom, dependents, count, message, dice,hit, defaultCasualties, battleID);
     }
 
     /* 

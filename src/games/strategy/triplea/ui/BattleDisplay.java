@@ -657,6 +657,91 @@ public class BattleDisplay extends JPanel
         return casualtyDetails.get();
         
     }
+    
+    public CasualtyDetails getCasualties(final Collection<Unit> autoKilled, final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message,
+                                         final DiceRoll dice, final PlayerID hit, final List<Unit> defaultCasualties)
+                                 {
+                                     if (SwingUtilities.isEventDispatchThread())
+                                         throw new IllegalStateException("This method should not be run in the event dispatch thread");
+
+                                     final AtomicReference<CasualtyDetails> casualtyDetails = new AtomicReference<CasualtyDetails>();
+                                     final CountDownLatch continueLatch = new CountDownLatch(1);
+                                     
+                                     SwingUtilities.invokeLater(new Runnable()
+                                     {
+
+                                         
+                                         public void run()
+                                         {
+                                             final boolean isEditMode = (dice == null);
+
+                                             if (!isEditMode)
+                                             {
+                                                 m_actionLayout.show(m_actionPanel, DICE_KEY);
+                                                 m_dicePanel.setDiceRoll(dice);
+                                             }
+
+                                             boolean plural = isEditMode || (count > 1);
+                                             String countStr = isEditMode ? "" : "" + count;
+                                             final String btnText = hit.getName() + ", press space to select " + countStr + (plural ? " casualties" : " casualty");
+                                             m_actionButton.setAction(new AbstractAction(btnText)
+                                             {
+                                                 public void actionPerformed(ActionEvent e)
+                                                 {
+
+                                                     String messageText = message + " " + btnText + ".";
+                                                     UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext());
+                                                     
+
+                                                     chooser.setTitle(messageText);
+                                                     if (isEditMode)
+                                                         chooser.setMax(selectFrom.size());
+                                                     else
+                                                         chooser.setMax(count);
+                                                     String[] options =
+                                                     { "Ok", "Cancel" };
+
+                                                     int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooser, hit.getName() + " select casualties",
+                                                             JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+                                                     if (option != 0)
+                                                         return;
+                                                     List<Unit> killed = chooser.getSelected(false);
+                                                     killed.addAll(autoKilled);
+                                                     List<Unit> damaged = chooser.getSelectedFirstHit();
+
+                                                     if (!isEditMode && (killed.size() + damaged.size() != count + autoKilled.size()))
+                                                     {
+                                                         JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties selected", hit.getName()
+                                                                 + " select casualties", JOptionPane.ERROR_MESSAGE);
+                                                         return;
+                                                     } else
+                                                     {
+                                                         CasualtyDetails response = new CasualtyDetails(killed, damaged, false);
+                                                         casualtyDetails.set(response);
+                                                         
+                                                         m_dicePanel.clear();
+                                                         m_actionButton.setEnabled(false);
+                                                         m_actionButton.setAction(m_nullAction);
+
+                                                         continueLatch.countDown();
+                                                     }
+                                                 }
+                                             });
+                                         }
+                                     });
+
+                                     try
+                                     {
+                                         continueLatch.await();
+                                     } catch (InterruptedException ex)
+                                     {
+                                         ex.printStackTrace();
+                                     }
+
+                                     
+                                     return casualtyDetails.get();
+                                     
+                                 }
 
     private void initLayout()
     {

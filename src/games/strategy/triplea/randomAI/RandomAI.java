@@ -375,8 +375,11 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
      *      java.util.Collection, java.util.Map, int, java.lang.String,
      *      games.strategy.triplea.delegate.DiceRoll,
      *      games.strategy.engine.data.PlayerID, java.util.List)
+     *      
+     *      Added new collection autoKilled to handle killing units prior to casualty selection
      */
-    public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
+    
+    public CasualtyDetails selectCasualties(Collection<Unit> autoKilled, Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
     {
         List<Unit> rDamaged = new ArrayList<Unit>();
         List<Unit> rKilled = new ArrayList<Unit>();
@@ -396,7 +399,6 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
         return m2;
 
     }
-
     /*
      * (non-Javadoc)
      * 

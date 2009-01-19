@@ -421,6 +421,22 @@ public class BattlePanel extends ActionPanel
 
     }
 
+    public CasualtyDetails getCasualties(final Collection<Unit> autoKilled, final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message,
+            final DiceRoll dice, final PlayerID hit, final List<Unit> defaultCasualties, GUID battleID)
+    {
+        //if the battle display is null, then this is an aa fire during move
+        if (battleID == null)
+            return getCasualtiesAA(selectFrom, dependents, count, message, dice, hit, defaultCasualties);
+        else
+        {
+            //something is wong
+            if(!ensureBattleIsDisplayed(battleID))
+                return new CasualtyDetails(defaultCasualties, Collections.<Unit>emptyList(), true);
+            
+            return m_battleDisplay.getCasualties(autoKilled, selectFrom, dependents, count, message, dice, hit, defaultCasualties);
+        }
+
+    }
     private CasualtyDetails getCasualtiesAA( Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice,
             PlayerID hit, List defaultCasualties)
     {

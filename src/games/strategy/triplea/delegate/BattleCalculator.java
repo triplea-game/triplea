@@ -138,35 +138,54 @@ public class BattleCalculator
     {
     	boolean isEditMode = EditDelegate.getEditMode(data);
     	int hits = dice.getHits();
+    	int hitsRemaining = 0;
         if (!isEditMode && hits == 0)
             return new CasualtyDetails(Collections.<Unit>emptyList(), Collections.<Unit>emptyList(), true);
-
+        
         Map<Unit, Collection<Unit>> dependents;
         if(headLess)
             dependents= Collections.emptyMap();
         else
             dependents= getDependents(targets, data);
 
+        List<Unit> killed = new ArrayList<Unit>();
+        Collection<Unit> remainingTargets = new ArrayList<Unit>();
+        
+        if(defending && isTransportCasualtiesRestricted(data))
+        {
+        //Pre remove non-transports if there are more than enough hits
+        Collection<Unit> nonTransports = Match.getMatches(targets, Matches.UnitIsNotTransport);
+        remainingTargets.addAll(targets);
+        //TODO comco there's still a bug on the exact count of non-transports.
+        kev
+        if(hits > nonTransports.size())
+        {
+            killed.addAll(nonTransports);
+            remainingTargets.removeAll(nonTransports);
+            hitsRemaining = hits - nonTransports.size();
+        }
+        else if(hits == nonTransports.size())
+            return new CasualtyDetails(killed, Collections.<Unit>emptyList(), true);
+        }
         // If all targets are one type and not two hit then
         // just remove the appropriate amount of units of that type.
         // Sets the appropriate flag in the select casualty message
         // such that user is prompted to continue since they did not
         // select the units themselves.
         
-        if(defending && isTransportCasualtiesRestricted(data) && allTargetsTransports(data, targets))
+        /*if(defending && isTransportCasualtiesRestricted(data) && allTargetsTransports(data, targets))
         {
-        	List<Unit> killed = new ArrayList<Unit>();
+        	//List<Unit> killed = new ArrayList<Unit>();
             Iterator<Unit> iter = targets.iterator();
             for (int i = 0; i < hits; i++)
             {
                 killed.add(iter.next());
             }
             return new CasualtyDetails(killed, Collections.<Unit>emptyList(), true);
-        }
+        }*/
         
         if (!isEditMode && allTargetsOneTypeNotTwoHit(targets, dependents))
         {
-            List<Unit> killed = new ArrayList<Unit>();
             Iterator<Unit> iter = targets.iterator();
             for (int i = 0; i < hits; i++)
             {
@@ -180,18 +199,19 @@ public class BattleCalculator
         // change, we do it here.
         IntegerMap<UnitType> costs = getCosts(player, data);
 
-        List<Unit> defaultCasualties = getDefaultCasualties(targets, hits, defending, player, costs);
+        List<Unit> defaultCasualties = getDefaultCasualties(remainingTargets, hitsRemaining, defending, player, costs);
 
         ITripleaPlayer tripleaPlayer;
         if(player.isNull())
             tripleaPlayer = new WeakAI(player.getName());
         else
             tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
-        
-        CasualtyDetails casualtySelection = tripleaPlayer.selectCasualties(targets, dependents, hits, text, dice, player,
+        //TODO COMCO perhaps preload some killed here.
+        CasualtyDetails casualtySelection = tripleaPlayer.selectCasualties(killed, remainingTargets, dependents, hitsRemaining, text, dice, player,
                 defaultCasualties, battleID);
 
-        List<Unit> killed = casualtySelection.getKilled();
+        killed.clear();
+        killed.addAll(casualtySelection.getKilled());
         List<Unit> damaged = casualtySelection.getDamaged();
 
         //check right number
@@ -406,7 +426,7 @@ public class BattleCalculator
     private static boolean allTargetsTransports(GameData data, Collection<Unit> targets)
     {
     	//Get all transports        
-        List<Unit> allTransports = Match.getMatches(targets, Matches.UnitTypeIsTransport);    	
+        List<Unit> allTransports = Match.getMatches(targets, Matches.UnitIsTransport);    	
     	
     	//If no transports, just return
         if (allTransports.isEmpty())

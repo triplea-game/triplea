@@ -43,11 +43,13 @@ public interface ITripleaPlayer extends IRemote
      * @param defaultCasualties - default casualties as selected by the game
      * @param battleID - the battle we are fighting in, may be null if this is an aa casualty selection during a move
      * @return the selected casualties
+     * 
+     * Added new collection autoKilled to handle killing units prior to casualty selection
      */
-    public CasualtyDetails selectCasualties(
-            Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents,  int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID     
-    );
 
+    public CasualtyDetails selectCasualties(
+            Collection<Unit> autoKilled, Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents,  int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID     
+    );
     /**
      * Select a fixed dice roll
      * 
