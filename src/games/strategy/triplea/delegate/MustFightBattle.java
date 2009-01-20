@@ -2251,6 +2251,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             } 
             else
             {
+                //TODO COMCO fire fighters/bombers individually
                 m_casualties = MustFightBattle.this.selectCasualties(SELECT_AA_CASUALTIES, bridge, attackable, false,
                         "AA guns fire,", m_dice).getKilled();
             }

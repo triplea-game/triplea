@@ -1131,7 +1131,7 @@ public class MoveValidator
         //the fighters cant move farther than this
         //note that this doesnt take into account the movement used to move the
         //units along the route
-        int maxMovement = MoveValidator.getMaxMovement(units);
+        int maxMovement = MoveValidator.getMaxMovement(units) - route.getLength();
 
         //If it's flying to/from an allied airbase, increase the range
         TerritoryAttachment taStart = TerritoryAttachment.get(route.getStart());
@@ -1246,8 +1246,7 @@ public class MoveValidator
       
         //If it's > the fighter's max moves, add in the potential movement for owned carriers
         //must be owned carriers if they're going to move
-        	int maxMoveIncludingCarrier = maxMovement +2;
-        
+        int maxMoveIncludingCarrier = maxMovement +2;
         Iterator<Territory> candidates = data.getMap().getNeighbors(route.getEnd(), maxMoveIncludingCarrier).iterator();
         while (candidates.hasNext())
         {
@@ -1268,12 +1267,11 @@ public class MoveValidator
             
             //how much spare capacity do they have?
             int extraCapacity = MoveValidator.carrierCapacity(unitsAtLocation) - MoveValidator.carrierCost(ownedUnitsAtLocation);
-            if(territory.equals(route.getStart()))
-                
+            if(territory.equals(route.getStart()))                
             {
                 extraCapacity += MoveValidator.carrierCost(units);
             }
-            
+
             extraCapacity = Math.max(0, extraCapacity);
             
             // check carrierMustMoveWith, and reserve carrier capacity for allied planes as required
@@ -1295,9 +1293,9 @@ public class MoveValidator
             	carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost);
             //carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost - MoveValidator.carrierCost(units));
             else 
-            {            	
+            {
             	//Can move OWNED carriers to get them.
-            	if(ownedCarrier.size()>0  && MoveValidator.carrierCapacity(ownedCarrier) - mustMoveWith.size() - route.getEnd().getUnits().size() >0)
+            	if(ownedCarrier.size()>0  && MoveValidator.carrierCapacity(ownedCarrier) - mustMoveWith.size() - route.getEnd().getUnits().size() >0 && MoveValidator.hasEnoughMovement(ownedCarrier, route.getLength() - distance))
             		carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost - route.getEnd().getUnits().size());
             }
         }
