@@ -105,12 +105,12 @@ public class UnitChooser extends JPanel
   {
     this(units, Collections.<Unit>emptyList(), dependent, data, allowTwoHit, uiContext);
   }
-
+//TODO Kev called here
   public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit, UIContext uiContext)
   {
       this(units, defaultSelections, dependent, false, data, allowTwoHit, uiContext);
   }
-
+//TODO Kev goes here
   public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, GameData data, boolean allowTwoHit, UIContext uiContext)
   {
     m_dependents = dependent;
@@ -123,7 +123,7 @@ public class UnitChooser extends JPanel
     createEntries(units, dependent, categorizeMovement, defaultSelections);
     layoutEntries();
   }
-  
+  //TODO Kev may want to try this
   public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, GameData data, boolean allowTwoHit, UIContext uiContext, Match<Collection<Unit>> match)
   {
     m_dependents = dependent;

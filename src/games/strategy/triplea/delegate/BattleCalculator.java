@@ -150,22 +150,25 @@ public class BattleCalculator
 
         List<Unit> killed = new ArrayList<Unit>();
         Collection<Unit> remainingTargets = new ArrayList<Unit>();
-        
+
         if(defending && isTransportCasualtiesRestricted(data))
         {
-        //Pre remove non-transports if there are more than enough hits
-        Collection<Unit> nonTransports = Match.getMatches(targets, Matches.UnitIsNotTransport);
-        remainingTargets.addAll(targets);
-        //TODO comco there's still a bug on the exact count of non-transports.
-        kev
-        if(hits > nonTransports.size())
-        {
-            killed.addAll(nonTransports);
-            remainingTargets.removeAll(nonTransports);
-            hitsRemaining = hits - nonTransports.size();
-        }
-        else if(hits == nonTransports.size())
-            return new CasualtyDetails(killed, Collections.<Unit>emptyList(), true);
+        	//Pre remove non-transports if there are more than enough hits
+        	Collection<Unit> nonTransports = Match.getMatches(targets, Matches.UnitIsNotTransport);
+        	remainingTargets.addAll(targets);
+        	//TODO comco there's still a bug on the exact count of non-transports.
+
+        	if(hits > nonTransports.size())
+        	{
+        		killed.addAll(nonTransports);
+        		remainingTargets.removeAll(nonTransports);
+        		hitsRemaining = hits - nonTransports.size();
+        	}
+        	else if(hits == nonTransports.size())
+        	{
+        		killed.addAll(nonTransports);
+        		return new CasualtyDetails(killed, Collections.<Unit>emptyList(), true);
+        	}
         }
         // If all targets are one type and not two hit then
         // just remove the appropriate amount of units of that type.

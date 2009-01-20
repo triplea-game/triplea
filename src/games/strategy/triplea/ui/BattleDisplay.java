@@ -17,6 +17,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.*;
@@ -25,6 +26,9 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.util.*;
 import games.strategy.ui.Util;
+import games.strategy.util.CompositeMatch;
+import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.awt.*;
@@ -690,7 +694,18 @@ public class BattleDisplay extends JPanel
                                                  {
 
                                                      String messageText = message + " " + btnText + ".";
-                                                     UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext());
+                                                     //UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext());
+                                                     Match<Collection<Unit>> match = new Match<Collection<Unit>>()
+                                                     {
+                                                    	 public boolean match(Collection<Unit> autoKilled)
+                                                         {
+                                                    		 return true;
+                                                    		 //return autoKilled.size() > 0;
+                                                         }                                             	 
+                                                     };
+                                                     
+                                                     
+                                                     UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, false, m_data, true, m_mapPanel.getUIContext(), match);
                                                      
 
                                                      chooser.setTitle(messageText);

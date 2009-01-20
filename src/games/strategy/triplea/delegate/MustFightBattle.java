@@ -1702,6 +1702,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         CompositeMatch<Unit> matchAllied = new CompositeMatchAnd<Unit>(); 
         matchAllied.add(Matches.UnitIsTransport);
         matchAllied.add(Matches.isUnitAllied(player, m_data));
+        matchAllied.add(Matches.UnitIsSea);
     	
         List<Unit> alliedTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), matchAllied);
     	
