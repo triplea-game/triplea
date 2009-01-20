@@ -350,7 +350,7 @@ public class StrategicBombingRaidBattle implements Battle
         {
             String text = "AA guns fire";
             CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker, 
-                    m_units, bridge, text, m_data, /*dice*/ null,/*defending*/ false, m_battleID, /*headless*/ false);
+                    m_units, bridge, text, m_data, /*dice*/ null,/*defending*/ false, m_battleID, /*headless*/ false, 0);
             return casualtySelection.getKilled();
         }     	
     	else if ((isFourthEdition() || isRandomAACasualties()) && !isChooseAA())

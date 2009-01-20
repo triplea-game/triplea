@@ -1963,7 +1963,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         PlayerID hit = defender ? m_defender : m_attacker;
         return BattleCalculator.selectCasualties(step, hit, attackableUnits,
-                bridge, text, m_data, dice, defender, m_battleID, m_headless);
+                bridge, text, m_data, dice, defender, m_battleID, m_headless, dice.getHits());
     }
 
     void removeCasualties(Collection<Unit> killed, boolean canReturnFire,
@@ -2955,7 +2955,7 @@ class Fire implements IExecutable
         if (isEditMode)
         {
             CasualtyDetails message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
-                    m_attackableUnits, bridge, m_text, data, m_dice,!m_defending, m_battleID, m_isHeadless);
+                    m_attackableUnits, bridge, m_text, data, m_dice,!m_defending, m_battleID, m_isHeadless, m_dice.getHits());
 
             m_killed = message.getKilled();
             m_damaged = message.getDamaged();
@@ -2966,68 +2966,96 @@ class Fire implements IExecutable
             int hitCount = m_dice.getHits();
 
             MustFightBattle.getDisplay(bridge).notifyDice(m_battle.getBattleID(), m_dice, m_stepName);
-        
-            //they all die
-            if (hitCount >= MustFightBattle.getMaxHits(m_attackableUnits))
-            {
-                m_killed = m_attackableUnits;
-                m_damaged = Collections.emptyList();
-                //everything died, so we need to confirm
-                m_confirmOwnCasualties = true;
-            } else
-            {
-            	CasualtyDetails message;
-        		//Get all transports in the territory    
-                int countTransports = Match.countMatches(m_attackableUnits, Matches.UnitIsTransport);
-                int nonTransportUnitCount = Match.countMatches(m_attackableUnits, Matches.UnitIsNotTransport);
-                Collection<Unit> nonTransports = Match.getMatches(m_attackableUnits, Matches.UnitIsNotTransport);
-                //TODO comco should automatically select non transports.
-                //If there are transports and they are restricted, look to remove them from the casualty selection
-             	if(countTransports > 0 && isTransportCasualtiesRestricted(data))
-            	{
 
-                    //Remove all the transports not needed to cover hit overflow
-             	    if(hitCount > nonTransportUnitCount)
-             	    {
-             	        int extraHits = hitCount - nonTransportUnitCount;
-             	        Collection<Unit> onlyTransports = Match.getMatches(m_attackableUnits, Matches.UnitIsTransport);
-             	        Collection<PlayerID> alliedHitPlayer = new ArrayList<PlayerID>();
-             	        
-             	        //find the players who have transports in the attackable pile
-             	        for(Unit unit:onlyTransports)
-             	        {
-             	            if(!alliedHitPlayer.contains(unit.getOwner()))
-             	                alliedHitPlayer.add(unit.getOwner());
-             	        }
-             	        
-             	        Iterator<PlayerID> playerIter = alliedHitPlayer.iterator();
-             	        //Leave enough transports for each defender for overlfows so they can select who loses them.
-             	        while(playerIter.hasNext())
-             	        {
-             	            PlayerID player = playerIter.next();
-             	            CompositeMatch<Unit> match = new CompositeMatchAnd<Unit>();
-             	            match.add(Matches.UnitIsTransport);
-             	            match.add(Matches.unitIsOwnedBy(player));
-             	            Collection<Unit> playerTransports = Match.getMatches(onlyTransports, match);
-             	            int transportsToRemove = Math.max(0, playerTransports.size() - extraHits);
-             	            m_attackableUnits.removeAll(Match.getNMatches(playerTransports, transportsToRemove, Matches.UnitIsTransport));
-             	        }
-             	    }
-            	}
-             	
-                message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
-                        m_attackableUnits, bridge, m_text, data, m_dice,!m_defending, m_battleID, m_isHeadless);
+            //TODO COMCO check for transport restriction and split casualty selection.
+            int countTransports = Match.countMatches(m_attackableUnits, Matches.UnitIsTransport);
+
+            if (countTransports > 0 && isTransportCasualtiesRestricted(data))
+            {
+                CasualtyDetails message;
+                Collection<Unit> nonTransports = Match.getMatches(m_attackableUnits, new CompositeMatchOr<Unit>(Matches.UnitIsNotTransport, Matches.UnitIsNotSea));
+                Collection<Unit> transportsOnly = Match.getMatches(m_attackableUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.UnitIsSea));
+                int numPossibleHits = MustFightBattle.getMaxHits(nonTransports);
                 
-                /*if(hitCount > nonTransportUnitCount)
+                //more hits than combat units
+                if(hitCount > numPossibleHits)
                 {
-                    m_attackableUnits.removeAll(nonTransports);
-                    message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
-                            m_attackableUnits, bridge, m_text, data, m_dice,!m_defending, m_battleID, m_isHeadless);
-                }*/
+                    int extraHits = hitCount - numPossibleHits;
+                    Collection<Unit> remainingTargets = new ArrayList<Unit>();
+                    remainingTargets.addAll(m_attackableUnits);
+                    remainingTargets.removeAll(nonTransports);
+                    
+                    Collection<PlayerID> alliedHitPlayer = new ArrayList<PlayerID>();
+                    //find the players who have transports in the attackable pile
+                    for(Unit unit:transportsOnly)
+                    {
+                        if(!alliedHitPlayer.contains(unit.getOwner()))
+                            alliedHitPlayer.add(unit.getOwner());
+                    }
+                    
+                    Iterator<PlayerID> playerIter = alliedHitPlayer.iterator();
+                    //Leave enough transports for each defender for overlfows so they can select who loses them.
+                    while(playerIter.hasNext())
+                    {
+                        PlayerID player = playerIter.next();
+                        CompositeMatch<Unit> match = new CompositeMatchAnd<Unit>();
+                        match.add(Matches.UnitIsTransport);
+                        match.add(Matches.unitIsOwnedBy(player));
+                        Collection<Unit> playerTransports = Match.getMatches(transportsOnly, match);
+                        int transportsToRemove = Math.max(0, playerTransports.size() - extraHits);
+                        transportsOnly.removeAll(Match.getNMatches(playerTransports, transportsToRemove, Matches.UnitIsTransport));
+                    }
 
-                m_killed = message.getKilled();
-                m_damaged = message.getDamaged();
-                m_confirmOwnCasualties = message.getAutoCalculated();
+                    m_killed = nonTransports;
+                    m_damaged = Collections.emptyList();
+                    //m_confirmOwnCasualties = true;
+                    
+                    message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
+                        transportsOnly, bridge, m_text, data, m_dice,!m_defending, m_battleID, m_isHeadless, extraHits);
+
+                    m_killed.addAll(message.getKilled());
+                    m_confirmOwnCasualties = true;
+                    
+                } 
+                //exact number of combat units
+                else if(hitCount == numPossibleHits)
+                {
+                    m_killed = nonTransports;
+                    m_damaged = Collections.emptyList();
+                    m_confirmOwnCasualties = true;
+                } 
+                //less than possible number
+                else
+                {
+                    message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
+                        nonTransports, bridge, m_text, data, m_dice,!m_defending, m_battleID, m_isHeadless, m_dice.getHits());
+
+                    m_killed = message.getKilled();
+                    m_damaged = message.getDamaged();
+                    m_confirmOwnCasualties = message.getAutoCalculated();
+                }
+            }
+            else  //not isTransportCasualtiesRestricted
+            {
+                //they all die
+                if (hitCount >= MustFightBattle.getMaxHits(m_attackableUnits))
+                {
+                    m_killed = m_attackableUnits;
+                    m_damaged = Collections.emptyList();
+                    //everything died, so we need to confirm
+                    m_confirmOwnCasualties = true;
+                }
+                //Choose casualties
+                else
+                {
+                    CasualtyDetails message;
+                    message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
+                        m_attackableUnits, bridge, m_text, data, m_dice,!m_defending, m_battleID, m_isHeadless, m_dice.getHits());
+                    
+                    m_killed = message.getKilled();
+                    m_damaged = message.getDamaged();
+                    m_confirmOwnCasualties = message.getAutoCalculated();
+                }
             }
         }
     }

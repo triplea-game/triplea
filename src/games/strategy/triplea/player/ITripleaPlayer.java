@@ -48,7 +48,7 @@ public interface ITripleaPlayer extends IRemote
      */
 
     public CasualtyDetails selectCasualties(
-            Collection<Unit> autoKilled, Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents,  int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID     
+            Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents,  int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID     
     );
     /**
      * Select a fixed dice roll

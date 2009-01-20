@@ -126,7 +126,7 @@ public class BattleCalculator
     public static CasualtyDetails selectCasualties(PlayerID player, Collection<Unit> targets, IDelegateBridge bridge, String text, GameData data,
             DiceRoll dice, boolean defending, GUID battleID)
     {
-        return selectCasualties(null, player, targets, bridge, text, data, dice, defending, battleID, false);
+        return selectCasualties(null, player, targets, bridge, text, data, dice, defending, battleID, false, dice.getHits());
     }
 
     /**
@@ -134,11 +134,11 @@ public class BattleCalculator
      * @param battleID may be null if we are not in a battle (eg, if this is an aa fire due to moving
      */
     public static CasualtyDetails selectCasualties(String step, PlayerID player, Collection<Unit> targets, IDelegateBridge bridge, String text,
-            GameData data, DiceRoll dice, boolean defending, GUID battleID, boolean headLess)
+            GameData data, DiceRoll dice, boolean defending, GUID battleID, boolean headLess, int extraHits)
     {
     	boolean isEditMode = EditDelegate.getEditMode(data);
     	int hits = dice.getHits();
-    	int hitsRemaining = 0;
+    	int hitsRemaining = hits;
         if (!isEditMode && hits == 0)
             return new CasualtyDetails(Collections.<Unit>emptyList(), Collections.<Unit>emptyList(), true);
         
@@ -147,48 +147,15 @@ public class BattleCalculator
             dependents= Collections.emptyMap();
         else
             dependents= getDependents(targets, data);
-
-        List<Unit> killed = new ArrayList<Unit>();
-        Collection<Unit> remainingTargets = new ArrayList<Unit>();
-
-        if(defending && isTransportCasualtiesRestricted(data))
+        
+        if(isTransportCasualtiesRestricted(data))
         {
-        	//Pre remove non-transports if there are more than enough hits
-        	Collection<Unit> nonTransports = Match.getMatches(targets, Matches.UnitIsNotTransport);
-        	remainingTargets.addAll(targets);
-        	//TODO comco there's still a bug on the exact count of non-transports.
-
-        	if(hits > nonTransports.size())
-        	{
-        		killed.addAll(nonTransports);
-        		remainingTargets.removeAll(nonTransports);
-        		hitsRemaining = hits - nonTransports.size();
-        	}
-        	else if(hits == nonTransports.size())
-        	{
-        		killed.addAll(nonTransports);
-        		return new CasualtyDetails(killed, Collections.<Unit>emptyList(), true);
-        	}
+            hitsRemaining = extraHits;
         }
-        // If all targets are one type and not two hit then
-        // just remove the appropriate amount of units of that type.
-        // Sets the appropriate flag in the select casualty message
-        // such that user is prompted to continue since they did not
-        // select the units themselves.
-        
-        /*if(defending && isTransportCasualtiesRestricted(data) && allTargetsTransports(data, targets))
-        {
-        	//List<Unit> killed = new ArrayList<Unit>();
-            Iterator<Unit> iter = targets.iterator();
-            for (int i = 0; i < hits; i++)
-            {
-                killed.add(iter.next());
-            }
-            return new CasualtyDetails(killed, Collections.<Unit>emptyList(), true);
-        }*/
-        
+                
         if (!isEditMode && allTargetsOneTypeNotTwoHit(targets, dependents))
         {
+            List<Unit> killed = new ArrayList<Unit>(); 
             Iterator<Unit> iter = targets.iterator();
             for (int i = 0; i < hits; i++)
             {
@@ -202,7 +169,7 @@ public class BattleCalculator
         // change, we do it here.
         IntegerMap<UnitType> costs = getCosts(player, data);
 
-        List<Unit> defaultCasualties = getDefaultCasualties(remainingTargets, hitsRemaining, defending, player, costs);
+        List<Unit> defaultCasualties = getDefaultCasualties(targets, hitsRemaining, defending, player, costs);
 
         ITripleaPlayer tripleaPlayer;
         if(player.isNull())
@@ -210,15 +177,30 @@ public class BattleCalculator
         else
             tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
         //TODO COMCO perhaps preload some killed here.
-        CasualtyDetails casualtySelection = tripleaPlayer.selectCasualties(killed, remainingTargets, dependents, hitsRemaining, text, dice, player,
+        CasualtyDetails casualtySelection = tripleaPlayer.selectCasualties(targets, dependents,  hitsRemaining, text, dice, player,
                 defaultCasualties, battleID);
 
-        killed.clear();
-        killed.addAll(casualtySelection.getKilled());
+        List<Unit> killed = casualtySelection.getKilled();
         List<Unit> damaged = casualtySelection.getDamaged();
+        //killed.addAll(casualtySelection.getKilled());
+        //damaged = casualtySelection.getDamaged();
 
+        int numhits = killed.size();
+        Iterator<Unit> killedIter = killed.iterator();
+        while (killedIter.hasNext())
+        {
+            Unit unit = killedIter.next();
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            if (ua.isTwoHit() && (unit.getHits() == 0))
+            {
+                numhits++;
+            }
+        }
+        
+        
         //check right number
-        if (!isEditMode && !(killed.size() + damaged.size() == hits))
+        if (!isEditMode && !(numhits + damaged.size() == hitsRemaining))
+        //if (!isEditMode && !(numhits + damaged.size() == hits))
         {
             tripleaPlayer.reportError("Wrong number of casualties selected");
             return selectCasualties(player, targets, bridge, text, data, dice, defending, battleID);
