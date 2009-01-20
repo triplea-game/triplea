@@ -487,7 +487,11 @@ public class BattleTracker implements java.io.Serializable
         PlayerID terrOrigOwner;
         
         if(isOccupiedTerritories(data))
+        {
         	terrOrigOwner = ta.getOccupiedTerrOf(); 
+            if (terrOrigOwner == null)
+                terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
+        }
         else
         	terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
         
