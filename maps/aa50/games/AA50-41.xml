@@ -2132,6 +2132,10 @@
                 
 <!--COMCO rules testing-->
 
+                <property name="National Objectives" value="true" editable="true">
+                	<boolean/>
+                </property>
+                
                 <property name="AA50 Tech Model" value="true" editable="false">
                 	<boolean/>
                 </property>

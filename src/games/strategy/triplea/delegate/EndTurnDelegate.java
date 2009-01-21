@@ -43,6 +43,7 @@ import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
@@ -86,7 +87,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 
         		if (isNationalObjectives())
         		{
-        			determineNationalObjectives(m_data);
+        			determineNationalObjectives(m_data, bridge);
         		}
         		
         if(isFourthEdition())
@@ -132,7 +133,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
  * Determine if National Objectives have been met
  * @param data
  */
-    private void determineNationalObjectives(GameData data)
+    private void determineNationalObjectives(GameData data, IDelegateBridge bridge)
     {
     	PlayerID player = data.getSequence().getStep().getPlayerID();
     	
@@ -358,8 +359,12 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     		//
     		if (objectiveMet)
     		{
-    			//Also log a message
+    		    int total = player.getResources().getQuantity(Constants.IPCS) + rule.getObjectiveValue();
     			player.getResources().addResource(data.getResourceList().getResource(Constants.IPCS), rule.getObjectiveValue());
+    			
+    			String ipcMessage = player.getName() + " met a national objective for an additional " + rule.getObjectiveValue() + MyFormatter.pluralize(" ipc", rule.getObjectiveValue()) +
+    			"; end with " + total + MyFormatter.pluralize(" ipc", total);
+    			bridge.getHistoryWriter().startEvent(ipcMessage);
     		}
     	} //end while        	
     } //end determineNationalObjectives
