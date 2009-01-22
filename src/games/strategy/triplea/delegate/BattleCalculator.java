@@ -176,14 +176,11 @@ public class BattleCalculator
             tripleaPlayer = new WeakAI(player.getName());
         else
             tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
-        //TODO COMCO perhaps preload some killed here.
         CasualtyDetails casualtySelection = tripleaPlayer.selectCasualties(targets, dependents,  hitsRemaining, text, dice, player,
                 defaultCasualties, battleID);
 
         List<Unit> killed = casualtySelection.getKilled();
         List<Unit> damaged = casualtySelection.getDamaged();
-        //killed.addAll(casualtySelection.getKilled());
-        //damaged = casualtySelection.getDamaged();
 
         int numhits = killed.size();
         Iterator<Unit> killedIter = killed.iterator();
@@ -200,7 +197,6 @@ public class BattleCalculator
         
         //check right number
         if (!isEditMode && !(numhits + damaged.size() == hitsRemaining))
-        //if (!isEditMode && !(numhits + damaged.size() == hits))
         {
             tripleaPlayer.reportError("Wrong number of casualties selected");
             return selectCasualties(player, targets, bridge, text, data, dice, defending, battleID);

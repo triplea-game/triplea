@@ -2969,7 +2969,7 @@ class Fire implements IExecutable
             MustFightBattle.getDisplay(bridge).notifyDice(m_battle.getBattleID(), m_dice, m_stepName);
 
             //TODO COMCO check for transport restriction and split casualty selection.
-            int countTransports = Match.countMatches(m_attackableUnits, Matches.UnitIsTransport);
+            int countTransports = Match.countMatches(m_attackableUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.UnitIsSea));
 
             if (countTransports > 0 && isTransportCasualtiesRestricted(data))
             {
