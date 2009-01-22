@@ -175,6 +175,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         
         Map<Territory, Collection<Battle>> adjBombardment = getPossibleBombardingTerritories();
         Iterator<Territory> territories = adjBombardment.keySet().iterator();
+        boolean shoreBombardPerGroundUnitRestricted = isShoreBombardPerGroundUnitRestricted(m_data);
 
         while (territories.hasNext())
         {
@@ -185,13 +186,26 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
                 battles = Match.getMatches(battles, Matches.BattleIsAmphibious);
                 if (!battles.isEmpty())
                 {
-                    Iterator<Unit> bombarding = t.getUnits().getMatches(ownedAndCanBombard).iterator();
+                    Collection<Unit> bombardUnits = t.getUnits().getMatches(ownedAndCanBombard);
+                    List<Unit> ListedBombardUnits = new ArrayList<Unit>();
+                    ListedBombardUnits.addAll(bombardUnits);
+                    sortUnitsToBombard(ListedBombardUnits, attacker);
+                    Iterator<Unit> bombarding = ListedBombardUnits.iterator();
+                    //Iterator<Unit> bombarding = t.getUnits().getMatches(ownedAndCanBombard).iterator();
                     while (bombarding.hasNext())
                     {
                         Unit u = (Unit) bombarding.next();
                         Battle battle = selectBombardingBattle(u, t, battles);
                         if (battle != null)
                         {
+                            if(shoreBombardPerGroundUnitRestricted)
+                            {
+                                if( battle.getAmphibiousLandAttackers().size() <= battle.getBombardingUnits().size())
+                                {
+                                    battles.remove(battle);
+                                    break;
+                                }
+                            }
                             battle.addBombardingUnit(u);
                         }
                     }
@@ -200,6 +214,17 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         }
     }
 
+    /**
+     * Sort the specified units in preferred movement or unload order.
+     */
+    private void sortUnitsToBombard(final List<Unit> units, final PlayerID player)
+    {
+        if(units.isEmpty())
+            return;
+
+        Collections.sort(units, UnitComparator.getDecreasingAttackComparator(player));
+    }
+    
     /**
      * Return map of adjacent territories along attack routes in battles where fighting will occur.
      */
@@ -273,7 +298,10 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         }
 
         ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
-        Territory bombardingTerritory =  remotePlayer.selectBombardingTerritory(u, uTerritory, territories, true);
+        Territory bombardingTerritory = null;
+        
+        if(!territories.isEmpty())
+            bombardingTerritory =  remotePlayer.selectBombardingTerritory(u, uTerritory, territories, true);
                 
         if (bombardingTerritory != null)
         {
@@ -387,7 +415,6 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
     {
     	return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
     }
-    
     
     public boolean getAttackSubs(final Territory terr) 
 	{		

@@ -18,6 +18,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -311,5 +312,27 @@ public class UnitComparator
             }
         };
     }
+    
+    public static Comparator<Unit> getDecreasingAttackComparator(final PlayerID player) 
+    {
+        return new Comparator<Unit>()
+        {
+
+            public int compare(Unit u1, Unit u2)
+            {
+                UnitAttachment ua1 = UnitAttachment.get(u1.getType());
+                UnitAttachment ua2 = UnitAttachment.get(u2.getType());
+                int attack1 = ua1.getAttack(player);
+                int attack2 = ua2.getAttack(player);
+
+                if (attack1 == attack2)
+                    return 0;
+                if (attack1 < attack2)
+                    return 1;
+                return -1;
+            }
+        };    
+    }
+    
    
 }
