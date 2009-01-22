@@ -1131,7 +1131,7 @@ public class MoveValidator
         //the fighters cant move farther than this
         //note that this doesnt take into account the movement used to move the
         //units along the route
-        int maxMovement = MoveValidator.getMaxMovement(units) - route.getLength();
+        int maxMovement = Math.max(0 , MoveValidator.getMaxMovement(units) - route.getLength());
 
         //If it's flying to/from an allied airbase, increase the range
         TerritoryAttachment taStart = TerritoryAttachment.get(route.getStart());
