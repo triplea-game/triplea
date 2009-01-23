@@ -157,7 +157,7 @@ public class BattleCalculator
         {
             List<Unit> killed = new ArrayList<Unit>(); 
             Iterator<Unit> iter = targets.iterator();
-            for (int i = 0; i < hits; i++)
+            for (int i = 0; i < hitsRemaining; i++)
             {
                 killed.add(iter.next());
             }
