@@ -191,7 +191,6 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
                     ListedBombardUnits.addAll(bombardUnits);
                     sortUnitsToBombard(ListedBombardUnits, attacker);
                     Iterator<Unit> bombarding = ListedBombardUnits.iterator();
-                    //Iterator<Unit> bombarding = t.getUnits().getMatches(ownedAndCanBombard).iterator();
                     while (bombarding.hasNext())
                     {
                         Unit u = (Unit) bombarding.next();

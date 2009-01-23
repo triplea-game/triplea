@@ -2061,6 +2061,10 @@
                 <!-- Use Anniversary Edition Rules -->
 				<property name="Anniversary Edition" value="true" editable="false">
                         <boolean/>
+                </property>             
+
+				<property name="Naval Bombard Casualties Return Fire Restricted" value="true" editable="false">
+                        <boolean/>
                 </property>
                 
 				<!-- Use Submersible Subs-->
