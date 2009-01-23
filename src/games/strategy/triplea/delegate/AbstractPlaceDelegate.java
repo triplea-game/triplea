@@ -388,16 +388,17 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
                 Matches.UnitIsFactory);
         boolean limitSBRDamageToUnitProd = isSBRAffectsUnitProduction();
         boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
+        boolean unitPlacementPerTerritoryRestricted = isUnitPlacementPerTerritoryRestricted();
         boolean originalFactory = ta.isOriginalFactory();
         boolean playerIsOriginalOwner = factoryUnits.size() > 0 ? m_player
                 .equals(getOriginalFactoryOwner(producer)) : false;
 
         //if (originalFactory && playerIsOriginalOwner && !limitSBRDamageToUnitProd)
-        if (originalFactory && playerIsOriginalOwner && !placementRestrictedByFactory)
+        if (originalFactory && playerIsOriginalOwner && !placementRestrictedByFactory && !unitPlacementPerTerritoryRestricted)
             return -1;
         
-    	//Restricts the ABSOLUTE number of units in a territory
-        if (isUnitPlacementPerTerritoryRestricted())
+    	//Restricts the STARTING number of units in a territory
+        if (unitPlacementPerTerritoryRestricted)
         {
         	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
         	if(ra != null && ra.getPlacementPerTerritory() > 0)
@@ -408,10 +409,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         		if (unitsInTerritory >= allowedPlacement)
         			return 0;
         		
-        		if(allowedPlacement - unitsInTerritory >= units.size())
-        			return units.size();
-        		
-        		return allowedPlacement - unitsInTerritory;
+        		return -1;
         	}        		
         }
         

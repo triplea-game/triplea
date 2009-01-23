@@ -2198,19 +2198,19 @@
                 
                 
 <!-- These require an associated value in the attachments section above-->                 
-                <property name="Movement By Territory Restricted" value="true" editable="true">
+                <property name="Movement By Territory Restricted" value="true" editable="false">
                 	<boolean/>
                 </property>
                 
-                <property name="Production Per X Territories Restricted" value="true" editable="true">
+                <property name="Production Per X Territories Restricted" value="true" editable="false">
                 	<boolean/>
                 </property>                
                 
-                <property name="Unit Placement Per Territory Restricted" value="true" editable="true">
+                <property name="Unit Placement Per Territory Restricted" value="true" editable="false">
                 	<boolean/>
                 </property>
                 <!-- COMCO need to specify only Chinese may do this -->
-                <property name="Place in Any Territory" value="true" editable="true">
+                <property name="Place in Any Territory" value="true" editable="false">
                 	<boolean/>
                 </property>
                 
