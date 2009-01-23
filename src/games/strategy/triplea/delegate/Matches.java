@@ -1047,11 +1047,21 @@ public class Matches
                 
                 return TripleAUnit.get(u).getSubmerged();
             }
-        };
-        
+        };        
     }
-    
 
+
+    public static Match<Unit> unitIsNotSubmerged(final GameData data)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit u)
+            {
+                
+                return !TripleAUnit.get(u).getSubmerged();
+            }
+        };        
+    }
         
     public static final Match<Unit> UnitIsAAOrFactory = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory);
 

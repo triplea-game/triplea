@@ -30,6 +30,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -977,6 +978,28 @@ public class MoveDelegateTest extends DelegateTest
     map.put(armour, 1);
 
     String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
+
+    //move carriers to ensure they can't go anywhere
+    route = new Route();
+    route.setStart(congoSeaZone);
+    route.add(westAfricaSea);
+    route.add(northAtlantic);
+    Collection<Unit> units = new ArrayList(); 
+    units.addAll(Match.getMatches(m_data.getMap().getTerritory(congoSeaZone.toString()).getUnits().getUnits(), Matches.UnitIsCarrier));
+
+    results = m_delegate.move( units, route);
+    assertValid(results);
+    
+    //move carriers to ensure they can't go anywhere
+    route = new Route();
+    route.setStart(redSea);
+    route.add(eastMediteranean);
+    route.add(blackSea);
+    units = new ArrayList(); 
+    units.addAll(Match.getMatches(m_data.getMap().getTerritory(redSea.toString()).getUnits().getUnits(), Matches.UnitIsCarrier));
+
+    results = m_delegate.move( units, route);
     assertValid(results);
 
     //make sure the place cant use it to land

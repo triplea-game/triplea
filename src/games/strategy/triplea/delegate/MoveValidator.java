@@ -809,6 +809,7 @@ public class MoveValidator
         CompositeMatch<Unit> enemyUnitsMatch = new CompositeMatchAnd<Unit>();
     	enemyUnitsMatch.add(Matches.enemyUnit(player, data));
     	enemyUnitsMatch.add(Matches.unitCanAttack(player));
+    	enemyUnitsMatch.add(Matches.unitIsNotSubmerged(data));
     	
         //Are there enemies there
     	if(route.getEnd().getUnits().someMatch(enemyUnitsMatch))
@@ -1355,6 +1356,7 @@ public class MoveValidator
                     carrierCapacity.put(current,carrierCapacity.getInt(current) - carrierCost);
                     break;
                 }
+
                 //Check carriers that could potentially move to within 'i' zones
                 Integer potentialWithNonComMove = new Integer(i) + 2;
                 if(carrierCapacity.getInt(potentialWithNonComMove) >= carrierCost && carrierCost != -1 )

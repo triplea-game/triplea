@@ -94,8 +94,7 @@ public class RevisedTest extends TestCase
         Territory sz1 = m_data.getMap().getTerritory("1 Sea Zone");
         Territory sz7 = m_data.getMap().getTerritory("7 Sea Zone");
         Territory sz8 = m_data.getMap().getTerritory("8 Sea Zone");
-        
-        
+                
         TripleAUnit sub = (TripleAUnit) sz8.getUnits().iterator().next();
         sub.setSubmerged(true);
         

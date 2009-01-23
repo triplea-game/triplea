@@ -309,6 +309,7 @@ public class DiceRollTest extends TestCase
     
     public void testHeavyBombers()
     {
+        m_data = LoadGameUtil.loadGame("classic", "iron_blitz.xml");
         PlayerID british = m_data.getPlayerList().getPlayerID("British");
         
         ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
@@ -327,6 +328,7 @@ public class DiceRollTest extends TestCase
     
     public void testHeavyBombersDefend()
     {
+        m_data = LoadGameUtil.loadGame("classic", "iron_blitz.xml");
         PlayerID british = m_data.getPlayerList().getPlayerID("British");
         
         ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
@@ -429,7 +431,7 @@ public class DiceRollTest extends TestCase
 
     public void testDiceRollCount()
     {
-        
+
         PlayerID british = m_data.getPlayerList().getPlayerID("British");
         Unit bombers =  m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber).get(0);
         
@@ -442,6 +444,7 @@ public class DiceRollTest extends TestCase
 
         ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
         TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+        m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.FALSE);
 
         assertEquals(2, BattleCalculator.getRolls(bombers, british, false) );
         assertEquals(1, BattleCalculator.getRolls(bombers, british, true) );

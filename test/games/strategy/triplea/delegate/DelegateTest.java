@@ -71,6 +71,9 @@ public class DelegateTest extends TestCase
 	protected Territory mozambiqueSeaZone;
 	protected Territory eastMediteranean;
 	protected Territory congoSeaZone;
+    protected Territory northAtlantic;
+    protected Territory redAtlantic;
+    protected Territory westAfricaSea;
 	protected Territory indianOcean;
 	protected Territory westAfricaSeaZone;
 	protected Territory southAfrica;
@@ -141,6 +144,8 @@ public class DelegateTest extends TestCase
 		egypt= m_data.getMap().getTerritory("Anglo Sudan Egypt");
 		congo= m_data.getMap().getTerritory("Congo");
 		congoSeaZone = m_data.getMap().getTerritory("Congo Sea Zone");
+		northAtlantic = m_data.getMap().getTerritory("North Atlantic Sea Zone");
+		westAfricaSea = m_data.getMap().getTerritory("West Africa Sea Zone");
 		kenya= m_data.getMap().getTerritory("Kenya-Rhodesia");
 		eastAfrica = m_data.getMap().getTerritory("Italian East Africa");
 		libya = m_data.getMap().getTerritory("Libya");

@@ -2063,6 +2063,10 @@
                         <boolean/>
                 </property>             
 
+				<property name="Use Shipyards" value="true" editable="false">
+                        <boolean/>
+                </property>        
+                
 				<property name="Naval Bombard Casualties Return Fire Restricted" value="true" editable="false">
                         <boolean/>
                 </property>

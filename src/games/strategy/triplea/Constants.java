@@ -126,6 +126,7 @@ public interface Constants
   public static final String TWO_HIT = "isTwoHit";
   public static final String ORIGINAL_OWNER = "originalOwner";
   public static final String USE_DESTROYERS_AND_ARTILLERY = "Use Destroyers and Artillery";
+  public static final String USE_SHIPYARDS = "Use Shipyards";
   public static final String LOW_LUCK = "Low Luck";
   public static final String IPC_CAP = "Territory Turn Limit";
   public static final String KAMIKAZE = "Kamikaze Airplanes";
