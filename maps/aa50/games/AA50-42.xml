@@ -587,6 +587,7 @@
         
         <resourceList>
                 <resource name="IPCs"/>
+                <resource name="techTokens"/>
         </resourceList>
 
         
