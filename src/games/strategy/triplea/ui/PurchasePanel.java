@@ -29,7 +29,6 @@ import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.ui.RepairPanel.Rule;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -49,10 +48,8 @@ public class PurchasePanel extends ActionPanel
 
   private JLabel actionLabel = new JLabel();
   private IntegerMap<ProductionRule> m_purchase;
-  private IntegerMap<Rule> m_repair;  
   private boolean m_bid;
   private SimpleUnitPanel m_unitsPanel;
-  private SimpleUnitPanel m_repairPanel;  
   private JLabel m_purchasedSoFar = new JLabel();
   private JButton m_buyButton;
 
@@ -67,12 +64,11 @@ public class PurchasePanel extends ActionPanel
     m_buyButton = new JButton(BUY);
     m_buyButton.addActionListener(PURCHASE_ACTION);
   }
-
+  
   public void display(final PlayerID id)
   {
     super.display(id);
     m_purchase = new IntegerMap<ProductionRule>();
-    m_repair = new IntegerMap<Rule>();
     
     SwingUtilities.invokeLater(new Runnable()
     {
@@ -143,42 +139,6 @@ public class PurchasePanel extends ActionPanel
         PlayerID player = getCurrentPlayer();
         GameData data = getData();
         
-    	//Check if any factories need to be repaired
-    	if(isSBRAffectsUnitProduction())
-    	{
-    		Collection<Territory> bombedTerrs = new ArrayList<Territory>();
-    		for(Territory t : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedFactory(data, player))) 
-                {
-    				TerritoryAttachment ta = TerritoryAttachment.get(t);
-    				if(ta.getProduction() != ta.getUnitProduction())
-    				{
-    					bombedTerrs.add(t);
-    				}
-                }
-    		
-    		
-    		if(bombedTerrs.size() > 0)
-    		{    		    
-    			m_repair = RepairPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, m_repair, getMap().getUIContext());
-
-    			Iterator<Rule> iter = m_repair.keySet().iterator();
-    			    			
-    	        while (iter.hasNext())
-    	        {
-    	        	Rule current = iter.next();    	        	
-    	        	int quantity = m_repair.getInt(current);
-    	        	
-    	        	if(quantity > 0)
-    	        	{
-        	            Territory terr = data.getMap().getTerritory(current.getTerr());
-        	            TerritoryAttachment ta = TerritoryAttachment.get(terr);
-        	            int currUnitProd = ta.getUnitProduction();
-        	            String newUnitProd = String.valueOf(currUnitProd += quantity);
-        	            ta.setUnitProduction(newUnitProd);    	        		
-    	        	}
-    	        }
-    		}
-    	}
     	m_purchase = ProductionPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, m_bid, m_purchase,getMap().getUIContext());
     	m_unitsPanel.setUnitsFromProductionRuleMap(m_purchase, player, data);
     	if(m_purchase.totalValues() == 0)

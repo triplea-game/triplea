@@ -27,6 +27,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -168,6 +169,63 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
 
     return null;
   }
+  /**
+   * Returns an error code, or null if all is good.
+   */
+  public String purchaseRepair(IntegerMap<RepairRule> repairRules)
+  {	  
+    IntegerMap<Resource> costs = getRepairCosts(repairRules);
+    IntegerMap<NamedAttachable> results = getRepairResults(repairRules);
+
+    if(!(canAfford(costs, m_player)))
+      return "Not enough resources";
+
+    // remove first, since add logs ipcs remaining
+    
+    Iterator<NamedAttachable> iter = results.keySet().iterator();
+    Collection<Unit> totalUnits = new ArrayList<Unit>();
+    CompositeChange changes = new CompositeChange();
+
+    // add changes for added resources
+    //  and find all added units
+    while(iter.hasNext() )
+    {
+      Object next = iter.next();
+      if(next instanceof Resource)
+      {
+        Resource resource = (Resource) next;
+        int quantity = results.getInt(resource);
+        Change change = ChangeFactory.changeResourcesChange(m_player, resource, quantity);
+        changes.add(change);
+      } else
+      {
+        UnitType type = (UnitType) next;
+        int quantity = results.getInt(type);
+        Collection<Unit> units = type.create(quantity, m_player);
+        totalUnits.addAll(units);
+
+      }
+    }
+
+    // add changes for added units
+    if(!totalUnits.isEmpty())
+    {
+      Change change = ChangeFactory.addUnits(m_player, totalUnits);
+      changes.add(change);
+    }
+
+    // add changes for spent resources
+    String remaining = removeFromPlayer(m_player, costs, changes);
+
+    addHistoryEvent(totalUnits,  remaining);  
+    
+    // commit changes
+    m_bridge.addChange(changes);
+
+      
+
+    return null;
+  }
 
 
   private void addHistoryEvent(Collection<Unit> totalUnits, String remainingText)
@@ -194,6 +252,19 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     }
     return costs;
   }
+  
+  private IntegerMap<Resource> getRepairCosts(IntegerMap<RepairRule> repairRules)
+  {
+    IntegerMap<Resource> costs = new IntegerMap<Resource>();
+
+    Iterator<RepairRule> rules = repairRules.keySet().iterator();
+    while(rules.hasNext() )
+    {
+    	RepairRule rule = rules.next();
+      costs.addMultiple(rule.getCosts(), repairRules.getInt(rule));
+    }
+    return costs;
+  }
 
   private IntegerMap<NamedAttachable> getResults(IntegerMap<ProductionRule> productionRules)
   {
@@ -207,6 +278,20 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     }
     return costs;
   }
+
+  private IntegerMap<NamedAttachable> getRepairResults(IntegerMap<RepairRule> repairRules)
+  {
+    IntegerMap<NamedAttachable> costs = new IntegerMap<NamedAttachable>();
+
+    Iterator<RepairRule> rules = repairRules.keySet().iterator();
+    while(rules.hasNext() )
+    {
+    	RepairRule rule = rules.next();
+      costs.addMultiple(rule.getResults(), repairRules.getInt(rule));
+    }
+    return costs;
+  }
+
 
 
 

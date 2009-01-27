@@ -28,6 +28,7 @@ import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
@@ -625,6 +626,12 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     {
         m_actionButtons.changeToProduce(player);
         return m_actionButtons.waitForPurchase(bid);
+    }
+//TODO COMCO added this
+    public IntegerMap<RepairRule> getRepair(final PlayerID player, boolean bid)
+    {
+        m_actionButtons.changeToRepair(player);
+        return m_actionButtons.waitForRepair(bid);
     }
 
     public MoveDescription getMove(final PlayerID player, IPlayerBridge bridge, final boolean nonCombat)

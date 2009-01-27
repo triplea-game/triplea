@@ -46,6 +46,8 @@ public class ActionButtons extends JPanel
     private MovePanel m_movePanel;
 
     private PurchasePanel m_purchasePanel;
+    
+    private RepairPanel m_repairPanel;
 
     private PlacePanel m_placePanel;
 
@@ -60,6 +62,7 @@ public class ActionButtons extends JPanel
         m_battlePanel = new BattlePanel(data, map);
         m_movePanel = new MovePanel(data, map, parent);
         m_purchasePanel = new PurchasePanel(data, map);
+        m_repairPanel = new RepairPanel(data, map);
         m_placePanel = new PlacePanel(data, map);
         m_techPanel = new TechPanel(data, map);
         m_endTurnPanel = new EndTurnPanel(data, map);
@@ -70,6 +73,7 @@ public class ActionButtons extends JPanel
         add(new JLabel(""), "");
         add(m_battlePanel, m_battlePanel.toString());
         add(m_movePanel, m_movePanel.toString());
+        add(m_repairPanel, m_repairPanel.toString());
         add(m_purchasePanel, m_purchasePanel.toString());
         add(m_placePanel, m_placePanel.toString());
         add(m_techPanel, m_techPanel.toString());
@@ -93,12 +97,14 @@ public class ActionButtons extends JPanel
                
                m_battlePanel.removeAll();
                m_movePanel.removeAll();
+               m_repairPanel.removeAll();
                m_purchasePanel.removeAll();
                m_placePanel.removeAll();
                m_techPanel.removeAll();
                m_endTurnPanel.removeAll();
                m_battlePanel = null;
                m_movePanel = null;
+               m_repairPanel = null;
                m_purchasePanel = null;
                m_placePanel = null;
                m_techPanel = null;
@@ -125,6 +131,21 @@ public class ActionButtons extends JPanel
             }
         });
 
+    }
+//TODO COMCO added this
+    public void changeToRepair(final PlayerID id)
+    {
+        m_current.setActive(false);
+        m_current = m_repairPanel;
+        m_repairPanel.display(id);
+    
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                m_layout.show(ActionButtons.this, m_repairPanel.toString());
+            }
+       });
     }
 
     public void changeToProduce(final PlayerID id)
@@ -214,6 +235,16 @@ public class ActionButtons extends JPanel
     public IntegerMap<ProductionRule> waitForPurchase(boolean bid)
     {
         return m_purchasePanel.waitForPurchase(bid);
+    }
+
+    /**
+     * Blocks until the user selects their purchase.
+     * 
+     * @return null if no move was made.
+     */
+    public IntegerMap<RepairRule> waitForRepair(boolean bid)
+    {
+        return m_repairPanel.waitForRepair(bid);
     }
 
     /**

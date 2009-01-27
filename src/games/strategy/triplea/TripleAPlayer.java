@@ -23,6 +23,7 @@ package games.strategy.triplea;
 import games.strategy.common.player.AbstractHumanPlayer;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IGamePlayer;
@@ -51,8 +52,11 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
+import games.strategy.util.Match;
 
+import games.strategy.engine.data.GameData;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -319,6 +323,13 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
                     ProductionRule rule = (ProductionRule) prodRules.next();
                     minIPCsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.IPCS)), minIPCsNeededToBuild);
                 }
+                //TODO COMCO added this
+                Iterator<RepairRule> repairRules = m_id.getRepairFrontier().getRules().iterator();
+                while(repairRules.hasNext())
+                {
+                    RepairRule rule = (RepairRule) repairRules.next();
+                    minIPCsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.IPCS)), minIPCsNeededToBuild);
+                }
                 
                 //can we buy anything
                 if (m_id.getResources().getQuantity(Constants.IPCS) < minIPCsNeededToBuild)
@@ -329,12 +340,47 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
                 m_bridge.getGameData().releaseReadLock();
             }
         }
+        //TODO COMCO add determination of damaged factories here
+      //Check if any factories need to be repaired
+        String error = null;
+		IPurchaseDelegate purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
+		
+        if(isSBRAffectsUnitProduction(m_bridge.getGameData()))
+        {
+        	GameData data = m_bridge.getGameData();
+        	Collection<Territory> bombedTerrs = new ArrayList<Territory>();
+        	for(Territory t : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedFactory(data, m_id))) 
+        	{
+        		TerritoryAttachment ta = TerritoryAttachment.get(t);
+        		if(ta.getProduction() != ta.getUnitProduction())
+        		{
+        			bombedTerrs.add(t);
+        		}
+        	}
+        	
+        	if(bombedTerrs.size() > 0)
+        	{
+        		IntegerMap<RepairRule> repair = m_ui.getRepair(m_id, bid);
+        		if (repair != null)
+        		{
+        			purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
+        			error = purchaseDel.purchaseRepair(repair);
+        			if (error != null)
+        			{
+        				m_ui.notifyError(error);
+        				//dont give up, keep going
+        				purchase(bid);
 
+        			}
+        		}
+        	}
+    	}
+        
         IntegerMap<ProductionRule> prod = m_ui.getProduction(m_id, bid);
         if (prod == null)
             return;
-        IPurchaseDelegate purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
-        String error = purchaseDel.purchase(prod);
+        purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
+        error = purchaseDel.purchase(prod);
         
         if (error != null)
         {
@@ -505,9 +551,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     public void confirmOwnCasualties(GUID battleId, String message)
     {
         m_ui.getBattlePanel().confirmCasualties(battleId, message);
+    }   
+
+    public final boolean isSBRAffectsUnitProduction(GameData data)
+    {
+        return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data);
     }
-    
-    
 }
 
 

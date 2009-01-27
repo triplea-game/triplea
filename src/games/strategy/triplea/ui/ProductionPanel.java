@@ -60,9 +60,7 @@ public class ProductionPanel extends JPanel
     {
         return new ProductionPanel(context).show(id, parent, data, bid, initialPurchase);
     }
-    
-    
-    
+        
     /**
      * Shows the production panel, and returns a map of selected rules.
      */

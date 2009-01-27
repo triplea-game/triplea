@@ -1291,14 +1291,17 @@ public class MoveValidator
             }
           
             //If the territory is within the maxMovement
-            if (route.getLength() < maxMovement)
+            //if (route.getLength() < maxMovement)
+            if((maxMovement - route.getLength()) >= distance)
             	carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost);
             //carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost - MoveValidator.carrierCost(units));
             else 
             {
             	//Can move OWNED carriers to get them.
-            	if(ownedCarrier.size()>0  && MoveValidator.carrierCapacity(ownedCarrier) - mustMoveWith.size() - route.getEnd().getUnits().size() >0 && MoveValidator.hasEnoughMovement(ownedCarrier, route.getLength() - distance))
-            		carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost - route.getEnd().getUnits().size());
+            	if(ownedCarrier.size()>0  && MoveValidator.carrierCapacity(ownedCarrier) - mustMoveWith.size() - route.getEnd().getUnits().size() >=0 && MoveValidator.hasEnoughMovement(ownedCarrier, route.getLength() - distance))
+            		carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost);
+            		//carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost - route.getEnd().getUnits().size());
+            	
             }
         }
         	

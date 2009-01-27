@@ -67,7 +67,29 @@ public class SimpleUnitPanel extends JPanel
 
     }
   }
+//TODO COMCO added this
+  public void setUnitsFromRepairRuleMap(IntegerMap<RepairRule> units, PlayerID player, GameData data)
+  {
+    removeAll();
 
+
+    TreeSet<RepairRule> repairRules = new TreeSet<RepairRule>(repairRuleComparator);
+    repairRules.addAll(units.keySet());
+    Iterator<RepairRule> iter = repairRules.iterator();
+    while (iter.hasNext())
+    {
+    	RepairRule repairRule = iter.next();
+
+      int quantity = units.getInt(repairRule);
+
+      UnitType unit = (UnitType) repairRule.getResults().keySet().
+        iterator().next();
+      boolean damaged = false;
+
+      addUnits(player, data, quantity, unit, damaged);
+
+    }
+  }
   /**
    *
    * @param categories a collection of UnitCategories
