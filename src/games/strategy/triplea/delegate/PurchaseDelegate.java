@@ -26,18 +26,24 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.RepairFrontier;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.BattleDisplay;
+import games.strategy.triplea.ui.ProductionRepairPanel;
+import games.strategy.triplea.ui.ProductionRepairPanel.Rule;
 import games.strategy.triplea.ui.UnitChooser;
 import games.strategy.util.IntegerMap;
 
@@ -175,16 +181,16 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
   public String purchaseRepair(IntegerMap<RepairRule> repairRules)
   {	  
     IntegerMap<Resource> costs = getRepairCosts(repairRules);
-    IntegerMap<NamedAttachable> results = getRepairResults(repairRules);
+    //IntegerMap<NamedAttachable> results = getRepairResults(repairRules);
 
     if(!(canAfford(costs, m_player)))
       return "Not enough resources";
 
     // remove first, since add logs ipcs remaining
-    
-    Iterator<NamedAttachable> iter = results.keySet().iterator();
-    Collection<Unit> totalUnits = new ArrayList<Unit>();
     CompositeChange changes = new CompositeChange();
+    Collection<Unit> totalUnits = new ArrayList<Unit>();
+    
+/*    Iterator<NamedAttachable> iter = results.keySet().iterator();
 
     // add changes for added resources
     //  and find all added units
@@ -205,14 +211,39 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
         totalUnits.addAll(units);
 
       }
-    }
+    }*/
 
     // add changes for added units
-    if(!totalUnits.isEmpty())
+/*    if(!totalUnits.isEmpty())
     {
       Change change = ChangeFactory.addUnits(m_player, totalUnits);
       changes.add(change);
-    }
+    }*/
+
+    //RepairFrontier frontier = m_player.getRepairFrontier();
+    //m_rules = ProductionRepairPanel.getRules();
+    //Iterator iter = m_rules.iterator();
+    
+    
+  //TODO COMCO     
+/*    List<Rule> m_rules = new ArrayList<Rule>();
+    Iterator<Rule> iter = ProductionRepairPanel.getRules().iterator();
+      while (iter.hasNext())
+      {
+          ProductionRepairPanel.Rule rule = (Rule) iter.next();
+          int quantity = rule.getQuantity();
+          if (quantity != 0)
+          {
+              //Set the territory's unitProduction
+              Territory terr = m_data.getMap().getTerritory(rule.getTerr());
+              TerritoryAttachment ta = TerritoryAttachment.get(terr);
+              int current = ta.getUnitProduction();
+
+              changes.add(ChangeFactory.attachmentPropertyChange(ta, (new Integer(current + quantity)).toString(), "unitProduction"));
+          }
+      }*/
+      
+    
 
     // add changes for spent resources
     String remaining = removeFromPlayer(m_player, costs, changes);
@@ -228,7 +259,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
   }
 
 
-  private void addHistoryEvent(Collection<Unit> totalUnits, String remainingText)
+private void addHistoryEvent(Collection<Unit> totalUnits, String remainingText)
   {
     // add history event
     String transcriptText;

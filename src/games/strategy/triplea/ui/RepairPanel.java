@@ -41,7 +41,7 @@ import javax.swing.*;
 
 /**
  *
- * @author  Sean Bridges
+ * @author  Kevin Comcowich
  * @version 1.0
  */
 public class RepairPanel extends ActionPanel
@@ -248,7 +248,7 @@ public class RepairPanel extends ActionPanel
             {
                 getData().releaseReadLock();
             }
-            if(!m_bid &&  m_repair.totalValues() > totalProd) 
+            /*if(!m_bid &&  m_repair.totalValues() > totalProd) 
             {                
                 int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( RepairPanel.this), "You have purchased more than you can place, continue with purchase?", "End Purchase", JOptionPane.YES_NO_OPTION);
                 if(rVal != JOptionPane.YES_OPTION)
@@ -256,7 +256,7 @@ public class RepairPanel extends ActionPanel
                     return;
                 }
                 
-            }
+            }*/
         }
         
           

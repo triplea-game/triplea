@@ -94,7 +94,7 @@ public class ProductionRepairPanel extends JPanel
     }
 
     // this method can be accessed by subclasses
-    protected List<Rule> getRules()
+    public List<Rule> getRules()
     {
         return m_rules;
     };
@@ -225,7 +225,7 @@ public class ProductionRepairPanel extends JPanel
             int quantity = rule.getQuantity();
             if (quantity != 0)
             {
-                prod.put(rule.getProductionRule(), quantity);
+                prod.add(rule.getProductionRule(), quantity);                               
             }
         }
         return prod;
@@ -260,7 +260,7 @@ public class ProductionRepairPanel extends JPanel
             return m_id.getResources().getQuantity(Constants.IPCS);
     }
 
-    class Rule extends JPanel
+    public class Rule extends JPanel
     {
         private ScrollableTextField m_text = new ScrollableTextField(0, Integer.MAX_VALUE);
         private int m_cost;         
@@ -309,7 +309,7 @@ public class ProductionRepairPanel extends JPanel
             return m_cost;
         }
 
-        int getQuantity()
+        public int getQuantity()
         {
             return m_text.getValue();
         }
@@ -329,7 +329,7 @@ public class ProductionRepairPanel extends JPanel
             m_text.setMax(max);
         }
 
-        String getTerr()
+        public String getTerr()
         {
             return m_terr;
         }
