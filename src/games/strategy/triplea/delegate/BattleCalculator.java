@@ -159,6 +159,9 @@ public class BattleCalculator
             Iterator<Unit> iter = targets.iterator();
             for (int i = 0; i < hitsRemaining; i++)
             {
+                if(i >= targets.size())
+                    break;
+                
                 killed.add(iter.next());
             }
             return new CasualtyDetails(killed, Collections.<Unit>emptyList(), true);
