@@ -122,6 +122,8 @@ public interface Constants
   public static final String PACIFIC_EDITION = "Pacific Edition";
   public static final String ANNIVERSARY_EDITION = "Anniversary Edition";  
   public static final String EUROPE_EDITION = "Europe Edition";
+  public static final String NO_ECONOMIC_VICTORY = "No Economic Victory";
+  
   public static final String SUBMERSIBLE_SUBS = "Submersible Subs";
   public static final String TWO_HIT = "isTwoHit";
   public static final String ORIGINAL_OWNER = "originalOwner";

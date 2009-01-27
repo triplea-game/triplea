@@ -198,7 +198,10 @@ public class StrategicBombingRaidBattle implements Battle
             public void execute(ExecutionStack stack, IDelegateBridge bridge,
                     GameData data)
             {
-                getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidCost);
+                if(isSBRAffectsUnitProduction())
+                    getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidCost + " production.");
+                else
+                    getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidCost + " " +  MyFormatter.pluralize("ipc", m_bombingRaidCost));
                 m_isOver = true;        
             }
         
@@ -321,7 +324,7 @@ public class StrategicBombingRaidBattle implements Battle
     {
     	return games.strategy.triplea.Properties.getLimitSBRDamageToProduction(m_data);
     }
-
+    
 	private boolean isLimitSBRDamagePerTurn(GameData data)
 	{
     	return games.strategy.triplea.Properties.getLimitSBRDamagePerTurn(data);
@@ -535,8 +538,9 @@ public class StrategicBombingRaidBattle implements Battle
             {
             	//get current production
                 int unitProduction = ta.getUnitProduction();                
-            	//Detemine the min that can be taken as losses
-                int alreadyLost = DelegateFinder.moveDelegate(m_data).ipcsAlreadyLost(m_battleSite);
+            	//Detemine the max that can be taken as losses
+                //int alreadyLost = DelegateFinder.moveDelegate(m_data).ipcsAlreadyLost(m_battleSite);
+                int alreadyLost = production - unitProduction;
                 
                 int limit = 2 * production  - alreadyLost;
                 cost = Math.min(cost, limit);

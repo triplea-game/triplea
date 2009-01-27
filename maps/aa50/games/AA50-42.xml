@@ -625,6 +625,7 @@
                 <unit name="carrier"/>
                 <unit name="submarine"/>
                 <unit name="factory"/>
+                <unit name="factory_hit"/>
                 <unit name="aaGun"/>
                 <unit name="artillery"/>
                 <unit name="destroyer"/>
@@ -813,7 +814,10 @@
                         <result resourceOrUnit="aaGun" quantity="1"/>
                 </productionRule>
 
+
+
                 <!-- Advanced Industrial Production -->
+                
                 <productionRule name="buyInfantryIndustrialTechnology">
                         <cost resource="IPCs" quantity="2" />
                         <result resourceOrUnit="infantry" quantity="1"/>
@@ -879,6 +883,58 @@
                         <result resourceOrUnit="aaGun" quantity="1"/>
                 </productionRule>
 
+
+<!-- SHIPYARD PRICES -->
+                
+                <productionRule name="buyTransportShipyards">
+                        <cost resource="IPCs" quantity="6" />
+                        <result resourceOrUnit="transport" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyCarrierShipyards">
+                        <cost resource="IPCs" quantity="11" />
+                        <result resourceOrUnit="carrier" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyDestroyerShipyards">
+                        <cost resource="IPCs" quantity="7" />
+                        <result resourceOrUnit="destroyer" quantity="1"/>
+                </productionRule>
+				
+				<productionRule name="buyCruiserShipyards">
+                        <cost resource="IPCs" quantity="10" />
+                        <result resourceOrUnit="cruiser" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyBattleshipShipyards">
+                        <cost resource="IPCs" quantity="17" />
+                        <result resourceOrUnit="battleship" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buySubmarineShipyards">
+                        <cost resource="IPCs" quantity="5" />
+                        <result resourceOrUnit="submarine" quantity="1"/>
+                </productionRule>
+
+<!-- Repair rules -->                
+                <repairRule name="repairFactory">
+                        <cost resource="IPCs" quantity="1" />
+                        <result resourceOrUnit="factory_hit" quantity="1"/>
+                </repairRule>
+                
+                <repairRule name="repairFactoryIndustrialTechnology">
+                        <cost resource="IPCs" quantity="1" />
+                        <result resourceOrUnit="factory_hit" quantity="2"/>
+                </repairRule>
+                
+                <repairFrontier name="repair">
+                	<repairRules name="repairFactory"/>
+                </repairFrontier>
+                
+                <repairFrontier name="repairIndustrialTechnology">
+                	<repairRules name="repairFactoryIndustrialTechnology"/>
+                </repairFrontier>
+
                 <productionFrontier name="production">
                         <frontierRules name="buyInfantry"/>
                         <frontierRules name="buyArtillery"/>
@@ -910,6 +966,16 @@
                         <frontierRules name="buyAAGunIndustrialTechnology"/>
                         <frontierRules name="buyFactoryIndustrialTechnology"/>        
                 </productionFrontier>
+                
+                <productionFrontier name="productionShipyards">
+                        <frontierRules name="buyTransportShipyards"/>
+                        <frontierRules name="buySubmarineShipyards"/>
+                        <frontierRules name="buyCarrierShipyards"/>
+                        <frontierRules name="buyDestroyerShipyards"/>
+						<frontierRules name="buyCruiserShipyards"/>
+                        <frontierRules name="buyBattleshipShipyards"/>   
+                </productionFrontier>
+                
 
                 <playerProduction player="Germans" frontier="production"/>
 				<playerProduction player="Russians" frontier="production"/>
@@ -919,7 +985,14 @@
 				<playerProduction player="Chinese" frontier="production"/>
                 <playerProduction player="Americans" frontier="production"/>
                 
-                
+                <playerRepair player="Germans" frontier="repair"/>
+				<playerRepair player="Russians" frontier="repair"/>
+				<playerRepair player="Japanese" frontier="repair"/>
+				<playerRepair player="British" frontier="repair"/>
+                <playerRepair player="Italians" frontier="repair"/>
+				<playerRepair player="Chinese" frontier="repair"/>
+                <playerRepair player="Americans" frontier="repair"/>
+                                
                 
         </production> 
         
@@ -988,6 +1061,8 @@
                 <attatchment name="unitAttatchment" attatchTo="infantry" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="1"/>
                          <option name="transportCost" value="2"/>
+                         <option name="isInfantry" value="true"/>
+                         <option name="isParatroop" value="false"/>
                          <option name="attack" value="1"/>
                          <option name="defense" value="2"/>
                          <option name="artillerySupportable" value="true"/>
@@ -996,6 +1071,7 @@
 				<!-- Chinese Infantry -->
 				<attatchment name="unitAttatchment" attatchTo="chineseInfantry" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 						<option name="movement" value="1"/>
+                         <option name="isInfantry" value="true"/>
 						<option name="attack" value="1"/>
 						<option name="defense" value="2"/>
 						<option name="artillerySupportable" value="true"/>
@@ -1015,6 +1091,7 @@
                          <option name="movement" value="2"/>
                          <option name="transportCost" value="3"/>
                          <option name="canBlitz" value="true"/>
+                         <option name="isArmour" value="true"/>
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
 
@@ -1036,6 +1113,7 @@
                          <option name="attack" value="4"/>
                          <option name="defense" value="1"/>
                          <option name="isStrategicBomber" value="true"/>
+                         <option name="transportCapacity" value="2"/>
                 </attatchment>
 
                 <!-- Transport -->
@@ -1096,6 +1174,10 @@
 
                 <!-- Factory -->
                 <attatchment name="unitAttatchment" attatchTo="factory" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                         <option name="isFactory" value="true"/>   
+                </attatchment>
+                
+                <attatchment name="unitAttatchment" attatchTo="factory_hit" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="isFactory" value="true"/>   
                 </attatchment>
             
@@ -1559,8 +1641,111 @@
 			    	<option name="canalName" value="Panama Canal"/>
 			    	<option name="landTerritories" value="Panama"/>
 			    </attatchment>
+                  
+<!--  National Objectives -->
+	<!-- German Objectives -->
+                <attatchment name="objectiveAttachment1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>   
+                	<option name="alliedOwnershipTerritories" value="France:Northwestern Europe:Germany:Poland:Czechoslovakia Hungary:Bulgaria Romania" count="6"/> 
+                </attatchment>
+         
+                <attatchment name="objectiveAttachment2" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Baltic States:East Poland:Belorussia:Eastern Ukraine:Ukraine" count="3"/>
+                </attatchment>         
                 
+                <attatchment name="objectiveAttachment3" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Karelia S.S.R.:Caucasus" count="1"/>
+                </attatchment>
                 
+	<!-- Russian Objectives -->
+                <attatchment name="objectiveAttachment1" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Archangel" count="1"/>
+                	<option name="alliedExclusionTerritories" value="controlled"/>
+                </attatchment>
+                
+                <attatchment name="objectiveAttachment2" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="10"/>
+                	<option name="alliedOwnershipTerritories" value="Norway:Finland:Poland:Bulgaria Romania:Czechoslovakia Hungary:Balkans" count="3"/>
+                </attatchment>
+                
+	<!-- Japanese Objectives -->         
+                <attatchment name="objectiveAttachment1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Manchuria:Kiangsu:French Indo-China Thailand" count="3"/>
+                </attatchment>
+                                
+                <attatchment name="objectiveAttachment2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Kwangtung:East Indies:Borneo:Philippine Islands:New Guinea:Solomon Islands" count="4"/>
+                </attatchment>
+                                
+                <attatchment name="objectiveAttachment3" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Hawaiian Islands:Australia:India" count="1"/>
+                </attatchment>
+                
+	<!-- British Objectives -->
+                <attatchment name="objectiveAttachment1" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Caroline Islands:French Indo-China Thailand:Formosa:Iwo Jima:Japan:Kiangsu:Manchuria:Okinawa" count="1"/>
+                </attatchment>
+                
+                <attatchment name="objectiveAttachment2" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Eastern Canada:Western Canada:Gibraltar:Egypt:Australia:Union of South Africa" count="6"/>
+                </attatchment>
+                
+                <attatchment name="objectiveAttachment3" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="France:Balkans" count="1"/>
+                </attatchment>
+                
+	<!-- Italian Objectives -->
+                <attatchment name="objectiveAttachment1" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Egypt:Trans-Jordan:France:Gibraltar" count="3"/>
+                </attatchment>
+                
+                <attatchment name="objectiveAttachment2" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Italy:Balkans:Morocco Algeria:Libya" count="4"/>
+                	<option name="enemyExclusionTerritories" value="13 Sea Zone:14 Sea Zone:15 Sea Zone" count="3"/>
+                </attatchment>
+                
+	<!-- American Objectives -->
+                <attatchment name="objectiveAttachment1" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="France" count="1"/>
+                </attatchment>
+                
+                <attatchment name="objectiveAttachment2" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Philippine Islands" count="1"/>
+                </attatchment>
+                
+                <attatchment name="objectiveAttachment3" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Western United States:Eastern United States:Central United States" count="3"/>
+                </attatchment>
+                
+                <attatchment name="objectiveAttachment4" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Midway:Wake Island:Hawaiian Islands:Solomon Islands" count="3"/>
+                </attatchment>
+                
+<!--  Rules Restrictions -->
+	<!-- Chinese Rules -->
+				<attatchment name="rulesAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="movementRestrictionTerritories" value="Chinghai:Ningxia:Sikang:Yunnan:Hupeh:Fukien:Suiyuan:Manchuria:Kiangsu:Kwangtung"/>
+                	<option name="movementRestrictionType" value="allowed"/>
+                	<option name="productionPerXTerritories" value="2"/>
+                	<option name="placementAnyTerritory" value="true"/>
+                	<option name="placementPerTerritory" value="3"/>
+                </attatchment>
+                                
         </attatchmentList>
 
         <initialize>
@@ -1879,9 +2064,27 @@
         </initialize>
 
         <propertyList>
+                                   
+
+                <!-- Use Anniversary Edition Rules -->
+				<property name="Anniversary Edition" value="true" editable="false">
+                        <boolean/>
+                </property>
+                       
+				<property name="No Economic Victory" value="true" editable="false">
+                        <boolean/>
+                </property>   
+
+				<property name="Sub Retreat Before Battle" value="true" editable="false">
+                        <boolean/>
+                </property>
                 
-                <property name="AA50 Tech Model" value="true" editable="false">
-                	<boolean/>
+				<property name="Use Shipyards" value="true" editable="false">
+                        <boolean/>
+                </property>        
+                
+				<property name="Naval Bombard Casualties Return Fire Restricted" value="true" editable="false">
+                        <boolean/>
                 </property>
                 
 				<!-- Use Submersible Subs-->
@@ -1901,11 +2104,6 @@
                 
 				<!-- Produce Fighters on Carriers-->
                 <property name="Produce fighters on carriers" value="true" editable="false">
-                        <boolean/>
-                </property>
-                
-				<!-- Always on AA-->
-                <property name="Always on AA" value="true" editable="true">
                         <boolean/>
                 </property>
                 
@@ -1953,51 +2151,90 @@
 
                 <property name="Americans bid" value="0" editable="true">
                         <number min="0" max="1000"/>
-                </property>              
+                </property>
                 
-<!--COMCO rules testing-->                
-                <property name="Sub Control Sea Zone Restricted" value="true" editable="true">
+                <property name="National Objectives" value="true" editable="true">
                 	<boolean/>
                 </property>
                 
-                <property name="Transport Casualties Restricted" value="true" editable="true">
+                <property name="AA50 Tech Model" value="true" editable="false">
                 	<boolean/>
                 </property>
                 
-                <property name="Unescorted Transport Dies" value="true" editable="true">
+                <property name="Sub Control Sea Zone Restricted" value="true" editable="false">
                 	<boolean/>
                 </property>
-				
-				<property name="Hari-Kari Units" value="true" editable="true">
+                
+                <property name="Transport Casualties Restricted" value="true" editable="false">
+                	<boolean/>
+                </property>
+
+				<property name="Hari-Kari Units" value="true" editable="false">
                 	<boolean/>
                 </property> 
                 
-				<property name="Kamikaze Airplanes" value="true" editable="true">
+				<property name="Kamikaze Airplanes" value="true" editable="false">
                 	<boolean/>
                 </property>
                 
-                <property name="Ignore Transport In Movement" value="true" editable="true">
+                <property name="Ignore Transport In Movement" value="true" editable="false">
                 	<boolean/>
                 </property>
                 
-                <property name="Ignore Sub In Movement" value="true" editable="true">
+                <property name="Ignore Sub In Movement" value="true" editable="false">
                 	<boolean/>
                 </property>
 
-                <property name="Air Attack Sub Restricted" value="true" editable="true">
+                <property name="Air Attack Sub Restricted" value="true" editable="false">
                 	<boolean/>
                 </property>
 
-                <property name="Shore Bombard Per Ground Unit Restricted" value="true" editable="true">
+                <property name="Shore Bombard Per Ground Unit Restricted" value="true" editable="false">
                 	<boolean/>
                 </property>
 
-                <property name="AA Territory Restricted" value="true" editable="true">
+                <property name="AA Territory Restricted" value="true" editable="false">
+                	<boolean/>
+                </property>
+
+                <property name="Occupied Territories" value="true" editable="false">
+                	<boolean/>
+                </property>
+
+                <property name="Unescorted Transport Dies" value="true" editable="false">
+                	<boolean/>
+                </property>
+
+                <property name="Blitz Through Factories And AA Restricted" value="true" editable="false">
+                	<boolean/>
+                </property>
+
+                <property name="SBR Affects Unit Production" value="true" editable="false">
+                	<boolean/>
+                </property>
+
+                <property name="Placement Restricted By Factory" value="true" editable="false">
                 	<boolean/>
                 </property>
                 
-<!--COMCO rules testing END -->  
-				
+                
+<!-- These require an associated value in the attachments section above-->                 
+                <property name="Movement By Territory Restricted" value="true" editable="false">
+                	<boolean/>
+                </property>
+                
+                <property name="Production Per X Territories Restricted" value="true" editable="false">
+                	<boolean/>
+                </property>                
+                
+                <property name="Unit Placement Per Territory Restricted" value="true" editable="false">
+                	<boolean/>
+                </property>
+                
+                <property name="Place in Any Territory" value="true" editable="false">
+                	<boolean/>
+                </property>
+                
                 <!-- Map Name: also used for map utils when asked -->
                 <property name="mapName" value="aa50" editable="false"/>
 				

@@ -1097,7 +1097,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 
-                if(!m_over && canAttackerRetreatSubs)
+                if(!m_over && canAttackerRetreatSubs && !isSubRetreatBeforeBattle())
                     attackerRetreatSubs(bridge);
             }
         });  
@@ -1109,7 +1109,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
-                if(!m_over &&  canDefenderRetreatSubs)
+                if(!m_over &&  canDefenderRetreatSubs && !isSubRetreatBeforeBattle())
                     defenderRetreatSubs(bridge);
             }
         });         

@@ -104,6 +104,21 @@ public class Properties implements Constants
 			 }
 		 }
 
+	        /*
+	         * Anniversary Edition
+	         */
+	         public static boolean getNoEconomicVictory(GameData data)
+	         {
+	             try
+	             {
+	                 return ( (Boolean) data.getProperties().get(NO_ECONOMIC_VICTORY) ).booleanValue();
+	             }
+	             catch(Exception e)
+	             {
+	                 return false;
+	             }
+	         }
+		 
 	 /*
 	  * Anniversary Edition Land & Production
 	  */

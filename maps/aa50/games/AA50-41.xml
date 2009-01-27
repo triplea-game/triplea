@@ -1653,7 +1653,7 @@
 			    	<option name="landTerritories" value="Panama"/>
 			    </attatchment>
                 
-<!-- COMCO National Objectives -->
+<!--  National Objectives -->
 	<!-- German Objectives -->
                 <attatchment name="objectiveAttachment1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="5"/>   
@@ -2061,8 +2061,16 @@
                 <!-- Use Anniversary Edition Rules -->
 				<property name="Anniversary Edition" value="true" editable="false">
                         <boolean/>
-                </property>             
+                </property>
+                       
+				<property name="No Economic Victory" value="true" editable="false">
+                        <boolean/>
+                </property>   
 
+				<property name="Sub Retreat Before Battle" value="true" editable="false">
+                        <boolean/>
+                </property>
+                
 				<property name="Use Shipyards" value="true" editable="false">
                         <boolean/>
                 </property>        
@@ -2137,9 +2145,6 @@
                         <number min="0" max="1000"/>
                 </property>
                 
-                
-<!--COMCO rules testing-->
-
                 <property name="National Objectives" value="true" editable="true">
                 	<boolean/>
                 </property>
@@ -2217,15 +2222,11 @@
                 <property name="Unit Placement Per Territory Restricted" value="true" editable="false">
                 	<boolean/>
                 </property>
-                <!-- COMCO need to specify only Chinese may do this -->
+                
                 <property name="Place in Any Territory" value="true" editable="false">
                 	<boolean/>
                 </property>
                 
-                
-<!--COMCO rules testing END -->                     
-
-				
                 <!-- Map Name: also used for map utils when asked -->
                 <property name="mapName" value="aa50" editable="false"/>
 				

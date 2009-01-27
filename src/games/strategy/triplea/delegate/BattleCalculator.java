@@ -194,6 +194,7 @@ public class BattleCalculator
             if (ua.isTwoHit() && (unit.getHits() == 0))
             {
                 numhits++;
+                damaged.remove(unit);
             }
         }
         
