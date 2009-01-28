@@ -57,8 +57,7 @@ public class ProductionRepairPanel extends JPanel
     private JButton m_done;
     private PlayerID m_id;
     private boolean m_bid;
-    private GameData m_data;
-    
+    private GameData m_data;    
 
     public static IntegerMap<RepairRule> getProduction(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap<RepairRule> initialPurchase, UIContext context)
     {
@@ -96,13 +95,13 @@ public class ProductionRepairPanel extends JPanel
     // this method can be accessed by subclasses
     public List<Rule> getRules()
     {
-        return m_rules;
+        return this.m_rules;
     };
 
     private void initDialog(JFrame root)
     {
       
-        m_dialog = new JDialog(root, "Produce", true);
+        m_dialog = new JDialog(root, "Repair", true);
         m_dialog.getContentPane().add(this);
 
         Action closeAction = new AbstractAction("")
@@ -125,7 +124,7 @@ public class ProductionRepairPanel extends JPanel
 
     /** Creates new ProductionRepairPanel */
     // the constructor can be accessed by subclasses
-    protected ProductionRepairPanel(UIContext uiContext)
+    public ProductionRepairPanel(UIContext uiContext)
     {
         m_uiContext = uiContext;
     }
@@ -225,7 +224,12 @@ public class ProductionRepairPanel extends JPanel
             int quantity = rule.getQuantity();
             if (quantity != 0)
             {
-                prod.add(rule.getProductionRule(), quantity);                               
+                prod.add(rule.getProductionRule(), quantity);
+                //TODO COMCO this works unless they change their minds and click the CHANGE button
+                /*Territory terr = m_data.getMap().getTerritory(rule.m_terr);
+                TerritoryAttachment ta = TerritoryAttachment.get(terr);
+                int newProd = ta.getUnitProduction()+ quantity;
+                ta.setUnitProduction(String.valueOf(newProd));*/
             }
         }
         return prod;
@@ -296,8 +300,10 @@ public class ProductionRepairPanel extends JPanel
                     space), 0, 0));
             this.add(info, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space,
                     space), 0, 0));
+            this.add(remaining, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space,
+                space), 0, 0));
 
-            this.add(m_text, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, space,
+            this.add(m_text, new GridBagConstraints(0, 4, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, space,
                     space, space), 0, 0));
 
             m_text.addChangeListener(m_listener);

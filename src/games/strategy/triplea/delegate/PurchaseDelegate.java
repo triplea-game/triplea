@@ -181,7 +181,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
   public String purchaseRepair(IntegerMap<RepairRule> repairRules)
   {	  
     IntegerMap<Resource> costs = getRepairCosts(repairRules);
-    //IntegerMap<NamedAttachable> results = getRepairResults(repairRules);
+    IntegerMap<NamedAttachable> results = getRepairResults(repairRules);
 
     if(!(canAfford(costs, m_player)))
       return "Not enough resources";
@@ -190,7 +190,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     CompositeChange changes = new CompositeChange();
     Collection<Unit> totalUnits = new ArrayList<Unit>();
     
-/*    Iterator<NamedAttachable> iter = results.keySet().iterator();
+    Iterator<NamedAttachable> iter = results.keySet().iterator();
 
     // add changes for added resources
     //  and find all added units
@@ -211,19 +211,15 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
         totalUnits.addAll(units);
 
       }
-    }*/
+    }
 
-    // add changes for added units
-/*    if(!totalUnits.isEmpty())
-    {
-      Change change = ChangeFactory.addUnits(m_player, totalUnits);
-      changes.add(change);
-    }*/
 
     //RepairFrontier frontier = m_player.getRepairFrontier();
     //m_rules = ProductionRepairPanel.getRules();
     //Iterator iter = m_rules.iterator();
     
+   /* ProductionRepairPanel kev = new ProductionRepairPanel(null);
+    List<Rule> rules = kev.getRules();*/
     
   //TODO COMCO     
 /*    List<Rule> m_rules = new ArrayList<Rule>();

@@ -51,28 +51,19 @@ public class RepairPanel extends ActionPanel
   private IntegerMap<RepairRule> m_repair;
   private boolean m_bid;
   private SimpleUnitPanel m_unitsPanel;
-  private SimpleUnitPanel m_repairPanel;  
   private JLabel m_repairdSoFar = new JLabel();
   private JButton m_buyButton;
 
   private final String BUY = "Buy...";
   private final String CHANGE = "Change...";
+  
+  //private UIContext m_map;
 
   /** Creates new RepairPanel */
   public RepairPanel(GameData data,MapPanel map)
   {
     super(data, map);
     m_unitsPanel = new SimpleUnitPanel(map.getUIContext());
-    m_repairPanel = new SimpleUnitPanel(map.getUIContext());
-    m_buyButton = new JButton(BUY);
-    m_buyButton.addActionListener(PURCHASE_ACTION);
-  }
-  
-  /** Creates new RepairPanel */
-  public RepairPanel(GameData data,MapPanel map, boolean Repair)
-  {
-    super(data, map);
-    m_repairPanel = new SimpleUnitPanel(map.getUIContext());
     m_buyButton = new JButton(BUY);
     m_buyButton.addActionListener(PURCHASE_ACTION);
   }
@@ -80,7 +71,6 @@ public class RepairPanel extends ActionPanel
   public void display(final PlayerID id)
   {
     super.display(id);
-    m_repair = new IntegerMap<RepairRule>();
     m_repair = new IntegerMap<RepairRule>();
     
     SwingUtilities.invokeLater(new Runnable()
@@ -124,27 +114,6 @@ public class RepairPanel extends ActionPanel
     
   }
 
-  public IntegerMap<RepairRule> waitForPurchase(boolean bid)
-  {
-    m_bid = bid;
-    refreshActionLabelText();
-    
-    //automatically "click" the buy button for us!
-    SwingUtilities.invokeLater(
-    		  new Runnable()
-    		 {
-    		  public void run()
-    		 {
-    		  PURCHASE_ACTION.actionPerformed(null);
-    		 }
-    		});
-    
-
-    waitForRelease();
-    return m_repair;
-    
-  }
-
   public IntegerMap<RepairRule> waitForRepair(boolean bid)
   {
     m_bid = bid;
@@ -172,7 +141,7 @@ public class RepairPanel extends ActionPanel
     {
         PlayerID player = getCurrentPlayer();
         GameData data = getData();
-        /*
+ /*
         	            m_repairPanel.setUnitsFromRepairRuleMap(new IntegerMap<RepairRule>(), player, getData());
         	            //TODO COMCO debit their IPCs for the repair
         	            int total = 2 * quantity;
@@ -182,9 +151,11 @@ public class RepairPanel extends ActionPanel
         	            aBridge.getHistoryWriter().startEvent(transcriptText);
 
         	            Change change = ChangeFactory.changeResourcesChange(player, ipcs, -quantity);
-        	            aBridge.addChange(change);*/
+        	            aBridge.addChange(change);       	            
+*/
+        //m_map = getMap().getUIContext();
     	
-    	m_repair = ProductionRepairPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, m_bid, m_repair,getMap().getUIContext());
+    	m_repair = ProductionRepairPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, m_bid, m_repair, getMap().getUIContext());
     	m_unitsPanel.setUnitsFromRepairRuleMap(m_repair, player, data);
     	if(m_repair.totalValues() == 0)
     	{
@@ -226,6 +197,9 @@ public class RepairPanel extends ActionPanel
             {
             	if(isSBRAffectsUnitProduction())
             	{
+            	    /*ProductionRepairPanel prp = new ProductionRepairPanel(m_map);
+                    List<Rule> rules = prp.getRules();*/
+            	    
             	    int addedProd = 0;
             	    PlayerID player = getCurrentPlayer();
             	    if(isIncreasedFactoryProduction(player))
