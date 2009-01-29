@@ -46,11 +46,13 @@ import games.strategy.triplea.ui.ProductionRepairPanel;
 import games.strategy.triplea.ui.ProductionRepairPanel.Rule;
 import games.strategy.triplea.ui.UnitChooser;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
 import java.awt.event.ActionEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -76,6 +78,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
   private IDelegateBridge m_bridge;
   private PlayerID m_player;
   private GameData m_data;
+  private static HashMap<Territory, Integer> m_repairCount = new HashMap<Territory, Integer>();
 
   public void initialize(String name, String displayName)
   {
@@ -213,34 +216,25 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
       }
     }
 
-
-    //RepairFrontier frontier = m_player.getRepairFrontier();
-    //m_rules = ProductionRepairPanel.getRules();
-    //Iterator iter = m_rules.iterator();
+    //Get the map of the factories that were repaired and how much for each
+    m_repairCount = ProductionRepairPanel.getTerritoryRepairs();
     
-   /* ProductionRepairPanel kev = new ProductionRepairPanel(null);
-    List<Rule> rules = kev.getRules();*/
-    
-  //TODO COMCO     
-/*    List<Rule> m_rules = new ArrayList<Rule>();
-    Iterator<Rule> iter = ProductionRepairPanel.getRules().iterator();
-      while (iter.hasNext())
-      {
-          ProductionRepairPanel.Rule rule = (Rule) iter.next();
-          int quantity = rule.getQuantity();
-          if (quantity != 0)
-          {
-              //Set the territory's unitProduction
-              Territory terr = m_data.getMap().getTerritory(rule.getTerr());
-              TerritoryAttachment ta = TerritoryAttachment.get(terr);
-              int current = ta.getUnitProduction();
-
-              changes.add(ChangeFactory.attachmentPropertyChange(ta, (new Integer(current + quantity)).toString(), "unitProduction"));
-          }
-      }*/
+    if(!m_repairCount.isEmpty())
+    {
+        Collection<Territory> factoryTerrs = Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasOwnedFactory(m_data, m_player));
+        
+        for(Territory terr : factoryTerrs)
+        {
+            if (m_repairCount.containsKey(terr))
+            {
+                int repairCount = m_repairCount.get(terr);
+                TerritoryAttachment ta = TerritoryAttachment.get(terr);
+                int current = ta.getUnitProduction();
+                changes.add(ChangeFactory.attachmentPropertyChange(ta, (new Integer(current + repairCount)).toString(), "unitProduction"));
+            }
+        }
+    }
       
-    
-
     // add changes for spent resources
     String remaining = removeFromPlayer(m_player, costs, changes);
 

@@ -57,7 +57,8 @@ public class ProductionRepairPanel extends JPanel
     private JButton m_done;
     private PlayerID m_id;
     private boolean m_bid;
-    private GameData m_data;    
+    private GameData m_data;
+    private static HashMap<Territory, Integer> m_repairCount = new HashMap<Territory, Integer>();
 
     public static IntegerMap<RepairRule> getProduction(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap<RepairRule> initialPurchase, UIContext context)
     {
@@ -225,11 +226,9 @@ public class ProductionRepairPanel extends JPanel
             if (quantity != 0)
             {
                 prod.add(rule.getProductionRule(), quantity);
-                //TODO COMCO this works unless they change their minds and click the CHANGE button
-                /*Territory terr = m_data.getMap().getTerritory(rule.m_terr);
-                TerritoryAttachment ta = TerritoryAttachment.get(terr);
-                int newProd = ta.getUnitProduction()+ quantity;
-                ta.setUnitProduction(String.valueOf(newProd));*/
+                
+                Territory terr = m_data.getMap().getTerritory(rule.m_terr);                
+                m_repairCount.put(terr, quantity);
             }
         }
         return prod;
@@ -262,6 +261,11 @@ public class ProductionRepairPanel extends JPanel
             return Integer.parseInt(m_data.getProperties().get(propertyName).toString());
         } else
             return m_id.getResources().getQuantity(Constants.IPCS);
+    }
+    
+    public static HashMap<Territory, Integer> getTerritoryRepairs()
+    {
+        return m_repairCount;
     }
 
     public class Rule extends JPanel

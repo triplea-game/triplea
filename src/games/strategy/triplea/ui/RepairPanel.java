@@ -34,6 +34,7 @@ import games.strategy.triplea.ui.ProductionRepairPanel.Rule;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -56,8 +57,8 @@ public class RepairPanel extends ActionPanel
 
   private final String BUY = "Buy...";
   private final String CHANGE = "Change...";
+  //private static HashMap<Territory, Integer> m_repairCount = new HashMap<Territory, Integer>();
   
-  //private UIContext m_map;
 
   /** Creates new RepairPanel */
   public RepairPanel(GameData data,MapPanel map)
@@ -141,21 +142,11 @@ public class RepairPanel extends ActionPanel
     {
         PlayerID player = getCurrentPlayer();
         GameData data = getData();
- /*
-        	            m_repairPanel.setUnitsFromRepairRuleMap(new IntegerMap<RepairRule>(), player, getData());
-        	            //TODO COMCO debit their IPCs for the repair
-        	            int total = 2 * quantity;
-        	            Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
-        	            String transcriptText = player.getName() + " spends " + quantity + MyFormatter.pluralize(" ipc", quantity)+"; to repair " + total+ " production";
-        	            data.getHistory().
-        	            aBridge.getHistoryWriter().startEvent(transcriptText);
-
-        	            Change change = ChangeFactory.changeResourcesChange(player, ipcs, -quantity);
-        	            aBridge.addChange(change);       	            
-*/
-        //m_map = getMap().getUIContext();
-    	
+     	
     	m_repair = ProductionRepairPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, m_bid, m_repair, getMap().getUIContext());
+    	
+    	//m_repairCount = ProductionRepairPanel.getTerritories();
+    	
     	m_unitsPanel.setUnitsFromRepairRuleMap(m_repair, player, data);
     	if(m_repair.totalValues() == 0)
     	{
@@ -222,18 +213,8 @@ public class RepairPanel extends ActionPanel
             {
                 getData().releaseReadLock();
             }
-            /*if(!m_bid &&  m_repair.totalValues() > totalProd) 
-            {                
-                int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( RepairPanel.this), "You have purchased more than you can place, continue with purchase?", "End Purchase", JOptionPane.YES_NO_OPTION);
-                if(rVal != JOptionPane.YES_OPTION)
-                {
-                    return;
-                }
-                
-            }*/
         }
-        
-          
+                  
         release();
      
     }
