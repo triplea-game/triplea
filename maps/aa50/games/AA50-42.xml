@@ -1255,6 +1255,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Caucasus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="4"/>
+                        <option name="unitProduction" value="4"/>
 						<option name="victoryCity" value="true"/>
                     </attatchment>
 					
@@ -1286,6 +1287,7 @@
 					<!--US Capitol-->
 					<attatchment name="territoryAttatchment" attatchTo="Eastern United States" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="12"/>
+                        <option name="unitProduction" value="12"/>
 						<option name="capital" value="Americans"/> 
                         <option name="victoryCity" value="true"/>
                     </attatchment>
@@ -1339,6 +1341,7 @@
 					<!--German Capitol-->
 					<attatchment name="territoryAttatchment" attatchTo="Germany" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="10"/>
+                        <option name="unitProduction" value="10"/>
 						<option name="capital" value="Germans"/> 
                         <option name="victoryCity" value="true"/>
                     </attatchment>
@@ -1380,6 +1383,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Italy" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
+                        <option name="unitProduction" value="6"/>
 						<option name="capital" value="Italians"/> 
                         <option name="victoryCity" value="true"/>
                     </attatchment>
@@ -1390,12 +1394,14 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Japan" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="8"/>
+                        <option name="unitProduction" value="8"/>
 						<option name="capital" value="Japanese"/> 
                         <option name="victoryCity" value="true"/>
                     </attatchment>
 					
 					<attatchment name="territoryAttatchment" attatchTo="Karelia S.S.R." javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
+                        <option name="unitProduction" value="2"/>
 						<option name="victoryCity" value="true"/>
                     </attatchment>
 					
@@ -1508,6 +1514,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Russia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
+                        <option name="unitProduction" value="6"/>
 						<option name="capital" value="Russians"/> 
                         <option name="victoryCity" value="true"/>
                     </attatchment>
@@ -1577,6 +1584,7 @@
 					<!--British Capitol-->
 					<attatchment name="territoryAttatchment" attatchTo="United Kingdom" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="8"/>
+                        <option name="unitProduction" value="8"/>
 						<option name="capital" value="British"/>
 						<option name="victoryCity" value="true"/>
                     </attatchment>
@@ -1608,6 +1616,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Western United States" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="10"/>
+                        <option name="unitProduction" value="10"/>
 						<option name="victoryCity" value="true"/>
                     </attatchment>
 					
