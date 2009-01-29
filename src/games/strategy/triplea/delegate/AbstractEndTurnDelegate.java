@@ -145,7 +145,7 @@ public abstract class AbstractEndTurnDelegate
         }
     }
 
-
+//TODO COMCO something like this for repairing factories
     private void repairBattleShips(IDelegateBridge aBridge)
     {
        Match<Unit> damagedBattleship = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);

@@ -38,6 +38,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -549,7 +550,38 @@ public class StrategicBombingRaidBattle implements Battle
 
             	// Record production lost
             	DelegateFinder.moveDelegate(m_data).ipcsLost(m_battleSite, cost);
-            	
+            	//TODO COMCO add the damaged parm here.
+            	/*
+            	 * Match<Unit> damagedBattleship = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);
+            	 * 
+            	 *
+            	 * 
+while(iter.hasNext())
+       {
+           Unit unit = (Unit) iter.next();
+           hits.put(unit,0);
+       }
+       aBridge.addChange(ChangeFactory.unitsHit(hits));
+       aBridge.getHistoryWriter().startEvent(damaged.size() + " " +  MyFormatter.pluralize("unit", damaged.size()) + " repaired.");
+
+
+
+void markDamaged(Collection<Unit> damaged, IDelegateBridge bridge)
+    {
+
+        if (damaged.size() == 0)
+            return;
+        Change damagedChange = null;
+        IntegerMap<Unit> damagedMap = new IntegerMap<Unit>();
+        damagedMap.putAll(damaged, 1);
+        damagedChange = ChangeFactory.unitsHit(damagedMap);
+        bridge.getHistoryWriter().addChildToEvent(
+                "Units damaged: " + MyFormatter.unitsToText(damaged),
+                damaged);
+        bridge.addChange(damagedChange);
+
+    }
+            	 */
             	Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
             	bridge.addChange(change);
             }

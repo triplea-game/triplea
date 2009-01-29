@@ -1785,8 +1785,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
         units.addAll(m_defendingUnits);
         units.addAll(m_defendingWaitingToDie);
         units = Match.getMatches(units, Matches.UnitIsNotSub);
+        
+        Collection<Unit> attSubs = new ArrayList<Unit>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
+        attSubs.addAll(m_attackingUnits);
+        attSubs.addAll(m_attackingWaitingToDie);
+        attSubs = Match.getMatches(attSubs, Matches.UnitIsSub);       
+                
       //if restricted, remove aircraft from attackers
-        if (isAirAttackSubRestricted() && m_battleSite.isWater() && !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
+        if (m_battleSite.isWater() && isAirAttackSubRestricted() && !attSubs.isEmpty() && !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
         {
         	units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
         }
