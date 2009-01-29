@@ -1243,6 +1243,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Burma" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
+                        <option name="occupiedTerrOf" value="British"/>
                     </attatchment>
 					
 					<attatchment name="territoryAttatchment" attatchTo="Buryatia S.S.R." javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1411,7 +1412,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Kiangsu" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="victoryCity" value="true"/>						
+						<option name="victoryCity" value="true"/>
                         <option name="occupiedTerrOf" value="Chinese"/>
                     </attatchment>
 					

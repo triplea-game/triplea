@@ -1243,6 +1243,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Burma" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
+                        <option name="occupiedTerrOf" value="British"/>
                     </attatchment>
 					
 					<attatchment name="territoryAttatchment" attatchTo="Buryatia S.S.R." javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1411,11 +1412,13 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Kiangsu" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="true"/>						
+                        <option name="occupiedTerrOf" value="Chinese"/>
                     </attatchment>
 					
 					<attatchment name="territoryAttatchment" attatchTo="Kwangtung" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
+                        <option name="occupiedTerrOf" value="British"/>
 						<option name="victoryCity" value="true"/>
                     </attatchment>
 					
@@ -1425,6 +1428,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Manchuria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
+                        <option name="occupiedTerrOf" value="Chinese"/>
                     </attatchment>
 					
 					<attatchment name="territoryAttatchment" attatchTo="Mexico" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1501,6 +1505,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Philippine Islands" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
+                        <option name="occupiedTerrOf" value="Americans"/>
 						<option name="victoryCity" value="true"/>
                     </attatchment>
 					
