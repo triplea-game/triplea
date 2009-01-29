@@ -1223,6 +1223,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Baltic States" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
+                        <option name="occupiedTerrOf" value="Russians"/>
                     </attatchment>
 					
 					<attatchment name="territoryAttatchment" attatchTo="Belgian Congo" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1231,10 +1232,12 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Belorussia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
+                        <option name="occupiedTerrOf" value="Russians"/>
                     </attatchment>
 					
 					<attatchment name="territoryAttatchment" attatchTo="Borneo" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="4"/>
+                        <option name="occupiedTerrOf" value="British"/>
                     </attatchment>
 					
 					<attatchment name="territoryAttatchment" attatchTo="Brazil" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1274,6 +1277,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="East Indies" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="4"/>
+                        <option name="occupiedTerrOf" value="British"/>
                     </attatchment>
 					
 					<attatchment name="territoryAttatchment" attatchTo="Eastern Canada" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1283,6 +1287,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="East Poland" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
+                        <option name="occupiedTerrOf" value="Russians"/>
                     </attatchment>
 					
 					<!--US Capitol-->
@@ -1455,6 +1460,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="New Guinea" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
+                        <option name="occupiedTerrOf" value="British"/>
                     </attatchment>
 					
 					<attatchment name="territoryAttatchment" attatchTo="New Zealand" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1472,6 +1478,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Eastern Ukraine" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
+                        <option name="occupiedTerrOf" value="Russians"/>
                     </attatchment>
 					
 					<attatchment name="territoryAttatchment" attatchTo="Northwestern Europe" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1540,6 +1547,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Solomon Islands" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="occupiedTerrOf" value="British"/>
                     </attatchment>
 					
 					<attatchment name="territoryAttatchment" attatchTo="Soviet Far East" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1580,6 +1588,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Ukraine" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
+                        <option name="occupiedTerrOf" value="Russians"/>
                     </attatchment>
 					
 					<attatchment name="territoryAttatchment" attatchTo="Union of South Africa" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1600,6 +1609,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Wake Island" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="occupiedTerrOf" value="Americans"/>
                     </attatchment>
 					
 					<attatchment name="territoryAttatchment" attatchTo="West Indies" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
