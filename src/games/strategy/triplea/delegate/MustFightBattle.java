@@ -1757,7 +1757,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 	        CompositeMatch<Unit> matchDefendingSubs = new CompositeMatchAnd<Unit>(); 
 	        matchDefendingSubs.add(Matches.UnitIsSub);
 	        matchDefendingSubs.add(Matches.isUnitAllied(m_defender, m_data));	    	
-	        List<Unit> defendingSubs = Match.getMatches(m_battleSite.getUnits().getUnits(), matchDefendingSubs);
+	        List<Unit> defendingSubs = Match.getMatches(m_defendingUnits, matchDefendingSubs);
 	        	        
 	    	//submerge defending subs
 	        submergeUnits(defendingSubs, true, bridge);
