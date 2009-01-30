@@ -1,4 +1,6 @@
-Changes for 1.0.1.5
+Changes for 1.0.2.0
+
+* Maps images, and XML for AA50 (Zero Pilot and Black Elk)
 
 * Update game notes (sgb)
 
