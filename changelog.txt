@@ -13,6 +13,7 @@ Changes for 1.0.1.5
 * Add chat ignore feature, thanks to Tango for the icon - http://tango.freedesktop.org/Tango_Icon_Library (sgb)
 
 * Add full TripleA 50 support (ComradeKev)
+    MUCH thanks to Seidelin for playtesting!
 
 * Add Choose AA Casualties property (value=true) to Revised.xml (President Douchebag)
 
