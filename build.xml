@@ -133,10 +133,6 @@
 		<copy file="icons/icon.icns" todir="${app.file}/Contents/Resources/" />
 
 		<exec executable="cp">
-			<arg line="-r games ${app.file}/Contents/Resources/" />
-		</exec>
-
-		<exec executable="cp">
 			<arg line="-r icons ${app.file}/Contents/Resources/" />
 		</exec>
 
@@ -339,10 +335,6 @@
 				<include name="**/*.png" />
 				<include name="**/*.bmp" />
 				<include name="**/*.ico" />
-			</zipfileset>
-
-			<zipfileset dir="games/" prefix="triplea_${triplea.version}/games/">
-				<include name="*.xml" />
 			</zipfileset>
 
 			<zipfileset dir="images/" prefix="triplea_${triplea.version}/images/">
