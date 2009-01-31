@@ -323,12 +323,15 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
                     ProductionRule rule = (ProductionRule) prodRules.next();
                     minIPCsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.IPCS)), minIPCsNeededToBuild);
                 }
-                //TODO COMCO added this
-                Iterator<RepairRule> repairRules = m_id.getRepairFrontier().getRules().iterator();
-                while(repairRules.hasNext())
+                //TODO COMCO added this       
+                if(m_id.getRepairFrontier() != null)
                 {
-                    RepairRule rule = (RepairRule) repairRules.next();
-                    minIPCsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.IPCS)), minIPCsNeededToBuild);
+                    Iterator<RepairRule> repairRules = m_id.getRepairFrontier().getRules().iterator();
+                    while(repairRules.hasNext())
+                    {
+                        RepairRule rule = (RepairRule) repairRules.next();
+                        minIPCsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.IPCS)), minIPCsNeededToBuild);
+                    }
                 }
                 
                 //can we buy anything
