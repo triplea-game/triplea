@@ -10,7 +10,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,7 +86,7 @@ public class NewGameChooserModel extends DefaultListModel
                         URL url = loader.getResource(entry.getName());
                         try
                         {
-                            entries.add(createEntry(new URI(URLEncoder.encode(url.toString(), "utf-8"))));
+                            entries.add(createEntry(new URI(url.toString().replace(" ", "%20"))));
                         } catch (URISyntaxException e)
                         {
                             e.printStackTrace();
