@@ -81,6 +81,7 @@ public class RulesAttachment extends DefaultAttachment
     
     //booleans
     private boolean m_placementAnyTerritory = false;
+    private boolean m_placementCapturedTerritory = false;
 
     //Integers
     private int m_territoryCount = -1;
@@ -227,7 +228,15 @@ public class RulesAttachment extends DefaultAttachment
       return m_placementAnyTerritory;
   }
 
+  public void setPlacementCapturedTerritory(String value)
+  {
+      m_placementCapturedTerritory = getBool(value);
+  }
 
+  public boolean getPlacementCapturedTerritory()
+  {
+      return m_placementCapturedTerritory;
+  }
   
   /**
    * Called after the attatchment is created.

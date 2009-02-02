@@ -180,7 +180,19 @@ public class Matches
             return ua.isStrategicBomber();
         }
     };
+    
+    public static final Match<Unit> unitHasMoved = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            Unit unit = (Unit) obj;
+            return TripleAUnit.get(unit).getAlreadyMoved() > 0;
+        }
+    };
 
+    public static final Match<Unit> unitHasNotMoved = new InverseMatch<Unit>(unitHasMoved);
+    
+    
     public static Match<Unit> unitCanAttack(final PlayerID id)
     {
         return new Match<Unit>()

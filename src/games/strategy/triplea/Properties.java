@@ -193,7 +193,22 @@ public class Properties implements Constants
              return false;
          }
      }
-	 
+
+     /*
+      * Use Advanced Technology
+      */
+     public static boolean getTechDevelopment(GameData data)
+     {
+         try
+         {
+             return ( (Boolean) data.getProperties().get(TECH_DEVELOPMENT) ).booleanValue();
+         }
+         catch(Exception e)
+         {
+             return false;
+         }
+     }
+     
 	 /*
 	  * Are transports restricted from unloading in multiple territories in a turn
 	  */

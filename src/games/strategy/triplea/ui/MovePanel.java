@@ -1250,7 +1250,8 @@ public class MovePanel extends ActionPanel
                 Route route = getRoute(getFirstSelectedTerritory(), t);
                 
                 //Load Bombers with paratroops
-                if(!m_nonCombat && isParatroopers(getCurrentPlayer()) && Match.someMatch(m_selectedUnits, Matches.UnitIsStrategicBomber))
+                //if(!m_nonCombat && isParatroopers(getCurrentPlayer()) && Match.someMatch(m_selectedUnits, Matches.UnitIsStrategicBomber))
+                if(!m_nonCombat && isParatroopers(getCurrentPlayer()) && Match.someMatch(m_selectedUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, Matches.unitHasNotMoved)))
                 {     
                 	final PlayerID player = getCurrentPlayer();
                 	/*if(route.getEnd() == null)
@@ -1287,27 +1288,28 @@ public class MovePanel extends ActionPanel
         	CompositeMatch<Unit> candidateBombersMatch = new CompositeMatchAnd<Unit>();
             candidateBombersMatch.add(Matches.UnitIsStrategicBomber);
             candidateBombersMatch.add(Matches.unitIsOwnedBy(player));
+            candidateBombersMatch.add(Matches.unitHasNotMoved);
                         
             //Get the list of all owned bombers in the starting terr
             final List<Unit> candidateBombers = Match.getMatches(route.getStart().getUnits().getUnits(), candidateBombersMatch);
-            
+           
             //Get the minimum transport cost of a candidate paratrooper
             int minTransportCost = 5;
             for(Unit unit : unitsToLoad)
             {
                 minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
             }
-            
-            // remove bombers that don't have enough capacity
-            Iterator<Unit> bomberIter = candidateBombers.iterator();
-            while (bomberIter.hasNext())
+
+            for(Unit bomber : candidateBombers)
             {
-                Unit bomber = bomberIter.next();
                 int capacity = getTransportTracker().getAvailableCapacity(bomber);
                 if (capacity < minTransportCost)
                 	candidateBombers.remove(bomber); //TODO need to test to see if this is valid
                 	//bomberIter.remove();
             }
+            
+            if(candidateBombers.isEmpty())
+                return null;
             
             //Generate map of capacity
             IntegerMap<Unit> availableCapacityMap = new IntegerMap<Unit>();

@@ -404,9 +404,9 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         	if(ra != null && ra.getPlacementPerTerritory() > 0)
         	{
         		int allowedPlacement = ra.getPlacementPerTerritory();
-        		int unitsInTerritory = to.getUnits().size();
+        		int ownedUnitsInTerritory = Match.countMatches(to.getUnits().getUnits(), Matches.unitIsOwnedBy(player));
         		
-        		if (unitsInTerritory >= allowedPlacement)
+        		if (ownedUnitsInTerritory >= allowedPlacement)
         			return 0;
         		
         		return -1;
@@ -478,7 +478,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             return "No factory adjacent to " + to.getName();
 
         //make sure the territory wasnt conquered this turn
-        if (wasConquered(producer))
+        if (wasConquered(producer) && !isPlacementAllowedInCapturedTerritory(player))
             return producer.getName() + " was conquered this turn and cannot produce till next turn";
                    
         if(isPlayerAllowedToPlaceAnywhere(player))
@@ -684,6 +684,12 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
                 Matches.UnitIsAAOrFactory);
         change.add(DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker()
                 .addOriginalOwnerChange(factoryAndAA, m_player));
+        
+        if(Match.someMatch(units, Matches.UnitIsFactory))
+        {
+            TerritoryAttachment ta = TerritoryAttachment.get(at);
+            ta.setUnitProduction(String.valueOf(getProduction(at)));
+        }
 
         String transcriptText = MyFormatter.unitsToTextNoOwner(units)
                 + " placed in " + at.getName();
@@ -857,6 +863,19 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     
     	return false;
     }
+    
+
+    private boolean isPlacementAllowedInCapturedTerritory(PlayerID player)
+    {
+            RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+            if(ra != null && ra.getPlacementCapturedTerritory())
+            {
+                return true;
+            }      
+    
+        return false;
+    }
+
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */

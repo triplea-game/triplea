@@ -1767,6 +1767,7 @@
                 	<option name="movementRestrictionType" value="allowed"/>
                 	<option name="productionPerXTerritories" value="2"/>
                 	<option name="placementAnyTerritory" value="true"/>
+                	<option name="placementCapturedTerritory" value="true"/>
                 	<option name="placementPerTerritory" value="3"/>
                 </attatchment>
                                 
@@ -1981,6 +1982,8 @@
 						<unitPlacement unitType="fighter" territory="51 Sea Zone" quantity="1" owner="Japanese"/>
 						<unitPlacement unitType="transport" territory="62 Sea Zone" quantity="1" owner="Japanese"/>
 						<unitPlacement unitType="battleship" territory="62 Sea Zone" quantity="1" owner="Japanese"/>
+						<unitPlacement unitType="infantry" territory="Solomon Islands" quantity="1" owner="Japanese"/>
+						
 						
 						<!-- British Unit Placements -->
 						<unitPlacement unitType="aaGun" territory="Australia" quantity="1" owner="British"/>

@@ -155,7 +155,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         m_bridge.getGameData().acquireReadLock();
         try
         {
-            if (m_id.getResources().getQuantity(Constants.IPCS) == 0)
+            if (m_id.getResources().getQuantity(Constants.IPCS) == 0 || !isTechDevelopment(m_bridge.getGameData()))
                 return;
         }
         finally 
@@ -560,6 +560,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     {
         return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data);
     }
+
+    private static boolean isTechDevelopment(GameData data)
+    {
+        return games.strategy.triplea.Properties.getTechDevelopment(data);
+    }
+    
 }
 
 

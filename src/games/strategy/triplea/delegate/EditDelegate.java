@@ -26,11 +26,13 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.Match;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -156,11 +158,31 @@ public class EditDelegate implements IDelegate, IEditDelegate
         if (null != (result = EditValidator.validateAddUnits(m_data, territory, units)))
             return result;
 
+        if(Match.someMatch(units, Matches.UnitIsFactory))
+        {
+            TerritoryAttachment ta = TerritoryAttachment.get(territory);
+            ta.setUnitProduction(String.valueOf(getProduction(territory)));
+        }
+        
         logEvent("Adding units owned by "+m_bridge.getPlayerID().getName()+" to "+territory.getName()+": "+MyFormatter.unitsToTextNoOwner(units), units);
         m_bridge.addChange(ChangeFactory.addUnits(territory, units));
         return null;
     }
+    
+    /**
+     * @return gets the production of the territory, ignores wether the
+     *         territory was an original factory
+     */
+    protected int getProduction(Territory territory)
+    {
+        TerritoryAttachment ta = TerritoryAttachment.get(territory);
+        if(ta != null)
+            return ta.getProduction();
+        return 0; 
 
+//        throw new UnsupportedOperationException("Not implemented");
+    }
+    
     public String changeTerritoryOwner(Territory territory, PlayerID player)
     {
         String result = null;

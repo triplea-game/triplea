@@ -346,25 +346,14 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
             	if (allOwnedTransports && allEnemyTransports)
             		continue;
             }
-            
-            //Query to attack subs
-            if (ignoreSubs) 
-            {
-                List<Unit> enemyUnits = territory.getUnits().getMatches(enemyUnit);
-                if (Match.allMatch(enemyUnits, Matches.UnitIsSub) && !getAttackSubs(territory))
-        		{                	
-                	m_battleTracker.removeBattle(m_battleTracker.getPendingBattle(territory, false));
-        		}
-            	
-            }
-            
+                       
             Route route = new Route();
 
             if (battle != null)
             {
                 attackingUnits.removeAll(((MustFightBattle) battle).getAttackingUnits());
             }
-            if (!attackingUnits.isEmpty())
+            if (!attackingUnits.isEmpty() && getAttackSubs(territory))
             {
                 route.setStart(territory);
                 m_battleTracker.addBattle(route, attackingUnits, false, m_bridge.getPlayerID(), m_data, m_bridge, null);

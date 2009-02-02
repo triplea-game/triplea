@@ -57,7 +57,7 @@ public class MoveValidator
     public static final String TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT = "Transport cannot both load AND unload after being in combat";
     public static final String UNESCORTED_UNITS_WILL_DIE_IN_COMBAT = "Unescorted units will die in combat";
     private static int m_mechanizedSupportAvail = 0;
-    //private static int m_paratroopsAvail = 0;
+    private static int m_paraTransportsAvail = 0;
     
     /**
      * Tests the given collection of units to see if they have the movement neccessary
@@ -68,7 +68,7 @@ public class MoveValidator
     public static boolean hasEnoughMovement(Collection<Unit> units, Route route)
     {
         getMechanizedSupportAvail(route);
-        
+                
         for (Unit unit : units)
         {
             if (!hasEnoughMovement(unit, route))
@@ -86,6 +86,47 @@ public class MoveValidator
         Collection<Unit> ownedUnits = route.getStart().getUnits().getMatches(Matches.unitIsOwnedBy(player));
         m_mechanizedSupportAvail = Match.countMatches(ownedUnits, Matches.UnitIsArmour);
     }
+
+    /**
+     * @param route
+     */
+    private static void getArialTransportSupportAvail(Route route, Collection<Unit> units)
+    {
+        PlayerID player = route.getStart().getData().getSequence().getStep().getPlayerID();
+        Collection<Unit> ownedUnits = Match.getMatches(units, Matches.unitIsOwnedBy(player));
+
+
+        CompositeMatch<Unit> transportBombers = new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber);
+        Collection<Unit> bombers = Match.getMatches(ownedUnits, transportBombers);
+        /*for (Unit bomber : bombers)
+        {
+            if (hasMoved(bomber))
+                bombers.remove(bomber);
+        }*/
+                
+        m_paraTransportsAvail = bombers.size();
+        //m_paraTransportsAvail = Match.countMatches(ownedUnits, Matches.UnitIsStrategicBomber);
+        
+        int tempBombers = m_paraTransportsAvail;
+        
+        for (Unit unit : units)
+        {
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+
+            if (isParatroopers(player) && (ua.isInfantry() || ua.isMarine()))
+            {   
+                if(tempBombers > 0 )
+                {
+                    ua.setIsParatroop("true");
+                    tempBombers --;
+                }
+                else
+                {
+                    ua.setIsParatroop("false");                
+                }
+            }
+        }
+    }
     
     public static boolean hasEnoughMovement(Collection<Unit> units, int length)
     {
@@ -97,6 +138,11 @@ public class MoveValidator
         return true;
     }
 
+    private static boolean hasMoved(Unit unit)
+    {
+        return TripleAUnit.get(unit).getAlreadyMoved() > 0;        
+    }
+    
     
     /**
      * Tests the given unit to see if it has the movement neccessary
@@ -104,9 +150,7 @@ public class MoveValidator
      * @arg alreadyMoved maps Unit -> movement
      */  
     public static boolean hasEnoughMovement(Unit unit, Route route)
-    {
-        getMechanizedSupportAvail(route);
-             
+    {             
         int left = TripleAUnit.get(unit).getMovementLeft();  
         UnitAttachment ua = UnitAttachment.get(unit.getType());
         PlayerID player = unit.getOwner();
@@ -158,13 +202,12 @@ public class MoveValidator
         
         if (isMechanizedInfantry(player) && (ua.isInfantry() || ua.isMarine()))
         {   
-            if(m_mechanizedSupportAvail > 0)
+            if(m_mechanizedSupportAvail > 0 )
             {
                 left++;
-                m_mechanizedSupportAvail -= 1;
+                m_mechanizedSupportAvail --;
             }
         }
-
         //TODO COMCO add rule to allow non-combat paratroops
         /*if(isParatroopers(player) && ua.isStrategicBomber())
         {
@@ -938,13 +981,23 @@ public class MoveValidator
             {
                 moveTest = units;
             }
+            
+            //Initialize available Mechanized Inf support
+            getMechanizedSupportAvail(route);
+            
+            getArialTransportSupportAvail(route, units);
+                        
             // check units individually           
             for (Unit unit : moveTest)
             {
                 if (!MoveValidator.hasEnoughMovement(unit, route))
                 {
-                    if(ParatrooperPresent(unit.getOwner(), unit))
+                    UnitAttachment ua = UnitAttachment.get(unit.getType());
+                    if(ua.isParatroop() && m_paraTransportsAvail > 0)
+                    {
+                        m_paraTransportsAvail --;
                         continue;
+                    }
                     
                     result.addDisallowedUnit("Not all units have enough movement",unit);                    
                 }
@@ -1678,6 +1731,23 @@ public class MoveValidator
                 
                 if(!Matches.isTerritoryFriendly(player, data).match(current))
                     return result.setErrorReturnResult("Must stop paratroops in first enemy territory");
+            }
+            
+            //initialize the number of paratroop transports available
+            getArialTransportSupportAvail(route, units);
+            
+            for(Unit unit:units)
+            {
+                UnitAttachment ua = UnitAttachment.get(unit.getType());
+                if(m_paraTransportsAvail > 0 && (ua.isInfantry() || ua.isMarine()))
+                {
+                    ua.setIsParatroop("true");
+                    m_paraTransportsAvail --;
+                }
+                /*else
+                {
+                    result.setErrorReturnResult("Kev");
+                }*/
             }
         }
         

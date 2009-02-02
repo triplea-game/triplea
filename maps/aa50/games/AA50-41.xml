@@ -1755,6 +1755,7 @@
                 	<option name="movementRestrictionType" value="allowed"/>
                 	<option name="productionPerXTerritories" value="2"/>
                 	<option name="placementAnyTerritory" value="true"/>
+                	<option name="placementCapturedTerritory" value="true"/>
                 	<option name="placementPerTerritory" value="3"/>
                 </attatchment>
                 
@@ -2106,7 +2107,7 @@
                 </property>
 				
 				<!-- Territory Turn Limit-->
-				<property name="Territory Turn Limit" value="true" editable="true">
+				<property name="Territory Turn Limit" value="false" editable="false">
                         <boolean/>
                 </property>
                 
@@ -2151,6 +2152,10 @@
                 </property>
                 
                 <property name="AA50 Tech Model" value="true" editable="false">
+                	<boolean/>
+                </property>
+                
+                <property name="Tech Development" value="true" editable="true">
                 	<boolean/>
                 </property>
                 

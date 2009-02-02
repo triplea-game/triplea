@@ -426,11 +426,15 @@ public class BattleTracker implements java.io.Serializable
                     changeTracker.addChange(add);
               //remove all the tokens  of the captured player
                 Resource tokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
-                int m_currTokens = whoseCapital.getResources().getQuantity(Constants.TECH_TOKENS);
-                Change removeTokens = ChangeFactory.changeResourcesChange(whoseCapital, tokens, -m_currTokens);
-                bridge.addChange(removeTokens);
-                if (changeTracker != null)
-                    changeTracker.addChange(removeTokens);                
+                if(tokens != null)
+                {
+                    int m_currTokens = whoseCapital.getResources().getQuantity(Constants.TECH_TOKENS);
+                    Change removeTokens = ChangeFactory.changeResourcesChange(whoseCapital, tokens, -m_currTokens);
+
+                    bridge.addChange(removeTokens);
+                    if (changeTracker != null)
+                        changeTracker.addChange(removeTokens);
+                }
             }
         }
 
@@ -682,8 +686,9 @@ public class BattleTracker implements java.io.Serializable
             Battle current = blocked.next();
             removeDependency(current, battle);
         }
-        m_pendingBattles.remove(battle);
-        m_foughBattles.add(battle.getTerritory());
+        
+            m_pendingBattles.remove(battle);
+            m_foughBattles.add(battle.getTerritory());
     }
 
     /**

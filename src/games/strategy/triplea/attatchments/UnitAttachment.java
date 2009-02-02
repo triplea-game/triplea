@@ -342,10 +342,15 @@ public class UnitAttachment extends DefaultAttachment
   public int getAttack(PlayerID player)
   {
     if(m_isSub)
-    {
-      
+    {      
       if(TechTracker.hasSuperSubs(player))
         return m_attack + 1;
+    }
+    
+    if(m_isAir && !m_isStrategicBomber)
+    {      
+      if(TechTracker.hasJetFighter(player) && isAA50TechModel(player.getData()))
+          return m_attack + 1;
     }
 
     return m_attack;
@@ -364,13 +369,9 @@ public class UnitAttachment extends DefaultAttachment
   public int getDefense(PlayerID player)
   {
     if(m_isAir && !m_isStrategicBomber)
-    {
-      
-      if(TechTracker.hasJetFighter(player))
-          if(isAA50TechModel(player.getData()))
-              return m_attack + 1;
-          else
-              return m_defense + 1;
+    {      
+        if(TechTracker.hasJetFighter(player) && !isAA50TechModel(player.getData()))
+            return m_defense + 1;
     }
     if(m_isSub && TechTracker.hasSuperSubs(player))
     {
