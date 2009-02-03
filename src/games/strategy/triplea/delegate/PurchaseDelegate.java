@@ -37,6 +37,8 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
@@ -184,6 +186,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
   public String purchaseRepair(IntegerMap<RepairRule> repairRules)
   {	  
     IntegerMap<Resource> costs = getRepairCosts(repairRules);
+
     IntegerMap<NamedAttachable> results = getRepairResults(repairRules);
 
     if(!(canAfford(costs, m_player)))
@@ -230,11 +233,22 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
                 int repairCount = m_repairCount.get(terr);
                 TerritoryAttachment ta = TerritoryAttachment.get(terr);
                 int current = ta.getUnitProduction();
+                
+            	IntegerMap<Unit> hits = new IntegerMap<Unit>();
+            	Collection<Unit> factories = Match.getMatches(terr.getUnits().getUnits(), Matches.UnitIsFactory);
+            	
+            	//reset factory damage marker if full production restored
+            	if(current + repairCount == ta.getProduction())
+            	{
+            		hits.put(factories.iterator().next(), 0);
+            		changes.add(ChangeFactory.unitsHit(hits));
+            	}            	
+                
                 changes.add(ChangeFactory.attachmentPropertyChange(ta, (new Integer(current + repairCount)).toString(), "unitProduction"));
             }
         }
     }
-      
+
     // add changes for spent resources
     String remaining = removeFromPlayer(m_player, costs, changes);
 
@@ -279,6 +293,7 @@ private void addHistoryEvent(Collection<Unit> totalUnits, String remainingText)
     IntegerMap<Resource> costs = new IntegerMap<Resource>();
 
     Iterator<RepairRule> rules = repairRules.keySet().iterator();
+
     while(rules.hasNext() )
     {
     	RepairRule rule = rules.next();
@@ -356,6 +371,9 @@ private void addHistoryEvent(Collection<Unit> totalUnits, String remainingText)
         {
           Resource resource = costsIter.next();
           int quantity = costs.getInt(resource);
+
+          if(isIncreasedFactoryProduction(player))
+        	  quantity /= 2;
           
           Change change = ChangeFactory.changeResourcesChange(m_player, resource, -quantity);
           changes.add(change);
@@ -363,6 +381,15 @@ private void addHistoryEvent(Collection<Unit> totalUnits, String remainingText)
           return m_player.getResources().getQuantity(resource) -  quantity + " ipcs remaining"; 
         }
         return "";
+    }
+    
+    
+    private boolean isIncreasedFactoryProduction(PlayerID player)    
+    {
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        if(ta == null)
+        	return false;
+        return ta.hasIncreasedFactoryProduction();
     }
 
 }

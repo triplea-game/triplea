@@ -202,6 +202,16 @@ public class RocketsFireHelper
 
             // Record production lost
             DelegateFinder.moveDelegate(data).ipcsLost(attackedTerritory, cost);
+        	Collection<Unit> damagedFactory = Match.getMatches(attackedTerritory.getUnits().getUnits(), Matches.UnitIsFactory);
+
+    		IntegerMap<Unit> hits = new IntegerMap<Unit>();
+        	for(Unit factory:damagedFactory)
+        	{
+        		hits.put(factory,1);
+        	}
+            
+        	bridge.addChange(ChangeFactory.unitsHit(hits));
+        	
             Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
             bridge.addChange(change);
         }

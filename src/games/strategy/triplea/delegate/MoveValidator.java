@@ -98,15 +98,10 @@ public class MoveValidator
 
         CompositeMatch<Unit> transportBombers = new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber);
         Collection<Unit> bombers = Match.getMatches(ownedUnits, transportBombers);
-        /*for (Unit bomber : bombers)
-        {
-            if (hasMoved(bomber))
-                bombers.remove(bomber);
-        }*/
+        
                 
         m_paraTransportsAvail = bombers.size();
-        //m_paraTransportsAvail = Match.countMatches(ownedUnits, Matches.UnitIsStrategicBomber);
-        
+                
         int tempBombers = m_paraTransportsAvail;
         
         for (Unit unit : units)

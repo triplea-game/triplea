@@ -220,9 +220,13 @@ public class UnitImageFactory
     StringBuilder name = new StringBuilder(32);
     name.append(type.getName());
 
-    if(type.getName().equals(Constants.AAGUN_TYPE) && TechTracker.hasRocket(id)) 
+    if(type.getName().equals(Constants.AAGUN_TYPE)) 
     {
-        name = new StringBuilder("rockets");
+    	if(TechTracker.hasRocket(id))
+    		name = new StringBuilder("rockets");
+    	
+    	if(TechTracker.hasAARadar(id))
+    		name.append("_r");
     }
     
     if (type.getName().equals(Constants.FIGHTER_TYPE))
@@ -262,11 +266,10 @@ public class UnitImageFactory
 //TODO COMCO add new icon types here
     if (type.getName().equals(Constants.FACTORY_TYPE))
     {
-
-      if (TechTracker.hasIndustrialTechnology(id))
+      if (TechTracker.hasIndustrialTechnology(id) || TechTracker.hasIncreasedFactoryProduction(id))
       {
           name.append("_it");
-      }
+      }      
     }
 
     if(damaged)

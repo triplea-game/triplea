@@ -1,3 +1,20 @@
+Changes for 1.0.2.1
+
+* The following list of bugs were fixed (Comradekev)
+	Only one Mechanized Infantry per tank should be allowed
+	Jet Fighters not attacking at 4
+	Non-aa50 games throw exceptions when trying to affect Tech Tokens
+	Chinese unit max for territory placement not limited to Chinese-only units
+	Territory Turn Limit removed from options
+	Option added for inclusion of Tech development
+	China should be able to place units on newly captured territories
+	Added Japanese Inf in Solomon Islands (aa-42)
+	Fix null pointer when choosing NOT to attack subs
+	Paratroops should be limited to 1 per bomber
+	Bombers should not be able to move before picking up paratroops
+	Radar/damaged factory icons not displaying
+	Fix factory repair cost for Increased Factory Production technology
+	
 Changes for 1.0.2.0
 
 * Maps images, and XML for AA50 (Zero Pilot and Black Elk)

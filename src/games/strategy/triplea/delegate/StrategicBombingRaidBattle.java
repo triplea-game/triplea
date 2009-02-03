@@ -550,38 +550,17 @@ public class StrategicBombingRaidBattle implements Battle
 
             	// Record production lost
             	DelegateFinder.moveDelegate(m_data).ipcsLost(m_battleSite, cost);
-            	//TODO COMCO add the damaged parm here.
-            	/*
-            	 * Match<Unit> damagedBattleship = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);
-            	 * 
-            	 *
-            	 * 
-while(iter.hasNext())
-       {
-           Unit unit = (Unit) iter.next();
-           hits.put(unit,0);
-       }
-       aBridge.addChange(ChangeFactory.unitsHit(hits));
-       aBridge.getHistoryWriter().startEvent(damaged.size() + " " +  MyFormatter.pluralize("unit", damaged.size()) + " repaired.");
+            	
+            	Collection<Unit> damagedFactory = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsFactory);
 
-
-
-void markDamaged(Collection<Unit> damaged, IDelegateBridge bridge)
-    {
-
-        if (damaged.size() == 0)
-            return;
-        Change damagedChange = null;
-        IntegerMap<Unit> damagedMap = new IntegerMap<Unit>();
-        damagedMap.putAll(damaged, 1);
-        damagedChange = ChangeFactory.unitsHit(damagedMap);
-        bridge.getHistoryWriter().addChildToEvent(
-                "Units damaged: " + MyFormatter.unitsToText(damaged),
-                damaged);
-        bridge.addChange(damagedChange);
-
-    }
-            	 */
+        		IntegerMap<Unit> hits = new IntegerMap<Unit>();
+            	for(Unit factory:damagedFactory)
+            	{
+            		hits.put(factory,1);
+            	}
+                
+            	bridge.addChange(ChangeFactory.unitsHit(hits));
+            	
             	Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
             	bridge.addChange(change);
             }

@@ -271,7 +271,7 @@ public class ProductionRepairPanel extends JPanel
     public class Rule extends JPanel
     {
         private ScrollableTextField m_text = new ScrollableTextField(0, Integer.MAX_VALUE);
-        private int m_cost;         
+        private float m_cost;         
         private RepairRule m_rule;
         private String m_terr;
 
@@ -314,7 +314,7 @@ public class ProductionRepairPanel extends JPanel
             setBorder(new EtchedBorder());
         }
 
-        int getCost()
+        float getCost()
         {
             return m_cost;
         }
