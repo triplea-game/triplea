@@ -1071,20 +1071,15 @@ public class MustFightBattle implements Battle, BattleStepStrings
                     	//If there are undefended attacking transports, determine if they automatically die
                         checkUndefendedTransports(bridge, m_defender);
                 	}
-                	/*
-            		//TODO comco perhaps check if there are any defending trns before declaring stalemate
-                	if(m_attackingUnits.size() == 0)
-                	{
-                        endBattle(bridge);
-                        nobodyWins(bridge);                		
-                	}
-                	else
-                	{                		*/
+                	
                 		endBattle(bridge);
                 		attackerWins(bridge);
-                	//}
+                } else if (Match.allMatch(m_attackingUnits, Matches.UnitIsTransport) && Match.allMatch(m_defendingUnits, Matches.UnitIsTransport))
+                {
+                        endBattle(bridge);
+                        nobodyWins(bridge);
                 }
-
+                
             }
             
         });  
@@ -2101,7 +2096,15 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
     	return games.strategy.triplea.Properties.getRandomAACasualties(m_data);
     }
-    
+
+    /**
+     * @return
+     */
+    private boolean isRollAAIndividually()
+    {
+        return games.strategy.triplea.Properties.getRollAAIndividually(m_data);
+    }
+        
     /**
      * @return
      */
@@ -2246,18 +2249,18 @@ public class MustFightBattle implements Battle, BattleStepStrings
            
             Collection<Unit> attackable = Match.getMatches(m_attackingUnits,
                     Matches.UnitIsAir);
-            
-            // if 4th edition choose casualties randomnly
-            // we can do that by removing planes at positions in the list where
-            // there was a corresponding hit in the dice roll.
-            if ((isFourthEdition() || isRandomAACasualties()) && !isChooseAA())
-            {
+                      
+            if(isRollAAIndividually())
+            { // select casualties based on individual shots at each aircraft
+                m_casualties = BattleCalculator.IndividuallyFiredAACasualties(attackable, m_dice, bridge);
+            }
+            else if ((isFourthEdition() || isRandomAACasualties()) && !isChooseAA())
+            { // if 4th edition choose casualties randomnly
                 m_casualties = BattleCalculator.fourthEditionAACasualties(attackable,
                         m_dice, bridge);
             } 
             else
-            {
-                //TODO COMCO fire fighters/bombers individually
+            { // allow player to select casualties from entire set
                 m_casualties = MustFightBattle.this.selectCasualties(SELECT_AA_CASUALTIES, bridge, attackable, false,
                         "AA guns fire,", m_dice).getKilled();
             }

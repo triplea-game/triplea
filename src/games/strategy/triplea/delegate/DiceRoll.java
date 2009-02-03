@@ -57,28 +57,60 @@ public class DiceRoll implements Externalizable
         
         if (data.getProperties().get(Constants.LOW_LUCK, false))
         {
-            // Low luck rolling
-            hits = numberOfAirUnits / Constants.MAX_DICE;
-            int hitsFractional = numberOfAirUnits % Constants.MAX_DICE;
-
-            if (hitsFractional > 0)
+            String annotation = "Roll AA guns in " + location.getName();
+            //If RADAR advancement, hit at a 2
+            if(isAARadar(location.getOwner()))
             {
-                String annotation = "Roll AA guns in " + location.getName();
-                if (isEditMode)
-                {
-                    //ITripleaPlayer player = (ITripleaPlayer)bridge.getRemote();
-                    
-                    dice = player.selectFixedDice(1, hitAt+1, true, annotation);
-                }
-                else
-                    dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
-                boolean hit = hitsFractional > dice[0];
-                Die die = new Die(dice[0], hitsFractional, hit ? DieType.HIT : DieType.MISS);
+                int power = hitAt+1;
+                hits = 0;
                 
-                sortedDice.add(die);
-                if (hit)
+             // Get number of hits
+                hits = (numberOfAirUnits* power) / Constants.MAX_DICE;
+                
+                int[] random = new int[0];
+
+                // We need to roll dice for the fractional part of the dice.
+                power = power % Constants.MAX_DICE;
+                if (power != 0)
                 {
-                    hits++;
+                    if (isEditMode)
+                    {
+                        ITripleaPlayer tripleAplayer = (ITripleaPlayer)bridge.getRemote();
+                        random = tripleAplayer.selectFixedDice(1, power, false, annotation);
+                    }
+                    else
+                        random = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
+                    boolean hit = power > random[0]; 
+                    if (hit)
+                    {
+                        hits++;
+                    }
+                    sortedDice.add(new Die(random[0], power, hit ? DieType.HIT : DieType.MISS ));
+                }
+            }
+            else
+            {                            
+                // Low luck rolling
+                hits = numberOfAirUnits / Constants.MAX_DICE;
+                int hitsFractional = numberOfAirUnits % Constants.MAX_DICE;
+
+                if (hitsFractional > 0)
+                {
+                    //String annotation = "Roll AA guns in " + location.getName();
+                    if (isEditMode)
+                    {
+                        dice = player.selectFixedDice(1, hitAt+1, true, annotation);
+                    }
+                    else
+                        dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
+                    boolean hit = hitsFractional > dice[0];
+                    Die die = new Die(dice[0], hitsFractional, hit ? DieType.HIT : DieType.MISS);
+
+                    sortedDice.add(die);
+                    if (hit)
+                    {
+                        hits++;
+                    }
                 }
             }
         } 
@@ -88,9 +120,7 @@ public class DiceRoll implements Externalizable
             // Normal rolling
             String annotation = "Roll AA guns in " + location.getName();
             if (isEditMode)
-            {
-                //ITripleaPlayer player = (ITripleaPlayer)bridge.getRemote();
-                
+            {                
                 dice = player.selectFixedDice(numberOfAirUnits, hitAt+1, true, annotation);
             }
             else
@@ -135,8 +165,6 @@ public class DiceRoll implements Externalizable
      */
     private static DiceRoll rollDiceLowLuck(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
     {
-
-
         int rollCount = BattleCalculator.getRolls(units, player, defending);
         if (rollCount == 0)
         {

@@ -2064,6 +2064,38 @@
 				<property name="Anniversary Edition" value="true" editable="false">
                         <boolean/>
                 </property>
+                
+				<property name="No Economic Victory" value="true" editable="false">
+                        <boolean/>
+                </property>
+                
+				<property name="Total Victory" value="false" editable="true">
+                        <boolean/>
+                </property>
+                
+				<property name="Honorable Surrender" value="true" editable="true">
+                        <boolean/>
+                </property>
+                
+				<property name="Projection of Power" value="false" editable="true">
+                        <boolean/>
+                </property>
+                
+				<property name="All Rockets Attack" value="true" editable="false">
+                        <boolean/>
+                </property>
+                
+				<property name="Rockets Can Fly Over Impassables" value="false" editable="false">
+                        <boolean/>
+                </property>
+
+				<property name="Unit Placement In Enemy Seas" value="true" editable="false">
+                        <boolean/>
+                </property>
+                
+				<property name="Roll AA Individually" value="true" editable="false">
+                        <boolean/>
+                </property>
                        
 				<property name="No Economic Victory" value="true" editable="false">
                         <boolean/>

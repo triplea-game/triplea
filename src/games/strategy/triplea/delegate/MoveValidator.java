@@ -597,6 +597,11 @@ public class MoveValidator
     {
         return games.strategy.triplea.Properties.getFourthEdition(data);
     }
+
+    private static boolean isAnniversaryEdition(GameData data)
+    {
+        return games.strategy.triplea.Properties.getAnniversaryEdition(data);
+    }
     
     /**
      * @return
@@ -759,7 +764,7 @@ public class MoveValidator
         if (getEditMode(data))
             return result;
 
-        if (route.someMatch(Matches.TerritoryIsImpassible))
+        if (route.someMatch(Matches.TerritoryIsImpassable))
             return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSIBLE);
 
         CompositeMatch<Territory> battle = new CompositeMatchOr<Territory>();
@@ -1028,7 +1033,7 @@ public class MoveValidator
                         allEnemyBlitzable &= MoveValidator.isBlitzable(current, data, player);
                     }
                 }
-
+                
                 if (enemyCount > 0 && !allEnemyBlitzable)
                 {
                     if(NonParatroopersPresent(player, units))
@@ -1038,8 +1043,17 @@ public class MoveValidator
                 {
                     Match<Unit> blitzingUnit = new CompositeMatchOr<Unit>(Matches.UnitCanBlitz, Matches.UnitIsAir);
                     Match<Unit> nonBlitzing = new InverseMatch<Unit>(blitzingUnit);
-                    for (Unit unit : Match.getMatches(units, nonBlitzing))
-                        result.addDisallowedUnit("Not all units can blitz",unit);
+                    Collection<Unit> nonBlitzingUnits = Match.getMatches(units, nonBlitzing);
+
+                    getMechanizedSupportAvail(route);
+                    for (Unit unit : nonBlitzingUnits)
+                    {
+                        UnitAttachment ua = UnitAttachment.get(unit.getType());
+                        if((ua.isInfantry() || ua.isMarine()) && m_mechanizedSupportAvail > 0)
+                            m_mechanizedSupportAvail --;
+                        else
+                            result.addDisallowedUnit("Not all units can blitz",unit);
+                    }
                 }
 
                 // No neutral countries on route predicate
@@ -1108,17 +1122,17 @@ public class MoveValidator
                 }
             }
         }
-        //TODO This is a bug in 4th ed rules.... should allow multiple AA in a territory in 4th ed.
-        //only allow aa into a land territory if one already present.
-        if (!isFourthEdition(data) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd() != null && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
+
+        //only allow aa into a land territory if one already present unless 4th ed. or Anniversayr ed.
+        if ((!isAnniversaryEdition(data) && !isFourthEdition(data)) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd() != null && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
                 && !route.getEnd().isWater())
         {
             for (Unit unit : Match.getMatches(units, Matches.UnitIsAA))
                 result.addDisallowedUnit("Only one AA gun allowed in a territory",unit);
         }
 
-        //only allow 1 aa to unload
-        if (route.getStart().isWater() && !route.getEnd().isWater() && Match.countMatches(units, Matches.UnitIsAA) > 1)
+        //only allow 1 aa to unload unless 4th ed. or Anniversayr ed.
+        if (route.getStart().isWater() && !route.getEnd().isWater() && Match.countMatches(units, Matches.UnitIsAA) > 1 && (!isAnniversaryEdition(data) && !isFourthEdition(data)))
         {
             Collection<Unit> aaGuns = Match.getMatches(units, Matches.UnitIsAA);
             Iterator<Unit> aaIter = aaGuns.iterator();
@@ -1128,7 +1142,7 @@ public class MoveValidator
         }
 
         // don't allow move through impassible territories
-        if (!isEditMode && route.someMatch(Matches.TerritoryIsImpassible))
+        if (!isEditMode && route.someMatch(Matches.TerritoryIsImpassable))
             return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSIBLE);
 
         if (canCrossNeutralTerritory(data, route, player, result).getError() != null)
@@ -1194,7 +1208,7 @@ public class MoveValidator
         	maxMovement++;
 
         
-        Match<Territory> canMoveThrough = new InverseMatch<Territory>(Matches.TerritoryIsImpassible);
+        Match<Territory> canMoveThrough = new InverseMatch<Territory>(Matches.TerritoryIsImpassable);
         Match<Territory> notNeutral = new InverseMatch<Territory>(Matches.TerritoryIsNeutral);
         
         Match<Territory> notNeutralAndNotImpassible = new CompositeMatchAnd<Territory>(canMoveThrough, notNeutral);

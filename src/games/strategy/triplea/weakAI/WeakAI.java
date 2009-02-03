@@ -621,7 +621,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             moveOfType.add(Matches.UnitIsNotFactory);
             moveOfType.add(Matches.UnitIsLand);
             
-            CompositeMatchAnd<Territory> moveThrough = new CompositeMatchAnd<Territory>(new InverseMatch<Territory>(Matches.TerritoryIsImpassible), 
+            CompositeMatchAnd<Territory> moveThrough = new CompositeMatchAnd<Territory>(new InverseMatch<Territory>(Matches.TerritoryIsImpassable), 
                     new InverseMatch<Territory>(Matches.TerritoryIsNeutral),
                     Matches.TerritoryIsLand);
             
@@ -670,7 +670,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             //if we cant move to a capitol, move towards the enemy
             else
             {
-                CompositeMatchAnd<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsImpassible.invert());
+                CompositeMatchAnd<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsImpassable.invert());
                 Route newRoute = Utils.findNearest(t, Matches.territoryHasEnemyLandUnits(player, data ), routeCondition, data);
                 // move to any enemy territory
                 if(newRoute==null){
@@ -717,14 +717,14 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         
         Match<Territory> routeCondition = new CompositeMatchAnd<Territory>(
                 Matches.territoryHasEnemyAA(player, getPlayerBridge().getGameData()).invert(),
-                Matches.TerritoryIsImpassible.invert()
+                Matches.TerritoryIsImpassable.invert()
         );
         
         for(Territory t : delegateRemote.getTerritoriesWhereAirCantLand())
         {
             Route noAARoute = Utils.findNearest(t, canLand, routeCondition, getPlayerBridge().getGameData());
             
-            Route aaRoute = Utils.findNearest(t, canLand, Matches.TerritoryIsImpassible.invert() , getPlayerBridge().getGameData());
+            Route aaRoute = Utils.findNearest(t, canLand, Matches.TerritoryIsImpassable.invert() , getPlayerBridge().getGameData());
             
             Collection<Unit> airToLand = t.getUnits().getMatches( new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.unitIsOwnedBy(player)));
             

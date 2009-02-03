@@ -30,6 +30,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.UnitCategory;
@@ -115,6 +116,38 @@ public class BattleCalculator
                 planesList.remove(pos);
                 casualties.add(unit);
             }
+        } else
+        {
+            casualties.addAll(planesList);
+        }
+
+        return casualties;
+    }
+
+    /**
+     * Choose plane casualties based on individual AA shots at each aircraft.
+     */
+    public static Collection<Unit> IndividuallyFiredAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge)
+    {
+        Collection<Unit> casualties = new ArrayList<Unit>();
+        int hits = dice.getHits();
+        List<Unit> planesList = new ArrayList<Unit>(planes);
+
+        // We need to choose which planes die based on their position in the list and the individual AA rolls
+        if (hits < planesList.size())
+        {
+            List<Die> rolls = dice.getRolls(1);
+
+            for (int i = 0; i < rolls.size(); i++)
+            {
+                Die die = rolls.get(i);
+                if(die.getType() == DieType.HIT)
+                {
+                    Unit unit = planesList.get(i);
+                    casualties.add(unit);
+                }                
+            }
+            planesList.removeAll(casualties);
         } else
         {
             casualties.addAll(planesList);

@@ -250,17 +250,36 @@ public class OddsCalculatorPanel extends JPanel
         
     }
     
+    // Holds a Thread in a final object so we can pass it to an inner thread.
+    class ThreadPointer
+    {
+        public Thread thread = null;
+    }
+
     private void updateStats()
     {
-        final WaitDialog dialog = new WaitDialog(this, "Calculating Odds");
+        //final WaitDialog dialog = new WaitDialog(this, "Calculating Odds");
+        // Hack to work with the inner threads.
+        final ThreadPointer threadPointer = new ThreadPointer();
+        // Create a canceable wait dialog.
+        final WaitDialog dialog = new WaitDialog(this, "Calculating Odds",
+            new Runnable() {
+            public void run() {
+                if ( threadPointer.thread != null ) {
+                    threadPointer.thread.interrupt();
+                }
+
+            }
+        });
         dialog.pack();
         dialog.setLocationRelativeTo(this);
         
         final AtomicReference<AggregateResults> results = new AtomicReference<AggregateResults>();
         
-        new Thread(new Runnable()
+        //new Thread(new Runnable()
+        //{
+        threadPointer.thread = new Thread(new Runnable() 
         {
-            
             public void run()
             {
                 try
@@ -314,7 +333,11 @@ public class OddsCalculatorPanel extends JPanel
                 
             }
             
-        }, "Odds calc thread").start();
+        //}, "Odds calc thread").start();
+        }, "Odds calc thread");
+        
+        // Actually start thread.
+        threadPointer.thread.start();
         
         if(results.get() == null)
             dialog.setVisible(true);

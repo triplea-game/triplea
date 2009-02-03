@@ -292,7 +292,6 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         //if land
         {
             return getUnitsToBePlacedLand(to, units, player);
-
         }
     }
 
@@ -318,7 +317,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
                     airThatCanLandOnCarrier));
         }
 
-        if (!isFourthEdition()
+        if ((!isFourthEdition() && !isUnitPlacementInEnemySeas())
                 && to.getUnits().someMatch(Matches.enemyUnit(player, m_data)))
             return null;
 
@@ -499,7 +498,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             return "Factories cant produce until 1 turn after they are created";
                    
         
-        if (to.isWater() && !isFourthEdition()
+        if (to.isWater() && (!isFourthEdition() && !isUnitPlacementInEnemySeas())
                 && to.getUnits().someMatch(Matches.enemyUnit(player, m_data)))
             return "Cannot place sea units with enemy naval units";
 
@@ -540,6 +539,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return games.strategy.triplea.Properties.getFourthEdition(m_data);
     }
 
+    protected boolean isUnitPlacementInEnemySeas()    
+    {
+        return games.strategy.triplea.Properties.getUnitPlacementInEnemySeas(m_data);
+    }
+    
     private boolean wasConquered(Territory t)
     {
 

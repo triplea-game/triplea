@@ -163,6 +163,7 @@ public class PlacePanel extends ActionPanel
                                 "You have not placed all your units yet.  Are you sure you want to end your turn?",
                                 "TripleA", JOptionPane.YES_NO_OPTION,
                                 JOptionPane.PLAIN_MESSAGE);
+                //TODO COMCO add code here to store the units until next time
                 if (option != JOptionPane.YES_OPTION)
                     return;
             }

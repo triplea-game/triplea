@@ -92,7 +92,9 @@ public class OddsCalculator
         AggregateResults rVal = new AggregateResults(count);
         BattleTracker battleTracker = new BattleTracker();
         
-        for(int i =0; i < count; i++)
+        //for(int i =0; i < count; i++)
+        // The dialog may be cancelled which causes the running thread to be markes as interruppted.
+        for(int i =0; i < count && !Thread.interrupted(); i++)
         {
             final CompositeChange allChanges = new CompositeChange();
             DummyDelegateBridge bridge1 = new DummyDelegateBridge(m_attacker, m_data, allChanges, m_keepOneAttackingLandUnit);

@@ -449,11 +449,14 @@ public class BattleTracker implements java.io.Serializable
             changeTracker.addChange(noMovementChange);
          
 
+        //moved this down to after the terr ownership is changed
+        
         //non coms revert to their original owner if once allied
         //unless their capital is not owned
-        for (Unit currentUnit : nonCom)
+       /* for (Unit currentUnit : nonCom)
         {
             PlayerID originalOwner = origOwnerTracker.getOriginalOwner(currentUnit);
+            
             Territory originalOwnersCapitol = null;
             if(originalOwner != null)
                 originalOwnersCapitol = TerritoryAttachment.getCapital(originalOwner, data); 
@@ -484,7 +487,7 @@ public class BattleTracker implements java.io.Serializable
                 if (changeTracker != null)
                     changeTracker.addChange(capture);
             }
-        }
+        }*/
 
         //is this an allied territory
         //revert to original owner if it is, unless they dont own there captital
@@ -514,7 +517,20 @@ public class BattleTracker implements java.io.Serializable
             changeTracker.addChange(takeOver);
             changeTracker.addToConquered(territory);
         }
-
+        
+        //non coms revert to their original owner if once allied
+        //unless their capital is not owned
+        for (Unit currentUnit : nonCom)
+        {
+            PlayerID originalOwner = origOwnerTracker.getOriginalOwner(currentUnit);            
+            
+            PlayerID terrOwner = newOwner;
+            
+            Change capture = ChangeFactory.changeOwner(currentUnit, terrOwner, territory);
+            bridge.addChange(capture);
+            if (changeTracker != null)
+                changeTracker.addChange(capture);            
+        }
         //is this territory our capitol or a capitol of our ally
         //Also check to make sure playerAttachment even HAS a capital to fix abend  
         if (terrOrigOwner != null && ta.getCapital() != null && TerritoryAttachment.getCapital(terrOrigOwner, data).equals(territory)

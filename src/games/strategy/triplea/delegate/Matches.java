@@ -180,6 +180,8 @@ public class Matches
             return ua.isStrategicBomber();
         }
     };
+
+    public static final Match<Unit> UnitIsNotStrategicBomber = new InverseMatch<Unit>(UnitIsStrategicBomber);
     
     public static final Match<Unit> unitHasMoved = new Match<Unit>()
     {
@@ -626,8 +628,9 @@ public class Matches
         }
     };
 
+    public final static Match<Territory> TerritoryIsNotNeutral = new InverseMatch<Territory>(TerritoryIsNeutral);
 
-    public static final Match<Territory> TerritoryIsImpassible = new Match<Territory>()
+    public static final Match<Territory> TerritoryIsImpassable = new Match<Territory>()
     {
         public boolean match(Territory t)
         {
@@ -641,7 +644,9 @@ public class Matches
             }
         }
     };
-  
+
+    public final static Match<Territory> TerritoryIsNotImpassable = new InverseMatch<Territory>(TerritoryIsImpassable);
+
 
     public static final Match<Battle> BattleIsEmpty = new Match<Battle>()
     {

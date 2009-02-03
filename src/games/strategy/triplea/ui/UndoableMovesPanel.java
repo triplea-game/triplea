@@ -30,6 +30,11 @@ public class UndoableMovesPanel extends JPanel
     private List<UndoableMove> m_moves;
     private final GameData m_data;
     private final MovePanel m_movePanel;
+    
+    // Place scroll pane in class global scope so the inner undo class can record
+    // the position so we can go back to that place.
+    JScrollPane scroll;
+    Integer scrollBarPreviousValue = null;
 
     public UndoableMovesPanel(GameData data, MovePanel movePanel)
     {
@@ -94,11 +99,16 @@ public class UndoableMovesPanel extends JPanel
             }
         }
 
-        JScrollPane scroll = new JScrollPane(items);
+        //JScrollPane scroll = new JScrollPane(items);
+        scroll = new JScrollPane(items);
         scroll.setBorder(null);
         scroll.getVerticalScrollBar().setUnitIncrement(scrollIncrement);
 
-        
+        if (scrollBarPreviousValue != null) 
+        {
+            scroll.getVerticalScrollBar().setValue(scrollBarPreviousValue);
+            scrollBarPreviousValue = null;
+        }
         
         add(scroll, BorderLayout.CENTER);
         SwingUtilities.invokeLater(new Runnable()
@@ -176,6 +186,8 @@ public class UndoableMovesPanel extends JPanel
 
         public void actionPerformed(ActionEvent e)
         {
+            // Record position of scroll bar as percentage.
+            scrollBarPreviousValue = scroll.getVerticalScrollBar().getValue();
             m_movePanel.undoMove(m_moveIndex);
         }
     }

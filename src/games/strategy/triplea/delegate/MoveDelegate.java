@@ -416,6 +416,11 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     	return games.strategy.triplea.Properties.getFourthEdition(m_data);
     }
 
+    private boolean isAnniversaryEdition()
+    {
+        return games.strategy.triplea.Properties.getAnniversaryEdition(m_data);
+    }
+    
     private ITripleaPlayer getRemotePlayer()
     {
         return getRemotePlayer(m_player);
@@ -481,7 +486,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
         //fourth edition, fires at end of combat move
         //3rd edition, fires at end of non combat move
-        if ((m_nonCombat && !isFourthEdition()) || (!m_nonCombat && isFourthEdition()))
+        if ((!m_nonCombat && isAnniversaryEdition()) || (m_nonCombat && !isFourthEdition()) || (!m_nonCombat && isFourthEdition()))
         {
             if (TechTracker.hasRocket(m_bridge.getPlayerID()))
             {

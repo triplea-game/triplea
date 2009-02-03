@@ -74,6 +74,80 @@ public class Properties implements Constants
 		}
 	}
 
+    public static boolean getTotalVictory(GameData data)
+    {
+        try
+        {
+            return ( (Boolean) data.getProperties().get(TOTAL_VICTORY) ).booleanValue();
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
+    }
+
+    public static boolean getHonorableSurrender(GameData data)
+    {
+        try
+        {
+            return ( (Boolean) data.getProperties().get(HONORABLE_SURRENDER) ).booleanValue();
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
+    }
+
+
+    public static boolean getProjectionOfPower(GameData data)
+    {
+        try
+        {
+            return ( (Boolean) data.getProperties().get(PROJECTION_OF_POWER) ).booleanValue();
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
+    }
+    
+	
+    public static boolean getAllRocketsAttack(GameData data)
+    {
+        try
+        {
+            return ( (Boolean) data.getProperties().get(ALL_ROCKETS_ATTACK) ).booleanValue();
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
+    }
+	
+    public static boolean getRocketsCanViolateNeutrality(GameData data)
+    {
+        try
+        {
+            return ( (Boolean) data.getProperties().get(ROCKETS_CAN_VIOLATE_NEUTRALITY) ).booleanValue();
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
+    }
+
+    public static boolean getRocketsCanFlyOverImpassables(GameData data)
+    {
+        try
+        {
+            return ( (Boolean) data.getProperties().get(ROCKETS_CAN_FLY_OVER_IMPASSABLES) ).booleanValue();
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
+    }
+    
 	/*
 	 * Pacific Edition
 	 */
@@ -104,21 +178,21 @@ public class Properties implements Constants
 			 }
 		 }
 
-	        /*
-	         * Anniversary Edition
-	         */
-	         public static boolean getNoEconomicVictory(GameData data)
-	         {
-	             try
-	             {
-	                 return ( (Boolean) data.getProperties().get(NO_ECONOMIC_VICTORY) ).booleanValue();
-	             }
-	             catch(Exception e)
-	             {
-	                 return false;
-	             }
-	         }
-		 
+		 /*
+		  * No Economic Victory Edition
+		  */
+		 public static boolean getNoEconomicVictory(GameData data)
+		 {
+		     try
+		     {
+		         return ( (Boolean) data.getProperties().get(NO_ECONOMIC_VICTORY) ).booleanValue();
+		     }
+		     catch(Exception e)
+		     {
+		         return false;
+		     }
+		 }
+
 	 /*
 	  * Anniversary Edition Land & Production
 	  */
@@ -239,6 +313,21 @@ public class Properties implements Constants
 		 }
 	 }
 
+     /*
+      * Are AA casualties chosen randomly
+      */
+     public static boolean getRollAAIndividually(GameData data)
+     {
+         try
+         {
+             return ( (Boolean) data.getProperties().get(ROLL_AA_INDIVIDUALLY) ).booleanValue();
+         }
+         catch(Exception e)
+         {
+             return false;
+         }
+     }
+	 
 	 /*
 	  * Limit the damage caused by each bomber on Strategic Bomb Raids to production of territory
 	  */
@@ -434,6 +523,21 @@ public class Properties implements Constants
 			 return false;
 		 }
 	 }
+
+     /*
+      * Can place new units in occupied sea zones
+      */
+     public static boolean getUnitPlacementInEnemySeas(GameData data)
+     {
+         try
+         {
+             return ( (Boolean) data.getProperties().get(UNIT_PLACEMENT_IN_ENEMY_SEAS) ).booleanValue();
+         }
+         catch(Exception e)
+         {
+             return false;
+         }
+     }
 
 	 /*
 	  * Subs restricted from controling sea zones

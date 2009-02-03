@@ -31,6 +31,16 @@ public class RocketsFireHelper
     {
     	return games.strategy.triplea.Properties.getFourthEdition(data);
     }
+	
+    private boolean isAllRocketsAttack(GameData data)
+    {
+        return games.strategy.triplea.Properties.getAllRocketsAttack(data);
+    }
+	
+    private boolean isRocketsCanFlyOverImpassables(GameData data)
+    {
+        return games.strategy.triplea.Properties.getRocketsCanFlyOverImpassables(data);
+    }
 
     /**
      * @return
@@ -75,7 +85,7 @@ public class RocketsFireHelper
             return;
         }
 
-        if (isFourthEdition(data) || isOneRocketAttackPerFactory(data))
+        if ((isFourthEdition(data) || isAllRocketsAttack(data)) || isOneRocketAttackPerFactory(data))
             fire4thEdition(data, player, rocketTerritories, bridge);
         else
             fire3rdEdition(data, player, rocketTerritories, bridge);
@@ -155,13 +165,21 @@ public class RocketsFireHelper
         enemyFactory.add(Matches.enemyUnit(player, data));
 
         Set<Territory> hasFactory = new HashSet<Territory>();
+        
+        boolean rocketsOverImpassables = isRocketsCanFlyOverImpassables(data);
+        Match impassable = Matches.TerritoryIsNotImpassable;
 
         Iterator iter = possible.iterator();
         while (iter.hasNext())
         {
             Territory current = (Territory) iter.next();
-            if (current.getUnits().someMatch(enemyFactory))
-                hasFactory.add(current);
+            
+            Route route = data.getMap().getRoute(territory, current, impassable);
+            if(route != null && route.getLength() <= 3)
+            {
+                if (current.getUnits().someMatch(enemyFactory)) 
+                    hasFactory.add(current);
+            }
         }
         return hasFactory;
     }

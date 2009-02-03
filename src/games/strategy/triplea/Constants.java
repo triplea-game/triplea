@@ -62,7 +62,12 @@ public interface Constants
   public static final String HEAVY_BOMBER_DICE_ROLLS = "Heavy Bomber Dice Rolls";
   public static final String TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN = "Battleships repair at end of round";
   public static final String FOURTH_EDITION = "4th Edition";
-
+  public static final String TOTAL_VICTORY = "Total Victory";
+  public static final String HONORABLE_SURRENDER = "Honorable Surrender";
+  public static final String PROJECTION_OF_POWER = "Projection of Power";  
+  public static final String ALL_ROCKETS_ATTACK = "All Rockets Attack";  
+  public static final String ROCKETS_CAN_VIOLATE_NEUTRALITY = "Rockets Can Violate Neutrality";
+  public static final String ROCKETS_CAN_FLY_OVER_IMPASSABLES = "Rockets Can Fly Over Impassables";
   /**
    * These are the individual rules from 4th Edition (All default to FALSE)
    */
@@ -72,6 +77,7 @@ public interface Constants
   public static final String TECH_DEVELOPMENT = "Tech Development";  
   public static final String TRANSPORT_UNLOAD_RESTRICTED = "Transport Restricted Unload";
   public static final String RANDOM_AA_CASUALTIES = "Random AA Casualties";
+  public static final String ROLL_AA_INDIVIDUALLY = "Roll AA Individually";  
   public static final String LIMIT_SBR_DAMAGE_TO_PRODUCTION = "Limit SBR Damage To Factory Production";
   public static final String LIMIT_ROCKET_DAMAGE_TO_PRODUCTION = "Limit SBR Damage To Factory Production";
   public static final String SBR_VICTORY_POINTS = "SBR Victory Points";
@@ -94,7 +100,8 @@ public interface Constants
    * These are the individual rules for TripleA 50th Edition (All default to FALSE)
    */
   public static final String NATIONAL_OBJECTIVES = "National Objectives";
-  public static final String SUB_CONTROL_SEA_ZONE_RESTRICTED = "Sub Control Sea Zone Restricted";  
+  public static final String SUB_CONTROL_SEA_ZONE_RESTRICTED = "Sub Control Sea Zone Restricted";
+  public static final String UNIT_PLACEMENT_IN_ENEMY_SEAS = "Unit Placement In Enemy Seas";  
   public static final String TRANSPORT_CONTROL_SEA_ZONE = "Transport Control Sea Zone";
   public static final String PRODUCTION_PER_X_TERRITORIES_RESTRICTED = "Production Per X Territories Restricted";
   public static final String PLACE_IN_ANY_TERRITORY = "Place in Any Territory";
