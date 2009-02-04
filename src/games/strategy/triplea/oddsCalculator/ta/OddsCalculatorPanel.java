@@ -41,6 +41,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
@@ -250,42 +251,31 @@ public class OddsCalculatorPanel extends JPanel
         
     }
     
-    // Holds a Thread in a final object so we can pass it to an inner thread.
-    class ThreadPointer
-    {
-        public Thread thread = null;
-    }
-
     private void updateStats()
     {
-        //final WaitDialog dialog = new WaitDialog(this, "Calculating Odds");
-        // Hack to work with the inner threads.
-        final ThreadPointer threadPointer = new ThreadPointer();
-        // Create a canceable wait dialog.
+        if(!SwingUtilities.isEventDispatchThread()) {
+            throw new IllegalStateException("Wrong thread");
+        }
+        
+        final AtomicReference<AggregateResults> results = new AtomicReference<AggregateResults>();        
+        final OddsCalculator calculator = new OddsCalculator();        
+        
         final WaitDialog dialog = new WaitDialog(this, "Calculating Odds",
-            new Runnable() {
-            public void run() {
-                if ( threadPointer.thread != null ) {
-                    threadPointer.thread.interrupt();
-                }
-
+                new AbstractAction() {
+                    public void actionPerformed(ActionEvent e) {
+                        calculator.cancel();
+                    }
             }
-        });
+        );
         dialog.pack();
         dialog.setLocationRelativeTo(this);
-        
-        final AtomicReference<AggregateResults> results = new AtomicReference<AggregateResults>();
-        
-        //new Thread(new Runnable()
-        //{
-        threadPointer.thread = new Thread(new Runnable() 
+
+        Thread calcThread = new Thread(new Runnable() 
         {
             public void run()
             {
                 try
                 {
-                    OddsCalculator calculator = new OddsCalculator();
-                    
                     // find a territory to fight in
                     Territory location = null;
                     for (Territory t : m_data.getMap())
@@ -320,13 +310,11 @@ public class OddsCalculatorPanel extends JPanel
                 {
                     SwingUtilities.invokeLater(new Runnable()
                     {
-                        
                         public void run()
                         {
                             dialog.setVisible(false);
                             dialog.dispose();
-                        }
-                        
+                        }                        
                     });
                     
                 }
@@ -337,10 +325,12 @@ public class OddsCalculatorPanel extends JPanel
         }, "Odds calc thread");
         
         // Actually start thread.
-        threadPointer.thread.start();
-        
-        if(results.get() == null)
-            dialog.setVisible(true);
+        calcThread.start();
+
+        //the runnable setting the dialog visible must 
+        //run after this code executes, since this
+        //code is running on the swing event thread
+        dialog.setVisible(true);
         
         m_attackerWin.setText(formatPercentage(results.get().getAttackerWinPercent()));
         m_defenderWin.setText(formatPercentage(results.get().getDefenderWinPercent()));

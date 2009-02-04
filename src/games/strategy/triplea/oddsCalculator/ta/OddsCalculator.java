@@ -53,6 +53,7 @@ public class OddsCalculator
     private Collection<Unit> m_defendingUnits = new ArrayList<Unit>();
     private Collection<Unit> m_bombardingUnits = new ArrayList<Unit>();
     private boolean m_keepOneAttackingLandUnit = false;
+    private volatile boolean m_cancelled = false;
     
     public OddsCalculator()
     {
@@ -92,9 +93,8 @@ public class OddsCalculator
         AggregateResults rVal = new AggregateResults(count);
         BattleTracker battleTracker = new BattleTracker();
         
-        //for(int i =0; i < count; i++)
-        // The dialog may be cancelled which causes the running thread to be markes as interruppted.
-        for(int i =0; i < count && !Thread.interrupted(); i++)
+        
+        for(int i =0; i < count && !m_cancelled; i++)
         {
             final CompositeChange allChanges = new CompositeChange();
             DummyDelegateBridge bridge1 = new DummyDelegateBridge(m_attacker, m_data, allChanges, m_keepOneAttackingLandUnit);
@@ -116,6 +116,13 @@ public class OddsCalculator
         rVal.setTime(System.currentTimeMillis() - start);
         
         return rVal;
+    }
+
+
+
+    public void cancel()
+    {
+        m_cancelled = true;        
     }
     
 }

@@ -1,35 +1,34 @@
 package games.strategy.engine.framework.ui.background;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 public class WaitDialog extends JDialog
 {
 
     public WaitDialog(Component parent, String waitMessage)
     {
+        this(parent, waitMessage,null);            
+    }    
+    
+    public WaitDialog(Component parent, String waitMessage, Action cancelAction) {
         super(JOptionPane.getFrameForComponent(parent), "Please Wait" , true);
+        
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         WaitPanel panel = new WaitPanel(waitMessage);
         setLayout(new BorderLayout());
         add(panel, BorderLayout.CENTER);
         
-    }
-    
-    public WaitDialog(Component parent, String waitMessage, final
-                      Runnable cancel) {
-        this(parent, waitMessage);
-        Button cancelButton = new Button("Cancel");
-        add(cancelButton);
-        cancelButton.addActionListener(
-            new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    cancel.run();
-                }
-            });
+        if(cancelAction != null) {
+            JButton cancelButton = new JButton("Cancel");
+            cancelButton.addActionListener(cancelAction);
+            add(cancelButton,BorderLayout.SOUTH);
+        }
     }
     
     
