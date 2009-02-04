@@ -55,6 +55,8 @@ public class EndRoundDelegate implements IDelegate
     private final static int TOTAL_VICTORY_VCS = 18;
     private final static int SURRENDER_WITH_HONOR_VCS = 15;
     private final static int PROJECTION_OF_POWER_VCS = 13;
+    private final static String AXIS = "Axis";
+    private final static String ALLIES = "Allies";
 
 	private String m_name;
 	private String m_displayName;
@@ -87,93 +89,72 @@ public class EndRoundDelegate implements IDelegate
 
 		PlayerID germans = m_data.getPlayerList().getPlayerID(Constants.GERMANS);
 		PlayerID americans = m_data.getPlayerList().getPlayerID(Constants.AMERICANS);
-		int axisTerrs = 0;
-		int alliedTerrs = 0;
+		int axisVCs = 0;
+		int alliedVCs = 0;
 		String victoryMessage = null;
 
-		//TODO COMCO refactor this and display a panel with the end-game state
-		//Check for Win by Victory Cities
-		if(isTotalVictory())
+		//Check for Winning conditions        
+        if(isFourthEdition() || isNoEconomicVictory())
+            return;
+        else if(isTotalVictory())       //Check for Win by Victory Cities
 		{
-		    axisTerrs = Match.countMatches(m_data.getMap().getTerritories(), 
+		    //Check for AXIS victory
+		    axisVCs = Match.countMatches(m_data.getMap().getTerritories(), 
 		        new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity,Matches.isTerritoryAllied(germans, m_data)));
 
-		    if(axisTerrs >= TOTAL_VICTORY_VCS)
-		    {
-		        victoryMessage = "Axis achieve TOTAL VICTORY with " + axisTerrs +" Victory Cities!";
-		        aBridge.getHistoryWriter().startEvent(victoryMessage);
-		        signalGameOver(victoryMessage,aBridge);
-		    }
+	        victoryMessage = " achieve TOTAL VICTORY with " + axisVCs +" Victory Cities!";	        
+		    checkVictoryCities(aBridge, axisVCs, TOTAL_VICTORY_VCS, victoryMessage, AXIS);
 
-		    alliedTerrs = Match.countMatches(m_data.getMap().getTerritories(), 
+            //Check for ALLIED victory		    
+		    alliedVCs = Match.countMatches(m_data.getMap().getTerritories(), 
 		        new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity,Matches.isTerritoryAllied(americans, m_data)));
 
-		    if(alliedTerrs >= TOTAL_VICTORY_VCS)
-		    {
-                victoryMessage = "Allies achieve TOTAL VICTORY with " + axisTerrs +" Victory Cities!";
-		        aBridge.getHistoryWriter().startEvent(victoryMessage);
-                signalGameOver(victoryMessage,aBridge);
-		    }
+            checkVictoryCities(aBridge, alliedVCs, TOTAL_VICTORY_VCS, victoryMessage, ALLIES);
+            
 		} 
 		else if(isHonorableSurrender())
 		{
-		    axisTerrs = Match.countMatches(m_data.getMap().getTerritories(), 
+            //Check for AXIS victory
+		    axisVCs = Match.countMatches(m_data.getMap().getTerritories(), 
 		        new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity,Matches.isTerritoryAllied(germans, m_data)));
 
-		    if(axisTerrs >= SURRENDER_WITH_HONOR_VCS)
-		    {
-		        victoryMessage = "Axis achieve an HONORABLE VICTORY with " + axisTerrs +" Victory Cities!";
-		        aBridge.getHistoryWriter().startEvent(victoryMessage);
-                signalGameOver(victoryMessage,aBridge);
-		    }
+            victoryMessage = " achieve an HONORABLE VICTORY with " + axisVCs + " Victory Cities!";
+            checkVictoryCities(aBridge, axisVCs, TOTAL_VICTORY_VCS, victoryMessage, AXIS);
 
-		    alliedTerrs = Match.countMatches(m_data.getMap().getTerritories(), 
+            //Check for ALLIED victory  
+		    alliedVCs = Match.countMatches(m_data.getMap().getTerritories(), 
 		        new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity,Matches.isTerritoryAllied(americans, m_data)));
-
-		    if(alliedTerrs >= SURRENDER_WITH_HONOR_VCS)
-		    {
-                victoryMessage = "Allies achieve an HONORABLE VICTORY with " + alliedTerrs +" Victory Cities!";
-		        aBridge.getHistoryWriter().startEvent(victoryMessage);
-                signalGameOver(victoryMessage,aBridge);
-		    }  
+		    
+            checkVictoryCities(aBridge, alliedVCs, TOTAL_VICTORY_VCS, victoryMessage, ALLIES);
 		}
 		else if (isProjectionOfPower())
 		{
-		    axisTerrs = Match.countMatches(m_data.getMap().getTerritories(), 
+            //Check for AXIS victory
+		    axisVCs = Match.countMatches(m_data.getMap().getTerritories(), 
 		        new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity,Matches.isTerritoryAllied(germans, m_data)));
 
-		    if(axisTerrs >= PROJECTION_OF_POWER_VCS)
-		    {
-                victoryMessage = "Axis achieve victory through a PROJECTION OF POWER with " + axisTerrs +" Victory Cities!";
-		        aBridge.getHistoryWriter().startEvent(victoryMessage);
-                signalGameOver(victoryMessage,aBridge);
-		    }
+            victoryMessage = " achieve victory through a PROJECTION OF POWER with " + axisVCs + " Victory Cities!";
+            checkVictoryCities(aBridge, axisVCs, TOTAL_VICTORY_VCS, victoryMessage, AXIS);
 
-		    alliedTerrs = Match.countMatches(m_data.getMap().getTerritories(), 
+            //Check for ALLIED victory  
+		    alliedVCs = Match.countMatches(m_data.getMap().getTerritories(), 
 		        new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity,Matches.isTerritoryAllied(americans, m_data)));
 
-		    if(alliedTerrs >= PROJECTION_OF_POWER_VCS)
-		    {
-                victoryMessage = "Allies achieve victory through a PROJECTION OF POWER with " + alliedTerrs +" Victory Cities!";
-		        aBridge.getHistoryWriter().startEvent(victoryMessage);
-                signalGameOver(victoryMessage,aBridge);
-		    }  
-		}        
-        
-		if(isFourthEdition() || isNoEconomicVictory())
-		    return;
-        
-		int gProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.GERMANS));
-		int jProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.JAPANESE));
-
-		if(gProd + jProd >= AXIS_ECONOMIC_VICTORY)
-		{
-			victoryMessage = "Axis achieve economic victory";
-			aBridge.getHistoryWriter().startEvent(victoryMessage);
-            //Added this to end the game on victory conditions
-            signalGameOver(victoryMessage,aBridge);
+            checkVictoryCities(aBridge, alliedVCs, TOTAL_VICTORY_VCS, victoryMessage, ALLIES);
 		}
+		else //Check for regular economic victory
+		{
+		    int gProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.GERMANS));
+		    int jProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.JAPANESE));
 
+		    if(gProd + jProd >= AXIS_ECONOMIC_VICTORY)
+		    {
+		        victoryMessage = "Axis achieve economic victory";
+		        aBridge.getHistoryWriter().startEvent(victoryMessage);
+		        //Added this to end the game on victory conditions
+		        signalGameOver(victoryMessage,aBridge);
+		    }
+		}
         
 		// Uncomment this to add allied economic victory when/if optional rules are implemented
 
@@ -192,6 +173,21 @@ public class EndRoundDelegate implements IDelegate
 		}
 		*/		
 	}
+
+
+    /**
+     * TODO: Method description.
+     * @param aBridge
+     * @param axisTerrs
+     */
+    private void checkVictoryCities(IDelegateBridge aBridge, int vcCount, int victoryCount, String victoryMessage, String side)
+    {
+        if(vcCount >= victoryCount)
+        {
+            aBridge.getHistoryWriter().startEvent(victoryMessage);
+            signalGameOver(side + victoryMessage,aBridge);
+        }
+    }
 
 
     /**

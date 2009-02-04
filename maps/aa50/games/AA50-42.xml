@@ -2090,14 +2090,9 @@
                 </resourceInitialize>
         </initialize>
 
-        <propertyList>
-                                   
+        <propertyList>                        
 
-                <!-- Use Anniversary Edition Rules -->
-				<property name="Anniversary Edition" value="true" editable="false">
-                        <boolean/>
-                </property>
-                
+		<!-- OPTIONAL PROPERTIES -->  
 				<property name="No Economic Victory" value="true" editable="false">
                         <boolean/>
                 </property>
@@ -2121,7 +2116,22 @@
                 <property name="Tech Development" value="true" editable="true">
                 	<boolean/>
                 </property>
-                                
+                
+		<!-- END OF OPTIONAL PROPERTIES -->
+		
+
+				<property name="Anniversary Edition" value="true" editable="false">
+                        <boolean/>
+                </property>
+                
+                <property name="Produce fighters on carriers" value="true" editable="false">
+                        <boolean/>
+                </property>
+
+                <property name="LHTR Carrier production rules" value="true" editable="false">
+                        <boolean/>
+                </property>
+                
 				<property name="All Rockets Attack" value="true" editable="false">
                         <boolean/>
                 </property>
