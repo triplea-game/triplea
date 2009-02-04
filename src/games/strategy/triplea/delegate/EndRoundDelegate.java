@@ -87,6 +87,7 @@ public class EndRoundDelegate implements IDelegate
 		int alliedTerrs = 0;
 
 		//TODO COMCO refactor this and display a panel with the end-game state
+		//Check for Win by Victory Cities
 		if(isTotalVictory())
 		{
 		    axisTerrs = Match.countMatches(m_data.getMap().getTerritories(), 

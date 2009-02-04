@@ -1,8 +1,8 @@
 Changes for 1.0.2.1
 
-* The following list of bugs were fixed (Comradekev)
-	Only one Mechanized Infantry per tank should be allowed
-	Jet Fighters not attacking at 4
+* The following list of bugs were fixed- primarily for AA50 (Comradekev)
+	#2554414 Only one Mechanized Infantry per tank should be allowed
+	#2554418 Jet Fighters not attacking at 4
 	Non-aa50 games throw exceptions when trying to affect Tech Tokens
 	Chinese unit max for territory placement not limited to Chinese-only units
 	Territory Turn Limit removed from options
@@ -14,6 +14,21 @@ Changes for 1.0.2.1
 	Bombers should not be able to move before picking up paratroops
 	Radar/damaged factory icons not displaying
 	Fix factory repair cost for Increased Factory Production technology
+	#2474056 Captured AA ownership
+	#2554411 Rockets allowed to overfly impassables
+	#2554412 Rockets firing after Non-Combat move in AA50
+	#2554419 Factory repair costs with Enhanced Production technology
+	Factories added with edit mode are damaged
+	Should allow more than 1 AA in a territory for 4th ed and anniv editions
+	Should be able to place in enemy occupied sea zones
+	Added stalemate condition for trn -v trn battles
+	Low-Luck AA support for RADAR tech
+	Mechanized Inf should be able to blitz
+	AA hits separated for combined fighter/bomber groups
+	
+* 2006022 Undo movement jumps back to top of list (Chris McIntosh)
+
+* 1910223 Ability to cancel odds calculator (Chris McIntosh)
 	
 Changes for 1.0.2.0
 
