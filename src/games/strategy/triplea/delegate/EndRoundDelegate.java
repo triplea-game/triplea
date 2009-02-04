@@ -20,6 +20,7 @@
 
 package games.strategy.triplea.delegate;
 
+import games.puzzle.tictactoe.ui.display.ITicTacToeDisplay;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
@@ -27,6 +28,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.CanalAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
+import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
@@ -37,6 +39,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -85,6 +89,7 @@ public class EndRoundDelegate implements IDelegate
 		PlayerID americans = m_data.getPlayerList().getPlayerID(Constants.AMERICANS);
 		int axisTerrs = 0;
 		int alliedTerrs = 0;
+		String victoryMessage = null;
 
 		//TODO COMCO refactor this and display a panel with the end-game state
 		//Check for Win by Victory Cities
@@ -95,9 +100,9 @@ public class EndRoundDelegate implements IDelegate
 
 		    if(axisTerrs >= TOTAL_VICTORY_VCS)
 		    {
-		        m_gameOver = true;
-		        aBridge.getHistoryWriter().startEvent("Axis achieve TOTAL VICTORY with " + axisTerrs +" Victory Cities!");
-		        aBridge.stopGameSequence();
+		        victoryMessage = "Axis achieve TOTAL VICTORY with " + axisTerrs +" Victory Cities!";
+		        aBridge.getHistoryWriter().startEvent(victoryMessage);
+		        signalGameOver(victoryMessage,aBridge);
 		    }
 
 		    alliedTerrs = Match.countMatches(m_data.getMap().getTerritories(), 
@@ -105,9 +110,9 @@ public class EndRoundDelegate implements IDelegate
 
 		    if(alliedTerrs >= TOTAL_VICTORY_VCS)
 		    {
-		        m_gameOver = true;
-		        aBridge.getHistoryWriter().startEvent("Allies achieve TOTAL VICTORY with " + axisTerrs +" Victory Cities!");
-		        aBridge.stopGameSequence();
+                victoryMessage = "Allies achieve TOTAL VICTORY with " + axisTerrs +" Victory Cities!";
+		        aBridge.getHistoryWriter().startEvent(victoryMessage);
+                signalGameOver(victoryMessage,aBridge);
 		    }
 		} 
 		else if(isHonorableSurrender())
@@ -117,9 +122,9 @@ public class EndRoundDelegate implements IDelegate
 
 		    if(axisTerrs >= SURRENDER_WITH_HONOR_VCS)
 		    {
-		        m_gameOver = true;
-		        aBridge.getHistoryWriter().startEvent("Axis accept the allies HONORABLE SURRENDER with " + axisTerrs +" Victory Cities!");
-		        aBridge.stopGameSequence();
+		        victoryMessage = "Axis achieve an HONORABLE VICTORY with " + axisTerrs +" Victory Cities!";
+		        aBridge.getHistoryWriter().startEvent(victoryMessage);
+                signalGameOver(victoryMessage,aBridge);
 		    }
 
 		    alliedTerrs = Match.countMatches(m_data.getMap().getTerritories(), 
@@ -127,9 +132,9 @@ public class EndRoundDelegate implements IDelegate
 
 		    if(alliedTerrs >= SURRENDER_WITH_HONOR_VCS)
 		    {
-		        m_gameOver = true;
-		        aBridge.getHistoryWriter().startEvent("Allies accept the axis HONORABLE SURRENDER with " + alliedTerrs +" Victory Cities!");
-		        aBridge.stopGameSequence();
+                victoryMessage = "Allies achieve an HONORABLE VICTORY with " + alliedTerrs +" Victory Cities!";
+		        aBridge.getHistoryWriter().startEvent(victoryMessage);
+                signalGameOver(victoryMessage,aBridge);
 		    }  
 		}
 		else if (isProjectionOfPower())
@@ -139,9 +144,9 @@ public class EndRoundDelegate implements IDelegate
 
 		    if(axisTerrs >= PROJECTION_OF_POWER_VCS)
 		    {
-		        m_gameOver = true;
-		        aBridge.getHistoryWriter().startEvent("Axis accept the allies HONORABLE SURRENDER with " + axisTerrs +" Victory Cities!");
-		        aBridge.stopGameSequence();
+                victoryMessage = "Axis achieve victory through a PROJECTION OF POWER with " + axisTerrs +" Victory Cities!";
+		        aBridge.getHistoryWriter().startEvent(victoryMessage);
+                signalGameOver(victoryMessage,aBridge);
 		    }
 
 		    alliedTerrs = Match.countMatches(m_data.getMap().getTerritories(), 
@@ -149,13 +154,11 @@ public class EndRoundDelegate implements IDelegate
 
 		    if(alliedTerrs >= PROJECTION_OF_POWER_VCS)
 		    {
-		        m_gameOver = true;
-		        aBridge.getHistoryWriter().startEvent("Allies accept the axis HONORABLE SURRENDER with " + alliedTerrs +" Victory Cities!");
-		        aBridge.stopGameSequence();
+                victoryMessage = "Allies achieve victory through a PROJECTION OF POWER with " + alliedTerrs +" Victory Cities!";
+		        aBridge.getHistoryWriter().startEvent(victoryMessage);
+                signalGameOver(victoryMessage,aBridge);
 		    }  
-		}
-
-        
+		}        
         
 		if(isFourthEdition() || isNoEconomicVictory())
 		    return;
@@ -165,11 +168,10 @@ public class EndRoundDelegate implements IDelegate
 
 		if(gProd + jProd >= AXIS_ECONOMIC_VICTORY)
 		{
-			m_gameOver = true;
-			aBridge.getHistoryWriter().startEvent("Axis achieve economic victory");
-	        //TODO We might want to find a more elegant way to end the game ala the TIC-TAC-TOE example
+			victoryMessage = "Axis achieve economic victory";
+			aBridge.getHistoryWriter().startEvent(victoryMessage);
             //Added this to end the game on victory conditions
-            aBridge.stopGameSequence();
+            signalGameOver(victoryMessage,aBridge);
 		}
 
         
@@ -183,13 +185,34 @@ public class EndRoundDelegate implements IDelegate
 		if(rProd + bProd + aProd >= ALLIES_ECONOMIC_VICTORY)
 		{
 			m_gameOver = true;
-			aBridge.getTranscript().write("Allies achieve economic victory", TranscriptMessage.PRIORITY_CHANNEL);
+            victoryMessage = "Allies achieve economic victory";
+			aBridge.getTranscript().write(victoryMessage, TranscriptMessage.PRIORITY_CHANNEL);
             //Added this to end the game on victory conditions
-            aBridge.stopGameSequence();
+            signalGameOver(victoryMessage,aBridge);
 		}
 		*/		
 	}
 
+
+    /**
+     * Notify all players that the game is over.
+     * 
+     * @param status the "game over" text to be displayed to each user.
+     */
+    private void signalGameOver(String status, IDelegateBridge a_bridge)
+    {
+        // If the game is over, we need to be able to alert all UIs to that fact.
+        //    The display object can send a message to all UIs.
+        if (!m_gameOver)
+        {
+            m_gameOver = true;
+            // Make sure the user really wants to leave the game.
+            int rVal = JOptionPane.showConfirmDialog(null, status +"\nDo you want to continue?", "Continue" , JOptionPane.YES_NO_OPTION);
+            if(rVal != JOptionPane.OK_OPTION)
+                a_bridge.stopGameSequence();
+        }
+    }
+    
 	private boolean isFourthEdition()
     {
     	return games.strategy.triplea.Properties.getFourthEdition(m_data);

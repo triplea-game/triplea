@@ -2114,6 +2114,14 @@
                         <boolean/>
                 </property>
                 
+                <property name="National Objectives" value="true" editable="true">
+                	<boolean/>
+                </property>
+                
+                <property name="Tech Development" value="true" editable="true">
+                	<boolean/>
+                </property>
+                                
 				<property name="All Rockets Attack" value="true" editable="false">
                         <boolean/>
                 </property>
@@ -2170,11 +2178,6 @@
                 <property name="Battleships repair at end of round" value="true" editable="true">
                         <boolean/>
                 </property>
-				
-				<!-- Territory Turn Limit-->
-				<property name="Territory Turn Limit" value="true" editable="true">
-                        <boolean/>
-                </property>
                 
 				<!-- Neutral Charge-->
                 <property name="neutralCharge" value="9999999"/>
@@ -2210,10 +2213,6 @@
 
                 <property name="Americans bid" value="0" editable="true">
                         <number min="0" max="1000"/>
-                </property>
-                
-                <property name="National Objectives" value="true" editable="true">
-                	<boolean/>
                 </property>
                 
                 <property name="AA50 Tech Model" value="true" editable="false">
