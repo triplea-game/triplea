@@ -2657,7 +2657,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         		}
         		
         	}        	
-		}  
+		}
         else if (canLandHere.size() > 0) 
         {	// 2nd edition
             //now defending air has what cant stay, is there a place we can go?

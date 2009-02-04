@@ -2092,6 +2092,10 @@
                         <boolean/>
                 </property>
                 
+				<property name="Surviving Air Move To Land" value="true" editable="false">
+                        <boolean/>
+                </property>
+                
                 <property name="Produce fighters on carriers" value="true" editable="false">
                         <boolean/>
                 </property>
