@@ -211,7 +211,7 @@ public class RocketsFireHelper
         if(SBRAffectsUnitProd)
         {
             //get current production
-            int unitProduction = ta.getUnitProduction();                
+            int unitProduction = Integer.parseInt(ta.getUnitProduction());                
             //Detemine the min that can be taken as losses
             int alreadyLost = DelegateFinder.moveDelegate(data).ipcsAlreadyLost(attackedTerritory);
             
@@ -232,6 +232,7 @@ public class RocketsFireHelper
         	
             Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
             bridge.addChange(change);
+            bridge.getHistoryWriter().addChildToEvent("Rocket attack costs " + cost + " production.");
         }
         //in fourth edtion, limit rocket attack cost to production value of factory.
         else if (isFourthEdition(data) || isLimitRocketDamageToProduction(data))

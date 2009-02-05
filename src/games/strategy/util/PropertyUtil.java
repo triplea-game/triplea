@@ -14,6 +14,7 @@
 
 package games.strategy.util;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 /**
@@ -26,7 +27,7 @@ public class PropertyUtil
 
     public static void set(String propertyName, Object value, Object subject) 
     {
-        Method m = getSetter(propertyName, subject);
+        Method m = getSetter(propertyName, subject, value);
         try
         {
             m.setAccessible(true);
@@ -59,12 +60,13 @@ public class PropertyUtil
     }
 
 
-    private static Method getSetter(String propertyName, Object subject) {
+    private static Method getSetter(String propertyName, Object subject, Object value) {
         
         String setterName = "set" + capitalizeFirstLetter(propertyName );
         for(Method m : subject.getClass().getDeclaredMethods()) {
-            if(m.getName().equals(setterName)) {
-                return m;
+            if(m.getName().equals(setterName)) 
+            {
+                return m;               
             }
         }
         throw new IllegalStateException("No method called:" + setterName + " on:" + subject);

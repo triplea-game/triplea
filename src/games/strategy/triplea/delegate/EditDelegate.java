@@ -162,6 +162,7 @@ public class EditDelegate implements IDelegate, IEditDelegate
         {
             TerritoryAttachment ta = TerritoryAttachment.get(territory);
             ta.setUnitProduction(String.valueOf(getProduction(territory)));
+            //ta.setUnitProduction(getProduction(territory));
         }
         
         logEvent("Adding units owned by "+m_bridge.getPlayerID().getName()+" to "+territory.getName()+": "+MyFormatter.unitsToTextNoOwner(units), units);

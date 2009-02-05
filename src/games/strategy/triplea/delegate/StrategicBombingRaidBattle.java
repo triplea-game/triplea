@@ -29,6 +29,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.PlayerAttachment;
@@ -538,9 +539,9 @@ public class StrategicBombingRaidBattle implements Battle
             if(isSBRAffectsUnitProduction())
             {
             	//get current production
-                int unitProduction = ta.getUnitProduction();                
+                //int unitProduction = ta.getUnitProduction();  
+                int unitProduction = Integer.parseInt(ta.getUnitProduction());                 
             	//Detemine the max that can be taken as losses
-                //int alreadyLost = DelegateFinder.moveDelegate(m_data).ipcsAlreadyLost(m_battleSite);
                 int alreadyLost = production - unitProduction;
                 
                 int limit = 2 * production  - alreadyLost;
@@ -558,11 +559,17 @@ public class StrategicBombingRaidBattle implements Battle
             	{
             		hits.put(factory,1);
             	}
-                
+            	//add a hit to the factory
             	bridge.addChange(ChangeFactory.unitsHit(hits));
             	
-            	Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
+            	Integer raidCost = unitProduction - cost;
+            	String temp = raidCost.toString();
+            	
+            	//decrease the unitProduction capacity of the territory
+                Change change = ChangeFactory.attachmentPropertyChange(ta, temp, "unitProduction");
+            	//Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
             	bridge.addChange(change);
+            	bridge.getHistoryWriter().addChildToEvent("Bombing raid costs " + cost + " production.");
             }
             else
             {
@@ -585,9 +592,9 @@ public class StrategicBombingRaidBattle implements Battle
             	DelegateFinder.moveDelegate(m_data).ipcsLost(m_battleSite, toRemove);
 
             	Change change = ChangeFactory.changeResourcesChange(m_defender, ipcs, -toRemove);
-            	bridge.addChange(change);
+            	bridge.addChange(change);            	
             }
-            
+
             m_bombingRaidCost = cost;
                
         }   

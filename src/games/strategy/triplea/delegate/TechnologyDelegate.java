@@ -109,13 +109,25 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
  
     public TechResults rollTech(int techRolls, TechAdvance techToRollFor, int newTokens)
     {
+        int m_currTokens = m_player.getResources().getQuantity(Constants.TECH_TOKENS);
         
-        //boolean canPay = checkEnoughMoney(techRolls);
+        if (getAvailableTechs().isEmpty())
+        {
+            Resource techTokens = m_data.getResourceList().getResource(Constants.TECH_TOKENS);
+            String transcriptText = m_player.getName() + " No more available tech advances.";
+
+            m_bridge.getHistoryWriter().startEvent(transcriptText);
+
+            Change removeTokens = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), techTokens, -m_currTokens);
+            m_bridge.addChange(removeTokens);
+            return new TechResults("No more available tech advances.");
+        }
+        
+        
         boolean canPay = checkEnoughMoney(newTokens);
         if (!canPay)
-            return new TechResults("Not enough money to pay for that many tech rolls");
+            return new TechResults("Not enough money to pay for that many tech rolls.");
 
-        //chargeForTechRolls(techRolls);
         chargeForTechRolls(newTokens);
         String annotation = m_player.getName() + " rolling for tech.";
         int[] random;
@@ -123,7 +135,6 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         {
             ITripleaPlayer tripleaPlayer = (ITripleaPlayer) m_bridge.getRemote();
             random = tripleaPlayer.selectFixedDice(techRolls, Constants.MAX_DICE, true, annotation);
-
         }
         else
             random = m_bridge.getRandom(Constants.MAX_DICE, techRolls, annotation);
@@ -144,9 +155,14 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
             //Display the two charts for which a successful roll will be chosen
             TechPanel techPanel = new TechPanel(m_data, null);
             m_techCategory = techPanel.getAvailableTechCategories(m_player);
-            //remove all the tokens  
-            int m_currTokens = m_player.getResources().getQuantity(Constants.TECH_TOKENS);
-            m_player.getResources().removeResource(m_data.getResourceList().getResource(Constants.TECH_TOKENS), m_currTokens);
+            //remove all the tokens            
+            Resource techTokens = m_data.getResourceList().getResource(Constants.TECH_TOKENS);
+            String transcriptText = m_player.getName() + " removing all Technology Tokens after successful research.";
+
+            m_bridge.getHistoryWriter().startEvent(transcriptText);
+
+            Change removeTokens = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), techTokens, -m_currTokens);
+            m_bridge.addChange(removeTokens);            
         }
 
         m_bridge.getHistoryWriter().setRenderingData(
@@ -195,6 +211,21 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         return new TechResults(random, techHits, advancesAsString,
                 m_player);
 
+    }
+    
+    private List<TechAdvance> getAvailableTechs()
+    {
+        m_data.acquireReadLock();
+        try
+        {
+            Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(m_player);
+            Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data);
+            return Util.difference(allAdvances, currentAdvances);
+        }
+        finally 
+        {
+            m_data.releaseReadLock();
+        }
     }
 
     boolean checkEnoughMoney(int rolls)

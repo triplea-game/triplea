@@ -78,8 +78,7 @@ public class TerritoryAttachment extends DefaultAttachment
 
     private String m_capital = null;
     private boolean m_originalFactory = false;
-    private int m_production = 2;
-    private int m_unitProduction = 0;    
+    private int m_production = 2;  
     private boolean m_isVictoryCity = false;
     private boolean m_isImpassible = false;
     private PlayerID m_originalOwner = null;
@@ -89,7 +88,9 @@ public class TerritoryAttachment extends DefaultAttachment
     private String m_convoyAttached = null;
     private boolean m_navalBase = false;
     private boolean m_airBase = false;
-    private boolean m_kamikazeZone = false;    
+    private boolean m_kamikazeZone = false;
+    //private int m_unitProduction = 0;  
+    private String m_unitProduction = "0";  
 
   /** Creates new TerritoryAttatchment */
   public TerritoryAttachment()
@@ -151,12 +152,22 @@ public class TerritoryAttachment extends DefaultAttachment
         return m_production;
     }
 
+/*    public void setUnitProduction(int value)
+    {
+        m_unitProduction = value;
+    }*/
+    
     public void setUnitProduction(String value)
     {
-        m_unitProduction = getInt(value);
+        m_unitProduction = value;       
     }
 
-    public int getUnitProduction()
+/*    public int getUnitProduction()
+    {
+        return m_unitProduction;
+    }*/
+    
+    public String getUnitProduction()
     {
         return m_unitProduction;
     }
