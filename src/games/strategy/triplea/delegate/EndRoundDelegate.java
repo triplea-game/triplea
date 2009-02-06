@@ -102,7 +102,7 @@ public class EndRoundDelegate implements IDelegate
 		    axisVCs = Match.countMatches(m_data.getMap().getTerritories(), 
 		        new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity,Matches.isTerritoryAllied(germans, m_data)));
 
-	        victoryMessage = " achieve TOTAL VICTORY with " + axisVCs +" Victory Cities!";	        
+	        victoryMessage = " achieve TOTAL VICTORY with ";	        
 		    checkVictoryCities(aBridge, axisVCs, TOTAL_VICTORY_VCS, victoryMessage, AXIS);
 
             //Check for ALLIED victory		    
@@ -118,14 +118,14 @@ public class EndRoundDelegate implements IDelegate
 		    axisVCs = Match.countMatches(m_data.getMap().getTerritories(), 
 		        new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity,Matches.isTerritoryAllied(germans, m_data)));
 
-            victoryMessage = " achieve an HONORABLE VICTORY with " + axisVCs + " Victory Cities!";
-            checkVictoryCities(aBridge, axisVCs, TOTAL_VICTORY_VCS, victoryMessage, AXIS);
+            victoryMessage = " achieve an HONORABLE VICTORY with ";
+            checkVictoryCities(aBridge, axisVCs, SURRENDER_WITH_HONOR_VCS, victoryMessage, AXIS);
 
             //Check for ALLIED victory  
 		    alliedVCs = Match.countMatches(m_data.getMap().getTerritories(), 
 		        new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity,Matches.isTerritoryAllied(americans, m_data)));
 		    
-            checkVictoryCities(aBridge, alliedVCs, TOTAL_VICTORY_VCS, victoryMessage, ALLIES);
+            checkVictoryCities(aBridge, alliedVCs, SURRENDER_WITH_HONOR_VCS, victoryMessage, ALLIES);
 		}
 		else if (isProjectionOfPower())
 		{
@@ -133,14 +133,14 @@ public class EndRoundDelegate implements IDelegate
 		    axisVCs = Match.countMatches(m_data.getMap().getTerritories(), 
 		        new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity,Matches.isTerritoryAllied(germans, m_data)));
 
-            victoryMessage = " achieve victory through a PROJECTION OF POWER with " + axisVCs + " Victory Cities!";
-            checkVictoryCities(aBridge, axisVCs, TOTAL_VICTORY_VCS, victoryMessage, AXIS);
+            victoryMessage = " achieve victory through a PROJECTION OF POWER with ";
+            checkVictoryCities(aBridge, axisVCs, PROJECTION_OF_POWER_VCS, victoryMessage, AXIS);
 
             //Check for ALLIED victory  
 		    alliedVCs = Match.countMatches(m_data.getMap().getTerritories(), 
 		        new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity,Matches.isTerritoryAllied(americans, m_data)));
 
-            checkVictoryCities(aBridge, alliedVCs, TOTAL_VICTORY_VCS, victoryMessage, ALLIES);
+            checkVictoryCities(aBridge, alliedVCs, PROJECTION_OF_POWER_VCS, victoryMessage, ALLIES);
 		}
 		else //Check for regular economic victory
 		{
@@ -181,10 +181,10 @@ public class EndRoundDelegate implements IDelegate
      * @param axisTerrs
      */
     private void checkVictoryCities(IDelegateBridge aBridge, int vcCount, int victoryCount, String victoryMessage, String side)
-    {
+    {        
         if(vcCount >= victoryCount)
         {
-            aBridge.getHistoryWriter().startEvent(victoryMessage);
+            aBridge.getHistoryWriter().startEvent(side + victoryMessage + vcCount + " Victory Cities!");
             signalGameOver(side + victoryMessage,aBridge);
         }
     }

@@ -188,7 +188,7 @@ public class PurchasePanel extends ActionPanel
             	    
             		for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedFactory(getData(), getCurrentPlayer()))) 
                     {
-            		    int terrProd = Integer.parseInt(TerritoryAttachment.get(t).getUnitProduction());
+            		    int terrProd = TerritoryAttachment.get(t).getUnitProduction();
             		    totalProd += Math.max(0, terrProd + addedProd);
                     }
             	}

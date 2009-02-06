@@ -14,6 +14,8 @@
 
 package games.strategy.util;
 
+import games.strategy.engine.data.GameParseException;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
@@ -25,6 +27,9 @@ import java.lang.reflect.Method;
 public class PropertyUtil
 {
 
+    private static final Class<?>[] STRING_ARGS = {String.class};
+    private static final Class<?>[] INT_ARGS = {int.class};
+    
     public static void set(String propertyName, Object value, Object subject) 
     {
         Method m = getSetter(propertyName, subject, value);
@@ -59,16 +64,25 @@ public class PropertyUtil
       return first + aString.substring(1);
     }
 
-
+    //TODO for some reason, territoryAttachments come into here as Integers in the History panel
     private static Method getSetter(String propertyName, Object subject, Object value) {
-        
         String setterName = "set" + capitalizeFirstLetter(propertyName );
         for(Method m : subject.getClass().getDeclaredMethods()) {
             if(m.getName().equals(setterName)) 
             {
-                return m;               
+                try
+                {
+                    Class<?> argType = value.getClass();
+                    return subject.getClass().getMethod(setterName, argType);
+                } catch(NoSuchMethodException nsmf)
+                {
+                    //Go ahead and try the first one
+                    return m;                    
+                }                
             }
         }
+
         throw new IllegalStateException("No method called:" + setterName + " on:" + subject);
+        
     }
 }

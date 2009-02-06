@@ -420,13 +420,13 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         
         if(limitSBRDamageToUnitProd)
         {            
-            production = Integer.parseInt(ta.getUnitProduction());
+            production = ta.getUnitProduction();
             //If there's NO factory, allow placement of the factory and set the initial unitProduction
             if(production == 0 && producer.getUnits().getMatches(Matches.UnitIsFactory).size() == 0)
             //&& territoryValue > 0
             {
-                ta.setUnitProduction(String.valueOf(territoryValue));
-                //ta.setUnitProduction(territoryValue);
+                //ta.setUnitProduction(String.valueOf(territoryValue));
+                ta.setUnitProduction(territoryValue);
                 return 1;
             }
             
@@ -693,8 +693,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         if(Match.someMatch(units, Matches.UnitIsFactory))
         {
             TerritoryAttachment ta = TerritoryAttachment.get(at);
-            ta.setUnitProduction(String.valueOf(getProduction(at)));
-            //ta.setUnitProduction(getProduction(at));
+            //ta.setUnitProduction(String.valueOf(getProduction(at)));
+            ta.setUnitProduction(getProduction(at));
         }
 
         String transcriptText = MyFormatter.unitsToTextNoOwner(units)

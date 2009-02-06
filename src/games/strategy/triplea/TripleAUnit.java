@@ -56,7 +56,7 @@ public class TripleAUnit extends Unit
     public static final String UNLOADED_AMPHIBIOUS = "wasAmphibious";
     
     //the transport that is currently transporting us
-    private Unit m_transportedBy = null;
+    private TripleAUnit m_transportedBy = null;
 
     
     //the units we have unloaded this turn
@@ -97,7 +97,7 @@ public class TripleAUnit extends Unit
      * private since this should only be called by UnitPropertyChange
      */
     @SuppressWarnings("unused")
-    private void setTransportedBy(Unit transportedBy)
+    private void setTransportedBy(TripleAUnit transportedBy)
     {
         m_transportedBy = transportedBy;
     }
@@ -191,7 +191,8 @@ public class TripleAUnit extends Unit
         return m_alreadyMoved;
     }
 
-    public void setAlreadyMoved(int alreadyMoved)
+    //public void setAlreadyMoved(int alreadyMoved)
+    public void setAlreadyMoved(Integer alreadyMoved)
     {
         m_alreadyMoved = alreadyMoved;
     }

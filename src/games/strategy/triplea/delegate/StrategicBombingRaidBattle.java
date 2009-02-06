@@ -331,7 +331,12 @@ public class StrategicBombingRaidBattle implements Battle
 	{
     	return games.strategy.triplea.Properties.getLimitSBRDamagePerTurn(data);
 	}
-	
+	   
+    private ITripleaPlayer getRemote(IDelegateBridge bridge)
+    {
+        return (ITripleaPlayer) bridge.getRemote();
+    }
+    
 	private boolean isIPCCap(GameData data)
 	{
     	return games.strategy.triplea.Properties.getIPCCap(data);
@@ -539,8 +544,7 @@ public class StrategicBombingRaidBattle implements Battle
             if(isSBRAffectsUnitProduction())
             {
             	//get current production
-                //int unitProduction = ta.getUnitProduction();  
-                int unitProduction = Integer.parseInt(ta.getUnitProduction());                 
+                int unitProduction = ta.getUnitProduction();
             	//Detemine the max that can be taken as losses
                 int alreadyLost = production - unitProduction;
                 
@@ -563,13 +567,14 @@ public class StrategicBombingRaidBattle implements Battle
             	bridge.addChange(ChangeFactory.unitsHit(hits));
             	
             	Integer raidCost = unitProduction - cost;
-            	String temp = raidCost.toString();
             	
             	//decrease the unitProduction capacity of the territory
-                Change change = ChangeFactory.attachmentPropertyChange(ta, temp, "unitProduction");
-            	//Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
+                Change change = ChangeFactory.attachmentPropertyChange(ta, raidCost.toString(), "unitProduction");
             	bridge.addChange(change);
-            	bridge.getHistoryWriter().addChildToEvent("Bombing raid costs " + cost + " production.");
+                bridge.getHistoryWriter().startEvent("Bombing raid in " + m_battleSite.getName() + " costs: " + cost + " production.");
+            	//bridge.getHistoryWriter().addChildToEvent("Bombing raid costs " + cost + " production.");
+
+            	getRemote(bridge).reportMessage("Bombing raid in " + m_battleSite.getName() + " costs: " + cost + " production.");
             }
             else
             {

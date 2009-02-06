@@ -89,8 +89,8 @@ public class TerritoryAttachment extends DefaultAttachment
     private boolean m_navalBase = false;
     private boolean m_airBase = false;
     private boolean m_kamikazeZone = false;
-    //private int m_unitProduction = 0;  
-    private String m_unitProduction = "0";  
+    private int m_unitProduction = 0;  
+    //private String m_unitProduction = "0";  
 
   /** Creates new TerritoryAttatchment */
   public TerritoryAttachment()
@@ -152,23 +152,20 @@ public class TerritoryAttachment extends DefaultAttachment
         return m_production;
     }
 
-/*    public void setUnitProduction(int value)
-    {
-        m_unitProduction = value;
-    }*/
-    
-    public void setUnitProduction(String value)
+    //public void setUnitProduction(String value)
+    public void setUnitProduction(Integer value)
     {
         m_unitProduction = value;       
     }
 
-/*    public int getUnitProduction()
+    public void setUnitProduction(String value)
     {
-        return m_unitProduction;
-    }*/
+        m_unitProduction = Integer.parseInt(value);       
+    }
     
-    public String getUnitProduction()
-    {
+    public int getUnitProduction()
+    {     
+        //return Integer.parseInt(m_unitProduction);
         return m_unitProduction;
     }
 

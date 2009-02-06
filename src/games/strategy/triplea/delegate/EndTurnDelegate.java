@@ -30,6 +30,8 @@ import java.util.Set;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
@@ -360,12 +362,15 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     		if (objectiveMet)
     		{
     		    int total = player.getResources().getQuantity(Constants.IPCS) + rule.getObjectiveValue();
-    			player.getResources().addResource(data.getResourceList().getResource(Constants.IPCS), rule.getObjectiveValue());
+    		    
+    		    Change change = ChangeFactory.changeResourcesChange(player, data.getResourceList().getResource(Constants.IPCS), rule.getObjectiveValue());
+    			//player.getResources().addResource(data.getResourceList().getResource(Constants.IPCS), rule.getObjectiveValue());
+                bridge.addChange(change);
     			
     			String ipcMessage = player.getName() + " met a national objective for an additional " + rule.getObjectiveValue() + MyFormatter.pluralize(" ipc", rule.getObjectiveValue()) +
     			"; end with " + total + MyFormatter.pluralize(" ipc", total);
     			bridge.getHistoryWriter().startEvent(ipcMessage);
-    		}
+    		}    		
     	} //end while        	
     } //end determineNationalObjectives
 

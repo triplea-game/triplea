@@ -206,12 +206,13 @@ public class RocketsFireHelper
         
         TerritoryAttachment ta = TerritoryAttachment.get(attackedTerritory);
         int territoryProduction = ta.getProduction();
+        int unitProduction = 0;
         boolean SBRAffectsUnitProd = isSBRAffectsUnitProduction(data);
         
         if(SBRAffectsUnitProd)
         {
             //get current production
-            int unitProduction = Integer.parseInt(ta.getUnitProduction());                
+            unitProduction = ta.getUnitProduction();                
             //Detemine the min that can be taken as losses
             int alreadyLost = DelegateFinder.moveDelegate(data).ipcsAlreadyLost(attackedTerritory);
             
@@ -230,9 +231,9 @@ public class RocketsFireHelper
             
         	bridge.addChange(ChangeFactory.unitsHit(hits));
         	
-            Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
+           /* Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
             bridge.addChange(change);
-            bridge.getHistoryWriter().addChildToEvent("Rocket attack costs " + cost + " production.");
+            bridge.getHistoryWriter().addChildToEvent("Rocket attack costs " + cost + " production.");*/
         }
         //in fourth edtion, limit rocket attack cost to production value of factory.
         else if (isFourthEdition(data) || isLimitRocketDamageToProduction(data))
@@ -260,7 +261,15 @@ public class RocketsFireHelper
         DelegateFinder.moveDelegate(data).ipcsLost(attackedTerritory, cost);
        
         if(SBRAffectsUnitProd)
+        {
             getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs: " + cost + " production.");
+        
+            bridge.getHistoryWriter().startEvent("Rocket attack in " + attackedTerritory.getName() + " costs: " + cost + " production.");
+            
+            Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
+            bridge.addChange(change);
+            
+        }
         else
         {
             getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs:" + cost);

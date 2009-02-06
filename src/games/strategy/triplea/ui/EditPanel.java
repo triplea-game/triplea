@@ -65,6 +65,7 @@ public class EditPanel extends ActionPanel
     private Action m_addUnitsAction;
     private Action m_delUnitsAction;
     private Action m_changeIPCsAction;
+    //TODO COMCO  private Action m_changeTechTokensAction;
     private Action m_changeTerritoryOwnerAction;
     private Action m_currentAction = null;
     private JLabel m_actionLabel;

@@ -1,4 +1,4 @@
-Changes for 1.0.2.1
+Changes for 1.0.3.0
 
 * The following list of bugs were fixed- primarily for AA50 (Comradekev)
 	#2554414 Only one Mechanized Infantry per tank should be allowed

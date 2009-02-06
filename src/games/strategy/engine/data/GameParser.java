@@ -72,6 +72,7 @@ import org.xml.sax.SAXException;
 public class GameParser
 {
     private static final Class<?>[] SETTER_ARGS = {String.class};
+    private static final Class<?>[] SETTER_ARGS_INT = {int.class};
 
     private GameData data;
 
@@ -1136,6 +1137,7 @@ public class GameParser
             //find the setter
             String name = null;
             Method setter = null;
+            boolean intArgs = false;
             try
             {
                 name = current.getAttribute("name");
@@ -1144,7 +1146,16 @@ public class GameParser
                 setter = obj.getClass().getMethod( "set" + capitalizeFirstLetter(name), SETTER_ARGS);
             } catch(NoSuchMethodException nsme)
             {
-                throw new GameParseException("No setter for attachment option. Setter:" + name + " Class:" + obj.getClass().getName());
+                /*try
+                {
+                    if(obj.getClass().getMethod( "set" + capitalizeFirstLetter(name), SETTER_ARGS_INT) != null)
+                    {
+                        intArgs = true;                        
+                    }
+                } catch(NoSuchMethodException nsmf)
+                {*/
+                    throw new GameParseException("No setter for attachment option. Setter:" + name + " Class:" + obj.getClass().getName());
+                //}
             }
 
             //find the value
@@ -1156,12 +1167,18 @@ public class GameParser
             if(count.length() > 0)    
             	itemValues = count + ":";
             
-            itemValues = itemValues + value;   
+            /*if (intArgs)
+            {
+                itemValues = itemValues + Integer.parseInt(value);   
+            }
+            else*/
+                itemValues = itemValues + value;
             
             //invoke
             try
             {            	
                 Object[] args = {itemValues};
+                
                 setter.invoke(obj, args );
             	
             } catch(IllegalAccessException iae)

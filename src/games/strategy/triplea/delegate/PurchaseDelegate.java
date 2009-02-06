@@ -232,7 +232,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
             {
                 int repairCount = m_repairCount.get(terr);
                 TerritoryAttachment ta = TerritoryAttachment.get(terr);
-                int current = Integer.parseInt(ta.getUnitProduction());
+                int current = ta.getUnitProduction();
                 
             	IntegerMap<Unit> hits = new IntegerMap<Unit>();
             	Collection<Unit> factories = Match.getMatches(terr.getUnits().getUnits(), Matches.UnitIsFactory);

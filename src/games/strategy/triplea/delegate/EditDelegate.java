@@ -12,6 +12,7 @@
 
 package games.strategy.triplea.delegate;
 
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -161,8 +162,8 @@ public class EditDelegate implements IDelegate, IEditDelegate
         if(Match.someMatch(units, Matches.UnitIsFactory))
         {
             TerritoryAttachment ta = TerritoryAttachment.get(territory);
-            ta.setUnitProduction(String.valueOf(getProduction(territory)));
-            //ta.setUnitProduction(getProduction(territory));
+            //ta.setUnitProduction(String.valueOf(getProduction(territory)));
+            ta.setUnitProduction(getProduction(territory));
         }
         
         logEvent("Adding units owned by "+m_bridge.getPlayerID().getName()+" to "+territory.getName()+": "+MyFormatter.unitsToTextNoOwner(units), units);
@@ -248,8 +249,8 @@ public class EditDelegate implements IDelegate, IEditDelegate
         if (null != (result = checkEditMode())) 
             return result;
 
-        Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
-        int oldTotal = player.getResources().getQuantity(ipcs);
+        Resource techTokens = m_data.getResourceList().getResource(Constants.TECH_TOKENS);
+        int oldTotal = player.getResources().getQuantity(techTokens);
 
         if (oldTotal == newTotal)
             return "New token total is unchanged";
@@ -257,8 +258,8 @@ public class EditDelegate implements IDelegate, IEditDelegate
             return "New token total is invalid";
 
         logEvent("Changing tech tokens for "+player.getName()+" from "+oldTotal+" to "+newTotal, null);
-        m_bridge.addChange(ChangeFactory.changeResourcesChange(player, ipcs, (newTotal - oldTotal)));
-       
+        m_bridge.addChange(ChangeFactory.changeResourcesChange(player, techTokens, (newTotal - oldTotal)));
+               
         return null;
     }
     

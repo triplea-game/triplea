@@ -267,8 +267,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         if(hits > 0 && isAA50TechModel())
         {
             available = getAvailableAdvancesForCategory(m_techCategory);
-            if (hits>1)
-                hits=1;
+            hits=1;
         } 
         else
         {

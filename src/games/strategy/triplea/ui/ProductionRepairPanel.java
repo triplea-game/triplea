@@ -143,8 +143,7 @@ public class ProductionRepairPanel extends JPanel
             	for(Territory terr : factoryTerrs)
             	{
                     TerritoryAttachment ta = TerritoryAttachment.get(terr);
-                    int unitProduction = Integer.parseInt(ta.getUnitProduction());
-                    //int unitProduction = ta.getUnitProduction();
+                    int unitProduction = ta.getUnitProduction();
                     int IPCProduction = ta.getProduction();
 
                     if(unitProduction < IPCProduction)
@@ -247,7 +246,7 @@ public class ProductionRepairPanel extends JPanel
             spent += current.getQuantity() * current.getCost();
             Territory terr = m_data.getMap().getTerritory(current.getTerr());
             TerritoryAttachment ta = TerritoryAttachment.get(terr);
-            int maxProd = ta.getProduction() - Integer.parseInt(ta.getUnitProduction());
+            int maxProd = ta.getProduction() - ta.getUnitProduction();
             current.setMax(maxProd);
         }
         int leftToSpend = (int) (ipcs - spent);
@@ -293,8 +292,7 @@ public class ProductionRepairPanel extends JPanel
             JLabel info=new JLabel(repairLocation.getName().toString());
             
             int prod = TerritoryAttachment.get(repairLocation).getProduction();
-            int unitProd = Integer.parseInt(TerritoryAttachment.get(repairLocation).getUnitProduction());
-            //int toRepair = Math.min(prod, prod - unitProd);
+            int unitProd = TerritoryAttachment.get(repairLocation).getUnitProduction();
             int toRepair = prod - unitProd;
 
             JLabel remaining=new JLabel("Production left to repair: " + toRepair);
