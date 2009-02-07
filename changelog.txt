@@ -1,5 +1,9 @@
 Changes for 1.0.3.0
 
+* Disable game properties button if there are no game properties (Chris McIntosh)
+
+* Fix spelling in classic xml (Chris McIntosh)
+
 * The following list of bugs were fixed- primarily for AA50 (Comradekev)
 	#2554414 Only one Mechanized Infantry per tank should be allowed
 	#2554418 Jet Fighters not attacking at 4

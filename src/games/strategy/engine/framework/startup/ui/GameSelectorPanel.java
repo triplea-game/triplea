@@ -165,7 +165,7 @@ public class GameSelectorPanel extends JPanel implements Observer
         JScrollPane scroll = new JScrollPane(panel);
         scroll.setBorder(null);
         scroll.getViewport().setBorder(null);
-        JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(this), scroll, "Game Options", JOptionPane.PLAIN_MESSAGE, null);        
+        JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(this), scroll, "Game Options", JOptionPane.PLAIN_MESSAGE, null);
     }
 
     private void setWidgetActivation()
@@ -185,7 +185,12 @@ public class GameSelectorPanel extends JPanel implements Observer
        
         m_loadSavedGame.setEnabled(canSelectGameData);
         m_loadNewGame.setEnabled(canSelectGameData);
-        m_gameOptions.setEnabled(canSelectGameData && m_model.getGameData() != null);
+
+        // Disable game options if there are none.
+        if (canSelectGameData && m_model.getGameData() != null && m_model.getGameData().getProperties().getEditableProperties().size() > 0)
+            m_gameOptions.setEnabled(true);
+        else
+            m_gameOptions.setEnabled(false);
     }
 
     public void update(Observable o, Object arg)
