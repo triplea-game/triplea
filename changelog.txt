@@ -1,3 +1,7 @@
+* update launch4j generated exes to use launch4j 3.0.1 (sgb)
+
+* updated embedded jre to 6_11 (sgb)
+
 Changes for 1.0.3.0
 
 * Disable game properties button if there are no game properties (Chris McIntosh)
