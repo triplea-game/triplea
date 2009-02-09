@@ -580,6 +580,10 @@
                 <property name="Territory Turn Limit" value="true" editable="true">
                         <boolean/>
                 </property>
+                
+                <property name="Tech Development" value="true" editable="true">
+                        <boolean/>
+                </property>
 
 		<!-- Low Luck -->
                 <property name="Low Luck" value="false" editable="true">

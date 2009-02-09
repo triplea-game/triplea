@@ -1688,6 +1688,10 @@
                         <boolean/>
                 </property>
                 
+                <property name="Tech Development" value="true" editable="true">
+                        <boolean/>
+                </property>
+                
                 <property name="Submersible Subs" value="true" editable="false">
                         <boolean/>
                 </property>

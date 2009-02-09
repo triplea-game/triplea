@@ -1559,6 +1559,10 @@
                 <property name="Low Luck" value="false" editable="true">
                         <boolean/>
                 </property>
+                
+                <property name="Tech Development" value="true" editable="true">
+                        <boolean/>
+                </property>
 
                 <!-- Bids -->
 		<property name="Germans bid" value="0" editable="true">

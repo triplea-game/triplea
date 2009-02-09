@@ -572,7 +572,6 @@ public class StrategicBombingRaidBattle implements Battle
                 Change change = ChangeFactory.attachmentPropertyChange(ta, raidCost.toString(), "unitProduction");
             	bridge.addChange(change);
                 bridge.getHistoryWriter().startEvent("Bombing raid in " + m_battleSite.getName() + " costs: " + cost + " production.");
-            	//bridge.getHistoryWriter().addChildToEvent("Bombing raid costs " + cost + " production.");
 
             	getRemote(bridge).reportMessage("Bombing raid in " + m_battleSite.getName() + " costs: " + cost + " production.");
             }

@@ -109,17 +109,23 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
  
     public TechResults rollTech(int techRolls, TechAdvance techToRollFor, int newTokens)
     {
-        int m_currTokens = m_player.getResources().getQuantity(Constants.TECH_TOKENS);
+        int m_currTokens = 0;
+        
+        if(isAA50TechModel())
+            m_currTokens = m_player.getResources().getQuantity(Constants.TECH_TOKENS);
         
         if (getAvailableTechs().isEmpty())
         {
-            Resource techTokens = m_data.getResourceList().getResource(Constants.TECH_TOKENS);
-            String transcriptText = m_player.getName() + " No more available tech advances.";
+            if(isAA50TechModel())
+            {
+                Resource techTokens = m_data.getResourceList().getResource(Constants.TECH_TOKENS);
+                String transcriptText = m_player.getName() + " No more available tech advances.";
 
-            m_bridge.getHistoryWriter().startEvent(transcriptText);
+                m_bridge.getHistoryWriter().startEvent(transcriptText);
 
-            Change removeTokens = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), techTokens, -m_currTokens);
-            m_bridge.addChange(removeTokens);
+                Change removeTokens = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), techTokens, -m_currTokens);
+                m_bridge.addChange(removeTokens);
+            }
             return new TechResults("No more available tech advances.");
         }
         

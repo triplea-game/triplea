@@ -52,14 +52,24 @@ public class DiceRoll implements Externalizable
         ITripleaPlayer player = (ITripleaPlayer)bridge.getRemote();
         
         int hitAt = 0;
-        if(isAARadar(location.getOwner()))
+        
+        boolean useRadar = false;
+        Collection<Unit> allAAUnits = Match.getMatches(location.getUnits().getUnits(),Matches.UnitIsAA);
+        for(Unit unit:allAAUnits)
+            if(isAARadar(unit.getOwner()))
+            {
+                useRadar = true;
+                break;
+            }        
+               
+        if(useRadar)
             hitAt = 1;
         
         if (data.getProperties().get(Constants.LOW_LUCK, false))
         {
             String annotation = "Roll AA guns in " + location.getName();
             //If RADAR advancement, hit at a 2
-            if(isAARadar(location.getOwner()))
+            if(useRadar)
             {
                 int power = hitAt+1;
                 hits = 0;

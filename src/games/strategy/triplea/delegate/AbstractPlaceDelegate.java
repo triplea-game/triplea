@@ -331,8 +331,9 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
 
         if (hasFactory(to) || isPlayerAllowedToPlaceAnywhere(player))
         {
+        
             //make sure only 1 AA in territory for classic
-            if (isFourthEdition())
+            if (isFourthEdition() || isAnniversaryEdition())
             {
                 placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAA));
             } else
@@ -540,6 +541,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return games.strategy.triplea.Properties.getFourthEdition(m_data);
     }
 
+    private boolean isAnniversaryEdition()    
+    {
+        return games.strategy.triplea.Properties.getAnniversaryEdition(m_data);
+    }
+    
     protected boolean isUnitPlacementInEnemySeas()    
     {
         return games.strategy.triplea.Properties.getUnitPlacementInEnemySeas(m_data);

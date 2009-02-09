@@ -1304,58 +1304,7 @@
 				    <attatchment name="canalAttatchment" attatchTo="20 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
 				    	<option name="canalName" value="Panama Canal"/>
 				    	<option name="landTerritories" value="Panama"/>
-				    </attatchment>
-         
-
-
-<!--  COMCO -->
-                <attatchment name="objectiveAttachment1" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="objectiveValue" value="5"/> 
-                	<option name="alliedExclusionTerritories" value="controlled"/>  
-                	<option name="alliedOwnershipTerritories" value="Archangel:Norway" count="2"/>     
-                </attatchment>
-         
-                <attatchment name="objectiveAttachment2" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="objectiveValue" value="10"/>
-                	<option name="alliedExclusionTerritories" value="original"/>
-                	<option name="alliedOwnershipTerritories" value="Norway:Caucasus:Novosibirsk:Yakut S.S.R.:Soviet Far East:Buryatia S.S.R." count="3"/>
-               		<option name="enemyExclusionTerritories" value="4 Sea Zone:3 Sea Zone" count="1"/>
-                </attatchment>         
-                
-                <attatchment name="objectiveAttachment3" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="objectiveValue" value="5"/>
-               		<option name="enemyExclusionTerritories" value="original"/>
-                </attatchment> 
-                
-                
-<!-- movement restricted to listed territories  (list, original, all && [dis]allowed && maybe something to [dis]allow enemy/allied terr groups (all, original, controlled)    -->
-<!--  COMCO
-                <attatchment name="movementRestriction" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="movementRestrictionTerritories" value="Eastern United States:Western United States:Central United States:Midway:Hawaiian Islands:China:Sinkiang:Mexico:Brazil:Alaska:West Indies:Panama:Greenland:Kwantung:French Indochina:Manchuria"/>
-                	<option name="restrictionType" value="allowed"/>
-                </attatchment>                
-                
-                <attatchment name="movementRestriction" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="movementRestrictionTerritories" value="original"/>
-                	<option name="restrictionType" value="allowed"/>
-                </attatchment>                   
-                
-                <attatchment name="movementRestriction" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="movementRestrictionTerritories" value="Caucasus"/>
-                	<option name="restrictionType" value="disallowed"/>
-                </attatchment>  
--->            
-                <!-- production restricted to 1 per x owned territories -->
-<!--  COMCO
-                <attatchment name="productionRestriction" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="perOwnedTerritories" value="2"/>
-                	<option name="allowedUnitTypes" value="infantry:armor"/>
-                </attatchment>
--->
-
-<!-- Comco end National Objectives & rules-->    
-       
-                  
+				    </attatchment>                  
         </attatchmentList>
         
         <initialize>
@@ -1682,8 +1631,7 @@
                 <!-- Map Name: also used for map utils when asked -->
                 <property name="mapName" value="revised" editable="false"/>
                 
-                <!--COMCO rules testing-->
-                <property name="National Objectives" value="true" editable="true">
+                <property name="Tech Development" value="true" editable="true">
                 	<boolean/>
                 </property>
                 

@@ -78,7 +78,12 @@ public class PropertyUtil
                 {
                     //Go ahead and try the first one
                     return m;                    
-                }                
+                }
+                    catch(NullPointerException n)
+                {
+                    //Go ahead and try the first one
+                    return m;                    
+                }   
             }
         }
 

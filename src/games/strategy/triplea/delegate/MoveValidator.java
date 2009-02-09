@@ -1049,6 +1049,9 @@ public class MoveValidator
                     for (Unit unit : nonBlitzingUnits)
                     {
                         UnitAttachment ua = UnitAttachment.get(unit.getType());
+                        if (ua.isParatroop())
+                            continue;
+                        
                         if((ua.isInfantry() || ua.isMarine()) && m_mechanizedSupportAvail > 0)
                             m_mechanizedSupportAvail --;
                         else

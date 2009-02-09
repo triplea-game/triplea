@@ -2973,9 +2973,13 @@
 
         <propertyList>
                 <!-- Use 4th Edition Rules -->
-		<property name="4th Edition" value="true" editable="false">
+				<property name="4th Edition" value="true" editable="false">
                         <boolean/>
                 </property>
+		
+				<property name="Tech Development" value="true" editable="true">
+					<boolean/>
+				</property>
                 
                 <property name="Submersible Subs" value="true" editable="false">
                         <boolean/>

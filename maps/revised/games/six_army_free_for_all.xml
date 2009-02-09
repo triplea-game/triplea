@@ -1472,6 +1472,10 @@
                 <property name="Always on AA" value="true" editable="true">
                         <boolean/>
                 </property>
+                                
+                <property name="Tech Development" value="true" editable="true">
+                        <boolean/>
+                </property>
                 
                 <property name="Battleships repair at end of round" value="true" editable="true">
                         <boolean/>

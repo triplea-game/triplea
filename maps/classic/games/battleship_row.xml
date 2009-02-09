@@ -1338,6 +1338,10 @@
 			<boolean/>
 		</property>
 		
+		<property name="Tech Development" value="true" editable="true">
+			<boolean/>
+		</property>
+		
 		<property name="maxFactoriesPerTerritory" value="1"/>
 		
 		<property name="Germans bid" value="0" editable="true">

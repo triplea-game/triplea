@@ -214,7 +214,8 @@ public class RocketsFireHelper
             //get current production
             unitProduction = ta.getUnitProduction();                
             //Detemine the min that can be taken as losses
-            int alreadyLost = DelegateFinder.moveDelegate(data).ipcsAlreadyLost(attackedTerritory);
+            //int alreadyLost = DelegateFinder.moveDelegate(data).ipcsAlreadyLost(attackedTerritory);
+            int alreadyLost = territoryProduction - unitProduction;
             
             int limit = 2 * territoryProduction  - alreadyLost;
             cost = Math.min(cost, limit);

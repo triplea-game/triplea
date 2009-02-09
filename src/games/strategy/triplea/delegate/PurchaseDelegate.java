@@ -47,6 +47,8 @@ import games.strategy.triplea.ui.BattleDisplay;
 import games.strategy.triplea.ui.ProductionRepairPanel;
 import games.strategy.triplea.ui.ProductionRepairPanel.Rule;
 import games.strategy.triplea.ui.UnitChooser;
+import games.strategy.triplea.util.UnitCategory;
+import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -57,6 +59,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
@@ -169,7 +172,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     }
 
     // add changes for spent resources
-    String remaining = removeFromPlayer(m_player, costs, changes);
+    String remaining = removeFromPlayer(m_player, costs, changes, totalUnits);
 
     addHistoryEvent(totalUnits,  remaining);  
     
@@ -250,7 +253,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     }
 
     // add changes for spent resources
-    String remaining = removeFromPlayer(m_player, costs, changes);
+    String remaining = removeFromPlayer(m_player, costs, changes, totalUnits);
 
     addHistoryEvent(totalUnits,  remaining);  
     
@@ -364,21 +367,32 @@ private void addHistoryEvent(Collection<Unit> totalUnits, String remainingText)
     }
 
 
-    protected String removeFromPlayer(PlayerID player, IntegerMap<Resource> costs, CompositeChange changes)
+    protected String removeFromPlayer(PlayerID player, IntegerMap<Resource> costs, CompositeChange changes, Collection<Unit> totalUnits)
     {
         Iterator<Resource> costsIter = costs.keySet().iterator();
+        int AvailIPCs = player.getResources().getQuantity(Constants.IPCS);
+        
         while(costsIter.hasNext() )
         {
           Resource resource = costsIter.next();
-          int quantity = costs.getInt(resource);
-
-          if(isIncreasedFactoryProduction(player))
-        	  quantity /= 2;
+          float quantity = costs.getInt(resource);
+          int cost = (int) quantity;
           
-          Change change = ChangeFactory.changeResourcesChange(m_player, resource, -quantity);
+          if(isIncreasedFactoryProduction(player))
+          {
+              Set<UnitCategory> categorized = UnitSeperator.categorize(totalUnits);
+              if (categorized.size() == 1)
+              {
+                  UnitCategory unitCategory =  categorized.iterator().next();
+                  if(unitCategory.getType().getName().endsWith("_hit"))
+                      cost = (int) (Math.round(quantity/2));
+              }
+          }
+                    
+          Change change = ChangeFactory.changeResourcesChange(m_player, resource, -cost);
           changes.add(change);
           
-          return m_player.getResources().getQuantity(resource) -  quantity + " ipcs remaining"; 
+          return m_player.getResources().getQuantity(resource) -  cost + " ipcs remaining"; 
         }
         return "";
     }

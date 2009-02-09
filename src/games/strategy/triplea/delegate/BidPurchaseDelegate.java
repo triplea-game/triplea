@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -63,7 +64,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate
   }
 
   @Override
-  protected String removeFromPlayer(PlayerID player, IntegerMap<Resource> resources, CompositeChange change)
+  protected String removeFromPlayer(PlayerID player, IntegerMap<Resource> resources, CompositeChange change, Collection<Unit> units)
   {
       m_spent = resources.getInt(super.getData().getResourceList().getResource(Constants.IPCS));
       return (m_bid - m_spent) + " IPC unused";

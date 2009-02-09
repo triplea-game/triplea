@@ -1702,7 +1702,7 @@
 	<!-- British Objectives -->
                 <attatchment name="objectiveAttachment1" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="5"/>
-                	<option name="alliedOwnershipTerritories" value="Caroline Islands:French Indo-China Thailand:Formosa:Iwo Jima:Japan:Kiangsu:Manchuria:Okinawa" count="1"/>
+                	<option name="alliedOwnershipTerritories" value="Caroline Islands:French Indo-China Thailand:Formosa:Iwo Jima:Japan:Okinawa" count="1"/>
                 </attatchment>
                 
                 <attatchment name="objectiveAttachment2" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -2061,7 +2061,7 @@
         <propertyList>                        
 
 		<!-- OPTIONAL PROPERTIES -->                
-				<property name="No Economic Victory" value="true" editable="false">
+				<property name="No Economic Victory" value="false" editable="true">
                         <boolean/>
                 </property>
                 

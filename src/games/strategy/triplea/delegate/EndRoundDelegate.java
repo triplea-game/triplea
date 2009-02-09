@@ -185,7 +185,7 @@ public class EndRoundDelegate implements IDelegate
         if(vcCount >= victoryCount)
         {
             aBridge.getHistoryWriter().startEvent(side + victoryMessage + vcCount + " Victory Cities!");
-            signalGameOver(side + victoryMessage,aBridge);
+            signalGameOver(side + victoryMessage + vcCount + " Victory Cities!",aBridge);
         }
     }
 
