@@ -74,6 +74,18 @@ public class Properties implements Constants
 		}
 	}
 
+    public static boolean getPartialAmphibiousRetreat(GameData data)
+    {
+        try
+        {
+            return ( (Boolean) data.getProperties().get(PARTIAL_AMPHIBIOUS_RETREAT) ).booleanValue();
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
+    }
+	
     public static boolean getTotalVictory(GameData data)
     {
         try
@@ -123,7 +135,19 @@ public class Properties implements Constants
             return false;
         }
     }
-	
+   
+    public static boolean getNeutralsImpassable(GameData data)
+    {
+        try
+        {
+            return ( (Boolean) data.getProperties().get(NEUTRALS_ARE_IMPASSABLE) ).booleanValue();
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
+    }
+    
     public static boolean getRocketsCanViolateNeutrality(GameData data)
     {
         try

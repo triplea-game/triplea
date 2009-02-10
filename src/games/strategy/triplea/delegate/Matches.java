@@ -363,6 +363,17 @@ public class Matches
         }
     };
 
+    public static final Match<Unit> UnitWasAmphibious = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {            
+            TripleAUnit taUnit = (TripleAUnit) obj;
+            return taUnit.getWasAmphibious();
+        }
+    };
+    
+    public static final Match<Unit> UnitWasNotAmphibious = new InverseMatch<Unit>(UnitWasAmphibious);
+    
     public static final Match<Unit> UnitCanTransport  = new Match<Unit>()
     {
         public boolean match(Unit obj)

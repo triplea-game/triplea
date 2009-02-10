@@ -74,6 +74,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     public static final int DEFAULT_RETREAT_TYPE = 0;
     public static final int SUBS_RETREAT_TYPE = 1;
     public static final int PLANES_RETREAT_TYPE = 2;
+    public static final int PARTIAL_AMPHIB_RETREAT_TYPE = 3;
 
     private final Territory m_battleSite;
 
@@ -741,7 +742,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         //if we are a sea zone, then we may not be able to retreat
-        //(ie a sub travelled under another unit to get to the battle sight)
+        //(ie a sub travelled under another unit to get to the battle site)
         //or an enemy sub retreated to our sea zone
         //however, if all our sea units die, then
         //the air units can still retreat, so if we have any air units attacking in
@@ -756,6 +757,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         } else if (canAttackerRetreatPlanes())
         {
             steps.add(m_attacker.getName() + PLANES_WITHDRAW);
+        } else if (canAttackerRetreatPartialAmphib())
+        {
+            steps.add(m_attacker.getName() + NONAMPHIB_WITHDRAW);
         }
 
         return steps;
@@ -1119,7 +1123,18 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 
             }
         });    
-       
+
+        steps.add(new IExecutable(){
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = -1150863964807721395L;
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+                if (canAttackerRetreatPartialAmphib() && !m_over)
+                    attackerRetreatNonAmphibUnits(bridge);
+                
+            }
+        });    
+        
         steps.add(new IExecutable(){
             // compatible with 0.9.0.2 saved games
             private static final long serialVersionUID = 669349383898975048L;
@@ -1197,6 +1212,23 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 && Match.someMatch(m_attackingUnits, Matches.UnitIsAir);
     }
 
+    /**
+     * @return
+     */
+    private boolean canAttackerRetreatPartialAmphib()
+    {
+        if(m_amphibious && isPartialAmphibiousRetreat())
+        {
+            for(Unit unit:m_attackingUnits)
+            {
+                TripleAUnit taUnit = (TripleAUnit) unit;
+                if(taUnit.getWasAmphibious())
+                    return true;
+            }
+        }
+        return false;
+    }
+    
     private Collection<Territory> getAttackerRetreatTerritories()
     {
         // If attacker is all planes, just return collection of current
@@ -1243,6 +1275,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private boolean canAttackerRetreat()
     {
+        //if (m_amphibious && !isPartialAmphibiousRetreat())
         if (m_amphibious)
             return false;
 
@@ -1280,7 +1313,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection<Territory> possible = getAttackerRetreatTerritories();
 
         if (!m_over)
-            queryRetreat(false, DEFAULT_RETREAT_TYPE, bridge, possible);
+        {
+            if(m_amphibious)
+                queryRetreat(false, PARTIAL_AMPHIB_RETREAT_TYPE, bridge, possible);
+            else
+                queryRetreat(false, DEFAULT_RETREAT_TYPE, bridge, possible);
+        }
     }
 
     private void attackerRetreatSubs(IDelegateBridge bridge)
@@ -1308,6 +1346,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
             queryRetreat(false, PLANES_RETREAT_TYPE, bridge, possible);
     }
 
+    private void attackerRetreatNonAmphibUnits(IDelegateBridge bridge)
+    {
+        Collection<Territory> possible = getAttackerRetreatTerritories();
+        
+        queryRetreat(false, PARTIAL_AMPHIB_RETREAT_TYPE, bridge, possible);
+    }
+    
     private boolean canDefenderRetreatSubs()
     {
         if(m_headless)
@@ -1329,8 +1374,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return;
 
         if (!m_over)
-            queryRetreat(true, SUBS_RETREAT_TYPE, bridge,
-                    getEmptyOrFriendlySeaNeighbors(m_defender));
+        {
+            //retreat subs
+            if (Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
+                queryRetreat(true, SUBS_RETREAT_TYPE, bridge, getEmptyOrFriendlySeaNeighbors(m_defender));
+        }
     }
 
     private Collection<Territory> getEmptyOrFriendlySeaNeighbors(PlayerID player)
@@ -1364,8 +1412,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         boolean subs;
         boolean planes;
+        boolean partialAmphib;
         planes = retreatType == PLANES_RETREAT_TYPE;
         subs = retreatType == SUBS_RETREAT_TYPE;
+        partialAmphib = retreatType == PARTIAL_AMPHIB_RETREAT_TYPE;
+
         if (availableTerritories.isEmpty() && !(subs && canSubsSubmerge()))
             return;
         
@@ -1377,6 +1428,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         } else if (planes)
         {
             units = Match.getMatches(units, Matches.UnitIsAir);
+        } else if (partialAmphib)
+        {
+            units = Match.getMatches(units, Matches.UnitWasNotAmphibious);
         }
 
         if (Match.someMatch(units, Matches.UnitIsSea))
@@ -1394,6 +1448,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             text = retreatingPlayer.getName() + " retreat subs?";
         else if (planes)
             text = retreatingPlayer.getName() + " retreat planes?";
+        else if (partialAmphib)
+            text = retreatingPlayer.getName() + " retreat non-amphibious units?";
         else
             text = retreatingPlayer.getName() + " retreat?";
         String step;
@@ -1408,6 +1464,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
                         + (canSubsSubmerge() ? SUBS_SUBMERGE : SUBS_WITHDRAW);
             else if (planes)
                 step = m_attacker.getName() + PLANES_WITHDRAW;
+            else if (partialAmphib)
+                step = m_attacker.getName() + NONAMPHIB_WITHDRAW;
             else
                 step = m_attacker.getName() + ATTACKER_WITHDRAW;
         }
@@ -1426,7 +1484,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (retreatTo != null)
         {
             //if attacker retreating non subs then its all over
-            if (!defender && !subs && !planes)
+            if (!defender && !subs && !planes && !partialAmphib)
             {
                 ensureAttackingAirCanRetreat(bridge);
                 m_over = true;
@@ -1444,6 +1502,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 String messageShort = retreatingPlayer.getName()
                         + " retreats planes";
                 getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
+            } else if(partialAmphib)
+            {
+                retreatUnitsAndPlanes(units, retreatTo, defender, bridge);
+                String messageShort = retreatingPlayer.getName()
+                        + " retreats non-amphibious units";
+                getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
             } else
             {
 
@@ -1457,6 +1521,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 else if (planes)
                     messageLong = retreatingPlayer.getName()
                             + " retreats planes to " + retreatTo.getName();
+                else if (partialAmphib)
+                    messageLong = retreatingPlayer.getName()
+                            + " retreats non-amphibious units to " + retreatTo.getName();
                 else
                     messageLong = retreatingPlayer.getName()
                             + " retreats all units to " + retreatTo.getName();
@@ -1602,7 +1669,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             boolean defender, IDelegateBridge bridge)
     {
         retreating.addAll(getDependentUnits(retreating));
-    	
+        
         //our own air units dont retreat with land units
         Match<Unit> notMyAir = new CompositeMatchOr<Unit>(Matches.UnitIsNotAir,
                 new InverseMatch<Unit>(Matches.unitIsOwnedBy(m_attacker)));
@@ -1627,8 +1694,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             if(dependentBattles.isEmpty())
                 change.add(retreatFromNonCombat(retreating, bridge, to));
             //Else retreat the units from combat when their transport retreats
-            else            	
-            	change.add(retreatFromDependents(retreating, bridge, to, dependentBattles));
+            else                
+                change.add(retreatFromDependents(retreating, bridge, to, dependentBattles));
         }
 
         bridge.addChange(change);
@@ -1650,7 +1717,58 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         }
     }
+  
+    private void retreatUnitsAndPlanes(Collection<Unit> retreating, Territory to,
+            boolean defender, IDelegateBridge bridge)
+    {
+        //Remove air from battle
+        Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
+        units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
+        
+        //add all land units' dependents
+        retreating.addAll(getDependentUnits(retreating));
+    	
+        //our own air units dont retreat with land units
+        Match<Unit> notMyAir = new CompositeMatchOr<Unit>(Matches.UnitIsNotAir,
+                new InverseMatch<Unit>(Matches.unitIsOwnedBy(m_attacker)));
+        Collection<Unit> nonAirRetreating = Match.getMatches(retreating, notMyAir);
 
+        String transcriptText = MyFormatter.unitsToTextNoOwner(nonAirRetreating) + " retreated to " + to.getName();
+        
+        bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<Unit>(nonAirRetreating));
+
+        CompositeChange change = new CompositeChange();
+        change.add(ChangeFactory.moveUnits(m_battleSite, to, nonAirRetreating));
+
+        if (m_over)
+        {
+            Collection<Battle> dependentBattles = m_tracker.getBlocked(this);
+            //If there are no dependent battles, check landings in allied territories
+            if(dependentBattles.isEmpty())
+                change.add(retreatFromNonCombat(nonAirRetreating, bridge, to));
+            //Else retreat the units from combat when their transport retreats
+            else            	
+            	change.add(retreatFromDependents(nonAirRetreating, bridge, to, dependentBattles));
+        }
+
+        bridge.addChange(change);
+
+        units.removeAll(nonAirRetreating);
+        if (units.isEmpty() || m_over)
+        {
+            endBattle(bridge);
+            if (defender)
+                attackerWins(bridge);
+            else
+                defenderWins(bridge);
+        } else
+        {
+            getDisplay(bridge).notifyRetreat(m_battleID, retreating);
+
+
+        }
+    }
+    
     //the maximum number of hits that this collection of units can sustain
     //takes into account units with two hits
     public static int getMaxHits(Collection<Unit> units)
@@ -1979,9 +2097,19 @@ public class MustFightBattle implements Battle, BattleStepStrings
             else
                 m_attackingWaitingToDie.addAll(killed);
         } else
-
-            //remove immediately            
-        	remove(killed, bridge, m_battleSite);
+        {
+            if(defender && isDefendingSubsSneakAttack())
+            {
+                m_defendingWaitingToDie.addAll(Match.getMatches(killed, Matches.UnitIsSub));
+                //remove the rest immediately            
+                remove(Match.getMatches(killed, Matches.UnitIsNotSub), bridge, m_battleSite);
+            }
+            else
+            {
+                //remove immediately            
+                remove(killed, bridge, m_battleSite);
+            }
+        }
 
         //remove from the active fighting
         if (defender)
@@ -2030,6 +2158,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private boolean isFourthEdition()
     {
     	return games.strategy.triplea.Properties.getFourthEdition(m_data);
+    }
+
+    private boolean isPartialAmphibiousRetreat()
+    {
+        return games.strategy.triplea.Properties.getPartialAmphibiousRetreat(m_data);
     }
     
     private boolean isParatroopers(PlayerID player)    
@@ -2977,7 +3110,6 @@ class Fire implements IExecutable
 
             MustFightBattle.getDisplay(bridge).notifyDice(m_battle.getBattleID(), m_dice, m_stepName);
 
-            //TODO COMCO check for transport restriction and split casualty selection.
             int countTransports = Match.countMatches(m_attackableUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.UnitIsSea));
 
             if (countTransports > 0 && isTransportCasualtiesRestricted(data))

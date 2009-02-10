@@ -504,7 +504,9 @@ public class BattleTracker implements java.io.Serializable
         
         PlayerID newOwner;
         if (terrOrigOwner != null && data.getAllianceTracker().isAllied(terrOrigOwner, id)
-                && TerritoryAttachment.getCapital(terrOrigOwner, data).getOwner().equals(terrOrigOwner))
+                        && (TerritoryAttachment.getCapital(terrOrigOwner, data).getOwner().equals(terrOrigOwner) ||
+                                        TerritoryAttachment.getCapital(terrOrigOwner, data).getOwner().equals(PlayerID.NULL_PLAYERID)))
+           
             newOwner = terrOrigOwner;
         else
             newOwner = id;

@@ -1441,6 +1441,7 @@
 					<attatchment name="territoryAttatchment" attatchTo="Mongolia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
                         <option name="isImpassible" value="true"/>
+						<option name="capital" value="Chinese"/>
                   </attatchment>
 				  
 					<attatchment name="territoryAttatchment" attatchTo="Morocco Algeria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1629,7 +1630,6 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Yunnan" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="1"/>
-						<option name="capital" value="Chinese"/>
 					</attatchment>
                 
                 <!-- Canals -->
@@ -2089,6 +2089,18 @@
                 
                 
 				<property name="Anniversary Edition" value="true" editable="false">
+                        <boolean/>
+                </property>
+
+				<property name="Partial Amphibious Retreat" value="true" editable="false">
+                        <boolean/>
+                </property>
+                
+				<property name="Neutrals Are Impassable" value="true" editable="false">
+                        <boolean/>
+                </property>
+                
+				<property name="Defending Subs Sneak Attack" value="true" editable="false">
                         <boolean/>
                 </property>
                 

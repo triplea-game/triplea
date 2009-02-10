@@ -53,6 +53,7 @@ public interface BattleStepStrings
   final static String REMOVE_CASUALTIES = "Remove casualties";
   final static String SUBS_WITHDRAW = " withdraw subs?";
   final static String PLANES_WITHDRAW = " withdraw planes?";
+  final static String NONAMPHIB_WITHDRAW = " withdraw non-amphibious units?";
   final static String SUBS_SUBMERGE = " submerge subs?";
 
   final static String ATTACKER_WITHDRAW = " withdraw?";

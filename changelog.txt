@@ -1,3 +1,7 @@
+Changes for 1.0.3.1
+
+* Added 'Neutrals Are Impassable' property to eliminate neutrals from pathfinding (ComradeKev)
+
 * on windows, put saved games in users home folder, rather than the triplea install directory.  this works better on Vista. (sgb)
 
 * fix [ 1945380 ] battle calculator window buttons lost (sgb)

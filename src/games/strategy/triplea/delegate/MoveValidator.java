@@ -598,6 +598,11 @@ public class MoveValidator
         return games.strategy.triplea.Properties.getFourthEdition(data);
     }
 
+    private static boolean isNeutralsImpassable(GameData data)
+    {
+        return games.strategy.triplea.Properties.getNeutralsImpassable(data);
+    }
+    
     private static boolean isAnniversaryEdition(GameData data)
     {
         return games.strategy.triplea.Properties.getAnniversaryEdition(data);
@@ -1951,7 +1956,7 @@ public class MoveValidator
         Match<Territory> territoryIsEnd = Matches.territoryIs(end);
 
         Route defaultRoute;
-        if (isFourthEdition(data))
+        if (isFourthEdition(data) || isNeutralsImpassable(data))
             defaultRoute = data.getMap().getRoute(start, end, new CompositeMatchOr(noNeutral, territoryIsEnd));
         else
             defaultRoute = data.getMap().getRoute(start, end);
@@ -2000,7 +2005,7 @@ public class MoveValidator
         
         for(Match<Territory> t : tests) {            
             Match<Territory> testMatch = null;
-            if (isFourthEdition(data))
+            if (isFourthEdition(data) || isNeutralsImpassable(data))
                 testMatch = new CompositeMatchAnd<Territory>(t, noNeutral);
             else
                 testMatch = t;

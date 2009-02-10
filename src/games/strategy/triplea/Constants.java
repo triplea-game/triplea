@@ -68,6 +68,9 @@ public interface Constants
   public static final String ALL_ROCKETS_ATTACK = "All Rockets Attack";  
   public static final String ROCKETS_CAN_VIOLATE_NEUTRALITY = "Rockets Can Violate Neutrality";
   public static final String ROCKETS_CAN_FLY_OVER_IMPASSABLES = "Rockets Can Fly Over Impassables";
+  public static final String NEUTRALS_ARE_IMPASSABLE = "Neutrals Are Impassable";
+  public static final String PARTIAL_AMPHIBIOUS_RETREAT = "Partial Amphibious Retreat";
+  
   /**
    * These are the individual rules from 4th Edition (All default to FALSE)
    */
