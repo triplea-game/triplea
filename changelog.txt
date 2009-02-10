@@ -1,3 +1,5 @@
+* on windows, put saved games in users home folder, rather than the triplea install directory.  this works better on Vista. (sgb)
+
 * fix [ 1945380 ] battle calculator window buttons lost (sgb)
 
 * update launch4j generated exes to use launch4j 3.0.1 (sgb)

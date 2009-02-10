@@ -44,9 +44,7 @@ public class SaveGameFileChooser extends JFileChooser
 	{
 	    //the default
 	    File defaultDirectory;
-        if(GameRunner.isWindows())
-            defaultDirectory = new File(GameRunner.getRootFolder(), "/savedGames/");
-        else if(GameRunner.isMac())
+        if(GameRunner.isMac())
             defaultDirectory = new File(System.getProperties().getProperty("user.home") +"/Documents/triplea/savedGames/");
         else
             defaultDirectory = new File(System.getProperties().getProperty("user.home") +"/triplea/savedGames/");
