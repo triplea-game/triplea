@@ -42,6 +42,7 @@ import java.util.Vector;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
@@ -387,7 +388,9 @@ public class OddsCalculatorPanel extends JPanel
         setLayout(new BorderLayout());
         
         JPanel main = new JPanel();
+        main.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
         add(main, BorderLayout.CENTER);
+        main.setLayout(new BorderLayout());
         
         JPanel attackAndDefend = new JPanel();
         attackAndDefend.setLayout(new GridBagLayout());
@@ -409,7 +412,7 @@ public class OddsCalculatorPanel extends JPanel
         attackAndDefend.add(attackerScroll, new GridBagConstraints(0, 1, 2, 1, 1, 1, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(10, gap, gap, gap), 0, 0));
         attackAndDefend.add(defenderScroll, new GridBagConstraints(2, 1, 2, 1, 1, 1, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(10, gap, gap, gap), 0, 0));
         
-        main.add(attackAndDefend);
+        main.add(attackAndDefend, BorderLayout.CENTER);
         
         JPanel resultsText = new JPanel();
         resultsText.setLayout(new GridBagLayout());
@@ -442,7 +445,7 @@ public class OddsCalculatorPanel extends JPanel
         
         m_resultsPanel.add(resultsText);
         
-        main.add(m_resultsPanel);
+        main.add(m_resultsPanel, BorderLayout.EAST);
         
         JPanel south = new JPanel();
         

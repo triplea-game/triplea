@@ -1,3 +1,5 @@
+* fix [ 1945380 ] battle calculator window buttons lost (sgb)
+
 * update launch4j generated exes to use launch4j 3.0.1 (sgb)
 
 * updated embedded jre to 6_11 (sgb)
