@@ -263,24 +263,30 @@ public class MoveValidator
      * AA and factory dont count as enemy.
      */
     //TODO COMCO need to revisit this for AA
-    public static boolean onlyIgnoredUnitsOnPath(Route route, PlayerID player, GameData data)
+    public static boolean onlyIgnoredUnitsOnPath(Route route, PlayerID player, GameData data, boolean ignoreRouteEnd)
     {
     	CompositeMatch<Unit> transportOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsSub, Matches.alliedUnit(player, data));
-    	CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitTypeIsTransport, Matches.alliedUnit(player, data));
-    	CompositeMatch<Unit> transportOrSubOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitTypeIsTransport, Matches.UnitIsSub, Matches.alliedUnit(player, data));
+    	CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsTransport, Matches.alliedUnit(player, data));
+    	CompositeMatch<Unit> transportOrSubOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsTransport, Matches.UnitIsSub, Matches.alliedUnit(player, data));
     	boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
     	boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
+    	int routeLength = route.getLength();
     	
-        for(int i = 0; i < route.getLength() - 1; i++)
-        {
-            Territory current = route.at(i);
-            if(getIgnoreTransportInMovement && getIgnoreSubInMovement && !current.getUnits().allMatch(transportOrSubOnly))            	
-                return false;
-            if(getIgnoreTransportInMovement && !getIgnoreSubInMovement && !current.getUnits().allMatch(transportOnly))
-            	return false;
-            if(!getIgnoreTransportInMovement && getIgnoreSubInMovement && !current.getUnits().allMatch(subOnly))
-            	return false;
-        }
+    	if(ignoreRouteEnd)
+    	{
+    	    routeLength -= 1;
+    	}
+            for(int i = 0; i < routeLength; i++)
+            {
+                Territory current = route.at(i);
+                if(getIgnoreTransportInMovement && getIgnoreSubInMovement && !current.getUnits().allMatch(transportOrSubOnly))              
+                    return false;
+                if(getIgnoreTransportInMovement && !getIgnoreSubInMovement && !current.getUnits().allMatch(transportOnly))
+                    return false;
+                if(!getIgnoreTransportInMovement && getIgnoreSubInMovement && !current.getUnits().allMatch(subOnly))
+                    return false;
+            }
+    	
         return true;
     }
 
@@ -800,7 +806,7 @@ public class MoveValidator
 
         if (route.getEnd().getUnits().someMatch(Matches.enemyUnit(player, data)))
         {
-        	if(onlyIgnoredUnitsOnPath(route, player, data))
+        	if(onlyIgnoredUnitsOnPath(route, player, data, true))
         		return result;
             
             CompositeMatch<Unit> friendlyOrSubmerged = new CompositeMatchOr<Unit>();
@@ -938,7 +944,7 @@ public class MoveValidator
                 return result;
         }
 
-        if (onlyIgnoredUnitsOnPath(route, player, data))
+        if (onlyIgnoredUnitsOnPath(route, player, data, true))
         	return result;
       
         //omit paratroops
@@ -1406,14 +1412,20 @@ public class MoveValidator
 
         carrierCapacity.put(new Integer(0), MoveValidator.carrierCapacity(unitsAtEnd) - alliedMustMoveCost);
 
+        Territory unitTerr = route.getEnd();
+        Collection<Territory> neighbors = data.getMap().getNeighbors(unitTerr, 1);
+        boolean anyNeighborsWater = Match.someMatch(neighbors, Matches.TerritoryIsWater);
          
         for (Unit unit : Match.getMatches(airThatMustLandOnCarriers, Matches.UnitCanLandOnCarrier))
         {
             int carrierCost = UnitAttachment.get(unit.getType()).getCarrierCost();
             int movement = movementLeft.getInt(unit);
+            
+            
+
             for(int i = movement; i >=-1; i--)
             {
-                if(i == -1)
+                if(i == -1 || (i==0 && !unitTerr.isWater()) || (i==1 && !anyNeighborsWater))
                 {
                     if (allowKamikaze)
                         result.addUnresolvedUnit(NOT_ALL_AIR_UNITS_CAN_LAND, unit);
@@ -1424,15 +1436,16 @@ public class MoveValidator
 
                 //Check carriers that are within 'i' zones
                 Integer current = new Integer(i);
-                if(carrierCapacity.getInt(current) >= carrierCost && carrierCost != -1 )
+                if(carrierCost != -1 && carrierCapacity.getInt(current) >= carrierCost)
                 {
                     carrierCapacity.put(current,carrierCapacity.getInt(current) - carrierCost);
                     break;
                 }
 
                 //Check carriers that could potentially move to within 'i' zones
+                //TODO need to subtract distance that fighter must move to reach water
                 Integer potentialWithNonComMove = new Integer(i) + 2;
-                if(carrierCapacity.getInt(potentialWithNonComMove) >= carrierCost && carrierCost != -1 )
+                if(carrierCost != -1 && carrierCapacity.getInt(potentialWithNonComMove) >= carrierCost)
                 {
                     carrierCapacity.put(potentialWithNonComMove,carrierCapacity.getInt(potentialWithNonComMove) - carrierCost);
                     break;
@@ -1605,7 +1618,8 @@ public class MoveValidator
             CompositeMatch<Unit> enemyNonSubmerged = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), new InverseMatch<Unit>(Matches
                     .unitIsSubmerged(data)));
             if (route.getEnd().getUnits().someMatch(enemyNonSubmerged) && NonParatroopersPresent(player, land))
-                return result.setErrorReturnResult("Cannot load when enemy sea units are present");
+                if(!onlyIgnoredUnitsOnPath(route, player, data, false))
+                    return result.setErrorReturnResult("Cannot load when enemy sea units are present");
             
             Map<Unit,Unit> unitsToTransports = MoveDelegate.mapTransports(route, land, transportsToLoad);
 
