@@ -997,64 +997,100 @@
         </production> 
         
         <attatchmentList>
-                <!-- Germans -->
+        		<!-- Germans -->
                 <attatchment name="techAttatchment" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
-                        <option name="heavyBomber" value="false"/>
-                        <option name="jetPower" value="false"/>
-                        <option name="industrialTechnology" value="false"/>
                         <option name="superSub" value="false"/>
-                        <option name="rocket" value="false"/>
+                        <option name="jetPower" value="false"/>
+                        <option name="shipyards" value="false"/>
+                        <option name="aARadar" value="false"/>
                         <option name="longRangeAir" value="false"/>
+                        <option name="heavyBomber" value="false"/>
+                        <option name="improvedArtillerySupport" value="false"/>
+                        <option name="rocket" value="false"/>
+                        <option name="paratroopers" value="false"/>
+                        <option name="increasedFactoryProduction" value="false"/>
+                        <option name="warBonds" value="false"/>
+                        <option name="mechanizedInfantry" value="false"/>
                 </attatchment>
 				
 				<!-- Russians -->
                 <attatchment name="techAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
-                        <option name="heavyBomber" value="false"/>
-                        <option name="jetPower" value="false"/>
-                        <option name="industrialTechnology" value="false"/>
                         <option name="superSub" value="false"/>
-                        <option name="rocket" value="false"/>
+                        <option name="jetPower" value="false"/>
+                        <option name="shipyards" value="false"/>
+                        <option name="aARadar" value="false"/>
                         <option name="longRangeAir" value="false"/>
+                        <option name="heavyBomber" value="false"/>
+                        <option name="improvedArtillerySupport" value="false"/>
+                        <option name="rocket" value="false"/>
+                        <option name="paratroopers" value="false"/>
+                        <option name="increasedFactoryProduction" value="false"/>
+                        <option name="warBonds" value="false"/>
+                        <option name="mechanizedInfantry" value="false"/>
                 </attatchment>
                 
                 <!-- Japanese -->
                 <attatchment name="techAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
-                        <option name="heavyBomber" value="false"/>
-                        <option name="jetPower" value="false"/>
-                        <option name="industrialTechnology" value="false"/>
                         <option name="superSub" value="false"/>
-                        <option name="rocket" value="false"/>
+                        <option name="jetPower" value="false"/>
+                        <option name="shipyards" value="false"/>
+                        <option name="aARadar" value="false"/>
                         <option name="longRangeAir" value="false"/>
+                        <option name="heavyBomber" value="false"/>
+                        <option name="improvedArtillerySupport" value="false"/>
+                        <option name="rocket" value="false"/>
+                        <option name="paratroopers" value="false"/>
+                        <option name="increasedFactoryProduction" value="false"/>
+                        <option name="warBonds" value="false"/>
+                        <option name="mechanizedInfantry" value="false"/>
                 </attatchment>
 
                 <!-- British -->
                 <attatchment name="techAttatchment" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
-                        <option name="heavyBomber" value="false"/>
-                        <option name="jetPower" value="false"/>
-                        <option name="industrialTechnology" value="false"/>
                         <option name="superSub" value="false"/>
-                        <option name="rocket" value="false"/>
+                        <option name="jetPower" value="false"/>
+                        <option name="shipyards" value="false"/>
+                        <option name="aARadar" value="false"/>
                         <option name="longRangeAir" value="false"/>
+                        <option name="heavyBomber" value="false"/>
+                        <option name="improvedArtillerySupport" value="false"/>
+                        <option name="rocket" value="false"/>
+                        <option name="paratroopers" value="false"/>
+                        <option name="increasedFactoryProduction" value="false"/>
+                        <option name="warBonds" value="false"/>
+                        <option name="mechanizedInfantry" value="false"/>
                 </attatchment>
 				
 				<!-- Italians -->
                 <attatchment name="techAttatchment" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
-                        <option name="heavyBomber" value="false"/>
-                        <option name="jetPower" value="false"/>
-                        <option name="industrialTechnology" value="false"/>
                         <option name="superSub" value="false"/>
-                        <option name="rocket" value="false"/>
+                        <option name="jetPower" value="false"/>
+                        <option name="shipyards" value="false"/>
+                        <option name="aARadar" value="false"/>
                         <option name="longRangeAir" value="false"/>
+                        <option name="heavyBomber" value="false"/>
+                        <option name="improvedArtillerySupport" value="false"/>
+                        <option name="rocket" value="false"/>
+                        <option name="paratroopers" value="false"/>
+                        <option name="increasedFactoryProduction" value="false"/>
+                        <option name="warBonds" value="false"/>
+                        <option name="mechanizedInfantry" value="false"/>
                 </attatchment>
 
                 <!-- Americans -->
                 <attatchment name="techAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
-                        <option name="heavyBomber" value="false"/>
-                        <option name="jetPower" value="false"/>
-                        <option name="industrialTechnology" value="false"/>
                         <option name="superSub" value="false"/>
-                        <option name="rocket" value="false"/>
+                        <option name="jetPower" value="false"/>
+                        <option name="shipyards" value="false"/>
+                        <option name="aARadar" value="false"/>
                         <option name="longRangeAir" value="false"/>
+                        <option name="heavyBomber" value="false"/>
+                        <option name="improvedArtillerySupport" value="false"/>
+                        <option name="rocket" value="false"/>
+                        <option name="paratroopers" value="false"/>
+                        <option name="increasedFactoryProduction" value="false"/>
+                        <option name="warBonds" value="false"/>
+                        <option name="mechanizedInfantry" value="false"/>
                 </attatchment>
 
                 <!-- Infantry -->

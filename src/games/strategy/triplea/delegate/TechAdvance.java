@@ -121,18 +121,18 @@ public abstract class TechAdvance implements java.io.Serializable
     	 * Anniversary Edition Tech
     	 */
         s_AnnivEditionAdvances = new ArrayList<TechAdvance>();
-        s_AnnivEditionAdvances.add(IMPROVED_ARTILLERY_SUPPORT);
-        s_AnnivEditionAdvances.add(ROCKETS);
-        s_AnnivEditionAdvances.add(PARATROOPERS);
-        s_AnnivEditionAdvances.add(INCREASED_FACTORY_PRODUCTION);
-        s_AnnivEditionAdvances.add(WAR_BONDS);
-        s_AnnivEditionAdvances.add(MECHANIZED_INFANTRY);
         s_AnnivEditionAdvances.add(SUPER_SUBS);
         s_AnnivEditionAdvances.add(JET_POWER);
         s_AnnivEditionAdvances.add(IMPROVED_SHIPYARDS);
         s_AnnivEditionAdvances.add(AA_RADAR);
         s_AnnivEditionAdvances.add(LONG_RANGE_AIRCRAFT);
         s_AnnivEditionAdvances.add(HEAVY_BOMBER);
+        s_AnnivEditionAdvances.add(IMPROVED_ARTILLERY_SUPPORT);
+        s_AnnivEditionAdvances.add(ROCKETS);
+        s_AnnivEditionAdvances.add(PARATROOPERS);
+        s_AnnivEditionAdvances.add(INCREASED_FACTORY_PRODUCTION);
+        s_AnnivEditionAdvances.add(WAR_BONDS);
+        s_AnnivEditionAdvances.add(MECHANIZED_INFANTRY);
         s_AnnivEditionAdvances = Collections.unmodifiableList(s_AnnivEditionAdvances);
         
         /*
