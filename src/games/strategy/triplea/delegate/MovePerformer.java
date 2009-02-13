@@ -195,15 +195,6 @@ public class MovePerformer implements Serializable
                     		ignoreBattle=true;
                     }
                     
-                    //Query to attack subs
-                    if(isIgnoreSubInMovement(data) && Match.allMatch(enemyUnits, Matches.UnitIsSub))
-                	{
-                		//if(!getAttackSubs(route))
-                		{
-                			//ignoreBattle=true;
-                		}
-                	}
-                    
                     if(!ignoreBattle)
                     {
                     	getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_data, m_bridge, m_currentMove);

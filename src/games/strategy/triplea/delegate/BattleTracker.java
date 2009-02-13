@@ -437,7 +437,9 @@ public class BattleTracker implements java.io.Serializable
                 }
             }
         }
-
+        //moved this down to after the terr ownership is changed
+                
+       /* 
         //take over non combatants
         CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>();
         enemyNonCom.add(Matches.UnitIsAAOrFactory);
@@ -447,13 +449,10 @@ public class BattleTracker implements java.io.Serializable
         bridge.addChange(noMovementChange);
         if(changeTracker != null)
             changeTracker.addChange(noMovementChange);
-         
-
-        //moved this down to after the terr ownership is changed
         
         //non coms revert to their original owner if once allied
         //unless their capital is not owned
-       /* for (Unit currentUnit : nonCom)
+         for (Unit currentUnit : nonCom)
         {
             PlayerID originalOwner = origOwnerTracker.getOriginalOwner(currentUnit);
             
@@ -520,6 +519,17 @@ public class BattleTracker implements java.io.Serializable
             changeTracker.addToConquered(territory);
         }
         
+        
+        //take over non combatants
+        CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>();
+        enemyNonCom.add(Matches.UnitIsAAOrFactory);
+        enemyNonCom.add(Matches.enemyUnit(id, data));
+        Collection<Unit> nonCom = territory.getUnits().getMatches(enemyNonCom);
+        Change noMovementChange = DelegateFinder.moveDelegate(data).markNoMovementChange(nonCom);
+        bridge.addChange(noMovementChange);
+        if(changeTracker != null)
+            changeTracker.addChange(noMovementChange);
+        
         //non coms revert to their original owner if once allied
         //unless their capital is not owned
         for (Unit currentUnit : nonCom)
@@ -533,6 +543,17 @@ public class BattleTracker implements java.io.Serializable
             if (changeTracker != null)
                 changeTracker.addChange(capture);            
         }
+
+        //Remove any bombing raids against captured territory
+        if(Match.someMatch(nonCom, Matches.UnitIsFactory))
+        {
+            Battle bombingBattle = getPendingBattle(territory, true);
+            if(bombingBattle != null)
+            {
+                removeBattle(bombingBattle);
+            }
+        }
+            
         //is this territory our capitol or a capitol of our ally
         //Also check to make sure playerAttachment even HAS a capital to fix abend  
         if (terrOrigOwner != null && ta.getCapital() != null && TerritoryAttachment.getCapital(terrOrigOwner, data).equals(territory)
@@ -582,8 +603,9 @@ public class BattleTracker implements java.io.Serializable
         if (!Matches.territoryHasEnemyUnits(id, data).match(site))
             return ChangeFactory.EMPTY_CHANGE;
 
-        //if just a factory then no battle
-        if (route.getEnd() != null && route.getEnd().getUnits().allMatch(Matches.UnitIsAAOrFactory))
+        //if just an enemy factory &/or AA then no battle
+        Collection<Unit> enemyUnits = Match.getMatches(route.getEnd().getUnits().getUnits(), Matches.enemyUnit(id, data));
+        if (route.getEnd() != null && Match.allMatch(enemyUnits, Matches.UnitIsAAOrFactory))
             return ChangeFactory.EMPTY_CHANGE;
 
         Battle battle = getPendingBattle(site, false);
