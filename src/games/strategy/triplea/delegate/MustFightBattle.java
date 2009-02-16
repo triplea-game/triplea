@@ -914,7 +914,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
                     if (isFourthEdition() || isDefendingSubsSneakAttack())
-                        defendSubs(bridge, defendingSubs);
+                        defendSubs(bridge);
                 }
                 
             });
@@ -960,7 +960,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                         units.addAll(m_defendingWaitingToDie);
                         units = Match.getMatches(units, Matches.UnitIsSub);
 
-                        defendSubs(bridge, units);
+                        defendSubs(bridge);
                     }
 
                 }
@@ -1080,8 +1080,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 		attackerWins(bridge);
                 } else if (Match.allMatch(m_attackingUnits, Matches.UnitIsTransport) && Match.allMatch(m_defendingUnits, Matches.UnitIsTransport))
                 {
+                    Match<Unit> attackerMatch = Matches.unitCanAttack(m_attacker);
+                    Match<Unit> defenderMatch = Matches.unitCanAttack(m_defender);
+                    
+                    if(Match.noneMatch(m_attackingUnits, attackerMatch) && Match.noneMatch(m_defendingUnits, defenderMatch))
+                    {
                         endBattle(bridge);
                         nobodyWins(bridge);
+                    }
                 }
                 
             }
@@ -2010,12 +2016,15 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 destroyersPresent, bridge, "Subs fire,");
     }
 
-    private void defendSubs(IDelegateBridge bridge, Collection<Unit> units)
+    private void defendSubs(IDelegateBridge bridge)
     {
         if (m_attackingUnits.size() == 0)
             return;
-
-        if (units.isEmpty())
+        
+        Collection<Unit> firing = Match.getMatches(m_defendingUnits,
+            Matches.UnitIsSub);
+        
+        if (firing.isEmpty())
             return;
 
         Collection<Unit> attacked = Match.getMatches(m_attackingUnits,
@@ -2025,7 +2034,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         boolean destroyersPresent = Match.someMatch(attacked,
                 Matches.UnitIsDestroyer);
-        fire(m_attacker.getName() + SELECT_SUB_CASUALTIES, units,
+        fire(m_attacker.getName() + SELECT_SUB_CASUALTIES, firing,
                 attacked, true, destroyersPresent, bridge, "Subs defend, ");
     }
 
