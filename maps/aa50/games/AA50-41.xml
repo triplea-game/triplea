@@ -2127,6 +2127,10 @@
 				<property name="Anniversary Edition" value="true" editable="false">
                         <boolean/>
                 </property>
+                
+				<property name="Blitz Through Factories And AA Restricted" value="true" editable="false">
+                        <boolean/>
+                </property>
 
 				<property name="Partial Amphibious Retreat" value="true" editable="false">
                         <boolean/>
