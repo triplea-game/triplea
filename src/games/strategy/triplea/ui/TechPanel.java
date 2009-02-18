@@ -128,7 +128,7 @@ public class TechPanel extends ActionPanel
         }
     }
 
-
+//TODO COMCO start here looking for the client problem w/ tech chart selection
     public TechAdvance getAvailableTechCategories(PlayerID player)
     {
         getData().acquireReadLock();
