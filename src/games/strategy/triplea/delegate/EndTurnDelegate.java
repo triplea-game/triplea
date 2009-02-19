@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JOptionPane;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -66,7 +68,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
         //only notify once
         if(m_gameOver)
             return;
-
+        String victoryMessage = null;
         PlayerID russians = m_data.getPlayerList().getPlayerID(Constants.RUSSIANS);
         PlayerID germans = m_data.getPlayerList().getPlayerID(Constants.GERMANS);
         PlayerID british = m_data.getPlayerList().getPlayerID(Constants.BRITISH);
@@ -82,7 +84,9 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
                     if(pa != null && Integer.parseInt(pa.getVps()) >= 22)
                     {
                         m_gameOver = true;
-                        bridge.getHistoryWriter().startEvent("Axis achieve VP victory");
+                        victoryMessage = "Axis achieve VP victory";
+                        bridge.getHistoryWriter().startEvent(victoryMessage);
+                        signalGameOver(victoryMessage,bridge);
                         return;
                     } 
                 } 
@@ -111,24 +115,45 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
         if (!russia) count++;
         if (!britain) count++;
         if (!america) count++;
+        victoryMessage = " achieve a military victory";
 
         if ( germany && japan && count >=2)
         {
             m_gameOver = true;
-            bridge.getHistoryWriter().startEvent("Axis achieve a military victory");
+            bridge.getHistoryWriter().startEvent("Axis" + victoryMessage);
+            signalGameOver(victoryMessage,bridge);
             //TODO We might want to find a more elegant way to end the game ala the TIC-TAC-TOE example
             //Added this to end the game on victory conditions
-            bridge.stopGameSequence();
+            //bridge.stopGameSequence();
         }
 
         if ( russia && !germany && britain && !japan && america)
         {
             m_gameOver = true;
-            bridge.getHistoryWriter().startEvent("Allies achieve a military victory");
+            bridge.getHistoryWriter().startEvent("Allies" + victoryMessage);
+            signalGameOver(victoryMessage,bridge);
             //Added this to end the game on victory conditions
-            bridge.stopGameSequence();
+            //bridge.stopGameSequence();
         }
+    }
 
+    /**
+     * Notify all players that the game is over.
+     * 
+     * @param status the "game over" text to be displayed to each user.
+     */
+    private void signalGameOver(String status, IDelegateBridge a_bridge)
+    {
+        // If the game is over, we need to be able to alert all UIs to that fact.
+        //    The display object can send a message to all UIs.
+        if (!m_gameOver)
+        {
+            m_gameOver = true;
+            // Make sure the user really wants to leave the game.
+            int rVal = JOptionPane.showConfirmDialog(null, status +"\nDo you want to continue?", "Continue" , JOptionPane.YES_NO_OPTION);
+            if(rVal != JOptionPane.OK_OPTION)
+                a_bridge.stopGameSequence();
+        }
     }
     
 /**
