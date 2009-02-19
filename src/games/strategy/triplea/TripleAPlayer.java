@@ -479,6 +479,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     }
 
     /* 
+     * 
+     */
+    public boolean selectAttackSubs(Territory unitTerritory)
+    {
+        return m_ui.getBattlePanel().getAttackSubs(unitTerritory);
+    }
+
+    /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
      */
     public boolean shouldBomberBomb(Territory territory)

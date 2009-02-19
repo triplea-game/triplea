@@ -77,6 +77,14 @@ public interface ITripleaPlayer extends IRemote
             boolean noneAvailable       
     );
     
+    /**
+     * Ask if the player wants to attack lone subs
+     * 
+     * @param unitTerritory - where the potential battle is
+     */
+    public boolean selectAttackSubs(
+            Territory unitTerritory    
+    );
     
     /**
      * Report an error to the user. 

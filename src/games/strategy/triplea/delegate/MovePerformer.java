@@ -366,20 +366,6 @@ public class MovePerformer implements Serializable
         return false;
     }
 
-
-	public boolean getAttackSubs(final Route route) 
-	{
-		String message = "Attack subs in " + route.getEnd();
-		String bomb = "Attack";
-		String normal = "Remain";
-		String[] choices =
-		{ bomb, normal };
-		int choice = JOptionPane.showConfirmDialog(null, "Attack submarines?", "Attack", JOptionPane.YES_NO_OPTION);
-		
-		return choice == 0;
-	}
-    
-
     /**
      * Fire aa guns. Returns units to remove.
      */

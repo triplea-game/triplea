@@ -382,6 +382,11 @@ public class BattlePanel extends ActionPanel
         return comp.getSelection();
     }
 
+    public boolean getAttackSubs(final Territory terr) 
+    {       
+        return JOptionPane.showConfirmDialog(null, "Attack submarines in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;        
+    }
+    
     public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player, final Collection<Unit> killed,
             final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents)
     {

@@ -209,6 +209,12 @@ public abstract class AbstractAI implements ITripleaPlayer
         return (Territory) territories.iterator().next();
     }
     
+    public boolean selectAttackSubs(Territory unitTerritory)
+    {       
+        //return true
+        return true;
+    }
+    
     public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from)
     {   
         //just use the first one

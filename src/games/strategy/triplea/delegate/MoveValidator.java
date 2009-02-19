@@ -806,7 +806,7 @@ public class MoveValidator
 
         if (route.getEnd().getUnits().someMatch(Matches.enemyUnit(player, data)))
         {
-        	if(onlyIgnoredUnitsOnPath(route, player, data, true))
+        	if(onlyIgnoredUnitsOnPath(route, player, data, false))
         		return result;
             
             CompositeMatch<Unit> friendlyOrSubmerged = new CompositeMatchOr<Unit>();
@@ -835,18 +835,13 @@ public class MoveValidator
     	if (getEditMode(data))
             return result;
     	
-    	if(isHariKariUnits(data))
-    		return result;
-    	//Are there any escorting units
-    	if (Match.countMatches(units, Matches.unitCanAttack(player))>0)
+    	if(isHariKariUnits(data) || Match.countMatches(units, Matches.unitCanAttack(player))>0)
     		return result;
     	
     	CompositeMatch<Unit> ownedUnitsMatch = new CompositeMatchAnd<Unit>();
     	ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
     	ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.unitCanAttack(player)));
     	ownedUnitsMatch.add(Matches.unitIsOwnedBy(player));
-    	//ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.UnitIsLand));
-    	//ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.UnitTypeIsTransport));
     	
         //get a list of all owned, nonCombat units
         List<Unit> ownedUnits = Match.getMatches(units, ownedUnitsMatch);
@@ -870,9 +865,6 @@ public class MoveValidator
     	{
     		for (Unit unit : ownedUnits)
             {
-    			 /*if(isHariKariUnits(data))
-    				continue;
-    			else*/
 				result.addDisallowedUnit(UNESCORTED_UNITS_WILL_DIE_IN_COMBAT, unit);
             }	
     	}

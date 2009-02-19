@@ -350,9 +350,10 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
             	}
             }
                        
-            if(ignoreSubs && !attackingUnits.isEmpty())
+            if(ignoreSubs && !attackingUnits.isEmpty() && Match.allMatch(enemyUnits, Matches.UnitIsSub))
             {
-                if ( Match.allMatch(enemyUnits, Matches.UnitIsSub)&& !getAttackSubs(territory))
+                ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
+                if(!remotePlayer.selectAttackSubs(territory))
                 {
                     m_battleTracker.removeBattle(battle);
                     continue;
@@ -403,12 +404,13 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
     	return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
     }
     
+    /*//TODO only displays to host
     public boolean getAttackSubs(final Territory terr) 
-	{		
+	{	        
 		int choice = JOptionPane.showConfirmDialog(null, "Attack submarines in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION);
 		
 		return choice == 0;
-	}
+	}*/
     
 
     /*

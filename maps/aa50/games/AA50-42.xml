@@ -2203,10 +2203,6 @@
 				<property name="Roll AA Individually" value="true" editable="false">
                         <boolean/>
                 </property>
-                       
-				<property name="No Economic Victory" value="true" editable="false">
-                        <boolean/>
-                </property>   
 
 				<property name="Sub Retreat Before Battle" value="true" editable="false">
                         <boolean/>
