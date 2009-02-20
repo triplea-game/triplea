@@ -404,15 +404,6 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
     	return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
     }
     
-    /*//TODO only displays to host
-    public boolean getAttackSubs(final Territory terr) 
-	{	        
-		int choice = JOptionPane.showConfirmDialog(null, "Attack submarines in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION);
-		
-		return choice == 0;
-	}*/
-    
-
     /*
      * (non-Javadoc)
      * 

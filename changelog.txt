@@ -1,5 +1,32 @@
 Changes for 1.0.3.1
 
+* The following list of bugs were fixed- primarily for AA50 (Comradekev)
+	Move Chinese capital to impassable neutral so any time a Chinese terr is liberated, it goes to China
+	Some dialogs not appearing on Client computers
+	Paratroops should be able to overfly blitzed territories
+	Factory repair charges not being applied
+	Use allied AA in a territory if they have Radar
+	Limit max damage from rocket attacks
+	Fix the UK nat'l objective
+	Technology throws exceptions in non AA50 games
+	Add useTech option for all games
+	Allow new AA to be placed if there's already one in the terr
+	Fix null pointers when transporting units
+	Allow partial retreat for a combined amphibious assault
+	Defending subs should be able to return fire befor applying sneak attack casualties
+	Pathfinding uses impassables
+	Allow loading of Trns in SZ with enemy subs
+	Consider carrier route (can't go on land) when attempting to find landing spots for fighters
+	Add ability to pre-set techs in AA50 games
+	Remove SBR raid from blitzed territory
+	Allow amphib assault w/o having to combat sub-only forces
+	Fix bomber -v bomber comes to stalemate after one round of combat
+	Fix defending subs still firing after submerging
+	Disallow blitzing through AA and factories
+	Fix 'Attack Subs' dialog only showing up on Host
+	Fix surface ships being allowed to move into enemy SZ during non-combat
+	Add option to continue after victory for all non-AA50 games
+
 * Added 'Neutrals Are Impassable' property to eliminate neutrals from pathfinding (ComradeKev)
 
 * on windows, put saved games in users home folder, rather than the triplea install directory.  this works better on Vista. (sgb)
