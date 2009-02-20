@@ -34,7 +34,7 @@ public interface BattleStepStrings
   final static String NAVAL_BOMBARDMENT = "Naval bombardment";
   final static String SELECT_NAVAL_BOMBARDMENT_CASUALTIES = "Select naval bombardment casualties";
   final static String REMOVE_UNESCORTED_TRANSPORTS = "Remove unescorted transports";
-  final static String REMOVE_AIR_ONLY_ATTACKING_SUBS = "Remove air only attacking subs";
+  final static String SUBMERGE_SUBS_VS_AIR_ONLY = "Submerge subs against only air units";
   final static String AIR_ATTACK_NON_SUBS = "Air attack non subs";
   final static String AIR_DEFEND_NON_SUBS = "Air defend non subs";
   

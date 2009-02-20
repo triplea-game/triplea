@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 
 
-<project name="TripleA" basedir="." default="compile">
+<!--<project name="TripleA" basedir="." default="compile">-->
+<project name="TripleA" basedir="." default="release">
 
 	<property file=".ant.properties" />
 
