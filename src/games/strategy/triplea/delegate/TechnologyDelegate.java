@@ -158,9 +158,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         
         if(techHits > 0 && isAA50TechModel())
         {
-            //Display the two charts for which a successful roll will be chosen
-            TechPanel techPanel = new TechPanel(m_data, null);
-            m_techCategory = techPanel.getAvailableTechCategories(m_player);
+            m_techCategory = techToRollFor;
             //remove all the tokens            
             Resource techTokens = m_data.getResourceList().getResource(Constants.TECH_TOKENS);
             String transcriptText = m_player.getName() + " removing all Technology Tokens after successful research.";
@@ -254,6 +252,14 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         Change charge = ChangeFactory.changeResourcesChange(m_bridge
                 .getPlayerID(), ipcs, -cost);
         m_bridge.addChange(charge);
+        
+        if(isAA50TechModel())
+        {
+            Resource tokens = m_data.getResourceList().getResource(Constants.TECH_TOKENS);
+            Change newTokens = ChangeFactory.changeResourcesChange(m_bridge
+                .getPlayerID(), tokens, rolls);
+            m_bridge.addChange(newTokens);
+        }
     }
 
     private int getTechHits(int[] random)

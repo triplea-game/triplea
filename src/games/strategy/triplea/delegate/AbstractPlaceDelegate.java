@@ -393,7 +393,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         boolean playerIsOriginalOwner = factoryUnits.size() > 0 ? m_player
                 .equals(getOriginalFactoryOwner(producer)) : false;
 
-        //if (originalFactory && playerIsOriginalOwner && !limitSBRDamageToUnitProd)
+
         if (originalFactory && playerIsOriginalOwner && !placementRestrictedByFactory && !unitPlacementPerTerritoryRestricted)
             return -1;
         
@@ -424,10 +424,12 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             production = ta.getUnitProduction();
             //If there's NO factory, allow placement of the factory and set the initial unitProduction
             if(production == 0 && producer.getUnits().getMatches(Matches.UnitIsFactory).size() == 0)
-            //&& territoryValue > 0
             {
-                //ta.setUnitProduction(String.valueOf(territoryValue));
-                ta.setUnitProduction(territoryValue);
+                /*//TODO COMCO move this to a change factory
+                Change change = ChangeFactory.changeUnitProduction(to, territoryValue);
+                m_bridge.getHistoryWriter().startEvent(transcriptText);
+                m_bridge.getHistoryWriter().setRenderingData(units);
+                m_bridge.addChange(change);*/
                 return 1;
             }
             
@@ -695,14 +697,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
                 Matches.UnitIsAAOrFactory);
         change.add(DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker()
                 .addOriginalOwnerChange(factoryAndAA, m_player));
-        
-        if(Match.someMatch(units, Matches.UnitIsFactory))
-        {
-            TerritoryAttachment ta = TerritoryAttachment.get(at);
-            //ta.setUnitProduction(String.valueOf(getProduction(at)));
-            ta.setUnitProduction(getProduction(at));
-        }
-
+       
         String transcriptText = MyFormatter.unitsToTextNoOwner(units)
                 + " placed in " + at.getName();
         m_bridge.getHistoryWriter().startEvent(transcriptText);
@@ -711,9 +706,14 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         Change remove = ChangeFactory.removeUnits(player, units);
         Change place = ChangeFactory.addUnits(at, units);
 
-        
         change.add(remove);
         change.add(place);
+        
+        if(Match.someMatch(units, Matches.UnitIsFactory))
+        {
+            Change unitProd = ChangeFactory.changeUnitProduction(at, getProduction(at));
+            change.add(unitProd);
+        }
 
         //can we move planes to land there
         

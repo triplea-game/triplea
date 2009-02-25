@@ -323,7 +323,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
                     ProductionRule rule = (ProductionRule) prodRules.next();
                     minIPCsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.IPCS)), minIPCsNeededToBuild);
                 }
-                //TODO COMCO added this       
+                     
                 if(m_id.getRepairFrontier() != null)
                 {
                     Iterator<RepairRule> repairRules = m_id.getRepairFrontier().getRules().iterator();
@@ -343,7 +343,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
                 m_bridge.getGameData().releaseReadLock();
             }
         }
-        //TODO COMCO add determination of damaged factories here
+
       //Check if any factories need to be repaired
         String error = null;
 		IPurchaseDelegate purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();

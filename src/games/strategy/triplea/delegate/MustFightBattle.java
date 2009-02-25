@@ -892,7 +892,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (!isEditMode && isSubRetreatBeforeBattle())
             steps.add(new IExecutable(){
                 // compatible with 0.9.0.2 saved games
-                private static final long serialVersionUID = 6775880082912594489L;
+                private static final long serialVersionUID = 7056448091800764539L;
                 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
                     if(!m_over)
@@ -1216,6 +1216,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     /**
      * @return
      */
+    //TODO COMCO need to sort units so amphib units are killed first (see line 74 of battlecalculator)
     private boolean canAttackerRetreatPartialAmphib()
     {
         if(m_amphibious && isPartialAmphibiousRetreat())
@@ -1223,7 +1224,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             for(Unit unit:m_attackingUnits)
             {
                 TripleAUnit taUnit = (TripleAUnit) unit;
-                if(taUnit.getWasAmphibious())
+                if(!taUnit.getWasAmphibious())
                     return true;
             }
         }
@@ -2428,6 +2429,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             //DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge);
             // NEW VERSION
             
+            boolean lowLuck = m_data.getProperties().get(Constants.LOW_LUCK, false);
 
             //send defender the dice roll so he can see what the dice are while he
             // waits for attacker to select casualties
@@ -2436,11 +2438,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
             Collection<Unit> attackable = Match.getMatches(m_attackingUnits,
                     Matches.UnitIsAir);
                       
-            if(isRollAAIndividually())
+            if(!lowLuck && isRollAAIndividually())
             { // select casualties based on individual shots at each aircraft
                 m_casualties = BattleCalculator.IndividuallyFiredAACasualties(attackable, m_dice, bridge);
             }
-            else if ((isFourthEdition() || isRandomAACasualties()) && !isChooseAA())
+            else if (!lowLuck && (isFourthEdition() || isRandomAACasualties()) && !isChooseAA())
             { // if 4th edition choose casualties randomnly
                 m_casualties = BattleCalculator.fourthEditionAACasualties(attackable,
                         m_dice, bridge);

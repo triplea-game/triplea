@@ -152,7 +152,6 @@ public class TerritoryAttachment extends DefaultAttachment
         return m_production;
     }
 
-    //public void setUnitProduction(String value)
     public void setUnitProduction(Integer value)
     {
         m_unitProduction = value;       
@@ -165,7 +164,6 @@ public class TerritoryAttachment extends DefaultAttachment
     
     public int getUnitProduction()
     {     
-        //return Integer.parseInt(m_unitProduction);
         return m_unitProduction;
     }
 

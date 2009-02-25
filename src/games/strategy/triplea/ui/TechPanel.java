@@ -127,9 +127,24 @@ public class TechPanel extends ActionPanel
             getData().releaseReadLock();
         }
     }
-
-//TODO COMCO start here looking for the client problem w/ tech chart selection
-    public TechAdvance getAvailableTechCategories(PlayerID player)
+    
+    private List<TechAdvance> getAvailableCategories()
+    {
+        getData().acquireReadLock();
+        try
+        {
+            Collection<TechAdvance> currentAdvances = TechTracker.getTechCategories(getCurrentPlayer());
+            Collection<TechAdvance> allAdvances = TechAdvance.getTechCategories(getData());
+            return Util.difference(allAdvances, currentAdvances);
+        }
+        finally 
+        {
+            getData().releaseReadLock();
+        }
+    }
+    
+//COMCO start here looking for the client problem w/ tech chart selection
+/*    public TechAdvance getAvailableTechCategories(PlayerID player)
     {
         getData().acquireReadLock();
         List<TechAdvance> techCategories;
@@ -155,7 +170,7 @@ public class TechPanel extends ActionPanel
         JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart", JOptionPane.PLAIN_MESSAGE);
         category = (TechAdvance) list.getSelectedValue();
         return category;        
-    }
+    }*/
 
 
     private Action GetTechRollsAction = new AbstractAction("Roll Tech...")
@@ -219,14 +234,27 @@ public class TechPanel extends ActionPanel
         {            
             m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
             //Notify user if there are no more techs to acheive
-            List<TechAdvance> available = getAvailableTechs();
-            if (available.isEmpty())
+            List<TechAdvance> techCategories = getAvailableCategories();
+            
+            //if (available.isEmpty())
+            if (techCategories.isEmpty())
             {
                 JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
-                getCurrentPlayer().getResources().removeResource(getData().getResourceList().getResource(Constants.TECH_TOKENS), m_currTokens);
+                //TODO COMCO this won't work
+                //getCurrentPlayer().getResources().removeResource(getData().getResourceList().getResource(Constants.TECH_TOKENS), m_currTokens);
                 return;
             }
-
+            
+            TechAdvance category = null;
+            JList list = new JList(new Vector<TechAdvance>(techCategories));
+            JPanel panel = new JPanel();
+            panel.setLayout(new BorderLayout());
+            panel.add(list, BorderLayout.CENTER);
+            panel.add(new JLabel("Select which tech chart you want to roll for"), BorderLayout.NORTH);
+            list.setSelectedIndex(0);
+            JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart", JOptionPane.PLAIN_MESSAGE);
+            category = (TechAdvance) list.getSelectedValue();
+            
             int ipcs = getCurrentPlayer().getResources().getQuantity(Constants.IPCS);
             
             String message = "Purchase Tech Tokens";
@@ -240,12 +268,11 @@ public class TechPanel extends ActionPanel
             
             m_currTokens += m_quantity;
             getCurrentPlayer().getResources().addResource(getData().getResourceList().getResource(Constants.TECH_TOKENS), m_quantity);
-     
-            m_techRoll = new TechRoll(null, m_currTokens, m_quantity);
+                        
+            m_techRoll = new TechRoll(category, m_currTokens, m_quantity);
             m_techRoll.setNewTokens(m_quantity);
             
             release();
-
         }
     };
 

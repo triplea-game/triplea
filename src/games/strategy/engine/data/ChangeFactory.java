@@ -20,6 +20,7 @@ package games.strategy.engine.data;
 
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.net.GUID;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PropertyUtil;
 
@@ -95,6 +96,11 @@ public class ChangeFactory
         return new PlayerOwnerChange(list, owner, location);
     }
 
+    public static Change changeUnitProduction(Territory terr, int value)
+    {
+        return new ChangeUnitProduction(terr, value);
+    }
+    
     public static Change addUnits(Territory territory, Collection<Unit> units)
     {
 
@@ -444,6 +450,42 @@ class PlayerOwnerChange extends Change
             unit.setOwner(player);
         }
         data.getMap().getTerritory(m_location).notifyChanged();
+    }
+}
+
+/**
+ * Changes unit production of a territory.
+ */
+class ChangeUnitProduction extends Change
+{
+    private static final long serialVersionUID = -1485932997086849018L;
+    
+    private final int m_unitProduction;
+    private final Territory m_location;
+
+
+    ChangeUnitProduction(Territory terr, int quantity)
+    {
+        m_location = terr;
+        m_unitProduction = quantity;
+    }
+
+    public Change invert()
+    {
+        return new ChangeUnitProduction(m_location, -m_unitProduction);
+    }
+
+    protected void perform(GameData data)
+    {
+        TerritoryAttachment ta = TerritoryAttachment.get(m_location);
+
+        ta.setUnitProduction(m_unitProduction);
+        m_location.notifyChanged();
+    }
+
+    public String toString()
+    {
+        return "Change unit production.  Quantity:" + m_unitProduction + " Territory:" + m_location;
     }
 }
 

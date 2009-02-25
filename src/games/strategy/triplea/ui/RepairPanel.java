@@ -57,7 +57,6 @@ public class RepairPanel extends ActionPanel
 
   private final String BUY = "Buy...";
   private final String CHANGE = "Change...";
-  //private static HashMap<Territory, Integer> m_repairCount = new HashMap<Territory, Integer>();
   
 
   /** Creates new RepairPanel */

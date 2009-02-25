@@ -162,8 +162,9 @@ public class EditDelegate implements IDelegate, IEditDelegate
         if(Match.someMatch(units, Matches.UnitIsFactory))
         {
             TerritoryAttachment ta = TerritoryAttachment.get(territory);
-            //ta.setUnitProduction(String.valueOf(getProduction(territory)));
-            ta.setUnitProduction(getProduction(territory));
+
+            Change change = ChangeFactory.changeUnitProduction(territory, getProduction(territory));
+            m_bridge.addChange(change);
         }
         
         logEvent("Adding units owned by "+m_bridge.getPlayerID().getName()+" to "+territory.getName()+": "+MyFormatter.unitsToTextNoOwner(units), units);
