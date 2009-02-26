@@ -157,6 +157,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     private JPanel m_gameSouthPanel;
     private HistoryPanel m_historyTree;
     private boolean m_inHistory = false;
+    private boolean m_inGame = true;
     private HistorySynchronizer m_historySyncher;
     private UIContext m_uiContext;
     private JPanel m_mapAndChatPanel;
@@ -501,6 +502,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         
         m_showGameAction = null;
         m_showHistoryAction = null;
+	m_showMapOnlyAction = null;
         m_showCommentLogAction = null;
         m_localPlayers = null;
         m_editPanel = null;
@@ -927,7 +929,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
             m_data.releaseReadLock();
         }
 
-        //we nee d to invoke and wait here since
+        //we need to invoke and wait here since
         //if we switch to the history as a result of a history
         //change, we need to ensure that no further history
         //events are run until our historySynchronizer is set up
@@ -975,9 +977,9 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         if (player != null && !player.isNull())
             m_round.setIcon(new ImageIcon(m_uiContext.getFlagImageFactory().getFlag(player)));
 
-        //if the game control has passed to someone else
+        //if the game control has passed to someone else and we are not just showing the map
         //show the history
-        if (player != null && !player.isNull() && !playing(player) && !m_inHistory)
+        if (player != null && !player.isNull() && !playing(player) && !m_inHistory && !m_uiContext.getShowMapOnly())
         {
             if (!SwingUtilities.isEventDispatchThread())
                 throw new IllegalStateException("We should be in dispatch thread");
@@ -1022,6 +1024,15 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
                                 hideEditMode();
                             }
                         }
+
+			if (m_uiContext.getShowMapOnly())
+			{
+			    hideRightHandSidePanel();
+			}
+			else
+		        {
+			    showRightHandSidePanel();
+		        }
                     }
                 });
             } catch (Exception e)
@@ -1049,6 +1060,16 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         getGlassPane().setVisible(false);
     }
 
+    public void showRightHandSidePanel()
+    {
+	m_rightHandSidePanel.setVisible(true);
+    }
+
+    public void hideRightHandSidePanel()
+    {
+	m_rightHandSidePanel.setVisible(false);
+    }
+
     public HistoryPanel getHistoryPanel()
     {
         return m_historyTree;
@@ -1056,7 +1077,9 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
     private void showHistory()
     {
-        m_inHistory = true;
+	m_inHistory = true;
+	m_inGame = false;
+
         setWidgetActivation();
 
         final GameData clonedGameData; 
@@ -1163,47 +1186,95 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
     public void showGame()
     {
-        m_inHistory = false;
+	m_inGame = true;
+	m_uiContext.setShowMapOnly(false);
 
-        if (m_historySyncher != null)
-        {
-            m_historySyncher.deactivate();
-            m_historySyncher = null;
-        }
+	// Are we coming from showHistory mode or showMapOnly mode?
+	if (m_inHistory)
+	{
+	    m_inHistory = false;
 
-        setWidgetActivation();
+	    if (m_historySyncher != null)
+	    {
+		m_historySyncher.deactivate();
+		m_historySyncher = null;
+	    }
+	    	    
+	    m_historyTree.goToEnd();
+	    m_historyTree = null;
+	    
+	    m_mapPanel.getData().removeDataChangeListener(m_dataChangeListener);
+	    m_statsPanel.setGameData(m_data);
+	    m_details.setGameData(m_data);
+	    m_mapPanel.setGameData(m_data);
+	    m_data.addDataChangeListener(m_dataChangeListener);
+	    
+	    m_tabsPanel.removeAll();
+	}
 
-        m_historyTree.goToEnd();
-        m_historyTree = null;
+	setWidgetActivation();
+	m_tabsPanel.add("Action", m_actionButtons);
+	m_tabsPanel.add("Stats", m_statsPanel);
+	m_tabsPanel.add("Territory", m_details);
+	if (getEditMode())
+	    m_tabsPanel.add("Edit", m_editPanel);
+	
+	if (m_actionButtons.getCurrent() != null)
+	    m_actionButtons.getCurrent().setActive(true);
+	
+	m_gameMainPanel.removeAll();
+	m_gameMainPanel.setLayout(new BorderLayout());
+	m_gameMainPanel.add(m_mapAndChatPanel, BorderLayout.CENTER);
+	m_gameMainPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
+	m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
+	
+	getContentPane().removeAll();
+	getContentPane().add(m_gameMainPanel, BorderLayout.CENTER);
+	
+	m_mapPanel.setRoute(null);
+	
+	validate();
+    }
 
-        m_mapPanel.getData().removeDataChangeListener(m_dataChangeListener);
-        m_statsPanel.setGameData(m_data);
-        m_details.setGameData(m_data);
-        m_mapPanel.setGameData(m_data);
-        m_data.addDataChangeListener(m_dataChangeListener);
+    public void showMapOnly()
+    {
+	// Are we coming from showHistory mode or showGame mode?	
+	if (m_inHistory)
+	{
+	    m_inHistory = false;
 
-        m_tabsPanel.removeAll();
-        m_tabsPanel.add("Action", m_actionButtons);
-        m_tabsPanel.add("Stats", m_statsPanel);
-        m_tabsPanel.add("Territory", m_details);
-        if (getEditMode())
-            m_tabsPanel.add("Edit", m_editPanel);
+	    if (m_historySyncher != null)
+	    {
+		m_historySyncher.deactivate();
+		m_historySyncher = null;
+	    }
+	    	    
+	    m_historyTree.goToEnd();
+	    m_historyTree = null;
+	    
+	    m_mapPanel.getData().removeDataChangeListener(m_dataChangeListener);
+	    m_mapPanel.setGameData(m_data);
+	    m_data.addDataChangeListener(m_dataChangeListener);
+	    
+	    m_gameMainPanel.removeAll();
+	    m_gameMainPanel.setLayout(new BorderLayout());
+	    m_gameMainPanel.add(m_mapAndChatPanel, BorderLayout.CENTER);
+	    m_gameMainPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
+	    m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
+	    
+	    getContentPane().removeAll();
+	    getContentPane().add(m_gameMainPanel, BorderLayout.CENTER);
+	
+	    m_mapPanel.setRoute(null);
+	}
+	else
+	{
+	    m_inGame = false;
+	}
 
-        if (m_actionButtons.getCurrent() != null)
-            m_actionButtons.getCurrent().setActive(true);
-
-        m_gameMainPanel.removeAll();
-        m_gameMainPanel.setLayout(new BorderLayout());
-        m_gameMainPanel.add(m_mapAndChatPanel, BorderLayout.CENTER);
-        m_gameMainPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
-        m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
-
-        getContentPane().removeAll();
-        getContentPane().add(m_gameMainPanel, BorderLayout.CENTER);
-
-        m_mapPanel.setRoute(null);
-
-        validate();
+	m_uiContext.setShowMapOnly(true);
+	setWidgetActivation();
+	validate();	
     }
     
     public boolean saveScreenshot(final HistoryNode node, final File file)
@@ -1459,14 +1530,47 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     private void setWidgetActivation()
     {
         if(m_showHistoryAction != null) {
-            m_showHistoryAction.setEnabled(!m_inHistory);
+            m_showHistoryAction.setEnabled( !(m_inHistory || m_uiContext.getShowMapOnly()));
         }
-        if(m_editModeButtonModel != null) {
-            m_editModeButtonModel.setEnabled(m_editDelegate != null);
-        }
+
         if(m_showGameAction != null) {
-            m_showGameAction.setEnabled(m_inHistory);
+            m_showGameAction.setEnabled(!m_inGame);
         }
+
+	if(m_showMapOnlyAction != null){
+	    // We need to check and make sure there are no local human players	
+	    boolean foundHuman = false;
+	    Iterator<IGamePlayer> iter = m_localPlayers.iterator();
+	    while (iter.hasNext())
+	    {
+		IGamePlayer gamePlayer = iter.next();
+		if (gamePlayer instanceof TripleAPlayer)
+		{
+		    foundHuman = true;
+		}
+	    }
+
+	    if (!foundHuman)
+	    {
+		m_showMapOnlyAction.setEnabled(m_inGame || m_inHistory);
+	    }
+	    else
+	    {
+		m_showMapOnlyAction.setEnabled(false);
+	    }
+	}
+
+        if(m_editModeButtonModel != null) {
+	    if(m_editDelegate == null || m_uiContext.getShowMapOnly())
+	    {
+		m_editModeButtonModel.setEnabled(false);
+	    }
+	    else
+	    {
+		m_editModeButtonModel.setEnabled(true); 
+	    }
+        }
+
     }
 
     // setEditDelegate is called by TripleAPlayer at the start and end of a turn
@@ -1566,6 +1670,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         public void actionPerformed(ActionEvent e)
         {
             showHistory();
+            m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
         }
     };
 
@@ -1578,6 +1683,17 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         public void actionPerformed(ActionEvent e)
         {
             showGame();
+	    m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+        }
+    };
+
+    private AbstractAction m_showMapOnlyAction = new AbstractAction("Show map only")
+    {
+
+        public void actionPerformed(ActionEvent e)
+        {
+	    showMapOnly();
+	    m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
         }
     };
 
@@ -1653,6 +1769,11 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         return m_showHistoryAction;
     }
     
+    Action getShowMapOnlyAction()
+    {
+	return m_showMapOnlyAction;
+    }
+
     Action getSaveScreenshotAction()
     {
         return m_saveScreenshotAction;

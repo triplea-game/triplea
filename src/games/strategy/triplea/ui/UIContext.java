@@ -54,6 +54,7 @@ public class UIContext
     private final IPCImageFactory m_ipcImageFactory = new IPCImageFactory();
     private boolean m_isShutDown;
     private boolean m_drawUnits=true;
+    private boolean m_drawMapOnly=false;
     
     private List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
     private List<Window> m_windowsToCloseOnShutdown = new ArrayList<Window>();
@@ -450,6 +451,15 @@ public class UIContext
     public void setShowUnits(boolean aBool)
     {
     	m_drawUnits=aBool;
+    }
+
+    public boolean getShowMapOnly()
+    {
+    	return m_drawMapOnly;
+    }    
+    public void setShowMapOnly(boolean aBool)
+    {
+    	m_drawMapOnly=aBool;
     }
 
     public void setUnitScaleFactor(double scaleFactor)

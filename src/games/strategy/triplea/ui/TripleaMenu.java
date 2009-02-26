@@ -154,10 +154,10 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         addEditMode(menuGame);
         menuGame.add(m_frame.getShowGameAction());
         menuGame.add(m_frame.getShowHistoryAction());
-        addShowVerifiedDice(menuGame);
+	menuGame.add(m_frame.getShowMapOnlyAction());
 
-        
-        addEnableSound(menuGame);
+        addShowVerifiedDice(menuGame);
+	addEnableSound(menuGame);
         
         menuGame.addSeparator();
         addGameOptionsMenu(menuGame);
@@ -256,6 +256,22 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         parentMenu.add(editMode);
     }
     
+    private void addShowMapOnly(JMenu parentMenu)
+    {
+	final JCheckBoxMenuItem showMapOnlyBox = new JCheckBoxMenuItem("Show map only");
+	showMapOnlyBox.setSelected(false);
+	showMapOnlyBox.addActionListener(new ActionListener()
+	{
+	    public void actionPerformed(ActionEvent e)
+	    {
+		boolean tfselected=showMapOnlyBox.isSelected();
+		getUIContext().setShowMapOnly(tfselected);
+		m_frame.getMapPanel().resetMap();
+	    }
+	});
+	parentMenu.add(showMapOnlyBox);
+    }
+
     private void addZoomMenu(JMenu menuGame)
     {
         Action mapZoom = new AbstractAction("Map Zoom...")

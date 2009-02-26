@@ -319,30 +319,34 @@ public class BattlePanel extends ActionPanel
                         m_currentBattleDisplayed = null;
                     }
 
-                    m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, battleID, BattlePanel.this.getMap());
-                    
-                    m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
-                    
-
-                    m_battleFrame.getContentPane().add(m_battleDisplay);
-                    m_battleFrame.setSize(750, 540);
-                    m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
-                    
-                    
-                    games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);		    
-                    m_battleFrame.setVisible(true);
-                    m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-
-                    m_currentBattleDisplayed = battleID;
-                    
-                    SwingUtilities.invokeLater(new Runnable()
-                    {
-                        public void run()
-                        {
-                            m_battleFrame.toFront();
-                        }
-
-                    });
+		    if (! getMap().getUIContext().getShowMapOnly())
+			{
+			    
+			    m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, battleID, BattlePanel.this.getMap());
+			    
+			    m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
+			    
+			    
+			    m_battleFrame.getContentPane().add(m_battleDisplay);
+			    m_battleFrame.setSize(750, 540);
+			    m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
+			    
+			    
+			    games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);		    
+			    m_battleFrame.setVisible(true);
+			    m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+			    
+			    m_currentBattleDisplayed = battleID;
+			    
+			    SwingUtilities.invokeLater(new Runnable()
+				{
+				    public void run()
+				    {
+					m_battleFrame.toFront();
+				    }
+				    
+				});
+			}
                 }
             });
         } catch (InterruptedException e)
