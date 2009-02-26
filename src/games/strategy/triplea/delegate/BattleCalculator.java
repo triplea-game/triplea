@@ -170,10 +170,10 @@ public class BattleCalculator
             GameData data, DiceRoll dice, boolean defending, GUID battleID, boolean headLess, int extraHits)
     {
     	boolean isEditMode = EditDelegate.getEditMode(data);
-    	int hits = dice.getHits();
-    	int hitsRemaining = hits;
-        if (!isEditMode && hits == 0)
+        if (isEditMode || dice.getHits() == 0)
             return new CasualtyDetails(Collections.<Unit>emptyList(), Collections.<Unit>emptyList(), true);
+
+        int hitsRemaining = dice.getHits();
         
         Map<Unit, Collection<Unit>> dependents;
         if(headLess)

@@ -186,10 +186,7 @@ public class RepairPanel extends ActionPanel
             try
             {
             	if(isSBRAffectsUnitProduction())
-            	{
-            	    /*ProductionRepairPanel prp = new ProductionRepairPanel(m_map);
-                    List<Rule> rules = prp.getRules();*/
-            	    
+            	{            	    
             	    int addedProd = 0;
             	    PlayerID player = getCurrentPlayer();
             	    if(isIncreasedFactoryProduction(player))
@@ -197,8 +194,12 @@ public class RepairPanel extends ActionPanel
             	    
             		for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedFactory(getData(), getCurrentPlayer()))) 
                     {
-            		    int terrProd = TerritoryAttachment.get(t).getUnitProduction();
-            		    totalProd += Math.max(0, terrProd + addedProd);
+            		    TerritoryAttachment ta = TerritoryAttachment.get(t);
+            		    int terrProd = ta.getUnitProduction();
+            		    if(ta.getProduction() > 2)
+            		        totalProd += Math.max(0, terrProd + addedProd);
+            		    else
+            		        totalProd += Math.max(0, terrProd);
                     }
             	}
             	else

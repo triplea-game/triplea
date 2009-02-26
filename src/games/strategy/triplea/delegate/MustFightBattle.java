@@ -260,20 +260,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                     Matches.UnitIsLand));
             m_amphibious = true;
         }
-
-        //mark units with no movement
-        //for all but air
-        Collection<Unit> nonAir = Match.getMatches(attackingUnits,
-                Matches.UnitIsNotAir);
         
-        //we dont want to change the movement of transported land units if this is a sea battle
-        //so restrict non air to remove land units
-        if(m_battleSite.isWater())
-            nonAir = Match.getMatches(nonAir, Matches.UnitIsNotLand);
-        
-        Change change = DelegateFinder.moveDelegate(m_data).markNoMovementChange(nonAir);
-        
-
         // transports
         Map<Unit, Collection<Unit>> dependencies = transporting(units);
         // If fourth edition, allied air on our carriers are also dependents
@@ -308,6 +295,24 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
         
         addDependentUnits(dependencies);
+
+        //mark units with no movement
+        //for all but air
+        Collection<Unit> nonAir = Match.getMatches(attackingUnits,
+                Matches.UnitIsNotAir);
+        
+        //we dont want to change the movement of transported land units if this is a sea battle
+        //so restrict non air to remove land units
+        if(m_battleSite.isWater())
+            nonAir = Match.getMatches(nonAir, Matches.UnitIsNotLand);
+        
+        //TODO check for ignore sub/trns here
+        if(onlyIgnoredUnitsOnPath(route, m_attacker, m_data, false))
+        {
+            return ChangeFactory.EMPTY_CHANGE;
+        }
+        
+        Change change = DelegateFinder.moveDelegate(m_data).markNoMovementChange(nonAir);
         return change;
     }
 
@@ -381,7 +386,54 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         return false;
     }
+    
+    /**
+     * Checks that there only transports, subs and/or allies on the route except at the end.
+     * AA and factory dont count as enemy.
+     */
+    private static boolean onlyIgnoredUnitsOnPath(Route route, PlayerID player, GameData data, boolean ignoreRouteEnd)
+    {
+        CompositeMatch<Unit> transportOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsSub, Matches.alliedUnit(player, data));
+        CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsTransport, Matches.alliedUnit(player, data));
+        CompositeMatch<Unit> transportOrSubOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsTransport, Matches.UnitIsSub, Matches.alliedUnit(player, data));
+        boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
+        boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
+        int routeLength = route.getLength();
+        
+        if(ignoreRouteEnd)
+        {
+            routeLength -= 1;
+        }
+            for(int i = 0; i < routeLength; i++)
+            {
+                Territory current = route.at(i);
+                if(getIgnoreTransportInMovement && getIgnoreSubInMovement && !current.getUnits().allMatch(transportOrSubOnly))              
+                    return false;
+                if(getIgnoreTransportInMovement && !getIgnoreSubInMovement && !current.getUnits().allMatch(transportOnly))
+                    return false;
+                if(!getIgnoreTransportInMovement && getIgnoreSubInMovement && !current.getUnits().allMatch(subOnly))
+                    return false;
+            }
+        
+        return true;
+    }
+    
+    /**
+     * @return
+     */
+    private static boolean isIgnoreTransportInMovement(GameData data)
+    {
+        return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);
+    }
 
+    /**
+     * @return
+     */
+    private static boolean isIgnoreSubInMovement(GameData data)
+    {
+        return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
+    }
+    
     public Territory getTerritory()
     {
 

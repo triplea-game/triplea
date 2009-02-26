@@ -22,10 +22,19 @@ Changes for 1.0.3.1
 	Allow amphib assault w/o having to combat sub-only forces
 	Fix bomber -v bomber comes to stalemate after one round of combat
 	Fix defending subs still firing after submerging
+	SBR throws null pointer in edit mode
+	Hosted games show more hits than units when transports present
+	Hosted games throw exceptions when undoing transport moves
+	Fix air not firing at subs when accompanying DD dies 
+	Fix client game factories not repaired
 	Disallow blitzing through AA and factories
+	Fix low luck AA not inflicting damage
 	Fix 'Attack Subs' dialog only showing up on Host
 	Fix surface ships being allowed to move into enemy SZ during non-combat
 	Add option to continue after victory for all non-AA50 games
+	Fix exception on host when getting technology
+	Fix partial retreat from amphib assault not working
+	Should be able to stop in SZ with a trn/sub, then continue trip
 
 * Added 'Neutrals Are Impassable' property to eliminate neutrals from pathfinding (ComradeKev)
 
