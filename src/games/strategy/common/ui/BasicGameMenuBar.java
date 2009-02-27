@@ -401,7 +401,17 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
                         if (!fileName.endsWith(".tsvg"))
                             fileName += ".tsvg";
                         File f = new File(dirName, fileName);
-                        
+                      
+                        //TODO check this on a MAC
+                        //disallow sub directories to be entered (in the form directory/name
+                       /* String filePath = f.getPath().substring(0,f.getPath().lastIndexOf("\\"));
+                        if(!fileChooser.getCurrentDirectory().toString().equals(filePath))
+                        {
+                            int choice = JOptionPane.showConfirmDialog(m_frame,
+                                "Special characters are not allowed in the file name.  Please rename it.", "Cancel?", JOptionPane.DEFAULT_OPTION,
+                                JOptionPane.WARNING_MESSAGE);
+                                return;
+                        }*/
                         // If the user selects a filename that already exists,
                         //    the AWT Dialog on Mac OS X will ask the user for confirmation
                         //    so, we don't need to explicitly ask user if they want to overwrite the old file
@@ -420,6 +430,16 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
                     if (rVal == JFileChooser.APPROVE_OPTION)
                     {
                         File f = fileChooser.getSelectedFile();
+
+                        //disallow sub directories to be entered (in the form directory/name
+                        String filePath = f.getPath().substring(0,f.getPath().lastIndexOf("\\"));
+                        if(!fileChooser.getCurrentDirectory().toString().equals(filePath))
+                        {
+                            int choice = JOptionPane.showConfirmDialog(m_frame,
+                                "Sub directories are not allowed in the file name.  Please rename it.", "Cancel?", JOptionPane.DEFAULT_OPTION,
+                                JOptionPane.WARNING_MESSAGE);
+                                return;
+                        }
 
                         if (!f.getName().toLowerCase().endsWith(".tsvg"))
                         {

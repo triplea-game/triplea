@@ -35,6 +35,7 @@ Changes for 1.0.3.1
 	Fix exception on host when getting technology
 	Fix partial retreat from amphib assault not working
 	Should be able to stop in SZ with a trn/sub, then continue trip
+	Add dialog to disallow file names with slashes
 	
 * Add ShowMapOnly mode for passively viewing games (Smutt) 
 
