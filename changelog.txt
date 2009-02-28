@@ -1,5 +1,7 @@
 Changes for 1.0.3.1
 
+* update docs to correct how to run TripleA from the command line using the ant run command.
+
 * The following list of bugs were fixed- primarily for AA50 (Comradekev)
 	Move Chinese capital to impassable neutral so any time a Chinese terr is liberated, it goes to China
 	Some dialogs not appearing on Client computers

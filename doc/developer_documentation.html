@@ -51,9 +51,7 @@
 			
 			<li><b>3.0</b> <a href="#sec_3">Running TripleA</a></li>
 				<ul>
-					<li><b>3.1</b> <a href="#sec_3.1">Microsoft Windows Systems</a></li>
-					<li><b>3.2</b> <a href="#sec_3.2">GNU/Linux, Mac OS X, and UNIX Style Systems</a></li>
-					<li><b>3.3</b> <a href="#sec_3.3">How TripleA Locates its Root Directory</a></li>
+					<li><b>3.1</b> <a href="#sec_3.1">How TripleA Locates its Root Directory</a></li>
 				</ul>
 			
 			<li><b>4.0</b> <a href="#sec_4">Network Configuration</a></li>
@@ -321,6 +319,15 @@
 								Initiates the JUnit tests.
 							</td>
 						</tr>
+						<tr>
+							<td valign="top">
+								<b>ant run</b>
+							</td>
+							
+							<td>
+								Compiles and launches TripleA
+							</td>
+						</tr>						
 					</table>
 				</p>
 				
@@ -851,7 +858,8 @@ Total time: 13 seconds
 				</p>
 				
 				<p>
-					TripleA is now ready to be run!
+					TripleA has been compiled successfuly.  Note, the triplea.exe, triplea.bat and triplea.sh files will not work at this point, as they rely on triplea.jar to be created.  Use the command
+					ant run to start triplea from the command line.
 				</p>
 				
 				<p>
@@ -1055,7 +1063,8 @@ Total time: 13 seconds
 				</p>
 				
 				<p>
-					TripleA is now ready to be run!
+					TripleA has been compiled successfuly.  Note, the triplea.exe, triplea.bat and triplea.sh files will not work at this point, as they rely on triplea.jar to be created.  Use the command
+					ant run to start triplea from the command line.
 				</p>
 				
 				<p>
@@ -1067,76 +1076,10 @@ Total time: 13 seconds
 		<h2><a name="sec_3">3.0</a> Running TripleA</h2>
 		<blockquote>
 			<p>
-				Getting TripleA to run is a little bit different depending which operating
-				system it is running from. Further more, different variants of a similar
-				operating system have their own little way of doing things. For example,
-				various GNU/Linux distributions like to organize their programs in different
-				directories. Such as having games in /usr/share/games and their respective binaries
-				or start-up scripts in /usr/bin/games, or perhaps in /usr/bin, or maybe have the
-				game in /opt and the binaries in /usr/bin.
+				Typically a developer will use an IDE to run TripleA.  If that is the case, use your IDE to launch the class games.strategy.engine.framework.GameRunner.  Make sure that the data folder is
+				on the class path.  To run TripleA from the command line, use the ant run command, which will compile and launch TripleA.
 			</p>
-			
-			<p>
-				As we can see, there are many different ways of installing and running programs on
-				different variants of an operating system (let alone different operating systems.)
-				This section will attempt to go over the basics of how to get TripleA running on
-				on various operating systems and provide some useful details on how to customize
-				TripleA's start-up routine.
-			</p>
-			
-			<p>
-				<a href="#top">- Top -</a>
-			</p>
-		</blockquote>
-		
-		
-		<h2><a name="sec_3.1">3.1</a> Microsoft Windows Systems</h2>
-		<blockquote>
-			<p>
-				For TripleA to run on a Windows Operating System it would need to execute the
-				<b>triplea_windows.bat</b> file. This file will run the appropriate java command
-				that will start-up TripleA.
-			</p>
-			
-			<p>
-				A word of caution: The actual java command is rather lengthy and won't fit in a standard
-				1024x768 screen size web-browser. Thus the command is really one large line and not two
-				separate lines. It may appear as so if the browser window is not large enough.
-				<br/>
-				<br/>
-				<table border="1" cellspacing="2" cellpadding="2">
-					<tr>
-						<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-							<b>Contents of triplea_windows.bat</b>
-						</td>
-					</tr>
 						
-					<tr>
-						<td align="left" valign="top" height="48" width="48">
-							<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
-						</td>
-							
-						<td bgcolor="#ffffcc">
-							<code>
-							@echo off<br>
-							java -Xmx128m -classpath lib/patch.jar;classes;bin/triplea.jar;lib/looks-1.3.1.jar;  games.strategy.engine.framework.GameRunner<br>
-							pause
-							</code>
-						</td>
-					</tr>
-				</table>
-				<br/>
-			</p>
-
-			<p>
-			Note, the triplea.exe file looks for java classes in /bin/triplea.jar, not the classes directory.  This makes triplea.exe unsuited for day to day development use.
-			</p>
-			
-			<p>
-				Steps can be taken to create a Windows short-cut file and have it point to the
-				<b>triplea_windows.bat</b> file. It can also use a TripleA icon image that can
-				be found in the <b>icons</b> folder inside the TripleA folder.
-			</p>
 			
 			<p>
 				<a href="#top">- Top -</a>
@@ -1144,78 +1087,9 @@ Total time: 13 seconds
 		</blockquote>
 		
 		
-		<h2><a name="sec_3.2">3.2</a> GNU/Linux, Mac OS X, and UNIX Style Systems</h2>
-		<blockquote>
-			<p>
-				TripleA provides two start-up shell scripts for these operating systems:
-				<ul>
-					<li>triplea_unix.sh</li>
-					<li>triplea_mac_os_x.sh</li>
-				</ul>
-			</p>
-			
-			<p>
-				The triplea_unix.sh command will work on any unix variant, including Mac-os, Linux, BSD, SGI/IRIX. triplea_max_is_x.sh 
-				contains mac specific flags, and a reference to the location of jdk 1.5 on mac systems, and 
-				will only run on mac os-x.
-			</p>
-			
-			<p>
-				A member of the TripleA community (DMan) has generously provided an improved
-				shell script for TripleA. The flow of execution of the script is as follows:
-				<ol>
-					<li>Check if Java is installed</li>
-					<li>Get the relative directory of TripleA</li>
-					<li>Enter the relative directory of TripleA</li>
-					<li>Execute the Java command</li>
-				</ol>
-			</p>
-			
-			<p>
-				<table border="1" cellspacing="2" cellpadding="2">
-					<tr>
-						<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-							<b>Contents of triplea_unix.sh</b>
-						</td>
-					</tr>
-						
-					<tr>
-						<td align="left" valign="top" height="48" width="48">
-							<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
-						</td>
-							
-						<td bgcolor="#ffffcc">
-							<code>
-<pre>
-#!/bin/sh
-
-if ! java -version >& /dev/null
-then
-echo "Could not find Java."
-echo "You must have Java installed and in your path."
-exit
-fi
-
-relativePathToGame=`dirname $0`
-cd $relativePathToGame
-
-
-java -Xmx128m -cp lib/patch.jar:classes:lib/looks-1.3.1.jar:bin/triplea.jar games.strategy.engine.framework.GameRunner
-
-</pre>
-							</code>
-						</td>
-					</tr>
-				</table>
-			</p>	
-		
-			<p>
-				<a href="#top">- Top -</a>
-			</p>
-		</blockquote>
 		
 		
-		<h2><a name="sec_3.3">3.3</a> How TripleA Locates its Root Directory</h2>
+		<h2><a name="sec_3.1">3.1</a> How TripleA Locates its Root Directory</h2>
 		<blockquote>
 			<p>
 				It may be of some interest to some developers to know exactly how TripleA
@@ -1257,7 +1131,7 @@ java -Xmx128m -cp lib/patch.jar:classes:lib/looks-1.3.1.jar:bin/triplea.jar game
 						</td>
 					</tr>
 					
-					<tr>
+			 		<tr>
 						<td align="left" valign="top" bgcolor="#ccccff">
 							<span style="font-weight: bold; font-size: small;">
 								Package
