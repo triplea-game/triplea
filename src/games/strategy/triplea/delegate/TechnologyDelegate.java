@@ -258,7 +258,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
             Resource tokens = m_data.getResourceList().getResource(Constants.TECH_TOKENS);
             Change newTokens = ChangeFactory.changeResourcesChange(m_bridge
                 .getPlayerID(), tokens, rolls);
-            m_bridge.addChange(newTokens);
+            //m_bridge.addChange(newTokens);
         }
     }
 

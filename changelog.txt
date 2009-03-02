@@ -39,6 +39,8 @@ Changes for 1.0.3.1
 	Should be able to stop in SZ with a trn/sub, then continue trip
 	Add dialog to disallow file names with slashes
 	
+* Fix for tech tokens (Seidelin)
+	
 * Add ShowMapOnly mode for passively viewing games (Smutt) 
 
 * Added 'Neutrals Are Impassable' property to eliminate neutrals from pathfinding (ComradeKev)

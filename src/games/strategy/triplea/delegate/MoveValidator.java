@@ -66,8 +66,13 @@ public class MoveValidator
      */
     
     public static boolean hasEnoughMovement(Collection<Unit> units, Route route)
-    {
-        getMechanizedSupportAvail(route);
+    {    
+        PlayerID player = null;
+
+        if (!units.isEmpty())
+            player = units.iterator().next().getOwner();
+           
+        getMechanizedSupportAvail(route, player);
                 
         for (Unit unit : units)
         {
@@ -80,9 +85,9 @@ public class MoveValidator
     /**
      * @param route
      */
-    private static void getMechanizedSupportAvail(Route route)
+    private static void getMechanizedSupportAvail(Route route, PlayerID player)
     {
-        PlayerID player = route.getStart().getData().getSequence().getStep().getPlayerID();
+        //PlayerID player = route.getStart().getData().getSequence().getStep().getPlayerID();
         Collection<Unit> ownedUnits = route.getStart().getUnits().getMatches(Matches.unitIsOwnedBy(player));
         m_mechanizedSupportAvail = Match.countMatches(ownedUnits, Matches.UnitIsArmour);
     }
@@ -90,9 +95,9 @@ public class MoveValidator
     /**
      * @param route
      */
-    private static void getArialTransportSupportAvail(Route route, Collection<Unit> units)
+    private static void getArialTransportSupportAvail(Route route, Collection<Unit> units, PlayerID player)
     {
-        PlayerID player = route.getStart().getData().getSequence().getStep().getPlayerID();
+        //PlayerID player = route.getStart().getData().getSequence().getStep().getPlayerID();
         Collection<Unit> ownedUnits = Match.getMatches(units, Matches.unitIsOwnedBy(player));
 
 
@@ -986,9 +991,9 @@ public class MoveValidator
             }
             
             //Initialize available Mechanized Inf support
-            getMechanizedSupportAvail(route);
+            getMechanizedSupportAvail(route, player);
             
-            getArialTransportSupportAvail(route, units);
+            getArialTransportSupportAvail(route, units, player);
                         
             // check units individually           
             for (Unit unit : moveTest)
@@ -1048,7 +1053,7 @@ public class MoveValidator
                     Match<Unit> nonBlitzing = new InverseMatch<Unit>(blitzingUnit);
                     Collection<Unit> nonBlitzingUnits = Match.getMatches(units, nonBlitzing);
 
-                    getMechanizedSupportAvail(route);
+                    getMechanizedSupportAvail(route, player);
                     for (Unit unit : nonBlitzingUnits)
                     {
                         UnitAttachment ua = UnitAttachment.get(unit.getType());
@@ -1757,7 +1762,7 @@ public class MoveValidator
             }
             
             //initialize the number of paratroop transports available
-            getArialTransportSupportAvail(route, units);
+            getArialTransportSupportAvail(route, units, player);
             
             for(Unit unit:units)
             {

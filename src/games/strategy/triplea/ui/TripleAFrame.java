@@ -29,6 +29,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
+import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
@@ -46,6 +47,7 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
+import games.strategy.engine.history.Renderable;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -991,10 +993,8 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         else if (player != null && !player.isNull() && playing(player) && m_inHistory)
         {
             showGame();
-            ClipPlayer.getInstance().playClip(SoundPath.START_TURN, SoundPath.class); //play
-                                                                                      // sound
+            ClipPlayer.getInstance().playClip(SoundPath.START_TURN, SoundPath.class); //play sound
         }
-
     }
 
     GameDataChangeListener m_dataChangeListener = new GameDataChangeListener()
@@ -1028,9 +1028,26 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 			if (m_uiContext.getShowMapOnly())
 			{
 			    hideRightHandSidePanel();
+
+			    //display troop movement
+			    HistoryNode node = m_data.getHistory().getLastNode();
+			    if (node instanceof Renderable)
+			    {
+			        Object details = ((Renderable) node).getRenderingData();
+			        if (details instanceof MoveDescription)
+			        {
+			            MoveDescription moveMessage = (MoveDescription) details;
+			            Route route = moveMessage.getRoute();
+			            m_mapPanel.setRoute(null);
+			            m_mapPanel.setRoute(route);
+			            Territory terr = route.getEnd();
+			            if (!m_mapPanel.isShowing(terr))
+			                m_mapPanel.centerOn(terr);				   
+			        }
+			    }
 			}
 			else
-		        {
+			{
 			    showRightHandSidePanel();
 		        }
                     }
