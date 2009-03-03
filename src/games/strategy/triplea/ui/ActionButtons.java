@@ -27,6 +27,7 @@ import games.strategy.util.IntegerMap;
 
 import java.awt.CardLayout;
 import java.util.Collection;
+import java.util.HashMap;
 
 import javax.swing.*;
 
@@ -242,7 +243,7 @@ public class ActionButtons extends JPanel
      * 
      * @return null if no move was made.
      */
-    public IntegerMap<RepairRule> waitForRepair(boolean bid)
+    public HashMap<Territory, IntegerMap<RepairRule>> waitForRepair(boolean bid)
     {
         return m_repairPanel.waitForRepair(bid);
     }

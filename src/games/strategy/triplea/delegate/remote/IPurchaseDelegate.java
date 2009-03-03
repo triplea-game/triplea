@@ -14,8 +14,11 @@
 
 package games.strategy.triplea.delegate.remote;
 
+import java.util.HashMap;
+
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.util.IntegerMap;
 
@@ -31,5 +34,6 @@ public interface IPurchaseDelegate extends IRemote
      */
     public String purchase(IntegerMap<ProductionRule> productionRules);
     
-    public String purchaseRepair(IntegerMap<RepairRule> productionRules);
+    //public String purchaseRepair(IntegerMap<RepairRule> productionRules);
+    public String purchaseRepair(HashMap<Territory, IntegerMap<RepairRule>> productionRules);
 }

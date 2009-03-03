@@ -58,6 +58,7 @@ import games.strategy.engine.data.GameData;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -363,7 +364,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         	
         	if(bombedTerrs.size() > 0)
         	{
-        		IntegerMap<RepairRule> repair = m_ui.getRepair(m_id, bid);
+        	    HashMap<Territory, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
         		if (repair != null)
         		{
         			purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();

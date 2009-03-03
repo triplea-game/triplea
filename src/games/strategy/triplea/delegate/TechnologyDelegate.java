@@ -109,6 +109,11 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
  
     public TechResults rollTech(int techRolls, TechAdvance techToRollFor, int newTokens)
     {
+        boolean canPay = checkEnoughMoney(newTokens);
+        if (!canPay)
+            return new TechResults("Not enough money to pay for that many tech rolls.");
+
+        chargeForTechRolls(newTokens);        
         int m_currTokens = 0;
         
         if(isAA50TechModel())
@@ -130,11 +135,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         }
         
         
-        boolean canPay = checkEnoughMoney(newTokens);
-        if (!canPay)
-            return new TechResults("Not enough money to pay for that many tech rolls.");
-
-        chargeForTechRolls(newTokens);
+        
         String annotation = m_player.getName() + " rolling for tech.";
         int[] random;
         if (EditDelegate.getEditMode(m_data))
@@ -258,7 +259,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
             Resource tokens = m_data.getResourceList().getResource(Constants.TECH_TOKENS);
             Change newTokens = ChangeFactory.changeResourcesChange(m_bridge
                 .getPlayerID(), tokens, rolls);
-            //m_bridge.addChange(newTokens);
+            m_bridge.addChange(newTokens);
         }
     }
 

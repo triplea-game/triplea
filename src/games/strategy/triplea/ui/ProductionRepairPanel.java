@@ -59,8 +59,8 @@ public class ProductionRepairPanel extends JPanel
     private boolean m_bid;
     private GameData m_data;
     private static HashMap<Territory, Integer> m_repairCount = new HashMap<Territory, Integer>();
-
-    public static IntegerMap<RepairRule> getProduction(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap<RepairRule> initialPurchase, UIContext context)
+    
+    public static HashMap<Territory, IntegerMap<RepairRule>> getProduction(PlayerID id, JFrame parent, GameData data, boolean bid, HashMap<Territory, IntegerMap<RepairRule>> initialPurchase, UIContext context)
     {
         return new ProductionRepairPanel(context).show(id, parent, data, bid, initialPurchase);
     }
@@ -68,7 +68,7 @@ public class ProductionRepairPanel extends JPanel
     /**
      * Shows the production panel, and returns a map of selected rules.
      */
-    public IntegerMap<RepairRule> show(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap<RepairRule> initialPurchase)
+    public HashMap<Territory, IntegerMap<RepairRule>> show(PlayerID id, JFrame parent, GameData data, boolean bid, HashMap<Territory, IntegerMap<RepairRule>> initialPurchase)
     {
         if (!(parent == m_owner))
             m_dialog = null;
@@ -98,7 +98,12 @@ public class ProductionRepairPanel extends JPanel
     {
         return this.m_rules;
     };
-
+    
+    public static HashMap<Territory, Integer> getTerritoryRepairs()
+    {
+        return m_repairCount;
+    }
+    
     private void initDialog(JFrame root)
     {
       
@@ -130,7 +135,8 @@ public class ProductionRepairPanel extends JPanel
         m_uiContext = uiContext;
     }
 
-    private void initRules(PlayerID player, GameData data, IntegerMap<RepairRule> initialPurchase)
+
+    private void initRules(PlayerID player, GameData data, HashMap<Territory, IntegerMap<RepairRule>> initialPurchase)
     {
         m_data.acquireReadLock();
         try
@@ -149,7 +155,10 @@ public class ProductionRepairPanel extends JPanel
                     if(unitProduction < IPCProduction)
                     {
                     	Rule rule = new Rule(repairRule, player, m_uiContext, terr);
-                    	int initialQuantity = initialPurchase.getInt(repairRule);
+                        //int initialQuantity = initialPurchase.getInt(repairRule);
+                    	int initialQuantity = 0;
+                    	if (!initialPurchase.isEmpty())
+                    	    initialQuantity = initialPurchase.get(repairRule).getInt(repairRule);
                     	rule.setQuantity(initialQuantity);
                     	rule.setMax(IPCProduction - unitProduction);
                     	rule.setTerr(terr.getName().toString());
@@ -215,20 +224,21 @@ public class ProductionRepairPanel extends JPanel
         }
     };
 
-    private IntegerMap<RepairRule> getProduction()
+    private HashMap<Territory, IntegerMap<RepairRule>> getProduction()
     {
-        IntegerMap<RepairRule> prod = new IntegerMap<RepairRule>();
+        HashMap<Territory,IntegerMap<RepairRule>> prod = new HashMap<Territory,IntegerMap<RepairRule>>();
+        IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
         Iterator<Rule> iter = m_rules.iterator();
         while (iter.hasNext())
         {
             Rule rule = iter.next();
             int quantity = rule.getQuantity();
             if (quantity != 0)
-            {
-                prod.add(rule.getProductionRule(), quantity);
-                
-                Territory terr = m_data.getMap().getTerritory(rule.m_terr);                
-                m_repairCount.put(terr, quantity);
+            {                
+                Territory terr = m_data.getMap().getTerritory(rule.m_terr);
+                //m_repairCount.put(terr, quantity);
+                repairRule.put(rule.getProductionRule(), quantity);
+                prod.put(terr, repairRule);
             }
         }
         return prod;
@@ -261,11 +271,6 @@ public class ProductionRepairPanel extends JPanel
             return Integer.parseInt(m_data.getProperties().get(propertyName).toString());
         } else
             return m_id.getResources().getQuantity(Constants.IPCS);
-    }
-    
-    public static HashMap<Territory, Integer> getTerritoryRepairs()
-    {
-        return m_repairCount;
     }
 
     public class Rule extends JPanel

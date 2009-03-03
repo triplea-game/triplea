@@ -432,13 +432,16 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
                         File f = fileChooser.getSelectedFile();
 
                         //disallow sub directories to be entered (in the form directory/name
-                        String filePath = f.getPath().substring(0,f.getPath().lastIndexOf("\\"));
-                        if(!fileChooser.getCurrentDirectory().toString().equals(filePath))
+                        if(f.getPath().contains("\\"))
                         {
-                            int choice = JOptionPane.showConfirmDialog(m_frame,
-                                "Sub directories are not allowed in the file name.  Please rename it.", "Cancel?", JOptionPane.DEFAULT_OPTION,
-                                JOptionPane.WARNING_MESSAGE);
+                            String filePath = f.getPath().substring(0,f.getPath().lastIndexOf("\\"));
+                            if(!fileChooser.getCurrentDirectory().toString().equals(filePath))
+                            {
+                                int choice = JOptionPane.showConfirmDialog(m_frame,
+                                    "Sub directories are not allowed in the file name.  Please rename it.", "Cancel?", JOptionPane.DEFAULT_OPTION,
+                                    JOptionPane.WARNING_MESSAGE);
                                 return;
+                            }
                         }
 
                         if (!f.getName().toLowerCase().endsWith(".tsvg"))

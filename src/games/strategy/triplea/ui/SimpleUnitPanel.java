@@ -68,26 +68,32 @@ public class SimpleUnitPanel extends JPanel
     }
   }
 //TODO COMCO added this
-  public void setUnitsFromRepairRuleMap(IntegerMap<RepairRule> units, PlayerID player, GameData data)
+  public void setUnitsFromRepairRuleMap(HashMap<Territory, IntegerMap<RepairRule>> units, PlayerID player, GameData data)
   {
     removeAll();
-
-
-    TreeSet<RepairRule> repairRules = new TreeSet<RepairRule>(repairRuleComparator);
-    repairRules.addAll(units.keySet());
-    Iterator<RepairRule> iter = repairRules.iterator();
+    
+    Set entries = units.keySet();
+    Iterator iter = entries.iterator();
     while (iter.hasNext())
     {
-    	RepairRule repairRule = iter.next();
+        Territory terr = (Territory) iter.next();
+        IntegerMap<RepairRule> rules = units.get(terr);
 
-      int quantity = units.getInt(repairRule);
+        TreeSet<RepairRule> repairRules = new TreeSet<RepairRule>(repairRuleComparator);
+        repairRules.addAll(rules.keySet());
+        Iterator<RepairRule> ruleIter = repairRules.iterator();
+        while (ruleIter.hasNext())
+        {
+            RepairRule repairRule = ruleIter.next();
+            int quantity = rules.getInt(repairRule);
 
-      UnitType unit = (UnitType) repairRule.getResults().keySet().
-        iterator().next();
-      boolean damaged = false;
+            UnitType unit = (UnitType) repairRule.getResults().keySet().
+            iterator().next();
+            boolean damaged = false;
 
-      addUnits(player, data, quantity, unit, damaged);
+            addUnits(player, data, quantity, unit, damaged);
 
+        }        
     }
   }
   /**

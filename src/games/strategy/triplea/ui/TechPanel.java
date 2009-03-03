@@ -267,7 +267,7 @@ public class TechPanel extends ActionPanel
             m_quantity = techTokenPanel.getValue();
             
             m_currTokens += m_quantity;
-            getCurrentPlayer().getResources().addResource(getData().getResourceList().getResource(Constants.TECH_TOKENS), m_quantity);
+            //getCurrentPlayer().getResources().addResource(getData().getResourceList().getResource(Constants.TECH_TOKENS), m_quantity);
                         
             m_techRoll = new TechRoll(category, m_currTokens, m_quantity);
             m_techRoll.setNewTokens(m_quantity);

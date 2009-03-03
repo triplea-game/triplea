@@ -94,6 +94,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -631,8 +632,8 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_actionButtons.changeToProduce(player);
         return m_actionButtons.waitForPurchase(bid);
     }
-//TODO COMCO added this
-    public IntegerMap<RepairRule> getRepair(final PlayerID player, boolean bid)
+//TODO COMCO added this 
+    public HashMap<Territory, IntegerMap<RepairRule>> getRepair(final PlayerID player, boolean bid)
     {
         m_actionButtons.changeToRepair(player);
         return m_actionButtons.waitForRepair(bid);

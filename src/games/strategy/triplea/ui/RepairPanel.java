@@ -49,7 +49,8 @@ public class RepairPanel extends ActionPanel
 {
 
   private JLabel actionLabel = new JLabel();
-  private IntegerMap<RepairRule> m_repair;
+  private HashMap<Territory, IntegerMap<RepairRule>> m_repair;
+  
   private boolean m_bid;
   private SimpleUnitPanel m_unitsPanel;
   private JLabel m_repairdSoFar = new JLabel();
@@ -71,7 +72,8 @@ public class RepairPanel extends ActionPanel
   public void display(final PlayerID id)
   {
     super.display(id);
-    m_repair = new IntegerMap<RepairRule>();
+    
+    m_repair = new HashMap<Territory, IntegerMap<RepairRule>>();
     
     SwingUtilities.invokeLater(new Runnable()
     {
@@ -89,8 +91,8 @@ public class RepairPanel extends ActionPanel
             add(Box.createVerticalStrut(9));
             add(m_repairdSoFar);
             add(Box.createVerticalStrut(4));
-
-            m_unitsPanel.setUnitsFromRepairRuleMap(new IntegerMap<RepairRule>(), id, getData());
+            
+            m_unitsPanel.setUnitsFromRepairRuleMap(new HashMap<Territory, IntegerMap<RepairRule>>(), id, getData());
             add(m_unitsPanel);
             add(Box.createVerticalGlue());
             SwingUtilities.invokeLater(REFRESH);
@@ -113,8 +115,8 @@ public class RepairPanel extends ActionPanel
     });
     
   }
-
-  public IntegerMap<RepairRule> waitForRepair(boolean bid)
+  
+  public HashMap<Territory, IntegerMap<RepairRule>> waitForRepair(boolean bid)
   {
     m_bid = bid;
     refreshActionLabelText();
@@ -144,10 +146,10 @@ public class RepairPanel extends ActionPanel
      	
     	m_repair = ProductionRepairPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, m_bid, m_repair, getMap().getUIContext());
     	
-    	//m_repairCount = ProductionRepairPanel.getTerritories();
     	
     	m_unitsPanel.setUnitsFromRepairRuleMap(m_repair, player, data);
-    	if(m_repair.totalValues() == 0)
+    	int totalValues = getTotalValues(m_repair);
+    	if(totalValues == 0)
     	{
     		m_repairdSoFar.setText("");
     		m_buyButton.setText(BUY);
@@ -155,18 +157,32 @@ public class RepairPanel extends ActionPanel
     	else
     	{
     		m_buyButton.setText(CHANGE);
-    		m_repairdSoFar.setText(m_repair.totalValues()+MyFormatter.pluralize(" unit", m_repair.totalValues())+" to be repaired:");
+    		m_repairdSoFar.setText(totalValues+MyFormatter.pluralize(" unit", totalValues)+" to be repaired:");
     	}
     }
   };
-
+  
+//Spin through the territories to get this.
+  private int getTotalValues(HashMap<Territory, IntegerMap<RepairRule>> m_repair)
+  {
+      Collection<Territory> terrs = m_repair.keySet();
+      Iterator<Territory> iter = terrs.iterator();
+      int totalValues = 0;
+      
+      while(iter.hasNext())
+      {
+          Territory terr = iter.next();
+          totalValues += m_repair.get(terr).totalValues();
+      }
+      return totalValues;
+  }
+  
   private Action DoneAction = new AbstractAction("Done")
   {
     @SuppressWarnings("unchecked")
     public void actionPerformed(ActionEvent event)
     {
-     
-        boolean hasPurchased = m_repair.totalValues() != 0;
+        boolean hasPurchased = getTotalValues(m_repair) != 0;
         if(!hasPurchased)
         {
             int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( RepairPanel.this), "Are you sure you dont want to buy anything?", "End Purchase", JOptionPane.YES_NO_OPTION);
