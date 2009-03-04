@@ -232,11 +232,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
      * The rule is that new fighters can be produced on new carriers. This does
      * not allow for fighters to be produced on old carriers.
      */
-    private String validateNewAirCanLandOnNewCarriers(Territory to,
-            Collection<Unit> units)
+    private String validateNewAirCanLandOnCarriers(Territory to, Collection<Unit> units)
     {
         int cost = MoveValidator.carrierCost(units);
         int capacity = MoveValidator.carrierCapacity(units);
+        capacity =+ MoveValidator.carrierCapacity(to.getUnits().getUnits());
 
         if (cost > capacity)
             return "Not enough new carriers to land all the fighters";
@@ -264,9 +264,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         
         if (to.isWater())
         {
-            Territory producer = getProducer(to, player);
-            String canLand = validateNewAirCanLandOnNewCarriers(
-                    producer, units);
+            String canLand = validateNewAirCanLandOnCarriers(to, units);
             if (canLand != null)
                 return canLand;
         } else
@@ -306,8 +304,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         Territory producer = getProducer(to, player);
         Collection<Unit> allProducedUnits = new ArrayList<Unit>(units);
         allProducedUnits.addAll(getAlreadyProduced(producer));
-        if (canProduceFightersOnCarriers()
-                && Match.someMatch(allProducedUnits, Matches.UnitIsCarrier))
+        if (canProduceFightersOnCarriers() &&
+                (Match.someMatch(allProducedUnits, Matches.UnitIsCarrier) || Match.someMatch(to.getUnits().getUnits(), Matches.UnitIsCarrier)))
         {
             CompositeMatch<Unit> airThatCanLandOnCarrier = new CompositeMatchAnd<Unit>();
             airThatCanLandOnCarrier.add(Matches.UnitIsAir);

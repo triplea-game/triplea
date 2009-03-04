@@ -431,10 +431,11 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
                     {
                         File f = fileChooser.getSelectedFile();
 
-                        //disallow sub directories to be entered (in the form directory/name
-                        if(f.getPath().contains("\\"))
+                        //disallow sub directories to be entered (in the form directory/name) for Windows boxes                        
+                        if(GameRunner.isWindows())
                         {
-                            String filePath = f.getPath().substring(0,f.getPath().lastIndexOf("\\"));
+                            int slashIndex = Math.min(f.getPath().lastIndexOf("\\"), f.getPath().length());
+                            String filePath = f.getPath().substring(0,slashIndex);
                             if(!fileChooser.getCurrentDirectory().toString().equals(filePath))
                             {
                                 int choice = JOptionPane.showConfirmDialog(m_frame,
@@ -443,6 +444,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
                                 return;
                             }
                         }
+                       
 
                         if (!f.getName().toLowerCase().endsWith(".tsvg"))
                         {
