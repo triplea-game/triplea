@@ -1099,6 +1099,7 @@
                          <option name="transportCost" value="2"/>
                          <option name="isInfantry" value="true"/>
                          <option name="isParatroop" value="false"/>
+                         <option name="isMechanized" value="false"/>
                          <option name="attack" value="1"/>
                          <option name="defense" value="2"/>
                          <option name="artillerySupportable" value="true"/>

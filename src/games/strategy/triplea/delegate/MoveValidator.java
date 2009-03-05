@@ -72,7 +72,7 @@ public class MoveValidator
         if (!units.isEmpty())
             player = units.iterator().next().getOwner();
            
-        getMechanizedSupportAvail(route, player);
+        getMechanizedSupportAvail(route, units, player);
                 
         for (Unit unit : units)
         {
@@ -85,25 +85,46 @@ public class MoveValidator
     /**
      * @param route
      */
-    private static void getMechanizedSupportAvail(Route route, PlayerID player)
+    private static void getMechanizedSupportAvail(Route route, Collection<Unit> units, PlayerID player)
     {
-        //PlayerID player = route.getStart().getData().getSequence().getStep().getPlayerID();
-        Collection<Unit> ownedUnits = route.getStart().getUnits().getMatches(Matches.unitIsOwnedBy(player));
-        m_mechanizedSupportAvail = Match.countMatches(ownedUnits, Matches.UnitIsArmour);
+        //Collection<Unit> ownedUnits = Match.getMatches(units, Matches.unitIsOwnedBy(player));
+
+        CompositeMatch<Unit> transportTanks = new CompositeMatchAnd<Unit>(Matches.UnitIsArmour, Matches.unitIsOwnedBy(player));
+        Collection<Unit> tanks = Match.getMatches(units, transportTanks);
+        
+        m_mechanizedSupportAvail = tanks.size();
+        
+        int tempTanks = m_mechanizedSupportAvail;
+        
+        for (Unit unit : units)
+        {
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+
+            if (isMechanizedInfantry(player) && (ua.isInfantry() || ua.isMarine()))
+            {   
+                if(tempTanks > 0 )
+                {
+                    ua.setIsMechanized("true");
+                    tempTanks --;
+                }
+                else
+                {
+                    ua.setIsMechanized("false");                
+                }
+            }
+        }
+        
     }
 
     /**
-     * @param route
+     * 
      */
     private static void getArialTransportSupportAvail(Route route, Collection<Unit> units, PlayerID player)
     {
-        //PlayerID player = route.getStart().getData().getSequence().getStep().getPlayerID();
-        Collection<Unit> ownedUnits = Match.getMatches(units, Matches.unitIsOwnedBy(player));
+        //Collection<Unit> ownedUnits = Match.getMatches(units, Matches.unitIsOwnedBy(player));
 
-
-        CompositeMatch<Unit> transportBombers = new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber);
-        Collection<Unit> bombers = Match.getMatches(ownedUnits, transportBombers);
-        
+        CompositeMatch<Unit> transportBombers = new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(player));
+        Collection<Unit> bombers = Match.getMatches(units, transportBombers);        
                 
         m_paraTransportsAvail = bombers.size();
                 
@@ -991,7 +1012,7 @@ public class MoveValidator
             }
             
             //Initialize available Mechanized Inf support
-            getMechanizedSupportAvail(route, player);
+            getMechanizedSupportAvail(route, units, player);
             
             getArialTransportSupportAvail(route, units, player);
                         
@@ -1004,6 +1025,11 @@ public class MoveValidator
                     if(ua.isParatroop() && m_paraTransportsAvail > 0)
                     {
                         m_paraTransportsAvail --;
+                        continue;
+                    }
+                    else if(ua.isMechanized() && m_mechanizedSupportAvail > 0)
+                    {
+                        m_mechanizedSupportAvail --;
                         continue;
                     }
                     
@@ -1053,15 +1079,17 @@ public class MoveValidator
                     Match<Unit> nonBlitzing = new InverseMatch<Unit>(blitzingUnit);
                     Collection<Unit> nonBlitzingUnits = Match.getMatches(units, nonBlitzing);
 
-                    getMechanizedSupportAvail(route, player);
+                    getMechanizedSupportAvail(route, units, player);
                     for (Unit unit : nonBlitzingUnits)
                     {
                         UnitAttachment ua = UnitAttachment.get(unit.getType());
                         if (ua.isParatroop())
                             continue;
                         
-                        if((ua.isInfantry() || ua.isMarine()) && m_mechanizedSupportAvail > 0)
-                            m_mechanizedSupportAvail --;
+                        //if((ua.isInfantry() || ua.isMarine()) && m_mechanizedSupportAvail > 0)
+                        //m_mechanizedSupportAvail --;
+                        if (ua.isMechanized())
+                            continue;
                         else
                             result.addDisallowedUnit("Not all units can blitz",unit);
                     }
@@ -1771,11 +1799,7 @@ public class MoveValidator
                 {
                     ua.setIsParatroop("true");
                     m_paraTransportsAvail --;
-                }
-                /*else
-                {
-                    result.setErrorReturnResult("Kev");
-                }*/
+                }               
             }
         }
         

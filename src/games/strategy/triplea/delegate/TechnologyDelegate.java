@@ -109,11 +109,13 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
  
     public TechResults rollTech(int techRolls, TechAdvance techToRollFor, int newTokens)
     {
-        boolean canPay = checkEnoughMoney(newTokens);
+        int rollCount = Math.max(techRolls, newTokens);
+        
+        boolean canPay = checkEnoughMoney(rollCount);
         if (!canPay)
             return new TechResults("Not enough money to pay for that many tech rolls.");
 
-        chargeForTechRolls(newTokens);        
+        chargeForTechRolls(rollCount);        
         int m_currTokens = 0;
         
         if(isAA50TechModel())

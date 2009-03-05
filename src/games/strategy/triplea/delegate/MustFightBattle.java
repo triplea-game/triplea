@@ -1954,18 +1954,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
             units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
         }
         
-       /* Collection<Unit> attSubs = new ArrayList<Unit>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
-        attSubs.addAll(m_attackingUnits);
-        attSubs.addAll(m_attackingWaitingToDie);
-        attSubs = Match.getMatches(attSubs, Matches.UnitIsSub);       
-                
-        //TODO perhaps need to add defendingwaitingtodie to below statement
-      //if restricted, remove aircraft from attackers
-        if (m_battleSite.isWater() && isAirAttackSubRestricted() && !attSubs.isEmpty() && !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
-        {
-        	units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
-        }*/
-
         if (units.isEmpty())
             return;
 
@@ -1991,24 +1979,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
             fire(m_defender.getName() + SELECT_CASUALTIES, units, enemyUnitsNotSubs, false, true, bridge, "Attacker's aircraft fire,");            
         }
-        
-        //TODO COMCO DD + Air attacking subs- if DD dies in subs' "sneak attack" air doesn't fire
-       /* if(m_battleSite.isWater() && Match.someMatch(m_defendingUnits, Matches.UnitIsSub) && !(Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer) || Match.someMatch(m_attackingWaitingToDie, Matches.UnitIsDestroyer)))
-        {	        	
-	        Collection<Unit> airUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsAir);
-	        airUnits.addAll(Match.getMatches(m_attackingWaitingToDie, Matches.UnitIsAir));
-	        // Only attacker can fire, allies can't.
-	        //Collection<Unit> ownedAirUnits = Match.getMatches(airUnits, Matches.unitIsOwnedBy(m_attacker));    
-            airUnits = Match.getMatches(airUnits, Matches.unitIsOwnedBy(m_attacker));        
-	
-	        if (airUnits.isEmpty())
-	            return;
-	        
-	        Collection<Unit> enemyUnitsNotSubs = Match.getMatches(m_defendingUnits, Matches.UnitIsNotSub);
-	
-	        fire(m_defender.getName() + SELECT_CASUALTIES, airUnits,
-	            enemyUnitsNotSubs, false, true, bridge, "Attackers aircraft fire,");	        
-        }*/
     }
     
     private boolean canAirAttackSubs(Collection<Unit> firedAt, Collection<Unit> firing)
@@ -2029,29 +1999,15 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection<Unit> units = new ArrayList<Unit>(m_defendingUnits.size() + m_defendingWaitingToDie.size());
         units.addAll(m_defendingUnits);
         units.addAll(m_defendingWaitingToDie); 
-        units = Match.getMatches(units, Matches.unitIsOwnedBy(m_attacker));        
+        units = Match.getMatches(units, Matches.unitIsOwnedBy(m_defender));        
         
         if(!canAirAttackSubs(m_attackingUnits, units))
         {
             units = Match.getMatches(units, Matches.UnitIsAir);  
-            Collection<Unit> enemyUnitsNotSubs = Match.getMatches(m_defendingUnits, Matches.UnitIsNotSub);
+            Collection<Unit> enemyUnitsNotSubs = Match.getMatches(m_attackingUnits, Matches.UnitIsNotSub);
 
             fire(m_defender.getName() + SELECT_CASUALTIES, units, enemyUnitsNotSubs, true, true, bridge, "Defender's aircraft fire,");            
         }
-        
-        /*if(m_battleSite.isWater() && Match.someMatch(m_attackingUnits, Matches.UnitIsSub) && !(Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer) || Match.someMatch(m_defendingWaitingToDie, Matches.UnitIsDestroyer)))
-        {	        	
-	        Collection<Unit> airUnits = Match.getMatches(m_defendingUnits, Matches.UnitIsAir);
-            airUnits.addAll(Match.getMatches(m_defendingWaitingToDie, Matches.UnitIsAir));            
-            
-            if (airUnits.isEmpty())
-                return;	        
-
-            Collection<Unit> enemyUnitsNotSubs = Match.getMatches(m_attackingUnits, Matches.UnitIsNotSub);
-	
-	        fire(m_defender.getName() + SELECT_CASUALTIES, airUnits,
-	            enemyUnitsNotSubs, true, true, bridge, "Defenders aircraft fire,");
-        }*/
     }
     
 //If there are no attacking DDs, but defending SUBs, remove attacking AIR as they've already fired- otherwise fire all attackers.     
@@ -2070,13 +2026,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
         }
-        /*if (m_battleSite.isWater() && isAirAttackSubRestricted() && Match.someMatch(m_defendingUnits, Matches.UnitIsSub) && !Match.someMatch(units, Matches.UnitIsDestroyer))
-        	units.removeAll(Match.getMatches(units, Matches.UnitIsAir));*/
         
-        // Only attacker can fire, allies can't.
-        //Collection<Unit> ownedUnits = Match.getMatches(units,Matches.unitIsOwnedBy(m_attacker));
-        //units = Match.getMatches(units,Matches.unitIsOwnedBy(m_attacker));
-
         if (units.isEmpty())
             return;
 
@@ -2105,8 +2055,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (m_attackingUnits.size() == 0)
             return;
         
-        Collection<Unit> firing = Match.getMatches(m_defendingUnits,
-            Matches.UnitIsSub);
+        Collection<Unit> firing = new ArrayList<Unit>(m_defendingUnits.size() + m_defendingWaitingToDie.size());
+        firing.addAll(m_defendingUnits);
+        firing.addAll(m_defendingWaitingToDie); 
+        firing = Match.getMatches(firing, Matches.UnitIsSub); 
+        
+        /*Collection<Unit> firing = Match.getMatches(m_defendingUnits,
+            Matches.UnitIsSub);*/
         
         if (firing.isEmpty())
             return;
@@ -2138,12 +2093,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
             units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
         }
         
-    /*    //if restricted, remove aircraft from attackers
-        if (isAirAttackSubRestricted() && m_battleSite.isWater()  && !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer))
-        {
-        	units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
-        }*/
-        
         if (units.isEmpty())
             return;
 
@@ -2167,13 +2116,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
         }
-        
-  /*      if (isAirAttackSubRestricted() && m_battleSite.isWater() && !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
-        {
-        	units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
-        }*/
-        
-        
+         
         if (units.isEmpty())
             return;
 
@@ -2194,6 +2137,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
     void removeCasualties(Collection<Unit> killed, boolean canReturnFire,
             boolean defender, IDelegateBridge bridge)
     {
+        if(killed.isEmpty())
+            return;
 
         if (canReturnFire)
         {
@@ -2205,16 +2150,17 @@ public class MustFightBattle implements Battle, BattleStepStrings
         } else
         {
             if(defender && isDefendingSubsSneakAttack())
-            {
-                m_defendingWaitingToDie.addAll(Match.getMatches(killed, Matches.UnitIsSub));
-                //remove the rest immediately            
-                remove(Match.getMatches(killed, Matches.UnitIsNotSub), bridge, m_battleSite);
+            {   //if there are no attacking destroyers, allow killed defending subs to sneak attack
+                if(Match.noneMatch(m_attackingUnits, Matches.UnitIsDestroyer))
+                {
+                    m_defendingWaitingToDie.addAll(Match.getMatches(killed, Matches.UnitIsSub));
+                    //remove the rest immediately            
+                    remove(Match.getMatches(killed, Matches.UnitIsNotSub), bridge, m_battleSite);
+                    return;
+                }
             }
-            else
-            {
-                //remove immediately            
-                remove(killed, bridge, m_battleSite);
-            }
+            //remove immediately            
+            remove(killed, bridge, m_battleSite);
         }
 
         //remove from the active fighting
@@ -2247,7 +2193,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
             fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, false,
                     canReturnFire, bridge, "Bombard");
         }
-
     }
     
     /**
@@ -3404,7 +3349,7 @@ class Fire implements IExecutable
                 
                 if (m_damaged != null)
                     m_battle.markDamaged(m_damaged, bridge);
-
+//TODO COMCO perhaps split it into those who can return fire (sneak attack subs) and those who can't
                 m_battle.removeCasualties(m_killed, m_canReturnFire, !m_defending, bridge);
         
             }
