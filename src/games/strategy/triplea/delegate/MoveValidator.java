@@ -288,12 +288,11 @@ public class MoveValidator
      * Checks that there only transports, subs and/or allies on the route except at the end.
      * AA and factory dont count as enemy.
      */
-    //TODO COMCO need to revisit this for AA
     public static boolean onlyIgnoredUnitsOnPath(Route route, PlayerID player, GameData data, boolean ignoreRouteEnd)
     {
-    	CompositeMatch<Unit> transportOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsSub, Matches.alliedUnit(player, data));
-    	CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsTransport, Matches.alliedUnit(player, data));
-    	CompositeMatch<Unit> transportOrSubOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsTransport, Matches.UnitIsSub, Matches.alliedUnit(player, data));
+    	CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsSub, Matches.alliedUnit(player, data));
+    	CompositeMatch<Unit> transportOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsTransport, Matches.UnitIsLand, Matches.alliedUnit(player, data));
+    	CompositeMatch<Unit> transportOrSubOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsTransport, Matches.UnitIsLand, Matches.UnitIsSub, Matches.alliedUnit(player, data));
     	boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
     	boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
     	int routeLength = route.getLength();
@@ -305,12 +304,15 @@ public class MoveValidator
             for(int i = 0; i < routeLength; i++)
             {
                 Territory current = route.at(i);
-                if(getIgnoreTransportInMovement && getIgnoreSubInMovement && !current.getUnits().allMatch(transportOrSubOnly))              
-                    return false;
-                if(getIgnoreTransportInMovement && !getIgnoreSubInMovement && !current.getUnits().allMatch(transportOnly))
-                    return false;
-                if(!getIgnoreTransportInMovement && getIgnoreSubInMovement && !current.getUnits().allMatch(subOnly))
-                    return false;
+                if(current.isWater())
+                {
+                    if(getIgnoreTransportInMovement && getIgnoreSubInMovement && !current.getUnits().allMatch(transportOrSubOnly))              
+                        return false;
+                    if(getIgnoreTransportInMovement && !getIgnoreSubInMovement && !current.getUnits().allMatch(transportOnly))
+                        return false;
+                    if(!getIgnoreTransportInMovement && getIgnoreSubInMovement && !current.getUnits().allMatch(subOnly))
+                        return false;
+                }
             }
     	
         return true;

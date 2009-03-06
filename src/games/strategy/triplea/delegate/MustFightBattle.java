@@ -2059,10 +2059,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         firing.addAll(m_defendingUnits);
         firing.addAll(m_defendingWaitingToDie); 
         firing = Match.getMatches(firing, Matches.UnitIsSub); 
-        
-        /*Collection<Unit> firing = Match.getMatches(m_defendingUnits,
-            Matches.UnitIsSub);*/
-        
+                
         if (firing.isEmpty())
             return;
 
