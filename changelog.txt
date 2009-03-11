@@ -4,6 +4,8 @@ Changes for 1.0.3.2
 	Tech tokens not removed from client after successful roll (Seidelin)
 	Factories not repaired on Client
 	Out of Bounds exception thrown when trying to save games (all games)
+	
+	Fix screwed up directorys
 
 Changes for 1.0.3.1
 
