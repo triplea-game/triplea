@@ -1,0 +1,74 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package games.strategy.engine.history;
+
+import games.strategy.engine.framework.*;
+import games.strategy.engine.message.IChannelMessenger;
+
+/**
+ * Has a subset of the historyWriters functionality.
+*  Delegates should only have access to these functions.
+*  The rest of the history writers functions should only
+*  be used by the GameData
+ */
+
+public class DelegateHistoryWriter implements IDelegateHistoryWriter
+{
+    private final IGameModifiedChannel m_channel;
+
+    public DelegateHistoryWriter(IChannelMessenger messenger)
+    {
+        m_channel = (IGameModifiedChannel) messenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL);
+    }
+
+    
+    public DelegateHistoryWriter(IGameModifiedChannel channel)
+    {
+        m_channel = channel;
+    }
+
+    
+    private IGameModifiedChannel getGameModifiedChannel()
+    {
+        return m_channel; 
+    }
+    
+    public void startEvent(String eventName)
+    {
+        getGameModifiedChannel().startHistoryEvent(eventName);
+
+    }
+
+    public void addChildToEvent(String child)
+    {
+      addChildToEvent(child, null);
+    }
+
+    public void addChildToEvent(String child, Object renderingData)
+    {
+        getGameModifiedChannel().addChildToEvent(child, renderingData);
+
+    }
+
+    /**
+     * Set the redering data for the current event.
+     */
+    public void setRenderingData(Object renderingData)
+    {
+        getGameModifiedChannel().setRenderingData(renderingData);
+    }
+
+
+}
