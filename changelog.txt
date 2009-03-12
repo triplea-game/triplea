@@ -1,11 +1,20 @@
 Changes for 1.0.3.2
 
 *  The following list of bugs were fixed- primarily for AA50 (Comradekev unless otherwise specified)
+	Darkened/moved Italian flag (Seidelin)	
 	Tech tokens not removed from client after successful roll (Seidelin)
 	Factories not repaired on Client
+	Not charged for tech rolls in non-AA50 games
 	Out of Bounds exception thrown when trying to save games (all games)
+	Fix Null Pointer when selecting 'do not attack' subs
+	Transports with cargo blocking movement
+	Can't build new fighters on old carriers
+	Defending carrier with fighters aboard- fighters don't return fire in 1st combat round
+	Defending subs should be able to return sneak attack fire
+	Transports killed after subs submerge
+	Transports/subs causing Itialian NO to not be met
 	
-	Fix screwed up directorys
+	Fix screwed up directories
 
 Changes for 1.0.3.1
 

@@ -652,13 +652,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 steps.add(SELECT_NAVAL_BOMBARDMENT_CASUALTIES);
             }
         }
-        
-        // See if there any unescorted trns
-        if (!isEditMode && m_battleSite.isWater() && isTransportCasualtiesRestricted())
-        { 
-            if(Match.someMatch(m_attackingUnits, Matches.UnitTypeIsTransport) || Match.someMatch(m_defendingUnits, Matches.UnitTypeIsTransport))
-                steps.add(REMOVE_UNESCORTED_TRANSPORTS);
-        }        
 
         //Check if defending subs can submerge before battle
         if (isSubRetreatBeforeBattle())
@@ -673,7 +666,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
         	if(!Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer) && Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
         		steps.add(m_attacker.getName() + SUBS_SUBMERGE);
         }
-      
+        
+        // See if there any unescorted trns
+        if (!isEditMode && m_battleSite.isWater() && isTransportCasualtiesRestricted())
+        { 
+            if(Match.someMatch(m_attackingUnits, Matches.UnitIsTransport) || Match.someMatch(m_defendingUnits, Matches.UnitIsTransport))
+                steps.add(REMOVE_UNESCORTED_TRANSPORTS);
+        }        
+
         // Air only Units can't attack subs without Destroyers present
         if (!isEditMode && isAirAttackSubRestricted()) 
         { 
@@ -928,18 +928,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         final List<Unit> defendingSubs = Match.getMatches(m_defendingUnits,
                 Matches.UnitIsSub);
         
-        /**Remove undefended trns*/
-        if (!isEditMode && isTransportCasualtiesRestricted())
-        	steps.add(new IExecutable(){
-        		private static final long serialVersionUID = 99989L;
-                
-        		 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-                 {
-        			 checkUndefendedTransports(bridge, m_defender);
-        			 checkUndefendedTransports(bridge, m_attacker);        			
-                 }
-        	});
-
         /**Ask to retreat defending subs before battle*/
         if (!isEditMode && isSubRetreatBeforeBattle())
             steps.add(new IExecutable(){
@@ -963,7 +951,19 @@ public class MustFightBattle implements Battle, BattleStepStrings
                         attackerRetreatSubs(bridge);
                 }
             });  
-        
+
+        /**Remove undefended trns*/
+        if (!isEditMode && isTransportCasualtiesRestricted())
+        	steps.add(new IExecutable(){
+        		private static final long serialVersionUID = 99989L;
+                
+        		 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                 {
+        			 checkUndefendedTransports(bridge, m_defender);
+        			 checkUndefendedTransports(bridge, m_attacker);        			
+                 }
+        	});
+
         /**Submerge subs if -vs air only & air restricted from attacking subs */
         if (!isEditMode && isAirAttackSubRestricted())
         	steps.add(new IExecutable(){
@@ -1884,7 +1884,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         	//Get all the ENEMY sea and air units in the territory
             CompositeMatch<Unit> enemyUnitsMatch = new CompositeMatchAnd<Unit>();
             enemyUnitsMatch.add(Matches.UnitIsNotLand);
-            enemyUnitsMatch.add(Matches.UnitTypeIsNotTransport);
+            enemyUnitsMatch.add(Matches.UnitIsNotTransport);
+            enemyUnitsMatch.add(Matches.unitIsNotSubmerged(m_data));
             enemyUnitsMatch.add(Matches.unitCanAttack(player));            
             Collection<Unit> enemyUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), enemyUnitsMatch);
             

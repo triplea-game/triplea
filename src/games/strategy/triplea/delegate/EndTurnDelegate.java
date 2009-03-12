@@ -255,7 +255,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     		}
 
     		//
-    		//Check for enemy unit exclusions
+    		//Check for enemy unit exclusions (ANY UNITS)
     		//TODO Transports and Subs don't count-- perhaps list types to exclude  
     		//   		
     		if(rule.getEnemyExclusionTerritories() != null && objectiveMet == true)
@@ -302,6 +302,51 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     			objectiveMet = checkUnitExclusions(objectiveMet, rule.getListedTerritories(terrs), "enemy", rule.getTerritoryCount(), player);
     		}
 
+    		//Check for enemy unit exclusions (SURFACE UNITS with ATTACK POWER)
+    		if(rule.getEnemySurfaceExclusionTerritories() != null && objectiveMet == true)
+    		{
+    			//Get the listed territories
+    			String[] terrs = rule.getEnemySurfaceExclusionTerritories();
+    			String value = new String();    			
+    			
+	    		//If there's only 1, it might be a 'group'  (original)
+    			if(terrs.length == 1)
+    			{    				
+	    			for(String name : terrs)
+	    			{
+	    				if(name.equals("original"))
+	    				{	//get all originally owned territories
+	    					OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+	        				Collection<Territory> enemyTerrs = origOwnerTracker.getOriginallyOwned(data, player);
+	        				rule.setTerritoryCount(String.valueOf(enemyTerrs.size()));
+	        				//Colon delimit the collection as it would exist in the XML
+	        				for (Territory item : enemyTerrs)
+	      					  	value = value + ":" + item;
+	        				//Remove the leading colon
+	        				value = value.replaceFirst(":", "");
+	    				}
+	    				else
+	    				{	//The list just contained 1 territory
+	    					value = name;
+	    				}
+	    			}
+    			}
+    			else
+    			{
+    				//Get the list of territories	
+    				Collection<Territory> listedTerrs = rule.getListedTerritories(terrs);
+    				//Colon delimit the collection as it exists in the XML
+    				for (Territory item : listedTerrs)
+  					  value = value + ":" + item;
+    				//Remove the leading colon
+    				value = value.replaceFirst(":", "");
+    			}
+
+    			//create the String list from the XML/gathered territories
+    			terrs = value.split(":");
+    			objectiveMet = checkUnitExclusions(objectiveMet, rule.getListedTerritories(terrs), "enemy_surface", rule.getTerritoryCount(), player);
+    		}
+    		
     		//
     		//Check for Territory Ownership rules
     		//
@@ -429,7 +474,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 	}
 
     /**
-     * Checks for the collection of territories to see if they have units onwned by the exclType alliance.  
+     * Checks for the collection of territories to see if they have units owned by the exclType alliance.  
      * It doesn't yet threshold the data
      */
 	private boolean checkUnitExclusions(boolean satisfied, Collection<Territory> Territories, String exclType, int numberNeeded, PlayerID player) 
@@ -459,12 +504,11 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 					}
 				}
 			}
-			else 
+			else if (exclType == "enemy")
 			{	//any enemy units in the territory
 				Collection<Unit> enemyUnits = Match.getMatches(allUnits, Matches.enemyUnit(player, m_data));
 				if (enemyUnits.size() < 1)
 				{
-					//TODO check the sub/trn rule (they don't count)
 					numberMet += 1;
 					if(numberMet >= numberNeeded)
 					{
@@ -472,6 +516,19 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 						break;
 					}
 				}
+			}
+			else //if (exclType == "enemy_surface")
+			{//any enemy units (not trn/sub) in the territory
+				Collection<Unit> enemyUnits = Match.getMatches(allUnits, new CompositeMatchAnd(Matches.enemyUnit(player, m_data), Matches.UnitIsNotSub, Matches.UnitIsNotTransport));
+				if (enemyUnits.size() < 1)
+				{
+					numberMet += 1;
+					if(numberMet >= numberNeeded)
+					{
+						satisfied = true;
+						break;
+					}
+				}				
 			}
 		}		
 		return satisfied;

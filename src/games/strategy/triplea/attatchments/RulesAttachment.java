@@ -77,6 +77,8 @@ public class RulesAttachment extends DefaultAttachment
     private String[] m_alliedOwnershipTerritories;
     private String[] m_alliedExcludedTerritories;
     private String[] m_enemyExcludedTerritories;
+    private String[] m_enemySurfaceExcludedTerritories;
+    
     private String[] m_movementRestrictionTerritories;
     
     //booleans
@@ -146,6 +148,17 @@ public class RulesAttachment extends DefaultAttachment
   public String[]  getEnemyExclusionTerritories()
   {
       return m_enemyExcludedTerritories;
+  }
+  
+  //exclusion types = original or list
+  public void setEnemySurfaceExclusionTerritories(String value)
+  {	
+	  m_enemySurfaceExcludedTerritories = value.split(":");
+  }
+
+  public String[]  getEnemySurfaceExclusionTerritories()
+  {
+      return m_enemySurfaceExcludedTerritories;
   }
   
   public void setTerritoryCount(String value)
@@ -255,6 +268,9 @@ public class RulesAttachment extends DefaultAttachment
       if(m_enemyExcludedTerritories != null && (!m_enemyExcludedTerritories.equals("controlled") && !m_enemyExcludedTerritories.equals("original") && !m_enemyExcludedTerritories.equals("all")))
     	  getListedTerritories(m_enemyExcludedTerritories);
 
+      if(m_enemySurfaceExcludedTerritories != null && (!m_enemySurfaceExcludedTerritories.equals("controlled") && !m_enemySurfaceExcludedTerritories.equals("original") && !m_enemySurfaceExcludedTerritories.equals("all")))
+    	  getListedTerritories(m_enemySurfaceExcludedTerritories);
+      
       if(m_alliedExcludedTerritories != null && (!m_alliedExcludedTerritories.equals("controlled") && !m_alliedExcludedTerritories.equals("original") && !m_alliedExcludedTerritories.equals("all")))
     	  getListedTerritories(m_alliedExcludedTerritories);
       

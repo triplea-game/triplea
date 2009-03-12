@@ -1761,7 +1761,7 @@
                 <attatchment name="objectiveAttachment2" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="5"/>
                 	<option name="alliedOwnershipTerritories" value="Italy:Balkans:Morocco Algeria:Libya" count="4"/>
-                	<option name="enemyExclusionTerritories" value="13 Sea Zone:14 Sea Zone:15 Sea Zone" count="3"/>
+                	<option name="enemySurfaceExclusionTerritories" value="13 Sea Zone:14 Sea Zone:15 Sea Zone" count="3"/>
                 </attatchment>
                 
 	<!-- American Objectives -->

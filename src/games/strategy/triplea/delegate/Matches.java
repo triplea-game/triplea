@@ -152,7 +152,7 @@ public class Matches
         public boolean match(Unit unit)
         {
             UnitAttachment ua = UnitAttachment.get(unit.getType());
-            return ua.getTransportCapacity() != -1;
+            return (ua.getTransportCapacity() != -1 && ua.isSea());
         }
     };
 
