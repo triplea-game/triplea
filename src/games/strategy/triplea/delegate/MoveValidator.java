@@ -367,7 +367,7 @@ public class MoveValidator
         blitzableUnits.add(Matches.alliedUnit(player, data));
         //4th edition, cant blitz through factories and aa guns
         //2nd edition you can 
-        if(!isFourthEdition(data) || IsBlitzThroughFactoriesAndAA(data))
+        if(!isFourthEdition(data) && !IsBlitzThroughFactoriesAndAARestricted(data))
         {
             blitzableUnits.add(Matches.UnitIsAAOrFactory);
         }
@@ -659,7 +659,7 @@ public class MoveValidator
     }
     
     
-    private static boolean IsBlitzThroughFactoriesAndAA(GameData data)
+    private static boolean IsBlitzThroughFactoriesAndAARestricted(GameData data)
     {
         return games.strategy.triplea.Properties.getBlitzThroughFactoriesAndAARestricted(data);
     }

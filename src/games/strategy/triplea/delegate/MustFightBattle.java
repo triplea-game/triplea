@@ -974,6 +974,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
                  }
         	});
         
+        //TODO comco remove fighters against subs only
+        
         /**Attacker subs fire */
         if (!isEditMode)
             steps.add(new IExecutable(){
@@ -1695,14 +1697,15 @@ public class MustFightBattle implements Battle, BattleStepStrings
         bridge.addChange(change);
 
         units.removeAll(submerging);
-        if (units.isEmpty() || m_over)
+        /*if (units.isEmpty() || m_over)
         {
             endBattle(bridge);
             if (defender)
                 attackerWins(bridge);
             else
                 defenderWins(bridge);
-        } else
+        } else*/
+        if (!units.isEmpty() && !m_over)
         {
             getDisplay(bridge).notifyRetreat(m_battleID, submerging);
 
@@ -1910,7 +1913,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
      */
     private void submergeSubsVsOnlyAir(IDelegateBridge bridge)
     {
-	    //if All attackers are AIR submerge any defending subs
+	    //if All attackers are AIR submerge any defending subs  ..m_defendingUnits.removeAll(m_killed);
 	    if(Match.allMatch(m_attackingUnits, Matches.UnitIsAir) && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
 	    {
 	    	//Get all defending subs (including allies) in the territory
@@ -2006,7 +2009,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             units = Match.getMatches(units, Matches.UnitIsAir);  
             Collection<Unit> enemyUnitsNotSubs = Match.getMatches(m_attackingUnits, Matches.UnitIsNotSub);
-
+            if(enemyUnitsNotSubs.isEmpty())
+            	return;
+            
             fire(m_defender.getName() + SELECT_CASUALTIES, units, enemyUnitsNotSubs, true, true, bridge, "Defender's aircraft fire,");            
         }
     }
@@ -2154,6 +2159,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                     m_defendingWaitingToDie.addAll(Match.getMatches(killed, Matches.UnitIsSub));
                     //remove the rest immediately            
                     remove(Match.getMatches(killed, Matches.UnitIsNotSub), bridge, m_battleSite);
+                    m_defendingUnits.removeAll(killed);
                     return;
                 }
             }

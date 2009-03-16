@@ -158,7 +158,8 @@ public class ProductionRepairPanel extends JPanel
                         //int initialQuantity = initialPurchase.getInt(repairRule);
                     	int initialQuantity = 0;
                     	if (!initialPurchase.isEmpty())
-                    	    initialQuantity = initialPurchase.get(repairRule).getInt(repairRule);
+                    	    initialQuantity = initialPurchase.get(terr).getInt(repairRule);
+                    	    //initialQuantity = initialPurchase.get(repairRule).getInt(repairRule);
                     	rule.setQuantity(initialQuantity);
                     	rule.setMax(IPCProduction - unitProduction);
                     	rule.setTerr(terr.getName().toString());
@@ -227,14 +228,15 @@ public class ProductionRepairPanel extends JPanel
     private HashMap<Territory, IntegerMap<RepairRule>> getProduction()
     {
         HashMap<Territory,IntegerMap<RepairRule>> prod = new HashMap<Territory,IntegerMap<RepairRule>>();
-        IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
+        //IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
         Iterator<Rule> iter = m_rules.iterator();
         while (iter.hasNext())
         {
             Rule rule = iter.next();
             int quantity = rule.getQuantity();
             if (quantity != 0)
-            {                
+            {
+                IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
                 Territory terr = m_data.getMap().getTerritory(rule.m_terr);
                 //m_repairCount.put(terr, quantity);
                 repairRule.put(rule.getProductionRule(), quantity);
