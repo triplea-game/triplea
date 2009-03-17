@@ -161,7 +161,6 @@ public class ChangeFactory
 
     public static Change unitsHit(IntegerMap<Unit> newHits)
     {
-
         return new UnitHitsChange(newHits);
     }
 

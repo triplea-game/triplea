@@ -15,8 +15,10 @@ Changes for 1.0.3.2
 	Transports/subs causing Itialian NO to not be met
 	Repairing multiple factories is buggy
 	Defending fighters should be allowed 1 move if their CV dies
+	US/China combined turn
 	
 Added New World Order 5 and 9 player games (Sieg)
+	Added relief map and blending support to NWO map (ComradeKev)
 
 Changes for 1.0.3.1
 

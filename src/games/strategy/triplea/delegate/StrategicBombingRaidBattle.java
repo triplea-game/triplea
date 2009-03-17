@@ -519,9 +519,7 @@ public class StrategicBombingRaidBattle implements Battle
                         max = Math.max(max, m_dice[index]  + 1);
                         index++;
                     }
-                    //add 1
-                    //costThisUnit = max + 1;
-                    //Fix max to 6 rather than 7
+
                     costThisUnit = max;
                     
                 }

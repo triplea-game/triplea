@@ -724,21 +724,19 @@
                         <step name="italianPlace" delegate="place" player="Italians"/>
                         <step name="italianEndTurn" delegate="endTurn" player="Italians"/>
 						
-						<!-- Chinese Game Sequence -->
+                        <!-- Chinese/Americans Game Sequence -->
+                        <step name="americanTech" delegate="tech" player="Americans"/>
+                        <step name="americanTechActivation" delegate="tech_activation" player="Americans"/>
+                        <step name="americanPurchase" delegate="purchase" player="Americans"/>
 						<step name="chinesePurchase" delegate="purchaseNoIPC" player="Chinese"/>
+                        <step name="americanCombatMove" delegate="move" player="Americans"/>
+                        <step name="americanBattle" delegate="battle" player="Americans"/>
+                        <step name="americanNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
 						<step name="chineseCombatMove" delegate="move" player="Chinese"/>
 						<step name="chineseBattle" delegate="battle" player="Chinese"/>
 						<step name="chineseNonCombatMove" delegate="move" player="Chinese" display="Non Combat Move"/>
 						<step name="chinesePlace" delegate="place" player="Chinese"/>
 						<step name="chineseEndTurn" delegate="endTurnNoIPC" player="Chinese"/>
-
-                        <!-- Americans Game Sequence -->
-                        <step name="americanTech" delegate="tech" player="Americans"/>
-                        <step name="americanTechActivation" delegate="tech_activation" player="Americans"/>
-                        <step name="americanPurchase" delegate="purchase" player="Americans"/>
-                        <step name="americanCombatMove" delegate="move" player="Americans"/>
-                        <step name="americanBattle" delegate="battle" player="Americans"/>
-                        <step name="americanNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
                         <step name="americanPlace" delegate="place" player="Americans"/>
                         <step name="americanEndTurn" delegate="endTurn" player="Americans"/>
                               

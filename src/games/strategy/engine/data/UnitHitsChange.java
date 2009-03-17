@@ -44,7 +44,6 @@ public class UnitHitsChange extends Change
             Unit item = iter.next();
             m_undoHits.put(item, item.getHits());
         }
-
     }
 
     protected void perform(GameData data)
@@ -66,8 +65,6 @@ public class UnitHitsChange extends Change
                 element.notifyChanged();
             }            
         }
-        
-        
     }
 
     public Change invert()

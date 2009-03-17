@@ -973,9 +973,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         		     submergeSubsVsOnlyAir(bridge);     			
                  }
         	});
-        
-        //TODO comco remove fighters against subs only
-        
+                
         /**Attacker subs fire */
         if (!isEditMode)
             steps.add(new IExecutable(){
@@ -2539,43 +2537,42 @@ public class MustFightBattle implements Battle, BattleStepStrings
     public Collection<Unit> getDependentUnits(Collection<Unit> units)
     {
 
-        Iterator<Unit> iter = units.iterator();
-        Collection<Unit> dependents = new ArrayList<Unit>();
-        while (iter.hasNext())
-        {
-        	Unit currentUnit = iter.next();
-        	
-            Collection<Unit> depending = m_dependentUnits.get(currentUnit);
-            if (depending != null)
-            {
-                dependents.addAll(depending);
-            }
-        }
-        return dependents;
+    	Iterator<Unit> iter = units.iterator();
+    	Collection<Unit> dependents = new ArrayList<Unit>();
+    	while (iter.hasNext())
+    	{
+    		Unit currentUnit = iter.next();
+
+    		Collection<Unit> depending = m_dependentUnits.get(currentUnit);
+    		if (depending != null)
+    		{
+    			dependents.addAll(depending);
+    		}
+    	}
+    	return dependents;
     }
     
     //Figure out what units a transport is transported and has unloaded
     public Collection<Unit>  getTransportDependents(Collection<Unit> targets, GameData data)
     {
-        Collection<Unit> dependents = new ArrayList<Unit>();
-    	 if (Match.someMatch(targets, Matches.UnitCanTransport))
-    	 {    		 
-	        //just worry about transports
-	        TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
-	        
-	        Iterator<Unit> iter = targets.iterator();
-	        while (iter.hasNext())
-	        {
-	            Unit target = iter.next();
-	            dependents.addAll(tracker.transportingAndUnloaded(target));
-	        }
-    	 }
-    	 return dependents;
+    	Collection<Unit> dependents = new ArrayList<Unit>();
+    	if (Match.someMatch(targets, Matches.UnitCanTransport))
+    	{    		 
+    		//just worry about transports
+    		TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
+
+    		Iterator<Unit> iter = targets.iterator();
+    		while (iter.hasNext())
+    		{
+    			Unit target = iter.next();
+    			dependents.addAll(tracker.transportingAndUnloaded(target));
+    		}
+    	}
+    	return dependents;
     }
 
     void markDamaged(Collection<Unit> damaged, IDelegateBridge bridge)
     {
-
         if (damaged.size() == 0)
             return;
         Change damagedChange = null;
@@ -2583,10 +2580,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         damagedMap.putAll(damaged, 1);
         damagedChange = ChangeFactory.unitsHit(damagedMap);
         bridge.getHistoryWriter().addChildToEvent(
-                "Units damaged: " + MyFormatter.unitsToText(damaged),
-                damaged);
+                "Units damaged: " + MyFormatter.unitsToText(damaged), damaged);
         bridge.addChange(damagedChange);
-
     }
 
 
@@ -2594,14 +2589,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         if (killed.size() == 0)
             return;
-
-        //get the transported units        
-        /*if (battleSite.isWater())
-        {*/            
-            Collection<Unit> dependent = getDependentUnits(killed);
-            killed.addAll(dependent);
-        //}
-        
+           
+        Collection<Unit> dependent = getDependentUnits(killed);
+        killed.addAll(dependent);
+                
         Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
         m_killed.addAll(killed);
 
@@ -3353,7 +3344,6 @@ class Fire implements IExecutable
                 
                 if (m_damaged != null)
                     m_battle.markDamaged(m_damaged, bridge);
-//TODO COMCO perhaps split it into those who can return fire (sneak attack subs) and those who can't
                 m_battle.removeCasualties(m_killed, m_canReturnFire, !m_defending, bridge);
         
             }
