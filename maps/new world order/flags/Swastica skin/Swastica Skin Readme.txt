@@ -1,0 +1,1 @@
+Copy 3 Swastica Png s to flags, overwrite ready
