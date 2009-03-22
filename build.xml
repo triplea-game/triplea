@@ -524,10 +524,6 @@
 				<include name="**/*.*" />
 			</zipfileset>
 
-			<zipfileset dir="games/" prefix="triplea_${triplea.version}/games/">
-				<include name="*.xml" />
-			</zipfileset>
-
 		</zip>
 	</target>
 
