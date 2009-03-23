@@ -256,7 +256,8 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
         }
         else
         {
-            return "m_repairCount is empty";
+            return null;
+            //return "m_repairCount is empty";
         }
 
         // add changes for spent resources

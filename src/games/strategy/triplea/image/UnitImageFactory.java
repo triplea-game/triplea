@@ -274,6 +274,7 @@ public class UnitImageFactory
 
     if(damaged)
       name.append("_hit");
+    //TODO COMCO here might be a spot for the damage count icons.
 
     return name.toString();
   }

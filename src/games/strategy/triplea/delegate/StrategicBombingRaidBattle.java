@@ -543,7 +543,7 @@ public class StrategicBombingRaidBattle implements Battle
             {
             	//get current production
                 int unitProduction = ta.getUnitProduction();
-            	//Detemine the max that can be taken as losses
+            	//Determine the max that can be taken as losses
                 int alreadyLost = production - unitProduction;
                 
                 int limit = 2 * production  - alreadyLost;

@@ -36,7 +36,7 @@ import games.strategy.triplea.formatter.*;
  * @author Sean Bridges
  * @version 1.0
  * 
- * Used to keep track of where battles have occured
+ * Used to keep track of where battles have occurred
  */
 public class BattleTracker implements java.io.Serializable
 {

@@ -202,7 +202,7 @@ public class RepairPanel extends ActionPanel
             try
             {
             	if(isSBRAffectsUnitProduction())
-            	{            	    
+            	{
             	    int addedProd = 0;
             	    PlayerID player = getCurrentPlayer();
             	    if(isIncreasedFactoryProduction(player))
@@ -219,7 +219,7 @@ public class RepairPanel extends ActionPanel
                     }
             	}
             	else
-            	{            		
+            	{
 	                for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedFactory(getData(), getCurrentPlayer()))) 
 	                {
 	                    totalProd += TerritoryAttachment.get(t).getProduction();
