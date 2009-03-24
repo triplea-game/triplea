@@ -75,8 +75,9 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         //only initialize once
         if(m_needToInitialize)
         {
-            addBombardmentSources();
+           // addBombardmentSources();
             setupSeaUnitsInSameSeaZoneBattles();
+            addBombardmentSources();
             m_needToInitialize = false;
         }
     }

@@ -1551,13 +1551,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
             } else if(partialAmphib)
             {
+            	//remove amphib units from those retreating
+            	units = Match.getMatches(units, Matches.UnitWasNotAmphibious);
                 retreatUnitsAndPlanes(units, retreatTo, defender, bridge);
                 String messageShort = retreatingPlayer.getName()
                         + " retreats non-amphibious units";
                 getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
             } else
             {
-
                 retreatUnits(units, retreatTo, defender, bridge);
 
                 String messageShort = retreatingPlayer.getName() + " retreats";
@@ -2973,6 +2974,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     // In an amphibious assault, sort on who is unloading from xports first
     // This will allow the marines with higher scores to get killed last
+    //TODO comco this may be used for partial retreats also
     public void sortAmphib(List<Unit> units, GameData data)
     {
         final Comparator<Unit> decreasingMovement = UnitComparator.getDecreasingMovementComparator();        

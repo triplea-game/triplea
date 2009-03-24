@@ -205,7 +205,7 @@ public class BattleCalculator
         // change, we do it here.
         IntegerMap<UnitType> costs = getCosts(player, data);
 
-        List<Unit> defaultCasualties = getDefaultCasualties(targets, hitsRemaining, defending, player, costs);
+        List<Unit> defaultCasualties = getDefaultCasualties(targets, hitsRemaining, defending, player, costs, data);
 
         ITripleaPlayer tripleaPlayer;
         if(player.isNull())
@@ -216,6 +216,10 @@ public class BattleCalculator
                 defaultCasualties, battleID);
 
         List<Unit> killed = casualtySelection.getKilled();
+        //if partial retreat is possible, kill amphibious units first
+    	if(isPartialAmphibiousRetreat(data))
+    		killed = killAmphibiousFirst(killed);
+    	
         List<Unit> damaged = casualtySelection.getDamaged();
 
         int numhits = killed.size();
@@ -247,7 +251,54 @@ public class BattleCalculator
         return casualtySelection;
     }
 
-    private static List<Unit> getDefaultCasualties(Collection<Unit> targets, int hits, boolean defending, PlayerID player, IntegerMap<UnitType> costs)
+	private static List<Unit> killAmphibiousFirst(List<Unit> killed) 
+	{
+		Collection<Unit> amphibUnits = new ArrayList<Unit>();
+    	Collection<UnitType> amphibTypes = new ArrayList<UnitType>();
+    	//Get a list of all selected killed units that are amphibious
+    	amphibUnits.addAll(Match.getMatches(killed, Matches.UnitWasAmphibious));
+    	//If there are none, return
+    	if(amphibUnits.isEmpty())
+    		return killed;
+    	
+    	Iterator<Unit> amphibUnitIter = amphibUnits.iterator();
+    	//Get a collection of the unit types of the amphib units
+    	while(amphibUnitIter.hasNext())
+    	{
+    		Unit unit = amphibUnitIter.next();
+    		UnitType ut = unit.getType();
+    		if(!amphibTypes.contains(ut))
+    			amphibTypes.add(ut);
+    	}
+    	//For each killed unit- see if there is an amphib unit that can be killed instead
+    	Iterator<Unit> killedIter = killed.iterator();
+    	while(killedIter.hasNext())
+    	{
+    		Unit unit = killedIter.next();
+    		
+    		if(amphibTypes.contains(unit.getType()))
+    		{ //add a unit from the collection
+    			List<Unit> oneAmphibUnit = Match.getNMatches(amphibUnits, 1, Matches.unitIsOfType(unit.getType()));
+
+    			if(oneAmphibUnit.size()>0)
+    			{
+    				Unit amphibUnit = oneAmphibUnit.iterator().next();
+    				killed.add(amphibUnit);
+    				killed.remove(unit);
+    				amphibUnits.remove(amphibUnit);
+    				continue;
+    			}
+    			else //If there are no more units of that type, remove the type from the collection
+    			{
+    				amphibTypes.remove(unit.getType());
+    			}
+    		}
+    	}
+    	
+    	return killed;
+	}
+
+    private static List<Unit> getDefaultCasualties(Collection<Unit> targets, int hits, boolean defending, PlayerID player, IntegerMap<UnitType> costs, GameData data)
     {
         // Remove two hit bb's selecting them first for default casualties
         ArrayList<Unit> defaultCasualties = new ArrayList<Unit>();
@@ -255,8 +306,7 @@ public class BattleCalculator
         Iterator<Unit> targetsIter = targets.iterator();
         while (targetsIter.hasNext())
         {
-            // Stop if we have already selected as many hits as there are
-            // targets
+            // Stop if we have already selected as many hits as there are targets
             if (numSelectedCasualties >= hits)
             {
                 return defaultCasualties;
@@ -277,13 +327,13 @@ public class BattleCalculator
         Iterator<Unit> sortedIter = sorted.iterator();
         while (sortedIter.hasNext())
         {
-            // Stop if we have already selected as many hits as there are
-            // targets
+            // Stop if we have already selected as many hits as there are targets
             if (numSelectedCasualties >= hits)
             {
                 return defaultCasualties;
             }
             Unit unit = sortedIter.next();
+            
             defaultCasualties.add(unit);
             numSelectedCasualties++;
         }
@@ -430,12 +480,21 @@ public class BattleCalculator
     }
 
     /**
-     * @return
+     * @return Can transports be used as cannon fodder
      */
     private static boolean isTransportCasualtiesRestricted(GameData data)
     {
     	return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
     }
+    
+    /**
+     * @return Can the attacker retreat non-amphibious units
+     */
+    private static boolean isPartialAmphibiousRetreat(GameData data)
+    {
+        return games.strategy.triplea.Properties.getPartialAmphibiousRetreat(data);
+    }
+    
     /**
      * Checks if all the units are transports
      * @param bridge

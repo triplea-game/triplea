@@ -1,3 +1,9 @@
+Changes for 1.0.3.3
+*  The following list of bugs were fixed- primarily for AA50 (Comradekev unless otherwise specified)
+	Fix subs blocking naval bombardment
+	Fix the engine forcing the repair of at least 1 damage
+	Amphib units taken as first casualties if partial retreat is possible.
+
 Changes for 1.0.3.2
 
 *  The following list of bugs were fixed- primarily for AA50 (Comradekev unless otherwise specified)
