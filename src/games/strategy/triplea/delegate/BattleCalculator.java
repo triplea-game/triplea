@@ -218,7 +218,7 @@ public class BattleCalculator
         List<Unit> killed = casualtySelection.getKilled();
         //if partial retreat is possible, kill amphibious units first
     	if(isPartialAmphibiousRetreat(data))
-    		killed = killAmphibiousFirst(killed);
+    		killed = killAmphibiousFirst(killed, targets);
     	
         List<Unit> damaged = casualtySelection.getDamaged();
 
@@ -251,41 +251,50 @@ public class BattleCalculator
         return casualtySelection;
     }
 
-	private static List<Unit> killAmphibiousFirst(List<Unit> killed) 
+	private static List<Unit> killAmphibiousFirst(List<Unit> killed, Collection<Unit> targets) 
 	{
-		Collection<Unit> amphibUnits = new ArrayList<Unit>();
+		Collection<Unit> allAmphibUnits = new ArrayList<Unit>();
+		Collection<Unit> killedNonAmphibUnits = new ArrayList<Unit>();
     	Collection<UnitType> amphibTypes = new ArrayList<UnitType>();
-    	//Get a list of all selected killed units that are amphibious
-    	amphibUnits.addAll(Match.getMatches(killed, Matches.UnitWasAmphibious));
-    	//If there are none, return
-    	if(amphibUnits.isEmpty())
-    		return killed;
     	
-    	Iterator<Unit> amphibUnitIter = amphibUnits.iterator();
+    	//Get a list of all selected killed units that are NOT amphibious
+    	Match<Unit> aMatch = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitWasNotAmphibious);
+    	killedNonAmphibUnits.addAll(Match.getMatches(killed, aMatch));
+    	
+    	//If all killed units are amphibious, just return them
+    	if(killedNonAmphibUnits.isEmpty())
+    		return killed;
+
+    	//Get a list of all units that are amphibious and remove those that are killed
+    	allAmphibUnits.addAll(Match.getMatches(targets, Matches.UnitWasAmphibious));
+    	allAmphibUnits.removeAll(Match.getMatches(killed, Matches.UnitWasAmphibious));
+    	
+    	Iterator<Unit> allAmphibUnitsIter = allAmphibUnits.iterator();    	    	
     	//Get a collection of the unit types of the amphib units
-    	while(amphibUnitIter.hasNext())
+    	while(allAmphibUnitsIter.hasNext())
     	{
-    		Unit unit = amphibUnitIter.next();
+    		Unit unit = allAmphibUnitsIter.next();
     		UnitType ut = unit.getType();
     		if(!amphibTypes.contains(ut))
     			amphibTypes.add(ut);
     	}
+    	
     	//For each killed unit- see if there is an amphib unit that can be killed instead
-    	Iterator<Unit> killedIter = killed.iterator();
-    	while(killedIter.hasNext())
+    	Iterator<Unit> killedNonAmphibUnitsIter = killedNonAmphibUnits.iterator();
+    	while(killedNonAmphibUnitsIter.hasNext())
     	{
-    		Unit unit = killedIter.next();
+    		Unit unit = killedNonAmphibUnitsIter.next();
     		
     		if(amphibTypes.contains(unit.getType()))
     		{ //add a unit from the collection
-    			List<Unit> oneAmphibUnit = Match.getNMatches(amphibUnits, 1, Matches.unitIsOfType(unit.getType()));
+    			List<Unit> oneAmphibUnit = Match.getNMatches(allAmphibUnits, 1, Matches.unitIsOfType(unit.getType()));
 
     			if(oneAmphibUnit.size()>0)
     			{
     				Unit amphibUnit = oneAmphibUnit.iterator().next();
-    				killed.add(amphibUnit);
     				killed.remove(unit);
-    				amphibUnits.remove(amphibUnit);
+    				killed.add(amphibUnit);
+    				allAmphibUnits.remove(amphibUnit);
     				continue;
     			}
     			else //If there are no more units of that type, remove the type from the collection
