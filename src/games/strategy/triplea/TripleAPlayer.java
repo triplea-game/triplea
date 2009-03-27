@@ -480,13 +480,29 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     }
 
     /* 
-     * 
+     * Ask if the player wants to attack subs
      */
     public boolean selectAttackSubs(Territory unitTerritory)
     {
         return m_ui.getBattlePanel().getAttackSubs(unitTerritory);
     }
 
+    /* 
+     * Ask if the player wants to attack transports
+     */
+    public boolean selectAttackTransports(Territory unitTerritory)
+    {
+        return m_ui.getBattlePanel().getAttackTransports(unitTerritory);
+    }
+
+    /* 
+     * Ask if the player wants to attack transports
+     */
+    public boolean selectAttackUnits(Territory unitTerritory)
+    {
+        return m_ui.getBattlePanel().getAttackUnits(unitTerritory);
+    }
+    
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
      */

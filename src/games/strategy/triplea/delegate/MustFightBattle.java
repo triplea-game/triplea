@@ -40,6 +40,8 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
+import games.strategy.triplea.util.UnitCategory;
+import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.triplea.weakAI.WeakAI;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
@@ -290,8 +292,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 else
                     dependentUnits.put(bomber, singleCollection);
             }
-
+         
             dependencies.putAll(dependentUnits);
+            
+            Set<UnitCategory> categorized = UnitSeperator.categorize(bombers, dependentUnits, false);
+                       
+//TODO COMCO here is the addition of dependent units to bombers  UnitCategory.createDependents()
+            //kev
         }
         
         addDependentUnits(dependencies);
@@ -1775,7 +1782,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
         
         //add all land units' dependents
-        retreating.addAll(getDependentUnits(retreating));
+        //retreating.addAll(getDependentUnits(retreating));
+        retreating.addAll(getDependentUnits(units));
     	
         //our own air units dont retreat with land units
         Match<Unit> notMyAir = new CompositeMatchOr<Unit>(Matches.UnitIsNotAir,
@@ -1894,7 +1902,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     		//If there are opposing forces with attack power, kill the transports  
         	if (enemyUnits.size() > 0)
         	{
-    			remove(alliedTransports, bridge, m_battleSite);   
+    			remove(alliedTransports, bridge, m_battleSite, false);   
             	//and remove them from the battle display
             	if(player.equals(m_defender))
             		m_defendingUnits.removeAll(alliedTransports);
@@ -2137,7 +2145,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     }
 
     void removeCasualties(Collection<Unit> killed, boolean canReturnFire,
-            boolean defender, IDelegateBridge bridge)
+            boolean defender, IDelegateBridge bridge, boolean isAA)
     {
         if(killed.isEmpty())
             return;
@@ -2157,13 +2165,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 {
                     m_defendingWaitingToDie.addAll(Match.getMatches(killed, Matches.UnitIsSub));
                     //remove the rest immediately            
-                    remove(Match.getMatches(killed, Matches.UnitIsNotSub), bridge, m_battleSite);
+                    remove(Match.getMatches(killed, Matches.UnitIsNotSub), bridge, m_battleSite, false);
                     m_defendingUnits.removeAll(killed);
                     return;
                 }
             }
             //remove immediately            
-            remove(killed, bridge, m_battleSite);
+            remove(killed, bridge, m_battleSite, isAA);
         }
 
         //remove from the active fighting
@@ -2391,8 +2399,20 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
                 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
-                    notifyCasualtiesAA(bridge);
-                    removeCasualties(m_casualties, false, false, bridge);
+                    notifyCasualtiesAA(bridge);                    
+                    removeCasualties(m_casualties, false, false, bridge, true);
+                    
+                    if(isParatroopers(m_attacker))
+                    {
+                    	Collection<Unit> killedBombers = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsStrategicBomber);
+                    	Iterator<Unit> killedBombersIter = killedBombers.iterator();
+                    	while(killedBombersIter.hasNext())
+                    	{
+                    		Unit unit = killedBombersIter.next();
+                        	m_dependentUnits.remove(unit);
+                    	}
+                    }
+                    
                     //TODO COMCO uncomment for later testing perhaps to remove paratroops from dependents
                     /*if(isParatroopers(m_attacker))
                     {
@@ -2586,12 +2606,25 @@ public class MustFightBattle implements Battle, BattleStepStrings
     }
 
 
-    private void remove(Collection<Unit> killed, IDelegateBridge bridge, Territory battleSite)
+    private void remove(Collection<Unit> killed, IDelegateBridge bridge, Territory battleSite, boolean isAA)
     {
         if (killed.size() == 0)
             return;
-           
+
+        /*PlayerID player = killed.iterator().next().getOwner();
+        if(isParatroopers(player) && !isAA)
+        {
+        	Collection<Unit> killedBombers = Match.getMatches(killed, Matches.UnitIsStrategicBomber);
+        	Iterator<Unit> killedBombersIter = killedBombers.iterator();
+        	while(killedBombersIter.hasNext())
+        	{
+        		Unit unit = killedBombersIter.next();
+            	m_dependentUnits.remove(unit);
+        	}
+        }*/
+        
         Collection<Unit> dependent = getDependentUnits(killed);
+        
         killed.addAll(dependent);
                 
         Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
@@ -2636,7 +2669,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	}
     	                
         m_attackingUnits.removeAll(lost);
-        remove(lost, bridge, landedTerritory);
+        remove(lost, bridge, landedTerritory, false);
     }
     
     private void clearWaitingToDie(IDelegateBridge bridge)
@@ -2645,7 +2678,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection<Unit> units = new ArrayList<Unit>();
         units.addAll(m_attackingWaitingToDie);
         units.addAll(m_defendingWaitingToDie);
-        remove(units, bridge, m_battleSite);
+        remove(units, bridge, m_battleSite, false);
         m_defendingWaitingToDie.clear();
         m_attackingWaitingToDie.clear();
     }
@@ -3045,7 +3078,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         m_attackingUnits.removeAll(lost);
-        remove(lost, bridge, m_battleSite);
+        remove(lost, bridge, m_battleSite, false);
 
         if (m_attackingUnits.isEmpty())
             m_tracker.removeBattle(this);
@@ -3346,7 +3379,7 @@ class Fire implements IExecutable
                 
                 if (m_damaged != null)
                     m_battle.markDamaged(m_damaged, bridge);
-                m_battle.removeCasualties(m_killed, m_canReturnFire, !m_defending, bridge);
+                m_battle.removeCasualties(m_killed, m_canReturnFire, !m_defending, bridge, false);
         
             }
         };

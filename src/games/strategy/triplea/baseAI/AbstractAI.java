@@ -210,8 +210,17 @@ public abstract class AbstractAI implements ITripleaPlayer
     }
     
     public boolean selectAttackSubs(Territory unitTerritory)
-    {       
-        //return true
+    {
+        return true;
+    }
+
+    public boolean selectAttackTransports(Territory unitTerritory)
+    {
+        return true;
+    }
+
+    public boolean selectAttackUnits(Territory unitTerritory)
+    {
         return true;
     }
     

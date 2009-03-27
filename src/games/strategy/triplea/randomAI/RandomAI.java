@@ -423,11 +423,26 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
      * @see games.strategy.triplea.player.ITripleaPlayer#selectAttackSubs(games.strategy.engine.data.Territory)
      */
     public boolean selectAttackSubs(Territory unitTerritory)
-    {       
-        //return true
+    {
         return true;
     }
-    
+
+    /* 
+     * @see games.strategy.triplea.player.ITripleaPlayer#selectAttackTransports(games.strategy.engine.data.Territory)
+     */
+    public boolean selectAttackTransports(Territory unitTerritory)
+    {
+        return true;
+    }
+
+    /* 
+     * @see games.strategy.triplea.player.ITripleaPlayer#selectAttackUnits(games.strategy.engine.data.Territory)
+     */
+    public boolean selectAttackUnits(Territory unitTerritory)
+    {
+        return true;
+    }
+        
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
      */

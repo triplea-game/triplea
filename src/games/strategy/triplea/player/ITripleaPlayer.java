@@ -87,9 +87,27 @@ public interface ITripleaPlayer extends IRemote
     );
     
     /**
+     * Ask if the player wants to attack lone transports
+     * 
+     * @param unitTerritory - where the potential battle is
+     */
+    public boolean selectAttackTransports(
+            Territory unitTerritory    
+    );
+
+    /**
+     * Ask if the player wants to attack units
+     * 
+     * @param unitTerritory - where the potential battle is
+     */
+    public boolean selectAttackUnits(
+            Territory unitTerritory    
+    );
+    
+    /**
      * Report an error to the user. 
      * 
-     * @param report that an error occured
+     * @param report that an error occurred
      */
     public void reportError(String error);
     

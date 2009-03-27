@@ -318,19 +318,23 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
      */
     private void setupSeaUnitsInSameSeaZoneBattles()
     {
+        PlayerID player = m_bridge.getPlayerID();
         //we want to match all sea zones with our units and enemy units
         CompositeMatch<Territory> seaWithOwnAndEnemy = new CompositeMatchAnd<Territory>();
         seaWithOwnAndEnemy.add(Matches.TerritoryIsWater);
-        seaWithOwnAndEnemy.add(Matches.territoryHasUnitsOwnedBy(m_bridge.getPlayerID()));
-        seaWithOwnAndEnemy.add(Matches.territoryHasEnemyUnits(m_bridge.getPlayerID(), m_data));
+        seaWithOwnAndEnemy.add(Matches.territoryHasUnitsOwnedBy(player));
+        seaWithOwnAndEnemy.add(Matches.territoryHasEnemyUnits(player, m_data));
 
         boolean ignoreTransports = isIgnoreTransportInMovement(m_data);
         boolean ignoreSubs = isIgnoreSubInMovement(m_data);
         
         Iterator territories = Match.getMatches(m_data.getMap().getTerritories(), seaWithOwnAndEnemy).iterator();
 
-        Match<Unit> ownedUnit = Matches.unitIsOwnedBy(m_bridge.getPlayerID());
-        Match<Unit> enemyUnit =  Matches.enemyUnit(m_bridge.getPlayerID(), m_data);
+        Match<Unit> ownedUnit = Matches.unitIsOwnedBy(player);
+        Match<Unit> enemyUnit =  Matches.enemyUnit(player, m_data);
+    	CompositeMatchAnd<Unit> seaTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.UnitIsSea);
+    	CompositeMatchOr<Unit> seaTranportsAndSubs = new CompositeMatchOr<Unit>(seaTransports, Matches.UnitIsSub);
+    	
         while (territories.hasNext())
         {
             Territory territory = (Territory) territories.next();
@@ -339,30 +343,53 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
                         
             Battle battle = m_battleTracker.getPendingBattle(territory, false);
             List<Unit> enemyUnits = territory.getUnits().getMatches(enemyUnit);
-            //Ignore transport on transport battles if they can be ignored
-            if (ignoreTransports && battle != null)
+
+            //Reach stalemate if all attacking and defending units are transports
+            if (ignoreTransports && battle != null && Match.allMatch(attackingUnits, seaTransports) 
+            		&& Match.allMatch(enemyUnits, seaTransports))
             {
-            	boolean allOwnedTransports = Match.allMatch(attackingUnits, Matches.UnitTypeIsTransport);
-            	boolean allEnemyTransports = Match.allMatch(enemyUnits, Matches.UnitTypeIsTransport);
-            	if (allOwnedTransports && allEnemyTransports)
-            	{
-            	    m_battleTracker.removeBattle(battle);
-            		continue;
-            	}
+            	m_battleTracker.removeBattle(battle);
+            	continue;
             }
-                       
-            if(ignoreSubs && !attackingUnits.isEmpty() && Match.allMatch(enemyUnits, Matches.UnitIsSub))
+            
+            //Check for ignored units
+            if (battle != null && !attackingUnits.isEmpty() && (ignoreTransports || ignoreSubs))
             {
                 ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
-                if(!remotePlayer.selectAttackSubs(territory))
-                {
-                    m_battleTracker.removeBattle(battle);
-                    continue;
-                }
+                //if only enemy transports... attack them?
+            	if(ignoreTransports && Match.allMatch(enemyUnits, seaTransports))
+            	{
+            		if(!remotePlayer.selectAttackTransports(territory))
+            		{
+            			 m_battleTracker.removeBattle(battle);
+            			 continue;
+            		}
+            	}
+
+                //if only enemy subs... attack them?
+            	if(ignoreSubs && Match.allMatch(enemyUnits, Matches.UnitIsSub))
+            	{	
+                    if(!remotePlayer.selectAttackSubs(territory))
+                    {
+                        m_battleTracker.removeBattle(battle);
+                        continue;
+                    }
+            	}
+            	
+                //if only enemy transports and subs... attack them?
+            	if(ignoreSubs && ignoreTransports && Match.allMatch(enemyUnits, seaTranportsAndSubs))
+            	{	
+                    if(!remotePlayer.selectAttackUnits(territory))
+                    {
+                        m_battleTracker.removeBattle(battle);
+                        continue;
+                    }
+            	}
+            	
             }
         }
     }
-
+       
 
     /**
      * Returns the state of the Delegate.

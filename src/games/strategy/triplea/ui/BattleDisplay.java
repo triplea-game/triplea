@@ -196,7 +196,10 @@ public class BattleDisplay extends JPanel
             JPanel panel = new JPanel();
             JLabel unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, false));
             panel.add(unit);
-            
+            kev
+            //TODO COMCO the CATEGORY doesn't have dependents... perhaps add them when adding deps to unit.
+            //probably call UnitCategory.createDependents() to add the deps.
+            //also look at battlecalculator.allTargetsOneTypeNotTwoHit(targets, dependents)
             Iterator iter = category.getDependents().iterator();
             while (iter.hasNext())
             {
@@ -211,6 +214,15 @@ public class BattleDisplay extends JPanel
     public void casualtyNotification(String step, DiceRoll dice, PlayerID player, Collection<Unit> killed, Collection<Unit> damaged, Map<Unit, Collection<Unit>> dependents)
     {
         setStep(step);
+        
+        /*Iterator<Unit> killedIter = killed.iterator();
+        while(killedIter.hasNext())
+        {
+        	Unit unit = killedIter.next();
+        	Collection unitDependents = unit.get
+            killed.add(dependents.get(unit))
+        }*/
+        
         m_casualties.setNotication(dice, player, killed, damaged, dependents);
         m_actionLayout.show(m_actionPanel, CASUALTIES_KEY);
 
