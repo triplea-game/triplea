@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.net.URLDecoder;
 import java.util.*;
 
 import javax.swing.*;
@@ -45,6 +46,7 @@ public class GameSelectorPanel extends JPanel implements Observer
         updateGameData();
     }
 
+    @SuppressWarnings("deprecation")
     private void updateGameData()
     {
 
@@ -66,16 +68,41 @@ public class GameSelectorPanel extends JPanel implements Observer
         m_roundText.setText(m_model.getGameRound());
         
         String fileName = m_model.getFileName();
-        if(fileName.length() > 25)
+        try
         {
-            int length = fileName.length();
-            fileName = fileName.substring(0,18) + "..."  + fileName.substring(length - 6, length);
+            fileName = URLDecoder.decode(fileName);
+        } catch(IllegalArgumentException e) 
+        {
+            //ignore
         }
-
-        
-        m_fileNameText.setText(fileName);
+               
+        m_fileNameText.setText(getLimitedFileNameText(fileName));
+        m_fileNameText.setToolTipText(fileName);        
     }
 
+    private String getLimitedFileNameText(String fileName) 
+    {
+        final int maxLength = 25;
+        
+        if(fileName.length() <= maxLength) 
+        {
+            return fileName;
+        }
+        
+        final int defaultCuttoff = 18;
+        int cuttoff = defaultCuttoff;
+                           
+        ///games will be in most paths, 
+        //try to ignore it
+        if(fileName.indexOf("games") > 0) 
+        { 
+            cuttoff = Math.min(18, fileName.indexOf("games"));
+        }                
+        
+        int length = fileName.length();
+        return fileName.substring(0,cuttoff) + "..."  + fileName.substring(length - (maxLength - cuttoff) - 2, length);
+        
+    }
     
     private void createComponents()
     {
