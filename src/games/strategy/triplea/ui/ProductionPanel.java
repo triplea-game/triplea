@@ -160,7 +160,7 @@ public class ProductionPanel extends JPanel
         for (int x = 0; x < m_rules.size(); x++)
         {
             boolean even = (x / 2) * 2 == x;
-            add(m_rules.get(x), new GridBagConstraints(x / 2, even ? 1 : 2, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+            add(m_rules.get(x), new GridBagConstraints(x / 2, even ? 1 : 2, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH,
                     nullInsets, 0, 0));
 
         }
@@ -262,6 +262,7 @@ public class ProductionPanel extends JPanel
             String text = " x " + (m_cost < 10 ? " " : "") + m_cost;
             JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
             JLabel info=new JLabel(attack+"/"+defense+"/"+movement);
+            info.setToolTipText(" attack:" + attack + " defense :" + defense +" movement:" +movement);
 
             int space = 8;
             this.add(new JLabel(type.getName()), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
