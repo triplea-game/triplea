@@ -350,7 +350,7 @@ public class BattleCalculator
         return defaultCasualties;
     }
 
-    private static Map<Unit, Collection<Unit>> getDependents(Collection<Unit> targets, GameData data)
+    public static Map<Unit, Collection<Unit>> getDependents(Collection<Unit> targets, GameData data)
     {
         //just worry about transports
         TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();

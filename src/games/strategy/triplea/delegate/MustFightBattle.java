@@ -231,7 +231,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     public Change addAttackChange(Route route, Collection<Unit> units)
     {
-        // Filter out allied units if fourth edition
+    	CompositeChange change = new CompositeChange();
+     
+    	// Filter out allied units if fourth edition
         Match<Unit> ownedBy = Matches.unitIsOwnedBy(m_attacker);
         Collection<Unit> attackingUnits = isFourthEdition() ? Match.getMatches(units,
                 ownedBy) : units;
@@ -286,6 +288,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 Unit bomber = unitsToCapableBombers.get(unit);                
                 singleCollection.add(unit);
                 
+                //Set transportedBy for paratrooper
+                TripleAUnit aBomber = (TripleAUnit) bomber;
+            	TripleAUnit aUnit = (TripleAUnit) unit;
+            	change.add(ChangeFactory.unitPropertyChange(aUnit, aBomber, TripleAUnit.TRANSPORTED_BY ));            	
+                
                 //Set the dependents
                 if (dependentUnits.get(bomber) != null)
                     dependentUnits.get(bomber).addAll(singleCollection);
@@ -296,9 +303,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
             dependencies.putAll(dependentUnits);
             
             Set<UnitCategory> categorized = UnitSeperator.categorize(bombers, dependentUnits, false);
-                       
-//TODO COMCO here is the addition of dependent units to bombers  UnitCategory.createDependents()
-            //kev
         }
         
         addDependentUnits(dependencies);
@@ -318,8 +322,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             return ChangeFactory.EMPTY_CHANGE;
         }
-        
-        Change change = DelegateFinder.moveDelegate(m_data).markNoMovementChange(nonAir);
+
+        change.add(DelegateFinder.moveDelegate(m_data).markNoMovementChange(nonAir));
         return change;
     }
 
@@ -2611,18 +2615,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (killed.size() == 0)
             return;
 
-        /*PlayerID player = killed.iterator().next().getOwner();
-        if(isParatroopers(player) && !isAA)
-        {
-        	Collection<Unit> killedBombers = Match.getMatches(killed, Matches.UnitIsStrategicBomber);
-        	Iterator<Unit> killedBombersIter = killedBombers.iterator();
-        	while(killedBombersIter.hasNext())
-        	{
-        		Unit unit = killedBombersIter.next();
-            	m_dependentUnits.remove(unit);
-        	}
-        }*/
-        
         Collection<Unit> dependent = getDependentUnits(killed);
         
         killed.addAll(dependent);

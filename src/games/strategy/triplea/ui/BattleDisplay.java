@@ -164,7 +164,7 @@ public class BattleDisplay extends JPanel
      * @param aPlayerID player kills belongs to
      * @author ahmet pata
      */
-    private void updateKilledUnits(Collection<Unit> aKilledUnits, PlayerID aPlayerID)
+    private Collection<Unit> updateKilledUnits(Collection<Unit> aKilledUnits, PlayerID aPlayerID)
     {
         final Map<UnitType, JLabel> lKillMap;
         final JPanel lCausalityPanel;
@@ -188,45 +188,54 @@ public class BattleDisplay extends JPanel
         	JLabel label = new JLabel("x1");
         }
         
-        Iterator killedIter = UnitSeperator.categorize(aKilledUnits, null, false).iterator();
+        Map<Unit, Collection<Unit>> dependentsMap;
+        if(aKilledUnits.size()>0)
+        {
+        	String kev="here";
+        }
+//TODO select those with 0 dependents first
+        dependentsMap= BattleCalculator.getDependents(aKilledUnits, m_data);
+        Collection<Unit> dependentUnitsReturned = new ArrayList<Unit>();
         
+        Iterator<Collection<Unit>> dependentUnitsCollections = dependentsMap.values().iterator();
+        while(dependentUnitsCollections.hasNext())
+        {
+        	Collection<Unit> dependentCollection = dependentUnitsCollections.next();
+        	dependentUnitsReturned.addAll(dependentCollection);
+        }
+        
+        Iterator killedIter = UnitSeperator.categorize(aKilledUnits, dependentsMap, false).iterator();
         while (killedIter.hasNext())
         {
             UnitCategory category = (UnitCategory) killedIter.next();
             JPanel panel = new JPanel();
             JLabel unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, false));
             panel.add(unit);
-            kev
-            //TODO COMCO the CATEGORY doesn't have dependents... perhaps add them when adding deps to unit.
-            //probably call UnitCategory.createDependents() to add the deps.
-            //also look at battlecalculator.allTargetsOneTypeNotTwoHit(targets, dependents)
-            Iterator iter = category.getDependents().iterator();
+            //Kev add
+            panel.add(new JLabel("x " + category.getUnits().size()));
+           
+            Iterator<UnitOwner> iter = category.getDependents().iterator();
             while (iter.hasNext())
             {
                 UnitOwner owner = (UnitOwner) iter.next();
-                unit.add(new JLabel(m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, false)));
+                unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, false));
+                panel.add(unit);
+                //TODO this size is of the transport collection size, not the transportED collection size.
+                panel.add(new JLabel("x " + category.getUnits().size()));
             }
-            panel.add(new JLabel("x " + category.getUnits().size()));
             lCausalityPanel.add(panel);            
         }
+        return dependentUnitsReturned;
     }
 
     public void casualtyNotification(String step, DiceRoll dice, PlayerID player, Collection<Unit> killed, Collection<Unit> damaged, Map<Unit, Collection<Unit>> dependents)
     {
         setStep(step);
-        
-        /*Iterator<Unit> killedIter = killed.iterator();
-        while(killedIter.hasNext())
-        {
-        	Unit unit = killedIter.next();
-        	Collection unitDependents = unit.get
-            killed.add(dependents.get(unit))
-        }*/
-        
+       
         m_casualties.setNotication(dice, player, killed, damaged, dependents);
         m_actionLayout.show(m_actionPanel, CASUALTIES_KEY);
 
-        updateKilledUnits(killed, player);
+        killed.addAll(updateKilledUnits(killed, player));
         if (player.equals(m_defender))
         {
             m_defenderModel.removeCasualties(killed);
@@ -793,7 +802,7 @@ public class BattleDisplay extends JPanel
     }
 
     /**
-     * Shorten columsn with no units.
+     * Shorten columns with no units.
      */
     private void setDefaultWidhts(JTable table)
     {
