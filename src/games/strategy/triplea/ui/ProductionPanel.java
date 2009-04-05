@@ -157,10 +157,14 @@ public class ProductionPanel extends JPanel
         add(legendLabel,
                 new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
 
+        
+        int rows = m_rules.size() / 7;
+        rows = Math.max(2, rows);
+        
         for (int x = 0; x < m_rules.size(); x++)
         {
-            boolean even = (x / 2) * 2 == x;
-            add(m_rules.get(x), new GridBagConstraints(x / 2, even ? 1 : 2, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+            
+            add(m_rules.get(x), new GridBagConstraints(x / rows, (x % rows) + 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH,
                     nullInsets, 0, 0));
 
         }
