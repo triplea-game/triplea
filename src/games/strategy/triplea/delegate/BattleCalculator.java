@@ -201,8 +201,7 @@ public class BattleCalculator
         }
 
         // Create production cost map, Maybe should do this elsewhere, but in
-        // case prices
-        // change, we do it here.
+        // case prices change, we do it here.
         IntegerMap<UnitType> costs = getCosts(player, data);
 
         List<Unit> defaultCasualties = getDefaultCasualties(targets, hitsRemaining, defending, player, costs, data);

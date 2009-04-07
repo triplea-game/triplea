@@ -272,8 +272,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
         }
-        //Set the dependent paratroopers so they die if the bomber dies.
-        //TODO COMCO validate for multiple bombers
+        
+        //Set the dependent paratroopers so they die if the bomber dies.        
         if(isParatroopers(m_attacker))
         {
             Collection<Unit> bombers = Match.getMatches(units, Matches.UnitIsStrategicBomber);
@@ -1279,7 +1279,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
     /**
      * @return
      */
-    //TODO COMCO need to sort units so amphib units are killed first (see line 74 of battlecalculator)
     private boolean canAttackerRetreatPartialAmphib()
     {
         if(m_amphibious && isPartialAmphibiousRetreat())
@@ -2408,28 +2407,35 @@ public class MustFightBattle implements Battle, BattleStepStrings
                     
                     if(isParatroopers(m_attacker))
                     {
-                    	Collection<Unit> killedBombers = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsStrategicBomber);
-                    	Iterator<Unit> killedBombersIter = killedBombers.iterator();
-                    	while(killedBombersIter.hasNext())
+                    	Collection<Unit> bombers = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsStrategicBomber);
+
+                    	if(!bombers.isEmpty())
                     	{
-                    		Unit unit = killedBombersIter.next();
-                        	m_dependentUnits.remove(unit);
+                    		Collection<Unit> dependents = getDependentUnits(bombers);
+                    		if(!dependents.isEmpty())
+                    		{
+                    			Iterator<Unit> dependentsIter = dependents.iterator();
+
+                    			CompositeChange change = new CompositeChange();
+                    			//remove dependency from paratroops
+                    			while(dependentsIter.hasNext())
+                    			{
+                    				Unit unit = dependentsIter.next();
+                    				change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY ));
+                    			}
+                    			bridge.addChange(change);
+                    		
+                    			//remove bombers from m_dependentUnits
+                    			Iterator<Unit> bombersIter = bombers.iterator();
+                    			while(bombersIter.hasNext())
+                    			{
+                    				Unit unit = bombersIter.next();
+                    				m_dependentUnits.remove(unit);
+                    			}
+                    		}
                     	}
                     }
-                    
-                    //TODO COMCO uncomment for later testing perhaps to remove paratroops from dependents
-                    /*if(isParatroopers(m_attacker))
-                    {
-                        Collection<Unit> paratroops = Match.getMatches(m_attackingUnits, Matches.UnitIsParatroop);
-                        
-                        CompositeChange change = new CompositeChange();
-                        for (Unit unit: paratroops)
-                            change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY ) );
-                        
-                        bridge.addChange(change);
-                    }*/
-                }
-                
+                }                
             };
             //push in reverse order of execution
             stack.push(notifyCasualties);
