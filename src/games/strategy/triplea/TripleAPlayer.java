@@ -496,7 +496,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     }
 
     /* 
-     * Ask if the player wants to attack transports
+     * Ask if the player wants to attack units
      */
     public boolean selectAttackUnits(Territory unitTerritory)
     {

@@ -1,11 +1,18 @@
 Changes for 1.0.3.3
 
-* limit nmber of units in one row of production panel to 8 (sgb)
+* limit number of units in one row of production panel to 8 (sgb)
 
 *  The following list of bugs were fixed- primarily for AA50 (Comradekev unless otherwise specified)
-	Fix subs blocking naval bombardment
 	Fix the engine forcing the repair of at least 1 damage
-	Amphib units taken as first casualties if partial retreat is possible.
+	Amphib units taken as first casualties if partial retreat is possible
+	Fix subs blocking naval bombardment
+	Fix paratroop code (die with AA casualties, retreats, non-dependent in regular combat)
+	Fix AARadar not inflicting casualties on aircraft
+	Fix disappearing fighters on combined US/China turn
+	Fix factories with IPC value <3 shouldn't get Increased Production bonus
+	Fix warships allowed to battle subs/trns, then move in noncombat movement
+	Fix error generation when placing IC, undoing it, then trying to re-place it
+	Fix error generation when trying to place both new fighter and CV in sea zone
 
 Changes for 1.0.3.2
 

@@ -36,7 +36,7 @@ public class MovePerformer implements Serializable
 {
 
     private transient MoveDelegate m_moveDelegate;
-    private transient GameData m_data;
+    private transient GameData m_data; 
     private transient IDelegateBridge m_bridge;
     private transient PlayerID m_player;
     
@@ -170,7 +170,7 @@ public class MovePerformer implements Serializable
                 {
                     boolean bombing = false;
                     boolean ignoreBattle = false;
-                    //could it be a bombuing raid
+                    //could it be a bombing raid
                     boolean allCanBomb = Match.allMatch(units, Matches.UnitIsStrategicBomber);
 
                     CompositeMatch<Unit> enemyFactory = new CompositeMatchAnd<Unit>();
@@ -182,7 +182,7 @@ public class MovePerformer implements Serializable
 
                     if (allCanBomb && targetToBomb)
                     {
-                        //TODO COMCO perhaps give message "at max damage" or something
+                        //TODO perhaps give message "at max damage" or something
                         bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
                     }
                     //Ignore Trn on Trn forces.
@@ -263,7 +263,7 @@ public class MovePerformer implements Serializable
         if(routeEnd != null)
             taRouteEnd = TerritoryAttachment.get(routeEnd);
         
-        Iterator iter = units.iterator();
+        Iterator<Unit> iter = units.iterator();
         while (iter.hasNext())
         {
             TripleAUnit unit = (TripleAUnit) iter.next();
@@ -282,8 +282,7 @@ public class MovePerformer implements Serializable
         }
 
         //if neutrals were taken over mark land units with 0 movement
-        //if weve entered a non blitzed conquered territory, mark with 0
-        // movement
+        //if entered a non blitzed conquered territory, mark with 0 movement
         if (!MoveDelegate.isNonCombat(m_bridge) && ( MoveDelegate.getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route)))
         {
             Collection land = Match.getMatches(units, Matches.UnitIsLand);

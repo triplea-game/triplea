@@ -317,11 +317,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if(m_battleSite.isWater())
             nonAir = Match.getMatches(nonAir, Matches.UnitIsNotLand);
         
-        //TODO check for ignore sub/trns here
-        if(onlyIgnoredUnitsOnPath(route, m_attacker, m_data, false))
-        {
+        //TODO This checks for ignored sub/trns and skips the set of the attackers to 0 movement left
+        //If attacker stops in an occupied territory, movement stops (battle is optional) 
+        /*if(onlyIgnoredUnitsOnPath(route, m_attacker, m_data, false))
             return ChangeFactory.EMPTY_CHANGE;
-        }
+        */
 
         change.add(DelegateFinder.moveDelegate(m_data).markNoMovementChange(nonAir));
         return change;
@@ -2470,7 +2470,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                       
             if(!lowLuck && isRollAAIndividually())
             { // select casualties based on individual shots at each aircraft
-                m_casualties = BattleCalculator.IndividuallyFiredAACasualties(attackable, m_dice, bridge);
+                m_casualties = BattleCalculator.IndividuallyFiredAACasualties(attackable, m_dice, bridge, m_defender);
             }
             else if (!lowLuck && (isFourthEdition() || isRandomAACasualties()) && !isChooseAA())
             { // if 4th edition choose casualties randomnly

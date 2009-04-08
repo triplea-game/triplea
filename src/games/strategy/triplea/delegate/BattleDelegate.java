@@ -75,8 +75,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         //only initialize once
         if(m_needToInitialize)
         {
-           // addBombardmentSources();
-            setupSeaUnitsInSameSeaZoneBattles();
+            setupSeaUnitsInSameSeaZoneBattles(m_bridge);
             addBombardmentSources();
             m_needToInitialize = false;
         }
@@ -316,7 +315,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
      * same sea zone. This happens when subs emerge (after being submerged), and
      * when naval units are placed in enemy occupied sea zones
      */
-    private void setupSeaUnitsInSameSeaZoneBattles()
+    private void setupSeaUnitsInSameSeaZoneBattles(IDelegateBridge aBridge)
     {
         PlayerID player = m_bridge.getPlayerID();
         //we want to match all sea zones with our units and enemy units
@@ -362,8 +361,17 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
             		if(!remotePlayer.selectAttackTransports(territory))
             		{
             			 m_battleTracker.removeBattle(battle);
-            			 continue;
+            			 //TODO perhaps try to reverse the setting of 0 movement left
+            			 /*CompositeChange change = new CompositeChange();
+            			 Iterator<Unit> attackIter = attackingUnits.iterator();
+            			 while(attackIter.hasNext())
+            			 {
+            				 TripleAUnit attacker = (TripleAUnit) attackIter.next();
+                			 change.add(ChangeFactory.unitPropertyChange(attacker, attacker.getAlreadyMoved(), TripleAUnit.ALREADY_MOVED));
+                			 //change.add(DelegateFinder.moveDelegate(m_data).markNoMovementChange(attackingUnits));    + attacker.getMovementLeft()        				 
+            			 }*/
             		}
+       			 continue;
             	}
 
                 //if only enemy subs... attack them?
@@ -372,8 +380,8 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
                     if(!remotePlayer.selectAttackSubs(territory))
                     {
                         m_battleTracker.removeBattle(battle);
-                        continue;
                     }
+                    continue;
             	}
             	
                 //if only enemy transports and subs... attack them?
@@ -382,10 +390,9 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
                     if(!remotePlayer.selectAttackUnits(territory))
                     {
                         m_battleTracker.removeBattle(battle);
-                        continue;
                     }
-            	}
-            	
+                    continue;
+            	}            	
             }
         }
     }

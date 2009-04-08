@@ -29,6 +29,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -127,7 +128,7 @@ public class BattleCalculator
     /**
      * Choose plane casualties based on individual AA shots at each aircraft.
      */
-    public static Collection<Unit> IndividuallyFiredAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge)
+    public static Collection<Unit> IndividuallyFiredAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge, PlayerID player)
     {
         Collection<Unit> casualties = new ArrayList<Unit>();
         int hits = dice.getHits();
@@ -136,7 +137,11 @@ public class BattleCalculator
         // We need to choose which planes die based on their position in the list and the individual AA rolls
         if (hits < planesList.size())
         {
-            List<Die> rolls = dice.getRolls(1);
+        	int rollAt = 1;
+        	if(isAARadar(player))
+        		rollAt = 2;
+        	
+            List<Die> rolls = dice.getRolls(rollAt);
 
             for (int i = 0; i < rolls.size(); i++)
             {
@@ -495,6 +500,17 @@ public class BattleCalculator
     	return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
     }
     
+    /**
+     * @return Can transports be used as cannon fodder
+     */
+	 private static boolean isAARadar(PlayerID player)
+	    {
+	        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+	        if(ta == null)
+	        	return false;
+	        return ta.hasAARadar();     
+	    }
+
     /**
      * @return Can the attacker retreat non-amphibious units
      */

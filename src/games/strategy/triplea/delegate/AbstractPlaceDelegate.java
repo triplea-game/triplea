@@ -236,7 +236,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     {
         int cost = MoveValidator.carrierCost(units);
         int capacity = MoveValidator.carrierCapacity(units);
-        capacity =+ MoveValidator.carrierCapacity(to.getUnits().getUnits());
+        capacity += MoveValidator.carrierCapacity(to.getUnits().getUnits());
 
         if (cost > capacity)
             return "Not enough new carriers to land all the fighters";
@@ -410,7 +410,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         		return -1;
         	}        		
         }
-        
+        //TODO comco look here
         //a factory can produce the same number of units as the number of ipcs
         // the territroy generates each turn
         int unitCount = getAlreadyProduced(producer).size();
@@ -419,20 +419,15 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         
         if(limitSBRDamageToUnitProd)
         {            
-            production = ta.getUnitProduction();
-            //If there's NO factory, allow placement of the factory and set the initial unitProduction
-            if(production == 0 && producer.getUnits().getMatches(Matches.UnitIsFactory).size() == 0)
+        	production = ta.getUnitProduction();
+            //If there's NO factory, allow placement of the factory
+            if(production <= 0 && producer.getUnits().getMatches(Matches.UnitIsFactory).size() == 0)
             {
-                /*//TODO COMCO move this to a change factory
-                Change change = ChangeFactory.changeUnitProduction(to, territoryValue);
-                m_bridge.getHistoryWriter().startEvent(transcriptText);
-                m_bridge.getHistoryWriter().setRenderingData(units);
-                m_bridge.addChange(change);*/
                 return 1;
             }
             
             //Increase production if have industrial technology
-            if(isIncreasedFactoryProduction(player))
+            if(isIncreasedFactoryProduction(player) && territoryValue > 2)
                 production += 2;
             
             //return 0 if less than 0
@@ -524,14 +519,12 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         // production
         if (isFourthEdition() && ta.getProduction() == 0)
         {
-            return "Cant place factory, that territory cant produce any units";
-                   
+            return "Cant place factory, that territory cant produce any units";                   
         }
 
         int maxUnitsToBePlaced = getMaxUnitsToBePlaced(units, to, player);
         if ((maxUnitsToBePlaced != -1) && (maxUnitsToBePlaced < units.size()))
-            return "Cannot place " + units.size()
-                    + " more units in " + producer.getName();
+            return "Cannot place " + units.size() + " more units in " + producer.getName();
 
         return null;
     }

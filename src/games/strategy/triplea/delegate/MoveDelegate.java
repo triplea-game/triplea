@@ -514,8 +514,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             }
             
             change.add(m_transportTracker.endOfRoundClearStateChange(m_data));
-            m_ipcsLost.clear();
-                        
+            m_ipcsLost.clear();                        
         }
 
         if(!change.isEmpty()) 
@@ -538,7 +537,8 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         while (iter.hasNext())
         {
             PlayerID player = iter.next();
-            if (!player.equals(m_player)) 
+            //Check if player still has units to place
+            if (!player.equals(m_player) && player.getUnits().isEmpty()) 
                 util.removeAirThatCantLand(player, false);
         }
     }
@@ -582,14 +582,8 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
      */
     public static Map<Unit, Unit> mapTransports(Route route, Collection<Unit> units, Collection<Unit> transportsToLoad, boolean isload, PlayerID player)
     {
-        //TODO COMCO need to finish this for unloads
         if (isload)
         {
-            /*TransportTracker transportTracker = new TransportTracker();
-            IDelegateBridge a_bridge;
-            a_bridge = new TripleADelegateBridge(aBridge, gameData);
-            Change change = transportTracker.loadTransportChange((TripleAUnit) transportsToLoad,(TripleAUnit) units, player);
-            m_bridge.addChange(change);*/
             return mapTransportsToLoad(units, transportsToLoad);
         }
         if (MoveValidator.isUnload(route))

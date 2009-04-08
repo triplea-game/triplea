@@ -189,11 +189,8 @@ public class BattleDisplay extends JPanel
         }
         
         Map<Unit, Collection<Unit>> dependentsMap;
-        if(aKilledUnits.size()>0)
-        {
-        	String kev="here";
-        }
-//TODO select those with 0 dependents first
+        
+//TODO COMCO select those with 0 dependents first
         dependentsMap= BattleCalculator.getDependents(aKilledUnits, m_data);
         Collection<Unit> dependentUnitsReturned = new ArrayList<Unit>();
         
