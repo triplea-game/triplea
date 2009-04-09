@@ -65,7 +65,7 @@
 <territory name="Moldavskaya"/> 
 <territory name="Denmark"/> 
 <territory name="Paris"/> 
-<territory name="W.Czech."/> 
+<territory name="W.Czech"/> 
 <territory name="Taranto"/> 
 <territory name="Manchester"/> 
 <territory name="Serbia"/> 
@@ -533,17 +533,17 @@
 <connection t1="sz31" t2="S.Hempton" /> 
 <connection t1="sz30" t2="S.Hempton" /> 
 <connection t1="sz30" t2="Dover" /> 
-<connection t1="sz30" t2="Normandy" /> 
 <connection t1="sz30" t2="Le Havre" /> 
+<connection t1="sz30" t2="Normandy" /> 
 <connection t1="sz30" t2="sz29" /> 
 <connection t1="sz30" t2="sz34" /> 
-<connection t1="sz34" t2="Normandy" /> 
+<connection t1="sz34" t2="Le Havre" /> 
 <connection t1="sz34" t2="Bordeaux" /> 
 <connection t1="sz34" t2="Bilbao" /> 
 <connection t1="sz34" t2="C.Ortegal" /> 
 <connection t1="sz35" t2="C.Ortegal" /> 
 <connection t1="sz35" t2="Portugal" /> 
-<connection t1="sz29" t2="Le Havre" /> 
+<connection t1="sz29" t2="Normandy" /> 
 <connection t1="sz29" t2="Lille" /> 
 <connection t1="sz29" t2="Belgium" /> 
 <connection t1="sz29" t2="Netherlands" /> 
@@ -814,7 +814,7 @@
 <connection t1="Lvov" t2="W.Romania" /> 
 <connection t1="Lvov" t2="E.Romania" /> 
 <connection t1="Lvov" t2="Hungary" /> 
-<connection t1="Lvov" t2="W.Czech." /> 
+<connection t1="Lvov" t2="E.Czech" /> 
 <connection t1="Lvov" t2="Krakow" /> 
 <connection t1="E.Romania" t2="W.Romania" /> 
 <connection t1="E.Romania" t2="Bulgaria" /> 
@@ -849,19 +849,19 @@
 <connection t1="Lodz" t2="Krakow" /> 
 <connection t1="Gdansk" t2="Koenigsberg" /> 
 <connection t1="Krakow" t2="Wroclaw" /> 
-<connection t1="Krakow" t2="W.Czech." /> 
 <connection t1="Krakow" t2="E.Czech" /> 
-<connection t1="W.Czech." t2="E.Czech" /> 
-<connection t1="W.Czech." t2="Hungary" /> 
-<connection t1="W.Czech." t2="Austrie" /> 
+<connection t1="Krakow" t2="W.Czech" /> 
+<connection t1="W.Czech" t2="E.Czech" /> 
+<connection t1="E.Czech" t2="Hungary" /> 
+<connection t1="E.Czech" t2="Austrie" /> 
 <connection t1="Hungary" t2="Austrie" /> 
 <connection t1="Hungary" t2="Triesta" /> 
 <connection t1="Gdansk" t2="Wroclaw" /> 
 <connection t1="Gdansk" t2="Dresden" /> 
 <connection t1="Gdansk" t2="Rostock" /> 
 <connection t1="Wroclaw" t2="Dresden" /> 
-<connection t1="Wroclaw" t2="E.Czech" /> 
-<connection t1="Austrie" t2="E.Czech" /> 
+<connection t1="Wroclaw" t2="W.Czech" /> 
+<connection t1="Austrie" t2="W.Czech" /> 
 <connection t1="Austrie" t2="Nuernberg" /> 
 <connection t1="Austrie" t2="Triesta" /> 
 <connection t1="Austrie" t2="Venezia" /> 
@@ -895,9 +895,9 @@
 <connection t1="Berlin" t2="Leipzig" /> 
 <connection t1="Berlin" t2="Koeln" /> 
 <connection t1="Leipzig" t2="Dresden" /> 
-<connection t1="E.Czech" t2="Dresden" /> 
-<connection t1="E.Czech" t2="Leipzig" /> 
-<connection t1="E.Czech" t2="Nuernberg" /> 
+<connection t1="W.Czech" t2="Dresden" /> 
+<connection t1="W.Czech" t2="Leipzig" /> 
+<connection t1="W.Czech" t2="Nuernberg" /> 
 <connection t1="Leipzig" t2="Nuernberg" /> 
 <connection t1="Leipzig" t2="Muenchen" /> 
 <connection t1="Leipzig" t2="Frankfurt" /> 
@@ -930,19 +930,19 @@
 <connection t1="Paris" t2="Reims" /> 
 <connection t1="Paris" t2="Versailles" /> 
 <connection t1="Paris" t2="Lille" /> 
-<connection t1="Le Havre" t2="Lille" /> 
-<connection t1="Le Havre" t2="Versailles" /> 
-<connection t1="Le Havre" t2="Normandy" /> 
-<connection t1="Versailles" t2="Normandy" /> 
+<connection t1="Normandy" t2="Lille" /> 
+<connection t1="Normandy" t2="Versailles" /> 
+<connection t1="Normandy" t2="Le Havre" /> 
+<connection t1="Versailles" t2="Le Havre" /> 
 <connection t1="Versailles" t2="Bourges" /> 
 <connection t1="Versailles" t2="Dijon" /> 
 <connection t1="Versailles" t2="Lille" /> 
 <connection t1="Reims" t2="Lille" /> 
 <connection t1="Bourges" t2="Dijon" /> 
 <connection t1="Bourges" t2="St.Etienne" /> 
-<connection t1="Bourges" t2="Normandy" /> 
+<connection t1="Bourges" t2="Le Havre" /> 
 <connection t1="Bourges" t2="Bordeaux" /> 
-<connection t1="Normandy" t2="Bordeaux" /> 
+<connection t1="Le Havre" t2="Bordeaux" /> 
 <connection t1="Bourges" t2="Toulouse" /> 
 <connection t1="Lyon" t2="St.Etienne" /> 
 <connection t1="Lyon" t2="Marseille" /> 
@@ -2178,7 +2178,7 @@
                        <option name="production" value="5"/> 
 						 
                    </attatchment> 
-<attatchment name="territoryAttatchment" attatchTo="Normandy" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory"> 
+<attatchment name="territoryAttatchment" attatchTo="Le Havre" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory"> 
                        <option name="production" value="2"/> 
 						 
                    </attatchment> 
@@ -2210,7 +2210,7 @@
                     
 						 
                    </attatchment> 
-<attatchment name="territoryAttatchment" attatchTo="E.Czech" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory"> 
+<attatchment name="territoryAttatchment" attatchTo="W.Czech" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory"> 
                        <option name="production" value="6"/> 
 						 
                    </attatchment> 
@@ -2299,7 +2299,7 @@
 						 
                    </attatchment> 
 
-<attatchment name="territoryAttatchment" attatchTo="W.Czech." javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory"> 
+<attatchment name="territoryAttatchment" attatchTo="E.Czech" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory"> 
                        <option name="production" value="2"/> 
 						 
                    </attatchment> 
@@ -2632,7 +2632,7 @@
 						 
                    </attatchment> 
 
-<attatchment name="territoryAttatchment" attatchTo="Le Havre" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory"> 
+<attatchment name="territoryAttatchment" attatchTo="Normandy" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory"> 
                        <option name="production" value="3"/> 
 						 
                    </attatchment> 
@@ -3049,8 +3049,8 @@
 <territoryOwner territory="Berlin" owner="Germans"/> 
 <territoryOwner territory="Gdansk" owner="Germans"/> 
 <territoryOwner territory="Wroclaw" owner="Germans"/> 
+<territoryOwner territory="W.Czech" owner="Germans"/> 
 <territoryOwner territory="E.Czech" owner="Germans"/> 
-<territoryOwner territory="W.Czech." owner="Germans"/> 
 <territoryOwner territory="Austrie" owner="Germans"/> 
 
 
@@ -3086,9 +3086,9 @@
 <territoryOwner territory="Reims" owner="French"/> 
 <territoryOwner territory="Metz" owner="French"/> 
 <territoryOwner territory="Lille" owner="French"/> 
-<territoryOwner territory="Le Havre" owner="French"/> 
-<territoryOwner territory="Versailles" owner="French"/> 
 <territoryOwner territory="Normandy" owner="French"/> 
+<territoryOwner territory="Versailles" owner="French"/> 
+<territoryOwner territory="Le Havre" owner="French"/> 
 <territoryOwner territory="Bordeaux" owner="French"/> 
 <territoryOwner territory="Bourges" owner="French"/> 
 <territoryOwner territory="Toulouse" owner="French"/> 
@@ -3280,12 +3280,12 @@
 <unitPlacement unitType="Armour" territory="Rostock" quantity="2" owner="Germans"/> 
 <unitPlacement unitType="EarlyFighter" territory="Rostock" quantity="2" owner="Germans"/> 
 
-<unitPlacement unitType="Factory" territory="E.Czech" quantity="1" owner="Germans"/> 
-<unitPlacement unitType="AAGun" territory="E.Czech" quantity="1" owner="Germans"/> 
-<unitPlacement unitType="Infantry" territory="E.Czech" quantity="6" owner="Germans"/> 
-<unitPlacement unitType="Armour" territory="E.Czech" quantity="4" owner="Germans"/> 
-<unitPlacement unitType="EarlyFighter" territory="E.Czech" quantity="1" owner="Germans"/> 
-<unitPlacement unitType="Bomber" territory="E.Czech" quantity="1" owner="Germans"/> 
+<unitPlacement unitType="Factory" territory="W.Czech" quantity="1" owner="Germans"/> 
+<unitPlacement unitType="AAGun" territory="W.Czech" quantity="1" owner="Germans"/> 
+<unitPlacement unitType="Infantry" territory="W.Czech" quantity="6" owner="Germans"/> 
+<unitPlacement unitType="Armour" territory="W.Czech" quantity="4" owner="Germans"/> 
+<unitPlacement unitType="EarlyFighter" territory="W.Czech" quantity="1" owner="Germans"/> 
+<unitPlacement unitType="Bomber" territory="W.Czech" quantity="1" owner="Germans"/> 
 
 <unitPlacement unitType="Factory" territory="Muenchen" quantity="1" owner="Germans"/> 
 <unitPlacement unitType="AAGun" territory="Muenchen" quantity="1" owner="Germans"/> 
@@ -3327,9 +3327,9 @@
 <unitPlacement unitType="Infantry" territory="Austrie" quantity="8" owner="Germans"/> 
 <unitPlacement unitType="Armour" territory="Austrie" quantity="2" owner="Germans"/> 
 
-<unitPlacement unitType="Infantry" territory="W.Czech." quantity="6" owner="Germans"/> 
-<unitPlacement unitType="Armour" territory="W.Czech." quantity="2" owner="Germans"/> 
-<unitPlacement unitType="Artillery" territory="W.Czech." quantity="1" owner="Germans"/> 
+<unitPlacement unitType="Infantry" territory="E.Czech" quantity="6" owner="Germans"/> 
+<unitPlacement unitType="Armour" territory="E.Czech" quantity="2" owner="Germans"/> 
+<unitPlacement unitType="Artillery" territory="E.Czech" quantity="1" owner="Germans"/> 
 
 <unitPlacement unitType="Infantry" territory="Leipzig" quantity="5" owner="Germans"/> 
 
@@ -3828,7 +3828,7 @@
 <unitPlacement unitType="Bunker" territory="Reims" quantity="1" owner="French"/> 
 
 <unitPlacement unitType="Infantry" territory="Versailles" quantity="1" owner="French"/> 
-<unitPlacement unitType="Infantry" territory="Normandy" quantity="1" owner="French"/> 
+<unitPlacement unitType="Infantry" territory="Le Havre" quantity="1" owner="French"/> 
 
 <unitPlacement unitType="Infantry" territory="Bordeaux" quantity="2" owner="French"/> 
 <unitPlacement unitType="Artillery" territory="Bordeaux" quantity="1" owner="French"/> 
@@ -3847,9 +3847,9 @@
 <unitPlacement unitType="AAGun" territory="Marseille" quantity="1" owner="French"/> 
 <unitPlacement unitType="Artillery" territory="Marseille" quantity="1" owner="French"/> 
 
-<unitPlacement unitType="Factory" territory="Le Havre" quantity="1" owner="French"/> 
-<unitPlacement unitType="Infantry" territory="Le Havre" quantity="2" owner="French"/> 
-<unitPlacement unitType="AAGun" territory="Le Havre" quantity="1" owner="French"/> 
+<unitPlacement unitType="Factory" territory="Normandy" quantity="1" owner="French"/> 
+<unitPlacement unitType="Infantry" territory="Normandy" quantity="2" owner="French"/> 
+<unitPlacement unitType="AAGun" territory="Normandy" quantity="1" owner="French"/> 
 
 
 

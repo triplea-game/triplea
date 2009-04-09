@@ -546,9 +546,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     
     private boolean wasConquered(Territory t)
     {
-
-        BattleTracker tracker = DelegateFinder.battleDelegate(m_data)
-                .getBattleTracker();
+        BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
         return tracker.wasConquered(t);
     }
 

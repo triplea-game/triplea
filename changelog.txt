@@ -13,6 +13,9 @@ Changes for 1.0.3.3
 	Fix warships allowed to battle subs/trns, then move in noncombat movement
 	Fix error generation when placing IC, undoing it, then trying to re-place it
 	Fix error generation when trying to place both new fighter and CV in sea zone
+	Fix Null Pointer when trying to edit a sea zone owner
+	Fix US being able to place an IC in a newly captured territory in AA50
+	Fix NWO territories Romania, Czech., Normandy, and Le Harve.
 
 Changes for 1.0.3.2
 

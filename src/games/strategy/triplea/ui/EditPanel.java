@@ -553,7 +553,15 @@ public class EditPanel extends ActionPanel
 
             if (m_currentAction == m_changeTerritoryOwnerAction)
             {
-                PlayerID defaultPlayer = TerritoryAttachment.get(territory).getOriginalOwner();
+            	TerritoryAttachment ta = TerritoryAttachment.get(territory);
+            	if (ta == null)
+            	{
+            		JOptionPane.showMessageDialog(getTopLevelAncestor(),
+            				"No TerritoryAttachment for " + territory + ".", "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+            		return;
+            	}
+                //PlayerID defaultPlayer = TerritoryAttachment.get(territory).getOriginalOwner();
+            	PlayerID defaultPlayer = ta.getOriginalOwner();
                 PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), defaultPlayer, getMap().getUIContext(), true);
                 int option;
                 option = JOptionPane.showOptionDialog(getTopLevelAncestor(), playerChooser, 
