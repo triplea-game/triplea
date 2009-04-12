@@ -191,6 +191,18 @@ public class LobbyFrame extends JFrame
                 controller.banIp(clickedOn, null);
             }        
         });
+        
+        rVal.add(new AbstractAction("Get IP and Aliases")
+        {
+            
+            public void actionPerformed(ActionEvent e)
+            {                
+                String text = controller.getIpAndAliases(clickedOn);
+                JOptionPane.showMessageDialog(LobbyFrame.this, text);
+            }        
+        });
+        
+        
 
         rVal.add(new AbstractAction("Reset password")
         {

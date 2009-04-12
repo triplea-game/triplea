@@ -43,6 +43,8 @@ public interface IModeratorController extends IRemote
     public boolean setPassword(INode node, String hashedPassword);
     
     
+    public String getIpAndAliases(INode node);
+    
     /**
      * Is the current user an admin.
      */

@@ -23,7 +23,13 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
+import java.net.InetAddress;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class ModeratorController implements IModeratorController
 {
@@ -44,6 +50,8 @@ public class ModeratorController implements IModeratorController
     {
         m_messenger = messenger;
     }
+    
+    
 
     public void banIp(INode node, Date banExpires)
     {
@@ -88,6 +96,28 @@ public class ModeratorController implements IModeratorController
         //remove any (n) that is added to distinguish duplicate names
         String name = node.getName().split(" ")[0];
         return name;
+    }
+    
+    public String getIpAndAliases(INode node) 
+    {
+        assertUserIsAdmin();
+        
+        Set<String> aliases = new TreeSet<String>();
+        
+        for(INode currentNode : m_messenger.getNodes()) 
+        {            
+            if(currentNode.getAddress().equals(node.getAddress()))
+                aliases.add(currentNode.getName());            
+        }
+                
+        StringBuilder builder = new StringBuilder();
+        builder.append("Address:" + node.getAddress()).append("\n");
+        builder.append("Names:\n");
+            
+        for(String name : aliases) { 
+            builder.append("   ").append(name).append("\n");
+        }
+        return builder.toString();
     }
 
     public boolean setPassword(INode node, String hashedPassword)
