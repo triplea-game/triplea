@@ -3231,6 +3231,8 @@ class Fire implements IExecutable
                     m_killed = nonTransports;
                     m_damaged = Collections.emptyList();
                     //m_confirmOwnCasualties = true;
+                    if(extraHits > transportsOnly.size())
+                    	extraHits = transportsOnly.size();
                     
                     message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
                         transportsOnly, bridge, m_text, data, m_dice,!m_defending, m_battleID, m_isHeadless, extraHits);

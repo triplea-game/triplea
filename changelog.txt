@@ -2,7 +2,7 @@ Changes for 1.0.3.3
 
 * limit number of units in one row of production panel to 8 (sgb)
 
-*  The following list of bugs were fixed- primarily for AA50 (Comradekev unless otherwise specified)
+*  The following list of bugs were fixed- primarily for AA50 (Comradekev)
 	Fix the engine forcing the repair of at least 1 damage
 	Amphib units taken as first casualties if partial retreat is possible
 	Fix subs blocking naval bombardment
@@ -16,6 +16,7 @@ Changes for 1.0.3.3
 	Fix Null Pointer when trying to edit a sea zone owner
 	Fix US being able to place an IC in a newly captured territory in AA50
 	Fix NWO territories Romania, Czech., Normandy, and Le Harve.
+	Multi-player transport fleets throw - 'wrong number of casualties selected' error
 
 Changes for 1.0.3.2
 
