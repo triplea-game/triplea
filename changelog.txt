@@ -19,6 +19,8 @@ Changes for 1.0.3.3
 	Fix US being able to place an IC in a newly captured territory in AA50
 	Fix NWO territories Romania, Czech., Normandy, and Le Harve.
 	Multi-player transport fleets throw - 'wrong number of casualties selected' error
+	Ask if BB/CR should bombard
+	Add ability to ignore defending Trns
 
 Changes for 1.0.3.2
 

@@ -442,7 +442,15 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
     {
         return true;
     }
-        
+    
+    /* 
+     * @see games.strategy.triplea.player.ITripleaPlayer#selectShoreBombard(games.strategy.engine.data.Territory)
+     */
+    public boolean selectShoreBombard(Territory unitTerritory)
+    {
+    	return true;
+    }
+    
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
      */

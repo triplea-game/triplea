@@ -223,6 +223,11 @@ public abstract class AbstractAI implements ITripleaPlayer
     {
         return true;
     }
+
+    public boolean selectShoreBombard(Territory unitTerritory)
+    {
+    	return true;
+    }
     
     public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from)
     {   

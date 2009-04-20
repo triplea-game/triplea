@@ -504,6 +504,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     }
     
     /* 
+     * Ask if the player wants to shore bombard
+     */
+    public boolean selectShoreBombard(Territory unitTerritory)
+    {
+        return m_ui.getBattlePanel().getShoreBombard(unitTerritory);
+    }
+    
+    /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
      */
     public boolean shouldBomberBomb(Territory territory)

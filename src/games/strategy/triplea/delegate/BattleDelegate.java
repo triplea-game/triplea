@@ -170,13 +170,14 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
     private void addBombardmentSources()
     {
         PlayerID attacker = m_bridge.getPlayerID();
+        ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
         Match<Unit> ownedAndCanBombard = new CompositeMatchAnd<Unit>(Matches
                 .unitCanBombard(attacker), Matches.unitIsOwnedBy(attacker));
         
         Map<Territory, Collection<Battle>> adjBombardment = getPossibleBombardingTerritories();
         Iterator<Territory> territories = adjBombardment.keySet().iterator();
         boolean shoreBombardPerGroundUnitRestricted = isShoreBombardPerGroundUnitRestricted(m_data);
-
+      
         while (territories.hasNext())
         {
             Territory t = territories.next();
@@ -191,9 +192,17 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
                     ListedBombardUnits.addAll(bombardUnits);
                     sortUnitsToBombard(ListedBombardUnits, attacker);
                     Iterator<Unit> bombarding = ListedBombardUnits.iterator();
-                    while (bombarding.hasNext())
+                    if(!bombardUnits.isEmpty())
                     {
-                        Unit u = (Unit) bombarding.next();
+                    	//TODO comco ask if they want to bombard                        
+                        if(!remotePlayer.selectShoreBombard(t))
+                        {
+                        	continue;
+                        }
+                    }
+                    while (bombarding.hasNext())
+                    { 
+                        Unit u = (Unit) bombarding.next();                        
                         Battle battle = selectBombardingBattle(u, t, battles);
                         if (battle != null)
                         {
@@ -327,8 +336,8 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         boolean ignoreTransports = isIgnoreTransportInMovement(m_data);
         boolean ignoreSubs = isIgnoreSubInMovement(m_data);
         
-        Iterator territories = Match.getMatches(m_data.getMap().getTerritories(), seaWithOwnAndEnemy).iterator();
-
+        Iterator<Territory> territories = Match.getMatches(m_data.getMap().getTerritories(), seaWithOwnAndEnemy).iterator();
+        
         Match<Unit> ownedUnit = Matches.unitIsOwnedBy(player);
         Match<Unit> enemyUnit =  Matches.enemyUnit(player, m_data);
     	CompositeMatchAnd<Unit> seaTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.UnitIsSea);

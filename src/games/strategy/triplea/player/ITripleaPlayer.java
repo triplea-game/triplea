@@ -103,6 +103,15 @@ public interface ITripleaPlayer extends IRemote
     public boolean selectAttackUnits(
             Territory unitTerritory    
     );
+
+    /**
+     * Ask if the player wants to shore bombard
+     * 
+     * @param unitTerritory - where the potential battle is
+     */
+    public boolean selectShoreBombard(
+            Territory unitTerritory    
+    );
     
     /**
      * Report an error to the user. 

@@ -400,6 +400,11 @@ public class BattlePanel extends ActionPanel
     {       
         return JOptionPane.showConfirmDialog(null, "Attack units in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;        
     }
+
+    public boolean getShoreBombard(final Territory terr) 
+    {       
+        return JOptionPane.showConfirmDialog(null, "Conduct naval bombard in " + terr.toString() + "?", "Bombard", JOptionPane.YES_NO_OPTION) == 0;        
+    }
     
     public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player, final Collection<Unit> killed,
             final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents)
