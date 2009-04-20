@@ -157,7 +157,12 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	public Set<Territory> getNeighbors(Territory t)
 	{
 		//ok since all entries in connections are already unmodifiable
-		return m_connections.get(t);
+	    
+		Set<Territory> neighbors = m_connections.get(t);
+		if(neighbors == null) {
+		    throw new IllegalArgumentException("No neighbors for:" + t);
+		}
+		return neighbors;
 	}
 
 	/**

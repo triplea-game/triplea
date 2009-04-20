@@ -1,5 +1,7 @@
 Changes for 1.0.3.3
 
+* add a better ai (Kevin Moore)
+
 * limit number of units in one row of production panel to 8 (sgb)
 
 *  The following list of bugs were fixed- primarily for AA50 (Comradekev)

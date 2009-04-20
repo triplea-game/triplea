@@ -39,6 +39,7 @@ import games.strategy.triplea.pbem.AxisAndAlliesDotOrgPBEMMessenger;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.randomAI.RandomAI;
 import games.strategy.triplea.sound.SoundPath;
+import games.strategy.triplea.strongAI.StrongAI;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.ui.display.TripleaDisplay;
@@ -68,6 +69,7 @@ public class TripleA implements IGameLoader
     private static final String HUMAN_PLAYER_TYPE = "Human";
     private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
     private static final String WEAK_COMPUTER_PLAYER_TYPE = "Easy AI";
+    private static final String STRONG_COMPUTER_PLAYER_TYPE = "Strong AI";
     //Kev
     //private static final String NEXT_COMPUTER_PLAYER_TYPE = "Next AI";
 
@@ -93,6 +95,10 @@ public class TripleA implements IGameLoader
             else if (type.equals(WEAK_COMPUTER_PLAYER_TYPE))
             {
                 players.add(new WeakAI(name));
+            }
+            else if(type.equals(STRONG_COMPUTER_PLAYER_TYPE)) 
+            {
+                players.add(new StrongAI(name));
             }
             //Kev
             /*else if (type.equals(NEXT_COMPUTER_PLAYER_TYPE))
@@ -236,7 +242,7 @@ public class TripleA implements IGameLoader
         
         return new String[]
         {
-            HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE};
+            HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE};
             //Kev
             //{HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, NEXT_COMPUTER_PLAYER_TYPE};
     }
