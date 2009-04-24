@@ -98,6 +98,7 @@ public class GameData implements java.io.Serializable
 	private IGameLoader m_loader;
 	private final History m_gameHistory = new History(this);
     private volatile transient boolean m_testLockIsHeld = false;
+    private int m_AIPauseDuration = 800;
 
 	/** Creates new GameData */
 	public GameData()
@@ -342,7 +343,14 @@ public class GameData implements java.io.Serializable
 	{
 		return m_gameName;
 	}
-
+    public int getAIPauseDuration()
+    {
+    	return m_AIPauseDuration;
+    }
+    public void setAIPauseDuration(int value)
+    {
+    	m_AIPauseDuration = value;
+    }
     public History getHistory()
     {
         //don't ensure the lock is held when getting the history

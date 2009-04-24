@@ -13,7 +13,6 @@
  */
 
 package games.strategy.common.player;
-
 /**
  * 
  * @author Lane Schwartz
@@ -42,7 +41,7 @@ public abstract class AbstractBaseAI extends AbstractBasePlayer
         {
             try
             {
-                Thread.sleep(800);
+                Thread.sleep(m_bridge.getGameData().getAIPauseDuration());
             } catch (InterruptedException e)
             {
                 e.printStackTrace();

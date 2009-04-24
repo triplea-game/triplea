@@ -1,5 +1,11 @@
 Changes for 1.0.3.3
 
+* add a setting to "Lock" the map, so you can observe a game without the map moving all around (Stephen Wicklund)
+
+* add  a setting to suppress the showing of battles between two AIs (Stephen Wicklund)
+
+* add a setting to choose how long the AI pauses between each movement (Stephen Wicklund)
+
 * add a better ai (Kevin Moore)
 
 * limit number of units in one row of production panel to 8 (sgb)

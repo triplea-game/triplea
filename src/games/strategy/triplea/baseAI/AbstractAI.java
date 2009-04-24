@@ -39,17 +39,18 @@ public abstract class AbstractAI implements ITripleaPlayer
      * Pause the game to allow the human player to see what is going on.
      *
      */
-    protected static void pause()
+    protected void pause()
     {
         if(m_pause)
         {
             try
             {
-                Thread.sleep(700);
+                Thread.sleep(getGameData().getAIPauseDuration());
             } catch (InterruptedException e)
             {
                 e.printStackTrace();
             }
+            catch(Exception ex){}
         }
     }
     

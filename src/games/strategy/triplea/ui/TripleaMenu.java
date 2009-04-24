@@ -31,6 +31,7 @@ import games.strategy.engine.stats.IStat;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.printgenerator.SetupFrame;
+import games.strategy.ui.IntTextField;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -44,7 +45,6 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeSet;
@@ -73,19 +73,19 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
- * 
+ *
  * Main menu for the triplea frame.
- * 
+ *
  * @author sgb
  *
  */
 public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 {
-    private JCheckBoxMenuItem showMapDetails; 
-    private JCheckBoxMenuItem showMapBlends; 
-    
+    private JCheckBoxMenuItem showMapDetails;
+    private JCheckBoxMenuItem showMapBlends;
+
     TripleaMenu(TripleAFrame frame)
-    {   
+    {
         super(frame);
 	    setWidgetActivation();
     }
@@ -94,12 +94,12 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
     {
         return m_frame.getUIContext();
     }
-    
-    protected void addGameSpecificHelpMenus(JMenu helpMenu) 
+
+    protected void addGameSpecificHelpMenus(JMenu helpMenu)
     {
         addMoveHelpMenu(helpMenu);
     }
-    
+
     /**
      * @param parentMenu
      */
@@ -110,7 +110,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
             public void actionPerformed(ActionEvent e)
             {
                 //html formatted string
-                String hints = 
+                String hints =
                     "<b> Selecting Units</b><br><br>" +
                     "Left click on a unit stack to select 1 unit.<br>" +
                 "CTRL-Left click on a unit stack to select all units in the stack.<br>" +
@@ -135,14 +135,14 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         });
     }
 
-    
-    protected void createGameSpecificMenus (JMenuBar menuBar) 
+
+    protected void createGameSpecificMenus (JMenuBar menuBar)
     {
         createViewMenu(menuBar);
         createGameMenu(menuBar);
         createExportMenu(menuBar);
     }
-    
+
     /**
      * @param menuBar
      */
@@ -158,27 +158,29 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 
         addShowVerifiedDice(menuGame);
 	addEnableSound(menuGame);
-        
+
         menuGame.addSeparator();
         addGameOptionsMenu(menuGame);
         addShowEnemyCasualties(menuGame);
+        addShowAIBattles(menuGame);
+        addAISleepDuration(menuGame);
         addShowDiceStats(menuGame);
         addBattleCalculatorMenu(menuGame);
-        
+
     }
-    
-    
+
+
     private void createExportMenu(JMenuBar menuBar)
     {
         JMenu menuGame = new JMenu("Export");
         menuBar.add(menuGame);
 
         addExportStats(menuGame);
-        addExportSetupCharts(menuGame);        
+        addExportSetupCharts(menuGame);
         addSaveScreenshot(menuGame);
-        
+
     }
-    
+
 
     /**
      * @param menuBar
@@ -187,64 +189,65 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
     {
         JMenu menuView = new JMenu("View");
         menuBar.add(menuView);
-                
+
         addZoomMenu(menuView);
         addUnitSizeMenu(menuView);
         addShowUnits(menuView);
+        addLockMap(menuView);
         addMapSkinsMenu(menuView);
         addShowMapDetails(menuView);
         addShowMapBlends(menuView);
         addChatTimeMenu(menuView);
         addShowCommentLog(menuView);
         addShowGameUuid(menuView);
-        
+
     }
-    
+
     private void addShowGameUuid(JMenu menuView)
     {
         menuView.add(new AbstractAction("Game UUID...")
-        {        
+        {
             public void actionPerformed(ActionEvent e)
             {
                 String id = (String) getData().getProperties().get(GameData.GAME_UUID);
                 JTextField text = new JTextField();
-                text.setText(id);   
+                text.setText(id);
                 JPanel panel = new JPanel();
                 panel.setLayout(new GridBagLayout());
                 panel.add(new JLabel("Game UUID:"), new GridBagConstraints(0,0,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0));
                 panel.add(text, new GridBagConstraints(0,1,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0));
-                
-                
+
+
                 JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(TripleaMenu.this), panel, "Game UUID", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
-                       
-            }        
+
+            }
         });
-        
+
     }
 
     private void addChatTimeMenu(JMenu parentMenu)
     {
         final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
-        
+
         chatTimeBox.addActionListener(new ActionListener()
         {
 
             public void actionPerformed(ActionEvent e)
             {
                 m_frame.setShowChatTime(chatTimeBox.isSelected());
-                
+
             }
-            
+
         });
-        
+
         chatTimeBox.setSelected(false);
         parentMenu.add(chatTimeBox);
-        
+
         chatTimeBox.setEnabled(MainFrame.getInstance().getChat() != null);
-        
+
     }
 
-    
+
     /**
      * @param parentMenu
      */
@@ -254,22 +257,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         editMode.setModel(m_frame.getEditModeButtonModel());
 
         parentMenu.add(editMode);
-    }
-    
-    private void addShowMapOnly(JMenu parentMenu)
-    {
-	final JCheckBoxMenuItem showMapOnlyBox = new JCheckBoxMenuItem("Show map only");
-	showMapOnlyBox.setSelected(false);
-	showMapOnlyBox.addActionListener(new ActionListener()
-	{
-	    public void actionPerformed(ActionEvent e)
-	    {
-		boolean tfselected=showMapOnlyBox.isSelected();
-		getUIContext().setShowMapOnly(tfselected);
-		m_frame.getMapPanel().resetMap();
-	    }
-	});
-	parentMenu.add(showMapOnlyBox);
     }
 
     private void addZoomMenu(JMenu menuGame)
@@ -285,12 +272,12 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                 model.setStepSize(1);
                 model.setValue( (int) (m_frame.getMapPanel().getScale() * 100));
                 JSpinner spinner = new JSpinner(model);
-                
+
                 JPanel panel = new JPanel();
                 panel.setLayout(new BorderLayout());
                 panel.add(new JLabel("Choose Map Scale Percentage"), BorderLayout.NORTH);
                 panel.add(spinner, BorderLayout.CENTER);
-                
+
                 JPanel buttons = new JPanel();
                 JButton fitWidth = new JButton("Fit Width");
                 buttons.add(fitWidth);
@@ -298,10 +285,10 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                 buttons.add(fitHeight);
 
                 panel.add(buttons, BorderLayout.SOUTH);
-                
+
                 fitWidth.addActionListener(new ActionListener()
                 {
-                
+
                     public void actionPerformed(ActionEvent e)
                     {
                         double screenWidth = m_frame.getMapPanel().getWidth();
@@ -309,15 +296,15 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                         double ratio =  screenWidth / mapWidth;
                         ratio = Math.max(0.15, ratio);
                         ratio = Math.min(1, ratio);
-                        
+
                         model.setValue((int) (ratio * 100));
                     }
-                
+
                 });
-                
+
                 fitHeight.addActionListener(new ActionListener()
                 {
-                
+
                     public void actionPerformed(ActionEvent e)
                     {
                         double screenHeight = m_frame.getMapPanel().getHeight();
@@ -325,28 +312,28 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                         double ratio =  screenHeight / mapHeight;
                         ratio = Math.max(0.15, ratio);
                         model.setValue((int) (ratio * 100));
-                
+
                     }
-                
+
                 });
 
-                
-                
+
+
                 int result = JOptionPane.showOptionDialog(m_frame, panel, "Choose Map Scale", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,null, new String[] {"OK","Cancel"}, 0);
                 if(result != 0)
                     return;
-                
-                
+
+
                 Number value = (Number)model.getValue();
                 m_frame.setScale(value.doubleValue());
             }
 
-           
-        
+
+
         };
-        
+
         menuGame.add(mapZoom);
-        
+
     }
 
 
@@ -385,7 +372,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 
         parentMenu.add(showCommentLog);
     }
-    
+
     /**
      * @param parentMenu
      */
@@ -418,14 +405,14 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                     JOptionPane.showMessageDialog(m_frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
                 }
             };
-            
+
 
             menuGame.add(optionsAction);
 
         }
     }
-    
-    
+
+
 
     /**
      * @param parentMenu
@@ -462,7 +449,57 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         });
         parentMenu.add(showUnitsBox);
     }
-
+private void addLockMap(JMenu parentMenu)
+    {
+        final JCheckBoxMenuItem lockMapBox = new JCheckBoxMenuItem("Lock Map");
+        lockMapBox.setSelected(getUIContext().getLockMap());
+        lockMapBox.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                getUIContext().setLockMap(lockMapBox.isSelected());
+            }
+        });
+        parentMenu.add(lockMapBox);
+    }
+    private void addShowAIBattles(JMenu parentMenu)
+    {
+        final JCheckBoxMenuItem showAIBattlesBox = new JCheckBoxMenuItem("Show Battles Between AIs");
+        showAIBattlesBox.setSelected(getUIContext().getShowBattlesBetweenAIs());
+        showAIBattlesBox.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                getUIContext().setShowBattlesBetweenAIs(showAIBattlesBox.isSelected());
+            }
+        });
+        parentMenu.add(showAIBattlesBox);
+    }
+    private void addAISleepDuration(JMenu parentMenu)
+    {
+        final JMenuItem AISleepDurationBox = new JMenuItem("AI Pause Duration (ms)");
+        AISleepDurationBox.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                final IntTextField text = new IntTextField(0, 10000);
+                text.setText(String.valueOf(getData().getAIPauseDuration()));
+                JPanel panel = new JPanel();
+                panel.setLayout(new GridBagLayout());
+                panel.add(new JLabel("AI Pause Duration:"), new GridBagConstraints(0,0,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0));
+                panel.add(text, new GridBagConstraints(0,1,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0));
+                JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(TripleaMenu.this), panel,"Set AI Pause Duration", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
+                try
+                {
+                    getData().setAIPauseDuration(Integer.parseInt(text.getText()));
+                }
+                catch(Exception ex)
+                {
+                }
+            }
+        });
+        parentMenu.add(AISleepDurationBox);
+    }
     /**
      * @param parentMenu
      */
@@ -495,28 +532,28 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         panel.add(new JLabel("Variance : " + format.format(stats.getVariance())));
         panel.add(new JLabel("Standard Deviation : " + format.format(stats.getStdDeviation())));
         panel.add(new JLabel("Total rolls : " + stats.getTotal()));
-        
+
                 JOptionPane.showMessageDialog(m_frame, panel, "Random Stats", JOptionPane.INFORMATION_MESSAGE);
 
             }
         };
         parentMenu.add(showDiceStats);
     }
-    
+
     private void addBattleCalculatorMenu(JMenu menuGame)
     {
         Action showBattleMenu = new AbstractAction("Battle Calculator...")
         {
-        
+
             public void actionPerformed(ActionEvent arg0)
             {
                 OddsCalculatorDialog.show(m_frame, null);
             }
-        
+
         };
-        
+
         menuGame.add(showBattleMenu);
-        
+
     }
 
 
@@ -530,11 +567,11 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
             public void actionPerformed(ActionEvent e)
             {
                 createAndSaveStats();
-                
+
             }
 
             /**
-             * 
+             *
              */
             private void createAndSaveStats()
             {
@@ -543,12 +580,12 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 File rootDir = new File(System.getProperties().getProperty("user.dir"));
                 chooser.setSelectedFile(new File(rootDir, "stats.csv"));
-                
+
                 if(chooser.showSaveDialog(m_frame) != JOptionPane.OK_OPTION)
                     return;
 
                 GameData clone;
-                
+
                 getData().acquireReadLock();
                 try
                 {
@@ -556,12 +593,12 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                 } finally
                 {
                     getData().releaseReadLock();
-                }                
+                }
                 IStat[] stats = statPanel.getStats();
 
                 String[] alliances = (String[]) statPanel.getAlliances().toArray(new String[statPanel.getAlliances().size()]);
                 PlayerID[] players = (PlayerID[]) statPanel.getPlayers().toArray(new PlayerID[statPanel.getPlayers().size()]);
-                
+
                 //its important here to translate the player objects into our game data
                 //the players for the stat panel are only relevant with respect to
                 //the game data they belong to
@@ -569,12 +606,12 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                 {
                     players[i] = clone.getPlayerList().getPlayerID(players[i].getName());
                 }
-                
-                
+
+
                 StringBuilder text = new StringBuilder(1000);
-                                
+
                 text.append("Round,Player Turn,");
-                
+
                 for(int i = 0; i < stats.length; i++)
                 {
                     for (int j = 0; j < players.length; j++)
@@ -582,9 +619,9 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                         text.append(stats[i].getName()).append(" ");
                         text.append(players[j].getName());
                         text.append(",");
-                        
+
                     }
-                    
+
                     for (int j = 0; j < alliances.length; j++)
                     {
                         text.append(stats[i].getName()).append(" ");
@@ -594,64 +631,64 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                 }
                 text.append("\n");
                 clone.getHistory().gotoNode(clone.getHistory().getLastNode());
-                
+
                 Enumeration nodes = ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
-                
+
                 PlayerID currentPlayer = null;
-                
+
                 int round = 0;
                 while (nodes.hasMoreElements())
                 {
                     //we want to export on change of turn
-                    
+
                     HistoryNode element = (HistoryNode) nodes.nextElement();
-                    
+
                     if(element instanceof Round)
                         round++;
-                    
+
                     if(!( element instanceof Step))
                         continue;
-                    
+
                     Step step = (Step) element;
-                    
+
                     if(step.getPlayerID() == null || step.getPlayerID().isNull())
                         continue;
-                    
+
                     if(step.getPlayerID() == currentPlayer)
                         continue;
-                    
+
                     currentPlayer = step.getPlayerID();
-                    
+
                     clone.getHistory().gotoNode(element);
-                    
-                    
+
+
                     String playerName = step.getPlayerID() == null ? "" : step.getPlayerID().getName() + ": ";
                     text.append(round).append(",").append(playerName).append(",");
-                    
+
                     for(int i = 0; i < stats.length; i++)
                     {
-                        
-                        
+
+
                         for (int j = 0; j < players.length; j++)
                         {
                             text.append(stats[i].getFormatter().format(stats[i].getValue(players[j], clone)));
                             text.append(",");
-                            
+
                         }
-                        
+
                         for (int j = 0; j < alliances.length; j++)
                         {
                             text.append(stats[i].getFormatter().format(stats[i].getValue(alliances[j], clone)));
                             text.append(",");
                         }
-                        
-                        
+
+
                     }
                     text.append("\n");
                 }
-                
-                
-                
+
+
+
                 try
                 {
                     FileWriter writer = new FileWriter(chooser.getSelectedFile());
@@ -671,13 +708,13 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         };
         parentMenu.add(showDiceStats);
     }
-   
+
 
    private void setWidgetActivation()
    {
         showMapDetails.setEnabled(getUIContext().getMapData().getHasRelief());
    }
-   
+
     /**
      * @param menuGame
      */
@@ -717,7 +754,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
     private void addShowMapBlends(JMenu menuGame)
     {
     	showMapBlends = new JCheckBoxMenuItem("Show Map Blends");
-    	
+
     	if(getUIContext().getMapData().getHasRelief() && showMapDetails.isEnabled() && showMapDetails.isSelected())
     	{
     		showMapBlends.setEnabled(true);
@@ -728,7 +765,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
     		showMapBlends.setSelected(false);
     		showMapBlends.setEnabled(false);
     	}
-                
+
 
         showMapBlends.addActionListener(new ActionListener()
         {
@@ -738,7 +775,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                 {
                     return;
                 }
-                                
+
                 TileImageFactory.setShowMapBlends(showMapBlends.isSelected());
                 TileImageFactory.setShowMapBlendMode(m_frame.getUIContext().getMapData().getMapBlendMode());
                 TileImageFactory.setShowMapBlendAlpha(m_frame.getUIContext().getMapData().getMapBlendAlpha());
@@ -747,8 +784,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                     public void run()
                     {
                     	m_frame.setScale(m_frame.getUIContext().getScale() * 100);
-                        
-                        yield();                        
+
+                        yield();
                         m_frame.getMapPanel().updateCountries(getData().getMap().getTerritories());
 
                     }
@@ -774,24 +811,24 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         ButtonGroup mapButtonGroup = new ButtonGroup();
 
         menuGame.add(mapSubMenu);
-        
+
         final Map<String,String> skins = UIContext.getSkins(m_frame.getGame().getData());
         for(final String key : skins.keySet() )
-        { 
+        {
             mapMenuItem = new JRadioButtonMenuItem(key);
-            
-            
+
+
             mapButtonGroup.add(mapMenuItem);
             mapSubMenu.add(mapMenuItem);
             mapSubMenu.setEnabled(skins.size() > 1);
-            
+
             if(skins.get(key).equals(m_frame.getUIContext().getMapDir()))
                 mapMenuItem.setSelected(true);
-            
+
             mapMenuItem.addActionListener(new ActionListener()
                     {
                         public void actionPerformed(ActionEvent e)
-                        {                            
+                        {
                                 try
                                 {
                                     m_frame.updateMap(skins.get(key));
@@ -804,16 +841,16 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                                 {
                                     se.printStackTrace();
                                     JOptionPane.showMessageDialog(m_frame, se.getMessage(), "Error Changing Map Skin2", JOptionPane.OK_OPTION);
-                                }                                
-                                
+                                }
+
                             }//else
 
                         }//actionPerformed
                     );
         }
 
-        
-       
+
+
     }
 
     /**
@@ -856,10 +893,10 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         parentMenu.add(menuFileExport);
     }
 
-    
+
     private void addUnitSizeMenu(JMenu parentMenu)
     {
-         
+
         final NumberFormat s_decimalFormat = new DecimalFormat("00.##");
 
         // This is the action listener used
@@ -933,6 +970,5 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 
         parentMenu.add(unitSizeMenu);
     }
-    
-}
 
+}

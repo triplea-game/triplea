@@ -16,6 +16,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.triplea.*;
 import games.strategy.triplea.image.*;
 import games.strategy.triplea.util.Stopwatch;
@@ -27,6 +28,7 @@ import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.*;
 import java.util.prefs.*;
+
 
 import javax.swing.*;
 
@@ -59,6 +61,10 @@ public class UIContext
     private List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
     private List<Window> m_windowsToCloseOnShutdown = new ArrayList<Window>();
     private List<Active> m_activeToDeactivate = new ArrayList<Active>();
+
+    private boolean m_lockMap = false;
+    private boolean m_showBattlesBetweenAIs = true; 
+    private Set<IGamePlayer> m_playerList;
     
     private double m_scale = 1;
     
@@ -460,6 +466,30 @@ public class UIContext
     public void setShowMapOnly(boolean aBool)
     {
     	m_drawMapOnly=aBool;
+    }
+    public boolean getLockMap()
+    {
+    	return m_lockMap;
+    }    
+    public void setLockMap(boolean aBool)
+    {
+    	m_lockMap = aBool;
+    }
+    public boolean getShowBattlesBetweenAIs()
+    {
+    	return m_showBattlesBetweenAIs;
+    }    
+    public void setShowBattlesBetweenAIs(boolean aBool)
+    {
+    	m_showBattlesBetweenAIs = aBool;
+    }    
+    public Set<IGamePlayer> getPlayerList()
+    {
+    	return m_playerList;
+    }    
+    public void setPlayerList(Set<IGamePlayer> value)
+    {
+    	m_playerList = value;
     }
 
     public void setUnitScaleFactor(double scaleFactor)

@@ -60,6 +60,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import games.strategy.triplea.TripleAPlayer;
+import games.strategy.engine.gamePlayer.IGamePlayer;
+
 /**
  * 
  * UI for fighting battles.
@@ -332,8 +335,26 @@ public class BattlePanel extends ActionPanel
 			    m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
 			    
 			    
-			    games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);		    
-			    m_battleFrame.setVisible(true);
+			    games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);		
+                      boolean foundHumanInBattle = false;
+                      Iterator<IGamePlayer> iter = getMap().getUIContext().getPlayerList().iterator();
+                      while (iter.hasNext())
+                      {
+                          IGamePlayer gamePlayer = iter.next();
+                          if ((gamePlayer.getID().equals(attacker) && gamePlayer instanceof TripleAPlayer) || (gamePlayer.getID().equals(defender) && gamePlayer instanceof TripleAPlayer))
+                          {
+                              foundHumanInBattle = true;
+                              break;
+                          }
+                      }    
+        		    if(getMap().getUIContext().getShowBattlesBetweenAIs() || foundHumanInBattle)
+			    {	    
+                          m_battleFrame.setVisible(true);
+			    }
+                else
+                {
+                    m_battleFrame.setVisible(false);
+                }
 			    m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 			    
 			    m_currentBattleDisplayed = battleID;

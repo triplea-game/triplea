@@ -256,7 +256,7 @@ public class MapPanel extends ImageScrollerLargeView
     
     public void centerOn(Territory territory)
     {
-        if (territory == null)
+        if (territory == null || m_uiContext.getLockMap())
             return;
 
         Point p = m_uiContext.getMapData().getCenter(territory);
