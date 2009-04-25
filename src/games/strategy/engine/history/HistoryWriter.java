@@ -85,7 +85,7 @@ public class HistoryWriter implements java.io.Serializable
         }
         
         
-        m_history.nodesWereInserted(old, new int[] { old.getChildCount() - 1 });
+        m_history.nodeStructureChanged(old);
     }
 
     public void startNextRound(int round)

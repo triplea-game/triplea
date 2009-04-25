@@ -1548,6 +1548,15 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
     private void setWidgetActivation()
     {
+        if(!SwingUtilities.isEventDispatchThread()) {
+            SwingUtilities.invokeLater(new Runnable() {
+            
+                public void run() {
+                    setWidgetActivation();            
+                }
+            });
+            return;
+        }
         if(m_showHistoryAction != null) {
             m_showHistoryAction.setEnabled( !(m_inHistory || m_uiContext.getShowMapOnly()));
         }
@@ -1575,7 +1584,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 	    }
 	    else
 	    {
-		m_showMapOnlyAction.setEnabled(false);
+	        m_showMapOnlyAction.setEnabled(false);
 	    }
 	}
 

@@ -49,6 +49,10 @@ public class HistoryPanel extends JPanel
 
         setLayout(new BorderLayout());
 
+        if(!m_data.areChangesOnlyInSwingEventThread()) {
+            throw new IllegalStateException();
+        }
+        
         m_tree = new JTree(m_data.getHistory());
         m_popup = popup;
         m_tree.add(m_popup);
@@ -287,6 +291,10 @@ public class HistoryPanel extends JPanel
 
     private void gotoNode(HistoryNode node)
     {
+        if(!SwingUtilities.isEventDispatchThread()) {
+            throw new IllegalStateException("Not EDT");
+        }
+        
         m_details.render(node);
         m_data.getHistory().gotoNode(node);
     }

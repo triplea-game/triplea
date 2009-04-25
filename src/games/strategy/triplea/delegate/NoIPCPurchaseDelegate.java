@@ -46,13 +46,16 @@ public class NoIPCPurchaseDelegate extends PurchaseDelegate
     String unitTypeToProduce = Constants.INFANTRY_TYPE;
     private GameData m_data;
 
-    private boolean isPacific = isPacificEdition();
-    private boolean isAnniversaryEdition = isAnniversaryEdition();
+    private boolean isPacific;
+    private boolean isAnniversaryEdition;
 
     public void start(IDelegateBridge aBridge, GameData gameData)
     {
         super.start(aBridge, gameData);
         m_data = gameData;
+        
+        isPacific = isPacificEdition();
+        isAnniversaryEdition = isAnniversaryEdition();
 
         PlayerID player = aBridge.getPlayerID();
         Collection<Territory> territories = gameData.getMap().getTerritoriesOwnedBy(player);

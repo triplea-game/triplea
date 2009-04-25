@@ -14,19 +14,28 @@
 
 package games.strategy.triplea.delegate;
 
-import java.io.*;
-import java.util.*;
-import games.strategy.engine.data.*;
-import games.strategy.triplea.attatchments.RulesAttachment;
-import games.strategy.triplea.attatchments.TechAttachment;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.Die.DieType;
-import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.formatter.*;
-import games.strategy.util.Match;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.TechAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.Die.DieType;
+import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.util.Match;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Used to store information about a dice roll.
@@ -429,8 +438,15 @@ public class DiceRoll implements Externalizable
     //Determine if it's an assaulting Marine so the attach value can be increased
     public static boolean isAmphibiousMarine(UnitAttachment ua, GameData data)
     {
-    	BattleTracker bt = new BattleTracker();
-     	bt = DelegateFinder.battleDelegate(data).getBattleTracker();
+    	BattleTracker bt;
+    	data.acquireReadLock();
+    	try
+    	{
+    	    bt = DelegateFinder.battleDelegate(data).getBattleTracker();
+    	} finally {
+    	    data.releaseReadLock();
+    	}
+    	
     
     	Collection<Territory> m_pendingBattles = bt.getPendingBattleSites(false);
      	Iterator<Territory> territories = m_pendingBattles.iterator();

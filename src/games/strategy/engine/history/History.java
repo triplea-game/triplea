@@ -39,9 +39,10 @@ import games.strategy.engine.data.*;
 import java.io.*;
 import java.util.*;
 
+import javax.swing.SwingUtilities;
 import javax.swing.tree.*;
 
-public class History  extends DefaultTreeModel implements java.io.Serializable
+public class History extends DefaultTreeModel implements java.io.Serializable
 {
     private final HistoryWriter m_writer = new HistoryWriter(this);
     private final List<Change> m_changes = new ArrayList<Change>();
@@ -49,6 +50,12 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
 
     private HistoryNode m_currentNode;
 
+    private void assertCorrectThread()
+    {
+        if(m_data.areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread())
+            throw new IllegalStateException("Wrong thread");
+    }
+    
     public History(GameData data)
     {
         super(new RootHistoryNode("Game History", true));
@@ -62,6 +69,7 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
 
     public HistoryNode getLastNode()
     {
+        assertCorrectThread();
         return getLastChildInternal( (HistoryNode) getRoot());
     }
 
@@ -92,10 +100,11 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
 
     public Change getDelta(HistoryNode start, HistoryNode end)
     {
+        assertCorrectThread();
         int firstChange = getLastChange(start);
         int lastChange = getLastChange(end);
 
-      if(firstChange == lastChange)
+        if(firstChange == lastChange)
           return null;
 
        List<Change> changes = m_changes.subList( Math.min(firstChange, lastChange), Math.max(firstChange, lastChange  ) );
@@ -113,6 +122,7 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
 
     public synchronized void gotoNode(HistoryNode node)
     {
+        assertCorrectThread();
         getGameData().acquireWriteLock();
         try
         {
@@ -178,6 +188,8 @@ class SerializedHistory implements Serializable
 {
     private final List<SerializationWriter> m_Writers = new ArrayList<SerializationWriter>();
     private GameData m_data;
+    
+    
     
     public SerializedHistory(History history, GameData data, List<Change> changes)
     {

@@ -64,6 +64,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;
+import javax.swing.SwingUtilities;
 
 /**
  * 
@@ -99,8 +100,15 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         catch (Exception e)
         {
         }
-        m_ui.getEditModeButtonModel().addActionListener(m_editModeAction);
-        m_ui.getEditModeButtonModel().setEnabled(true);
+        
+        SwingUtilities.invokeLater( new Runnable() {
+        
+            public void run() {
+                m_ui.getEditModeButtonModel().addActionListener(m_editModeAction);
+                m_ui.getEditModeButtonModel().setEnabled(true);        
+            }
+        });
+        
 
         if (name.endsWith("Bid"))
             purchase(true);
@@ -121,9 +129,16 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         else
             badStep = true;
 
-        m_ui.getEditModeButtonModel().setEnabled(false);
-        m_ui.getEditModeButtonModel().removeActionListener(m_editModeAction);
-        m_ui.setEditDelegate(null);
+        
+        SwingUtilities.invokeLater( new Runnable() {
+            
+            public void run() {
+                m_ui.getEditModeButtonModel().setEnabled(false);
+                m_ui.getEditModeButtonModel().removeActionListener(m_editModeAction);
+                m_ui.setEditDelegate(null);
+            }}
+        );
+        
         
         if (badStep)
             throw new IllegalArgumentException("Unrecognized step name:" + name);
