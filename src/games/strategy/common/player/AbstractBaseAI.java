@@ -31,24 +31,14 @@ public abstract class AbstractBaseAI extends AbstractBasePlayer
         super(name);
     }
     
-    private boolean m_pause =  Boolean.valueOf(System.getProperties().getProperty("triplea.ai.pause", "true"));
-    
-    public void setPause(boolean pause) 
-    {
-    	m_pause = pause;
-    }
-    
     protected void pause()
     {
-        if(m_pause)
+        try
         {
-            try
-            {
-                Thread.sleep(UIContext.getAIPauseDuration());
-            } catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
+            Thread.sleep(UIContext.getAIPauseDuration());
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
         }
     }
     

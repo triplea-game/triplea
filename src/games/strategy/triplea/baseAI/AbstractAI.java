@@ -16,7 +16,7 @@ import games.strategy.triplea.ui.UIContext;
 /**
  * Base class for ais.<p>
  * 
- *  run with -Dtriplea.abstractai.pause=false to eliminate the human friendly pauses <p>
+ *  Control pausing with the AI pause menu option
  * 
  * AI's should note that any data that is stored in the ai instance, will be lost when
  * the game is restarted.  We cannot save data with an AI, since the player
@@ -34,25 +34,22 @@ public abstract class AbstractAI implements ITripleaPlayer
 {
     private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
     
-    private static final boolean m_pause =  Boolean.valueOf(System.getProperties().getProperty("triplea.abstractai.pause", "true"));
-    
     /**
      * Pause the game to allow the human player to see what is going on.
      *
      */
     protected void pause()
     {
-        if(m_pause)
+    
+        try
         {
-            try
-            {
-                Thread.sleep(UIContext.getAIPauseDuration());
-            } catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-            catch(Exception ex){}
+            Thread.sleep(UIContext.getAIPauseDuration());
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
         }
+        catch(Exception ex){}
+
     }
     
     
