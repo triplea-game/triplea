@@ -82,25 +82,40 @@ public class CenterPicker extends JFrame
     {
         super("Center Picker");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        try
+        File file = new File(new File(mapName).getParent() + File.pathSeparator + "polygons.txt");
+        if(file.exists() && JOptionPane.showConfirmDialog(new JPanel(), "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories names?", "File Suggestion", 1) == 0)
         {
-	    System.out.println("Select the Polygons file");
-	    String polyPath = new FileOpen("Select A Polygon File").getPathString();
-	    
-	    if(polyPath != null)
-	    {
-	        System.out.println("Polygons : "+polyPath);
-                m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(polyPath));
+            try
+            {
+                System.out.println("Polygons : " + file.getPath());
+                m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(file.getPath()));
             }
-	    else
-	    {
-	        System.out.println("Polygons file not given. Will run regardless");
-	    }
-	}
-        catch (IOException ex1)
+            catch (IOException ex1)
+            {
+                ex1.printStackTrace();
+            }
+        }
+        else
         {
-            ex1.printStackTrace();
+            try
+            {
+                System.out.println("Select the Polygons file");
+                String polyPath = new FileOpen("Select A Polygon File").getPathString();
+
+                if(polyPath != null)
+                {
+                    System.out.println("Polygons : "+polyPath);
+                        m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(polyPath));
+                    }
+                else
+                {
+                    System.out.println("Polygons file not given. Will run regardless");
+                }
+            }
+            catch (IOException ex1)
+            {
+                ex1.printStackTrace();
+            }
         }
 
         createImage(mapName);

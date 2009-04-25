@@ -14,15 +14,31 @@
 
 package util.image;
 
-import java.io.*;
-import java.util.*;
-import java.awt.*;
-import java.util.List;
-import java.awt.geom.*;
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.triplea.ui.MapData;
+import games.strategy.util.PointFileReaderWriter;
 
-import javax.swing.*;
-import games.strategy.triplea.ui.*;
-import games.strategy.util.*;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.LineNumberReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 
 public class AutoPlacementFinder
@@ -32,12 +48,12 @@ public class AutoPlacementFinder
     private static int PLACEHEIGHT = 46;
     private static MapData s_mapData;
 
-    
+    private static double percent;
     public static void main(String[] args)
     {
         if(args.length == 1)
         {
-            double percent = Double.parseDouble(args[0]);
+            percent = Double.parseDouble(args[0]);
             PLACEHEIGHT = (int) (percent * PLACEHEIGHT);
             PLACEWIDTH = (int) (percent * PLACEWIDTH);
         }
@@ -54,8 +70,53 @@ public class AutoPlacementFinder
     static void calculate()
     {
         Map<String, Collection> m_placements = new HashMap<String, Collection>();      //create hash map of placements
-	String mapDir    = getMapDirectory();  //ask user where the map is
-	
+	String mapDir = getMapDirectory();  //ask user where the map is
+	if(percent == 0)
+    {
+        try
+        {
+            File file = new File(GameRunner.getRootFolder() + File.separator + "maps" + File.separator + mapDir + File.separator + "map.properties");
+            if(file.exists())
+            {
+                FileReader reader = new FileReader(file);
+                LineNumberReader reader2 = new LineNumberReader(reader);
+                int i = 0;
+                while(true)
+                {
+                    reader2.setLineNumber(i);
+                    String line = reader2.readLine();
+                    if(line == null)
+                        break;
+                    if(line.contains("units.scale="))
+                    {
+                        int result = JOptionPane.showConfirmDialog(new JPanel(), "A map.properties file was found in the map's folder, do you want to use the file to supply the unit's scale?", "File Suggestion", 1);
+                        if(result == 2)
+                            return;
+                        if(result == 0)
+                        {
+                            percent = Double.parseDouble(line.substring(line.indexOf("units.scale=") + 12).trim());
+                            PLACEHEIGHT = (int) (percent * PLACEHEIGHT);
+                            PLACEWIDTH = (int) (percent * PLACEWIDTH);
+                            break;
+                        }
+                    }
+                    i++;
+                }
+            }
+        }
+        catch(Exception ex){}
+    }
+    if(percent == 0)
+    {
+        try
+        {
+            String result = getUnitsScale();
+            percent = Double.parseDouble(result.toLowerCase());
+            PLACEHEIGHT = (int) (percent * PLACEHEIGHT);
+            PLACEWIDTH = (int) (percent * PLACEWIDTH);
+        }
+        catch(Exception ex){}
+    }
 	if(mapDir == null)
         {
 	    System.out.println("You need to specify a map name for this to work");
@@ -156,7 +217,19 @@ public class AutoPlacementFinder
             return null;
         }
     }
+    private static String getUnitsScale()
+    {
+        String unitsScale = JOptionPane.showInputDialog(null, "Enter the unit's scale (e.g. 0.5625)");
 
+        if(unitsScale != null)
+        {
+            return unitsScale;
+        }
+        else
+        {
+            return null;
+        }
+    }
 
     /**
        java.util.List getPlacementsStartingAtMiddle(java.util.Collection, java.awt.Rectangle, java.awt.Point)

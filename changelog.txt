@@ -1,5 +1,10 @@
 Changes for 1.0.3.3
 
+* Make it so map utility programs can find the centers, polygons, and map.properties files by using the
+  path of the map's image file. (Stephen Wicklund)
+  
+ * Make it so the user can specify the unit's scale when using the 'Auto Placement Finder' utility.(Stephen Wicklund)
+
 * add a setting to "Lock" the map, so you can observe a game without the map moving all around (Stephen Wicklund)
 
 * add  a setting to suppress the showing of battles between two AIs (Stephen Wicklund)

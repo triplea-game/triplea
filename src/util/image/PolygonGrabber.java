@@ -98,28 +98,43 @@ public class PolygonGrabber extends JFrame
     {
         super("Polygon gragger");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        try
+        File file = new File(new File(mapName).getParent() + File.pathSeparator + "centers.txt");
+        if(file.exists() && JOptionPane.showConfirmDialog(new JPanel(), "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories names?", "File Suggestion", 1) == 0)
         {
-	    System.out.println("Select the Centers file");
-	    String centerPath = new FileOpen("Select A Center File").getPathString();
-	    
-	    if(centerPath != null)
-	    {
-	        System.out.println("Centers : "+centerPath);
-                m_centers = PointFileReaderWriter.readOneToOne(new FileInputStream(centerPath));
+            try
+            {
+                System.out.println("Centers : " + file.getPath());
+                m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(file.getPath()));
             }
-	    else
-	    {
-	        System.out.println("You must specify a centers file.");
-		System.out.println("Shutting down.");
-		System.exit(0);
-	    }
-	}
-        catch (IOException ex1)
+            catch (IOException ex1)
+            {
+                ex1.printStackTrace();
+            }
+        }
+        else
         {
-            ex1.printStackTrace();
-	    System.exit(0);
+            try
+            {
+                System.out.println("Select the Centers file");
+                String centerPath = new FileOpen("Select A Center File").getPathString();
+
+                if(centerPath != null)
+                {
+                    System.out.println("Centers : "+centerPath);
+                    m_centers = PointFileReaderWriter.readOneToOne(new FileInputStream(centerPath));
+                }
+                else
+                {
+                    System.out.println("You must specify a centers file.");
+                    System.out.println("Shutting down.");
+                    System.exit(0);
+                }
+            }
+            catch (IOException ex1)
+            {
+                ex1.printStackTrace();
+                System.exit(0);
+            }
         }
 
         createImage(mapName);

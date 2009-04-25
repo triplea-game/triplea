@@ -62,7 +62,7 @@ public class ImageShrinker
         
         // save thumbnail image to OUTFILE
         
-        FileImageOutputStream out = new FileImageOutputStream(new File("smallMap.jpeg"));
+        FileImageOutputStream out = new FileImageOutputStream(new File(new File(mapFile.getPath()).getParent() + File.pathSeparator + "smallMap.jpeg"));
         ImageWriter encoder = (ImageWriter)ImageIO.getImageWritersByFormatName("JPEG").next();
         JPEGImageWriteParam param = new JPEGImageWriteParam(null);
         
