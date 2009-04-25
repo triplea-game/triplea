@@ -134,6 +134,9 @@ public class UIContext
     private static String getDefaultMapDir(GameData data)
     {
         String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
+        if(mapName == null || mapName.trim().length() == 0) {
+            throw new IllegalStateException("Map name property not set on game");
+        }
         Preferences prefs = getPreferencesForMap(mapName);
         String mapDir =  prefs.get(MAP_SKIN_PREF, mapName);
      
