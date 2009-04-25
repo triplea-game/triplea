@@ -45,11 +45,6 @@ public class GameDataComponent implements java.io.Serializable
 		return m_data;
 	}
 
-	protected void setGameData(GameData data)
-	{
-		m_data = data;
-	}
-
 	private void writeObject(ObjectOutputStream stream) throws IOException
 	{
 		writeInternal(stream);
