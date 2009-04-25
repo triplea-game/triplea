@@ -62,8 +62,9 @@ public class UIContext
     private List<Window> m_windowsToCloseOnShutdown = new ArrayList<Window>();
     private List<Active> m_activeToDeactivate = new ArrayList<Active>();
 
-    private boolean m_lockMap = false;
-    private boolean m_showBattlesBetweenAIs = true; 
+    private final static String LOCK_MAP = "LockMap";
+    private final static String SHOW_BATTLES_BETWEEN_AIS = "ShowBattlesBetweenAIs";
+    private final static String AI_PAUSE_DURATION = "AIPauseDuration";
     private Set<IGamePlayer> m_playerList;
     
     private double m_scale = 1;
@@ -72,7 +73,23 @@ public class UIContext
     {
         m_mapImage = new MapImage();
     }
-    
+    public static int getAIPauseDuration()
+    {
+    	Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
+        return prefs.getInt(AI_PAUSE_DURATION, 800);
+    }
+    public static void setAIPauseDuration(int value)
+    {
+    	Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
+        prefs.putInt(AI_PAUSE_DURATION, value);
+        try
+        {
+            prefs.flush();
+        } catch (BackingStoreException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
     public double getScale()
     {
         return m_scale;
@@ -469,19 +486,37 @@ public class UIContext
     }
     public boolean getLockMap()
     {
-    	return m_lockMap;
+        Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
+        return prefs.getBoolean(LOCK_MAP, false);
     }    
     public void setLockMap(boolean aBool)
     {
-    	m_lockMap = aBool;
+        Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
+        prefs.putBoolean(LOCK_MAP, aBool);
+        try
+        {
+            prefs.flush();
+        } catch (BackingStoreException ex)
+        {
+            ex.printStackTrace();
+        }
     }
     public boolean getShowBattlesBetweenAIs()
     {
-    	return m_showBattlesBetweenAIs;
+    	Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
+        return prefs.getBoolean(SHOW_BATTLES_BETWEEN_AIS, true);
     }    
     public void setShowBattlesBetweenAIs(boolean aBool)
     {
-    	m_showBattlesBetweenAIs = aBool;
+    	Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
+        prefs.putBoolean(SHOW_BATTLES_BETWEEN_AIS, aBool);
+        try
+        {
+            prefs.flush();
+        } catch (BackingStoreException ex)
+        {
+            ex.printStackTrace();
+        }
     }    
     public Set<IGamePlayer> getPlayerList()
     {

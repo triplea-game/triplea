@@ -11,6 +11,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.remote.*;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.ui.UIContext;
 
 /**
  * Base class for ais.<p>
@@ -45,7 +46,7 @@ public abstract class AbstractAI implements ITripleaPlayer
         {
             try
             {
-                Thread.sleep(getGameData().getAIPauseDuration());
+                Thread.sleep(UIContext.getAIPauseDuration());
             } catch (InterruptedException e)
             {
                 e.printStackTrace();

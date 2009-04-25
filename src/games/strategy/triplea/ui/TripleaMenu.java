@@ -483,7 +483,7 @@ private void addLockMap(JMenu parentMenu)
             public void actionPerformed(ActionEvent e)
             {
                 final IntTextField text = new IntTextField(0, 10000);
-                text.setText(String.valueOf(getData().getAIPauseDuration()));
+                text.setText(String.valueOf(UIContext.getAIPauseDuration()));
                 JPanel panel = new JPanel();
                 panel.setLayout(new GridBagLayout());
                 panel.add(new JLabel("AI Pause Duration:"), new GridBagConstraints(0,0,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0));
@@ -491,7 +491,7 @@ private void addLockMap(JMenu parentMenu)
                 JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(TripleaMenu.this), panel,"Set AI Pause Duration", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
                 try
                 {
-                    getData().setAIPauseDuration(Integer.parseInt(text.getText()));
+                    UIContext.setAIPauseDuration(Integer.parseInt(text.getText()));
                 }
                 catch(Exception ex)
                 {

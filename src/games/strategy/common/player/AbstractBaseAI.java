@@ -13,6 +13,9 @@
  */
 
 package games.strategy.common.player;
+
+import games.strategy.triplea.ui.UIContext;
+
 /**
  * 
  * @author Lane Schwartz
@@ -41,7 +44,7 @@ public abstract class AbstractBaseAI extends AbstractBasePlayer
         {
             try
             {
-                Thread.sleep(m_bridge.getGameData().getAIPauseDuration());
+                Thread.sleep(UIContext.getAIPauseDuration());
             } catch (InterruptedException e)
             {
                 e.printStackTrace();
