@@ -477,7 +477,7 @@ private void addLockMap(JMenu parentMenu)
     }
     private void addAISleepDuration(JMenu parentMenu)
     {
-        final JMenuItem AISleepDurationBox = new JMenuItem("AI Pause Duration (ms)");
+        final JMenuItem AISleepDurationBox = new JMenuItem("AI Pause Duration");
         AISleepDurationBox.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -486,7 +486,7 @@ private void addLockMap(JMenu parentMenu)
                 text.setText(String.valueOf(UIContext.getAIPauseDuration()));
                 JPanel panel = new JPanel();
                 panel.setLayout(new GridBagLayout());
-                panel.add(new JLabel("AI Pause Duration:"), new GridBagConstraints(0,0,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0));
+                panel.add(new JLabel("AI Pause Duration (ms):"), new GridBagConstraints(0,0,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0));
                 panel.add(text, new GridBagConstraints(0,1,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0));
                 JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(TripleaMenu.this), panel,"Set AI Pause Duration", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
                 try
