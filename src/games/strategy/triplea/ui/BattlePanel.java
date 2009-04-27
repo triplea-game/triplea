@@ -61,6 +61,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import games.strategy.triplea.TripleAPlayer;
+import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 
 /**
@@ -405,29 +406,29 @@ public class BattlePanel extends ActionPanel
         int option = JOptionPane.NO_OPTION;
         while (option != JOptionPane.OK_OPTION)
         {
-            option = JOptionPane.showConfirmDialog(this, comp, "Bombardment Territory Selection", JOptionPane.OK_OPTION);
+            option = EventThreadJOptionPane.showConfirmDialog(this, comp, "Bombardment Territory Selection", JOptionPane.OK_OPTION);
         }
         return comp.getSelection();
     }
 
     public boolean getAttackSubs(final Territory terr) 
     {       
-        return JOptionPane.showConfirmDialog(null, "Attack submarines in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;        
+        return EventThreadJOptionPane.showConfirmDialog(null, "Attack submarines in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;        
     }
 
     public boolean getAttackTransports(final Territory terr) 
     {       
-        return JOptionPane.showConfirmDialog(null, "Attack transports in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;        
+        return EventThreadJOptionPane.showConfirmDialog(null, "Attack transports in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;        
     }
 
     public boolean getAttackUnits(final Territory terr) 
     {       
-        return JOptionPane.showConfirmDialog(null, "Attack units in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;        
+        return EventThreadJOptionPane.showConfirmDialog(null, "Attack units in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;        
     }
 
     public boolean getShoreBombard(final Territory terr) 
     {       
-        return JOptionPane.showConfirmDialog(null, "Conduct naval bombard in " + terr.toString() + "?", "Bombard", JOptionPane.YES_NO_OPTION) == 0;        
+        return EventThreadJOptionPane.showConfirmDialog(null, "Conduct naval bombard in " + terr.toString() + "?", "Bombard", JOptionPane.YES_NO_OPTION) == 0;        
     }
     
     public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player, final Collection<Unit> killed,
@@ -495,7 +496,7 @@ public class BattlePanel extends ActionPanel
 
         String[] options =
         { "OK" };
-        JOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE,
+        EventThreadJOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE,
                 null, options, null);
         List<Unit> killed = chooser.getSelected(false);
         CasualtyDetails response = new CasualtyDetails(killed, chooser.getSelectedFirstHit(), false);
