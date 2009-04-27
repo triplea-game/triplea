@@ -36,7 +36,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Seria
   private final UnitCollection m_units;
 
   // In a grid-based game, stores the coordinate of the Territory
-  int[] m_coordinate = null;
+  private final int[] m_coordinate;
   
   /** Creates new Territory */
   public Territory(String name, boolean water, GameData data)
@@ -44,6 +44,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Seria
     super(name, data);
     m_water = water;
     m_units = new UnitCollection(this, getData());
+    m_coordinate = null;
   }
 
   /** Creates new Territory */
