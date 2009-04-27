@@ -199,6 +199,34 @@ public class RevisedTest extends TestCase
         
     }
     
+    public void testTransportAttack()
+    {
+        Territory sz14 = m_data.getMap().getTerritory("14 Sea Zone");
+        Territory sz13 = m_data.getMap().getTerritory("13 Sea Zone");
+        
+        
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+
+        MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        ITestDelegateBridge bridge = getDelegateBridge(germans);
+        bridge.setStepName("CombatMove");
+        moveDelegate.start(bridge, m_data);
+
+        
+        Route sz14To13 = new Route();
+        sz14To13.setStart(sz14);
+        sz14To13.add(sz13);
+
+        
+        List<Unit> transports = sz14.getUnits().getMatches(Matches.UnitIsTransport);
+        assertEquals(1, transports.size());
+        
+        
+        String error = moveDelegate.move(transports, sz14To13);
+        assertNull(error,error);
+        
+    }
+    
     public void testLoadUndo()
     {
         Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
