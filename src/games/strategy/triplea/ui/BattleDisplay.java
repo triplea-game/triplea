@@ -12,37 +12,76 @@
 
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.delegate.*;
+import games.strategy.triplea.delegate.BattleCalculator;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.sound.SoundPath;
-import games.strategy.triplea.util.*;
+import games.strategy.triplea.util.UnitCategory;
+import games.strategy.triplea.util.UnitOwner;
+import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.Util;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchOr;
-import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.prefs.Preferences;
 
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 /**
  * Displays a running battle
@@ -77,8 +116,7 @@ public class BattleDisplay extends JPanel
     private final JPanel m_causalitiesInstantPanelAttacker = new JPanel();
     private final JLabel LABEL_NONE_ATTACKER = new JLabel("None");
     private final JLabel LABEL_NONE_DEFENDER = new JLabel("None");
-    private final Map<UnitType, JLabel> m_UnitKillMapDefender = new HashMap<UnitType, JLabel>();
-    private final Map<UnitType, JLabel> m_UnitKillMapAttacker = new HashMap<UnitType, JLabel>();
+    
     private UIContext m_uiContext;
 
     private final JLabel m_messageLabel = new JLabel();
@@ -166,31 +204,26 @@ public class BattleDisplay extends JPanel
      */
     private Collection<Unit> updateKilledUnits(Collection<Unit> aKilledUnits, PlayerID aPlayerID)
     {
-        final Map<UnitType, JLabel> lKillMap;
+        
         final JPanel lCausalityPanel;
-        final JLabel lPlayerNoneLabel;
+        
         
         if (aPlayerID.equals(m_defender))
         {
-            lKillMap = m_UnitKillMapDefender;
+         
             lCausalityPanel = m_causalitiesInstantPanelDefender;
-            lPlayerNoneLabel = LABEL_NONE_DEFENDER;
+        
         }
         else
         {
-            lKillMap = m_UnitKillMapAttacker;
+         
             lCausalityPanel = m_causalitiesInstantPanelAttacker;
-            lPlayerNoneLabel = LABEL_NONE_ATTACKER;
+        
         }
 
-        if (!aKilledUnits.isEmpty())
-        {
-        	JLabel label = new JLabel("x1");
-        }
         
         Map<Unit, Collection<Unit>> dependentsMap;
         
-//TODO COMCO select those with 0 dependents first
         dependentsMap= BattleCalculator.getDependents(aKilledUnits, m_data);
         Collection<Unit> dependentUnitsReturned = new ArrayList<Unit>();
         
