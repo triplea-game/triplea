@@ -76,7 +76,7 @@ public class AA50_42Test extends TestCase {
             
             
             String error = moveDelegate.move(transports, sz13To12);
-            assertEquals(error,MoveValidator.UNESCORTED_UNITS_WILL_DIE_IN_COMBAT);
+            assertEquals(error,null);
             
         }
 
