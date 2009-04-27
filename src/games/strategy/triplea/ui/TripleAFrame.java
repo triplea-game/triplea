@@ -69,6 +69,7 @@ import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.Util;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.EventThreadJOptionPane;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -99,6 +100,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -519,7 +521,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     
     public void shutdown()
     {
-        int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?\nUnsaved game data will be lost.", "Exit" , JOptionPane.YES_NO_OPTION);
+        int rVal = EventThreadJOptionPane.showConfirmDialog(this, "Are you sure you want to exit?\nUnsaved game data will be lost.", "Exit" , JOptionPane.YES_NO_OPTION);
         if(rVal != JOptionPane.OK_OPTION)
             return;
 
@@ -528,7 +530,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     
     public void leaveGame()
     {
-        int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit" , JOptionPane.YES_NO_OPTION);
+        int rVal = EventThreadJOptionPane.showConfirmDialog(this, "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit" , JOptionPane.YES_NO_OPTION);
         if(rVal != JOptionPane.OK_OPTION)
             return;
         
@@ -633,7 +635,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_actionButtons.changeToProduce(player);
         return m_actionButtons.waitForPurchase(bid);
     }
-//TODO COMCO added this 
+
     public HashMap<Territory, IntegerMap<RepairRule>> getRepair(final PlayerID player, boolean bid)
     {
         m_actionButtons.changeToRepair(player);
@@ -692,12 +694,12 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
     public void notifyError(String message)
     {
-        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+        EventThreadJOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     public void notifyMessage(String message)
     {
-        JOptionPane.showMessageDialog(this, message, message, JOptionPane.INFORMATION_MESSAGE);
+        EventThreadJOptionPane.showMessageDialog(this, message, message, JOptionPane.INFORMATION_MESSAGE);
     }
 
     
@@ -718,7 +720,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         String cancel = movePhase ? "Keep Moving" : "Change Placement";
         String[] options =
         { cancel, ok };
-        int choice = JOptionPane.showOptionDialog(this, message, "Air cannot land", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
+        int choice = EventThreadJOptionPane.showOptionDialog(this, message, "Air cannot land", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
                 options, cancel);
         return choice == 1;
     }
@@ -729,21 +731,35 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         String cancel = movePhase ? "Keep Moving" : "Change Placement";
         String[] options =
         { cancel, ok };
-        int choice = JOptionPane.showOptionDialog(this, message, "Units cannot fight", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
+        int choice = EventThreadJOptionPane.showOptionDialog(this, message, "Units cannot fight", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
                 options, cancel);
         return choice == 1;
     }
 
     public boolean getOK(String message)
     {
-        int choice = JOptionPane.showConfirmDialog(this, message, message, JOptionPane.OK_CANCEL_OPTION);
+        int choice = EventThreadJOptionPane.showConfirmDialog(this, message, message, JOptionPane.OK_CANCEL_OPTION);
         return choice == JOptionPane.OK_OPTION;
     }
 
-    public void notifyTechResults(TechResults msg)
+    public void notifyTechResults(final TechResults msg)
     {
-        TechResultsDisplay display = new TechResultsDisplay(msg, m_uiContext);
-        JOptionPane.showOptionDialog(this, display, "Tech roll", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[]
+        final AtomicReference<TechResultsDisplay> displayRef = new AtomicReference<TechResultsDisplay>();
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+            
+                public void run() {
+                    TechResultsDisplay display = new TechResultsDisplay(msg, m_uiContext);
+                    displayRef.set(display);
+                }
+            });
+        } catch (InterruptedException e) {
+            throw new IllegalStateException();
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException();
+        }
+        
+        EventThreadJOptionPane.showOptionDialog(this, displayRef.get(), "Tech roll", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[]
         { "OK" }, "OK");
 
     }
@@ -755,7 +771,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         String normal = "Attack";
         String[] choices =
         { bomb, normal };
-        int choice = JOptionPane.showOptionDialog(this, message, "Bomb?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
+        int choice = EventThreadJOptionPane.showOptionDialog(this, message, "Bomb?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
                 choices, bomb);
         return choice == 0;
     }
@@ -764,7 +780,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     {
         DiceChooser chooser = new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals);
         do {
-            JOptionPane.showMessageDialog(null,
+            EventThreadJOptionPane.showMessageDialog(null,
                                           chooser, title,
                                           JOptionPane.PLAIN_MESSAGE);
         } while (chooser.getDice() == null); 
@@ -787,7 +803,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         { "OK" };
         String message = "Select territory for air units to land";
 
-        JOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+        EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 
         Territory selected = (Territory) list.getSelectedValue();
 
@@ -843,7 +859,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         { "OK", "Dont attack" };
         String message = "Select Rocket Target";
 
-        int selection = JOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
+        int selection = EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
                 null);
 
         Territory selected = null;
@@ -1081,12 +1097,12 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
     public void showRightHandSidePanel()
     {
-	m_rightHandSidePanel.setVisible(true);
+        m_rightHandSidePanel.setVisible(true);
     }
 
     public void hideRightHandSidePanel()
     {
-	m_rightHandSidePanel.setVisible(false);
+        m_rightHandSidePanel.setVisible(false);
     }
 
     public HistoryPanel getHistoryPanel()
@@ -1096,8 +1112,8 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
     private void showHistory()
     {
-	m_inHistory = true;
-	m_inGame = false;
+        m_inHistory = true;
+    	m_inGame = false;
 
         setWidgetActivation();
 
@@ -1205,95 +1221,95 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
     public void showGame()
     {
-	m_inGame = true;
-	m_uiContext.setShowMapOnly(false);
-
-	// Are we coming from showHistory mode or showMapOnly mode?
-	if (m_inHistory)
-	{
-	    m_inHistory = false;
-
-	    if (m_historySyncher != null)
-	    {
-		m_historySyncher.deactivate();
-		m_historySyncher = null;
-	    }
-	    	    
-	    m_historyTree.goToEnd();
-	    m_historyTree = null;
-	    
-	    m_mapPanel.getData().removeDataChangeListener(m_dataChangeListener);
-	    m_statsPanel.setGameData(m_data);
-	    m_details.setGameData(m_data);
-	    m_mapPanel.setGameData(m_data);
-	    m_data.addDataChangeListener(m_dataChangeListener);
-	    
-	    m_tabsPanel.removeAll();
-	}
-
-	setWidgetActivation();
-	m_tabsPanel.add("Action", m_actionButtons);
-	m_tabsPanel.add("Stats", m_statsPanel);
-	m_tabsPanel.add("Territory", m_details);
-	if (getEditMode())
-	    m_tabsPanel.add("Edit", m_editPanel);
-	
-	if (m_actionButtons.getCurrent() != null)
-	    m_actionButtons.getCurrent().setActive(true);
-	
-	m_gameMainPanel.removeAll();
-	m_gameMainPanel.setLayout(new BorderLayout());
-	m_gameMainPanel.add(m_mapAndChatPanel, BorderLayout.CENTER);
-	m_gameMainPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
-	m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
-	
-	getContentPane().removeAll();
-	getContentPane().add(m_gameMainPanel, BorderLayout.CENTER);
-	
-	m_mapPanel.setRoute(null);
-	
-	validate();
+    	m_inGame = true;
+    	m_uiContext.setShowMapOnly(false);
+    
+    	// Are we coming from showHistory mode or showMapOnly mode?
+    	if (m_inHistory)
+    	{
+    	    m_inHistory = false;
+    
+    	    if (m_historySyncher != null)
+    	    {
+    		m_historySyncher.deactivate();
+    		m_historySyncher = null;
+    	    }
+    	    	    
+    	    m_historyTree.goToEnd();
+    	    m_historyTree = null;
+    	    
+    	    m_mapPanel.getData().removeDataChangeListener(m_dataChangeListener);
+    	    m_statsPanel.setGameData(m_data);
+    	    m_details.setGameData(m_data);
+    	    m_mapPanel.setGameData(m_data);
+    	    m_data.addDataChangeListener(m_dataChangeListener);
+    	    
+    	    m_tabsPanel.removeAll();
+    	}
+    
+    	setWidgetActivation();
+    	m_tabsPanel.add("Action", m_actionButtons);
+    	m_tabsPanel.add("Stats", m_statsPanel);
+    	m_tabsPanel.add("Territory", m_details);
+    	if (getEditMode())
+    	    m_tabsPanel.add("Edit", m_editPanel);
+    	
+    	if (m_actionButtons.getCurrent() != null)
+    	    m_actionButtons.getCurrent().setActive(true);
+    	
+    	m_gameMainPanel.removeAll();
+    	m_gameMainPanel.setLayout(new BorderLayout());
+    	m_gameMainPanel.add(m_mapAndChatPanel, BorderLayout.CENTER);
+    	m_gameMainPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
+    	m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
+    	
+    	getContentPane().removeAll();
+    	getContentPane().add(m_gameMainPanel, BorderLayout.CENTER);
+    	
+    	m_mapPanel.setRoute(null);
+    	
+    	validate();
     }
 
     public void showMapOnly()
     {
-	// Are we coming from showHistory mode or showGame mode?	
-	if (m_inHistory)
-	{
-	    m_inHistory = false;
-
-	    if (m_historySyncher != null)
-	    {
-		m_historySyncher.deactivate();
-		m_historySyncher = null;
-	    }
-	    	    
-	    m_historyTree.goToEnd();
-	    m_historyTree = null;
-	    
-	    m_mapPanel.getData().removeDataChangeListener(m_dataChangeListener);
-	    m_mapPanel.setGameData(m_data);
-	    m_data.addDataChangeListener(m_dataChangeListener);
-	    
-	    m_gameMainPanel.removeAll();
-	    m_gameMainPanel.setLayout(new BorderLayout());
-	    m_gameMainPanel.add(m_mapAndChatPanel, BorderLayout.CENTER);
-	    m_gameMainPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
-	    m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
-	    
-	    getContentPane().removeAll();
-	    getContentPane().add(m_gameMainPanel, BorderLayout.CENTER);
-	
-	    m_mapPanel.setRoute(null);
-	}
-	else
-	{
-	    m_inGame = false;
-	}
-
-	m_uiContext.setShowMapOnly(true);
-	setWidgetActivation();
-	validate();	
+    	// Are we coming from showHistory mode or showGame mode?	
+    	if (m_inHistory)
+    	{
+    	    m_inHistory = false;
+    
+    	    if (m_historySyncher != null)
+    	    {
+    		m_historySyncher.deactivate();
+    		m_historySyncher = null;
+    	    }
+    	    	    
+    	    m_historyTree.goToEnd();
+    	    m_historyTree = null;
+    	    
+    	    m_mapPanel.getData().removeDataChangeListener(m_dataChangeListener);
+    	    m_mapPanel.setGameData(m_data);
+    	    m_data.addDataChangeListener(m_dataChangeListener);
+    	    
+    	    m_gameMainPanel.removeAll();
+    	    m_gameMainPanel.setLayout(new BorderLayout());
+    	    m_gameMainPanel.add(m_mapAndChatPanel, BorderLayout.CENTER);
+    	    m_gameMainPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
+    	    m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
+    	    
+    	    getContentPane().removeAll();
+    	    getContentPane().add(m_gameMainPanel, BorderLayout.CENTER);
+    	
+    	    m_mapPanel.setRoute(null);
+    	}
+    	else
+    	{
+    	    m_inGame = false;
+    	}
+    
+    	m_uiContext.setShowMapOnly(true);
+    	setWidgetActivation();
+    	validate();	
     }
     
     public boolean saveScreenshot(final HistoryNode node, final File file)
@@ -1739,23 +1755,41 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     };
 
 
-    public Collection<Unit> moveFightersToCarrier(Collection<Unit> fighters, Territory where)
+    public Collection<Unit> moveFightersToCarrier(final Collection<Unit> fighters, final Territory where)
     {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+        final AtomicReference<ScrollableTextField> textRef = new AtomicReference<ScrollableTextField>();
+        final AtomicReference<JPanel> panelRef = new AtomicReference<JPanel>();
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+            
+                public void run() {
+                    JPanel panel = new JPanel();
+                    panel.setLayout(new BorderLayout());
+                    ScrollableTextField text = new ScrollableTextField(0, fighters.size());
+                    text.setBorder(new EmptyBorder(8, 8, 8, 8));
+                    panel.add(text, BorderLayout.CENTER);
+                    panel.add(new JLabel("How many fighters do you want to move from " + where.getName() + " to new carrier?"), BorderLayout.NORTH);
+                    panelRef.set(panel);
+                    
+                    textRef.set(text);
+                    panelRef.set(panel);
+                }
+            });
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException(e);
+        }
+        
+        
 
-        ScrollableTextField text = new ScrollableTextField(0, fighters.size());
-        text.setBorder(new EmptyBorder(8, 8, 8, 8));
-        panel.add(text, BorderLayout.CENTER);
-        panel.add(new JLabel("How many fighters do you want to move from " + where.getName() + " to new carrier?"), BorderLayout.NORTH);
-
-        int choice = JOptionPane.showOptionDialog(this, panel, "Place fighters on new carrier?", JOptionPane.PLAIN_MESSAGE,
+        int choice = EventThreadJOptionPane.showOptionDialog(this, panelRef.get(), "Place fighters on new carrier?", JOptionPane.PLAIN_MESSAGE,
                 JOptionPane.OK_CANCEL_OPTION, null, new String[]
                 { "OK", "Cancel" }, "OK");
         if (choice == 0)
         {
             //arrayList.subList() is not serializable
-            return new ArrayList<Unit>(new ArrayList<Unit>(fighters).subList(0, text.getValue()));
+            return new ArrayList<Unit>(new ArrayList<Unit>(fighters).subList(0, textRef.get().getValue()));
         } else
             return new ArrayList<Unit>(0);
     }

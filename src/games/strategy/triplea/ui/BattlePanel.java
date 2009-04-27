@@ -329,7 +329,7 @@ public class BattlePanel extends ActionPanel
 			    
 			    m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
 			    
-			    
+			    m_battleFrame.getContentPane().removeAll();
 			    m_battleFrame.getContentPane().add(m_battleDisplay);
 			    m_battleFrame.setSize(750, 540);
 			    m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
@@ -347,9 +347,12 @@ public class BattlePanel extends ActionPanel
                               break;
                           }
                       }    
-        		    if(getMap().getUIContext().getShowBattlesBetweenAIs() || foundHumanInBattle)
-			    {	    
+        		      if(getMap().getUIContext().getShowBattlesBetweenAIs() || foundHumanInBattle)
+			    {	      
                           m_battleFrame.setVisible(true);
+                          m_battleFrame.validate();
+                          m_battleFrame.invalidate();
+                          m_battleFrame.repaint();
 			    }
                 else
                 {
