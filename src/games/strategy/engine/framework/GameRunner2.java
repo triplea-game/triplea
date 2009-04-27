@@ -160,19 +160,17 @@ public class GameRunner2
     {
         try
         {
-            //macs are already beautiful
-            if (!GameRunner.isMac())
+            try
             {
-                com.jgoodies.looks.plastic.PlasticLookAndFeel.setTabStyle(com.jgoodies.looks.plastic.PlasticLookAndFeel.TAB_STYLE_METAL_VALUE);
-                //com.jgoodies.plaf.plastic.PlasticXPLookAndFeel.setTabStyle(com.jgoodies.plaf.plastic.PlasticLookAndFeel.TAB_STYLE_METAL_VALUE);
-                UIManager.setLookAndFeel(new com.jgoodies.looks.plastic.PlasticXPLookAndFeel());
-                com.jgoodies.looks.Options.setPopupDropShadowEnabled(true);
-
+                UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel");                
+            } catch(Throwable t) {
+                if(!GameRunner.isMac()) {                   
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());                    
+                }
             }
-        } catch (Throwable ex)
-        {
-            ex.printStackTrace();
-        }
+            } catch(Throwable t) {
+                t.printStackTrace(System.out);
+            }
     }
     
     public static void setupLogging()
@@ -187,3 +185,4 @@ public class GameRunner2
         }
     }
 }
+
