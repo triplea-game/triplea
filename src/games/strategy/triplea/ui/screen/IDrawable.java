@@ -16,34 +16,33 @@ package games.strategy.triplea.ui.screen;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.ui.UIContext;
 import games.strategy.triplea.util.Stopwatch;
-import games.strategy.ui.Util;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FontMetrics;
+import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.TexturePaint;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 /**
  * @author Sean Bridges
@@ -69,9 +68,11 @@ public interface IDrawable
 
     public static final int TERRITORY_TEXT_LEVEL = 10;
 
-    public static final int UNITS_LEVEL = 11;
-
-    public static final int TERRITORY_OVERLAY_LEVEL = 12;
+    public static final int BATTLE_HIGHLIGHT_LEVEL = 11;
+    
+    public static final int UNITS_LEVEL = 12;
+    
+    public static final int TERRITORY_OVERLAY_LEVEL = 13;
 
     /**
      * Draw the tile
@@ -484,31 +485,30 @@ class ConvoyZoneDrawable implements IDrawable
 //Class to use 'Faded' country markers for Kamikaze Zones.
 class KamikazeZoneDrawable implements IDrawable
 {
- private final String m_player;
- private final String m_location;
- private final UIContext m_uiContext;
- 
- public KamikazeZoneDrawable(final PlayerID player, final Territory location, UIContext uiContext)
- {
-     super();
-     m_player = player.getName();
-     m_location = location.getName();
-     m_uiContext = uiContext;
- }
-
- public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
- {
-	 //Change so only original owner gets the kamikazi zone marker
-	 Territory terr = data.getMap().getTerritory(m_location);     
-	 Image img = m_uiContext.getFlagImageFactory().getFadedFlag(data.getPlayerList().getPlayerID(TerritoryAttachment.get(terr).getOriginalOwner().getName()));
-     Point point = mapData.getKamikazeMarkerLocation(data.getMap().getTerritory(m_location));
-     graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
- }
-
- public int getLevel()
- {
-     return CAPITOL_MARKER_LEVEL;
- }
+     
+    private final String m_location;
+    private final UIContext m_uiContext;
+     
+    public KamikazeZoneDrawable(final PlayerID player, final Territory location, UIContext uiContext)
+    {
+        super();
+        m_location = location.getName();
+        m_uiContext = uiContext;
+    }
+  
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+    {
+   	    //Change so only original owner gets the kamikazi zone marker
+        Territory terr = data.getMap().getTerritory(m_location);     
+        Image img = m_uiContext.getFlagImageFactory().getFadedFlag(data.getPlayerList().getPlayerID(TerritoryAttachment.get(terr).getOriginalOwner().getName()));
+        Point point = mapData.getKamikazeMarkerLocation(data.getMap().getTerritory(m_location));
+        graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
+    }
+   
+    public int getLevel()
+    {
+        return CAPITOL_MARKER_LEVEL;
+    }
 }
 
 class SeaZoneOutlineDrawable implements IDrawable
@@ -552,7 +552,122 @@ class SeaZoneOutlineDrawable implements IDrawable
     
 }
 
-class LandTerritoryDrawable implements IDrawable
+
+abstract class TerritoryDrawable
+{
+    protected final void draw(Rectangle bounds, Graphics2D graphics, MapData mapData,
+        AffineTransform unscaled, AffineTransform scaled, Territory territory, Paint territoryPaint) {
+        List<Polygon> polys = mapData.getPolygons(territory);
+        
+        Object oldAAValue = graphics.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+        //at 100% scale, this makes the lines look worse
+        if(!(scaled == unscaled))
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        for(Polygon polygon : polys)
+        {
+            // if we dont have to draw, dont
+            if (!polygon.intersects(bounds) && !polygon.contains(bounds))
+                continue;
+
+            // use a copy since we will move the polygon
+            polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
+
+            polygon.translate(-bounds.x, -bounds.y);
+            graphics.setPaint(territoryPaint);    
+            graphics.fillPolygon(polygon);
+            graphics.setColor(Color.BLACK);
+            graphics.drawPolygon(polygon);
+        }
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, oldAAValue);
+    }
+}
+
+class BattleDrawable extends TerritoryDrawable implements IDrawable
+{
+    private final String m_territoryName;
+
+    public BattleDrawable(final String territoryName)
+    {
+        m_territoryName = territoryName;
+    }
+
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData,
+        AffineTransform unscaled, AffineTransform scaled) {
+     
+        Set<PlayerID> players = new HashSet<PlayerID>();
+        for(Unit u : data.getMap().getTerritory(m_territoryName).getUnits()) 
+        {
+            if(!TripleAUnit.get(u).getSubmerged())
+                players.add(u.getOwner());            
+        }
+        
+        Territory territory = data.getMap().getTerritory(m_territoryName);
+        PlayerID attacker = null;
+        boolean draw = false;
+        for(PlayerID p : players) 
+        {
+            if(!territory.isWater()) 
+            {
+                if(!data.getAllianceTracker().isAllied(p, territory.getOwner()) ) 
+                {
+                    attacker = p;
+                    draw = true;
+                    break;
+                }
+            }
+            else 
+            {
+                //O(n^2), but n is usually 2, and almost always < 10
+                for(PlayerID p2 : players) 
+                {
+                    if(!data.getAllianceTracker().isAllied(p, p2) ) 
+                    {
+                        draw = true;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if(draw) 
+        {           
+            Color stripeColor;
+            if(territory.isWater())
+                stripeColor = Color.RED.brighter();
+            else  {
+                stripeColor  = mapData.getPlayerColor(attacker.getName()); 
+            }
+            
+
+            Paint paint = new GradientPaint(
+                0 - (float)bounds.getX(), 0 - (float) bounds.getY(),
+                //(float) (tBounds.getX() - bounds.getX()),
+                //(float) (tBounds.getY() - bounds.getY()),
+                new Color(stripeColor.getRed(), stripeColor.getGreen(), stripeColor.getBlue(), 120),                  
+                //(float) (tBounds.getX() - bounds.getX() + tBounds.getWidth()) , 
+                //(float) (tBounds.getY() - bounds.getY() + tBounds.getHeight()), 
+                30 - (float)bounds.getX(), 50 - (float) bounds.getY(),
+                new Color(0,0,0,0),  
+                true);
+
+            
+                       
+            //newColor = new Color(255,120,120);
+            //graphics.setStroke(new BasicStroke(6));
+            //new TerritoryOverLayDrawable(Color.RED, m_territoryName, OP.DRAW).draw(bounds, data, graphics, mapData, unscaled, scaled);
+            super.draw(bounds, graphics, mapData, unscaled, scaled, territory, paint);
+        }
+    }
+
+    public int getLevel() {
+        return BATTLE_HIGHLIGHT_LEVEL;
+    }
+    
+}
+
+
+class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable
 {
     private final String m_territoryName;
 
@@ -575,30 +690,11 @@ class LandTerritoryDrawable implements IDrawable
             territoryColor = mapData.getPlayerColor(territory.getOwner().getName());
         }
 
-        List<Polygon> polys = mapData.getPolygons(territory);
-        
-        Object oldAAValue = graphics.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-        //at 100% scale, this makes the lines look worse
-        if(!(scaled == unscaled))
-            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
-        for(Polygon polygon : polys)
-        {
-            // if we dont have to draw, dont
-            if (!polygon.intersects(bounds) && !polygon.contains(bounds))
-                continue;
-
-            // use a copy since we will move the polygon
-            polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
-
-            polygon.translate(-bounds.x, -bounds.y);
-            graphics.setColor(territoryColor);
-            graphics.fillPolygon(polygon);
-            graphics.setColor(Color.BLACK);
-            graphics.drawPolygon(polygon);
-        }
-        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, oldAAValue);
+        draw(bounds, graphics, mapData, unscaled, scaled, territory, territoryColor);
     }
+
+
+    
 
     public int getLevel()
     {

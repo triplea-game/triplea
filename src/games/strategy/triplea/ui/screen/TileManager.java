@@ -273,6 +273,7 @@ public class TileManager
             drawUnits(territory, data, mapData, drawnOn, drawing);
         }
         
+        drawing.add(new BattleDrawable(territory.getName()));
         if(!territory.isWater())
             drawing.add(new LandTerritoryDrawable(territory.getName()));
         else 
@@ -297,6 +298,7 @@ public class TileManager
             }
                 
             drawing.add(new SeaZoneOutlineDrawable(territory.getName()));
+            
         } 
         
         drawing.add(new TerritoryNameDrawable(territory.getName(), m_uiContext));
