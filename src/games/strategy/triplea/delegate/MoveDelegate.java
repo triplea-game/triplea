@@ -477,11 +477,14 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
      */
     public void end()
     {
+    	
 
         if (m_nonCombat)
             removeAirThatCantLand();
         else
         	removeUnitsThatCantFight();
+        //TODO COMCO perhaps add any pre-existing battles here (new placement, 1 round combat, etc...)
+        
         m_movesToUndo.clear();
 
         //fourth edition, fires at end of combat move

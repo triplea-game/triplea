@@ -71,7 +71,7 @@
 <territory name="Serbia"/>
 <territory name="Bilbao"/>
 <territory name="S.Egypt"/>
-<territory name="S.Hempton"/>
+<territory name="S.Hampton"/>
 <territory name="S.Norway"/>
 <territory name="Karchia"/>
 <territory name="St.Etienne"/>
@@ -531,8 +531,8 @@
 <connection t1="sz31" t2="W.Ire" />
 <connection t1="sz31" t2="S.Ire" />
 <connection t1="sz31" t2="Wales" />
-<connection t1="sz31" t2="S.Hempton" />
-<connection t1="sz30" t2="S.Hempton" />
+<connection t1="sz31" t2="S.Hampton" />
+<connection t1="sz30" t2="S.Hampton" />
 <connection t1="sz30" t2="Dover" />
 <connection t1="sz30" t2="Le Havre" />
 <connection t1="sz30" t2="Normandy" />
@@ -977,15 +977,15 @@
 <connection t1="C.Ortegal" t2="Portugal" />
 <connection t1="London" t2="Dover" />
 <connection t1="London" t2="Norwich" />
-<connection t1="London" t2="S.Hempton" />
+<connection t1="London" t2="S.Hampton" />
 <connection t1="London" t2="Wales" />
 <connection t1="London" t2="Manchester" />
 <connection t1="London" t2="York" />
 <connection t1="Manchester" t2="York" />
 <connection t1="Norwich" t2="York" />
 <connection t1="Norwich" t2="Dover" />
-<connection t1="S.Hempton" t2="Dover" />
-<connection t1="S.Hempton" t2="Wales" />
+<connection t1="S.Hampton" t2="Dover" />
+<connection t1="S.Hampton" t2="Wales" />
 <connection t1="Manchester" t2="Wales" />
 <connection t1="Manchester" t2="N.Castle" />
 <connection t1="S.Scottland" t2="N.Castle" />
@@ -2116,7 +2116,7 @@
 						
                     </attatchment>
 
-<attatchment name="territoryAttatchment" attatchTo="S.Hempton" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+<attatchment name="territoryAttatchment" attatchTo="S.Hampton" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="4"/>
 						
                     </attatchment>
@@ -2928,7 +2928,7 @@
 <territoryOwner territory="London" owner="British"/>
 <territoryOwner territory="Norwich" owner="British"/>
 <territoryOwner territory="Dover" owner="British"/>
-<territoryOwner territory="S.Hempton" owner="British"/>
+<territoryOwner territory="S.Hampton" owner="British"/>
 <territoryOwner territory="Wales" owner="British"/>
 <territoryOwner territory="Norwich" owner="British"/>
 <territoryOwner territory="York" owner="British"/>
@@ -3339,12 +3339,12 @@
 <unitPlacement unitType="Artillery" territory="N.Scottland" quantity="1" owner="British"/>
 <unitPlacement unitType="AAGun" territory="N.Scottland" quantity="1" owner="British"/>
 
-<unitPlacement unitType="Factory" territory="S.Hempton" quantity="1" owner="British"/>
-<unitPlacement unitType="Armour" territory="S.Hempton" quantity="1" owner="British"/>
-<unitPlacement unitType="EarlyFighter" territory="S.Hempton" quantity="1" owner="British"/>
-<unitPlacement unitType="Infantry" territory="S.Hempton" quantity="2" owner="British"/>
-<unitPlacement unitType="Artillery" territory="S.Hempton" quantity="2" owner="British"/>
-<unitPlacement unitType="AAGun" territory="S.Hempton" quantity="1" owner="British"/>
+<unitPlacement unitType="Factory" territory="S.Hampton" quantity="1" owner="British"/>
+<unitPlacement unitType="Armour" territory="S.Hampton" quantity="1" owner="British"/>
+<unitPlacement unitType="EarlyFighter" territory="S.Hampton" quantity="1" owner="British"/>
+<unitPlacement unitType="Infantry" territory="S.Hampton" quantity="2" owner="British"/>
+<unitPlacement unitType="Artillery" territory="S.Hampton" quantity="2" owner="British"/>
+<unitPlacement unitType="AAGun" territory="S.Hampton" quantity="1" owner="British"/>
 
 <unitPlacement unitType="Factory" territory="N.Canada" quantity="1" owner="British"/>
 <unitPlacement unitType="Armour" territory="N.Canada" quantity="2" owner="British"/>

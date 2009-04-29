@@ -238,19 +238,20 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
                 {
                     int repairCount = m_repairCount.get(terr);
                     TerritoryAttachment ta = TerritoryAttachment.get(terr);
-                    int current = ta.getUnitProduction();
+                    int currentDamage = ta.getUnitProduction();
 
                     IntegerMap<Unit> hits = new IntegerMap<Unit>();
                     Collection<Unit> factories = Match.getMatches(terr.getUnits().getUnits(), Matches.UnitIsFactory);
 
-                    //reset factory damage marker if full production restored
-                    if(current + repairCount == ta.getProduction())
+                    //Display appropriate damaged/repaired factory and factory damage totals
+                    if(repairCount>0)
                     {
-                        hits.put(factories.iterator().next(), 0);
+                    	int newDamageTotal = ta.getProduction() - (currentDamage + repairCount);
+                        hits.put(factories.iterator().next(), newDamageTotal);
                         changes.add(ChangeFactory.unitsHit(hits));
                     }            	
 
-                    changes.add(ChangeFactory.attachmentPropertyChange(ta, (new Integer(current + repairCount)).toString(), "unitProduction"));
+                    changes.add(ChangeFactory.attachmentPropertyChange(ta, (new Integer(currentDamage + repairCount)).toString(), "unitProduction"));
                 }
             }
         }

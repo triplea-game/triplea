@@ -611,8 +611,8 @@ public class BattleTracker implements java.io.Serializable
         Battle battle = getPendingBattle(site, false);
         if (battle == null)
         {
-            battle = new MustFightBattle(site, id, data, this);
-            m_pendingBattles.add(battle);
+        	battle = new MustFightBattle(site, id, data, this);
+        	m_pendingBattles.add(battle);
         }
         Change change = battle.addAttackChange(route, units);
 
@@ -663,6 +663,7 @@ public class BattleTracker implements java.io.Serializable
         {
             Battle battle = iter.next();
             if (!battle.isEmpty() && battle.isBombingRun() == bombing)
+            	//TODO kev if(attacker = player )
                 battles.add(battle.getTerritory());
 
         }

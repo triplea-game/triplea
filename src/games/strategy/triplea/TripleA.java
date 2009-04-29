@@ -70,9 +70,6 @@ public class TripleA implements IGameLoader
     private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
     private static final String WEAK_COMPUTER_PLAYER_TYPE = "Easy AI";
     private static final String STRONG_COMPUTER_PLAYER_TYPE = "Strong AI";
-    //Kev
-    //private static final String NEXT_COMPUTER_PLAYER_TYPE = "Next AI";
-
     
     private transient TripleaDisplay m_display;
     private transient IGame m_game;
@@ -100,11 +97,6 @@ public class TripleA implements IGameLoader
             {
                 players.add(new StrongAI(name));
             }
-            //Kev
-            /*else if (type.equals(NEXT_COMPUTER_PLAYER_TYPE))
-            {
-                players.add(new NextAI(name));
-            }*/
             else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
             {
                 TripleAPlayer player = new TripleAPlayer(name);
@@ -141,8 +133,7 @@ public class TripleA implements IGameLoader
 
 
             if(game.getData().getDelegateList().getDelegate("edit") == null) 
-            {
-                
+            {                
                 //an evil awful hack
                 //we don't want to change the game xml
                 //and invalidate mods so hack it
@@ -243,9 +234,7 @@ public class TripleA implements IGameLoader
         return new String[]
         {
             HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE};
-            //Kev
-            //{HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, NEXT_COMPUTER_PLAYER_TYPE};
-    }
+        }
 
     public IPBEMMessenger[] getPBEMMessengers()
     {

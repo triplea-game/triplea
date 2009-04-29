@@ -195,7 +195,7 @@ public class MovePerformer implements Serializable
                     		ignoreBattle=true;
                     }
                     
-                    if(!ignoreBattle)
+                    if(!ignoreBattle && !MoveDelegate.isNonCombat(m_bridge))
                     {
                     	getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_data, m_bridge, m_currentMove);
                     }

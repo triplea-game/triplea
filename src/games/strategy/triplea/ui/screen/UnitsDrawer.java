@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.*;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
@@ -69,7 +70,30 @@ public class UnitsDrawer implements IDrawable
             graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4),
                     m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight());
         }
+        
+        //Display Factory Damage
+        if(type.getName().equals("factory"))
+        {
+        	displayFactoryDamage(bounds, data, graphics, type);
+        }
     }
+
+	private void displayFactoryDamage(Rectangle bounds, GameData data,
+			Graphics2D graphics, UnitType type) {
+
+		graphics.setColor(Color.black);
+		graphics.setFont(MapImage.MAP_FONT);
+
+		TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));       
+		int damageCount = ta.getProduction() - ta.getUnitProduction();
+
+		if(damageCount>0)
+		{
+			graphics.drawString(String.valueOf(damageCount), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4),
+					m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight()/4);
+		}
+        
+	}
     
 
     public Tuple<Territory,List<Unit>> getUnits(GameData data)

@@ -44,7 +44,7 @@ public class UnitsThatCantFightUtil
         m_bridge = bridge;
     }
 
-
+  //TODO Used to notify of kamikazi attacks
     public Collection<Territory> getTerritoriesWhereUnitsCantFight(PlayerID player)
     {
         Collection<Territory> cantFight = new ArrayList<Territory>();
@@ -56,11 +56,16 @@ public class UnitsThatCantFightUtil
             //get all owned non-combat units
             CompositeMatch<Unit> ownedUnitsMatch = new CompositeMatchAnd<Unit>();
         	ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
-        	ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.unitCanAttack(player)));
         	ownedUnitsMatch.add(Matches.unitIsOwnedBy(player));
-        	//see if there are any enemy combat units
+
+        	//All owned units
+            int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatch);
+            //only noncombat units
+        	ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.unitCanAttack(player)));
             Collection<Unit> nonCombatUnits = current.getUnits().getMatches(ownedUnitsMatch);
-            
+                        
+            if(!nonCombatUnits.isEmpty() && nonCombatUnits.size() == countAllOwnedUnits)
+            	cantFight.add(current);
         }
         return cantFight;
     }
@@ -72,11 +77,15 @@ public class UnitsThatCantFightUtil
         {
             Territory current = territories.next();
             
+          //get all owned non-combat units
             CompositeMatch<Unit> ownedUnitsMatch = new CompositeMatchAnd<Unit>();
         	ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
-        	ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.unitCanAttack(player)));
         	ownedUnitsMatch.add(Matches.unitIsOwnedBy(player));
-        	//Get all moving non-Combatant units
+
+        	//All owned units
+            int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatch);
+            //only noncombat units
+        	ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.unitCanAttack(player)));
             Collection<Unit> nonCombatUnits = current.getUnits().getMatches(ownedUnitsMatch);
             
             //Match for enemy combat units
@@ -84,21 +93,25 @@ public class UnitsThatCantFightUtil
         	enemyUnitsMatch.add(Matches.enemyUnit(player, m_data));
         	enemyUnitsMatch.add(Matches.unitCanAttack(player));
             
-        	//Are there any nonCombatants and enemy units
-            //TODO Comco probably see if there are any enemy COMBAT units
-            if (nonCombatUnits.size() != 0 && current.getUnits().someMatch(enemyUnitsMatch))
+        	//Are there any nonCombatants and enemy combat units
+        	//TODO perhaps ignore if there are units that can be ignored (subs)
+            if (nonCombatUnits.size() != 0 && nonCombatUnits.size() == countAllOwnedUnits && current.getUnits().someMatch(enemyUnitsMatch))
             {	
             	//Get the pending battle
             	Battle nonBombingBattle = MoveDelegate.getBattleTracker(m_data).getPendingBattle(current, false);
             	//Get the dependent units
-            	nonCombatUnits.addAll(nonBombingBattle.getDependentUnits(nonCombatUnits));
-            	//Kill the nonCombat units and their dependents
-            	removeUnitsThatCantFight(player, current, nonCombatUnits);
-            	
-            	//Remove the battle from the stack
-            	Route route = new Route();
-                route.setStart(current);            	
-            	nonBombingBattle.removeAttack(route, nonCombatUnits);            	
+            	if(nonBombingBattle != null)
+            	{
+            		nonCombatUnits.addAll(nonBombingBattle.getDependentUnits(nonCombatUnits));
+
+            		//Kill the nonCombat units and their dependents
+            		removeUnitsThatCantFight(player, current, nonCombatUnits);
+
+            		//Remove the battle from the stack
+            		Route route = new Route();
+            		route.setStart(current);            	
+            		nonBombingBattle.removeAttack(route, nonCombatUnits);
+            	}
             }
         }
     }

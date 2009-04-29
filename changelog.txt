@@ -5,7 +5,7 @@ Changes for 1.0.3.3
 * Make it so map utility programs can find the centers, polygons, and map.properties files by using the
   path of the map's image file. (Stephen Wicklund)
   
- * Make it so the user can specify the unit's scale when using the 'Auto Placement Finder' utility.(Stephen Wicklund)
+* Make it so the user can specify the unit's scale when using the 'Auto Placement Finder' utility.(Stephen Wicklund)
 
 * add a setting to "Lock" the map, so you can observe a game without the map moving all around (Stephen Wicklund)
 
@@ -34,6 +34,10 @@ Changes for 1.0.3.3
 	Multi-player transport fleets throw - 'wrong number of casualties selected' error
 	Ask if BB/CR should bombard
 	Add ability to ignore defending Trns
+	Fix NWO map names
+	Add damage totals to factory icons (black text)
+	US units that move into enemy occupied SZ in non-combat (trn/sub) fight during Chinese combat
+	Fix null pointer when loading AA50 maps with 'Show Map Blends' selected on the View menu
 
 Changes for 1.0.3.2
 
