@@ -467,7 +467,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
            if (unitsToLoad.size() == 0)
               continue;
            List<Territory> blockThese = new ArrayList<Territory>();
-		   List<Territory> xNeighbors = SUtils.getExactNeighbors(checkThis, 1, data);
+		   List<Territory> xNeighbors = SUtils.getExactNeighbors(checkThis, 1, data, false);
 		   if (xNeighbors.size() == 1 && xNeighbors.get(0).isWater())
 		   {
               Territory myIsland = xNeighbors.get(0);
@@ -591,7 +591,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		//check other territories where the transports are located
 		//this part probably can be removed now that the set is completely rewritten
 		//looks at transports by trans territories, rather than where the units are located
-		for (Territory xT : tTerr)
+/*		for (Territory xT : tTerr)
 		{
 //			if (xT == lastSeaZoneOnAmphib)
 //				continue; //messing up here if we let it pick up at the Amphib Route...fix later
@@ -697,7 +697,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				}
 			}
 		}
-
+*/
     }
 
     private void populateNonComTransportMove(GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
@@ -1201,14 +1201,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						int bDist = data.getMap().getDistance(bTerr, nT);
 						int bomberNum = bTerr.getUnits().countMatches(bomberUnit);
 						if (bDist<=3)
-							airStrength+= (float) bomberNum*9.2F; //reflects doubling of attack in strength routines now
+							airStrength+= (float) bomberNum*4.7F; //reflects doubling of attack in strength routines now
 					}
 					for (Territory fTerr : fighterTerr)
 					{
 						int fDist = data.getMap().getDistance(fTerr, nT);
 						int fighterNum = fTerr.getUnits().countMatches(fighterUnit);
 						if (fDist<3)
-							airStrength+= (float) fighterNum*7.2F;
+							airStrength+= (float) fighterNum*3.7F;
 					}
 					invadeStrength+=airStrength;
 					if (invadeStrength < 0.88F*capStrength)
@@ -1785,7 +1785,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			   }
 			   else
 			   	  continue;
-		       targetSeaTerr = SUtils.getExactNeighbors(sT, 2, data); //try it @ 2
+		       targetSeaTerr = SUtils.getExactNeighbors(sT, 2, data, false); //try it @ 2
 		       for (Territory sT2 : targetSeaTerr)
 		       {
 				  if (!sT2.isWater() || pickedOne)
@@ -1849,7 +1849,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				      mostUnits = eT2.size();
 				      pickedOne = false;
 				   }
-			       targetSeaTerr = SUtils.getExactNeighbors(nsT, 2, data);
+			       targetSeaTerr = SUtils.getExactNeighbors(nsT, 2, data, false);
 			       for (Territory sT4 : targetSeaTerr)
 			       {
 					   if (!sT4.isWater() || pickedOne)
@@ -2175,14 +2175,25 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 								   moveIt = unit;
 							   }
 						   }
-						   Set<Territory> checkTerrs = data.getMap().getNeighbors(acT, max);
+						   if (moveIt == null) //no planes can move!!!
+						       continue;
+						   Set<Territory> checkTerrs = data.getMap().getNeighbors(acT);
 						   Territory bestTerr = null;
 						   int maxFriendly = 0;
 						   for (Territory checkTerr : checkTerrs)
 						   {
-							   if (checkTerr.isWater() || (checkTerr == acT))
+							   if (checkTerr == acT)
 							       continue;
-							   if (Matches.isTerritoryAllied(player, data).match(acT))
+							   if (checkTerr.isWater() && max > 1)
+							   {
+								   Set<Territory> checkTerrs2 = data.getMap().getNeighbors(checkTerr);
+								   for (Territory checkTerr2 : checkTerrs2)
+								   {
+									   if (Matches.TerritoryIsLand.match(checkTerr2) && Matches.isTerritoryAllied(player, data).match(checkTerr2))
+									       bestTerr = checkTerr2;
+								   }
+							   }
+							   else if (Matches.TerritoryIsLand.match(checkTerr) && Matches.isTerritoryAllied(player, data).match(checkTerr))
 							   {
 							       List <Unit> aUnits = checkTerr.getUnits().getMatches(alliedUnit);
 							       if (aUnits.size() >= maxFriendly)
@@ -2764,7 +2775,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		ourStrength = SUtils.strength(myCapital.getUnits().getMatches(landUnit), false, false);
 		ourStrength += 11.0F; //assume new units on the way
 		List<Territory> myNeighbors = SUtils.getNeighboringLandTerritories(data, player, myCapital);
-		if (totalInvasion > 1.5F*ourStrength) //borrow some units
+		if (totalInvasion > 1.55F*ourStrength) //borrow some units
 		{
 			for (Territory tx3 : myNeighbors)
 			{
@@ -2774,7 +2785,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				List<Unit> sendIn = new ArrayList<Unit>();
 				for (Unit x : allUnits)
 				{
-					if (ourStrength <= totalInvasion*1.15F)
+					if (ourStrength <= totalInvasion*1.20F)
 					{
 						ourStrength += SUtils.uStrength(x, false, false);
 						sendIn.add(x);
@@ -2831,7 +2842,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             if ((t.getUnits().someMatch(Matches.UnitIsFactory) || t.getUnits().someMatch(Matches.UnitIsAA)) && t != myCapital)
             { //protect factories...rather than just not moving, plan to move some in if necessary
               //Don't worry about units that have been moved toward capital
-				Set<Territory> anyTransNearby2 = data.getMap().getNeighbors(t, 3);
+//				Set<Territory> anyTransNearby2 = data.getMap().getNeighbors(t, 3);
 
 				SUtils.getEnemyStrengthAt(e1, e2, data, player, t, false, true);
 				totalInvasion = e1 + numInvaders*3.0F;
@@ -3128,7 +3139,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				int acCounter = 1;
 				while (fighterUnits.size() > 0 && acCounter < 5) //check up to 4 terr away for an AC
 				{
-					List<Territory> newFTerr = SUtils.getExactNeighbors(fighterTerr, acCounter, data);
+					List<Territory> newFTerr = SUtils.getExactNeighbors(fighterTerr, acCounter, data, false);
 					for (Territory ACTerr : newFTerr)
 					{
 						if (!ACTerr.isWater())
@@ -3186,7 +3197,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					foundOne=true;
 				while (!foundOne && acCounter > 0) //check up to 4 terr away for an AC
 				{
-					List<Territory> newFTerr = SUtils.getExactNeighbors(fighterTerr, acCounter, data);
+					List<Territory> newFTerr = SUtils.getExactNeighbors(fighterTerr, acCounter, data, false);
 					for (Territory ACTerr : newFTerr)
 					{
 						if (ACTerr.isWater())
@@ -3255,7 +3266,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					  data.getMap().getNeighbors(fighterTerr, Matches.territoryHasEnemyUnits(player, data)).size()==0)
 			//don't let planes pile up somewhere
 			{//we can go toward a large group of our own units or an enemy factory
-				List<Territory> checkTwo = SUtils.getExactNeighbors(fighterTerr, 2, data);
+				List<Territory> checkTwo = SUtils.getExactNeighbors(fighterTerr, 2, data, false);
 				boolean dontMovePlane = false;
 				for (Territory xx : checkTwo)
 				{
@@ -4211,7 +4222,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						unitCount++;
 					}
 				} //let it roll through for another purchase because doBuyAttackShips is on
-				if (buySub && leftToSpend > cost && unitCount < totIPC && SUtils.UnitTypeIsSub.match(results))
+				if (buySub && leftToSpend > cost && unitCount < totIPC && Matches.UnitTypeIsSub.match(results))
 				{
 					leftToSpend-=cost;
 					ipcSea-=cost;
@@ -4235,7 +4246,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					unitCount++;
 					continue;
 				}
-				if (ipcSea >= cost && SUtils.UnitTypeIsBB.match(results) && unitCount < totIPC && Math.random() >= 0.82)
+				if (ipcSea >= cost && Matches.UnitTypeIsBB.match(results) && unitCount < totIPC && Math.random() >= 0.82)
 				{
 					ipcSea-=cost;
 					leftToSpend-=cost;

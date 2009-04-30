@@ -10,6 +10,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
+import games.strategy.triplea.Properties;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
@@ -28,7 +29,7 @@ public class SUtils
 		List<Unit> infantry = new ArrayList<Unit>();
 		List<Unit> artillery = new ArrayList<Unit>();
 		List<Unit> armor = new ArrayList<Unit>();
-		
+
 		for (Unit x : transUnits)
 		{
 			if (Matches.UnitIsArtillerySupportable.match(x))
@@ -69,25 +70,6 @@ public class SUtils
 
 	}
 
-    public static final Match<UnitType> UnitTypeIsSub  = new Match<UnitType>()
-    {
-        public boolean match(UnitType obj)
-        {
-            UnitType type = (UnitType) obj;
-            UnitAttachment ua = UnitAttachment.get(type);
-            return ua.isSub();
-        }
-    };
-
-    public static final Match<UnitType> UnitTypeIsBB  = new Match<UnitType>()
-    {
-        public boolean match(UnitType obj)
-        {
-            UnitType type = (UnitType) obj;
-            UnitAttachment ua = UnitAttachment.get(type);
-            return ua.isTwoHit();
-        }
-    };
     /**
      * All the territories that border one of our territories
      */
@@ -112,7 +94,7 @@ public class SUtils
         {
             if(Matches.isTerritoryEnemy(player, data).match(t) && !t.getOwner().isNull() )
             {
-				if (allied && !data.getMap().getNeighbors(t, Matches.territoryHasUnitsOwnedBy(player)).isEmpty())
+				if (allied && !data.getMap().getNeighbors(t, Matches.isTerritoryAllied(player, data)).isEmpty())
                    	    rVal.add(t);
                 else if(!data.getMap().getNeighbors(t, Matches.isTerritoryOwnedBy(player)).isEmpty())
                     rVal.add(t);
@@ -150,7 +132,7 @@ public class SUtils
     public static List<Territory> getNeighboringEnemyLandTerritories(GameData data, PlayerID player, Territory check)
     {
         List<Territory> rVal = new ArrayList<Territory>();
-        List<Territory> checkList = getExactNeighbors(check, 1, data);
+        List<Territory> checkList = getExactNeighbors(check, 1, data, false);
         for(Territory t : checkList)
         {
             if(Matches.isTerritoryEnemyAndNotNuetralWater(player, data).match(t))
@@ -162,7 +144,7 @@ public class SUtils
     public static List<Territory> getNeighboringLandTerritories(GameData data, PlayerID player, Territory check)
     { //find land territories owned by allies of player which neighbor a territory
     	ArrayList<Territory> rVal = new ArrayList<Territory>();
-    	List<Territory> checkList = getExactNeighbors(check, 1, data);
+    	List<Territory> checkList = getExactNeighbors(check, 1, data, false);
     	for (Territory t : checkList)
     	{
 			if (Matches.isTerritoryAllied(player, data).match(t))
@@ -291,7 +273,7 @@ public class SUtils
 	public static boolean landRouteToEnemyCapital(Territory thisTerr, Route goRoute, GameData data, PlayerID player)
 	{//is there a land route between territory and enemy
         Territory myCapital = TerritoryAttachment.getCapital(player, data);
-        
+
         boolean routeExists = false;
         Route route = null;
 
@@ -408,13 +390,13 @@ public class SUtils
 	    the premise of this is a little messed up because we are requiring our bombers and fighters
 	    to use the same route...probably needs a complete rewrite
 	  */
-	  	
+
 	  	int r = 0;
 		Collection <Unit> ourPlanes = new ArrayList<Unit>();
 		Collection <Unit> fighters = new ArrayList<Unit>();
 		CompositeMatch<Unit> fighterUnit = new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player));
 		CompositeMatch<Unit> bomberUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(player));
-		
+
 		CompositeMatch<Unit> alliedFighter = new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier);
 		//assume the only other fighters would be allied
 
@@ -451,7 +433,7 @@ public class SUtils
         float seaStrength = 0.0F, firstStrength = 0.0F, strength=0.0F, airStrength=0.0F;
 		CompositeMatch<Unit> enemyPlane = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.enemyUnit(player, data));
 		CompositeMatch<Unit> enemyBomber = new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, Matches.enemyUnit(player, data));
-		
+
 		List<Territory> checked = new ArrayList<Territory>();
 
         for(Territory t : data.getMap().getNeighbors(location,  location.isWater() ? Matches.TerritoryIsWater :  Matches.TerritoryIsLand))
@@ -925,15 +907,15 @@ public class SUtils
 		//          Strength of Units in the Territory and 1 Territory away
 		//             Is greater than the sum of all enemy Territory 2 away
 		//          Territory should be closest to an enemy Capital
-		
+
 		List<Territory> owned = allOurTerritories(data, player);
-		
-		
+
+
 		Territory minTerr = null;
 		float minRisk = 1.0F;
-		
+
 		risk = 1.0F;
-		
+
 		for (Territory t: owned)
 		{
 			int ipcValue = TerritoryAttachment.get(t).getProduction();
@@ -945,7 +927,7 @@ public class SUtils
 			Set <Territory> factCheck = data.getMap().getNeighbors(t, Matches.territoryHasOwnedFactory(data, player));
 			if (factCheck.size()>0)
 				continue;
-			List<Territory> twoAway = getExactNeighbors(t, 2, data);
+			List<Territory> twoAway = getExactNeighbors(t, 2, data, false);
 			boolean badIdea = false;
 			for (Territory twoCheck : twoAway)
 			{
@@ -1108,12 +1090,13 @@ public class SUtils
 	}
 
 	@SuppressWarnings("unchecked")
-    public static List<Territory> getExactNeighbors(Territory territory, int distance, GameData data)
+    public static List<Territory> getExactNeighbors(Territory territory, int distance, GameData data, boolean neutral)
 	{
 		/* This routine will get the neighbors which are exactly a certain # away
 		   It removes all of the inner circle neighbors which are closer than #
 		   Uses identical format the getNeighbors routines in gameMap
 		   It returns a modifiable List
+		   It can include or not include Neutral countries (neutral=true includes them)
 		*/
 		if(distance < 0)
 			throw new IllegalArgumentException("Distance must be positive not:" + distance);
@@ -1123,7 +1106,7 @@ public class SUtils
 			return startClone;
 
 		List<Territory> startX = new ArrayList<Territory>();
-		
+
 
 		Set<Territory> start = data.getMap().getNeighbors(territory);
 		startClone.addAll(start);
@@ -1139,6 +1122,14 @@ public class SUtils
 			startX.clear();
 		}
 		startClone.remove(territory);
+		if (!neutral && Properties.getNeutralsImpassable(data))
+		{
+			for (Territory t : startX)
+			{
+			    if (Matches.TerritoryIsNeutral.match(t))
+			       startX.remove(t);
+		    }
+		}
 		return startClone;
 
 	}
@@ -1159,9 +1150,11 @@ public class SUtils
 	public static Territory findASeaTerritoryToPlaceOn(Territory landTerr, GameData data, PlayerID player)
 	{
 
-		List<Territory> seaNeighbors = getExactNeighbors(landTerr, 1, data);
 		Territory seaPlaceAt = null;
 		Territory xPlace = null;
+        if (landTerr == null)
+        	return seaPlaceAt;
+		List<Territory> seaNeighbors = getExactNeighbors(landTerr, 1, data, false);
 		CompositeMatch<Unit> seaUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsAir, Matches.unitIsOwnedBy(player));
 		float mTot = 500.0F, e1 = 0.0F, e2 = 0.0F, s1 = 0.0F;
 		int i=0;
