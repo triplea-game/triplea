@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="New World Order 5 Player" version="2.1"/>
+        <info name="New World Order 5 Player" version="2.1.1"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -3875,7 +3875,7 @@
 
 
                 <!-- Map Name: also used for map utils when asked -->
-                <property name="mapName" value="New World Order" editable="false"/>
+                <property name="mapName" value="new world order" editable="false"/>
 
 <property name="notes" value=
 "

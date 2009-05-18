@@ -1,5 +1,7 @@
 Changes for 1.0.3.3
 
+* fix map name case in nwo maps (sgb)
+
 * mark territories with battles (sgb)
 
 * Make it so map utility programs can find the centers, polygons, and map.properties files by using the
