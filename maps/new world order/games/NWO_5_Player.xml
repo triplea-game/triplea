@@ -1026,32 +1026,32 @@
 
         
         <unitList>
-<unit name="Infantry"/>
-<unit name="Elite"/>
-<unit name="Truck"/>
-<unit name="Armour"/>
-<unit name="Bigarmour"/>
-<unit name="Halftrack"/>
-<unit name="Katyusha"/>
-<unit name="Scout"/> 
-<unit name="Fighter"/>
-<unit name="EarlyFighter"/>
-<unit name="Me262"/>
-<unit name="Bomber"/>
-<unit name="Lancaster"/>
-<unit name="Transport"/>
-<unit name="Battleship"/>
-<unit name="Carrier"/>
-<unit name="B29"/>
-<unit name="T.Boat"/>
-<unit name="Submarine"/>
-<unit name="Factory"/>
-<unit name="AAGun"/>
-<unit name="Bunker"/>
-<unit name="Artillery"/>
-<unit name="Destroyer"/>
-<unit name="Cruiser"/>
-<unit name="S.Sub"/>
+<unit name="infantry"/>
+<unit name="elite"/>
+<unit name="truck"/>
+<unit name="armour"/>
+<unit name="bigarmour"/>
+<unit name="halftrack"/>
+<unit name="katyusha"/>
+<unit name="scout"/> 
+<unit name="fighter"/>
+<unit name="earlyfighter"/>
+<unit name="me262"/>
+<unit name="bomber"/>
+<unit name="lancaster"/>
+<unit name="transport"/>
+<unit name="battleship"/>
+<unit name="carrier"/>
+<unit name="b29"/>
+<unit name="t.boat"/>
+<unit name="submarine"/>
+<unit name="factory"/>
+<unit name="aaGun"/>
+<unit name="bunker"/>
+<unit name="artillery"/>
+<unit name="destroyer"/>
+<unit name="cruiser"/>
+<unit name="s.sub"/>
 </unitList>
 
         <gamePlay>
@@ -1153,414 +1153,414 @@
         <production>
 <!-- Unit Production Cost -->
 
-<productionRule name="buyInfantry">
+<productionRule name="buyinfantry">
 <cost resource="IPCs" quantity="2"/>
-<result resourceOrUnit="Infantry" quantity="1"/>
+<result resourceOrUnit="infantry" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyElite">
+<productionRule name="buyelite">
 <cost resource="IPCs" quantity="3"/>
-<result resourceOrUnit="Elite" quantity="1"/>
+<result resourceOrUnit="elite" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyTruck">
+<productionRule name="buytruck">
 <cost resource="IPCs" quantity="4"/>
-<result resourceOrUnit="Truck" quantity="1"/>
+<result resourceOrUnit="truck" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyArtillery">
+<productionRule name="buyartillery">
 <cost resource="IPCs" quantity="4"/>
-<result resourceOrUnit="Artillery" quantity="1"/>
+<result resourceOrUnit="artillery" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyArmour">
+<productionRule name="buyarmour">
 <cost resource="IPCs" quantity="5"/>
-<result resourceOrUnit="Armour" quantity="1"/>
+<result resourceOrUnit="armour" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyBigarmour">
+<productionRule name="buybigarmour">
 <cost resource="IPCs" quantity="7"/>
-<result resourceOrUnit="Bigarmour" quantity="1"/>
+<result resourceOrUnit="bigarmour" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyHalftrack">
+<productionRule name="buyhalftrack">
 <cost resource="IPCs" quantity="6"/>
-<result resourceOrUnit="Halftrack" quantity="1"/>
+<result resourceOrUnit="halftrack" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyKatyusha">
+<productionRule name="buykatyusha">
 <cost resource="IPCs" quantity="6"/>
-<result resourceOrUnit="Katyusha" quantity="1"/>
+<result resourceOrUnit="katyusha" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyScout">
+<productionRule name="buyscout">
 <cost resource="IPCs" quantity="3"/>
-<result resourceOrUnit="Scout" quantity="1"/>
+<result resourceOrUnit="scout" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyFighter">
+<productionRule name="buyfighter">
 <cost resource="IPCs" quantity="10"/>
-<result resourceOrUnit="Fighter" quantity="1"/>
+<result resourceOrUnit="fighter" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyEarlyFighter">
+<productionRule name="buyearlyfighter">
 <cost resource="IPCs" quantity="8"/>
-<result resourceOrUnit="EarlyFighter" quantity="1"/>
+<result resourceOrUnit="earlyfighter" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyMe262">
+<productionRule name="buyme262">
 <cost resource="IPCs" quantity="13"/>
-<result resourceOrUnit="Me262" quantity="1"/>
+<result resourceOrUnit="me262" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyBomber">
+<productionRule name="buybomber">
 <cost resource="IPCs" quantity="15"/>
-<result resourceOrUnit="Bomber" quantity="1"/>
+<result resourceOrUnit="bomber" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyLancaster">
+<productionRule name="buylancaster">
 <cost resource="IPCs" quantity="20"/>
-<result resourceOrUnit="Lancaster" quantity="1"/>
+<result resourceOrUnit="lancaster" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyTransport">
+<productionRule name="buytransport">
 <cost resource="IPCs" quantity="8"/>
-<result resourceOrUnit="Transport" quantity="1"/>
+<result resourceOrUnit="transport" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyCarrier">
+<productionRule name="buycarrier">
 <cost resource="IPCs" quantity="16"/>
-<result resourceOrUnit="Carrier" quantity="1"/>
+<result resourceOrUnit="carrier" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyB29">
+<productionRule name="buyb29">
 <cost resource="IPCs" quantity="20"/>
-<result resourceOrUnit="B29" quantity="1"/>
+<result resourceOrUnit="b29" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyT.Boat">
+<productionRule name="buyt.boat">
 <cost resource="IPCs" quantity="6"/>
-<result resourceOrUnit="T.Boat" quantity="1"/>
+<result resourceOrUnit="t.boat" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyDestroyer">
+<productionRule name="buydestroyer">
 <cost resource="IPCs" quantity="12"/>
-<result resourceOrUnit="Destroyer" quantity="1"/>
+<result resourceOrUnit="destroyer" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyBattleship">
+<productionRule name="buybattleship">
 <cost resource="IPCs" quantity="24"/>
-<result resourceOrUnit="Battleship" quantity="1"/>
+<result resourceOrUnit="battleship" quantity="1"/>
 </productionRule>
 
-<productionRule name="buySubmarine">
+<productionRule name="buysubmarine">
 <cost resource="IPCs" quantity="8"/>
-<result resourceOrUnit="Submarine" quantity="1"/>
+<result resourceOrUnit="submarine" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyS.Sub">
+<productionRule name="buys.sub">
 <cost resource="IPCs" quantity="12"/>
-<result resourceOrUnit="S.Sub" quantity="1"/>
+<result resourceOrUnit="s.sub" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyCruiser">
+<productionRule name="buycruiser">
 <cost resource="IPCs" quantity="14"/>
-<result resourceOrUnit="Cruiser" quantity="1"/>
+<result resourceOrUnit="cruiser" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyFactory">
+<productionRule name="buyfactory">
 <cost resource="IPCs" quantity="15"/>
-<result resourceOrUnit="Factory" quantity="1"/>
+<result resourceOrUnit="factory" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyAAGun">
+<productionRule name="buyaaGun">
 <cost resource="IPCs" quantity="5"/>
-<result resourceOrUnit="AAGun" quantity="1"/>
+<result resourceOrUnit="aaGun" quantity="1"/>
 </productionRule>
 
 <!-- Advanced Industrial Production -->
 
-<productionRule name="buyInfantryIndustrialTechnology">
+<productionRule name="buyinfantryIndustrialTechnology">
 <cost resource="IPCs" quantity="1"/>
-<result resourceOrUnit="Infantry" quantity="1"/>
+<result resourceOrUnit="infantry" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyEliteIndustrialTechnology">
+<productionRule name="buyeliteIndustrialTechnology">
 <cost resource="IPCs" quantity="2"/>
-<result resourceOrUnit="Elite" quantity="1"/>
+<result resourceOrUnit="elite" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyTruckIndustrialTechnology">
+<productionRule name="buytruckIndustrialTechnology">
 <cost resource="IPCs" quantity="3"/>
-<result resourceOrUnit="Elite" quantity="1"/>
+<result resourceOrUnit="elite" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyArtilleryIndustrialTechnology">
+<productionRule name="buyartilleryIndustrialTechnology">
 <cost resource="IPCs" quantity="3"/>
-<result resourceOrUnit="Artillery" quantity="1"/>
+<result resourceOrUnit="artillery" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyArmourIndustrialTechnology">
+<productionRule name="buyarmourIndustrialTechnology">
 <cost resource="IPCs" quantity="4"/>
-<result resourceOrUnit="Armour" quantity="1"/>
+<result resourceOrUnit="armour" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyBigarmourIndustrialTechnology">
+<productionRule name="buybigarmourIndustrialTechnology">
 <cost resource="IPCs" quantity="7"/>
-<result resourceOrUnit="Bigarmour" quantity="1"/>
+<result resourceOrUnit="bigarmour" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyHalftrackIndustrialTechnology">
+<productionRule name="buyhalftrackIndustrialTechnology">
 <cost resource="IPCs" quantity="5"/>
-<result resourceOrUnit="Halftrack" quantity="1"/>
+<result resourceOrUnit="halftrack" quantity="1"/>
 </productionRule>
 
 
-<productionRule name="buyKatyushaIndustrialTechnology">
+<productionRule name="buykatyushaIndustrialTechnology">
 <cost resource="IPCs" quantity="5"/>
-<result resourceOrUnit="Katyusha" quantity="1"/>
+<result resourceOrUnit="katyusha" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyScoutIndustrialTechnology">
+<productionRule name="buyscoutIndustrialTechnology">
 <cost resource="IPCs" quantity="2"/>
-<result resourceOrUnit="Scout" quantity="1"/>
+<result resourceOrUnit="scout" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyFighterIndustrialTechnology">
+<productionRule name="buyfighterIndustrialTechnology">
 <cost resource="IPCs" quantity="9"/>
-<result resourceOrUnit="Fighter" quantity="1"/>
+<result resourceOrUnit="fighter" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyEarlyFighterIndustrialTechnology">
+<productionRule name="buyearlyfighterIndustrialTechnology">
 <cost resource="IPCs" quantity="7"/>
-<result resourceOrUnit="Fighter" quantity="1"/>
+<result resourceOrUnit="fighter" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyMe262IndustrialTechnology">
+<productionRule name="buyme262IndustrialTechnology">
 <cost resource="IPCs" quantity="12"/>
-<result resourceOrUnit="Fighter" quantity="1"/>
+<result resourceOrUnit="fighter" quantity="1"/>
 </productionRule>
 
 
-<productionRule name="buyBomberIndustrialTechnology">
+<productionRule name="buybomberIndustrialTechnology">
 <cost resource="IPCs" quantity="14"/>
-<result resourceOrUnit="Bomber" quantity="1"/>
+<result resourceOrUnit="bomber" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyLancasterIndustrialTechnology">
+<productionRule name="buylancasterIndustrialTechnology">
 <cost resource="IPCs" quantity="17"/>
-<result resourceOrUnit="Bomber" quantity="1"/>
+<result resourceOrUnit="bomber" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyTransportIndustrialTechnology">
+<productionRule name="buytransportIndustrialTechnology">
 <cost resource="IPCs" quantity="7"/>
-<result resourceOrUnit="Transport" quantity="1"/>
+<result resourceOrUnit="transport" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyCarrierIndustrialTechnology">
+<productionRule name="buycarrierIndustrialTechnology">
 <cost resource="IPCs" quantity="15"/>
-<result resourceOrUnit="Carrier" quantity="1"/>
+<result resourceOrUnit="carrier" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyB29IndustrialTechnology">
+<productionRule name="buyb29IndustrialTechnology">
 <cost resource="IPCs" quantity="19"/>
-<result resourceOrUnit="B29" quantity="1"/>
+<result resourceOrUnit="b29" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyDestroyerIndustrialTechnology">
+<productionRule name="buydestroyerIndustrialTechnology">
 <cost resource="IPCs" quantity="11"/>
-<result resourceOrUnit="Destroyer" quantity="1"/>
+<result resourceOrUnit="destroyer" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyBattleshipIndustrialTechnology">
+<productionRule name="buybattleshipIndustrialTechnology">
 <cost resource="IPCs" quantity="23"/>
-<result resourceOrUnit="Battleship" quantity="1"/>
+<result resourceOrUnit="battleship" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyT.BoatIndustrialTechnology">
+<productionRule name="buyt.boatIndustrialTechnology">
 <cost resource="IPCs" quantity="5"/>
-<result resourceOrUnit="Submarine" quantity="1"/>
+<result resourceOrUnit="submarine" quantity="1"/>
 </productionRule>
 
-<productionRule name="buySubmarineIndustrialTechnology">
+<productionRule name="buysubmarineIndustrialTechnology">
 <cost resource="IPCs" quantity="7"/>
-<result resourceOrUnit="Submarine" quantity="1"/>
+<result resourceOrUnit="submarine" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyS.SubIndustrialTechnology">
+<productionRule name="buys.subIndustrialTechnology">
 <cost resource="IPCs" quantity="11"/>
-<result resourceOrUnit="S.Sub" quantity="1"/>
+<result resourceOrUnit="s.sub" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyCruiserIndustrialTechnology">
+<productionRule name="buycruiserIndustrialTechnology">
 <cost resource="IPCs" quantity="13"/>
-<result resourceOrUnit="Cruiser" quantity="1"/>
+<result resourceOrUnit="cruiser" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyFactoryIndustrialTechnology">
+<productionRule name="buyfactoryIndustrialTechnology">
 <cost resource="IPCs" quantity="14"/>
-<result resourceOrUnit="Factory" quantity="1"/>
+<result resourceOrUnit="factory" quantity="1"/>
 </productionRule>
 
-<productionRule name="buyAAGunIndustrialTechnology">
+<productionRule name="buyaaGunIndustrialTechnology">
 <cost resource="IPCs" quantity="4"/>
-<result resourceOrUnit="AAGun" quantity="1"/>
+<result resourceOrUnit="aaGun" quantity="1"/>
 </productionRule>
 
 <productionFrontier name="productionGermans">
-<frontierRules name="buyInfantry"/>
-<frontierRules name="buyElite"/>
-<frontierRules name="buyScout"/>
-<frontierRules name="buyArtillery"/>
-<frontierRules name="buyTruck"/>
-<frontierRules name="buyHalftrack"/>
-<frontierRules name="buyArmour"/>
-<frontierRules name="buyBigarmour"/>
-<frontierRules name="buyEarlyFighter"/>
-<frontierRules name="buyFighter"/>
-<frontierRules name="buyMe262"/>
-<frontierRules name="buyBomber"/>
-<frontierRules name="buyTransport"/>
-<frontierRules name="buyT.Boat"/>
-<frontierRules name="buySubmarine"/>
-<frontierRules name="buyCarrier"/>
-<frontierRules name="buyDestroyer"/>
-<frontierRules name="buyBattleship"/>
-<frontierRules name="buyS.Sub"/>
-<frontierRules name="buyCruiser"/>
-<frontierRules name="buyAAGun"/>
-<frontierRules name="buyFactory"/>
+<frontierRules name="buyinfantry"/>
+<frontierRules name="buyelite"/>
+<frontierRules name="buyscout"/>
+<frontierRules name="buyartillery"/>
+<frontierRules name="buytruck"/>
+<frontierRules name="buyhalftrack"/>
+<frontierRules name="buyarmour"/>
+<frontierRules name="buybigarmour"/>
+<frontierRules name="buyearlyfighter"/>
+<frontierRules name="buyfighter"/>
+<frontierRules name="buyme262"/>
+<frontierRules name="buybomber"/>
+<frontierRules name="buytransport"/>
+<frontierRules name="buyt.boat"/>
+<frontierRules name="buysubmarine"/>
+<frontierRules name="buycarrier"/>
+<frontierRules name="buydestroyer"/>
+<frontierRules name="buybattleship"/>
+<frontierRules name="buys.sub"/>
+<frontierRules name="buycruiser"/>
+<frontierRules name="buyaaGun"/>
+<frontierRules name="buyfactory"/>
 </productionFrontier>
 
 <productionFrontier name="productionAmericans">
-<frontierRules name="buyInfantry"/>
-<frontierRules name="buyElite"/>
-<frontierRules name="buyScout"/>
-<frontierRules name="buyArtillery"/>
-<frontierRules name="buyTruck"/>
-<frontierRules name="buyHalftrack"/>
-<frontierRules name="buyArmour"/>
-<frontierRules name="buyBigarmour"/>
-<frontierRules name="buyEarlyFighter"/>
-<frontierRules name="buyFighter"/>
-<frontierRules name="buyBomber"/>
-<frontierRules name="buyB29"/>
-<frontierRules name="buyTransport"/>
-<frontierRules name="buyT.Boat"/>
-<frontierRules name="buySubmarine"/>
-<frontierRules name="buyCarrier"/>
-<frontierRules name="buyDestroyer"/>
-<frontierRules name="buyBattleship"/>
-<frontierRules name="buyS.Sub"/>
-<frontierRules name="buyCruiser"/>
-<frontierRules name="buyAAGun"/>
-<frontierRules name="buyFactory"/>
+<frontierRules name="buyinfantry"/>
+<frontierRules name="buyelite"/>
+<frontierRules name="buyscout"/>
+<frontierRules name="buyartillery"/>
+<frontierRules name="buytruck"/>
+<frontierRules name="buyhalftrack"/>
+<frontierRules name="buyarmour"/>
+<frontierRules name="buybigarmour"/>
+<frontierRules name="buyearlyfighter"/>
+<frontierRules name="buyfighter"/>
+<frontierRules name="buybomber"/>
+<frontierRules name="buyb29"/>
+<frontierRules name="buytransport"/>
+<frontierRules name="buyt.boat"/>
+<frontierRules name="buysubmarine"/>
+<frontierRules name="buycarrier"/>
+<frontierRules name="buydestroyer"/>
+<frontierRules name="buybattleship"/>
+<frontierRules name="buys.sub"/>
+<frontierRules name="buycruiser"/>
+<frontierRules name="buyaaGun"/>
+<frontierRules name="buyfactory"/>
 </productionFrontier>
 
 
 
 <productionFrontier name="productionRussians">
-<frontierRules name="buyInfantry"/>
-<frontierRules name="buyElite"/>
-<frontierRules name="buyScout"/>
-<frontierRules name="buyArtillery"/>
-<frontierRules name="buyTruck"/>
-<frontierRules name="buyHalftrack"/>
-<frontierRules name="buyArmour"/>
-<frontierRules name="buyBigarmour"/>
-<frontierRules name="buyKatyusha"/>
-<frontierRules name="buyEarlyFighter"/>
-<frontierRules name="buyFighter"/>
-<frontierRules name="buyBomber"/>
-<frontierRules name="buyTransport"/>
-<frontierRules name="buyT.Boat"/>
-<frontierRules name="buySubmarine"/>
-<frontierRules name="buyCarrier"/>
-<frontierRules name="buyDestroyer"/>
-<frontierRules name="buyBattleship"/>
-<frontierRules name="buyS.Sub"/>
-<frontierRules name="buyCruiser"/>
-<frontierRules name="buyAAGun"/>
-<frontierRules name="buyFactory"/>
+<frontierRules name="buyinfantry"/>
+<frontierRules name="buyelite"/>
+<frontierRules name="buyscout"/>
+<frontierRules name="buyartillery"/>
+<frontierRules name="buytruck"/>
+<frontierRules name="buyhalftrack"/>
+<frontierRules name="buyarmour"/>
+<frontierRules name="buybigarmour"/>
+<frontierRules name="buykatyusha"/>
+<frontierRules name="buyearlyfighter"/>
+<frontierRules name="buyfighter"/>
+<frontierRules name="buybomber"/>
+<frontierRules name="buytransport"/>
+<frontierRules name="buyt.boat"/>
+<frontierRules name="buysubmarine"/>
+<frontierRules name="buycarrier"/>
+<frontierRules name="buydestroyer"/>
+<frontierRules name="buybattleship"/>
+<frontierRules name="buys.sub"/>
+<frontierRules name="buycruiser"/>
+<frontierRules name="buyaaGun"/>
+<frontierRules name="buyfactory"/>
 </productionFrontier>
 
 <productionFrontier name="productionBritish">
-<frontierRules name="buyInfantry"/>
-<frontierRules name="buyElite"/>
-<frontierRules name="buyScout"/>
-<frontierRules name="buyArtillery"/>
-<frontierRules name="buyTruck"/>
-<frontierRules name="buyHalftrack"/>
-<frontierRules name="buyArmour"/>
-<frontierRules name="buyBigarmour"/>
-<frontierRules name="buyEarlyFighter"/>
-<frontierRules name="buyFighter"/>
-<frontierRules name="buyBomber"/>
-<frontierRules name="buyLancaster"/>
-<frontierRules name="buyTransport"/>
-<frontierRules name="buyT.Boat"/>
-<frontierRules name="buySubmarine"/>
-<frontierRules name="buyCarrier"/>
-<frontierRules name="buyDestroyer"/>
-<frontierRules name="buyBattleship"/>
-<frontierRules name="buyS.Sub"/>
-<frontierRules name="buyCruiser"/>
-<frontierRules name="buyAAGun"/>
-<frontierRules name="buyFactory"/>
+<frontierRules name="buyinfantry"/>
+<frontierRules name="buyelite"/>
+<frontierRules name="buyscout"/>
+<frontierRules name="buyartillery"/>
+<frontierRules name="buytruck"/>
+<frontierRules name="buyhalftrack"/>
+<frontierRules name="buyarmour"/>
+<frontierRules name="buybigarmour"/>
+<frontierRules name="buyearlyfighter"/>
+<frontierRules name="buyfighter"/>
+<frontierRules name="buybomber"/>
+<frontierRules name="buylancaster"/>
+<frontierRules name="buytransport"/>
+<frontierRules name="buyt.boat"/>
+<frontierRules name="buysubmarine"/>
+<frontierRules name="buycarrier"/>
+<frontierRules name="buydestroyer"/>
+<frontierRules name="buybattleship"/>
+<frontierRules name="buys.sub"/>
+<frontierRules name="buycruiser"/>
+<frontierRules name="buyaaGun"/>
+<frontierRules name="buyfactory"/>
 </productionFrontier>
 
 <productionFrontier name="productionItalians">
-<frontierRules name="buyInfantry"/>
-<frontierRules name="buyElite"/>
-<frontierRules name="buyScout"/>
-<frontierRules name="buyArtillery"/>
-<frontierRules name="buyTruck"/>
-<frontierRules name="buyHalftrack"/>
-<frontierRules name="buyArmour"/>
-<frontierRules name="buyBigarmour"/>
-<frontierRules name="buyEarlyFighter"/>
-<frontierRules name="buyFighter"/>
-<frontierRules name="buyMe262"/>
-<frontierRules name="buyBomber"/>
-<frontierRules name="buyTransport"/>
-<frontierRules name="buyT.Boat"/>
-<frontierRules name="buySubmarine"/>
-<frontierRules name="buyCarrier"/>
-<frontierRules name="buyDestroyer"/>
-<frontierRules name="buyBattleship"/>
-<frontierRules name="buyS.Sub"/>
-<frontierRules name="buyCruiser"/>
-<frontierRules name="buyAAGun"/>
-<frontierRules name="buyFactory"/>
+<frontierRules name="buyinfantry"/>
+<frontierRules name="buyelite"/>
+<frontierRules name="buyscout"/>
+<frontierRules name="buyartillery"/>
+<frontierRules name="buytruck"/>
+<frontierRules name="buyhalftrack"/>
+<frontierRules name="buyarmour"/>
+<frontierRules name="buybigarmour"/>
+<frontierRules name="buyearlyfighter"/>
+<frontierRules name="buyfighter"/>
+<frontierRules name="buyme262"/>
+<frontierRules name="buybomber"/>
+<frontierRules name="buytransport"/>
+<frontierRules name="buyt.boat"/>
+<frontierRules name="buysubmarine"/>
+<frontierRules name="buycarrier"/>
+<frontierRules name="buydestroyer"/>
+<frontierRules name="buybattleship"/>
+<frontierRules name="buys.sub"/>
+<frontierRules name="buycruiser"/>
+<frontierRules name="buyaaGun"/>
+<frontierRules name="buyfactory"/>
 </productionFrontier>
 
 
 
 <productionFrontier name="productionIndustrialTechnology">
-<frontierRules name="buyInfantryIndustrialTechnology"/>
-<frontierRules name="buyEliteIndustrialTechnology"/>
-<frontierRules name="buyArtilleryIndustrialTechnology"/>
-<frontierRules name="buyTruckIndustrialTechnology"/>
-<frontierRules name="buyArmourIndustrialTechnology"/>
-<frontierRules name="buyBigarmourIndustrialTechnology"/>
-<frontierRules name="buyHalftrackIndustrialTechnology"/>
-<frontierRules name="buyKatyushaIndustrialTechnology"/>
-<frontierRules name="buyScoutIndustrialTechnology"/>
-<frontierRules name="buyFighterIndustrialTechnology"/>
-<frontierRules name="buyEarlyFighterIndustrialTechnology"/>
-<frontierRules name="buyMe262IndustrialTechnology"/>
-<frontierRules name="buyBomberIndustrialTechnology"/>
-<frontierRules name="buyTransportIndustrialTechnology"/>
-<frontierRules name="buyT.BoatIndustrialTechnology"/>
-<frontierRules name="buySubmarineIndustrialTechnology"/>
-<frontierRules name="buyCarrierIndustrialTechnology"/>
-<frontierRules name="buyB29IndustrialTechnology"/>
-<frontierRules name="buyDestroyerIndustrialTechnology"/>
-<frontierRules name="buyBattleshipIndustrialTechnology"/>
-<frontierRules name="buyS.SubIndustrialTechnology"/>
-<frontierRules name="buyCruiserIndustrialTechnology"/>
-<frontierRules name="buyAAGunIndustrialTechnology"/>
-<frontierRules name="buyFactoryIndustrialTechnology"/>
+<frontierRules name="buyinfantryIndustrialTechnology"/>
+<frontierRules name="buyeliteIndustrialTechnology"/>
+<frontierRules name="buyartilleryIndustrialTechnology"/>
+<frontierRules name="buytruckIndustrialTechnology"/>
+<frontierRules name="buyarmourIndustrialTechnology"/>
+<frontierRules name="buybigarmourIndustrialTechnology"/>
+<frontierRules name="buyhalftrackIndustrialTechnology"/>
+<frontierRules name="buykatyushaIndustrialTechnology"/>
+<frontierRules name="buyscoutIndustrialTechnology"/>
+<frontierRules name="buyfighterIndustrialTechnology"/>
+<frontierRules name="buyearlyfighterIndustrialTechnology"/>
+<frontierRules name="buyme262IndustrialTechnology"/>
+<frontierRules name="buybomberIndustrialTechnology"/>
+<frontierRules name="buytransportIndustrialTechnology"/>
+<frontierRules name="buyt.boatIndustrialTechnology"/>
+<frontierRules name="buysubmarineIndustrialTechnology"/>
+<frontierRules name="buycarrierIndustrialTechnology"/>
+<frontierRules name="buyb29IndustrialTechnology"/>
+<frontierRules name="buydestroyerIndustrialTechnology"/>
+<frontierRules name="buybattleshipIndustrialTechnology"/>
+<frontierRules name="buys.subIndustrialTechnology"/>
+<frontierRules name="buycruiserIndustrialTechnology"/>
+<frontierRules name="buyaaGunIndustrialTechnology"/>
+<frontierRules name="buyfactoryIndustrialTechnology"/>
 </productionFrontier>
 
 <playerProduction player="British" frontier="productionBritish"/>
@@ -1619,7 +1619,7 @@
 </attatchment>
 
 
-<attatchment name="unitAttatchment" attatchTo="Infantry" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="infantry" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="1"/>
 <option name="transportCost" value="2"/>
 <option name="attack" value="1"/>
@@ -1627,7 +1627,7 @@
 <option name="artillerySupportable" value="true"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Elite" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="elite" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="1"/>
 <option name="transportCost" value="2"/>
 <option name="attack" value="2"/>
@@ -1635,22 +1635,22 @@
 <option name="artillerySupportable" value="true"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Artillery" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="artillery" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="1"/>
 <option name="transportCost" value="3"/>
 <option name="attack" value="2"/>
 <option name="defense" value="2"/>
-<option name="Artillery" value="true"/>
+<option name="artillery" value="true"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Truck" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="truck" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="3"/>
 <option name="transportCost" value="3"/>
 <option name="attack" value="1"/>
 <option name="defense" value="2"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Armour" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="armour" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="2"/>
 <option name="transportCost" value="3"/>
 <option name="canBlitz" value="true"/>
@@ -1658,7 +1658,7 @@
 <option name="defense" value="3"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Bigarmour" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="bigarmour" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="2"/>
 <option name="transportCost" value="3"/>
 <option name="canBlitz" value="true"/>
@@ -1666,7 +1666,7 @@
 <option name="defense" value="3"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Halftrack" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="halftrack" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="3"/>
 <option name="transportCost" value="3"/>
 <option name="canBlitz" value="true"/>
@@ -1675,7 +1675,7 @@
 <option name="artillery" value="true"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Katyusha" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="katyusha" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="3"/>
 <option name="transportCost" value="3"/>
 <option name="artillery" value="true"/>
@@ -1683,7 +1683,7 @@
 <option name="defense" value="1"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Scout" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="scout" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="2"/>
 <option name="transportCost" value="2"/>
 <option name="canBlitz" value="true"/>
@@ -1691,7 +1691,7 @@
 <option name="defense" value="1"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Fighter" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="fighter" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="4"/>
 <option name="carrierCost" value="1"/>
 <option name="isAir" value="true"/>
@@ -1699,7 +1699,7 @@
 <option name="defense" value="4"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="EarlyFighter" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="earlyfighter" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="4"/>
 <option name="carrierCost" value="1"/>
 <option name="isAir" value="true"/>
@@ -1707,7 +1707,7 @@
 <option name="defense" value="3"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Me262" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="me262" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="5"/>
 <option name="carrierCost" value="1"/>
 <option name="isAir" value="true"/>
@@ -1716,7 +1716,7 @@
 <option name="isStrategicBomber" value="true"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Bomber" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="bomber" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="6"/>
 <option name="isAir" value="true"/>
 <option name="attack" value="4"/>
@@ -1724,7 +1724,7 @@
 <option name="isStrategicBomber" value="true"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Lancaster" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="lancaster" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="8"/>
 <option name="isAir" value="true"/>
 <option name="attack" value="5"/>
@@ -1732,7 +1732,7 @@
 <option name="isStrategicBomber" value="true"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Transport" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="transport" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="2"/>
 <option name="isSea" value="true"/>
 <option name="transportCapacity" value="5"/>
@@ -1740,14 +1740,14 @@
 <option name="defense" value="1"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="T.Boat" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="t.boat" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="1"/>
 <option name="isSea" value="true"/>
 <option name="attack" value="2"/>
 <option name="defense" value="1"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Battleship" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="battleship" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="2"/>
 <option name="isSea" value="true"/>
 <option name="attack" value="4"/>
@@ -1756,7 +1756,7 @@
 <option name="isTwoHit" value="true"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Destroyer" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="destroyer" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="2"/>
 <option name="isSea" value="true"/>
 <option name="attack" value="3"/>
@@ -1764,7 +1764,7 @@
 <option name="isDestroyer" value="true"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Cruiser" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="cruiser" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="2"/>
 <option name="isSea" value="true"/>
 <option name="attack" value="3"/>
@@ -1772,7 +1772,7 @@
 <option name="canBombard" value="true"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Carrier" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="carrier" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="carrierCapacity" value="2"/>
 <option name="movement" value="2"/>
 <option name="isSea" value="true"/>
@@ -1780,7 +1780,7 @@
 <option name="defense" value="3"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="B29" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="b29" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="8"/>
 <option name="isAir" value="true"/>
 <option name="attack" value="5"/>
@@ -1788,7 +1788,7 @@
 <option name="isStrategicBomber" value="true"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Submarine" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="submarine" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="isSub" value="true"/>
 <option name="movement" value="2"/>
 <option name="isSea" value="true"/>
@@ -1796,7 +1796,7 @@
 <option name="defense" value="2"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="S.Sub" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="s.sub" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="isSub" value="true"/>
 <option name="movement" value="3"/>
 <option name="isSea" value="true"/>
@@ -1804,18 +1804,18 @@
 <option name="defense" value="3"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Factory" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="factory" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="isFactory" value="true"/>
 <option name="transportCost" value="6"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="AAGun" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="aaGun" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="isAA" value="true"/>
 <option name="transportCost" value="3"/>
 <option name="movement" value="1"/>
 </attatchment>
 
-<attatchment name="unitAttatchment" attatchTo="Bunker" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<attatchment name="unitAttatchment" attatchTo="bunker" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="attack" value="0"/>
 <option name="defense" value="3"/>
 <option name="isTwoHit" value="true"/>
@@ -2979,212 +2979,212 @@
 
                         <!-- German Unit Placements -->
 
-<unitPlacement unitType="Factory" territory="Berlin" quantity="1" owner="Germans"/>
-<unitPlacement unitType="AAGun" territory="Berlin" quantity="1" owner="Germans"/>
-<unitPlacement unitType="Infantry" territory="Berlin" quantity="8" owner="Germans"/>
-<unitPlacement unitType="Armour" territory="Berlin" quantity="5" owner="Germans"/>
-<unitPlacement unitType="EarlyFighter" territory="Berlin" quantity="2" owner="Germans"/>
-<unitPlacement unitType="Bomber" territory="Berlin" quantity="1" owner="Germans"/>
+<unitPlacement unitType="factory" territory="Berlin" quantity="1" owner="Germans"/>
+<unitPlacement unitType="aaGun" territory="Berlin" quantity="1" owner="Germans"/>
+<unitPlacement unitType="infantry" territory="Berlin" quantity="8" owner="Germans"/>
+<unitPlacement unitType="armour" territory="Berlin" quantity="5" owner="Germans"/>
+<unitPlacement unitType="earlyfighter" territory="Berlin" quantity="2" owner="Germans"/>
+<unitPlacement unitType="bomber" territory="Berlin" quantity="1" owner="Germans"/>
 
 
-<unitPlacement unitType="Factory" territory="Bremen" quantity="1" owner="Germans"/>
-<unitPlacement unitType="AAGun" territory="Bremen" quantity="1" owner="Germans"/>
-<unitPlacement unitType="Infantry" territory="Bremen" quantity="5" owner="Germans"/>
-<unitPlacement unitType="Armour" territory="Bremen" quantity="2" owner="Germans"/>
-<unitPlacement unitType="EarlyFighter" territory="Bremen" quantity="1" owner="Germans"/>
-<unitPlacement unitType="Infantry" territory="Hamburg" quantity="5" owner="Germans"/> 
+<unitPlacement unitType="factory" territory="Bremen" quantity="1" owner="Germans"/>
+<unitPlacement unitType="aaGun" territory="Bremen" quantity="1" owner="Germans"/>
+<unitPlacement unitType="infantry" territory="Bremen" quantity="5" owner="Germans"/>
+<unitPlacement unitType="armour" territory="Bremen" quantity="2" owner="Germans"/>
+<unitPlacement unitType="earlyfighter" territory="Bremen" quantity="1" owner="Germans"/>
+<unitPlacement unitType="infantry" territory="Hamburg" quantity="5" owner="Germans"/> 
 
-<unitPlacement unitType="Factory" territory="Rostock" quantity="1" owner="Germans"/>
-<unitPlacement unitType="AAGun" territory="Rostock" quantity="1" owner="Germans"/>
-<unitPlacement unitType="Infantry" territory="Rostock" quantity="4" owner="Germans"/>
-<unitPlacement unitType="Armour" territory="Rostock" quantity="2" owner="Germans"/>
-<unitPlacement unitType="EarlyFighter" territory="Rostock" quantity="2" owner="Germans"/>
+<unitPlacement unitType="factory" territory="Rostock" quantity="1" owner="Germans"/>
+<unitPlacement unitType="aaGun" territory="Rostock" quantity="1" owner="Germans"/>
+<unitPlacement unitType="infantry" territory="Rostock" quantity="4" owner="Germans"/>
+<unitPlacement unitType="armour" territory="Rostock" quantity="2" owner="Germans"/>
+<unitPlacement unitType="earlyfighter" territory="Rostock" quantity="2" owner="Germans"/>
 
-<unitPlacement unitType="Factory" territory="W.Czech" quantity="1" owner="Germans"/>
-<unitPlacement unitType="AAGun" territory="W.Czech" quantity="1" owner="Germans"/>
-<unitPlacement unitType="Infantry" territory="W.Czech" quantity="6" owner="Germans"/>
-<unitPlacement unitType="Armour" territory="W.Czech" quantity="4" owner="Germans"/>
-<unitPlacement unitType="EarlyFighter" territory="W.Czech" quantity="1" owner="Germans"/>
-<unitPlacement unitType="Bomber" territory="W.Czech" quantity="1" owner="Germans"/>
+<unitPlacement unitType="factory" territory="W.Czech" quantity="1" owner="Germans"/>
+<unitPlacement unitType="aaGun" territory="W.Czech" quantity="1" owner="Germans"/>
+<unitPlacement unitType="infantry" territory="W.Czech" quantity="6" owner="Germans"/>
+<unitPlacement unitType="armour" territory="W.Czech" quantity="4" owner="Germans"/>
+<unitPlacement unitType="earlyfighter" territory="W.Czech" quantity="1" owner="Germans"/>
+<unitPlacement unitType="bomber" territory="W.Czech" quantity="1" owner="Germans"/>
 
-<unitPlacement unitType="Factory" territory="Muenchen" quantity="1" owner="Germans"/>
-<unitPlacement unitType="AAGun" territory="Muenchen" quantity="1" owner="Germans"/>
-<unitPlacement unitType="Infantry" territory="Muenchen" quantity="5" owner="Germans"/>
-<unitPlacement unitType="Armour" territory="Muenchen" quantity="2" owner="Germans"/>
-<unitPlacement unitType="EarlyFighter" territory="Muenchen" quantity="1" owner="Germans"/>
+<unitPlacement unitType="factory" territory="Muenchen" quantity="1" owner="Germans"/>
+<unitPlacement unitType="aaGun" territory="Muenchen" quantity="1" owner="Germans"/>
+<unitPlacement unitType="infantry" territory="Muenchen" quantity="5" owner="Germans"/>
+<unitPlacement unitType="armour" territory="Muenchen" quantity="2" owner="Germans"/>
+<unitPlacement unitType="earlyfighter" territory="Muenchen" quantity="1" owner="Germans"/>
 
-<unitPlacement unitType="Factory" territory="Frankfurt" quantity="1" owner="Germans"/>
-<unitPlacement unitType="AAGun" territory="Frankfurt" quantity="1" owner="Germans"/>
-<unitPlacement unitType="Infantry" territory="Frankfurt" quantity="5" owner="Germans"/>
-<unitPlacement unitType="Armour" territory="Frankfurt" quantity="1" owner="Germans"/>
-<unitPlacement unitType="EarlyFighter" territory="Frankfurt" quantity="2" owner="Germans"/>
+<unitPlacement unitType="factory" territory="Frankfurt" quantity="1" owner="Germans"/>
+<unitPlacement unitType="aaGun" territory="Frankfurt" quantity="1" owner="Germans"/>
+<unitPlacement unitType="infantry" territory="Frankfurt" quantity="5" owner="Germans"/>
+<unitPlacement unitType="armour" territory="Frankfurt" quantity="1" owner="Germans"/>
+<unitPlacement unitType="earlyfighter" territory="Frankfurt" quantity="2" owner="Germans"/>
 
-<unitPlacement unitType="Factory" territory="Nuernberg" quantity="1" owner="Germans"/>
-<unitPlacement unitType="AAGun" territory="Nuernberg" quantity="1" owner="Germans"/>
-<unitPlacement unitType="Infantry" territory="Nuernberg" quantity="4" owner="Germans"/>
-<unitPlacement unitType="Armour" territory="Nuernberg" quantity="3" owner="Germans"/>
-<unitPlacement unitType="EarlyFighter" territory="Nuernberg" quantity="1" owner="Germans"/>
-
-
-<unitPlacement unitType="Infantry" territory="Koeln" quantity="5" owner="Germans"/>
-<unitPlacement unitType="Armour" territory="Koeln" quantity="2" owner="Germans"/>
-
-<unitPlacement unitType="Infantry" territory="Dresden" quantity="4" owner="Germans"/>
-<unitPlacement unitType="Armour" territory="Dresden" quantity="3" owner="Germans"/>
+<unitPlacement unitType="factory" territory="Nuernberg" quantity="1" owner="Germans"/>
+<unitPlacement unitType="aaGun" territory="Nuernberg" quantity="1" owner="Germans"/>
+<unitPlacement unitType="infantry" territory="Nuernberg" quantity="4" owner="Germans"/>
+<unitPlacement unitType="armour" territory="Nuernberg" quantity="3" owner="Germans"/>
+<unitPlacement unitType="earlyfighter" territory="Nuernberg" quantity="1" owner="Germans"/>
 
 
-<unitPlacement unitType="Infantry" territory="Gdansk" quantity="5" owner="Germans"/>
-<unitPlacement unitType="Artillery" territory="Gdansk" quantity="1" owner="Germans"/>
-<unitPlacement unitType="Armour" territory="Gdansk" quantity="1" owner="Germans"/>
+<unitPlacement unitType="infantry" territory="Koeln" quantity="5" owner="Germans"/>
+<unitPlacement unitType="armour" territory="Koeln" quantity="2" owner="Germans"/>
 
-<unitPlacement unitType="Infantry" territory="Wroclaw" quantity="8" owner="Germans"/>
-<unitPlacement unitType="Artillery" territory="Wroclaw" quantity="1" owner="Germans"/>
-
-<unitPlacement unitType="Infantry" territory="Nuernberg" quantity="4" owner="Germans"/>
-<unitPlacement unitType="Infantry" territory="Austrie" quantity="8" owner="Germans"/>
-<unitPlacement unitType="Armour" territory="Austrie" quantity="2" owner="Germans"/>
-
-<unitPlacement unitType="Infantry" territory="E.Czech" quantity="6" owner="Germans"/>
-<unitPlacement unitType="Armour" territory="E.Czech" quantity="2" owner="Germans"/>
-
-<unitPlacement unitType="Infantry" territory="Leipzig" quantity="5" owner="Germans"/>
+<unitPlacement unitType="infantry" territory="Dresden" quantity="4" owner="Germans"/>
+<unitPlacement unitType="armour" territory="Dresden" quantity="3" owner="Germans"/>
 
 
+<unitPlacement unitType="infantry" territory="Gdansk" quantity="5" owner="Germans"/>
+<unitPlacement unitType="artillery" territory="Gdansk" quantity="1" owner="Germans"/>
+<unitPlacement unitType="armour" territory="Gdansk" quantity="1" owner="Germans"/>
 
+<unitPlacement unitType="infantry" territory="Wroclaw" quantity="8" owner="Germans"/>
+<unitPlacement unitType="artillery" territory="Wroclaw" quantity="1" owner="Germans"/>
+
+<unitPlacement unitType="infantry" territory="Nuernberg" quantity="4" owner="Germans"/>
+<unitPlacement unitType="infantry" territory="Austrie" quantity="8" owner="Germans"/>
+<unitPlacement unitType="armour" territory="Austrie" quantity="2" owner="Germans"/>
+
+<unitPlacement unitType="infantry" territory="E.Czech" quantity="6" owner="Germans"/>
+<unitPlacement unitType="armour" territory="E.Czech" quantity="2" owner="Germans"/>
+
+<unitPlacement unitType="infantry" territory="Leipzig" quantity="5" owner="Germans"/>
 
 
 
-			<unitPlacement unitType="Destroyer" territory="sz26" quantity="3" owner="Germans"/>
-                        <unitPlacement unitType="Submarine" territory="sz26" quantity="2" owner="Germans"/>
-                        <unitPlacement unitType="Transport" territory="sz26" quantity="2" owner="Germans"/>
-                        <unitPlacement unitType="Battleship" territory="sz26" quantity="1" owner="Germans"/>
 
-			<unitPlacement unitType="Destroyer" territory="sz25" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="Submarine" territory="sz25" quantity="1" owner="Germans"/>
 
-			<unitPlacement unitType="Destroyer" territory="sz41" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="Submarine" territory="sz41" quantity="2" owner="Germans"/>
-                        <unitPlacement unitType="Transport" territory="sz41" quantity="2" owner="Germans"/>
+
+			<unitPlacement unitType="destroyer" territory="sz26" quantity="3" owner="Germans"/>
+                        <unitPlacement unitType="submarine" territory="sz26" quantity="2" owner="Germans"/>
+                        <unitPlacement unitType="transport" territory="sz26" quantity="2" owner="Germans"/>
+                        <unitPlacement unitType="battleship" territory="sz26" quantity="1" owner="Germans"/>
+
+			<unitPlacement unitType="destroyer" territory="sz25" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="submarine" territory="sz25" quantity="1" owner="Germans"/>
+
+			<unitPlacement unitType="destroyer" territory="sz41" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="submarine" territory="sz41" quantity="2" owner="Germans"/>
+                        <unitPlacement unitType="transport" territory="sz41" quantity="2" owner="Germans"/>
                         
 
 
 
 
 
-<unitPlacement unitType="Submarine" territory="sz14" quantity="1" owner="Germans"/>
-<unitPlacement unitType="Submarine" territory="sz11" quantity="3" owner="Germans"/>
-<unitPlacement unitType="Submarine" territory="sz8" quantity="3" owner="Germans"/>
-<unitPlacement unitType="Submarine" territory="sz6" quantity="1" owner="Germans"/>
-<unitPlacement unitType="Submarine" territory="sz35" quantity="1" owner="Germans"/>
-<unitPlacement unitType="Submarine" territory="sz19" quantity="3" owner="Germans"/>
+<unitPlacement unitType="submarine" territory="sz14" quantity="1" owner="Germans"/>
+<unitPlacement unitType="submarine" territory="sz11" quantity="3" owner="Germans"/>
+<unitPlacement unitType="submarine" territory="sz8" quantity="3" owner="Germans"/>
+<unitPlacement unitType="submarine" territory="sz6" quantity="1" owner="Germans"/>
+<unitPlacement unitType="submarine" territory="sz35" quantity="1" owner="Germans"/>
+<unitPlacement unitType="submarine" territory="sz19" quantity="3" owner="Germans"/>
                         
 
 
 
 			<!-- Russian Unit Placements -->
 
-<unitPlacement unitType="Infantry" territory="Armenia" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Azerbaydzhan" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Armenia" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Azerbaydzhan" quantity="1" owner="Russians"/>
 
-<unitPlacement unitType="Infantry" territory="Belorussia" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Litovskaya" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Belorussia" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Moldavskaya" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Odessa" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Belorussia" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Litovskaya" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Belorussia" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Moldavskaya" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Odessa" quantity="1" owner="Russians"/>
 
-<unitPlacement unitType="Infantry" territory="Ukrainskaya" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Artillery" territory="Ukrainskaya" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Ukrainskaya" quantity="1" owner="Russians"/>
+<unitPlacement unitType="artillery" territory="Ukrainskaya" quantity="1" owner="Russians"/>
 
-<unitPlacement unitType="Infantry" territory="Riga" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Artillery" territory="Riga" quantity="1" owner="Russians"/>
-
-
-<unitPlacement unitType="Infantry" territory="Estorskaya" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Estonia" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Olonets" quantity="2" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Belomorsk" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Murmansk" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Vologda" quantity="2" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Yaroslavl" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Kaluga" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Rzhev" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Nikolsk" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Nenets" quantity="2" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Svedlovsk" quantity="2" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Donetsk" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Kursk" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Krym" quantity="3" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Stavropol" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Sochi" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Kizbar" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Astraknan" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Kazakh" quantity="2" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Novgorod" quantity="2" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Kubyshev" quantity="1" owner="Russians"/>
-
-<unitPlacement unitType="Infantry" territory="Brest" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Artillery" territory="Brest" quantity="1" owner="Russians"/>
-
-<unitPlacement unitType="Infantry" territory="Minsk" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Saratov" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Lugansk" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Pavlovsk" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Evenki Okrug" quantity="2" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Karchia" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Gorky" quantity="1" owner="Russians"/>	
-
-<unitPlacement unitType="Factory" territory="Moscow" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Moscow" quantity="6" owner="Russians"/>
-<unitPlacement unitType="Armour" territory="Moscow" quantity="3" owner="Russians"/>
-<unitPlacement unitType="AAGun" territory="Moscow" quantity="1" owner="Russians"/> 
-<unitPlacement unitType="Artillery" territory="Moscow" quantity="2" owner="Russians"/>
-<unitPlacement unitType="EarlyFighter" territory="Moscow" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Bomber" territory="Moscow" quantity="1" owner="Russians"/>
-
-<unitPlacement unitType="Factory" territory="Leningrad" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Leningrad" quantity="3" owner="Russians"/>
-<unitPlacement unitType="Armour" territory="Leningrad" quantity="1" owner="Russians"/>
-<unitPlacement unitType="AAGun" territory="Leningrad" quantity="1" owner="Russians"/>
-<unitPlacement unitType="EarlyFighter" territory="Leningrad" quantity="1" owner="Russians"/>
-
-<unitPlacement unitType="Factory" territory="Stalingrad" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Stalingrad" quantity="4" owner="Russians"/>
-<unitPlacement unitType="Armour" territory="Stalingrad" quantity="2" owner="Russians"/>
-<unitPlacement unitType="AAGun" territory="Stalingrad" quantity="1" owner="Russians"/>
-<unitPlacement unitType="EarlyFighter" territory="Stalingrad" quantity="1" owner="Russians"/>
-
-<unitPlacement unitType="Factory" territory="Omsk" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Omsk" quantity="5" owner="Russians"/>
-<unitPlacement unitType="Armour" territory="Omsk" quantity="1" owner="Russians"/>
-<unitPlacement unitType="AAGun" territory="Omsk" quantity="1" owner="Russians"/>
-
-<unitPlacement unitType="Factory" territory="Rostov" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Rostov" quantity="2" owner="Russians"/>
-<unitPlacement unitType="AAGun" territory="Rostov" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Riga" quantity="1" owner="Russians"/>
+<unitPlacement unitType="artillery" territory="Riga" quantity="1" owner="Russians"/>
 
 
-<unitPlacement unitType="Infantry" territory="Smolensk" quantity="3" owner="Russians"/>
-<unitPlacement unitType="Armour" territory="Smolensk" quantity="1" owner="Russians"/>
-<unitPlacement unitType="AAGun" territory="Smolensk" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Estorskaya" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Estonia" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Olonets" quantity="2" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Belomorsk" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Murmansk" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Vologda" quantity="2" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Yaroslavl" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Kaluga" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Rzhev" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Nikolsk" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Nenets" quantity="2" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Svedlovsk" quantity="2" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Donetsk" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Kursk" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Krym" quantity="3" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Stavropol" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Sochi" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Kizbar" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Astraknan" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Kazakh" quantity="2" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Novgorod" quantity="2" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Kubyshev" quantity="1" owner="Russians"/>
 
-<unitPlacement unitType="Factory" territory="Archangelsk" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Infantry" territory="Archangelsk" quantity="4" owner="Russians"/>
-<unitPlacement unitType="Armour" territory="Archangelsk" quantity="1" owner="Russians"/>
-<unitPlacement unitType="AAGun" territory="Archangelsk" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Brest" quantity="1" owner="Russians"/>
+<unitPlacement unitType="artillery" territory="Brest" quantity="1" owner="Russians"/>
 
-<unitPlacement unitType="Submarine" territory="sz21" quantity="2" owner="Russians"/>
-<unitPlacement unitType="Destroyer" territory="sz21" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Transport" territory="sz21" quantity="2" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Minsk" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Saratov" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Lugansk" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Pavlovsk" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Evenki Okrug" quantity="2" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Karchia" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Gorky" quantity="1" owner="Russians"/>	
 
-<unitPlacement unitType="Submarine" territory="sz28" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Destroyer" territory="sz28" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Transport" territory="sz28" quantity="2" owner="Russians"/>
+<unitPlacement unitType="factory" territory="Moscow" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Moscow" quantity="6" owner="Russians"/>
+<unitPlacement unitType="armour" territory="Moscow" quantity="3" owner="Russians"/>
+<unitPlacement unitType="aaGun" territory="Moscow" quantity="1" owner="Russians"/> 
+<unitPlacement unitType="artillery" territory="Moscow" quantity="2" owner="Russians"/>
+<unitPlacement unitType="earlyfighter" territory="Moscow" quantity="1" owner="Russians"/>
+<unitPlacement unitType="bomber" territory="Moscow" quantity="1" owner="Russians"/>
 
-<unitPlacement unitType="Submarine" territory="sz61" quantity="1" owner="Russians"/>
-<unitPlacement unitType="Destroyer" territory="sz61" quantity="2" owner="Russians"/>
-<unitPlacement unitType="Transport" territory="sz61" quantity="2" owner="Russians"/>
+<unitPlacement unitType="factory" territory="Leningrad" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Leningrad" quantity="3" owner="Russians"/>
+<unitPlacement unitType="armour" territory="Leningrad" quantity="1" owner="Russians"/>
+<unitPlacement unitType="aaGun" territory="Leningrad" quantity="1" owner="Russians"/>
+<unitPlacement unitType="earlyfighter" territory="Leningrad" quantity="1" owner="Russians"/>
 
-<unitPlacement unitType="Transport" territory="sz62" quantity="1" owner="Russians"/>
+<unitPlacement unitType="factory" territory="Stalingrad" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Stalingrad" quantity="4" owner="Russians"/>
+<unitPlacement unitType="armour" territory="Stalingrad" quantity="2" owner="Russians"/>
+<unitPlacement unitType="aaGun" territory="Stalingrad" quantity="1" owner="Russians"/>
+<unitPlacement unitType="earlyfighter" territory="Stalingrad" quantity="1" owner="Russians"/>
+
+<unitPlacement unitType="factory" territory="Omsk" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Omsk" quantity="5" owner="Russians"/>
+<unitPlacement unitType="armour" territory="Omsk" quantity="1" owner="Russians"/>
+<unitPlacement unitType="aaGun" territory="Omsk" quantity="1" owner="Russians"/>
+
+<unitPlacement unitType="factory" territory="Rostov" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Rostov" quantity="2" owner="Russians"/>
+<unitPlacement unitType="aaGun" territory="Rostov" quantity="1" owner="Russians"/>
+
+
+<unitPlacement unitType="infantry" territory="Smolensk" quantity="3" owner="Russians"/>
+<unitPlacement unitType="armour" territory="Smolensk" quantity="1" owner="Russians"/>
+<unitPlacement unitType="aaGun" territory="Smolensk" quantity="1" owner="Russians"/>
+
+<unitPlacement unitType="factory" territory="Archangelsk" quantity="1" owner="Russians"/>
+<unitPlacement unitType="infantry" territory="Archangelsk" quantity="4" owner="Russians"/>
+<unitPlacement unitType="armour" territory="Archangelsk" quantity="1" owner="Russians"/>
+<unitPlacement unitType="aaGun" territory="Archangelsk" quantity="1" owner="Russians"/>
+
+<unitPlacement unitType="submarine" territory="sz21" quantity="2" owner="Russians"/>
+<unitPlacement unitType="destroyer" territory="sz21" quantity="1" owner="Russians"/>
+<unitPlacement unitType="transport" territory="sz21" quantity="2" owner="Russians"/>
+
+<unitPlacement unitType="submarine" territory="sz28" quantity="1" owner="Russians"/>
+<unitPlacement unitType="destroyer" territory="sz28" quantity="1" owner="Russians"/>
+<unitPlacement unitType="transport" territory="sz28" quantity="2" owner="Russians"/>
+
+<unitPlacement unitType="submarine" territory="sz61" quantity="1" owner="Russians"/>
+<unitPlacement unitType="destroyer" territory="sz61" quantity="2" owner="Russians"/>
+<unitPlacement unitType="transport" territory="sz61" quantity="2" owner="Russians"/>
+
+<unitPlacement unitType="transport" territory="sz62" quantity="1" owner="Russians"/>
 
 
 
@@ -3200,90 +3200,90 @@
 						
                         <!-- Italian Unit Placements -->
 
-<unitPlacement unitType="Infantry" territory="E.Tunesia" quantity="1" owner="Italians"/>
-<unitPlacement unitType="Infantry" territory="S.Tunesia" quantity="1" owner="Italians"/>
+<unitPlacement unitType="infantry" territory="E.Tunesia" quantity="1" owner="Italians"/>
+<unitPlacement unitType="infantry" territory="S.Tunesia" quantity="1" owner="Italians"/>
 
-<unitPlacement unitType="Infantry" territory="Tripoli" quantity="2" owner="Italians"/>
-<unitPlacement unitType="Artillery" territory="Tripoli" quantity="1" owner="Italians"/>
+<unitPlacement unitType="infantry" territory="Tripoli" quantity="2" owner="Italians"/>
+<unitPlacement unitType="artillery" territory="Tripoli" quantity="1" owner="Italians"/>
 
-<unitPlacement unitType="Infantry" territory="Libya" quantity="1" owner="Italians"/>
-<unitPlacement unitType="Infantry" territory="Tobruk" quantity="2" owner="Italians"/>
-<unitPlacement unitType="Armour" territory="Tobruk" quantity="1" owner="Italians"/>
-
-
-<unitPlacement unitType="Infantry" territory="Firenze" quantity="1" owner="Italians"/>
-<unitPlacement unitType="Artillery" territory="Firenze" quantity="1" owner="Italians"/>
-
-<unitPlacement unitType="Infantry" territory="Triesta" quantity="3" owner="Italians"/>
-<unitPlacement unitType="Artillery" territory="Triesta" quantity="2" owner="Italians"/>
-
-<unitPlacement unitType="Infantry" territory="Albania" quantity="3" owner="Italians"/>
-<unitPlacement unitType="Artillery" territory="Albania" quantity="2" owner="Italians"/>
-<unitPlacement unitType="Armour" territory="Albania" quantity="2" owner="Italians"/>
+<unitPlacement unitType="infantry" territory="Libya" quantity="1" owner="Italians"/>
+<unitPlacement unitType="infantry" territory="Tobruk" quantity="2" owner="Italians"/>
+<unitPlacement unitType="armour" territory="Tobruk" quantity="1" owner="Italians"/>
 
 
-<unitPlacement unitType="Infantry" territory="Sardinia" quantity="2" owner="Italians"/>
+<unitPlacement unitType="infantry" territory="Firenze" quantity="1" owner="Italians"/>
+<unitPlacement unitType="artillery" territory="Firenze" quantity="1" owner="Italians"/>
+
+<unitPlacement unitType="infantry" territory="Triesta" quantity="3" owner="Italians"/>
+<unitPlacement unitType="artillery" territory="Triesta" quantity="2" owner="Italians"/>
+
+<unitPlacement unitType="infantry" territory="Albania" quantity="3" owner="Italians"/>
+<unitPlacement unitType="artillery" territory="Albania" quantity="2" owner="Italians"/>
+<unitPlacement unitType="armour" territory="Albania" quantity="2" owner="Italians"/>
 
 
-<unitPlacement unitType="Infantry" territory="E.Sicilia" quantity="2" owner="Italians"/>
-<unitPlacement unitType="EarlyFighter" territory="E.Sicilia" quantity="2" owner="Italians"/>
-<unitPlacement unitType="Artillery" territory="W.Sicilia" quantity="1" owner="Italians"/>
-
-<unitPlacement unitType="Infantry" territory="Messina" quantity="1" owner="Italians"/>
-<unitPlacement unitType="Artillery" territory="Messina" quantity="1" owner="Italians"/>
-
-<unitPlacement unitType="Infantry" territory="Napoli" quantity="1" owner="Italians"/>
-<unitPlacement unitType="Artillery" territory="Foggia" quantity="1" owner="Italians"/>
+<unitPlacement unitType="infantry" territory="Sardinia" quantity="2" owner="Italians"/>
 
 
+<unitPlacement unitType="infantry" territory="E.Sicilia" quantity="2" owner="Italians"/>
+<unitPlacement unitType="earlyfighter" territory="E.Sicilia" quantity="2" owner="Italians"/>
+<unitPlacement unitType="artillery" territory="W.Sicilia" quantity="1" owner="Italians"/>
+
+<unitPlacement unitType="infantry" territory="Messina" quantity="1" owner="Italians"/>
+<unitPlacement unitType="artillery" territory="Messina" quantity="1" owner="Italians"/>
+
+<unitPlacement unitType="infantry" territory="Napoli" quantity="1" owner="Italians"/>
+<unitPlacement unitType="artillery" territory="Foggia" quantity="1" owner="Italians"/>
 
 
 
 
 
-<unitPlacement unitType="Factory" territory="Roma" quantity="1" owner="Italians"/>
-<unitPlacement unitType="Infantry" territory="Roma" quantity="6" owner="Italians"/>
-<unitPlacement unitType="Artillery" territory="Roma" quantity="2" owner="Italians"/>
-<unitPlacement unitType="AAGun" territory="Roma" quantity="1" owner="Italians"/>
-<unitPlacement unitType="Armour" territory="Roma" quantity="4" owner="Italians"/>
-<unitPlacement unitType="EarlyFighter" territory="Roma" quantity="1" owner="Italians"/>
+
+
+<unitPlacement unitType="factory" territory="Roma" quantity="1" owner="Italians"/>
+<unitPlacement unitType="infantry" territory="Roma" quantity="6" owner="Italians"/>
+<unitPlacement unitType="artillery" territory="Roma" quantity="2" owner="Italians"/>
+<unitPlacement unitType="aaGun" territory="Roma" quantity="1" owner="Italians"/>
+<unitPlacement unitType="armour" territory="Roma" quantity="4" owner="Italians"/>
+<unitPlacement unitType="earlyfighter" territory="Roma" quantity="1" owner="Italians"/>
  
 
-<unitPlacement unitType="Factory" territory="Genova" quantity="1" owner="Italians"/>
-<unitPlacement unitType="Infantry" territory="Genova" quantity="4" owner="Italians"/>
-<unitPlacement unitType="AAGun" territory="Genova" quantity="1" owner="Italians"/>
-<unitPlacement unitType="Armour" territory="Genova" quantity="2" owner="Italians"/>
-<unitPlacement unitType="EarlyFighter" territory="Genova" quantity="1" owner="Italians"/>
-<unitPlacement unitType="Infantry" territory="Genova" quantity="3" owner="Germans"/>
-<unitPlacement unitType="Artillery" territory="Genova" quantity="1" owner="Germans"/>
+<unitPlacement unitType="factory" territory="Genova" quantity="1" owner="Italians"/>
+<unitPlacement unitType="infantry" territory="Genova" quantity="4" owner="Italians"/>
+<unitPlacement unitType="aaGun" territory="Genova" quantity="1" owner="Italians"/>
+<unitPlacement unitType="armour" territory="Genova" quantity="2" owner="Italians"/>
+<unitPlacement unitType="earlyfighter" territory="Genova" quantity="1" owner="Italians"/>
+<unitPlacement unitType="infantry" territory="Genova" quantity="3" owner="Germans"/>
+<unitPlacement unitType="artillery" territory="Genova" quantity="1" owner="Germans"/>
 
-<unitPlacement unitType="Factory" territory="Venezia" quantity="1" owner="Italians"/>
-<unitPlacement unitType="Infantry" territory="Venezia" quantity="4" owner="Italians"/>
-<unitPlacement unitType="Artillery" territory="Venezia" quantity="2" owner="Italians"/>
-<unitPlacement unitType="AAGun" territory="Venezia" quantity="1" owner="Italians"/>
-<unitPlacement unitType="Armour" territory="Venezia" quantity="2" owner="Italians"/>
-<unitPlacement unitType="EarlyFighter" territory="Venezia" quantity="2" owner="Italians"/>
+<unitPlacement unitType="factory" territory="Venezia" quantity="1" owner="Italians"/>
+<unitPlacement unitType="infantry" territory="Venezia" quantity="4" owner="Italians"/>
+<unitPlacement unitType="artillery" territory="Venezia" quantity="2" owner="Italians"/>
+<unitPlacement unitType="aaGun" territory="Venezia" quantity="1" owner="Italians"/>
+<unitPlacement unitType="armour" territory="Venezia" quantity="2" owner="Italians"/>
+<unitPlacement unitType="earlyfighter" territory="Venezia" quantity="2" owner="Italians"/>
 
-<unitPlacement unitType="Factory" territory="Taranto" quantity="1" owner="Italians"/>
-<unitPlacement unitType="Infantry" territory="Taranto" quantity="2" owner="Italians"/>
-<unitPlacement unitType="Artillery" territory="Taranto" quantity="2" owner="Italians"/>
-<unitPlacement unitType="AAGun" territory="Taranto" quantity="1" owner="Italians"/>
+<unitPlacement unitType="factory" territory="Taranto" quantity="1" owner="Italians"/>
+<unitPlacement unitType="infantry" territory="Taranto" quantity="2" owner="Italians"/>
+<unitPlacement unitType="artillery" territory="Taranto" quantity="2" owner="Italians"/>
+<unitPlacement unitType="aaGun" territory="Taranto" quantity="1" owner="Italians"/>
 
 
-			<unitPlacement unitType="Destroyer" territory="sz51" quantity="1" owner="Italians"/>
-                        <unitPlacement unitType="Submarine" territory="sz51" quantity="1" owner="Italians"/>
-                        <unitPlacement unitType="Transport" territory="sz51" quantity="2" owner="Italians"/>
+			<unitPlacement unitType="destroyer" territory="sz51" quantity="1" owner="Italians"/>
+                        <unitPlacement unitType="submarine" territory="sz51" quantity="1" owner="Italians"/>
+                        <unitPlacement unitType="transport" territory="sz51" quantity="2" owner="Italians"/>
                         
-			<unitPlacement unitType="Destroyer" territory="sz42" quantity="1" owner="Italians"/>
-                        <unitPlacement unitType="Submarine" territory="sz42" quantity="1" owner="Italians"/>
-                        <unitPlacement unitType="Transport" territory="sz42" quantity="2" owner="Italians"/>
-                        <unitPlacement unitType="Battleship" territory="sz42" quantity="1" owner="Italians"/>
+			<unitPlacement unitType="destroyer" territory="sz42" quantity="1" owner="Italians"/>
+                        <unitPlacement unitType="submarine" territory="sz42" quantity="1" owner="Italians"/>
+                        <unitPlacement unitType="transport" territory="sz42" quantity="2" owner="Italians"/>
+                        <unitPlacement unitType="battleship" territory="sz42" quantity="1" owner="Italians"/>
 
-<unitPlacement unitType="Transport" territory="sz50" quantity="2" owner="Italians"/>
+<unitPlacement unitType="transport" territory="sz50" quantity="2" owner="Italians"/>
 
 
-<unitPlacement unitType="Transport" territory="sz45" quantity="2" owner="Italians"/>
-<unitPlacement unitType="Destroyer" territory="sz49" quantity="1" owner="Italians"/>	
+<unitPlacement unitType="transport" territory="sz45" quantity="2" owner="Italians"/>
+<unitPlacement unitType="destroyer" territory="sz49" quantity="1" owner="Italians"/>	
 
 
 
@@ -3293,143 +3293,143 @@
 
 			<!-- British Unit Placements -->
 
-<unitPlacement unitType="Factory" territory="London" quantity="1" owner="British"/>
-<unitPlacement unitType="Armour" territory="London" quantity="2" owner="British"/>
-<unitPlacement unitType="EarlyFighter" territory="London" quantity="1" owner="British"/>
-<unitPlacement unitType="Infantry" territory="London" quantity="6" owner="British"/>
-<unitPlacement unitType="Artillery" territory="London" quantity="2" owner="British"/>
-<unitPlacement unitType="AAGun" territory="London" quantity="1" owner="British"/>
-<unitPlacement unitType="Bomber" territory="London" quantity="1" owner="British"/>
+<unitPlacement unitType="factory" territory="London" quantity="1" owner="British"/>
+<unitPlacement unitType="armour" territory="London" quantity="2" owner="British"/>
+<unitPlacement unitType="earlyfighter" territory="London" quantity="1" owner="British"/>
+<unitPlacement unitType="infantry" territory="London" quantity="6" owner="British"/>
+<unitPlacement unitType="artillery" territory="London" quantity="2" owner="British"/>
+<unitPlacement unitType="aaGun" territory="London" quantity="1" owner="British"/>
+<unitPlacement unitType="bomber" territory="London" quantity="1" owner="British"/>
 
 
 
 
-<unitPlacement unitType="Factory" territory="Cairo" quantity="1" owner="British"/>
-<unitPlacement unitType="Armour" territory="Cairo" quantity="3" owner="British"/>
-<unitPlacement unitType="EarlyFighter" territory="Cairo" quantity="2" owner="British"/>
-<unitPlacement unitType="Infantry" territory="Cairo" quantity="6" owner="British"/>
-<unitPlacement unitType="Artillery" territory="Cairo" quantity="2" owner="British"/>
-<unitPlacement unitType="AAGun" territory="Cairo" quantity="1" owner="British"/>
+<unitPlacement unitType="factory" territory="Cairo" quantity="1" owner="British"/>
+<unitPlacement unitType="armour" territory="Cairo" quantity="3" owner="British"/>
+<unitPlacement unitType="earlyfighter" territory="Cairo" quantity="2" owner="British"/>
+<unitPlacement unitType="infantry" territory="Cairo" quantity="6" owner="British"/>
+<unitPlacement unitType="artillery" territory="Cairo" quantity="2" owner="British"/>
+<unitPlacement unitType="aaGun" territory="Cairo" quantity="1" owner="British"/>
 
-<unitPlacement unitType="Factory" territory="Wales" quantity="1" owner="British"/>
-<unitPlacement unitType="Armour" territory="Wales" quantity="1" owner="British"/>
-<unitPlacement unitType="EarlyFighter" territory="Wales" quantity="1" owner="British"/>
-<unitPlacement unitType="Infantry" territory="Wales" quantity="3" owner="British"/>
-<unitPlacement unitType="Artillery" territory="Wales" quantity="1" owner="British"/>
-<unitPlacement unitType="AAGun" territory="Wales" quantity="1" owner="British"/>
-
-
-<unitPlacement unitType="Factory" territory="Norwich" quantity="1" owner="British"/>
-<unitPlacement unitType="Armour" territory="Norwich" quantity="1" owner="British"/>
-<unitPlacement unitType="EarlyFighter" territory="Norwich" quantity="2" owner="British"/>
-<unitPlacement unitType="Infantry" territory="Norwich" quantity="4" owner="British"/>
-<unitPlacement unitType="Artillery" territory="Norwich" quantity="2" owner="British"/>
-<unitPlacement unitType="AAGun" territory="Norwich" quantity="1" owner="British"/>
-
-<unitPlacement unitType="Factory" territory="Manchester" quantity="1" owner="British"/>
-<unitPlacement unitType="Armour" territory="Manchester" quantity="1" owner="British"/>
-<unitPlacement unitType="Infantry" territory="Manchester" quantity="4" owner="British"/>
-<unitPlacement unitType="AAGun" territory="Manchester" quantity="1" owner="British"/>
+<unitPlacement unitType="factory" territory="Wales" quantity="1" owner="British"/>
+<unitPlacement unitType="armour" territory="Wales" quantity="1" owner="British"/>
+<unitPlacement unitType="earlyfighter" territory="Wales" quantity="1" owner="British"/>
+<unitPlacement unitType="infantry" territory="Wales" quantity="3" owner="British"/>
+<unitPlacement unitType="artillery" territory="Wales" quantity="1" owner="British"/>
+<unitPlacement unitType="aaGun" territory="Wales" quantity="1" owner="British"/>
 
 
-<unitPlacement unitType="Factory" territory="N.Scottland" quantity="1" owner="British"/>
-<unitPlacement unitType="Armour" territory="N.Scottland" quantity="1" owner="British"/>
-<unitPlacement unitType="EarlyFighter" territory="N.Scottland" quantity="1" owner="British"/>
-<unitPlacement unitType="Infantry" territory="N.Scottland" quantity="3" owner="British"/>
-<unitPlacement unitType="Artillery" territory="N.Scottland" quantity="1" owner="British"/>
-<unitPlacement unitType="AAGun" territory="N.Scottland" quantity="1" owner="British"/>
+<unitPlacement unitType="factory" territory="Norwich" quantity="1" owner="British"/>
+<unitPlacement unitType="armour" territory="Norwich" quantity="1" owner="British"/>
+<unitPlacement unitType="earlyfighter" territory="Norwich" quantity="2" owner="British"/>
+<unitPlacement unitType="infantry" territory="Norwich" quantity="4" owner="British"/>
+<unitPlacement unitType="artillery" territory="Norwich" quantity="2" owner="British"/>
+<unitPlacement unitType="aaGun" territory="Norwich" quantity="1" owner="British"/>
 
-<unitPlacement unitType="Factory" territory="S.Hampton" quantity="1" owner="British"/>
-<unitPlacement unitType="Armour" territory="S.Hampton" quantity="1" owner="British"/>
-<unitPlacement unitType="EarlyFighter" territory="S.Hampton" quantity="1" owner="British"/>
-<unitPlacement unitType="Infantry" territory="S.Hampton" quantity="2" owner="British"/>
-<unitPlacement unitType="Artillery" territory="S.Hampton" quantity="2" owner="British"/>
-<unitPlacement unitType="AAGun" territory="S.Hampton" quantity="1" owner="British"/>
-
-<unitPlacement unitType="Factory" territory="N.Canada" quantity="1" owner="British"/>
-<unitPlacement unitType="Armour" territory="N.Canada" quantity="2" owner="British"/>
-<unitPlacement unitType="EarlyFighter" territory="N.Canada" quantity="1" owner="British"/>
-<unitPlacement unitType="Infantry" territory="N.Canada" quantity="4" owner="British"/>
-<unitPlacement unitType="Artillery" territory="N.Canada" quantity="2" owner="British"/>
-<unitPlacement unitType="AAGun" territory="N.Canada" quantity="1" owner="British"/>
-
-<unitPlacement unitType="Factory" territory="W.Canada" quantity="1" owner="British"/>
-<unitPlacement unitType="Armour" territory="W.Canada" quantity="1" owner="British"/>
-<unitPlacement unitType="Infantry" territory="W.Canada" quantity="3" owner="British"/>
-<unitPlacement unitType="AAGun" territory="W.Canada" quantity="1" owner="British"/>
+<unitPlacement unitType="factory" territory="Manchester" quantity="1" owner="British"/>
+<unitPlacement unitType="armour" territory="Manchester" quantity="1" owner="British"/>
+<unitPlacement unitType="infantry" territory="Manchester" quantity="4" owner="British"/>
+<unitPlacement unitType="aaGun" territory="Manchester" quantity="1" owner="British"/>
 
 
+<unitPlacement unitType="factory" territory="N.Scottland" quantity="1" owner="British"/>
+<unitPlacement unitType="armour" territory="N.Scottland" quantity="1" owner="British"/>
+<unitPlacement unitType="earlyfighter" territory="N.Scottland" quantity="1" owner="British"/>
+<unitPlacement unitType="infantry" territory="N.Scottland" quantity="3" owner="British"/>
+<unitPlacement unitType="artillery" territory="N.Scottland" quantity="1" owner="British"/>
+<unitPlacement unitType="aaGun" territory="N.Scottland" quantity="1" owner="British"/>
 
-<unitPlacement unitType="Infantry" territory="S.Canada" quantity="1" owner="British"/>
-<unitPlacement unitType="Infantry" territory="E.Ire" quantity="3" owner="British"/>
-<unitPlacement unitType="Infantry" territory="S.Scottland" quantity="2" owner="British"/>
-<unitPlacement unitType="Infantry" territory="E.Scottland" quantity="1" owner="British"/>
-<unitPlacement unitType="Infantry" territory="N.Castle" quantity="2" owner="British"/>
-<unitPlacement unitType="Infantry" territory="York" quantity="1" owner="British"/>
-<unitPlacement unitType="Infantry" territory="Dover" quantity="3" owner="British"/>
-<unitPlacement unitType="EarlyFighter" territory="Dover" quantity="1" owner="British"/>
+<unitPlacement unitType="factory" territory="S.Hampton" quantity="1" owner="British"/>
+<unitPlacement unitType="armour" territory="S.Hampton" quantity="1" owner="British"/>
+<unitPlacement unitType="earlyfighter" territory="S.Hampton" quantity="1" owner="British"/>
+<unitPlacement unitType="infantry" territory="S.Hampton" quantity="2" owner="British"/>
+<unitPlacement unitType="artillery" territory="S.Hampton" quantity="2" owner="British"/>
+<unitPlacement unitType="aaGun" territory="S.Hampton" quantity="1" owner="British"/>
+
+<unitPlacement unitType="factory" territory="N.Canada" quantity="1" owner="British"/>
+<unitPlacement unitType="armour" territory="N.Canada" quantity="2" owner="British"/>
+<unitPlacement unitType="earlyfighter" territory="N.Canada" quantity="1" owner="British"/>
+<unitPlacement unitType="infantry" territory="N.Canada" quantity="4" owner="British"/>
+<unitPlacement unitType="artillery" territory="N.Canada" quantity="2" owner="British"/>
+<unitPlacement unitType="aaGun" territory="N.Canada" quantity="1" owner="British"/>
+
+<unitPlacement unitType="factory" territory="W.Canada" quantity="1" owner="British"/>
+<unitPlacement unitType="armour" territory="W.Canada" quantity="1" owner="British"/>
+<unitPlacement unitType="infantry" territory="W.Canada" quantity="3" owner="British"/>
+<unitPlacement unitType="aaGun" territory="W.Canada" quantity="1" owner="British"/>
 
 
 
-
-<unitPlacement unitType="Infantry" territory="Gibraltar" quantity="2" owner="British"/>
-<unitPlacement unitType="EarlyFighter" territory="Gibraltar" quantity="1" owner="British"/>
-
-
-<unitPlacement unitType="Infantry" territory="Malta" quantity="5" owner="British"/>
-<unitPlacement unitType="EarlyFighter" territory="Malta" quantity="1" owner="British"/>
-
-<unitPlacement unitType="Infantry" territory="El Allamain" quantity="2" owner="British"/>
-<unitPlacement unitType="Armour" territory="El Allamain" quantity="1" owner="British"/>
-
-<unitPlacement unitType="Infantry" territory="W.Egypt" quantity="1" owner="British"/>
-<unitPlacement unitType="Infantry" territory="N.Egypt" quantity="2" owner="British"/>
-<unitPlacement unitType="Infantry" territory="S.Egypt" quantity="1" owner="British"/>
-<unitPlacement unitType="Infantry" territory="E.Egypt" quantity="2" owner="British"/>
-
-<unitPlacement unitType="Infantry" territory="Israel" quantity="3" owner="British"/>
-<unitPlacement unitType="Armour" territory="Israel" quantity="3" owner="British"/>
-
-<unitPlacement unitType="Infantry" territory="Saudi Arabia" quantity="3" owner="British"/>
-
-<unitPlacement unitType="Infantry" territory="Cyprus" quantity="1" owner="British"/>
-<unitPlacement unitType="EarlyFighter" territory="Cyprus" quantity="1" owner="British"/>
+<unitPlacement unitType="infantry" territory="S.Canada" quantity="1" owner="British"/>
+<unitPlacement unitType="infantry" territory="E.Ire" quantity="3" owner="British"/>
+<unitPlacement unitType="infantry" territory="S.Scottland" quantity="2" owner="British"/>
+<unitPlacement unitType="infantry" territory="E.Scottland" quantity="1" owner="British"/>
+<unitPlacement unitType="infantry" territory="N.Castle" quantity="2" owner="British"/>
+<unitPlacement unitType="infantry" territory="York" quantity="1" owner="British"/>
+<unitPlacement unitType="infantry" territory="Dover" quantity="3" owner="British"/>
+<unitPlacement unitType="earlyfighter" territory="Dover" quantity="1" owner="British"/>
 
 
 
-			<unitPlacement unitType="Destroyer" territory="sz56" quantity="2" owner="British"/>
-                        <unitPlacement unitType="Transport" territory="sz56" quantity="2" owner="British"/>
-                        <unitPlacement unitType="Submarine" territory="sz56" quantity="1" owner="British"/>
 
-			<unitPlacement unitType="Cruiser" territory="sz57" quantity="1" owner="British"/>
+<unitPlacement unitType="infantry" territory="Gibraltar" quantity="2" owner="British"/>
+<unitPlacement unitType="earlyfighter" territory="Gibraltar" quantity="1" owner="British"/>
+
+
+<unitPlacement unitType="infantry" territory="Malta" quantity="5" owner="British"/>
+<unitPlacement unitType="earlyfighter" territory="Malta" quantity="1" owner="British"/>
+
+<unitPlacement unitType="infantry" territory="El Allamain" quantity="2" owner="British"/>
+<unitPlacement unitType="armour" territory="El Allamain" quantity="1" owner="British"/>
+
+<unitPlacement unitType="infantry" territory="W.Egypt" quantity="1" owner="British"/>
+<unitPlacement unitType="infantry" territory="N.Egypt" quantity="2" owner="British"/>
+<unitPlacement unitType="infantry" territory="S.Egypt" quantity="1" owner="British"/>
+<unitPlacement unitType="infantry" territory="E.Egypt" quantity="2" owner="British"/>
+
+<unitPlacement unitType="infantry" territory="Israel" quantity="3" owner="British"/>
+<unitPlacement unitType="armour" territory="Israel" quantity="3" owner="British"/>
+
+<unitPlacement unitType="infantry" territory="Saudi Arabia" quantity="3" owner="British"/>
+
+<unitPlacement unitType="infantry" territory="Cyprus" quantity="1" owner="British"/>
+<unitPlacement unitType="earlyfighter" territory="Cyprus" quantity="1" owner="British"/>
+
+
+
+			<unitPlacement unitType="destroyer" territory="sz56" quantity="2" owner="British"/>
+                        <unitPlacement unitType="transport" territory="sz56" quantity="2" owner="British"/>
+                        <unitPlacement unitType="submarine" territory="sz56" quantity="1" owner="British"/>
+
+			<unitPlacement unitType="cruiser" territory="sz57" quantity="1" owner="British"/>
 	
 
 
 
-			<unitPlacement unitType="Destroyer" territory="sz59" quantity="1" owner="British"/>
-                        <unitPlacement unitType="Transport" territory="sz59" quantity="2" owner="British"/>
+			<unitPlacement unitType="destroyer" territory="sz59" quantity="1" owner="British"/>
+                        <unitPlacement unitType="transport" territory="sz59" quantity="2" owner="British"/>
 
-			<unitPlacement unitType="Submarine" territory="sz58" quantity="1" owner="British"/>	
+			<unitPlacement unitType="submarine" territory="sz58" quantity="1" owner="British"/>	
                         
 
-			<unitPlacement unitType="Battleship" territory="sz37" quantity="1" owner="British"/>	
-			<unitPlacement unitType="Destroyer" territory="sz37" quantity="1" owner="British"/>
-			<unitPlacement unitType="Carrier" territory="sz37" quantity="1" owner="British"/>
+			<unitPlacement unitType="battleship" territory="sz37" quantity="1" owner="British"/>	
+			<unitPlacement unitType="destroyer" territory="sz37" quantity="1" owner="British"/>
+			<unitPlacement unitType="carrier" territory="sz37" quantity="1" owner="British"/>
 
-			<unitPlacement unitType="Battleship" territory="sz17" quantity="1" owner="British"/>	
-			<unitPlacement unitType="Destroyer" territory="sz17" quantity="1" owner="British"/>
-			<unitPlacement unitType="Transport" territory="sz17" quantity="2" owner="British"/>
+			<unitPlacement unitType="battleship" territory="sz17" quantity="1" owner="British"/>	
+			<unitPlacement unitType="destroyer" territory="sz17" quantity="1" owner="British"/>
+			<unitPlacement unitType="transport" territory="sz17" quantity="2" owner="British"/>
 
-			<unitPlacement unitType="Destroyer" territory="sz1" quantity="1" owner="British"/>
-			<unitPlacement unitType="Transport" territory="sz1" quantity="2" owner="British"/>
+			<unitPlacement unitType="destroyer" territory="sz1" quantity="1" owner="British"/>
+			<unitPlacement unitType="transport" territory="sz1" quantity="2" owner="British"/>
 
-			<unitPlacement unitType="Destroyer" territory="sz9" quantity="1" owner="British"/>
-			<unitPlacement unitType="Transport" territory="sz9" quantity="1" owner="British"/>
+			<unitPlacement unitType="destroyer" territory="sz9" quantity="1" owner="British"/>
+			<unitPlacement unitType="transport" territory="sz9" quantity="1" owner="British"/>
 
-			<unitPlacement unitType="Destroyer" territory="sz31" quantity="1" owner="British"/>
+			<unitPlacement unitType="destroyer" territory="sz31" quantity="1" owner="British"/>
 
-			<unitPlacement unitType="Submarine" territory="sz30" quantity="1" owner="British"/>
-			<unitPlacement unitType="Destroyer" territory="sz47" quantity="1" owner="British"/>
+			<unitPlacement unitType="submarine" territory="sz30" quantity="1" owner="British"/>
+			<unitPlacement unitType="destroyer" territory="sz47" quantity="1" owner="British"/>
 
 
 
@@ -3437,44 +3437,44 @@
 
 			<!-- American Unit Placements -->
 
-<unitPlacement unitType="Infantry" territory="N.U.S" quantity="1" owner="Americans"/>
-<unitPlacement unitType="Artillery" territory="N.U.S" quantity="1" owner="Americans"/>
+<unitPlacement unitType="infantry" territory="N.U.S" quantity="1" owner="Americans"/>
+<unitPlacement unitType="artillery" territory="N.U.S" quantity="1" owner="Americans"/>
 
-<unitPlacement unitType="Factory" territory="E.U.S" quantity="1" owner="Americans"/>
-<unitPlacement unitType="Infantry" territory="E.U.S" quantity="1" owner="Americans"/>
-<unitPlacement unitType="AAGun" territory="E.U.S" quantity="1" owner="Americans"/>
+<unitPlacement unitType="factory" territory="E.U.S" quantity="1" owner="Americans"/>
+<unitPlacement unitType="infantry" territory="E.U.S" quantity="1" owner="Americans"/>
+<unitPlacement unitType="aaGun" territory="E.U.S" quantity="1" owner="Americans"/>
 
-<unitPlacement unitType="Infantry" territory="S.U.S" quantity="2" owner="Americans"/>
+<unitPlacement unitType="infantry" territory="S.U.S" quantity="2" owner="Americans"/>
 
-<unitPlacement unitType="Infantry" territory="Central U.S" quantity="1" owner="Americans"/>
-<unitPlacement unitType="EarlyFighter" territory="Central U.S" quantity="1" owner="Americans"/>
-
-
-
-
-
-
-<unitPlacement unitType="Infantry" territory="Washington" quantity="3" owner="Americans"/>
-<unitPlacement unitType="Artillery" territory="Washington" quantity="1" owner="Americans"/>
-
-
-
-<unitPlacement unitType="Factory" territory="W.U.S" quantity="1" owner="Americans"/>
-<unitPlacement unitType="AAGun" territory="W.U.S" quantity="1" owner="Americans"/>
-<unitPlacement unitType="Infantry" territory="W.U.S" quantity="3" owner="Americans"/>
-<unitPlacement unitType="Armour" territory="W.U.S" quantity="1" owner="Americans"/>
+<unitPlacement unitType="infantry" territory="Central U.S" quantity="1" owner="Americans"/>
+<unitPlacement unitType="earlyfighter" territory="Central U.S" quantity="1" owner="Americans"/>
 
 
 
 
 
 
-			<unitPlacement unitType="Transport" territory="sz2" quantity="1" owner="Americans"/>
-                        <unitPlacement unitType="Destroyer" territory="sz2" quantity="1" owner="Americans"/>
+<unitPlacement unitType="infantry" territory="Washington" quantity="3" owner="Americans"/>
+<unitPlacement unitType="artillery" territory="Washington" quantity="1" owner="Americans"/>
 
 
-			<unitPlacement unitType="Transport" territory="sz3" quantity="1" owner="Americans"/>
-                        <unitPlacement unitType="Destroyer" territory="sz3" quantity="1" owner="Americans"/>
+
+<unitPlacement unitType="factory" territory="W.U.S" quantity="1" owner="Americans"/>
+<unitPlacement unitType="aaGun" territory="W.U.S" quantity="1" owner="Americans"/>
+<unitPlacement unitType="infantry" territory="W.U.S" quantity="3" owner="Americans"/>
+<unitPlacement unitType="armour" territory="W.U.S" quantity="1" owner="Americans"/>
+
+
+
+
+
+
+			<unitPlacement unitType="transport" territory="sz2" quantity="1" owner="Americans"/>
+                        <unitPlacement unitType="destroyer" territory="sz2" quantity="1" owner="Americans"/>
+
+
+			<unitPlacement unitType="transport" territory="sz3" quantity="1" owner="Americans"/>
+                        <unitPlacement unitType="destroyer" territory="sz3" quantity="1" owner="Americans"/>
 
 
 
@@ -3485,100 +3485,100 @@
 
  <!-- Skandinav -->
     
-<unitPlacement unitType="Bunker" territory="S.Norway" quantity="1"/>
-<unitPlacement unitType="Bunker" territory="C.Norway" quantity="1"/>
-<unitPlacement unitType="Bunker" territory="N.N" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Narvik" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="N.Finnland" quantity="3"/>
-<unitPlacement unitType="Infantry" territory="C.Finnland" quantity="3"/>
-<unitPlacement unitType="Infantry" territory="Lappland" quantity="3"/>
+<unitPlacement unitType="bunker" territory="S.Norway" quantity="1"/>
+<unitPlacement unitType="bunker" territory="C.Norway" quantity="1"/>
+<unitPlacement unitType="bunker" territory="N.N" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Narvik" quantity="1"/>
+<unitPlacement unitType="infantry" territory="N.Finnland" quantity="3"/>
+<unitPlacement unitType="infantry" territory="C.Finnland" quantity="3"/>
+<unitPlacement unitType="infantry" territory="Lappland" quantity="3"/>
 
-<unitPlacement unitType="Infantry" territory="S.Sweden" quantity="1"/>
-<unitPlacement unitType="Bunker" territory="S.Sweden" quantity="1"/>
+<unitPlacement unitType="infantry" territory="S.Sweden" quantity="1"/>
+<unitPlacement unitType="bunker" territory="S.Sweden" quantity="1"/>
 
 
-<unitPlacement unitType="Infantry" territory="Vyborg" quantity="3"/>
-<unitPlacement unitType="Infantry" territory="Iceland" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Vyborg" quantity="3"/>
+<unitPlacement unitType="infantry" territory="Iceland" quantity="1"/>
 
-<unitPlacement unitType="Armour" territory="Denmark" quantity="1"/>
-<unitPlacement unitType="AAGun" territory="Denmark" quantity="1"/>
-<unitPlacement unitType="Artillery" territory="Denmark" quantity="1"/>
+<unitPlacement unitType="armour" territory="Denmark" quantity="1"/>
+<unitPlacement unitType="aaGun" territory="Denmark" quantity="1"/>
+<unitPlacement unitType="artillery" territory="Denmark" quantity="1"/>
 
-<unitPlacement unitType="Factory" territory="N.Sweden" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="N.Sweden" quantity="4"/>
-<unitPlacement unitType="Armour" territory="N.Sweden" quantity="1"/>
-<unitPlacement unitType="AAGun" territory="N.Sweden" quantity="1"/>
+<unitPlacement unitType="factory" territory="N.Sweden" quantity="1"/>
+<unitPlacement unitType="infantry" territory="N.Sweden" quantity="4"/>
+<unitPlacement unitType="armour" territory="N.Sweden" quantity="1"/>
+<unitPlacement unitType="aaGun" territory="N.Sweden" quantity="1"/>
 
-<unitPlacement unitType="Factory" territory="S.Finnland" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="S.Finnland" quantity="3"/>
-<unitPlacement unitType="Armour" territory="S.Finnland" quantity="1"/>
-<unitPlacement unitType="AAGun" territory="S.Finnland" quantity="1"/>
-<unitPlacement unitType="Bunker" territory="S.Finnland" quantity="1"/>
+<unitPlacement unitType="factory" territory="S.Finnland" quantity="1"/>
+<unitPlacement unitType="infantry" territory="S.Finnland" quantity="3"/>
+<unitPlacement unitType="armour" territory="S.Finnland" quantity="1"/>
+<unitPlacement unitType="aaGun" territory="S.Finnland" quantity="1"/>
+<unitPlacement unitType="bunker" territory="S.Finnland" quantity="1"/>
 
 
 
 
  <!-- France -->
 
-<unitPlacement unitType="Infantry" territory="Denmark" quantity="3"/>
+<unitPlacement unitType="infantry" territory="Denmark" quantity="3"/>
 
-<unitPlacement unitType="Infantry" territory="Netherlands" quantity="3"/>
-<unitPlacement unitType="Artillery" territory="Netherlands" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Netherlands" quantity="3"/>
+<unitPlacement unitType="artillery" territory="Netherlands" quantity="1"/>
 
-<unitPlacement unitType="Infantry" territory="Belgium" quantity="3"/>
-<unitPlacement unitType="Infantry" territory="Corsica" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Belgium" quantity="3"/>
+<unitPlacement unitType="infantry" territory="Corsica" quantity="1"/>
 
-<unitPlacement unitType="Infantry" territory="Metz" quantity="2"/>
-<unitPlacement unitType="Armour" territory="Metz" quantity="1"/>
-<unitPlacement unitType="Bunker" territory="Metz" quantity="3"/>
+<unitPlacement unitType="infantry" territory="Metz" quantity="2"/>
+<unitPlacement unitType="armour" territory="Metz" quantity="1"/>
+<unitPlacement unitType="bunker" territory="Metz" quantity="3"/>
 
-<unitPlacement unitType="Infantry" territory="Lyon" quantity="1"/>
-<unitPlacement unitType="Bunker" territory="Lyon" quantity="1"/>
-
-
-<unitPlacement unitType="Bunker" territory="Switzerland" quantity="10"/>
+<unitPlacement unitType="infantry" territory="Lyon" quantity="1"/>
+<unitPlacement unitType="bunker" territory="Lyon" quantity="1"/>
 
 
-
-<unitPlacement unitType="Infantry" territory="St.Etienne" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Bourges" quantity="1"/>
-
-<unitPlacement unitType="Infantry" territory="Lille" quantity="1"/>
-<unitPlacement unitType="Bunker" territory="Lille" quantity="1"/>
-
-
-<unitPlacement unitType="Infantry" territory="Dijon" quantity="2"/>
-<unitPlacement unitType="Infantry" territory="Toulouse" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Montpellier" quantity="1"/>
-
-<unitPlacement unitType="Armour" territory="Reims" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Reims" quantity="1"/>
-<unitPlacement unitType="Bunker" territory="Reims" quantity="1"/>
-
-
-<unitPlacement unitType="Infantry" territory="Versailles" quantity="2"/>
-<unitPlacement unitType="Infantry" territory="Le Havre" quantity="2"/>
-
-<unitPlacement unitType="Infantry" territory="Bordeaux" quantity="2"/>
-<unitPlacement unitType="Artillery" territory="Bordeaux" quantity="1"/>
-
-
-<unitPlacement unitType="Factory" territory="Paris" quantity="1"/>
-<unitPlacement unitType="Armour" territory="Paris" quantity="1"/>
-<unitPlacement unitType="EarlyFighter" territory="Paris" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Paris" quantity="6"/>
-<unitPlacement unitType="AAGun" territory="Paris" quantity="1"/>
+<unitPlacement unitType="bunker" territory="Switzerland" quantity="10"/>
 
 
 
-<unitPlacement unitType="Factory" territory="Marseille" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Marseille" quantity="4"/>
-<unitPlacement unitType="AAGun" territory="Marseille" quantity="1"/>
-<unitPlacement unitType="Artillery" territory="Marseille" quantity="1"/>
+<unitPlacement unitType="infantry" territory="St.Etienne" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Bourges" quantity="1"/>
 
-<unitPlacement unitType="Factory" territory="Normandy" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Normandy" quantity="2"/>
-<unitPlacement unitType="AAGun" territory="Normandy" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Lille" quantity="1"/>
+<unitPlacement unitType="bunker" territory="Lille" quantity="1"/>
+
+
+<unitPlacement unitType="infantry" territory="Dijon" quantity="2"/>
+<unitPlacement unitType="infantry" territory="Toulouse" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Montpellier" quantity="1"/>
+
+<unitPlacement unitType="armour" territory="Reims" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Reims" quantity="1"/>
+<unitPlacement unitType="bunker" territory="Reims" quantity="1"/>
+
+
+<unitPlacement unitType="infantry" territory="Versailles" quantity="2"/>
+<unitPlacement unitType="infantry" territory="Le Havre" quantity="2"/>
+
+<unitPlacement unitType="infantry" territory="Bordeaux" quantity="2"/>
+<unitPlacement unitType="artillery" territory="Bordeaux" quantity="1"/>
+
+
+<unitPlacement unitType="factory" territory="Paris" quantity="1"/>
+<unitPlacement unitType="armour" territory="Paris" quantity="1"/>
+<unitPlacement unitType="earlyfighter" territory="Paris" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Paris" quantity="6"/>
+<unitPlacement unitType="aaGun" territory="Paris" quantity="1"/>
+
+
+
+<unitPlacement unitType="factory" territory="Marseille" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Marseille" quantity="4"/>
+<unitPlacement unitType="aaGun" territory="Marseille" quantity="1"/>
+<unitPlacement unitType="artillery" territory="Marseille" quantity="1"/>
+
+<unitPlacement unitType="factory" territory="Normandy" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Normandy" quantity="2"/>
+<unitPlacement unitType="aaGun" territory="Normandy" quantity="1"/>
 
 
 
@@ -3586,35 +3586,35 @@
 
 
 
-<unitPlacement unitType="Factory" territory="Madrid" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Madrid" quantity="6"/>
-<unitPlacement unitType="AAGun" territory="Madrid" quantity="1"/>
-<unitPlacement unitType="Artillery" territory="Madrid" quantity="1"/>
-<unitPlacement unitType="EarlyFighter" territory="Madrid" quantity="1"/>
+<unitPlacement unitType="factory" territory="Madrid" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Madrid" quantity="6"/>
+<unitPlacement unitType="aaGun" territory="Madrid" quantity="1"/>
+<unitPlacement unitType="artillery" territory="Madrid" quantity="1"/>
+<unitPlacement unitType="earlyfighter" territory="Madrid" quantity="1"/>
 
 
-<unitPlacement unitType="Factory" territory="Barcelona" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Barcelona" quantity="2"/>
-<unitPlacement unitType="AAGun" territory="Barcelona" quantity="1"/>
-<unitPlacement unitType="Bunker" territory="Barcelona" quantity="1"/>
+<unitPlacement unitType="factory" territory="Barcelona" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Barcelona" quantity="2"/>
+<unitPlacement unitType="aaGun" territory="Barcelona" quantity="1"/>
+<unitPlacement unitType="bunker" territory="Barcelona" quantity="1"/>
 
 
-<unitPlacement unitType="Infantry" territory="Bilbao" quantity="2"/>
-<unitPlacement unitType="Bunker" territory="Bilbao" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Bilbao" quantity="2"/>
+<unitPlacement unitType="bunker" territory="Bilbao" quantity="1"/>
 
-<unitPlacement unitType="Infantry" territory="C.Ortegal" quantity="2"/>
-<unitPlacement unitType="Bunker" territory="C.Ortegal" quantity="1"/>
+<unitPlacement unitType="infantry" territory="C.Ortegal" quantity="2"/>
+<unitPlacement unitType="bunker" territory="C.Ortegal" quantity="1"/>
 
 
 
-<unitPlacement unitType="Infantry" territory="Portugal" quantity="4"/>
-<unitPlacement unitType="Bunker" territory="Portugal" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Portugal" quantity="4"/>
+<unitPlacement unitType="bunker" territory="Portugal" quantity="1"/>
 
-<unitPlacement unitType="Infantry" territory="Sevilla" quantity="2"/>
-<unitPlacement unitType="Bunker" territory="Sevilla" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Sevilla" quantity="2"/>
+<unitPlacement unitType="bunker" territory="Sevilla" quantity="1"/>
 
-<unitPlacement unitType="Bunker" territory="S.Nevada" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="C.Spain" quantity="2"/>
+<unitPlacement unitType="bunker" territory="S.Nevada" quantity="1"/>
+<unitPlacement unitType="infantry" territory="C.Spain" quantity="2"/>
 
 
 
@@ -3623,26 +3623,26 @@
 
 <!--Afrika -->
 
-<unitPlacement unitType="Factory" territory="Tunis" quantity="1"/>
-<unitPlacement unitType="Armour" territory="Tunis" quantity="1"/>
-<unitPlacement unitType="EarlyFighter" territory="Tunis" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Tunis" quantity="3"/>
-<unitPlacement unitType="AAGun" territory="Tunis" quantity="1"/>
+<unitPlacement unitType="factory" territory="Tunis" quantity="1"/>
+<unitPlacement unitType="armour" territory="Tunis" quantity="1"/>
+<unitPlacement unitType="earlyfighter" territory="Tunis" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Tunis" quantity="3"/>
+<unitPlacement unitType="aaGun" territory="Tunis" quantity="1"/>
 
-<unitPlacement unitType="Factory" territory="C.Morocco" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="C.Morocco" quantity="3"/>
-<unitPlacement unitType="Artillery" territory="C.Morocco" quantity="1"/>
-<unitPlacement unitType="AAGun" territory="C.Morocco" quantity="1"/>
+<unitPlacement unitType="factory" territory="C.Morocco" quantity="1"/>
+<unitPlacement unitType="infantry" territory="C.Morocco" quantity="3"/>
+<unitPlacement unitType="artillery" territory="C.Morocco" quantity="1"/>
+<unitPlacement unitType="aaGun" territory="C.Morocco" quantity="1"/>
 
-<unitPlacement unitType="Bunker" territory="Tanger" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Alger" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="C.Algeria" quantity="2"/>
-<unitPlacement unitType="Infantry" territory="N.Algeria" quantity="2"/>
-<unitPlacement unitType="Infantry" territory="E.Algeria" quantity="2"/>
-<unitPlacement unitType="Infantry" territory="N.Tunesia" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="W.Tunesia" quantity="2"/>
-<unitPlacement unitType="Infantry" territory="Marrakech" quantity="4"/>
-<unitPlacement unitType="Infantry" territory="Canarians" quantity="1"/>
+<unitPlacement unitType="bunker" territory="Tanger" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Alger" quantity="1"/>
+<unitPlacement unitType="infantry" territory="C.Algeria" quantity="2"/>
+<unitPlacement unitType="infantry" territory="N.Algeria" quantity="2"/>
+<unitPlacement unitType="infantry" territory="E.Algeria" quantity="2"/>
+<unitPlacement unitType="infantry" territory="N.Tunesia" quantity="1"/>
+<unitPlacement unitType="infantry" territory="W.Tunesia" quantity="2"/>
+<unitPlacement unitType="infantry" territory="Marrakech" quantity="4"/>
+<unitPlacement unitType="infantry" territory="Canarians" quantity="1"/>
 
 
 
@@ -3650,115 +3650,115 @@
 
 <!--Middle East -->
 
-<unitPlacement unitType="Infantry" territory="Istanbul" quantity="3"/>
-<unitPlacement unitType="Armour" territory="Istanbul" quantity="2"/>
-<unitPlacement unitType="Bunker" territory="Istanbul" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Istanbul" quantity="3"/>
+<unitPlacement unitType="armour" territory="Istanbul" quantity="2"/>
+<unitPlacement unitType="bunker" territory="Istanbul" quantity="1"/>
 
 
-<unitPlacement unitType="Infantry" territory="Denizli" quantity="2"/>
-<unitPlacement unitType="Bunker" territory="Denizli" quantity="1"/>
-
-
-
-
-<unitPlacement unitType="Infantry" territory="S.Turkey" quantity="2"/>
-<unitPlacement unitType="Armour" territory="S.Turkey" quantity="1"/>
-<unitPlacement unitType="Bunker" territory="S.Turkey" quantity="1"/>
-
-
-<unitPlacement unitType="Infantry" territory="C.Turkey" quantity="2"/>
-<unitPlacement unitType="Bunker" territory="C.Turkey" quantity="1"/>
-
-
-<unitPlacement unitType="Infantry" territory="N.Turkey" quantity="3"/>
-<unitPlacement unitType="Bunker" territory="N.Turkey" quantity="1"/>
-
-
-<unitPlacement unitType="Infantry" territory="Lebanon" quantity="1"/>
-
-<unitPlacement unitType="Infantry" territory="Tabriz" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Jordan" quantity="2"/>
-<unitPlacement unitType="Infantry" territory="Syria" quantity="3"/>
-<unitPlacement unitType="Armour" territory="Syria" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Fars" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Crete" quantity="1"/>
-<unitPlacement unitType="AAGun" territory="Crete" quantity="1"/>
-
-<unitPlacement unitType="Factory" territory="Izmir" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Izmir" quantity="3"/>
-<unitPlacement unitType="Armour" territory="Izmir" quantity="1"/>
-<unitPlacement unitType="Bunker" territory="Izmir" quantity="1"/>
-
-
-<unitPlacement unitType="AAGun" territory="Izmir" quantity="1"/>
-
-
-<unitPlacement unitType="Factory" territory="Ankara" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Ankara" quantity="4"/>
-<unitPlacement unitType="AAGun" territory="Ankara" quantity="1"/>
-<unitPlacement unitType="Armour" territory="Ankara" quantity="1"/>
-<unitPlacement unitType="Bunker" territory="Ankara" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Denizli" quantity="2"/>
+<unitPlacement unitType="bunker" territory="Denizli" quantity="1"/>
 
 
 
 
-<unitPlacement unitType="Factory" territory="Iraq" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Iraq" quantity="4"/>
-<unitPlacement unitType="AAGun" territory="Iraq" quantity="1"/>
+<unitPlacement unitType="infantry" territory="S.Turkey" quantity="2"/>
+<unitPlacement unitType="armour" territory="S.Turkey" quantity="1"/>
+<unitPlacement unitType="bunker" territory="S.Turkey" quantity="1"/>
 
 
-<unitPlacement unitType="Factory" territory="Iran" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Iran" quantity="3"/>
-<unitPlacement unitType="AAGun" territory="Iran" quantity="1"/>
-<unitPlacement unitType="Armour" territory="Iran" quantity="1"/>
+<unitPlacement unitType="infantry" territory="C.Turkey" quantity="2"/>
+<unitPlacement unitType="bunker" territory="C.Turkey" quantity="1"/>
+
+
+<unitPlacement unitType="infantry" territory="N.Turkey" quantity="3"/>
+<unitPlacement unitType="bunker" territory="N.Turkey" quantity="1"/>
+
+
+<unitPlacement unitType="infantry" territory="Lebanon" quantity="1"/>
+
+<unitPlacement unitType="infantry" territory="Tabriz" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Jordan" quantity="2"/>
+<unitPlacement unitType="infantry" territory="Syria" quantity="3"/>
+<unitPlacement unitType="armour" territory="Syria" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Fars" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Crete" quantity="1"/>
+<unitPlacement unitType="aaGun" territory="Crete" quantity="1"/>
+
+<unitPlacement unitType="factory" territory="Izmir" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Izmir" quantity="3"/>
+<unitPlacement unitType="armour" territory="Izmir" quantity="1"/>
+<unitPlacement unitType="bunker" territory="Izmir" quantity="1"/>
+
+
+<unitPlacement unitType="aaGun" territory="Izmir" quantity="1"/>
+
+
+<unitPlacement unitType="factory" territory="Ankara" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Ankara" quantity="4"/>
+<unitPlacement unitType="aaGun" territory="Ankara" quantity="1"/>
+<unitPlacement unitType="armour" territory="Ankara" quantity="1"/>
+<unitPlacement unitType="bunker" territory="Ankara" quantity="1"/>
+
+
+
+
+<unitPlacement unitType="factory" territory="Iraq" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Iraq" quantity="4"/>
+<unitPlacement unitType="aaGun" territory="Iraq" quantity="1"/>
+
+
+<unitPlacement unitType="factory" territory="Iran" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Iran" quantity="3"/>
+<unitPlacement unitType="aaGun" territory="Iran" quantity="1"/>
+<unitPlacement unitType="armour" territory="Iran" quantity="1"/>
 
 
 
 <!--Europe -->
 
-<unitPlacement unitType="Factory" territory="Greece" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Greece" quantity="5"/>
-<unitPlacement unitType="Armour" territory="Greece" quantity="2"/>
-<unitPlacement unitType="AAGun" territory="Greece" quantity="1"/>
+<unitPlacement unitType="factory" territory="Greece" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Greece" quantity="5"/>
+<unitPlacement unitType="armour" territory="Greece" quantity="2"/>
+<unitPlacement unitType="aaGun" territory="Greece" quantity="1"/>
 
-<unitPlacement unitType="Infantry" territory="S.Greece" quantity="1"/>
+<unitPlacement unitType="infantry" territory="S.Greece" quantity="1"/>
 
-<unitPlacement unitType="Factory" territory="E.Romania" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="E.Romania" quantity="6"/>
-<unitPlacement unitType="AAGun" territory="E.Romania" quantity="1"/>
-<unitPlacement unitType="Armour" territory="E.Romania" quantity="1"/>
+<unitPlacement unitType="factory" territory="E.Romania" quantity="1"/>
+<unitPlacement unitType="infantry" territory="E.Romania" quantity="6"/>
+<unitPlacement unitType="aaGun" territory="E.Romania" quantity="1"/>
+<unitPlacement unitType="armour" territory="E.Romania" quantity="1"/>
 
-<unitPlacement unitType="Infantry" territory="W.Romania" quantity="3"/>
-<unitPlacement unitType="Infantry" territory="Hungary" quantity="2"/>
-<unitPlacement unitType="Infantry" territory="Kroatia" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Bosnia" quantity="2"/>
-<unitPlacement unitType="Infantry" territory="Serbia" quantity="3"/>
-<unitPlacement unitType="Infantry" territory="Macedonia" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Bulgaria" quantity="2"/>
+<unitPlacement unitType="infantry" territory="W.Romania" quantity="3"/>
+<unitPlacement unitType="infantry" territory="Hungary" quantity="2"/>
+<unitPlacement unitType="infantry" territory="Kroatia" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Bosnia" quantity="2"/>
+<unitPlacement unitType="infantry" territory="Serbia" quantity="3"/>
+<unitPlacement unitType="infantry" territory="Macedonia" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Bulgaria" quantity="2"/>
 
-<unitPlacement unitType="Infantry" territory="Lvov" quantity="1" />
+<unitPlacement unitType="infantry" territory="Lvov" quantity="1" />
 
 
 
 
 <!-- Ire -->
 
-<unitPlacement unitType="Infantry" territory="N.Ire" quantity="4"/>
-<unitPlacement unitType="Infantry" territory="S.Ire" quantity="3"/>
-<unitPlacement unitType="Infantry" territory="W.Ire" quantity="1"/>
+<unitPlacement unitType="infantry" territory="N.Ire" quantity="4"/>
+<unitPlacement unitType="infantry" territory="S.Ire" quantity="3"/>
+<unitPlacement unitType="infantry" territory="W.Ire" quantity="1"/>
 
 
 <!-- Poland -->
 
-<unitPlacement unitType="Infantry" territory="C.Poland" quantity="4"/>
-<unitPlacement unitType="Armour" territory="C.Poland" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Koenigsberg" quantity="3"/>
-<unitPlacement unitType="Infantry" territory="Lodz" quantity="4"/>
-<unitPlacement unitType="Armour" territory="Lodz" quantity="1"/>
-<unitPlacement unitType="Armour" territory="Krakow" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Krakow" quantity="1"/>
-<unitPlacement unitType="Bunker" territory="Warzawa" quantity="1"/>
-<unitPlacement unitType="Infantry" territory="Warzawa" quantity="1"/>
+<unitPlacement unitType="infantry" territory="C.Poland" quantity="4"/>
+<unitPlacement unitType="armour" territory="C.Poland" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Koenigsberg" quantity="3"/>
+<unitPlacement unitType="infantry" territory="Lodz" quantity="4"/>
+<unitPlacement unitType="armour" territory="Lodz" quantity="1"/>
+<unitPlacement unitType="armour" territory="Krakow" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Krakow" quantity="1"/>
+<unitPlacement unitType="bunker" territory="Warzawa" quantity="1"/>
+<unitPlacement unitType="infantry" territory="Warzawa" quantity="1"/>
 
 
 
@@ -3809,7 +3809,7 @@
                         <boolean/>
                 </property>
                 
-                <property name="Battleships repair at end of round" value="true" editable="true">
+                <property name="battleships repair at end of round" value="true" editable="true">
                         <boolean/>
                 </property>
 
@@ -3829,11 +3829,11 @@
                 	<boolean/>
                 </property>
 
-		<property name="Heavy Bombers Pick best of X Dice" value="true" editable="true">
+		<property name="Heavy bombers Pick best of X Dice" value="true" editable="true">
                         <boolean/>
                 </property> 
 
-		<property name="Heavy Bomber Dice Rolls" value="2" editable="true">
+		<property name="Heavy bomber Dice Rolls" value="2" editable="true">
                         <number min="2" max="10"/>
                 </property>
 
@@ -3895,32 +3895,32 @@
 &lt;br&gt;
 &lt;br&gt;----------------------------Land Units----------------------------
 &lt;br&gt;
-&lt;br&gt;Infantry    - 1 / 2 / 1 / 2
-&lt;br&gt;Elite       - 2 / 2 / 1 / 3
-&lt;br&gt;Scout       - 2 / 1 / 2 / 3 Two Scouts One Trans.
-&lt;br&gt;Artillery   - 2 / 2 / 1 / 4 Support
-&lt;br&gt;Truck	      - 1 / 2 / 3 / 4
+&lt;br&gt;infantry    - 1 / 2 / 1 / 2
+&lt;br&gt;elite       - 2 / 2 / 1 / 3
+&lt;br&gt;scout       - 2 / 1 / 2 / 3 Two scouts One Trans.
+&lt;br&gt;artillery   - 2 / 2 / 1 / 4 Support
+&lt;br&gt;truck	      - 1 / 2 / 3 / 4
 &lt;br&gt;Halftrax    - 2 / 2 / 3 / 6 Support / Blitz
-&lt;br&gt;Armour      - 3 / 3 / 2 / 5
-&lt;br&gt;Bunker      - 0 / 3 / 0 / 0 Two Hit
-&lt;br&gt;AAGun       - 0 / 1 / 0 / 5 
-&lt;br&gt;Factory     - 0 / 0 / 0 / 15
+&lt;br&gt;armour      - 3 / 3 / 2 / 5
+&lt;br&gt;bunker      - 0 / 3 / 0 / 0 Two Hit
+&lt;br&gt;aaGun       - 0 / 1 / 0 / 5 
+&lt;br&gt;factory     - 0 / 0 / 0 / 15
 &lt;br&gt; 
 &lt;br&gt;-----------------------------Air Units-----------------------------
 &lt;br&gt;
-&lt;br&gt;EarlyFighter- 2 / 3 / 4 / 8
-&lt;br&gt;Fighter     - 3 / 4 / 4 / 10
-&lt;br&gt;Bomber      - 4 / 1 / 6 / 15 Strat.Bomb
+&lt;br&gt;earlyfighter- 2 / 3 / 4 / 8
+&lt;br&gt;fighter     - 3 / 4 / 4 / 10
+&lt;br&gt;bomber      - 4 / 1 / 6 / 15 Strat.Bomb
 &lt;br&gt;
 &lt;br&gt;-----------------------------Sea Units-----------------------------
 &lt;br&gt;
 &lt;br&gt;TorpedoBoat - 2 / 1 / 1 / 6
-&lt;br&gt;Transport   - 0 / 1 / 2 / 8
-&lt;br&gt;Submarine   - 2 / 2 / 2 / 8
-&lt;br&gt;Destroyer   - 3 / 3 / 2 / 12
-&lt;br&gt;Carrier     - 1 / 3 / 2 / 16
-&lt;br&gt;Cruiser     - 3 / 3 / 2 / 14 Bombard
-&lt;br&gt;Battleship  - 4 / 4 / 2 / 24 Bombard / Two Hit
+&lt;br&gt;transport   - 0 / 1 / 2 / 8
+&lt;br&gt;submarine   - 2 / 2 / 2 / 8
+&lt;br&gt;destroyer   - 3 / 3 / 2 / 12
+&lt;br&gt;carrier     - 1 / 3 / 2 / 16
+&lt;br&gt;cruiser     - 3 / 3 / 2 / 14 Bombard
+&lt;br&gt;battleship  - 4 / 4 / 2 / 24 Bombard / Two Hit
 &lt;br&gt;
 &lt;br&gt;=================Special Units================
 &lt;br&gt;
@@ -3928,12 +3928,12 @@
 &lt;br&gt;Every Unit Marked With The RED DOT Sign Shouldnt
 &lt;br&gt;Be Bought Before Round 4
 &lt;br&gt;
-&lt;br&gt;Big Armour - 4 / 3 / 2 / 7
+&lt;br&gt;Big armour - 4 / 3 / 2 / 7
 &lt;br&gt;Super Sub  - 3 / 3 / 3 / 12 
-&lt;br&gt;Katyusha   - 3 / 1 / 3 / 6 Support / Blitz
-&lt;br&gt;Me262      - 4 / 2 / 5 / 13 Strat.Bomb / Land On Carrier
-&lt;br&gt;Lancaster  - 5 / 2 / 8 / 20 Strat.Bomb
-&lt;br&gt;B29        - 5 / 2 / 8 / 20 Strat.Bomb
+&lt;br&gt;katyusha   - 3 / 1 / 3 / 6 Support / Blitz
+&lt;br&gt;me262      - 4 / 2 / 5 / 13 Strat.Bomb / Land On carrier
+&lt;br&gt;lancaster  - 5 / 2 / 8 / 20 Strat.Bomb
+&lt;br&gt;b29        - 5 / 2 / 8 / 20 Strat.Bomb
 &lt;br&gt;
 &lt;br&gt; 
 &lt;br&gt;=================Turn Order==================
