@@ -235,7 +235,7 @@ public class CenterPicker extends JFrame
 
          try
          {
-             Util.ensureImageLoaded(m_image, this);
+             Util.ensureImageLoaded(m_image);
          }
          catch (InterruptedException ex)
          {

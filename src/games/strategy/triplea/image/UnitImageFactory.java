@@ -142,7 +142,7 @@ public class UnitImageFactory
     // Ensure the scaling is completed.
     try
     {
-      Util.ensureImageLoaded(scaledImage, new java.awt.Label());
+      Util.ensureImageLoaded(scaledImage);
     }
     catch (InterruptedException ex)
     {
@@ -163,7 +163,7 @@ public class UnitImageFactory
     Image image = Toolkit.getDefaultToolkit().getImage(url);
     try
     {
-      Util.ensureImageLoaded(image, new java.awt.Label());
+      Util.ensureImageLoaded(image);
     }
     catch (InterruptedException ex)
     {

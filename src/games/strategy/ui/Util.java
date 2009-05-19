@@ -49,9 +49,10 @@ public class Util
     {
     }
 
-    public static void ensureImageLoaded(Image anImage, Component comp) throws InterruptedException
+    private static final Component c = new Component() {};
+    public static void ensureImageLoaded(Image anImage) throws InterruptedException
     {
-        MediaTracker tracker = new MediaTracker(comp);
+        MediaTracker tracker = new MediaTracker(c);
         tracker.addImage(anImage, 1);
         tracker.waitForAll();
         tracker.removeImage(anImage);

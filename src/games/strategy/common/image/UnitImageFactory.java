@@ -82,7 +82,7 @@ public class UnitImageFactory
         {   
             image = ImageIO.read( new File(BASE_FOLDER, fileName) );
 
-            Util.ensureImageLoaded(image, new java.awt.Label());
+            Util.ensureImageLoaded(image);
         }
         catch (InterruptedException ex)
         {

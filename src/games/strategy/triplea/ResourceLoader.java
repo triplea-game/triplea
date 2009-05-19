@@ -48,6 +48,21 @@ public class ResourceLoader
             throw new IllegalStateException("Found neither zip:" + zip + " or dir:" + dir + " for skin:" + mapName);
         }
         
+        try
+        {
+            if(dir.exists()) {            
+                if(!dir.getCanonicalPath().endsWith(mapName)) {
+                    throw new IllegalStateException("Map case is incorrect, xml:" + mapName + " file:" + dir.getCanonicalFile().getName());
+                }
+            }
+            if(zip.exists()) {            
+                if(!zip.getCanonicalPath().endsWith(mapName)) {
+                    throw new IllegalStateException("Map case is incorrect, xml:" + mapName + " f:" + zip.getCanonicalFile().getName());
+                }
+            }
+        } catch(IOException ioe) {
+            throw new IllegalStateException(ioe);
+        }
         
        
         File addedFile;
@@ -136,8 +151,24 @@ public class ResourceLoader
     }
     
     public URL getResource(String path)
-    {
-        return m_loader.getResource(path);
+    {        
+        URL rVal = m_loader.getResource(path);
+        if(rVal == null)
+        {
+            return null;
+        }
+        File f;
+        try {
+            f = new File(URLDecoder.decode(rVal.getFile(), "utf-8")).getCanonicalFile();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        
+        if(!f.getPath().endsWith(path)) 
+        {
+            throw new IllegalStateException("Case does not match, xml:" + path + " file:" + f.getPath());
+        }
+        return rVal;
     }
     
     public InputStream getResourceAsStream(String path)

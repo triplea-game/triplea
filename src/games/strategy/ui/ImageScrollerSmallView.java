@@ -49,7 +49,7 @@ public class ImageScrollerSmallView extends JComponent
         m_model = model;
         try
         {
-            Util.ensureImageLoaded(image, this);
+            Util.ensureImageLoaded(image);
             setDoubleBuffered(false);
         } catch (InterruptedException ie)
         {
@@ -84,7 +84,7 @@ public class ImageScrollerSmallView extends JComponent
     {
         try
         {
-            Util.ensureImageLoaded(image, this);
+            Util.ensureImageLoaded(image);
             setDoubleBuffered(false);
         } catch (InterruptedException ie)
         {

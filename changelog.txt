@@ -1,5 +1,7 @@
 Changes for 1.0.3.3
 
+* fail when loading game where xml case and file name case differs (sgb)
+
 * fix map name case in nwo maps (sgb)
 
 * mark territories with battles (sgb)

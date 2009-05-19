@@ -265,7 +265,7 @@ public class PolygonGrabber extends JFrame
 
         try
         {
-            Util.ensureImageLoaded(m_image, this);
+            Util.ensureImageLoaded(m_image);
         }
         catch (InterruptedException ex)
         {
