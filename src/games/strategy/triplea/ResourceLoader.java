@@ -164,7 +164,7 @@ public class ResourceLoader
             throw new IllegalStateException(e);
         }
         
-        if(!f.getPath().endsWith(path)) 
+        if(!f.getPath().endsWith(path.replace('/', File.separatorChar))) 
         {
             throw new IllegalStateException("Case does not match, xml:" + path + " file:" + f.getPath());
         }
