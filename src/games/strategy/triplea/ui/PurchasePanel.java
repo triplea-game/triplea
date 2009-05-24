@@ -21,22 +21,29 @@
 package games.strategy.triplea.ui;
 
 
-import games.strategy.engine.data.*;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -49,8 +56,10 @@ public class PurchasePanel extends ActionPanel
   private JLabel actionLabel = new JLabel();
   private IntegerMap<ProductionRule> m_purchase;
   private boolean m_bid;
-  private SimpleUnitPanel m_unitsPanel;
-  private JLabel m_purchasedSoFar = new JLabel();
+  private SimpleUnitPanel m_purchasedPreviousRoundsUnits; 
+  private JLabel m_purchasedPreviousRoundsLabel;
+  private SimpleUnitPanel m_purhcasedUnits;
+  private JLabel m_purchasedLabel = new JLabel();
   private JButton m_buyButton;
 
   private final String BUY = "Buy...";
@@ -60,9 +69,11 @@ public class PurchasePanel extends ActionPanel
   public PurchasePanel(GameData data,MapPanel map)
   {
     super(data, map);
-    m_unitsPanel = new SimpleUnitPanel(map.getUIContext());
+    m_purchasedPreviousRoundsUnits = new SimpleUnitPanel(map.getUIContext());
+    m_purhcasedUnits = new SimpleUnitPanel(map.getUIContext());
     m_buyButton = new JButton(BUY);
     m_buyButton.addActionListener(PURCHASE_ACTION);
+    m_purchasedPreviousRoundsLabel = new JLabel("Unplaced from previous rounds");
   }
   
   public void display(final PlayerID id)
@@ -81,14 +92,33 @@ public class PurchasePanel extends ActionPanel
             add(actionLabel);
             add(m_buyButton);
             add(new JButton(DoneAction));
-            m_purchasedSoFar.setText("");
+            m_purchasedLabel.setText("");
 
             add(Box.createVerticalStrut(9));
-            add(m_purchasedSoFar);
+            add(m_purchasedLabel);
             add(Box.createVerticalStrut(4));
 
-            m_unitsPanel.setUnitsFromProductionRuleMap(new IntegerMap<ProductionRule>(), id, getData());
-            add(m_unitsPanel);
+            m_purhcasedUnits.setUnitsFromProductionRuleMap(
+                new IntegerMap<ProductionRule>(), id, getData());
+            add(m_purhcasedUnits);
+            
+            
+            getData().acquireReadLock();
+            try
+            {
+                m_purchasedPreviousRoundsUnits.setUnitsFromCategories(
+                    UnitSeperator.categorize(id.getUnits().getUnits())
+                    , getData());
+                add(Box.createVerticalStrut(4));
+                if(!id.getUnits().isEmpty()) {
+                    add(m_purchasedPreviousRoundsLabel);
+                    
+                }
+                add(m_purchasedPreviousRoundsUnits);
+            } finally {
+                getData().releaseReadLock();
+            }
+            
             add(Box.createVerticalGlue());
             SwingUtilities.invokeLater(REFRESH);
         }
@@ -140,23 +170,23 @@ public class PurchasePanel extends ActionPanel
         GameData data = getData();
         
     	m_purchase = ProductionPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, m_bid, m_purchase,getMap().getUIContext());
-    	m_unitsPanel.setUnitsFromProductionRuleMap(m_purchase, player, data);
+    	m_purhcasedUnits.setUnitsFromProductionRuleMap(m_purchase, player, data);
     	if(m_purchase.totalValues() == 0)
     	{
-    		m_purchasedSoFar.setText("");
+    		m_purchasedLabel.setText("");
     		m_buyButton.setText(BUY);
     	}
     	else
     	{
     		m_buyButton.setText(CHANGE);
-    		m_purchasedSoFar.setText(m_purchase.totalValues()+MyFormatter.pluralize(" unit", m_purchase.totalValues())+" to be produced:");
+    		m_purchasedLabel.setText(m_purchase.totalValues()+MyFormatter.pluralize(" unit", m_purchase.totalValues())+" to be produced:");
     	}
     }
   };
 
   private Action DoneAction = new AbstractAction("Done")
   {
-    @SuppressWarnings("unchecked")
+    
     public void actionPerformed(ActionEvent event)
     {
      
@@ -172,7 +202,7 @@ public class PurchasePanel extends ActionPanel
         
         //give a warning if the 
         //player tries to produce too much
-      //Kev check here for factory max bug/feature request
+        //Kev check here for factory max bug/feature request
         if(isFourthEdition() || isRestrictedPurchase() || isSBRAffectsUnitProduction()) 
         {
             int totalProd = 0;
@@ -207,7 +237,7 @@ public class PurchasePanel extends ActionPanel
             {
                 getData().releaseReadLock();
             }
-            if(!m_bid &&  m_purchase.totalValues() > totalProd)
+            if(!m_bid &&  m_purchase.totalValues() + getCurrentPlayer().getUnits().size() > totalProd)
             {                
                 int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( PurchasePanel.this), "You have purchased more than you can place, continue with purchase?", "End Purchase", JOptionPane.YES_NO_OPTION);
                 if(rVal != JOptionPane.YES_OPTION)

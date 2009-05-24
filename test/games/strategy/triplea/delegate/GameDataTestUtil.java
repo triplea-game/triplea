@@ -35,10 +35,6 @@ public class GameDataTestUtil {
         return data.getPlayerList().getPlayerID("British");
     }
     
-    public static UnitType transport(GameData data) {
-        return data.getUnitTypeList().getUnitType("Transport");
-    }
-    
     public static Territory territory(String name, GameData data) {
         Territory t = data.getMap().getTerritory(name);
         if(t == null) {
@@ -57,6 +53,14 @@ public class GameDataTestUtil {
     
     public static void addTo(Territory t, Collection<Unit> units) {
         new ChangePerformer(t.getData()).perform(ChangeFactory.addUnits(t, units));
+    }
+    
+    public static void addTo(PlayerID t, Collection<Unit> units) {
+        new ChangePerformer(t.getData()).perform(ChangeFactory.addUnits(t, units));
+    }
+
+    public static PlaceDelegate placeDelegate(GameData data) {
+        return (PlaceDelegate) data.getDelegateList().getDelegate("place");
     }
     
 }

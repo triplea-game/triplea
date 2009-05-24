@@ -451,6 +451,12 @@ public class Properties implements Constants {
         return data.getProperties().get(OCCUPIED_TERRITORIES, false);
 
     }
+    
+    public static boolean getUnplacedUnitsLive(GameData data) {
+
+        return data.getProperties().get(UNPLACED_UNITS_LIVE, false);
+    }
+    
 
     /*
      * Air restricted from attacking subs unless DD present

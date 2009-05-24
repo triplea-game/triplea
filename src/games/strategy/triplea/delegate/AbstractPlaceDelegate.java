@@ -37,6 +37,7 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -811,7 +812,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         PlayerID player = m_bridge.getPlayerID();
         //clear all units not placed
         Collection<Unit> units = player.getUnits().getUnits();
-        if (!units.isEmpty())
+        if (!Properties.getUnplacedUnitsLive(m_data) && !units.isEmpty())
         {
             m_bridge.getHistoryWriter().startEvent(
                     MyFormatter.unitsToTextNoOwner(units)

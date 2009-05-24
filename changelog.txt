@@ -1,5 +1,7 @@
 Changes for 1.0.3.3
 
+* fix bug 2779959	AA50: Stay in the Mobilization Zone
+
 * fail when loading game where xml case and file name case differs (sgb)
 
 * fix map name/unit case in nwo maps (sgb)

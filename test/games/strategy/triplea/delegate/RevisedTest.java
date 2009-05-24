@@ -34,6 +34,8 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.util.CompositeMatchAnd;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.*;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -653,6 +655,20 @@ public class RevisedTest extends TestCase
         
     }
     
+    
+    public void testUnplacedDie() 
+    {
+        PlaceDelegate del = placeDelegate(m_data);
+        del.start(getDelegateBridge(british(m_data)), m_data);
+        
+        addTo(british(m_data), 
+              transports(m_data).create(1,british(m_data)));
+        
+        del.end();
+        
+        //unplaced units die
+        assertTrue(british(m_data).getUnits().isEmpty());        
+    }
     
 
     private ITripleaPlayer getDummyPlayer()

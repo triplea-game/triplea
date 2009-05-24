@@ -2327,6 +2327,10 @@
                 	<boolean/>
                 </property>
                 
+                <property name="Unplaced units live when not placed" value ="true" editable="false">
+                    <boolean/>
+                </property>
+                
                 <!-- Map Name: also used for map utils when asked -->
                 <property name="mapName" value="aa50" editable="false"/>
 				

@@ -14,9 +14,6 @@
 
 package games.strategy.util;
 
-import games.strategy.engine.data.GameParseException;
-
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 /**

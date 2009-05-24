@@ -14,6 +14,7 @@
 
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.*;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
@@ -85,4 +86,18 @@ public class AA50_41Test extends TestCase {
         }
         
 
+        
+        public void testUnplacedDie() 
+        {
+            PlaceDelegate del = placeDelegate(m_data);
+            del.start(getDelegateBridge(british(m_data)), m_data);
+            
+            addTo(british(m_data), 
+                  transports(m_data).create(1,british(m_data)));
+            
+            del.end();
+            
+            //unplaced units die
+            assertEquals(1, british(m_data).getUnits().size());        
+        }
 }

@@ -26,9 +26,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
-import games.strategy.engine.data.RepairFrontier;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -41,31 +39,21 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitTypeComparator;
-import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.ui.BattleDisplay;
-import games.strategy.triplea.ui.ProductionRepairPanel;
-import games.strategy.triplea.ui.ProductionRepairPanel.Rule;
-import games.strategy.triplea.ui.UnitChooser;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
-import java.awt.event.ActionEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
-import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
 
 /**
  *
