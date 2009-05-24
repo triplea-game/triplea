@@ -107,16 +107,13 @@ public class RevisedTest extends TestCase
         
         //the transport can enter sz 8
         //since the sub is submerged
-        Route m1 = new Route();
-        m1.setStart(sz1);
-        m1.add(sz8);
+        Route m1 = new Route(sz1,sz8);        
         assertNull(moveDelegate.move(sz1.getUnits().getUnits(), m1));
         
         
         //the transport can now leave sz8
-        Route m2 = new Route();
-        m2.setStart(sz8);
-        m2.add(sz7);
+        Route m2 = new Route(sz8,sz7);
+        
         String error = moveDelegate.move(sz8.getUnits().getMatches(Matches.unitIsOwnedBy(british)), m2);
         assertNull(error,error);
 

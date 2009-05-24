@@ -20,12 +20,8 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestDelegateBridge;
-import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.kingstable.ui.display.DummyDisplay;
-
-import java.util.List;
-
 import junit.framework.TestCase;
 
 public class AA50_41Test extends TestCase {
@@ -60,8 +56,6 @@ public class AA50_41Test extends TestCase {
             
             PlayerID british = m_data.getPlayerList().getPlayerID("British");
             
-
-            
             MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
             ITestDelegateBridge bridge = getDelegateBridge(british);
             bridge.setStepName("CombatMove");
@@ -82,14 +76,13 @@ public class AA50_41Test extends TestCase {
             
             moveDelegate.end();
             
-            //the transport was removed automatically
-            assertEquals(sz13.getUnits().size(), 2);
+            //the transport was not removed automatically
+            assertEquals(sz13.getUnits().size(), 3);
             
             BattleDelegate bd = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
-            assertTrue(bd.getBattleTracker().getPendingBattleSites(false).isEmpty());
+            assertFalse(bd.getBattleTracker().getPendingBattleSites(false).isEmpty());
             
         }
-
-
+        
 
 }

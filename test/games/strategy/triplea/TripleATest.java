@@ -27,6 +27,7 @@ public class TripleATest
         suite.addTestSuite(OddsCalculatorTest.class);
         suite.addTestSuite(AirThatCantLandUtilTest.class);
         suite.addTestSuite(UnitAutoChooserTest.class);
+        suite.addTestSuite(UnitsThatCantFightUtilTest.class);
         return suite;
     }
 
