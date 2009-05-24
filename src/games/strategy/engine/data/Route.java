@@ -50,6 +50,21 @@ public class Route implements java.io.Serializable
 
     private Territory m_start;
 
+    
+    public Route() {
+        
+    }
+    
+    public Route(Territory start, Territory ... route) {
+        
+        setStart(start);
+        for(Territory t: route) {
+            add(t);
+        }        
+    }
+    
+    
+    
     /**
      * Join the two routes. It must be the case that r1.end() equals r2.start()
      * or r1.end() == null and r1.start() equals r2
