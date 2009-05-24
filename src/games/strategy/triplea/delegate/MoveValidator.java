@@ -55,7 +55,6 @@ public class MoveValidator
     public static final String TOO_POOR_TO_VIOLATE_NEUTRALITY = "Not enough money to pay for violating neutrality";
     public static final String NOT_ALL_AIR_UNITS_CAN_LAND = "Not all air units can land";
     public static final String TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT = "Transport cannot both load AND unload after being in combat";
-    public static final String UNESCORTED_UNITS_WILL_DIE_IN_COMBAT = "Unescorted units will die in combat";
     private static int m_mechanizedSupportAvail = 0;
     private static int m_paraTransportsAvail = 0;
     
@@ -708,9 +707,6 @@ public class MoveValidator
                 return result;
         }
 
-        if (validateNonCombatUnitsEnteringCombat(data, units, route, player, result).getError() != null)
-            return result;
-        
         if (validateNonEnemyUnitsOnPath(data, units, route, player, result).getError() != null)
             return result;
 
@@ -857,51 +853,6 @@ public class MoveValidator
         return result;
     }
     
-    //Added to handle non-combat units moving into harm's way
-    private static MoveValidationResult validateNonCombatUnitsEnteringCombat(GameData data, Collection<Unit> units, Route route, PlayerID player, MoveValidationResult result)
-    {
-    	if (getEditMode(data))
-            return result;
-    	
-    	if(isHariKariUnits(data) || Match.countMatches(units, Matches.unitCanAttack(player))>0)
-    		return result;
-    	
-    	CompositeMatch<Unit> ownedUnitsMatch = new CompositeMatchAnd<Unit>();
-    	ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
-    	ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.unitCanAttack(player)));
-    	ownedUnitsMatch.add(Matches.unitIsOwnedBy(player));
-    	
-        //get a list of all owned, nonCombat units
-        List<Unit> ownedUnits = Match.getMatches(units, ownedUnitsMatch);
-
-        //Remove dependents 
-        //TODO COMCO check fighters on noncombat carrier?
-        //ownedUnits.removeAll(getDependentUnits(ownedUnits));
-        
-    	//If nothing left, return
-        if(ownedUnits.isEmpty())
-        	return result;
-        
-      //Match for enemy combat units
-        CompositeMatch<Unit> enemyUnitsMatch = new CompositeMatchAnd<Unit>();
-    	enemyUnitsMatch.add(Matches.enemyUnit(player, data));
-    	enemyUnitsMatch.add(Matches.unitCanAttack(player));
-    	enemyUnitsMatch.add(Matches.unitIsNotSubmerged(data));
-    	
-        //Are there enemies there
-    	if(route.getEnd().getUnits().someMatch(enemyUnitsMatch))
-    	{
-    		for (Unit unit : ownedUnits)
-            {
-				result.addDisallowedUnit(UNESCORTED_UNITS_WILL_DIE_IN_COMBAT, unit);
-            }	
-    	}
-    	
-        return result;
-        
-    }
-    
-
     //Added to handle restriction of movement to listed territories
     private static MoveValidationResult validateMovementRestrictedByTerritory(GameData data, Collection<Unit> units, Route route, PlayerID player, MoveValidationResult result)
     {
