@@ -37,15 +37,12 @@ import games.strategy.engine.pbem.IPBEMMessenger;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.pbem.AxisAndAlliesDotOrgPBEMMessenger;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.randomAI.RandomAI;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.strongAI.StrongAI;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.ui.display.TripleaDisplay;
 import games.strategy.triplea.weakAI.WeakAI;
-//Kev
-//import games.strategy.triplea.nextAI.NextAI;
 
 import java.awt.Frame;
 import java.io.IOException;
@@ -66,10 +63,9 @@ public class TripleA implements IGameLoader
     // compatible with 0.9.0.2 saved games
     private static final long serialVersionUID = -8374315848374732436L;
     
-    private static final String HUMAN_PLAYER_TYPE = "Human";
-    private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
-    private static final String WEAK_COMPUTER_PLAYER_TYPE = "Easy AI";
-    private static final String STRONG_COMPUTER_PLAYER_TYPE = "Strong AI";
+    private static final String HUMAN_PLAYER_TYPE = "Human";    
+    private static final String WEAK_COMPUTER_PLAYER_TYPE = " E.Z. Fodder";
+    private static final String STRONG_COMPUTER_PLAYER_TYPE = " Moore N. Able";
     
     private transient TripleaDisplay m_display;
     private transient IGame m_game;
@@ -85,11 +81,7 @@ public class TripleA implements IGameLoader
         {
             String name = (String) iter.next();
             String type = (String) playerNames.get(name);
-            if (type.equals(RANDOM_COMPUTER_PLAYER_TYPE))
-            {
-                players.add(new RandomAI(name));
-            }
-            else if (type.equals(WEAK_COMPUTER_PLAYER_TYPE))
+            if (type.equals(WEAK_COMPUTER_PLAYER_TYPE))
             {
                 players.add(new WeakAI(name));
             }
