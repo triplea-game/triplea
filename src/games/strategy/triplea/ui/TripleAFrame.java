@@ -727,7 +727,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
     public boolean getOKToLetUnitsDie(PlayerID m_id, String message, boolean movePhase)
     {                
-        String ok = movePhase ?  "Kill Units" : "Kill Units";
+        String ok = movePhase ?  "Done Moving" : "Kill Units";
         String cancel = movePhase ? "Keep Moving" : "Change Placement";
         String[] options =
         { cancel, ok };

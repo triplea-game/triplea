@@ -480,9 +480,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     	
 
         if (m_nonCombat)
-            removeAirThatCantLand();
-        else
-        	removeUnitsThatCantFight();
+            removeAirThatCantLand();       
         //TODO COMCO perhaps add any pre-existing battles here (new placement, 1 round combat, etc...)
         
         m_movesToUndo.clear();
@@ -545,21 +543,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                 util.removeAirThatCantLand(player, false);
         }
     }
-
-    private void removeUnitsThatCantFight()
-    {
-    	//Remove the pending battles here
-        UnitsThatCantFightUtil util = new UnitsThatCantFightUtil(m_data, m_bridge);
-        util.removeUnitsThatCantFight(m_player);
-        // if edit mode has been on, we need to clean up after all players
-        Iterator<PlayerID> iter = m_data.getPlayerList().iterator();
-        while (iter.hasNext())
-        {
-            PlayerID player = iter.next();
-            if (!player.equals(m_player)) 
-                util.removeUnitsThatCantFight(player);
-        }
-    }
+   
     /**
      * returns a map of unit -> transport. returns null if no mapping can be
      * done either because there is not sufficient transport capacity or because
@@ -776,7 +760,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
     public Collection<Territory> getTerritoriesWhereUnitsCantFight()
     {
-        return new UnitsThatCantFightUtil(m_data, m_bridge).getTerritoriesWhereUnitsCantFight(m_player);
+        return new UnitsThatCantFightUtil(m_data).getTerritoriesWhereUnitsCantFight(m_player);
     }
 
  

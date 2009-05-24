@@ -12,22 +12,17 @@
 
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.InverseMatch;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 
 /**
@@ -35,100 +30,41 @@ import java.util.Iterator;
  */
 public class UnitsThatCantFightUtil
 {
-    private final GameData m_data;
-    private final IDelegateBridge m_bridge;
+    private final GameData m_data;    
     
-    public UnitsThatCantFightUtil(final GameData data, final IDelegateBridge bridge)
+    public UnitsThatCantFightUtil(final GameData data)
     {
-        m_data = data;
-        m_bridge = bridge;
+        m_data = data;        
     }
 
-  //TODO Used to notify of kamikazi attacks
+    //TODO Used to notify of kamikazi attacks
     public Collection<Territory> getTerritoriesWhereUnitsCantFight(PlayerID player)
     {
-        Collection<Territory> cantFight = new ArrayList<Territory>();
-        Iterator<Territory> territories = m_data.getMap().getTerritories().iterator();
         
-        while (territories.hasNext())
-        {
-            Territory current = (Territory) territories.next();
+        Collection<Territory> cantFight = new ArrayList<Territory>();
+        for (Territory current : m_data.getMap())
+        { 
             //get all owned non-combat units
             CompositeMatch<Unit> ownedUnitsMatch = new CompositeMatchAnd<Unit>();
-        	ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
-        	ownedUnitsMatch.add(Matches.unitIsOwnedBy(player));
+            ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
+            if(current.isWater()) {
+                ownedUnitsMatch.add(Matches.UnitIsLand.invert());
+            }
+            ownedUnitsMatch.add(Matches.unitIsOwnedBy(player));
 
-        	//All owned units
+            //All owned units
             int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatch);
             //only noncombat units
-        	ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.unitCanAttack(player)));
+            ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.unitCanAttack(player)));
             Collection<Unit> nonCombatUnits = current.getUnits().getMatches(ownedUnitsMatch);
                         
-            if(!nonCombatUnits.isEmpty() && nonCombatUnits.size() == countAllOwnedUnits)
-            	cantFight.add(current);
+            if(nonCombatUnits.isEmpty() || nonCombatUnits.size() != countAllOwnedUnits)
+                continue;
+            
+            if(current.getUnits().someMatch(Matches.enemyUnit(player, m_data)))
+                cantFight.add(current);
         }
         return cantFight;
     }
-
-    public void removeUnitsThatCantFight(PlayerID player)
-    {
-        Iterator<Territory> territories = getTerritoriesWhereUnitsCantFight(player).iterator();
-        while (territories.hasNext())
-        {
-            Territory current = territories.next();
-            
-          //get all owned non-combat units
-            CompositeMatch<Unit> ownedUnitsMatch = new CompositeMatchAnd<Unit>();
-        	ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
-        	ownedUnitsMatch.add(Matches.unitIsOwnedBy(player));
-
-        	//All owned units
-            int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatch);
-            //only noncombat units
-        	ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.unitCanAttack(player)));
-            Collection<Unit> nonCombatUnits = current.getUnits().getMatches(ownedUnitsMatch);
-            
-            //Match for enemy combat units
-            CompositeMatch<Unit> enemyUnitsMatch = new CompositeMatchAnd<Unit>();
-        	enemyUnitsMatch.add(Matches.enemyUnit(player, m_data));
-        	enemyUnitsMatch.add(Matches.unitCanAttack(player));
-            
-        	//Are there any nonCombatants and enemy combat units
-        	//TODO perhaps ignore if there are units that can be ignored (subs)
-            if (nonCombatUnits.size() != 0 && nonCombatUnits.size() == countAllOwnedUnits && current.getUnits().someMatch(enemyUnitsMatch))
-            {	
-            	//Get the pending battle
-            	Battle nonBombingBattle = MoveDelegate.getBattleTracker(m_data).getPendingBattle(current, false);
-            	//Get the dependent units
-            	if(nonBombingBattle != null)
-            	{
-            		nonCombatUnits.addAll(nonBombingBattle.getDependentUnits(nonCombatUnits));
-
-            		//Kill the nonCombat units and their dependents
-            		removeUnitsThatCantFight(player, current, nonCombatUnits);
-
-            		//Remove the battle from the stack
-            		Route route = new Route();
-            		route.setStart(current);            	
-            		nonBombingBattle.removeAttack(route, nonCombatUnits);
-            	}
-            }
-        }
-    }
-
-    private void removeUnitsThatCantFight(PlayerID player, Territory territory, Collection<Unit> units)
-    {
-        Collection<Unit> toRemove = new ArrayList<Unit>(units.size());
-        
-        toRemove.addAll(units);        
-
-        Change remove = ChangeFactory.removeUnits(territory, toRemove);
-
-        String transcriptText = MyFormatter.unitsToTextNoOwner(toRemove) + " could not fight in " + territory.getName() + " and "
-                + (toRemove.size() > 1 ? "were" : "was") + " removed";
-        m_bridge.getHistoryWriter().startEvent(transcriptText);
-
-        m_bridge.addChange(remove);
-
-    }  
+  
 }
