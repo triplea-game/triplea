@@ -1,6 +1,8 @@
 Changes for 1.0.3.3
 
-* fix bug 2753571 - Unloaded cargo not being removed when transport sinks (sgb,  gruetzdark)
+* put game name in window title (sgb)
+
+* fix bug 2753571 - Unloaded cargo not being removed when transport sinks, also odds calculator fails with transports in revised (sgb,  gruetzdark)
 
 * fix bug 2779959 - AA50: Stay in the Mobilization Zone (sgb)
 
