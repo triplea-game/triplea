@@ -64,8 +64,8 @@ public class TripleA implements IGameLoader
     private static final long serialVersionUID = -8374315848374732436L;
     
     private static final String HUMAN_PLAYER_TYPE = "Human";    
-    private static final String WEAK_COMPUTER_PLAYER_TYPE = " E.Z. Fodder";
-    private static final String STRONG_COMPUTER_PLAYER_TYPE = " Moore N. Able";
+    private static final String WEAK_COMPUTER_PLAYER_TYPE = "E.Z. Fodder (AI)";
+    private static final String STRONG_COMPUTER_PLAYER_TYPE = "Moore N. Able (AI)";
     
     private transient TripleaDisplay m_display;
     private transient IGame m_game;
