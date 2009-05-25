@@ -725,8 +725,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		List<Territory> ourSeaSpots = new ArrayList<Territory>();
 		List<Unit> transMoved = new ArrayList<Unit>();
 //		transTerr2.removeAll(occTransTerr);
-		Territory rankTerr[] = new Territory[200];
-		float ranking[] = new float[200];
+		Territory rankTerr[] = new Territory[data.getMap().getTerritories().size()];
+		float ranking[] = new float[data.getMap().getTerritories().size()];
 		int terrCount = 0;
 		List<Territory>enemyCaps = SUtils.getEnemyCapitals(data, player);
 		List<Territory>eCapsCopy = new ArrayList<Territory>(enemyCaps);
@@ -883,9 +883,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		List<Territory> ourFactories = SUtils.findCertainShips(data, player, Matches.UnitIsFactory);
 		List<Territory> ourSeaSpots = new ArrayList<Territory>();
 		List<Unit> transMoved = new ArrayList<Unit>();
-		Territory rankTerr[] = new Territory[200];
-		float rankStrength[] = new float[200];
-		float ranking[] = new float[200];
+		Territory rankTerr[] = new Territory[data.getMap().getTerritories().size()];
+		float rankStrength[] = new float[data.getMap().getTerritories().size()];
+		float ranking[] = new float[data.getMap().getTerritories().size()];
 		int terrCount = 0;
 		List<Territory> bomberTerr = SUtils.findCertainShips(data, player, ourBombers);
 		List<Territory> fighterTerr = SUtils.findCertainShips(data, player, ourFighters);
@@ -954,7 +954,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			enemyCaps2.addAll(alliedTerr);
 
 		//build a profile list of every enemy territory
-		List<Territory> badGuyTerr = SUtils.allEnemyTerritories(data, player);
+		LinkedHashSet<Territory> badGuyTerr = new LinkedHashSet(SUtils.allEnemyTerritories(data, player));
 		if (enemyCaps2.size() > 0)
 			badGuyTerr.addAll(enemyCaps2); //let's add-in allied cap neighbors
 		List<Territory> badGuyTemp = new ArrayList<Territory>(badGuyTerr);
@@ -1122,12 +1122,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
     private void populateTransportUnload(GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
     {//We need to track the planes better...probably counting them in more than 1 attack
-		Territory eTerr[] = new Territory[200] ; //revised game has 79 territories and 64 sea zones
-		float eStrength[] = new float[200];
+		Territory eTerr[] = new Territory[data.getMap().getTerritories().size()] ; //revised game has 79 territories and 64 sea zones
+		float eStrength[] = new float[data.getMap().getTerritories().size()];
 		float eS = 0.00F;
 		List<Unit>airUnitsAdd = new ArrayList<Unit>();
-		Territory acUnitT[] = new Territory[200]; //need to track AirCraft Carriers
-		int acNew[] = new int[200];
+		Territory acUnitT[] = new Territory[data.getMap().getTerritories().size()]; //need to track AirCraft Carriers
+		int acNew[] = new int[data.getMap().getTerritories().size()];
 		int acCount = 0, acAvail = 0;
 
 		CompositeMatch<Unit> enemyUnit = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data));
@@ -1525,8 +1525,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
        Route amphibRoute = getAmphibRoute(player);
 
        Territory firstSeaZoneOnAmphib = null, lastSeaZoneOnAmphib = null;
-	   Territory eTerr[] = new Territory[200] ; //revised game has 79 territories and 64 sea zones
-	   float eStrength[] = new float[200];
+	   Territory eTerr[] = new Territory[data.getMap().getTerritories().size()]; 
+	   float eStrength[] = new float[data.getMap().getTerritories().size()];
        Collection <Unit> transports = new ArrayList<Unit>();
        List<Territory> seaTerr = new ArrayList<Territory>();
 
@@ -2305,8 +2305,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
 		int rDist=0;
 		float attackFactor = 1.13F; //adjust to make attacks more or less likely (1.05 is too low)
-		Territory sortTerritories[] = new Territory[200] ; //revised game has 79 territories and 64 sea zones
-		float sortStrength[] = new float[200];
+		Territory sortTerritories[] = new Territory[data.getMap().getTerritories().size()] ; //revised game has 79 territories and 64 sea zones
+		float sortStrength[] = new float[data.getMap().getTerritories().size()];
 		int numTerr = 0;
 		float xStrength = 0.0F;
 		boolean landable = false;
@@ -3387,8 +3387,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
         List<Territory> bigProblem2 = SUtils.getNeighboringEnemyLandTerritories(data, player, myCapital); //attack these guys first
 
-		Territory sortTerritories[] = new Territory[200] ; //revised game has 79 territories and 64 sea zones
-		float sortStrength[] = new float[200];
+		Territory sortTerritories[] = new Territory[data.getMap().getTerritories().size()] ; //revised game has 79 territories and 64 sea zones
+		float sortStrength[] = new float[data.getMap().getTerritories().size()];
 		Territory sortProblems[] = new Territory[16] ; //maximum neighboring territories > 15???
 		float sortStrengthProblems[] = new float[16];
 		int numTerr = 0, numTerrProblem = 0, realProblems = 0;
