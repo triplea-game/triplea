@@ -1059,7 +1059,7 @@
 <unit name="artillery"/> 
 <unit name="destroyer"/> 
 <unit name="cruiser"/> 
-<unit name="S.Sub"/> 
+<unit name="s.sub"/> 
 </unitList> 
 
        <gamePlay> 
@@ -1336,9 +1336,9 @@
 <result resourceOrUnit="submarine" quantity="1"/> 
 </productionRule> 
 
-<productionRule name="buyS.Sub"> 
+<productionRule name="buys.sub"> 
 <cost resource="IPCs" quantity="12"/> 
-<result resourceOrUnit="S.Sub" quantity="1"/> 
+<result resourceOrUnit="s.sub" quantity="1"/> 
 </productionRule> 
 
 <productionRule name="buycruiser"> 
@@ -1470,9 +1470,9 @@
 <result resourceOrUnit="submarine" quantity="1"/> 
 </productionRule> 
 
-<productionRule name="buyS.SubIndustrialTechnology"> 
+<productionRule name="buys.subIndustrialTechnology"> 
 <cost resource="IPCs" quantity="11"/> 
-<result resourceOrUnit="S.Sub" quantity="1"/> 
+<result resourceOrUnit="s.sub" quantity="1"/> 
 </productionRule> 
 
 <productionRule name="buycruiserIndustrialTechnology"> 
@@ -1514,7 +1514,7 @@
 <frontierRules name="buyCarrier"/> 
 <frontierRules name="buyDestroyer"/> 
 <frontierRules name="buyBattleship"/> 
-<frontierRules name="buyS.Sub"/> 
+<frontierRules name="buys.sub"/> 
 <frontierRules name="buycruiser"/> 
 <frontierRules name="buybunker"/> 
 <frontierRules name="buyAAGun"/> 
@@ -1541,7 +1541,7 @@
 <frontierRules name="buyCarrier"/> 
 <frontierRules name="buyDestroyer"/> 
 <frontierRules name="buyBattleship"/> 
-<frontierRules name="buyS.Sub"/> 
+<frontierRules name="buys.sub"/> 
 <frontierRules name="buycruiser"/> 
 <frontierRules name="buybunker"/> 
 <frontierRules name="buyAAGun"/> 
@@ -1567,7 +1567,7 @@
 <frontierRules name="buyCarrier"/> 
 <frontierRules name="buyDestroyer"/> 
 <frontierRules name="buyBattleship"/> 
-<frontierRules name="buyS.Sub"/> 
+<frontierRules name="buys.sub"/> 
 <frontierRules name="buycruiser"/> 
 <frontierRules name="buybunker"/> 
 <frontierRules name="buyAAGun"/> 
@@ -1596,7 +1596,7 @@
 <frontierRules name="buyCarrier"/> 
 <frontierRules name="buyDestroyer"/> 
 <frontierRules name="buyBattleship"/> 
-<frontierRules name="buyS.Sub"/> 
+<frontierRules name="buys.sub"/> 
 <frontierRules name="buycruiser"/> 
 <frontierRules name="buybunker"/> 
 <frontierRules name="buyAAGun"/> 
@@ -1621,7 +1621,7 @@
 <frontierRules name="buyCarrier"/> 
 <frontierRules name="buyDestroyer"/> 
 <frontierRules name="buyBattleship"/> 
-<frontierRules name="buyS.Sub"/> 
+<frontierRules name="buys.sub"/> 
 <frontierRules name="buycruiser"/> 
 <frontierRules name="buybunker"/> 
 <frontierRules name="buyAAGun"/> 
@@ -1648,7 +1648,7 @@
 <frontierRules name="buyCarrier"/> 
 <frontierRules name="buyDestroyer"/> 
 <frontierRules name="buyBattleship"/> 
-<frontierRules name="buyS.Sub"/> 
+<frontierRules name="buys.sub"/> 
 <frontierRules name="buycruiser"/> 
 <frontierRules name="buybunker"/> 
 <frontierRules name="buyAAGun"/> 
@@ -1675,7 +1675,7 @@
 <frontierRules name="buyCarrier"/> 
 <frontierRules name="buyDestroyer"/> 
 <frontierRules name="buyBattleship"/> 
-<frontierRules name="buyS.Sub"/> 
+<frontierRules name="buys.sub"/> 
 <frontierRules name="buycruiser"/> 
 <frontierRules name="buybunker"/> 
 <frontierRules name="buyAAGun"/> 
@@ -1706,7 +1706,7 @@
 <frontierRules name="buyCarrier"/> 
 <frontierRules name="buyDestroyer"/> 
 <frontierRules name="buyBattleship"/> 
-<frontierRules name="buyS.Sub"/> 
+<frontierRules name="buys.sub"/> 
 <frontierRules name="buycruiser"/> 
 <frontierRules name="buybunker"/> 
 <frontierRules name="buyAAGun"/> 
@@ -1732,7 +1732,7 @@
 <frontierRules name="buyCarrier"/> 
 <frontierRules name="buyDestroyer"/> 
 <frontierRules name="buyBattleship"/> 
-<frontierRules name="buyS.Sub"/> 
+<frontierRules name="buys.sub"/> 
 <frontierRules name="buycruiser"/> 
 <frontierRules name="buybunker"/> 
 <frontierRules name="buyAAGun"/> 
@@ -1762,7 +1762,7 @@
 <frontierRules name="buyb29IndustrialTechnology"/> 
 <frontierRules name="buyDestroyerIndustrialTechnology"/> 
 <frontierRules name="buyBattleshipIndustrialTechnology"/> 
-<frontierRules name="buyS.SubIndustrialTechnology"/> 
+<frontierRules name="buys.subIndustrialTechnology"/> 
 <frontierRules name="buycruiserIndustrialTechnology"/> 
 <frontierRules name="buybunkerIndustrialTechnology"/> 
 <frontierRules name="buyAAGunIndustrialTechnology"/> 
@@ -2009,7 +2009,7 @@
 <option name="defense" value="2"/> 
 </attatchment> 
 
-<attatchment name="unitAttatchment" attatchTo="S.Sub" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType"> 
+<attatchment name="unitAttatchment" attatchTo="s.sub" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType"> 
 <option name="isSub" value="true"/> 
 <option name="movement" value="3"/> 
 <option name="isSea" value="true"/> 
