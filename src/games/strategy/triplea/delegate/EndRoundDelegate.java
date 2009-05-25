@@ -31,6 +31,7 @@ import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Match;
 
 import java.io.Serializable;
@@ -203,7 +204,7 @@ public class EndRoundDelegate implements IDelegate
         {
             m_gameOver = true;
             // Make sure the user really wants to leave the game.
-            int rVal = JOptionPane.showConfirmDialog(null, status +"\nDo you want to continue?", "Continue" , JOptionPane.YES_NO_OPTION);
+            int rVal =  EventThreadJOptionPane.showConfirmDialog(null, status +"\nDo you want to continue?", "Continue" , JOptionPane.YES_NO_OPTION);
             if(rVal != JOptionPane.OK_OPTION)
                 a_bridge.stopGameSequence();
         }
