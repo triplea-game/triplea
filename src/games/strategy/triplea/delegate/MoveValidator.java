@@ -811,7 +811,7 @@ public class MoveValidator
         	//If subs and transports can't control sea zones, it's OK to move there
         	if(isSubControlSeaZoneRestricted(data) && Match.allMatch(units, Matches.UnitIsSub))
         		return result;
-        	else if(!isTransportControlSeaZone(data) && Match.allMatch(units, Matches.UnitTypeIsTransport))
+        	else if(!isTransportControlSeaZone(data) && Match.allMatch(units, Matches.UnitIsTransport))
         		return result;
         	else
         		return result.setErrorReturnResult("Cannot advance units to battle in non combat");

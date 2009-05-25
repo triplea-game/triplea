@@ -47,6 +47,10 @@ public class GameDataTestUtil {
         return unitType("transport", data);
     }
     
+    public static UnitType infantry(GameData data) {
+        return unitType("infantry", data);
+    }
+    
     private static UnitType unitType(String name, GameData data) {
         return data.getUnitTypeList().getUnitType(name);
     }

@@ -7,14 +7,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -25,6 +24,8 @@ import org.xml.sax.SAXException;
 public class NewGameChooserModel extends DefaultListModel
 {
 
+    private static final Logger log = Logger.getLogger(NewGameChooserModel.class.getName());
+    
     public NewGameChooserModel()
     {
         populate();
@@ -87,8 +88,9 @@ public class NewGameChooserModel extends DefaultListModel
                         try
                         {
                             entries.add(createEntry(new URI(url.toString().replace(" ", "%20"))));
-                        } catch (URISyntaxException e)
+                        } catch (Exception e)
                         {
+                            System.err.println("Could not parse:" + url);
                             e.printStackTrace();
                         }
                     }
@@ -121,22 +123,9 @@ public class NewGameChooserModel extends DefaultListModel
     }
      
     
-    private NewGameChooserEntry createEntry(URI uri)
-    {
-        try
-        {
-            return new NewGameChooserEntry(uri);
-        } catch (IOException e)
-        {                    
-            e.printStackTrace();
-        } catch (GameParseException e)
-        {                 
-            e.printStackTrace();
-        } catch (SAXException e)
-        {                 
-            e.printStackTrace();
-        }
-        return null;
+    private NewGameChooserEntry createEntry(URI uri) throws IOException, GameParseException, SAXException
+    {     
+        return new NewGameChooserEntry(uri);     
     }
 
     private void populateFromDirectory(File mapDir, List<NewGameChooserEntry> entries)
@@ -151,7 +140,16 @@ public class NewGameChooserModel extends DefaultListModel
         for(File game : games.listFiles()) 
         {
             if(game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
-               entries.add(createEntry(game.toURI()));
+                try
+                {
+                    NewGameChooserEntry entry = createEntry(game.toURI());
+                    entries.add(entry);
+                } catch(Exception e) {
+                    System.err.println("Could not parse:" + game);
+                    e.printStackTrace();
+                }
+                
+               
             }
         }
 

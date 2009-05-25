@@ -155,19 +155,9 @@ public class Matches
             return (ua.getTransportCapacity() != -1 && ua.isSea());
         }
     };
-
-    public static final Match<Unit> UnitIsNotTransport = new InverseMatch<Unit>(UnitIsTransport);
-
-    public static final Match<Unit> UnitTypeIsTransport = new Match<Unit>()
-    {
-        public boolean match(Unit unit)
-        {
-            UnitAttachment ua = UnitAttachment.get(unit.getType());
-            return ua.isTransport();
-        }
-    };
-
-    public static final Match<Unit> UnitTypeIsNotTransport = new InverseMatch<Unit>(UnitTypeIsTransport);
+    
+    public static final Match<Unit> UnitIsNotTransport = UnitIsTransport.invert();
+    
 
     public static final Match<Unit> UnitIsStrategicBomber = new Match<Unit>()
     {

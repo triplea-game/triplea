@@ -686,6 +686,12 @@ public class RevisedTest extends TestCase
         
     }
     
+    public void testTransportIsTransport() 
+    {
+        assertTrue(Matches.UnitIsTransport.match(transports(m_data).create(british(m_data))));
+        assertFalse(Matches.UnitIsTransport.match(infantry(m_data).create(british(m_data))));
+    }
+    
 }
 
 

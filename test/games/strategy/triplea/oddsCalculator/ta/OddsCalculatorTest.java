@@ -1,17 +1,11 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.delegate.LoadGameUtil;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -133,6 +127,28 @@ public class OddsCalculatorTest extends TestCase
         assertEquals(0.33, results.getDefenderWinPercent(), 0.05);
         assertEquals(0.33, results.getDrawPercent(), 0.05);
     }
+    
+        public void testSeaBattleWithTransport()
+        {
+           
+           //Attack a battleship with a battleship and a transport
+           
+            Territory sz2 = m_data.getMap().getTerritory("2 Sea Zone");
+           
+            PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+            List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("battleship").create(1,germans);
+            attackingUnits.addAll(m_data.getUnitTypeList().getUnitType("transport").create(1,germans));
+            List<Unit> bombardingUnits = Collections.emptyList();
+            
+            PlayerID british = m_data.getPlayerList().getPlayerID("British");
+            List<Unit> defendingUnits = m_data.getUnitTypeList().getUnitType("battleship").create(1,british);        
+           
+           OddsCalculator calc = new OddsCalculator();
+           AggregateResults results = calc.calculate(m_data, germans, british, sz2, attackingUnits, defendingUnits, bombardingUnits, 1000);
+           
+           assertTrue(results.getAttackerWinPercent() > 0.65);
+        }
+
 
 
     

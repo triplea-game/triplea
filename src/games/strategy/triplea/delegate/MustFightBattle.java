@@ -1112,7 +1112,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 	{ 
                     	//Get all allied transports in the territory
                         CompositeMatch<Unit> matchAllied = new CompositeMatchAnd<Unit>(); 
-                        matchAllied.add(Matches.UnitTypeIsTransport);
+                        matchAllied.add(Matches.UnitIsTransport);
                         matchAllied.add(Matches.isUnitAllied(m_attacker, m_data));
                     	
                         List<Unit> alliedTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), matchAllied);                    	
@@ -1621,7 +1621,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         CompositeChange change = new CompositeChange();
 
-    	units = Match.getMatches(units, Matches.UnitTypeIsTransport);
+    	units = Match.getMatches(units, Matches.UnitIsTransport);
     	Collection<Unit> retreated = getTransportDependents(units,m_data);
     	if(!retreated.isEmpty())
     	{    		
@@ -2585,7 +2585,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
     
     //Figure out what units a transport is transported and has unloaded
     public Collection<Unit>  getTransportDependents(Collection<Unit> targets, GameData data)
-    {
+    {        
+        if(m_headless) 
+        {
+            return Collections.emptyList();
+        }
     	Collection<Unit> dependents = new ArrayList<Unit>();
     	if (Match.someMatch(targets, Matches.UnitCanTransport))
     	{    		 
@@ -2655,7 +2659,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 	//Remove landed units from allied territory when their transport sinks
     private void removeFromNonCombatLandings(Collection<Unit> units, IDelegateBridge bridge)
     {
-    	units = Match.getMatches(units, Matches.UnitTypeIsTransport);
+    	units = Match.getMatches(units, Matches.UnitIsTransport);
     	Collection<Unit> lost = getTransportDependents(units, m_data);
     	Territory landedTerritory = null;
     	
