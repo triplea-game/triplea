@@ -2985,6 +2985,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             {
               	newRoute = SUtils.findNearest(t, Matches.isTerritoryEnemy(player, data), routeCondition, data);
             }
+            if(newRoute == null) 
+            {
+                continue;
+            }
             int newDistance = newRoute.getLength();
             if(to != null && minDistance <= (newDistance + 1))
             {
