@@ -4520,8 +4520,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		if (xCount == 0)
 		{
-			CasualtyDetails m3 = new CasualtyDetails(rKilled, rDamaged, false);
-			return m3;
+			return new CasualtyDetails(rKilled, rDamaged, false);			
 		}
 
 		if (xCount > 0)
@@ -4581,6 +4580,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				if (Matches.UnitIsTwoHit.match(unitx))
 					workUnits.add(unitx);
 			}
+			
+			//add anything not selected above
+			Set<Unit> remainder =new HashSet<Unit>(selectFrom);
+			remainder.removeAll(workUnits);
+			workUnits.addAll(remainder);
 		}
 			/* Order:
 				SEA:
@@ -4593,6 +4597,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				6) Loaded Transport
 				7) Carrier (Fighter is better than 1 Carrier...need to check score in battle) implement later...
 				8) Battleship
+				9) anything else
 			*/
 		for (int j=0; j < xCount; j++)
 		{
