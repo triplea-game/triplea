@@ -3704,7 +3704,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
         List<ProductionRule> rules = player.getProductionFrontier().getRules();
         IntegerMap<ProductionRule> purchase = new IntegerMap<ProductionRule>();
-        List<RepairRule> rrules = player.getRepairFrontier().getRules();
+        List<RepairRule> rrules = Collections.emptyList();
+        if(player.getRepairFrontier() != null) {
+            rrules = player.getRepairFrontier().getRules();
+        }
         IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
         HashMap<Territory, IntegerMap<RepairRule>> repair = new HashMap<Territory, IntegerMap<RepairRule>>();
 
