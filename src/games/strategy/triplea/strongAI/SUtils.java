@@ -282,7 +282,7 @@ public class SUtils
             Territory capitol =  TerritoryAttachment.getCapital(otherPlayer, data);
 	        if(capitol != null && !data.getAllianceTracker().isAllied(player, capitol.getOwner()))
 	        {
-	            route = data.getMap().getLandRoute(myCapital, capitol);
+	            route = data.getMap().getRoute(myCapital, capitol, Matches.TerritoryIsNotImpassable);
 	            if(route != null)
 	           	   routeExists = true;
 	        }
