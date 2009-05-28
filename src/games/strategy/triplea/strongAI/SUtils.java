@@ -272,7 +272,7 @@ public class SUtils
 
 	public static boolean landRouteToEnemyCapital(Territory thisTerr, Route goRoute, GameData data, PlayerID player)
 	{//is there a land route between territory and enemy
-        Territory myCapital = TerritoryAttachment.getCapital(player, data);
+     //   Territory myCapital = TerritoryAttachment.getCapital(player, data);
 
         boolean routeExists = false;
         Route route = null;
@@ -282,7 +282,7 @@ public class SUtils
             Territory capitol =  TerritoryAttachment.getCapital(otherPlayer, data);
 	        if(capitol != null && !data.getAllianceTracker().isAllied(player, capitol.getOwner()))
 	        {
-	            route = data.getMap().getRoute(myCapital, capitol, Matches.TerritoryIsNotImpassable);
+	            route = data.getMap().getRoute(thisTerr, capitol, Matches.TerritoryIsNotImpassable);
 	            if(route != null)
 	           	   routeExists = true;
 	        }
@@ -301,7 +301,7 @@ public class SUtils
      */
     public static List<Unit> getUnitsUpToStrength(double maxStrength, Collection<Unit> units, boolean attacking, boolean sea)
     {
-        if(strength(units, attacking, sea) < maxStrength)
+        if(strength(units, attacking, sea, false) < maxStrength)
             return new ArrayList<Unit>(units);
 
         ArrayList<Unit> rVal = new ArrayList<Unit>();
@@ -309,7 +309,7 @@ public class SUtils
         for(Unit u : units)
         {
             rVal.add(u);
-            if(strength(rVal, attacking, sea) > maxStrength)
+            if(strength(rVal, attacking, sea, false) > maxStrength)
                 return rVal;
         }
 
@@ -428,7 +428,7 @@ public class SUtils
 	}
 
 
-    public static float getStrengthOfPotentialAttackers(Territory location, GameData data, PlayerID player)
+    public static float getStrengthOfPotentialAttackers(Territory location, GameData data, PlayerID player, boolean tFirst)
     {
         float seaStrength = 0.0F, firstStrength = 0.0F, strength=0.0F, airStrength=0.0F;
 		CompositeMatch<Unit> enemyPlane = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.enemyUnit(player, data));
@@ -439,7 +439,7 @@ public class SUtils
         for(Territory t : data.getMap().getNeighbors(location,  location.isWater() ? Matches.TerritoryIsWater :  Matches.TerritoryIsLand))
         {
            	List<Unit> enemies = t.getUnits().getMatches(Matches.enemyUnit(player, data));
-            firstStrength+= strength(enemies, true, location.isWater());
+            firstStrength+= strength(enemies, true, location.isWater(), tFirst);
             checked.add(t);
         }
         for (Territory t2 : data.getMap().getNeighbors(location, 3))
@@ -801,7 +801,7 @@ public class SUtils
 
 // A copy of the unit strength calculator in AIUtils
 // Changed to do one unit at a time
-    public static float uStrength(Unit units, boolean attacking, boolean sea)
+    public static float uStrength(Unit units, boolean attacking, boolean sea, boolean transportsFirst)
     {
         float strength = 0.0F;
         Unit u = units;
@@ -828,6 +828,8 @@ public class SUtils
                 if(unitAttatchment.getAttack(u.getOwner()) == 0)
                     strength -= 0.35F; //adjusted KDM
             }
+            if (unitAttatchment.getTransportCapacity()>0 && !transportsFirst)
+                strength -=0.35F; //only allow transport to have 0.35 on defense; none on attack
         }
         else if (unitAttatchment.isAir() & sea) //we can count airplanes in sea attack
         {
@@ -849,7 +851,7 @@ public class SUtils
      * @param sea - calculate the strength of the units in a sea or land battle?
      * @return
      */
-    public static float strength(Collection<Unit> units, boolean attacking, boolean sea)
+    public static float strength(Collection<Unit> units, boolean attacking, boolean sea, boolean transportsFirst)
     {
         float strength = 0.0F;
 
@@ -876,7 +878,8 @@ public class SUtils
                     if(unitAttatchment.getAttack(u.getOwner()) == 0)
                         strength -= 0.35F;
                 }
-
+                if (unitAttatchment.getTransportCapacity()>0 && !transportsFirst)
+                    strength -=0.35F; //only allow transport to have 0.35 on defense; none on attack
             }
             else if (unitAttatchment.isAir() == sea)
             {
@@ -950,7 +953,7 @@ public class SUtils
 	}
 
     public static void getStrengthAt(float Strength1, float Strength2, GameData data, PlayerID player, Territory ourTerr,
-    		boolean sea, boolean contiguous)
+    		boolean sea, boolean contiguous, boolean tFirst)
     {
 		//gives our sea Strength within one and two territories of ourTerr
 		//defensive strength
@@ -980,14 +983,14 @@ public class SUtils
 					rDist = data.getMap().getWaterDistance(ourTerr, t);
 					seaUnits = t.getUnits().getMatches(seaUnit);
 					airUnits = t.getUnits().getMatches(airUnit);
-					thisStrength = strength(seaUnits, false, true) + allairstrength(airUnits, false);
+					thisStrength = strength(seaUnits, false, true, tFirst) + allairstrength(airUnits, false);
 				}
 				else if (!t.isWater() && !sea)
 				{
 					rDist = data.getMap().getLandDistance(ourTerr, t);
 					landUnits = t.getUnits().getMatches(landUnit);
 					airUnits = t.getUnits().getMatches(airUnit);
-					thisStrength = strength(landUnits, false, false) + allairstrength(airUnits, false);
+					thisStrength = strength(landUnits, false, false, tFirst) + allairstrength(airUnits, false);
 				}
 				else
 					continue;
@@ -999,13 +1002,13 @@ public class SUtils
 				{ //don't count anything in a transport
 					seaUnits = t.getUnits().getMatches(seaUnit);
 					airUnits = t.getUnits().getMatches(airUnit);
-					thisStrength = strength(seaUnits, false, true) + allairstrength(airUnits, false);
+					thisStrength = strength(seaUnits, false, true, tFirst) + allairstrength(airUnits, false);
 				}
 				else if (!t.isWater())
 				{
 					landUnits = t.getUnits().getMatches(landUnit);
 					airUnits = t.getUnits().getMatches(airUnit);
-					thisStrength = strength(landUnits, false, false) + allairstrength(airUnits, false);
+					thisStrength = strength(landUnits, false, false, tFirst) + allairstrength(airUnits, false);
 				}
 			}
 			if (rDist == 0 || rDist == 1)
@@ -1018,7 +1021,7 @@ public class SUtils
 	}
 
 	public static void getEnemyStrengthAt(float Strength1, float Strength2, GameData data, PlayerID player, Territory ourTerr,
-				boolean sea, boolean contiguous)
+				boolean sea, boolean contiguous, boolean tFirst)
 	{
 		//gives enemy Strength within one and three zones of territory if sea, one and two if land
 		//attack strength
@@ -1051,14 +1054,14 @@ public class SUtils
 					rDist = data.getMap().getWaterDistance(ourTerr, t);
 					seaUnits = t.getUnits().getMatches(seaUnit);
 					airUnits = t.getUnits().getMatches(airUnit);
-					thisStrength = strength(seaUnits, true, true) + allairstrength(airUnits, true);
+					thisStrength = strength(seaUnits, true, true, tFirst) + allairstrength(airUnits, true);
 				}
 				else if (!t.isWater() && !sea)
 				{
 					rDist = data.getMap().getLandDistance(ourTerr, t);
 					landUnits = t.getUnits().getMatches(landUnit);
 					airUnits = t.getUnits().getMatches(airUnit);
-					thisStrength = strength(landUnits, true, false) + allairstrength(airUnits, true);
+					thisStrength = strength(landUnits, true, false, tFirst) + allairstrength(airUnits, true);
 				}
 				else
 					continue;
@@ -1070,13 +1073,13 @@ public class SUtils
 				{
 					seaUnits = t.getUnits().getMatches(seaUnit);
 					airUnits = t.getUnits().getMatches(airUnit);
-					thisStrength = strength(seaUnits, true, true) + allairstrength(airUnits, true);
+					thisStrength = strength(seaUnits, true, true, tFirst) + allairstrength(airUnits, true);
 				}
 				else if (!t.isWater())
 				{
 					landUnits = t.getUnits().getMatches(landUnit);
 					airUnits = t.getUnits().getMatches(airUnit);
-					thisStrength = strength(landUnits, true, false) + allairstrength(airUnits, true);
+					thisStrength = strength(landUnits, true, false, tFirst) + allairstrength(airUnits, true);
 				}
 			}
 
@@ -1147,7 +1150,7 @@ public class SUtils
 		return nowater;
 	}
 
-	public static Territory findASeaTerritoryToPlaceOn(Territory landTerr, GameData data, PlayerID player)
+	public static Territory findASeaTerritoryToPlaceOn(Territory landTerr, GameData data, PlayerID player, boolean tFirst)
 	{
 
 		Territory seaPlaceAt = null;
@@ -1172,8 +1175,8 @@ public class SUtils
 				continue;
 			if (xPlace == null)
 				xPlace = t;
-			getEnemyStrengthAt(e1, e2, data, player, t, true, true);
-			s1 = strength(t.getUnits().getMatches(seaUnit), false, true);
+			getEnemyStrengthAt(e1, e2, data, player, t, true, true, tFirst);
+			s1 = strength(t.getUnits().getMatches(seaUnit), false, true, tFirst);
 			float eTot = e1 - s1;
 			if (eTot < mTot)
 			{
@@ -1198,7 +1201,7 @@ public class SUtils
 			List<Unit> tmpUnits2 = new ArrayList<Unit>();
 			if (remainingStrengthNeeded > 0.0 && !Matches.territoryHasEnemyUnits(player, data).match(owned))
 			{
-				Route thisRoute = data.getMap().getRoute(owned, enemy);
+				Route thisRoute = data.getMap().getRoute(owned, enemy, Matches.TerritoryIsNotImpassable);
 				int rDist = data.getMap().getDistance(owned, enemy);
 				List<Unit> allAirUnits=owned.getUnits().getMatches(airUnit);
 				for (Unit u2 : allAirUnits)
@@ -1245,7 +1248,7 @@ public class SUtils
 					if (remainingStrengthNeeded > 0.0F)
 					{
 						tmpBlitz.add(blitzer);
-						remainingStrengthNeeded -= uStrength(blitzer, true, false);
+						remainingStrengthNeeded -= uStrength(blitzer, true, false, false);
 					}
 			   }
 			   Route blitzRoute = data.getMap().getLandRoute(blitzTerr, enemy);
