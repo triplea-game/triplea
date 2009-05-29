@@ -5,15 +5,15 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
-import games.strategy.triplea.Properties;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -23,6 +23,24 @@ import java.util.Set;
 
 public class SUtils
 {
+    
+    public static final Match<Territory> TerritoryIsImpassableToLandUnits = new Match<Territory>()
+    {
+        public boolean match(Territory t)
+        {
+            if (t.isWater())
+                return true;
+            else if (t.getOwner().equals(PlayerID.NULL_PLAYERID))
+                return true;
+            else if (TerritoryAttachment.get(t).isImpassible())
+                return true;
+            else
+                return false;
+        }
+    };
+    public final static Match<Territory> TerritoryIsNotImpassableToLandUnits = new InverseMatch<Territory>(TerritoryIsImpassableToLandUnits);
+
+    
     public static List<Unit> sortTransportUnits(List<Unit> transUnits)
     {
 		List<Unit> sorted = new ArrayList<Unit>();
@@ -147,7 +165,7 @@ public class SUtils
     	List<Territory> checkList = getExactNeighbors(check, 1, data, false);
     	for (Territory t : checkList)
     	{
-			if (Matches.isTerritoryAllied(player, data).match(t))
+			if (Matches.isTerritoryAllied(player, data).match(t) && Matches.TerritoryIsNotImpassable.match(t))
 				rVal.add(t);
 		}
 		return rVal;
@@ -156,9 +174,12 @@ public class SUtils
 	public static boolean doesLandExistAt(Territory t, GameData data)
 	{ //simply: is this territory surrounded by water
 		boolean isLand = false;
-		Set<Territory> checkList = data.getMap().getNeighbors(t, Matches.TerritoryIsWater);
-		if (checkList != null && checkList.size() > 0)
-			isLand = true;
+		Set<Territory> checkList = data.getMap().getNeighbors(t, Matches.TerritoryIsLand);
+		for (Territory checkNeutral : checkList)
+		{
+			if (Matches.TerritoryIsNotImpassable.match(checkNeutral))
+				isLand=true;
+		}
 		return isLand;
 	}
 
@@ -282,7 +303,7 @@ public class SUtils
             Territory capitol =  TerritoryAttachment.getCapital(otherPlayer, data);
 	        if(capitol != null && !data.getAllianceTracker().isAllied(player, capitol.getOwner()))
 	        {
-	            route = data.getMap().getRoute(thisTerr, capitol, Matches.TerritoryIsNotImpassable);
+	            route = data.getMap().getRoute(thisTerr, capitol, TerritoryIsNotImpassableToLandUnits);
 	            if(route != null)
 	           	   routeExists = true;
 	        }
@@ -316,13 +337,13 @@ public class SUtils
         return rVal;
 
     }
-    public static List<Territory> TerritoryOnlyPlanes(GameData data, PlayerID player)
+    public static List<Territory> TerritoryOnlyPlanes(GameData data, PlayerID player, int lUnit)
     {
 		List <Unit> airUnits = new ArrayList<Unit>();
 		List <Unit> landUnits = new ArrayList<Unit>();
 		List <Territory> returnTerr = new ArrayList<Territory>();
 		int aUnit = 0;
-		int lUnit = 0;
+		lUnit = 0;
 		//find all territories for this player which only contain planes
 		CompositeMatch<Unit> airUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir);
 		CompositeMatch<Unit> landUnit = new CompositeMatchAnd<Unit>(Matches.isUnitAllied(player, data), Matches.UnitIsLand, Matches.UnitIsNotAA);
@@ -353,7 +374,7 @@ public class SUtils
 		nearNeighbors.remove(t);
 		for (Territory t2 : nearNeighbors)
 		{
-			if (t2.isWater())
+			if (t2.isWater() || TerritoryAttachment.get(t2).isImpassible())
 				continue;
 			if (friendly)
 			{
@@ -689,7 +710,7 @@ public class SUtils
             if(data.getAllianceTracker().isAllied(us, capitol.getOwner()))
                 continue;
 
-            if(data.getMap().getDistance(t, capitol, Matches.TerritoryIsLand) != -1)
+            if(data.getMap().getDistance(t, capitol, TerritoryIsNotImpassableToLandUnits) != -1)
             {
                 return true;
             }
@@ -1129,7 +1150,7 @@ public class SUtils
 		{
 			for (Territory t : startX)
 			{
-			    if (Matches.TerritoryIsNeutral.match(t))
+			    if (TerritoryIsImpassableToLandUnits.match(t))
 			       startX.remove(t);
 		    }
 		}

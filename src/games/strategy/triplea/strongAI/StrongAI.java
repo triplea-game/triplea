@@ -93,7 +93,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	{
 		final GameData data = getPlayerBridge().getGameData();
 		m_AE = games.strategy.triplea.Properties.getAnniversaryEdition(data);
-		m_transports_may_die = games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
+		m_transports_may_die = !games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
 		m_zero_combat_attack = games.strategy.triplea.Properties.getHariKariUnits(data);
 	}
 
@@ -102,6 +102,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		return m_transports_may_die;
 	}
 
+	private boolean useProductionData()
+	{
+		return m_AE;
+	}
 
 	private void setFactory(Territory t)
 	{
@@ -2542,8 +2546,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         Territory myCapital = TerritoryAttachment.getCapital(player, data);
 		List <Territory> planeTerr = new ArrayList<Territory>();
 		CompositeMatch<Unit> airUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir);
-
-		planeTerr = SUtils.TerritoryOnlyPlanes(data, player);
+        int lUnit = 0;
+		planeTerr = SUtils.TerritoryOnlyPlanes(data, player, lUnit);
 		planeTerr.remove(myCapital);
 		if (planeTerr.size() == 0) //skip...no loner planes
 			return;
@@ -3692,6 +3696,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         {
 			totIPC += TerritoryAttachment.get(fT).getProduction();
 			totProd += TerritoryAttachment.get(fT).getUnitProduction();
+			if (!useProductionData())
+				totProd = totIPC;
+
 		} //maximum # of units
 		int unitCount=0;
 
@@ -3715,49 +3722,50 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
         Territory myCapital = TerritoryAttachment.getCapital(player, data);
         Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
-
-        List<ProductionRule> rules = player.getProductionFrontier().getRules();
-        IntegerMap<ProductionRule> purchase = new IntegerMap<ProductionRule>();
-        List<RepairRule> rrules = Collections.emptyList();
-        if(player.getRepairFrontier() != null) {
-            rrules = player.getRepairFrontier().getRules();
-        }
-        IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
-        HashMap<Territory, IntegerMap<RepairRule>> repair = new HashMap<Territory, IntegerMap<RepairRule>>();
-
-        //determine current risk to the capitol
-        float ourSea1 = 0.0F, ourLand1 = 0.0F, ourSea2 = 0.0F, ourLand2 = 0.0F;
-        float enemySea1 = 0.0F, enemyLand1 = 0.0F, enemySea2 = 0.0F, enemyLand2 = 0.0F, riskFactor = 1.0F;
-        float realSeaThreat = 0.0F, realLandThreat = 0.0F;
-
 		Territory ourCapital = TerritoryAttachment.getCapital(player, data);
 
         int leftToSpend = player.getResources().getQuantity(ipcs );
 		purchaseT=1.00F;
 
-        // figure out if anything needs to be repaired
-        String error = null;
-        Boolean repairs = false;
-		for (RepairRule rrule : rrules)
+        List<ProductionRule> rules = player.getProductionFrontier().getRules();
+        IntegerMap<ProductionRule> purchase = new IntegerMap<ProductionRule>();
+        List<RepairRule> rrules = Collections.emptyList();
+        if(player.getRepairFrontier() != null) // figure out if anything needs to be repaired
         {
-//			int thisCost = rrule.getCosts().getInt();
-        	for (Territory fixTerr : factories)
-        	{
-        	    if (!Matches.territoryHasOwnedFactory(data, player).match(fixTerr))
-        	 	    continue;
-       		    TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
-        	    int diff = ta.getProduction() - ta.getUnitProduction();
-        	    diff = Math.min(diff, totIPC/2);
-        	    if(diff > 0)
-        	    {
-        	        repairMap.add(rrule, diff);
-        		    repair.put(fixTerr, repairMap);
-        		    repairs = true;
+            rrules = player.getRepairFrontier().getRules();
+            IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
+            HashMap<Territory, IntegerMap<RepairRule>> repair = new HashMap<Territory, IntegerMap<RepairRule>>();
+            String error = null;
+            Boolean repairs = false;
+            int diff = 0;
+		    for (RepairRule rrule : rrules)
+            {
+                for (Territory fixTerr : factories)
+                {
+                    if (!Matches.territoryHasOwnedFactory(data, player).match(fixTerr))
+            	 	    continue;
+        		    TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
+            	    diff = ta.getProduction() - ta.getUnitProduction();
+            	    diff = Math.min(diff, totIPC/2);
+                    if(diff > 0)
+                    {
+                        repairMap.add(rrule, diff);
+                        repair.put(fixTerr, repairMap);
+                        repairs = true;
+					}
 				}
         	}
+            if (repairs)
+            {
+                error = purchaseDelegate.purchaseRepair(repair);
+                leftToSpend -= diff;
+            }
     	}
-    	if (repairs)
-     		error = purchaseDelegate.purchaseRepair(repair);
+
+        //determine current risk to the capitol
+        float ourSea1 = 0.0F, ourLand1 = 0.0F, ourSea2 = 0.0F, ourLand2 = 0.0F;
+        float enemySea1 = 0.0F, enemyLand1 = 0.0F, enemySea2 = 0.0F, enemyLand2 = 0.0F, riskFactor = 1.0F;
+        float realSeaThreat = 0.0F, realLandThreat = 0.0F;
 
         SUtils.getStrengthAt(ourSea1, ourSea2, data, player, ourCapital, true, true, tFirst);
         SUtils.getStrengthAt(ourLand1, ourLand2, data, player, ourCapital, false, true, tFirst);
@@ -3892,6 +3900,47 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		//Purchase land units first
 		int landConstant = 2; //we want to loop twice to spread out our purchase
 		boolean highPriceLandUnits = false;
+		int highPrice = 0, lowPrice = 20;
+		IntegerMap<UnitType> landUnits = new IntegerMap<UnitType>();
+//		IntegerMap<UnitType> airUnits = new Integermap<UnitType>();
+		ProductionRule highRule = null;
+		for (ProductionRule ruleCheck : rules)
+		{
+			int costCheck = ruleCheck.getCosts().getInt(ipcs);
+			UnitType x = (UnitType) ruleCheck.getResults().keySet().iterator().next();
+			if (Matches.UnitTypeCanBeTransported.match(x) && !Matches.UnitTypeIsAA.match(x))
+			{
+				landUnits.add(x, costCheck); //all our land Units
+				if (costCheck > highPrice)
+				{
+					highPrice = costCheck;
+					highRule = ruleCheck;
+				}
+				if (costCheck < lowPrice)
+					lowPrice = costCheck;
+			}
+//			if (Matches.UnitTypeIsAir.match(x))
+//				airUnits.add(x, costCheck);
+		}
+		highPriceLandUnits = (highPrice*totProd) < ipcLand;
+		if (highPriceLandUnits && !doBuyAttackShips && !buyPlanesOnly)
+		{
+			if (!buyOnePlane)
+			{
+				leftToSpend -= highPrice*totProd;
+				ipcLand -= highPrice*totProd;
+				purchase.add(highRule, totProd);
+				unitCount = totProd;
+			}
+			else
+			{
+				leftToSpend -= highPrice*(totProd-1);
+				ipcLand -= highPrice*(totProd-1);
+				purchase.add(highRule, totProd-1);
+				unitCount = totProd-1;
+			}
+		}
+
 		if (((isAmphib && isLand) && (realLandThreat > 8.00F)) || (!isAmphib && realLandThreat > 12.00F))
 		{
 			landConstant = 1; //if we have a strong threat to our capitol, focus on cheapest units
@@ -3905,16 +3954,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			buyOnePlane = true;
 			highPriceLandUnits=true;
 		}
-		int highPrice = 0;
 		if (realLandThreat < 0.0F)
 			highPriceLandUnits = true;
-		for (ProductionRule ruleCheck : rules)
-		{
-			int costCheck = ruleCheck.getCosts().getInt(ipcs);
-			UnitType x = (UnitType) ruleCheck.getResults().keySet().iterator().next();
-			if (Matches.UnitTypeCanBeTransported.match(x) && !Matches.UnitTypeIsAA.match(x) && (costCheck > highPrice))
-				highPrice = costCheck;
-		}
 		if (leftToSpend > 95 && !doBuyAttackShips) //if not buying ships, buy planes
 		{
 			buyPlanesOnly = true;
