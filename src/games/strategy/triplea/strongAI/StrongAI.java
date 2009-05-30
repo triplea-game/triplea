@@ -1621,6 +1621,15 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	   {
 		  for (Territory newTerr : allTerr)
 		  {
+			 boolean enemyFound = false;
+			 Set<Territory> sNewTerr = data.getMap().getNeighbors(newTerr, 2);
+			 for (Territory cEnemyTerr : sNewTerr)
+			 {
+				 if (Matches.territoryHasEnemyUnits(player, data).match(cEnemyTerr))
+				 	enemyFound = true;
+			 }
+			 if (enemyFound)
+			     continue;
 			 Territory goPoint = eTerr[0];
 			 Route capRoute = data.getMap().getRoute(newTerr, goPoint);
 		     if (capRoute == null)
@@ -2035,7 +2044,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		for (Territory t : data.getMap())
 		{
 		   List<Unit> tPlanes = t.getUnits().getMatches(fighterAndOwned);
-		   if (tPlanes.size() <= 0)
+		   if (tPlanes.size() <= 0 || acTerr.contains(t))
 		       continue;
 		   if (acTerr.size() > 0)
 		   {
@@ -2897,12 +2906,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         CompositeMatch alliedFactories = new CompositeMatchAnd(Matches.isUnitAllied(player, data), Matches.UnitIsFactory);
         CompositeMatch enemyFactories = new CompositeMatchAnd(Matches.enemyUnit(player, data), Matches.UnitIsFactory);
         List<Unit> alreadyMoved = new ArrayList<Unit>();
+        List<Territory> alreadyCheck = new ArrayList<Territory>();
 
         final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
 
         Match<Territory> canLand = new CompositeMatchAnd<Territory>(
 
-                Matches.isTerritoryAllied(player, getPlayerBridge().getGameData()),
+                Matches.isTerritoryAllied(player, data),
                 new Match<Territory>()
                 {
                     @Override
@@ -2926,13 +2936,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         {
 			List<Unit> bomberUnits = tBomb.getUnits().getMatches(bomberUnit);
 	        List<Unit> sendBombers = new ArrayList<Unit>();
+			alreadyCheck.add(tBomb);
 			for (Unit bU : bomberUnits)
 			{
 				boolean landable = SUtils.airUnitIsLandable(bU, tBomb, myCapital, player, data);
 				if (landable)
 					sendBombers.add(bU);
 			}
-			if (bomberUnits.size() > 0 && tBomb != myCapital)
+			if (sendBombers.size() > 0 && tBomb != myCapital)
 			{
 				Route bomberRoute = data.getMap().getRoute(tBomb, myCapital);
 				moveRoutes.add(bomberRoute);
@@ -2943,263 +2954,71 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			for (Unit bU : bomberUnits)
 			{
 				Route bomberRoute2 = SUtils.findNearestNotEmpty(tBomb, canLand, routeCondition, data);
-				moveRoutes.add(bomberRoute2);
-				moveUnits.add(bomberUnits);
+				if (bomberRoute2 != null)
+				{
+					List<Unit> qAdd = new ArrayList<Unit>();
+					qAdd.add(bU);
+				    moveRoutes.add(bomberRoute2);
+				    moveUnits.add(qAdd);
+				    alreadyMoved.add(bU);
+				}
 
 				Route bomberRoute3 = SUtils.findNearest(tBomb, canLand, Matches.TerritoryIsImpassable.invert(), data);
-				moveRoutes.add(bomberRoute3);
-				moveUnits.add(bomberUnits);
+				if (bomberRoute3 != null)
+				{
+					List<Unit> qAdd = new ArrayList<Unit>();
+					qAdd.add(bU);
+				    moveRoutes.add(bomberRoute3);
+				    moveUnits.add(qAdd);
+				    alreadyMoved.add(bU);
+				}
 			}
 		}
-
-        List<Territory> fTerr = SUtils.findUnitTerr(data, player, fighterUnit);
-        for (Territory fighterTerr : fTerr)
-        {
-			List<Unit> fighterUnits = new ArrayList<Unit>(fighterTerr.getUnits().getMatches(fighterUnit));
-			List<Unit> bomberUnits2 = fighterTerr.getUnits().getMatches(bomberUnit); //might use this
-			List<Unit> ACUnits2 = fighterTerr.getUnits().getMatches(carrierUnit);
-			boolean foundOne = false;
-			List<Territory> ACTerrs = SUtils.ACTerritory(player, data);
-			if ((!fighterTerr.isWater() && delegate.getBattleTracker().wasConquered(fighterTerr)) ||
-				(fighterTerr.isWater() && fighterUnits.size() > ACUnits2.size()*2))
+		for (Territory tFight : delegateRemote.getTerritoriesWhereAirCantLand())
+		{
+			List<Unit> fighterUnits = new ArrayList<Unit>(tFight.getUnits().getMatches(fighterUnit));
+			List<Unit> ACUnits = new ArrayList<Unit>(tFight.getUnits().getMatches(carrierUnit));
+			int maxUnits = ACUnits.size()*2;
+			for (int i=1; i <= maxUnits; i++)
 			{
-				for (Territory ACTerr : ACTerrs)
+				List<Unit> newFUnits = new ArrayList<Unit>();
+				newFUnits.addAll(fighterUnits);
+				Unit removeFighter = null;
+				int movMin=7;
+				for (Unit f : newFUnits)
 				{
-					Route fRoute = data.getMap().getRoute(fighterTerr, ACTerr);
-					int rDist = fRoute.getLength();
-					if (rDist > 3)
-						continue;
-					List<Unit> myCarrierUnits = ACTerr.getUnits().getMatches(carrierUnit);
-					List<Unit> fighterOnCarrier = ACTerr.getUnits().getMatches(fighterUnit);
-					int Cspace = myCarrierUnits.size()*2 - fighterOnCarrier.size();
-					List<Unit> addFighters = new ArrayList<Unit>();
-					if (Cspace >= fighterUnits.size()) //plenty of space
+					int thisMove =TripleAUnit.get(f).getMovementLeft();
+					if (thisMove < movMin)
 					{
-						for (Unit fUnit : fighterUnits)
-						{
-							if (MoveValidator.hasEnoughMovement(fUnit, rDist))
-								addFighters.add(fUnit);
-						}
-						if (addFighters.size() > 0)
-						{
-							moveUnits.add(addFighters);
-							moveRoutes.add(fRoute);
-							fighterUnits.removeAll(addFighters);
-							foundOne = true;
-						}
-					}
-					else if (Cspace > 0)
-					{ //too many fighters to fit here
-						int takeOff = fighterUnits.size() - Cspace;
-						for (int j=0; j < takeOff; j++)
-							fighterUnits.remove(j);
-						moveUnits.add(fighterUnits);
-						moveRoutes.add(fRoute);
-						foundOne=true;
+						movMin = thisMove;
+						removeFighter = f;
 					}
 				}
-			}
-			if (fighterTerr.isWater() && fighterUnits.size() > ACUnits2.size()*2)
+				if (removeFighter != null)
+					fighterUnits.remove(removeFighter);
+			} //fighterUnits has the fighters with greatest movement remaining
+			for (Unit f1 : fighterUnits)
 			{
-				int acCounter = 1;
-				while (fighterUnits.size() > 0 && acCounter < 5) //check up to 4 terr away for an AC
+				Route fighterRoute2 = SUtils.findNearestNotEmpty(tFight, canLand, routeCondition, data);
+				if (fighterRoute2 != null)
 				{
-					List<Territory> newFTerr = SUtils.getExactNeighbors(fighterTerr, acCounter, data, false);
-					for (Territory ACTerr : newFTerr)
-					{
-						if (!ACTerr.isWater())
-							continue;
-						List<Unit> ACUnits = ACTerr.getUnits().getMatches(carrierUnit);
-						if (ACUnits.size() <= 0) //we are only going to transfer our fighters to our carrier...not allied
-							continue;
-						List<Unit> alliedFighterUnits = ACTerr.getUnits().getMatches(alliedFighterUnit);
-						List<Unit> alliedCarrierUnits = ACTerr.getUnits().getMatches(alliedCarrierUnit);
-						List<Unit> myCarrierUnits = ACTerr.getUnits().getMatches(carrierUnit);
-						List<Unit> myFighterUnits = ACTerr.getUnits().getMatches(fighterUnit);
-						List<Unit> fightersAdd = new ArrayList<Unit>();
-						int numFighterAdd = ((alliedCarrierUnits.size() - myCarrierUnits.size())*2 - (alliedFighterUnits.size() - myFighterUnits.size()));
-						int fighterSpace = myCarrierUnits.size()*2 - myFighterUnits.size();
-						if (numFighterAdd < 0)
-							fighterSpace += numFighterAdd;
-						int fighterCount = 0;
-						Route fighterRoute = data.getMap().getRoute(fighterTerr, ACTerr);
-						int fDist = fighterRoute.getLength();
-						int nDist = MoveValidator.getLeastMovement(fighterUnits);
-						int tFight = fighterUnits.size();
-						for (int jj=0; jj < 2; jj++)
-						{
-							for (int jj2=0; jj2 < tFight-1; jj2++)
-							{
-								Unit fUnit = fighterUnits.get(jj2);
-								Unit fUnit2 = fighterUnits.get(jj2+1);
-								if (TripleAUnit.get(fUnit).getMovementLeft() > TripleAUnit.get(fUnit2).getMovementLeft())
-								{// switch them
-									fighterUnits.remove(jj2);
-									fighterUnits.add(jj2+1, fUnit);
-								}
-							}
-						}
-						for (Unit uFighter : fighterUnits)
-						{
-							fighterCount++;
-							if (fighterCount <= fighterSpace && MoveValidator.hasEnoughMovement(uFighter, fDist))
-								fightersAdd.add(uFighter);
-						}
-						if (fightersAdd.size() > 0)
-						{
-							moveRoutes.add(fighterRoute);
-							moveUnits.add(fightersAdd);
-//							foundOne=true;
-							fighterUnits.removeAll(fightersAdd);
-						}
-					}
-					acCounter++;
+					List<Unit> qAdd = new ArrayList<Unit>();
+					qAdd.add(f1);
+					moveRoutes.add(fighterRoute2);
+					moveUnits.add(qAdd);
+					alreadyMoved.add(f1);
 				}
-				acCounter=4;
-				if (fighterUnits.size() > 0)
-					foundOne=false;
-				else
-					foundOne=true;
-				while (!foundOne && acCounter > 0) //check up to 4 terr away for an AC
+				Route fighterRoute3 = SUtils.findNearest(tFight, canLand, Matches.TerritoryIsImpassable.invert(), data);
+				if (fighterRoute3 != null)
 				{
-					List<Territory> newFTerr = SUtils.getExactNeighbors(fighterTerr, acCounter, data, false);
-					for (Territory ACTerr : newFTerr)
-					{
-						if (ACTerr.isWater())
-							continue;
-						if (Matches.isTerritoryAllied(player, data).match(ACTerr)) //find the closest allied territory and land
-						{
-							List<Unit> fightersAdd = new ArrayList<Unit>();
-							Route fighterRoute = data.getMap().getRoute(fighterTerr, ACTerr);
-							int fDist = fighterRoute.getLength();
-							for (Unit uFighter : fighterUnits)
-							{
-								if (MoveValidator.hasEnoughMovement(uFighter, fDist))
-									fightersAdd.add(uFighter);
-							}
-							if (fighterUnits.size() > 0)
-							{
-								moveRoutes.add(fighterRoute);
-								moveUnits.add(fighterUnits);
-								fighterUnits.removeAll(fightersAdd);
-								if (fighterUnits.size()==0)
-									foundOne=true;
-							}
-						}
-					}
-					acCounter--;
-				}
-				if (!foundOne)
-				{//look around for a territory
-					for (Unit uFighter2 : fighterUnits)
-					{
-						int flightLength = TripleAUnit.get(uFighter2).getMovementLeft();
-						if (flightLength == 0)
-							continue; //it is sunk
-						Set<Territory> checkAll = data.getMap().getNeighbors(fighterTerr, flightLength);
-						boolean gotIt = false;
-						for (Territory checkOne : checkAll)
-						{
-							if (Matches.isTerritoryOwnedBy(player).match(checkOne) && !gotIt)
-							{
-								Route checkRoute2 = data.getMap().getRoute(fighterTerr, checkOne);
-								if (checkRoute2 != null)
-								{
-									List<Unit> blankList = new ArrayList<Unit>();
-									blankList.add(uFighter2);
-									moveRoutes.add(checkRoute2);
-									moveUnits.add(blankList);
-									gotIt=true;
-									continue;
-								}
-							}
-						}
-					}
+					List<Unit> qAdd = new ArrayList<Unit>();
+					qAdd.add(f1);
+					moveRoutes.add(fighterRoute3);
+					moveUnits.add(qAdd);
+					alreadyMoved.add(f1);
 				}
 			}
-			else if (!fighterTerr.isWater() || ACUnits2.size() == 0) //none here
-			{
-				Route noAARoute = SUtils.findNearestNotEmpty(fighterTerr, canLand, routeCondition, data);
-				Route aaRoute = SUtils.findNearest(fighterTerr, canLand, Matches.TerritoryIsImpassable.invert(), data);
-				moveUnits.add(fighterUnits);
-				moveRoutes.add(noAARoute);
-				moveUnits.add(fighterUnits);
-				moveRoutes.add(aaRoute);
-			}
-//			else if (!fighterTerr.isWater() && factoryTerr.contains(fighterTerr) &&
-			else if (!fighterTerr.isWater() &&
-					  data.getMap().getNeighbors(fighterTerr, Matches.territoryHasEnemyUnits(player, data)).size()==0)
-			//don't let planes pile up somewhere
-			{//we can go toward a large group of our own units or an enemy factory
-				List<Territory> checkTwo = SUtils.getExactNeighbors(fighterTerr, 2, data, false);
-				boolean dontMovePlane = false;
-				for (Territory xx : checkTwo)
-				{
-					if (dontMovePlane)
-						continue;
-					dontMovePlane=Matches.isTerritoryEnemy(player, data).match(xx);
-				}
-				if (dontMovePlane)
-					continue;
-				Territory closestFact = null;
-				int factDist = 100, thisDist=0;
-				for (Territory eFact : enemyFactoryTerr)
-				{
-					thisDist = data.getMap().getDistance(fighterTerr, eFact);
-					if (thisDist < factDist)
-					{
-						factDist = thisDist;
-						closestFact = eFact;
-					}
-				}
-				if (closestFact != null)
-				{ //move towards the enemy factory
-					Route factRoute = data.getMap().getRoute(fighterTerr, closestFact);
-					List<Unit> fightersAdd = new ArrayList<Unit>();
-					for (int i=3; i>=0; i--)
-					{
-						Territory thisTerr = factRoute.getTerritories().get(i);
-						if (Matches.isTerritoryAllied(player, data).match(thisTerr) && SUtils.getNeighboringEnemyLandTerritories(data, player, thisTerr).size()==0)
-						{
-							Route fighterRoute = data.getMap().getRoute(fighterTerr, thisTerr);
-							int fDist = fighterRoute.getLength();
-							for (Unit fUnit : fighterUnits)
-							{
-								if (MoveValidator.hasEnoughMovement(fUnit, fDist))
-									fightersAdd.add(fUnit);
-							}
-							for (Unit bUnit : bomberUnits2)
-							{
-								if (MoveValidator.hasEnoughMovement(bUnit, fDist))
-									fightersAdd.add(bUnit);
-							}
-							if (fightersAdd.size() > 0)
-							{
-								moveUnits.add(fightersAdd);
-								moveRoutes.add(fighterRoute);
-								i=-1;
-							}
-						}
-					}
-				}
-			}
-
-
 		}
-        for(Territory t : delegateRemote.getTerritoriesWhereAirCantLand())
-        {
-            Route noAARoute = SUtils.findNearestNotEmpty(t, canLand, routeCondition, data);
-            Route aaRoute = SUtils.findNearest(t, canLand, Matches.TerritoryIsImpassable.invert() , data);
-			Collection<Unit> airToLand = SUtils.whatPlanesNeedToLand(false, t, player);
-
-            moveUnits.add(airToLand);
-            moveRoutes.add(noAARoute);
-
-            moveUnits.add(airToLand);
-            moveRoutes.add(aaRoute);
-        }
-
-
     }
 
     private void populateCombatMove(GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
