@@ -316,47 +316,52 @@ public class UIContext
         }
     }
         
-    private static void closeWindow(Window window)
+    private static void closeWindow(final Window window)
     {
        window.setVisible(false);
        window.dispose();
        
-       
-       //there is a bug in java (1.50._06  for linux at least)
-       //where frames are not garbage collected.
-       //
-       //http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6364875
-       //http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6368950
-       //
-       //so remove all references to everything
-       //to minimize the damage
+       SwingUtilities.invokeLater(new Runnable() {
+    
+        public void run() {
+            //there is a bug in java (1.50._06  for linux at least)
+            //where frames are not garbage collected.
+            //
+            //http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6364875
+            //http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6368950
+            //
+            //so remove all references to everything
+            //to minimize the damage
 
 
-       if(window instanceof JFrame)
-       {
-           JFrame frame = ((JFrame) window);
-           
-           JMenuBar menu = (JMenuBar) frame.getJMenuBar();
-           if(menu != null)
-           {
-               while(menu.getMenuCount() > 0)
-                   menu.remove(0);
-           }
-           
-           frame.setMenuBar(null);
-           frame.setJMenuBar(null);
-           frame.getRootPane().removeAll();           
-           frame.getRootPane().setJMenuBar(null);
-           frame.getContentPane().removeAll();
-           frame.getContentPane().setLayout(new BorderLayout());
-           frame.setContentPane(new JPanel());
-           frame.setIconImage(null);
-           
-           
-           clearInputMap(frame.getRootPane());
-           
-       }
- 
+            if(window instanceof JFrame)
+            {
+                JFrame frame = ((JFrame) window);
+                
+                JMenuBar menu = (JMenuBar) frame.getJMenuBar();
+                if(menu != null)
+                {
+                    while(menu.getMenuCount() > 0)
+                        menu.remove(0);
+                }
+                
+                frame.setMenuBar(null);
+                frame.setJMenuBar(null);
+                frame.getRootPane().removeAll();           
+                frame.getRootPane().setJMenuBar(null);
+                frame.getContentPane().removeAll();
+                frame.getContentPane().setLayout(new BorderLayout());
+                frame.setContentPane(new JPanel());
+                frame.setIconImage(null);
+                
+                
+                clearInputMap(frame.getRootPane());
+                
+            }
+
+        }
+    });
+      
        
     }
     

@@ -38,6 +38,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -140,6 +141,11 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
         	
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
             {
+                
+                if(m_setCellRenderer == null) {
+                    return new JLabel();
+                }
+                
                 INode node = (INode) value;
                 DefaultListCellRenderer renderer = (DefaultListCellRenderer) m_setCellRenderer.getListCellRendererComponent(list, getDisplayString(node), index, isSelected, cellHasFocus);
                 

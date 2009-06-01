@@ -446,7 +446,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_uiContext.shutDown();
         if(m_chatPanel != null)
         {
-            m_chatPanel.setPlayerRenderer(new DefaultListCellRenderer());
+            m_chatPanel.setPlayerRenderer(null);
             m_chatPanel.setChat(null);
         }
             
@@ -508,7 +508,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         
         m_showGameAction = null;
         m_showHistoryAction = null;
-	m_showMapOnlyAction = null;
+        m_showMapOnlyAction = null;
         m_showCommentLogAction = null;
         m_localPlayers = null;
         m_editPanel = null;

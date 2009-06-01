@@ -26,6 +26,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
@@ -102,8 +103,27 @@ public class ChatMessagePanel extends JPanel implements IChatListener
     
     
     
-    public void setChat(Chat chat)
+    public void setChat(final Chat chat)
     {
+        if(!SwingUtilities.isEventDispatchThread()) {
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                
+                    public void run() {
+                        setChat(chat);            
+                    }
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+        
+            
+        
+        
         if(m_chat != null)
         {
             m_chat.removeChatListener(this);
