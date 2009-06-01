@@ -37,7 +37,6 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.triplea.weakAI.WeakAI;
-import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -357,7 +356,7 @@ public class BattleCalculator
     public static Map<Unit, Collection<Unit>> getDependents(Collection<Unit> targets, GameData data)
     {
         //just worry about transports
-        TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
+        TransportTracker tracker = new TransportTracker();
 
         Map<Unit, Collection<Unit>> dependents = new HashMap<Unit, Collection<Unit>>();
         Iterator<Unit> iter = targets.iterator();
