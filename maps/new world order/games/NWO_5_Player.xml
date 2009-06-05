@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="New World Order 5 Player" version="2.1.1"/>
+        <info name="New World Order 5 Nations" version="2.1.1"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 

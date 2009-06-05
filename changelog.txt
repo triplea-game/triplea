@@ -1,3 +1,8 @@
+Changes for 1.0.3.4
+* Fixed the connections or E/W Romania in NWO9 (ComradeKev)
+
+* Added name_place.txt for NWO (ComradeKev)
+
 Changes for 1.0.3.3
 
 * put game name in window title (sgb)

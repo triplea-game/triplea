@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd"> 
 
 <game> 
-       <info name="New World Order 9 Player" version="1.6.1"/> 
+       <info name="New World Order 9 Nations" version="1.6.1"/> 
         
        <loader javaClass="games.strategy.triplea.TripleA"/> 
 
@@ -447,7 +447,7 @@
 <connection t1="sz60" t2="Ankara" /> 
 <connection t1="sz60" t2="Istanbul" /> 
 <connection t1="sz60" t2="Bulgaria" /> 
-<connection t1="sz60" t2="W.Romania" /> 
+<connection t1="sz60" t2="E.Romania" /> 
 <connection t1="sz60" t2="Odessa" /> 
 <connection t1="sz60" t2="sz61" /> 
 <connection t1="sz61" t2="Odessa" /> 
@@ -800,8 +800,8 @@
 <connection t1="Ukrainskaya" t2="Lvov" /> 
 <connection t1="Ukrainskaya" t2="Belorussia" /> 
 <connection t1="Moldavskaya" t2="Odessa" /> 
-<connection t1="W.Romania" t2="Odessa" /> 
-<connection t1="Moldavskaya" t2="W.Romania" /> 
+<connection t1="E.Romania" t2="Odessa" /> 
+<connection t1="Moldavskaya" t2="E.Romania" /> 
 <connection t1="Moldavskaya" t2="Lvov" /> 
 <connection t1="Litovskaya" t2="Belorussia" /> 
 <connection t1="Litovskaya" t2="Koenigsberg" /> 
@@ -819,8 +819,8 @@
 <connection t1="E.Romania" t2="W.Romania" /> 
 <connection t1="E.Romania" t2="Bulgaria" /> 
 <connection t1="Bulgaria" t2="W.Romania" /> 
-<connection t1="E.Romania" t2="Serbia" /> 
-<connection t1="E.Romania" t2="Hungary" /> 
+<connection t1="W.Romania" t2="Serbia" /> 
+<connection t1="W.Romania" t2="Hungary" /> 
 <connection t1="Serbia" t2="Bulgaria" /> 
 <connection t1="Istanbul" t2="Bulgaria" /> 
 <connection t1="Greece" t2="Bulgaria" /> 
