@@ -221,11 +221,9 @@
 		<connection t1="Eastern France" t2="Vichy France" />
 		
 		<!-- Neutrals -->
-		<connection t1="Switzerland" t2="Turkestan" />
 		<connection t1="Germany" t2="Switzerland" />
 		<connection t1="Northern Italy" t2="Switzerland" />
 		<connection t1="Eastern France" t2="Switzerland" />
-		<connection t1="Northern Italy" t2="Switzerland" />
 		<connection t1="Vichy France" t2="Switzerland" />
 		<connection t1="Austria" t2="Switzerland" />
 		
@@ -240,7 +238,6 @@
 	    <connection t1="Central Atlantic Sea Zone" t2="British Convoy 1 Sea Zone" />
 	    <connection t1="Central Atlantic Sea Zone" t2="British Convoy 2 Sea Zone" />
 	    <connection t1="Central Atlantic Sea Zone" t2="U.S. Convoy 1 Sea Zone" />
-	    <connection t1="Central Atlantic Sea Zone" t2="Strait of Gibraltar Sea Zone" />
 	    <connection t1="Central Atlantic Sea Zone" t2="U.S. Eastern Coast Sea Zone" />
 		<connection t1="Central Atlantic Sea Zone" t2="Mid-Atlantic Sea Zone" />
 	    <connection t1="Azores Sea Sea Zone" t2="British Convoy 1 Sea Zone" />

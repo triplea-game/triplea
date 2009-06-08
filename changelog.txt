@@ -3,6 +3,12 @@ Changes for 1.0.3.4
 
 * Added name_place.txt for NWO (ComradeKev)
 
+* Updated rockets.png for Russians in NWO (ComradeKev)
+
+* Fixed some connections in Europe.xml (ComradeKev)
+
+* Added name_place.txt for Europe (ComradeKev)
+
 Changes for 1.0.3.3
 
 * put game name in window title (sgb)
