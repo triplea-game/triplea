@@ -288,8 +288,14 @@ public class BattleTracker implements java.io.Serializable
         }
 
         //deal with end territory, may be the case that
-        //a naval battle must precede th
-        if (Matches.TerritoryIsNeutral.match(route.getEnd()) && Matches.TerritoryIsEmpty.match(route.getEnd()))
+        //a naval battle must precede there
+        //Also check if there are only factory/AA units left in the neutral territory.
+        Collection<Unit> endUnits = route.getEnd().getUnits().getUnits();
+        CompositeMatch<Unit> enemyNonCom = new CompositeMatchOr<Unit>();
+        enemyNonCom.add(Matches.UnitIsFactory);
+        enemyNonCom.add(Matches.UnitIsAA);
+        if (Matches.TerritoryIsNeutral.match(route.getEnd()) && (Matches.TerritoryIsEmpty.match(route.getEnd()) || 
+        		Match.allMatch(endUnits, enemyNonCom)))
         {
             Battle precede = getDependentAmphibiousAssault(route);
             if (precede == null)
