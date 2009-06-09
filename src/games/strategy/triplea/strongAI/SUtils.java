@@ -20,10 +20,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.Iterator;
 
 public class SUtils
 {
-    
+
     public static final Match<Territory> TerritoryIsImpassableToLandUnits = new Match<Territory>()
     {
         public boolean match(Territory t)
@@ -40,7 +41,7 @@ public class SUtils
     };
     public final static Match<Territory> TerritoryIsNotImpassableToLandUnits = new InverseMatch<Territory>(TerritoryIsImpassableToLandUnits);
 
-    
+
     public static List<Unit> sortTransportUnits(List<Unit> transUnits)
     {
 		List<Unit> sorted = new ArrayList<Unit>();
@@ -449,11 +450,13 @@ public class SUtils
 	}
 
 
-    public static float getStrengthOfPotentialAttackers(Territory location, GameData data, PlayerID player, boolean tFirst)
+    public static float getStrengthOfPotentialAttackers(Territory location, GameData data, PlayerID player, boolean tFirst, boolean ignoreOnlyPlanes)
     {
         float seaStrength = 0.0F, firstStrength = 0.0F, strength=0.0F, airStrength=0.0F;
 		CompositeMatch<Unit> enemyPlane = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.enemyUnit(player, data));
 		CompositeMatch<Unit> enemyBomber = new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, Matches.enemyUnit(player, data));
+		CompositeMatch<Unit> enemyTransport = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitIsTransport);
+		Set<Territory> waterTerr = data.getMap().getNeighbors(location, Matches.TerritoryIsWater);
 
 		List<Territory> checked = new ArrayList<Territory>();
 
@@ -467,7 +470,7 @@ public class SUtils
         {
 			if (!checked.contains(t2))
 			{
-				if (data.getMap().getDistance(t2, location) < 3) //limit fighter reach to 2 sectors
+				if (data.getMap().getDistance(t2, location, Matches.TerritoryIsNotImpassable) < 3) //limit fighter reach to 2 sectors
 				{
 					List<Unit> attackPlanes = t2.getUnits().getMatches(enemyPlane);
 					airStrength += allairstrength(attackPlanes, true);
@@ -479,14 +482,27 @@ public class SUtils
 				}
 			}
 
-			if (!t2.isWater())
+			if (!t2.isWater() || !isWaterAt(location, data))
 				continue;
-			List<Unit> transports = t2.getUnits().getMatches(Matches.UnitIsTransport);
-			int transNum= transports.size();
-			seaStrength += transNum*3.5F;
+			boolean transportsCounted = false;
+			Iterator<Territory> iterTerr = waterTerr.iterator();
+			while (!transportsCounted && iterTerr.hasNext())
+            {
+				Territory waterCheck = iterTerr.next();
+				if (data.getMap().getWaterDistance(t2, waterCheck) <=2)
+				{
+			        List<Unit> transports = t2.getUnits().getMatches(enemyTransport);
+			        int transNum= transports.size();
+			        seaStrength += transNum*3.5F;
+			        transportsCounted = true;
+			    }
+			}
 		}
 
-		strength = seaStrength + firstStrength + airStrength;
+        if (ignoreOnlyPlanes && firstStrength==0.0F && seaStrength==0.0F)
+            strength = 0.0F;
+        else
+		    strength = seaStrength + firstStrength + airStrength;
 
         return strength;
     }

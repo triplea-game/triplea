@@ -155,9 +155,9 @@ public class Matches
             return (ua.getTransportCapacity() != -1 && ua.isSea());
         }
     };
-    
+
     public static final Match<Unit> UnitIsNotTransport = UnitIsTransport.invert();
-    
+
 
     public static final Match<Unit> UnitIsStrategicBomber = new Match<Unit>()
     {
@@ -428,6 +428,17 @@ public class Matches
         }
     };
 
+    public static final Match<UnitType> UnitTypeIsAAOrFactory = new Match<UnitType>()
+    {
+		public boolean match(UnitType obj)
+		{
+			UnitAttachment ua = UnitAttachment.get((UnitType) obj);
+			if (ua.isAA() || ua.isFactory())
+			   return true;
+			return false;
+		}
+	};
+
     public static final Match<Unit> UnitIsAA = new Match<Unit>()
     {
         public boolean match(Unit obj)
@@ -572,6 +583,21 @@ public class Matches
     	};
     }
 
+    public static Match<Territory> territoryHasAlliedFactory(final GameData data, final PlayerID player)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                if (!data.getAllianceTracker().isAllied(t.getOwner(), player))
+                    return false;
+                if(!t.getUnits().someMatch(Matches.UnitIsFactory))
+                    return false;
+                return true;
+            }
+        };
+    }
+
     public static Match<Territory> territoryHasOwnedFactory(final GameData data, final PlayerID player)
     {
         return new Match<Territory>()
@@ -647,7 +673,6 @@ public class Matches
     };
 
     public final static Match<Territory> TerritoryIsNotImpassable = new InverseMatch<Territory>(TerritoryIsImpassable);
-
 
     public static final Match<Battle> BattleIsEmpty = new Match<Battle>()
     {
