@@ -224,6 +224,7 @@ public class Console extends JFrame
     
      public static String getMemory()
      {
+         System.gc();
          StringBuilder buf = new StringBuilder("MEMORY\n");
             buf.append("****\n");
             buf.append("Total memory:" + Runtime.getRuntime().totalMemory());
