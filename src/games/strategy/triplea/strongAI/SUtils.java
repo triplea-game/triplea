@@ -154,7 +154,8 @@ public class SUtils
         List<Territory> checkList = getExactNeighbors(check, 1, data, false);
         for(Territory t : checkList)
         {
-            if(Matches.isTerritoryEnemyAndNotNuetralWater(player, data).match(t))
+//            if(Matches.isTerritoryEnemyAndNotNuetralWater(player, data).match(t))
+            if (Matches.isTerritoryEnemy(player, data).match(t) && !t.getOwner().isNull() && Matches.TerritoryIsNotImpassable.match(t))
                rVal.add(t);
         }
         return rVal;
@@ -178,7 +179,7 @@ public class SUtils
 		Set<Territory> checkList = data.getMap().getNeighbors(t, Matches.TerritoryIsLand);
 		for (Territory checkNeutral : checkList)
 		{
-			if (Matches.TerritoryIsNotImpassable.match(checkNeutral))
+			if (Matches.TerritoryIsNotImpassable.match(checkNeutral) && !t.getOwner().isNull())
 				isLand=true;
 		}
 		return isLand;
@@ -997,11 +998,18 @@ public class SUtils
 		Collection<Unit> seaUnits = new ArrayList<Unit>();
 		Collection<Unit> airUnits = new ArrayList<Unit>();
 		Collection<Unit> landUnits = new ArrayList<Unit>();
-		int rDist=0;
+		int rDist=0, r=2;
 		float thisStrength = 0.0F;
 
-		Collection <Territory> nearNeighbors = data.getMap().getNeighbors(ourTerr, 2);
-		nearNeighbors.add(ourTerr);
+		if (!sea)
+		    r=1;
+		if (!ourTerr.isWater() && sea)
+		    r=3; //if we have a land terr and looking at sea...look 3 out rather than 2
+		List<Territory> nearNeighbors = new ArrayList<Territory>();
+		Set <Territory> nN = data.getMap().getNeighbors(ourTerr, r);
+		nearNeighbors.addAll(nN);
+		if (ourTerr.isWater() == sea)
+		    nearNeighbors.add(ourTerr);
 		CompositeMatch<Unit> owned = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player));
 
 		CompositeMatch<Unit> seaUnit = new CompositeMatchAnd<Unit>(owned, Matches.UnitIsSea);
@@ -1050,7 +1058,7 @@ public class SUtils
 			}
 			if (rDist == 0 || rDist == 1)
 				Strength1 += thisStrength;
-			if (rDist >= 0 && rDist <=2)
+			if (rDist >= 0 && rDist <=3)
 				Strength2 += thisStrength;
 			thisStrength = 0.0F;
 			rDist = 0;
