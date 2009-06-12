@@ -380,6 +380,9 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     protected int getMaxUnitsToBePlaced(Collection<Unit> units, Territory to, PlayerID player)
     {
         Territory producer = getProducer(to, player);
+        
+        if(producer == null)
+        	return 0;
 
         //if its an original factory then unlimited production
         TerritoryAttachment ta = TerritoryAttachment.get(producer);
@@ -512,6 +515,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             PlayerID player)
     {
         Territory producer = getProducer(to, player);
+        if(producer == null)
+            return "No factory adjacent to " + to.getName();
 
         //if its an original factory then unlimited production
         TerritoryAttachment ta = TerritoryAttachment.get(producer);

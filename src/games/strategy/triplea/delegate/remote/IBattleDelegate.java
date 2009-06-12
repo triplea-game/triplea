@@ -14,6 +14,8 @@
 
 package games.strategy.triplea.delegate.remote;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
@@ -28,6 +30,12 @@ public interface IBattleDelegate extends IRemote
      * @return the battles currently waiting to be fought
      */
     public BattleListing getBattles();
+
+    /**
+     * 
+     * @return add battles that continue from a previous turn
+     */
+    public void addContinuingBattles(GameData data, PlayerID id);
     
     /**
      * Fight the battle in the given country

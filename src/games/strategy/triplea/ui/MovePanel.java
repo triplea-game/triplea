@@ -29,12 +29,16 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.BattleDelegate;
+import games.strategy.triplea.delegate.BattleTracker;
+import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveDelegate;
@@ -47,6 +51,7 @@ import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
+import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -196,6 +201,15 @@ public class MovePanel extends ActionPanel
     {
         return (IMoveDelegate) m_bridge.getRemote();
     }
+
+    private IBattleDelegate getBattleDelegate()
+    {
+        //return (IBattleDelegate) m_bridge.getRemote();
+        
+        IDelegate delegate =getData().getDelegateList().getDelegate("battle");
+        return (IBattleDelegate) delegate;
+        
+    }
     
     private void updateMoves()
     {
@@ -308,6 +322,15 @@ public class MovePanel extends ActionPanel
 
             }
             
+            //See if there are any left-over battles from previous turns
+            //TODO may remove the ignore checks for future dev and just check for enemy units in a zone
+            if(!m_nonCombat && (isIgnoreTransportInMovement(getData()) || isIgnoreSubInMovement(getData())))
+            {
+                //Kev See if there are any opposing units in territories without defined battles and add the battles..            	
+            	getBattleDelegate().addContinuingBattles(getData(), getCurrentPlayer());
+
+            }
+            
             m_moveMessage = null;
             release();
             
@@ -335,7 +358,25 @@ public class MovePanel extends ActionPanel
     });
       
     }
+    private BattleTracker getBattleTracker(GameData data)
+    {     
+    	return DelegateFinder.battleDelegate(data).getBattleTracker();
+    }
+    /**
+     * @return
+     */
+    private static boolean isIgnoreTransportInMovement(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);
+    }
 
+    /**
+     * @return
+     */
+    private static boolean isIgnoreSubInMovement(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
+    }
     
     private final Action cancelMove =  new AbstractAction(
         "Cancel")

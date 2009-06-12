@@ -12,7 +12,7 @@ Changes for 1.0.3.4
 
 * Added name_place.txt for Europe (ComradeKev)
 
-* Fixed neutrals not capturable after a failed attempt (ComradeKev)
+* Fixed neutrals not able to be captured after a failed attempt (ComradeKev)
 
 Changes for 1.0.3.3
 

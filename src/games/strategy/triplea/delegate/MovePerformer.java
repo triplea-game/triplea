@@ -182,7 +182,6 @@ public class MovePerformer implements Serializable
 
                     if (allCanBomb && targetToBomb)
                     {
-                        //TODO perhaps give message "at max damage" or something
                         bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
                     }
                     //Ignore Trn on Trn forces.

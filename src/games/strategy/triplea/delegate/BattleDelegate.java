@@ -138,6 +138,32 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         return new BattleListing(battles, bombing);
     }
 
+    public void addContinuingBattles(GameData data, PlayerID id)
+    {
+    	Collection<Territory> terrs = data.getMap().getTerritories();
+    	CompositeMatch<Territory> enemyAndOwnedUnits = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyUnits(id, data));
+    	enemyAndOwnedUnits.add(Matches.territoryHasUnitsOwnedBy(id));
+    	
+    	Collection<Territory> battleTerrs = Match.getMatches(terrs, enemyAndOwnedUnits);
+    	Iterator<Territory> terrIter = battleTerrs.iterator();
+    	while(terrIter.hasNext())
+    	{
+    		Territory terr = terrIter.next();
+    		Collection<Unit> ownedUnits = Match.getMatches(terr.getUnits().getUnits(),Matches.unitIsOwnedBy(id));
+    		
+    		if(Match.someMatch(ownedUnits, Matches.unitCanAttack(id)))
+    		{
+    			if(getBattleTracker().getPendingBattle(terr, false) == null)
+    			{
+    				//BattleDelegate();
+    				Route route = new Route();
+    				route.setStart(terr);
+    				//getBattleTracker().addBattle(route, ownedUnits, false, id, data, (IDelegateBridge) getBattleBridge(), null);    				
+    			}
+    		}    		        
+    	}    	
+    }
+    
     /**
      * @return
      */
@@ -159,6 +185,11 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         return m_battleTracker;
     }
 
+    public IDelegateBridge getBattleBridge()
+    {
+        return m_bridge;
+    }
+    
     public OriginalOwnerTracker getOriginalOwnerTracker()
     {
         return m_originalOwnerTracker;
@@ -194,7 +225,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
                     Iterator<Unit> bombarding = ListedBombardUnits.iterator();
                     if(!bombardUnits.isEmpty())
                     {
-                    	//TODO comco ask if they want to bombard                        
+                    	//ask if they want to bombard                        
                         if(!remotePlayer.selectShoreBombard(t))
                         {
                         	continue;

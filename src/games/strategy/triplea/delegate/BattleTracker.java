@@ -169,7 +169,7 @@ public class BattleTracker implements java.io.Serializable
             }
         }
     }
-
+    
     private void addBombingBattle(Route route, Collection<Unit> units, PlayerID attacker, GameData data)
     {
         Battle battle = getPendingBattle(route.getEnd(), true);
@@ -610,7 +610,7 @@ public class BattleTracker implements java.io.Serializable
             return ChangeFactory.EMPTY_CHANGE;
 
         //if just an enemy factory &/or AA then no battle
-        Collection<Unit> enemyUnits = Match.getMatches(route.getEnd().getUnits().getUnits(), Matches.enemyUnit(id, data));
+        Collection<Unit> enemyUnits = Match.getMatches(site.getUnits().getUnits(), Matches.enemyUnit(id, data));
         if (route.getEnd() != null && Match.allMatch(enemyUnits, Matches.UnitIsAAOrFactory))
             return ChangeFactory.EMPTY_CHANGE;
 
