@@ -294,7 +294,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                         }
                         
                         UIManager.setLookAndFeel(lookAndFeels.get(selectedValue));
-                        GameRunner2.setDefaultLookAndFeel(selectedValue);
+                        GameRunner2.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
                         
                         for(Frame f : Frame.getFrames()) {
                             SwingUtilities.updateComponentTreeUI(f);  

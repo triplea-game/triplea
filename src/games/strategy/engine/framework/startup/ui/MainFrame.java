@@ -122,6 +122,15 @@ public class MainFrame extends JFrame
         setVisible(true);
     }
     
+    @Override
+    public void setVisible(boolean aValue) 
+    {
+        super.setVisible(aValue);
+        if(aValue) {
+            SwingUtilities.updateComponentTreeUI(this);
+        }
+    }
+    
     private void loadGameFile(String fileName)
     {
         File f = new File(fileName);
