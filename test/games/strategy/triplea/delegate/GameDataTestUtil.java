@@ -51,6 +51,10 @@ public class GameDataTestUtil {
         return unitType("infantry", data);
     }
     
+    public static UnitType bomber(GameData data) {
+        return unitType("bomber", data);
+    }
+    
     private static UnitType unitType(String name, GameData data) {
         return data.getUnitTypeList().getUnitType(name);
     }
@@ -65,6 +69,10 @@ public class GameDataTestUtil {
 
     public static PlaceDelegate placeDelegate(GameData data) {
         return (PlaceDelegate) data.getDelegateList().getDelegate("place");
+    }
+    
+    public static BattleDelegate battleDelegate(GameData data) {
+        return (BattleDelegate) data.getDelegateList().getDelegate("battle");
     }
     
 }

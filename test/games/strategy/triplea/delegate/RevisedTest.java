@@ -32,6 +32,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.DummyDisplay;
+import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.util.CompositeMatchAnd;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.*;
@@ -194,6 +195,51 @@ public class RevisedTest extends TestCase
         assertNull(moveDelegate.move(russia.getUnits().getMatches(Matches.UnitIsAir), r) );
         //make sure they can't land, they can't because the territory was conquered
         assertEquals(1, moveDelegate.getTerritoriesWhereAirCantLand().size());
+        
+        
+    }
+    
+    public void testBombingRaid() 
+    {
+        MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+        bridge.setStepName("CombatMove");
+        moveDelegate.start(bridge, m_data);
+        bridge.setRemote(new DummyTripleAPlayer(){
+
+            @Override
+            public boolean shouldBomberBomb(Territory territory) {
+               return true;
+            }
+        });
+        
+        Territory uk = territory("United Kingdom", m_data);
+        Territory germany = territory("Germany", m_data);
+        Route route = new Route(
+            uk,
+            territory("6 Sea Zone", m_data),
+            territory("5 Sea Zone", m_data),
+            germany
+            );
+        
+        String error = moveDelegate.move(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber),
+            route);
+        assertNull(error);
+
+        BattleTracker tracker = MoveDelegate.getBattleTracker(m_data);
+        //there should be a bombing battle
+        assertTrue(tracker.hasPendingBattle(germany, true));
+        //there should not be a normal battle
+        assertFalse(tracker.hasPendingBattle(germany, false));
+        
+        //start the battle phase, this should not add a new battle
+        moveDelegate.end();        
+        battleDelegate(m_data).start(bridge, m_data);
+        
+        //there should be a bombing battle
+        assertTrue(tracker.hasPendingBattle(germany, true));
+        //there should not be a normal battle
+        assertFalse(tracker.hasPendingBattle(germany, false));
         
         
     }
@@ -673,16 +719,7 @@ public class RevisedTest extends TestCase
 
     private ITripleaPlayer getDummyPlayer()
     {
-        InvocationHandler handler = new InvocationHandler()
-        {
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
-            {
-                return null;
-            }
-        };
-        
-        return (ITripleaPlayer) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleaPlayer.class}, handler ); 
-        
+        return new DummyTripleAPlayer();
         
     }
     

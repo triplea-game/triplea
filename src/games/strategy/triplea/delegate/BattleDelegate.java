@@ -18,20 +18,31 @@
 
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.delegate.AutoSave;
+import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.util.*;
+import games.strategy.util.CompositeMatch;
+import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.Match;
 
 import java.io.Serializable;
-import java.util.*;
-
-import javax.swing.JOptionPane;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Sean Bridges
@@ -138,17 +149,21 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         return new BattleListing(battles, bombing);
     }
 
-    public void addContinuedBattles(GameData data, PlayerID id)
+    private void addContinuedSeaBattles(GameData data, PlayerID id)
     {
     	Collection<Territory> terrs = data.getMap().getTerritories();
     	CompositeMatch<Territory> enemyAndOwnedUnits = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyUnits(id, data));
     	enemyAndOwnedUnits.add(Matches.territoryHasUnitsOwnedBy(id));
     	
+    	
     	Collection<Territory> battleTerrs = Match.getMatches(terrs, enemyAndOwnedUnits);
-    	Iterator<Territory> terrIter = battleTerrs.iterator();
-    	while(terrIter.hasNext())
+    	
+    	for(Territory terr : battleTerrs)
     	{
-    		Territory terr = terrIter.next();
+    	    if(!terr.isWater()) 
+    	    {
+    	        continue;
+    	    }
     		Collection<Unit> ownedUnits = Match.getMatches(terr.getUnits().getUnits(),Matches.unitIsOwnedBy(id));
     		
     		if(Match.someMatch(ownedUnits, Matches.unitCanAttack(id)))
@@ -359,7 +374,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         PlayerID player = m_bridge.getPlayerID();
         
         //kev set up any continued battles from previous actions
-        addContinuedBattles(m_data, player);
+        addContinuedSeaBattles(m_data, player);
         
         //we want to match all sea zones with our units and enemy units
         CompositeMatch<Territory> seaWithOwnAndEnemy = new CompositeMatchAnd<Territory>();
