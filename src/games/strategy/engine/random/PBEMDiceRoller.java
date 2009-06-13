@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -88,7 +89,22 @@ public class PBEMDiceRoller implements IRandomSource
      */
     public int[] getRandom(final int max, final int count, final String annotation)
     {
-        
+        if(!SwingUtilities.isEventDispatchThread()) {
+            final AtomicReference<int[]> result = new AtomicReference<int[]>();
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                
+                    public void run() {
+                        result.set(getRandom(max, count, annotation));            
+                    }
+                });
+            } catch (InterruptedException e) {
+                throw new IllegalStateException(e);
+            } catch (InvocationTargetException e) {
+                throw new IllegalStateException(e);
+            }
+            return result.get();            
+        }
         HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, m_player1Email, m_player2Email, m_gameID, m_remoteDiceServer, m_gameUUID);
         dialog.roll();
         return dialog.getDiceRoll();
@@ -160,7 +176,7 @@ class HttpDiceRollerDialog extends JDialog
     private final IRemoteDiceServer m_diceServer;
     private final String m_gameUUID;
 
-    private Object m_lock;
+    private final Object m_lock = new Object();
 
     public boolean m_test = false;
 
@@ -267,8 +283,7 @@ class HttpDiceRollerDialog extends JDialog
         //if we are not the event thread, then start again in the event thread
         //pausing this thread until we are done
         if (!SwingUtilities.isEventDispatchThread())
-        {
-            m_lock = new Object();
+        {            
             synchronized (m_lock)
             {
 

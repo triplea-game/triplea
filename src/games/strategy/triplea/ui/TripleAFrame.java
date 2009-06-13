@@ -839,35 +839,46 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         return m_actionButtons.waitForTech();
     }
 
-    public Territory getRocketAttack(Collection<Territory> candidates, Territory from)
+    public Territory getRocketAttack(final Collection<Territory> candidates, final Territory from)
     {
 
-        JList list = new JList(new Vector<Territory>(candidates));
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setSelectedIndex(0);
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        JScrollPane scroll = new JScrollPane(list);
-        panel.add(scroll, BorderLayout.CENTER);
+        final AtomicReference<Territory> selected = new AtomicReference<Territory>();
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+            
+                public void run() {
+                    JList list = new JList(new Vector<Territory>(candidates));
+                    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                    list.setSelectedIndex(0);
+                    JPanel panel = new JPanel();
+                    panel.setLayout(new BorderLayout());
+                    JScrollPane scroll = new JScrollPane(list);
+                    panel.add(scroll, BorderLayout.CENTER);
 
-        if (from != null)
-        {
-            panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in " + from.getName()));
+                    if (from != null)
+                    {
+                        panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in " + from.getName()));
+                    }
+
+                    String[] options =
+                    { "OK", "Dont attack" };
+                    String message = "Select Rocket Target";
+
+                    int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
+                            null);
+
+                    
+                    if (selection == 0) //OK
+                        selected.set((Territory) list.getSelectedValue());
+                }
+            });
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException(e);
         }
-
-        String[] options =
-        { "OK", "Dont attack" };
-        String message = "Select Rocket Target";
-
-        int selection = EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
-                null);
-
-        Territory selected = null;
-        if (selection == 0) //OK
-            selected = (Territory) list.getSelectedValue();
-
-        return selected;
-    }
+        return selected.get();
+     }
 
     public boolean playing(PlayerID id)
     {

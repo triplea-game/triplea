@@ -1,5 +1,9 @@
 Changes for 1.0.3.4
 
+* fig bug 2801742 Rockets throw error in NWO (sgb)
+
+* Fix bug 2801740 java error in every roll in a PBEM game. (sgb)
+
 * Fixed not being able to place bid units at non-factories (ComradeKev)
 
 * Fix bug 2675636 Crash when ignoring enemy units (ComradeKev)

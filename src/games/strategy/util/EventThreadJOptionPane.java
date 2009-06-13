@@ -15,6 +15,7 @@
 package games.strategy.util;
 
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -139,6 +140,33 @@ public class EventThreadJOptionPane {
             }
         }
         return rVal.get();
+        
+    }
+
+    public static void showMessageDialog(final Frame parentComponent, final String message) {
+        if(SwingUtilities.isEventDispatchThread()) {
+            JOptionPane.showMessageDialog(parentComponent, message);
+            return;
+        }
+        
+        final CountDownLatch latch = new CountDownLatch(1);        
+        SwingUtilities.invokeLater(new Runnable() {        
+            public void run() {
+                JOptionPane.showMessageDialog(parentComponent, message);
+                latch.countDown();        
+            }
+        });
+
+        boolean done = false;
+        while(!done) {
+            try {
+                latch.await();
+                done = true;
+            } catch (InterruptedException e) {
+              //ignore   
+            }
+        }
+        return;
         
     }
         

@@ -20,6 +20,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.framework.IGame;
+import games.strategy.util.EventThreadJOptionPane;
 
 import javax.swing.*;
 
@@ -53,7 +54,7 @@ public class PlayersPanel extends JPanel
     public static void showPlayers(IGame game, Component parent)
     {
         PlayersPanel panel = new PlayersPanel(game.getPlayerManager(), game.getData());
-        JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent),panel, "Players", JOptionPane.PLAIN_MESSAGE);
+        EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent),panel, "Players", JOptionPane.PLAIN_MESSAGE);
     }
 
         
