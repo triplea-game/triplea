@@ -27,6 +27,7 @@ import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
+import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.MD5Crypt;
 
 import java.awt.BorderLayout;
@@ -244,16 +245,12 @@ public class LobbyFrame extends JFrame
     
     void shutdown()
     {
-//        int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?\nUnsaved game data will be lost.", "Exit" , JOptionPane.YES_NO_OPTION);
-//        if(rVal != JOptionPane.OK_OPTION)
-//            return;
-
         System.exit(0);
     }
 
     private void connectionToServerLost()
     {
-        JOptionPane.showMessageDialog(LobbyFrame.this, "Connection to Server Lost", "Connection Lost", JOptionPane.ERROR_MESSAGE, null);
+        EventThreadJOptionPane.showMessageDialog(LobbyFrame.this, "Connection to Server Lost", "Connection Lost", JOptionPane.ERROR_MESSAGE, null);
     }
 
 }

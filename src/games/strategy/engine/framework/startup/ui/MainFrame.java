@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import java.awt.BorderLayout;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.*;
@@ -101,6 +102,21 @@ public class MainFrame extends JFrame
      */
     public void clientLeftGame()
     {
+        if(!SwingUtilities.isEventDispatchThread()) {
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                
+                    public void run() {
+                        clientLeftGame();            
+                    }
+                });
+            } catch (InterruptedException e) {
+                throw new IllegalStateException(e);
+            } catch (InvocationTargetException e) {
+                throw new IllegalStateException(e);
+            }
+            return;
+        }
         m_gameSelectorModel.loadDefaultGame(this);
         m_setupPanelModel.showSelectType();
         setVisible(true);

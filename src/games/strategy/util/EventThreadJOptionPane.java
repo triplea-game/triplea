@@ -14,6 +14,8 @@
 
 package games.strategy.util;
 
+import games.strategy.engine.lobby.client.ui.LobbyFrame;
+
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.HeadlessException;
@@ -168,6 +170,11 @@ public class EventThreadJOptionPane {
         }
         return;
         
+    }
+    public static void showMessageDialog(Component parentComponent,
+        Object message, String title, int messageType, Icon icon)  {
+        showOptionDialog(parentComponent, message, title, JOptionPane.DEFAULT_OPTION, 
+                         messageType, icon, null, null);
     }
         
 }
