@@ -35,7 +35,7 @@ public interface IBattleDelegate extends IRemote
      * 
      * @return add battles that continue from a previous turn
      */
-    public void addContinuingBattles(GameData data, PlayerID id);
+    public void addContinuedBattles(GameData data, PlayerID id);
     
     /**
      * Fight the battle in the given country

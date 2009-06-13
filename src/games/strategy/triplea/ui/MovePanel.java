@@ -321,16 +321,7 @@ public class MovePanel extends ActionPanel
                 }
 
             }
-            
-            //See if there are any left-over battles from previous turns
-            //TODO may remove the ignore checks for future dev and just check for enemy units in a zone
-            if(!m_nonCombat && (isIgnoreTransportInMovement(getData()) || isIgnoreSubInMovement(getData())))
-            {
-                //Kev See if there are any opposing units in territories without defined battles and add the battles..            	
-            	getBattleDelegate().addContinuingBattles(getData(), getCurrentPlayer());
-
-            }
-            
+         
             m_moveMessage = null;
             release();
             

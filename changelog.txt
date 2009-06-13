@@ -1,5 +1,11 @@
 Changes for 1.0.3.4
 
+* Fixed not being able to place bid units at non-factories (ComradeKev)
+
+* Fix bug 2675636 Crash when ignoring enemy units (ComradeKev)
+
+* Fix bug 2779955 Cause battle when new/ignored units are in contested zones (ComradeKev)
+
 * Minor change to the Strong AI calculation of the strength of sea units near a territory (Kevin Moore)
 
 * Fixed the connections or E/W Romania in NWO9 (ComradeKev)

@@ -138,7 +138,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         return new BattleListing(battles, bombing);
     }
 
-    public void addContinuingBattles(GameData data, PlayerID id)
+    public void addContinuedBattles(GameData data, PlayerID id)
     {
     	Collection<Territory> terrs = data.getMap().getTerritories();
     	CompositeMatch<Territory> enemyAndOwnedUnits = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyUnits(id, data));
@@ -155,10 +155,9 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
     		{
     			if(getBattleTracker().getPendingBattle(terr, false) == null)
     			{
-    				//BattleDelegate();
     				Route route = new Route();
     				route.setStart(terr);
-    				//getBattleTracker().addBattle(route, ownedUnits, false, id, data, (IDelegateBridge) getBattleBridge(), null);    				
+    				getBattleTracker().addBattle(route, ownedUnits, false, id, data, m_bridge, null);    				
     			}
     		}    		        
     	}    	
@@ -358,6 +357,10 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
     private void setupSeaUnitsInSameSeaZoneBattles(IDelegateBridge aBridge)
     {
         PlayerID player = m_bridge.getPlayerID();
+        
+        //kev set up any continued battles from previous actions
+        addContinuedBattles(m_data, player);
+        
         //we want to match all sea zones with our units and enemy units
         CompositeMatch<Territory> seaWithOwnAndEnemy = new CompositeMatchAnd<Territory>();
         seaWithOwnAndEnemy.add(Matches.TerritoryIsWater);
@@ -382,7 +385,8 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
                         
             Battle battle = m_battleTracker.getPendingBattle(territory, false);
             List<Unit> enemyUnits = territory.getUnits().getMatches(enemyUnit);
-
+            
+           
             //Reach stalemate if all attacking and defending units are transports
             if (ignoreTransports && battle != null && Match.allMatch(attackingUnits, seaTransports) 
             		&& Match.allMatch(enemyUnits, seaTransports))
