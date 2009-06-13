@@ -6,12 +6,17 @@ import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.triplea.ui.ErrorHandler;
 
 import java.util.logging.LogManager;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 
 public class GameRunner2
 {
+    public static final String LOOK_AND_FEEL_PREF = "LookAndFeel";
+    
     public static final String TRIPLEA_GAME_PROPERTY = "triplea.game";
     public static final String TRIPLEA_HOST_PROPERTY = "triplea.host";
     public static final String TRIPLEA_PORT_PROPERTY = "triplea.port";
@@ -162,7 +167,7 @@ public class GameRunner2
         {
             try
             {
-                UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel");                
+                UIManager.setLookAndFeel(getDefaultLookAndFeel());                
             } catch(Throwable t) {
                 if(!GameRunner.isMac()) {                   
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());                    
@@ -184,5 +189,21 @@ public class GameRunner2
             e.printStackTrace();
         }
     }
+    
+    public static String getDefaultLookAndFeel() {
+        Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
+        return pref.get(LOOK_AND_FEEL_PREF, "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel");
+    }
+    
+    public static void setDefaultLookAndFeel(String lookAndFeelClassName) { 
+        Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
+        pref.put(LOOK_AND_FEEL_PREF, lookAndFeelClassName);
+        try {
+            pref.sync();
+        } catch (BackingStoreException e) {
+            e.printStackTrace();
+        }
+    }
+    
 }
 

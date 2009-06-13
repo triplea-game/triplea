@@ -1,6 +1,12 @@
 Changes for 1.0.3.4
 
-* fig bug 2801742 Rockets throw error in NWO (sgb)
+* allow switching the look and feel (sgb)
+
+* Add menu to change look and feel (sgb)
+
+* Fix bug 2799810  Admin right-click menu (sgb)
+
+* Fig bug 2801742 Rockets throw error in NWO (sgb)
 
 * Fix bug 2801740 java error in every roll in a PBEM game. (sgb)
 

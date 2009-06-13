@@ -20,6 +20,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataUtils;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
@@ -34,6 +35,8 @@ import games.strategy.triplea.printgenerator.SetupFrame;
 import games.strategy.ui.IntTextField;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -44,10 +47,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -60,6 +67,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -69,7 +77,12 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.LookAndFeel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -200,9 +213,111 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         addChatTimeMenu(menuView);
         addShowCommentLog(menuView);
         addShowGameUuid(menuView);
+        addSetLookAndFeel(menuView);
 
     }
+    
+    private boolean isJavaGreatThan5() {
+        String version = System.getProperties().getProperty("java.version");
+        return version.indexOf("1.5") == -1;
+    }
 
+    private void addSetLookAndFeel(JMenu menuView) 
+    {
+        menuView.add(new AbstractAction("Set Look and Feel...")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                Map<String,String> lookAndFeels = new LinkedHashMap<String, String>();
+                lookAndFeels.put("Default", UIManager.getSystemLookAndFeelClassName());
+                lookAndFeels.put("Metal", MetalLookAndFeel.class.getName() );
+                lookAndFeels.put("Platform Independent", UIManager.getCrossPlatformLookAndFeelClassName() );
+                
+                if(isJavaGreatThan5()) { 
+                    
+                    try
+                    {
+                        List<String> substanceLooks = Arrays.asList(new String[] {                             
+                            "org.jvnet.substance.skin.SubstanceAutumnLookAndFeel",
+                            
+                            "org.jvnet.substance.skin.SubstanceChallengerDeepLookAndFeel",
+                            "org.jvnet.substance.skin.SubstanceCremeCoffeeLookAndFeel",
+                            "org.jvnet.substance.skin.SubstanceCremeLookAndFeel",
+                            "org.jvnet.substance.skin.SubstanceDustCoffeeLookAndFeel",
+                            "org.jvnet.substance.skin.SubstanceDustLookAndFeel",
+                            "org.jvnet.substance.skin.SubstanceEmeraldDuskLookAndFeel",
+                            "org.jvnet.substance.skin.SubstanceMagmaLookAndFeel",
+                            "org.jvnet.substance.skin.SubstanceMistAquaLookAndFeel",                            
+                            "org.jvnet.substance.skin.SubstanceModerateLookAndFeel",
+                            "org.jvnet.substance.skin.SubstanceNebulaLookAndFeel",
+                            "org.jvnet.substance.skin.SubstanceRavenGraphiteGlassLookAndFeel",
+                            "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel",
+                            "org.jvnet.substance.skin.SubstanceRavenLookAndFeel",                            
+                            "org.jvnet.substance.skin.SubstanceTwilightLookAndFeel",
+                        });
+                        
+                        for(String s : substanceLooks) {
+                            Class c = Class.forName(s);
+                            LookAndFeel lf = (LookAndFeel) c.newInstance();
+                            lookAndFeels.put(lf.getName(), s);
+                        }
+                    } catch(Exception t) {
+                       t.printStackTrace();
+                    }
+                    
+                }
+                
+                
+                    
+                JList list = new JList(new Vector(lookAndFeels.keySet()));
+                
+                String currentKey = null;
+                for(String s : lookAndFeels.keySet()) {
+                    String currentName = UIManager.getLookAndFeel().getClass().getName();
+                    if(lookAndFeels.get(s).equals(currentName)) {
+                        currentKey = s;
+                        break;
+                    }
+                }
+                list.setSelectedValue(currentKey, false);
+                
+                
+                if(JOptionPane.showConfirmDialog(m_frame, list) == JOptionPane.OK_OPTION) {
+                    
+                    try {
+                        String selectedValue = (String) list.getSelectedValue();
+                        if(selectedValue == null) {
+                            return;
+                        }
+                        if(selectedValue.equals(currentKey)) {
+                            return;
+                        }
+                        
+                        UIManager.setLookAndFeel(lookAndFeels.get(selectedValue));
+                        GameRunner2.setDefaultLookAndFeel(selectedValue);
+                        
+                        for(Frame f : Frame.getFrames()) {
+                            SwingUtilities.updateComponentTreeUI(f);  
+                            Dimension size = f.getSize();
+                            f.pack();
+                            f.setSize(size);
+                        }                                                
+                    } catch (ClassNotFoundException e1) {
+                        throw new IllegalArgumentException(e1);
+                    } catch (InstantiationException e1) {
+                        throw new IllegalArgumentException(e1);
+                    } catch (IllegalAccessException e1) {
+                        throw new IllegalArgumentException(e1);                        
+                    } catch (UnsupportedLookAndFeelException e1) {
+                        throw new IllegalArgumentException(e1);
+                    }
+                }
+                
+                
+            }
+        });
+    }
+        
     private void addShowGameUuid(JMenu menuView)
     {
         menuView.add(new AbstractAction("Game UUID...")
