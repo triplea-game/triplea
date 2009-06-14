@@ -17,12 +17,19 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.display.IDisplay;
+import games.strategy.kingstable.ui.display.DummyDisplay;
 
 import java.util.Collection;
+
+import junit.framework.AssertionFailedError;
 
 public class GameDataTestUtil {
 
@@ -38,7 +45,7 @@ public class GameDataTestUtil {
     public static Territory territory(String name, GameData data) {
         Territory t = data.getMap().getTerritory(name);
         if(t == null) {
-            throw new IllegalStateException("no territory:" + t);
+            throw new IllegalStateException("no territory:" + name);
         }
         return t;
     }
@@ -74,6 +81,40 @@ public class GameDataTestUtil {
     public static BattleDelegate battleDelegate(GameData data) {
         return (BattleDelegate) data.getDelegateList().getDelegate("battle");
     }
+    
+    public static MoveDelegate moveDelegate(GameData data) {
+        return (MoveDelegate) data.getDelegateList().getDelegate("move");
+    }
+    
+    public static ITestDelegateBridge getDelegateBridge(GameData data, PlayerID player)
+    {
+        ITestDelegateBridge bridge1 = new TestDelegateBridge(data, player, (IDisplay) new DummyDisplay());
+        TestTripleADelegateBridge bridge2 = new TestTripleADelegateBridge(bridge1, data);
+        return bridge2;
+    }
+    
+    public static void load(Collection<Unit> units, Route route) {
+        if(units.isEmpty()) {
+            throw new AssertionFailedError("No units");
+        }
+        MoveDelegate moveDelegate = moveDelegate(route.getStart().getData());
+        Collection<Unit> transports = route.getEnd().getUnits().getMatches(Matches.unitIsOwnedBy(units.iterator().next().getOwner()));
+        String error = moveDelegate.move(units, route, transports);
+        if(error != null) {
+            throw new AssertionFailedError("Illegal move:" + error);
+        }
+    }
+    
+    public static void move(Collection<Unit> units, Route route) {
+        if(units.isEmpty()) {
+            throw new AssertionFailedError("No units");
+        }
+        String error = moveDelegate(route.getStart().getData()).move(units, route);
+        if(error != null) {
+            throw new AssertionFailedError("Illegal move:" + error);
+        }
+    }
+        
     
 }
 

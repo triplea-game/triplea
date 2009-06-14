@@ -41,13 +41,6 @@ public class AA50_41Test extends TestCase {
             m_data = null;
         }
 
-        private ITestDelegateBridge getDelegateBridge(PlayerID player)
-        {
-            ITestDelegateBridge bridge1 = new TestDelegateBridge(m_data, player, (IDisplay) new DummyDisplay());
-            TestTripleADelegateBridge bridge2 = new TestTripleADelegateBridge(bridge1, m_data);
-            return bridge2;
-        }
-        
       
         public void testDefendingTrasnportsAutoKilled()
         {
@@ -57,8 +50,8 @@ public class AA50_41Test extends TestCase {
             
             PlayerID british = m_data.getPlayerList().getPlayerID("British");
             
-            MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
-            ITestDelegateBridge bridge = getDelegateBridge(british);
+            MoveDelegate moveDelegate = moveDelegate(m_data);
+            ITestDelegateBridge bridge = getDelegateBridge(m_data,british);
             bridge.setStepName("CombatMove");
             moveDelegate.start(bridge, m_data);
             
@@ -80,7 +73,7 @@ public class AA50_41Test extends TestCase {
             //the transport was not removed automatically
             assertEquals(sz13.getUnits().size(), 3);
             
-            BattleDelegate bd = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
+            BattleDelegate bd = battleDelegate(m_data);
             assertFalse(bd.getBattleTracker().getPendingBattleSites(false).isEmpty());
             
         }
@@ -90,7 +83,7 @@ public class AA50_41Test extends TestCase {
         public void testUnplacedDie() 
         {
             PlaceDelegate del = placeDelegate(m_data);
-            del.start(getDelegateBridge(british(m_data)), m_data);
+            del.start(getDelegateBridge(m_data, british(m_data)), m_data);
             
             addTo(british(m_data), 
                   transports(m_data).create(1,british(m_data)));
@@ -99,5 +92,46 @@ public class AA50_41Test extends TestCase {
             
             //unplaced units die
             assertEquals(1, british(m_data).getUnits().size());        
+        }
+        
+        
+        public void testInfantryLoadOnlyTransports() 
+        {
+            
+            
+            Territory gibraltar = territory("Gibraltar", m_data);
+            //add a tank to gibralter
+            PlayerID british = british(m_data);
+            addTo(gibraltar, infantry(m_data).create(1,british));
+            
+            MoveDelegate moveDelegate = moveDelegate(m_data);
+            ITestDelegateBridge bridge = getDelegateBridge(m_data,british);
+            bridge.setStepName("CombatMove");
+            moveDelegate.start(bridge, m_data);
+            
+            Territory sz9 = territory("9 Sea Zone", m_data);
+            Territory sz13 = territory("13 Sea Zone", m_data);
+            Route sz9ToSz13 = new Route(
+                sz9,
+                territory("12 Sea Zone", m_data),
+                sz13
+            );
+            
+            //move the transport to attack, this is suicide but valid
+            move(sz9.getUnits().getMatches(Matches.UnitIsTransport), sz9ToSz13);
+            
+         
+            //load the transport
+            load(gibraltar.getUnits().getUnits(), new Route(gibraltar, sz13));
+            
+            
+            //not sure what to do here
+            //should the load have suceeded?
+            //should there be a battle
+            //currently it is wrong, because the 
+            //infantry is counted as an attacking unit
+            //and kills the transport
+            fail();
+            
         }
 }
