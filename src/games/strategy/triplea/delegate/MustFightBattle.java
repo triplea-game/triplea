@@ -1293,7 +1293,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return false;
     }
     
-    private Collection<Territory> getAttackerRetreatTerritories()
+    Collection<Territory> getAttackerRetreatTerritories()
     {
         // If attacker is all planes, just return collection of current
         // territory
@@ -1322,7 +1322,19 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 }
             });
         }
-
+        else 
+        {         
+            //the air unit may have come from a conquered or enemy territory, don't allow retreating
+            Match<Territory> conqueuredOrEnemy = new CompositeMatchOr<Territory>(
+                Matches.isTerritoryEnemy(m_attacker, m_data),
+                new CompositeMatchAnd<Territory>(
+                    Matches.TerritoryIsLand,
+                    Matches.territoryWasFoughOver(m_tracker)
+                    )
+                );
+            possible.removeAll(Match.getMatches(possible,conqueuredOrEnemy));
+        }
+        
         //the battle site is in the attacking from
         //if sea units are fighting a submerged sub
         possible.remove(m_battleSite);

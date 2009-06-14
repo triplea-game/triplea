@@ -66,6 +66,10 @@ public class GameDataTestUtil {
         return data.getUnitTypeList().getUnitType(name);
     }
     
+    public static void removeFrom(Territory t, Collection<Unit> units) {
+        new ChangePerformer(t.getData()).perform(ChangeFactory.removeUnits(t, units));
+    }
+    
     public static void addTo(Territory t, Collection<Unit> units) {
         new ChangePerformer(t.getData()).perform(ChangeFactory.addUnits(t, units));
     }

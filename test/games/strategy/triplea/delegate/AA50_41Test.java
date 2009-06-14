@@ -23,6 +23,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.kingstable.ui.display.DummyDisplay;
+import games.strategy.util.Match;
 import junit.framework.TestCase;
 
 public class AA50_41Test extends TestCase {
@@ -134,4 +135,63 @@ public class AA50_41Test extends TestCase {
             fail();
             
         }
+        
+        public void testCanRetreatIntoEmptyEnemyTerritory() 
+        {
+            Territory eastPoland = territory("East Poland", m_data);
+            Territory ukraine = territory("Ukraine", m_data);
+            Territory poland = territory("Poland", m_data);
+            //remove all units from east poland
+            removeFrom(eastPoland, eastPoland.getUnits().getUnits());
+            
+            
+            MoveDelegate moveDelegate = moveDelegate(m_data);
+            ITestDelegateBridge delegateBridge = getDelegateBridge(m_data, germans(m_data));
+            delegateBridge.setStepName("CombatMove");
+            moveDelegate.start(delegateBridge, m_data);
+           
+            Territory bulgaria = territory("Bulgaria Romania", m_data);
+            
+            //attack from bulgraia
+            move(bulgaria.getUnits().getUnits(), new Route(bulgaria, ukraine));
+            //add an air attack from east poland
+            move(poland.getUnits().getMatches(Matches.UnitIsAir), new Route(poland, eastPoland, ukraine));
+            
+            //we should not be able to retreat to east poland!
+            //that territory is still owned by the enemy
+            MustFightBattle battle = (MustFightBattle) 
+                MoveDelegate.getBattleTracker(m_data).getPendingBattle(ukraine, false);
+            
+            assertFalse(battle.getAttackerRetreatTerritories().contains(eastPoland));            
+        }
+        
+        public void testCanRetreatIntoBlitzedTerritory() 
+        {
+            Territory eastPoland = territory("East Poland", m_data);
+            Territory ukraine = territory("Ukraine", m_data);
+            Territory poland = territory("Poland", m_data);
+            //remove all units from east poland
+            removeFrom(eastPoland, eastPoland.getUnits().getUnits());
+            
+            
+            MoveDelegate moveDelegate = moveDelegate(m_data);
+            ITestDelegateBridge delegateBridge = getDelegateBridge(m_data, germans(m_data));
+            delegateBridge.setStepName("CombatMove");
+            moveDelegate.start(delegateBridge, m_data);
+           
+            Territory bulgaria = territory("Bulgaria Romania", m_data);
+            
+            //attack from bulgraia
+            move(bulgaria.getUnits().getUnits(), new Route(bulgaria, ukraine));
+            //add a blitz attack
+            move(poland.getUnits().getMatches(Matches.UnitIsArmour), new Route(poland, eastPoland, ukraine));
+            
+            //we should not be able to retreat to east poland!
+            //that territory was just conquered
+            MustFightBattle battle = (MustFightBattle) 
+                MoveDelegate.getBattleTracker(m_data).getPendingBattle(ukraine, false);
+            
+            assertFalse(battle.getAttackerRetreatTerritories().contains(eastPoland));            
+        }
+        
 }
