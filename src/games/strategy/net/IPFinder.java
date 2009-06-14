@@ -126,6 +126,15 @@ public class IPFinder {
     
     private static boolean isPrivateNetworkAddress(InetAddress address) {
         
+        //stupid java signed byte type
+        final byte _192 = (byte) 0xC0;
+        final byte _172 = (byte) 0xAC;
+        final byte _168 = (byte) 0xA8;
+        final byte _169 = (byte) 0xA9;
+        final byte _252 = (byte) 0xFC;
+        final byte _254 = (byte) 0xFE;
+        
+        
         byte[] bytes = address.getAddress();
         //ip 4
         if(bytes.length == 4)
@@ -133,28 +142,48 @@ public class IPFinder {
             //http://en.wikipedia.org/wiki/Private_network
             if(
               (bytes[0] == 10) ||
-              (bytes[0] == 172 && bytes[1] >= 16 && bytes[1] <= 31) ||
-              (bytes[0] == 192 &&  bytes[1] == 168 ) ||
-              (bytes[0] == 169 &&  bytes[1] == 254 )
+              (bytes[0] == _172 && bytes[1] >= 16 && bytes[1] <= 31) ||
+              (bytes[0] == _192 &&  bytes[1] == _168 ) ||
+              (bytes[0] == _169 &&  bytes[1] == _254 )
               )
                 return true;
         }
         //ip 6
         else {
             //http://en.wikipedia.org/wiki/IPv6#Addressing
-            if(bytes[0] ==  252 && bytes[1] == 0) {
+            if(
+                (bytes[0] ==  _252 && bytes[1] == 0) ||
+                 bytes[0] ==  _254
+              )
+                {
                 return true;
             }
         }
         
         return false;
         
-        
     }
 
     
     public static void main(String[] args) throws SocketException, UnknownHostException {
-       System.out.println(findInetAddress());
+       
+       Enumeration enum1 = NetworkInterface.getNetworkInterfaces();
+       while (enum1.hasMoreElements()) 
+       {
+           
+           NetworkInterface netface = (NetworkInterface)enum1.nextElement();
+           System.out.println("interface:" + netface);
+           Enumeration enum2 = netface.getInetAddresses();
+           while (enum2.hasMoreElements()) 
+           {
+               InetAddress ip2 = (InetAddress) enum2.nextElement();
+               System.out.println(" address:" + ip2 + " is private:" + isPrivateNetworkAddress(ip2) + " is loopback:" + ip2.isLoopbackAddress());
+           }
+           System.out.println("----------------------");
+       }
+           
+       System.out.println();
+       System.out.println("Found:" + findInetAddress());
     }
 }//end class IPFinder
 
