@@ -2,8 +2,6 @@ Changes for 1.0.3.4
 
 * Fix bug 2804677 Retreating into enemy spaces (sgb)
 
-* allow switching the look and feel (sgb)
-
 * Add menu to change look and feel (sgb)
 
 * Fix bug 2799810  Admin right-click menu (sgb)
