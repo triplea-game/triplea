@@ -302,7 +302,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
          
             dependencies.putAll(dependentUnits);
             
-            Set<UnitCategory> categorized = UnitSeperator.categorize(bombers, dependentUnits, false);
+            UnitSeperator.categorize(bombers, dependentUnits, false);
         }
         
         addDependentUnits(dependencies);
@@ -396,53 +396,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
 
         return false;
-    }
-    
-    /**
-     * Checks that there only transports, subs and/or allies on the route except at the end.
-     * AA and factory dont count as enemy.
-     */
-    private static boolean onlyIgnoredUnitsOnPath(Route route, PlayerID player, GameData data, boolean ignoreRouteEnd)
-    {
-        CompositeMatch<Unit> transportOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsSub, Matches.alliedUnit(player, data));
-        CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsTransport, Matches.alliedUnit(player, data));
-        CompositeMatch<Unit> transportOrSubOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsTransport, Matches.UnitIsSub, Matches.alliedUnit(player, data));
-        boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
-        boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
-        int routeLength = route.getLength();
-        
-        if(ignoreRouteEnd)
-        {
-            routeLength -= 1;
-        }
-            for(int i = 0; i < routeLength; i++)
-            {
-                Territory current = route.at(i);
-                if(getIgnoreTransportInMovement && getIgnoreSubInMovement && !current.getUnits().allMatch(transportOrSubOnly))              
-                    return false;
-                if(getIgnoreTransportInMovement && !getIgnoreSubInMovement && !current.getUnits().allMatch(transportOnly))
-                    return false;
-                if(!getIgnoreTransportInMovement && getIgnoreSubInMovement && !current.getUnits().allMatch(subOnly))
-                    return false;
-            }
-        
-        return true;
-    }
-    
-    /**
-     * @return
-     */
-    private static boolean isIgnoreTransportInMovement(GameData data)
-    {
-        return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);
-    }
-
-    /**
-     * @return
-     */
-    private static boolean isIgnoreSubInMovement(GameData data)
-    {
-        return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
     }
     
     public Territory getTerritory()

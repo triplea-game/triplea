@@ -23,6 +23,9 @@ import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.kingstable.ui.display.DummyDisplay;
+import games.strategy.triplea.util.DummyTripleAPlayer;
+import games.strategy.util.Match;
+import static games.strategy.triplea.delegate.GameDataTestUtil.*;
 
 import java.util.List;
 
@@ -44,24 +47,16 @@ public class AA50_42Test extends TestCase {
             m_data = null;
         }
 
-        private ITestDelegateBridge getDelegateBridge(PlayerID player)
-        {
-            ITestDelegateBridge bridge1 = new TestDelegateBridge(m_data, player, (IDisplay) new DummyDisplay());
-            TestTripleADelegateBridge bridge2 = new TestTripleADelegateBridge(bridge1, m_data);
-            return bridge2;
-        }
-        
-      
         public void testTransportAttack()
         {
             Territory sz13 = m_data.getMap().getTerritory("13 Sea Zone");
             Territory sz12 = m_data.getMap().getTerritory("12 Sea Zone");
             
             
-            PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+            PlayerID germans = germans(m_data);
 
             MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
-            ITestDelegateBridge bridge = getDelegateBridge(germans);
+            ITestDelegateBridge bridge = getDelegateBridge(m_data, germans);
             bridge.setStepName("CombatMove");
             moveDelegate.start(bridge, m_data);
 
@@ -76,10 +71,57 @@ public class AA50_42Test extends TestCase {
             
             
             String error = moveDelegate.move(transports, sz13To12);
-            assertEquals(error,null);
-            
+            assertEquals(error,null);          
         }
 
+        
+        public void testBombAndAttackEmptyTerritory()
+        {
+            Territory karrelia = territory("Karelia S.S.R.", m_data);
+            Territory baltic = territory("Baltic States", m_data);
+            Territory sz5 = territory("5 Sea Zone", m_data);
+            Territory germany = territory("Germany", m_data);
+            
+            PlayerID germans = germans(m_data);
+            
+            MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+            ITestDelegateBridge bridge = getDelegateBridge(m_data, germans);
+            bridge.setStepName("CombatMove");
+            moveDelegate.start(bridge, m_data);
+            
+            bridge.setRemote(new DummyTripleAPlayer() {
+
+                @Override
+                public boolean shouldBomberBomb(Territory territory) {
+                    return true;
+                }                
+            }
+            );
+            
+            //remove the russian units
+            removeFrom(karrelia, karrelia.getUnits().getMatches(Matches.UnitIsNotFactory));
+            
+            //move the bomber to attack
+            move(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber), 
+                new Route(germany, sz5, karrelia));
+            
+            //move an infantry to invade
+            move(baltic.getUnits().getMatches(Matches.UnitIsInfantry), 
+                new Route(baltic, karrelia));
+            
+            BattleTracker battleTracker = MoveDelegate.getBattleTracker(m_data);
+            
+            //we should have a pending land battle, and a pending bombing raid
+            assertNotNull(battleTracker.getPendingBattle(karrelia, false));
+            assertNotNull(battleTracker.getPendingBattle(karrelia, true));
+            
+            
+            //the territory should not be conquered
+            assertEquals(karrelia.getOwner(), russians(m_data));
+            
+            
+            
+        }
 
 
 }

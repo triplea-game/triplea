@@ -1,5 +1,7 @@
 Changes for 1.0.3.4
 
+* Fix bug where a territory could not be strategic bombed and conquered in the same turn (sgb)
+
 * Fix bug 2804677 Retreating into enemy spaces (sgb)
 
 * Add menu to change look and feel (sgb)

@@ -38,6 +38,10 @@ public class GameDataTestUtil {
         return data.getPlayerList().getPlayerID("Germans");
     }
     
+    public static PlayerID russians(GameData data) {
+        return data.getPlayerList().getPlayerID("Russians");
+    }
+    
     public static PlayerID british(GameData data) {
         return data.getPlayerList().getPlayerID("British");
     }
@@ -92,7 +96,7 @@ public class GameDataTestUtil {
     
     public static ITestDelegateBridge getDelegateBridge(GameData data, PlayerID player)
     {
-        ITestDelegateBridge bridge1 = new TestDelegateBridge(data, player, (IDisplay) new DummyDisplay());
+        ITestDelegateBridge bridge1 = new TestDelegateBridge(data, player, (IDisplay) new DummyDisplay());        
         TestTripleADelegateBridge bridge2 = new TestTripleADelegateBridge(bridge1, data);
         return bridge2;
     }

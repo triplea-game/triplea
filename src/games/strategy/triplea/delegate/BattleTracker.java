@@ -256,6 +256,9 @@ public class BattleTracker implements java.io.Serializable
         if (conquerable.match(route.getEnd()))
         {
             Battle precede = getDependentAmphibiousAssault(route);
+            if(precede == null) {
+                precede = getPendingBattle(route.getEnd(), true);
+            }
             if (precede == null)
             {
                 if (canBlitz.match(route.getEnd()))
