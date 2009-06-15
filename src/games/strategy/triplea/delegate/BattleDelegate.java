@@ -413,6 +413,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
             //Check for ignored units
             if (battle != null && !attackingUnits.isEmpty() && (ignoreTransports || ignoreSubs))
             {
+            	//TODO check if incoming units can attack before asking
                 ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
                 //if only enemy transports... attack them?
             	if(ignoreTransports && Match.allMatch(enemyUnits, seaTransports))

@@ -1,3 +1,17 @@
+Changes for 1.0.3.5
+
+* Fixed stopping in zone with ignored units causes movement to end (ComradeKev)
+
+* Added AA50 Technology Tree to game notes (ComradeKev)
+
+* Check defending units for attack power before popping kamikaze message (ComradeKev)
+
+* Add method to land paratroops (remove dependence on bombers) (ComradeKev)
+
+* Fix 1 AA hit kills all paratroops (ComradeKev)
+
+* Fix paratroops refusing to fight (ComradeKev)
+
 Changes for 1.0.3.4
 
 * Better internet ip detection (sgb)

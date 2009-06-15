@@ -2371,7 +2371,27 @@
 						Credits:
 						<br>
 						Triplelk Jason Clark - baseline <br>
-						Zero Pilot Mike McCaughey - integration
+						Zero Pilot Mike McCaughey - integration<br>
+						ComradeKev - custom code and rules<br>
+						Seidelin - playtesting<br>
+						<br>
+						<br>
+						<b>Technology</b><br>
+         				*** Air/Naval Tech ***<br>
+        				SUPER SUBS- subs attack at 3<br>
+        				JET POWER- fighters attack at 4<br>
+        				IMPROVED SHIPYARDS- naval units are cheaper<br>
+        				AA RADAR- AA hit on 2 or less<br>
+        				LONG RANGE AIRCRAFT- aircraft range increased by 2<br>
+        				HEAVY BOMBER- roll 2 dice for each bomber attack<br>
+        				<br>
+         				*** Land/Production Tech ***<br>
+        				IMPROVED ARTILLERY SUPPORT- artillery support 2 infantry<br>
+        				ROCKETS- AA conduct rocket attacks for 1d6 damage to production<br>
+        				PARATROOPERS- each bomber may carry 1 infantry into combat<br>
+        				INCREASED FACTORY PRODUCTION- factories produce 2 additional units, repairs 1/2 price<br>
+        				WAR BONDS- collect an 1d6 extra IPCs each turn<br>
+        				MECHANIZED INFANTRY- tanks may carry 1 infantry each for 2 spaces<br>
 					]]>	
 					</value>
 				</property>

@@ -30,6 +30,7 @@ public interface BattleStepStrings
   final static String AA_GUNS_FIRE = "AA guns fire";
   final static String SELECT_AA_CASUALTIES = "Select AA casualties";
   final static String REMOVE_AA_CASUALTIES = "Remove AA casualties";
+  final static String LAND_PARATROOPS = "Land Paratroopers";
 
   final static String NAVAL_BOMBARDMENT = "Naval bombardment";
   final static String SELECT_NAVAL_BOMBARDMENT_CASUALTIES = "Select naval bombardment casualties";

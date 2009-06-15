@@ -191,7 +191,6 @@ public class TripleAUnit extends Unit
         return m_alreadyMoved;
     }
 
-    //public void setAlreadyMoved(int alreadyMoved)
     public void setAlreadyMoved(Integer alreadyMoved)
     {
         m_alreadyMoved = alreadyMoved;

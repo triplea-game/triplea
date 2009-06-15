@@ -165,7 +165,7 @@ public class MoveValidator
     
     
     /**
-     * Tests the given unit to see if it has the movement neccessary
+     * Tests the given unit to see if it has the movement necessary
      * to move.
      * @arg alreadyMoved maps Unit -> movement
      */  
@@ -1145,6 +1145,7 @@ public class MoveValidator
 
     private static MoveValidationResult validateAirCanLand(final GameData data, Collection<Unit> units, Route route, PlayerID player, MoveValidationResult result)
     {
+    	//TODO this method needs to be revectored badly
         if (getEditMode(data))
             return result;
 

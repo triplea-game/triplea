@@ -278,31 +278,34 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             Collection<Unit> bombers = Match.getMatches(units, Matches.UnitIsStrategicBomber);
             Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsParatroop);
-          //Load capable bombers by default>
-            Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, paratroops, bombers, true, m_attacker);
-            
-            HashMap<Unit, Collection<Unit>> dependentUnits = new HashMap<Unit, Collection<Unit>>();
-            List<Unit> singleCollection = new ArrayList<Unit>();
-            for (Unit unit : unitsToCapableBombers.keySet())
+            if(!bombers.isEmpty() && !paratroops.isEmpty())
             {
-                Unit bomber = unitsToCapableBombers.get(unit);                
-                singleCollection.add(unit);
-                
-                //Set transportedBy for paratrooper
-                TripleAUnit aBomber = (TripleAUnit) bomber;
-            	TripleAUnit aUnit = (TripleAUnit) unit;
-            	change.add(ChangeFactory.unitPropertyChange(aUnit, aBomber, TripleAUnit.TRANSPORTED_BY ));            	
-                
-                //Set the dependents
-                if (dependentUnits.get(bomber) != null)
-                    dependentUnits.get(bomber).addAll(singleCollection);
-                else
-                    dependentUnits.put(bomber, singleCollection);
+            	//Load capable bombers by default>
+            	Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, paratroops, bombers, true, m_attacker);
+
+            	HashMap<Unit, Collection<Unit>> dependentUnits = new HashMap<Unit, Collection<Unit>>();
+            	List<Unit> singleCollection = new ArrayList<Unit>();
+            	for (Unit unit : unitsToCapableBombers.keySet())
+            	{
+            		Unit bomber = unitsToCapableBombers.get(unit);                
+            		singleCollection.add(unit);   
+
+            		//Set transportedBy for paratrooper
+            		//TripleAUnit aBomber = (TripleAUnit) bomber;
+            		//TripleAUnit aUnit = (TripleAUnit) unit;
+            		change.add(ChangeFactory.unitPropertyChange(unit, bomber, TripleAUnit.TRANSPORTED_BY ));            	
+
+            		//Set the dependents
+            		if (dependentUnits.get(bomber) != null)
+            			dependentUnits.get(bomber).addAll(singleCollection);
+            		else
+            			dependentUnits.put(bomber, Collections.singleton(unit));
+            	}
+
+            	dependencies.putAll(dependentUnits);
+
+            	UnitSeperator.categorize(bombers, dependentUnits, false);
             }
-         
-            dependencies.putAll(dependentUnits);
-            
-            UnitSeperator.categorize(bombers, dependentUnits, false);
         }
         
         addDependentUnits(dependencies);
@@ -319,9 +322,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         //TODO This checks for ignored sub/trns and skips the set of the attackers to 0 movement left
         //If attacker stops in an occupied territory, movement stops (battle is optional) 
-        /*if(onlyIgnoredUnitsOnPath(route, m_attacker, m_data, false))
-            return ChangeFactory.EMPTY_CHANGE;
-        */
+        if(MoveValidator.onlyIgnoredUnitsOnPath(route, m_attacker, m_data, false))
+            return change;
+        
 
         change.add(DelegateFinder.moveDelegate(m_data).markNoMovementChange(nonAir));
         return change;
@@ -615,6 +618,20 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 steps.add(NAVAL_BOMBARDMENT);
                 steps.add(SELECT_NAVAL_BOMBARDMENT_CASUALTIES);
             }
+            
+            if(!m_battleSite.isWater() && isParatroopers(m_attacker))
+            {
+            	Collection<Unit> bombers = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsStrategicBomber);
+
+            	if(!bombers.isEmpty())
+            	{
+            		Collection<Unit> dependents = getDependentUnits(bombers);
+            		if(!dependents.isEmpty())
+            		{
+            			steps.add(LAND_PARATROOPS);
+            		}
+            	}
+            }
         }
 
         //Check if defending subs can submerge before battle
@@ -836,7 +853,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             
         };        
         
-        IExecutable removeNonCombatatants = new IExecutable()
+        IExecutable removeNonCombatants = new IExecutable()
         {
 
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
@@ -844,9 +861,19 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 removeNonCombatants();
             }
             
-        };
+        }; 
+        
+        IExecutable landParatroops = new IExecutable()
+        {
+
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+            	landParatroops(bridge);
+            }
+        }; 
         //push in opposite order of execution
-        m_stack.push(removeNonCombatatants);
+        m_stack.push(landParatroops);
+        m_stack.push(removeNonCombatants);
         m_stack.push(fireNavalBombardment);
         m_stack.push(fireAAGuns);
     }
@@ -2368,38 +2395,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
                     notifyCasualtiesAA(bridge);                    
-                    removeCasualties(m_casualties, false, false, bridge, true);
-                    
-                    if(isParatroopers(m_attacker))
-                    {
-                    	Collection<Unit> bombers = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsStrategicBomber);
-
-                    	if(!bombers.isEmpty())
-                    	{
-                    		Collection<Unit> dependents = getDependentUnits(bombers);
-                    		if(!dependents.isEmpty())
-                    		{
-                    			Iterator<Unit> dependentsIter = dependents.iterator();
-
-                    			CompositeChange change = new CompositeChange();
-                    			//remove dependency from paratroops
-                    			while(dependentsIter.hasNext())
-                    			{
-                    				Unit unit = dependentsIter.next();
-                    				change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY ));
-                    			}
-                    			bridge.addChange(change);
-                    		
-                    			//remove bombers from m_dependentUnits
-                    			Iterator<Unit> bombersIter = bombers.iterator();
-                    			while(bombersIter.hasNext())
-                    			{
-                    				Unit unit = bombersIter.next();
-                    				m_dependentUnits.remove(unit);
-                    			}
-                    		}
-                    	}
-                    }
+                    removeCasualties(m_casualties, false, false, bridge, true);                    
                 }                
             };
             //push in reverse order of execution
@@ -2530,6 +2526,40 @@ public class MustFightBattle implements Battle, BattleStepStrings
         m_attackingUnits = removeNonCombatants(m_attackingUnits);
     }
 
+    private void landParatroops(IDelegateBridge bridge)
+    {
+        if(isParatroopers(m_attacker))
+        {
+        	Collection<Unit> bombers = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsStrategicBomber);
+
+        	if(!bombers.isEmpty())
+        	{
+        		Collection<Unit> dependents = getDependentUnits(bombers);
+        		if(!dependents.isEmpty())
+        		{
+        			Iterator<Unit> dependentsIter = dependents.iterator();
+
+        			CompositeChange change = new CompositeChange();
+        			//remove dependency from paratroops
+        			while(dependentsIter.hasNext())
+        			{
+        				Unit unit = dependentsIter.next();
+        				change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY ));
+        			}
+        			bridge.addChange(change);
+        		
+        			//remove bombers from m_dependentUnits
+        			Iterator<Unit> bombersIter = bombers.iterator();
+        			while(bombersIter.hasNext())
+        			{
+        				Unit unit = bombersIter.next();
+        				m_dependentUnits.remove(unit);
+        			}
+        		}
+        	}
+        }
+    }
+    
     public Collection<Unit> getDependentUnits(Collection<Unit> units)
     {
 
@@ -2601,7 +2631,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         bridge.getHistoryWriter().addChildToEvent(transcriptText, killed);
 
         bridge.addChange(killedChange);
-     
+        
         Collection<Battle> dependentBattles = m_tracker.getBlocked(this);
       //If there are NO dependent battles, check for unloads in allied territories 
         if (dependentBattles.isEmpty())        

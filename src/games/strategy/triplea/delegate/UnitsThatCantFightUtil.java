@@ -40,6 +40,9 @@ public class UnitsThatCantFightUtil
     //TODO Used to notify of kamikazi attacks
     public Collection<Territory> getTerritoriesWhereUnitsCantFight(PlayerID player)
     {
+        CompositeMatch<Unit> enemyAttackUnits = new CompositeMatchAnd<Unit>();
+        enemyAttackUnits.add(Matches.enemyUnit(player, m_data));
+        enemyAttackUnits.add(Matches.unitCanAttack(player));
         
         Collection<Territory> cantFight = new ArrayList<Territory>();
         for (Territory current : m_data.getMap())
@@ -61,7 +64,7 @@ public class UnitsThatCantFightUtil
             if(nonCombatUnits.isEmpty() || nonCombatUnits.size() != countAllOwnedUnits)
                 continue;
             
-            if(current.getUnits().someMatch(Matches.enemyUnit(player, m_data)))
+            if(current.getUnits().someMatch(enemyAttackUnits))
                 cantFight.add(current);
         }
         return cantFight;
