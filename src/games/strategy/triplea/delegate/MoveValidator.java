@@ -305,16 +305,16 @@ public class MoveValidator
                 Territory current = route.at(i);
                 if(current.isWater())
                 {
-                    if(getIgnoreTransportInMovement && getIgnoreSubInMovement && !current.getUnits().allMatch(transportOrSubOnly))              
-                        return false;
-                    if(getIgnoreTransportInMovement && !getIgnoreSubInMovement && !current.getUnits().allMatch(transportOnly))
-                        return false;
-                    if(!getIgnoreTransportInMovement && getIgnoreSubInMovement && !current.getUnits().allMatch(subOnly))
-                        return false;
+                    if(getIgnoreTransportInMovement && getIgnoreSubInMovement && current.getUnits().allMatch(transportOrSubOnly))              
+                        return true;
+                    if(getIgnoreTransportInMovement && !getIgnoreSubInMovement && current.getUnits().allMatch(transportOnly))
+                        return true;
+                    if(!getIgnoreTransportInMovement && getIgnoreSubInMovement && current.getUnits().allMatch(subOnly))
+                        return true;
                 }
             }
     	
-        return true;
+        return false;
     }
 
     public static boolean enemyDestroyerOnPath(Route route, PlayerID player, GameData data)

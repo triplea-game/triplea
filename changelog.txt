@@ -1,5 +1,7 @@
 Changes for 1.0.3.5
 
+* Fix bug 2806723 ships allowed to move through enemy navys during combat move (ComradeKev)
+
 * Fixed stopping in zone with ignored units causes movement to end (ComradeKev)
 
 * Added AA50 Technology Tree to game notes (ComradeKev)
