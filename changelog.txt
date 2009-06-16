@@ -1,5 +1,7 @@
 Changes for 1.0.3.5
 
+* Fix bug 2459410 Fighters on carriers with allied fighters can't attack (ComradeKev)
+
 * Fix bug 2807115 Air improperly calculating max distance with existing carriers (ComradeKev)
 
 * Fix exceptions when undoing a paratroop attack move (ComradeKev)
