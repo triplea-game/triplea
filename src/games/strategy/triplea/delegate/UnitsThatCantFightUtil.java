@@ -20,6 +20,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.InverseMatch;
+import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,10 +58,11 @@ public class UnitsThatCantFightUtil
 
             //All owned units
             int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatch);
+            
             //only noncombat units
-            ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.unitCanAttack(player)));
+            //ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.unitCanAttack(player)));
             Collection<Unit> nonCombatUnits = current.getUnits().getMatches(ownedUnitsMatch);
-                        
+          
             if(nonCombatUnits.isEmpty() || nonCombatUnits.size() != countAllOwnedUnits)
                 continue;
             

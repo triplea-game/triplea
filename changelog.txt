@@ -1,6 +1,12 @@
 Changes for 1.0.3.5
 
-* Fix bug 2806723 ships allowed to move through enemy navys during combat move (ComradeKev)
+* Fix bug 2807115 Air improperly calculating max distance with existing carriers (ComradeKev)
+
+* Fix exceptions when undoing a paratroop attack move (ComradeKev)
+
+* Fix aircraft being able to fly too far when building carriers (ComradeKev)
+
+* Fix bug 2806723 ships allowed to move through enemy navies during combat move (ComradeKev)
 
 * Fixed stopping in zone with ignored units causes movement to end (ComradeKev)
 

@@ -1203,11 +1203,15 @@ public class MoveValidator
         
         Match<Territory> canMoveThrough = new InverseMatch<Territory>(Matches.TerritoryIsImpassable);
         Match<Territory> notNeutral = new InverseMatch<Territory>(Matches.TerritoryIsNeutral);
+        Match<Territory> isSea = Matches.TerritoryIsWater;
         
         Match<Territory> notNeutralAndNotImpassible = new CompositeMatchAnd<Territory>(canMoveThrough, notNeutral);
         
         //find the closest land territory where everyone can land
         int closestLandTerritory = Integer.MAX_VALUE;
+
+    	int nearestFactory = Integer.MAX_VALUE;
+    	Match<Unit> ownedFactory = new CompositeMatchAnd<Unit>(Matches.UnitIsFactory, Matches.unitOwnedBy(player) );
         
         Iterator iter = data.getMap().getNeighbors(route.getEnd(), maxMovement).iterator();
     
@@ -1225,14 +1229,19 @@ public class MoveValidator
             Route noNeutralRoute = data.getMap().getRoute(route.getEnd(), territory, notNeutralAndNotImpassible); 
             if(noNeutralRoute != null)
             {
-                closestLandTerritory = Math.min(closestLandTerritory, noNeutralRoute.getLength());
+                closestLandTerritory = Math.min(closestLandTerritory, noNeutralRoute.getLength());                
             }
             //can we find a path with neutrals?
             //can we afford this path?
             Route neutralViolatingRoute = data.getMap().getRoute(route.getEnd(), territory, notNeutral);
             if((neutralViolatingRoute != null) && getNeutralCharge(data, neutralViolatingRoute) <= player.getResources().getQuantity(Constants.IPCS))
             {
-                closestLandTerritory = Math.min(closestLandTerritory, neutralViolatingRoute.getLength());                    
+                closestLandTerritory = Math.min(closestLandTerritory, neutralViolatingRoute.getLength());
+            }
+            
+            if(territory.getUnits().someMatch(ownedFactory))
+            {
+            	nearestFactory = Math.min(nearestFactory, noNeutralRoute.getLength());
             }
         }
         
@@ -1302,7 +1311,7 @@ public class MoveValidator
         IntegerMap<Integer> carrierCapacity = new IntegerMap<Integer>();
       
         //If it's > the fighter's max moves, add in the potential movement for owned carriers
-        //must be owned carriers if they're going to move
+        //must be owned carriers if they're going to move //TODO reduce this to movement left +2
         int maxMoveIncludingCarrier = maxMovement +2;
         Iterator<Territory> candidates = data.getMap().getNeighbors(route.getEnd(), maxMoveIncludingCarrier).iterator();
         while (candidates.hasNext())
@@ -1313,7 +1322,13 @@ public class MoveValidator
             if(candidateRoute == null)
                 continue;
             Integer distance = new Integer(candidateRoute.getLength());
-            
+
+            Route seaRoute = data.getMap().getRoute(route.getEnd(), territory, isSea);
+            Integer seaDistance = Integer.MAX_VALUE;
+            if(seaRoute != null)
+            {
+            	seaDistance = seaRoute.getLength();
+            }
             //we dont want to count units that moved with us
             Collection<Unit> unitsAtLocation = territory.getUnits().getMatches(Matches.alliedUnit(player, data));
             Collection<Unit> ownedUnitsAtLocation = territory.getUnits().getMatches(Matches.unitIsOwnedBy(player));
@@ -1344,18 +1359,18 @@ public class MoveValidator
                     continue;
                 alliedMustMoveCost += MoveValidator.carrierCost(mustMovePlanes);
             }
-          
+
             //If the territory is within the maxMovement
-            //if (route.getLength() < maxMovement)
             if((maxMovement - route.getLength()) >= distance)
-            	carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost);
-            //carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost - MoveValidator.carrierCost(units));
+            	carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost);            
             else 
             {
-            	//Can move OWNED carriers to get them.
-            	if(ownedCarrier.size()>0  && MoveValidator.carrierCapacity(ownedCarrier) - mustMoveWith.size() - route.getEnd().getUnits().size() >=0 && MoveValidator.hasEnoughMovement(ownedCarrier, route.getLength() - distance))
-            		carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost);
-            		//carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost - route.getEnd().getUnits().size());
+        		//Can move OWNED carriers to get them.
+            	if((maxMovement - route.getLength()) >= seaDistance-2)
+            	{
+                	if(ownedCarrier.size()>0  && MoveValidator.carrierCapacity(ownedCarrier) - mustMoveWith.size() - MoveValidator.carrierCost(airThatMustLandOnCarriers) >=0 && MoveValidator.hasEnoughMovement(ownedCarrier, route.getLength() - seaDistance))
+                		carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost);	
+            	}
             	
             }
         }
@@ -1370,9 +1385,12 @@ public class MoveValidator
         boolean lhtrCarrierProdRules = AirThatCantLandUtil.isLHTRCarrierProduction(data);
         boolean hasProducedCarriers = player.getUnits().someMatch(Matches.UnitIsCarrier);
         if (lhtrCarrierProdRules && hasProducedCarriers)
-        {
-        	placeUnits = Match.getMatches(placeUnits, Matches.UnitIsCarrier);
-        	unitsAtEnd.addAll(placeUnits);
+        { 
+        	if(nearestFactory-1 <= maxMovement - route.getLength())
+        	{
+        		placeUnits = Match.getMatches(placeUnits, Matches.UnitIsCarrier);
+        		carrierCapacity.put(new Integer(nearestFactory-1), MoveValidator.carrierCapacity(placeUnits) );        		
+        	}
         }        
         
         // check carrierMustMoveWith, and reserve carrier capacity for allied planes as required
@@ -1399,8 +1417,6 @@ public class MoveValidator
         {
             int carrierCost = UnitAttachment.get(unit.getType()).getCarrierCost();
             int movement = movementLeft.getInt(unit);
-            
-            
 
             for(int i = movement; i >=-1; i--)
             {

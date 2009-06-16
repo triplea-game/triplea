@@ -218,9 +218,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             Unit holder = dependentHolders.next();
             Collection<Unit> dependents = m_dependentUnits.get(holder);
             dependents.removeAll(units);
-
         }
-
     }
 
     public boolean isEmpty()
@@ -284,22 +282,22 @@ public class MustFightBattle implements Battle, BattleStepStrings
             	Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, paratroops, bombers, true, m_attacker);
 
             	HashMap<Unit, Collection<Unit>> dependentUnits = new HashMap<Unit, Collection<Unit>>();
-            	List<Unit> singleCollection = new ArrayList<Unit>();
+            	Collection<Unit> singleCollection = new ArrayList<Unit>();
             	for (Unit unit : unitsToCapableBombers.keySet())
             	{
+                    Collection<Unit> unitList = new ArrayList<Unit>();
+                    unitList.add(unit);
             		Unit bomber = unitsToCapableBombers.get(unit);                
-            		singleCollection.add(unit);   
+            		singleCollection.add(unit);
 
             		//Set transportedBy for paratrooper
-            		//TripleAUnit aBomber = (TripleAUnit) bomber;
-            		//TripleAUnit aUnit = (TripleAUnit) unit;
             		change.add(ChangeFactory.unitPropertyChange(unit, bomber, TripleAUnit.TRANSPORTED_BY ));            	
 
             		//Set the dependents
             		if (dependentUnits.get(bomber) != null)
-            			dependentUnits.get(bomber).addAll(singleCollection);
+            			dependentUnits.get(bomber).addAll(unitList);
             		else
-            			dependentUnits.put(bomber, Collections.singleton(unit));
+            			dependentUnits.put(bomber, unitList);
             	}
 
             	dependencies.putAll(dependentUnits);
