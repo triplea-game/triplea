@@ -734,11 +734,13 @@ class EndPoint
         } catch (IllegalAccessException e)
         {
             //this shouldnt happen
+            System.err.println("error in call:" + call);
             e.printStackTrace();
             return new RemoteMethodCallResults(e);
         }
         catch(IllegalArgumentException e) {
             //this shouldnt happen
+            System.err.println("error in call:" + call);
             e.printStackTrace();
             return new RemoteMethodCallResults(e);            
         }
