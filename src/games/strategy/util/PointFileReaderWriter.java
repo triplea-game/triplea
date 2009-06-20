@@ -278,80 +278,86 @@ public class PointFileReaderWriter
 
     private static void readMultiplePolygons(String line, HashMap<String, List<Polygon>> mapping) throws IOException
     {
-        //this loop is executed a lot when loading games
-        //so it is hand optimized
-        
-        String name = line.substring(0, line.indexOf('<')).trim();
-
-        int index = name.length();
-        
-        List<Polygon> polygons = new ArrayList<Polygon>(64);
-        ArrayList<Point> points = new ArrayList<Point>();
-        
-        final int length = line.length();
-        while(index < length)
+        try
         {
-            char current = line.charAt(index);
-            if(current == '<')
+            //this loop is executed a lot when loading games
+            //so it is hand optimized
+            
+            String name = line.substring(0, line.indexOf('<')).trim();
+    
+            int index = name.length();
+            
+            List<Polygon> polygons = new ArrayList<Polygon>(64);
+            ArrayList<Point> points = new ArrayList<Point>();
+            
+            final int length = line.length();
+            while(index < length)
             {
-                int x = 0;
-                int y = 0;
-                
-                int base = 0;
-                
-                //inside a poly
-                while(true)
+                char current = line.charAt(index);
+                if(current == '<')
                 {
-                    current = line.charAt(++index);
+                    int x = 0;
+                    int y = 0;
                     
-                    switch (current)
+                    int base = 0;
+                    
+                    //inside a poly
+                    while(true)
                     {
-                        case '0':
-                        case '1':
-                        case '2':
-                        case '3':
-                        case '4':
-                        case '5':
-                        case '6':
-                        case '7':
-                        case '8':
-                        case '9':
-                            base *= 10;
-                            base += current - '0';
-                        break;
-                        case ',':
-                            x = base;
-                            base = 0;
-                        break;
-                        case ')':
-                            y = base;
-                            base = 0;
-                            points.add(new Point(x,y));
-                        break;
-
-                        default:
-                        break;
+                        current = line.charAt(++index);
+                        
+                        switch (current)
+                        {
+                            case '0':
+                            case '1':
+                            case '2':
+                            case '3':
+                            case '4':
+                            case '5':
+                            case '6':
+                            case '7':
+                            case '8':
+                            case '9':
+                                base *= 10;
+                                base += current - '0';
+                            break;
+                            case ',':
+                                x = base;
+                                base = 0;
+                            break;
+                            case ')':
+                                y = base;
+                                base = 0;
+                                points.add(new Point(x,y));
+                            break;
+    
+                            default:
+                            break;
+                        }
+                        
+                        
+                        if(current == '>')
+                        {
+                            //end poly
+                            createPolygonFromPoints(polygons, points);
+                            points.clear();
+                            //break from while(true)
+                            break;
+                        }
                     }
                     
-                    
-                    if(current == '>')
-                    {
-                        //end poly
-                        createPolygonFromPoints(polygons, points);
-                        points.clear();
-                        //break from while(true)
-                        break;
-                    }
                 }
-                
+                index++; 
             }
-            index++; 
+            
+            if(mapping.containsKey(name))
+                throw new IOException("name found twice:" + name);
+    
+            mapping.put(name, polygons);
+        } catch(StringIndexOutOfBoundsException e) {
+            throw new IllegalStateException("Invalid line:" + line, e);
         }
         
-        if(mapping.containsKey(name))
-            throw new IOException("name found twice:" + name);
-
-        mapping.put(name, polygons);
     }
 
      private static void createPolygonFromPoints(Collection<Polygon> polygons, ArrayList<Point> points)
