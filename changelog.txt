@@ -1,5 +1,7 @@
 Changes for 1.0.3.5
 
+* fix bug 2808834 online games suddenly fail (sgb)
+
 * fix bug 2806095, missing files in mac build (sgb)
 
 * Add some AA50 test cases

@@ -25,6 +25,7 @@ import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
+import games.strategy.util.EventThreadJOptionPane;
 
 import java.awt.Component;
 import java.io.*;
@@ -136,7 +137,7 @@ public class ClientModel implements IMessengerErrorListener
         int port = props.getPort();
         if (port >= 65536 || port <= 0)
         {
-            JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
+            EventThreadJOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
@@ -154,7 +155,7 @@ public class ClientModel implements IMessengerErrorListener
         catch (Exception ioe)
         {
             ioe.printStackTrace(System.out);
-            JOptionPane.showMessageDialog(ui, "Unable to connect:" + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            EventThreadJOptionPane.showMessageDialog(ui, "Unable to connect:" + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
@@ -262,7 +263,7 @@ public class ClientModel implements IMessengerErrorListener
                 public void run()
                 {
                     m_typePanelModel.showSelectType();
-                    JOptionPane.showMessageDialog(m_ui, "Could not join game:" + reason);
+                    EventThreadJOptionPane.showMessageDialog(m_ui, "Could not join game:" + reason);
                 }
             
             });
@@ -453,7 +454,7 @@ public class ClientModel implements IMessengerErrorListener
 
     private void connectionLost()
     {
-        JOptionPane.showMessageDialog(m_ui," Connection To Server Lost", "Connection Lost", JOptionPane.ERROR_MESSAGE );
+        EventThreadJOptionPane.showMessageDialog(m_ui," Connection To Server Lost", "Connection Lost", JOptionPane.ERROR_MESSAGE );
         if(m_game != null)
         {
             m_game.shutDown();

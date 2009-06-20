@@ -14,8 +14,6 @@
 
 package games.strategy.util;
 
-import games.strategy.engine.lobby.client.ui.LobbyFrame;
-
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.HeadlessException;
@@ -176,5 +174,33 @@ public class EventThreadJOptionPane {
         showOptionDialog(parentComponent, message, title, JOptionPane.DEFAULT_OPTION, 
                          messageType, icon, null, null);
     }
+    
+    public static void showMessageDialog(final Component parentComponent,
+        final Object message) throws HeadlessException {
+        if(SwingUtilities.isEventDispatchThread()) {
+            JOptionPane.showMessageDialog(parentComponent, message);
+            return;
+        }
+        
+        final CountDownLatch latch = new CountDownLatch(1);        
+        SwingUtilities.invokeLater(new Runnable() {        
+            public void run() {
+                JOptionPane.showMessageDialog(parentComponent, message);
+                latch.countDown();        
+            }
+        });
+
+        boolean done = false;
+        while(!done) {
+            try {
+                latch.await();
+                done = true;
+            } catch (InterruptedException e) {
+              //ignore   
+            }
+        }
+        return;
+    }
+
         
 }
