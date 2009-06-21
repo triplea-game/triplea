@@ -37,6 +37,6 @@ public interface ILobbyGameController extends IRemote
      * 
      * This method may only be called by the node that is hosting this game.<p>
      */
-    public boolean testGame(GUID gameID);
+    public String testGame(GUID gameID);
     
 }

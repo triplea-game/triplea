@@ -158,7 +158,7 @@ public class LobbyGameController implements ILobbyGameController
         
     }
     
-    public boolean testGame(GUID gameID) 
+    public String testGame(GUID gameID) 
     {
         
         GameDescription description;
@@ -169,7 +169,7 @@ public class LobbyGameController implements ILobbyGameController
         
         
         if(description == null)
-            return false;
+            return "No such game found";
         
         //make sure we are being tested from the right node
         INode from = MessageContext.getSender();
@@ -186,11 +186,12 @@ public class LobbyGameController implements ILobbyGameController
             s.connect(new InetSocketAddress(host,port), 10*1000);
             s.close();
             s_logger.fine("Connection test passed for host:" + host + " port:" + port);
-            return true;
+            
+            return null;
         } catch (IOException e)
         {
             s_logger.fine("Connection test failed for host:" + host + " port:" + port + " reason:" + e.getMessage());
-            return false;
+            return "host:" +  host + " " + " port:" + port;
         }
     }
 

@@ -254,8 +254,9 @@ public class InGameLobbyWatcher
         {
             public void run()
             {
+              final String addressUsed = controller.testGame(m_gameID);
               //if the server cannot connect to us, then quit  
-              if(!controller.testGame(m_gameID)) 
+              if(addressUsed != null) 
               {  
                   if(isActive()) 
                   {
@@ -266,7 +267,8 @@ public class InGameLobbyWatcher
                          public void run()
                          {
                              String message = "Your computer is not reachable from the internet.\n" +
-                                              "Please check your firewall or router configuration.";
+                                              "Please check your firewall or router configuration.\n" +
+                                              "The server tried to connect to " + addressUsed;
                              
                             JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent),  message, "Could Not Host", JOptionPane.ERROR_MESSAGE);
                             System.exit(-1);
