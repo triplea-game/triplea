@@ -147,6 +147,15 @@ public class Matches
         }
     };
 
+    public static final Match<Unit> UnitIsCruiser = new Match<Unit>()
+    { //need something in Unit Attachment, but for now...this will work
+        public boolean match(Unit unit)
+        {
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            return (ua.isSea() && !ua.getIsDestroyer() && !ua.isTwoHit() && !ua.isSub() && (ua.getCarrierCapacity() < 1) && (ua.getTransportCapacity() < 1));
+        }
+    };
+
     public static final Match<Unit> UnitIsTransport = new Match<Unit>()
     {
         public boolean match(Unit unit)

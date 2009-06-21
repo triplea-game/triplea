@@ -1,5 +1,7 @@
 Changes for 1.0.3.5
 
+* Modify AI: Apply purchasing changes to sea units (Kevin Moore)
+
 * Show user ip/port lobby server tries to connect to when hosting a game fails because the computer is not reachable from the lobby server (sgb)
 
 *  Modified AI: purchasing for seaLion, improved blitzing, tweaked combat and non-combat to better protect capitals and factories, add comments in SUtils (Kevin Moore)

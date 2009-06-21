@@ -1393,7 +1393,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		Match<Unit> ownedAndNotMoved = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), HasntMoved, Transporting);
 		CompositeMatch<Unit> escortUnit1 = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsDestroyer);
 		CompositeMatch<Unit> escortUnit2 = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsTwoHit);
-		CompositeMatch<Unit> escortUnits = new CompositeMatchOr<Unit>(escortUnit1, escortUnit2);
+		CompositeMatch<Unit> escortUnit3 = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsCruiser);
+		CompositeMatch<Unit> escortUnits = new CompositeMatchOr<Unit>(escortUnit1, escortUnit2, escortUnit3);
 		if (moveRoutes.size() == 2) {
 			moveRoutes.remove(1);
 			moveUnits.remove(1);
@@ -3733,6 +3734,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         CompositeMatch<Unit> enemyTransport = new CompositeMatchAnd<Unit>(enemyUnit, Matches.UnitIsTransport);
         CompositeMatch<Unit> ourFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsFactory);
         CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.unitIsOwnedBy(player));
+        CompositeMatch<Unit> fighter = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanLandOnCarrier);
 
         List<Territory> factories = SUtils.findUnitTerr(data, player, ourFactories);
         List<Territory> enemyAttackShipTerr = SUtils.findUnitTerr(data, player, enemyAttackShip);
@@ -3852,10 +3854,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
 		IntegerMap<ProductionRule> bestAttack = new IntegerMap<ProductionRule>();
 		IntegerMap<ProductionRule> bestDefense = new IntegerMap<ProductionRule>();
+		boolean fighterPresent = false;
 		if (capDanger) //focus on Land Units and buy before any other decisions are made
 		{
 			Set<ProductionRule> landProd = landProductionCosts.keySet();
-			if (SUtils.findPurchaseMix(bestAttack, bestDefense, landProd, leftToSpend, totProd, data, player))
+			if (SUtils.findPurchaseMix(bestAttack, bestDefense, landProd, leftToSpend, totProd, data, player, fighterPresent))
 			{
 				for (ProductionRule rule1 : landProd)
 				{
@@ -4095,13 +4098,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		} //done buying factories...only buy 1
 
-		if (!capDanger && !buyPlanesOnly)
+		int maxBuy = totProd;
+		if (buyOnePlane)
+			maxBuy--;
+		if (!capDanger && !buyPlanesOnly) //attack oriented land units
 		{
-			int maxBuy = totProd;
-			if (buyOnePlane)
-				maxBuy--;
 			Set<ProductionRule> landProd = landProductionCosts.keySet();
-			if (SUtils.findPurchaseMix(bestAttack, bestDefense, landProd, ipcLand, totProd, data, player))
+			if (SUtils.findPurchaseMix(bestAttack, bestDefense, landProd, ipcLand, maxBuy, data, player, fighterPresent))
 			{
 				for (ProductionRule rule1 : landProd)
 				{
@@ -4110,6 +4113,26 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					int cost = rule1.getCosts().getInt(ipcs);
 					leftToSpend -= cost*buyThese;
 					ipcLand -= cost*buyThese;
+					unitCount += buyThese;
+				}
+			}
+			bestAttack.clear();
+			bestDefense.clear();
+		}
+		if (doBuyAttackShips && !buyTransports) //attack oriented sea units
+		{
+			Set<ProductionRule> seaProd = seaProductionCosts.keySet();
+			if (myCapital.getUnits().someMatch(fighter))
+				fighterPresent = true;
+			if (SUtils.findPurchaseMix(bestAttack, bestDefense, seaProd, ipcSea, maxBuy, data, player, fighterPresent))
+			{
+				for (ProductionRule rule1 : seaProd)
+				{
+					int buyThese = bestAttack.getInt(rule1);
+					purchase.add(rule1, buyThese);
+					int cost = rule1.getCosts().getInt(ipcs);
+					leftToSpend -= cost*buyThese;
+					ipcSea -= cost*buyThese;
 					unitCount += buyThese;
 				}
 			}

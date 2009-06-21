@@ -1624,7 +1624,7 @@ public class SUtils
 	 * So much more that can be done with this...track units and try to minimize or maximize the # purchased
 	 */
 
-	public static boolean findPurchaseMix(IntegerMap<ProductionRule> bestAttack, IntegerMap<ProductionRule> bestDefense, Set<ProductionRule> rules, int totIPC, int maxUnits, GameData data, PlayerID player)
+	public static boolean findPurchaseMix(IntegerMap<ProductionRule> bestAttack, IntegerMap<ProductionRule> bestDefense, Set<ProductionRule> rules, int totIPC, int maxUnits, GameData data, PlayerID player, boolean fighterPresent)
 	{
 		IntegerMap<String> parameters = new IntegerMap<String>();
 		parameters.put("attack", 0);
@@ -1645,7 +1645,7 @@ public class SUtils
 			bestDefense.put(rule, 0);
 		}
 		int countNum = 1;
-		int goodLoop = purchaseLoop (parameters, countNum, bestAttack, bestDefense, data, player);
+		int goodLoop = purchaseLoop (parameters, countNum, bestAttack, bestDefense, data, player, fighterPresent);
 		if (goodLoop > 0 && bestAttack.size() > 0 && bestDefense.size() > 0)
 			return true;
 		else
@@ -1661,7 +1661,7 @@ public class SUtils
 	 * @param bestDefense - list of the rules and the number to be purchased
 	 * @return - integer which is 1 if bestAttack has changed, 2 if bestDefense has changed, 3 if both have changed
 	 */
-	public static int purchaseLoop(IntegerMap<String> parameters, int ruleNum, IntegerMap<ProductionRule> bestAttack, IntegerMap<ProductionRule> bestDefense, GameData data, PlayerID player)
+	public static int purchaseLoop(IntegerMap<String> parameters, int ruleNum, IntegerMap<ProductionRule> bestAttack, IntegerMap<ProductionRule> bestDefense, GameData data, PlayerID player, boolean fighterPresent)
 	{
 		/*
 		 * It is expected that this is called with a subset of possible units (i.e. just land Units or just Air Units)
@@ -1707,11 +1707,14 @@ public class SUtils
 					continue;
 				UnitType x = (UnitType) rule.getResults().keySet().iterator().next();
 				UnitAttachment u = UnitAttachment.get(x);
-				int uAttack = u.getAttack(player) + (u.isTwoHit() ? 0 : 1);
-				int uDefense = u.getDefense(player)+ (u.isTwoHit() ? 0 : 1);
+				int uAttack = u.getAttack(player);
+				int uDefense = u.getDefense(player);
+				//give bonus of 1 hit per 2 units and if fighters are on the capital, a bonus for carrier
+				int bonusAttack = (u.isTwoHit() ? 1 : 0) + (uAttack > 0 && (i % 2)==0 ? 1 : 0) + (fighterPresent && u.getCarrierCapacity() > 0 ? 1 : 0);
+				int bonusDefense = (u.isTwoHit() ? 1 : 0) + (uDefense > 0 && (i % 2)==0 ? 1 : 0) + (fighterPresent && u.getCarrierCapacity() > 0 ? 2 : 0); 
 				totUnits++;
-				totAttack += uAttack;
-				totDefense += uDefense;
+				totAttack += uAttack + bonusAttack; 
+				totDefense += uDefense + bonusDefense;
 			}
 			if (totUnits < maxUnits && ruleIter.hasNext())
 			{
@@ -1719,7 +1722,7 @@ public class SUtils
 				parameters.put("defense", totDefense);
 				parameters.put("cost", totCost);
 				parameters.put("totUnits", totUnits);
-				parametersChanged = purchaseLoop(parameters, counter, bestAttack, bestDefense, data, player);
+				parametersChanged = purchaseLoop(parameters, counter, bestAttack, bestDefense, data, player, fighterPresent);
 				maxAttack = parameters.getInt("maxAttack");
 				maxDefense = parameters.getInt("maxDefense");
 				maxAttackCost = parameters.getInt("maxAttackCost");
