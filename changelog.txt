@@ -1,5 +1,7 @@
 Changes for 1.0.3.5
 
+*  Modified AI: purchasing for seaLion, improved blitzing, tweaked combat and non-combat to better protect capitals and factories, add comments in SUtils (Kevin Moore)
+
 * fix bug 2808834 online games suddenly fail (sgb)
 
 * fix bug 2806095, missing files in mac build (sgb)

@@ -1011,7 +1011,6 @@ public class Matches
 
     }
 
-
     public static Match<Territory> territoryHasEnemyLandUnits(final PlayerID player, final GameData data)
     {
         return new Match<Territory>()
@@ -1036,6 +1035,20 @@ public class Matches
 
     }
 
+    public static Match<Territory> territoryHasOwnedTransportingUnits(final PlayerID player)
+    {
+    	return new Match<Territory>()
+    	{
+    		public boolean match(Territory t)
+    		{
+    	        final CompositeMatch<Unit> match = new CompositeMatchAnd<Unit>();
+    	        match.add(unitIsOwnedBy(player));
+    	        match.add(transportIsTransporting());
+
+    	        return t.getUnits().someMatch(match);
+    		}
+    	};
+    }
     public static Match<Unit> transportCannotUnload(final Territory territory)
     {
         final TransportTracker transportTracker = new TransportTracker();
@@ -1055,6 +1068,35 @@ public class Matches
         };
     }
 
+    public static Match<Unit> transportIsNotTransporting()
+    {
+    	final TransportTracker transportTracker = new TransportTracker();
+    	
+    	return new Match<Unit>()
+    	{
+    		public boolean match(Unit transport)
+    		{
+    			if (transportTracker.isTransporting(transport))
+    				return false;
+    			return true;
+    		}
+    	};
+    }
+
+    public static Match<Unit> transportIsTransporting()
+    {
+    	final TransportTracker transportTracker = new TransportTracker();
+    	
+    	return new Match<Unit>()
+    	{
+    		public boolean match(Unit transport)
+    		{
+    			if (transportTracker.isTransporting(transport))
+    				return true;
+    			return false;
+    		}
+    	};
+    }
 
     public final static Match<Unit> UnitIsLand = new CompositeMatchAnd<Unit>( UnitIsNotSea, UnitIsNotAir);
     public final static Match<Unit> UnitIsNotLand = new InverseMatch<Unit>(UnitIsLand);
