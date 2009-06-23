@@ -20,6 +20,7 @@ import java.util.zip.ZipInputStream;
 import javax.swing.DefaultListModel;
 
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 public class NewGameChooserModel extends DefaultListModel
 {
@@ -144,7 +145,11 @@ public class NewGameChooserModel extends DefaultListModel
                 {
                     NewGameChooserEntry entry = createEntry(game.toURI());
                     entries.add(entry);
-                } catch(Exception e) {
+                } catch(SAXParseException e) {
+                    System.err.println("Could not parse:" + game + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
+                    e.printStackTrace();
+                }
+                catch(Exception e) {
                     System.err.println("Could not parse:" + game);
                     e.printStackTrace();
                 }

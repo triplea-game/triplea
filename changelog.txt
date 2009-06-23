@@ -1,4 +1,6 @@
-Changes for 1.0.3.5
+Changes for 1.0.4
+
+* show line/column of xml errors when a game fails to parse (sgb)
 
 * Modify AI: Apply purchasing changes to sea units (Kevin Moore)
 

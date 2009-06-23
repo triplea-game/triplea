@@ -71,8 +71,7 @@ import org.xml.sax.SAXException;
  */
 public class GameParser
 {
-    private static final Class<?>[] SETTER_ARGS = {String.class};
-    private static final Class<?>[] SETTER_ARGS_INT = {int.class};
+    private static final Class<?>[] SETTER_ARGS = {String.class};    
 
     private GameData data;
 
@@ -86,15 +85,15 @@ public class GameParser
             throw new IllegalArgumentException("Stream must be non null");
 
         Document doc = null;
-        try
-        {
+        
+        try {
             doc = getDocument(stream);
-        } catch(Exception e)
-        {
-            //not terribly elegant, but we cant deal with the error here
-            throw new SAXException("Error parsing stream:" + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        } catch (ParserConfigurationException e) {
+            throw new IllegalStateException(e);
         }
-
+        
 
         Node root = doc.getDocumentElement();
 
