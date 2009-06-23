@@ -186,8 +186,8 @@ public class LobbyLogin
             // this has already been dealt with
             return createAccount();
         } catch (IOException ioe)
-        {
-            ioe.printStackTrace();
+        {           
+            JOptionPane.showMessageDialog(m_parent, ioe.getMessage(), "Account creation failed", JOptionPane.ERROR_MESSAGE);
             return null;
         }
     }
