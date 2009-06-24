@@ -3251,13 +3251,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		** 4) Enemy players factories
 		*/
 
-//		openFile();
     	boolean capDanger = getCapDanger();
         float attackFactor = 1.36F;
         float attackFactor2 = 1.22F; //emergency attack...weaken enemy
         final Collection<Unit> unitsAlreadyMoved = new HashSet<Unit>();
 		List<Territory> enemyOwned = SUtils.getNeighboringEnemyLandTerritories(data, player, true);
-//		output.format("%s", "We Could Attack: "+enemyOwned+"/n");
 		boolean tFirst = transportsMayDieFirst();
 		List<Territory> alreadyAttacked = new ArrayList<Territory>();
         Territory myCapital = TerritoryAttachment.getCapital(player, data);
@@ -3283,6 +3281,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         CompositeMatch<Unit> alliedLandUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data),
         											Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotFactory);
         CompositeMatch<Unit> alliedAirLandUnit = new CompositeMatchOr<Unit>(alliedAirUnit, alliedLandUnit);
+        CompositeMatch<Unit> blitzUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBlitz);
+        CompositeMatch<Unit> enemyLandAirUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsNotSea, Matches.UnitIsNotAA, Matches.UnitIsNotFactory);
+        CompositeMatch<Territory> emptyEnemyTerr = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotNeutral(player, data));
 
         if (!ownMyCapital) //We lost our capital
         {
@@ -3351,8 +3352,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				}
 			}
 		}
-//		output.format("%s", "Our Capital: "+ myCapital + "/n  We own it" + ownMyCapital+"\n");
-//		output.format("%s", "Big Problems: " + bigProblem2+"\n");
 
         List<Collection<Unit>> xMoveUnits = new ArrayList<Collection<Unit>>();
         List<Route> xMoveRoutes = new ArrayList<Route>();
@@ -3370,7 +3369,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
             float xRS = 1000.0F;
             SUtils.inviteBlitzAttack(false, myCapital, xRS, xAlreadyMoved, xMoveUnits, xMoveRoutes, data, player, true, true);
-            boolean groundUnits = !((1000 - xRS) > 1.0F);
+            boolean groundUnits = ((1000.0F - xRS) > 1.0F);
             SUtils.invitePlaneAttack(false, myCapital, xRS, xAlreadyMoved, xMoveUnits, xMoveRoutes, data, player);
             SUtils.inviteTransports(false, myCapital, xRS, xAlreadyMoved, xMoveUnits, xMoveRoutes, data, player);
             capStrength += 1000.0F - xRS;
@@ -3438,6 +3437,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				moveUnits.addAll(xMoveUnits);
 				moveRoutes.addAll(xMoveRoutes);
 				unitsAlreadyMoved.addAll(xAlreadyMoved);
+				alreadyAttacked.add(badCapitol);
 			}
 		}
 		xMoveUnits.clear();
@@ -3454,31 +3454,82 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             {
                 //only take it with 1 unit
                 boolean taken = false;
+                Set<Territory> nextTerrs = data.getMap().getNeighbors(enemy, emptyEnemyTerr);
+                HashMap<Territory, Float> canBeTaken = new HashMap<Territory, Float>();
+                for (Territory nextOne : nextTerrs)
+                {
+                	List<Territory> myGoodNeighbors = SUtils.getNeighboringLandTerritories(data, player, nextOne);
+                	if (myGoodNeighbors.size()>0) //we own the neighbors...let them handle bringing blitz units in
+                		continue;
+                	List<Unit> totUnits = nextOne.getUnits().getMatches(enemyLandAirUnit);
+                	float thisStrength = SUtils.strength(totUnits, false, false, tFirst);
+                	canBeTaken.put(nextOne, thisStrength);
+                }
+                Set<Territory> blitzTerrs = canBeTaken.keySet();
                 for(Territory attackFrom : data.getMap().getNeighbors(enemy, Matches.territoryHasLandUnitsOwnedBy(player)))
                 {
                     if(taken)
                         break;
 					//just get an infantry at the top of the queue
-                    List<Unit> unitsSorted = SUtils.sortTransportUnits(attackFrom.getUnits().getMatches(attackable));
-
-                    for(Unit unit : unitsSorted)
+                    List<Unit> blitzUnits = attackFrom.getUnits().getMatches(blitzUnit);
+                    Territory findOne = null;
+                    if (canBeTaken.size() > 0) //we have another terr we can take
                     {
-                        moveRoutes.add(data.getMap().getRoute(attackFrom, enemy));
+                    	for (Territory attackTo : blitzTerrs)
+                    	{
+                    		if (canBeTaken.get(attackTo) < 1.0F)
+                    			findOne = attackTo;
+                    	}
+                    }
+                    if (findOne != null && !blitzUnits.isEmpty()) //use a tank
+                    {
+                    	for (Territory bT : blitzTerrs)
+                    	{
+                    		if (canBeTaken.get(bT) < 3.0F)
+                    		{
+                            	Route newRoute = new Route();
+                    			newRoute.setStart(attackFrom);
+                    			newRoute.add(enemy);
+                    			newRoute.add(bT);
+                    			Unit deleteThisOne = null;
+                    			for (Unit tank : blitzUnits)
+                    			{
+                    				if (deleteThisOne == null)
+                    				{
+                    					moveUnits.add(Collections.singleton(tank));
+                    					moveRoutes.add(newRoute);
+                    					unitsAlreadyMoved.add(tank);
+                    					deleteThisOne = tank;
+                    					alreadyAttacked.add(enemy);
+                    					emptyBadTerr.remove(enemy);
+                    				}
+                    			}
+                    			blitzUnits.remove(deleteThisOne);
+                    		}
+                    	}
+                    }
+                    else //use an infantry
+                    {
+                    	List<Unit> unitsSorted = SUtils.sortTransportUnits(attackFrom.getUnits().getMatches(attackable));
+                    	for(Unit unit : unitsSorted)
+                    	{
+                    		moveRoutes.add(data.getMap().getRoute(attackFrom, enemy));
 
-                        if(attackFrom.isWater())
-                        {
-                            List<Unit> units2 = attackFrom.getUnits().getMatches(Matches.unitIsLandAndOwnedBy(player));
-                            moveUnits.add( Util.difference(units2, unitsAlreadyMoved) );
-                            unitsAlreadyMoved.addAll(units2);
-                        }
-                        else
-                            moveUnits.add(Collections.singleton(unit));
+                    		if(attackFrom.isWater())
+                    		{
+                    			List<Unit> units2 = attackFrom.getUnits().getMatches(Matches.unitIsLandAndOwnedBy(player));
+                    			moveUnits.add( Util.difference(units2, unitsAlreadyMoved) );
+                    			unitsAlreadyMoved.addAll(units2);
+                    		}
+                    		else
+                    			moveUnits.add(Collections.singleton(unit));
 
-                        unitsAlreadyMoved.add(unit);
-                        alreadyAttacked.add(enemy);
-                        emptyBadTerr.add(enemy);
-                        taken = true;
-                        break;
+                    		unitsAlreadyMoved.add(unit);
+                    		alreadyAttacked.add(enemy);
+                    		emptyBadTerr.add(enemy);
+                    		taken = true;
+                    		break;
+                    	}
                     }
                 }
             }
@@ -3720,9 +3771,63 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
     protected void purchase(boolean purcahseForBid, int ipcsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
     {   //lot of tweaks have gone into this routine without good organization...need to cleanup
+        //breakdown Rules by type and cost
+		int highPrice = 0;
+        List<ProductionRule> rules = player.getProductionFrontier().getRules();
+        IntegerMap<ProductionRule> purchase = new IntegerMap<ProductionRule>();
+		List<ProductionRule> landProductionRules = new ArrayList<ProductionRule>();
+		List<ProductionRule> airProductionRules = new ArrayList<ProductionRule>();
+		List<ProductionRule> seaProductionRules = new ArrayList<ProductionRule>();
+		IntegerMap<ProductionRule> bestAttack = new IntegerMap<ProductionRule>();
+		IntegerMap<ProductionRule> bestDefense = new IntegerMap<ProductionRule>();
+        ProductionRule highRule = null;
+        Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
+
+        for (ProductionRule ruleCheck : rules)
+		{
+			int costCheck = ruleCheck.getCosts().getInt(ipcs);
+			UnitType x = (UnitType) ruleCheck.getResults().keySet().iterator().next();
+			if (Matches.UnitTypeIsAir.match(x))
+			{
+			    airProductionRules.add(ruleCheck);
+			}
+			else if (Matches.UnitTypeIsSea.match(x))
+			{
+				seaProductionRules.add(ruleCheck);
+			}
+			else if (!Matches.UnitTypeIsAAOrFactory.match(x))
+			{
+				if (costCheck > highPrice)
+				{
+					highPrice = costCheck;
+					highRule = ruleCheck;
+				}
+				landProductionRules.add(ruleCheck);
+			}
+		}
+
         if (purcahseForBid)
         {
-            return;
+            int buyLimit = ipcsToSpend / 2;
+            boolean bestMix = false;
+            if (ipcsToSpend < 25)
+            	bestMix = SUtils.findPurchaseMix(bestAttack, bestDefense, landProductionRules, ipcsToSpend, buyLimit, data, player, true);
+            else
+            {
+            	landProductionRules.addAll(airProductionRules);
+            	bestMix = SUtils.findPurchaseMix(bestAttack, bestDefense, landProductionRules, ipcsToSpend, buyLimit, data, player, true);
+            }
+            if (bestMix)
+            {
+				for (ProductionRule rule1 : landProductionRules)
+				{
+					int buyThese = bestAttack.getInt(rule1);
+					purchase.add(rule1, buyThese);
+				}
+            }
+	        purchaseDelegate.purchase(purchase);
+	        return;
+            
         }
 
 //        pause();
@@ -3776,13 +3881,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         boolean isAmphib = isAmphibAttack(player), factPurchased = false;
 
         Territory myCapital = TerritoryAttachment.getCapital(player, data);
-        Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
 
         int leftToSpend = player.getResources().getQuantity(ipcs );
 		purchaseT=1.00F;
 
-        List<ProductionRule> rules = player.getProductionFrontier().getRules();
-        IntegerMap<ProductionRule> purchase = new IntegerMap<ProductionRule>();
         List<RepairRule> rrules = Collections.emptyList();
         if(player.getRepairFrontier() != null) // figure out if anything needs to be repaired
         {
@@ -3822,45 +3924,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         determineCapDanger(player, data, ourLand2, enemyLand2);
         boolean capDanger = getCapDanger();
  
-        //breakdown Rules by type and cost
-		int highPrice = 0;
-        HashMap<ProductionRule, Integer> landProductionCosts = new HashMap<ProductionRule, Integer>();
-        HashMap<ProductionRule, Integer> airProductionCosts = new HashMap<ProductionRule, Integer>();
-        HashMap<ProductionRule, Integer> seaProductionCosts = new HashMap<ProductionRule, Integer>();
-        ProductionRule highRule = null;
-		for (ProductionRule ruleCheck : rules)
-		{
-			int costCheck = ruleCheck.getCosts().getInt(ipcs);
-			UnitType x = (UnitType) ruleCheck.getResults().keySet().iterator().next();
-			if (Matches.UnitTypeIsAir.match(x))
-			{
-			    airProductionCosts.put(ruleCheck, costCheck);
-			}
-			else if (Matches.UnitTypeIsSea.match(x))
-			{
-				seaProductionCosts.put(ruleCheck, costCheck);
-			}
-			else if (!Matches.UnitTypeIsAAOrFactory.match(x))
-			{
-				if (costCheck > highPrice)
-				{
-					highPrice = costCheck;
-					highRule = ruleCheck;
-				}
-				landProductionCosts.put(ruleCheck, costCheck);
-			}
-			
-		}
-
-		IntegerMap<ProductionRule> bestAttack = new IntegerMap<ProductionRule>();
-		IntegerMap<ProductionRule> bestDefense = new IntegerMap<ProductionRule>();
 		boolean fighterPresent = false;
 		if (capDanger) //focus on Land Units and buy before any other decisions are made
 		{
-			Set<ProductionRule> landProd = landProductionCosts.keySet();
-			if (SUtils.findPurchaseMix(bestAttack, bestDefense, landProd, leftToSpend, totProd, data, player, fighterPresent))
+			if (SUtils.findPurchaseMix(bestAttack, bestDefense, landProductionRules, leftToSpend, totProd, data, player, fighterPresent))
 			{
-				for (ProductionRule rule1 : landProd)
+				for (ProductionRule rule1 : landProductionRules)
 				{
 					int buyThese = bestDefense.getInt(rule1);
 					purchase.add(rule1, buyThese);
@@ -4064,12 +4133,15 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		if (landConstant !=1)
 		{
 			buyfactory = true;
+			int numFactory = 0;
+			
 			for (Territory fT2 : factories)
 			{
 				if (SUtils.hasLandRouteToEnemyOwnedCapitol(fT2, player, data))
-					buyfactory = false;
+					numFactory++;
 			}
-
+			if (numFactory >= 2 || capDanger)
+				buyfactory = false; //allow 2 factories on the same continent
 		}
 		if (buyfactory) //determine factory first to make sure enough IPC...doesn't count toward units
 		{
@@ -4103,10 +4175,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			maxBuy--;
 		if (!capDanger && !buyPlanesOnly) //attack oriented land units
 		{
-			Set<ProductionRule> landProd = landProductionCosts.keySet();
-			if (SUtils.findPurchaseMix(bestAttack, bestDefense, landProd, ipcLand, maxBuy, data, player, fighterPresent))
+			if (SUtils.findPurchaseMix(bestAttack, bestDefense, landProductionRules, ipcLand, maxBuy, data, player, fighterPresent))
 			{
-				for (ProductionRule rule1 : landProd)
+				for (ProductionRule rule1 : landProductionRules)
 				{
 					int buyThese = bestAttack.getInt(rule1);
 					purchase.add(rule1, buyThese);
@@ -4121,12 +4192,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		if (doBuyAttackShips && !buyTransports) //attack oriented sea units
 		{
-			Set<ProductionRule> seaProd = seaProductionCosts.keySet();
 			if (myCapital.getUnits().someMatch(fighter))
 				fighterPresent = true;
-			if (SUtils.findPurchaseMix(bestAttack, bestDefense, seaProd, ipcSea, maxBuy, data, player, fighterPresent))
+			if (SUtils.findPurchaseMix(bestAttack, bestDefense, seaProductionRules, ipcSea, maxBuy, data, player, fighterPresent))
 			{
-				for (ProductionRule rule1 : seaProd)
+				for (ProductionRule rule1 : seaProductionRules)
 				{
 					int buyThese = bestAttack.getInt(rule1);
 					purchase.add(rule1, buyThese);
@@ -4424,14 +4494,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         //maybe we bought a factory
         Territory factTerr = getFactory();
         if (factTerr != null)
-        	placeAllWeCanOn(data, factTerr, factTerr, factTerr, placeDelegate, player); //double terr signals factory
+        	placeAllWeCanOn(bid, data, factTerr, factTerr, factTerr, placeDelegate, player); //double terr signals factory
 
         //place in capitol first...uhhh...this is problem for America
 
         List<Territory> factoryTerritories = SUtils.findUnitTerr(data, player, ourFactory);
         //check for no factories, but still can place
         RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
-        if (ra != null && ra.getPlacementAnyTerritory()) //make them all available for placing
+        if ((ra != null && ra.getPlacementAnyTerritory()) || bid) //make them all available for placing
            factoryTerritories.addAll(SUtils.allOurTerritories(data, player));
         List<Territory> cloneFactTerritories = new ArrayList<Territory>(factoryTerritories);
         for (Territory deleteBad : cloneFactTerritories)
@@ -4528,19 +4598,19 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			seaPlaceAtTrans = landFactTerr;
 		}
 
-        placeAllWeCanOn(data, seaPlaceAtTrans, seaPlaceAtAttack, landFactTerr, placeDelegate, player);
+        placeAllWeCanOn(bid, data, seaPlaceAtTrans, seaPlaceAtAttack, landFactTerr, placeDelegate, player);
         Collections.shuffle(factoryTerritories);
         for(Territory t : factoryTerritories)
         {
 			Territory seaPlaceAt = SUtils.findASeaTerritoryToPlaceOn(t, data, player, tFirst);
 			if (seaPlaceAt == null)
 				seaPlaceAt = seaPlaceAtTrans;
-            placeAllWeCanOn(data, seaPlaceAt, seaPlaceAt, t, placeDelegate, player);
+            placeAllWeCanOn(bid, data, seaPlaceAt, seaPlaceAt, t, placeDelegate, player);
         }
     }
 
 
-    private void placeAllWeCanOn(GameData data, Territory seaPlaceAt1, Territory seaPlaceAt2, Territory placeAt, IAbstractPlaceDelegate placeDelegate, PlayerID player)
+    private void placeAllWeCanOn(boolean bid, GameData data, Territory seaPlaceAt1, Territory seaPlaceAt2, Territory placeAt, IAbstractPlaceDelegate placeDelegate, PlayerID player)
     {
         CompositeMatch<Unit> attackUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsNotTransport);
         CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport);
@@ -4576,6 +4646,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         int placementLeft3 =  pu3.getMaxUnits();
         if(placementLeft3 == -1)
             placementLeft3 = Integer.MAX_VALUE;
+        if (bid)
+        {
+        	placementLeft1 = 1000;
+        	placementLeft2 = 1000;
+        	placementLeft3 = 1000;
+        }
 
         if(!tSeaUnits.isEmpty())
         {

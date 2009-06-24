@@ -1,5 +1,7 @@
 Changes for 1.0.4
 
+* Strong AI fix bid purchasing and put in code for blitzing empty territories (Kevin Moore)
+
 * show line/column of xml errors when a game fails to parse (sgb)
 
 * Modify AI: Apply purchasing changes to sea units (Kevin Moore)

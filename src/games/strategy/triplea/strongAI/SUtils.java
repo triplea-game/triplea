@@ -1086,7 +1086,7 @@ public class SUtils
 	 * Territory should be closest to an enemy Capital
 	 * @param data
 	 * @param player
-	 * @param risk
+	 * @param risk - not really used...should pass a relative risk back
 	 * @param buyfactory
 	 * @return
 	 */
@@ -1101,20 +1101,37 @@ public class SUtils
 		for (Territory t: owned)
 		{
 			int ipcValue = TerritoryAttachment.get(t).getProduction();
-			if (ipcValue <= 2 || Matches.territoryHasOwnedFactory(data, player).match(t))
+			if (ipcValue < 2 || Matches.territoryHasOwnedFactory(data, player).match(t))
 				continue;
 			List<Territory> weOwnAll = getNeighboringEnemyLandTerritories(data, player, t);
 			if (weOwnAll.size() > 0)
 				continue;
-			Set <Territory> factCheck = data.getMap().getNeighbors(t, Matches.territoryHasOwnedFactory(data, player));
+			Set <Territory> factCheck = data.getMap().getNeighbors(t, Matches.territoryHasEnemyFactory(data, player));
 			if (factCheck.size()>0)
 				continue;
 			List<Territory> twoAway = getExactNeighbors(t, 2, data, false);
+			List<Territory> threeAway = getExactNeighbors(t, 3, data, false);
 			boolean badIdea = false;
+			float twoCheckStrength = 0.0F, threeCheckStrength = 0.0F;
 			for (Territory twoCheck : twoAway)
 			{
 				if (Matches.territoryHasEnemyUnits(player, data).match(twoCheck))
+					twoCheckStrength += strength(twoCheck.getUnits().getMatches(Matches.enemyUnit(player, data)), true, false, false);
+			}
+			float tStrength = strength(t.getUnits().getMatches(Matches.unitIsOwnedBy(player)), false, false, false);
+			if (twoCheckStrength > 10.0F)
 					badIdea = true;
+			for (Territory threeCheck : threeAway)
+			{
+				if (Matches.territoryHasEnemyUnits(player, data).match(threeCheck))
+				{ //only count it if it has a path
+					Route d1 = data.getMap().getLandRoute(threeCheck, t);
+					threeCheckStrength += strength(threeCheck.getUnits().getMatches(Matches.enemyUnit(player, data)), true, false, false);
+				}
+			}
+			if (threeCheckStrength > 15.0F)
+			{
+				badIdea = true;
 			}
 			if (badIdea)
 				continue;
@@ -1624,7 +1641,7 @@ public class SUtils
 	 * So much more that can be done with this...track units and try to minimize or maximize the # purchased
 	 */
 
-	public static boolean findPurchaseMix(IntegerMap<ProductionRule> bestAttack, IntegerMap<ProductionRule> bestDefense, Set<ProductionRule> rules, int totIPC, int maxUnits, GameData data, PlayerID player, boolean fighterPresent)
+	public static boolean findPurchaseMix(IntegerMap<ProductionRule> bestAttack, IntegerMap<ProductionRule> bestDefense, List<ProductionRule> rules, int totIPC, int maxUnits, GameData data, PlayerID player, boolean fighterPresent)
 	{
 		IntegerMap<String> parameters = new IntegerMap<String>();
 		parameters.put("attack", 0);
