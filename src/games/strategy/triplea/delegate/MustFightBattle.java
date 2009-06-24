@@ -817,12 +817,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (canAttackerRetreat() || someAirAtSea)
         {
             steps.add(m_attacker.getName() + ATTACKER_WITHDRAW);
-        } else if (canAttackerRetreatPlanes())
-        {
-            steps.add(m_attacker.getName() + PLANES_WITHDRAW);
         } else if (canAttackerRetreatPartialAmphib())
         {
             steps.add(m_attacker.getName() + NONAMPHIB_WITHDRAW);
+        } else if (canAttackerRetreatPlanes())
+        {
+            steps.add(m_attacker.getName() + PLANES_WITHDRAW);
         }
 
         return steps;
@@ -1250,7 +1250,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
      */
     private boolean canAttackerRetreatPlanes()
     {
-        return (isFourthEdition() || isAttackerRetreatPlanes()) && m_amphibious
+    	return (isFourthEdition() || isAttackerRetreatPlanes() || isPartialAmphibiousRetreat()) && m_amphibious
                 && Match.someMatch(m_attackingUnits, Matches.UnitIsAir);
     }
 
@@ -1261,6 +1261,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         if(m_amphibious && isPartialAmphibiousRetreat())
         {
+        	if (Match.someMatch(m_attackingUnits, Matches.UnitIsAir))
+        	{
+        		return true;
+        	}
+
             for(Unit unit:m_attackingUnits)
             {
                 TripleAUnit taUnit = (TripleAUnit) unit;

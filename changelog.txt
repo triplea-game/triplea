@@ -1,5 +1,13 @@
 Changes for 1.0.4
 
+* Fix bug 281534 fighter movement calculation (ComradeKev)
+
+* Moved capitol markers to better fit with AA50 reliefs (BraveHamster)
+
+* Fix bug 2810759 Non-amphib units taken as casualties before amphib units (Seidelin)
+
+* Fix bug 2807878 Planes attacking w/ amphib units can't retreat (Seidelin)
+
 * Strong AI fix bid purchasing and put in code for blitzing empty territories (Kevin Moore)
 
 * show line/column of xml errors when a game fails to parse (sgb)
@@ -8,7 +16,7 @@ Changes for 1.0.4
 
 * Show user ip/port lobby server tries to connect to when hosting a game fails because the computer is not reachable from the lobby server (sgb)
 
-*  Modified AI: purchasing for seaLion, improved blitzing, tweaked combat and non-combat to better protect capitals and factories, add comments in SUtils (Kevin Moore)
+* Modified AI: purchasing for seaLion, improved blitzing, tweaked combat and non-combat to better protect capitals and factories, add comments in SUtils (Kevin Moore)
 
 * fix bug 2808834 online games suddenly fail (sgb)
 
