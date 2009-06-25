@@ -1,4 +1,5 @@
 Changes for 1.0.4
+* Add Relief Tiles for AA50 (Much thanks to Imperious Leader)
 
 * Fix bug 281534 fighter movement calculation (ComradeKev)
 

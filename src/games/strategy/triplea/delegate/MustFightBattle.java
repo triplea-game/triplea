@@ -820,7 +820,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         } else if (canAttackerRetreatPartialAmphib())
         {
             steps.add(m_attacker.getName() + NONAMPHIB_WITHDRAW);
-        } else if (canAttackerRetreatPlanes())
+        } else if (canAttackerRetreatPlanes() & !canAttackerRetreatPartialAmphib())
         {
             steps.add(m_attacker.getName() + PLANES_WITHDRAW);
         }
