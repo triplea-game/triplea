@@ -616,7 +616,6 @@
   
         <unitList>
                 <unit name="infantry"/>
-				<unit name="chineseInfantry"/>
                 <unit name="armour"/>
                 <unit name="fighter"/>
                 <unit name="bomber"/>
@@ -1103,15 +1102,7 @@
                          <option name="artillerySupportable" value="true"/>
                 </attatchment>
 				
-				<!-- Chinese Infantry -->
-				<attatchment name="unitAttatchment" attatchTo="chineseInfantry" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
-						<option name="movement" value="1"/>
-                         <option name="isInfantry" value="true"/>
-						<option name="attack" value="1"/>
-						<option name="defense" value="2"/>
-						<option name="artillerySupportable" value="true"/>
-				</attatchment>
-
+				
                 <!-- Artillery -->
                 <attatchment name="unitAttatchment" attatchTo="artillery" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="1"/>
@@ -2371,6 +2362,39 @@
         				Total Victory - 18 Victory Cities<br>
         				Honorable Surrender - 15 Victory Cities<br>
         				Projection of Power - 13 Victory Cities<br>
+        				<br>
+        				<br>
+        				<b>National Objectives</b><br>
+        				<i>Germany: Lebensraum-</i><br>
+        				+5 IPCs if Axis control France, NW Europe, Germany, Czechoslovakia, Bulgaria, and Poland.<br>
+        				+5 IPCs if Axis control 3 of Baltic States, East Poland, Ukraine, East Ukrain, and Belorussia.<br>
+        				+5 IPCs if Axis control Karelia or Caucasus <br>
+        				<br>
+        				<i>Japan: The Greater East Asia Coprosperity Sphere-</i><br>
+        				+5 IPCs if Axis control Manchuria, Kiangsu, and French Indo China.<br>
+        				+5 IPCs if Axis control 4 of Kwangtung, East Indies, Borneo, Philippine Islands, New Guinea and Solomon Islands.<br>
+        				+5 IPCs if Axis control 1 of Hawaiian Islands, Australia, or India<br>
+        				<br>
+        				<i>Italy: Mare Nostrum-</i><br>
+        				+5 IPCs if Axis control Italy, Balkans, Morocco and Libya AND no enemy surface ships in sea zones 13, 14, or 15.<br>
+        				+5 IPCs if Axis control 3 of Egypt, Trans Jordan, France, and Gibraltar<br>
+        				<br>
+        				<i>United States: The Arsenal of Democracy-</i><br>
+        				+5 IPCs Allies control W U.S., Central U.S., and E U.S.<br>
+        				+5 IPCs if Allies control Philippine Islands.<br>
+        				+5 IPCs if Allies control France.<br>
+        				+5 IPCs if Allies control 3 of Midway, Wake Island, Hawaiian Islands, and Solomon Islands.<br>
+        				<br>
+        				<i>United Kingdom: The British Empire-</i><br>
+        				+5 IPCs if Allies control E Canada, W Canada, Gibraltar, Egypt, Australia and South Africa.<br>
+        				+5 IPCs if Allies control any territory originally controlled by Japan.<br>
+        				+5 IPCs if Allies control France or the Balkans.<br>
+        				<br>
+        				<i>Soviet Union: The Great Patriotic War-</i><br>
+        				+10 IPCs if Allies control 3 of Norway, Finland, Poland, Bulgaria, Czechoslovakia, and Balkans.<br>
+        				+5 IPCs if Soviets control Archangel and no allied forces in Soviet controlled territories.<br>
+        				  
+        				
         
 					]]>	
 					</value>

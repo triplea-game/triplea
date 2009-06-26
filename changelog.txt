@@ -1,4 +1,10 @@
 Changes for 1.0.4
+* Fix bug 2801738 just use Infantry instead of chineseInfantry so they stack properly (ComradeKev)
+
+* Add NOs to game notes for AA50 (ComradeKev)
+
+* Fix bug 2807397 Revise NWO 9 Player placements for E/W Romania (ComradeKev)
+
 * Fix number of paratroops shown loading on to bomber (ComradeKev)
 
 * Change default route finding to try land routes first (ComradeKev)

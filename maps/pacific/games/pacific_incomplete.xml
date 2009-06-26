@@ -449,7 +449,6 @@ Coded by Iron__Cross
     <unitList>
         <unit name="marine"/>
         <unit name="infantry"/>
-        <unit name="chineseInfantry"/>
         <unit name="armour"/>
         <unit name="fighter"/>
         <unit name="bomber"/>
@@ -801,15 +800,6 @@ Coded by Iron__Cross
             type="unitType">
             <option name="movement" value="1"/>
             <option name="transportCost" value="3"/>
-            <option name="attack" value="1"/>
-            <option name="defense" value="2"/>
-            <option name="artillerySupportable" value="true"/>
-        </attatchment>
-        
-        <attatchment name="unitAttatchment" attatchTo="chineseInfantry"
-            javaClass="games.strategy.triplea.attatchments.UnitAttachment"
-            type="unitType">
-            <option name="movement" value="1"/>
             <option name="attack" value="1"/>
             <option name="defense" value="2"/>
             <option name="artillerySupportable" value="true"/>
@@ -1884,23 +1874,23 @@ Coded by Iron__Cross
             
             <!-- Chinese Placements -->
             
-            <unitPlacement unitType="chineseInfantry" territory="Szechwan"
+            <unitPlacement unitType="infantry" territory="Szechwan"
                 quantity="3" owner="Chinese"/>
-            <unitPlacement unitType="chineseInfantry" territory="Kwangsi"
+            <unitPlacement unitType="infantry" territory="Kwangsi"
                 quantity="1" owner="Chinese"/>
-            <unitPlacement unitType="chineseInfantry" territory="Sikang"
+            <unitPlacement unitType="infantry" territory="Sikang"
                 quantity="1" owner="Chinese"/>
-            <unitPlacement unitType="chineseInfantry" territory="Suiyuan"
+            <unitPlacement unitType="infantry" territory="Suiyuan"
                 quantity="2" owner="Chinese"/>
-            <unitPlacement unitType="chineseInfantry" territory="Yunnan"
+            <unitPlacement unitType="infantry" territory="Yunnan"
                 quantity="2" owner="Chinese"/>
-            <unitPlacement unitType="chineseInfantry" territory="Anhwe"
+            <unitPlacement unitType="infantry" territory="Anhwe"
                 quantity="2" owner="Chinese"/>
-            <unitPlacement unitType="chineseInfantry" territory="Hopei"
+            <unitPlacement unitType="infantry" territory="Hopei"
                 quantity="2" owner="Chinese"/>
-            <unitPlacement unitType="chineseInfantry" territory="Hunan"
+            <unitPlacement unitType="infantry" territory="Hunan"
                 quantity="2" owner="Chinese"/>
-            <unitPlacement unitType="chineseInfantry" territory="Kiangsi"
+            <unitPlacement unitType="infantry" territory="Kiangsi"
                 quantity="1" owner="Chinese"/>
             
             <unitPlacement unitType="aaGun" territory="Szechwan" quantity="1"

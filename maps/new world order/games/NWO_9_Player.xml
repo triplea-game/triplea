@@ -2109,7 +2109,7 @@
 
 
 <attatchment name="territoryAttatchment" attatchTo="E.Romania" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory"> 
-                       <option name="production" value="4"/><option name="capital" value="Romanians"/>    
+                       <option name="production" value="3"/>    
 						 
 </attatchment> 
 
@@ -2721,7 +2721,7 @@
 						 
                    </attatchment> 
 <attatchment name="territoryAttatchment" attatchTo="W.Romania" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory"> 
-                       <option name="production" value="3"/> 
+                       <option name="production" value="4"/> <option name="capital" value="Romanians"/>
 						 
                    </attatchment> 
 <attatchment name="territoryAttatchment" attatchTo="Israel" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory"> 
@@ -3952,15 +3952,15 @@
 			<!-- Romanians Unit Placements --> 
 
 
-<unitPlacement unitType="factory" territory="E.Romania" quantity="1" owner="Romanians"/> 
-<unitPlacement unitType="infantry" territory="E.Romania" quantity="6" owner="Romanians"/> 
-<unitPlacement unitType="aaGun" territory="E.Romania" quantity="1" owner="Romanians"/> 
-<unitPlacement unitType="armour" territory="E.Romania" quantity="1" owner="Romanians"/> 
-<unitPlacement unitType="earlyfighter" territory="E.Romania" quantity="1" owner="Romanians"/> 
-
-<unitPlacement unitType="infantry" territory="W.Romania" quantity="1" owner="Romanians"/> 
-<unitPlacement unitType="artillery" territory="W.Romania" quantity="1" owner="Romanians"/> 
+<unitPlacement unitType="factory" territory="W.Romania" quantity="1" owner="Romanians"/> 
+<unitPlacement unitType="infantry" territory="W.Romania" quantity="6" owner="Romanians"/> 
 <unitPlacement unitType="aaGun" territory="W.Romania" quantity="1" owner="Romanians"/> 
+<unitPlacement unitType="armour" territory="W.Romania" quantity="1" owner="Romanians"/> 
+<unitPlacement unitType="earlyfighter" territory="W.Romania" quantity="1" owner="Romanians"/> 
+
+<unitPlacement unitType="infantry" territory="E.Romania" quantity="1" owner="Romanians"/> 
+<unitPlacement unitType="artillery" territory="E.Romania" quantity="1" owner="Romanians"/> 
+<unitPlacement unitType="aaGun" territory="E.Romania" quantity="1" owner="Romanians"/> 
 
 
 

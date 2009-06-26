@@ -61,7 +61,8 @@ public class NoIPCPurchaseDelegate extends PurchaseDelegate
         Collection<Territory> territories = gameData.getMap().getTerritoriesOwnedBy(player);
 
         if(isPacific || isAnniversaryEdition)
-            unitTypeToProduce = Constants.CHINESE_INFANTRY_TYPE;
+            unitTypeToProduce = Constants.INFANTRY_TYPE;
+        //unitTypeToProduce = Constants.CHINESE_INFANTRY_TYPE;
 
         int nUnitsToProduce = getProductionUnits(territories, player);
         Collection<Unit> units = gameData.getUnitTypeList().getUnitType(unitTypeToProduce).create(nUnitsToProduce, player);
