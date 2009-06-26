@@ -949,7 +949,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         		 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                  {
         			 checkUndefendedTransports(bridge, m_defender);
-        			 checkUndefendedTransports(bridge, m_attacker);        			
+        			 checkUndefendedTransports(bridge, m_attacker);
+        			 //TODO kev perhaps end the battle here if there are no more to fight
                  }
         	});
 
@@ -1306,7 +1307,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             });
         }
         else 
-        {         
+        {
+//TODO kev perhaps allow blitzing units to retreat 1
             //the air unit may have come from a conquered or enemy territory, don't allow retreating
             Match<Territory> conqueuredOrEnemy = new CompositeMatchOr<Territory>(
                 Matches.isTerritoryEnemy(m_attacker, m_data),

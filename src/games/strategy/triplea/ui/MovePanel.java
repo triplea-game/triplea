@@ -1337,7 +1337,6 @@ public class MovePanel extends ActionPanel
                 int capacity = getTransportTracker().getAvailableCapacity(bomber);
                 if (capacity < minTransportCost)
                 	candidateBombers.remove(bomber); //TODO need to test to see if this is valid
-                	//bomberIter.remove();
             }
             
             if(candidateBombers.isEmpty())
@@ -1359,24 +1358,26 @@ public class MovePanel extends ActionPanel
             Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, availableUnits, capableBombers, true, player);
             
             m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
-            List<Unit> singleCollection = new ArrayList<Unit>();
+            Collection<Unit> singleCollection = new ArrayList<Unit>();
             for (Unit unit : unitsToCapableBombers.keySet())
             {
+                Collection<Unit> unitList = new ArrayList<Unit>();
+                unitList.add(unit);
                 Unit bomber = unitsToCapableBombers.get(unit);
+                singleCollection.add(unit);
+                
                 int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
                 availableCapacityMap.add(bomber, (-1 * unitCost));
                 defaultSelections.add(bomber);
                 
-                //List<Unit> singleCollection = new ArrayList<Unit>();
-                singleCollection.add(unit);
                 
             	//Set the dependents
                 if (m_dependentUnits.get(bomber) != null)
-                	m_dependentUnits.get(bomber).addAll(singleCollection);
+                	m_dependentUnits.get(bomber).addAll(unitList);
                 else
-                    m_dependentUnits.put(bomber, singleCollection);
+                    m_dependentUnits.put(bomber, unitList);
             }
-
+            
             m_mustMoveWithDetails = MoveValidator.getMustMoveWith(route.getStart(), 
                 capableBombers, 
                 getData(),
@@ -1397,7 +1398,7 @@ public class MovePanel extends ActionPanel
             //Allow player to select which to load.
             UnitChooser chooser = new UnitChooser(candidateBombers, 
                 defaultSelections, 
-                m_dependentUnits, /*m_mustMoveWithDetails.getMustMoveWith(),*/
+                m_dependentUnits, 
                 /*categorizeMovement*/ true, 
                 m_bridge.getGameData(), 
                 /*allowTwoHit*/ false, 

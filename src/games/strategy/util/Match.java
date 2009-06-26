@@ -94,6 +94,9 @@ public abstract class Match<T>
 	 */
 	public final static <T> boolean allMatch(Collection<T> collection, Match<T> aMatch)
 	{
+		if(collection.isEmpty())
+			return false;
+		
 		Iterator<T> iter = collection.iterator();
 		while(iter.hasNext())
 		{
@@ -109,7 +112,9 @@ public abstract class Match<T>
 	 */
 	public static final <T> boolean someMatch(Collection<T> collection, Match<T> aMatch)
 	{
-		
+		if(collection.isEmpty())
+			return false;
+				
 		Iterator<T> iter = collection.iterator();
 		while(iter.hasNext())
 		{

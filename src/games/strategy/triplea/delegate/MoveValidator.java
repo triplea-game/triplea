@@ -1965,15 +1965,32 @@ public class MoveValidator
         //it must be in the route, so it shouldn't affect the route choice
         Match<Territory> territoryIsEnd = Matches.territoryIs(end);
 
+        Match<Territory> territoryIsLand = Matches.TerritoryIsLand;
+
         Route defaultRoute;
         if (isFourthEdition(data) || isNeutralsImpassable(data))
-            defaultRoute = data.getMap().getRoute(start, end, new CompositeMatchOr(noNeutral, territoryIsEnd));
+        	
+        	defaultRoute = data.getMap().getRoute(start, end, new CompositeMatchOr(noNeutral, territoryIsEnd));
+        	
         else
-            defaultRoute = data.getMap().getRoute(start, end);
+        {
+        	defaultRoute = data.getMap().getRoute(start, end);
+        }
 
         if (defaultRoute == null)
         	defaultRoute = data.getMap().getRoute(start, end);
-
+        
+        //If start and end are land, try a land route.
+        //dont force a water route, since planes may be moving
+        if(!start.isWater() && !end.isWater())
+        {
+            Route landRoute = data.getMap().getRoute(start, end,
+                    Matches.TerritoryIsLand);
+            if (landRoute != null &&
+            		landRoute.getLength() == defaultRoute.getLength())
+                    return landRoute;
+        }
+        
         //if the start and end are in water, try and get a water route
         //dont force a water route, since planes may be moving
         if (start.isWater() && end.isWater())

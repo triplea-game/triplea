@@ -1,5 +1,13 @@
 Changes for 1.0.4
-* Add victory conditions to game notes
+* Fix number of paratroops shown loading on to bomber (ComradeKev)
+
+* Change default route finding to try land routes first (ComradeKev)
+
+* Fix allMatch and someMatch returning true on empty collections (ComradeKev)
+
+* Add victory conditions to game notes (ComradeKev)
+
+* Enable turning on/off relief tiles on AA50 (ComradeKev)
 
 * Add Relief Tiles for AA50 (Much thanks to Imperious Leader)
 
