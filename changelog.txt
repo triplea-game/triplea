@@ -1,5 +1,9 @@
 Changes for 1.0.4
+* Check if SBR damages unit production before displaying factory damage (ComradeKev)
+
 * Fix bug 2801738 just use Infantry instead of chineseInfantry so they stack properly (ComradeKev)
+
+* Add victory conditions to game notes (ComradeKev)
 
 * Add NOs to game notes for AA50 (ComradeKev)
 

@@ -72,12 +72,12 @@ public class UnitsDrawer implements IDrawable
         }
         
         //Display Factory Damage
-        if(type.getName().equals("factory"))
+        if(isSBRAffectsUnitProduction(data) && type.getName().equals("factory"))
         {
         	displayFactoryDamage(bounds, data, graphics, type);
         }
     }
-
+    
 	private void displayFactoryDamage(Rectangle bounds, GameData data,
 			Graphics2D graphics, UnitType type) {
 
@@ -126,6 +126,11 @@ public class UnitsDrawer implements IDrawable
     public String toString()
     {
         return "UnitsDrawer for " + m_count + " " + MyFormatter.pluralize(m_unitType) + " in  " + m_territoryName; 
+    }
+
+    private  boolean isSBRAffectsUnitProduction(GameData data)
+    {
+        return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data);
     }
 
 }
