@@ -1,4 +1,7 @@
 Changes for 1.0.4
+
+* Add some missing units for NWO and activate tech for extra 4 players in NWO-9 (ComradeKev)
+
 * Check if SBR damages unit production before displaying factory damage (ComradeKev)
 
 * Fix bug 2801738 just use Infantry instead of chineseInfantry so they stack properly (ComradeKev)
