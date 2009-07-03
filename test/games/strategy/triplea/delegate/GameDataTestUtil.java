@@ -42,6 +42,10 @@ public class GameDataTestUtil {
         return data.getPlayerList().getPlayerID("Russians");
     }
     
+    public static PlayerID americans(GameData data) {
+        return data.getPlayerList().getPlayerID("Americans");
+    }
+    
     public static PlayerID british(GameData data) {
         return data.getPlayerList().getPlayerID("British");
     }

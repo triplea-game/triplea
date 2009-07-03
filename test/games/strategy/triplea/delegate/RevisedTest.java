@@ -14,6 +14,7 @@
 
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.*;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.ChangePerformer;
@@ -36,14 +37,13 @@ import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.util.CompositeMatchAnd;
 
-import static games.strategy.triplea.delegate.GameDataTestUtil.*;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -69,6 +69,15 @@ public class RevisedTest extends TestCase
         ITestDelegateBridge bridge1 = new TestDelegateBridge(m_data, player, (IDisplay) new DummyDisplay());
         TestTripleADelegateBridge bridge2 = new TestTripleADelegateBridge(bridge1, m_data);
         return bridge2;
+    }
+    
+    public void testAlliedNeighbors() 
+    {
+        PlayerID americans = americans(m_data);
+        Territory centralUs = territory("Central United States", m_data);
+        Set<Territory> enemyNeighbors = m_data.getMap().getNeighbors(
+            centralUs, Matches.isTerritoryEnemy(americans, m_data));        
+        assertTrue(enemyNeighbors.isEmpty());
     }
     
     public void testSubAdvance()
