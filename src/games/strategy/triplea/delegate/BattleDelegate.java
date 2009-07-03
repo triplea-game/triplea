@@ -508,6 +508,15 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
     {
         return IBattleDelegate.class;
     }
+
+    public Territory getCurentBattle() {
+        Battle b = m_currentBattle;
+        if(b != null) {
+            return b.getTerritory();
+        } else {
+            return null;
+        }
+    }
 }
 
 class BattleState implements Serializable

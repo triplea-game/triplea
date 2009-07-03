@@ -36,5 +36,10 @@ public interface IBattleDelegate extends IRemote
      * @return an error string if the battle could not be fought or an error occured, null otherwse
      */
     public String fightBattle(Territory where, boolean bombing);
-
+    
+    /**
+     * 
+     * @return The location of the currently being fought battle, or null if no battle is in progress.
+     */
+    public Territory getCurentBattle();
 }
