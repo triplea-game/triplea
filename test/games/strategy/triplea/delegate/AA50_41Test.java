@@ -15,6 +15,18 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.ITestDelegateBridge;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
+import games.strategy.engine.random.ScriptedRandomSource;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
+import games.strategy.util.IntegerMap;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -23,24 +35,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParser;
-import games.strategy.engine.data.ITestDelegateBridge;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.ProductionRule;
-import games.strategy.engine.data.Route;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TestDelegateBridge;
-import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
-import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.random.ScriptedRandomSource;
-import games.strategy.kingstable.ui.display.DummyDisplay;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import junit.framework.TestCase;
-import games.strategy.util.IntegerMap;
 
 public class AA50_41Test extends TestCase {
     
@@ -300,13 +295,21 @@ public class AA50_41Test extends TestCase {
        
         public void testBidPlace() 
         {
-            ITestDelegateBridge bridge = GameDataTestUtil.getDelegateBridge(british(m_data));
+            ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
             bridge.setStepName("placeBid");
             bidPlaceDelegate(m_data).start(bridge, m_data);
             
+            //create 20 british infantry
             addTo(british(m_data), infantry(m_data).create(20, british(m_data)));
-            String error = bidPlaceDelegate(m_data).placeUnits(british(m_data).getUnits().getUnits(), territory("United Kingdom", m_data));
-            assertNull(error);        
+            
+            Territory uk = territory("United Kingdom", m_data);
+            Collection<Unit> units = british(m_data).getUnits().getUnits();
+            PlaceableUnits placeable = bidPlaceDelegate(m_data).getPlaceableUnits(units, uk);
+            assertEquals(20, placeable.getMaxUnits());
+            assertNull(placeable.getErrorMessage());
+            
+            String error = bidPlaceDelegate(m_data).placeUnits(units, uk);
+            assertNull(error);    
         }
 
 		public void testFactoryPlace() throws Exception
@@ -357,8 +360,8 @@ public class AA50_41Test extends TestCase {
         /*
          * Add Utilities here
          */
-    	@SuppressWarnings("unchecked")
-		private Collection getUnits(IntegerMap<UnitType> units, PlayerID from)
+    	
+		private Collection<Unit> getUnits(IntegerMap<UnitType> units, PlayerID from)
     	{
     		Iterator<UnitType> iter = units.keySet().iterator();
     		Collection rVal = new ArrayList(units.totalValues());

@@ -30,6 +30,7 @@ import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.triplea.util.DummyTripleAPlayer;
@@ -40,6 +41,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -205,8 +207,16 @@ public class RevisedTest extends TestCase
         bridge.setStepName("placeBid");
         bidPlaceDelegate(m_data).start(bridge, m_data);
         
+        //create 20 british infantry
         addTo(british(m_data), infantry(m_data).create(20, british(m_data)));
-        String error = bidPlaceDelegate(m_data).placeUnits(british(m_data).getUnits().getUnits(), territory("United Kingdom", m_data));
+        
+        Territory uk = territory("United Kingdom", m_data);
+        Collection<Unit> units = british(m_data).getUnits().getUnits();
+        PlaceableUnits placeable = bidPlaceDelegate(m_data).getPlaceableUnits(units, uk);
+        assertEquals(20, placeable.getMaxUnits());
+        assertNull(placeable.getErrorMessage());
+        
+        String error = bidPlaceDelegate(m_data).placeUnits(units, uk);
         assertNull(error);        
     }
     

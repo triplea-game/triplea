@@ -1,5 +1,7 @@
 Changes for 1.0.4
 
+* fix bug 2815801 Bid placement Error (sgb)
+
 * Complete gutting of NonCombatMoveSea; Removed most plane analysis code and replaced with calls to invitePlaneAttack in SUtils; 
   tweak to purchasing when resources are high to help with other maps; 
   prepared code for purchasing units for the best transport attack (Kevin Moore)
