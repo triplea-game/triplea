@@ -199,6 +199,17 @@ public class RevisedTest extends TestCase
         
     }
     
+    public void testBidPlace() 
+    {
+        ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+        bridge.setStepName("placeBid");
+        bidPlaceDelegate(m_data).start(bridge, m_data);
+        
+        addTo(british(m_data), infantry(m_data).create(20, british(m_data)));
+        String error = bidPlaceDelegate(m_data).placeUnits(british(m_data).getUnits().getUnits(), territory("United Kingdom", m_data));
+        assertNull(error);        
+    }
+    
     public void testBombingRaid() 
     {
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");

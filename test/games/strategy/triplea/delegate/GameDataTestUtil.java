@@ -98,10 +98,14 @@ public class GameDataTestUtil {
         return (MoveDelegate) data.getDelegateList().getDelegate("move");
     }
     
-    public static ITestDelegateBridge getDelegateBridge(GameData data, PlayerID player)
+    public static BidPlaceDelegate bidPlaceDelegate(GameData data) {
+        return (BidPlaceDelegate) data.getDelegateList().getDelegate("placeBid");
+    }
+    
+    public static ITestDelegateBridge getDelegateBridge(PlayerID player)
     {
-        ITestDelegateBridge bridge1 = new TestDelegateBridge(data, player, (IDisplay) new DummyDisplay());        
-        TestTripleADelegateBridge bridge2 = new TestTripleADelegateBridge(bridge1, data);
+        ITestDelegateBridge bridge1 = new TestDelegateBridge(player.getData(), player, (IDisplay) new DummyDisplay());        
+        TestTripleADelegateBridge bridge2 = new TestTripleADelegateBridge(bridge1, player.getData());
         return bridge2;
     }
     

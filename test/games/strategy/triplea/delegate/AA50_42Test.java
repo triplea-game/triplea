@@ -56,7 +56,7 @@ public class AA50_42Test extends TestCase {
             PlayerID germans = germans(m_data);
 
             MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
-            ITestDelegateBridge bridge = getDelegateBridge(m_data, germans);
+            ITestDelegateBridge bridge = getDelegateBridge(germans);
             bridge.setStepName("CombatMove");
             moveDelegate.start(bridge, m_data);
 
@@ -85,7 +85,7 @@ public class AA50_42Test extends TestCase {
             PlayerID germans = germans(m_data);
             
             MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
-            ITestDelegateBridge bridge = getDelegateBridge(m_data, germans);
+            ITestDelegateBridge bridge = getDelegateBridge( germans);
             bridge.setStepName("CombatMove");
             moveDelegate.start(bridge, m_data);
             

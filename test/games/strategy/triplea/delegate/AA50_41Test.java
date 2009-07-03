@@ -68,7 +68,7 @@ public class AA50_41Test extends TestCase {
             PlayerID british = m_data.getPlayerList().getPlayerID("British");
             
             MoveDelegate moveDelegate = moveDelegate(m_data);
-            ITestDelegateBridge bridge = getDelegateBridge(m_data,british);
+            ITestDelegateBridge bridge = getDelegateBridge(british);
             bridge.setStepName("CombatMove");
             moveDelegate.start(bridge, m_data);
             
@@ -100,7 +100,7 @@ public class AA50_41Test extends TestCase {
         public void testUnplacedDie() 
         {
             PlaceDelegate del = placeDelegate(m_data);
-            del.start(getDelegateBridge(m_data, british(m_data)), m_data);
+            del.start(getDelegateBridge( british(m_data)), m_data);
             
             addTo(british(m_data), 
                   transports(m_data).create(1,british(m_data)));
@@ -122,7 +122,7 @@ public class AA50_41Test extends TestCase {
             addTo(gibraltar, infantry(m_data).create(1,british));
             
             MoveDelegate moveDelegate = moveDelegate(m_data);
-            ITestDelegateBridge bridge = getDelegateBridge(m_data,british);
+            ITestDelegateBridge bridge = getDelegateBridge(british);
             bridge.setStepName("CombatMove");
             moveDelegate.start(bridge, m_data);
             
@@ -162,7 +162,7 @@ public class AA50_41Test extends TestCase {
             
             
             MoveDelegate moveDelegate = moveDelegate(m_data);
-            ITestDelegateBridge delegateBridge = getDelegateBridge(m_data, germans(m_data));
+            ITestDelegateBridge delegateBridge = getDelegateBridge(germans(m_data));
             delegateBridge.setStepName("CombatMove");
             moveDelegate.start(delegateBridge, m_data);
            
@@ -191,7 +191,7 @@ public class AA50_41Test extends TestCase {
             
             
             MoveDelegate moveDelegate = moveDelegate(m_data);
-            ITestDelegateBridge delegateBridge = getDelegateBridge(m_data, germans(m_data));
+            ITestDelegateBridge delegateBridge = getDelegateBridge(germans(m_data));
             delegateBridge.setStepName("CombatMove");
             moveDelegate.start(delegateBridge, m_data);
            
@@ -214,7 +214,7 @@ public class AA50_41Test extends TestCase {
         {
         	//Set up tech
         	PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
-            ITestDelegateBridge delegateBridge = getDelegateBridge(m_data, germans(m_data));
+            ITestDelegateBridge delegateBridge = getDelegateBridge(germans(m_data));
             TechTracker.addAdvance(germans, m_data, delegateBridge, TechAdvance.MECHANIZED_INFANTRY);
 
             //Set up the move delegate
@@ -268,7 +268,7 @@ public class AA50_41Test extends TestCase {
         {
         	//Set up tech
         	PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
-            ITestDelegateBridge delegateBridge = getDelegateBridge(m_data, germans(m_data));
+            ITestDelegateBridge delegateBridge = getDelegateBridge( germans(m_data));
             TechTracker.addAdvance(germans, m_data, delegateBridge, TechAdvance.JET_POWER);
             
         	//Set up the territories
@@ -298,6 +298,16 @@ public class AA50_41Test extends TestCase {
             assertEquals(0, roll2.getHits());
         }
        
+        public void testBidPlace() 
+        {
+            ITestDelegateBridge bridge = GameDataTestUtil.getDelegateBridge(british(m_data));
+            bridge.setStepName("placeBid");
+            bidPlaceDelegate(m_data).start(bridge, m_data);
+            
+            addTo(british(m_data), infantry(m_data).create(20, british(m_data)));
+            String error = bidPlaceDelegate(m_data).placeUnits(british(m_data).getUnits().getUnits(), territory("United Kingdom", m_data));
+            assertNull(error);        
+        }
 
 		public void testFactoryPlace() throws Exception
         {
@@ -310,7 +320,7 @@ public class AA50_41Test extends TestCase {
 	        
         	//Set up game
 			PlayerID british = m_data.getPlayerList().getPlayerID("British");
-            ITestDelegateBridge delegateBridge = getDelegateBridge(m_data, british(m_data));
+            ITestDelegateBridge delegateBridge = getDelegateBridge( british(m_data));
                         
         	//Set up the territories
             Territory egypt = territory("Anglo Sudan Egypt", m_data);        

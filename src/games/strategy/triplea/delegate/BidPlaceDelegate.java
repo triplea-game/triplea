@@ -43,6 +43,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
     }
 
     // Return whether we can place bid in a certain territory
+    @Override
     protected String canProduce(Territory to, Collection<Unit> units, PlayerID player)
     {
         //we can place if no enemy units and its water
