@@ -1,5 +1,9 @@
 Changes for 1.0.4
 
+* Complete gutting of NonCombatMoveSea; Removed most plane analysis code and replaced with calls to invitePlaneAttack in SUtils; 
+  tweak to purchasing when resources are high to help with other maps; 
+  prepared code for purchasing units for the best transport attack (Kevin Moore)
+
 * Add some missing units for NWO and activate tech for extra 4 players in NWO-9 (ComradeKev)
 
 * Check if SBR damages unit production before displaying factory damage (ComradeKev)
