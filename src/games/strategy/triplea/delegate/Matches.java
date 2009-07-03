@@ -1002,6 +1002,18 @@ public class Matches
 
     }
 
+    public static Match<Territory> territoryHasNoAlliedUnits(final PlayerID player, final GameData data)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                return !t.getUnits().someMatch( alliedUnit(player,data));
+            }
+        };
+
+    }
+
     public static Match<Territory> territoryHasNonSubmergedEnemyUnits(final PlayerID player, final GameData data)
     {
 
