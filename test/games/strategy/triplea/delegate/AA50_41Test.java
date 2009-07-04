@@ -351,6 +351,41 @@ public class AA50_41Test extends TestCase {
     		assertEquals(ta.getUnitProduction(), ta.getProduction());            
         }
        
+		
+		public void testMoveUnitsThroughSubs()
+		{
+		    ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+            bridge.setStepName("nonCombatMove");
+            moveDelegate(m_data).start(bridge, m_data);
+            
+            Territory sz6 = territory("6 Sea Zone", m_data);
+            Route route = new Route(
+                sz6,
+                territory("7 Sea Zone", m_data),
+                territory("8 Sea Zone", m_data)
+                );
+		    
+            String error = moveDelegate(m_data).move(sz6.getUnits().getUnits(), route);
+            assertNull(error,error);
+		}
+		
+	      public void testMoveUnitsThroughTransports()
+	        {
+	            ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+	            bridge.setStepName("nonCombatMove");
+	            moveDelegate(m_data).start(bridge, m_data);
+	            
+	            Territory sz12 = territory("12 Sea Zone", m_data);
+	            Route route = new Route(
+	                sz12,
+	                territory("13 Sea Zone", m_data),
+	                territory("14 Sea Zone", m_data)
+	                );
+	            
+	            String error = moveDelegate(m_data).move(sz12.getUnits().getUnits(), route);
+	            assertNull(error,error);
+	        }
+	        
         
 
         /***********************************************************/
