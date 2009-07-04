@@ -1435,9 +1435,6 @@
 	</initialize>
 
 	<propertyList>
-		<property name="Use Destroyers and Artillery" value="false" editable="true">
-			<boolean/>
-		</property>
 		
 		<property name="Tech Development" value="true" editable="true">
 			<boolean/>
