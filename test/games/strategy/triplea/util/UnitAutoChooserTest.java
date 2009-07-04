@@ -7,15 +7,12 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.delegate.LoadGameUtil;
-import games.strategy.triplea.delegate.TestTripleADelegateBridge;
-import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.util.PropertyUtil;
 
 import java.util.ArrayList;
@@ -155,9 +152,7 @@ public class UnitAutoChooserTest extends TestCase
 
     protected ITestDelegateBridge getDelegateBridge(PlayerID player)
     {
-        ITestDelegateBridge bridge1 = new TestDelegateBridge(m_data, player, (IDisplay) new DummyDisplay());
-        TestTripleADelegateBridge bridge2 = new TestTripleADelegateBridge(bridge1, m_data);
-        return bridge2;
+        return GameDataTestUtil.getDelegateBridge(player);
     }
     
     private void loadTransport(Map<Unit,Collection<Unit>> mustMoveWith, 

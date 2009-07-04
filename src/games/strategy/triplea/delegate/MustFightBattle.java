@@ -40,7 +40,6 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
-import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.triplea.weakAI.WeakAI;
 import games.strategy.util.CompositeMatch;
@@ -57,6 +56,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -339,7 +339,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 m_dependentUnits.get(holder)
                         .addAll(transporting);
             else
-                m_dependentUnits.put(holder, transporting);
+                m_dependentUnits.put(holder, new LinkedHashSet<Unit>(transporting));
         }
     }
 
@@ -464,9 +464,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return;
         }
 
-        // Add dependent defending units to dependent unit map
-        Map<Unit, Collection<Unit>> defender_dependencies = transporting(m_defendingUnits);
-        addDependentUnits(defender_dependencies);
+        addDependentUnits(transporting(m_defendingUnits));
+        addDependentUnits(transporting(m_attackingUnits));
 
         //list the steps
         m_stepStrings = determineStepStrings(true, bridge);
@@ -2238,22 +2237,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
     /**
      * @return
      */
-    private boolean isPacificEdition()
-    {
-        return m_data.getProperties().get(Constants.PACIFIC_EDITION, false);
-    }
-    
-    /**
-     * @return
-     */
-    private boolean isEuropeEdition()
-    {
-        return m_data.getProperties().get(Constants.EUROPE_EDITION, false);
-    }
-
-    /**
-     * @return
-     */
     private boolean isAlliedAirDependents()
     {
     	return games.strategy.triplea.Properties.getAlliedAirDependents(m_data);
@@ -3347,7 +3330,6 @@ class Fire implements IExecutable
      */
     public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
     {
-        boolean isEditMode = EditDelegate.getEditMode(data);
         //add to the stack so we will execute,
         //we want to roll dice, select casualties, then notify in that order, so 
         //push onto the stack in reverse order

@@ -26,6 +26,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
+import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.util.IntegerMap;
 
 import java.io.InputStream;
@@ -120,6 +121,7 @@ public class AA50_41Test extends TestCase {
             ITestDelegateBridge bridge = getDelegateBridge(british);
             bridge.setStepName("CombatMove");
             moveDelegate.start(bridge, m_data);
+            bridge.setRemote(new DummyTripleAPlayer());
             
             Territory sz9 = territory("9 Sea Zone", m_data);
             Territory sz13 = territory("13 Sea Zone", m_data);
@@ -136,15 +138,64 @@ public class AA50_41Test extends TestCase {
             //load the transport
             load(gibraltar.getUnits().getUnits(), new Route(gibraltar, sz13));
             
+            moveDelegate.end();
             
-            //not sure what to do here
-            //should the load have suceeded?
-            //should there be a battle
-            //currently it is wrong, because the 
-            //infantry is counted as an attacking unit
-            //and kills the transport
-            fail();
+            bridge.setStepName("combat");
             
+            BattleDelegate battleDelegate = battleDelegate(m_data);
+            battleDelegate.start(bridge, m_data);
+            
+            assertTrue(battleDelegate.getBattles().isEmpty());
+            
+        }
+        
+        public void testLoadedTransportAttackKillsLoadedUnits() 
+        {
+            PlayerID british = british(m_data);
+            
+            MoveDelegate moveDelegate = moveDelegate(m_data);
+            ITestDelegateBridge bridge = getDelegateBridge(british);
+            bridge.setStepName("CombatMove");
+            bridge.setRemote(new DummyTripleAPlayer() {
+
+                @Override
+                public boolean selectAttackSubs(Territory unitTerritory) { 
+                    return true;
+                }
+            });
+            moveDelegate.start(bridge, m_data);
+            
+            Territory sz9 = territory("9 Sea Zone", m_data);
+            Territory sz7 = territory("7 Sea Zone", m_data);
+            Territory uk = territory("United Kingdom", m_data);
+            
+            Route sz9ToSz7 = new Route(
+                sz9,
+                territory("8 Sea Zone", m_data),
+                sz7
+            );
+            
+            //move the transport to attack, this is suicide but valid            
+            List<Unit> transports = sz9.getUnits().getMatches(Matches.UnitIsTransport);
+            move(transports, sz9ToSz7);
+         
+            //load the transport
+            load(uk.getUnits().getMatches(Matches.UnitIsInfantry), new Route(uk, sz7));
+            
+            moveDelegate(m_data).end();
+                        
+            bridge.setStepName("combat");
+            
+            BattleDelegate battleDelegate = battleDelegate(m_data);
+            battleDelegate.start(bridge, m_data);
+            
+            assertEquals(2,new TransportTracker().transporting(transports.get(0)).size());
+            
+            //fight the battle
+            assertValid(battleDelegate.fightBattle(sz7, false));
+            
+            //make sure the infantry die with the transport
+            assertTrue(sz7.getUnits().toString(), sz7.getUnits().getMatches(Matches.unitOwnedBy(british)).isEmpty());
         }
         
         public void testCanRetreatIntoEmptyEnemyTerritory() 

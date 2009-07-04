@@ -236,7 +236,6 @@ public class MovePerformer implements Serializable
                         + route.getEnd().getName());
                 
                 m_moveDelegate.updateUndoableMoves(m_currentMove);
-                
             }
 
         };

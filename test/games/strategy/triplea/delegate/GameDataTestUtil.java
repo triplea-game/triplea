@@ -25,7 +25,8 @@ import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.kingstable.ui.display.DummyDisplay;
+import games.strategy.triplea.ui.display.DummyDisplay;
+
 
 import java.util.Collection;
 
@@ -108,9 +109,7 @@ public class GameDataTestUtil {
     
     public static ITestDelegateBridge getDelegateBridge(PlayerID player)
     {
-        ITestDelegateBridge bridge1 = new TestDelegateBridge(player.getData(), player, (IDisplay) new DummyDisplay());        
-        TestTripleADelegateBridge bridge2 = new TestTripleADelegateBridge(bridge1, player.getData());
-        return bridge2;
+        return new TestDelegateBridge(player.getData(), player, (IDisplay) new DummyDisplay());                
     }
     
     public static void load(Collection<Unit> units, Route route) {

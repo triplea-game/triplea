@@ -66,9 +66,7 @@ public class RevisedTest extends TestCase
 
     private ITestDelegateBridge getDelegateBridge(PlayerID player)
     {
-        ITestDelegateBridge bridge1 = new TestDelegateBridge(m_data, player, (IDisplay) new DummyDisplay());
-        TestTripleADelegateBridge bridge2 = new TestTripleADelegateBridge(bridge1, m_data);
-        return bridge2;
+        return GameDataTestUtil.getDelegateBridge(player);
     }
     
     public void testAlliedNeighbors() 

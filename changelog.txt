@@ -1,5 +1,7 @@
 Changes for 1.0.4
 
+* fix aa50 bug where units loaded onto transports in a pending battle zone do not die when their trasnsports do (sgb)
+
 * Fixed bug 2807875, Factories count towards production limit (sgb)
 
 * fix bug 2815801 Bid placement Error (sgb)

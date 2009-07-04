@@ -7,12 +7,9 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.display.DummyDisplay;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -43,9 +40,7 @@ public class AirThatCantLandUtilTest extends TestCase
 
     private ITestDelegateBridge getDelegateBridge(PlayerID player)
     {
-        ITestDelegateBridge bridge1 = new TestDelegateBridge(m_data, player, (IDisplay) new DummyDisplay());
-        TestTripleADelegateBridge bridge2 = new TestTripleADelegateBridge(bridge1, m_data);
-        return bridge2;
+        return GameDataTestUtil.getDelegateBridge(player);
     }
     
     public void testSimple()
