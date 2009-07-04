@@ -56,7 +56,7 @@ public class RepairPanel extends ActionPanel
   private JLabel m_repairdSoFar = new JLabel();
   private JButton m_buyButton;
 
-  private final String BUY = "Buy...";
+  private final String BUY = "Repair...";
   private final String CHANGE = "Change...";
   
 
@@ -81,7 +81,7 @@ public class RepairPanel extends ActionPanel
         public void run()
         {
             removeAll();
-            actionLabel.setText(id.getName() + " production");
+            actionLabel.setText(id.getName() + " repair");
             m_buyButton.setText(BUY);
             add(actionLabel);
             add(m_buyButton);
@@ -179,13 +179,13 @@ public class RepairPanel extends ActionPanel
   
   private Action DoneAction = new AbstractAction("Done")
   {
-    @SuppressWarnings("unchecked")
+    
     public void actionPerformed(ActionEvent event)
     {
         boolean hasPurchased = getTotalValues(m_repair) != 0;
         if(!hasPurchased)
         {
-            int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( RepairPanel.this), "Are you sure you dont want to buy anything?", "End Purchase", JOptionPane.YES_NO_OPTION);
+            int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( RepairPanel.this), "Are you sure you dont want to repair anything?", "End Purchase", JOptionPane.YES_NO_OPTION);
             if(rVal != JOptionPane.YES_OPTION)
             {
                 return;
