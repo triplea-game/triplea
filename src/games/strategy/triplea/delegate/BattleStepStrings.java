@@ -39,9 +39,6 @@ public interface BattleStepStrings
   final static String AIR_ATTACK_NON_SUBS = "Air attack non subs";
   final static String AIR_DEFEND_NON_SUBS = "Air defend non subs";
   
-
-  final static String SUBS_SNEAK_ATTACK = "Subs sneak attack";
-  final static String SELECT_SNEAK_ATTACK_CASUALTIES = "Select sneak attack casualties";
   final static String REMOVE_SNEAK_ATTACK_CASUALTIES = "Remove sneak attack casualties";
 
   final static String FIRE = " fire";

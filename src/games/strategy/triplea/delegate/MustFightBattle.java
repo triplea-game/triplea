@@ -678,8 +678,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 }
                 else
                 {
-                    steps.add(m_attacker.getName() + SUBS_SNEAK_ATTACK);
-                    steps.add(m_defender.getName() + SELECT_SNEAK_ATTACK_CASUALTIES);
+                    steps.add(m_attacker.getName() + SUBS_FIRE);
+                    steps.add(m_defender.getName() + SELECT_SUB_CASUALTIES);
                     steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
                     attackingSubsAlreadyFired = true;
                 }
@@ -700,8 +700,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 }
                 else
                 {
-                    steps.add(m_defender.getName() + SUBS_SNEAK_ATTACK);
-                    steps.add(m_attacker.getName() + SELECT_SNEAK_ATTACK_CASUALTIES);
+                    steps.add(m_defender.getName() + SUBS_FIRE);
+                    steps.add(m_attacker.getName() + SELECT_SUB_CASUALTIES);
                     steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
                     defendingSubsAlreadyFired = true;
                 }
@@ -1854,6 +1854,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         PlayerID firing = defender ? m_defender : m_attacker;
         PlayerID defending = !defender ? m_defender : m_attacker;        
         
+        if(firingUnits.isEmpty()) {
+            return;
+        }
         
         m_stack.push(new Fire(attackableUnits, canReturnFire, firing, defending, firingUnits, stepName, text, this, defender, 
                 m_dependentUnits, m_stack, m_headless));               
@@ -2058,7 +2061,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //if there are destroyers in the attacked units, we can return fire.
         boolean destroyersPresent = Match.someMatch(attacked,
                 Matches.UnitIsDestroyer);
-        fire(SELECT_SNEAK_ATTACK_CASUALTIES, firing, attacked, false,
+        fire(m_defender.getName() + SELECT_SUB_CASUALTIES, firing, attacked, false,
                 destroyersPresent, bridge, "Subs fire,");
     }
 

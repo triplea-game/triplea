@@ -15,6 +15,7 @@ package games.strategy.triplea.ui;
 import java.awt.BorderLayout;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Logger;
 
 import javax.swing.*;
 
@@ -30,6 +31,8 @@ import javax.swing.*;
  */
 class BattleStepsPanel extends JPanel implements Active
 {
+    private static final Logger log = Logger.getLogger(BattleStepsPanel.class.getName());
+    
     //if this is the target step, we want to walk to the last step
     private final static String LAST_STEP = "NULL MARKER FOR LAST STEP";
 
@@ -236,7 +239,10 @@ class BattleStepsPanel extends JPanel implements Active
         {
             if(m_listModel.indexOf(step) != -1) {
                 m_targetStep = step;    
+            } else {
+                log.info("Could not find step name:" + step);
             }
+           
         }
         goToTarget();
 

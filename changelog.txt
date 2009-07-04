@@ -1,5 +1,7 @@
 Changes for 1.0.4
 
+* fix bug 2815448, AA50: Defending subs don't get sneak defense (sgb)
+
 * fix bug 2803021, NWO IPCs to spend don't display (sgb)
 
 * move copies of blank_relief to images/relief tiles, this allows all maps to share a copy (sgb)
