@@ -21,24 +21,40 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.*;
-
-import javax.swing.JOptionPane;
-
-import games.strategy.util.*;
-import games.strategy.engine.data.*;
-
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameStep;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.*;
+import games.strategy.triplea.attatchments.CanalAttachment;
+import games.strategy.triplea.attatchments.RulesAttachment;
+import games.strategy.triplea.attatchments.TechAttachment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
-import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
-import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
-import games.strategy.triplea.delegate.remote.IMoveDelegate;
-import games.strategy.triplea.ui.UnitChooser;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.util.CompositeMatch;
+import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.IntegerMap;
+import games.strategy.util.InverseMatch;
+import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 /**
  *
  * @author  Sean Bridges
@@ -158,12 +174,6 @@ public class MoveValidator
         return true;
     }
 
-    private static boolean hasMoved(Unit unit)
-    {
-        return TripleAUnit.get(unit).getAlreadyMoved() > 0;        
-    }
-    
-    
     /**
      * Tests the given unit to see if it has the movement necessary
      * to move.
@@ -644,14 +654,6 @@ public class MoveValidator
     /**
      * @return
      */
-    private static boolean isHariKariUnits(GameData data)
-    {
-    	return games.strategy.triplea.Properties.getHariKariUnits(data);
-    }
-
-    /**
-     * @return
-     */
     private static boolean isMovementByTerritoryRestricted(GameData data)
     {
     	return games.strategy.triplea.Properties.getMovementByTerritoryRestricted(data);
@@ -1053,7 +1055,7 @@ public class MoveValidator
                 //ignore the end territory in our tests
                 Match<Territory> territoryIsEnd = Matches.territoryIs(route.getEnd());
                 //See if there are neutrals in the path                    	
-                if (data.getMap().getRoute(route.getStart(), route.getEnd(), new CompositeMatchOr(noNeutral, territoryIsEnd)) == null)
+                if (data.getMap().getRoute(route.getStart(), route.getEnd(), new CompositeMatchOr<Territory>(noNeutral, territoryIsEnd)) == null)
                 	return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
 	                                    
             }
@@ -1066,7 +1068,7 @@ public class MoveValidator
                     //ignore the end territory in our tests                    
                     Match<Territory> territoryIsEnd = Matches.territoryIs(route.getEnd());
                     //See if there are neutrals in the path    
-            		if (data.getMap().getRoute(route.getStart(), route.getEnd(), new CompositeMatchOr(noNeutral, territoryIsEnd)) == null)
+            		if (data.getMap().getRoute(route.getStart(), route.getEnd(), new CompositeMatchOr<Territory>(noNeutral, territoryIsEnd)) == null)
             			return result.setErrorReturnResult("Air units cannot fly over neutral territories");	
             	}
             }
@@ -1749,7 +1751,7 @@ public class MoveValidator
                 CompositeMatch<Unit> paratroopNBombers = new CompositeMatchOr<Unit>();
                 paratroopNBombers.add(Matches.UnitIsStrategicBomber);
                 paratroopNBombers.add(Matches.UnitIsParatroop);
-                for (Unit unit : Match.getMatches(units, paratroopNBombers))
+                if(Match.someMatch(units, paratroopNBombers))
                 {
                     result.setErrorReturnResult("Paratroops must advance to battle");
                 }
@@ -1964,8 +1966,6 @@ public class MoveValidator
         //ignore the end territory in our tests
         //it must be in the route, so it shouldn't affect the route choice
         Match<Territory> territoryIsEnd = Matches.territoryIs(end);
-
-        Match<Territory> territoryIsLand = Matches.TerritoryIsLand;
 
         Route defaultRoute;
         if (isFourthEdition(data) || isNeutralsImpassable(data))
