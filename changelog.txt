@@ -1,5 +1,7 @@
 Changes for 1.0.4
 
+* Fixed bug 2807875, Factories count towards production limit (sgb)
+
 * fix bug 2815801 Bid placement Error (sgb)
 
 * Complete gutting of NonCombatMoveSea; Removed most plane analysis code and replaced with calls to invitePlaneAttack in SUtils; 

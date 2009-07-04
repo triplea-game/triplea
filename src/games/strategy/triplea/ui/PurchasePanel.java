@@ -25,9 +25,11 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.UnitSeperator;
@@ -237,7 +239,17 @@ public class PurchasePanel extends ActionPanel
             {
                 getData().releaseReadLock();
             }
-            if(!m_bid &&  m_purchase.totalValues() + getCurrentPlayer().getUnits().size() > totalProd)
+            //sum production for all units except factories
+            int totalProduced = 0;
+            for(ProductionRule rule : m_purchase.keySet()) {
+                UnitAttachment ua = UnitAttachment.get((UnitType) rule.getResults().keySet().iterator().next());
+                
+                if(!ua.isFactory()) {
+                    totalProduced+= m_purchase.getInt(rule);
+                }
+            }
+            
+            if(!m_bid &&  totalProduced + getCurrentPlayer().getUnits().size() > totalProd)
             {                
                 int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( PurchasePanel.this), "You have purchased more than you can place, continue with purchase?", "End Purchase", JOptionPane.YES_NO_OPTION);
                 if(rVal != JOptionPane.YES_OPTION)
