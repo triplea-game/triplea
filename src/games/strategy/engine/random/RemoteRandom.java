@@ -85,7 +85,7 @@ public class RemoteRandom implements IRemoteRandom
        
         m_game.getVault().waitForID(remoteVaultID, 15000);
         if(!m_game.getVault().knowsAbout(remoteVaultID))
-            throw new IllegalStateException("Vault id not locked, cheating suspected");
+            throw new IllegalStateException("Vault id not known, have:" + m_game.getVault().knownIds() + " looking for:" + remoteVaultID);
         
         return m_localNumbers;
     }

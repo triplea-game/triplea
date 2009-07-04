@@ -22,7 +22,6 @@ import java.io.Serializable;
  */
 public class VaultID implements Serializable
 {
-    
     private static long s_currentID;
    
     private synchronized static long getNextID()
@@ -36,8 +35,7 @@ public class VaultID implements Serializable
     private final long m_uniqueID = getNextID();
     
     VaultID(final INode generatedOn)
-    {
-        super();
+    {        
         m_generatedOn = generatedOn;
     }
     

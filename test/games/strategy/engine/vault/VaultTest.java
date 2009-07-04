@@ -47,8 +47,8 @@ public class VaultTest extends TestCase
 		UnifiedMessenger serverUM = new UnifiedMessenger(m_server);
 		UnifiedMessenger clientUM = new UnifiedMessenger(m_client1);		
 		
-		m_serverVault = new Vault(new ChannelMessenger(serverUM), new RemoteMessenger(serverUM));
-		m_clientVault =  new Vault(new ChannelMessenger(clientUM), new RemoteMessenger(clientUM));
+		m_serverVault = new Vault(new ChannelMessenger(serverUM));
+		m_clientVault =  new Vault(new ChannelMessenger(clientUM));
 		
 		Thread.yield();
 		
@@ -100,7 +100,7 @@ public class VaultTest extends TestCase
         ChannelMessenger channelMessenger = new ChannelMessenger(unifiedMessenger);
         RemoteMessenger remoteMessenger = new RemoteMessenger(unifiedMessenger);
         
-        Vault vault = new Vault(channelMessenger, remoteMessenger);
+        Vault vault = new Vault(channelMessenger);
         
         byte[] data = new byte[] {0,1,2,3,4,5};
         VaultID id = vault.lock(data);

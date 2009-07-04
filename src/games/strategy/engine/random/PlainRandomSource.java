@@ -43,7 +43,8 @@ public class PlainRandomSource implements IRandomSource
     Object seedObj = new Object();
     long seed = seedObj.hashCode();     //hash code is an int, 32 bits
 
-    seed += System.currentTimeMillis(); //seed with current time as well
+    seed += System.currentTimeMillis();
+    seed += System.nanoTime(); //seed with current time as well
     return seed;
   }
 

@@ -74,7 +74,7 @@ public class ClientGame implements IGame
     
     m_remoteMessenger = m_messengers.getRemoteMessenger();
     m_channelMessenger = m_messengers.getChannelMessenger();
-    m_vault = new Vault(m_channelMessenger, m_remoteMessenger);
+    m_vault = new Vault(m_channelMessenger);
     
     
     m_channelMessenger.registerChannelSubscriber(m_gameModificationChannelListener, IGame.GAME_MODIFICATION_CHANNEL);

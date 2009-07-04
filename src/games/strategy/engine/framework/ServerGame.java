@@ -131,7 +131,7 @@ public class ServerGame implements IGame
         m_channelMessenger = messengers.getChannelMessenger();
         
         
-        m_vault = new Vault(m_channelMessenger, m_remoteMessenger);
+        m_vault = new Vault(m_channelMessenger);
 
         Map<String, INode> allPlayers = new HashMap<String,INode>(remotePlayerMapping);
         for(IGamePlayer player : localPlayers)

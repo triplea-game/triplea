@@ -13,13 +13,23 @@
  */
 package games.strategy.engine.vault;
 
-import games.strategy.engine.message.*;
-import games.strategy.net.INode;
+import games.strategy.engine.message.IChannelMessenger;
+import games.strategy.engine.message.IChannelSubscribor;
+import games.strategy.engine.message.RemoteName;
 
-import java.security.*;
-import java.util.*;
+import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
-import javax.crypto.*;
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 /**
@@ -38,7 +48,7 @@ import javax.crypto.spec.DESKeySpec;
  * 
  * @author Sean Bridges
  */
-public class Vault implements IServerVault
+public class Vault 
 {
     private static final RemoteName VAULT_CHANNEL = new RemoteName("games.strategy.engine.vault.IServerVault.VAULT_CHANNEL", IRemoteVault.class);
     
@@ -54,36 +64,25 @@ public class Vault implements IServerVault
     
     private final KeyGenerator m_keyGen;
     private final IChannelMessenger m_channelMessenger;
-    private final IRemoteMessenger m_remoteMessenger;
     
     //Maps VaultID -> SecretKey
-    private final Map<VaultID, SecretKey> m_secretKeys = Collections.synchronizedMap(new HashMap<VaultID, SecretKey>());
+    private final ConcurrentMap<VaultID, SecretKey> m_secretKeys = new ConcurrentHashMap<VaultID, SecretKey>();
 
     //maps ValutID -> encrypted byte[]
-    private final Map<VaultID, byte[]> m_unverifiedValues = Collections.synchronizedMap(new HashMap<VaultID, byte[]>());
+    private final ConcurrentMap<VaultID, byte[]> m_unverifiedValues = new ConcurrentHashMap<VaultID, byte[]>();
     //maps VaultID -> byte[]
-    private final Map<VaultID, byte[]> m_verifiedValues = Collections.synchronizedMap(new HashMap<VaultID, byte[]>());
-    //maps INode->Long
-    //these are the ids of the remote keys that we have seen
-    //dont allow values to be reused
-    private final Map<INode, Long> m_maxRemoteIDIndexes = Collections.synchronizedMap(new HashMap<INode, Long>());
-    
+    private final ConcurrentMap<VaultID, byte[]> m_verifiedValues = new ConcurrentHashMap<VaultID, byte[]>();
+     
     private final Object m_waitForLock = new Object();
-    
-    private static final RemoteName
-    VAULT_SERVER_REMOTE =  new RemoteName("games.strategy.engine.vault.IServerVault.VAULT_SERVER_REMOTE", IServerVault.class);
     
     /**
      * @param channelMessenger
      */
-    public Vault(final IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
+    public Vault(final IChannelMessenger channelMessenger)
     {
         m_channelMessenger = channelMessenger;
-        m_remoteMessenger = remoteMessenger;
         
         m_channelMessenger.registerChannelSubscriber(m_remoteVault, VAULT_CHANNEL);
-        
-        handleInit(remoteMessenger);
         
         try
         {
@@ -99,12 +98,6 @@ public class Vault implements IServerVault
     public void shutDown()
     {
         m_channelMessenger.unregisterChannelSubscriber(m_remoteVault, VAULT_CHANNEL);
-        
-        if(m_channelMessenger.isServer())
-        {
-            //we init others
-            m_remoteMessenger.unregisterRemote(VAULT_SERVER_REMOTE);
-        }
     }
     
     //serialize secret key as byte array to 
@@ -137,26 +130,7 @@ public class Vault implements IServerVault
        
     }
     
-    /**
-     * @param remoteMessenger
-     */
-    private void handleInit(IRemoteMessenger remoteMessenger)
-    {
-        if(m_channelMessenger.isServer())
-        {
-            //we init others
-            remoteMessenger.registerRemote(this, VAULT_SERVER_REMOTE);
-        }
-        else
-        {
-            //we need to be initialized
-            IServerVault server = (IServerVault) remoteMessenger.getRemote(VAULT_SERVER_REMOTE);
-            Map<VaultID, byte[]> [] initValues = server.getInitData();
-            m_verifiedValues.putAll(initValues[0]);
-            m_unverifiedValues.putAll(initValues[1]);
-        }
-    }
-
+   
     private IRemoteVault getRemoteBroadcaster()
     {
         return (IRemoteVault) m_channelMessenger.getChannelBroadcastor(VAULT_CHANNEL);
@@ -171,12 +145,13 @@ public class Vault implements IServerVault
      * @param data - the data to lock
      * @return the VaultId of the data
      */
-    //this method is synchronized since vault ids must arrive in order
-    public synchronized VaultID lock(byte[] data)
+    public VaultID lock(byte[] data)
     {
         VaultID id = new VaultID(m_channelMessenger.getLocalNode());
         SecretKey key = m_keyGen.generateKey();
-        m_secretKeys.put(id, key);
+        if(m_secretKeys.putIfAbsent(id, key) != null) {
+            throw new IllegalStateException("dupliagte id:" + id);
+        }
         //we already know it, so might as well keep it
         m_verifiedValues.put(id, data);
         
@@ -244,9 +219,7 @@ public class Vault implements IServerVault
         {
             throw new IllegalArgumentException("Cant unlock data that wasnt locked on this node");
         }
-        SecretKey key = m_secretKeys.get(id);
-        //allow the secret key to be gc'd
-        m_secretKeys.remove(key);
+        SecretKey key = m_secretKeys.remove(id);
     
         //let everyone unlock it
         getRemoteBroadcaster().unlock(id, secretKeyToBytes( key));
@@ -286,6 +259,12 @@ public class Vault implements IServerVault
         return m_verifiedValues.containsKey(id) || m_unverifiedValues.containsKey(id);
     }
     
+
+    public List<VaultID> knownIds() {
+        ArrayList<VaultID> rVal = new ArrayList<VaultID>(m_verifiedValues.keySet());
+        rVal.addAll(m_unverifiedValues.keySet());
+        return rVal;
+    }
     
     /**
      * Allow all data associated with the given vault id to be released and garbage collected<p>
@@ -305,20 +284,10 @@ public class Vault implements IServerVault
             if(id.getGeneratedOn().equals(m_channelMessenger.getLocalNode()))
                 return;
             
-            //we only want to put something in the vault once!
-            //if a remote node can lock the same vaultid more than once
-            //then we have no security.
-            //we rely on the monotone increasing value of ids
-            Long lastID = m_maxRemoteIDIndexes.get(id.getGeneratedOn());
-            if(lastID == null)
-                lastID = new Long(-1);
             
-            if(id.getUniqueID() <= lastID.longValue())
-                throw new IllegalStateException("Attempt was made to reuse a vaultID, cheating is suspected");
-                
-            m_maxRemoteIDIndexes.put(id.getGeneratedOn(), new Long(id.getUniqueID()));
-            
-            m_unverifiedValues.put(id, data);
+            if(m_unverifiedValues.putIfAbsent(id, data) != null) {
+                throw new IllegalStateException("duplicate values for id:" + id);
+            }
             
             synchronized(m_waitForLock)
             {
@@ -353,9 +322,7 @@ public class Vault implements IServerVault
                 throw new IllegalStateException(e.getMessage());
             }     
             
-            byte[] encrypted = m_unverifiedValues.get(id);
-            //allow it to be gcd
-            m_unverifiedValues.remove(id);
+            byte[] encrypted = m_unverifiedValues.remove(id);            
             byte[] decrypted;
             
             try
@@ -382,7 +349,9 @@ public class Vault implements IServerVault
             byte[] data = new byte[decrypted.length - KNOWN_VAL.length];
             System.arraycopy(decrypted, KNOWN_VAL.length, data, 0, data.length);
             
-            m_verifiedValues.put(id, data);
+            if(m_verifiedValues.putIfAbsent(id, data) != null) {
+                throw new IllegalStateException("duplicate values for id:" + id);
+            }
             
             synchronized(m_waitForLock)
             {
@@ -417,7 +386,11 @@ public class Vault implements IServerVault
                     return;
                 try
                 {
-                    m_waitForLock.wait(endTime - System.currentTimeMillis());
+                    long waitTime = endTime - System.currentTimeMillis();
+                    if(waitTime > 0) 
+                    {
+                        m_waitForLock.wait(waitTime);
+                    }
                 } catch (InterruptedException e)
                 {
                     //not a big deal
@@ -456,17 +429,6 @@ public class Vault implements IServerVault
       }        
     }
 
-    /* (non-Javadoc)
-     * @see games.strategy.engine.vault.IServerVault#getInitData()
-     */
-    @SuppressWarnings("unchecked")
-    public Map<VaultID, byte[]> [] getInitData()
-    {
-        Map<VaultID, byte[]> [] rVal =  new Map[]{m_verifiedValues, m_unverifiedValues};
-        return rVal;
-         
-    }
-    
 }
 
 
@@ -475,14 +437,4 @@ interface IRemoteVault extends IChannelSubscribor
    public void addLockedValue(VaultID id, byte[] data);
    public void unlock(VaultID id, byte[] secretKeyBytes);
    public void release(VaultID id);
-}
-
-interface IServerVault extends IRemote
-{
-    /**
-     * 
-     * @return [0] - verified
-     * @return [1] - unverified
-     */
-    public Map<VaultID, byte[]> [] getInitData();
 }
