@@ -1,12 +1,14 @@
 Changes for 1.0.4
 
+* fix bug 2803021, NWO IPCs to spend don't display (sgb)
+
 * move copies of blank_relief to images/relief tiles, this allows all maps to share a copy (sgb)
 
 * change labels/dialog on repair screen to make it clear we are not purchasing units (sgb)
 
 * fix bug 2802962, bug where units loaded onto transports in a pending battle zone do not die when their trasnsports do (sgb)
 
-* Fixed bug 2807875, Factories count towards production limit (sgb)
+* fix bug 2807875, Factories count towards production limit (sgb)
 
 * fix bug 2815801 Bid placement Error (sgb)
 

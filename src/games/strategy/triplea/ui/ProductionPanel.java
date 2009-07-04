@@ -169,9 +169,10 @@ public class ProductionPanel extends JPanel
 
         }
 
-        add(m_left, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
+        int startY = m_rules.size() / rows;
+        add(m_left, new GridBagConstraints(0, startY +1, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
         m_done = new JButton(m_done_action);
-        add(m_done, new GridBagConstraints(0, 4, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,
+        add(m_done, new GridBagConstraints(0, startY + 2, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,
                 0, 8, 0), 0, 0));
 
     }
