@@ -207,8 +207,8 @@ public class AA50_41Test extends TestCase {
         
         public void testMechanizedInfantry()
         {
-        	//Set up tech
-        	PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+            //Set up tech
+            PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
             ITestDelegateBridge delegateBridge = getDelegateBridge(germans(m_data));
             TechTracker.addAdvance(germans, m_data, delegateBridge, TechAdvance.MECHANIZED_INFANTRY);
 
@@ -217,7 +217,7 @@ public class AA50_41Test extends TestCase {
             delegateBridge.setStepName("CombatMove");
             moveDelegate.start(delegateBridge, m_data);
             
-        	//Set up the territories
+            //Set up the territories
             Territory poland = territory("Poland", m_data);
             Territory eastPoland = territory("East Poland", m_data);
             Territory belorussia = territory("Belorussia", m_data);
@@ -261,12 +261,12 @@ public class AA50_41Test extends TestCase {
 
         public void testJetPower()
         {
-        	//Set up tech
-        	PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+            //Set up tech
+            PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
             ITestDelegateBridge delegateBridge = getDelegateBridge( germans(m_data));
             TechTracker.addAdvance(germans, m_data, delegateBridge, TechAdvance.JET_POWER);
             
-        	//Set up the territories
+            //Set up the territories
             Territory poland = territory("Poland", m_data);
             Territory eastPoland = territory("East Poland", m_data);            
 
@@ -312,20 +312,20 @@ public class AA50_41Test extends TestCase {
             assertNull(error);    
         }
 
-		public void testFactoryPlace() throws Exception
+        public void testFactoryPlace() throws Exception
         {
-			//get the xml file (needed because it has "heldUnits" meaning already purchased)
-			URL url = this.getClass().getResource("DelegateTest.xml");
-			
-			InputStream input= url.openStream();
-			m_data = (new GameParser()).parse(input);
-	        input.close();
-	        
-        	//Set up game
-			PlayerID british = m_data.getPlayerList().getPlayerID("British");
+            //get the xml file (needed because it has "heldUnits" meaning already purchased)
+            URL url = this.getClass().getResource("DelegateTest.xml");
+            
+            InputStream input= url.openStream();
+            m_data = (new GameParser()).parse(input);
+            input.close();
+            
+            //Set up game
+            PlayerID british = m_data.getPlayerList().getPlayerID("British");
             ITestDelegateBridge delegateBridge = getDelegateBridge( british(m_data));
                         
-        	//Set up the territories
+            //Set up the territories
             Territory egypt = territory("Anglo Sudan Egypt", m_data);        
 
             //Set up the unit types
@@ -338,23 +338,23 @@ public class AA50_41Test extends TestCase {
             placeDelegate.start(delegateBridge, m_data);
             
             //Add the factory
-    		IntegerMap<UnitType> map = new IntegerMap<UnitType>();
-    		map.add(factoryType, 1);
-    		
-    		//Place the factory
-    		String response = placeDelegate.placeUnits(getUnits(map, british), egypt);		
-    		assertValid(response);
-    		
-    		//placeUnits performPlace
-    		//get production and unit production values
-    		TerritoryAttachment ta = TerritoryAttachment.get(egypt);    		
-    		assertEquals(ta.getUnitProduction(), ta.getProduction());            
+            IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+            map.add(factoryType, 1);
+            
+            //Place the factory
+            String response = placeDelegate.placeUnits(getUnits(map, british), egypt);      
+            assertValid(response);
+            
+            //placeUnits performPlace
+            //get production and unit production values
+            TerritoryAttachment ta = TerritoryAttachment.get(egypt);            
+            assertEquals(ta.getUnitProduction(), ta.getProduction());            
         }
        
-		
-		public void testMoveUnitsThroughSubs()
-		{
-		    ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+        
+        public void testMoveUnitsThroughSubs()
+        {
+            ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
             bridge.setStepName("nonCombatMove");
             moveDelegate(m_data).start(bridge, m_data);
             
@@ -364,28 +364,56 @@ public class AA50_41Test extends TestCase {
                 territory("7 Sea Zone", m_data),
                 territory("8 Sea Zone", m_data)
                 );
-		    
+            
             String error = moveDelegate(m_data).move(sz6.getUnits().getUnits(), route);
             assertNull(error,error);
-		}
-		
-	      public void testMoveUnitsThroughTransports()
-	        {
-	            ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
-	            bridge.setStepName("nonCombatMove");
-	            moveDelegate(m_data).start(bridge, m_data);
-	            
-	            Territory sz12 = territory("12 Sea Zone", m_data);
-	            Route route = new Route(
-	                sz12,
-	                territory("13 Sea Zone", m_data),
-	                territory("14 Sea Zone", m_data)
-	                );
-	            
-	            String error = moveDelegate(m_data).move(sz12.getUnits().getUnits(), route);
-	            assertNull(error,error);
-	        }
-	        
+        }
+        
+        public void testMoveUnitsThroughTransports()
+        {
+            ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+            bridge.setStepName("nonCombatMove");
+            moveDelegate(m_data).start(bridge, m_data);
+            
+            Territory sz12 = territory("12 Sea Zone", m_data);
+            Route route = new Route(
+                sz12,
+                territory("13 Sea Zone", m_data),
+                territory("14 Sea Zone", m_data)
+                );
+            
+            String error = moveDelegate(m_data).move(sz12.getUnits().getUnits(), route);
+            assertNull(error,error);
+        }
+            
+        public void testLoadThroughSubs()
+        {
+            ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+            bridge.setStepName("nonCombatMove");
+            MoveDelegate moveDelegate = moveDelegate(m_data);
+            moveDelegate.start(bridge, m_data);
+            
+            Territory sz8 = territory("8 Sea Zone", m_data);
+            Territory sz7 = territory("7 Sea Zone", m_data);
+            Territory sz6 = territory("6 Sea Zone", m_data);
+            Territory uk = territory("United Kingdom", m_data);
+            
+            
+            //add a transport
+            addTo(sz8, transports(m_data).create(1,british(m_data)));
+            
+            //move the transport where to the sub is
+            assertValid(moveDelegate.move(sz8.getUnits().getUnits(), new Route(sz8,sz7)));
+            
+            
+            //load the transport
+            load(uk.getUnits().getMatches(Matches.UnitIsInfantry), new Route(uk, sz7));
+                        
+            //move the transport out
+            assertValid(moveDelegate.move(sz7.getUnits().getMatches(Matches.unitOwnedBy(british(m_data))), 
+                new Route(sz7,sz6)));
+        }
+
         
 
         /***********************************************************/
@@ -395,18 +423,18 @@ public class AA50_41Test extends TestCase {
         /*
          * Add Utilities here
          */
-    	
-		private Collection<Unit> getUnits(IntegerMap<UnitType> units, PlayerID from)
-    	{
-    		Iterator<UnitType> iter = units.keySet().iterator();
-    		Collection rVal = new ArrayList(units.totalValues());
-    		while(iter.hasNext())
-    		{
-    			UnitType type = iter.next();
-    			rVal.addAll(from.getUnits().getUnits(type, units.getInt(type)));
-    		}
-    		return rVal;
-    	}
+        
+        private Collection<Unit> getUnits(IntegerMap<UnitType> units, PlayerID from)
+        {
+            Iterator<UnitType> iter = units.keySet().iterator();
+            Collection rVal = new ArrayList(units.totalValues());
+            while(iter.hasNext())
+            {
+                UnitType type = iter.next();
+                rVal.addAll(from.getUnits().getUnits(type, units.getInt(type)));
+            }
+            return rVal;
+        }
 
 
         /***********************************************************/
@@ -417,12 +445,13 @@ public class AA50_41Test extends TestCase {
          * Add assertions here
          */
         public void assertValid(String string)
-    	{
-    	    assertNull(string,string);
-    	}
-    	
-    	public void assertError(String string)
-    	{
-    	    assertNotNull(string,string);
-    	}
+        {
+            assertNull(string,string);
+        }
+        
+        public void assertError(String string)
+        {
+            assertNotNull(string,string);
+        }
 }
+
