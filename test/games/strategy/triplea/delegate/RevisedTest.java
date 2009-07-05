@@ -23,17 +23,14 @@ import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.util.CompositeMatchAnd;
 
@@ -207,6 +204,34 @@ public class RevisedTest extends TestCase
         
         
     }
+    
+    public void testLoadAlliedTransports() 
+    {
+        PlayerID british = british(m_data);
+        PlayerID americans = americans(m_data);
+        
+        Territory uk = territory("United Kingdom", m_data);
+        
+        ITestDelegateBridge bridge = getDelegateBridge(british);
+        bridge.setStepName("CombatMove");
+        moveDelegate(m_data).start(bridge, m_data);
+        
+        
+        //create 2 us infantry
+        addTo(uk, infantry(m_data).create(2, americans));
+        
+        //try to load them on the british players turn
+        
+        Territory sz2 = territory("2 Sea Zone", m_data);
+        String error = moveDelegate(m_data).move(
+            uk.getUnits().getMatches(Matches.unitIsOwnedBy(americans)), 
+            new Route(uk, sz2), 
+            sz2.getUnits().getMatches(Matches.UnitIsTransport));
+        
+        assertFalse(error == null);
+        
+    }
+    
     
     public void testBidPlace() 
     {

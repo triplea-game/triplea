@@ -1,5 +1,7 @@
 Changes for 1.0.4
 
+* fix bug 1888062 multinational transport bug (sgb)
+
 * remove non working "Use Destroyers and Artillery" in Iron Blitz (sgb)
 
 * fix bug 2815448, AA50: Defending subs don't get sneak defense (sgb)

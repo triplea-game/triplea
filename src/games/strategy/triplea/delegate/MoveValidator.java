@@ -966,6 +966,10 @@ public class MoveValidator
                 moveTest = units;
             }
             
+            for(Unit unit : Match.getMatches(moveTest, Matches.unitIsOwnedBy(player).invert())) {
+                result.addDisallowedUnit("Can only move own troops", unit);
+            }
+            
             //Initialize available Mechanized Inf support
             getMechanizedSupportAvail(route, units, player);
             
