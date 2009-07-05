@@ -12,7 +12,7 @@ Coded by Iron__Cross
 -->
 
 <game>
-    <info name="Pacific - Alpha" version="1.0.3"/>
+    <info name="Pacific - Alpha" version="1.0.4"/>
     
     <loader javaClass="games.strategy.triplea.TripleA"/>
     
@@ -803,6 +803,7 @@ Coded by Iron__Cross
             <option name="attack" value="1"/>
             <option name="defense" value="2"/>
             <option name="artillerySupportable" value="true"/>
+            <option name="isInfantry" value="true"/>
         </attatchment>
         
         <attatchment name="unitAttatchment" attatchTo="artillery"

@@ -1,5 +1,9 @@
 Changes for 1.0.4
 
+* add isInfantry marker to infantry units for all mods, not just aa50 (sgb)
+
+* fix bug where strat bombers hit by aa en route to a battle lives (sgb)
+
 * fix bug 2816632 Marine unit doesn't work with LL (sgb)
 
 * fix bug 1888062 multinational transport bug (sgb)

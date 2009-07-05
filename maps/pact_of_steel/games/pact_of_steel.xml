@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Pact of Steel" version="2.1.1"/>
+        <info name="Pact of Steel" version="2.1.2"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -903,6 +903,7 @@
                          <option name="attack" value="1"/>
                          <option name="defense" value="2"/>
                          <option name="artillerySupportable" value="true"/>
+                         <option name="isInfantry" value="true"/>
                 </attatchment>
 
                 <!-- Artillery -->

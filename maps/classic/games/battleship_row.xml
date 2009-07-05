@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="Battleship Row" version="0.2"/>
+	<info name="Battleship Row" version="0.3"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -730,6 +730,7 @@
 			 <option name="transportCost" value="1"/>
 			 <option name="attack" value="1"/>
 			 <option name="defense" value="2"/>
+			 <option name="isInfantry" value="true"/>
 	    </attatchment>
 	    
 	    <attatchment name="unitAttatchment"

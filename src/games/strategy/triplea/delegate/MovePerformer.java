@@ -173,14 +173,14 @@ public class MovePerformer implements Serializable
                 mustFightThrough.add(Matches.isTerritoryEnemyAndNotNuetralWater(id, m_data));
                 mustFightThrough.add(Matches.territoryHasNonSubmergedEnemyUnits(id, m_data));
 
-                Collection<Unit> moved = Util.intersection(units, (Collection<Unit>) arrivingUnits[0]);
+                Collection<Unit> arrived = Util.intersection(units, (Collection<Unit>) arrivingUnits[0]);
 
                 if (route.someMatch(mustFightThrough) && arrivingUnits[0].size() != 0)
                 {
                     boolean bombing = false;
                     boolean ignoreBattle = false;
                     //could it be a bombing raid
-                    boolean allCanBomb = Match.allMatch(units, Matches.UnitIsStrategicBomber);
+                    boolean allCanBomb = Match.allMatch(arrived, Matches.UnitIsStrategicBomber);
 
                     CompositeMatch<Unit> enemyFactory = new CompositeMatchAnd<Unit>();
                     enemyFactory.add(Matches.UnitIsFactory);
@@ -196,7 +196,7 @@ public class MovePerformer implements Serializable
                     //Ignore Trn on Trn forces.
                     if(isIgnoreTransportInMovement(data))
                     {                    	
-                    	boolean allOwnedTransports = Match.allMatch(units, Matches.UnitIsTransport);
+                    	boolean allOwnedTransports = Match.allMatch(arrived, Matches.UnitIsTransport);
                     	boolean allEnemyTransports = Match.allMatch(enemyUnits, Matches.UnitIsTransport);
                     	//If everybody is a transport, don't create a battle
                     	if(allOwnedTransports && allEnemyTransports)
@@ -210,9 +210,9 @@ public class MovePerformer implements Serializable
                 }
 
                 //mark movement
-                Change moveChange = markMovementChange(units, route);
+                Change moveChange = markMovementChange(arrived, route);
 
-                Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, units, transportsToLoad);
+                Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, arrived, transportsToLoad);
                 markTransportsMovement(transporting, route);
                 
                 CompositeChange change = new CompositeChange(moveChange);
@@ -224,7 +224,7 @@ public class MovePerformer implements Serializable
                 {
                     ChangeFactory.addUnits(route.getEnd(), arrivingUnits[0]);
                     remove = ChangeFactory.removeUnits(route.getStart(), units);
-                    add = ChangeFactory.addUnits(route.getEnd(), units);
+                    add = ChangeFactory.addUnits(route.getEnd(), arrived);
                     change.add(add,remove);
                 }
                 
@@ -232,7 +232,7 @@ public class MovePerformer implements Serializable
 
                 m_currentMove.addChange(change);
 
-                m_currentMove.setDescription(MyFormatter.unitsToTextNoOwner(moved) + " moved from " + route.getStart().getName() + " to "
+                m_currentMove.setDescription(MyFormatter.unitsToTextNoOwner(arrived) + " moved from " + route.getStart().getName() + " to "
                         + route.getEnd().getName());
                 
                 m_moveDelegate.updateUndoableMoves(m_currentMove);
@@ -248,13 +248,6 @@ public class MovePerformer implements Serializable
 
     }
     
-    private static boolean isParatroopers(PlayerID player)    
-    {
-        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
-        if(ta == null)
-        	return false;
-        return ta.hasParatroopers();
-    }    
 
     private Change markMovementChange(Collection<Unit> units, Route route)
     {
@@ -292,7 +285,7 @@ public class MovePerformer implements Serializable
         //if entered a non blitzed conquered territory, mark with 0 movement
         if (!MoveDelegate.isNonCombat(m_bridge) && ( MoveDelegate.getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route)))
         {
-            Collection land = Match.getMatches(units, Matches.UnitIsLand);
+            Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
             iter = land.iterator();
             while (iter.hasNext())
             {

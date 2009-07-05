@@ -297,6 +297,90 @@ public class RevisedTest extends TestCase
         
     }
     
+    public void testOverFlyBombersDies()
+    {
+
+        PlayerID british = british(m_data);
+        MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        ITestDelegateBridge bridge = getDelegateBridge(british);
+        bridge.setStepName("CombatMove");
+        moveDelegate.start(bridge, m_data);
+
+        bridge.setRemote(new DummyTripleAPlayer()
+        {
+            @Override
+            public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories) {
+               return true;
+            }     
+        });
+        bridge.setRandomSource(new ScriptedRandomSource(0));
+
+        Territory uk = territory("United Kingdom", m_data);
+        Territory we = territory("Western Europe", m_data);
+        Territory se = territory("Southern Europe", m_data);
+
+        Route route = new Route(
+            uk,we,se
+            );
+        
+        move(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), route);
+        
+        //the aa gun should have fired. the bomber no longer exists
+        assertTrue(se.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
+        assertTrue(we.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
+        assertTrue(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty()); 
+    }
+    
+    public void testOverFlyBombersJoiningBattleDie()
+    {
+
+        //a bomber flies over aa to join a battle, gets hit,
+        //it should not appear in the battle
+        
+        PlayerID british = british(m_data);
+        MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        ITestDelegateBridge bridge = getDelegateBridge(british);
+        bridge.setStepName("CombatMove");
+        moveDelegate.start(bridge, m_data);
+
+        bridge.setRemote(new DummyTripleAPlayer()
+        {
+            @Override
+            public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories) {
+               return true;
+            }     
+        });
+        bridge.setRandomSource(new ScriptedRandomSource(0));
+
+        Territory uk = territory("United Kingdom", m_data);
+        Territory we = territory("Western Europe", m_data);
+        Territory se = territory("Southern Europe", m_data);
+        Territory sz14 = territory("14 Sea Zone", m_data);
+        Territory sz15 = territory("15 Sea Zone", m_data);
+        Territory egypt = territory("Anglo Egypt", m_data);
+
+        //start a battle in se
+        removeFrom(sz14, sz14.getUnits().getUnits());
+        addTo(sz15, transports(m_data).create(1,british));
+        
+        load(egypt.getUnits().getMatches(Matches.UnitIsInfantry), new Route(egypt,sz15));
+        
+        move(sz15.getUnits().getUnits(), new Route(sz15,sz14));
+        
+        move(sz14.getUnits().getMatches(Matches.UnitIsInfantry), new Route(sz14,se));
+        
+        Route route = new Route(
+            uk,we,se
+            );
+        
+        move(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), route);
+        
+        //the aa gun should have fired and hit
+        assertTrue(se.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
+        assertTrue(we.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
+        assertTrue(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());  
+    }
+    
     public void testTransportAttack()
     {
         Territory sz14 = m_data.getMap().getTerritory("14 Sea Zone");

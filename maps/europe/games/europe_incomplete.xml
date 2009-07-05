@@ -11,7 +11,7 @@
 
 <game>
 
-	<info name="Europe - Alpha" version="0.26"/>
+	<info name="Europe - Alpha" version="0.27"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -626,6 +626,7 @@
 			 <option name="attack" value="1"/>
 			 <option name="defense" value="2"/>
 			 <option name="artillerySupportable" value="true"/>
+			 <option name="isInfantry" value="true"/>
 	    </attatchment>
 	    <attatchment name="unitAttatchment" 
 			 attatchTo="artillery"

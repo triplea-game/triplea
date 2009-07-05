@@ -9,7 +9,7 @@
 
 <game>
 
-	<info name="Capture The Flag" version="1.0"/>
+	<info name="Capture The Flag" version="1.0.1"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -302,6 +302,7 @@
 			 <option name="attack" value="1"/>
 			 <option name="defense" value="2"/>
 			 <option name="artillerySupportable" value="true"/>
+			 <option name="isInfantry" value="true"/>
 	    </attatchment>
 	    <attatchment name="unitAttatchment" 
 			 attatchTo="artillery"

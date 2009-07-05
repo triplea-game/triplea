@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Minimap" version="1.0"/>
+        <info name="Minimap" version="1.1"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -335,6 +335,7 @@
                          <option name="attack" value="1"/>
                          <option name="defense" value="2"/>
                          <option name="artillerySupportable" value="true"/>
+                         <option name="isInfantry" value="true"/>
                     </attatchment>
             
                     <attatchment name="unitAttatchment" attatchTo="artillery" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">

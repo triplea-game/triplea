@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Big World : 1942" version="2.2"/>
+        <info name="Big World : 1942" version="2.3"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -1571,6 +1571,7 @@
                          <option name="transportCost" value="2"/>
                          <option name="attack" value="1"/>
                          <option name="defense" value="2"/>
+                         <option name="isInfantry" value="true"/>
                          <option name="artillerySupportable" value="true"/>
                     </attatchment>
             

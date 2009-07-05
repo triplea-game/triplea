@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd"> 
 
 <game> 
-       <info name="New World Order 9 Nations" version="1.6.1"/> 
+       <info name="New World Order 9 Nations" version="1.6.2"/> 
         
        <loader javaClass="games.strategy.triplea.TripleA"/> 
 
@@ -1872,6 +1872,7 @@
 <option name="attack" value="1"/> 
 <option name="defense" value="2"/> 
 <option name="artillerySupportable" value="true"/> 
+<option name="isInfantry" value="true"/>
 </attatchment> 
 
 <attatchment name="unitAttatchment" attatchTo="elite" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType"> 
@@ -1880,6 +1881,7 @@
 <option name="attack" value="2"/> 
 <option name="defense" value="2"/> 
 <option name="artillerySupportable" value="true"/> 
+<option name="isInfantry" value="true"/>
 </attatchment> 
 
 <attatchment name="unitAttatchment" attatchTo="artillery" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType"> 

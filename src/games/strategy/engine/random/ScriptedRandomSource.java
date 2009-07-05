@@ -90,6 +90,14 @@ public class ScriptedRandomSource implements IRandomSource
         m_numbers = numbers;
     }
     
+    public ScriptedRandomSource(Integer... numbers)
+    {
+        m_numbers = new int[numbers.length];
+        for(int i =0; i < numbers.length; i++) {
+            m_numbers[i] = numbers[i];
+        }
+    }
+    
     public int getRandom(int max, String annotation)
     {
         return getRandom(max,1,null)[0];

@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="Classic" version="1.6"/>
+	<info name="Classic" version="1.7"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -775,6 +775,7 @@
 			 <option name="attack" value="1"/>
 			 <option name="defense" value="2"/>
 			 <option name="artillerySupportable" value="true"/>
+			 <option name="isInfantry" value="true"/>
 	    </attatchment>
 	    
 	    <attatchment name="unitAttatchment" 
