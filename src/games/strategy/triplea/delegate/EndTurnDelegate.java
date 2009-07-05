@@ -149,10 +149,13 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
         if (!m_gameOver)
         {
             m_gameOver = true;
-            // Make sure the user really wants to leave the game.
-            int rVal = JOptionPane.showConfirmDialog(null, status +"\nDo you want to continue?", "Continue" , JOptionPane.YES_NO_OPTION);
-            if(rVal != JOptionPane.OK_OPTION)
-                a_bridge.stopGameSequence();
+            //we can't talk to the user directly
+            //we need to go through an ITripleAPlayer, or an IDisplay
+            
+//            // Make sure the user really wants to leave the game.
+//            int rVal = JOptionPane.showConfirmDialog(null, status +"\nDo you want to continue?", "Continue" , JOptionPane.YES_NO_OPTION);
+//            if(rVal != JOptionPane.OK_OPTION)
+//                a_bridge.stopGameSequence();
         }
     }
     
