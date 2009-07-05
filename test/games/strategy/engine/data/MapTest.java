@@ -71,6 +71,8 @@ public class MapTest extends TestCase
 	{
 		
 		//map, l is land, w is water
+	    //each territory is connected to
+	    //it's direct neighbors, but not diagonals
 		// llll
 		// llww
 		// llwl
@@ -210,6 +212,12 @@ public class MapTest extends TestCase
 	{
 		assertTrue(map.getLandDistance(ad,da) == 6);
 	}
+	
+    public void testLongRoute()
+    {
+        Route route = map.getLandRoute(ad,da);
+        assertEquals(route.getLength(),6);
+    }
 
 	public void testNeighborLandNoSeaConnect()
 	{
@@ -263,7 +271,9 @@ public class MapTest extends TestCase
 	public void testMultiplePossible()
 	{
 		Route rt = map.getRoute(aa,dd);
-		assertTrue(rt.getLength() == 6);
+		assertEquals(rt.getStart(), aa);
+		assertEquals(rt.getEnd(), dd);
+		assertEquals(rt.getLength(),6);
 	}
 	
 	public void testNeighbors()

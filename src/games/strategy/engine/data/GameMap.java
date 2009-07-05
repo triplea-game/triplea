@@ -37,7 +37,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 
 	private Collection<Territory> m_territories = new ArrayList<Territory>();
 	//note that all entries are unmodifiable
-	private HashMap<Territory, Set<Territory>> m_connections = new HashMap<Territory, Set<Territory> >();
+	private Map<Territory, Set<Territory>> m_connections = new HashMap<Territory, Set<Territory> >();
 	//for fast lookup based on the string name of the territory
     private Map<String, Territory> m_territoryLookup = new HashMap<String,Territory>();
     
@@ -263,43 +263,16 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 */
 	public Route getRoute(Territory t1, Territory t2, Match<Territory> cond)
 	{
-		Route route = new Route();
-		route.setStart(t1);
-
-		if(t1.equals(t2) )
-			return route;
-
-
-		//find the distance
-		int distance = getDistance(t1,t2,cond);
-		if(distance == -1)
-		{
-			return null;
-		}
-
-		getRoute(route, distance, t1, t2, cond);
-
-		return route;
-	}
-
-	private boolean getRoute(Route route, int distance, Territory start, Territory stop, Match<Territory> cond)
-	{
-		distance--;
-		Set<Territory> connections = new HashSet<Territory>( getNeighbors(start, cond));
-		Iterator<Territory> iter = connections.iterator();
-		while(iter.hasNext())
-		{
-			Territory current = iter.next();
-			if( getDistance(current, stop,cond) == distance)
-			{
-				if(cond.match(current))
-				{
-					route.add(current);
-					return getRoute(route, distance, current, stop, cond);
-				}
-			}
-		}
-		return false;
+	    if(t1 == t2) {
+            return new Route(t1);
+        }
+        if(getNeighbors(t1,cond).contains(t2)) {
+            return new Route(t1,t2);
+        }
+        
+        RouteFinder engine = new RouteFinder(this, cond);
+        return engine.findRoute(t1,t2);
+	    
 	}
 
 	/**

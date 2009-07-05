@@ -55,6 +55,18 @@ public class Route implements java.io.Serializable
         
     }
     
+  public Route(List<Territory> route) {
+        
+        setStart(route.get(0));
+        if(route.size() == 1) {
+            return;
+        }
+        for(Territory t: route.subList(1, route.size())) {
+            add(t);
+        }
+    }
+    
+    
     public Route(Territory start, Territory ... route) {
         
         setStart(start);
