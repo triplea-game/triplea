@@ -9,6 +9,7 @@ import java.util.logging.LogManager;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -192,7 +193,12 @@ public class GameRunner2
     
     public static String getDefaultLookAndFeel() {
         Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
-        return pref.get(LOOK_AND_FEEL_PREF, "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel");
+        String defaultLokAndFeel =  "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel";
+        //macs are already beautiful
+        if(GameRunner.isMac()) {
+            defaultLokAndFeel = UIManager.getSystemLookAndFeelClassName();
+        }        
+        return pref.get(LOOK_AND_FEEL_PREF, defaultLokAndFeel);
     }
     
     public static void setDefaultLookAndFeel(String lookAndFeelClassName) { 
