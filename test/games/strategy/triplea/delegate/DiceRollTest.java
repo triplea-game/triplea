@@ -4,16 +4,13 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Die.DieType;
-import games.strategy.triplea.ui.display.DummyDisplay;
 
 import java.util.Collections;
 import java.util.List;
@@ -211,6 +208,30 @@ public class DiceRollTest extends TestCase
         
         ITestDelegateBridge bridge = getDelegateBridge(americans);
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
+        
+        MockBattle battle = new MockBattle(algeria);
+        battle.setAmphibiousLandAttackers(attackers);
+        battle.setIsAmphibious(true);
+        
+        
+        DiceRoll roll=  DiceRoll.rollDice(attackers, false, americans,bridge,m_data, battle, "");
+        assertEquals(1, roll.getHits());        
+    }
+    
+    public void testMarineAttackPlus1LowLuck() throws Exception 
+    {
+        m_data = LoadGameUtil.loadGame("classic", "iron_blitz.xml");
+     
+        makeGameLowLuck();
+        
+        Territory algeria = m_data.getMap().getTerritory("Algeria");
+        PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+        
+        UnitType marine = m_data.getUnitTypeList().getUnitType("marine");
+        List<Unit> attackers = marine.create(3, americans);
+        
+        ITestDelegateBridge bridge = getDelegateBridge(americans);
+        bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
         
         MockBattle battle = new MockBattle(algeria);
         battle.setAmphibiousLandAttackers(attackers);

@@ -1,5 +1,7 @@
 Changes for 1.0.4
 
+* fix bug 2816632 Marine unit doesn't work with LL (sgb)
+
 * fix bug 1888062 multinational transport bug (sgb)
 
 * remove non working "Use Destroyers and Artillery" in Iron Blitz (sgb)
