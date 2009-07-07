@@ -55,7 +55,7 @@ public final class TileImageFactory
     private final Object m_mutex = new Object();
 
     // one instance in the application
-    private final static String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief";
+    private final static String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief2";
     private static boolean s_showReliefImages = true;
     private final static String SHOW_MAP_BLENDS_PREFERENCE = "ShowBlends";
     private static boolean s_showMapBlends = false;
@@ -76,7 +76,7 @@ public final class TileImageFactory
     static
     {
         Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
-        s_showReliefImages = prefs.getBoolean(SHOW_RELIEF_IMAGES_PREFERENCE, false);
+        s_showReliefImages = prefs.getBoolean(SHOW_RELIEF_IMAGES_PREFERENCE, true);
         s_showMapBlends = prefs.getBoolean(SHOW_MAP_BLENDS_PREFERENCE, false);
         s_showMapBlendMode = prefs.get(SHOW_MAP_BLEND_MODE, "normal");
         s_showMapBlendAlpha = prefs.getFloat(SHOW_MAP_BLEND_ALPHA, 1.0f);
