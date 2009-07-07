@@ -1294,7 +1294,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         // In 4th edition we need to filter out territories where only planes
         // came from since planes cannot define retreat paths
-        if (isFourthEdition())
+        if (isFourthEdition() || isAnniversaryEdition())
         {
             possible = Match.getMatches(possible, new Match<Territory>()
             {
@@ -1305,19 +1305,19 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 }
             });
         }
-        else 
-        {
-//TODO kev perhaps allow blitzing units to retreat 1
+        /*else 
+        {*/
             //the air unit may have come from a conquered or enemy territory, don't allow retreating
             Match<Territory> conqueuredOrEnemy = new CompositeMatchOr<Territory>(
-                Matches.isTerritoryEnemy(m_attacker, m_data),
+                Matches.isTerritoryEnemyAndNotNeutral(m_attacker, m_data),
                 new CompositeMatchAnd<Territory>(
-                    Matches.TerritoryIsLand,
+                    //Matches.TerritoryIsLand,
+                    Matches.TerritoryIsWater,
                     Matches.territoryWasFoughOver(m_tracker)
                     )
                 );
             possible.removeAll(Match.getMatches(possible,conqueuredOrEnemy));
-        }
+        //}
         
         //the battle site is in the attacking from
         //if sea units are fighting a submerged sub
@@ -2223,8 +2223,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
     	return games.strategy.triplea.Properties.getFourthEdition(m_data);
     }
+    
+    private boolean isAnniversaryEdition()
+    {
+    	return games.strategy.triplea.Properties.getAnniversaryEdition(m_data);
+    }
 
-    private boolean isPartialAmphibiousRetreat()
+        private boolean isPartialAmphibiousRetreat()
     {
         return games.strategy.triplea.Properties.getPartialAmphibiousRetreat(m_data);
     }

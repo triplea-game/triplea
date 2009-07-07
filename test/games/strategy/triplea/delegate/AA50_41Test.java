@@ -253,7 +253,7 @@ public class AA50_41Test extends TestCase {
             MustFightBattle battle = (MustFightBattle) 
                 MoveDelegate.getBattleTracker(m_data).getPendingBattle(ukraine, false);
             
-            assertFalse(battle.getAttackerRetreatTerritories().contains(eastPoland));            
+            assertTrue(battle.getAttackerRetreatTerritories().contains(eastPoland));            
         }
         
         public void testMechanizedInfantry()

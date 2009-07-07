@@ -896,7 +896,8 @@ public class MovePanel extends ActionPanel
     {
         if (!MoveValidator.isLoad(route))
             return Collections.emptyList();
-
+        if (Match.someMatch(unitsToLoad, Matches.UnitIsAir))  //Air units should never be asked to select transport 
+        	return Collections.emptyList();
         Collection<Unit> endOwnedUnits = route.getEnd().getUnits().getUnits();
 
         final PlayerID unitOwner = getUnitOwner(unitsToLoad);

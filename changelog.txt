@@ -1,5 +1,15 @@
 Changes for 1.0.4
 
+* Changed testCanRetreatIntoBlitzedTerritory() to allow retreat into blitzed territory per AA.org (ComradeKev)
+
+* fix bugs 2815448 defending subs not getting sneak attack (Seidelin) 
+
+* fix bug 2813511 naval units not asked to retreat (Seidelin)
+
+* fix bug 2807885 fighters asked which transport to load (Seidelin)
+
+* Partial refactor of validateAirCanLand (ComradeKev)
+
 * add isInfantry marker to infantry units for all mods, not just aa50 (sgb)
 
 * fix bug where strat bombers hit by aa en route to a battle lives (sgb)
