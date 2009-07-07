@@ -34,6 +34,5 @@ public interface IPurchaseDelegate extends IRemote
      */
     public String purchase(IntegerMap<ProductionRule> productionRules);
     
-    //public String purchaseRepair(IntegerMap<RepairRule> productionRules);
     public String purchaseRepair(HashMap<Territory, IntegerMap<RepairRule>> productionRules);
 }

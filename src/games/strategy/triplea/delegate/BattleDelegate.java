@@ -373,7 +373,8 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
     {
         PlayerID player = m_bridge.getPlayerID();
         
-        //kev set up any continued battles from previous actions
+        //Set up any continued battles from previous actions
+        //This can be the basis for multi-round games like D-Day
         addContinuedSeaBattles(m_data, player);
         
         //we want to match all sea zones with our units and enemy units

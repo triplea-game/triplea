@@ -59,8 +59,24 @@ public class UnitsDrawer implements IDrawable
         if (type == null)
             throw new IllegalStateException("Type not found:" + m_unitType);
         PlayerID owner = data.getPlayerList().getPlayerID(m_playerName);
-
+        
         Image img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged);
+        
+        if(!m_damaged && type.getName().equals("factory") && isSBRAffectsUnitProduction(data) )
+        {
+        	TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));
+        	int prod = ta.getProduction();
+        	int unitProd = ta.getUnitProduction();
+        	if(unitProd < prod)
+        	{
+                img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, true);
+        	}
+        }
+        else
+        {
+            img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged);
+        }
+        
         graphics.drawImage(img, m_placementPoint.x - bounds.x, m_placementPoint.y - bounds.y, null);
 
         if (m_count != 1)
@@ -78,8 +94,8 @@ public class UnitsDrawer implements IDrawable
         }
     }
     
-	private void displayFactoryDamage(Rectangle bounds, GameData data,
-			Graphics2D graphics, UnitType type) {
+	private void displayFactoryDamage(Rectangle bounds, GameData data, Graphics2D graphics, UnitType type) 
+	{
 
 		graphics.setColor(Color.black);
 		graphics.setFont(MapImage.MAP_FONT);

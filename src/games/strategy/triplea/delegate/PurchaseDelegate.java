@@ -239,7 +239,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
                         changes.add(ChangeFactory.unitsHit(hits));
                     }            	
 
-                    changes.add(ChangeFactory.attachmentPropertyChange(ta, (new Integer(currentDamage + repairCount)).toString(), "unitProduction"));
+                    changes.add(ChangeFactory.attachmentPropertyChange(ta, (new Integer(currentDamage + repairCount)).toString(), "unitProduction"));                    
                 }
             }
         }

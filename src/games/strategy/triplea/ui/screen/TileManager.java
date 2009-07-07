@@ -341,7 +341,7 @@ public class TileManager
         Point lastPlace = null;
 
         Iterator unitCategoryIter = UnitSeperator.categorize(territory.getUnits().getUnits()).iterator();
-
+        
         while (unitCategoryIter.hasNext())
         {
             
@@ -359,7 +359,7 @@ public class TileManager
                 lastPlace.x += m_uiContext.getUnitImageFactory().getUnitImageWidth();
                 overflow = true;
             }
-
+            
             UnitsDrawer drawable = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), category.getOwner().getName(), lastPlace,
                     category.getDamaged(), overflow, territory.getName(), m_uiContext);
             drawing.add(drawable);

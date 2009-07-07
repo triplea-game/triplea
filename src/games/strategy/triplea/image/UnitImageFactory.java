@@ -263,7 +263,7 @@ public class UnitImageFactory
       if (TechTracker.hasRocket(id))
       {}
     }
-//TODO COMCO add new icon types here
+
     if (type.getName().equals(Constants.FACTORY_TYPE))
     {
       if (TechTracker.hasIndustrialTechnology(id) || TechTracker.hasIncreasedFactoryProduction(id))
@@ -274,7 +274,6 @@ public class UnitImageFactory
 
     if(damaged)
       name.append("_hit");
-    //TODO COMCO here might be a spot for the damage count icons.
 
     return name.toString();
   }
