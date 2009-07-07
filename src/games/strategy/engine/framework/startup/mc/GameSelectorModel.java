@@ -34,7 +34,7 @@ public class GameSelectorModel extends Observable
 {
     
     public static final File DEFAULT_DIRECTORY = new File(GameRunner.getRootFolder(),  "/games");
-    private static final String DEFAULT_GAME_NAME_PREF = "DefaultGameName";
+    private static final String DEFAULT_GAME_NAME_PREF = "DefaultGameName2";
     
     private GameData m_data;
     private String m_gameName;
@@ -210,7 +210,7 @@ public class GameSelectorModel extends Observable
         //load the previously saved value
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         
-        String defaultGameName = "revised";
+        String defaultGameName = "AA50-42";
         String s = prefs.get(DEFAULT_GAME_NAME_PREF, defaultGameName);
         
         
