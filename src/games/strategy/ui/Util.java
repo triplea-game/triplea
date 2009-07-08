@@ -34,6 +34,11 @@ import java.awt.Window;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
+
+import javax.swing.SwingUtilities;
 
 
 
@@ -49,6 +54,34 @@ public class Util
     {
     }
 
+    public static interface Task<T> {
+        public T run();
+    }
+    
+    public  static <T> T  runInSwingEventThread(final Task<T> task) {
+        
+        if(SwingUtilities.isEventDispatchThread()) { 
+            return task.run();
+        }
+            
+        
+        final AtomicReference<T> results = new AtomicReference<T>();
+        
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+            
+                public void run() {
+                    results.set(task.run());
+                }
+            });
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException(e);
+        }
+        return results.get();
+    }
+    
     private static final Component c = new Component() {};
     public static void ensureImageLoaded(Image anImage) throws InterruptedException
     {
@@ -66,6 +99,8 @@ public class Util
         g.dispose();
         return copy;
     }
+    
+    
 
 //    public static Image createVolatileImage(int width, int height)
 //    {

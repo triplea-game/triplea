@@ -59,8 +59,10 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import quicktime.app.time.TaskAllMovies;
 
 import games.strategy.triplea.TripleAPlayer;
+import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 
@@ -399,9 +401,13 @@ public class BattlePanel extends ActionPanel
     /**
      * Ask user which territory to bombard with a given unit.
      */
-    public Territory getBombardment(Unit unit, Territory unitTerritory, Collection<Territory>  territories, boolean noneAvailable)
-    {
-        BombardComponent comp = new BombardComponent(unit, unitTerritory, territories, noneAvailable);
+    public Territory getBombardment(final Unit unit,final  Territory unitTerritory,final  Collection<Territory>  territories, final boolean noneAvailable)
+    {       
+        BombardComponent comp = Util.runInSwingEventThread(new Util.Task<BombardComponent>() {        
+            public BombardComponent run() {
+                return new BombardComponent(unit, unitTerritory, territories, noneAvailable);
+            }
+        }); 
 
         int option = JOptionPane.NO_OPTION;
         while (option != JOptionPane.OK_OPTION)
