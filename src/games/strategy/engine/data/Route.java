@@ -283,7 +283,7 @@ public class Route implements java.io.Serializable
     }
 
     /**
-     * Get the last territory in the route, this is the detination.
+     * Get the last territory in the route, this is the destination.
      * If the route consists of only a starting territory, this will return null.
      */
     public Territory getEnd()

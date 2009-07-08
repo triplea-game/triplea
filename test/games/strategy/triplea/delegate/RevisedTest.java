@@ -780,7 +780,7 @@ public class RevisedTest extends TestCase
         assertEquals(1, MoveDelegate.getBattleTracker(m_data).getPendingBattleSites(false).size());
         
         
-        //we should be abe to undo the move of the sub
+        //we should be able to undo the move of the sub
         error = moveDelegate.undoMove(1);
         assertNull(error);
         

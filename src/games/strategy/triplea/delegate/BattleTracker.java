@@ -22,6 +22,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
@@ -635,14 +636,26 @@ public class BattleTracker implements java.io.Serializable
         if (route.getEnd() != null && Match.allMatch(enemyUnits, Matches.UnitIsAAOrFactory))
             return ChangeFactory.EMPTY_CHANGE;
 
+        //CompositeChange change = new CompositeChange();
+        
         Battle battle = getPendingBattle(site, false);
+
         if (battle == null)
         {
         	battle = new MustFightBattle(site, id, data, this);
         	m_pendingBattles.add(battle);
+        	
+        	//TODO Kev need to look about how to add the existing units w/o restricting their movement OUT of the territory.  Perhaps with a new rule.
+        	/*Collection<Unit> existingOwnedUnits = Match.getMatches(site.getUnits().getUnits(), Matches.unitIsOwnedBy(id));
+        	if(!existingOwnedUnits.isEmpty())
+        	{
+        		Route r = new Route();
+                r.setStart(route.getEnd());
+                change.add(battle.addAttackChange(r, existingOwnedUnits));
+        	}*/
         }
-//        Collection<Unit> ownedUnits = Match.getMatches(site.getUnits().getUnits(), Matches.unitIsOwnedBy(id));
-//        units.addAll(ownedUnits);
+
+        //change.add(battle.addAttackChange(route, units));
         Change change = battle.addAttackChange(route, units);
 
         //make amphibious assaults dependent on possible naval invasions
@@ -692,7 +705,6 @@ public class BattleTracker implements java.io.Serializable
         {
             Battle battle = iter.next();
             if (!battle.isEmpty() && battle.isBombingRun() == bombing)
-            	//TODO kev if(attacker = player )
                 battles.add(battle.getTerritory());
 
         }

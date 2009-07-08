@@ -1,5 +1,7 @@
 Changes for 1.0.4
 
+* fix bug 2818023 again moving unit to carried-over battle causes existing units to be ignored (ComradeKev)
+
 * new aa50 flag images for italy and russia (U-Boat)
 
 * fix partially repaired factories showing as completely repaired (ComradeKev)

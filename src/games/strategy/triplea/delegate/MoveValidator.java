@@ -1203,9 +1203,7 @@ public class MoveValidator
         //now, find out where we can land on carriers
         IntegerMap<Integer> carrierCapacity = getInitialCarrierCapacity(data, units, route, player, maxMovement,
 				airThatMustLandOnCarriers);
-        	
-        Collection<Unit> unitsAtEnd = route.getEnd().getUnits().getMatches(Matches.alliedUnit(player, data));
-        unitsAtEnd.addAll(units);
+
         
         
     	//Check to see if there are carriers to be placed
@@ -1223,6 +1221,8 @@ public class MoveValidator
         	}
         }        
         //Don't think we need this any more.
+        /*Collection<Unit> unitsAtEnd = route.getEnd().getUnits().getMatches(Matches.alliedUnit(player, data));
+        unitsAtEnd.addAll(units);*/
        /* // check carrierMustMoveWith, and reserve carrier capacity for allied planes as required
         Collection<Unit> ownedCarrier = Match.getMatches(route.getEnd().getUnits().getUnits(), 
                                                          new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player)));
@@ -1244,7 +1244,7 @@ public class MoveValidator
         Collection<Territory> neighbors = data.getMap().getNeighbors(unitTerr, 1);
         boolean anyNeighborsWater = Match.someMatch(neighbors, Matches.TerritoryIsWater);
          
-        for (Unit unit : Match.getMatches(airThatMustLandOnCarriers, Matches.UnitCanLandOnCarrier))
+        for (Unit unit : Match.getMatches(units, Matches.UnitCanLandOnCarrier))
         {
             int carrierCost = UnitAttachment.get(unit.getType()).getCarrierCost();
             int movement = m_movementLeft.getInt(unit);
