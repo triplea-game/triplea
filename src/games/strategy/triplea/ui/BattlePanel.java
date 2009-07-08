@@ -59,7 +59,6 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import quicktime.app.time.TaskAllMovies;
 
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.ui.Util;
