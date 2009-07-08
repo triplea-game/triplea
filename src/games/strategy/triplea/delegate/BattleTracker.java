@@ -641,8 +641,8 @@ public class BattleTracker implements java.io.Serializable
         	battle = new MustFightBattle(site, id, data, this);
         	m_pendingBattles.add(battle);
         }
-        Collection<Unit> ownedUnits = Match.getMatches(site.getUnits().getUnits(), Matches.unitIsOwnedBy(id));
-        units.addAll(ownedUnits);
+//        Collection<Unit> ownedUnits = Match.getMatches(site.getUnits().getUnits(), Matches.unitIsOwnedBy(id));
+//        units.addAll(ownedUnits);
         Change change = battle.addAttackChange(route, units);
 
         //make amphibious assaults dependent on possible naval invasions

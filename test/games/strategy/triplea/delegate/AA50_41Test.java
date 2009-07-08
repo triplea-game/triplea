@@ -466,6 +466,36 @@ public class AA50_41Test extends TestCase {
         }
 
         
+        public void testAttackUndoAndAttackAgain() 
+        {
+            MoveDelegate move = moveDelegate(m_data);
+            ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
+            bridge.setStepName("CombatMove");
+            move.start(bridge, m_data);
+            
+            Territory sz14 = territory("14 Sea Zone", m_data);
+            Territory sz13 = territory("13 Sea Zone", m_data);
+            Territory sz12 = territory("12 Sea Zone", m_data);
+            
+            Route r = new Route(sz14,sz13,sz12);
+            
+            //move the battleship
+            move(sz14.getUnits().getMatches(Matches.UnitIsTwoHit), r );
+            
+            //move everything
+            move(sz14.getUnits().getMatches(Matches.UnitIsNotTransport), r );
+            //undo it
+            move.undoMove(1);
+                        
+            //move again
+            move(sz14.getUnits().getMatches(Matches.UnitIsNotTransport), r );
+            
+            MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz12, false);
+            
+            //only 2 attacking units
+            assertEquals(3, mfb.getAttackingUnits().size());
+        }
+        
 
         /***********************************************************/
         /***********************************************************/
