@@ -492,7 +492,8 @@ public class AA50_41Test extends TestCase {
             
             MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz12, false);
             
-            //only 2 attacking units
+            //only 3 attacking units
+            //the battleship and the two cruisers
             assertEquals(3, mfb.getAttackingUnits().size());
         }
         
