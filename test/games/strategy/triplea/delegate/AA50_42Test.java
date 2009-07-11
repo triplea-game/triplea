@@ -167,9 +167,9 @@ public class AA50_42Test extends TestCase {
             moveDelegate(m_data).end();
             
             //all units in sz5 should be involved in the battle
-            
+            //except the italian carrier
             MustFightBattle mfb =  (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz5, false);
-            assertEquals(7, mfb.getAttackingUnits().size());
+            assertEquals(6, mfb.getAttackingUnits().size());
         }
         
         
