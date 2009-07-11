@@ -71,6 +71,14 @@ public class GameDataTestUtil {
         return unitType("battleship", data);
     }
     
+    public static UnitType carrier(GameData data) {
+        return unitType("carrier", data);
+    }
+    
+    public static UnitType fighter(GameData data) {
+        return unitType("fighter", data);
+    }
+    
     public static UnitType infantry(GameData data) {
         return unitType("infantry", data);
     }

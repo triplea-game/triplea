@@ -144,6 +144,35 @@ public class AA50_42Test extends TestCase {
             assertEquals(5, mfb.getAttackingUnits().size());
         }
         
+        public void testLingeringFightersAndALliedUnitsJoinBattle() throws Exception 
+        {
+            Territory sz5 = territory("5 Sea Zone", m_data);
+            Territory sz6 = territory("6 Sea Zone", m_data);
+            Territory sz7 = territory("7 Sea Zone", m_data);
+            
+            //add a russian battlship
+            addTo(sz5, battleship(m_data).create(1,russians(m_data)));
+            
+            //add an allied carrier and a fighter
+            addTo(sz5, carrier(m_data).create(1,italians(m_data)));
+            addTo(sz5, fighter(m_data).create(1,germans(m_data)));
+            
+            ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
+            bridge.setStepName("CombatMove");
+            moveDelegate(m_data).start(bridge, m_data);
+            
+            //attack with a german sub
+            move(sz7.getUnits().getUnits(), new Route(sz7,sz6,sz5));
+            
+            moveDelegate(m_data).end();
+            
+            //all units in sz5 should be involved in the battle
+            
+            MustFightBattle mfb =  (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz5, false);
+            assertEquals(7, mfb.getAttackingUnits().size());
+        }
+        
+        
         public void testLingeringSeaUnitsCanMoveAwayFromBattle() throws Exception 
         {
             Territory sz5 = territory("5 Sea Zone", m_data);

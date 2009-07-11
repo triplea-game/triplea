@@ -553,8 +553,8 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             }
             MustFightBattle mfb = (MustFightBattle) tracker.getPendingBattle(t,false);
             Set<Unit> ownedSeaUnits = new HashSet<Unit>(t.getUnits().getMatches(new CompositeMatchAnd<Unit>(
-                Matches.UnitIsSea,
-                Matches.unitIsOwnedBy(m_player))));
+                Matches.UnitIsLand.invert(),
+                Matches.alliedUnit(m_player, m_data))));
              ownedSeaUnits.removeAll(mfb.getAttackingUnits());
              if(!ownedSeaUnits.isEmpty()) 
              {
