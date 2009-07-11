@@ -4853,13 +4853,17 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
          */
         if (bid)
         {
-        	Collection<Territory> ourTempTerrs = data.getMap().getTerritoriesOwnedBy(player);
-        	Iterator<Territory> ourTerrIter = ourTempTerrs.iterator();
+        	
         	List<Territory> ourTerrs = new ArrayList<Territory>();
-        	while (ourTerrIter.hasNext())
+        	for (Territory t : data.getMap().getTerritoriesOwnedBy(player))
         	{
-        		Territory t = ourTerrIter.next();
-        		Set<Territory> testT = data.getMap().getNeighbors(t, Matches.isTerritoryEnemy(player, data));
+        		
+        		Set<Territory> testT = data.getMap().getNeighbors(t,
+        		    new CompositeMatchAnd<Territory>(
+        		        Matches.isTerritoryEnemy(player, data),
+        		        Matches.TerritoryIsLand,
+        		        Matches.TerritoryIsNotNeutral        		        
+        		        ));
            		if (testT.size() > 0)
            		{
         			ourTerrs.add(t);
