@@ -12,14 +12,29 @@
 
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.util.*;
+import games.strategy.util.CompositeMatch;
+import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Logic to fire rockets.
@@ -133,7 +148,7 @@ public class RocketsFireHelper
             fireRocket(player, attacked, bridge, data, null);
     }
 
-    private Set<Territory> getTerritoriesWithRockets(GameData data, PlayerID player)
+    Set<Territory> getTerritoriesWithRockets(GameData data, PlayerID player)
     {
 
         Set<Territory> territories = new HashSet<Territory>();
@@ -142,13 +157,18 @@ public class RocketsFireHelper
         ownedAA.add(Matches.UnitIsAA);
         ownedAA.add(Matches.unitIsOwnedBy(player));
 
+        BattleTracker tracker = MoveDelegate.getBattleTracker(data);
+        
         Iterator iter = data.getMap().iterator();
         while (iter.hasNext())
         {
             Territory current = (Territory) iter.next();
             if (current.isWater())
                 continue;
-
+            if(tracker.wasConquered(current)) 
+                continue;
+            
+            
             if (current.getUnits().someMatch(ownedAA))
                 territories.add(current);
         }

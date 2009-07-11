@@ -854,6 +854,32 @@ public class RevisedTest extends TestCase
     }
     
 
+    public void testRocketsDontFireInConquered() 
+    {
+        MoveDelegate move = moveDelegate(m_data);
+        ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
+        bridge.setStepName("CombatMove");
+        bridge.setRemote(new DummyTripleAPlayer()
+        {
+            
+        });
+        move.start(bridge,m_data);
+        
+        //remove the russians units in caucasus so we can blitz
+        Territory cauc = territory("Caucasus", m_data);
+        removeFrom(cauc, cauc.getUnits().getMatches(Matches.UnitIsNotAA));
+        
+        //blitz
+        Territory wr = territory("West Russia",m_data);
+        move(wr.getUnits().getMatches(Matches.UnitCanBlitz), new Route(wr,cauc));
+        
+        Set<Territory> fire = new RocketsFireHelper().getTerritoriesWithRockets(m_data, germans(m_data));
+        //germany, WE, SE, but not caucusus
+        assertEquals(fire.size(), 3);
+       
+        
+    }
+    
     private ITripleaPlayer getDummyPlayer()
     {
         return new DummyTripleAPlayer();
