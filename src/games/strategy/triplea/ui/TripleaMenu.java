@@ -33,10 +33,9 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.printgenerator.SetupFrame;
 import games.strategy.ui.IntTextField;
+import games.strategy.util.EventThreadJOptionPane;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -79,9 +78,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.LookAndFeel;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -267,9 +264,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                     
                 }
                 
-                
-                    
-                JList list = new JList(new Vector(lookAndFeels.keySet()));
+                JList list = new JList(new Vector<String>(lookAndFeels.keySet()));
                 
                 String currentKey = null;
                 for(String s : lookAndFeels.keySet()) {
@@ -283,38 +278,18 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                 
                 
                 if(JOptionPane.showConfirmDialog(m_frame, list) == JOptionPane.OK_OPTION) {
-                    
-                    try {
-                        String selectedValue = (String) list.getSelectedValue();
-                        if(selectedValue == null) {
-                            return;
-                        }
-                        if(selectedValue.equals(currentKey)) {
-                            return;
-                        }
-                        
-                        UIManager.setLookAndFeel(lookAndFeels.get(selectedValue));
-                        GameRunner2.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
-                        
-                        for(Frame f : Frame.getFrames()) {
-                            SwingUtilities.updateComponentTreeUI(f);  
-                            Dimension size = f.getSize();
-                            f.pack();
-                            f.setSize(size);
-                        }                                                
-                    } catch (ClassNotFoundException e1) {
-                        throw new IllegalArgumentException(e1);
-                    } catch (InstantiationException e1) {
-                        throw new IllegalArgumentException(e1);
-                    } catch (IllegalAccessException e1) {
-                        throw new IllegalArgumentException(e1);                        
-                    } catch (UnsupportedLookAndFeelException e1) {
-                        throw new IllegalArgumentException(e1);
+                    String selectedValue = (String) list.getSelectedValue();
+                    if(selectedValue == null) {
+                        return;
                     }
+                    if(selectedValue.equals(currentKey)) {
+                        return;
+                    }
+                    
+                    GameRunner2.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
+                    EventThreadJOptionPane.showMessageDialog(m_frame, "The look and feel will update when you restart TripleA");
                 }
-                
-                
-            }
+           }
         });
     }
         
