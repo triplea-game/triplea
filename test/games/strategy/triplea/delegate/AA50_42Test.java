@@ -14,18 +14,14 @@
 
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.*;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.display.IDisplay;
-import games.strategy.kingstable.ui.display.DummyDisplay;
 import games.strategy.triplea.util.DummyTripleAPlayer;
-import games.strategy.util.Match;
-import static games.strategy.triplea.delegate.GameDataTestUtil.*;
 
 import java.util.List;
 
@@ -122,6 +118,60 @@ public class AA50_42Test extends TestCase {
             
             
         }
+        
+        
+        public void testLingeringSeaUnitsJoinBattle() throws Exception 
+        {
+            Territory sz5 = territory("5 Sea Zone", m_data);
+            Territory sz6 = territory("6 Sea Zone", m_data);
+            Territory sz7 = territory("7 Sea Zone", m_data);
+            
+            //add a russian battlship
+            addTo(sz5, battleship(m_data).create(1,russians(m_data)));
+            
+            ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
+            bridge.setStepName("CombatMove");
+            moveDelegate(m_data).start(bridge, m_data);
+            
+            //attack with a german sub
+            move(sz7.getUnits().getUnits(), new Route(sz7,sz6,sz5));
+            
+            moveDelegate(m_data).end();
+            
+            //all units in sz5 should be involved in the battle
+            
+            MustFightBattle mfb =  (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz5, false);
+            assertEquals(5, mfb.getAttackingUnits().size());
+        }
+        
+        public void testLingeringSeaUnitsCanMoveAwayFromBattle() throws Exception 
+        {
+            Territory sz5 = territory("5 Sea Zone", m_data);
+            Territory sz6 = territory("6 Sea Zone", m_data);
+            Territory sz7 = territory("7 Sea Zone", m_data);
+            
+            //add a russian battlship
+            addTo(sz5, battleship(m_data).create(1,russians(m_data)));
+            
+            ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
+            bridge.setStepName("CombatMove");
+            moveDelegate(m_data).start(bridge, m_data);
+            
+            //attack with a german sub
+            move(sz7.getUnits().getUnits(), new Route(sz7,sz6,sz5));
+         
+            //move the transport away
+            
+            move(sz5.getUnits().getMatches(Matches.UnitIsTransport), new Route(sz5,sz6));
+            
+            moveDelegate(m_data).end();
+            
+            //all units in sz5 should be involved in the battle
+            
+            MustFightBattle mfb =  (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz5, false);
+            assertEquals(4, mfb.getAttackingUnits().size());
+        }
+
 
 
 }

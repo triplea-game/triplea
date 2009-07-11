@@ -47,9 +47,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 
@@ -497,6 +499,11 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         }
         CompositeChange change = new CompositeChange();
 
+        if(!m_nonCombat && isAnniversaryEdition()) 
+        {
+            change.add(addLingeringSeaUnitsToBattles());
+        }
+        
         //do at the end of the round
         //if we do it at the start of non combat, then
         //we may do it in the middle of the round, while loading.
@@ -525,6 +532,38 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             m_bridge.getHistoryWriter().startEvent("Cleaning up after movement phases");
             m_bridge.addChange(change);
         }
+    }
+    
+    private Change addLingeringSeaUnitsToBattles() 
+    {
+        //if an enemy placed units in a hostile sea zone
+        //and then during combat move, we attacked the newly placed units
+        //our units in the sea zone need to join the battle
+        CompositeChange change = new CompositeChange();
+        BattleTracker tracker = getBattleTracker(m_data);
+        for(Territory t : tracker.getPendingBattleSites(false)) 
+        {
+            if(!t.isWater()) 
+            {
+                continue;
+            }
+            if(!(tracker.getPendingBattle(t, false) instanceof MustFightBattle)) 
+            {
+                continue;
+            }
+            MustFightBattle mfb = (MustFightBattle) tracker.getPendingBattle(t,false);
+            Set<Unit> ownedSeaUnits = new HashSet<Unit>(t.getUnits().getMatches(new CompositeMatchAnd<Unit>(
+                Matches.UnitIsSea,
+                Matches.unitIsOwnedBy(m_player))));
+             ownedSeaUnits.removeAll(mfb.getAttackingUnits());
+             if(!ownedSeaUnits.isEmpty()) 
+             {
+                 change.add(mfb.addAttackChange(new Route(t), ownedSeaUnits));
+             }
+            
+        }
+        return change;
+        
     }
 
     private void removeAirThatCantLand()
