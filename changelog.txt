@@ -1,5 +1,7 @@
 Changes for 1.0.4
 
+* Improved land and sea unit purchasing. Changed parameters on factory purchase. Extensively modified ship handling in combat and non-combat. Modified battle prediction to improve land unit attack. (Kevin Moore)
+
 * fix bug 2818023 again moving unit to carried-over battle causes existing units to be ignored (ComradeKev)
 
 * new aa50 flag images for italy and russia (U-Boat)

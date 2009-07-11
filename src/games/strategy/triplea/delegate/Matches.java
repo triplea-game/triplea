@@ -152,8 +152,19 @@ public class Matches
         public boolean match(Unit unit)
         {
             UnitAttachment ua = UnitAttachment.get(unit.getType());
-            return (ua.isSea() && !ua.getIsDestroyer() && !ua.isTwoHit() && !ua.isSub() && (ua.getCarrierCapacity() < 1) && (ua.getTransportCapacity() < 1));
+            return (ua.isSea() && !ua.getIsDestroyer() && !ua.isTwoHit() && !ua.isSub() && (ua.getCarrierCapacity() == -1) && (ua.getTransportCapacity() < 1));
         }
+    };
+    
+    public static final Match<Unit> UnitIsBB = new Match<Unit>()
+    {
+    	public boolean match(Unit unit)
+    	{
+    		UnitAttachment ua = UnitAttachment.get(unit.getType());
+    		if (!ua.isSea())
+    			return false;
+    		return (ua.isTwoHit());
+    	}
     };
 
     public static final Match<Unit> UnitIsTransport = new Match<Unit>()
@@ -243,8 +254,15 @@ public class Matches
             return ua.isSea() || ua.isAir();
         }
     };
-
-
+    
+    public static final Match<UnitType> UnitTypeIsCarrier = new Match<UnitType>()
+    {
+    	public boolean match(UnitType type)
+    	{
+    		UnitAttachment ua = UnitAttachment.get(type);
+    		return (ua.getCarrierCapacity() != -1);
+    	}
+    };
 
     public static final Match<Unit> UnitIsAir = new Match<Unit>()
     {
@@ -414,6 +432,37 @@ public class Matches
             return ua.isFactory();
         }
     };
+    
+    public static final Match<UnitType> UnitTypeIsInfantry = new Match<UnitType>()
+    {
+    	public boolean match(UnitType obj)
+    	{
+    		UnitType type = (UnitType) obj;
+    		UnitAttachment ua = UnitAttachment.get(type);
+    		return ua.isInfantry();
+    	}
+    };
+    
+    public static final Match<UnitType> UnitTypeIsArtillery = new Match<UnitType>()
+    {
+    	public boolean match(UnitType obj)
+    	{
+    		UnitType type = (UnitType) obj;
+    		UnitAttachment ua = UnitAttachment.get(type);
+    		return ua.isArtillery();
+    	}
+    };
+    
+    public static final Match<UnitType> UnitTypeIsArmour = new Match<UnitType>()
+    {
+    	public boolean match(UnitType obj)
+    	{
+    		UnitType type = (UnitType) obj;
+    		UnitAttachment ua = UnitAttachment.get(type);
+    		return ua.isArmour();
+    	}
+    };
+    
 
     public static final Match<Unit> UnitIsFactory = new Match<Unit>()
     {
@@ -589,6 +638,19 @@ public class Matches
                 	}
                 return false;
         	}
+    	};
+    }
+    
+    public static Match<Territory> territoryHasEnemyLandNeighbor(final GameData data, final PlayerID player)
+    {
+    	return new Match<Territory>()
+    	{
+    		public boolean match(Territory t)
+    		{
+    			if (data.getMap().getNeighbors(t, isTerritoryEnemy(player, data)).size() > 0)
+    				return true;
+    			return false;
+    		}
     	};
     }
 
