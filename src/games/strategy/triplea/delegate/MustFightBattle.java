@@ -213,6 +213,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //deal with amphibious assaults
         if (attackingFrom.isWater())
         {
+            if (route.getEnd() != null
+                && !route.getEnd().isWater()
+                && Match.someMatch(units, Matches.UnitIsLand))
+           {
+               m_amphibiousLandAttackers.removeAll(Match.getMatches(units, Matches.UnitIsLand));
+           }
+            
+            
             //if none of the units is a land unit, the attack from
             //that territory is no longer an amphibious assault
             if (Match.noneMatch(attackingFromMapUnits, Matches.UnitIsLand))

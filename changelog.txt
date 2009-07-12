@@ -1,5 +1,7 @@
 Changes for 1.0.4
 
+* fix bug 2820382 Undoing/redoing amphibious attack can allow too many bombard (Seidelin)
+
 * Don't allow aa guns in blitzed territories to fire rockets (sgb)
 
 * Improved land and sea unit purchasing. Changed parameters on factory purchase. Extensively modified ship handling in combat and non-combat. Modified battle prediction to improve land unit attack. (Kevin Moore)

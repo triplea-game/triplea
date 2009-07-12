@@ -754,7 +754,102 @@ public class AA50_41Test extends TestCase {
             assertEquals(0, attacked.getUnits().size());
         }
 
+        public void testLimitBombardtoNumberOfUnloaded() 
+        {
+            MoveDelegate move = moveDelegate(m_data);
+            ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
+            bridge.setRemote(new DummyTripleAPlayer()
+            {
+                @Override
+                public boolean selectShoreBombard(Territory unitTerritory) {
+                    return true;
+                }
+            });
+            bridge.setStepName("CombatMove");
+            move.start(bridge, m_data);
+            
+            Territory sz14 = territory("14 Sea Zone", m_data);
+            Territory sz15 = territory("15 Sea Zone", m_data);
+            Territory eg = territory("Egypt", m_data);
+            Territory li = territory("Libya", m_data);
+            Territory balkans = territory("Balkans", m_data);
+            
+            
+            //load the transports
+            load(balkans.getUnits().getMatches(Matches.UnitIsInfantry), new Route(balkans,sz14));
+            
+            //move the fleet
+            move(sz14.getUnits().getUnits(), new Route(sz14,sz15));
+            
+            //move troops from Libya
+            move(li.getUnits().getMatches(Matches.unitOwnedBy(italians(m_data))), new Route(li, eg));
+  
+            //unload the transports
+            move(sz15.getUnits().getMatches(Matches.UnitIsLand), new Route(sz15,eg));
+            
+            move.end();
+            
+            //start the battle phase, this will ask the user to bombard
+            battleDelegate(m_data).start(bridge,m_data);
+            
+            MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(eg, false);
+            
+            
+            //only 2 battleships are allowed to bombard
+            //Currently no units will bombard so test will fail.
+            assertEquals(2, mfb.getBombardingUnits().size());
+        }
         
+        public void testAmphAttackUndoAndAttackAgainBombard() 
+        {
+            MoveDelegate move = moveDelegate(m_data);
+            ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
+            bridge.setRemote(new DummyTripleAPlayer()
+            {
+                @Override
+                public boolean selectShoreBombard(Territory unitTerritory) {
+                    return true;
+                }
+            });
+            bridge.setStepName("CombatMove");
+            move.start(bridge, m_data);
+            
+            Territory sz14 = territory("14 Sea Zone", m_data);
+            Territory sz15 = territory("15 Sea Zone", m_data);
+            Territory eg = territory("Egypt", m_data);
+            Territory li = territory("Libya", m_data);
+            Territory balkans = territory("Balkans", m_data);
+            
+            //load the transports
+            load(balkans.getUnits().getMatches(Matches.UnitIsInfantry), new Route(balkans,sz14));
+            
+            //move the fleet
+            move(sz14.getUnits().getUnits(), new Route(sz14,sz15));
+            
+            //move troops from Libya
+            move(li.getUnits().getMatches(Matches.unitOwnedBy(italians(m_data))), new Route(li, eg));
+  
+            //unload the transports
+            move(sz15.getUnits().getMatches(Matches.UnitIsLand), new Route(sz15,eg));
+            
+            //undo amphibious landing
+            move.undoMove(move.getMovesMade().size() -1);
+                        
+            //move again
+            move(sz15.getUnits().getMatches(Matches.UnitIsLand), new Route(sz15,eg) );
+            
+            move.end();
+            
+            //start the battle phase, this will ask the user to bombard
+            battleDelegate(m_data).start(bridge,m_data);
+            
+            MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(eg, false);
+            
+            
+            //only 2 battleships are allowed to bombard
+            //Currently no units will bombard so test will fail.
+            assertEquals(2, mfb.getBombardingUnits().size());
+        }
         
         /***********************************************************/
         /***********************************************************/
