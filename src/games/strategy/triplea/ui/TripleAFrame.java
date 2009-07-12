@@ -70,6 +70,7 @@ import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.Util;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.util.Tuple;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -776,9 +777,16 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         return choice == 0;
     }
 
-    public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title)
+    public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals,final String title)
     {
-        DiceChooser chooser = new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals);
+        DiceChooser chooser = Util.runInSwingEventThread(new Util.Task<DiceChooser>()
+            {
+                public DiceChooser run() {
+                    return new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals);
+                }            
+        }); 
+            
+            
         do {
             EventThreadJOptionPane.showMessageDialog(null,
                                           chooser, title,
@@ -788,16 +796,26 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     }
 
 
-    public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
+    public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates)
     {
+        Tuple<JPanel,JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel,JList>>() {
 
-        JList list = new JList(new Vector<Territory>(candidates));
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setSelectedIndex(0);
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        JScrollPane scroll = new JScrollPane(list);
-        panel.add(scroll, BorderLayout.CENTER);
+            public Tuple<JPanel,JList> run() {
+                JList list = new JList(new Vector<Territory>(candidates));
+                list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                list.setSelectedIndex(0);
+                JPanel panel = new JPanel();
+                panel.setLayout(new BorderLayout());
+                JScrollPane scroll = new JScrollPane(list);
+                panel.add(scroll, BorderLayout.CENTER);
+                return new Tuple<JPanel, JList>(panel,list);
+            }
+        });
+        
+        JPanel panel = comps.getFirst();        
+        JList list = comps.getSecond();
+        
+       
 
         String[] options =
         { "OK" };
