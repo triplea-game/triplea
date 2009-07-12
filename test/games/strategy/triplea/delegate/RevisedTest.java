@@ -14,6 +14,7 @@
 
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.BattleStepStrings.*;
 import static games.strategy.triplea.delegate.GameDataTestUtil.*;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
@@ -26,9 +27,11 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
+import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.DummyTripleAPlayer;
@@ -37,9 +40,11 @@ import games.strategy.util.CompositeMatchAnd;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -838,6 +843,288 @@ public class RevisedTest extends TestCase
         
     }
     
+    
+    public void testAttackSubsOnSubs() 
+    {
+        String defender = "Germans";
+        String attacker = "British";
+        
+        Territory attacked = territory("31 Sea Zone", m_data);
+        Territory from = territory("32 Sea Zone", m_data);
+        
+        //1 sub attacks 1 sub
+        addTo(from, submarine(m_data).create(1,british(m_data)));
+        addTo(attacked, submarine(m_data).create(1,germans(m_data)));
+        
+        ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+        bridge.setStepName("CombatMove");
+        moveDelegate(m_data).start(bridge, m_data);
+        
+        move(from.getUnits().getUnits(), new Route(from,attacked));
+       
+        moveDelegate(m_data).end();
+        
+        MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false);
+        
+        List<String> steps = battle.determineStepStrings(true, bridge);
+        assertEquals(                
+            Arrays.asList(
+               
+               
+                attacker + SUBS_FIRE,
+                defender + SELECT_SUB_CASUALTIES,
+                
+                defender + SUBS_FIRE,
+                attacker + SELECT_SUB_CASUALTIES,
+                REMOVE_SNEAK_ATTACK_CASUALTIES,
+                REMOVE_CASUALTIES,                
+                attacker + SUBS_SUBMERGE,
+                defender + SUBS_SUBMERGE,
+                attacker + ATTACKER_WITHDRAW
+                
+            ).toString(),
+            steps.toString()
+        );
+        
+        List<IExecutable> execs = battle.getBattleExecutables();
+        int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
+        int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
+        
+        assertTrue(attackSubs < defendSubs);
+        
+        
+        bridge.setRemote(new DummyTripleAPlayer());
+        
+        //fight, each sub should fire
+        //and hit
+        ScriptedRandomSource randomSource = new ScriptedRandomSource(
+            0,0,ScriptedRandomSource.ERROR);
+        bridge.setRandomSource(randomSource);
+        battle.fight(bridge);
+        
+        assertEquals(2, randomSource.getTotalRolled());
+        assertTrue(attacked.getUnits().isEmpty());
+
+    }
+    
+    public void testAttackSubsOnDestroyer() 
+    {
+        String defender = "Germans";
+        String attacker = "British";
+        
+        Territory attacked = territory("31 Sea Zone", m_data);
+        Territory from = territory("32 Sea Zone", m_data);
+        
+        //1 sub attacks 1 sub and 1 destroyer
+        //defender sneak attacks, not attacker
+        addTo(from, submarine(m_data).create(1,british(m_data)));
+        addTo(attacked, submarine(m_data).create(1,germans(m_data)));
+        addTo(attacked, destroyer(m_data).create(1,germans(m_data)));
+        
+        ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+        bridge.setStepName("CombatMove");
+        moveDelegate(m_data).start(bridge, m_data);
+        
+        move(from.getUnits().getUnits(), new Route(from,attacked));
+       
+        moveDelegate(m_data).end();
+        
+        MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false);
+        
+        List<String> steps = battle.determineStepStrings(true, bridge);
+        assertEquals(                
+            Arrays.asList(
+                
+                
+                defender + SUBS_FIRE,
+                attacker + SELECT_SUB_CASUALTIES,
+                
+                attacker + SUBS_FIRE,
+                defender + SELECT_SUB_CASUALTIES,
+                
+                REMOVE_SNEAK_ATTACK_CASUALTIES,
+                
+                defender + FIRE,
+                attacker + SELECT_CASUALTIES,
+                REMOVE_CASUALTIES,
+                defender + SUBS_SUBMERGE,
+                attacker + ATTACKER_WITHDRAW
+            ).toString(),
+            steps.toString()
+        );
+        
+        List<IExecutable> execs = battle.getBattleExecutables();
+        int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
+        int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
+        
+        assertTrue(defendSubs < attackSubs);
+        
+        bridge.setRemote(new DummyTripleAPlayer());
+        
+        //defending subs sneak attack and hit
+        //no chance to return fire
+        ScriptedRandomSource randomSource = new ScriptedRandomSource(
+            0,ScriptedRandomSource.ERROR);
+        bridge.setRandomSource(randomSource);
+        battle.fight(bridge);
+        
+        assertEquals(1, randomSource.getTotalRolled());
+        assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(british(m_data))).isEmpty());
+        assertEquals(2, attacked.getUnits().size());
+    }
+    
+
+    public void testAttackDestroyerAndSubsAgainstSub() 
+    {
+        String defender = "Germans";
+        String attacker = "British";
+        
+        Territory attacked = territory("31 Sea Zone", m_data);
+        Territory from = territory("32 Sea Zone", m_data);
+        
+        //1 sub and 1 destroyer attack 1 sub
+        //defender sneak attacks, not attacker
+        addTo(from, submarine(m_data).create(1,british(m_data)));
+        addTo(from, destroyer(m_data).create(1,british(m_data)));
+        addTo(attacked, submarine(m_data).create(1,germans(m_data)));
+        
+        ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+        bridge.setStepName("CombatMove");
+        moveDelegate(m_data).start(bridge, m_data);
+        
+        move(from.getUnits().getUnits(), new Route(from,attacked));
+       
+        moveDelegate(m_data).end();
+        
+        MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false);
+        
+        List<String> steps = battle.determineStepStrings(true, bridge);
+        assertEquals(                
+            Arrays.asList(
+               
+                
+                attacker + SUBS_FIRE,
+                defender + SELECT_SUB_CASUALTIES,
+                
+                defender + SUBS_FIRE,
+                attacker + SELECT_SUB_CASUALTIES,
+                
+                REMOVE_SNEAK_ATTACK_CASUALTIES,
+                
+                attacker + FIRE,
+                defender + SELECT_CASUALTIES,
+                
+                REMOVE_CASUALTIES,
+                attacker + SUBS_SUBMERGE,
+                attacker + ATTACKER_WITHDRAW
+                
+            ).toString(),
+            steps.toString()
+        );
+        
+        List<IExecutable> execs = battle.getBattleExecutables();
+        int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
+        int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
+        
+        assertTrue(attackSubs < defendSubs);
+        
+        bridge.setRemote(new DummyTripleAPlayer());
+        
+        //defending subs sneak attack and hit
+        //no chance to return fire
+        ScriptedRandomSource randomSource = new ScriptedRandomSource(
+            0,ScriptedRandomSource.ERROR);
+        bridge.setRandomSource(randomSource);
+        battle.fight(bridge);
+        
+        assertEquals(1, randomSource.getTotalRolled());
+        assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(germans(m_data))).isEmpty());
+        assertEquals(2, attacked.getUnits().size());
+    }
+
+    
+
+    public void testAttackDestroyerAndSubsAgainstSubAndDestroyer() 
+    {
+        String defender = "Germans";
+        String attacker = "British";
+        
+        Territory attacked = territory("31 Sea Zone", m_data);
+        Territory from = territory("32 Sea Zone", m_data);
+        
+        //1 sub and 1 destroyer attack 1 sub and 1 destroyer
+        //defender sneak attacks, not attacker
+        addTo(from, submarine(m_data).create(1,british(m_data)));
+        addTo(from, destroyer(m_data).create(1,british(m_data)));
+        addTo(attacked, submarine(m_data).create(1,germans(m_data)));
+        addTo(attacked, destroyer(m_data).create(1,germans(m_data)));
+        
+        ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+        bridge.setStepName("CombatMove");
+        moveDelegate(m_data).start(bridge, m_data);
+        
+        move(from.getUnits().getUnits(), new Route(from,attacked));
+       
+        moveDelegate(m_data).end();
+        
+        MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false);
+        
+        List<String> steps = battle.determineStepStrings(true, bridge);
+        assertEquals(                
+            Arrays.asList(
+                
+                attacker + SUBS_FIRE,
+                defender + SELECT_SUB_CASUALTIES,
+                defender + SUBS_FIRE,
+                attacker + SELECT_SUB_CASUALTIES,
+
+                REMOVE_SNEAK_ATTACK_CASUALTIES,
+                
+                attacker + FIRE,
+                defender + SELECT_CASUALTIES,
+                
+                defender + FIRE,
+                attacker + SELECT_CASUALTIES,
+                
+                REMOVE_CASUALTIES,
+                attacker + ATTACKER_WITHDRAW
+            ).toString(),
+            steps.toString()
+        );
+        
+        List<IExecutable> execs = battle.getBattleExecutables();
+        int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
+        int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
+        
+        assertTrue(attackSubs < defendSubs);
+        
+        bridge.setRemote(new DummyTripleAPlayer());
+        
+        
+        bridge.setRemote(new DummyTripleAPlayer(){
+
+            @Override
+            public CasualtyDetails selectCasualties(Collection<Unit> selectFrom,
+                Map<Unit, Collection<Unit>> dependents, int count, String message,
+                DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID) {
+                
+                return new CasualtyDetails(
+                    Arrays.asList(selectFrom.iterator().next()),
+                    Collections.<Unit>emptyList(), false);
+            }
+            
+        });
+        
+ 
+        ScriptedRandomSource randomSource = new ScriptedRandomSource(
+            0,0,0,0,ScriptedRandomSource.ERROR);
+        bridge.setRandomSource(randomSource);
+        battle.fight(bridge);
+        
+        assertEquals(4, randomSource.getTotalRolled());            
+        assertEquals(0, attacked.getUnits().size());
+    }
+
     
     public void testUnplacedDie() 
     {

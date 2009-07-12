@@ -42,6 +42,7 @@ public class ScriptedRandomSource implements IRandomSource
 
     private final int[] m_numbers;
     private int m_currentIndex = 0;
+    private int m_rolled;
     
     /**
      * Should we use a scripted random sourcce.
@@ -105,6 +106,7 @@ public class ScriptedRandomSource implements IRandomSource
 
     public int[] getRandom(int max, int count, String annotation)
     {
+        m_rolled += count;
         int[] rVal = new int[count];
         for(int i = 0; i <count; i++)
         {
@@ -132,5 +134,9 @@ public class ScriptedRandomSource implements IRandomSource
                 m_currentIndex = 0;
         }
         return rVal;
+    }
+    
+    public int getTotalRolled() {
+        return m_rolled;
     }
 }

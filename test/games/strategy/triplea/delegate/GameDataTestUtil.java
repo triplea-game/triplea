@@ -29,6 +29,7 @@ import games.strategy.triplea.ui.display.DummyDisplay;
 
 
 import java.util.Collection;
+import java.util.List;
 
 import junit.framework.AssertionFailedError;
 
@@ -77,6 +78,14 @@ public class GameDataTestUtil {
     
     public static UnitType fighter(GameData data) {
         return unitType("fighter", data);
+    }
+    
+    public static UnitType destroyer(GameData data) {
+        return unitType("destroyer", data);
+    }
+    
+    public static UnitType submarine(GameData data) {
+        return unitType("submarine", data);
     }
     
     public static UnitType infantry(GameData data) {
@@ -150,6 +159,26 @@ public class GameDataTestUtil {
         }
     }
         
-    
+    public static int getIndex(List<IExecutable> steps, Class<?> type) 
+    {
+        int rVal = -1;
+        int index = 0;
+        for(IExecutable e : steps) 
+        {
+            if(type.isInstance(e)) 
+            {
+                if(rVal != -1) {
+                    throw new AssertionFailedError("More than one instance:" + steps);
+                }
+                rVal = index; 
+            }
+            index++;                
+        }
+        if(rVal == -1) {
+            throw new AssertionFailedError("No instance:" + steps);
+        }
+        return rVal;
+        
+    }
 }
 

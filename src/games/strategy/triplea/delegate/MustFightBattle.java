@@ -68,8 +68,19 @@ import java.util.Set;
  * @author Sean Bridges
  * 
  */
+
+enum ReturnFire {
+    ALL,SUBS,NONE
+}
+
 public class MustFightBattle implements Battle, BattleStepStrings
 {
+    
+
+    //these class exist for testing
+    public static abstract class AttackSubs implements IExecutable {}
+    public static abstract class DefendSubs implements IExecutable {}
+
     // compatible with 0.9.0.2 saved games
     private static final long serialVersionUID = 5879502298361231540L;
     
@@ -598,8 +609,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
     public List<String> determineStepStrings(boolean showFirstRun, IDelegateBridge bridge)
     {
         
-        boolean attackingSubsAlreadyFired = false;
-        boolean defendingSubsAlreadyFired = false;
         List<String> steps = new ArrayList<String>();
         
         if(EditDelegate.getEditMode(m_data)) 
@@ -642,14 +651,16 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //Check if defending subs can submerge before battle
         if (isSubRetreatBeforeBattle())
         {
-        	if(!Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer) && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
+        	if(!Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer) &&
+        	    Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
         		steps.add(m_defender.getName() + SUBS_SUBMERGE);
         }
 
-        //Check if attack subs can submerge before battle
+        //Check if attack subs can submerge before battle        
         if (isSubRetreatBeforeBattle())
         {
-        	if(!Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer) && Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
+        	if(!Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer) && 
+        	    Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
         		steps.add(m_attacker.getName() + SUBS_SUBMERGE);
         }
         
@@ -659,96 +670,72 @@ public class MustFightBattle implements Battle, BattleStepStrings
             if(Match.someMatch(m_attackingUnits, Matches.UnitIsTransport) || Match.someMatch(m_defendingUnits, Matches.UnitIsTransport))
                 steps.add(REMOVE_UNESCORTED_TRANSPORTS);
         }        
-
-        // Air only Units can't attack subs without Destroyers present
-        if (isAirAttackSubRestricted()) 
-        { 
-            Collection<Unit> units = new ArrayList<Unit>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
-            units.addAll(m_attackingUnits);
-            units.addAll(m_attackingWaitingToDie);
-            
-        	//if(!Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer) && Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
-            if(Match.someMatch(m_attackingUnits, Matches.UnitIsAir) && !canAirAttackSubs(m_defendingUnits, units))
-                steps.add(SUBMERGE_SUBS_VS_AIR_ONLY);
+        
+        boolean defenderSubsFireFirst = 
+            defenderSubsFireFirst();
+        
+        if (defenderSubsFireFirst && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
+        {
+            steps.add(m_defender.getName() + SUBS_FIRE);
+            steps.add(m_attacker.getName() + SELECT_SUB_CASUALTIES);
         }
-
+        
         //attacker subs sneak attack
         //Attacking subs have no sneak attack if Destroyers are present
         if ( m_battleSite.isWater()) 
         {
             if (Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
             {
-                if(Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
-                {
-                    steps.add(m_attacker.getName() + SUBS_FIRE);
-                    steps.add(m_defender.getName() + SELECT_SUB_CASUALTIES);
-                    attackingSubsAlreadyFired = true;
-                }
-                else
-                {
-                    steps.add(m_attacker.getName() + SUBS_FIRE);
-                    steps.add(m_defender.getName() + SELECT_SUB_CASUALTIES);
-                    steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
-                    attackingSubsAlreadyFired = true;
-                }
+                steps.add(m_attacker.getName() + SUBS_FIRE);
+                steps.add(m_defender.getName() + SELECT_SUB_CASUALTIES);                                       
             }
         }
         
         //defender subs sneak attack        
         //Defending subs have no sneak attack in Pacific/Europe Editions or if Destroyers are present
-        if (m_battleSite.isWater() && (isFourthEdition() || isDefendingSubsSneakAttack()))
+        if (m_battleSite.isWater())
         {
-            if (Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
+            if (!defenderSubsFireFirst && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
             {
-                if(Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer))
-                {
-                    steps.add(m_defender.getName() + SUBS_FIRE);
-                    steps.add(m_attacker.getName() + SELECT_SUB_CASUALTIES);
-                    defendingSubsAlreadyFired = true;
-                }
-                else
-                {
-                    steps.add(m_defender.getName() + SUBS_FIRE);
-                    steps.add(m_attacker.getName() + SELECT_SUB_CASUALTIES);
-                    steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
-                    defendingSubsAlreadyFired = true;
-                }
+                steps.add(m_defender.getName() + SUBS_FIRE);
+                steps.add(m_attacker.getName() + SELECT_SUB_CASUALTIES);
             }
         }
+        
+        steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
+            
 
+        // Air only Units can't attack subs without Destroyers present
+        if (isAirAttackSubRestricted()) 
+        { 
+            Collection<Unit> units = new ArrayList<Unit>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
+            units.addAll(m_attackingUnits);
+            
+            //if(!Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer) && Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
+            if(Match.someMatch(m_attackingUnits, Matches.UnitIsAir) && !canAirAttackSubs(m_defendingUnits, units))
+                steps.add(SUBMERGE_SUBS_VS_AIR_ONLY);
+        }
+
+        
         // Air Units can't attack subs without Destroyers present
         if (m_battleSite.isWater() && isAirAttackSubRestricted())
         {  
             Collection<Unit> units = new ArrayList<Unit>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
             units.addAll(m_attackingUnits);
-            units.addAll(m_attackingWaitingToDie);
             
             //if(!Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer) && Match.someMatch(m_attackingUnits, Matches.UnitIsAir) && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
             if(Match.someMatch(m_attackingUnits, Matches.UnitIsAir) && !canAirAttackSubs(m_defendingUnits, units))
                 steps.add(AIR_ATTACK_NON_SUBS);
         }
 
-        //attacker fire        
-        if (!attackingSubsAlreadyFired && m_battleSite.isWater() && Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
-        {
-        	steps.add(m_attacker.getName() + SUBS_FIRE);
-        	steps.add(m_defender.getName() + SELECT_SUB_CASUALTIES);
-        }
-        
         if (Match.someMatch(m_attackingUnits, Matches.UnitIsNotSub))
         {
             steps.add(m_attacker.getName() + FIRE);
+            steps.add(m_defender.getName() + SELECT_CASUALTIES);
   
         }
 
-        //defender fire
-        //defender subs, note this happens earlier for fourth edition
-        if (!defendingSubsAlreadyFired && m_battleSite.isWater() && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
-        {
-        	steps.add(m_defender.getName() + SUBS_FIRE);
-        	steps.add(m_attacker.getName() + SELECT_SUB_CASUALTIES);
-        }
-
+ 
         // Air Units can't attack subs without Destroyers present
         if (m_battleSite.isWater() && isAirAttackSubRestricted())
         {            
@@ -765,6 +752,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             
             steps.add(m_defender.getName() + FIRE);
+            steps.add(m_attacker.getName() + SELECT_CASUALTIES);
             
         }
 
@@ -776,18 +764,21 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             if (canSubsSubmerge())
             {
-                if (canAttackerRetreatSubs())
+                if(!isSubRetreatBeforeBattle()) 
                 {
-                    if (Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
+                    if (canAttackerRetreatSubs())
                     {
-                        steps.add(m_attacker.getName() + SUBS_SUBMERGE);
+                        if (Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
+                        {
+                            steps.add(m_attacker.getName() + SUBS_SUBMERGE);
+                        }
                     }
-                }
-                if (canDefenderRetreatSubs())
-                {
-                    if (Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
+                    if (canDefenderRetreatSubs())
                     {
-                        steps.add(m_defender.getName() + SUBS_SUBMERGE);
+                        if (Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
+                        {
+                            steps.add(m_defender.getName() + SUBS_SUBMERGE);
+                        }
                     }
                 }
 
@@ -833,6 +824,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         return steps;
 
+    }
+
+    private boolean defenderSubsFireFirst() {
+        return returnFireAgainstAttackingSubs() == ReturnFire.ALL &&
+        returnFireAgainstDefendingSubs() == ReturnFire.NONE;
     }
 
     private void pushFightStartOnStack()
@@ -888,6 +884,20 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return;
 
        
+        List<IExecutable> steps = getBattleExecutables();   
+        
+        //add in the reverse order we create them
+        Collections.reverse(steps);
+        for (IExecutable step : steps)
+        {
+            m_stack.push(step);
+        }
+
+
+        return;
+    }
+
+    List<IExecutable> getBattleExecutables() {
         //the code here is a bit odd to read
         //basically, we need to break the code into seperate atomic pieces.
         //If there is a network error, or some other unfortunate event,
@@ -999,7 +1009,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         });  
         
         
-        steps.add(new IExecutable(){
+        steps.add(new IExecutable() { 
             // compatible with 0.9.0.2 saved games
             private static final long serialVersionUID = 6775880082912594489L;
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
@@ -1082,22 +1092,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 }
                 
             }
-        });   
-        
-        //add in the reverse order we create them
-        Collections.reverse(steps);
-        for (IExecutable step : steps)
-        {
-            m_stack.push(step);
-        }
-
-
-        return;
+        });
+        return steps;
     }
 
     private void addFightStepsNonEditMode(List<IExecutable> steps) {
         /**Ask to retreat defending subs before battle*/
-        if (isSubRetreatBeforeBattle())
+        if (isSubRetreatBeforeBattle()) 
+        {
             steps.add(new IExecutable(){
                 // compatible with 0.9.0.2 saved games
                 private static final long serialVersionUID = 7056448091800764539L;
@@ -1107,9 +1109,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
                         defenderRetreatSubs(bridge);
                 }
             });  
-
-        /**Ask to retreat attacking subs before battle*/
-        if (isSubRetreatBeforeBattle())
             steps.add(new IExecutable(){
                 // compatible with 0.9.0.2 saved games
                 private static final long serialVersionUID = 6775880082912594489L;
@@ -1119,6 +1118,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
                         attackerRetreatSubs(bridge);
                 }
             });  
+        }
+        
+       
 
         /**Remove undefended trns*/
         if (isTransportCasualtiesRestricted())
@@ -1143,27 +1145,41 @@ public class MustFightBattle implements Battle, BattleStepStrings
                  }
         	});
                 
-        /**Attacker subs fire */
-    
-        steps.add(new IExecutable(){
-            private static final long serialVersionUID = 99991L;
-            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-            {
-                attackSubs(bridge);
-            }                
-        });
+
+        final ReturnFire returnFireAgainstAttackingSubs = returnFireAgainstAttackingSubs();
+        final ReturnFire returnFireAgainstDefendingSubs = returnFireAgainstDefendingSubs();
         
-        /**Defending subs fire if 4th Edition or Defending subs sneak attack*/
-        if ((isFourthEdition() || isDefendingSubsSneakAttack()))
-            steps.add(new IExecutable(){
+        
+        if(defenderSubsFireFirst()) {
+            steps.add(new DefendSubs(){
                 // compatible with 0.9.0.2 saved games
                 private static final long serialVersionUID = 99992L;
                 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
-                    defendSubs(bridge);
+                    defendSubs(bridge, returnFireAgainstDefendingSubs);
+                }                
+            });        
+        }
+        
+        steps.add(new AttackSubs(){
+            private static final long serialVersionUID = 99991L;
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+                attackSubs(bridge, returnFireAgainstAttackingSubs);
+            }                
+        });
+        
+        if(!defenderSubsFireFirst()) {
+            steps.add(new DefendSubs(){
+                // compatible with 0.9.0.2 saved games
+                private static final long serialVersionUID = 99992L;
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                {
+                    defendSubs(bridge, returnFireAgainstDefendingSubs);
                 }                
             });
-
+        }
+        
         /**Attacker air fire on NON subs */
         if (isAirAttackSubRestricted())
             steps.add(new IExecutable(){
@@ -1176,6 +1192,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
             });
 
+        
+      
+        
         /**Attacker fire remaining units */
     
         steps.add(new IExecutable(){
@@ -1188,19 +1207,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         });
 
-        /**Defender fire subs if they haven't already fired */
-
-        steps.add(new IExecutable(){
-            // compatible with 0.9.0.2 saved games
-            private static final long serialVersionUID = -4316269766293144179L;
-            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-            {
-                if (!isFourthEdition() && !isDefendingSubsSneakAttack())
-                {
-                    defendSubs(bridge);
-                }
-            }
-        });        
 
         /**Defender air fire on NON subs */
         if (isAirAttackSubRestricted())
@@ -1224,7 +1230,55 @@ public class MustFightBattle implements Battle, BattleStepStrings
             }
          });
     }
+    
+    
+    private ReturnFire returnFireAgainstAttackingSubs() 
+    {
+        final boolean attackingSubsSneakAttack = !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer);
+        final boolean defendingSubsSneakAttack = defendingSubsSneakAttack2();
 
+        final ReturnFire returnFireAgainstAttackingSubs;
+        if(!attackingSubsSneakAttack) {
+            returnFireAgainstAttackingSubs = ReturnFire.ALL;
+        } else if(defendingSubsSneakAttack) {
+            returnFireAgainstAttackingSubs = ReturnFire.SUBS;
+        } else {
+            returnFireAgainstAttackingSubs = ReturnFire.NONE;
+        }
+        return returnFireAgainstAttackingSubs;
+        
+    }
+    
+    private ReturnFire returnFireAgainstDefendingSubs() 
+    {
+        /**Attacker subs fire */
+        /*calculate here, this holds for the fight round, but can't be computed later
+        since destroyers may die*/
+        final boolean attackingSubsSneakAttack = !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer);
+        final boolean defendingSubsSneakAttack = defendingSubsSneakAttack2();
+        
+        
+        final ReturnFire returnFireAgainstDefendingSubs;
+        if(!defendingSubsSneakAttack) {
+            returnFireAgainstDefendingSubs = ReturnFire.ALL;
+        } else if(attackingSubsSneakAttack) {
+            returnFireAgainstDefendingSubs = ReturnFire.SUBS;
+        } else {
+            returnFireAgainstDefendingSubs = ReturnFire.NONE;
+        }
+        return returnFireAgainstDefendingSubs;
+    }
+    
+   
+
+    private boolean defendingSubsSneakAttack2() {
+        return (isFourthEdition() || 
+        isDefendingSubsSneakAttack()) && !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer);
+    }
+
+    
+    
+    
     private void addFightStepsEditMode(List<IExecutable> steps) {
     
         steps.add(new IExecutable(){
@@ -1857,7 +1911,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private void fire(final String stepName, Collection<Unit> firingUnits,
             Collection<Unit> attackableUnits, boolean defender,
-            boolean canReturnFire, final IDelegateBridge bridge, String text)
+            ReturnFire returnFire, final IDelegateBridge bridge, String text)
     {
         PlayerID firing = defender ? m_defender : m_attacker;
         PlayerID defending = !defender ? m_defender : m_attacker;        
@@ -1866,7 +1920,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return;
         }
         
-        m_stack.push(new Fire(attackableUnits, canReturnFire, firing, defending, firingUnits, stepName, text, this, defender, 
+        m_stack.push(new Fire(attackableUnits, returnFire, firing, defending, firingUnits, stepName, text, this, defender, 
                 m_dependentUnits, m_stack, m_headless));               
     }
     
@@ -1979,7 +2033,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return;
 
         fire(m_attacker.getName() + SELECT_CASUALTIES, units,
-                m_attackingUnits, true, true, bridge, "Defenders fire, ");
+                m_attackingUnits, true, ReturnFire.ALL, bridge, "Defenders fire, ");
     }
     
     //If there are no attacking DDs but defending SUBs, fire AIR at non-SUB forces ONLY
@@ -1998,7 +2052,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             units = Match.getMatches(units, Matches.UnitIsAir);  
             Collection<Unit> enemyUnitsNotSubs = Match.getMatches(m_defendingUnits, Matches.UnitIsNotSub);
 
-            fire(m_defender.getName() + SELECT_CASUALTIES, units, enemyUnitsNotSubs, false, true, bridge, "Attacker's aircraft fire,");            
+            fire(m_defender.getName() + SELECT_CASUALTIES, units, enemyUnitsNotSubs, false,ReturnFire.ALL, bridge, "Attacker's aircraft fire,");            
         }
     }
     
@@ -2029,11 +2083,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
             if(enemyUnitsNotSubs.isEmpty())
             	return;
             
-            fire(m_defender.getName() + SELECT_CASUALTIES, units, enemyUnitsNotSubs, true, true, bridge, "Defender's aircraft fire,");            
+            fire(m_defender.getName() + SELECT_CASUALTIES, units, enemyUnitsNotSubs, true, ReturnFire.ALL, bridge, "Defender's aircraft fire,");            
         }
     }
     
-//If there are no attacking DDs, but defending SUBs, remove attacking AIR as they've already fired- otherwise fire all attackers.     
+    //If there are no attacking DDs, but defending SUBs, remove attacking AIR as they've already fired- otherwise fire all attackers.     
     private void attackNonSubs(IDelegateBridge bridge)
     {
         if (m_defendingUnits.size() == 0)
@@ -2054,10 +2108,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return;
 
         fire(m_defender.getName() + SELECT_CASUALTIES, units,
-                m_defendingUnits, false, true, bridge, "Attackers fire,");
+                m_defendingUnits, false, ReturnFire.ALL, bridge, "Attackers fire,");
     }
 
-    private void attackSubs(IDelegateBridge bridge)
+    private void attackSubs(IDelegateBridge bridge, ReturnFire returnFire)
     {
         Collection<Unit> firing = Match.getMatches(m_attackingUnits,
                 Matches.UnitIsSub);
@@ -2067,13 +2121,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection<Unit> attacked = Match.getMatches(m_defendingUnits,
                 Matches.UnitIsNotAir);
         //if there are destroyers in the attacked units, we can return fire.
-        boolean destroyersPresent = Match.someMatch(attacked,
-                Matches.UnitIsDestroyer);
+     
         fire(m_defender.getName() + SELECT_SUB_CASUALTIES, firing, attacked, false,
-                destroyersPresent, bridge, "Subs fire,");
+            returnFire, bridge, "Subs fire,");
     }
 
-    private void defendSubs(IDelegateBridge bridge)
+    private void defendSubs(IDelegateBridge bridge, ReturnFire returnFire)
     {
         if (m_attackingUnits.size() == 0)
             return;
@@ -2092,10 +2145,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (attacked.isEmpty())
             return;
 
-        boolean destroyersPresent = Match.someMatch(attacked,
-                Matches.UnitIsDestroyer);
+        
         fire(m_attacker.getName() + SELECT_SUB_CASUALTIES, firing,
-                attacked, true, destroyersPresent, bridge, "Subs defend, ");
+                attacked, true, returnFire, bridge, "Subs defend, ");
     }
 
     private void attackAny(IDelegateBridge bridge)
@@ -2117,7 +2169,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return;
 
         fire(m_defender.getName() + SELECT_CASUALTIES, units,
-                m_defendingUnits, false, true, bridge, "Attackers fire,");
+                m_defendingUnits, false, ReturnFire.ALL, bridge, "Attackers fire,");
     }
 
     private void defendAny(IDelegateBridge bridge)
@@ -2141,7 +2193,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return;
 
         fire(m_attacker.getName() + SELECT_CASUALTIES, units,
-                m_attackingUnits, true, true, bridge, "Defenders fire, ");
+                m_attackingUnits, true, ReturnFire.ALL, bridge, "Defenders fire, ");
     }
 
     private CasualtyDetails selectCasualties(String step,
@@ -2154,34 +2206,30 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 bridge, text, m_data, dice, defender, m_battleID, m_headless, dice.getHits());
     }
 
-    void removeCasualties(Collection<Unit> killed, boolean canReturnFire,
+    void removeCasualties(Collection<Unit> killed, ReturnFire returnFire,
             boolean defender, IDelegateBridge bridge, boolean isAA)
     {
         if(killed.isEmpty())
             return;
 
-        if (canReturnFire)
+        if (returnFire == ReturnFire.ALL)
         {
             //move to waiting to die
             if (defender)
                 m_defendingWaitingToDie.addAll(killed);
             else
                 m_attackingWaitingToDie.addAll(killed);
-        } else
+        } else if(returnFire == ReturnFire.SUBS)
         {
-            if(defender && isDefendingSubsSneakAttack())
-            {   //if there are no attacking destroyers, allow killed defending subs to sneak attack
-                if(Match.noneMatch(m_attackingUnits, Matches.UnitIsDestroyer))
-                {
-                    m_defendingWaitingToDie.addAll(Match.getMatches(killed, Matches.UnitIsSub));
-                    //remove the rest immediately            
-                    remove(Match.getMatches(killed, Matches.UnitIsNotSub), bridge, m_battleSite, false);
-                    m_defendingUnits.removeAll(killed);
-                    return;
-                }
-            }
-            //remove immediately            
-            remove(killed, bridge, m_battleSite, isAA);
+            //move to waiting to die
+            if (defender)
+                m_defendingWaitingToDie.addAll(Match.getMatches(killed, Matches.UnitIsSub));
+            else
+                m_attackingWaitingToDie.addAll(Match.getMatches(killed, Matches.UnitIsSub));
+            remove(Match.getMatches(killed, Matches.UnitIsNotSub) , bridge, m_battleSite, isAA);
+        } else if(returnFire == ReturnFire.NONE) 
+        {
+            remove(killed , bridge, m_battleSite, isAA);
         }
 
         //remove from the active fighting
@@ -2212,7 +2260,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (bombard.size() > 0 && attacked.size() > 0)
         {
             fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, false,
-                    canReturnFire, bridge, "Bombard");
+                    canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge, "Bombard");
         }
     }
     
@@ -2399,7 +2447,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
                     notifyCasualtiesAA(bridge);                    
-                    removeCasualties(m_casualties, false, false, bridge, true);                    
+                    removeCasualties(m_casualties, ReturnFire.NONE, false, bridge, true);                    
                 }                
             };
             //push in reverse order of execution
@@ -3118,7 +3166,7 @@ class Fire implements IExecutable
     private final String m_stepName;
     private final Collection<Unit> m_firingUnits;
     private final  Collection<Unit> m_attackableUnits;
-    private final boolean m_canReturnFire;
+    private final ReturnFire m_canReturnFire;
 
     private final String m_text;
     private final MustFightBattle m_battle;
@@ -3134,7 +3182,7 @@ class Fire implements IExecutable
     private boolean m_confirmOwnCasualties = true;
     private final boolean m_isHeadless;
     
-    public Fire(Collection<Unit> attackableUnits, boolean canReturnFire, PlayerID firingPlayer, PlayerID hitPlayer, 
+    public Fire(Collection<Unit> attackableUnits, ReturnFire canReturnFire, PlayerID firingPlayer, PlayerID hitPlayer, 
             Collection<Unit> firingUnits, String stepName, String text, MustFightBattle battle, 
             boolean defending, Map<Unit, Collection<Unit>> dependentUnits, ExecutionStack stack, boolean headless)
     {
@@ -3401,6 +3449,7 @@ class Fire implements IExecutable
     {
     	return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
     }
+    
 
 }
 
