@@ -597,11 +597,19 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     public List<String> determineStepStrings(boolean showFirstRun, IDelegateBridge bridge)
     {
-        boolean isEditMode = EditDelegate.getEditMode(m_data);
+        
         boolean attackingSubsAlreadyFired = false;
         boolean defendingSubsAlreadyFired = false;
         List<String> steps = new ArrayList<String>();
-        if (!isEditMode && showFirstRun)
+        
+        if(EditDelegate.getEditMode(m_data)) 
+        {
+            steps.add(m_defender.getName() + SELECT_CASUALTIES);
+            steps.add(m_attacker.getName() + SELECT_CASUALTIES);
+            return steps;
+        }
+        
+        if (showFirstRun)
         {
             if (canFireAA())
             {
@@ -646,14 +654,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
         
         // See if there any unescorted trns
-        if (!isEditMode && m_battleSite.isWater() && isTransportCasualtiesRestricted())
+        if (m_battleSite.isWater() && isTransportCasualtiesRestricted())
         { 
             if(Match.someMatch(m_attackingUnits, Matches.UnitIsTransport) || Match.someMatch(m_defendingUnits, Matches.UnitIsTransport))
                 steps.add(REMOVE_UNESCORTED_TRANSPORTS);
         }        
 
         // Air only Units can't attack subs without Destroyers present
-        if (!isEditMode && isAirAttackSubRestricted()) 
+        if (isAirAttackSubRestricted()) 
         { 
             Collection<Unit> units = new ArrayList<Unit>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
             units.addAll(m_attackingUnits);
@@ -666,7 +674,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         //attacker subs sneak attack
         //Attacking subs have no sneak attack if Destroyers are present
-        if (!isEditMode && m_battleSite.isWater()) 
+        if ( m_battleSite.isWater()) 
         {
             if (Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
             {
@@ -688,7 +696,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         //defender subs sneak attack        
         //Defending subs have no sneak attack in Pacific/Europe Editions or if Destroyers are present
-        if (!isEditMode && m_battleSite.isWater() && (isFourthEdition() || isDefendingSubsSneakAttack()))
+        if (m_battleSite.isWater() && (isFourthEdition() || isDefendingSubsSneakAttack()))
         {
             if (Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
             {
@@ -709,7 +717,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         // Air Units can't attack subs without Destroyers present
-        if (!isEditMode && m_battleSite.isWater() && isAirAttackSubRestricted())
+        if (m_battleSite.isWater() && isAirAttackSubRestricted())
         {  
             Collection<Unit> units = new ArrayList<Unit>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
             units.addAll(m_attackingUnits);
@@ -729,9 +737,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         if (Match.someMatch(m_attackingUnits, Matches.UnitIsNotSub))
         {
-            if (!isEditMode)
-                steps.add(m_attacker.getName() + FIRE);
-            steps.add(m_defender.getName() + SELECT_CASUALTIES);
+            steps.add(m_attacker.getName() + FIRE);
+  
         }
 
         //defender fire
@@ -743,7 +750,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         // Air Units can't attack subs without Destroyers present
-        if (!isEditMode && m_battleSite.isWater() && isAirAttackSubRestricted())
+        if (m_battleSite.isWater() && isAirAttackSubRestricted())
         {            
             Collection<Unit> units = new ArrayList<Unit>(m_defendingUnits.size() + m_defendingWaitingToDie.size());
             units.addAll(m_defendingUnits);
@@ -756,9 +763,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         if (Match.someMatch(m_defendingUnits, Matches.UnitIsNotSub))
         {
-            if (!isEditMode)
-                steps.add(m_defender.getName() + FIRE);
-            steps.add(m_attacker.getName() + SELECT_CASUALTIES);
+            
+            steps.add(m_defender.getName() + FIRE);
+            
         }
 
         //remove casualties
@@ -880,8 +887,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (m_over)
             return;
 
-        boolean isEditMode = EditDelegate.getEditMode(m_data);
-
+       
         //the code here is a bit odd to read
         //basically, we need to break the code into seperate atomic pieces.
         //If there is a network error, or some other unfortunate event,
@@ -898,9 +904,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //if you read the code in linear order, ignore wrapping stuff in annonymous iexecutables, then the code
         //can be read as it will execute
         
-        
-
-        
         //store the steps in a list
         //we need to push them in reverse order that we
         //create them, and its easier to track if we just add them 
@@ -908,159 +911,15 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //to the stack at the end
         List<IExecutable> steps = new ArrayList<IExecutable>();
         
-        
-        //for 4th edition we need to fire the defending subs before the
-        //attacking subs fire
-        //this allows the dead subs to return fire, even if they are selected
-        // as casualties
-        final List<Unit> defendingSubs = Match.getMatches(m_defendingUnits,
-                Matches.UnitIsSub);
-        
-        /**Ask to retreat defending subs before battle*/
-        if (!isEditMode && isSubRetreatBeforeBattle())
-            steps.add(new IExecutable(){
-                // compatible with 0.9.0.2 saved games
-                private static final long serialVersionUID = 7056448091800764539L;
-                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-                {
-                    if(!m_over)
-                        defenderRetreatSubs(bridge);
-                }
-            });  
-
-        /**Ask to retreat attacking subs before battle*/
-        if (!isEditMode && isSubRetreatBeforeBattle())
-            steps.add(new IExecutable(){
-                // compatible with 0.9.0.2 saved games
-                private static final long serialVersionUID = 6775880082912594489L;
-                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-                {
-                    if(!m_over)
-                        attackerRetreatSubs(bridge);
-                }
-            });  
-
-        /**Remove undefended trns*/
-        if (!isEditMode && isTransportCasualtiesRestricted())
-        	steps.add(new IExecutable(){
-        		private static final long serialVersionUID = 99989L;
-                
-        		 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-                 {
-        			 checkUndefendedTransports(bridge, m_defender);
-        			 checkUndefendedTransports(bridge, m_attacker);
-        			 //TODO kev perhaps end the battle here if there are no more to fight
-                 }
-        	});
-
-        /**Submerge subs if -vs air only & air restricted from attacking subs */
-        if (!isEditMode && isAirAttackSubRestricted())
-        	steps.add(new IExecutable(){
-        		private static final long serialVersionUID = 99990L;                
-        		 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-                 {
-        		     submergeSubsVsOnlyAir(bridge);     			
-                 }
-        	});
-                
-        /**Attacker subs fire */
-        if (!isEditMode)
-            steps.add(new IExecutable(){
-                private static final long serialVersionUID = 99991L;
-                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-                {
-                    attackSubs(bridge);
-                }                
-            });
-        
-        /**Defending subs fire if 4th Edition or Defending subs sneak attack*/
-        if (!isEditMode && (isFourthEdition() || isDefendingSubsSneakAttack()))
-            steps.add(new IExecutable(){
-                // compatible with 0.9.0.2 saved games
-                private static final long serialVersionUID = 99992L;
-                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-                {
-                    defendSubs(bridge);
-                }                
-            });
-
-        /**Attacker air fire on NON subs */
-        if (!isEditMode && isAirAttackSubRestricted())
-            steps.add(new IExecutable(){
-                // compatible with 0.9.0.2 saved games
-                private static final long serialVersionUID = 99993L;
-                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-                {                		
-                    attackAirOnNonSubs(bridge);
-                }
-
-            });
-
-        /**Attacker fire remaining units */
-        if (!isEditMode)
-            steps.add(new IExecutable(){
-                // compatible with 0.9.0.2 saved games
-                private static final long serialVersionUID = 99994L;
-                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-                {
-                    attackNonSubs(bridge);
-                }
-
-            });
-
-        /**Defender fire subs if they haven't already fired */
-        if (!isEditMode)
-            steps.add(new IExecutable(){
-                // compatible with 0.9.0.2 saved games
-                private static final long serialVersionUID = -4316269766293144179L;
-                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-                {
-                    if (!isFourthEdition() && !isDefendingSubsSneakAttack())
-                    {
-                        defendSubs(bridge);
-                    }
-                }
-            });        
-
-        /**Defender air fire on NON subs */
-        if (!isEditMode && isAirAttackSubRestricted())
-            steps.add(new IExecutable(){
-                // compatible with 0.9.0.2 saved games
-                private static final long serialVersionUID = 1560702114917865123L;
-                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-                {
-                    defendAirOnNonSubs(bridge);
-                }
-
-            });
-
-        if (!isEditMode)
-            steps.add(new IExecutable(){
-                // compatible with 0.9.0.2 saved games
-                private static final long serialVersionUID = 1560702114917865290L;
-                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-                {
-                    defendNonSubs(bridge);
-                }
-
-            });
-
-        if (isEditMode)
-            steps.add(new IExecutable(){
-                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-                {
-                    attackAny(bridge);
-                }
-
-            });        
-
-        if (isEditMode)
-            steps.add(new IExecutable(){
-                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-                {
-                    defendAny(bridge);
-                }
-            });        
+        boolean isEditMode = EditDelegate.getEditMode(m_data);
+        if(!isEditMode) 
+        {
+            addFightStepsNonEditMode(steps);
+        }
+        else 
+        {
+            addFightStepsEditMode(steps);
+        }
         
         //we must grab these here, when we clear waiting to die, we might remove
         //all the opposing destroyers, and this would change the canRetreatSubs rVal
@@ -1234,6 +1093,155 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
 
         return;
+    }
+
+    private void addFightStepsNonEditMode(List<IExecutable> steps) {
+        /**Ask to retreat defending subs before battle*/
+        if (isSubRetreatBeforeBattle())
+            steps.add(new IExecutable(){
+                // compatible with 0.9.0.2 saved games
+                private static final long serialVersionUID = 7056448091800764539L;
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                {
+                    if(!m_over)
+                        defenderRetreatSubs(bridge);
+                }
+            });  
+
+        /**Ask to retreat attacking subs before battle*/
+        if (isSubRetreatBeforeBattle())
+            steps.add(new IExecutable(){
+                // compatible with 0.9.0.2 saved games
+                private static final long serialVersionUID = 6775880082912594489L;
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                {
+                    if(!m_over)
+                        attackerRetreatSubs(bridge);
+                }
+            });  
+
+        /**Remove undefended trns*/
+        if (isTransportCasualtiesRestricted())
+        	steps.add(new IExecutable(){
+        		private static final long serialVersionUID = 99989L;
+                
+        		 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                 {
+        			 checkUndefendedTransports(bridge, m_defender);
+        			 checkUndefendedTransports(bridge, m_attacker);
+        			 //TODO kev perhaps end the battle here if there are no more to fight
+                 }
+        	});
+
+        /**Submerge subs if -vs air only & air restricted from attacking subs */
+        if (isAirAttackSubRestricted())
+        	steps.add(new IExecutable(){
+        		private static final long serialVersionUID = 99990L;                
+        		 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                 {
+        		     submergeSubsVsOnlyAir(bridge);     			
+                 }
+        	});
+                
+        /**Attacker subs fire */
+    
+        steps.add(new IExecutable(){
+            private static final long serialVersionUID = 99991L;
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+                attackSubs(bridge);
+            }                
+        });
+        
+        /**Defending subs fire if 4th Edition or Defending subs sneak attack*/
+        if ((isFourthEdition() || isDefendingSubsSneakAttack()))
+            steps.add(new IExecutable(){
+                // compatible with 0.9.0.2 saved games
+                private static final long serialVersionUID = 99992L;
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                {
+                    defendSubs(bridge);
+                }                
+            });
+
+        /**Attacker air fire on NON subs */
+        if (isAirAttackSubRestricted())
+            steps.add(new IExecutable(){
+                // compatible with 0.9.0.2 saved games
+                private static final long serialVersionUID = 99993L;
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                {                		
+                    attackAirOnNonSubs(bridge);
+                }
+
+            });
+
+        /**Attacker fire remaining units */
+    
+        steps.add(new IExecutable(){
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = 99994L;
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+                attackNonSubs(bridge);
+            }
+
+        });
+
+        /**Defender fire subs if they haven't already fired */
+
+        steps.add(new IExecutable(){
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = -4316269766293144179L;
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+                if (!isFourthEdition() && !isDefendingSubsSneakAttack())
+                {
+                    defendSubs(bridge);
+                }
+            }
+        });        
+
+        /**Defender air fire on NON subs */
+        if (isAirAttackSubRestricted())
+            steps.add(new IExecutable(){
+                // compatible with 0.9.0.2 saved games
+                private static final long serialVersionUID = 1560702114917865123L;
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                {
+                    defendAirOnNonSubs(bridge);
+                }
+
+            });
+
+       
+        steps.add(new IExecutable(){
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = 1560702114917865290L;
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+                defendNonSubs(bridge);
+            }
+         });
+    }
+
+    private void addFightStepsEditMode(List<IExecutable> steps) {
+    
+        steps.add(new IExecutable(){
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+                attackAny(bridge);
+            }
+
+        });        
+
+    
+        steps.add(new IExecutable(){
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+                defendAny(bridge);
+            }
+        });
     }
 
     /**
