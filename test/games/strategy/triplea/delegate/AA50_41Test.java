@@ -586,13 +586,16 @@ public class AA50_41Test extends TestCase {
             List<String> steps = battle.determineStepStrings(true, bridge);
             assertEquals(                
                 Arrays.asList(
-                    defender + SUBS_SUBMERGE,                                        
+                    defender + SUBS_SUBMERGE,   
+                    
                     defender + SUBS_FIRE,
                     attacker + SELECT_SUB_CASUALTIES,
                     
+                    REMOVE_SNEAK_ATTACK_CASUALTIES,
+                    
                     attacker + SUBS_FIRE,
                     defender + SELECT_SUB_CASUALTIES,
-                    REMOVE_SNEAK_ATTACK_CASUALTIES,
+                    
                     defender + FIRE,
                     attacker + SELECT_CASUALTIES,
                     REMOVE_CASUALTIES,
@@ -650,10 +653,10 @@ public class AA50_41Test extends TestCase {
                     attacker + SUBS_FIRE,
                     defender + SELECT_SUB_CASUALTIES,
 
+                    REMOVE_SNEAK_ATTACK_CASUALTIES,
+                    
                     defender + SUBS_FIRE,
                     attacker + SELECT_SUB_CASUALTIES,
-
-                    REMOVE_SNEAK_ATTACK_CASUALTIES,
                     
                     attacker + FIRE,
                     defender + SELECT_CASUALTIES,
@@ -715,8 +718,6 @@ public class AA50_41Test extends TestCase {
                     defender + SUBS_FIRE,
                     attacker + SELECT_SUB_CASUALTIES,
 
-                    REMOVE_SNEAK_ATTACK_CASUALTIES,
-                    
                     attacker + FIRE,
                     defender + SELECT_CASUALTIES,
                     

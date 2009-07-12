@@ -876,8 +876,10 @@ public class RevisedTest extends TestCase
                 
                 defender + SUBS_FIRE,
                 attacker + SELECT_SUB_CASUALTIES,
+                
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
-                REMOVE_CASUALTIES,                
+                REMOVE_CASUALTIES,
+                
                 attacker + SUBS_SUBMERGE,
                 defender + SUBS_SUBMERGE,
                 attacker + ATTACKER_WITHDRAW
@@ -939,10 +941,12 @@ public class RevisedTest extends TestCase
                 defender + SUBS_FIRE,
                 attacker + SELECT_SUB_CASUALTIES,
                 
+                REMOVE_SNEAK_ATTACK_CASUALTIES,
+                
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
                 
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
+                
                 
                 defender + FIRE,
                 attacker + SELECT_CASUALTIES,
@@ -1006,10 +1010,10 @@ public class RevisedTest extends TestCase
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
                 
+                REMOVE_SNEAK_ATTACK_CASUALTIES,
+                
                 defender + SUBS_FIRE,
                 attacker + SELECT_SUB_CASUALTIES,
-                
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
                 
                 attacker + FIRE,
                 defender + SELECT_CASUALTIES,
@@ -1078,8 +1082,6 @@ public class RevisedTest extends TestCase
                 defender + SUBS_FIRE,
                 attacker + SELECT_SUB_CASUALTIES,
 
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
-                
                 attacker + FIRE,
                 defender + SELECT_CASUALTIES,
                 

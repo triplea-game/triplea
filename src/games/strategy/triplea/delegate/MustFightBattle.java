@@ -69,13 +69,13 @@ import java.util.Set;
  * 
  */
 
-enum ReturnFire {
-    ALL,SUBS,NONE
-}
-
 public class MustFightBattle implements Battle, BattleStepStrings
 {
-    
+
+    public static enum ReturnFire {
+        ALL,SUBS,NONE
+    }
+
 
     //these class exist for testing
     public static abstract class AttackSubs implements IExecutable {}
@@ -686,6 +686,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             steps.add(m_defender.getName() + SUBS_FIRE);
             steps.add(m_attacker.getName() + SELECT_SUB_CASUALTIES);
+            steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
         }
         
         //attacker subs sneak attack
@@ -699,6 +700,16 @@ public class MustFightBattle implements Battle, BattleStepStrings
             }
         }
         
+        boolean onlyAttackerSneakAttack =
+            !defenderSubsFireFirst &&
+            returnFireAgainstAttackingSubs() == ReturnFire.NONE &&
+            returnFireAgainstDefendingSubs() == ReturnFire.ALL;
+        
+        if(onlyAttackerSneakAttack) 
+        {
+            steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
+        }
+        
         //defender subs sneak attack        
         //Defending subs have no sneak attack in Pacific/Europe Editions or if Destroyers are present
         if (m_battleSite.isWater())
@@ -710,7 +721,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
             }
         }
         
-        steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
+        if(!defenderSubsFireFirst && !onlyAttackerSneakAttack&&
+            returnFireAgainstDefendingSubs() != ReturnFire.ALL) 
+        {
+            steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
+        }
             
 
         // Air only Units can't attack subs without Destroyers present
@@ -3174,7 +3189,7 @@ class Fire implements IExecutable
     private final String m_stepName;
     private final Collection<Unit> m_firingUnits;
     private final  Collection<Unit> m_attackableUnits;
-    private final ReturnFire m_canReturnFire;
+    private final MustFightBattle.ReturnFire m_canReturnFire;
 
     private final String m_text;
     private final MustFightBattle m_battle;
@@ -3190,7 +3205,7 @@ class Fire implements IExecutable
     private boolean m_confirmOwnCasualties = true;
     private final boolean m_isHeadless;
     
-    public Fire(Collection<Unit> attackableUnits, ReturnFire canReturnFire, PlayerID firingPlayer, PlayerID hitPlayer, 
+    public Fire(Collection<Unit> attackableUnits, MustFightBattle.ReturnFire canReturnFire, PlayerID firingPlayer, PlayerID hitPlayer, 
             Collection<Unit> firingUnits, String stepName, String text, MustFightBattle battle, 
             boolean defending, Map<Unit, Collection<Unit>> dependentUnits, ExecutionStack stack, boolean headless)
     {
