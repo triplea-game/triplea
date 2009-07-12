@@ -700,6 +700,12 @@ public class MoveValidator
             return result;
         }
         
+        if(!data.getMap().isValidRoute(route)) 
+        {
+            result.setError("Invalid route:" + route);
+            return result;
+        }
+        
         if (validateMovementRestrictedByTerritory(data, units, route, player, result).getError() != null)
         {
         	return result;

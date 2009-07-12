@@ -44,7 +44,7 @@ import games.strategy.util.*;
  * @version 1.0
  * 
  */
-public class Route implements java.io.Serializable
+public class Route implements java.io.Serializable, Iterable<Territory>
 {
     private List<Territory> m_route = new ArrayList<Territory>();
 
@@ -263,11 +263,11 @@ public class Route implements java.io.Serializable
 
     public String toString()
     {
-        StringBuilder buf = new StringBuilder("Route:").append(m_start).append(" -> ");
+        StringBuilder buf = new StringBuilder("Route:").append(m_start);
         for (int i = 0; i < getLength(); i++)
         {
-            buf.append(at(i).getName());
             buf.append(" -> ");
+            buf.append(at(i).getName());           
         }
         return buf.toString();
     }
@@ -313,6 +313,10 @@ public class Route implements java.io.Serializable
         }
         return true;
 
+    }
+
+    public Iterator<Territory> iterator() {
+        return Collections.unmodifiableList(getTerritories()).iterator();
     }
 
 }

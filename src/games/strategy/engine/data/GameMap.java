@@ -407,4 +407,23 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 		}
 	};
 
+	/**
+	 * Tests that each territory is connected to the preceding territory 
+	 */
+    public boolean isValidRoute(Route route) {
+        
+        Territory previous = null;
+        for(Territory t : route) 
+        {
+            if(previous != null) {
+                if(!getNeighbors(previous).contains(t)) {
+                    return false;
+                }
+                
+            }
+            previous = t;
+        }
+        return true;
+    }
+
 }

@@ -292,12 +292,12 @@ public class PacificTest extends DelegateTest
 		bridge.setStepName("americansCombatMove");
 		
 		Route route = new Route();
-	    route.setStart(Midway);
+	    route.setStart(US);
 	    route.add(SZ5);
 	    route.add(SZ7);
 	    route.add(SZ8);
 	    route.add(SZ20);
-	    route.add(US);
+	    route.add(Midway);
 
 	    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
 	    map.put(fighter, 1);

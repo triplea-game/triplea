@@ -71,6 +71,24 @@ public class RevisedTest extends TestCase
         return GameDataTestUtil.getDelegateBridge(player);
     }
     
+    public void testMoveBadRoute() 
+    {
+       PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        
+       Territory sz1 = m_data.getMap().getTerritory("1 Sea Zone");
+       Territory sz11 = m_data.getMap().getTerritory("11 Sea Zone");
+       Territory sz9 = m_data.getMap().getTerritory("9 Sea Zone");
+                
+       
+       ITestDelegateBridge bridge = getDelegateBridge(british);
+       bridge.setStepName("NonCombatMove");
+       moveDelegate(m_data).start(bridge, m_data);
+
+       String error = moveDelegate(m_data).move(sz1.getUnits().getUnits(), new Route(sz1,sz11,sz9));
+        assertTrue(error != null);
+    }
+    
+    
     public void testAlliedNeighbors() 
     {
         PlayerID americans = americans(m_data);
@@ -325,7 +343,7 @@ public class RevisedTest extends TestCase
         Territory se = territory("Southern Europe", m_data);
 
         Route route = new Route(
-            uk,we,se
+            uk,territory("7 Sea Zone", m_data), we,se
             );
         
         move(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), route);
@@ -375,7 +393,7 @@ public class RevisedTest extends TestCase
         move(sz14.getUnits().getMatches(Matches.UnitIsInfantry), new Route(sz14,se));
         
         Route route = new Route(
-            uk,we,se
+            uk, territory("7 Sea Zone", m_data),we,se
             );
         
         move(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), route);
