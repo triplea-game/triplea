@@ -862,6 +862,48 @@ public class RevisedTest extends TestCase
     }
     
     
+    public void testLandBattleNoSneakAttack() 
+    {
+        String defender = "Germans";
+        String attacker = "British";
+        
+        Territory attacked = territory("Libya", m_data);
+        Territory from = territory("Anglo Egypt", m_data);
+        
+       
+        ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+        bridge.setStepName("CombatMove");
+        moveDelegate(m_data).start(bridge, m_data);
+        
+        move(from.getUnits().getUnits(), new Route(from,attacked));
+       
+        moveDelegate(m_data).end();
+        
+        MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false);
+        
+        List<String> steps = battle.determineStepStrings(true, bridge);
+        assertEquals(                
+            Arrays.asList(
+               
+               
+                attacker + FIRE,
+                defender + SELECT_CASUALTIES,
+                
+                defender + FIRE,
+                attacker + SELECT_CASUALTIES,
+                
+                REMOVE_CASUALTIES,
+                
+                attacker + ATTACKER_WITHDRAW
+                
+            ).toString(),
+            steps.toString()
+        );
+        
+     
+
+    }
+    
     public void testAttackSubsOnSubs() 
     {
         String defender = "Germans";
