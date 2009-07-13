@@ -899,6 +899,49 @@ public class RevisedTest extends TestCase
             ).toString(),
             steps.toString()
         );
+     
+    }
+    
+    
+    public void testSeaBattleNoSneakAttack() 
+    {
+        String defender = "Germans";
+        String attacker = "British";
+        
+        Territory attacked = territory("31 Sea Zone", m_data);
+        Territory from = territory("32 Sea Zone", m_data);
+        
+        //1 destroyer attacks 1 destroyer
+        addTo(from, destroyer(m_data).create(1,british(m_data)));
+        addTo(attacked, destroyer(m_data).create(1,germans(m_data)));
+        
+        ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+        bridge.setStepName("CombatMove");
+        moveDelegate(m_data).start(bridge, m_data);
+        
+        move(from.getUnits().getUnits(), new Route(from,attacked));
+       
+        moveDelegate(m_data).end();
+        
+        MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false);
+        List<String> steps = battle.determineStepStrings(true, bridge);
+        assertEquals(                
+            Arrays.asList(
+               
+               
+                attacker + FIRE,
+                defender + SELECT_CASUALTIES,
+                
+                defender + FIRE,
+                attacker + SELECT_CASUALTIES,
+                
+                REMOVE_CASUALTIES,
+                
+                attacker + ATTACKER_WITHDRAW
+                
+            ).toString(),
+            steps.toString()
+        );
         
      
 
