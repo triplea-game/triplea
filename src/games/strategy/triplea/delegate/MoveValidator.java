@@ -108,7 +108,7 @@ public class MoveValidator
     {
         //Collection<Unit> ownedUnits = Match.getMatches(units, Matches.unitIsOwnedBy(player));
 
-        CompositeMatch<Unit> transportTanks = new CompositeMatchAnd<Unit>(Matches.UnitIsArmour, Matches.unitIsOwnedBy(player));
+        CompositeMatch<Unit> transportTanks = new CompositeMatchAnd<Unit>(Matches.UnitCanBlitz, Matches.unitIsOwnedBy(player));
         Collection<Unit> tanks = Match.getMatches(units, transportTanks);
         
         m_mechanizedSupportAvail = tanks.size();

@@ -1977,7 +1977,7 @@ public class SUtils
 			for (int j = i+1; j < unitList.size()-1; j++)
 			{
 				UnitType unit2 = orderedUnitList.get(j);
-				boolean isTank2 = Matches.UnitTypeIsArmour.match(unit2);
+				boolean isTank2 = UnitAttachment.get(unit2).getCanBlitz();
 
 				UnitAttachment ua2 = UnitAttachment.get(unit2);
 				int ipip2 = 0;

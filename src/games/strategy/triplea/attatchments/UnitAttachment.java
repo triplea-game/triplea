@@ -43,8 +43,7 @@ public class UnitAttachment extends DefaultAttachment
 
   private boolean m_isAir = false;
   private boolean m_isSea = false;
-  private boolean m_isAA = false;
-  private boolean m_isTank = false;  
+  private boolean m_isAA = false;   
   private boolean m_isFactory = false;
   private boolean m_canBlitz = false;
   private boolean m_isSub = false;
@@ -170,16 +169,6 @@ public class UnitAttachment extends DefaultAttachment
     return m_isAA;
   }
 
-  public void setIsArmour(String s)
-  {
-    m_isTank = getBool(s);
-  }
-
-  public boolean isArmour()
-  {
-    return m_isTank;
-  }
-  
   public boolean isInfantry()
   {
     return m_isInfantry;

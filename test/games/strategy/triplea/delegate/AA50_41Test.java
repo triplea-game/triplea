@@ -253,7 +253,7 @@ public class AA50_41Test extends TestCase {
             //attack from bulgraia
             move(bulgaria.getUnits().getUnits(), new Route(bulgaria, ukraine));
             //add a blitz attack
-            move(poland.getUnits().getMatches(Matches.UnitIsArmour), new Route(poland, eastPoland, ukraine));
+            move(poland.getUnits().getMatches(Matches.UnitCanBlitz), new Route(poland, eastPoland, ukraine));
             
             //we should not be able to retreat to east poland!
             //that territory was just conquered
@@ -292,7 +292,7 @@ public class AA50_41Test extends TestCase {
             
             //Get units
             Collection<Unit> moveUnits = poland.getUnits().getUnits(infantryType, 3);
-            moveUnits.addAll(poland.getUnits().getMatches(Matches.UnitIsArmour));
+            moveUnits.addAll(poland.getUnits().getMatches(Matches.UnitCanBlitz));
 
             //add a INVALID blitz attack
             String errorResults = moveDelegate.move(moveUnits, new Route(poland, eastPoland, belorussia));
@@ -301,7 +301,7 @@ public class AA50_41Test extends TestCase {
             //Fix the number of units
             moveUnits.clear();
             moveUnits.addAll(poland.getUnits().getUnits(infantryType, 2));
-            moveUnits.addAll(poland.getUnits().getMatches(Matches.UnitIsArmour));
+            moveUnits.addAll(poland.getUnits().getMatches(Matches.UnitCanBlitz));
             
             //add a VALID blitz attack
             String validResults = moveDelegate.move(moveUnits, new Route(poland, eastPoland, belorussia));

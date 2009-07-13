@@ -452,17 +452,6 @@ public class Matches
     		return ua.isArtillery();
     	}
     };
-    
-    public static final Match<UnitType> UnitTypeIsArmour = new Match<UnitType>()
-    {
-    	public boolean match(UnitType obj)
-    	{
-    		UnitType type = (UnitType) obj;
-    		UnitAttachment ua = UnitAttachment.get(type);
-    		return ua.isArmour();
-    	}
-    };
-    
 
     public static final Match<Unit> UnitIsFactory = new Match<Unit>()
     {
@@ -509,18 +498,7 @@ public class Matches
 
     public static final Match<Unit> UnitIsNotAA = new InverseMatch<Unit>(UnitIsAA);
 
-
-    public static final Match<Unit> UnitIsArmour = new Match<Unit>()
-    {
-        public boolean match(Unit obj)
-        {
-            UnitType type = ((Unit) obj).getUnitType();
-            UnitAttachment ua = UnitAttachment.get(type);
-            return ua.isArmour();
-        }
-    };
-
-    public static final Match<Unit> UnitIsNotArmour = new InverseMatch<Unit>(UnitIsArmour);
+    public static final Match<Unit> UnitIsNotArmour = new InverseMatch<Unit>(UnitCanBlitz);
 
     public static final Match<Unit> UnitIsInfantry = new Match<Unit>()
     {

@@ -1115,8 +1115,7 @@
                 <attatchment name="unitAttatchment" attatchTo="armour" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="2"/>
                          <option name="transportCost" value="3"/>
-                         <option name="canBlitz" value="true"/>
-                         <option name="isArmour" value="true"/>
+                         <option name="canBlitz" value="true"/>                         
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
 
