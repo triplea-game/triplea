@@ -1,5 +1,11 @@
 Changes for 1.0.4
 
+* Scrub xml and source (ComradeKev)
+
+* fix bug 2818614 include substance jar in build.xml (Seidelin)
+
+* fix bug 2818578 partial amphib attack with air asked to retreat twice (Seidelin) 
+
 * fix bug 2820382 Undoing/redoing amphibious attack can allow too many bombard (Seidelin)
 
 * Don't allow aa guns in blitzed territories to fire rockets (sgb)
@@ -11,8 +17,6 @@ Changes for 1.0.4
 * new aa50 flag images for italy and russia (U-Boat)
 
 * fix partially repaired factories showing as completely repaired (ComradeKev)
-
-* fix bug 2818023 moving unit to carried-over battle causes existing units to be ignored (ComradeKev)
 
 * Changed testCanRetreatIntoBlitzedTerritory() to allow retreat into blitzed territory per AA.org (ComradeKev)
 

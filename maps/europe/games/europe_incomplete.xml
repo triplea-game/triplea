@@ -3,7 +3,7 @@
 
 <!-- 
 	=================================================== 
-	Axis & Allies Europe map compiled by IC for TripleA 
+	Map compiled by IC for TripleA 
 	Baseline by Black-Elk (TripleElk)
 	Convoy center code thanks to Adam...?
 	====================================================
@@ -1499,13 +1499,11 @@
 			<value>
 			<![CDATA[
 		
-		This current mod reflects the A&A Europe edition.   <br> <br> 
-
-		ATTENTION:: As of 0.25, Convoy Centers are now working!		<br> <br> 
+		This current mod reflects the WW2 European conflict.   <br> <br> 
 		
 		There are a few elements still to be added however, for example, the middle east territories <br>
 		are counted as regular UK territories as their special rules are also not yet currently implemented. <br> 
-		Strategic bombing for now behaves exactly as regular Axis and Allies strategic bombing.  Also <br>
+		Strategic bombing for now behaves.  Also <br>
 		there is no extra Russia bonus of commandeering allied units and converting them to Russian owned <br>
 		at this time.  All units created by a nation will stay under ownership by that nation throughout <br>
 		the entire game. <br> <br> <i> 
