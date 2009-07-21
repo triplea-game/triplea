@@ -371,7 +371,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         	for(Territory t : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedFactory(data, m_id))) 
         	{
         		TerritoryAttachment ta = TerritoryAttachment.get(t);
-        		//Kev changed this to > from !=
+        		//changed this to > from !=
         		if(ta.getProduction() > ta.getUnitProduction())
         		{
         			bombedTerrs.add(t);

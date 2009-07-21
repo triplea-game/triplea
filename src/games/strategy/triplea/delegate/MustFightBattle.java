@@ -1155,7 +1155,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
                  {
         			 checkUndefendedTransports(bridge, m_defender);
         			 checkUndefendedTransports(bridge, m_attacker);
-        			 //TODO kev perhaps end the battle here if there are no more to fight
                  }
         	});
 
@@ -3080,7 +3079,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     // In an amphibious assault, sort on who is unloading from xports first
     // This will allow the marines with higher scores to get killed last
-    //TODO comco this may be used for partial retreats also
     public void sortAmphib(List<Unit> units, GameData data)
     {
         final Comparator<Unit> decreasingMovement = UnitComparator.getDecreasingMovementComparator();        

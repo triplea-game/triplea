@@ -636,28 +636,17 @@ public class BattleTracker implements java.io.Serializable
         if (route.getEnd() != null && Match.allMatch(enemyUnits, Matches.UnitIsAAOrFactory))
             return ChangeFactory.EMPTY_CHANGE;
 
-        //CompositeChange change = new CompositeChange();
-        
         Battle battle = getPendingBattle(site, false);
-
+        //If there are no pending battles- add one for units already in the combat zone
         if (battle == null)
         {
         	battle = new MustFightBattle(site, id, data, this);
         	m_pendingBattles.add(battle);
-        	
-        	//TODO Kev need to look about how to add the existing units w/o restricting their movement OUT of the territory.  Perhaps with a new rule.
-        	/*Collection<Unit> existingOwnedUnits = Match.getMatches(site.getUnits().getUnits(), Matches.unitIsOwnedBy(id));
-        	if(!existingOwnedUnits.isEmpty())
-        	{
-        		Route r = new Route();
-                r.setStart(route.getEnd());
-                change.add(battle.addAttackChange(r, existingOwnedUnits));
-        	}*/
         }
-
-        //change.add(battle.addAttackChange(route, units));
+        
+        //Add the units that moved into the battle
         Change change = battle.addAttackChange(route, units);
-
+        
         //make amphibious assaults dependent on possible naval invasions
 
         //its only a dependency if we are unloading

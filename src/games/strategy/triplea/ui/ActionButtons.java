@@ -133,7 +133,7 @@ public class ActionButtons extends JPanel
         });
 
     }
-//TODO COMCO added this
+
     public void changeToRepair(final PlayerID id)
     {
         m_current.setActive(false);

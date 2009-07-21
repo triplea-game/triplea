@@ -499,7 +499,7 @@ Coded by Iron__Cross
         <delegate name="bid"
             javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate"
             display="Bid Purchase"/>
-<!-- Kev -->
+
         <delegate name="giveIPCs"
             javaClass="games.strategy.triplea.delegate.GiveIPCsDelegate"
             display="Give IPCs"/>            
@@ -563,7 +563,7 @@ Coded by Iron__Cross
             <step name="australianPlace" delegate="place" player="Australians"/>           
             <step name="britishEndTurn" delegate="endTurn" player="British"/>
             <step name="australianEndTurn" delegate="endTurn" player="Australians"/>
-            <!--Kev Added Commonwealth end turn 
+            <!--Added Commonwealth end turn 
             <step name="commonwealthGiveIPCs" delegate="giveIPCs" player="Commonwealth"/>
             -->
             

@@ -16,7 +16,6 @@
  * Parser.java
  *
  * Created on October 12, 2001, 12:55 PM
- * Kev look here for initialization
  */
 
 package games.strategy.engine.data;

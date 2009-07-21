@@ -355,8 +355,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             //if its an original factory then unlimited production
             TerritoryAttachment ta = TerritoryAttachment.get(to);
 
-            //TODO COMCO extract rule from 4th ed into individual rule
-            //4th edition, you cant place factories in territories with no
+            //TODO COMCO extract into individual rule
+            //You cant place factories in territories with no
             // production
             if (!(isFourthEdition() && ta.getProduction() == 0))
             {
@@ -414,7 +414,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         		return -1;
         	}        		
         }
-        //TODO comco look here
+
         //a factory can produce the same number of units as the number of ipcs
         // the territroy generates each turn
         int unitCount = getAlreadyProduced(producer).size();
@@ -728,7 +728,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     {
         return (ITripleaPlayer) m_bridge.getRemote();
     }
-//TODO Comco here's the spot for special air placement rules
+//TODO Here's the spot for special air placement rules
     private void moveAirOntoNewCarriers(Territory territory, Collection<Unit> units,
             PlayerID player, CompositeChange placeChange)
     {

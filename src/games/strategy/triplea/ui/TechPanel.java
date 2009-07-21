@@ -143,35 +143,6 @@ public class TechPanel extends ActionPanel
         }
     }
     
-//COMCO start here looking for the client problem w/ tech chart selection
-/*    public TechAdvance getAvailableTechCategories(PlayerID player)
-    {
-        getData().acquireReadLock();
-        List<TechAdvance> techCategories;
-        try
-        {
-            Collection<TechAdvance> currentAdvances = TechTracker.getTechCategories(player);
-            Collection<TechAdvance> allAdvances = TechAdvance.getTechCategories(getData());
-            techCategories = Util.difference(allAdvances, currentAdvances);
-        }
-        finally 
-        {
-            getData().releaseReadLock();
-        }
-        
-        
-        TechAdvance category = null;
-        JList list = new JList(new Vector<TechAdvance>(techCategories));
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.add(list, BorderLayout.CENTER);
-        panel.add(new JLabel("Select which tech chart you want to roll for"), BorderLayout.NORTH);
-        list.setSelectedIndex(0);
-        JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart", JOptionPane.PLAIN_MESSAGE);
-        category = (TechAdvance) list.getSelectedValue();
-        return category;        
-    }*/
-
 
     private Action GetTechRollsAction = new AbstractAction("Roll Tech...")
     {
@@ -240,8 +211,6 @@ public class TechPanel extends ActionPanel
             if (techCategories.isEmpty())
             {
                 JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
-                //TODO COMCO this won't work
-                //getCurrentPlayer().getResources().removeResource(getData().getResourceList().getResource(Constants.TECH_TOKENS), m_currTokens);
                 return;
             }
             
@@ -286,12 +255,8 @@ public class TechPanel extends ActionPanel
               {  
                  List<TechAdvance> techCategories = getAvailableCategories();
                  
-                 //if (available.isEmpty())
                  if (techCategories.isEmpty())
                  {
-                   //JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
-                   //TODO COMCO this won't work
-                   //getCurrentPlayer().getResources().removeResource(getData().getResourceList().getResource(Constants.TECH_TOKENS), m_currTokens);
                    return;
                  }
                  

@@ -204,7 +204,6 @@ public class PurchasePanel extends ActionPanel
         
         //give a warning if the 
         //player tries to produce too much
-        //Kev check here for factory max bug/feature request
         if(isFourthEdition() || isRestrictedPurchase() || isSBRAffectsUnitProduction()) 
         {
             int totalProd = 0;

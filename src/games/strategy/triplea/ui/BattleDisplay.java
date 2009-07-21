@@ -241,7 +241,6 @@ public class BattleDisplay extends JPanel
             JPanel panel = new JPanel();
             JLabel unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, false));
             panel.add(unit);
-            //Kev add
             panel.add(new JLabel("x " + category.getUnits().size()));
            
             Iterator<UnitOwner> iter = category.getDependents().iterator();

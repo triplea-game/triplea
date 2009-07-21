@@ -67,7 +67,11 @@ public class SimpleUnitPanel extends JPanel
 
     }
   }
-//TODO COMCO added this
+  /**
+  *
+  * @param units a HashMap in the form RepairRule -> number of units
+  * assumes that each repair rule has 1 result, which is simply the number of units
+  */
   public void setUnitsFromRepairRuleMap(HashMap<Territory, IntegerMap<RepairRule>> units, PlayerID player, GameData data)
   {
     removeAll();

@@ -482,8 +482,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     	
 
         if (m_nonCombat)
-            removeAirThatCantLand();       
-        //TODO COMCO perhaps add any pre-existing battles here (new placement, 1 round combat, etc...)
+            removeAirThatCantLand();
         
         m_movesToUndo.clear();
 
