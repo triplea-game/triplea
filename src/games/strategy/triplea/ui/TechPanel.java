@@ -65,7 +65,7 @@ public class TechPanel extends ActionPanel
                 m_actionLabel.setText(id.getName() + " Tech Roll");
                 add(m_actionLabel);
                 
-                if(isAA50TechModel())
+                if(isWW2V3TechModel())
                 {
                     add(new JButton(GetTechTokenAction));
                     add(new JButton(JustRollTech));
@@ -150,7 +150,7 @@ public class TechPanel extends ActionPanel
         {
             TechAdvance advance = null;
            
-            if (isFourthEdition() || isSelectableTechRoll())
+            if (isWW2V2() || isSelectableTechRoll())
             {
                 List<TechAdvance> available = getAvailableTechs();
                 if (available.isEmpty())

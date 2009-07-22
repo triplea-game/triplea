@@ -27,7 +27,7 @@ public interface ITechDelegate extends IRemote
      * 
      * @param rollCount - the number of tech rolls
      * @param tech - the tech to roll for, should be null if the game does not support
-     *               rolling for certain techs (ie third edition)
+     *               rolling for certain techs
      * @return TechResults.  If the tech could not be rolled, then a message saying why.
      */
     public TechResults rollTech(int rollCount, TechAdvance techToRollFor, int newTokens);

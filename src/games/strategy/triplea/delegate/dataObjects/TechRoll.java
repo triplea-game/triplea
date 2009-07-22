@@ -19,7 +19,7 @@ import games.strategy.triplea.delegate.TechAdvance;
 /**
  * Used to describe a tech roll.
  * advance may be null if the game does not support rolling for
- * specific techs (ie aa 2nd edition)
+ * specific techs 
  */
 public class TechRoll
 {

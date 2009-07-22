@@ -123,7 +123,7 @@ public abstract class AbstractEndTurnDelegate
 
 
         PlayerAttachment pa = PlayerAttachment.get(player);
-        if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false) && pa != null)
+        if(m_data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null)
         {      
             Change changeVP = (ChangeFactory.attachmentPropertyChange(pa, (new Integer(Integer.parseInt(pa.getVps()) + (toAdd / 10 + Integer.parseInt(pa.getCaptureVps()) / 10))).toString(), "vps"));
             Change changeCapVP = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");

@@ -368,7 +368,7 @@ public class DiceRoll implements Externalizable
                 {
                     int strength;
                     if (defending)
-                        //If it's Pacific_Edition and Japan's turn one, all but Chinese defend at a 1
+                        //If it's a sneak attack, all but Chinese defend at a 1
                     {
                         strength = ua.getDefense(current.getOwner());
                         if (isFirstTurnLimitedRoll(player))
@@ -415,7 +415,7 @@ public class DiceRoll implements Externalizable
             return false;
         }
         
-        return player.getData().getProperties().get(Constants.PACIFIC_EDITION, false) 
+        return player.getData().getProperties().get(Constants.PACIFIC_THEATER, false) 
         && player.getData().getSequence().getRound() == 1 
         && player.getData().getSequence().getStep().getName().equals("japaneseBattle") 
         && !player.equals(player.getData().getPlayerList().getPlayerID(Constants.CHINESE));

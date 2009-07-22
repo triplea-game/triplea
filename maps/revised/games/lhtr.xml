@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="LHTR 4th Edition" version="1.4"/>
+        <info name="LHTR World War 2 Version 2" version="1.4"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -1586,8 +1586,8 @@
                         <number min="0" max="1000"/>
                 </property>
 
-                <!-- Use 4th Edition Rules -->
-		<property name="4th Edition" value="true" editable="false">
+                <!-- Use WW2V2 Rules -->
+		<property name="WW2V2" value="true" editable="false">
                         <boolean/>
                 </property>
                 

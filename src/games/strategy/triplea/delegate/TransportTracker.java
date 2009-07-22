@@ -223,7 +223,7 @@ public class TransportTracker
     {
         UnitAttachment ua = UnitAttachment.get(unit.getType());
         //Check if there are transports available, also check for destroyer capacity (Tokyo Express)
-        if (ua.getTransportCapacity() == -1 || (unit.getData().getProperties().get(Constants.PACIFIC_EDITION, false) && ua.getIsDestroyer() && !unit.getOwner().getName().equals("Japanese")))
+        if (ua.getTransportCapacity() == -1 || (unit.getData().getProperties().get(Constants.PACIFIC_THEATER, false) && ua.getIsDestroyer() && !unit.getOwner().getName().equals("Japanese")))
             return 0;
         int capacity = ua.getTransportCapacity();
         int used = getCost(transporting(unit));
@@ -309,17 +309,17 @@ public class TransportTracker
         return false;
     }
     
-    private boolean isFourthEdition(GameData data)  {
-        return games.strategy.triplea.Properties.getFourthEdition(data);
+    private boolean isWW2V2(GameData data)  {
+        return games.strategy.triplea.Properties.getWW2V2(data);
     }
 
     private boolean isRestrictedTransportUnload(GameData data)  {
-        return games.strategy.triplea.Properties.getFourthEdition(data);
+        return games.strategy.triplea.Properties.getWW2V2(data);
     }
 
-    // In 4th edition and LHTR, a transport can never unload into 
+    // In some versions, a transport can never unload into 
     // multiple territories in a given turn.
-    // In 2nd edition a transport can unload to multiple territories in 
+    // In WW2V1 a transport can unload to multiple territories in 
     // non-combat phase, provided they are both adjacent to the sea zone.
     public boolean isTransportUnloadRestrictedToAnotherTerritory(Unit transport, Territory territory)
     {
@@ -332,7 +332,7 @@ public class TransportTracker
         for (Unit u : unloaded)
         {
             TripleAUnit taUnit = (TripleAUnit) u;
-            if (isFourthEdition(data) || isRestrictedTransportUnload(data))
+            if (isWW2V2(data) || isRestrictedTransportUnload(data))
             {
                 // cannot unload to two different territories
                 if (!taUnit.getUnloadedTo().equals(territory))

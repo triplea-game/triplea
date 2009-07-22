@@ -3787,14 +3787,14 @@
 
         <propertyList>
 
-		<!-- Use 4th Edition Rules -->
+		<!-- Use WW2V2 Rules -->
 
 		<!-- Low Luck -->
                 <property name="Low Luck" value="false" editable="true">
                         <boolean/>
                 </property>
 
-		<property name="4th Edition" value="true" editable="true">
+		<property name="WW2V2" value="true" editable="true">
                         <boolean/>
                 </property>
                 

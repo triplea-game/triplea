@@ -413,14 +413,14 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         return DelegateFinder.battleDelegate(data).getBattleTracker();
     }
 
-    private boolean isFourthEdition()
+    private boolean isWW2V2()
     {
-    	return games.strategy.triplea.Properties.getFourthEdition(m_data);
+    	return games.strategy.triplea.Properties.getWW2V2(m_data);
     }
 
-    private boolean isAnniversaryEdition()
+    private boolean isWW2V3()
     {
-        return games.strategy.triplea.Properties.getAnniversaryEdition(m_data);
+        return games.strategy.triplea.Properties.getWW2V3(m_data);
     }
     
     private ITripleaPlayer getRemotePlayer()
@@ -486,9 +486,9 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         
         m_movesToUndo.clear();
 
-        //fourth edition, fires at end of combat move
-        //3rd edition, fires at end of non combat move
-        if ((!m_nonCombat && isAnniversaryEdition()) || (m_nonCombat && (!isFourthEdition() && !isAnniversaryEdition())) || (!m_nonCombat && isFourthEdition()))
+        //WW2V2, fires at end of combat move
+        //WW2V1, fires at end of non combat move
+        if ((!m_nonCombat && isWW2V3()) || (m_nonCombat && (!isWW2V2() && !isWW2V3())) || (!m_nonCombat && isWW2V2()))
         {
             if (TechTracker.hasRocket(m_bridge.getPlayerID()))
             {
@@ -498,7 +498,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         }
         CompositeChange change = new CompositeChange();
 
-        if(!m_nonCombat && isAnniversaryEdition()) 
+        if(!m_nonCombat && isWW2V3()) 
         {
             change.add(addLingeringSeaUnitsToBattles());
         }
@@ -678,7 +678,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         };
         //fill the units with the highest cost first.
         //allows easy loading of 2 infantry and 2 tanks on 2 transports
-        //in 4th edition rules.
+        //in WW2V2 rules.
         Collections.sort(canBeTransported, c);
 
         List<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
@@ -744,7 +744,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         };
         //fill the units with the highest cost first.
         //allows easy loading of 2 infantry and 2 tanks on 2 transports
-        //in 4th edition rules.
+        //in WW2V2 rules.
         Collections.sort(canBeTransported, c);
 
         List<Unit> canTransport = Match.getMatches(bombers, Matches.UnitIsStrategicBomber);

@@ -92,14 +92,14 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         return m_techs;
     }
 
-    private boolean isFourthEdition()
+    private boolean isWW2V2()
     {
-        return games.strategy.triplea.Properties.getFourthEdition(m_data);
+        return games.strategy.triplea.Properties.getWW2V2(m_data);
     }
 
-    private boolean isAA50TechModel()
+    private boolean isWW2V3TechModel()
     {
-        return games.strategy.triplea.Properties.getAA50TechModel(m_data);
+        return games.strategy.triplea.Properties.getWW2V3TechModel(m_data);
     }
 
     private boolean isSelectableTechRoll()
@@ -111,7 +111,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
     {
         int rollCount = techRolls;
         
-        if(isAA50TechModel())
+        if(isWW2V3TechModel())
             rollCount = newTokens;
         
         boolean canPay = checkEnoughMoney(rollCount);
@@ -121,12 +121,12 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         chargeForTechRolls(rollCount);        
         int m_currTokens = 0;
         
-        if(isAA50TechModel())
+        if(isWW2V3TechModel())
             m_currTokens = m_player.getResources().getQuantity(Constants.TECH_TOKENS);
         
         if (getAvailableTechs().isEmpty())
         {
-            if(isAA50TechModel())
+            if(isWW2V3TechModel())
             {
                 Resource techTokens = m_data.getResourceList().getResource(Constants.TECH_TOKENS);
                 String transcriptText = m_player.getName() + " No more available tech advances.";
@@ -152,7 +152,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
             random = m_bridge.getRandom(Constants.MAX_DICE, techRolls, annotation);
         int techHits = getTechHits(random);
 
-        boolean selectableTech = isSelectableTechRoll() || isFourthEdition();
+        boolean selectableTech = isSelectableTechRoll() || isWW2V2();
         String directedTechInfo = selectableTech ? " for "
                 + techToRollFor : "";
         m_bridge.getHistoryWriter().startEvent(
@@ -162,7 +162,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
                         + " and gets " + techHits + " "
                         + MyFormatter.pluralize("hit", techHits));
         
-        if(techHits > 0 && isAA50TechModel())
+        if(techHits > 0 && isWW2V3TechModel())
         {
             m_techCategory = techToRollFor;
             //remove all the tokens            
@@ -259,7 +259,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
                 .getPlayerID(), ipcs, -cost);
         m_bridge.addChange(charge);
         
-        if(isAA50TechModel())
+        if(isWW2V3TechModel())
         {
             Resource tokens = m_data.getResourceList().getResource(Constants.TECH_TOKENS);
             Change newTokens = ChangeFactory.changeResourcesChange(m_bridge
@@ -282,7 +282,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
     private Collection<TechAdvance> getTechAdvances(int hits)
     {
         List<TechAdvance> available = new ArrayList<TechAdvance>();
-        if(hits > 0 && isAA50TechModel())
+        if(hits > 0 && isWW2V3TechModel())
         {
             available = getAvailableAdvancesForCategory(m_techCategory);
             hits=1;

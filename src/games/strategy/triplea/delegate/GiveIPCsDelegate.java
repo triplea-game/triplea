@@ -67,7 +67,7 @@ public class GiveIPCsDelegate implements IDelegate
 
 		m_data = gameData;
 
-		if(isFourthEdition())
+		if(isWW2V2())
 		    return;
 	}
 
@@ -81,9 +81,9 @@ public class GiveIPCsDelegate implements IDelegate
 		return m_displayName;
 	}
 	
-	private boolean isFourthEdition()
+	private boolean isWW2V2()
     {
-    	return games.strategy.triplea.Properties.getFourthEdition(m_data);
+    	return games.strategy.triplea.Properties.getWW2V2(m_data);
     }
 	/**
 	 * Called before the delegate will stop running.

@@ -95,7 +95,7 @@ public class EndRoundDelegate implements IDelegate
 		String victoryMessage = null;
 
 		//Check for Winning conditions        
-        if(isFourthEdition() || isNoEconomicVictory())
+        if(isWW2V2() || isNoEconomicVictory())
             return;
         else if(isTotalVictory())       //Check for Win by Victory Cities
 		{
@@ -210,9 +210,9 @@ public class EndRoundDelegate implements IDelegate
         }
     }
     
-	private boolean isFourthEdition()
+	private boolean isWW2V2()
     {
-    	return games.strategy.triplea.Properties.getFourthEdition(m_data);
+    	return games.strategy.triplea.Properties.getWW2V2(m_data);
     }
 	
     private boolean isTotalVictory()

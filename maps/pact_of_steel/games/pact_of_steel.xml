@@ -1684,8 +1684,8 @@
         </initialize>
 
         <propertyList>
-                <!-- Use 4hth Edition Rules -->
-                <property name="4th Edition" value="true" editable="false">
+                <!-- Use WW2V2 Rules -->
+                <property name="WW2V2" value="true" editable="false">
                         <boolean/>
                 </property>
                 

@@ -435,7 +435,7 @@ public class BattleTracker implements java.io.Serializable
                 int capturedIPCCount = whoseCapital.getResources().getQuantity(ipcs);
                 if(pa != null)
                 {
-                    if(isPacificEdition(data))
+                    if(isPacificTheater(data))
                     {
                         Change changeVP = ChangeFactory.attachmentPropertyChange(pa, (Integer.valueOf(capturedIPCCount + Integer.parseInt(pa.getCaptureVps()))).toString(), "captureVps");
                         bridge.addChange(changeVP);
@@ -781,9 +781,9 @@ public class BattleTracker implements java.io.Serializable
         return m_bombardedFromTerritories.contains(territory);
     }
 
-    private boolean isPacificEdition(GameData data)
+    private boolean isPacificTheater(GameData data)
     {
-        return data.getProperties().get(Constants.PACIFIC_EDITION, false);
+        return data.getProperties().get(Constants.PACIFIC_THEATER, false);
     }
 
     private boolean isOccupiedTerritories(GameData data)

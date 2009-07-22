@@ -2973,8 +2973,8 @@
         </initialize>
 
         <propertyList>
-                <!-- Use 4th Edition Rules -->
-				<property name="4th Edition" value="true" editable="false">
+                <!-- Use WW2V2 Rules -->
+				<property name="WW2V2" value="true" editable="false">
                         <boolean/>
                 </property>
 		
@@ -3063,7 +3063,7 @@
 				turning point at Midway (May 1942). 
 				
 				<br><br>
-				Standard TripleA '4th edition' + 'LHTR' bomber rules apply. 
+				Standard TripleA 'WW2V2' + 'LHTR' bomber rules apply. 
 				However, there are also variant rules to consider.<br>Also 'LHTR' 
 				delayed tech activation is applied.<br>
 				<h2>Capitols</h2>

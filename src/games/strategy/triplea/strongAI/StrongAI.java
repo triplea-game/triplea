@@ -75,7 +75,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	private void getEdition()
 	{
 		final GameData data = getPlayerBridge().getGameData();
-		m_AE = games.strategy.triplea.Properties.getAnniversaryEdition(data);
+		m_AE = games.strategy.triplea.Properties.getWW2V3(data);
 		m_transports_may_die = !games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
 		m_zero_combat_attack = games.strategy.triplea.Properties.getHariKariUnits(data);
 		m_natObjective = games.strategy.triplea.Properties.getNationalObjectives(data);
@@ -4956,7 +4956,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				seaAttackUnitFactories.put(unitFact, 0);
 			}
 		}
-		//case for Russia and Germany in Revised and Italians in AA50
+		//case for Russia and Germany in WW2V2 and Italians in WW2V3
 		if (transportFactories.size() == 0)
 		{
 			for (Territory unitFact2 : factoryTerritories)

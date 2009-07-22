@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="AA50-41" version="1.0.0"/>
+        <info name="World War 2 Version 3a" version="1.0.0"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -2113,7 +2113,7 @@
 		<!-- END OF OPTIONAL PROPERTIES -->
                 
                 
-				<property name="Anniversary Edition" value="true" editable="false">
+				<property name="WW2V3" value="true" editable="false">
                         <boolean/>
                 </property>
                 
@@ -2239,7 +2239,7 @@
                         <number min="0" max="1000"/>
                 </property>
 
-                <property name="AA50 Tech Model" value="true" editable="false">
+                <property name="WW2V2 Tech Model" value="true" editable="false">
                 	<boolean/>
                 </property>
                 
@@ -2401,4 +2401,4 @@
 
         </propertyList>
 </game>
-<!-- aa50-41 XML by Zero Pilot 9.08-->
+<!-- WW2V2 XML by Zero Pilot 9.08-->

@@ -76,7 +76,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
         PlayerID americans = m_data.getPlayerList().getPlayerID(Constants.AMERICANS);
 
 
-                if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false))
+                if(m_data.getProperties().get(Constants.PACIFIC_THEATER, false))
                 {
                     PlayerAttachment pa = PlayerAttachment.get(japanese);
 
@@ -96,7 +96,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
         			determineNationalObjectives(m_data, bridge);
         		}
         		
-        if(isFourthEdition())
+        if(isWW2V2())
             return;
 
         
@@ -542,8 +542,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     	return games.strategy.triplea.Properties.getNationalObjectives(m_data);
     }
 
-    private boolean isFourthEdition()
+    private boolean isWW2V2()
     {
-    	return games.strategy.triplea.Properties.getFourthEdition(m_data);
+    	return games.strategy.triplea.Properties.getWW2V2(m_data);
     }
 }

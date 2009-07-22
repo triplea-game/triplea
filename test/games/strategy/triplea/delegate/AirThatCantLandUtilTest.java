@@ -242,7 +242,7 @@ public class AirThatCantLandUtilTest extends TestCase
         assertEquals(expectedCountSz_43, postCountSz_43);    	
     }
 
-    public void testCanLandNeighborLand4thEd()
+    public void testCanLandNeighborLandV2()
     {
     	PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
         PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
@@ -295,7 +295,7 @@ public class AirThatCantLandUtilTest extends TestCase
         assertEquals(expectedCountCanada, postCountInt);      
     }
 
-    public void testCanLandNeighborLandWithRetreatedBattle4thEd()
+    public void testCanLandNeighborLandWithRetreatedBattleV2()
     {
     	PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
         PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");

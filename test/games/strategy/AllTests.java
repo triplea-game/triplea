@@ -30,7 +30,7 @@ public class AllTests extends TestCase
         //tests for the engine code
         suite.addTest(StrategyGameTest.suite());
         
-        //tests for a&a code
+        //tests for triplea code
         suite.addTest(TripleATest.suite());
         
         //tests for King's Table code

@@ -42,9 +42,9 @@ import java.util.Set;
 public class RocketsFireHelper
 {
 
-	private boolean isFourthEdition(GameData data)
+	private boolean isWW2V2(GameData data)
     {
-    	return games.strategy.triplea.Properties.getFourthEdition(data);
+    	return games.strategy.triplea.Properties.getWW2V2(data);
     }
 	
     private boolean isAllRocketsAttack(GameData data)
@@ -100,14 +100,14 @@ public class RocketsFireHelper
             return;
         }
 
-        if ((isFourthEdition(data) || isAllRocketsAttack(data)) || isOneRocketAttackPerFactory(data))
-            fire4thEdition(data, player, rocketTerritories, bridge);
+        if ((isWW2V2(data) || isAllRocketsAttack(data)) || isOneRocketAttackPerFactory(data))
+            fireWW2V2(data, player, rocketTerritories, bridge);
         else
-            fire3rdEdition(data, player, rocketTerritories, bridge);
+            fireWW2V1(data, player, rocketTerritories, bridge);
 
     }
 
-    private void fire4thEdition(GameData data, PlayerID player, Set<Territory> rocketTerritories, IDelegateBridge bridge)
+    private void fireWW2V2(GameData data, PlayerID player, Set<Territory> rocketTerritories, IDelegateBridge bridge)
     {
         Set<Territory> attackedTerritories = new HashSet<Territory>();
         Iterator<Territory> iter = rocketTerritories.iterator();
@@ -127,7 +127,7 @@ public class RocketsFireHelper
         }
     }
 
-    private void fire3rdEdition(GameData data, PlayerID player, Set<Territory> rocketTerritories, IDelegateBridge bridge)
+    private void fireWW2V1(GameData data, PlayerID player, Set<Territory> rocketTerritories, IDelegateBridge bridge)
     {
         Set<Territory> targets = new HashSet<Territory>();
         Iterator<Territory> iter = rocketTerritories.iterator();
@@ -256,8 +256,8 @@ public class RocketsFireHelper
             bridge.addChange(change);
             bridge.getHistoryWriter().addChildToEvent("Rocket attack costs " + cost + " production.");*/
         }
-        //in fourth edtion, limit rocket attack cost to production value of factory.
-        else if (isFourthEdition(data) || isLimitRocketDamageToProduction(data))
+        //in WW2V2, limit rocket attack cost to production value of factory.
+        else if (isWW2V2(data) || isLimitRocketDamageToProduction(data))
         {
             // If we are limiting total ipcs lost then take that into account
             if (isIPCCap(data) || isLimitRocketDamagePerTurn(data))
@@ -301,7 +301,7 @@ public class RocketsFireHelper
             Change rocketCharge = ChangeFactory.changeResourcesChange(attacked, ipcs, -cost);
             bridge.addChange(rocketCharge);
         }
-        //this is null in 3rd edition
+        //this is null in WW2V1
         if(attackFrom != null)
         {
             List<Unit> units = attackFrom.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsAA, Matches.unitIsOwnedBy(player) ));

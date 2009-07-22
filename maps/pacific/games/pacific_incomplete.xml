@@ -781,7 +781,7 @@ Coded by Iron__Cross
     </production>
     
 		<!-- In order to accomodate Japanese DDs being able to transport a single Inf, 
-        the transportCost of all land units will differ from other versions of A&A. -->    
+        the transportCost of all land units will differ from other versions. -->    
     <attatchmentList>
         
         <attatchment name="unitAttatchment" attatchTo="marine"
@@ -2002,12 +2002,12 @@ Coded by Iron__Cross
     
     <propertyList>
         
-        <!-- Use 4th Edition Rules -->
-        <property name="4th Edition" value="true" editable="false">
+        <!-- Use WW2V2 Rules -->
+        <property name="WW2V2" value="true" editable="false">
             <boolean/>
         </property>
         
-        <property name="Pacific Edition" value="true" editable="false">
+        <property name="Pacific Theater" value="true" editable="false">
             <boolean/>
         </property>
         

@@ -338,7 +338,7 @@ public class UnitAttachment extends DefaultAttachment
     
     if(m_isAir && !m_isStrategicBomber)
     {      
-      if(TechTracker.hasJetFighter(player) && isAA50TechModel(player.getData()))
+      if(TechTracker.hasJetFighter(player) && isWW2V3TechModel(player.getData()))
           return m_attack + 1;
     }
 
@@ -359,7 +359,7 @@ public class UnitAttachment extends DefaultAttachment
   {
     if(m_isAir && !m_isStrategicBomber)
     {      
-        if(TechTracker.hasJetFighter(player) && !isAA50TechModel(player.getData()))
+        if(TechTracker.hasJetFighter(player) && !isWW2V3TechModel(player.getData()))
             return m_defense + 1;
     }
     if(m_isSub && TechTracker.hasSuperSubs(player))
@@ -422,7 +422,7 @@ public class UnitAttachment extends DefaultAttachment
         m_transportCost != -1 ||
         m_isMarine
         )
-        throw new GameParseException("Invalid Unit Attatchemnnt" + this);
+        throw new GameParseException("Invalid Unit Attatchment" + this);
     }
     else //if land
     {
@@ -432,26 +432,26 @@ public class UnitAttachment extends DefaultAttachment
         m_carrierCapacity != -1 ||
         m_transportCapacity != -1
         )
-        throw new GameParseException("Invalid Unit Attatchemnnt" + this);
+        throw new GameParseException("Invalid Unit Attatchment" + this);
     }
 
     if(m_carrierCapacity != -1 && m_carrierCost != -1)
     {
-      throw new GameParseException("Invalid Unit Attatchemnnt" + this);
+      throw new GameParseException("Invalid Unit Attatchment" + this);
     }
 
     if(m_transportCost != -1 && m_transportCapacity != -1)
     {
-      throw new GameParseException("Invalid Unit Attatchemnnt" + this);
+      throw new GameParseException("Invalid Unit Attatchment" + this);
     }
 
 
 
   }
 
-  private boolean isAA50TechModel(GameData data)
+  private boolean isWW2V3TechModel(GameData data)
   {
-      return games.strategy.triplea.Properties.getAA50TechModel(data);
+      return games.strategy.triplea.Properties.getWW2V3TechModel(data);
   }
 
   public String toString()
@@ -472,7 +472,7 @@ public class UnitAttachment extends DefaultAttachment
     " movement:" +m_movement +
     " transportCapacity:" +m_transportCapacity +
     " transportCost:" +m_transportCost+
-    "  destroyer" + m_isDestroyer;
+    " destroyer:" + m_isDestroyer;
   }
 
 }

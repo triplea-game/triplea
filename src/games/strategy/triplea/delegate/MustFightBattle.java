@@ -250,9 +250,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
     	CompositeChange change = new CompositeChange();
      
-    	// Filter out allied units if fourth edition
+    	// Filter out allied units if WW2V2
         Match<Unit> ownedBy = Matches.unitIsOwnedBy(m_attacker);
-        Collection<Unit> attackingUnits = isFourthEdition() ? Match.getMatches(units,
+        Collection<Unit> attackingUnits = isWW2V2() ? Match.getMatches(units,
                 ownedBy) : units;
 
         Territory attackingFrom = getAttackFrom(route);
@@ -284,8 +284,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         // transports
         Map<Unit, Collection<Unit>> dependencies = transporting(units);
-        // If fourth edition, allied air on our carriers are also dependents
-        if (isFourthEdition() || isAlliedAirDependents())
+        // If WW2V2, allied air on our carriers are also dependents
+        if (isWW2V2() || isAlliedAirDependents())
         {
             dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
         }
@@ -711,7 +711,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
         
         //defender subs sneak attack        
-        //Defending subs have no sneak attack in Pacific/Europe Editions or if Destroyers are present
+        //Defending subs have no sneak attack in Pacific/Europe Theaters or if Destroyers are present
         if (m_battleSite.isWater())
         {
             if (!defenderSubsFireFirst && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
@@ -1295,7 +1295,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
    
 
     private boolean defendingSubsSneakAttack2() {
-        return (isFourthEdition() || 
+        return (isWW2V2() || 
         isDefendingSubsSneakAttack()) && !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer);
     }
 
@@ -1335,7 +1335,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
      */
     private boolean canAttackerRetreatPlanes()
     {
-    	return (isFourthEdition() || isAttackerRetreatPlanes() || isPartialAmphibiousRetreat()) && m_amphibious
+    	return (isWW2V2() || isAttackerRetreatPlanes() || isPartialAmphibiousRetreat()) && m_amphibious
                 && Match.someMatch(m_attackingUnits, Matches.UnitIsAir);
     }
 
@@ -1377,9 +1377,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection<Territory> possible = Match.getMatches(m_attackingFrom, Matches
                 .territoryHasNoEnemyUnits(m_attacker, m_data));
 
-        // In 4th edition we need to filter out territories where only planes
+        // In WW2V2 we need to filter out territories where only planes
         // came from since planes cannot define retreat paths
-        if (isFourthEdition() || isAnniversaryEdition())
+        if (isWW2V2() || isWW2V3())
         {
             possible = Match.getMatches(possible, new Match<Territory>()
             {
@@ -1816,8 +1816,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         retreating = Match.getMatches(retreating, notMyAir);
 
         String transcriptText;
-        // in classic A&A, defending subs can retreat so show owner
-        if (isFourthEdition())
+        // in WW2V1, defending subs can retreat so show owner
+        if (isWW2V2())
                 transcriptText = MyFormatter.unitsToTextNoOwner(retreating) + " retreated to " + to.getName();
         else
                 transcriptText = MyFormatter.unitsToText(retreating) + " retreated to " + to.getName();
@@ -2277,8 +2277,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             bridge.addChange(change);
         }
 
-        //4th edition, bombardment casualties cant return fire
-        boolean canReturnFire = (!isFourthEdition() && isNavalBombardCasualtiesReturnFire());
+        //WW2V2, bombardment casualties cant return fire
+        boolean canReturnFire = (!isWW2V2() && isNavalBombardCasualtiesReturnFire());
 
         if (bombard.size() > 0 && attacked.size() > 0)
         {
@@ -2298,14 +2298,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
     /**
      * @return
      */
-    private boolean isFourthEdition()
+    private boolean isWW2V2()
     {
-    	return games.strategy.triplea.Properties.getFourthEdition(m_data);
+    	return games.strategy.triplea.Properties.getWW2V2(m_data);
     }
     
-    private boolean isAnniversaryEdition()
+    private boolean isWW2V3()
     {
-    	return games.strategy.triplea.Properties.getAnniversaryEdition(m_data);
+    	return games.strategy.triplea.Properties.getWW2V3(m_data);
     }
 
         private boolean isPartialAmphibiousRetreat()
@@ -2508,9 +2508,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
             { // select casualties based on individual shots at each aircraft
                 m_casualties = BattleCalculator.IndividuallyFiredAACasualties(attackable, m_dice, bridge, m_defender);
             }
-            else if (!lowLuck && (isFourthEdition() || isRandomAACasualties()) && !isChooseAA())
-            { // if 4th edition choose casualties randomnly
-                m_casualties = BattleCalculator.fourthEditionAACasualties(attackable,
+            else if (!lowLuck && (isWW2V2() || isRandomAACasualties()) && !isChooseAA())
+            { // if WW2V2 choose casualties randomly
+                m_casualties = BattleCalculator.WW2V2AACasualties(attackable,
                         m_dice, bridge);
             } 
             else
@@ -2901,7 +2901,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             }            
         }        
         
-        if (isFourthEdition() || isSurvivingAirMoveToLand())
+        if (isWW2V2() || isSurvivingAirMoveToLand())
 		{
         	Territory territory = null;
         	while (canLandHere.size() > 1 && m_defendingAir.size() > 0)
@@ -2945,7 +2945,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         	}        	
 		}
         else if (canLandHere.size() > 0) 
-        {	// 2nd edition
+        {	
             //now defending air has what cant stay, is there a place we can go?
             //check for an island in this sea zone
             Iterator<Territory> neighborsIter = canLandHere.iterator();

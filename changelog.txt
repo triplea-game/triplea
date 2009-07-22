@@ -16,7 +16,7 @@ Changes for 1.0.4
 
 * fix bug 2818023 again moving unit to carried-over battle causes existing units to be ignored (ComradeKev)
 
-* new aa50 flag images for italy and russia (U-Boat)
+* new flag images for Italy and Russia (U-Boat)
 
 * fix partially repaired factories showing as completely repaired (ComradeKev)
 
@@ -104,7 +104,7 @@ Changes for 1.0.4
 
 * fix bug 2806095, missing files in mac build (sgb)
 
-* Add some AA50 test cases
+* Add some test cases
 
 * Fix bug 2459410 Fighters on carriers with allied fighters can't attack (ComradeKev)
 
@@ -170,7 +170,7 @@ Changes for 1.0.3.3
 
 * fix bug 2753571 - Unloaded cargo not being removed when transport sinks, also odds calculator fails with transports in revised (sgb,  gruetzdark)
 
-* fix bug 2779959 - AA50: Stay in the Mobilization Zone (sgb)
+* fix bug 2779959 - Stay in the Mobilization Zone (sgb)
 
 * fail when loading game where xml case and file name case differs (sgb)
 
@@ -193,7 +193,7 @@ Changes for 1.0.3.3
 
 * limit number of units in one row of production panel to 8 (sgb)
 
-*  The following list of bugs were fixed- primarily for AA50 (Comradekev)
+*  The following list of bugs were fixed- (Comradekev)
 	Fix the engine forcing the repair of at least 1 damage
 	Amphib units taken as first casualties if partial retreat is possible
 	Fix subs blocking naval bombardment
@@ -205,7 +205,7 @@ Changes for 1.0.3.3
 	Fix error generation when placing IC, undoing it, then trying to re-place it
 	Fix error generation when trying to place both new fighter and CV in sea zone
 	Fix Null Pointer when trying to edit a sea zone owner
-	Fix US being able to place an IC in a newly captured territory in AA50
+	Fix US being able to place an IC in a newly captured territory 
 	Fix NWO territories Romania, Czech., Normandy, and Le Harve.
 	Multi-player transport fleets throw - 'wrong number of casualties selected' error
 	Ask if BB/CR should bombard
@@ -213,15 +213,15 @@ Changes for 1.0.3.3
 	Fix NWO map names
 	Add damage totals to factory icons (black text)
 	US units that move into enemy occupied SZ in non-combat (trn/sub) fight during Chinese combat
-	Fix null pointer when loading AA50 maps with 'Show Map Blends' selected on the View menu
+	Fix null pointer when loading maps with 'Show Map Blends' selected on the View menu
 
 Changes for 1.0.3.2
 
-*  The following list of bugs were fixed- primarily for AA50 (Comradekev unless otherwise specified)
+*  The following list of bugs were fixed- (Comradekev unless otherwise specified)
 	Darkened/moved Italian flag (Seidelin)	
 	Tech tokens not removed from client after successful roll (Seidelin)
 	Factories not repaired on Client
-	Not charged for tech rolls in non-AA50 games
+	Not charged for tech rolls 
 	Out of Bounds exception thrown when trying to save games (all games)
 	Fix Null Pointer when selecting 'do not attack' subs
 	Transports with cargo blocking movement
@@ -241,7 +241,7 @@ Changes for 1.0.3.1
 
 * update docs to correct how to run TripleA from the command line using the ant run command.
 
-* The following list of bugs were fixed- primarily for AA50 (Comradekev)
+* The following list of bugs were fixed- (Comradekev)
 	Move Chinese capital to impassable neutral so any time a Chinese terr is liberated, it goes to China
 	Some dialogs not appearing on Client computers
 	Paratroops should be able to overfly blitzed territories
@@ -249,7 +249,7 @@ Changes for 1.0.3.1
 	Use allied AA in a territory if they have Radar
 	Limit max damage from rocket attacks
 	Fix the UK nat'l objective
-	Technology throws exceptions in non AA50 games
+	Technology throws exceptions 
 	Add useTech option for all games
 	Allow new AA to be placed if there's already one in the terr
 	Fix null pointers when transporting units
@@ -258,7 +258,7 @@ Changes for 1.0.3.1
 	Pathfinding uses impassables
 	Allow loading of Trns in SZ with enemy subs
 	Consider carrier route (can't go on land) when attempting to find landing spots for fighters
-	Add ability to pre-set techs in AA50 games
+	Add ability to pre-set techs 
 	Remove SBR raid from blitzed territory
 	Allow amphib assault w/o having to combat sub-only forces
 	Fix bomber -v bomber comes to stalemate after one round of combat
@@ -272,7 +272,7 @@ Changes for 1.0.3.1
 	Fix low luck AA not inflicting damage
 	Fix 'Attack Subs' dialog only showing up on Host
 	Fix surface ships being allowed to move into enemy SZ during non-combat
-	Add option to continue after victory for all non-AA50 games
+	Add option to continue after victory for all games
 	Fix exception on host when getting technology
 	Fix partial retreat from amphib assault not working
 	Should be able to stop in SZ with a trn/sub, then continue trip
@@ -298,10 +298,10 @@ Changes for 1.0.3.0
 
 * Fix spelling in classic xml (Chris McIntosh)
 
-* The following list of bugs were fixed- primarily for AA50 (Comradekev)
+* The following list of bugs were fixed- (Comradekev)
 	#2554414 Only one Mechanized Infantry per tank should be allowed
 	#2554418 Jet Fighters not attacking at 4
-	Non-aa50 games throw exceptions when trying to affect Tech Tokens
+	Games throw exceptions when trying to affect Tech Tokens
 	Chinese unit max for territory placement not limited to Chinese-only units
 	Territory Turn Limit removed from options
 	Option added for inclusion of Tech development
@@ -314,10 +314,10 @@ Changes for 1.0.3.0
 	Fix factory repair cost for Increased Factory Production technology
 	#2474056 Captured AA ownership
 	#2554411 Rockets allowed to overfly impassables
-	#2554412 Rockets firing after Non-Combat move in AA50
+	#2554412 Rockets firing after Non-Combat move 
 	#2554419 Factory repair costs with Enhanced Production technology
 	Factories added with edit mode are damaged
-	Should allow more than 1 AA in a territory for 4th ed and anniv editions
+	Should allow more than 1 AA in a territory for some games
 	Should be able to place in enemy occupied sea zones
 	Added stalemate condition for trn -v trn battles
 	Low-Luck AA support for RADAR tech
@@ -349,7 +349,7 @@ Changes for 1.0.2.0
 
 * Add Choose AA Casualties property (value=true) to Revised.xml (President Douchebag)
 
-* Break up Fourth Edition rules into individual rules (while keeping overall Fourth Edition setting) (ComradeKev)
+* Break up rulesets into individual rules (while keeping overall ruleset setting) (ComradeKev)
 
 Changes for 1.0.1.4
 
@@ -388,7 +388,7 @@ Changes for 1.0.1.3
 
 * Fix bug [ 1937303 ] casualty window shows all casualties as defending nation (ComradeKev)
 
-* Fix bug [ 2066114 ] Industrial Tech advancement crashes stats tab in 4th edition games (President Douchebag)
+* Fix bug [ 2066114 ] Industrial Tech advancement crashes stats tab (President Douchebag)
 
 * Add code to identify offending territory in AutoPlacementFinder exceptions for centers.txt (ComradeKev)
 
@@ -404,7 +404,7 @@ Changes for 1.0.1.2
 
 * Re-create code to change ownership of units so British/Australians can play on same turn in pacific
 
-* Fix thrown exception with 4th edition neutral blitz/flyover. (Comradekev)
+* Fix thrown exception with neutral blitz/flyover. (Comradekev)
 
 * Fix bug [ 2005292 ] LHTR planes not able to land on produced carriers. (ComradeKev)
 
@@ -617,7 +617,7 @@ Changes for 0.9.2
 
 * fix bug [ 1767304 ] Great War v.1.5 sz67 to sz57 bug (sgb)
 
-* fix bug [ 1563219 ] Possible to buy more units than can be placed (4th ed rules) (sgb)
+* fix bug [ 1563219 ] Possible to buy more units than can be placed  (sgb)
 
 * fix bug [ 1535135 ] loading save game bug (sgb)
 
@@ -1191,7 +1191,7 @@ Changes for 0.6.0
 
 Changes for 0.5.4
 
-* fixed bug where units could blitz through territories with an aa gun if they blitzed in 2 steps (4th edition only) (sgb)
+* fixed bug where units could blitz through territories with an aa gun if they blitzed in 2 steps  (sgb)
 
 * fixed bug [ 1188411 ] Missing client text (Chat window) 5.2.2 (sgb)
 
@@ -1367,7 +1367,7 @@ Changes for 0.5.1
 
 * Improve all map utilities so they are user friendly and better to use. (George_H)
 
-* Fixed bug in 4th edition where air units could define retreat paths (they still can in classic). (Ali Ibrahim)
+* Fixed bug where air units could define retreat paths (they still can in some games). (Ali Ibrahim)
 
 * Added MersenneTwister Thread Safe (MT199937) Random Number Generator with Permission from Sean Luke. (George_H)
 
@@ -1387,7 +1387,7 @@ Changes for 0.5.1
 
 * Fixed bug which did not correctly reload transports which had conducted an amphibious assault and then retreated. (Ali Ibrahim)
 
-* Added capability to bid for allies for 4th edition game. (Ali Ibrahim)
+* Added capability to bid for allies. (Ali Ibrahim)
 
 Changes for 0.5.0
 
@@ -1403,7 +1403,7 @@ Changes for 0.5.0
 
 * Fixed bug where allied air units which are cargo attacked. (Ali Ibrahim)
 
-* Changed game logic to allow destroyers to pass over submerged subs in 4th edition. (Ali Ibrahim)
+* Changed game logic to allow destroyers to pass over submerged subs. (Ali Ibrahim)
 
 * Fixed bug which didn't allow fighters to consider landing in gibralator due to issue with pathing and neutrals. (Ali Ibrahim)
 
@@ -1413,7 +1413,7 @@ Changes for 0.4.9
 
 * Fix for bug #1010428 bypassing the unit selection popup message when there is only 1 unit to be moved. (Ali Ibrahim)
 
-* AI for 2nd edition rules added,experimental. (Sean Bridges/Troy)
+* AI rules added,experimental. (Sean Bridges/Troy)
 
 * Stack trace when starting triplea after a saved game fixed. (Sean Bridges)
 
@@ -1425,9 +1425,9 @@ Changes for 0.4.9
 
 * Fixes for Points 1,4 (and possibly 3) for Bug #1003736. (Ali Ibrahim)
 
-* Clean up of neutrality violation messages (4th ed). (Ali Ibrahim)
+* Clean up of neutrality violation messages. (Ali Ibrahim)
 
-* Now defending planes can land in any adjacent territory if their carrier is lost in combat (4th ed). (Ali Ibrahim)
+* Now defending planes can land in any adjacent territory if their carrier is lost in combat. (Ali Ibrahim)
 
 Changes for 0.4.8
 

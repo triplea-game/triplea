@@ -83,7 +83,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
         Collection<Unit> placeableUnits = new ArrayList<Unit>();
 
         //make sure only 1 AA in territory for classic
-        if (isFourthEdition())
+        if (isWW2V2())
         {
             placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAA));
         } else
@@ -106,9 +106,9 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
             //if its an original factory then unlimited production
             TerritoryAttachment ta = TerritoryAttachment.get(to);
 
-            //4th edition, you cant place factories in territories with no
+            //WW2V2, you cant place factories in territories with no
             // production
-            if (!(isFourthEdition() && ta.getProduction() == 0))
+            if (!(isWW2V2() && ta.getProduction() == 0))
             {
                 //this is how many factories exist now
                 int factoryCount = to.getUnits().getMatches(

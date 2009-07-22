@@ -56,14 +56,14 @@ public abstract class ActionPanel extends JPanel
         setBorder(new EmptyBorder(5, 5, 0, 0));
     }
 
-    public final boolean isFourthEdition()
+    public final boolean isWW2V2()
     {
-        return games.strategy.triplea.Properties.getFourthEdition(m_data);
+        return games.strategy.triplea.Properties.getWW2V2(m_data);
     }
 
-    public final boolean isAA50TechModel()
+    public final boolean isWW2V3TechModel()
     {
-        return games.strategy.triplea.Properties.getAA50TechModel(m_data);
+        return games.strategy.triplea.Properties.getWW2V3TechModel(m_data);
     }
 
     public final boolean isRestrictedPurchase()

@@ -61,9 +61,9 @@ class AAInMoveUtil implements Serializable
 		return m_data.getProperties().get(Constants.CHOOSE_AA, false);
 	}
     	
-    private boolean isFourthEdition()
+    private boolean isWW2V2()
     {
-        return games.strategy.triplea.Properties.getFourthEdition(m_data);
+        return games.strategy.triplea.Properties.getWW2V2(m_data);
     }
       	
     private boolean isRandomAACasualties()
@@ -263,12 +263,12 @@ class AAInMoveUtil implements Serializable
     private void selectCasualties(DiceRoll dice, Collection<Unit> units, Territory territory, GUID battleID)
     {
         String text = "Select " + dice.getHits() + " casualties from aa fire in " + territory.getName();
-        // If fourth edition, select casualties randomnly
+        // If WW2V2, select casualties randomnly
         Collection<Unit> casualties = null;
 
-        if ((isFourthEdition() || isRandomAACasualties()) && !isChooseAA())
+        if ((isWW2V2() || isRandomAACasualties()) && !isChooseAA())
         {
-            casualties = BattleCalculator.fourthEditionAACasualties(units, dice, m_bridge);
+            casualties = BattleCalculator.WW2V2AACasualties(units, dice, m_bridge);
         } else
         {
             CasualtyDetails casualtyMsg = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice, false, battleID);

@@ -194,7 +194,7 @@ public class RepairPanel extends ActionPanel
         
         //give a warning if the 
         //player tries to produce too much
-        if(isFourthEdition() || isRestrictedPurchase() || isSBRAffectsUnitProduction()) 
+        if(isWW2V2() || isRestrictedPurchase() || isSBRAffectsUnitProduction()) 
         {
             int totalProd = 0;
             getData().acquireReadLock();

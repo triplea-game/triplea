@@ -97,10 +97,10 @@ public class BattleCalculator
     }
 
     /**
-     * Choose plane casualties according to 4th edition rules which specifies
-     * that they are randomnly chosen.
+     * Choose plane casualties according to WW2V2 rules which specifies
+     * that they are randomly chosen.
      */
-    public static Collection<Unit> fourthEditionAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge)
+    public static Collection<Unit> WW2V2AACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge)
     {
         Collection<Unit> casualties = new ArrayList<Unit>();
         int hits = dice.getHits();

@@ -52,9 +52,9 @@ public class Properties implements Constants {
 
     }
 
-    public static boolean getFourthEdition(GameData data) {
+    public static boolean getWW2V2(GameData data) {
 
-        return data.getProperties().get(FOURTH_EDITION, false);
+        return data.getProperties().get(WW2V2, false);
 
     }
 
@@ -106,25 +106,25 @@ public class Properties implements Constants {
     }
 
     /*
-     * Pacific Edition
+     * Pacific Theater
      */
-    public static boolean getPacificEdition(GameData data) {
+    public static boolean getPacificTheater(GameData data) {
 
-        return data.getProperties().get(PACIFIC_EDITION, false);
+        return data.getProperties().get(PACIFIC_THEATER, false);
 
     }
 
     /*
-     * Anniversary Edition
+     * World War 2 Version 3
      */
-    public static boolean getAnniversaryEdition(GameData data) {
+    public static boolean getWW2V3(GameData data) {
 
-        return data.getProperties().get(ANNIVERSARY_EDITION, false);
+        return data.getProperties().get(WW2V3, false);
 
     }
 
     /*
-     * No Economic Victory Edition
+     * No Economic Victory Condition
      */
     public static boolean getNoEconomicVictory(GameData data) {
 
@@ -133,20 +133,20 @@ public class Properties implements Constants {
     }
 
     /*
-     * Anniversary Edition Land & Production
+     * World War 2 Version 3 Land & Production
      */
-    public static boolean getAnniversaryEditionLandProduction(GameData data) {
+    public static boolean getWW2V3LandProduction(GameData data) {
 
-        return data.getProperties().get(ANNIVERSARY_EDITION_LAND_PRODUCTION, false);
+        return data.getProperties().get(WW2V3_LAND_PRODUCTION, false);
 
     }
 
     /*
-     * Anniversary Edition Air & Naval
+     * World War 2 Version 3 Air & Naval
      */
-    public static boolean getAnniversaryEditionAirNaval(GameData data) {
+    public static boolean getWW2V3AirNaval(GameData data) {
 
-        return data.getProperties().get(ANNIVERSARY_EDITION_AIR_NAVAL, false);
+        return data.getProperties().get(WW2V3_AIR_NAVAL, false);
 
     }
 
@@ -171,9 +171,9 @@ public class Properties implements Constants {
     /*
      * Can the player select the type of technology they are rolling for
      */
-    public static boolean getAA50TechModel(GameData data) {
+    public static boolean getWW2V3TechModel(GameData data) {
 
-        return data.getProperties().get(AA50_Tech_Model, false);
+        return data.getProperties().get(WW2V3_Tech_Model, false);
 
     }
 

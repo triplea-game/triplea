@@ -29,14 +29,14 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 	 * 
 	 */
 	private static final long serialVersionUID = -6537455000443362041L;
-	private static String AA2nd = "Axis and Allies";
-	private static String AAR = "Axis and Allies Revised";
+	private static String WW2V1 = "World War 2 Version 1";
+	private static String WW2V2 = "World War 2 Version 2";
 	
 	private static String landBattle = "Land Zone";
 	private static String seaBattle = "Sea Zone";
 	
 	private boolean reset = false;
-	private String currentGameType = RollerApplet.AA2nd;
+	private String currentGameType = RollerApplet.WW2V1;
 	private Panel unitsPanel = null;
 	private Panel optionsPanel = null;
 	private Vector<Panel> unitGroupPanels = new Vector<Panel>();
@@ -382,7 +382,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		unitGroupPanels = new Vector<Panel>();
 		totRemAtt = new Hashtable<String, Integer>();
 		totRemDef = new Hashtable<String, Integer>();
-		if(gameType.equals(RollerApplet.AA2nd))
+		if(gameType.equals(RollerApplet.WW2V1))
 		{
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newInf()));
 			totRemAtt.put(StandardUnits.InfName, new Integer(0));
@@ -409,7 +409,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 			totRemAtt.put(StandardUnits.BBName, new Integer(0));
 			totRemDef.put(StandardUnits.BBName, new Integer(0));
 		}
-		else if(gameType.equals(RollerApplet.AAR))
+		else if(gameType.equals(RollerApplet.WW2V2))
 		{
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newInf()));
 			totRemAtt.put(StandardUnits.InfName, new Integer(0));
@@ -463,8 +463,8 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		gamePanel.add(gameLabel);
 		
 		Choice gameChoice = new Choice();
-		gameChoice.add(AA2nd);
-		gameChoice.add(AAR);
+		gameChoice.add(WW2V1);
+		gameChoice.add(WW2V2);
 		gameChoice.addItemListener(this);
 		gameChoice.setName("gameChoice");
 		gamePanel.add(gameChoice);
@@ -603,14 +603,14 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 			{
 				if(state)
 				{
-					if(currentGameType.equals(AAR))
+					if(currentGameType.equals(WW2V2))
 						cur.setMaxRolls(2);
 					else
 						cur.setMaxHits(3);
 				}
 				else
 				{
-					if(currentGameType.equals(AAR))
+					if(currentGameType.equals(WW2V2))
 						cur.setMaxRolls(1);
 					else
 						cur.setMaxHits(1);					
@@ -702,7 +702,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		else
 			landB = false;
 		boolean rollAASep = false;
-		if(currentGameType.equals(RollerApplet.AAR))
+		if(currentGameType.equals(RollerApplet.WW2V2))
 			rollAASep = true;
 		resetOOL();
 		b = new OCBattle(attackers, defenders, roundCount, conL.getState(), hasAA.getState(), landB, rollAASep, false, ool);

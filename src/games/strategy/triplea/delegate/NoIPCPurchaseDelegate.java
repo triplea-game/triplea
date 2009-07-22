@@ -47,20 +47,20 @@ public class NoIPCPurchaseDelegate extends PurchaseDelegate
     private GameData m_data;
 
     private boolean isPacific;
-    private boolean isAnniversaryEdition;
+    private boolean isWW2V3;
 
     public void start(IDelegateBridge aBridge, GameData gameData)
     {
         super.start(aBridge, gameData);
         m_data = gameData;
         
-        isPacific = isPacificEdition();
-        isAnniversaryEdition = isAnniversaryEdition();
+        isPacific = isPacificTheater();
+        isWW2V3 = isWW2V3();
 
         PlayerID player = aBridge.getPlayerID();
         Collection<Territory> territories = gameData.getMap().getTerritoriesOwnedBy(player);
 
-        if(isPacific || isAnniversaryEdition)
+        if(isPacific || isWW2V3)
             unitTypeToProduce = Constants.INFANTRY_TYPE;
         //unitTypeToProduce = Constants.CHINESE_INFANTRY_TYPE;
 
@@ -134,14 +134,14 @@ public class NoIPCPurchaseDelegate extends PurchaseDelegate
         return 0; 
     }
 
-    private boolean isPacificEdition()
+    private boolean isPacificTheater()
     {
-    	return games.strategy.triplea.Properties.getPacificEdition(m_data);
+    	return games.strategy.triplea.Properties.getPacificTheater(m_data);
     }
 
-    private boolean isAnniversaryEdition()
+    private boolean isWW2V3()
     {
-    	return games.strategy.triplea.Properties.getAnniversaryEdition(m_data);
+    	return games.strategy.triplea.Properties.getWW2V3(m_data);
     }
 
     private boolean isProductionPerValuedTerritoryRestricted()

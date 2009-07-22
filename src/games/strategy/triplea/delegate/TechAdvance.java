@@ -35,12 +35,12 @@ import java.util.logging.Logger;
  */
 public abstract class TechAdvance implements java.io.Serializable
 {
-    private static List<TechAdvance> s_3rdEditionAdvances;
-    private static List<TechAdvance> s_4thEditionAdvances;
-    private static List<TechAdvance> s_AnnivEditionAdvances;
+    private static List<TechAdvance> s_WW2V1Advances;
+    private static List<TechAdvance> s_WW2V2Advances;
+    private static List<TechAdvance> s_WW2V3Advances;
     private static List<TechAdvance> s_AirNavalAdvances;
     private static List<TechAdvance> s_LandProductionAdvances;
-    private static List<TechAdvance> s_AnnivAdvanceCategories;
+    private static List<TechAdvance> s_WW2V3AdvanceCategories;
     
     public static final TechAdvance JET_POWER = new JetPowerAdvance();
     public static final TechAdvance SUPER_SUBS = new SuperSubsAdvance();
@@ -62,19 +62,17 @@ public abstract class TechAdvance implements java.io.Serializable
 
     public static List<TechAdvance> getTechAdvances(GameData data)
     {
-        boolean isFourthEdition = games.strategy.triplea.Properties.getFourthEdition(data);
-        //boolean isAnniversaryEditionLandProduction = games.strategy.triplea.Properties.getAnniversaryEditionLandProduction(data);
-        //boolean isAnniversaryEditionAirNaval = games.strategy.triplea.Properties.getAnniversaryEditionAirNaval(data);
-        boolean isAnniversaryEdition = games.strategy.triplea.Properties.getAnniversaryEdition(data);
+        boolean isWW2V2 = games.strategy.triplea.Properties.getWW2V2(data);
+        boolean isWW2V3 = games.strategy.triplea.Properties.getWW2V3(data);
         
 
         
-        if(isFourthEdition)
-            return s_4thEditionAdvances;
-        else if(isAnniversaryEdition)
-            return s_AnnivEditionAdvances;
+        if(isWW2V2)
+            return s_WW2V2Advances;
+        else if(isWW2V3)
+            return s_WW2V3Advances;
         else
-            return s_3rdEditionAdvances;       
+            return s_WW2V1Advances;       
     }
     
     public static List<TechAdvance> getTechAdvances(GameData data, TechAdvance techCategory)
@@ -87,56 +85,56 @@ public abstract class TechAdvance implements java.io.Serializable
 
     public static List<TechAdvance> getTechCategories(GameData data)
     {
-        return s_AnnivAdvanceCategories;
+        return s_WW2V3AdvanceCategories;
     }
     //initialize the advances, note s_advances is made unmodifiable
     static
     {
     	/*
-    	 * 3rd Edition Tech
+    	 * World War 2 Version 1 Tech
     	 */
-        s_3rdEditionAdvances = new ArrayList<TechAdvance>();
-        s_3rdEditionAdvances.add(JET_POWER);
-        s_3rdEditionAdvances.add(SUPER_SUBS);
-        s_3rdEditionAdvances.add(LONG_RANGE_AIRCRAFT);
-        s_3rdEditionAdvances.add(ROCKETS);
-        s_3rdEditionAdvances.add(INDUSTRIAL_TECHNOLOGY);
-        s_3rdEditionAdvances.add(HEAVY_BOMBER);
-        s_3rdEditionAdvances = Collections.unmodifiableList(s_3rdEditionAdvances);
+        s_WW2V1Advances = new ArrayList<TechAdvance>();
+        s_WW2V1Advances.add(JET_POWER);
+        s_WW2V1Advances.add(SUPER_SUBS);
+        s_WW2V1Advances.add(LONG_RANGE_AIRCRAFT);
+        s_WW2V1Advances.add(ROCKETS);
+        s_WW2V1Advances.add(INDUSTRIAL_TECHNOLOGY);
+        s_WW2V1Advances.add(HEAVY_BOMBER);
+        s_WW2V1Advances = Collections.unmodifiableList(s_WW2V1Advances);
         
     	/*
-    	 * 4th Edition Tech
+    	 * World War 2 Version 2 Tech
     	 */
-        s_4thEditionAdvances = new ArrayList<TechAdvance>();
-        s_4thEditionAdvances.add(JET_POWER);
-        s_4thEditionAdvances.add(SUPER_SUBS);
-        s_4thEditionAdvances.add(LONG_RANGE_AIRCRAFT);
-        s_4thEditionAdvances.add(ROCKETS);
-        s_4thEditionAdvances.add(DESTROYER_BOMBARD);
-        s_4thEditionAdvances.add(HEAVY_BOMBER);
-		s_4thEditionAdvances.add(INDUSTRIAL_TECHNOLOGY);
-        s_4thEditionAdvances = Collections.unmodifiableList(s_4thEditionAdvances);
+        s_WW2V2Advances = new ArrayList<TechAdvance>();
+        s_WW2V2Advances.add(JET_POWER);
+        s_WW2V2Advances.add(SUPER_SUBS);
+        s_WW2V2Advances.add(LONG_RANGE_AIRCRAFT);
+        s_WW2V2Advances.add(ROCKETS);
+        s_WW2V2Advances.add(DESTROYER_BOMBARD);
+        s_WW2V2Advances.add(HEAVY_BOMBER);
+		s_WW2V2Advances.add(INDUSTRIAL_TECHNOLOGY);
+        s_WW2V2Advances = Collections.unmodifiableList(s_WW2V2Advances);
         
     	/*
-    	 * Anniversary Edition Tech
+    	 * World War 2 Version 3 Tech
     	 */
-        s_AnnivEditionAdvances = new ArrayList<TechAdvance>();
-        s_AnnivEditionAdvances.add(SUPER_SUBS);
-        s_AnnivEditionAdvances.add(JET_POWER);
-        s_AnnivEditionAdvances.add(IMPROVED_SHIPYARDS);
-        s_AnnivEditionAdvances.add(AA_RADAR);
-        s_AnnivEditionAdvances.add(LONG_RANGE_AIRCRAFT);
-        s_AnnivEditionAdvances.add(HEAVY_BOMBER);
-        s_AnnivEditionAdvances.add(IMPROVED_ARTILLERY_SUPPORT);
-        s_AnnivEditionAdvances.add(ROCKETS);
-        s_AnnivEditionAdvances.add(PARATROOPERS);
-        s_AnnivEditionAdvances.add(INCREASED_FACTORY_PRODUCTION);
-        s_AnnivEditionAdvances.add(WAR_BONDS);
-        s_AnnivEditionAdvances.add(MECHANIZED_INFANTRY);
-        s_AnnivEditionAdvances = Collections.unmodifiableList(s_AnnivEditionAdvances);
+        s_WW2V3Advances = new ArrayList<TechAdvance>();
+        s_WW2V3Advances.add(SUPER_SUBS);
+        s_WW2V3Advances.add(JET_POWER);
+        s_WW2V3Advances.add(IMPROVED_SHIPYARDS);
+        s_WW2V3Advances.add(AA_RADAR);
+        s_WW2V3Advances.add(LONG_RANGE_AIRCRAFT);
+        s_WW2V3Advances.add(HEAVY_BOMBER);
+        s_WW2V3Advances.add(IMPROVED_ARTILLERY_SUPPORT);
+        s_WW2V3Advances.add(ROCKETS);
+        s_WW2V3Advances.add(PARATROOPERS);
+        s_WW2V3Advances.add(INCREASED_FACTORY_PRODUCTION);
+        s_WW2V3Advances.add(WAR_BONDS);
+        s_WW2V3Advances.add(MECHANIZED_INFANTRY);
+        s_WW2V3Advances = Collections.unmodifiableList(s_WW2V3Advances);
         
         /*
-         * Anniversary Edition Air/Naval Tech
+         * WW2V3 Air/Naval Tech
          */
         s_AirNavalAdvances = new ArrayList<TechAdvance>();
         s_AirNavalAdvances.add(SUPER_SUBS);
@@ -148,7 +146,7 @@ public abstract class TechAdvance implements java.io.Serializable
         s_AirNavalAdvances = Collections.unmodifiableList(s_AirNavalAdvances);
 
         /*
-         * Anniversary Edition Land/Production Tech
+         * WW2V3 Land/Production Tech
          */
         s_LandProductionAdvances = new ArrayList<TechAdvance>();
         s_LandProductionAdvances.add(IMPROVED_ARTILLERY_SUPPORT);
@@ -160,12 +158,12 @@ public abstract class TechAdvance implements java.io.Serializable
         s_LandProductionAdvances = Collections.unmodifiableList(s_LandProductionAdvances);
         
         /*
-         * Anniversary Edition Land/Production Tech Categories
+         * WW2V3 Land/Production Tech Categories
          */
-        s_AnnivAdvanceCategories = new ArrayList<TechAdvance>();
-        s_AnnivAdvanceCategories.add(AIR_NAVAL_ADVANCES);
-        s_AnnivAdvanceCategories.add(LAND_PRODUCTION_ADVANCES);
-        s_AnnivAdvanceCategories = Collections.unmodifiableList(s_AnnivAdvanceCategories);
+        s_WW2V3AdvanceCategories = new ArrayList<TechAdvance>();
+        s_WW2V3AdvanceCategories.add(AIR_NAVAL_ADVANCES);
+        s_WW2V3AdvanceCategories.add(LAND_PRODUCTION_ADVANCES);
+        s_WW2V3AdvanceCategories = Collections.unmodifiableList(s_WW2V3AdvanceCategories);
     }
 
     public abstract String getName();

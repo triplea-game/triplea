@@ -22,7 +22,7 @@ package games.strategy.triplea;
 
 /**
  *
- * Constants used througout the game.
+ * Constants used throughout the game.
  *
  * @author  Sean Bridges
  * @version 1.0
@@ -61,7 +61,8 @@ public interface Constants
   
   public static final String HEAVY_BOMBER_DICE_ROLLS = "Heavy Bomber Dice Rolls";
   public static final String TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN = "Battleships repair at end of round";
-  public static final String FOURTH_EDITION = "4th Edition";
+  //public static final String FTH_EDITION = "fth Edition";
+  public static final String WW2V2 = "WW2V2";
   public static final String TOTAL_VICTORY = "Total Victory";
   public static final String HONORABLE_SURRENDER = "Honorable Surrender";
   public static final String PROJECTION_OF_POWER = "Projection of Power";  
@@ -72,11 +73,11 @@ public interface Constants
   public static final String PARTIAL_AMPHIBIOUS_RETREAT = "Partial Amphibious Retreat";
   
   /**
-   * These are the individual rules from 4th Edition (All default to FALSE)
+   * These are the individual rules from a game (All default to FALSE)
    */
   public static final String PLACEMENT_RESTRICTED_BY_FACTORY = "Placement Restricted By Factory";
   public static final String SELECTABLE_TECH_ROLL = "Selectable Tech Roll";
-  public static final String AA50_Tech_Model = "AA50 Tech Model";  
+  public static final String WW2V3_Tech_Model = "WW2V2 Tech Model";  
   public static final String TECH_DEVELOPMENT = "Tech Development";  
   public static final String TRANSPORT_UNLOAD_RESTRICTED = "Transport Restricted Unload";
   public static final String RANDOM_AA_CASUALTIES = "Random AA Casualties";
@@ -95,12 +96,12 @@ public interface Constants
   public static final String BLITZ_THROUGH_FACTORIES_AND_AA_RESTRICTED = "Blitz Through Factories And AA Restricted";
   public static final String AIR_ATTACK_SUB_RESTRICTED = "Air Attack Sub Restricted";
   /**
-   * End individual 4th Edition rules (All default to FALSE)
+   * End individual rules (All default to FALSE)
    */
   
 
   /**
-   * These are the individual rules for TripleA 50th Edition (All default to FALSE)
+   * These are the individual rules for TripleA WW2V3 (All default to FALSE)
    */
   public static final String NATIONAL_OBJECTIVES = "National Objectives";
   public static final String SUB_CONTROL_SEA_ZONE_RESTRICTED = "Sub Control Sea Zone Restricted";
@@ -120,20 +121,20 @@ public interface Constants
   public static final String IGNORE_SUB_IN_MOVEMENT = "Ignore Sub In Movement";  
   public static final String HARI_KARI_UNITS = "Hari-Kari Units";
   public static final String CONTINUOUS_RESEARCH = "Continuous Research";
-  public static final String ANNIVERSARY_EDITION_LAND_PRODUCTION = "Anniversary Edition Land Production";
-  public static final String ANNIVERSARY_EDITION_AIR_NAVAL = "Anniversary Edition Air Naval";
+  public static final String WW2V3_LAND_PRODUCTION = "WW2V3 Land Production";
+  public static final String WW2V3_AIR_NAVAL = "WW2V3 Air Naval";
   public static final String HARI_KARI = "Hari-Kari Units";
   public static final String OCCUPIED_TERRITORIES = "Occupied Territories";
   public static final String UNPLACED_UNITS_LIVE = "Unplaced units live when not placed";
   /**
-   * End individual rules for TripleA 50th Edition (All default to FALSE)
+   * End individual rules for TripleA WW2V3 (All default to FALSE)
    */
 
   public static final String PRODUCTION_PER_VALUED_TERRITORY_RESTRICTED = "Production Per Valued Territory Restricted";
   public static final String CHOOSE_AA = "Choose AA Casualties";
-  public static final String PACIFIC_EDITION = "Pacific Edition";
-  public static final String ANNIVERSARY_EDITION = "Anniversary Edition";  
-  public static final String EUROPE_EDITION = "Europe Edition";
+  public static final String PACIFIC_THEATER = "Pacific Theater";
+  public static final String WW2V3 = "WW2V3";  
+  public static final String EUROPE_THEATER = "Europe Theater";
   public static final String NO_ECONOMIC_VICTORY = "No Economic Victory";
   
   public static final String SUBMERSIBLE_SUBS = "Submersible Subs";

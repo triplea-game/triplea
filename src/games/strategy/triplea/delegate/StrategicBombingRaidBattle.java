@@ -174,7 +174,7 @@ public class StrategicBombingRaidBattle implements Battle
                 else
                 	bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + MyFormatter.pluralize("ipc", m_bombingRaidCost));
 
-                if(isPacificEdition() || isSBRVictoryPoints())
+                if(isPacificTheater() || isSBRVictoryPoints())
                 {
                     if(m_defender.getName().equals(Constants.JAPANESE)) 
                     {
@@ -312,9 +312,9 @@ public class StrategicBombingRaidBattle implements Battle
     /**
      * @return
      */
-    private boolean isFourthEdition()
+    private boolean isWW2V2()
     {
-    	return games.strategy.triplea.Properties.getFourthEdition(m_data);
+    	return games.strategy.triplea.Properties.getWW2V2(m_data);
     }
 
     private boolean isRandomAACasualties()
@@ -347,9 +347,9 @@ public class StrategicBombingRaidBattle implements Battle
         return games.strategy.triplea.Properties.getSBRVictoryPoint(m_data);
     }
     
-    private boolean isPacificEdition()
+    private boolean isPacificTheater()
     {
-        return games.strategy.triplea.Properties.getPacificEdition(m_data);
+        return games.strategy.triplea.Properties.getPacificTheater(m_data);
     }
 
     private Collection<Unit> calculateCasualties(IDelegateBridge bridge, DiceRoll dice)
@@ -363,9 +363,9 @@ public class StrategicBombingRaidBattle implements Battle
                     m_units, bridge, text, m_data, /*dice*/ null,/*defending*/ false, m_battleID, /*headless*/ false, 0);
             return casualtySelection.getKilled();
         }     	
-    	else if ((isFourthEdition() || isRandomAACasualties()) && !isChooseAA())
+    	else if ((isWW2V2() || isRandomAACasualties()) && !isChooseAA())
         {
-            casualties = BattleCalculator.fourthEditionAACasualties(m_units, dice, bridge);
+            casualties = BattleCalculator.WW2V2AACasualties(m_units, dice, bridge);
         }
         else
         {
@@ -500,7 +500,7 @@ public class StrategicBombingRaidBattle implements Battle
 
             Iterator<Unit> iter = m_units.iterator();
             int index = 0;
-            Boolean limitDamage = isFourthEdition() || isLimitSBRDamageToProduction();
+            Boolean limitDamage = isWW2V2() || isLimitSBRDamageToProduction();
 
             while (iter.hasNext())
             {

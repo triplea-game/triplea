@@ -265,7 +265,7 @@ public class MoveValidator
         CompositeMatch<Unit> alliedOrNonCombat = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.alliedUnit(player, data));
 
         // Submerged units do not interfere with movement
-        // only relevant for 4th edition
+        // only relevant for WW2V2
         alliedOrNonCombat.add(Matches.unitIsSubmerged(data));
         
         for(int i = 0; i < route.getLength() - 1; i++)
@@ -358,9 +358,9 @@ public class MoveValidator
         
         CompositeMatch<Unit> blitzableUnits = new CompositeMatchOr<Unit>();
         blitzableUnits.add(Matches.alliedUnit(player, data));
-        //4th edition, cant blitz through factories and aa guns
-        //2nd edition you can 
-        if(!isFourthEdition(data) && !IsBlitzThroughFactoriesAndAARestricted(data))
+        //WW2V2, cant blitz through factories and aa guns
+        //WW2V1 you can 
+        if(!isWW2V2(data) && !IsBlitzThroughFactoriesAndAARestricted(data))
         {
             blitzableUnits.add(Matches.UnitIsAAOrFactory);
         }
@@ -620,9 +620,9 @@ public class MoveValidator
         return Match.someMatch(units, notAirOrSea);
     }
 
-    private static boolean isFourthEdition(GameData data)
+    private static boolean isWW2V2(GameData data)
     {
-        return games.strategy.triplea.Properties.getFourthEdition(data);
+        return games.strategy.triplea.Properties.getWW2V2(data);
     }
 
     private static boolean isNeutralsImpassable(GameData data)
@@ -630,9 +630,9 @@ public class MoveValidator
         return games.strategy.triplea.Properties.getNeutralsImpassable(data);
     }
     
-    private static boolean isAnniversaryEdition(GameData data)
+    private static boolean isWW2V3(GameData data)
     {
-        return games.strategy.triplea.Properties.getAnniversaryEdition(data);
+        return games.strategy.triplea.Properties.getWW2V3(data);
     }
     
     /**
@@ -1115,16 +1115,16 @@ public class MoveValidator
             }
         }
 
-        //only allow aa into a land territory if one already present unless 4th ed. or Anniversayr ed.
-        if ((!isAnniversaryEdition(data) && !isFourthEdition(data)) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd() != null && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
+        //only allow aa into a land territory if one already present unless WW2V2 or WW2V3.
+        if ((!isWW2V3(data) && !isWW2V2(data)) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd() != null && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
                 && !route.getEnd().isWater())
         {
             for (Unit unit : Match.getMatches(units, Matches.UnitIsAA))
                 result.addDisallowedUnit("Only one AA gun allowed in a territory",unit);
         }
 
-        //only allow 1 aa to unload unless 4th ed. or Anniversayr ed.
-        if (route.getStart().isWater() && !route.getEnd().isWater() && Match.countMatches(units, Matches.UnitIsAA) > 1 && (!isAnniversaryEdition(data) && !isFourthEdition(data)))
+        //only allow 1 aa to unload unless WW2V2 or WW2V3.
+        if (route.getStart().isWater() && !route.getEnd().isWater() && Match.countMatches(units, Matches.UnitIsAA) > 1 && (!isWW2V3(data) && !isWW2V2(data)))
         {
             Collection<Unit> aaGuns = Match.getMatches(units, Matches.UnitIsAA);
             Iterator<Unit> aaIter = aaGuns.iterator();
@@ -1523,7 +1523,7 @@ public class MoveValidator
 	
     // Determines whether we can pay the neutral territory charge for a
     // given route for air units. We can't cross neutral territories
-    // in 4th Edition.
+    // in WW2V2.
     private static MoveValidationResult canCrossNeutralTerritory(GameData data, Route route, PlayerID player, MoveValidationResult result)
     {
         //neutrals we will overfly in the first place
@@ -2017,7 +2017,7 @@ public class MoveValidator
         Match<Territory> territoryIsEnd = Matches.territoryIs(end);
 
         Route defaultRoute;
-        if (isFourthEdition(data) || isNeutralsImpassable(data))
+        if (isWW2V2(data) || isNeutralsImpassable(data))
         	
         	defaultRoute = data.getMap().getRoute(start, end, new CompositeMatchOr(noNeutral, territoryIsEnd));
         	
@@ -2081,7 +2081,7 @@ public class MoveValidator
         
         for(Match<Territory> t : tests) {            
             Match<Territory> testMatch = null;
-            if (isFourthEdition(data) || isNeutralsImpassable(data))
+            if (isWW2V2(data) || isNeutralsImpassable(data))
                 testMatch = new CompositeMatchAnd<Territory>(t, noNeutral);
             else
                 testMatch = t;

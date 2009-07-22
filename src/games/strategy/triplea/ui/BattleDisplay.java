@@ -1001,7 +1001,7 @@ class BattleModel extends DefaultTableModel
                 	++strength;
 	        } 
             else
-                //If it's Pacific_Edition and Japan's turn one, all but Chinese defend at a 1
+                //If it's a sneak attack, all but Chinese defend at a 1
             {
                 strength = attachment.getDefense(category.getOwner());
                 if( DiceRoll.isFirstTurnLimitedRoll(category.getOwner()))

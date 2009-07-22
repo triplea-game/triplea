@@ -255,8 +255,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             return "Cannot place these units in " + to;
         }
 //TODO Comco incorporate this into a rule (place_only_in_capital_restricted)
-        // can only place chinese units in pacific edition on capitol
-        if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false))
+        // can only place chinese units in pacific theater on capitol
+        if(m_data.getProperties().get(Constants.PACIFIC_THEATER, false))
             if(TerritoryAttachment.getCapital(player, m_data) != to && player.getName().equals("Chinese"))
                 return "Cannot place these units outside of the capital";
 
@@ -316,7 +316,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
                     airThatCanLandOnCarrier));
         }
 
-        if ((!isFourthEdition() && !isUnitPlacementInEnemySeas())
+        if ((!isWW2V2() && !isUnitPlacementInEnemySeas())
                 && to.getUnits().someMatch(Matches.enemyUnit(player, m_data)))
             return null;
 
@@ -332,7 +332,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         {
         
             //make sure only 1 AA in territory for classic
-            if (isFourthEdition() || isAnniversaryEdition())
+            if (isWW2V2() || isWW2V3())
             {
                 placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAA));
             } else
@@ -358,7 +358,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             //TODO COMCO extract into individual rule
             //You cant place factories in territories with no
             // production
-            if (!(isFourthEdition() && ta.getProduction() == 0))
+            if (!(isWW2V2() && ta.getProduction() == 0))
             {
                 //this is how many factories exist now
                 int factoryCount = to.getUnits().getMatches(
@@ -499,7 +499,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             return "Factories cant produce until 1 turn after they are created";
                    
         
-        if (to.isWater() && (!isFourthEdition() && !isUnitPlacementInEnemySeas())
+        if (to.isWater() && (!isWW2V2() && !isUnitPlacementInEnemySeas())
                 && to.getUnits().someMatch(Matches.enemyUnit(player, m_data)))
             return "Cannot place sea units with enemy naval units";
 
@@ -521,9 +521,9 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         //if its an original factory then unlimited production
         TerritoryAttachment ta = TerritoryAttachment.get(producer);
 
-        //4th edition, you cant place factories in territories with no
+        //WW2V2, you cant place factories in territories with no
         // production
-        if (isFourthEdition() && ta.getProduction() == 0)
+        if (isWW2V2() && ta.getProduction() == 0)
         {
             return "Cant place factory, that territory cant produce any units";                   
         }
@@ -535,14 +535,14 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return null;
     }
 
-    protected boolean isFourthEdition()    
+    protected boolean isWW2V2()    
     {
-        return games.strategy.triplea.Properties.getFourthEdition(m_data);
+        return games.strategy.triplea.Properties.getWW2V2(m_data);
     }
 
-    private boolean isAnniversaryEdition()    
+    private boolean isWW2V3()    
     {
-        return games.strategy.triplea.Properties.getAnniversaryEdition(m_data);
+        return games.strategy.triplea.Properties.getWW2V3(m_data);
     }
     
     protected boolean isUnitPlacementInEnemySeas()    
