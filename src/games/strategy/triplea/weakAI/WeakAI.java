@@ -25,6 +25,7 @@ import games.strategy.triplea.delegate.*;
 import games.strategy.triplea.delegate.dataObjects.*;
 import games.strategy.triplea.delegate.remote.*;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.strongAI.SUtils;
 import games.strategy.util.*;
 
 import java.util.*;
@@ -995,6 +996,40 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         
         List<ProductionRule> rules = player.getProductionFrontier().getRules();
         IntegerMap<ProductionRule> purchase = new IntegerMap<ProductionRule>();
+
+        List<RepairRule> rrules = Collections.emptyList();
+        CompositeMatch<Unit> ourFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsFactory);
+		List<Territory> factories = SUtils.findUnitTerr(data, player, ourFactories);
+        if(player.getRepairFrontier() != null) // figure out if anything needs to be repaired
+        {
+            rrules = player.getRepairFrontier().getRules();
+            IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
+            HashMap<Territory, IntegerMap<RepairRule>> repair = new HashMap<Territory, IntegerMap<RepairRule>>();
+            Boolean repairs = false;
+            int diff = 0;
+		    for (RepairRule rrule : rrules)
+            {
+                for (Territory fixTerr : factories)
+                {
+                    if (!Matches.territoryHasOwnedFactory(data, player).match(fixTerr))
+            	 	    continue;
+        		    TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
+            	    diff = ta.getProduction() - ta.getUnitProduction();
+            	    diff = Math.min(diff, leftToSpend);
+                    if(diff > 0)
+                    {
+                        repairMap.add(rrule, diff);
+                        repair.put(fixTerr, repairMap);
+                        repairs = true;
+					}
+				}
+        	}
+            if (repairs)
+            {
+                purchaseDelegate.purchaseRepair(repair);
+                leftToSpend -= diff;
+            }
+    	}
 
         
         int minCost = Integer.MAX_VALUE;

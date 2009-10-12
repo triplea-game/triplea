@@ -146,6 +146,15 @@ public class Matches
             return ua.getIsDestroyer();
         }
     };
+    
+    public static final Match<UnitType> UnitTypeIsDestroyer = new Match<UnitType>()
+    {
+        public boolean match(UnitType type)
+        {
+            UnitAttachment ua = UnitAttachment.get(type);
+            return ua.getIsDestroyer();
+        }
+    };
 
     public static final Match<Unit> UnitIsCruiser = new Match<Unit>()
     { //need something in Unit Attachment, but for now...this will work
@@ -625,7 +634,33 @@ public class Matches
     	{
     		public boolean match(Territory t)
     		{
-    			if (data.getMap().getNeighbors(t, isTerritoryEnemy(player, data)).size() > 0)
+    			if (Matches.TerritoryIsLand.match(t) && data.getMap().getNeighbors(t, Matches.isTerritoryEnemyAndNotNeutral(player, data)).size() > 0)
+    				return true;
+    			return false;
+    		}
+    	};
+    }
+
+    public static Match<Territory> territoryHasEnemyFactoryNeighbor(final GameData data, final PlayerID player)
+    {
+    	return new Match<Territory>()
+    	{
+    		public boolean match(Territory t)
+    		{
+    			if (data.getMap().getNeighbors(t, Matches.territoryHasEnemyFactory(data, player)).size() > 0)
+    				return true;
+    			return false;
+    		}
+    	};
+    }
+
+    public static Match<Territory> territoryHasWaterNeighbor(final GameData data)
+    {
+    	return new Match<Territory>()
+    	{
+    		public boolean match(Territory t)
+    		{
+    			if (data.getMap().getNeighbors(t, Matches.TerritoryIsWater).size() > 0)
     				return true;
     			return false;
     		}
@@ -692,6 +727,24 @@ public class Matches
                 return t.getUnits().allMatch(nonCom);
             }
         };
+    }
+
+    public static Match<Territory> TerritoryHasProductionValueAtLeast(final int prodVal)
+    {
+    	return new Match<Territory>()
+    	{
+    		public boolean match(Territory t)
+    		{
+    			if (t.isWater())
+    				return false;
+    			
+    			int terrProd = TerritoryAttachment.get(t).getProduction();
+    			if (terrProd >= prodVal)
+    				return true;
+    			else
+    				return false;
+    		}
+    	};
     }
 
     public static final Match<Territory> TerritoryIsNeutral = new Match<Territory>()
@@ -1079,6 +1132,18 @@ public class Matches
             public boolean match(Territory t)
             {
                 return t.getUnits().someMatch( enemyUnit(player,data)) && t.getUnits().someMatch(Matches.UnitIsLand);
+            }
+        };
+
+    }
+
+    public static Match<Territory> territoryHasEnemyBlitzUnits(final PlayerID player, final GameData data)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                return t.getUnits().someMatch( enemyUnit(player,data)) && t.getUnits().someMatch(Matches.UnitCanBlitz);
             }
         };
 
