@@ -849,12 +849,14 @@ public class RevisedTest extends TestCase
         bridge.setRemote(player);
         
         
-        int ipcsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.IPCS));
+        //int PUsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+        int pusBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
         
         battle.fight(bridge);
         
-        int ipcsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.IPCS));
-        assertEquals(ipcsBeforeRaid - 6, ipcsAfterRaid);
+        //int PUsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+        int pusAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+        assertEquals(pusBeforeRaid - 6, pusAfterRaid);
         
 
         
