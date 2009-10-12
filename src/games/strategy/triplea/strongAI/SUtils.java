@@ -1106,7 +1106,7 @@ public class SUtils
 
 	/**
 	 * determines a suitable Territory for a factory
-	 * suitable: At Least 2 IPC
+	 * suitable: At Least 2 PU
 	 * All Territories around it are owned
 	 * Strength of Units in the Territory and 1 Territory away
 	 * Is greater than the sum of all enemy Territory 2 away
@@ -1127,8 +1127,8 @@ public class SUtils
 
 		for (Territory t: owned)
 		{
-			int ipcValue = TerritoryAttachment.get(t).getProduction();
-			if (ipcValue < 2 || Matches.territoryHasOwnedFactory(data, player).match(t))
+			int PUValue = TerritoryAttachment.get(t).getProduction();
+			if (PUValue < 2 || Matches.territoryHasOwnedFactory(data, player).match(t))
 				continue;
 			List<Territory> weOwnAll = getNeighboringEnemyLandTerritories(data, player, t);
 			if (weOwnAll.size() > 0)
@@ -2085,9 +2085,9 @@ public class SUtils
 	 */
 
 	public static boolean findPurchaseMix(IntegerMap<ProductionRule> bestAttack, IntegerMap<ProductionRule> bestDefense, IntegerMap<ProductionRule> bestTransport, 
-											IntegerMap<ProductionRule> bestMaxUnits, List<ProductionRule> rules, int totIPC, int maxUnits, GameData data, PlayerID player, int fighters)
+											IntegerMap<ProductionRule> bestMaxUnits, List<ProductionRule> rules, int totPU, int maxUnits, GameData data, PlayerID player, int fighters)
 	{
-        Resource key = data.getResourceList().getResource(Constants.IPCS);
+        Resource key = data.getResourceList().getResource(Constants.PUS);
 		IntegerMap<String> parameters = new IntegerMap<String>();
 		parameters.put("attack", 0);
 		parameters.put("defense", 0);
@@ -2101,7 +2101,7 @@ public class SUtils
 		parameters.put("totcost", 0);
 		parameters.put("totUnit", 0);
 		parameters.put("maxUnits", maxUnits); //never changed
-		parameters.put("maxCost", totIPC); //never changed
+		parameters.put("maxCost", totPU); //never changed
 		parameters.put("infantry", 0);
 		Iterator<ProductionRule> prodIter = rules.iterator();
 		HashMap<ProductionRule, Boolean> transportMap= new HashMap<ProductionRule, Boolean>();
@@ -2127,11 +2127,11 @@ public class SUtils
 		{
 			int totCost = maxUnits*minCost;
 			int totUnits = maxUnits;
-			if (totCost < totIPC)
+			if (totCost < totPU)
 				bestMaxUnits.put(minCostRule, maxUnits);
 			else
 			{
-				totUnits = totIPC/minCost;
+				totUnits = totPU/minCost;
 				totCost = totUnits*minCost;
 				bestMaxUnits.put(minCostRule, totUnits);
 			}
@@ -2174,7 +2174,7 @@ public class SUtils
 		 * Assumptions: 1) artillery purchased with infantry has a bonus
 		 *              2) fighters have attack: 3 and defense: 4 TODO: Recode this to use fighter attack/defense and to handle tech bonus
 		 */
-        Resource key = data.getResourceList().getResource(Constants.IPCS);
+        Resource key = data.getResourceList().getResource(Constants.PUS);
 		Set<ProductionRule> ruleCheck = bestAttack.keySet();
 		Iterator<ProductionRule> ruleIter = ruleCheck.iterator();
 		int counter = 1;

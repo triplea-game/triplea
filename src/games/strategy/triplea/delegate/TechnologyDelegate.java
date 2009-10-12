@@ -240,15 +240,15 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
 
     boolean checkEnoughMoney(int rolls)
     {
-        Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
+        Resource PUs = m_data.getResourceList().getResource(Constants.PUS);
         int cost = rolls * Constants.TECH_ROLL_COST;
-        int has = m_bridge.getPlayerID().getResources().getQuantity(ipcs);
+        int has = m_bridge.getPlayerID().getResources().getQuantity(PUs);
         return has >= cost;
     }
 
     private void chargeForTechRolls(int rolls)
     {
-        Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
+        Resource PUs = m_data.getResourceList().getResource(Constants.PUS);
         int cost = rolls * Constants.TECH_ROLL_COST;
 
         String transcriptText = m_bridge.getPlayerID().getName() + " spend "
@@ -256,7 +256,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         m_bridge.getHistoryWriter().startEvent(transcriptText);
 
         Change charge = ChangeFactory.changeResourcesChange(m_bridge
-                .getPlayerID(), ipcs, -cost);
+                .getPlayerID(), PUs, -cost);
         m_bridge.addChange(charge);
         
         if(isWW2V3TechModel())

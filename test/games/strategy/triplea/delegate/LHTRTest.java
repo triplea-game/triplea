@@ -221,15 +221,15 @@ public class LHTRTest extends TestCase
         bridge.setRemote(player);
         
         
-        int ipcsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.IPCS));
+        int PUsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
         
         battle.fight(bridge);
         
-        int ipcsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.IPCS));
+        int PUsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
         
         //largets dice is 4, so damage is 1 + 4 = 5
         //Changed to match StrategicBombingRaidBattle changes (removed the +1)
-        assertEquals(ipcsBeforeRaid - 4, ipcsAfterRaid);
+        assertEquals(PUsBeforeRaid - 4, PUsAfterRaid);
         
         
     }
@@ -275,16 +275,16 @@ public class LHTRTest extends TestCase
         bridge.setRemote(player);
         
         
-        int ipcsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.IPCS));
+        int PUsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
         
         battle.fight(bridge);
         
-        int ipcsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.IPCS));
+        int PUsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
         
         //largets dice is 4, so damage is 1 + 4 = 5
         //bomber 2 hits at 2, so damage is 3 
         //Changed to match StrategicBombingRaidBattle changes (removed the +1)
-        assertEquals(ipcsBeforeRaid - 6, ipcsAfterRaid);
+        assertEquals(PUsBeforeRaid - 6, PUsAfterRaid);
         
         
     }

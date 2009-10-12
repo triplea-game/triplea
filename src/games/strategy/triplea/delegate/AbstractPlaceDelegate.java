@@ -415,7 +415,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         	}        		
         }
 
-        //a factory can produce the same number of units as the number of ipcs
+        //a factory can produce the same number of units as the number of PUs
         // the territroy generates each turn
         int unitCount = getAlreadyProduced(producer).size();
         int production = 0;

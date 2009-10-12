@@ -430,19 +430,19 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     		}
     		
     		//
-    		//If all are satisfied add the IPCs for this objective
+    		//If all are satisfied add the PUs for this objective
     		//
     		if (objectiveMet)
     		{
-    		    int total = player.getResources().getQuantity(Constants.IPCS) + rule.getObjectiveValue();
+    		    int total = player.getResources().getQuantity(Constants.PUS) + rule.getObjectiveValue();
     		    
-    		    Change change = ChangeFactory.changeResourcesChange(player, data.getResourceList().getResource(Constants.IPCS), rule.getObjectiveValue());
-    			//player.getResources().addResource(data.getResourceList().getResource(Constants.IPCS), rule.getObjectiveValue());
+    		    Change change = ChangeFactory.changeResourcesChange(player, data.getResourceList().getResource(Constants.PUS), rule.getObjectiveValue());
+    			//player.getResources().addResource(data.getResourceList().getResource(Constants.PUS), rule.getObjectiveValue());
                 bridge.addChange(change);
     			
-    			String ipcMessage = player.getName() + " met a national objective for an additional " + rule.getObjectiveValue() + MyFormatter.pluralize(" ipc", rule.getObjectiveValue()) +
-    			"; end with " + total + MyFormatter.pluralize(" ipc", total);
-    			bridge.getHistoryWriter().startEvent(ipcMessage);
+    			String PUMessage = player.getName() + " met a national objective for an additional " + rule.getObjectiveValue() + MyFormatter.pluralize(" PU", rule.getObjectiveValue()) +
+    			"; end with " + total + MyFormatter.pluralize(" PU", total);
+    			bridge.getHistoryWriter().startEvent(PUMessage);
     		}    		
     	} //end while        	
     } //end determineNationalObjectives

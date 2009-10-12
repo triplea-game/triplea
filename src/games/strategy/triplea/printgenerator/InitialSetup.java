@@ -76,11 +76,11 @@ public class InitialSetup
             new CountryChart().saveToFile(currentPlayer, m_printData);
             
         }
-        new IPCInfo().saveToFile(m_printData);
+        new PUInfo().saveToFile(m_printData);
         try
         {
             new PlayerOrder().saveToFile(m_printData);
-            new IPCChart(m_printData).saveToFile();
+            new PUChart(m_printData).saveToFile();
         } catch (IOException e)
         {
             e.printStackTrace();

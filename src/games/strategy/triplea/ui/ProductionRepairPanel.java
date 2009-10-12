@@ -150,9 +150,9 @@ public class ProductionRepairPanel extends JPanel
             	{
                     TerritoryAttachment ta = TerritoryAttachment.get(terr);
                     int unitProduction = ta.getUnitProduction();
-                    int IPCProduction = ta.getProduction();
+                    int PUProduction = ta.getProduction();
 
-                    if(unitProduction < IPCProduction)
+                    if(unitProduction < PUProduction)
                     {
                     	Rule rule = new Rule(repairRule, player, m_uiContext, terr);
                         //int initialQuantity = initialPurchase.getInt(repairRule);
@@ -161,7 +161,7 @@ public class ProductionRepairPanel extends JPanel
                     	    initialQuantity = initialPurchase.get(terr).getInt(repairRule);
                     	    //initialQuantity = initialPurchase.get(repairRule).getInt(repairRule);
                     	rule.setQuantity(initialQuantity);
-                    	rule.setMax(IPCProduction - unitProduction);
+                    	rule.setMax(PUProduction - unitProduction);
                     	rule.setTerr(terr.getName().toString());
                     	rule.setName(terr.getName().toString());
                     	m_rules.add(rule);
@@ -203,10 +203,10 @@ public class ProductionRepairPanel extends JPanel
     // This method can be overridden by subclasses
     protected void setLeft(int left)
     {
-        int total = getIPCs();
+        int total = getPUs();
         int spent = total - left;
         
-        m_left.setText("You have " + left + " " + StringUtil.plural("IPC", left) + " left out of " + total +  " "  + StringUtil.plural("IPC", total)) ;
+        m_left.setText("You have " + left + " " + StringUtil.plural("PU", left) + " left out of " + total +  " "  + StringUtil.plural("PU", total)) ;
     }
     
     private boolean isIncreasedFactoryProduction(PlayerID player)    
@@ -249,7 +249,7 @@ public class ProductionRepairPanel extends JPanel
     // This method can be overridden by subclasses
     protected void calculateLimits()
     {
-        int ipcs = getIPCs();
+        int PUs = getPUs();
         float spent = 0;
         Iterator<Rule> iter = m_rules.iterator();
         while (iter.hasNext())
@@ -261,18 +261,18 @@ public class ProductionRepairPanel extends JPanel
             int maxProd = ta.getProduction() - ta.getUnitProduction();
             current.setMax(maxProd);
         }
-        int leftToSpend = (int) (ipcs - spent);
+        int leftToSpend = (int) (PUs - spent);
         setLeft(leftToSpend);
     }
 
-    private int getIPCs()
+    private int getPUs()
     {
         if (m_bid)
         {
             String propertyName = m_id.getName() + " bid";
             return Integer.parseInt(m_data.getProperties().get(propertyName).toString());
         } else
-            return m_id.getResources().getQuantity(Constants.IPCS);
+            return m_id.getResources().getQuantity(Constants.PUS);
     }
 
     public class Rule extends JPanel
@@ -286,7 +286,7 @@ public class ProductionRepairPanel extends JPanel
         {            
             setLayout(new GridBagLayout());
             m_rule = rule;
-            m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.IPCS));
+            m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.PUS));
 
             if(isIncreasedFactoryProduction(id))
                 m_cost /= 2;

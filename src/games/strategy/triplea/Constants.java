@@ -45,7 +45,7 @@ public interface Constants
   public static final String RULES_OBJECTIVE_PREFIX = "objectiveAttachment";
   public static final String PLAYER_ATTATCHMENT_NAME = "playerAttatchment";
   public static final String CANAL_ATTATCHMENT_PREFIX = "canalAttatchment";
-  public static final String IPCS = "IPCs";
+  public static final String PUS = "PUs";
   public static final String TECH_TOKENS = "techTokens";
   public static final String VPS = "VPs";
   public static final int    MAX_DICE = 6;
@@ -143,7 +143,7 @@ public interface Constants
   public static final String USE_DESTROYERS_AND_ARTILLERY = "Use Destroyers and Artillery";
   public static final String USE_SHIPYARDS = "Use Shipyards";
   public static final String LOW_LUCK = "Low Luck";
-  public static final String IPC_CAP = "Territory Turn Limit";
+  public static final String PU_CAP = "Territory Turn Limit";
   public static final String KAMIKAZE = "Kamikaze Airplanes";
   public static final String LHTR_HEAVY_BOMBERS = "LHTR Heavy Bombers";
   public static final String EDIT_MODE = "EditMode";

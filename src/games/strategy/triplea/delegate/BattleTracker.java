@@ -385,39 +385,39 @@ public class BattleTracker implements java.io.Serializable
         {   
             //Determine if both parts of the convoy route are owned by the attacker or allies
             boolean ownedConvoyRoute =  data.getMap().getNeighbors(territory, Matches.territoryHasConvoyOwnedBy(id, data, territory)).size() > 0;
-            int ipcCharge = TerritoryAttachment.get(territory).getProduction();
+            int PUCharge = TerritoryAttachment.get(territory).getProduction();
             Territory valuedTerritory = data.getMap().getTerritory(territory.getName());
                         
             //If the captured territory is water, get the associated land territory for reporting.
             if (territory.isWater())
             {
                 valuedTerritory = data.getMap().getTerritory(TerritoryAttachment.get(territory).getConvoyAttached());
-                ipcCharge = TerritoryAttachment.get(valuedTerritory).getProduction();
+                PUCharge = TerritoryAttachment.get(valuedTerritory).getProduction();
             }
             
             if(ownedConvoyRoute)
             {                
                 bridge.getHistoryWriter().addChildToEvent(
-                        valuedTerritory.getOwner() + " gain " + ipcCharge + " production for liberating the convoy route in " + territory.getName());
+                        valuedTerritory.getOwner() + " gain " + PUCharge + " production for liberating the convoy route in " + territory.getName());
             }
             else
             {
                 bridge.getHistoryWriter().addChildToEvent(
-                        valuedTerritory.getOwner() + " lose " + ipcCharge + " production due to the capture of the convoy route in " + territory.getName());
+                        valuedTerritory.getOwner() + " lose " + PUCharge + " production due to the capture of the convoy route in " + territory.getName());
             }
         }
 
         //if neutral
         if (territory.getOwner().isNull())
         {
-            Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
-            int ipcCharge = -games.strategy.triplea.Properties.getNeutralCharge(data);
-            Change neutralFee = ChangeFactory.changeResourcesChange(id, ipcs, ipcCharge);
+            Resource PUs = data.getResourceList().getResource(Constants.PUS);
+            int PUCharge = -games.strategy.triplea.Properties.getNeutralCharge(data);
+            Change neutralFee = ChangeFactory.changeResourcesChange(id, PUs, PUCharge);
             bridge.addChange(neutralFee);
             if (changeTracker != null)
                 changeTracker.addChange(neutralFee);
             bridge.getHistoryWriter().addChildToEvent(
-                    id.getName() + " loses " + -ipcCharge + " " + MyFormatter.pluralize("IPC", -ipcCharge) + " for violating " + territory.getName()
+                    id.getName() + " loses " + -PUCharge + " " + MyFormatter.pluralize("PU", -PUCharge) + " for violating " + territory.getName()
                             + "s neutrality");
         }
 
@@ -431,24 +431,24 @@ public class BattleTracker implements java.io.Serializable
             PlayerAttachment pa = PlayerAttachment.get(id);
             if (whoseCapital.equals(territory.getOwner()))
             {
-                Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
-                int capturedIPCCount = whoseCapital.getResources().getQuantity(ipcs);
+                Resource PUs = data.getResourceList().getResource(Constants.PUS);
+                int capturedPUCount = whoseCapital.getResources().getQuantity(PUs);
                 if(pa != null)
                 {
                     if(isPacificTheater(data))
                     {
-                        Change changeVP = ChangeFactory.attachmentPropertyChange(pa, (Integer.valueOf(capturedIPCCount + Integer.parseInt(pa.getCaptureVps()))).toString(), "captureVps");
+                        Change changeVP = ChangeFactory.attachmentPropertyChange(pa, (Integer.valueOf(capturedPUCount + Integer.parseInt(pa.getCaptureVps()))).toString(), "captureVps");
                         bridge.addChange(changeVP);
                     } 
                 } 
-                Change remove = ChangeFactory.changeResourcesChange(whoseCapital, ipcs, -capturedIPCCount);
+                Change remove = ChangeFactory.changeResourcesChange(whoseCapital, PUs, -capturedPUCount);
                 bridge.addChange(remove);
                 bridge.getHistoryWriter().addChildToEvent(
-                        id.getName() + " captures " + capturedIPCCount + MyFormatter.pluralize("IPC", capturedIPCCount) + " while taking "
+                        id.getName() + " captures " + capturedPUCount + MyFormatter.pluralize("PU", capturedPUCount) + " while taking "
                                 + whoseCapital.getName() + " capital");
                 if (changeTracker != null)
                     changeTracker.addChange(remove);
-                Change add = ChangeFactory.changeResourcesChange(id, ipcs, capturedIPCCount);
+                Change add = ChangeFactory.changeResourcesChange(id, PUs, capturedPUCount);
                 bridge.addChange(add);
                 if (changeTracker != null)
                     changeTracker.addChange(add);

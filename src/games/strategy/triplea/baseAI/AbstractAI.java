@@ -109,12 +109,12 @@ public abstract class AbstractAI implements ITripleaPlayer
      * It is the AI's turn to purchase units.
      * 
      * @param purcahseForBid - is this a bid purchase, or a normal purchase
-     * @param ipcsToSpend - how many ipcs we have to spend
+     * @param PUsToSpend - how many PUs we have to spend
      * @param purchaseDelegate - the purchase delgate to buy things with
      * @param data - the GameData
      * @param player - the player to buy for
      */
-    protected abstract void purchase(boolean purcahseForBid, int ipcsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player);
+    protected abstract void purchase(boolean purcahseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player);
 
     /**
      * It is the AI's turn to roll for technology.
@@ -295,8 +295,8 @@ public abstract class AbstractAI implements ITripleaPlayer
         else if (name.endsWith("Purchase"))
         {
             
-            Resource ipcs = m_bridge.getGameData().getResourceList().getResource(Constants.IPCS);
-            int leftToSpend = m_id.getResources().getQuantity(ipcs );
+            Resource PUs = m_bridge.getGameData().getResourceList().getResource(Constants.PUS);
+            int leftToSpend = m_id.getResources().getQuantity(PUs );
             
             purchase(false,leftToSpend, (IPurchaseDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
         }

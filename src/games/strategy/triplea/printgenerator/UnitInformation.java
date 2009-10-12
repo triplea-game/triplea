@@ -179,7 +179,7 @@ class UnitInformation
             if (currentType.equals(type))
             {
                 int cost = currentRule.getCosts().getInt(
-                        m_data.getResourceList().getResource(Constants.IPCS));
+                        m_data.getResourceList().getResource(Constants.PUS));
                 return cost;
             }
         }

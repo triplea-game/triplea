@@ -101,7 +101,7 @@
 	</map>
 	
 	<resourceList>
-		<resource name="IPCs"/>
+		<resource name="PUs"/>
 	</resourceList>
 
 
@@ -203,27 +203,27 @@
 
 	<production>
 		<productionRule name="buyInfantry">
-			<cost resource="IPCs" quantity="3" />
+			<cost resource="PUs" quantity="3" />
 			<result resourceOrUnit="infantry" quantity="1"/>
 		</productionRule>
 		<productionRule name="buyArtillery">
-			<cost resource="IPCs" quantity="4" />
+			<cost resource="PUs" quantity="4" />
 			<result resourceOrUnit="artillery" quantity="1"/>
 		</productionRule>
 		<productionRule name="buyArmour">
-			<cost resource="IPCs" quantity="5" />
+			<cost resource="PUs" quantity="5" />
 			<result resourceOrUnit="armour" quantity="1"/>
 		</productionRule>
 		<productionRule name="buyFighter">
-			<cost resource="IPCs" quantity="12" />
+			<cost resource="PUs" quantity="12" />
 			<result resourceOrUnit="fighter" quantity="1"/>
 		</productionRule>
 		<productionRule name="buyBomber">
-			<cost resource="IPCs" quantity="15" />
+			<cost resource="PUs" quantity="15" />
 			<result resourceOrUnit="bomber" quantity="1"/>
 		</productionRule>
 		<productionRule name="buyAAGun">
-			<cost resource="IPCs" quantity="5" />
+			<cost resource="PUs" quantity="5" />
 			<result resourceOrUnit="aaGun" quantity="1"/>
 		</productionRule>
 
@@ -573,10 +573,10 @@
 		</unitInitialize>
 	
 		<resourceInitialize>
-			<resourceGiven player="Russians" resource="IPCs" quantity="12"/>
-			<resourceGiven player="Italians" resource="IPCs" quantity="12"/>
-			<resourceGiven player="Germans" resource="IPCs" quantity="12"/>
-			<resourceGiven player="Chinese" resource="IPCs" quantity="12"/>
+			<resourceGiven player="Russians" resource="PUs" quantity="12"/>
+			<resourceGiven player="Italians" resource="PUs" quantity="12"/>
+			<resourceGiven player="Germans" resource="PUs" quantity="12"/>
+			<resourceGiven player="Chinese" resource="PUs" quantity="12"/>
 		</resourceInitialize>
 	</initialize>
 
@@ -632,11 +632,11 @@
 		<!-- notes appear in the notes menu in the main screen, format as html -->
 		<property name="notes" value="Order goes in clockwise direction starting with Russia &lt;br&gt; &lt;br&gt;
 		
-		Each white territory is neutral, but costs no IPCs to invade  &lt;br&gt; &lt;br&gt;
+		Each white territory is neutral, but costs no PUs to invade  &lt;br&gt; &lt;br&gt;
 		
 		When a player loses his base, he is out for good unless he can reliberate it himself &lt;br&gt; &lt;br&gt;
 		
-		Each player starts with 12 IPCs of production &lt;br&gt; &lt;br&gt;
+		Each player starts with 12 PUs of production &lt;br&gt; &lt;br&gt;
 
 		Last man, or Team standing wins (if playing a team, territory can not be shared) &lt;br&gt; &lt;br&gt;
 				

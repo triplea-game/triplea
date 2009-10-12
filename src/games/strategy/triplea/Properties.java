@@ -254,12 +254,12 @@ public class Properties implements Constants {
     }
 
     /*
-     * Limit the TOTAL ipcs lost to Bombers/Rockets in a turn to territory's
+     * Limit the TOTAL PUs lost to Bombers/Rockets in a turn to territory's
      * production
      */
-    public static boolean getIPCCap(GameData data) {
+    public static boolean getPUCap(GameData data) {
 
-        return data.getProperties().get(IPC_CAP, false);
+        return data.getProperties().get(PU_CAP, false);
 
     }
 
@@ -372,7 +372,7 @@ public class Properties implements Constants {
     }
 
     /*
-     * Production restricted to 1 unit per owned territory with an IPC value
+     * Production restricted to 1 unit per owned territory with an PU value
      */
     public static boolean getProductionPerValuedTerritoryRestricted(GameData data) {
 

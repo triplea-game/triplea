@@ -970,7 +970,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         return sum;
     }
 
-    protected void purchase(boolean purcahseForBid, int ipcsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
+    protected void purchase(boolean purcahseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
     {
         if (purcahseForBid)
         {          
@@ -988,9 +988,9 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             defUnitsAtAmpibRoute = amphibRoute.getEnd().getUnits().getUnitCount(); 
         }
         
-        Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
+        Resource PUs = data.getResourceList().getResource(Constants.PUS);
 
-        int leftToSpend = player.getResources().getQuantity(ipcs );
+        int leftToSpend = player.getResources().getQuantity(PUs );
         
         
         List<ProductionRule> rules = player.getProductionFrontier().getRules();
@@ -1002,7 +1002,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         {
             for(ProductionRule rule : rules)
             {
-                int cost = rule.getCosts().getInt(ipcs);
+                int cost = rule.getCosts().getInt(PUs);
                 
                 if(minCost == Integer.MAX_VALUE)
                 {

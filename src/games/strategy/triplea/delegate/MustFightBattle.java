@@ -3127,6 +3127,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         return m_attackingFrom;
     }
+    
+    public Map<Territory,Collection<Unit>> getAttackingFromMap()
+    {
+        return m_attackingFromMap;
+    }
 
     public Collection<Unit> getAmphibiousLandAttackers()
     {

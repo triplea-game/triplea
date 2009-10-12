@@ -44,8 +44,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate
    */
   protected boolean canAfford(IntegerMap<Resource> costs, PlayerID player)
   {
-      Resource ipcs = getData().getResourceList().getResource(Constants.IPCS);
-      return costs.getInt(ipcs) <= m_bid;
+      Resource PUs = getData().getResourceList().getResource(Constants.PUS);
+      return costs.getInt(PUs) <= m_bid;
   }
 
   public void start(IDelegateBridge bridge, GameData data)
@@ -66,8 +66,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate
   @Override
   protected String removeFromPlayer(PlayerID player, IntegerMap<Resource> resources, CompositeChange change, Collection<Unit> units)
   {
-      m_spent = resources.getInt(super.getData().getResourceList().getResource(Constants.IPCS));
-      return (m_bid - m_spent) + " IPC unused";
+      m_spent = resources.getInt(super.getData().getResourceList().getResource(Constants.PUS));
+      return (m_bid - m_spent) + " PU unused";
   }
 
   /**
@@ -79,8 +79,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate
        int unspent =  m_bid - m_spent;
        if(unspent == 0)
            return;
-       m_bridge.getHistoryWriter().startEvent(m_bridge.getPlayerID().getName() + " retains " + unspent + " IPCS not spent in bid phase");
-       Change unspentChange = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), super.getData().getResourceList().getResource(Constants.IPCS), unspent);
+       m_bridge.getHistoryWriter().startEvent(m_bridge.getPlayerID().getName() + " retains " + unspent + " PUS not spent in bid phase");
+       Change unspentChange = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), super.getData().getResourceList().getResource(Constants.PUS), unspent);
        m_bridge.addChange(unspentChange);
        
        m_hasBid = false;

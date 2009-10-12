@@ -180,10 +180,10 @@ public class ProductionPanel extends JPanel
     // This method can be overridden by subclasses
     protected void setLeft(int left)
     {
-        int total = getIPCs();
+        int total = getPUs();
         int spent = total - left;
         
-        m_left.setText("You have " + left + " " + StringUtil.plural("IPC", spent) + " left out of " + total +  " "  + StringUtil.plural("IPC", total)) ;
+        m_left.setText("You have " + left + " " + StringUtil.plural("PU", spent) + " left out of " + total +  " "  + StringUtil.plural("PU", total)) ;
     }
 
     Action m_done_action = new AbstractAction("Done")
@@ -213,7 +213,7 @@ public class ProductionPanel extends JPanel
     // This method can be overridden by subclasses
     protected void calculateLimits()
     {
-        int ipcs = getIPCs();
+        int PUs = getPUs();
         int spent = 0;
         Iterator<Rule> iter = m_rules.iterator();
         while (iter.hasNext())
@@ -221,7 +221,7 @@ public class ProductionPanel extends JPanel
             Rule current = iter.next();
             spent += current.getQuantity() * current.getCost();
         }
-        int leftToSpend = ipcs - spent;
+        int leftToSpend = PUs - spent;
         setLeft(leftToSpend);
 
         iter = m_rules.iterator();
@@ -235,14 +235,14 @@ public class ProductionPanel extends JPanel
 
     }
 
-    private int getIPCs()
+    private int getPUs()
     {
         if (m_bid)
         {
             String propertyName = m_id.getName() + " bid";
             return Integer.parseInt(m_data.getProperties().get(propertyName).toString());
         } else
-            return m_id.getResources().getQuantity(Constants.IPCS);
+            return m_id.getResources().getQuantity(Constants.PUS);
     }
 
     class Rule extends JPanel
@@ -257,7 +257,7 @@ public class ProductionPanel extends JPanel
             
             setLayout(new GridBagLayout());
             m_rule = rule;
-            m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.IPCS));
+            m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.PUS));
             UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
             UnitAttachment attach= UnitAttachment.get(type);
             int attack=attach.getAttack(id);

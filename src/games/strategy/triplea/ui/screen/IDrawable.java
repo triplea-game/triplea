@@ -179,14 +179,14 @@ class TerritoryNameDrawable implements IDrawable
                 graphics.drawString(territory.getName(), x - bounds.x, y - bounds.y);
         	}
 
-        // draw the ipcs.
+        // draw the PUs.
         if (ta.getProduction() > 0)
         {
-            Image img = m_uiContext.getIPCImageFactory().getIpcImage(ta.getProduction());
+            Image img = m_uiContext.getPUImageFactory().getPUImage(ta.getProduction());
             String prod = Integer.valueOf(ta.getProduction()).toString();
             
-            Point place = mapData.getIPCPlacementPoint(territory);
-            // if ipc_place.txt is specified draw there
+            Point place = mapData.getPUPlacementPoint(territory);
+            // if pu_place.txt is specified draw there
             if(place != null)
             {
                 x = place.x;

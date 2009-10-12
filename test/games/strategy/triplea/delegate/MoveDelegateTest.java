@@ -454,7 +454,7 @@ public class MoveDelegateTest extends DelegateTest
     assertEquals(4, equatorialAfrica.getUnits().size());
     assertEquals(0, westAfrica.getUnits().size());
     assertEquals(westAfrica.getOwner(), PlayerID.NULL_PLAYERID);
-    assertEquals(35, british.getResources().getQuantity(ipcs));
+    assertEquals(35, british.getResources().getQuantity(PUs));
 
     String results = m_delegate.move( getUnits(map, route.getStart()), route);
     assertValid( results);
@@ -462,7 +462,7 @@ public class MoveDelegateTest extends DelegateTest
     assertEquals(2, equatorialAfrica.getUnits().size());
     assertEquals(2, westAfrica.getUnits().size());
     assertEquals(westAfrica.getOwner(), british);
-    assertEquals(32, british.getResources().getQuantity(ipcs));
+    assertEquals(32, british.getResources().getQuantity(PUs));
   }
 
   public void testAirCanOverFlyEnemy()
@@ -811,10 +811,10 @@ public class MoveDelegateTest extends DelegateTest
 
   public void testCanOverrunNeutralWithoutFunds()
   {
-    assertEquals(35, british.getResources().getQuantity(ipcs));
-    Change makePoor = ChangeFactory.changeResourcesChange(british, ipcs, -35);
+    assertEquals(35, british.getResources().getQuantity(PUs));
+    Change makePoor = ChangeFactory.changeResourcesChange(british, PUs, -35);
     m_bridge.addChange(makePoor);
-    assertEquals(0, british.getResources().getQuantity(ipcs));
+    assertEquals(0, british.getResources().getQuantity(PUs));
 
     //try to take over South Africa, cant because we cant afford it
 

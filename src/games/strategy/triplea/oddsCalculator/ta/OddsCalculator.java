@@ -272,7 +272,7 @@ class DummyPlayer extends AbstractAI
     {}
 
     @Override
-    protected void purchase(boolean purcahseForBid, int ipcsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
+    protected void purchase(boolean purcahseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
     {}
 
     @Override

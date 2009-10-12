@@ -369,14 +369,14 @@ public class BattleCalculator
     }
 
     /**
-     * Return map where keys are unit types and values are ipc costs of that
+     * Return map where keys are unit types and values are PU costs of that
      * unit type
      * 
      * @param player
      *            The player to get costs schedule for
      * @param data
      *            The game data.
-     * @return a map of unit types to ipc cost
+     * @return a map of unit types to PU cost
      */
     public static IntegerMap<UnitType> getCosts(PlayerID player, GameData data)
     {
@@ -389,7 +389,7 @@ public class BattleCalculator
         while (iter.hasNext())
         {
             ProductionRule rule = iter.next();
-            int cost = rule.getCosts().getInt(data.getResourceList().getResource(Constants.IPCS));
+            int cost = rule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));
             UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
             costs.put(type, cost);
         }

@@ -172,7 +172,7 @@ public class StrategicBombingRaidBattle implements Battle
                 if(isSBRAffectsUnitProduction())
                 	bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + " production in " + m_battleSite.getName());
                 else
-                	bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + MyFormatter.pluralize("ipc", m_bombingRaidCost));
+                	bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + MyFormatter.pluralize("PU", m_bombingRaidCost));
 
                 if(isPacificTheater() || isSBRVictoryPoints())
                 {
@@ -203,7 +203,7 @@ public class StrategicBombingRaidBattle implements Battle
                 if(isSBRAffectsUnitProduction())
                     getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidCost + " production.");
                 else
-                    getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidCost + " " +  MyFormatter.pluralize("ipc", m_bombingRaidCost));
+                    getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidCost + " " +  MyFormatter.pluralize("PU", m_bombingRaidCost));
                 m_isOver = true;        
             }
         
@@ -337,9 +337,9 @@ public class StrategicBombingRaidBattle implements Battle
         return (ITripleaPlayer) bridge.getRemote();
     }
     
-	private boolean isIPCCap(GameData data)
+	private boolean isPUCap(GameData data)
 	{
-    	return games.strategy.triplea.Properties.getIPCCap(data);
+    	return games.strategy.triplea.Properties.getPUCap(data);
 	}
 	
     private boolean isSBRVictoryPoints()
@@ -470,14 +470,14 @@ public class StrategicBombingRaidBattle implements Battle
             boolean isEditMode = EditDelegate.getEditMode(m_data);
             if (isEditMode)
             {
-                String annotation = m_attacker.getName() + " fixing dice to allocate ipc cost in strategic bombing raid against " + m_defender.getName() + " in "
+                String annotation = m_attacker.getName() + " fixing dice to allocate PU cost in strategic bombing raid against " + m_defender.getName() + " in "
                         + m_battleSite.getName();
                 ITripleaPlayer attacker = (ITripleaPlayer) bridge.getRemote(m_attacker);
                 m_dice = attacker.selectFixedDice(rollCount, 0, true, annotation);
             }
             else
             {
-                String annotation = m_attacker.getName() + " rolling to allocate ipc cost in strategic bombing raid against " + m_defender.getName() + " in "
+                String annotation = m_attacker.getName() + " rolling to allocate PU cost in strategic bombing raid against " + m_defender.getName() + " in "
                         + m_battleSite.getName();
                 m_dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
             }
@@ -552,7 +552,7 @@ public class StrategicBombingRaidBattle implements Battle
         		getDisplay(bridge).bombingResults(m_battleID, m_dice, cost);
 
             	// Record production lost
-            	DelegateFinder.moveDelegate(m_data).ipcsLost(m_battleSite, cost);
+            	DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, cost);
             	
             	Collection<Unit> damagedFactory = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsFactory);
 
@@ -575,10 +575,10 @@ public class StrategicBombingRaidBattle implements Battle
             }
             else
             {
-            	// Limit ipcs lost if we would like to cap ipcs lost at territory value
-            	if (isIPCCap(m_data) || isLimitSBRDamagePerTurn(m_data))
+            	// Limit PUs lost if we would like to cap PUs lost at territory value
+            	if (isPUCap(m_data) || isLimitSBRDamagePerTurn(m_data))
             	{
-            		int alreadyLost = DelegateFinder.moveDelegate(m_data).ipcsAlreadyLost(m_battleSite);
+            		int alreadyLost = DelegateFinder.moveDelegate(m_data).PUsAlreadyLost(m_battleSite);
             		int limit = Math.max(0, production - alreadyLost);
             		cost = Math.min(cost, limit);
             	}
@@ -586,14 +586,14 @@ public class StrategicBombingRaidBattle implements Battle
             	getDisplay(bridge).bombingResults(m_battleID, m_dice, cost);
 
             	//get resources
-            	Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
-            	int have = m_defender.getResources().getQuantity(ipcs);
+            	Resource PUs = m_data.getResourceList().getResource(Constants.PUS);
+            	int have = m_defender.getResources().getQuantity(PUs);
             	int toRemove = Math.min(cost, have);
 
-            	// Record ipcs lost
-            	DelegateFinder.moveDelegate(m_data).ipcsLost(m_battleSite, toRemove);
+            	// Record PUs lost
+            	DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, toRemove);
 
-            	Change change = ChangeFactory.changeResourcesChange(m_defender, ipcs, -toRemove);
+            	Change change = ChangeFactory.changeResourcesChange(m_defender, PUs, -toRemove);
             	bridge.addChange(change);            	
             }
 

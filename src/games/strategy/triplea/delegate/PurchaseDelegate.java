@@ -128,7 +128,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
         if(!(canAfford(costs, m_player)))
             return "Not enough resources";
 
-        // remove first, since add logs ipcs remaining
+        // remove first, since add logs PUs remaining
 
         Iterator<NamedAttachable> iter = results.keySet().iterator();
         Collection<Unit> totalUnits = new ArrayList<Unit>();
@@ -186,7 +186,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
         if(!(canAfford(costs, m_player)))
             return "Not enough resources";
 
-        // remove first, since add logs ipcs remaining
+        // remove first, since add logs PUs remaining
         CompositeChange changes = new CompositeChange();
         Collection<Unit> totalUnits = new ArrayList<Unit>();
 
@@ -429,7 +429,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     protected String removeFromPlayer(PlayerID player, IntegerMap<Resource> costs, CompositeChange changes, Collection<Unit> totalUnits)
     {
         Iterator<Resource> costsIter = costs.keySet().iterator();
-        int AvailIPCs = player.getResources().getQuantity(Constants.IPCS);
+        int AvailPUs = player.getResources().getQuantity(Constants.PUS);
 
         while(costsIter.hasNext() )
         {
@@ -451,7 +451,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
             Change change = ChangeFactory.changeResourcesChange(m_player, resource, -cost);
             changes.add(change);
 
-            return m_player.getResources().getQuantity(resource) -  cost + " ipcs remaining"; 
+            return m_player.getResources().getQuantity(resource) -  cost + " PUs remaining"; 
         }
         return "";
     }

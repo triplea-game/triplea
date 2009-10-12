@@ -6,7 +6,7 @@ Note.  This game system still in alpha stage.
 Lots of more code to still add in Java as well!
 
 Missing Combined American/Chinese turn, kamikazes, special strategic bombing
-not to mention India/Australia max IPC system.
+not to mention India/Australia max PU system.
 
 Coded by Iron__Cross
 -->
@@ -418,7 +418,7 @@ Coded by Iron__Cross
     </map>
     
     <resourceList>
-        <resource name="IPCs"/>
+        <resource name="PUs"/>
         <resource name="VPs"/>
         <resource name="TemporaryVPs"/>
     </resourceList>
@@ -481,14 +481,14 @@ Coded by Iron__Cross
         <delegate name="purchase"
             javaClass="games.strategy.triplea.delegate.PurchaseDelegate"
             display="Purchase Units"/>
-        <delegate name="purchaseNoIPC"
-            javaClass="games.strategy.triplea.delegate.NoIPCPurchaseDelegate"
+        <delegate name="purchaseNoPU"
+            javaClass="games.strategy.triplea.delegate.NoPUPurchaseDelegate"
             display="Purchase Units"/>
         <delegate name="endTurn"
             javaClass="games.strategy.triplea.delegate.EndTurnDelegate"
             display="Turn Complete"/>
-        <delegate name="endTurnNoIPC"
-            javaClass="games.strategy.triplea.delegate.NoIPCEndTurnDelegate"
+        <delegate name="endTurnNoPU"
+            javaClass="games.strategy.triplea.delegate.NoPUEndTurnDelegate"
             display="Turn Complete"/>
         <delegate name="endRound"
             javaClass="games.strategy.triplea.delegate.EndRoundDelegate"
@@ -500,9 +500,9 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate"
             display="Bid Purchase"/>
 
-        <delegate name="giveIPCs"
-            javaClass="games.strategy.triplea.delegate.GiveIPCsDelegate"
-            display="Give IPCs"/>            
+        <delegate name="givePUs"
+            javaClass="games.strategy.triplea.delegate.GivePUsDelegate"
+            display="Give PUs"/>            
         
         <sequence>
             <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
@@ -564,21 +564,21 @@ Coded by Iron__Cross
             <step name="britishEndTurn" delegate="endTurn" player="British"/>
             <step name="australianEndTurn" delegate="endTurn" player="Australians"/>
             <!--Added Commonwealth end turn 
-            <step name="commonwealthGiveIPCs" delegate="giveIPCs" player="Commonwealth"/>
+            <step name="commonwealthGivePUs" delegate="givePUs" player="Commonwealth"/>
             -->
             
             <!-- Chinese Game Sequence -->
             
             
             <!--                        <step name="chineseTech" delegate="tech" player="Chinese"/>-->
-            <step name="chinesePurchase" delegate="purchaseNoIPC"
+            <step name="chinesePurchase" delegate="purchaseNoPU"
                 player="Chinese"/>
             <step name="chineseCombatMove" delegate="move" player="Chinese"/>
             <step name="chineseBattle" delegate="battle" player="Chinese"/>
             <step name="chineseNonCombatMove" delegate="move" player="Chinese"
                 display="Non Combat Move"/>
             <step name="chinesePlace" delegate="place" player="Chinese"/>
-            <step name="chineseEndTurn" delegate="endTurnNoIPC" player="Chinese"/>
+            <step name="chineseEndTurn" delegate="endTurnNoPU" player="Chinese"/>
             
             <!-- Americans Game Sequence -->
             
@@ -599,128 +599,128 @@ Coded by Iron__Cross
     <production>
         <!-- Unit Production Cost -->
         <productionRule name="buyMarine">
-            <cost resource="IPCs" quantity="4"/>
+            <cost resource="PUs" quantity="4"/>
             <result resourceOrUnit="marine" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyInfantry">
-            <cost resource="IPCs" quantity="3"/>
+            <cost resource="PUs" quantity="3"/>
             <result resourceOrUnit="infantry" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyArtillery">
-            <cost resource="IPCs" quantity="4"/>
+            <cost resource="PUs" quantity="4"/>
             <result resourceOrUnit="artillery" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyArmour">
-            <cost resource="IPCs" quantity="5"/>
+            <cost resource="PUs" quantity="5"/>
             <result resourceOrUnit="armour" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyFighter">
-            <cost resource="IPCs" quantity="10"/>
+            <cost resource="PUs" quantity="10"/>
             <result resourceOrUnit="fighter" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyBomber">
-            <cost resource="IPCs" quantity="15"/>
+            <cost resource="PUs" quantity="15"/>
             <result resourceOrUnit="bomber" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyTransport">
-            <cost resource="IPCs" quantity="8"/>
+            <cost resource="PUs" quantity="8"/>
             <result resourceOrUnit="transport" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyCarrier">
-            <cost resource="IPCs" quantity="16"/>
+            <cost resource="PUs" quantity="16"/>
             <result resourceOrUnit="carrier" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyDestroyer">
-            <cost resource="IPCs" quantity="12"/>
+            <cost resource="PUs" quantity="12"/>
             <result resourceOrUnit="destroyer" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyBattleship">
-            <cost resource="IPCs" quantity="24"/>
+            <cost resource="PUs" quantity="24"/>
             <result resourceOrUnit="battleship" quantity="1"/>
         </productionRule>
         
         <productionRule name="buySubmarine">
-            <cost resource="IPCs" quantity="8"/>
+            <cost resource="PUs" quantity="8"/>
             <result resourceOrUnit="submarine" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyFactory">
-            <cost resource="IPCs" quantity="15"/>
+            <cost resource="PUs" quantity="15"/>
             <result resourceOrUnit="factory" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyAAGun">
-            <cost resource="IPCs" quantity="5"/>
+            <cost resource="PUs" quantity="5"/>
             <result resourceOrUnit="aaGun" quantity="1"/>
         </productionRule>
         
         <!-- Advanced Industrial Production -->
         <productionRule name="buyInfantryIndustrialTechnology">
-            <cost resource="IPCs" quantity="2"/>
+            <cost resource="PUs" quantity="2"/>
             <result resourceOrUnit="infantry" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyArtilleryIndustrialTechnology">
-            <cost resource="IPCs" quantity="3"/>
+            <cost resource="PUs" quantity="3"/>
             <result resourceOrUnit="artillery" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyArmourIndustrialTechnology">
-            <cost resource="IPCs" quantity="4"/>
+            <cost resource="PUs" quantity="4"/>
             <result resourceOrUnit="armour" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyFighterIndustrialTechnology">
-            <cost resource="IPCs" quantity="9"/>
+            <cost resource="PUs" quantity="9"/>
             <result resourceOrUnit="fighter" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyBomberIndustrialTechnology">
-            <cost resource="IPCs" quantity="14"/>
+            <cost resource="PUs" quantity="14"/>
             <result resourceOrUnit="bomber" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyTransportIndustrialTechnology">
-            <cost resource="IPCs" quantity="7"/>
+            <cost resource="PUs" quantity="7"/>
             <result resourceOrUnit="transport" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyCarrierIndustrialTechnology">
-            <cost resource="IPCs" quantity="15"/>
+            <cost resource="PUs" quantity="15"/>
             <result resourceOrUnit="carrier" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyDestroyerIndustrialTechnology">
-            <cost resource="IPCs" quantity="11"/>
+            <cost resource="PUs" quantity="11"/>
             <result resourceOrUnit="destroyer" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyBattleshipIndustrialTechnology">
-            <cost resource="IPCs" quantity="23"/>
+            <cost resource="PUs" quantity="23"/>
             <result resourceOrUnit="battleship" quantity="1"/>
         </productionRule>
         
         <productionRule name="buySubmarineIndustrialTechnology">
-            <cost resource="IPCs" quantity="7"/>
+            <cost resource="PUs" quantity="7"/>
             <result resourceOrUnit="submarine" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyFactoryIndustrialTechnology">
-            <cost resource="IPCs" quantity="14"/>
+            <cost resource="PUs" quantity="14"/>
             <result resourceOrUnit="factory" quantity="1"/>
         </productionRule>
         
         <productionRule name="buyAAGunIndustrialTechnology">
-            <cost resource="IPCs" quantity="4"/>
+            <cost resource="PUs" quantity="4"/>
             <result resourceOrUnit="aaGun" quantity="1"/>
         </productionRule>
         
@@ -1990,13 +1990,13 @@ Coded by Iron__Cross
         </unitInitialize>
         
         <resourceInitialize>
-            <resourceGiven player="Japanese" resource="IPCs" quantity="19"/>
-            <resourceGiven player="British" resource="IPCs" quantity="15"/>
+            <resourceGiven player="Japanese" resource="PUs" quantity="19"/>
+            <resourceGiven player="British" resource="PUs" quantity="15"/>
             <!-- Added Australians & Commonwealth-->
-            <resourceGiven player="Australians" resource="IPCs" quantity="20"/>  
-            <resourceGiven player="Commonwealth" resource="IPCs" quantity="20"/>                    
-            <resourceGiven player="Chinese" resource="IPCs" quantity="0"/>
-            <resourceGiven player="Americans" resource="IPCs" quantity="75"/>
+            <resourceGiven player="Australians" resource="PUs" quantity="20"/>  
+            <resourceGiven player="Commonwealth" resource="PUs" quantity="20"/>                    
+            <resourceGiven player="Chinese" resource="PUs" quantity="0"/>
+            <resourceGiven player="Americans" resource="PUs" quantity="75"/>
         </resourceInitialize>
     </initialize>
     
@@ -2100,7 +2100,7 @@ Coded by Iron__Cross
 					<li> (implemented) Marines </li>
 					<li> Chinese and USA same turn order (done on seperate turns for now) </li>
 					<li> (implemented) Seperate income for India and Australia </li>
-					<li> Commonwealth Convoy Center IPC distribution</li>
+					<li> Commonwealth Convoy Center PU distribution</li>
 					<li> Special stratbombing rules (regular strat bombing rules applied) </li>
 					<li> (implemented) Japanese Victory Points</li>
 					<li> (implemented) Japanese special turn one attack</li>

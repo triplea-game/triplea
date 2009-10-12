@@ -755,7 +755,7 @@ public class MoveValidator
 
         //make sure we can afford to pay neutral fees
         int cost = getNeutralCharge(data, route);
-        int resources = player.getResources().getQuantity(Constants.IPCS);
+        int resources = player.getResources().getQuantity(Constants.PUS);
         if (resources - cost < 0)
             return result.setErrorReturnResult(TOO_POOR_TO_VIOLATE_NEUTRALITY);
 
@@ -1420,7 +1420,7 @@ public class MoveValidator
 			if(UseNeutrals)
 			{
 				Route neutralViolatingRoute = data.getMap().getRoute(route.getEnd(), territory, notNeutral);
-				if((neutralViolatingRoute != null) && getNeutralCharge(data, neutralViolatingRoute) <= player.getResources().getQuantity(Constants.IPCS))
+				if((neutralViolatingRoute != null) && getNeutralCharge(data, neutralViolatingRoute) <= player.getResources().getQuantity(Constants.PUS))
 				{
 					m_nearestLand = Math.min(m_nearestLand, neutralViolatingRoute.getLength());
 
@@ -1528,9 +1528,9 @@ public class MoveValidator
     {
         //neutrals we will overfly in the first place
         Collection<Territory> neutrals = MoveDelegate.getEmptyNeutral(route);
-        int ipcs = player.getResources().getQuantity(Constants.IPCS);
+        int PUs = player.getResources().getQuantity(Constants.PUS);
 
-        if (ipcs < getNeutralCharge(data, neutrals.size()))
+        if (PUs < getNeutralCharge(data, neutrals.size()))
             return result.setErrorReturnResult(TOO_POOR_TO_VIOLATE_NEUTRALITY);
 
         return result;
@@ -2030,11 +2030,17 @@ public class MoveValidator
         	defaultRoute = data.getMap().getRoute(start, end);
         
         //If start and end are land, try a land route.
-        //dont force a water route, since planes may be moving
+        //don't force a land route, since planes may be moving
         if(!start.isWater() && !end.isWater())
-        {
-            Route landRoute = data.getMap().getRoute(start, end,
-                    Matches.TerritoryIsLand);
+        { 
+        	Route landRoute;
+        	if (isWW2V2(data) || isNeutralsImpassable(data))
+        		landRoute = data.getMap().getRoute(start, end, new CompositeMatchAnd( Matches.TerritoryIsLand, new CompositeMatchOr(noNeutral, territoryIsEnd)));
+        	else
+        	{
+        		landRoute = data.getMap().getRoute(start, end, Matches.TerritoryIsLand);
+        	}
+        	
             if (landRoute != null &&
             		landRoute.getLength() == defaultRoute.getLength())
                     return landRoute;

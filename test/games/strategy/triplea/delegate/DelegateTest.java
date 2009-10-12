@@ -103,7 +103,7 @@ public class DelegateTest extends TestCase
 
 	
 	
-	protected Resource ipcs;
+	protected Resource PUs;
 	
 	
 	/** Creates new PlaceDelegateTest */
@@ -186,7 +186,7 @@ public class DelegateTest extends TestCase
 		bomber = m_data.getUnitTypeList().getUnitType("bomber");
 		carrier = m_data.getUnitTypeList().getUnitType("carrier");
 		
-		ipcs = m_data.getResourceList().getResource("IPCs");
+		PUs = m_data.getResourceList().getResource("PUs");
 	}
 
 

@@ -96,7 +96,7 @@ public abstract class AbstractEndTurnDelegate
         if(!capital.getOwner().equals(player))
             return;
 
-        Resource ipcs = gameData.getResourceList().getResource(Constants.IPCS);
+        Resource PUs = gameData.getResourceList().getResource(Constants.PUS);
         //just collect resources
         Collection<Territory> territories = gameData.getMap().getTerritoriesOwnedBy(player);
 
@@ -114,11 +114,11 @@ public abstract class AbstractEndTurnDelegate
             toAdd += randomRoll[0]+1;
         }
         
-        int total = player.getResources().getQuantity(ipcs) + toAdd;
-        String transcriptText = player.getName() + " collect " + toAdd + MyFormatter.pluralize(" ipc", toAdd)+"; end with " + total+ MyFormatter.pluralize(" ipc", total) + " total";
+        int total = player.getResources().getQuantity(PUs) + toAdd;
+        String transcriptText = player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd)+"; end with " + total+ MyFormatter.pluralize(" PU", total) + " total";
         aBridge.getHistoryWriter().startEvent(transcriptText);
 
-        Change change = ChangeFactory.changeResourcesChange(player, ipcs, toAdd);
+        Change change = ChangeFactory.changeResourcesChange(player, PUs, toAdd);
         aBridge.addChange(change);
 
 

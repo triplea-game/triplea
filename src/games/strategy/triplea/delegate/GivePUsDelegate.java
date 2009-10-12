@@ -31,12 +31,12 @@ import java.util.Iterator;
 
 /**
  *
- *  A delegate used to transfer IPCs to other players
+ *  A delegate used to transfer PUs to other players
  *
  * @author  Kevin Comcowich
  * @version 1.0
  */
-public class GiveIPCsDelegate implements IDelegate
+public class GivePUsDelegate implements IDelegate
 {
 	private String m_name;
 	private String m_displayName;
@@ -44,8 +44,8 @@ public class GiveIPCsDelegate implements IDelegate
 	//to prevent repeat notifications
 	private boolean m_gameOver = false;
 
-	/** Creates a new instance of GiveIPCsDelegate */
-    public GiveIPCsDelegate()
+	/** Creates a new instance of GivePUsDelegate */
+    public GivePUsDelegate()
 	{
     }
 

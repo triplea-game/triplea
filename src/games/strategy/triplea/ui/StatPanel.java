@@ -71,7 +71,7 @@ public class StatPanel extends JPanel
 {
     private final StatTableModel m_dataModel;
     private final TechTableModel m_techModel;
-    private IStat[] m_stats = new IStat[] {new IPCStat(), new ProductionStat(), new UnitsStat(), new TUVStat()};
+    private IStat[] m_stats = new IStat[] {new PUStat(), new ProductionStat(), new UnitsStat(), new TUVStat()};
     private GameData m_data;
     private JTable m_statsTable;
     private Image m_statsImage;
@@ -581,7 +581,7 @@ class ProductionStat extends AbstractStat
                 //if it's water, it is a Convoy Center
                 if (place.isWater())
                     {
-                		//Can't get IPCs for capturing a CC, only original owner can get them.
+                		//Can't get PUs for capturing a CC, only original owner can get them.
                     	if (origOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID && origOwnerTracker.getOriginalOwner(place) == player)
                     		isOwnedConvoyOrLand = true;
                     }
@@ -617,17 +617,17 @@ class ProductionStat extends AbstractStat
     
 }
 
-class IPCStat extends AbstractStat
+class PUStat extends AbstractStat
 {
 
     public String getName()
     {
-        return "IPCs";
+        return "PUs";
     }
 
     public double getValue(PlayerID player, GameData data)
     {
-        return player.getResources().getQuantity(Constants.IPCS);
+        return player.getResources().getQuantity(Constants.PUS);
     }
 }
 

@@ -22,7 +22,7 @@ import java.util.Map;
 public class PrintGenerationData
 {
     private File m_outDir;
-    private Map<Integer, Integer> m_SameIPCMap;
+    private Map<Integer, Integer> m_SamePUMap;
     private GameData m_data;
     /**
      * General Constructor
@@ -45,18 +45,18 @@ public class PrintGenerationData
         m_outDir = outDir;
     }
     /**
-     * @return the sameIPCMap
+     * @return the samePUMap
      */
-    protected Map<Integer, Integer> getSameIPCMap()
+    protected Map<Integer, Integer> getSamePUMap()
     {
-        return m_SameIPCMap;
+        return m_SamePUMap;
     }
     /**
-     * @param sameIPCMap the sameIPCMap to set
+     * @param samePUMap the samePUMap to set
      */
-    protected void setSameIPCMap(Map<Integer, Integer> sameIPCMap)
+    protected void setSamePUMap(Map<Integer, Integer> samePUMap)
     {
-        m_SameIPCMap = sameIPCMap;
+        m_SamePUMap = samePUMap;
     }
     /**
      * @return the data

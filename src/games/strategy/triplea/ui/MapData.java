@@ -51,7 +51,7 @@ public class MapData
     private static final String CAPITAL_MARKERS = "capitols.txt";
     private static final String VC_MARKERS = "vc.txt";
     private static final String IMPASSIBLE = "Impassible";
-    private static final String IPC_PLACE_FILE = "ipc_place.txt";
+    private static final String PU_PLACE_FILE = "pu_place.txt";
     private static final String TERRITORY_NAME_PLACE_FILE = "name_place.txt";
     private static final String KAMIKAZE_FILE = "kamikaze_place.txt";
     private static final String DONT_DRAW_TERRITORY_NAME = "dont_draw_territory_names";
@@ -80,7 +80,7 @@ public class MapData
     private Map<String,Point> m_vcPlace;
 
     //maps String -> Point    
-    private Map<String,Point> m_ipcPlace;
+    private Map<String,Point> m_PUPlace;
     
     //maps String -> Point    
     private Map<String,Point> m_namePlace;
@@ -148,7 +148,7 @@ public class MapData
             m_centers = PointFileReaderWriter.readOneToOneCenters(loader.getResourceAsStream(prefix + CENTERS_FILE));
             m_vcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + VC_MARKERS));
             m_capitolPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CAPITAL_MARKERS));
-            m_ipcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + IPC_PLACE_FILE));
+            m_PUPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + PU_PLACE_FILE));
             m_namePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + TERRITORY_NAME_PLACE_FILE));
             m_kamikazePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + KAMIKAZE_FILE)); 
             m_mapProperties = new Properties();
@@ -499,10 +499,10 @@ public class MapData
         return getCenter(terr);
     }
     
-    public Point getIPCPlacementPoint(Territory terr)
+    public Point getPUPlacementPoint(Territory terr)
     {
-        if(m_ipcPlace.containsKey(terr.getName()))
-            return m_ipcPlace.get(terr.getName());
+        if(m_PUPlace.containsKey(terr.getName()))
+            return m_PUPlace.get(terr.getName());
         return null;  
     }
     

@@ -70,9 +70,9 @@ public class RocketsFireHelper
     	return games.strategy.triplea.Properties.getRocketAttackPerFactoryRestricted(data);
     }
 	
-	private boolean isIPCCap(GameData data)
+	private boolean isPUCap(GameData data)
 	{
-    	return games.strategy.triplea.Properties.getIPCCap(data);
+    	return games.strategy.triplea.Properties.getPUCap(data);
 	}
 	
 	private boolean isLimitRocketDamagePerTurn(GameData data)
@@ -216,7 +216,7 @@ public class RocketsFireHelper
     {
 
         PlayerID attacked = attackedTerritory.getOwner();
-        Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
+        Resource PUs = data.getResourceList().getResource(Constants.PUS);
         //int cost = bridge.getRandom(Constants.MAX_DICE);
 
         int cost = bridge.getRandom(Constants.MAX_DICE, "Rocket fired by " + player.getName() + " at " + attacked.getName());
@@ -234,14 +234,14 @@ public class RocketsFireHelper
             //get current production
             unitProduction = ta.getUnitProduction();                
             //Detemine the min that can be taken as losses
-            //int alreadyLost = DelegateFinder.moveDelegate(data).ipcsAlreadyLost(attackedTerritory);
+            //int alreadyLost = DelegateFinder.moveDelegate(data).PUsAlreadyLost(attackedTerritory);
             int alreadyLost = territoryProduction - unitProduction;
             
             int limit = 2 * territoryProduction  - alreadyLost;
             cost = Math.min(cost, limit);
 
             // Record production lost
-            DelegateFinder.moveDelegate(data).ipcsLost(attackedTerritory, cost);
+            DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
         	Collection<Unit> damagedFactory = Match.getMatches(attackedTerritory.getUnits().getUnits(), Matches.UnitIsFactory);
 
     		IntegerMap<Unit> hits = new IntegerMap<Unit>();
@@ -259,10 +259,10 @@ public class RocketsFireHelper
         //in WW2V2, limit rocket attack cost to production value of factory.
         else if (isWW2V2(data) || isLimitRocketDamageToProduction(data))
         {
-            // If we are limiting total ipcs lost then take that into account
-            if (isIPCCap(data) || isLimitRocketDamagePerTurn(data))
+            // If we are limiting total PUs lost then take that into account
+            if (isPUCap(data) || isLimitRocketDamagePerTurn(data))
             {
-                int alreadyLost = DelegateFinder.moveDelegate(data).ipcsAlreadyLost(attackedTerritory);
+                int alreadyLost = DelegateFinder.moveDelegate(data).PUsAlreadyLost(attackedTerritory);
                 territoryProduction -= alreadyLost;
                 territoryProduction = Math.max(0, territoryProduction);
             }
@@ -273,13 +273,13 @@ public class RocketsFireHelper
             }
         }
         
-        // Trying to remove more IPCs than the victim has is A Bad Thing[tm]
-        int availForRemoval = attacked.getResources().getQuantity(ipcs);
+        // Trying to remove more PUs than the victim has is A Bad Thing[tm]
+        int availForRemoval = attacked.getResources().getQuantity(PUs);
         if (cost > availForRemoval)
             cost = availForRemoval;
 
-        // Record the ipcs lost
-        DelegateFinder.moveDelegate(data).ipcsLost(attackedTerritory, cost);
+        // Record the PUs lost
+        DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
        
         if(SBRAffectsUnitProd)
         {
@@ -295,10 +295,10 @@ public class RocketsFireHelper
         {
             getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs:" + cost);
       
-            String transcriptText = attacked.getName() + " lost " + cost + " ipcs to rocket attack by " + player.getName();
+            String transcriptText = attacked.getName() + " lost " + cost + " PUs to rocket attack by " + player.getName();
             bridge.getHistoryWriter().startEvent(transcriptText);
 
-            Change rocketCharge = ChangeFactory.changeResourcesChange(attacked, ipcs, -cost);
+            Change rocketCharge = ChangeFactory.changeResourcesChange(attacked, PUs, -cost);
             bridge.addChange(rocketCharge);
         }
         //this is null in WW2V1

@@ -34,7 +34,7 @@ public class AIUtils
     
     
     /**
-     * How many IPC's does it cost the given player to produce the given unit type.<p> 
+     * How many PU's does it cost the given player to produce the given unit type.<p> 
      * 
      * If the player cannot produce the given unit, return Integer.MAX_VALUE<p>
      */
@@ -45,7 +45,7 @@ public class AIUtils
         if(player == null)
             throw new IllegalArgumentException("null player id");
         
-        Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
+        Resource PUs = data.getResourceList().getResource(Constants.PUS);
         
         ProductionRule rule = getProductionRule(unitType, player, data);
         if(rule == null)
@@ -54,7 +54,7 @@ public class AIUtils
         }
         else
         {
-            return rule.getCosts().getInt(ipcs);
+            return rule.getCosts().getInt(PUs);
         }
     }
     

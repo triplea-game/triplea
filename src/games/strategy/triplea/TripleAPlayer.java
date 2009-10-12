@@ -171,7 +171,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         m_bridge.getGameData().acquireReadLock();
         try
         {
-            if (m_id.getResources().getQuantity(Constants.IPCS) == 0 || !isTechDevelopment(m_bridge.getGameData()))
+            if (m_id.getResources().getQuantity(Constants.PUS) == 0 || !isTechDevelopment(m_bridge.getGameData()))
                 return;
         }
         finally 
@@ -323,13 +323,13 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         {
             //if my capital is captured, 
             //I can't produce
-            //i may have ipcs if i capture someone else's
+            //i may have PUs if i capture someone else's
             //capital
             Territory capital = TerritoryAttachment.getCapital(m_id, m_bridge.getGameData());
             if(capital != null && !capital.getOwner().equals(m_id))
                 return;
             
-            int minIPCsNeededToBuild = Integer.MAX_VALUE;
+            int minPUsNeededToBuild = Integer.MAX_VALUE;
             m_bridge.getGameData().acquireReadLock();
             try
             {
@@ -337,7 +337,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
                 while(prodRules.hasNext())
                 {
                     ProductionRule rule = (ProductionRule) prodRules.next();
-                    minIPCsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.IPCS)), minIPCsNeededToBuild);
+                    minPUsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.PUS)), minPUsNeededToBuild);
                 }
                      
                 if(m_id.getRepairFrontier() != null)
@@ -346,12 +346,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
                     while(repairRules.hasNext())
                     {
                         RepairRule rule = (RepairRule) repairRules.next();
-                        minIPCsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.IPCS)), minIPCsNeededToBuild);
+                        minPUsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.PUS)), minPUsNeededToBuild);
                     }
                 }
                 
                 //can we buy anything
-                if (m_id.getResources().getQuantity(Constants.IPCS) < minIPCsNeededToBuild)
+                if (m_id.getResources().getQuantity(Constants.PUS) < minPUsNeededToBuild)
                     return;
             }
             finally

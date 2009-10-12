@@ -169,9 +169,9 @@ public class TechPanel extends ActionPanel
                 advance = (TechAdvance) list.getSelectedValue();
             }
 
-            int ipcs = getCurrentPlayer().getResources().getQuantity(Constants.IPCS);
+            int PUs = getCurrentPlayer().getResources().getQuantity(Constants.PUS);
             String message = "Roll Tech";
-            TechRollPanel techRollPanel = new TechRollPanel(ipcs);
+            TechRollPanel techRollPanel = new TechRollPanel(PUs);
             int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techRollPanel, message, JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE, null);
             if (choice != JOptionPane.OK_OPTION)
@@ -224,10 +224,10 @@ public class TechPanel extends ActionPanel
             JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart", JOptionPane.PLAIN_MESSAGE);
             category = (TechAdvance) list.getSelectedValue();
             
-            int ipcs = getCurrentPlayer().getResources().getQuantity(Constants.IPCS);
+            int PUs = getCurrentPlayer().getResources().getQuantity(Constants.PUS);
             
             String message = "Purchase Tech Tokens";
-            TechTokenPanel techTokenPanel = new TechTokenPanel(ipcs, m_currTokens);
+            TechTokenPanel techTokenPanel = new TechTokenPanel(PUs, m_currTokens);
             int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techTokenPanel, message, JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE, null);
             if (choice != JOptionPane.OK_OPTION)
@@ -281,20 +281,20 @@ public class TechPanel extends ActionPanel
 
 class TechRollPanel extends JPanel
 {
-    int m_ipcs;
+    int m_PUs;
     JLabel m_left = new JLabel();
     ScrollableTextField m_textField;
 
-    TechRollPanel(int ipcs)
+    TechRollPanel(int PUs)
     {
         setLayout(new GridBagLayout());
-        m_ipcs = ipcs;
+        m_PUs = PUs;
         JLabel title = new JLabel("Select the number of tech rolls:");
         title.setBorder(new javax.swing.border.EmptyBorder(5, 5, 5, 5));
-        m_textField = new ScrollableTextField(0, ipcs / Constants.TECH_ROLL_COST);
+        m_textField = new ScrollableTextField(0, PUs / Constants.TECH_ROLL_COST);
         m_textField.addChangeListener(m_listener);
         JLabel costLabel = new JLabel("x5");
-        setLabel(ipcs);
+        setLabel(PUs);
         int space = 0;
         add(title, new GridBagConstraints(0, 0, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, space, space), 0, 0));
         add(m_textField, new GridBagConstraints(0, 1, 1, 1, 0.5, 1, GridBagConstraints.EAST, GridBagConstraints.NONE,
@@ -303,16 +303,16 @@ class TechRollPanel extends JPanel
         add(m_left, new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 5, space, space), 0, 0));
     }
 
-    private void setLabel(int ipcs)
+    private void setLabel(int PUs)
     {
-        m_left.setText("Left to spend:" + ipcs);
+        m_left.setText("Left to spend:" + PUs);
     }
 
     private ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
     {
         public void changedValue(ScrollableTextField stf)
         {
-            setLabel(m_ipcs - (Constants.TECH_ROLL_COST * m_textField.getValue()));
+            setLabel(m_PUs - (Constants.TECH_ROLL_COST * m_textField.getValue()));
         }
     };
 
@@ -324,21 +324,21 @@ class TechRollPanel extends JPanel
 
 class TechTokenPanel extends JPanel
 {
-    int m_ipcs;
+    int m_PUs;
     JLabel m_left = new JLabel();
     JLabel m_right = new JLabel();
     ScrollableTextField m_textField;
 
-    TechTokenPanel(int ipcs, int currTokens)
+    TechTokenPanel(int PUs, int currTokens)
     {
         setLayout(new GridBagLayout());
-        m_ipcs = ipcs;
+        m_PUs = PUs;
         JLabel title = new JLabel("Select the number of tech tokens to purchase:");
         title.setBorder(new javax.swing.border.EmptyBorder(5, 5, 5, 5));
-        m_textField = new ScrollableTextField(0, ipcs / Constants.TECH_ROLL_COST);
+        m_textField = new ScrollableTextField(0, PUs / Constants.TECH_ROLL_COST);
         m_textField.addChangeListener(m_listener);
         JLabel costLabel = new JLabel("x5");
-        setLabel(ipcs);
+        setLabel(PUs);
         setTokens(currTokens);
         int space = 0;
         add(title, new GridBagConstraints(0, 0, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, space, space), 0, 0));
@@ -349,9 +349,9 @@ class TechTokenPanel extends JPanel
         add(m_right, new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 120, space, space), 0, 0));
     }
 
-    private void setLabel(int ipcs)
+    private void setLabel(int PUs)
     {
-        m_left.setText("Left to spend:" + ipcs);
+        m_left.setText("Left to spend:" + PUs);
     }
 
     private void setTokens(int tokens)
@@ -363,7 +363,7 @@ class TechTokenPanel extends JPanel
     {
         public void changedValue(ScrollableTextField stf)
         {
-            setLabel(m_ipcs - (Constants.TECH_ROLL_COST * m_textField.getValue()));
+            setLabel(m_PUs - (Constants.TECH_ROLL_COST * m_textField.getValue()));
         }
     };
 

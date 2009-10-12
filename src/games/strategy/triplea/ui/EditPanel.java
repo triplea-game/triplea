@@ -64,7 +64,7 @@ public class EditPanel extends ActionPanel
     private TripleAFrame m_frame;
     private Action m_addUnitsAction;
     private Action m_delUnitsAction;
-    private Action m_changeIPCsAction;
+    private Action m_changePUsAction;
     private Action m_changeTerritoryOwnerAction;
     private Action m_currentAction = null;
     private JLabel m_actionLabel;
@@ -192,7 +192,7 @@ public class EditPanel extends ActionPanel
             }
         };
 
-        m_changeIPCsAction = new AbstractAction("Change IPCs") {
+        m_changePUsAction = new AbstractAction("Change PUs") {
             public void actionPerformed(ActionEvent event)
             {
                 m_currentAction = this;
@@ -201,7 +201,7 @@ public class EditPanel extends ActionPanel
                 PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
                 int option;
                 option = JOptionPane.showOptionDialog(getTopLevelAncestor(), playerChooser, 
-                                                "Select owner of ipcs to change",
+                                                "Select owner of PUs to change",
                                                 JOptionPane.OK_CANCEL_OPTION,
                                                 JOptionPane.PLAIN_MESSAGE, null, null, null);
                 if(option != JOptionPane.OK_OPTION)
@@ -209,15 +209,15 @@ public class EditPanel extends ActionPanel
 
                 PlayerID player = playerChooser.getSelected();
 
-                Resource ipcs = getData().getResourceList().getResource(Constants.IPCS);
-                int oldTotal = player.getResources().getQuantity(ipcs);
+                Resource PUs = getData().getResourceList().getResource(Constants.PUS);
+                int oldTotal = player.getResources().getQuantity(PUs);
                 int newTotal = oldTotal;
 
-                JTextField ipcsField = new JTextField(String.valueOf(oldTotal), 4);
-                ipcsField.setMaximumSize(ipcsField.getPreferredSize());
+                JTextField PUsField = new JTextField(String.valueOf(oldTotal), 4);
+                PUsField.setMaximumSize(PUsField.getPreferredSize());
 
-                option = JOptionPane.showOptionDialog(getTopLevelAncestor(), new JScrollPane(ipcsField), 
-                                                "Select new number of ipcs",
+                option = JOptionPane.showOptionDialog(getTopLevelAncestor(), new JScrollPane(PUsField), 
+                                                "Select new number of PUs",
                                                 JOptionPane.OK_CANCEL_OPTION,
                                                 JOptionPane.PLAIN_MESSAGE, null, null, null);
                 if(option != JOptionPane.OK_OPTION)
@@ -225,12 +225,12 @@ public class EditPanel extends ActionPanel
 
                 try 
                 {
-                    newTotal = Integer.parseInt(ipcsField.getText());
+                    newTotal = Integer.parseInt(PUsField.getText());
                 } catch (Exception e)
                 {
                 }
 
-                String result = m_frame.getEditDelegate().changeIPCs(player, newTotal);
+                String result = m_frame.getEditDelegate().changePUs(player, newTotal);
                 if (result != null)
                     JOptionPane.showMessageDialog(getTopLevelAncestor(),
                                                   result,
@@ -251,7 +251,7 @@ public class EditPanel extends ActionPanel
         add(new JButton(m_addUnitsAction));
         add(new JButton(m_delUnitsAction));
         add(new JButton(m_changeTerritoryOwnerAction));
-        add(new JButton(m_changeIPCsAction));
+        add(new JButton(m_changePUsAction));
         add(Box.createVerticalStrut(15));
 
         setWidgetActivation();
@@ -320,14 +320,14 @@ public class EditPanel extends ActionPanel
             m_addUnitsAction.setEnabled(false);
             m_delUnitsAction.setEnabled(false);
             m_changeTerritoryOwnerAction.setEnabled(false);
-            m_changeIPCsAction.setEnabled(false);
+            m_changePUsAction.setEnabled(false);
         }
         else
         {
             m_addUnitsAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
             m_delUnitsAction.setEnabled(!m_selectedUnits.isEmpty());
             m_changeTerritoryOwnerAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
-            m_changeIPCsAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
+            m_changePUsAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
         }
     }
 

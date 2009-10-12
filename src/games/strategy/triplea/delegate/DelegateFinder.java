@@ -57,12 +57,12 @@ public class DelegateFinder
 		return (TechnologyDelegate) delegate;
 	}
 
-	public static final GiveIPCsDelegate giveIPCsDelegate(GameData data)
+	public static final GivePUsDelegate givePUsDelegate(GameData data)
 	{
-		IDelegate delegate =  data.getDelegateList().getDelegate("giveIPCs");
+		IDelegate delegate =  data.getDelegateList().getDelegate("givePUs");
 		if(delegate == null)
-			throw new IllegalStateException("giveIPCs delegate not found");
-		return (GiveIPCsDelegate) delegate;
+			throw new IllegalStateException("givePUs delegate not found");
+		return (GivePUsDelegate) delegate;
 	}
 	
 }

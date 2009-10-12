@@ -75,7 +75,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     private boolean m_firstRun = true;
     private boolean m_nonCombat;
     private final TransportTracker m_transportTracker = new TransportTracker();
-    private IntegerMap<Territory> m_ipcsLost = new IntegerMap<Territory>();
+    private IntegerMap<Territory> m_PUsLost = new IntegerMap<Territory>();
     
     
     //if we are in the process of doing a move
@@ -521,7 +521,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             }
             
             change.add(m_transportTracker.endOfRoundClearStateChange(m_data));
-            m_ipcsLost.clear();                        
+            m_PUsLost.clear();                        
         }
 
         if(!change.isEmpty()) 
@@ -830,19 +830,19 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
 
     /**
-     * Return the number of ipcs that have been lost by bombing, rockets, etc.
+     * Return the number of PUs that have been lost by bombing, rockets, etc.
      */
-    public int ipcsAlreadyLost(Territory t)
+    public int PUsAlreadyLost(Territory t)
     {
-        return m_ipcsLost.getInt(t);
+        return m_PUsLost.getInt(t);
     }
 
     /**
-     * Add more ipcs lost to a territory due to bombing, rockets, etc.
+     * Add more PUs lost to a territory due to bombing, rockets, etc.
      */
-    public void ipcsLost(Territory t, int amt)
+    public void PUsLost(Territory t, int amt)
     {
-        m_ipcsLost.add(t, amt);
+        m_PUsLost.add(t, amt);
     }
 
     public TransportTracker getTransportTracker()
@@ -878,7 +878,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         state.m_nonCombat = m_nonCombat;                
         if (saveUndo)
             state.m_movesToUndo = m_movesToUndo;
-        state.m_ipcsLost = m_ipcsLost;
+        state.m_PUsLost = m_PUsLost;
         state.m_tempMovePerformer = this.m_tempMovePerformer;
         return state;
     }
@@ -897,7 +897,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         //prevents overwriting undo state when we restore from an undo move
         if (state.m_movesToUndo != null)
             m_movesToUndo = state.m_movesToUndo;
-        m_ipcsLost = state.m_ipcsLost;
+        m_PUsLost = state.m_PUsLost;
         m_tempMovePerformer = state.m_tempMovePerformer;
     }
 }
@@ -906,7 +906,7 @@ class MoveState implements Serializable
 {
     public boolean m_firstRun = true;
     public boolean m_nonCombat;
-    public IntegerMap<Territory> m_ipcsLost;
+    public IntegerMap<Territory> m_PUsLost;
     public List<UndoableMove> m_movesToUndo;
     public MovePerformer m_tempMovePerformer;
 

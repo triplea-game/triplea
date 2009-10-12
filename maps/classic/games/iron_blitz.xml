@@ -454,7 +454,7 @@
 	</map>
 	
 	<resourceList>
-		<resource name="IPCs"/>
+		<resource name="PUs"/>
 	</resourceList>
 
 
@@ -568,132 +568,132 @@
 
 	<production>
 		<productionRule name="buyMarine">
-			<cost resource="IPCs" quantity="4" />
+			<cost resource="PUs" quantity="4" />
 			<result resourceOrUnit="marine" quantity="1"/>
 		</productionRule>
 		<productionRule name="buyInfantry">
-			<cost resource="IPCs" quantity="3" />
+			<cost resource="PUs" quantity="3" />
 			<result resourceOrUnit="infantry" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyArtillery">
-			<cost resource="IPCs" quantity="4" />
+			<cost resource="PUs" quantity="4" />
 			<result resourceOrUnit="artillery" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyArmour">
-			<cost resource="IPCs" quantity="5" />
+			<cost resource="PUs" quantity="5" />
 			<result resourceOrUnit="armour" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyFighter">
-			<cost resource="IPCs" quantity="12" />
+			<cost resource="PUs" quantity="12" />
 			<result resourceOrUnit="fighter" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyBomber">
-			<cost resource="IPCs" quantity="15" />
+			<cost resource="PUs" quantity="15" />
 			<result resourceOrUnit="bomber" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyTransport">
-			<cost resource="IPCs" quantity="8" />
+			<cost resource="PUs" quantity="8" />
 			<result resourceOrUnit="transport" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyDestroyer">
-			<cost resource="IPCs" quantity="8" />
+			<cost resource="PUs" quantity="8" />
 			<result resourceOrUnit="destroyer" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyCarrier">
-			<cost resource="IPCs" quantity="18" />
+			<cost resource="PUs" quantity="18" />
 			<result resourceOrUnit="carrier" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyBattleship">
-			<cost resource="IPCs" quantity="24" />
+			<cost resource="PUs" quantity="24" />
 			<result resourceOrUnit="battleship" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buySubmarine">
-			<cost resource="IPCs" quantity="8" />
+			<cost resource="PUs" quantity="8" />
 			<result resourceOrUnit="submarine" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyFactory">
-			<cost resource="IPCs" quantity="15" />
+			<cost resource="PUs" quantity="15" />
 			<result resourceOrUnit="factory" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyAAGun">
-			<cost resource="IPCs" quantity="5" />
+			<cost resource="PUs" quantity="5" />
 			<result resourceOrUnit="aaGun" quantity="1"/>
 		</productionRule>
 
 		<!-- advanced industrial production -->
 		<productionRule name="buyMarineIndustrialTechnology">
-			<cost resource="IPCs" quantity="3" />
+			<cost resource="PUs" quantity="3" />
 			<result resourceOrUnit="marine" quantity="1"/>
 		</productionRule>
 
 		<productionRule name="buyInfantryIndustrialTechnology">
-			<cost resource="IPCs" quantity="2" />
+			<cost resource="PUs" quantity="2" />
 			<result resourceOrUnit="infantry" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyArtilleryIndustrialTechnology">
-			<cost resource="IPCs" quantity="3" />
+			<cost resource="PUs" quantity="3" />
 			<result resourceOrUnit="artillery" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyArmourIndustrialTechnology">
-			<cost resource="IPCs" quantity="4" />
+			<cost resource="PUs" quantity="4" />
 			<result resourceOrUnit="armour" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyFighterIndustrialTechnology">
-			<cost resource="IPCs" quantity="11" />
+			<cost resource="PUs" quantity="11" />
 			<result resourceOrUnit="fighter" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyBomberIndustrialTechnology">
-			<cost resource="IPCs" quantity="14" />
+			<cost resource="PUs" quantity="14" />
 			<result resourceOrUnit="bomber" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyTransportIndustrialTechnology">
-			<cost resource="IPCs" quantity="7" />
+			<cost resource="PUs" quantity="7" />
 			<result resourceOrUnit="transport" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyDestroyerIndustrialTechnology">
-			<cost resource="IPCs" quantity="7" />
+			<cost resource="PUs" quantity="7" />
 			<result resourceOrUnit="destroyer" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyCarrierIndustrialTechnology">
-			<cost resource="IPCs" quantity="17" />
+			<cost resource="PUs" quantity="17" />
 			<result resourceOrUnit="carrier" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyBattleshipIndustrialTechnology">
-			<cost resource="IPCs" quantity="23" />
+			<cost resource="PUs" quantity="23" />
 			<result resourceOrUnit="battleship" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buySubmarineIndustrialTechnology">
-			<cost resource="IPCs" quantity="7" />
+			<cost resource="PUs" quantity="7" />
 			<result resourceOrUnit="submarine" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyFactoryIndustrialTechnology">
-			<cost resource="IPCs" quantity="14" />
+			<cost resource="PUs" quantity="14" />
 			<result resourceOrUnit="factory" quantity="1"/>
 		</productionRule>
 		
 		<productionRule name="buyAAGunIndustrialTechnology">
-			<cost resource="IPCs" quantity="4" />
+			<cost resource="PUs" quantity="4" />
 			<result resourceOrUnit="aaGun" quantity="1"/>
 		</productionRule>
 
@@ -1427,11 +1427,11 @@
 		</unitInitialize>
 	
 		<resourceInitialize>
-			<resourceGiven player="Japanese" resource="IPCs" quantity="25"/>
-			<resourceGiven player="British" resource="IPCs" quantity="30"/>
-			<resourceGiven player="Americans" resource="IPCs" quantity="36"/>
-			<resourceGiven player="Russians" resource="IPCs" quantity="24"/>
-			<resourceGiven player="Germans" resource="IPCs" quantity="32"/>
+			<resourceGiven player="Japanese" resource="PUs" quantity="25"/>
+			<resourceGiven player="British" resource="PUs" quantity="30"/>
+			<resourceGiven player="Americans" resource="PUs" quantity="36"/>
+			<resourceGiven player="Russians" resource="PUs" quantity="24"/>
+			<resourceGiven player="Germans" resource="PUs" quantity="32"/>
 		</resourceInitialize>
 	</initialize>
 
@@ -1507,8 +1507,8 @@
 
 						A mod which adds destroyers and marines <br> <br> 
 				 
-					    <H3> Destroyers </H3>attack and defend at 2, and cost 8 ipcs. <br> 
-						<H3> Marines </H3>attack at 1 (2 during amphibious assaults), defend at 2, and cost 4 ipcs. <br> <br>
+					    <H3> Destroyers </H3>attack and defend at 2, and cost 8 PUs. <br> 
+						<H3> Marines </H3>attack at 1 (2 during amphibious assaults), defend at 2, and cost 4 PUs. <br> <br>
 						
 						<br> <br> <i> 
 								

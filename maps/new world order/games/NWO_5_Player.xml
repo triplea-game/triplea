@@ -1003,7 +1003,7 @@
 		</map>
 
         <resourceList>
-                <resource name="IPCs"/>
+                <resource name="PUs"/>
         </resourceList>
 
         <playerList>
@@ -1154,256 +1154,256 @@
 <!-- Unit Production Cost -->
 
 <productionRule name="buyinfantry">
-<cost resource="IPCs" quantity="2"/>
+<cost resource="PUs" quantity="2"/>
 <result resourceOrUnit="infantry" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyelite">
-<cost resource="IPCs" quantity="3"/>
+<cost resource="PUs" quantity="3"/>
 <result resourceOrUnit="elite" quantity="1"/>
 </productionRule>
 
 <productionRule name="buytruck">
-<cost resource="IPCs" quantity="4"/>
+<cost resource="PUs" quantity="4"/>
 <result resourceOrUnit="truck" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyartillery">
-<cost resource="IPCs" quantity="4"/>
+<cost resource="PUs" quantity="4"/>
 <result resourceOrUnit="artillery" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyarmour">
-<cost resource="IPCs" quantity="5"/>
+<cost resource="PUs" quantity="5"/>
 <result resourceOrUnit="armour" quantity="1"/>
 </productionRule>
 
 <productionRule name="buybigarmour">
-<cost resource="IPCs" quantity="7"/>
+<cost resource="PUs" quantity="7"/>
 <result resourceOrUnit="bigarmour" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyhalftrack">
-<cost resource="IPCs" quantity="6"/>
+<cost resource="PUs" quantity="6"/>
 <result resourceOrUnit="halftrack" quantity="1"/>
 </productionRule>
 
 <productionRule name="buykatyusha">
-<cost resource="IPCs" quantity="6"/>
+<cost resource="PUs" quantity="6"/>
 <result resourceOrUnit="katyusha" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyscout">
-<cost resource="IPCs" quantity="3"/>
+<cost resource="PUs" quantity="3"/>
 <result resourceOrUnit="scout" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyfighter">
-<cost resource="IPCs" quantity="10"/>
+<cost resource="PUs" quantity="10"/>
 <result resourceOrUnit="fighter" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyearlyfighter">
-<cost resource="IPCs" quantity="8"/>
+<cost resource="PUs" quantity="8"/>
 <result resourceOrUnit="earlyfighter" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyme262">
-<cost resource="IPCs" quantity="13"/>
+<cost resource="PUs" quantity="13"/>
 <result resourceOrUnit="me262" quantity="1"/>
 </productionRule>
 
 <productionRule name="buybomber">
-<cost resource="IPCs" quantity="15"/>
+<cost resource="PUs" quantity="15"/>
 <result resourceOrUnit="bomber" quantity="1"/>
 </productionRule>
 
 <productionRule name="buylancaster">
-<cost resource="IPCs" quantity="20"/>
+<cost resource="PUs" quantity="20"/>
 <result resourceOrUnit="lancaster" quantity="1"/>
 </productionRule>
 
 <productionRule name="buytransport">
-<cost resource="IPCs" quantity="8"/>
+<cost resource="PUs" quantity="8"/>
 <result resourceOrUnit="transport" quantity="1"/>
 </productionRule>
 
 <productionRule name="buycarrier">
-<cost resource="IPCs" quantity="16"/>
+<cost resource="PUs" quantity="16"/>
 <result resourceOrUnit="carrier" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyb29">
-<cost resource="IPCs" quantity="20"/>
+<cost resource="PUs" quantity="20"/>
 <result resourceOrUnit="b29" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyt.boat">
-<cost resource="IPCs" quantity="6"/>
+<cost resource="PUs" quantity="6"/>
 <result resourceOrUnit="t.boat" quantity="1"/>
 </productionRule>
 
 <productionRule name="buydestroyer">
-<cost resource="IPCs" quantity="12"/>
+<cost resource="PUs" quantity="12"/>
 <result resourceOrUnit="destroyer" quantity="1"/>
 </productionRule>
 
 <productionRule name="buybattleship">
-<cost resource="IPCs" quantity="24"/>
+<cost resource="PUs" quantity="24"/>
 <result resourceOrUnit="battleship" quantity="1"/>
 </productionRule>
 
 <productionRule name="buysubmarine">
-<cost resource="IPCs" quantity="8"/>
+<cost resource="PUs" quantity="8"/>
 <result resourceOrUnit="submarine" quantity="1"/>
 </productionRule>
 
 <productionRule name="buys.sub">
-<cost resource="IPCs" quantity="12"/>
+<cost resource="PUs" quantity="12"/>
 <result resourceOrUnit="s.sub" quantity="1"/>
 </productionRule>
 
 <productionRule name="buycruiser">
-<cost resource="IPCs" quantity="14"/>
+<cost resource="PUs" quantity="14"/>
 <result resourceOrUnit="cruiser" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyfactory">
-<cost resource="IPCs" quantity="15"/>
+<cost resource="PUs" quantity="15"/>
 <result resourceOrUnit="factory" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyaaGun">
-<cost resource="IPCs" quantity="5"/>
+<cost resource="PUs" quantity="5"/>
 <result resourceOrUnit="aaGun" quantity="1"/>
 </productionRule>
 
 <!-- Advanced Industrial Production -->
 
 <productionRule name="buyinfantryIndustrialTechnology">
-<cost resource="IPCs" quantity="1"/>
+<cost resource="PUs" quantity="1"/>
 <result resourceOrUnit="infantry" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyeliteIndustrialTechnology">
-<cost resource="IPCs" quantity="2"/>
+<cost resource="PUs" quantity="2"/>
 <result resourceOrUnit="elite" quantity="1"/>
 </productionRule>
 
 <productionRule name="buytruckIndustrialTechnology">
-<cost resource="IPCs" quantity="3"/>
+<cost resource="PUs" quantity="3"/>
 <result resourceOrUnit="elite" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyartilleryIndustrialTechnology">
-<cost resource="IPCs" quantity="3"/>
+<cost resource="PUs" quantity="3"/>
 <result resourceOrUnit="artillery" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyarmourIndustrialTechnology">
-<cost resource="IPCs" quantity="4"/>
+<cost resource="PUs" quantity="4"/>
 <result resourceOrUnit="armour" quantity="1"/>
 </productionRule>
 
 <productionRule name="buybigarmourIndustrialTechnology">
-<cost resource="IPCs" quantity="7"/>
+<cost resource="PUs" quantity="7"/>
 <result resourceOrUnit="bigarmour" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyhalftrackIndustrialTechnology">
-<cost resource="IPCs" quantity="5"/>
+<cost resource="PUs" quantity="5"/>
 <result resourceOrUnit="halftrack" quantity="1"/>
 </productionRule>
 
 
 <productionRule name="buykatyushaIndustrialTechnology">
-<cost resource="IPCs" quantity="5"/>
+<cost resource="PUs" quantity="5"/>
 <result resourceOrUnit="katyusha" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyscoutIndustrialTechnology">
-<cost resource="IPCs" quantity="2"/>
+<cost resource="PUs" quantity="2"/>
 <result resourceOrUnit="scout" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyfighterIndustrialTechnology">
-<cost resource="IPCs" quantity="9"/>
+<cost resource="PUs" quantity="9"/>
 <result resourceOrUnit="fighter" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyearlyfighterIndustrialTechnology">
-<cost resource="IPCs" quantity="7"/>
+<cost resource="PUs" quantity="7"/>
 <result resourceOrUnit="fighter" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyme262IndustrialTechnology">
-<cost resource="IPCs" quantity="12"/>
+<cost resource="PUs" quantity="12"/>
 <result resourceOrUnit="fighter" quantity="1"/>
 </productionRule>
 
 
 <productionRule name="buybomberIndustrialTechnology">
-<cost resource="IPCs" quantity="14"/>
+<cost resource="PUs" quantity="14"/>
 <result resourceOrUnit="bomber" quantity="1"/>
 </productionRule>
 
 <productionRule name="buylancasterIndustrialTechnology">
-<cost resource="IPCs" quantity="17"/>
+<cost resource="PUs" quantity="17"/>
 <result resourceOrUnit="bomber" quantity="1"/>
 </productionRule>
 
 <productionRule name="buytransportIndustrialTechnology">
-<cost resource="IPCs" quantity="7"/>
+<cost resource="PUs" quantity="7"/>
 <result resourceOrUnit="transport" quantity="1"/>
 </productionRule>
 
 <productionRule name="buycarrierIndustrialTechnology">
-<cost resource="IPCs" quantity="15"/>
+<cost resource="PUs" quantity="15"/>
 <result resourceOrUnit="carrier" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyb29IndustrialTechnology">
-<cost resource="IPCs" quantity="19"/>
+<cost resource="PUs" quantity="19"/>
 <result resourceOrUnit="b29" quantity="1"/>
 </productionRule>
 
 <productionRule name="buydestroyerIndustrialTechnology">
-<cost resource="IPCs" quantity="11"/>
+<cost resource="PUs" quantity="11"/>
 <result resourceOrUnit="destroyer" quantity="1"/>
 </productionRule>
 
 <productionRule name="buybattleshipIndustrialTechnology">
-<cost resource="IPCs" quantity="23"/>
+<cost resource="PUs" quantity="23"/>
 <result resourceOrUnit="battleship" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyt.boatIndustrialTechnology">
-<cost resource="IPCs" quantity="5"/>
+<cost resource="PUs" quantity="5"/>
 <result resourceOrUnit="submarine" quantity="1"/>
 </productionRule>
 
 <productionRule name="buysubmarineIndustrialTechnology">
-<cost resource="IPCs" quantity="7"/>
+<cost resource="PUs" quantity="7"/>
 <result resourceOrUnit="submarine" quantity="1"/>
 </productionRule>
 
 <productionRule name="buys.subIndustrialTechnology">
-<cost resource="IPCs" quantity="11"/>
+<cost resource="PUs" quantity="11"/>
 <result resourceOrUnit="s.sub" quantity="1"/>
 </productionRule>
 
 <productionRule name="buycruiserIndustrialTechnology">
-<cost resource="IPCs" quantity="13"/>
+<cost resource="PUs" quantity="13"/>
 <result resourceOrUnit="cruiser" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyfactoryIndustrialTechnology">
-<cost resource="IPCs" quantity="14"/>
+<cost resource="PUs" quantity="14"/>
 <result resourceOrUnit="factory" quantity="1"/>
 </productionRule>
 
 <productionRule name="buyaaGunIndustrialTechnology">
-<cost resource="IPCs" quantity="4"/>
+<cost resource="PUs" quantity="4"/>
 <result resourceOrUnit="aaGun" quantity="1"/>
 </productionRule>
 
@@ -3777,11 +3777,11 @@
                 <resourceInitialize>
 
 
-			<resourceGiven player="Germans" resource="IPCs" quantity="60"/>
-                        <resourceGiven player="Russians" resource="IPCs" quantity="10"/>
-                        <resourceGiven player="Italians" resource="IPCs" quantity="30"/>
-			<resourceGiven player="British" resource="IPCs" quantity="14"/>
-			<resourceGiven player="Americans" resource="IPCs" quantity="12"/>		
+			<resourceGiven player="Germans" resource="PUs" quantity="60"/>
+                        <resourceGiven player="Russians" resource="PUs" quantity="10"/>
+                        <resourceGiven player="Italians" resource="PUs" quantity="30"/>
+			<resourceGiven player="British" resource="PUs" quantity="14"/>
+			<resourceGiven player="Americans" resource="PUs" quantity="12"/>		
                 </resourceInitialize>
         </initialize>
 

@@ -311,7 +311,7 @@ public class HistoryLog extends JFrame
                         {
                         } else if (title.equals("Cleaning up after movement phases"))
                         {
-                        } else if (title.matches("\\w+ collect \\d+ ipcs?.*"))
+                        } else if (title.matches("\\w+ collect \\d+ PUs?.*"))
                         {
                             logWriter.println(indent+title);
                         } else if (title.matches("\\w+ takes? .*? from \\w+"))
@@ -426,7 +426,7 @@ public class HistoryLog extends JFrame
     {
         PrintWriter logWriter = m_printWriter;
         Collection<PlayerID> players;
-        logWriter.println("Production/IPCs Summary :\n");
+        logWriter.println("Production/PUs Summary :\n");
         data.acquireReadLock();
         try
         {
@@ -439,9 +439,9 @@ public class HistoryLog extends JFrame
 
         for (PlayerID player : players)
         {
-            int ipcs = player.getResources().getQuantity(Constants.IPCS);
+            int PUs = player.getResources().getQuantity(Constants.PUS);
             int production = getProduction(player, data);
-            logWriter.println("    " + player.getName() + " : " + production + " / " + ipcs);
+            logWriter.println("    " + player.getName() + " : " + production + " / " + PUs);
         }
         logWriter.println();
 

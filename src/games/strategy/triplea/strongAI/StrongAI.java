@@ -4056,7 +4056,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         return sum;
     }
 
-    protected void purchase(boolean purcahseForBid, int ipcsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
+    protected void purchase(boolean purcahseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
     {   //TODO: lot of tweaks have gone into this routine without good organization...need to cleanup
         //breakdown Rules by type and cost
 		int highPrice = 0;
@@ -4070,11 +4070,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		IntegerMap<ProductionRule> bestTransport = new IntegerMap<ProductionRule>();
 		IntegerMap<ProductionRule> bestMaxUnits = new IntegerMap<ProductionRule>();
         ProductionRule highRule = null;
-        Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
+        Resource PUs = data.getResourceList().getResource(Constants.PUS);
 
         for (ProductionRule ruleCheck : rules)
 		{
-			int costCheck = ruleCheck.getCosts().getInt(ipcs);
+			int costCheck = ruleCheck.getCosts().getInt(PUs);
 			UnitType x = (UnitType) ruleCheck.getResults().keySet().iterator().next();
 			if (Matches.UnitTypeIsAir.match(x))
 			{
@@ -4097,14 +4097,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
         if (purcahseForBid)
         {
-            int buyLimit = ipcsToSpend / 2;
+            int buyLimit = PUsToSpend / 2;
             boolean bestMix = false;
-            if (ipcsToSpend < 25)
-            	bestMix = SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, landProductionRules, ipcsToSpend, buyLimit, data, player, 2);
+            if (PUsToSpend < 25)
+            	bestMix = SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, landProductionRules, PUsToSpend, buyLimit, data, player, 2);
             else
             {
             	landProductionRules.addAll(airProductionRules);
-            	bestMix = SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, landProductionRules, ipcsToSpend, buyLimit, data, player, 2);
+            	bestMix = SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, landProductionRules, PUsToSpend, buyLimit, data, player, 2);
             }
             if (bestMix)
             {
@@ -4170,7 +4170,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		if (EASCount == 0 && ETTCount > 0 && OASCount == 0)
 			buySub = true;
 
-        int totIPC = 0, totProd = 0, ipcSea = 0, ipcLand = 0;
+        int totPU = 0, totProd = 0, PUSea = 0, PULand = 0;
 		float purchaseT;
 		String error = null;
 		boolean localShipThreat = false;
@@ -4178,10 +4178,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		Territory localShipThreatTerr = null;
         for (Territory fT : factories)
         {
-			totIPC += TerritoryAttachment.get(fT).getProduction();
+			totPU += TerritoryAttachment.get(fT).getProduction();
 			totProd += TerritoryAttachment.get(fT).getUnitProduction();
 			if (!useProductionData())
-				totProd = totIPC;
+				totProd = totPU;
 			if (isAmphib)
 			{
 				 currShipThreat = SUtils.shipThreatToTerr(fT, data, player, tFirst);
@@ -4213,7 +4213,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		for (Territory oT : ourAttackShipTerr)
 			ourSeaStrength += SUtils.strength(oT.getUnits().getMatches(ourAttackShip), true, true, tFirst);
 */
-        int leftToSpend = player.getResources().getQuantity(ipcs );
+        int leftToSpend = player.getResources().getQuantity(PUs );
 		purchaseT=1.00F;
 
         List<RepairRule> rrules = Collections.emptyList();
@@ -4232,7 +4232,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             	 	    continue;
         		    TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
             	    diff = ta.getProduction() - ta.getUnitProduction();
-            	    diff = Math.min(diff, totIPC/2);
+            	    diff = Math.min(diff, totPU/2);
                     if(diff > 0)
                     {
                         repairMap.add(rrule, diff);
@@ -4258,14 +4258,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		int fighterPresent = 0;
 		if (capDanger) //focus on Land Units and buy before any other decisions are made
 		{
-        	landProductionRules.addAll(airProductionRules); //just in case we have a lot of IPC
+        	landProductionRules.addAll(airProductionRules); //just in case we have a lot of PU
 			if (SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, landProductionRules, leftToSpend, totProd, data, player, 0))
 			{
 				for (ProductionRule rule1 : landProductionRules)
 				{
 					int buyThese = bestDefense.getInt(rule1);
 					purchase.add(rule1, buyThese);
-					int cost = rule1.getCosts().getInt(ipcs);
+					int cost = rule1.getCosts().getInt(PUs);
 					leftToSpend -= cost*buyThese;
 					unitCount += buyThese;
 				}
@@ -4277,9 +4277,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         SUtils.getStrengthAt(ourLand1, ourLand2, data, player, myCapital, false, true, tFirst);
         SUtils.getEnemyStrengthAt(enemySea1, enemySea2, data, player, myCapital, true, true, tFirst);
         SUtils.getEnemyStrengthAt(enemyLand1, enemyLand2, data, player, myCapital, false, true, tFirst);
-        float IPCNeeded = 0.0F;
+        float PUNeeded = 0.0F;
         if (shipCapitalThreat) //don't panic on a small advantage
-			IPCNeeded = (float) maxShipThreat*7.0F; 	//Every 10.0F advantage needs about 7 IPC to stop (TODO: Build function for IPC needed for ships)
+			PUNeeded = (float) maxShipThreat*7.0F; 	//Every 10.0F advantage needs about 7 PU to stop (TODO: Build function for PU needed for ships)
 
 //        realLandThreat = enemyLand2*1.20F - ourLand2;
 //        realSeaThreat = enemySea2*1.20F - ourSea2;
@@ -4313,12 +4313,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			purchaseT = 0.00F;
         else if (isAmphib && !isLand) //fix Japan if USA has massed a mess of attack ships
 			purchaseT =0.58F;
-		if (isAmphib && (IPCNeeded > leftToSpend)) //they have major advantage, let's wait another turn
+		if (isAmphib && (PUNeeded > leftToSpend)) //they have major advantage, let's wait another turn
 		{
 			leftToSpend = Math.min(leftToSpend, (int) realLandThreat/2);
 			purchaseT = 1.00F;
 		}
-		if (IPCNeeded > 0.75F*leftToSpend)
+		if (PUNeeded > 0.75F*leftToSpend)
 			buyTransports=false;
 		if (!isAmphib)
 		{
@@ -4333,8 +4333,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		}
 		float fSpend = (float) leftToSpend;
-        ipcSea = (int) (fSpend*(1.00F-purchaseT));
-        ipcLand = leftToSpend - ipcSea;
+        PUSea = (int) (fSpend*(1.00F-purchaseT));
+        PULand = leftToSpend - PUSea;
         int minCost = Integer.MAX_VALUE;
 
 		//Test for how badly we want transports
@@ -4354,27 +4354,27 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			buyTransports = true;
 	    	if (!isLand)
 	    	{
-	    		if (ipcLand > 8) //assume cost of transport is 8
+	    		if (PULand > 8) //assume cost of transport is 8
 	    		{
-					ipcLand -=8;
-					ipcSea +=8;
+					PULand -=8;
+					PUSea +=8;
 				}
 			}
 			if (capUnits.size() > capTrans.size()*3)
 			{
-				ipcLand = ipcLand/2;
-				ipcSea = leftToSpend - ipcLand;
+				PULand = PULand/2;
+				PUSea = leftToSpend - PULand;
 			}
-			if (capUnits.size() > capTrans.size()*4) //put all the money on ipcSea
+			if (capUnits.size() > capTrans.size()*4) //put all the money on PUSea
 			{
-				ipcSea = leftToSpend;
-				ipcLand = 0;
+				PUSea = leftToSpend;
+				PULand = 0;
 			}
 		}
 		else if (isAmphib && (capUnits.size()*2 < capTrans.size()) && realSeaThreat < 2.0F)
 		{
-			ipcLand=leftToSpend;
-			ipcSea=0;
+			PULand=leftToSpend;
+			PUSea=0;
 			skipShips = true;
 			buyTransports=false;
 		}
@@ -4390,33 +4390,33 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		else if (leftToSpend > 5*(totProd-1))
 			buyOnePlane = true;
 
-		boolean extraIPConPlanes = false;
+		boolean extraPUonPlanes = false;
         if (capDanger) //capital in trouble...purchase units accordingly...most expensive available
         {
         	if (!isLand && !doBuyAttackShips) //try to balance the need for Naval units here
         	{
-        		ipcLand = leftToSpend;
-        		ipcSea = 0;
+        		PULand = leftToSpend;
+        		PUSea = 0;
         	}
 	        
-	        extraIPConPlanes = true;
+	        extraPUonPlanes = true;
 	        buyTransports = false;
         }
 
-        highPriceLandUnits = (highPrice*totProd) < ipcLand;
+        highPriceLandUnits = (highPrice*totProd) < PULand;
 		if (highPriceLandUnits && !doBuyAttackShips && !buyPlanesOnly)
 		{
 			if (!buyOnePlane)
 			{
 				leftToSpend -= highPrice*totProd;
-				ipcLand -= highPrice*totProd;
+				PULand -= highPrice*totProd;
 				purchase.add(highRule, totProd);
 				unitCount = totProd;
 			}
 			else
 			{
 				leftToSpend -= highPrice*(totProd-1);
-				ipcLand -= highPrice*(totProd-1);
+				PULand -= highPrice*(totProd-1);
 				purchase.add(highRule, totProd-1);
 				unitCount = totProd-1;
 				buyPlanesOnly=true;
@@ -4426,11 +4426,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		if (((isAmphib && isLand) && (realLandThreat > 8.00F)) || (!isAmphib && realLandThreat > 12.00F))
 		{
 			landConstant = 1; //if we have a strong threat to our capitol, focus on cheapest units
-			ipcLand = leftToSpend;
-			ipcSea = 0;
+			PULand = leftToSpend;
+			PUSea = 0;
 		}
-		int maxPurch = ipcLand/3;
-		if (maxPurch > (totIPC + 4)) //more money than places to put units...buy more expensive units
+		int maxPurch = PULand/3;
+		if (maxPurch > (totPU + 4)) //more money than places to put units...buy more expensive units
 		{
 			landConstant = 2;
 			buyOnePlane = true;
@@ -4439,7 +4439,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		if (realLandThreat < 0.0F && !capDanger)
 			highPriceLandUnits = true;
 
-		boolean buyfactory = false, buyExtraLandUnits = true; //fix this later...we might want to save IPC
+		boolean buyfactory = false, buyExtraLandUnits = true; //fix this later...we might want to save PU
 		if (landConstant !=1)
 		{
 			buyfactory = true;
@@ -4453,11 +4453,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			if (numFactory >= 2 || capDanger)
 				buyfactory = false; //allow 2 factories on the same continent
 		}
-		if (!doBuyAttackShips && realLandThreat < 12.0F && buyfactory) //determine factory first to make sure enough IPC...doesn't count toward units
+		if (!doBuyAttackShips && realLandThreat < 12.0F && buyfactory) //determine factory first to make sure enough PU...doesn't count toward units
 		{
 			for (ProductionRule factoryRule : rules)
 			{
-				int cost = factoryRule.getCosts().getInt(ipcs);
+				int cost = factoryRule.getCosts().getInt(PUs);
 				UnitType factoryType = (UnitType) factoryRule.getResults().keySet().iterator().next();
 				if (Matches.UnitTypeIsFactory.match(factoryType))
 				{
@@ -4470,10 +4470,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 							setFactory(factTerr);
 							purchase.add(factoryRule, 1);
 							leftToSpend -=cost;
-							ipcLand -= cost;
+							PULand -= cost;
 							factPurchased = true;
-							if (ipcLand < 0)
-								ipcSea = leftToSpend;
+							if (PULand < 0)
+								PUSea = leftToSpend;
 						}
 					}
 				}
@@ -4483,20 +4483,20 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		if (buyOnePlane)
 			maxBuy--;
 
-		if (ipcSea > 0 && doBuyAttackShips && !buyTransports) //attack oriented sea units
+		if (PUSea > 0 && doBuyAttackShips && !buyTransports) //attack oriented sea units
 		{
 			if (isAmphib && !capDanger &&  maxShipThreat > 2)
-				ipcSea = leftToSpend;
+				PUSea = leftToSpend;
 			if (unitCount < 2)
 				setAttackShipPurchase(true);
 			fighterPresent = myCapital.getUnits().countMatches(Matches.UnitCanLandOnCarrier);
-			if (ipcSea > 0 && SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, seaProductionRules, ipcSea, maxBuy, data, player, fighterPresent))
+			if (PUSea > 0 && SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, seaProductionRules, PUSea, maxBuy, data, player, fighterPresent))
 			{
 				int buyThese = 0;
 				int AttackType = 1; //bestAttack
 				if (Math.random() <= 0.90) //for ships, focus on defense set most of the time
 					AttackType = 2;
-				if (Math.random() >= 0.50 && factoryCount == 1 && IPCNeeded > 0.75*leftToSpend) //50% maxUnits when need a lot of ships 
+				if (Math.random() >= 0.50 && factoryCount == 1 && PUNeeded > 0.75*leftToSpend) //50% maxUnits when need a lot of ships 
 					AttackType = 3;
 				for (ProductionRule rule1 : seaProductionRules)
 				{
@@ -4513,9 +4513,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						break;
 					}
 					purchase.add(rule1, buyThese);
-					int cost = rule1.getCosts().getInt(ipcs);
+					int cost = rule1.getCosts().getInt(PUs);
 					leftToSpend -= cost*buyThese;
-					ipcSea -= cost*buyThese;
+					PUSea -= cost*buyThese;
 					unitCount += buyThese;
 				}
 			}
@@ -4526,7 +4526,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		if (!capDanger && !buyPlanesOnly) //attack oriented land units
 		{
-			if (SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, landProductionRules, ipcLand, maxBuy, data, player, fighterPresent))
+			if (SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, landProductionRules, PULand, maxBuy, data, player, fighterPresent))
 			{
 				int buyThese = 0;
 				int AttackType = 1; //bestAttack
@@ -4549,9 +4549,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						break;
 					}
 					purchase.add(rule1, buyThese);
-					int cost = rule1.getCosts().getInt(ipcs);
+					int cost = rule1.getCosts().getInt(PUs);
 					leftToSpend -= cost*buyThese;
-					ipcLand -= cost*buyThese;
+					PULand -= cost*buyThese;
 					unitCount += buyThese;
 				}
 			}
@@ -4566,7 +4566,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				continue;
             for(ProductionRule rule : rules)
             {
-                int cost = rule.getCosts().getInt(ipcs);
+                int cost = rule.getCosts().getInt(PUs);
 
                 if(minCost == Integer.MAX_VALUE)
                     minCost = cost;
@@ -4589,7 +4589,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 {
 					if (buyPlanesOnly && unitCount < totProd)
 					{
-						int planePurchase = (totIPC-unitCount)/2;
+						int planePurchase = (totPU-unitCount)/2;
 						if (planePurchase == 0)
 							planePurchase=1;
 						purchase.add(rule, planePurchase);
@@ -4606,22 +4606,22 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
 					continue;
 				}
-/*				if (cost <= ipcLand && !buyPlanesOnly)
+/*				if (cost <=PUcLand && !buyPlanesOnly)
 				{
-					int numLand = (int) (ipcLand / cost);
+					int numLand = (int) (PULand / cost);
 					if (numLand == 1)
 						numLand = landConstant;
 					if (highPriceLandUnits && cost == highPrice)
 						numLand = numLand*3;
-					while (cost*(numLand/landConstant) > ipcLand)
+					while (cost*(numLand/landConstant) > PULand)
 						numLand--;
 
 					int numPLand = numLand / landConstant;
-					while (totIPC < (unitCount + numPLand))
+					while (totPU < (unitCount + numPLand))
 						numPLand--;
 					if (numPLand > 0)
 					{
-						ipcLand -= cost * numPLand;
+						PULand -= cost * numPLand;
 						leftToSpend -= cost * numPLand;
 						purchase.add(rule, numPLand);
 						unitCount += numPLand;
@@ -4631,21 +4631,21 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 */			}
 		}
 		if (isAmphib)
-			ipcSea = leftToSpend; //go ahead and make them available
+			PUSea = leftToSpend; //go ahead and make them available
 		for (int j=0; j<=3; j++) //make 3 passes on sea purchases
 		{
 			if (skipShips)
 				continue;
             for(ProductionRule rule : rules)
             {
-                int cost = rule.getCosts().getInt(ipcs);
+                int cost = rule.getCosts().getInt(PUs);
 
                 if(minCost == Integer.MAX_VALUE)
                     minCost = cost;
                 if(minCost > cost)
                     minCost = cost;
 
-                if ((leftToSpend < cost || ipcSea < cost || unitCount >= totProd))
+                if ((leftToSpend < cost || PUSea < cost || unitCount >= totProd))
                 	continue;
 
                 UnitType results = (UnitType) rule.getResults().keySet().iterator().next();
@@ -4656,21 +4656,21 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					continue; //the first purchase is only for transports if buyTransports is true
 				if (transportCapacity > 0 &&  buyTransports && !doBuyAttackShips)
 				{
-					if (ipcSea >= cost)
+					if (PUSea >= cost)
 					{
-						int buyTrans = (int) (ipcSea/cost);
+						int buyTrans = (int) (PUSea/cost);
 						if (transConstant == 1)
 						{
 							if (buyTrans > 0)
 							{
-								if ((unitCount + buyTrans) > totIPC)
-									buyTrans= totIPC - unitCount;
-								while (cost*(buyTrans)>ipcSea)
+								if ((unitCount + buyTrans) > totPU)
+									buyTrans= totPU - unitCount;
+								while (cost*(buyTrans)>PUSea)
 									buyTrans--;
 
 								purchase.add(rule, buyTrans);
 								unitCount += buyTrans;
-								ipcSea -= cost*buyTrans;
+								PUSea -= cost*buyTrans;
 								leftToSpend -= cost*buyTrans;
 								buyTransports = false;
 							}
@@ -4681,7 +4681,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 							{
 								if (buyTrans ==1)
 								{
-									ipcSea-=cost;
+									PUSea-=cost;
 									leftToSpend -= cost;
 									purchase.add(rule, 1);
 									unitCount += 1;
@@ -4689,13 +4689,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 								}
 								else
 								{
-									buyTrans = buyTrans - (unitCount + buyTrans - totIPC);
+									buyTrans = buyTrans - (unitCount + buyTrans - totPU);
 									buyTrans = buyTrans/transConstant;
-									while (cost*(buyTrans) > ipcSea)
+									while (cost*(buyTrans) > PUSea)
 										buyTrans--;
 									if (buyTrans > 0)
 									{
-										ipcSea-=cost*buyTrans;
+										PUSea-=cost*buyTrans;
 										leftToSpend-=cost*buyTrans;
 										purchase.add(rule, buyTrans);
 										unitCount += buyTrans;
@@ -4707,18 +4707,18 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					}
 					continue;
 				}
-				if (buyBattleShip && ipcSea >= cost && cost >=20)
+				if (buyBattleShip && PUSea >= cost && cost >=20)
 				{
-					ipcSea-=cost;
+					PUSea-=cost;
 					leftToSpend-=cost;
 					purchase.add(rule, 1);
 					unitCount++;
 				}
-				if (doBuyAttackShips && unitCount < totProd && ipcSea >= cost && transportCapacity > 0 && buyTransports)
+				if (doBuyAttackShips && unitCount < totProd && PUSea >= cost && transportCapacity > 0 && buyTransports)
 				{
 					if ((cost< 13 && Math.random() <0.75) || (cost < 20 && Math.random() < 0.48) || (cost >= 20 && Math.random() > 0.65))
 					{
-						ipcSea-=cost;
+						PUSea-=cost;
 						leftToSpend-=cost;
 						purchase.add(rule, 1);
 						unitCount++;
@@ -4727,31 +4727,31 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				if (buySub && leftToSpend > cost && unitCount < totProd && Matches.UnitTypeIsSub.match(results))
 				{
 					leftToSpend-=cost;
-					ipcSea-=cost;
+					PUSea-=cost;
 					purchase.add(rule,1);
 					unitCount++;
 				} //go ahead and see if it wants to buy another one
 
-				if (ipcSea >= cost && cost < 13 && unitCount < totProd && Math.random() < 0.28 && (doBuyAttackShips==(transportCapacity < 0)))
+				if (PUSea >= cost && cost < 13 && unitCount < totProd && Math.random() < 0.28 && (doBuyAttackShips==(transportCapacity < 0)))
 				{
-					ipcSea-=cost;
+					PUSea-=cost;
 					leftToSpend-=cost;
 					purchase.add(rule, 1);
 					unitCount++;
 					continue;
 				}
-				if (ipcSea >= cost && (cost >= 13 && cost < 20) && unitCount < totProd && Math.random() < 0.18)
+				if (PUSea >= cost && (cost >= 13 && cost < 20) && unitCount < totProd && Math.random() < 0.18)
 				{
-					ipcSea-=cost;
+					PUSea-=cost;
 					leftToSpend-=cost;
 					purchase.add(rule, 1);
 					unitCount++;
 					continue;
 				}
-				if (ipcSea >= cost && Matches.UnitTypeIsBB.match(results) && unitCount < totProd && Math.random() >= 0.82)
+				if (PUSea >= cost && Matches.UnitTypeIsBB.match(results) && unitCount < totProd && Math.random() >= 0.82)
 
 				{
-					ipcSea-=cost;
+					PUSea-=cost;
 					leftToSpend-=cost;
 					purchase.add(rule, 1);
 					unitCount++;
@@ -4762,7 +4762,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		{
 			for (ProductionRule quickProd : rules)
 			{
-                int quickCost = quickProd.getCosts().getInt(ipcs);
+                int quickCost = quickProd.getCosts().getInt(PUs);
 
                 if (leftToSpend < quickCost || unitCount >= totProd)
                 	continue;
@@ -4786,11 +4786,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				}
 			}
 		}
-		if (leftToSpend > 0 && (unitCount < totProd) && extraIPConPlanes)
+		if (leftToSpend > 0 && (unitCount < totProd) && extraPUonPlanes)
 		{
 			for (ProductionRule planeProd : rules)
 			{
-				int planeCost = planeProd.getCosts().getInt(ipcs);
+				int planeCost = planeProd.getCosts().getInt(PUs);
 				if (leftToSpend < planeCost || unitCount >= totProd)
 					continue;
 				UnitType plane = (UnitType) planeProd.getResults().keySet().iterator().next();

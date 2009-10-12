@@ -292,15 +292,20 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
             Battle battle = (Battle) m_battleTracker.getPendingBattle(t, false);
             
             //we only care about battles where we must fight
-            //this check is really to avoid implementing getAttackingFrom() in other battle 
-            //subclasses
+            //this check is really to avoid implementing getAttackingFrom() in other battle subclasses
             if(!(battle instanceof MustFightBattle))
                 continue;
-            //bombarding can only occur in territories where 
+            //bombarding can only occur in territories from which at least 1 land unit attacked
+            Map<Territory,Collection<Unit>> attackingFromMap = ((MustFightBattle) battle).getAttackingFromMap();
             Iterator<Territory> bombardingTerritories = ((MustFightBattle) battle).getAttackingFrom().iterator();
             while (bombardingTerritories.hasNext())
             {
                 Territory neighbor = (Territory) bombardingTerritories.next();
+                //If all units from a territory are air- no bombard
+                if( Match.allMatch(attackingFromMap.get(neighbor), Matches.UnitIsAir) )
+                {
+                	continue;
+                }
                 Collection<Battle> battles = possibleBombardingTerritories
                         .get(neighbor);
                 if (battles == null)

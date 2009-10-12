@@ -30,7 +30,7 @@ import java.util.Map;
  * @author Gansito Frito
  * 
  */
-public class IPCInfo
+public class PUInfo
 {
 
     private GameData m_data;

@@ -2606,7 +2606,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<li>map.properties</li>
 								<li>capitols.txt (optional for victory capitols)</li>
 								<li>vc.txt (optional for victory markers)</li>
-								<li>ipc_place.txt(optional, if it exists this is where ipc markers will be placed)</li>
+								<li>pu_place.txt(optional, if it exists this is where PU markers will be placed)</li>
 							</ul>
 						</li>
 						<br/>
@@ -3800,7 +3800,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 							<td bgcolor="#ffffcc">
 <xmp>
 <resourceList>
-         <resource name="IPCs"/>
+         <resource name="PUs"/>
 </resourceList>
 </xmp>
 							</td>
@@ -4554,7 +4554,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 							<td bgcolor="#ffffcc">
 <xmp>
 <productionRule name="buyTanks">
-	<cost resource="IPCs" quantity="4" />
+	<cost resource="PUs" quantity="4" />
 	<result resourceOrUnit="armour" quantity="1"/>
 </productionRule>
 </xmp>

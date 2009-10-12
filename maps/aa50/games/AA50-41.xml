@@ -586,7 +586,7 @@
         </map>
         
         <resourceList>
-                <resource name="IPCs"/>
+                <resource name="PUs"/>
                 <resource name="techTokens"/>                
         </resourceList>
 
@@ -639,9 +639,9 @@
                 <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
                 <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
                 <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
-				<delegate name="purchaseNoIPC" javaClass="games.strategy.triplea.delegate.NoIPCPurchaseDelegate" display="Purchase Units"/>
+				<delegate name="purchaseNoPU" javaClass="games.strategy.triplea.delegate.NoPUPurchaseDelegate" display="Purchase Units"/>
                 <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
-				<delegate name="endTurnNoIPC" javaClass="games.strategy.triplea.delegate.NoIPCEndTurnDelegate" display="Turn Complete"/>
+				<delegate name="endTurnNoPU" javaClass="games.strategy.triplea.delegate.NoPUEndTurnDelegate" display="Turn Complete"/>
                 <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
                 <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
                 <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
@@ -727,7 +727,7 @@
                         <step name="americanTech" delegate="tech" player="Americans"/>
                         <step name="americanTechActivation" delegate="tech_activation" player="Americans"/>
                         <step name="americanPurchase" delegate="purchase" player="Americans"/>
-						<step name="chinesePurchase" delegate="purchaseNoIPC" player="Chinese"/>
+						<step name="chinesePurchase" delegate="purchaseNoPU" player="Chinese"/>
                         <step name="americanCombatMove" delegate="move" player="Americans"/>
                         <step name="americanBattle" delegate="battle" player="Americans"/>
                         <step name="americanNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
@@ -736,7 +736,7 @@
 						<step name="chineseNonCombatMove" delegate="move" player="Chinese" display="Non Combat Move"/>
                         <step name="americanPlace" delegate="place" player="Americans"/>
 						<step name="chinesePlace" delegate="place" player="Chinese"/>
-						<step name="chineseEndTurn" delegate="endTurnNoIPC" player="Chinese"/>
+						<step name="chineseEndTurn" delegate="endTurnNoPU" player="Chinese"/>
                         <step name="americanEndTurn" delegate="endTurn" player="Americans"/>
                               
 						<!-- End Round -->
@@ -747,67 +747,67 @@
         <production>
                 <!-- Unit Production Cost -->
                 <productionRule name="buyInfantry">
-                        <cost resource="IPCs" quantity="3" />
+                        <cost resource="PUs" quantity="3" />
                         <result resourceOrUnit="infantry" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyArtillery">
-                        <cost resource="IPCs" quantity="4" />
+                        <cost resource="PUs" quantity="4" />
                         <result resourceOrUnit="artillery" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyArmour">
-                        <cost resource="IPCs" quantity="5" />
+                        <cost resource="PUs" quantity="5" />
                         <result resourceOrUnit="armour" quantity="1"/>
                 </productionRule>
 
                 <productionRule name="buyFighter">
-                        <cost resource="IPCs" quantity="10" />
+                        <cost resource="PUs" quantity="10" />
                         <result resourceOrUnit="fighter" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyBomber">
-                        <cost resource="IPCs" quantity="12" />
+                        <cost resource="PUs" quantity="12" />
                         <result resourceOrUnit="bomber" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyTransport">
-                        <cost resource="IPCs" quantity="7" />
+                        <cost resource="PUs" quantity="7" />
                         <result resourceOrUnit="transport" quantity="1"/>
                 </productionRule>
 
                 <productionRule name="buyCarrier">
-                        <cost resource="IPCs" quantity="14" />
+                        <cost resource="PUs" quantity="14" />
                         <result resourceOrUnit="carrier" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyDestroyer">
-                        <cost resource="IPCs" quantity="8" />
+                        <cost resource="PUs" quantity="8" />
                         <result resourceOrUnit="destroyer" quantity="1"/>
                 </productionRule>
 				
 				<productionRule name="buyCruiser">
-                        <cost resource="IPCs" quantity="12" />
+                        <cost resource="PUs" quantity="12" />
                         <result resourceOrUnit="cruiser" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyBattleship">
-                        <cost resource="IPCs" quantity="20" />
+                        <cost resource="PUs" quantity="20" />
                         <result resourceOrUnit="battleship" quantity="1"/>
                 </productionRule>
 
                 <productionRule name="buySubmarine">
-                        <cost resource="IPCs" quantity="6" />
+                        <cost resource="PUs" quantity="6" />
                         <result resourceOrUnit="submarine" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyFactory">
-                        <cost resource="IPCs" quantity="15" />
+                        <cost resource="PUs" quantity="15" />
                         <result resourceOrUnit="factory" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyAAGun">
-                        <cost resource="IPCs" quantity="6" />
+                        <cost resource="PUs" quantity="6" />
                         <result resourceOrUnit="aaGun" quantity="1"/>
                 </productionRule>
 
@@ -816,67 +816,67 @@
                 <!-- Advanced Industrial Production -->
                 
                 <productionRule name="buyInfantryIndustrialTechnology">
-                        <cost resource="IPCs" quantity="3" />
+                        <cost resource="PUs" quantity="3" />
                         <result resourceOrUnit="infantry" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyArtilleryIndustrialTechnology">
-                        <cost resource="IPCs" quantity="4" />
+                        <cost resource="PUs" quantity="4" />
                         <result resourceOrUnit="artillery" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyArmourIndustrialTechnology">
-                        <cost resource="IPCs" quantity="5" />
+                        <cost resource="PUs" quantity="5" />
                         <result resourceOrUnit="armour" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyFighterIndustrialTechnology">
-                        <cost resource="IPCs" quantity="10" />
+                        <cost resource="PUs" quantity="10" />
                         <result resourceOrUnit="fighter" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyBomberIndustrialTechnology">
-                        <cost resource="IPCs" quantity="12" />
+                        <cost resource="PUs" quantity="12" />
                         <result resourceOrUnit="bomber" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyTransportIndustrialTechnology">
-                        <cost resource="IPCs" quantity="6" />
+                        <cost resource="PUs" quantity="6" />
                         <result resourceOrUnit="transport" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyCarrierIndustrialTechnology">
-                        <cost resource="IPCs" quantity="11" />
+                        <cost resource="PUs" quantity="11" />
                         <result resourceOrUnit="carrier" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyDestroyerIndustrialTechnology">
-                        <cost resource="IPCs" quantity="7" />
+                        <cost resource="PUs" quantity="7" />
                         <result resourceOrUnit="destroyer" quantity="1"/>
                 </productionRule>
 				
 				<productionRule name="buyCruiserIndustrialTechnology">
-                        <cost resource="IPCs" quantity="10" />
+                        <cost resource="PUs" quantity="10" />
                         <result resourceOrUnit="destroyer" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyBattleshipIndustrialTechnology">
-                        <cost resource="IPCs" quantity="17" />
+                        <cost resource="PUs" quantity="17" />
                         <result resourceOrUnit="battleship" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buySubmarineIndustrialTechnology">
-                        <cost resource="IPCs" quantity="5" />
+                        <cost resource="PUs" quantity="5" />
                         <result resourceOrUnit="submarine" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyFactoryIndustrialTechnology">
-                        <cost resource="IPCs" quantity="15" />
+                        <cost resource="PUs" quantity="15" />
                         <result resourceOrUnit="factory" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyAAGunIndustrialTechnology">
-                        <cost resource="IPCs" quantity="6" />
+                        <cost resource="PUs" quantity="6" />
                         <result resourceOrUnit="aaGun" quantity="1"/>
                 </productionRule>
                 
@@ -885,43 +885,43 @@
                 <!-- SHIPYARD PRICES -->
                 
                 <productionRule name="buyTransportShipyards">
-                        <cost resource="IPCs" quantity="6" />
+                        <cost resource="PUs" quantity="6" />
                         <result resourceOrUnit="transport" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyCarrierShipyards">
-                        <cost resource="IPCs" quantity="11" />
+                        <cost resource="PUs" quantity="11" />
                         <result resourceOrUnit="carrier" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyDestroyerShipyards">
-                        <cost resource="IPCs" quantity="7" />
+                        <cost resource="PUs" quantity="7" />
                         <result resourceOrUnit="destroyer" quantity="1"/>
                 </productionRule>
 				
 				<productionRule name="buyCruiserShipyards">
-                        <cost resource="IPCs" quantity="10" />
+                        <cost resource="PUs" quantity="10" />
                         <result resourceOrUnit="cruiser" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyBattleshipShipyards">
-                        <cost resource="IPCs" quantity="17" />
+                        <cost resource="PUs" quantity="17" />
                         <result resourceOrUnit="battleship" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buySubmarineShipyards">
-                        <cost resource="IPCs" quantity="5" />
+                        <cost resource="PUs" quantity="5" />
                         <result resourceOrUnit="submarine" quantity="1"/>
                 </productionRule>
                 
                <!-- Repair rules -->                
                 <repairRule name="repairFactory">
-                        <cost resource="IPCs" quantity="1" />
+                        <cost resource="PUs" quantity="1" />
                         <result resourceOrUnit="factory_hit" quantity="1"/>
                 </repairRule>
                 
                 <repairRule name="repairFactoryIndustrialTechnology">
-                        <cost resource="IPCs" quantity="1" />
+                        <cost resource="PUs" quantity="1" />
                         <result resourceOrUnit="factory_hit" quantity="2"/>
                 </repairRule>
                 
@@ -2065,13 +2065,13 @@
                 </unitInitialize>
         
                 <resourceInitialize>                      
-                        <resourceGiven player="Germans" resource="IPCs" quantity="31"/>
-                        <resourceGiven player="Russians" resource="IPCs" quantity="30"/>
-						<resourceGiven player="Japanese" resource="IPCs" quantity="17"/>
-						<resourceGiven player="British" resource="IPCs" quantity="43"/>
-						<resourceGiven player="Italians" resource="IPCs" quantity="10"/>
-						<resourceGiven player="Chinese" resource="IPCs" quantity="0"/>
-						<resourceGiven player="Americans" resource="IPCs" quantity="40"/>
+                        <resourceGiven player="Germans" resource="PUs" quantity="31"/>
+                        <resourceGiven player="Russians" resource="PUs" quantity="30"/>
+						<resourceGiven player="Japanese" resource="PUs" quantity="17"/>
+						<resourceGiven player="British" resource="PUs" quantity="43"/>
+						<resourceGiven player="Italians" resource="PUs" quantity="10"/>
+						<resourceGiven player="Chinese" resource="PUs" quantity="0"/>
+						<resourceGiven player="Americans" resource="PUs" quantity="40"/>
 						
                         <resourceGiven player="Germans" resource="techTokens" quantity="0"/>
                         <resourceGiven player="Russians" resource="techTokens" quantity="0"/>
@@ -2353,7 +2353,7 @@
         				ROCKETS- AA conduct rocket attacks for 1d6 damage to production<br>
         				PARATROOPERS- each bomber may carry 1 infantry into combat<br>
         				INCREASED FACTORY PRODUCTION- factories produce 2 additional units, repairs 1/2 price<br>
-        				WAR BONDS- collect an 1d6 extra IPCs each turn<br>
+        				WAR BONDS- collect an 1d6 extra PUs each turn<br>
         				MECHANIZED INFANTRY- tanks may carry 1 infantry each for 2 spaces<br>
         				<br>
         				<br>
@@ -2365,33 +2365,33 @@
         				<br>
         				<b>National Objectives</b><br>
         				<i>Germany: Lebensraum-</i><br>
-        				+5 IPCs if Axis control France, NW Europe, Germany, Czechoslovakia, Bulgaria, and Poland.<br>
-        				+5 IPCs if Axis control 3 of Baltic States, East Poland, Ukraine, East Ukrain, and Belorussia.<br>
-        				+5 IPCs if Axis control Karelia or Caucasus <br>
+        				+5 PUs if Axis control France, NW Europe, Germany, Czechoslovakia, Bulgaria, and Poland.<br>
+        				+5 PUs if Axis control 3 of Baltic States, East Poland, Ukraine, East Ukrain, and Belorussia.<br>
+        				+5 PUs if Axis control Karelia or Caucasus <br>
         				<br>
         				<i>Japan: The Greater East Asia Coprosperity Sphere-</i><br>
-        				+5 IPCs if Axis control Manchuria, Kiangsu, and French Indo China.<br>
-        				+5 IPCs if Axis control 4 of Kwangtung, East Indies, Borneo, Philippine Islands, New Guinea and Solomon Islands.<br>
-        				+5 IPCs if Axis control 1 of Hawaiian Islands, Australia, or India<br>
+        				+5 PUs if Axis control Manchuria, Kiangsu, and French Indo China.<br>
+        				+5 PUs if Axis control 4 of Kwangtung, East Indies, Borneo, Philippine Islands, New Guinea and Solomon Islands.<br>
+        				+5 PUs if Axis control 1 of Hawaiian Islands, Australia, or India<br>
         				<br>
         				<i>Italy: Mare Nostrum-</i><br>
-        				+5 IPCs if Axis control Italy, Balkans, Morocco and Libya AND no enemy surface ships in sea zones 13, 14, or 15.<br>
-        				+5 IPCs if Axis control 3 of Egypt, Trans Jordan, France, and Gibraltar<br>
+        				+5 PUs if Axis control Italy, Balkans, Morocco and Libya AND no enemy surface ships in sea zones 13, 14, or 15.<br>
+        				+5 PUs if Axis control 3 of Egypt, Trans Jordan, France, and Gibraltar<br>
         				<br>
         				<i>United States: The Arsenal of Democracy-</i><br>
-        				+5 IPCs Allies control W U.S., Central U.S., and E U.S.<br>
-        				+5 IPCs if Allies control Philippine Islands.<br>
-        				+5 IPCs if Allies control France.<br>
-        				+5 IPCs if Allies control 3 of Midway, Wake Island, Hawaiian Islands, and Solomon Islands.<br>
+        				+5 PUs Allies control W U.S., Central U.S., and E U.S.<br>
+        				+5 PUs if Allies control Philippine Islands.<br>
+        				+5 PUs if Allies control France.<br>
+        				+5 PUs if Allies control 3 of Midway, Wake Island, Hawaiian Islands, and Solomon Islands.<br>
         				<br>
         				<i>United Kingdom: The British Empire-</i><br>
-        				+5 IPCs if Allies control E Canada, W Canada, Gibraltar, Egypt, Australia and South Africa.<br>
-        				+5 IPCs if Allies control any territory originally controlled by Japan.<br>
-        				+5 IPCs if Allies control France or the Balkans.<br>
+        				+5 PUs if Allies control E Canada, W Canada, Gibraltar, Egypt, Australia and South Africa.<br>
+        				+5 PUs if Allies control any territory originally controlled by Japan.<br>
+        				+5 PUs if Allies control France or the Balkans.<br>
         				<br>
         				<i>Soviet Union: The Great Patriotic War-</i><br>
-        				+10 IPCs if Allies control 3 of Norway, Finland, Poland, Bulgaria, Czechoslovakia, and Balkans.<br>
-        				+5 IPCs if Soviets control Archangel and no allied forces in Soviet controlled territories.<br>
+        				+10 PUs if Allies control 3 of Norway, Finland, Poland, Bulgaria, Czechoslovakia, and Balkans.<br>
+        				+5 PUs if Soviets control Archangel and no allied forces in Soviet controlled territories.<br>
         				  
         				
         

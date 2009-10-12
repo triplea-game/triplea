@@ -224,22 +224,22 @@ public class EditDelegate implements IDelegate, IEditDelegate
         return null;
     }
 
-    public String changeIPCs(PlayerID player, int newTotal)
+    public String changePUs(PlayerID player, int newTotal)
     {
         String result = null;
         if (null != (result = checkEditMode())) 
             return result;
 
-        Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
-        int oldTotal = player.getResources().getQuantity(ipcs);
+        Resource PUs = m_data.getResourceList().getResource(Constants.PUS);
+        int oldTotal = player.getResources().getQuantity(PUs);
 
         if (oldTotal == newTotal)
-            return "New ipcs total is unchanged";
+            return "New PUs total is unchanged";
         if (newTotal < 0)
-            return "New ipcs total is invalid";
+            return "New PUs total is invalid";
 
-        logEvent("Changing ipcs for "+player.getName()+" from "+oldTotal+" to "+newTotal, null);
-        m_bridge.addChange(ChangeFactory.changeResourcesChange(player, ipcs, (newTotal - oldTotal)));
+        logEvent("Changing PUs for "+player.getName()+" from "+oldTotal+" to "+newTotal, null);
+        m_bridge.addChange(ChangeFactory.changeResourcesChange(player, PUs, (newTotal - oldTotal)));
        
         return null;
     }
