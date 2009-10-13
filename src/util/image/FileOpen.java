@@ -40,7 +40,13 @@ public class FileOpen
 	   working directory. Filters out all non-txt files and
 	   handles possible file load errors.
 	*/
-	public FileOpen(String title) 
+	public FileOpen(String title)	 
+	{
+		this(title, ".txt", ".gif", ".png");
+		
+	}
+	
+	public FileOpen(String title, final String... extensions)  
 	{
 		JFileChooser chooser = new JFileChooser();
 		chooser.setDialogTitle(title);
@@ -53,15 +59,27 @@ public class FileOpen
 		{
 			public boolean accept(File f)
 			{
-				return f.getName().toLowerCase().endsWith(".txt") || 
-				       f.getName().toLowerCase().endsWith(".gif") ||
-				       f.getName().toLowerCase().endsWith(".png") ||
-				       f.isDirectory();
+				if(f.isDirectory()) 
+				{
+					return true;
+				}
+				for(String ex : extensions) 
+				{
+					if(f.getName().endsWith(ex)) {
+						return true;
+					}					
+				}
+				return false;
 			}
 
 			public String getDescription()
 			{
-				return "*.txt, *.gif, *.png";
+				StringBuffer buf = new StringBuffer();
+				for(String ex : extensions) 
+				{
+					buf.append("*").append(ex).append(" ");					
+				}
+				return buf.toString();
 			}
 		});
 
