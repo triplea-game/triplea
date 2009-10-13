@@ -71,6 +71,7 @@
 				<include name="**/*.txt" />
 				<include name="**/*.jpeg" />
 				<include name="**/*.xml" />
+				<include name="**/*.xslt" />
 				<include name="**/*.wav" />
 				<include name="**/*.properties" />
 			</fileset>
