@@ -1,6 +1,14 @@
 Changes for 1.0.4
 
-* Various strong ai changes (Kevin Moore)
+* add utility for updating game.xml files (sgb)
+
+* Strong AI Changes  (Kevin Moore)
+  -Handles Neutrals correctly.
+  -Switched all decision making to a territory ranking system which is consistent throughout the AI
+  -Eliminated expectations that movement will be under revised/AA50 limits.
+  -Cleaned up handling of units around a threatened capital
+  -Improved blitzing and transport invading
+
 
 * Scrub Production Units (PUs)(ComradeKev)
 
