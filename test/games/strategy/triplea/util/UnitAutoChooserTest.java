@@ -12,7 +12,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.GameDataTestUtil;
-import games.strategy.triplea.delegate.LoadGameUtil;
+import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.PropertyUtil;
 
 import java.util.ArrayList;

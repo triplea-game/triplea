@@ -1,5 +1,7 @@
 Changes for 1.0.4
 
+* remove troublesome maps (sgb)
+
 * Add code to allow downloading and installing games from the network.  To host maps, you need to create
   a games xml file, structured as,  
 

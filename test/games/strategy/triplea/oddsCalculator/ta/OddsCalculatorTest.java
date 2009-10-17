@@ -4,7 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.delegate.LoadGameUtil;
+import games.strategy.triplea.xml.LoadGameUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;

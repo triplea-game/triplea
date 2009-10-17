@@ -30,6 +30,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.util.DummyTripleAPlayer;
+import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
 
 import java.io.InputStream;

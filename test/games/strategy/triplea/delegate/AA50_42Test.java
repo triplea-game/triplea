@@ -22,6 +22,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.util.DummyTripleAPlayer;
+import games.strategy.triplea.xml.LoadGameUtil;
 
 import java.util.List;
 

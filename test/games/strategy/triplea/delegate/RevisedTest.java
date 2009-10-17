@@ -35,6 +35,7 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.DummyTripleAPlayer;
+import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.CompositeMatchAnd;
 
 import java.lang.reflect.InvocationHandler;

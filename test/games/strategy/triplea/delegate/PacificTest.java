@@ -25,6 +25,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.ui.display.DummyDisplay;
+import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
 
 import java.util.ArrayList;

@@ -11,6 +11,7 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Die.DieType;
+import games.strategy.triplea.xml.LoadGameUtil;
 
 import java.util.Collections;
 import java.util.List;

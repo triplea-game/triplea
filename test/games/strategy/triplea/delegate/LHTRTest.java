@@ -19,6 +19,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.DummyDisplay;
+import games.strategy.triplea.xml.LoadGameUtil;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

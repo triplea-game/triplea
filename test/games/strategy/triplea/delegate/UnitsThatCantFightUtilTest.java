@@ -17,6 +17,7 @@ package games.strategy.triplea.delegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.*;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.xml.LoadGameUtil;
 
 import java.util.Collection;
 

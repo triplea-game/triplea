@@ -10,6 +10,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.xml.LoadGameUtil;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
