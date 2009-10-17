@@ -166,17 +166,25 @@ public class GameRunner2
     {
         try
         {
-            try
-            {
-                UIManager.setLookAndFeel(getDefaultLookAndFeel());                
-            } catch(Throwable t) {
-                if(!GameRunner.isMac()) {                   
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());                    
-                }
-            }
-            } catch(Throwable t) {
-                t.printStackTrace(System.out);
-            }
+        	SwingUtilities.invokeAndWait(new Runnable() {
+				
+				public void run() {
+					try
+					{
+						UIManager.setLookAndFeel(getDefaultLookAndFeel());
+					} catch(Throwable t) {
+		                if(!GameRunner.isMac()) {   
+		                	try
+		                	{
+		                		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		                	} catch(Exception e) {}
+		                }
+		            }
+				}
+			});
+        } catch(Throwable t) {
+            t.printStackTrace(System.out);
+        }
     }
     
     public static void setupLogging()

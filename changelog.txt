@@ -1,5 +1,7 @@
 Changes for 1.0.4
 
+* update to substance 5.3 (sgb)
+
 * remove troublesome maps (sgb)
 
 * Add code to allow downloading and installing games from the network.  To host maps, you need to create
