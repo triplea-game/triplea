@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -37,11 +38,18 @@ public class NewGameChooserModel extends DefaultListModel
         return (NewGameChooserEntry) super.get(i);
     }
     
+    private List<File> allMapFiles() {
+    	List<File> rVal = new ArrayList<File>();
+    	rVal.addAll(Arrays.asList(new File(GameRunner.getRootFolder(), "maps").listFiles()));
+    	rVal.addAll(Arrays.asList(GameRunner.getUserMapsFolder().listFiles()));
+    	return rVal;
+    }
+    
     private void populate()
     {
-        File maps = new File(GameRunner.getRootFolder(), "maps");
+        
         List<NewGameChooserEntry> entries = new ArrayList<NewGameChooserEntry>();
-        for(File map : maps.listFiles()) 
+        for(File map : allMapFiles()) 
         {
             if(map.isDirectory()) 
             {

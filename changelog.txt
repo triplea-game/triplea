@@ -1,5 +1,32 @@
 Changes for 1.0.4
 
+* Add code to allow downloading and installing games from the network.  To host maps, you need to create
+  a games xml file, structured as,  
+
+<games>
+  <game>
+    <!-- this is where your game zip file is -->
+    <url>http://example.com/games/mygame.zip</url>
+    <!-- the name of the map -->
+    <mapName>myGame</mapName>
+    <description><![CDATA[
+        Some notes about the game, simple html allowed,
+        <b>like bold</b>
+    ]]></description>
+  </game>
+  <!-- multiple games are allowed to be listed -->
+  <game>    
+    <url>http://example.com/games/game2.zip</url>
+    <mapName>mySecondGame</mapName>
+    <description><![CDATA[
+        Another description
+    ]]></description>
+  </game>
+</games>
+
+  Give someone the url of the xml file above, and TripleA will list the games, and give the user the 
+  option to install them.  Games are installed to the userHome/triplea/maps (sgb)
+
 * add utility for updating game.xml files (sgb)
 
 * Strong AI Changes  (Kevin Moore)

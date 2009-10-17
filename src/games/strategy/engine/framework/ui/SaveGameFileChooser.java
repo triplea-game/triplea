@@ -32,25 +32,7 @@ public class SaveGameFileChooser extends JFileChooser
 	
 	public static final String AUTOSAVE_FILE_NAME = "autosave.tsvg";
 
-	public static final File DEFAULT_DIRECTORY;
-	
-	/*
-	 * The default is to store saved games in the save game folder, but a request was made to allow
-	 * them in the users home.
-	 * Check the value in triplea.properties to see where we want to save the saved games.
-	 * The change was suggested by William McQueen.
-	 */
-	static
-	{
-	    //the default
-	    File defaultDirectory;
-        if(GameRunner.isMac())
-            defaultDirectory = new File(System.getProperties().getProperty("user.home") +"/Documents/triplea/savedGames/");
-        else
-            defaultDirectory = new File(System.getProperties().getProperty("user.home") +"/triplea/savedGames/");
-        
-	    DEFAULT_DIRECTORY = defaultDirectory;
-	}
+	public static final File DEFAULT_DIRECTORY = new File(GameRunner.getUserRootFolder(), "savedGames");
 	
 	
 	private static SaveGameFileChooser s_instance;

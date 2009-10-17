@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.mapDownload.DownloadMapDialog;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
@@ -39,6 +40,7 @@ public class MetaSetupPanel extends SetupPanel
     private JButton  m_hostGame;
     private JButton m_connectToHostedGame;
     private JButton m_connectToLobby;
+    private JButton m_downloadMaps;
     private SetupPanelModel m_model;
     
     public MetaSetupPanel(SetupPanelModel model)
@@ -58,6 +60,7 @@ public class MetaSetupPanel extends SetupPanel
         m_hostGame = new JButton("Host Networked Game");
         m_connectToHostedGame = new JButton("Connect to Networked Game");
         m_connectToLobby = new JButton("Find Games On The Lobby Server");
+        m_downloadMaps = new JButton("Download Maps");
     }
 
     private void layoutComponents()
@@ -73,6 +76,7 @@ public class MetaSetupPanel extends SetupPanel
         add(m_hostGame, new GridBagConstraints(0,3,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
         add(m_connectToHostedGame, new GridBagConstraints(0,4,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
         add(m_connectToLobby, new GridBagConstraints(0,5,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
+        add(m_downloadMaps, new GridBagConstraints(0,6,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
 
         //top space
         add(new JPanel(), new GridBagConstraints(0,100,1,1,1,1,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00,0,0,0), 0,0) );
@@ -132,10 +136,21 @@ public class MetaSetupPanel extends SetupPanel
             }
         
         });
+        
+        m_downloadMaps.addActionListener(new ActionListener() {			
+			public void actionPerformed(ActionEvent e) {
+				downloadMaps();				
+			}
+		});
 
     }
 
-    private void connectToLobby()
+    private void downloadMaps() {
+    	DownloadMapDialog.downloadGames(this);
+		
+	}
+
+	private void connectToLobby()
     {
         LobbyServerProperties props = getLobbyServerProperties();
         if(props == null)

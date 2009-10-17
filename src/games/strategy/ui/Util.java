@@ -20,6 +20,8 @@
 
 package games.strategy.ui;
 
+import games.strategy.util.EventThreadJOptionPane;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -37,6 +39,8 @@ import java.awt.image.ImageObserver;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 
@@ -97,6 +101,10 @@ public class Util
         g.drawImage(img, 0, 0 ,null);
         g.dispose();
         return copy;
+    }
+    
+    public static void notifyError(Component parent, String message) {
+    	EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), message, "Error", JOptionPane.ERROR_MESSAGE);
     }
     
     

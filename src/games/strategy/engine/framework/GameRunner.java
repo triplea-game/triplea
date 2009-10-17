@@ -115,8 +115,26 @@ public class GameRunner
         GameRunner2.main(args);
     }
 
- 
+    public static File getUserRootFolder() {
+    	File userHome = new File(System.getProperties().getProperty("user.home"));
+	    //the default
+	    File rootDir;
+        if(GameRunner.isMac())
+            rootDir = new File(new File(userHome, "Documents"), "triplea");
+        else
+            rootDir = new File(userHome , "triplea");
+        
+	   return rootDir;
+    }
 
+    public static File getUserMapsFolder() {
+    	File f = new File(getUserRootFolder(), "maps");
+    	if(!f.exists()) {
+    		f.mkdirs();
+    	}
+    	return f;
+    }
+    
     /**
      * Get the root folder for the application
      */
