@@ -1858,7 +1858,7 @@ public class SUtils
 
 	/**
 	 * determines a suitable Territory for a factory
-	 * suitable: At Least 2 IPC
+	 * suitable: At Least 2 PU
 	 * All Territories around it are owned
 	 * Strength of Units in the Territory and 1 Territory away
 	 * Is greater than the sum of all enemy Territory 2 away
@@ -1884,8 +1884,8 @@ public class SUtils
 			prodMap.put(factTerr, TerritoryAttachment.get(factTerr).getProduction());
 		for (Territory t: owned)
 		{
-			int ipcValue = TerritoryAttachment.get(t).getProduction();
-			if (ipcValue < 2 || Matches.territoryHasOwnedFactory(data, player).match(t))
+			int puValue = TerritoryAttachment.get(t).getProduction();
+			if (puValue < 2 || Matches.territoryHasOwnedFactory(data, player).match(t))
 				continue;
 			List<Territory> weOwnAll = getNeighboringEnemyLandTerritories(data, player, t);
 			if (weOwnAll.size() > 0)
@@ -1914,7 +1914,7 @@ public class SUtils
 				if (Matches.territoryHasEnemyUnits(player, data).match(twoCheck))
 					twoCheckStrength += strength(twoCheck.getUnits().getMatches(Matches.enemyUnit(player, data)), true, false, false);
 			}
-			if (twoCheckStrength > (ipcValue*3.0F + tStrength))
+			if (twoCheckStrength > (puValue*3.0F + tStrength))
 					badIdea = true;
 			for (Territory threeCheck : threeAway)
 			{
@@ -1924,7 +1924,7 @@ public class SUtils
 					threeCheckStrength += strength(threeCheck.getUnits().getMatches(Matches.enemyUnit(player, data)), true, false, false);
 				}
 			}
-			if ((twoCheckStrength + threeCheckStrength) > (ipcValue*6.0F + tStrength)) //take at least 2 moves to invade
+			if ((twoCheckStrength + threeCheckStrength) > (puValue*6.0F + tStrength)) //take at least 2 moves to invade
 			{
 				badIdea = true;
 			}
@@ -3459,7 +3459,7 @@ public class SUtils
 	 */
 
 	public static boolean findPurchaseMix(IntegerMap<ProductionRule> bestAttack, IntegerMap<ProductionRule> bestDefense, IntegerMap<ProductionRule> bestTransport, 
-											IntegerMap<ProductionRule> bestMaxUnits, IntegerMap<ProductionRule> bestMobileAttack, List<ProductionRule> rules, int totIPC, int maxUnits, GameData data, PlayerID player, int fighters)
+											IntegerMap<ProductionRule> bestMaxUnits, IntegerMap<ProductionRule> bestMobileAttack, List<ProductionRule> rules, int totPU, int maxUnits, GameData data, PlayerID player, int fighters)
 	{
         Resource key = data.getResourceList().getResource(Constants.PUS);
 		IntegerMap<String> parameters = new IntegerMap<String>();
@@ -3480,7 +3480,7 @@ public class SUtils
 		parameters.put("totMovement", 0);
 		parameters.put("maxMovement", 0);
 		parameters.put("maxUnits", maxUnits); //never changed
-		parameters.put("maxCost", totIPC); //never changed
+		parameters.put("maxCost", totPU); //never changed
 		parameters.put("infantry", 0);
 		parameters.put("nonInfantry", 0);
 		Iterator<ProductionRule> prodIter = rules.iterator();
@@ -3915,15 +3915,15 @@ public class SUtils
         return newRoute;
     }
     /**
-     * Returns the players current ipcs available
+     * Returns the players current pus available
      * @param data
      * @param player
      * @return
      */
 	public static int getLeftToSpend(GameData data, PlayerID player)
 	{
-        Resource ipcs = data.getResourceList().getResource(Constants.PUS);
-        return player.getResources().getQuantity(ipcs);
+        Resource pus = data.getResourceList().getResource(Constants.PUS);
+        return player.getResources().getQuantity(pus);
 	}
 	
     /**
@@ -3949,7 +3949,7 @@ public class SUtils
     	List<Territory> enemyCapitals = SUtils.getEnemyCapitals(data, player);
     	Territory myCapital = TerritoryAttachment.getCapital(player, data);
     	int minDist = 1000;
-    	int playerIPCs = getLeftToSpend(data, player);
+    	int playerPUs = getLeftToSpend(data, player);
     	for (Territory eCapTerr : enemyCapitals)
     	{
     		int dist = data.getMap().getDistance(myCapital, eCapTerr);
@@ -4030,7 +4030,7 @@ public class SUtils
 			}
 			else if (Matches.TerritoryIsNeutral.match(eTerr))
 			{
-				if (Matches.TerritoryIsNotImpassable.match(eTerr) && (Matches.isTerritoryFreeNeutral(data).match(eTerr) || Properties.getNeutralCharge(data) <= playerIPCs))
+				if (Matches.TerritoryIsNotImpassable.match(eTerr) && (Matches.isTerritoryFreeNeutral(data).match(eTerr) || Properties.getNeutralCharge(data) <= playerPUs))
 				{
 					eTerrValue += -100.0F; // Make sure most neutral territories have lower priorities than enemy territories.
 					boolean hasENeighbors = Matches.territoryHasEnemyLandNeighbor(data, player).match(eTerr);
