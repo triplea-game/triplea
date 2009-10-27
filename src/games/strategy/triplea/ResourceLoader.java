@@ -1,10 +1,19 @@
 package games.strategy.triplea;
 
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.util.Match;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.StringTokenizer;
 
 
 /**
@@ -21,7 +30,7 @@ public class ResourceLoader
     public static ResourceLoader getMapresourceLoader(String mapName)
     {
         List<String> dirs = getPaths(mapName);
-        dirs.add("/images");
+        dirs.add(new File(GameRunner.getRootFolder(), "/images").getAbsolutePath());
         
         return new ResourceLoader( dirs.toArray(new String[0]));
     }
@@ -31,57 +40,53 @@ public class ResourceLoader
     {
         //find the primary directory/file
         
-        String dirName = File.separator + "maps" + File.separator + mapName;
+        String dirName = File.separator + mapName;
         String zipName = dirName + ".zip";
         
-        File dir = new File(GameRunner.getRootFolder(), dirName);
-        File zip = new File(GameRunner.getRootFolder(), zipName);
+        List<File> candidates = new ArrayList<File>();
+        candidates.add(new File(GameRunner.getRootFolder() + File.separator + "maps", dirName));
+        candidates.add(new File(GameRunner.getRootFolder() + File.separator + "maps", zipName));
+        candidates.add(new File(GameRunner.getUserMapsFolder(), dirName));
+        candidates.add(new File(GameRunner.getUserMapsFolder(), zipName));
 
-        //they cant both exist
-        if(dir.exists() && zip.exists())
+       
+        Collection<File> existing = Match.getMatches(candidates, new Match<File>() {
+			public boolean match(File f) {
+				return f.exists();
+			}        	
+        });
+       
+        if(existing.size() > 1)
         {
-            throw new IllegalStateException("Found both zip:" + zip + " and dir:" + dir + " for skin:" + mapName);
+            throw new IllegalStateException("Found too many files for:" + mapName + " found:" + existing);
         }
         //at least one must exist
-        if(!dir.exists() && !zip.exists())
+        if(existing.isEmpty())
         {
-            throw new IllegalStateException("Found neither zip:" + zip + " or dir:" + dir + " for skin:" + mapName);
+            throw new IllegalStateException("Could not find file for map:" + mapName);
         }
         
-        try
-        {
-            if(dir.exists()) {            
-                if(!dir.getCanonicalPath().endsWith(mapName)) {
-                    throw new IllegalStateException("Map case is incorrect, xml:" + mapName + " file:" + dir.getCanonicalFile().getName());
-                }
-            }
-            if(zip.exists()) {            
-                if(!zip.getCanonicalPath().endsWith(mapName)) {
-                    throw new IllegalStateException("Map case is incorrect, xml:" + mapName + " f:" + zip.getCanonicalFile().getName());
-                }
-            }
-        } catch(IOException ioe) {
-            throw new IllegalStateException(ioe);
-        }
+        File match = existing.iterator().next();
         
-       
-        File addedFile;
+        
+    	String fileName = match.getName();
+    	if(fileName.indexOf('.') > 0) { 
+    		fileName = fileName.substring(0, fileName.lastIndexOf('.'));
+    	}
+    		
+        if(!fileName.equals(mapName)) {
+            throw new IllegalStateException("Map case is incorrect, xml:" + mapName + " file:" + match.getName());
+        }
+     
+        
+               
         List<String> rVal = new ArrayList<String>();
-        if(dir.exists())
-        {
-            rVal.add(dirName);
-            addedFile = dir;
-        }
-        else
-        {
-            rVal.add(zipName);
-            addedFile = zip;
-        }
+        rVal.add(match.getAbsolutePath());
             
         //find dependencies
         try
         {
-            URLClassLoader url = new URLClassLoader(new URL[] {addedFile.toURI().toURL()});
+            URLClassLoader url = new URLClassLoader(new URL[] {match.toURI().toURL()});
             URL dependencesURL = url.getResource("dependencies.txt");
             if(dependencesURL != null)
             {
@@ -122,9 +127,8 @@ public class ResourceLoader
         URL[] urls = new URL[paths.length];
         
         for(int i =0; i < paths.length; i++)
-        {
-            File root = GameRunner.getRootFolder();
-            File f = new File(root, paths[i]);
+        {            
+            File f = new File(paths[i]);
             
             if(!f.exists())
             {
