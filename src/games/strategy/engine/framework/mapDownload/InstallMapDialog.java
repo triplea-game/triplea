@@ -1,8 +1,9 @@
 package games.strategy.engine.framework.mapDownload;
 
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.ui.NewGameChooserModel;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.Util;
+import games.strategy.util.EventThreadJOptionPane;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -10,12 +11,10 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
@@ -96,6 +95,7 @@ public class InstallMapDialog extends JDialog {
 		buttonsPanel.add(m_cancelButton);
 		buttonsPanel.add(m_installButton);
 		buttonsPanel.add(Box.createGlue());
+		buttonsPanel.setBorder(new EmptyBorder(20,20,20,20));
 
 		JScrollPane descriptionScroll = new JScrollPane();		
 		descriptionScroll.setViewportView(m_descriptionPane);
@@ -166,42 +166,35 @@ public class InstallMapDialog extends JDialog {
 			File(System.getProperty("java.io.tmpdir"), "tadownload:" +UUID.randomUUID().toString());
 		tempFile.deleteOnExit();
 		
-		FileOutputStream sink;
-		try {
-			
-			sink = new FileOutputStream(tempFile);
-		} catch (FileNotFoundException e) {
-			Util.notifyError(this, "Could not create temp file:" + e.getMessage());
-			return;
-		}
-		try
-		{
-			URL url = new URL(selected.getUrl());
-			InputStream is = url.openStream();
-			try
-			{
-				copy(sink, is); 
-				sink.getFD().sync();
-			} finally {
-				try
-				{
-					if(is != null) {
-						is.close();
-					}
-				} catch(IOException e) {
-					Util.notifyError(this, e.getMessage());
-					return;
-				}
-			}
-		} catch(FileNotFoundException e) {
-			Util.notifyError(this, "Could not find:" + e.getMessage());
-			return;
-		}
-		catch(IOException e) {
-			Util.notifyError(this, e.getMessage());
+		
+		
+		
+		DownloadRunnable download = new DownloadRunnable(selected.getUrl());
+		BackgroundTaskRunner.runInBackground(getRootPane(), "Downloading", download);
+		if(download.getError() != null) {
+			Util.notifyError(this, download.getError());
 			return;
 		}
 		
+		FileOutputStream sink = null;
+		try {
+			
+			sink = new FileOutputStream(tempFile);
+			sink.write(download.getContents());
+			sink.getFD().sync();
+		} catch (IOException e) {
+			Util.notifyError(this, "Could not create write to temp file:" + e.getMessage());
+			return;
+		} finally { 
+			if(sink != null) {
+				try {
+					sink.close();
+				} catch (IOException e) {
+					//ignore
+				}
+			}
+		}
+				
 		//try to make sure it is a valid zip file
 		try
 		{			
@@ -246,9 +239,12 @@ public class InstallMapDialog extends JDialog {
 			}
 			
 		}
+		
+		EventThreadJOptionPane.showMessageDialog(getRootPane(), "Map successfully installed");
+		setVisible(false);
 	}
 
-	private void copy(OutputStream sink, InputStream is) throws IOException {
+	public static void copy(OutputStream sink, InputStream is) throws IOException {
 		byte[] b = new byte[8192];  
 		int read;  
 		while ((read = is.read(b)) != -1) {  

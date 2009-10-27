@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.mapDownload;
 
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.Util;
 
 import java.awt.BorderLayout;
@@ -8,11 +9,8 @@ import java.awt.event.ActionEvent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import java.util.Vector;
 import java.util.prefs.Preferences;
@@ -54,7 +52,7 @@ public class DownloadMapDialog extends JDialog {
 		m_urlComboBox = new JComboBox(getStoredDownloadSites());
 		m_urlComboBox.setEditable(true);
 		m_urlComboBox.setPrototypeDisplayValue(
-				"                                             ");
+				"                                                                                                                                                                            ");
 	}
 	
 
@@ -72,6 +70,7 @@ public class DownloadMapDialog extends JDialog {
 		buttonsPanel.add(m_cancelButton);
 		buttonsPanel.add(m_listGamesButton);
 		buttonsPanel.add(Box.createGlue());
+		buttonsPanel.setBorder(new EmptyBorder(20,20,20,20));
 
 		JPanel main = new JPanel();
 		main.setBorder(new EmptyBorder(30,30,30,30));
@@ -81,7 +80,7 @@ public class DownloadMapDialog extends JDialog {
 		add(main, BorderLayout.CENTER);
 	}
 	
-
+	
 
 	private void setupListeners() {
 		m_cancelButton.addActionListener(new AbstractAction() {
@@ -90,35 +89,29 @@ public class DownloadMapDialog extends JDialog {
 				setVisible(false);				
 			}
 		});
-		
+
 		m_listGamesButton.addActionListener(new AbstractAction() {
 			
 			public void actionPerformed(ActionEvent event) {
-				String selected = (String) m_urlComboBox.getSelectedItem();
+				final String selected = (String) m_urlComboBox.getSelectedItem();
 				if(selected == null || selected.trim().length() == 0) {
 					Util.notifyError(m_cancelButton, "nothing selected");
 					return;
-				}			
-				URL url;
-				try {
-					url = new URL(selected.trim());
-					
-				} catch (MalformedURLException e1) {
-					Util.notifyError(m_cancelButton, "invalid url");
+				}
+				
+				DownloadRunnable download = new DownloadRunnable(selected);
+				
+				BackgroundTaskRunner.runInBackground(getRootPane(), "Downloading....", download);
+				
+				if(download.getError() != null) {
+					Util.notifyError(m_cancelButton, download.getError());
 					return;
 				}
+								
 				List<DownloadFileDescription> downloads;
 				try
-				{
-					InputStream stream = url.openStream();
-					try
-					{
-						downloads = new DownloadFileParser().parse(stream);
-					} finally {
-						if(stream != null) {
-							stream.close();
-						}
-					}
+				{					
+					downloads = new DownloadFileParser().parse(new ByteArrayInputStream(download.getContents()));					
 					if(downloads.isEmpty()) {
 						throw new IllegalStateException("No games listed.");
 					}
