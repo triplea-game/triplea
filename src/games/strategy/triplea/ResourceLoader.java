@@ -161,16 +161,16 @@ public class ResourceLoader
         {
             return null;
         }
-        File f;
+        String fileName;
         try {
-            f = new File(URLDecoder.decode(rVal.getFile(), "utf-8")).getCanonicalFile();
+            fileName = URLDecoder.decode(rVal.getFile(), "utf-8");
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
         
-        if(!f.getPath().endsWith(path.replace('/', File.separatorChar))) 
+        if(!fileName.endsWith(path)) 
         {
-            throw new IllegalStateException("The file:" + f.getPath() + "  does not have the correct case.  It must match the case declared in the xml:" + path );
+            throw new IllegalStateException("The file:" + fileName + "  does not have the correct case.  It must match the case declared in the xml:" + path );
         }
         return rVal;
     }
