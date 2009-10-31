@@ -8,6 +8,7 @@ import games.strategy.util.EventThreadJOptionPane;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Frame;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,6 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -263,6 +265,16 @@ public class InstallMapDialog extends JDialog {
 			DownloadFileDescription selected = getSelected();				
 			m_descriptionPane.setText(selected.getDescription());
 			m_urlLabel.setText(DOWNLOAD_URL_PREFIX + selected.getUrl());
+			
+			//scroll to the top of the notes screen
+			SwingUtilities.invokeLater(new Runnable()
+	        {        
+	            public void run()
+	            {         
+	            	m_descriptionPane.scrollRectToVisible(new Rectangle(0,0,0,0));
+	            }
+	        
+	        });
 		}
 			
 	}

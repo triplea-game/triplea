@@ -1,3 +1,5 @@
+* download file notes shows top of notes by default now, rather than scrolling to the middle (sgb)
+
 Changes for 1.1.0
 
 * update StrongAI files for PUs (ComradeKev)
