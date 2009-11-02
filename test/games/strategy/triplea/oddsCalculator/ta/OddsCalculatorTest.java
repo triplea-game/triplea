@@ -4,6 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import static games.strategy.triplea.delegate.GameDataTestUtil.*;
 import games.strategy.triplea.xml.LoadGameUtil;
 
 import java.util.ArrayList;
@@ -128,28 +129,42 @@ public class OddsCalculatorTest extends TestCase
         assertEquals(0.33, results.getDrawPercent(), 0.05);
     }
     
-        public void testSeaBattleWithTransport()
-        {
-           
-           //Attack a battleship with a battleship and a transport
-           
-            Territory sz2 = m_data.getMap().getTerritory("2 Sea Zone");
-           
-            PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
-            List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("battleship").create(1,germans);
-            attackingUnits.addAll(m_data.getUnitTypeList().getUnitType("transport").create(1,germans));
-            List<Unit> bombardingUnits = Collections.emptyList();
-            
-            PlayerID british = m_data.getPlayerList().getPlayerID("British");
-            List<Unit> defendingUnits = m_data.getUnitTypeList().getUnitType("battleship").create(1,british);        
-           
-           OddsCalculator calc = new OddsCalculator();
-           AggregateResults results = calc.calculate(m_data, germans, british, sz2, attackingUnits, defendingUnits, bombardingUnits, 1000);
-           
-           assertTrue(results.getAttackerWinPercent() > 0.65);
-        }
+    public void testSeaBattleWithTransport()
+    {
+       
+       //Attack a battleship with a battleship and a transport
+       
+        Territory sz2 = m_data.getMap().getTerritory("2 Sea Zone");
+       
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+        List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("battleship").create(1,germans);
+        attackingUnits.addAll(m_data.getUnitTypeList().getUnitType("transport").create(1,germans));
+        List<Unit> bombardingUnits = Collections.emptyList();
+        
+        PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        List<Unit> defendingUnits = m_data.getUnitTypeList().getUnitType("battleship").create(1,british);        
+       
+       OddsCalculator calc = new OddsCalculator();
+       AggregateResults results = calc.calculate(m_data, germans, british, sz2, attackingUnits, defendingUnits, bombardingUnits, 1000);
+       
+       assertTrue(results.getAttackerWinPercent() > 0.65);
+    }
 
 
+    public void testSubInfLoop()
+    {
+        m_data = LoadGameUtil.loadGame("AA50", "AA50-42.xml");
+        //Attack a battleship with a battleship and a transport
+       
+        Territory sz1 = territory("1 Sea Zone", m_data);
+        List<Unit> attacking = submarine(m_data).create(2, americans(m_data));
+        List<Unit> defending = submarine(m_data).create(2, germans(m_data));
+        
+        OddsCalculator calc = new OddsCalculator();
+        calc.setKeepOneAttackingLandUnit(false);
+        calc.calculate(m_data, americans(m_data), germans(m_data), sz1, attacking, defending, Collections.<Unit>emptyList(), 5000);
+              
+    }
 
     
 }

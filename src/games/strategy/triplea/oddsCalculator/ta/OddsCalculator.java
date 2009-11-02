@@ -1,6 +1,7 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
 import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -65,15 +66,21 @@ public class OddsCalculator
     @SuppressWarnings("unchecked")
     public AggregateResults calculate(GameData data, PlayerID attacker, PlayerID defender,  Territory location, Collection<Unit> attacking, Collection<Unit>  defending, Collection<Unit> bombarding, int runCount)
     {
-       m_data = GameDataUtils.cloneGameData(data, false);
-       m_attacker =  (PlayerID) GameDataUtils.translateIntoOtherGameData(attacker, data);
-       m_defender =  (PlayerID) GameDataUtils.translateIntoOtherGameData(defender, data);
-       m_location = (Territory) GameDataUtils.translateIntoOtherGameData(location, data);
+       m_data = GameDataUtils.cloneGameData(data, false);       
+       m_attacker =  m_data.getPlayerList().getPlayerID(attacker.getName());
+       m_defender = m_data.getPlayerList().getPlayerID(defender.getName());
+       m_location = m_data.getMap().getTerritory(location.getName());
+       
+        
        m_attackingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(attacking, data);
        m_defendingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(defending, data);
        m_bombardingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(bombarding, data);
        
-             
+       
+       new ChangePerformer(m_data).perform(ChangeFactory.removeUnits(m_location, m_location.getUnits().getUnits()));
+       new ChangePerformer(m_data).perform(ChangeFactory.addUnits(m_location, m_attackingUnits));
+       new ChangePerformer(m_data).perform(ChangeFactory.addUnits(m_location, m_defendingUnits));
+            
        
        return calculate(runCount);
         
