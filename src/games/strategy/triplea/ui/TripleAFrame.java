@@ -1368,163 +1368,167 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         // print map panel to image
         final BufferedImage mapImage = Util.createImage((int)(scale * mapPanel.getImageWidth()), (int)(scale * mapPanel.getImageHeight()), false);
         Graphics2D mapGraphics = mapImage.createGraphics();
-        GameData data = mapPanel.getData();
-        data.acquireReadLock(); 
-        try 
-        {
-            mapPanel.print(mapGraphics);
-        } finally 
-        {
-            data.releaseReadLock();
-        }
-
-        // overlay title
-        Color title_color = m_uiContext.getMapData().getColorProperty("screenshot.title.color");
-        if(title_color == null)
-            title_color = Color.BLACK;
-        String s_title_x = m_uiContext.getMapData().getProperty("screenshot.title.x");
-        String s_title_y = m_uiContext.getMapData().getProperty("screenshot.title.y");
-        String s_title_size = m_uiContext.getMapData().getProperty("screenshot.title.font.size");
-        int title_x;
-        int title_y;
-        int title_size;
         try
         {
-            title_x = (int)(Integer.parseInt(s_title_x) * scale);
-            title_y = (int)(Integer.parseInt(s_title_y) * scale);
-            title_size = Integer.parseInt(s_title_size);
+	        GameData data = mapPanel.getData();
+	        data.acquireReadLock(); 
+	        try 
+	        {
+	            mapPanel.print(mapGraphics);
+	        } finally 
+	        {
+	            data.releaseReadLock();
+	        }
+	
+	        // overlay title
+	        Color title_color = m_uiContext.getMapData().getColorProperty("screenshot.title.color");
+	        if(title_color == null)
+	            title_color = Color.BLACK;
+	        String s_title_x = m_uiContext.getMapData().getProperty("screenshot.title.x");
+	        String s_title_y = m_uiContext.getMapData().getProperty("screenshot.title.y");
+	        String s_title_size = m_uiContext.getMapData().getProperty("screenshot.title.font.size");
+	        int title_x;
+	        int title_y;
+	        int title_size;
+	        try
+	        {
+	            title_x = (int)(Integer.parseInt(s_title_x) * scale);
+	            title_y = (int)(Integer.parseInt(s_title_y) * scale);
+	            title_size = Integer.parseInt(s_title_size);
+	        }
+	        catch(NumberFormatException nfe)
+	        {
+	            // choose safe defaults
+	            title_x = (int)(15 * scale);
+	            title_y = (int)(15 * scale);
+	            title_size = 15;
+	        }
+	
+	        // everything else should be scaled down onto map image
+	        AffineTransform transform = new AffineTransform();
+	        transform.scale(scale, scale);
+	        mapGraphics.setTransform(transform);
+	
+	        mapGraphics.setFont(new Font("Ariel", Font.BOLD, title_size));
+	        mapGraphics.setColor(title_color);
+	        mapGraphics.drawString("Round "+round+": "+ (player != null ? player.getName() : "")  +" - "+step, title_x, title_y);
+	        // overlay stats, if enabled
+	        boolean stats_enabled = m_uiContext.getMapData().getBooleanProperty("screenshot.stats.enabled");
+	        if(stats_enabled)
+	        {
+	            // get screenshot properties from map data
+	            Color stats_text_color = m_uiContext.getMapData().getColorProperty("screenshot.text.color");
+	            if(stats_text_color == null)
+	                stats_text_color = Color.BLACK;
+	            Color stats_border_color = m_uiContext.getMapData().getColorProperty("screenshot.border.color");
+	            if(stats_border_color == null)
+	                stats_border_color = Color.WHITE;
+	            String s_stats_x = m_uiContext.getMapData().getProperty("screenshot.stats.x");
+	            String s_stats_y = m_uiContext.getMapData().getProperty("screenshot.stats.y");
+	            int stats_x;
+	            int stats_y;
+	            try
+	            {
+	                stats_x = (int)(Integer.parseInt(s_stats_x) * scale);
+	                stats_y = (int)(Integer.parseInt(s_stats_y) * scale);
+	            }
+	            catch(NumberFormatException nfe)
+	            {
+	                // choose reasonable defaults
+	                stats_x = (int)(120 * scale);
+	                stats_y = (int)(70 * scale);
+	            }
+	
+	            // Fetch stats table and save current properties before modifying them
+	            // NOTE: This is a bit of a hack, but creating a fresh JTable and
+	            // populating it with statsPanel data seemed hard.  This was easier.
+	            JTable table = m_statsPanel.getStatsTable();
+	            javax.swing.table.TableCellRenderer oldRenderer = table.getDefaultRenderer(Object.class);
+	            Font oldTableFont = table.getFont();
+	            Font oldTableHeaderFont = table.getTableHeader().getFont();
+	            Dimension oldTableSize = table.getSize();
+	            Color oldTableFgColor = table.getForeground();
+	            Color oldTableSelFgColor = table.getSelectionForeground();
+	            int oldCol0Width = table.getColumnModel().getColumn(0).getPreferredWidth();
+	            int oldCol2Width = table.getColumnModel().getColumn(2).getPreferredWidth();
+	
+	            // override some stats table properties for screenshot
+	            table.setOpaque(false);
+	            table.setFont(new Font("Ariel", Font.BOLD, 15));
+	            table.setForeground(stats_text_color);
+	            table.setSelectionForeground(table.getForeground());
+	            table.setGridColor(stats_border_color);
+	            table.getTableHeader().setFont(new Font("Ariel", Font.BOLD, 15));
+	            table.getColumnModel().getColumn(0).setPreferredWidth(80);
+	            table.getColumnModel().getColumn(2).setPreferredWidth(90);
+	            table.setSize(table.getPreferredSize());
+	            table.doLayout();
+	
+	            // initialize table/header dimensions
+	            int tableWidth = table.getSize().width;
+	            int tableHeight = table.getSize().height;
+	            int hdrWidth = tableWidth; // use tableWidth not hdrWidth!
+	            int hdrHeight = table.getTableHeader().getSize().height;
+	
+	            // create image for capturing table header
+	            BufferedImage tblHdrImage = Util.createImage(hdrWidth, hdrHeight, false);
+	            Graphics2D tblHdrGraphics = tblHdrImage.createGraphics();
+	
+	            // create image for capturing table (support transparencies)
+	            BufferedImage tblImage = Util.createImage(tableWidth, tableHeight, true);
+	            Graphics2D tblGraphics = tblImage.createGraphics();
+	            
+	            // create a custom renderer that paints selected cells transparently
+	            DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
+	                { setOpaque(false); }
+	            };
+	
+	            // set our custom renderer on the JTable
+	            table.setDefaultRenderer(Object.class, renderer);
+	
+	            // print table and header to images and draw them on map
+	            table.getTableHeader().print(tblHdrGraphics);
+	            table.print(tblGraphics);
+	            mapGraphics.drawImage(tblHdrImage, stats_x, stats_y, null);
+	            mapGraphics.drawImage(tblImage, stats_x, stats_y + (int)(hdrHeight * scale), null);
+	
+	            // Clean up objects.  There might be some overkill here, 
+	            //  but there were memory leaks that are fixed by some/all of these.
+	            tblHdrGraphics.dispose();
+	            tblGraphics.dispose();
+	            m_statsPanel.setStatsBgImage(null);
+	            tblHdrImage.flush();
+	            tblImage.flush();
+	
+	            // restore table properties
+	            table.setDefaultRenderer(Object.class, oldRenderer);
+	            table.setOpaque(true);
+	            table.setForeground(oldTableFgColor);
+	            table.setSelectionForeground(oldTableSelFgColor);
+	            table.setFont(oldTableFont);
+	            table.getTableHeader().setFont(oldTableHeaderFont);
+	            table.setSize(oldTableSize);
+	            table.getColumnModel().getColumn(0).setPreferredWidth(oldCol0Width);
+	            table.getColumnModel().getColumn(2).setPreferredWidth(oldCol2Width);
+	            table.doLayout();
+	        }
+	
+	        // save Image as .png
+	        try
+	        {
+	            ImageIO.write(mapImage, "png", file);
+	        } catch (Exception e2)
+	        {
+	            e2.printStackTrace();
+	            JOptionPane.showMessageDialog(TripleAFrame.this, e2.getMessage(), "Error saving Screenshot", JOptionPane.OK_OPTION);
+	            retval = false;
+	        }
+	        // Clean up objects.  There might be some overkill here, 
+	        //  but there were memory leaks that are fixed by some/all of these.
+        } finally {
+        	mapImage.flush();
+        	mapGraphics.dispose();        	        	
         }
-        catch(NumberFormatException nfe)
-        {
-            // choose safe defaults
-            title_x = (int)(15 * scale);
-            title_y = (int)(15 * scale);
-            title_size = 15;
-        }
-
-        // everything else should be scaled down onto map image
-        AffineTransform transform = new AffineTransform();
-        transform.scale(scale, scale);
-        mapGraphics.setTransform(transform);
-
-        mapGraphics.setFont(new Font("Ariel", Font.BOLD, title_size));
-        mapGraphics.setColor(title_color);
-        mapGraphics.drawString("Round "+round+": "+ (player != null ? player.getName() : "")  +" - "+step, title_x, title_y);
-        // overlay stats, if enabled
-        boolean stats_enabled = m_uiContext.getMapData().getBooleanProperty("screenshot.stats.enabled");
-        if(stats_enabled)
-        {
-            // get screenshot properties from map data
-            Color stats_text_color = m_uiContext.getMapData().getColorProperty("screenshot.text.color");
-            if(stats_text_color == null)
-                stats_text_color = Color.BLACK;
-            Color stats_border_color = m_uiContext.getMapData().getColorProperty("screenshot.border.color");
-            if(stats_border_color == null)
-                stats_border_color = Color.WHITE;
-            String s_stats_x = m_uiContext.getMapData().getProperty("screenshot.stats.x");
-            String s_stats_y = m_uiContext.getMapData().getProperty("screenshot.stats.y");
-            int stats_x;
-            int stats_y;
-            try
-            {
-                stats_x = (int)(Integer.parseInt(s_stats_x) * scale);
-                stats_y = (int)(Integer.parseInt(s_stats_y) * scale);
-            }
-            catch(NumberFormatException nfe)
-            {
-                // choose reasonable defaults
-                stats_x = (int)(120 * scale);
-                stats_y = (int)(70 * scale);
-            }
-
-            // Fetch stats table and save current properties before modifying them
-            // NOTE: This is a bit of a hack, but creating a fresh JTable and
-            // populating it with statsPanel data seemed hard.  This was easier.
-            JTable table = m_statsPanel.getStatsTable();
-            javax.swing.table.TableCellRenderer oldRenderer = table.getDefaultRenderer(Object.class);
-            Font oldTableFont = table.getFont();
-            Font oldTableHeaderFont = table.getTableHeader().getFont();
-            Dimension oldTableSize = table.getSize();
-            Color oldTableFgColor = table.getForeground();
-            Color oldTableSelFgColor = table.getSelectionForeground();
-            int oldCol0Width = table.getColumnModel().getColumn(0).getPreferredWidth();
-            int oldCol2Width = table.getColumnModel().getColumn(2).getPreferredWidth();
-
-            // override some stats table properties for screenshot
-            table.setOpaque(false);
-            table.setFont(new Font("Ariel", Font.BOLD, 15));
-            table.setForeground(stats_text_color);
-            table.setSelectionForeground(table.getForeground());
-            table.setGridColor(stats_border_color);
-            table.getTableHeader().setFont(new Font("Ariel", Font.BOLD, 15));
-            table.getColumnModel().getColumn(0).setPreferredWidth(80);
-            table.getColumnModel().getColumn(2).setPreferredWidth(90);
-            table.setSize(table.getPreferredSize());
-            table.doLayout();
-
-            // initialize table/header dimensions
-            int tableWidth = table.getSize().width;
-            int tableHeight = table.getSize().height;
-            int hdrWidth = tableWidth; // use tableWidth not hdrWidth!
-            int hdrHeight = table.getTableHeader().getSize().height;
-
-            // create image for capturing table header
-            BufferedImage tblHdrImage = Util.createImage(hdrWidth, hdrHeight, false);
-            Graphics2D tblHdrGraphics = tblHdrImage.createGraphics();
-
-            // create image for capturing table (support transparencies)
-            BufferedImage tblImage = Util.createImage(tableWidth, tableHeight, true);
-            Graphics2D tblGraphics = tblImage.createGraphics();
-            
-            // create a custom renderer that paints selected cells transparently
-            DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
-                { setOpaque(false); }
-            };
-
-            // set our custom renderer on the JTable
-            table.setDefaultRenderer(Object.class, renderer);
-
-            // print table and header to images and draw them on map
-            table.getTableHeader().print(tblHdrGraphics);
-            table.print(tblGraphics);
-            mapGraphics.drawImage(tblHdrImage, stats_x, stats_y, null);
-            mapGraphics.drawImage(tblImage, stats_x, stats_y + (int)(hdrHeight * scale), null);
-
-            // Clean up objects.  There might be some overkill here, 
-            //  but there were memory leaks that are fixed by some/all of these.
-            tblHdrGraphics.dispose();
-            tblGraphics.dispose();
-            m_statsPanel.setStatsBgImage(null);
-            tblHdrImage.flush();
-            tblImage.flush();
-
-            // restore table properties
-            table.setDefaultRenderer(Object.class, oldRenderer);
-            table.setOpaque(true);
-            table.setForeground(oldTableFgColor);
-            table.setSelectionForeground(oldTableSelFgColor);
-            table.setFont(oldTableFont);
-            table.getTableHeader().setFont(oldTableHeaderFont);
-            table.setSize(oldTableSize);
-            table.getColumnModel().getColumn(0).setPreferredWidth(oldCol0Width);
-            table.getColumnModel().getColumn(2).setPreferredWidth(oldCol2Width);
-            table.doLayout();
-        }
-
-        // save Image as .png
-        try
-        {
-            ImageIO.write(mapImage, "png", file);
-        } catch (Exception e2)
-        {
-            e2.printStackTrace();
-            JOptionPane.showMessageDialog(TripleAFrame.this, e2.getMessage(), "Error saving Screenshot", JOptionPane.OK_OPTION);
-            retval = false;
-        }
-        // Clean up objects.  There might be some overkill here, 
-        //  but there were memory leaks that are fixed by some/all of these.
-        mapGraphics.dispose();
-        mapImage.flush();
 
         return retval;
     }
