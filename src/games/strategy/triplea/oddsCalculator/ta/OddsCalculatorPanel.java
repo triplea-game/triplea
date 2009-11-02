@@ -109,34 +109,31 @@ public class OddsCalculatorPanel extends JPanel
             try
             {
                 m_landBattle.setSelected(!location.isWater());
+            
+                //default to the current player 
+                if(!m_data.getSequence().getStep().getPlayerID().isNull()) {
+                    m_attackerCombo.setSelectedItem(m_data.getSequence().getStep().getPlayerID());
+                }
                 
-                if(!location.getUnits().isEmpty())
+                if(!location.isWater())
                 {
-                    //default to the current player 
-                    if(!m_data.getSequence().getStep().getPlayerID().isNull()) {
-                        m_attackerCombo.setSelectedItem(m_data.getSequence().getStep().getPlayerID());
-                    }
-                    
-                    if(!location.isWater())
+                    m_defenderCombo.setSelectedItem(location.getOwner());
+                }
+                else
+                {
+                    // we need to find out the defender for sea zones
+                    for (PlayerID player : location.getUnits().getPlayersWithUnits())
                     {
-                        m_defenderCombo.setSelectedItem(location.getOwner());
-                    }
-                    else
-                    {
-                        // we need to find out the defender for sea zones
-                        for (PlayerID player : location.getUnits().getPlayersWithUnits())
+                        if(player != getAttacker() && !m_data.getAllianceTracker().isAllied(player, getAttacker()))
                         {
-                            if(player != getAttacker() && !m_data.getAllianceTracker().isAllied(player, getAttacker()))
-                            {
-                                m_defenderCombo.setSelectedItem(player);
-                                break;
-                            }
-                            
+                            m_defenderCombo.setSelectedItem(player);
+                            break;
                         }
                         
                     }
+                    
                 }
-                
+                            
                 updateDefender(location.getUnits().getMatches(Matches.alliedUnit(getDefender(), data)));
                 updateAttacker(location.getUnits().getMatches(Matches.alliedUnit(getAttacker(), data)));
                 

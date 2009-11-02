@@ -1,3 +1,7 @@
+* better logic for determining which odds calculator player should be used if no units are in the territory (sgb)
+
+* better isolation of units in odd calculator from units in the game (sgb)
+
 * download file notes shows top of notes by default now, rather than scrolling to the middle (sgb)
 
 Changes for 1.1.0
