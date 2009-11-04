@@ -154,7 +154,6 @@ public class OddsCalculatorTest extends TestCase
     public void testSubInfLoop()
     {
         m_data = LoadGameUtil.loadGame("AA50", "AA50-42.xml");
-        //Attack a battleship with a battleship and a transport
        
         Territory sz1 = territory("1 Sea Zone", m_data);
         List<Unit> attacking = submarine(m_data).create(2, americans(m_data));
@@ -165,6 +164,37 @@ public class OddsCalculatorTest extends TestCase
         calc.calculate(m_data, americans(m_data), germans(m_data), sz1, attacking, defending, Collections.<Unit>emptyList(), 5000);
               
     }
+    
+    public void testAttackingTransports()
+    {
+        m_data = LoadGameUtil.loadGame("AA50", "AA50-42.xml");
+       
+        Territory sz1 = territory("1 Sea Zone", m_data);
+        List<Unit> attacking = transports(m_data).create(2, americans(m_data));
+        List<Unit> defending = submarine(m_data).create(2, germans(m_data));
+        
+        OddsCalculator calc = new OddsCalculator();
+        calc.setKeepOneAttackingLandUnit(false);
+        AggregateResults results =  calc.calculate(m_data, americans(m_data), germans(m_data), sz1, attacking, defending, Collections.<Unit>emptyList(), 1);
+        assertEquals(results.getAttackerWinPercent(), 0.0);
+        assertEquals(results.getDefenderWinPercent(), 1.0);
+             
+    }
 
+    public void testDefendingTransports()
+    {
+        m_data = LoadGameUtil.loadGame("AA50", "AA50-42.xml");
+       
+        Territory sz1 = territory("1 Sea Zone", m_data);
+        List<Unit> attacking = submarine(m_data).create(2, americans(m_data));
+        List<Unit> defending = transports(m_data).create(2, germans(m_data));
+        
+        OddsCalculator calc = new OddsCalculator();
+        calc.setKeepOneAttackingLandUnit(false);
+        AggregateResults results =  calc.calculate(m_data, americans(m_data), germans(m_data), sz1, attacking, defending, Collections.<Unit>emptyList(), 1);
+        assertEquals(results.getAttackerWinPercent(), 1.0);
+        assertEquals(results.getDefenderWinPercent(), 0.0);
+             
+    }
     
 }

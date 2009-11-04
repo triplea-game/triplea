@@ -994,11 +994,15 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	                	endBattle(bridge);
     	                	defenderWins(bridge);
                     	}
-                        else
+                        else if(m_round == 0)
                         {
                         	//TODO Need to determine how combined forces on attack work- trn left in terr by prev player, ally moves in and attacks
                         	//add back in the non-combat units (Trns)
                         	m_attackingUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.unitIsOwnedBy(m_attacker));
+                        } else 
+                        {
+    	                	endBattle(bridge);
+    	                	defenderWins(bridge);                        	
                         }
                 	}
                 	else
