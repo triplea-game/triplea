@@ -61,6 +61,26 @@ public class Util
         public T run();
     }
     
+    public static void runInSwingEventThread(Runnable r) {
+    	if(SwingUtilities.isEventDispatchThread()) 
+    	{
+    		r.run();
+    	}
+    	else 
+    	{
+    		try 
+    		{
+				SwingUtilities.invokeAndWait(r);
+			} catch (InterruptedException e) 
+			{
+				throw new IllegalStateException(e);
+			} catch (InvocationTargetException e) 
+			{
+				throw new IllegalStateException(e);
+			}
+    	}
+    }
+    
     public  static <T> T  runInSwingEventThread(final Task<T> task) {
         
         if(SwingUtilities.isEventDispatchThread()) { 
