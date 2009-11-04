@@ -853,6 +853,61 @@ public class AA50_41Test extends TestCase {
             assertEquals(2, mfb.getBombardingUnits().size());
         }
         
+        
+        public void testCarrierWithAlliedPlanes() 
+        {
+        	Territory sz8 = territory("8 Sea Zone", m_data);
+        	Territory sz1 = territory("1 Sea Zone", m_data);
+        	
+        	addTo(sz8, carrier(m_data).create(1, british(m_data)));
+        	addTo(sz8, fighter(m_data).create(1, americans(m_data)));
+        	
+        	Route route = new Route(sz8, sz1);
+        	
+        	
+            ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+            bridge.setStepName("CombatMove");
+            moveDelegate(m_data).start(bridge, m_data);
+            
+            move(sz8.getUnits().getMatches(Matches.unitIsOwnedBy(british(m_data))), route);
+ 
+        }
+        
+        public void testAirCanLandWithAlliedFighters() 
+        {
+        	
+        	//germany owns madagascar, with 1 fighter in it
+        	//also 1 carrier, and 1 allied fighter in sz 40
+        	//the fighter should not be able to move from madagascar 
+        	//to sz 40, since with the allied fighter, their is no room
+        	//on the carrier
+        	
+        	Territory madagascar = territory("French Madagascar", m_data);
+        	PlayerID germans = germans(m_data);
+			madagascar.setOwner(germans);
+        	
+        	Territory sz40 = territory("40 Sea Zone", m_data);
+        	addTo(sz40, carrier(m_data).create(1, germans));
+        	addTo(sz40, fighter(m_data).create(1, italians(m_data)));
+        	addTo(madagascar, fighter(m_data).create(1, germans));
+        	
+        	Route route = m_data.getMap().getRoute(madagascar, sz40);
+        	
+            ITestDelegateBridge bridge = getDelegateBridge(germans);
+            bridge.setStepName("CombatMove");
+            moveDelegate(m_data).start(bridge, m_data);
+            //don't allow kamikazee
+            bridge.setRemote(new DummyTripleAPlayer() {
+				@Override
+				public boolean confirmMoveKamikaze() {
+					return false;
+				}            	
+            });
+        	
+            String error =  moveDelegate(m_data).move(madagascar.getUnits().getUnits(), route);
+            assertError(error);
+        }
+        
         /***********************************************************/
         /***********************************************************/
         /***********************************************************/
@@ -864,7 +919,7 @@ public class AA50_41Test extends TestCase {
         private Collection<Unit> getUnits(IntegerMap<UnitType> units, PlayerID from)
         {
             Iterator<UnitType> iter = units.keySet().iterator();
-            Collection rVal = new ArrayList(units.totalValues());
+            Collection<Unit> rVal = new ArrayList<Unit>(units.totalValues());
             while(iter.hasNext())
             {
                 UnitType type = iter.next();

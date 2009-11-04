@@ -69,7 +69,7 @@ public class MoveValidatorTest extends DelegateTest
 		assertTrue(MoveValidator.hasEnoughMovement(units, 2));
 	}
 	
-	public void testHasWate()
+	public void testHasWater()
 	{
 		Route route = new Route();
 		route.setStart(eastMediteranean);

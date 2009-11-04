@@ -86,13 +86,7 @@ public class MoveValidator
     
     public static boolean hasEnoughMovement(Collection<Unit> units, Route route)
     {    
-        PlayerID player = null;
 
-        if (!units.isEmpty())
-            player = units.iterator().next().getOwner();
-           
-        //getMechanizedSupportAvail(route, units, player);
-                
         for (Unit unit : units)
         {
             if (!hasEnoughMovement(unit, route))
@@ -960,7 +954,11 @@ public class MoveValidator
             }
             
             for(Unit unit : Match.getMatches(moveTest, Matches.unitIsOwnedBy(player).invert())) {
-                result.addDisallowedUnit("Can only move own troops", unit);
+            	//allow allied fighters to move with carriers
+            	if(!(UnitAttachment.get(unit.getType()).getCarrierCost() > 0 &&
+            		data.getAllianceTracker().isAllied(player, unit.getOwner()))) {
+            		result.addDisallowedUnit("Can only move own troops", unit);
+            	}
             }
             
             //Initialize available Mechanized Inf support
@@ -1162,10 +1160,7 @@ public class MoveValidator
         Collection<Unit> ownedAir = new ArrayList<Unit>();
         ownedAir.addAll( Match.getMatches(units, ownedAirMatch ));
         ownedAir.addAll(Match.getMatches( route.getEnd().getUnits().getUnits(), ownedAirMatch ));
-        
-        if(ownedAir.isEmpty())
-            throw new IllegalArgumentException("no units");
-        
+               
         //Get the farthest we need to search for places to land (including current route length)
         //Generate the IntegerMap containing each aircraft's remaining movement
         int maxMovement = getAirMovementLeft(data, units, ownedAir, route, player);
