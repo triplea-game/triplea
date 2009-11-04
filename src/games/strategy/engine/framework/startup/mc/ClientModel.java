@@ -15,26 +15,50 @@
 package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.chat.ChatPanel;
-import games.strategy.engine.data.*;
-import games.strategy.engine.framework.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerManager;
+import games.strategy.engine.framework.ClientGame;
+import games.strategy.engine.framework.GameDataManager;
+import games.strategy.engine.framework.GameObjectStreamFactory;
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.IServerReady;
 import games.strategy.engine.framework.startup.login.ClientLogin;
-import games.strategy.engine.framework.startup.ui.*;
+import games.strategy.engine.framework.startup.ui.ClientOptions;
+import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.message.*;
-import games.strategy.net.*;
+import games.strategy.engine.message.ChannelMessenger;
+import games.strategy.engine.message.IChannelMessenger;
+import games.strategy.engine.message.IRemoteMessenger;
+import games.strategy.engine.message.RemoteMessenger;
+import games.strategy.engine.message.RemoteName;
+import games.strategy.engine.message.UnifiedMessenger;
+import games.strategy.net.ClientMessenger;
+import games.strategy.net.CouldNotLogInException;
+import games.strategy.net.IMessenger;
+import games.strategy.net.IMessengerErrorListener;
+import games.strategy.net.INode;
+import games.strategy.net.Messengers;
+import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
 
 import java.awt.Component;
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.logging.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 public class ClientModel implements IMessengerErrorListener
 {
@@ -216,7 +240,12 @@ public class ClientModel implements IMessengerErrorListener
       public void gameReset()
       {
           m_objectStreamFactory.setData(null);
-          MainFrame.getInstance().setVisible(true);
+          Util.runInSwingEventThread(new Runnable() {
+			
+			public void run() {
+				 MainFrame.getInstance().setVisible(true);				
+			}
+		});         
       }
       
       public void doneSelectingPlayers(byte[] gameData, Map<String, INode> players)
