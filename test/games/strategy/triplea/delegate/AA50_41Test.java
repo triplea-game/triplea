@@ -32,6 +32,7 @@ import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -869,7 +870,11 @@ public class AA50_41Test extends TestCase {
             bridge.setStepName("CombatMove");
             moveDelegate(m_data).start(bridge, m_data);
             
-            move(sz8.getUnits().getMatches(Matches.unitIsOwnedBy(british(m_data))), route);
+            move(sz8.getUnits().getUnits(), route);
+            
+            //make sure the fighter moved
+            assertTrue(sz8.getUnits().getUnits().isEmpty());
+            assertFalse(sz1.getUnits().getMatches(Matches.UnitIsAir).isEmpty());
  
         }
         
