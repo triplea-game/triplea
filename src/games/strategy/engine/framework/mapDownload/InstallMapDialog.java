@@ -50,7 +50,7 @@ public class InstallMapDialog extends JDialog {
 	private JLabel m_urlLabel;
 	
 	private InstallMapDialog(Frame owner, List<DownloadFileDescription> games) {
-		super(owner, "Select game to instsall",  true);
+		super(owner, "Select game to install",  true);
 		m_games = games;
 		
 		createComponents();
