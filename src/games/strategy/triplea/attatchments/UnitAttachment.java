@@ -55,7 +55,6 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isArtillerySupportable = false;
   private boolean m_isMarine = false;
   private boolean m_isInfantry = false; 
-  private boolean m_isParatroop = false; 
   private boolean m_isMechanized = false; 
   
   //-1 if cant transport
@@ -178,11 +177,6 @@ public class UnitAttachment extends DefaultAttachment
   {
     return m_isMarine;
   }
-  
-  public boolean isParatroop()
-  {
-    return m_isParatroop;
-  }
 
   public boolean isMechanized()
   {
@@ -212,11 +206,6 @@ public class UnitAttachment extends DefaultAttachment
   public void setIsInfantry(String s)
   {
     m_isInfantry = getBool(s);
-  }
-
-  public void setIsParatroop(String s)
-  {
-      m_isParatroop = getBool(s);
   }
 
   public void setIsMechanized(String s)

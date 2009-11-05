@@ -1,3 +1,7 @@
+* fix bug where paratroops could walk on water, bug 2867358 (sgb)
+
+* remove isParatroop UnitAttachmant property.  All mods using this will have to delete this (sgb) 
+
 * fix Allied fighter on AC bug, bug 2890919 (sgb)
 
 * fix infinite loop in odds calculator, bug  2853353 (sgb)

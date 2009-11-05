@@ -132,17 +132,7 @@ public class MoveValidator
     	{	
     		CompositeMatch<Unit> transportBombers = new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(player));
     		arialTransportSupportAvailable = Match.countMatches(units, transportBombers);  
-
-    		for (Unit unit : units)
-    		{
-    			UnitAttachment ua = UnitAttachment.get(unit.getType());
-
-    			if (ua.isInfantry() || ua.isMarine())
-    			{   
-    				ua.setIsParatroop("true");
-    				break;
-    			}
-    		}
+    	
     	}
         return arialTransportSupportAvailable;        
     }
@@ -973,7 +963,7 @@ public class MoveValidator
                 if (!MoveValidator.hasEnoughMovement(unit, route))
                 {
                     UnitAttachment ua = UnitAttachment.get(unit.getType());
-                    if(ua.isParatroop() && arialTransportSupportAvailable > 0)
+                    if(Matches.UnitIsParatroop.match(unit) && arialTransportSupportAvailable > 0)
                     {
                     	arialTransportSupportAvailable --;
                         continue;
@@ -1034,7 +1024,7 @@ public class MoveValidator
                     for (Unit unit : nonBlitzingUnits)
                     {
                         UnitAttachment ua = UnitAttachment.get(unit.getType());
-                        if (ua.isParatroop())
+                        if (Matches.UnitIsParatroop.match(unit))
                             continue;
                         
                         //if((ua.isInfantry() || ua.isMarine()) && m_mechanizedSupportAvail > 0)
@@ -1563,27 +1553,6 @@ public class MoveValidator
 
         TransportTracker transportTracker = new TransportTracker();
         
-        if (isParatroopers(player) && Match.someMatch(units, Matches.UnitIsStrategicBomber) && Match.someMatch(units, Matches.UnitIsParatroop))
-        {
-            Collection<Unit> bombers = Match.getMatches(units, Matches.UnitIsStrategicBomber);
-            Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsParatroop);
-
-            //Set the bombers' dependents
-            Iterator<Unit> bombersIter = bombers.iterator();
-            while (bombersIter.hasNext())
-            {
-                Unit bomber = bombersIter.next();
-                Collection<Unit> dependents = transportTracker.transporting(bomber);
-            }
-            //Set the paratroops as dependents
-            Iterator<Unit> paratroopIter = paratroops.iterator();
-            while (paratroopIter.hasNext())
-            {
-                Unit infantry = paratroopIter.next();
-                Unit dependent = transportTracker.transportedBy(infantry);
-            }
-        }
-        
         //if unloading make sure length of route is only 1
         if (!isEditMode && MoveValidator.isUnload(route))
         {
@@ -1714,9 +1683,7 @@ public class MoveValidator
                     for (Unit unit : land)
                     {
                         if (unitsToTransports.containsKey(unit))
-                            continue;
-                        if(ParatrooperPresent(player, unit))
-                            continue;
+                            continue;                       
                         
                         UnitAttachment ua = UnitAttachment.get(unit.getType());
                         if (ua.getTransportCost() != -1)
@@ -1753,9 +1720,8 @@ public class MoveValidator
         if(isParatroopers(player))
         {
             for (Unit unit : Match.getMatches(units, Matches.UnitCanBeTransported))
-            {
-                UnitAttachment ua = UnitAttachment.get(unit.getType());
-                if (!ua.isParatroop())
+            {                
+                if (!Matches.UnitIsParatroop.match(unit))
                     return true;
             }
         }
@@ -1768,9 +1734,8 @@ public class MoveValidator
     private static boolean ParatrooperPresent(PlayerID player, Unit unit)
     {
         if(isParatroopers(player))
-        {
-            UnitAttachment ua = UnitAttachment.get(unit.getType());
-            if (ua.isParatroop())
+        {            
+            if (Matches.UnitIsParatroop.match(unit))
                 return true;
         }
         

@@ -26,13 +26,14 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.net.GUID;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -911,6 +912,26 @@ public class AA50_41Test extends TestCase {
         	
             String error =  moveDelegate(m_data).move(madagascar.getUnits().getUnits(), route);
             assertError(error);
+        }
+        
+        public void testParatroopsWalkOnWater() 
+        {
+        	
+        	//paratroops should stop on water
+        	
+        	PlayerID germans = germans(m_data);
+        	Territory france = territory("France", m_data);
+			TechAttachment.get(germans).setParatroopers("true");
+			
+			Route r = m_data.getMap().getRoute(france, territory("7 Sea Zone", m_data));
+			Collection<Unit> paratroopers = france.getUnits().getMatches(Matches.UnitIsParatroop);
+			assertFalse(paratroopers.isEmpty());
+			
+			MoveValidationResult results = MoveValidator.validateMove(
+					paratroopers, 
+					r, germans, Collections.<Unit>emptyList(), false, null, m_data);
+			assertFalse(results.isMoveValid());
+			
         }
         
         /***********************************************************/

@@ -1414,13 +1414,6 @@ public class MovePanel extends ActionPanel
             if (option != JOptionPane.OK_OPTION)
                 return Collections.emptyList();
 
-            
-            for(Unit unit : Match.getMatches(chooser.getSelected(true),Matches.UnitIsInfantry))
-            {
-                UnitAttachment ua = UnitAttachment.get(unit.getType());
-                ua.setIsParatroop("true");
-            }
-            
             return chooser.getSelected(true); 
                        
         }

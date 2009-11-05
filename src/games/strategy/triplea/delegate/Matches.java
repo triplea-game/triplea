@@ -29,6 +29,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.util.UnitCategory;
@@ -537,9 +538,13 @@ public class Matches
     {
         public boolean match(Unit obj)
         {
+        	TechAttachment ta = TechAttachment.get(obj.getOwner());
+        	if(ta == null || !ta.hasParatroopers()) {
+        		return false;
+        	}        	
             UnitType type = ((Unit) obj).getUnitType();
             UnitAttachment ua = UnitAttachment.get(type);
-            return ua.isParatroop();
+            return ua.isInfantry() || ua.isMarine();
         }
     };
 
