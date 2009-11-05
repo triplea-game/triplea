@@ -7,6 +7,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.remote.*;
@@ -290,8 +291,12 @@ public abstract class AbstractAI implements ITripleaPlayer
             
             purchase(true,bidAmount, (IPurchaseDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
         }
-        else if (name.endsWith("Tech"))
+        else if (name.endsWith("Tech")) {
+        	if(!Properties.getTechDevelopment(getGameData())) {
+        		return;
+        	}
             tech((ITechDelegate) m_bridge.getRemote() , m_bridge.getGameData(), m_id);
+        }
         else if (name.endsWith("Purchase"))
         {
             
