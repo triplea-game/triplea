@@ -78,7 +78,8 @@ public class UnitAttachment extends DefaultAttachment
   {
   }
 
-
+  //does nothing, kept to avoid breaking maps
+  public void setIsParatroop(String s) {}
 
 
   public void setCanBlitz(String s)

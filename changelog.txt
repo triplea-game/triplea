@@ -1,6 +1,6 @@
 * fix bug where paratroops could walk on water, bug 2867358 (sgb)
 
-* remove isParatroop UnitAttachmant property.  All mods using this will have to delete this (sgb) 
+* remove isParatroop UnitAttachmant property. (sgb) 
 
 * fix Allied fighter on AC bug, bug 2890919 (sgb)
 
