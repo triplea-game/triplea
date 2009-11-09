@@ -226,6 +226,18 @@ public class Matches
             }
         };
     }
+    
+    public static Match<UnitType> unitTypeCanAttack(final PlayerID id)
+    {
+    	return new Match<UnitType>()
+    	{
+    		public boolean match(UnitType uT)
+    		{
+    			UnitAttachment ua = UnitAttachment.get(uT);
+    			return ua.getAttack(id) != 0;
+    		}
+    	};
+    }
 
     public static final Match<Unit> UnitIsNotSea = new Match<Unit>()
     {
@@ -639,7 +651,48 @@ public class Matches
     	{
     		public boolean match(Territory t)
     		{
-    			if (Matches.TerritoryIsLand.match(t) && data.getMap().getNeighbors(t, Matches.isTerritoryEnemyAndNotNeutral(player, data)).size() > 0)
+    			if (data.getMap().getNeighbors(t, Matches.isTerritoryEnemyAndNotNeutral(player, data)).size() > 0)
+    				return true;
+    			return false;
+    		}
+    	};
+    }
+    
+    public static Match<Territory> TerritoryHasOwnedDestroyer(final PlayerID player)
+    {
+    	return new Match<Territory>()
+    	{
+    		public boolean match(Territory t)
+    		{
+    			CompositeMatch<Unit> destroyerUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsDestroyer, Matches.unitIsOwnedBy(player));
+    			if (Matches.TerritoryIsWater.match(t) && t.getUnits().someMatch(destroyerUnit))
+    				return true;
+    			return false;
+    		}
+    	};
+    }
+
+    public static Match<Territory> territoryHasAlliedFactoryNeighbor(final GameData data, final PlayerID player)
+    {
+    	return new Match<Territory>()
+    	{
+    		public boolean match(Territory t)
+    		{
+    			if (data.getMap().getNeighbors(t, Matches.territoryHasAlliedFactory(data, player)).size() > 0)
+    				return true;
+    			return false;
+    		}
+    	};
+    }
+
+    public static Match<Territory> territoryHasValidLandRouteTo(final GameData data, final Territory goTerr)
+    {
+    	return new Match<Territory>()
+    	{
+    		public boolean match(Territory t)
+    		{
+    			CompositeMatch<Territory> validLandRoute = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
+    			if (data.getMap().getRoute(t, goTerr, validLandRoute) != null)
     				return true;
     			return false;
     		}
