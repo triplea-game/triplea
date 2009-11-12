@@ -92,7 +92,7 @@ public class NewGameChooserModel extends DefaultListModel
                                                    
                     if(entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml")) 
                     {
-                        URLClassLoader loader = new URLClassLoader(new URL[] {map.toURL()});
+                        URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});
                         URL url = loader.getResource(entry.getName());
                         try
                         {
