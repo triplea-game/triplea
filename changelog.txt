@@ -1,3 +1,5 @@
+* StrongAi, Cleaned out unused code. Minor tweak to getStrengthOfPotentialAttackers. (Kevin Moore)
+
 * Fix bug in zip url parsing (Stephen Gallagher)
 
 * StrongAi, Fix bug in ship movement. Modify territory selection for non-combat transports (Kevin Moore)
