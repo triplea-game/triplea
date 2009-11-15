@@ -698,7 +698,7 @@ public class MoveValidator
         if (validateTransport(data, undoableMoves, units, route, player, transportsToLoad, result).getError() != null)
             return result;
 
-        if (validateParatroops(isNonCombat, data, undoableMoves, units, route, player, transportsToLoad, result).getError() != null)
+        if (validateParatroops(isNonCombat, data, undoableMoves, units, route, player, result).getError() != null)
             return result;
         
         if (validateCanal(data, units, route, player, result).getError() != null)
@@ -1740,15 +1740,31 @@ public class MoveValidator
         }
         
         return false;
-        }
+    }
 
+    private static List<Unit> getParatroopsRequiringTransport(    		
+            Collection<Unit> units, final Route route
+            ) {
+    	
+    	return Match.getMatches(units, 
+    			new CompositeMatchAnd<Unit>(
+    				Matches.UnitIsParatroop,
+    				new Match<Unit>() {
+						
+						public boolean match(Unit u) {
+							return TripleAUnit.get(u).getMovementLeft() < route.getLength();
+						}
+    					
+    				}
+    	));    	
+    }
+    
     private static MoveValidationResult validateParatroops(boolean nonCombat,
                                                            GameData data, 
                                                            final List<UndoableMove> undoableMoves, 
                                                            Collection<Unit> units, 
                                                            Route route, 
-                                                           PlayerID player, 
-                                                           Collection<Unit> transportsToLoad,
+                                                           PlayerID player,
                                                            MoveValidationResult result)
     {        
         if(!isParatroopers(player))
@@ -1763,9 +1779,21 @@ public class MoveValidator
         if(nonCombat)
             return result.setErrorReturnResult("Paratroops may not move during NonCombat");
 
-        
         if (!getEditMode(data))
         {
+            //if we can move without using paratroop tech, do so
+            //this allows moving a bomber/infantry from one friendly
+            //territory to another
+            if(getParatroopsRequiringTransport(units, route).isEmpty()) {
+            	return result;
+            }
+            
+            for(Unit u : getParatroopsRequiringTransport(units, route)) {
+            	if(TripleAUnit.get(u).getAlreadyMoved() != 0) {
+            		result.addDisallowedUnit("Cannot paratroop units that have already moved", u);
+            	}
+            }
+            
             //TODO using just allied territories causes it to go to LALA land when moving to water
             //if (Matches.isTerritoryAllied(player, data).match(route.getEnd()))
             if (Matches.isTerritoryFriendly(player, data).match(route.getEnd()))

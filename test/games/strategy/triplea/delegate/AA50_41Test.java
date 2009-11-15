@@ -935,6 +935,97 @@ public class AA50_41Test extends TestCase {
 			
         }
         
+        public void testMoveParatroopersAsNonPartroops() 
+        {
+        	
+        	//move a bomber and a paratrooper
+        	//one step, but as a normal movement
+        	
+        	PlayerID germans = germans(m_data);
+        	Territory germany = territory("Germany", m_data);
+        	Territory nwe = territory("Northwestern Europe", m_data);
+        	
+        	ITestDelegateBridge bridge = getDelegateBridge(germans);
+            bridge.setStepName("CombatMove");
+            moveDelegate(m_data).start(bridge, m_data);
+        	
+			TechAttachment.get(germans).setParatroopers("true");
+			
+			List<Unit> paratrooper = germany.getUnits().getMatches(Matches.UnitIsParatroop);
+			paratrooper = paratrooper.subList(0,1);
+			List<Unit> bomberAndParatroop = new ArrayList<Unit>(paratrooper);
+			bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+			
+			//move to nwe, this is a valid move, and it not a partroop move
+			move(bomberAndParatroop, new Route(germany, nwe));
+			
+        } 
+        
+        public void testCantMoveParatroopersThatMovedPreviously() 
+        {
+        	//make sure infantry can't be moved as paratroopers after moving
+        	
+        	PlayerID germans = germans(m_data);
+        	Territory germany = territory("Germany", m_data);
+        	Territory nwe = territory("Northwestern Europe", m_data);
+        	Territory poland = territory("Poland", m_data);
+        	Territory eastPoland = territory("East Poland", m_data);        	
+        	
+        	ITestDelegateBridge bridge = getDelegateBridge(germans);
+            bridge.setStepName("CombatMove");
+            moveDelegate(m_data).start(bridge, m_data);
+        	
+			TechAttachment.get(germans).setParatroopers("true");
+			
+			List<Unit> paratrooper = nwe.getUnits().getMatches(Matches.UnitIsParatroop);
+			
+			move(paratrooper, new Route(nwe,germany));
+			
+			List<Unit> bomberAndParatroop = new ArrayList<Unit>(paratrooper);
+			bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+			
+			//move the units to east poland
+			String error = moveDelegate(m_data).move(bomberAndParatroop, new Route(germany, poland, eastPoland));
+			
+			assertFalse(error == null);
+			
+        }        
+        
+        public void testParatroopersMoveTwice() 
+        {
+        	//After a battle move to put a bomber + infantry (paratroop) in a first enemy
+        	//territory, you can make a new move (in the same battle move round) to put
+        	//bomber+ infantry in a more internal enemy territory.
+        	
+        	
+        	PlayerID germans = germans(m_data);
+        	Territory germany = territory("Germany", m_data);
+        	Territory poland = territory("Poland", m_data);
+        	Territory eastPoland = territory("East Poland", m_data);
+        	Territory beloRussia = territory("Belorussia", m_data);
+        	
+        	ITestDelegateBridge bridge = getDelegateBridge(germans);
+            bridge.setStepName("CombatMove");
+            moveDelegate(m_data).start(bridge, m_data);
+        	
+			TechAttachment.get(germans).setParatroopers("true");
+			
+			List<Unit> paratrooper = germany.getUnits().getMatches(Matches.UnitIsParatroop);
+			paratrooper = paratrooper.subList(0, 1);
+			List<Unit> bomberAndParatroop = new ArrayList<Unit>(paratrooper);
+			bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+			
+			//move the units to east poland
+			move(bomberAndParatroop, new Route(germany, poland, eastPoland));
+			
+			//try to move them further, this should fail
+			String error = moveDelegate(m_data).move(bomberAndParatroop, new Route(eastPoland, beloRussia));
+			
+			
+			assertFalse(error == null);
+			
+        }
+        
         public void testAmphibAttackWithPlanesOnlyAskRetreatOnce() 
         {
         	PlayerID germans = germans(m_data);

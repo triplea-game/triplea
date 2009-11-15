@@ -1,3 +1,7 @@
+* various paratrooper fixes (sgb)
+
+* fix bug 2892469, paratroops in first enemy territory (sgb)
+
 * StrongAi, Cleaned out unused code. Minor tweak to getStrengthOfPotentialAttackers. (Kevin Moore)
 
 * Fix bug in zip url parsing (Stephen Gallagher)
