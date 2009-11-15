@@ -713,7 +713,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         
         if(canProduceCarriersUnderFighter && carrierCount > 0)
         {
-            message = message + " You have " + carrierCount + " "  + MyFormatter.pluralize("carrier", carrierCount);
+            message = message + "\nYou have " + carrierCount + " "  + MyFormatter.pluralize("carrier", carrierCount) + " on which planes can land";
         }
         
         
