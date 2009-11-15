@@ -31,6 +31,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
+import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
@@ -931,6 +932,67 @@ public class AA50_41Test extends TestCase {
 					paratroopers, 
 					r, germans, Collections.<Unit>emptyList(), false, null, m_data);
 			assertFalse(results.isMoveValid());
+			
+        }
+        
+        public void testAmphibAttackWithPlanesOnlyAskRetreatOnce() 
+        {
+        	PlayerID germans = germans(m_data);
+        	ITestDelegateBridge bridge = getDelegateBridge(germans);
+            bridge.setStepName("CombatMove");
+            moveDelegate(m_data).start(bridge, m_data);
+
+            Territory france = territory("France", m_data);
+            Territory egypt = territory("Egypt", m_data);
+            Territory balkans = territory("Balkans", m_data);
+            Territory libya = territory("Libya", m_data);
+            Territory germany = territory("Germany", m_data);
+			Territory sz13 = territory("13 Sea Zone", m_data);
+			Territory sz14 = territory("14 Sea Zone", m_data);
+			Territory sz15 = territory("15 Sea Zone", m_data);
+
+			bridge.setRemote(new DummyTripleAPlayer() {
+				@Override
+				public Territory retreatQuery(GUID battleID, boolean submerge,
+						Collection<Territory> possibleTerritories,
+						String message) {
+					assertFalse(message.contains(MustFightBattle.RETREAT_PLANES));
+					return null;
+				}				
+			});
+			
+			bridge.setDisplay(new DummyDisplay() {
+
+				@Override
+				public void listBattleSteps(GUID battleID, List<String> steps) {
+					for(String s : steps) {
+						assertFalse(s.contains(BattleStepStrings.PLANES_WITHDRAW));
+					}
+				}} );
+			
+            //move units for amphib assault			
+			load(france.getUnits().getMatches(Matches.UnitIsInfantry),
+            		new Route(france, sz13));            
+			move(sz13.getUnits().getUnits(), new Route(sz13,sz14,sz15));
+			move(sz15.getUnits().getMatches(Matches.UnitIsInfantry), new Route(sz15, egypt));
+			
+			//ground attack
+			load(libya.getUnits().getMatches(Matches.UnitIsArtillery),
+            		new Route(libya, egypt));
+			
+			//air units
+			move(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber), new Route(germany, balkans, sz14, sz15, egypt));
+        	
+			
+			moveDelegate(m_data).end();
+			
+			bridge.setStepName("Combat");
+	
+			//cook the dice so that all miss first round,all hit second round
+			bridge.setRandomSource(new ScriptedRandomSource(5,5,5,5,5,5,5,5,5,1,1,1,1,1,1,1,1,1));
+			battleDelegate(m_data).start(bridge, m_data);
+			
+			battleDelegate(m_data).fightBattle(egypt, false);
 			
         }
         

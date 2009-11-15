@@ -31,6 +31,7 @@ import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.UnifiedMessenger;
 import games.strategy.engine.random.IRandomSource;
+import games.strategy.triplea.ui.display.ITripleaDisplay;
 
 import java.util.Properties;
 
@@ -70,6 +71,10 @@ public class TestDelegateBridge implements ITestDelegateBridge
         m_historyWriter = new DelegateHistoryWriter(channelMessenger);
         
     }
+    
+    public void setDisplay(ITripleaDisplay display) {
+    	m_dummyDisplay = display;
+    }
 
     /**
      * Delegates should not use random data that comes from any other source.
@@ -108,20 +113,6 @@ public class TestDelegateBridge implements ITestDelegateBridge
     {
         aChange.perform(m_data);
     }
-
-    public void commit()
-    {
-    }
-
-    public void startTransaction()
-    {
-    }
-
-    public void rollback()
-    {
-    }
-
-
 
     public void setStepName(String name)
     {

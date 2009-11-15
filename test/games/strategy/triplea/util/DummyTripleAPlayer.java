@@ -14,6 +14,7 @@
 
 package games.strategy.triplea.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +106,7 @@ public class DummyTripleAPlayer implements ITripleaPlayer {
         Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice,
         PlayerID hit, List<Unit> defaultCasualties, GUID battleID) {
         
-        return null;
+        return new CasualtyDetails(defaultCasualties, new ArrayList<Unit>(), true);
     }
 
     public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title) {

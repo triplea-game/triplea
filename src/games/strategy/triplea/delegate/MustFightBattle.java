@@ -72,7 +72,9 @@ import java.util.Set;
 public class MustFightBattle implements Battle, BattleStepStrings
 {
 
-    public static enum ReturnFire {
+    public static final String RETREAT_PLANES = " retreat planes?";
+
+	public static enum ReturnFire {
         ALL,SUBS,NONE
     }
 
@@ -838,10 +840,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (canAttackerRetreat() || someAirAtSea)
         {
             steps.add(m_attacker.getName() + ATTACKER_WITHDRAW);
-        } else if (canAttackerRetreatPartialAmphib())
+        } else if (canAttackerRetreatPartialAmphib() )
         {
             steps.add(m_attacker.getName() + NONAMPHIB_WITHDRAW);
-        } else if (canAttackerRetreatPlanes() & !canAttackerRetreatPartialAmphib())
+        } else if (canAttackerRetreatPlanes())
         {
             steps.add(m_attacker.getName() + PLANES_WITHDRAW);
         }
@@ -1063,7 +1065,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             private static final long serialVersionUID = -1150863964807721395L;
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
-                if (canAttackerRetreatPlanes() && !m_over)
+                if (canAttackerRetreatPlanes() && !canAttackerRetreatPartialAmphib() && !m_over)
                     attackerRetreatPlanes(bridge);                
             }
         });    
@@ -1350,12 +1352,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         if(m_amphibious && isPartialAmphibiousRetreat())
         {
-        	if (Match.someMatch(m_attackingUnits, Matches.UnitIsAir))
-        	{
-        		return true;
-        	}
-
-            for(Unit unit:m_attackingUnits)
+        	List<Unit> landUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsLand);  //Only include land units when checking for allow amphibious retreat
+        	for(Unit unit:landUnits)        	
             {
                 TripleAUnit taUnit = (TripleAUnit) unit;
                 if(!taUnit.getWasAmphibious())
@@ -1589,7 +1587,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (subs)
             text = retreatingPlayer.getName() + " retreat subs?";
         else if (planes)
-            text = retreatingPlayer.getName() + " retreat planes?";
+            text = retreatingPlayer.getName() + RETREAT_PLANES;
         else if (partialAmphib)
             text = retreatingPlayer.getName() + " retreat non-amphibious units?";
         else

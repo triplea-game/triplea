@@ -17,7 +17,7 @@ public class DummyDisplay implements ITripleaDisplay
 
     }
 
-    public void listBattleSteps(GUID battleID, List steps)
+    public void listBattleSteps(GUID battleID, List<String> steps)
     {
         // TODO Auto-generated method stub
 

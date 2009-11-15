@@ -22,6 +22,7 @@ package games.strategy.engine.data;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomSource;
+import games.strategy.triplea.ui.display.ITripleaDisplay;
 
 /**
  * 
@@ -38,18 +39,11 @@ public interface ITestDelegateBridge extends IDelegateBridge
      */
     public void setPlayerID(PlayerID aPlayer);
 
-    public boolean inTransaction();
-
-    public void commit();
-
-    public void startTransaction();
-
-    public void rollback();
-
     public void setStepName(String name);
 
     public void setRandomSource(IRandomSource randomSource);
     
     public void setRemote(IRemote remote);
 
+    public void setDisplay(ITripleaDisplay display);
 }
