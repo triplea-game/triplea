@@ -54,8 +54,7 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isArtillery = false;
   private boolean m_isArtillerySupportable = false;
   private boolean m_isMarine = false;
-  private boolean m_isInfantry = false; 
-  private boolean m_isMechanized = false; 
+  private boolean m_isInfantry = false;   
   
   //-1 if cant transport
   private int m_transportCapacity = -1;
