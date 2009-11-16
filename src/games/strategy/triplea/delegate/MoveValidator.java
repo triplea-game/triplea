@@ -106,17 +106,6 @@ public class MoveValidator
     	{	
     		CompositeMatch<Unit> transportArmor = new CompositeMatchAnd<Unit>(Matches.UnitCanBlitz, Matches.unitIsOwnedBy(player));
     		mechanizedSupportAvailable = Match.countMatches(units, transportArmor);
-    		
-    		  for (Unit unit : units)
-    	        {
-    	            UnitAttachment ua = UnitAttachment.get(unit.getType());
-
-    	            if (ua.isInfantry() || ua.isMarine())
-    	            {   
-    	                    ua.setIsMechanized("true");
-    	                    break;
-    	            }
-    	        }
     	}
         return mechanizedSupportAvailable;
     }
@@ -965,16 +954,16 @@ public class MoveValidator
                     UnitAttachment ua = UnitAttachment.get(unit.getType());
                     if(Matches.UnitIsParatroop.match(unit) && arialTransportSupportAvailable > 0)
                     {
-                    	arialTransportSupportAvailable --;
-                        continue;
+                    	arialTransportSupportAvailable --;                     
                     }
-                    else if(ua.isMechanized() && mechanizedSupportAvailable > 0)
+                    else if(mechanizedSupportAvailable > 0 && TripleAUnit.get(unit).getAlreadyMoved() == 0)
                     {
                     	mechanizedSupportAvailable --;
-                        continue;
                     }
-                    
-                    result.addDisallowedUnit("Not all units have enough movement",unit);                    
+                    else 
+                    {                    
+                    	result.addDisallowedUnit("Not all units have enough movement",unit);
+                    }
                 }
             }
 
@@ -1022,14 +1011,13 @@ public class MoveValidator
 
                     //getMechanizedSupportAvail(route, units, player);
                     for (Unit unit : nonBlitzingUnits)
-                    {
-                        UnitAttachment ua = UnitAttachment.get(unit.getType());
+                    {                       
                         if (Matches.UnitIsParatroop.match(unit))
                             continue;
                         
                         //if((ua.isInfantry() || ua.isMarine()) && m_mechanizedSupportAvail > 0)
                         //m_mechanizedSupportAvail --;
-                        if (ua.isMechanized())
+                        if (Matches.UnitIsInfantry.match(unit))
                             continue;
                         else
                             result.addDisallowedUnit("Not all units can blitz",unit);

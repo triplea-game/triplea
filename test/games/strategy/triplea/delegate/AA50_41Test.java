@@ -915,6 +915,57 @@ public class AA50_41Test extends TestCase {
             assertError(error);
         }
         
+        public void testMechInfSimple() 
+        {
+        	PlayerID germans = germans(m_data);
+        	Territory france = territory("France", m_data);
+        	Territory germany = territory("Germany", m_data);
+        	Territory poland = territory("Poland", m_data);
+        	
+			TechAttachment.get(germans).setMechanizedInfantry("true");
+			
+			ITestDelegateBridge bridge = getDelegateBridge(germans);
+	        bridge.setStepName("CombatMove");
+	        
+	        moveDelegate(germans.getData()).start(bridge, germans.getData());
+			
+			Route r = new Route(france,germany,poland);
+			List<Unit> toMove = new ArrayList<Unit>();
+			
+			//1 armour and 1 infantry
+			toMove.addAll(france.getUnits().getMatches(Matches.UnitCanBlitz));
+			toMove.add(france.getUnits().getMatches(Matches.UnitIsInfantry).get(0));
+			
+			move(toMove, r);
+						
+        }
+        
+        public void testMechInfUnitAlreadyMovedSimple() 
+        {
+        	PlayerID germans = germans(m_data);
+        	Territory france = territory("France", m_data);
+        	Territory germany = territory("Germany", m_data);
+        	
+			TechAttachment.get(germans).setMechanizedInfantry("true");
+			
+			ITestDelegateBridge bridge = getDelegateBridge(germans);
+	        bridge.setStepName("CombatMove");
+	        moveDelegate(germans.getData()).start(bridge, germans.getData());
+			
+			//get rid of the infantry in france
+			removeFrom(france, france.getUnits().getMatches(Matches.UnitIsInfantry));
+			
+			//move an infantry from germany to france
+			move(germany.getUnits().getMatches(Matches.UnitIsInfantry).subList(0, 1), new Route(germany,france));			
+	
+			//try to move all the units in france, the infantry should not be able to move			
+			Route r = new Route(france,germany);
+			String error = moveDelegate(m_data).move(france.getUnits().getUnits(), r);
+			
+			assertFalse(error == null);
+						
+        }
+        
         public void testParatroopsWalkOnWater() 
         {
         	

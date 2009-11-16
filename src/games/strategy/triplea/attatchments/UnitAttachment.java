@@ -81,6 +81,9 @@ public class UnitAttachment extends DefaultAttachment
   //does nothing, kept to avoid breaking maps
   public void setIsParatroop(String s) {}
 
+  //does nothing, used to keep compatability with older xml files
+  public void setIsMechanized(String s) {}
+
 
   public void setCanBlitz(String s)
   {
@@ -179,11 +182,6 @@ public class UnitAttachment extends DefaultAttachment
     return m_isMarine;
   }
 
-  public boolean isMechanized()
-  {
-    return m_isMechanized;
-  }
-
   public void setIsFactory(String s)
   {
     m_isFactory = getBool(s);
@@ -207,11 +205,6 @@ public class UnitAttachment extends DefaultAttachment
   public void setIsInfantry(String s)
   {
     m_isInfantry = getBool(s);
-  }
-
-  public void setIsMechanized(String s)
-  {
-      m_isMechanized = getBool(s);
   }
   
   public boolean getIsInfantry()

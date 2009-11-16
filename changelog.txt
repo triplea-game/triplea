@@ -1,3 +1,5 @@
+* fix bug 2898135, where unloaded infantry could move as mechanized infantry (sgb)
+
 * various paratrooper fixes (sgb)
 
 * fix bug 2892469, paratroops in first enemy territory (sgb)
