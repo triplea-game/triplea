@@ -127,7 +127,7 @@ public class BattleCalculator
     /**
      * Choose plane casualties based on individual AA shots at each aircraft.
      */
-    public static Collection<Unit> IndividuallyFiredAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge, PlayerID player)
+    public static Collection<Unit> individuallyFiredAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge, PlayerID player)
     {
         Collection<Unit> casualties = new ArrayList<Unit>();
         int hits = dice.getHits();
@@ -516,27 +516,6 @@ public class BattleCalculator
     private static boolean isPartialAmphibiousRetreat(GameData data)
     {
         return games.strategy.triplea.Properties.getPartialAmphibiousRetreat(data);
-    }
-    
-    /**
-     * Checks if all the units are transports
-     * @param bridge
-     * @param player
-     */
-    private static boolean allTargetsTransports(GameData data, Collection<Unit> targets)
-    {
-    	//Get all transports        
-        List<Unit> allTransports = Match.getMatches(targets, Matches.UnitIsTransport);    	
-    	
-    	//If no transports, just return
-        if (allTransports.isEmpty())
-            return false;
-
-        //Are the transports unescorted
-        if(allTransports.size() == targets.size())
-        	return true;
-    
-        return false;
     }
     
     //nothing but static

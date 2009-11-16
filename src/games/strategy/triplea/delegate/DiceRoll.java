@@ -76,62 +76,34 @@ public class DiceRoll implements Externalizable
         
         if (data.getProperties().get(Constants.LOW_LUCK, false))
         {
+        	int power = useRadar ? 2 : 1;
+        	
             String annotation = "Roll AA guns in " + location.getName();
             //If RADAR advancement, hit at a 2
-            if(useRadar)
+                       
+            // Low luck rolling
+            hits = (numberOfAirUnits * power) / Constants.MAX_DICE;
+            int hitsFractional = (numberOfAirUnits * power) % Constants.MAX_DICE;
+
+            if (hitsFractional > 0)
             {
-                int power = hitAt+1;
-                hits = 0;
-                
-             // Get number of hits
-                hits = (numberOfAirUnits* power) / Constants.MAX_DICE;
-                
-                int[] random = new int[0];
-
-                // We need to roll dice for the fractional part of the dice.
-                power = power % Constants.MAX_DICE;
-                if (power != 0)
+                //String annotation = "Roll AA guns in " + location.getName();
+                if (isEditMode)
                 {
-                    if (isEditMode)
-                    {
-                        ITripleaPlayer tripleAplayer = (ITripleaPlayer)bridge.getRemote();
-                        random = tripleAplayer.selectFixedDice(1, power, false, annotation);
-                    }
-                    else
-                        random = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
-                    boolean hit = power > random[0]; 
-                    if (hit)
-                    {
-                        hits++;
-                    }
-                    sortedDice.add(new Die(random[0], power, hit ? DieType.HIT : DieType.MISS ));
+                    dice = player.selectFixedDice(1, hitAt+1, true, annotation);
+                }
+                else
+                    dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
+                boolean hit = hitsFractional > dice[0];
+                Die die = new Die(dice[0], hitsFractional, hit ? DieType.HIT : DieType.MISS);
+
+                sortedDice.add(die);
+                if (hit)
+                {
+                    hits++;
                 }
             }
-            else
-            {                            
-                // Low luck rolling
-                hits = numberOfAirUnits / Constants.MAX_DICE;
-                int hitsFractional = numberOfAirUnits % Constants.MAX_DICE;
-
-                if (hitsFractional > 0)
-                {
-                    //String annotation = "Roll AA guns in " + location.getName();
-                    if (isEditMode)
-                    {
-                        dice = player.selectFixedDice(1, hitAt+1, true, annotation);
-                    }
-                    else
-                        dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
-                    boolean hit = hitsFractional > dice[0];
-                    Die die = new Die(dice[0], hitsFractional, hit ? DieType.HIT : DieType.MISS);
-
-                    sortedDice.add(die);
-                    if (hit)
-                    {
-                        hits++;
-                    }
-                }
-            }
+        
         } 
         else
         {
@@ -192,7 +164,7 @@ public class DiceRoll implements Externalizable
 
         int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
 
-        Iterator iter = units.iterator();
+        Iterator<Unit> iter = units.iterator();
 
         int power = 0;
         int hitCount = 0;
@@ -200,7 +172,7 @@ public class DiceRoll implements Externalizable
         // We iterate through the units to find the total strength of the units
         while (iter.hasNext())
         {
-            Unit current = (Unit) iter.next();
+            Unit current = iter.next();
             UnitAttachment ua = UnitAttachment.get(current.getType());
             int rolls = defending ? 1 : ua.getAttackRolls(player);
             for (int i = 0; i < rolls; i++)

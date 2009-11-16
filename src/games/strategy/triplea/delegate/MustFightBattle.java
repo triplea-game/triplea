@@ -2508,7 +2508,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                       
             if(!lowLuck && isRollAAIndividually())
             { // select casualties based on individual shots at each aircraft
-                m_casualties = BattleCalculator.IndividuallyFiredAACasualties(attackable, m_dice, bridge, m_defender);
+                m_casualties = BattleCalculator.individuallyFiredAACasualties(attackable, m_dice, bridge, m_defender);
             }
             else if (!lowLuck && (isWW2V2() || isRandomAACasualties()) && !isChooseAA())
             { // if WW2V2 choose casualties randomly

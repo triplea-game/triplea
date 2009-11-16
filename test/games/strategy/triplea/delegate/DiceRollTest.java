@@ -10,6 +10,7 @@ import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.xml.LoadGameUtil;
 
@@ -323,6 +324,41 @@ public class DiceRollTest extends TestCase
         
         DiceRoll hitNoRoll = DiceRoll.rollAA(6, bridge, westRussia, m_data);
         assertEquals(hitNoRoll.getHits(),1 );
+        
+        
+    }
+    
+    public void testAALowLuckWithRadar()
+    {
+        
+        makeGameLowLuck();
+        Territory westRussia = m_data.getMap().getTerritory("West Russia");
+        PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
+        
+        GameDataTestUtil.addTo(westRussia, GameDataTestUtil.aaGun(m_data).create(1, russians));
+        
+        
+        TechAttachment.get(russians).setAARadar("true");
+        
+        ITestDelegateBridge bridge = getDelegateBridge(russians);
+     
+        //aa radar hits at 1 (0 based)
+        bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
+        
+        DiceRoll hit = DiceRoll.rollAA(1, bridge, westRussia, m_data);
+        assertEquals(hit.getHits(), 1);
+        
+        //aa missses at 2 (0 based)
+        bridge.setRandomSource(new ScriptedRandomSource(new int[] {2}));
+        
+        DiceRoll miss = DiceRoll.rollAA(1, bridge, westRussia, m_data);
+        assertEquals(miss.getHits(), 0);
+        
+        //6 bombers, 2 should hit, and nothing should be rolled
+        bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
+        
+        DiceRoll hitNoRoll = DiceRoll.rollAA(6, bridge, westRussia, m_data);
+        assertEquals(hitNoRoll.getHits(), 2);
         
         
     }
