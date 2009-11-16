@@ -1138,6 +1138,51 @@ public class AA50_41Test extends TestCase {
 			
         }
         
+        
+        public void testDefencelessTransportsDie() 
+        {        	
+        	PlayerID british = british(m_data);
+        	
+        	ITestDelegateBridge bridge = getDelegateBridge(british);
+            bridge.setStepName("CombatMove");
+            moveDelegate(m_data).start(bridge, m_data);
+            
+            Territory uk = territory("United Kingdom", m_data);
+            Territory sz5 = territory("5 Sea Zone", m_data);
+
+            //remove the sub
+            removeFrom(sz5, sz5.getUnits().getMatches(Matches.UnitIsSub));
+            
+            bridge.setRemote(new DummyTripleAPlayer() {
+				@Override
+				public Territory retreatQuery(GUID battleID, boolean submerge,
+						Collection<Territory> possibleTerritories,
+						String message) {
+					//we should not be asked to retreat
+					throw new IllegalStateException("Should not be asked to retreat:" + message);					
+				}				
+			});
+
+            move(uk.getUnits().getMatches(Matches.UnitIsAir), m_data.getMap().getRoute(uk, sz5) );
+			
+            //move units for amphib assault			
+			moveDelegate(m_data).end();
+			
+			bridge.setStepName("Combat");
+	
+			//cook the dice so that 1 british fighters hits, and nothing else
+			//this will leave 1 transport alone in the sea zone
+			bridge.setRandomSource(new ScriptedRandomSource(1,5,5,5,5,5,5,5,5));
+			battleDelegate(m_data).start(bridge, m_data);
+			
+			battleDelegate(m_data).fightBattle(sz5, false);
+			
+			//make sure the transports died
+			assertTrue(sz5.getUnits().getMatches(Matches.unitIsOwnedBy(germans(m_data))).isEmpty());
+			
+        }
+        
+        
         /***********************************************************/
         /***********************************************************/
         /***********************************************************/

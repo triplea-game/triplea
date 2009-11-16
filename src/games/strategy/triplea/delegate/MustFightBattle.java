@@ -1341,6 +1341,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
      */
     private boolean canAttackerRetreatPlanes()
     {
+    	if(onlyDefencelessDefendingTransportsLeft()) {
+    		return false;
+    	}
+    	
     	return (isWW2V2() || isAttackerRetreatPlanes() || isPartialAmphibiousRetreat()) && m_amphibious
                 && Match.someMatch(m_attackingUnits, Matches.UnitIsAir);
     }
@@ -1350,6 +1354,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
      */
     private boolean canAttackerRetreatPartialAmphib()
     {
+    	
         if(m_amphibious && isPartialAmphibiousRetreat())
         {
         	List<Unit> landUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsLand);  //Only include land units when checking for allow amphibious retreat
@@ -1422,6 +1427,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private boolean canAttackerRetreat()
     {
+    	if(onlyDefencelessDefendingTransportsLeft()) {
+    		return false;
+    	}
+    	
         //if (m_amphibious && !isPartialAmphibiousRetreat())
         if (m_amphibious)
             return false;
@@ -1434,6 +1443,20 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return true;
     }
 
+    private boolean onlyDefencelessAttackingTransportsLeft() {
+    	if(!isTransportCasualtiesRestricted()) {
+    		return false;
+    	}
+    	return Match.allMatch(m_defendingUnits, Matches.UnitIsTransport);
+    }
+    
+    private boolean onlyDefencelessDefendingTransportsLeft() {
+    	if(!isTransportCasualtiesRestricted()) {
+    		return false;
+    	}
+    	return Match.allMatch(m_defendingUnits, Matches.UnitIsTransport);
+    }
+    
     private boolean canAttackerRetreatSubs()
     {
         if (Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))

@@ -1,3 +1,5 @@
+* fix bug 2831083, WW2V3: Retreat from undefended transports (sgb)
+
 * fix bug 2892836, aa radar in low luck (sgb)
 
 * fix bug 2893144, null pointer on startup (sgb)
