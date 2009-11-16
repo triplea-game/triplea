@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -25,9 +24,6 @@ import org.xml.sax.SAXParseException;
 
 public class NewGameChooserModel extends DefaultListModel
 {
-
-    private static final Logger log = Logger.getLogger(NewGameChooserModel.class.getName());
-    
     public NewGameChooserModel()
     {
         populate();
@@ -40,9 +36,17 @@ public class NewGameChooserModel extends DefaultListModel
     
     private List<File> allMapFiles() {
     	List<File> rVal = new ArrayList<File>();
-    	rVal.addAll(Arrays.asList(new File(GameRunner.getRootFolder(), "maps").listFiles()));
-    	rVal.addAll(Arrays.asList(GameRunner.getUserMapsFolder().listFiles()));
+    	rVal.addAll(safeListFiles(new File(GameRunner.getRootFolder(), "maps")));
+    	rVal.addAll(safeListFiles(GameRunner.getUserMapsFolder()));
     	return rVal;
+    }
+    
+    private List<File> safeListFiles(File f) {
+    	File[] files = f.listFiles();
+    	if(files == null) {
+    		return new ArrayList<File>();
+    	}
+    	return Arrays.asList(files);
     }
     
     private void populate()
