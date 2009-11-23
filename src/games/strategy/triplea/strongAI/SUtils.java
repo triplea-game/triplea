@@ -1219,7 +1219,11 @@ public class SUtils
 				maxBomberDistance = Math.max(maxBomberDistance, MoveValidator.getMaxMovement(eBUnits));
 			}
 			maxFighterDistance--; //must be able to land...we will miss fighters who have a Carrier that can reach same sea zone...C'est la vie
+			if (maxFighterDistance < 0)
+				maxFighterDistance = 0;
 			maxBomberDistance--; //must be able to land...won't miss anything here...unless special bombers that can land on carrier per above
+			if (maxBomberDistance < 0)
+				maxBomberDistance = 0;
 			List<Territory> eTTerrs = SUtils.findUnitTerr(data, ePlayer, aTransport);
 			int maxTransportDistance = 0;
 			for (Territory eTTerr : eTTerrs)

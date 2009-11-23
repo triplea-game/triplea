@@ -226,9 +226,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     		Resource techtokens = data.getResourceList().getResource(Constants.TECH_TOKENS); 
     		int TechTokens = player.getResources().getQuantity(techtokens); 
     		int TokensToBuy=0; 
-    		if(TechTokens < 3 && PUs > Math.random()*120) 
+    		if(TechTokens < 3 && PUs > Math.random()*160) 
     			TokensToBuy=1; 
-    		if (TechTokens>0 || TokensToBuy>0) 
+    		if (TechTokens > 0 || TokensToBuy > 0) 
     		{ 
     			if (Math.random()>0.35) 
     				techDelegate.rollTech(TechTokens+TokensToBuy,TechAdvance.LAND_PRODUCTION_ADVANCES,TokensToBuy); 
@@ -1092,6 +1092,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		List<Territory> targetTerrs = new ArrayList<Territory>(rankMap.keySet());
 		List<Unit> unitsAlreadyMoved = new ArrayList<Unit>();
 		List<PlayerID> ePlayers = SUtils.getEnemyPlayers(data, player);
+		Route amphibRoute = getAmphibRoute(player);
+		boolean isAmphib = isAmphibAttack(player);
+		if (isAmphib && amphibRoute != null && amphibRoute.getEnd() != null)
+		{
+			Territory quickDumpTerr = amphibRoute.getEnd();
+			float remainingStrengthNeeded = 1000.0F;
+			SUtils.inviteTransports(true, quickDumpTerr, remainingStrengthNeeded, unitsAlreadyMoved, moveUnits, moveRoutes, data, player, tFirst, false, null);
+		}
 		PlayerID ePlayer = ePlayers.get(0);
 		float distanceFactor = 0.85F;
 	    //Target allied territories next to a bad guy
