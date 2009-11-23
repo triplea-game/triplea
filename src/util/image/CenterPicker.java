@@ -23,6 +23,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 
+import java.util.Map.Entry;
 import javax.swing.*;
 
 
@@ -263,10 +264,12 @@ public class CenterPicker extends JFrame
                 g.drawImage(m_image, 0, 0, this);
                 g.setColor(Color.red);
 
-                 Iterator<Point> polyIter = m_centers.values().iterator();
+                 Iterator<String> polyIter = m_centers.keySet().iterator();
                  while (polyIter.hasNext()) {
-                     Point item = polyIter.next();
+                     String centerName = polyIter.next();
+                     Point item = m_centers.get(centerName);
                      g.fillOval(item.x, item.y, 15,15);
+                     g.drawString(centerName, item.x + 17, item.y + 13);
                  }
             }
         };
@@ -360,7 +363,7 @@ public class CenterPicker extends JFrame
     */
     private String findTerritoryName(Point p)
     {
-        String seaName = "there be dragons";
+        String seaName = "unknown";
 
         //try to find a land territory.
         //sea zones often surround a land territory
@@ -406,19 +409,28 @@ public class CenterPicker extends JFrame
     */
     private void mouseEvent(Point point, boolean ctrlDown, boolean rightMouse)
     {
-        String name = findTerritoryName(point);
-        JTextField message = new JTextField();
-        message.setText(name);
-        JOptionPane.showMessageDialog(this, message);
-        name = message.getText();
-        
-        
-        int rVal = JOptionPane.showConfirmDialog(this, name);
-        if(rVal == JOptionPane.OK_OPTION)
+        if (!rightMouse)
         {
+            String name = findTerritoryName(point);
+            name = JOptionPane.showInputDialog(this, "Enter the territory name:", name);
+            if (name.trim().length() == 0)
+                return;
+            if (m_centers.containsKey(name) && JOptionPane.showConfirmDialog(this, "Another center exists with the same name. Are you sure you want to replace it with this one?") != 0)
+                return;
+            
             m_centers.put(name, point);
+        }
+        else
+        {            
+            String centerClicked = null;
+            for (Entry<String, Point> cur : m_centers.entrySet())
+            {
+                if (new Rectangle(cur.getValue(), new Dimension(15, 15)).intersects(new Rectangle(point, new Dimension(1, 1))))
+                    centerClicked = cur.getKey();
+            }
+            if(centerClicked != null && JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this center?") == 0)
+                m_centers.remove(centerClicked);
         }
         repaint();
     }
-
 }//end class CenterPicker

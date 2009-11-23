@@ -759,7 +759,7 @@ public class PolygonGrabber extends JFrame
             
             if(iterCount > 100000)
             {
-                JOptionPane.showMessageDialog(this, "FAIL" + currentPoint);
+                JOptionPane.showMessageDialog(this, "Failed to grab the polygon. Failed at point: " + currentPoint.getX() + "," + currentPoint.getY());
                 return null;
             }
 	    
