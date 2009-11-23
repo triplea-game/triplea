@@ -1,3 +1,9 @@
+* Various map utility fixes (Stephen Wicklund)
+
+* Right clicking on center picker removes the dot (Stephen Wicklund)
+
+* Center picker displays the name of the center next to the dot (Stephen Wicklund)
+
 * Fix bug in getStrengthOfPotentialAttackers for planes. Reduced frequency of tech purchase. (Kevin Moore)
 
 * fix bug 2831083, WW2V3: Retreat from undefended transports (sgb)
