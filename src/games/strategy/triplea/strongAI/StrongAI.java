@@ -5020,6 +5020,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     
     private void bomberNonComMove(GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
     {
+        final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     	CompositeMatch<Unit> myBomberUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsStrategicBomber);
     	CompositeMatch<Unit> alliedFactory = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), Matches.UnitIsFactory);
     	CompositeMatch<Unit> enemyFactory = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitIsFactory);
@@ -5034,7 +5035,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	{
     		Territory bTerr = bTerrIter.next();
     		Route bRoute = SUtils.findNearest(bTerr, Matches.territoryHasEnemyUnits(player, data), waterOrLand, data);
-    		if (bRoute == null || bRoute.getLength() < 4)
+    		if (bRoute == null || bRoute.getLength() < 4 && Matches.TerritoryIsLand.match(bTerr) && !delegate.getBattleTracker().wasBattleFought(bTerr))
     		{
     			bTerrIter.remove();
     		}
@@ -5047,6 +5048,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	HashMap<Territory, Float> strengthMap = new HashMap<Territory, Float>();
     	for (Territory aF : alliedFactories)
     	{
+    		if (delegate.getBattleTracker().wasConquered(aF))
+    			continue; //don't allow planes to move toward a just conquered factory
     		Route distToEnemy = SUtils.findNearest(aF, Matches.territoryHasEnemyUnits(player, data), waterOrLand, data);
     		if (distToEnemy == null || distToEnemy.getEnd() == null)
     			continue;
