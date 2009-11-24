@@ -1445,7 +1445,7 @@
                 
                 <productionRule name="buyCruiserIndustrialTechnology">
                         <cost resource="PUs" quantity="9" />
-                        <result resourceOrUnit="destroyer" quantity="1"/>
+                        <result resourceOrUnit="cruiser" quantity="1"/>
                 </productionRule>
 
                 <productionRule name="buyBattleshipIndustrialTechnology">

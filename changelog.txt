@@ -1,3 +1,5 @@
+* Fix buyCruiserIndustrialTechnology unit for Big_World (ComradeKev)
+
 * Various map utility fixes (Stephen Wicklund)
 
 * Right clicking on center picker removes the dot (Stephen Wicklund)

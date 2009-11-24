@@ -4139,6 +4139,7 @@ public class SUtils
 			else if (Matches.isTerritoryAllied(player, data).match(eTerr) && Matches.TerritoryIsNotNeutral.match(eTerr))
 			{
 				boolean hasENeighbors = Matches.territoryHasEnemyLandNeighbor(data, player).match(eTerr);
+				//BUG- the following route will always be null for island nations with no land route to enemies (Japan/US)
 				Route testERoute = findNearest(eTerr, enemyAndNoWater, noEnemyOrWater, data);
 
 				eTerrValue += (hasENeighbors ? 1.0F : -1.0F);
