@@ -1487,7 +1487,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					}
 				}
 				Territory safeTerr = SUtils.getSafestWaterTerr(lT, transTerr, seaTerrAttacked, data, player, false, tFirst);
-				if (safeTerr == null)
+				if (safeTerr == null || !landTerrMap2.containsKey(lT))
 				{
 					cFIter.remove();
 					continue;
@@ -1889,7 +1889,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		List<Unit> unitsAlreadyMoved = new ArrayList<Unit>();
 		List<Territory> ourFriendlyTerr = new ArrayList<Territory>();
 		List<Territory> ourEnemyTerr =new ArrayList<Territory>();
-		HashMap<Territory, Float> rankMap =	SUtils.rankTerritories(data, ourFriendlyTerr, ourEnemyTerr, null, player, tFirst, false, false);
+		HashMap<Territory, Float> rankMap =	SUtils.rankTerritories(data, ourFriendlyTerr, ourEnemyTerr, null, player, tFirst, true, false);
 
 		List<Territory> goTerr = new ArrayList<Territory>(rankMap.keySet());
 		SUtils.reorderTerrByFloat(goTerr, rankMap, true);
@@ -1904,6 +1904,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 //		if (maxPasses < maxCap)
 //			maxPasses=1;
 		Territory tempTerr=null, tempTerr2 = null;
+		enemyCaps.retainAll(goTerr);
 		SUtils.reorderTerrByFloat(enemyCaps, rankMap, true);
 /*		for (int j=0; j < maxCap-1; j++) //sort the caps & neighbors by their production value
 		{
@@ -5432,6 +5433,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
         //find the territories we can just walk into
 		enemyOwned.removeAll(alreadyAttacked);
+		enemyOwned.retainAll(rankMap.keySet());
 		SUtils.reorderTerrByFloat(enemyOwned, rankMap, true);
         for(Territory enemy : enemyOwned)
         {
@@ -6940,8 +6942,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
         	SUtils.reorderTerrByFloat(ourFriendlyTerr, rankMap, true);
         	ourFriendlyTerr.retainAll(ourTerrs);
-          Territory bidLandTerr = null;
-        	if (ourTerrs.size() > 0)
+        	Territory bidLandTerr = null;
+        	if (ourFriendlyTerr.size() > 0)
         		bidLandTerr = ourFriendlyTerr.get(0);
         	if (bidLandTerr == null)
         		bidLandTerr = capitol;
