@@ -77,7 +77,7 @@ public interface Constants
    */
   public static final String PLACEMENT_RESTRICTED_BY_FACTORY = "Placement Restricted By Factory";
   public static final String SELECTABLE_TECH_ROLL = "Selectable Tech Roll";
-  public static final String WW2V3_Tech_Model = "WW2V2 Tech Model";  
+  public static final String WW2V3_Tech_Model = "WW2V3 Tech Model";  
   public static final String TECH_DEVELOPMENT = "Tech Development";  
   public static final String TRANSPORT_UNLOAD_RESTRICTED = "Transport Restricted Unload";
   public static final String RANDOM_AA_CASUALTIES = "Random AA Casualties";

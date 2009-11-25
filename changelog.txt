@@ -1,3 +1,5 @@
+* Fix WW2V3_Tech_Model constant (ComradeKev)
+
 * Fix buyCruiserIndustrialTechnology unit for Big_World (ComradeKev)
 
 * Various map utility fixes (Stephen Wicklund)
