@@ -1461,6 +1461,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		{
 			List<Unit> ourTransports = transTerr.getUnits().getMatches(transportingUnit);
 			ourTransports.removeAll(unitsAlreadyMoved);
+			if (ourTransports.isEmpty())
+				continue;
 			int tmpDistance = MoveValidator.getMaxMovement(ourTransports);
 			Set<Territory> transTerrNeighbors = data.getMap().getNeighbors(transTerr, tmpDistance+1);
 			List<Territory> tmpTerrList = new ArrayList<Territory>(transTerrNeighbors);
