@@ -5206,6 +5206,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		SUtils.reorderTerrByFloat(enemyOwned, enemyMap, true);
 		numTerr = enemyMap.size();
 		float aggregateStrength = 0.0F;
+		Iterator<Territory> bPIter = bigProblem2.iterator();
+		while (bPIter.hasNext())
+		{
+			Territory bPTerr = bPIter.next();
+			if (Matches.TerritoryIsNeutral.match(bPTerr)) //don't worry about neutrals in the Big Problems
+				bPIter.remove();
+		}
  		for (Territory tProb: bigProblem2) //rank the problems
 		{
             if(!tProb.getUnits().someMatch(Matches.enemyUnit(player, data) ) )
@@ -5270,6 +5277,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	{
     		List<Unit> myCapUnits = myCapital.getUnits().getMatches(Matches.unitIsOwnedBy(player));
     		List<Territory> eCapTerrs = SUtils.getNeighboringEnemyLandTerritories(data, player, myCapital);
+    		Iterator<Territory> eCIter = eCapTerrs.iterator();
+    		while (eCIter.hasNext())
+    		{
+    			Territory noNeutralTerr = eCIter.next();
+    			if (Matches.TerritoryIsNeutral.match(noNeutralTerr))
+    				eCIter.remove();
+    		}
     		float totECapStrength = SUtils.getStrengthOfPotentialAttackers(myCapital, data, player, tFirst, true, alreadyAttacked);
     		HashMap<Territory, Float> eCapMap = new HashMap<Territory, Float>();
     		float maxStrength = 0.0F;
@@ -5655,8 +5669,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	enemyOwned.removeAll(alreadyAttacked);
         for(Territory enemy : enemyOwned)
         {
-			List<Unit> eUnits = enemy.getUnits().getMatches(Matches.enemyUnit(player, data));
+			Collection<Unit> eUnits = enemy.getUnits().getUnits();
             float enemyStrength = SUtils.strength(eUnits, false, false, tFirst);
+        	TerritoryAttachment ta = TerritoryAttachment.get(enemy);
+        	float pValue = ta.getProduction();
+            if (Matches.TerritoryIsNeutral.match(enemy) && enemyStrength > pValue*9) //why bother...focus on enemies
+            	continue; //TODO: Strengthen this determination
             if(enemyStrength > 0.0F)
             {
                 ourStrength = 0.0F;
