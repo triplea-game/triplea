@@ -1,3 +1,5 @@
+* Add Rocket to NWO units (ComradeKev)
+
 * Fix WW2V3_Tech_Model constant (ComradeKev)
 
 * Fix buyCruiserIndustrialTechnology unit for Big_World (ComradeKev)
