@@ -119,20 +119,27 @@ class TerritoryNameDrawable implements IDrawable
 
         if (territory.isWater())
         {
-        	if (ta == null)
-        	return;
-        	
-        	if (ta.isConvoyRoute())
+        	//Start by determining if we should display the sea zone name
+        	if(isDisplaySeaNames(data))
         	{
         		drawComments = true;
-        		commentText = ta.getConvoyAttached() + " Convoy Route";
+        		commentText = territory.getName();
         	}
-
-        	//Check to ensure there's an original owner to fix abend
-        	if (ta.getProduction() > 0 && ta.getOriginalOwner() != null)   		
+        	//Then overlay with any other specials
+        	if(ta != null)
         	{
-        		drawComments = true;
-        		commentText = ta.getOriginalOwner().getName() + " Convoy Center";
+        		if (ta.isConvoyRoute())
+        		{
+        			drawComments = true;
+        			commentText = ta.getConvoyAttached() + " Convoy Route";
+        		}
+
+        		//Check to ensure there's an original owner to fix abend
+        		if (ta.getProduction() > 0 && ta.getOriginalOwner() != null)   		
+        		{
+        			drawComments = true;
+        			commentText = ta.getOriginalOwner().getName() + " Convoy Center";
+        		}
         	}
         	
         	if (drawComments == false)
@@ -180,7 +187,7 @@ class TerritoryNameDrawable implements IDrawable
         	}
 
         // draw the PUs.
-        if (ta.getProduction() > 0)
+        if (ta != null && ta.getProduction() > 0)
         {
             Image img = m_uiContext.getPUImageFactory().getPUImage(ta.getProduction());
             String prod = Integer.valueOf(ta.getProduction()).toString();
@@ -202,16 +209,8 @@ class TerritoryNameDrawable implements IDrawable
                 y += fm.getLeading() + fm.getAscent();
                 
                 draw(bounds, graphics, x, y, img, prod);
-                
-                
             }
-                
-            
- 
-            
-
         }
-
     }
 
     private void draw(Rectangle bounds, Graphics2D graphics, int x, int y, Image img, String prod)
@@ -232,6 +231,12 @@ class TerritoryNameDrawable implements IDrawable
     {
         return TERRITORY_TEXT_LEVEL;
     }
+
+    private static boolean isDisplaySeaNames(GameData data)
+    {
+        return games.strategy.triplea.Properties.getDisplaySeaNames(data);
+    }
+    
 }
 
 class VCDrawable implements IDrawable

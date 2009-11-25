@@ -2301,7 +2301,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
             Change change =DelegateFinder.moveDelegate(m_data).markNoMovementChange(bombard);
             bridge.addChange(change);
         }
-
+        /**
+         * This code is actually a bug- the property is intended to tell if the return fire is
+         * RESTRICTED- but it's used as if it's ALLOWED.  The reason is the default values on the 
+         * property definition.  However, fixing this will entail a fix to the XML to reverse
+         * all values.  We'll leave it as is for now and try to figure out a patch strategy later.
+         */
         //WW2V2, bombardment casualties cant return fire
         boolean canReturnFire = (!isWW2V2() && isNavalBombardCasualtiesReturnFire());
 

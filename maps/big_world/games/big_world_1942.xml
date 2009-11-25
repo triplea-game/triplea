@@ -2973,6 +2973,12 @@
         </initialize>
 
         <propertyList>
+        
+        <!-- Eliminate Economic Victory Conditions -->
+        	<property name="No Economic Victory" value="true" editable="true">
+        		<boolean/>
+			</property>
+			
                 <!-- Use WW2V2 Rules -->
 				<property name="WW2V2" value="true" editable="false">
                         <boolean/>

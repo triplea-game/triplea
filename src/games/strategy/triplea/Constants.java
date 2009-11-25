@@ -117,6 +117,7 @@ public interface Constants
   public static final String SHORE_BOMBARD_PER_GROUND_UNIT_RESTRICTED = "Shore Bombard Per Ground Unit Restricted";
   public static final String SBR_AFFECTS_UNIT_PRODUCTION = "SBR Affects Unit Production";
   public static final String AA_TERRITORY_RESTRICTED = "AA Territory Restricted";
+  public static final String MULTIPLE_AA_PER_TERRITORY = "Multiple AA Per Territory";
   public static final String IGNORE_TRANSPORT_IN_MOVEMENT = "Ignore Transport In Movement";
   public static final String IGNORE_SUB_IN_MOVEMENT = "Ignore Sub In Movement";  
   public static final String HARI_KARI_UNITS = "Hari-Kari Units";
@@ -169,6 +170,7 @@ public interface Constants
   public static final String LARGE_MAP_FILENAME = "largeMap.gif";
   public static final String SMALL_MAP_FILENAME = "smallMap.jpeg";
   public static final String MAP_NAME = "mapName";
+  public static final String DISPLAY_SEA_NAMES = "Display Sea Names";
   
   public static final String SHOW_ENEMY_CASUALTIES_USER_PREF = "ShowEnemyCasualties";
 

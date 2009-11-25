@@ -262,6 +262,7 @@ public class MoveValidator
     	boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
     	boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
     	int routeLength = route.getLength();
+    	boolean validMove = false;
     	
     	if(ignoreRouteEnd)
     	{
@@ -273,15 +274,18 @@ public class MoveValidator
                 if(current.isWater())
                 {
                     if(getIgnoreTransportInMovement && getIgnoreSubInMovement && current.getUnits().allMatch(transportOrSubOnly))              
-                        return true;
+                        continue;
                     if(getIgnoreTransportInMovement && !getIgnoreSubInMovement && current.getUnits().allMatch(transportOnly))
-                        return true;
+                    	continue;
                     if(!getIgnoreTransportInMovement && getIgnoreSubInMovement && current.getUnits().allMatch(subOnly))
-                        return true;
+                    	continue;
+                    
+                    if(!validMove)
+                    	return validMove;
                 }
             }
     	
-        return false;
+        return true;
     }
 
     public static boolean enemyDestroyerOnPath(Route route, PlayerID player, GameData data)
@@ -606,6 +610,11 @@ public class MoveValidator
     private static boolean isWW2V3(GameData data)
     {
         return games.strategy.triplea.Properties.getWW2V3(data);
+    }
+
+    private static boolean isMultipleAAPerTerritory(GameData data)
+    {
+        return games.strategy.triplea.Properties.getMultipleAAPerTerritory(data);
     }
     
     /**
@@ -1092,7 +1101,8 @@ public class MoveValidator
         }
 
         //only allow aa into a land territory if one already present unless WW2V2 or WW2V3.
-        if ((!isWW2V3(data) && !isWW2V2(data)) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd() != null && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
+        //if ((!isWW2V3(data) && !isWW2V2(data)) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd() != null && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
+        if ((!isMultipleAAPerTerritory(data) && !isWW2V3(data) && !isWW2V2(data)) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd() != null && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
                 && !route.getEnd().isWater())
         {
             for (Unit unit : Match.getMatches(units, Matches.UnitIsAA))

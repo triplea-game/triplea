@@ -345,7 +345,7 @@ public class Properties implements Constants {
     }
 
     /*
-     * Subs restricted from controling sea zones
+     * Subs restricted from controlling sea zones
      */
     public static boolean getSubControlSeaZoneRestricted(GameData data) {
 
@@ -511,7 +511,16 @@ public class Properties implements Constants {
         return data.getProperties().get(AA_TERRITORY_RESTRICTED, false);
 
     }
+    
+    /*
+     * Multiple AA allowed per territory
+     */
+    public static boolean getMultipleAAPerTerritory(GameData data) {
 
+        return data.getProperties().get(MULTIPLE_AA_PER_TERRITORY, false);
+
+    }
+    
     /*
      * NATIONAL OBJECTIVES USED
      */
@@ -527,6 +536,15 @@ public class Properties implements Constants {
     public static boolean getContinuousResearch(GameData data) {
 
         return data.getProperties().get(CONTINUOUS_RESEARCH, false);
+
+    }
+
+    /*
+     * Display Sea Names
+     */
+    public static boolean getDisplaySeaNames(GameData data) {
+
+        return data.getProperties().get(DISPLAY_SEA_NAMES, false);
 
     }
 

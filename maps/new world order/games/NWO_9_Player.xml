@@ -4262,9 +4262,19 @@
        </initialize> 
 
        <propertyList> 
-                
-               <!-- Use WW2V2 Rules --> 
 
+        <!-- Eliminate Economic Victory Conditions -->
+        	<property name="No Economic Victory" value="true" editable="true">
+        		<boolean/>
+			</property>
+			
+               <!-- Use WW2V2 Rules --> 
+    
+        <!-- Allow multiple AA per territory -->
+        	<property name="Multiple AA Per Territory" value="true" editable="true">
+        		<boolean/>
+			</property>
+			
 		<!-- Low Luck --> 
                <property name="Low Luck" value="true" editable="true"> 
                        <boolean/> 

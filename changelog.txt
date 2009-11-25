@@ -1,4 +1,12 @@
-* Add Rocket to NWO units (ComradeKev)
+* fix bug 2887488, Add "Display Sea Names" property to display sea zone names (ComradeKev)
+ 
+* Add 'Multiple AA Per Territory' property (ComradeKev)
+
+* Fix nonCombat movement into enemy SZ 2 zones away (ComradeKev)
+
+* Remove Economic Victory from NWO, Great War, and Big World (ComradeKev)
+
+* Add French Rocket to NWO units (ComradeKev)
 
 * Fix WW2V3_Tech_Model constant (ComradeKev)
 
