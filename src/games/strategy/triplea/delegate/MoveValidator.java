@@ -73,10 +73,6 @@ public class MoveValidator
     public static final String NOT_ALL_AIR_UNITS_CAN_LAND = "Not all air units can land";
     public static final String TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT = "Transport cannot both load AND unload after being in combat";
     
-    //TODO - remove this
-    //static utility functions should not silently set/rely on globally accessible mutable state!
-    private static IntegerMap<Unit> m_movementLeft = new IntegerMap<Unit>();
-    
     /**
      * Tests the given collection of units to see if they have the movement neccessary
      * to move.
@@ -648,7 +644,7 @@ public class MoveValidator
                                                     final List<UndoableMove> undoableMoves, 
                                                     GameData data)
     {
-	    m_movementLeft = new IntegerMap<Unit>();
+	    IntegerMap<Unit> movementLeft = new IntegerMap<Unit>();
 	    
         MoveValidationResult result = new MoveValidationResult();
 
@@ -686,7 +682,7 @@ public class MoveValidator
         if (validateBasic(isNonCombat, data, units, route, player, transportsToLoad, result).getError() != null)
             return result;
 
-        if (validateAirCanLand(data, units, route, player, result).getError() != null)
+        if (validateAirCanLand(data, units, route, player, result, movementLeft).getError() != null)
             return result;
 
         if (validateTransport(data, undoableMoves, units, route, player, transportsToLoad, result).getError() != null)
@@ -1125,7 +1121,7 @@ public class MoveValidator
         return result;
     }
 
-    private static MoveValidationResult validateAirCanLand(final GameData data, Collection<Unit> units, Route route, PlayerID player, MoveValidationResult result)
+    private static MoveValidationResult validateAirCanLand(final GameData data, Collection<Unit> units, Route route, PlayerID player, MoveValidationResult result, IntegerMap<Unit> movementLeft)
     {
         if (getEditMode(data))
             return result;
@@ -1147,7 +1143,7 @@ public class MoveValidator
                
         //Get the farthest we need to search for places to land (including current route length)
         //Generate the IntegerMap containing each aircraft's remaining movement
-        int maxMovement = getAirMovementLeft(data, units, ownedAir, route, player);
+        int maxMovement = getAirMovementLeft(data, units, ownedAir, route, player, movementLeft);
 
         //Get the distances to the nearest allied land and owned factory
         int nearestFactory = getNearestFactory(data, route, player, maxMovement, friendlyGround);
@@ -1158,7 +1154,7 @@ public class MoveValidator
 		
         //find the air units that can't make it to land
         boolean allowKamikaze =  data.getProperties().get(Constants.KAMIKAZE, false);
-        Collection<Unit> airThatMustLandOnCarriers = getAirThatMustLandOnCarriers(ownedAir, allowKamikaze, result, nearestLand);
+        Collection<Unit> airThatMustLandOnCarriers = getAirThatMustLandOnCarriers(ownedAir, allowKamikaze, result, nearestLand, movementLeft);
         
         //we are done, everything can find a place to land
         if(airThatMustLandOnCarriers.isEmpty())
@@ -1216,7 +1212,7 @@ public class MoveValidator
         for (Unit unit : Match.getMatches(units, Matches.UnitCanLandOnCarrier))
         {
             int carrierCost = UnitAttachment.get(unit.getType()).getCarrierCost();
-            int movement = m_movementLeft.getInt(unit);
+            int movement = movementLeft.getInt(unit);
 
             for(int i = movement; i >=-1; i--)
             {
@@ -1341,7 +1337,7 @@ public class MoveValidator
         return carrierCapacity;
 	}
 
-	private static Collection<Unit> getAirThatMustLandOnCarriers(Collection<Unit> ownedAir, boolean allowKamikaze, MoveValidationResult result, int nearestLand) 
+	private static Collection<Unit> getAirThatMustLandOnCarriers(Collection<Unit> ownedAir, boolean allowKamikaze, MoveValidationResult result, int nearestLand, IntegerMap<Unit> movementLeft) 
 	{
 		Collection<Unit> airThatMustLandOnCarriers = new ArrayList<Unit>();
 		Match<Unit> cantLandMatch = new InverseMatch<Unit>(Matches.UnitCanLandOnCarrier);
@@ -1350,7 +1346,7 @@ public class MoveValidator
         while (ownedAirIter.hasNext())
         {
             Unit unit = (Unit) ownedAirIter.next();
-            if(m_movementLeft.getInt(unit) < nearestLand)
+            if(movementLeft.getInt(unit) < nearestLand)
             {
                 airThatMustLandOnCarriers.add(unit);
                 //not everything can land on a carrier (i.e. bombers)
@@ -1458,7 +1454,7 @@ public class MoveValidator
 		return friendlyGround;
 	}
 
-	private static int getAirMovementLeft(final GameData data, Collection<Unit> units, Collection<Unit> ownedAir, Route route, PlayerID player)
+	private static int getAirMovementLeft(final GameData data, Collection<Unit> units, Collection<Unit> ownedAir, Route route, PlayerID player, IntegerMap<Unit> movementLeft)
 	{
 		//this is the farthest we need to look for places to land
 		
@@ -1497,7 +1493,7 @@ public class MoveValidator
 			
 			maxMovement= Math.max(movement, maxMovement);
 			
-			m_movementLeft.put(unit, movement);
+			movementLeft.put(unit, movement);
 		}
 		
 		return maxMovement;
