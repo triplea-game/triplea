@@ -1,3 +1,5 @@
+* fix bug 2893890, fighters with no movement left can hover in sea zones where carriers can be placed (sgb)
+
 * fix bug 2887488, Add "Display Sea Names" property to display sea zone names (ComradeKev)
  
 * Add 'Multiple AA Per Territory' property (ComradeKev)

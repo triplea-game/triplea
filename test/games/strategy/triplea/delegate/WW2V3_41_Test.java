@@ -49,14 +49,14 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 
-public class AA50_41Test extends TestCase {
+public class WW2V3_41_Test extends TestCase {
     
         private GameData m_data;
         
         @Override
         protected void setUp() throws Exception
         {
-            m_data = LoadGameUtil.loadGame("AA50", "AA50-41.xml");
+            m_data = LoadGameUtil.loadGame("AA50", "ww2v3_1941.xml");
         }
 
         @Override
@@ -1182,6 +1182,74 @@ public class AA50_41Test extends TestCase {
 			
         }
         
+
+        public void testFighterLandsWhereCarrierCanBePlaced() 
+        {        	        
+        	PlayerID germans = germans(m_data);
+        	
+        	//germans have 1 carrier to place
+			addTo(germans, carrier(m_data).create(1, germans));
+			
+			//start the move phase
+			ITestDelegateBridge bridge = getDelegateBridge(germans);
+	            bridge.setStepName("CombatMove");
+	            moveDelegate(m_data).start(bridge, m_data);
+		
+	        bridge.setRemote(new DummyTripleAPlayer(){
+
+				@Override
+				public boolean confirmMoveHariKari() {
+					return false;
+				}});
+	            
+			//the fighter should be able to move and hover in the sea zone
+	        //the fighter has no movement left
+			Territory neEurope = territory("Northwestern Europe", m_data);
+			Route route = new Route(
+					neEurope,
+					territory("Germany", m_data),
+					territory("Poland", m_data),
+					territory("Baltic States", m_data),
+					territory("5 Sea Zone", m_data)
+					);
+			
+			
+			//the fighter should be able to move, and hover in the sea zone until the carrier is placed
+			move(neEurope.getUnits().getMatches(Matches.UnitIsAir), route);
+        	
+        }
+
+        public void testFighterCantHoverWithNoCarrierToPlace() 
+        {
+        	        	
+			//start the move phase
+			ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
+	            bridge.setStepName("CombatMove");
+	            moveDelegate(m_data).start(bridge, m_data);
+
+            bridge.setRemote(new DummyTripleAPlayer(){
+
+				@Override
+				public boolean confirmMoveHariKari() {
+					return false;
+				}});
+        	
+			//the fighter should not be able to move and hover in the sea zone
+	        //since their are no carriers to place
+		    //the fighter has no movement left	            
+			Territory neEurope = territory("Northwestern Europe", m_data);
+			Route route = new Route(
+					neEurope,
+					territory("Germany", m_data),
+					territory("Poland", m_data),
+					territory("Baltic States", m_data),
+					territory("5 Sea Zone", m_data)
+					);
+			
+		 	String error = moveDelegate(m_data).move(neEurope.getUnits().getMatches(Matches.UnitIsAir), route);
+		 	assertNotNull(error);
+        	
+        }
         
         /***********************************************************/
         /***********************************************************/

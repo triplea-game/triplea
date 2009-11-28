@@ -153,7 +153,7 @@ public class OddsCalculatorTest extends TestCase
 
     public void testSubInfLoop()
     {
-        m_data = LoadGameUtil.loadGame("AA50", "AA50-42.xml");
+        m_data = LoadGameUtil.loadGame("AA50", "ww2v3_1942.xml");
        
         Territory sz1 = territory("1 Sea Zone", m_data);
         List<Unit> attacking = submarine(m_data).create(2, americans(m_data));
@@ -167,7 +167,7 @@ public class OddsCalculatorTest extends TestCase
     
     public void testAttackingTransports()
     {
-        m_data = LoadGameUtil.loadGame("AA50", "AA50-42.xml");
+        m_data = LoadGameUtil.loadGame("AA50", "ww2v3_1942.xml");
        
         Territory sz1 = territory("1 Sea Zone", m_data);
         List<Unit> attacking = transports(m_data).create(2, americans(m_data));
@@ -183,7 +183,7 @@ public class OddsCalculatorTest extends TestCase
 
     public void testDefendingTransports()
     {
-        m_data = LoadGameUtil.loadGame("AA50", "AA50-42.xml");
+        m_data = LoadGameUtil.loadGame("AA50", "ww2v3_1942.xml");
        
         Territory sz1 = territory("1 Sea Zone", m_data);
         List<Unit> attacking = submarine(m_data).create(2, americans(m_data));

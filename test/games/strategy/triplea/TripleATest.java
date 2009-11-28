@@ -18,8 +18,8 @@ public class TripleATest
         suite.addTestSuite(MoveValidatorTest.class);
         suite.addTestSuite(EmailValidatorTest.class);
         suite.addTestSuite(RevisedTest.class);
-        suite.addTestSuite(AA50_41Test.class);
-        suite.addTestSuite(AA50_42Test.class);
+        suite.addTestSuite(WW2V3_41_Test.class);
+        suite.addTestSuite(WW2V3_42_Test.class);
         suite.addTestSuite(LHTRTest.class);
         suite.addTestSuite(PacificTest.class);
         suite.addTestSuite(DiceRollTest.class);

@@ -14,7 +14,7 @@ public class LoadGameUtil
         InputStream is = LoadGameUtil.class.getResourceAsStream(game);
         
         if(is == null)
-            throw new IllegalStateException("revised does not exist");
+            throw new IllegalStateException(game + " does not exist");
         try
         {
             

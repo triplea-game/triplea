@@ -31,7 +31,7 @@ public class UnitsThatCantFightUtilTest extends TestCase {
     public void testNoSuicideAttacksAA50AtStart()
     {
         //at the start of the game, there are no suicide attacks
-        GameData data = LoadGameUtil.loadGame("AA50", "AA50-41.xml");
+        GameData data = LoadGameUtil.loadGame("AA50", "ww2v3_1941.xml");
         
         Collection<Territory> territories = new UnitsThatCantFightUtil(data).getTerritoriesWhereUnitsCantFight(germans(data));
         
@@ -42,7 +42,7 @@ public class UnitsThatCantFightUtilTest extends TestCase {
     
     public void testSuicideAttackInAA50()
     {
-        GameData data = LoadGameUtil.loadGame("AA50", "AA50-41.xml");
+        GameData data = LoadGameUtil.loadGame("AA50", "ww2v3_1941.xml");
         
         //add a german sub to sz 12       
         Territory sz12 = territory("12 Sea Zone", data);
@@ -58,7 +58,7 @@ public class UnitsThatCantFightUtilTest extends TestCase {
     
     public void testSuicideAttackInAA50WithTransportedUnits()
     {
-        GameData data = LoadGameUtil.loadGame("AA50", "AA50-41.xml");
+        GameData data = LoadGameUtil.loadGame("AA50", "ww2v3_1941.xml");
         
         //add a german sub to sz 12       
         Territory sz12 = territory("12 Sea Zone", data);

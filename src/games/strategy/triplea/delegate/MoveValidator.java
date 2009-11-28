@@ -72,10 +72,9 @@ public class MoveValidator
     public static final String TOO_POOR_TO_VIOLATE_NEUTRALITY = "Not enough money to pay for violating neutrality";
     public static final String NOT_ALL_AIR_UNITS_CAN_LAND = "Not all air units can land";
     public static final String TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT = "Transport cannot both load AND unload after being in combat";
-    //private static int m_mechanizedSupportAvail = 0;
-    //private static int m_paraTransportsAvail = 0;
-    private static int m_nearestLand = Integer.MAX_VALUE;
-    private static int m_nearestFactory = Integer.MAX_VALUE;
+    
+    //TODO - remove this
+    //static utility functions should not silently set/rely on globally accessible mutable state!
     private static IntegerMap<Unit> m_movementLeft = new IntegerMap<Unit>();
     
     /**
@@ -649,9 +648,6 @@ public class MoveValidator
                                                     final List<UndoableMove> undoableMoves, 
                                                     GameData data)
     {
-    	//kev Resetting these in case this is called multiple times (like in the J-Unit tests)    	
-    	m_nearestLand=Integer.MAX_VALUE;
-	    m_nearestFactory = Integer.MAX_VALUE;
 	    m_movementLeft = new IntegerMap<Unit>();
 	    
         MoveValidationResult result = new MoveValidationResult();
@@ -1154,11 +1150,15 @@ public class MoveValidator
         int maxMovement = getAirMovementLeft(data, units, ownedAir, route, player);
 
         //Get the distances to the nearest allied land and owned factory
-        getNearestLZFactoryDistances(data, route, player, maxMovement, friendlyGround);        
+        int nearestFactory = getNearestFactory(data, route, player, maxMovement, friendlyGround);
+        int nearestLand = getNearestLand(data, route, player, maxMovement, friendlyGround);
+        
+        
+        
 		
         //find the air units that can't make it to land
         boolean allowKamikaze =  data.getProperties().get(Constants.KAMIKAZE, false);
-        Collection<Unit> airThatMustLandOnCarriers = getAirThatMustLandOnCarriers(ownedAir, allowKamikaze, result);
+        Collection<Unit> airThatMustLandOnCarriers = getAirThatMustLandOnCarriers(ownedAir, allowKamikaze, result, nearestLand);
         
         //we are done, everything can find a place to land
         if(airThatMustLandOnCarriers.isEmpty())
@@ -1183,10 +1183,10 @@ public class MoveValidator
         boolean hasProducedCarriers = player.getUnits().someMatch(Matches.UnitIsCarrier);
         if (lhtrCarrierProdRules && hasProducedCarriers)
         { 
-        	if(m_nearestFactory-1 <= maxMovement - route.getLength())
+        	if(nearestFactory-1 <= maxMovement)
         	{
         		placeUnits = Match.getMatches(placeUnits, Matches.UnitIsCarrier);
-        		carrierCapacity.put(new Integer(m_nearestFactory-1), carrierCapacity.getInt(m_nearestFactory-1) + MoveValidator.carrierCapacity(placeUnits) );        		
+        		carrierCapacity.put(new Integer(nearestFactory-1), carrierCapacity.getInt(nearestFactory-1) + MoveValidator.carrierCapacity(placeUnits) );        		
         	}
         }        
         //Don't think we need this any more.
@@ -1341,15 +1341,16 @@ public class MoveValidator
         return carrierCapacity;
 	}
 
-	private static Collection<Unit> getAirThatMustLandOnCarriers(Collection<Unit> ownedAir, boolean allowKamikaze, MoveValidationResult result) 
+	private static Collection<Unit> getAirThatMustLandOnCarriers(Collection<Unit> ownedAir, boolean allowKamikaze, MoveValidationResult result, int nearestLand) 
 	{
 		Collection<Unit> airThatMustLandOnCarriers = new ArrayList<Unit>();
 		Match<Unit> cantLandMatch = new InverseMatch<Unit>(Matches.UnitCanLandOnCarrier);
         Iterator<Unit> ownedAirIter = ownedAir.iterator();
+        
         while (ownedAirIter.hasNext())
         {
             Unit unit = (Unit) ownedAirIter.next();
-            if(m_movementLeft.getInt(unit) < m_nearestLand)
+            if(m_movementLeft.getInt(unit) < nearestLand)
             {
                 airThatMustLandOnCarriers.add(unit);
                 //not everything can land on a carrier (i.e. bombers)
@@ -1366,8 +1367,22 @@ public class MoveValidator
 		return airThatMustLandOnCarriers;
 	}
 
-	private static void getNearestLZFactoryDistances(final GameData data, Route route, PlayerID player, int maxMovement, CompositeMatch<Territory> friendlyGround) 
+	private static int getNearestLand(final GameData data, Route route, PlayerID player, int maxMovement, CompositeMatch<Territory> friendlyGround) {
+		return calculateNearestDistances(data, route, player, maxMovement, friendlyGround)[0];
+	}
+	
+	private static int getNearestFactory(final GameData data, Route route, PlayerID player, int maxMovement, CompositeMatch<Territory> friendlyGround) {
+		return calculateNearestDistances(data, route, player, maxMovement, friendlyGround)[1];
+	}
+	
+	/**
+	 * Don't use, use either getNearestFactory, or getNearestLand instead 
+	 */
+	private static int[] calculateNearestDistances(final GameData data, Route route, PlayerID player, int maxMovement, CompositeMatch<Territory> friendlyGround) 
 	{
+		int nearestLand = Integer.MAX_VALUE;
+		int nearestFactory = Integer.MAX_VALUE;
+		
 		Match<Territory> canMoveThrough = new InverseMatch<Territory>(Matches.TerritoryIsImpassable);
 		Match<Territory> notNeutral = new InverseMatch<Territory>(Matches.TerritoryIsNeutral);
 		Match<Territory> notNeutralAndNotImpassible = new CompositeMatchAnd<Territory>(canMoveThrough, notNeutral);
@@ -1391,12 +1406,12 @@ public class MoveValidator
 			Route noNeutralRoute = data.getMap().getRoute(route.getEnd(), territory, notNeutralAndNotImpassible); 
 			if(noNeutralRoute != null)
 			{
-				m_nearestLand = Math.min(m_nearestLand, noNeutralRoute.getLength());
+				nearestLand = Math.min(nearestLand, noNeutralRoute.getLength());
 
 				//Get nearest factory
 				if(hasOwnedFactory)
 				{
-					m_nearestFactory = Math.min(m_nearestFactory, noNeutralRoute.getLength());
+					nearestFactory = Math.min(nearestFactory, noNeutralRoute.getLength());
 				}
 			}
 			//Get a path WITH using neutrals
@@ -1405,16 +1420,17 @@ public class MoveValidator
 				Route neutralViolatingRoute = data.getMap().getRoute(route.getEnd(), territory, notNeutral);
 				if((neutralViolatingRoute != null) && getNeutralCharge(data, neutralViolatingRoute) <= player.getResources().getQuantity(Constants.PUS))
 				{
-					m_nearestLand = Math.min(m_nearestLand, neutralViolatingRoute.getLength());
+					nearestLand = Math.min(nearestLand, neutralViolatingRoute.getLength());
 
 					//Get nearest factory
 					if(hasOwnedFactory)
 					{
-						m_nearestFactory = Math.min(m_nearestFactory, neutralViolatingRoute.getLength());
+						nearestFactory = Math.min(nearestFactory, neutralViolatingRoute.getLength());
 					}
 				}
 			}
 		}		
+		return new int[] {nearestLand, nearestFactory};
 	}
 
 	private static CompositeMatch<Territory> alliedNonConqueredNonPendingTerritory(final GameData data, PlayerID player) {

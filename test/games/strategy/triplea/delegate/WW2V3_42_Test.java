@@ -28,14 +28,14 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-public class AA50_42Test extends TestCase {
+public class WW2V3_42_Test extends TestCase {
     
         private GameData m_data;
 
         @Override
         protected void setUp() throws Exception
         {
-            m_data = LoadGameUtil.loadGame("AA50", "AA50-42.xml");
+            m_data = LoadGameUtil.loadGame("AA50", "ww2v3_1942.xml");
         }
 
         @Override
@@ -201,7 +201,7 @@ public class AA50_42Test extends TestCase {
             MustFightBattle mfb =  (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz5, false);
             assertEquals(4, mfb.getAttackingUnits().size());
         }
-
+        
 
 
 }
