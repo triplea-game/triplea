@@ -35,7 +35,7 @@ public interface IAttachment extends Serializable
      * Called after the attatchment is created. IF an error occurs should throw
      * an exception to halt the parsing
      */
-    public void validate() throws GameParseException;
+    public void validate(GameData data) throws GameParseException;
 
     public Attachable getAttatchedTo();
 

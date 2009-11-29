@@ -21,7 +21,9 @@
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.*;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.TechTracker;
 
 
@@ -375,7 +377,7 @@ public class UnitAttachment extends DefaultAttachment
     return 1;
   }
 
-  public void validate() throws GameParseException
+  public void validate(GameData data) throws GameParseException
   {
     if(m_isAir)
     {
@@ -427,7 +429,10 @@ public class UnitAttachment extends DefaultAttachment
       throw new GameParseException("Invalid Unit Attatchment" + this);
     }
 
-
+    if(m_isSea && m_transportCapacity != -1 && Properties.getTransportCasualtiesRestricted(data) && (m_attack > 0 || m_defense > 0)) 
+    {
+    	throw new GameParseException("Restricted transports cannot have attack or defense");
+    }
 
   }
 

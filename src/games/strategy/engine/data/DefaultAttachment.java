@@ -76,7 +76,7 @@ public class DefaultAttachment implements IAttachment
     /**
      * Called after the attatchment is created.
      */
-    public void validate() throws GameParseException
+    public void validate(GameData data) throws GameParseException
     {
     }
     

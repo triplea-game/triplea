@@ -75,12 +75,9 @@ public class TestAttachment implements games.strategy.engine.data.IAttachment {
 	{
 	}
 
-	/**
-	 * Called after the attatchment is created.
-	 * IF an error occurs should throw a runtime
-	 * exception to halt the vm.
-	 */
-	public void validate() {
+
+	public void validate(GameData data) 
+	{
 	}
 
 }

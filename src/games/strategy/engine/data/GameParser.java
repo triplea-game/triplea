@@ -32,6 +32,7 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.Version;
 
 import java.io.File;
@@ -131,8 +132,34 @@ public class GameParser
         if(properties != null)
             parseProperties(properties);
 
+        validate();
+        
         return data;
     }
+
+	private void validate() throws GameParseException {
+		//validate unit attachments
+		for(UnitType u : data.getUnitTypeList()) 
+        {
+			validateAttachments(u);
+        }
+		for(Territory t : data.getMap()) 
+		{
+			validateAttachments(t);
+		}
+		for(Resource r : data.getResourceList().getResources()) 
+		{
+			validateAttachments(r);
+		}		
+	}
+	
+	private void validateAttachments(Attachable attachable) throws GameParseException 
+	{
+		for(IAttachment a : attachable.getAttachments().values()) 
+    	{
+    		a.validate(data);
+    	}
+	}
 
     private Document getDocument(InputStream input) throws SAXException, IOException, ParserConfigurationException
     {
@@ -1072,7 +1099,6 @@ public class GameParser
             List values = getChildren("option", current);
             
             setValues(attachment, values);
-            attachment.validate();
             
             //find the attachable
             String type = current.getAttribute("type");
