@@ -2,6 +2,7 @@ package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.util.ClassLoaderUtil;
 
 import java.io.File;
 import java.io.FileInputStream;

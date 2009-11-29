@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.ui;
+package games.strategy.util;
 
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.

@@ -1,7 +1,7 @@
 package games.strategy.triplea;
 
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.ui.ClassLoaderUtil;
+import games.strategy.util.ClassLoaderUtil;
 import games.strategy.util.Match;
 
 import java.io.File;
