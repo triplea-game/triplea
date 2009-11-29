@@ -1,6 +1,8 @@
 package games.strategy.engine.framework.mapDownload;
 
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.ui.NewGameChooser;
+import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
@@ -147,21 +149,31 @@ public class InstallMapDialog extends JDialog {
 				setWidgetActivation();				
 			}
 		});
-		
-		
 	}
 
+	private boolean isDefaultMap(DownloadFileDescription selected) {
+		return NewGameChooserModel.getDefaultMapNames().contains(selected.getMapName());
+	}
 	
-	
-
-
 	private void install(DownloadFileDescription selected) {
+		
+		
+		if(isDefaultMap(selected)) {
+			Util.notifyError(this, "The map " + selected.getMapName() + " cannot be downloaded as it comes installed with TripleA");
+			return;
+		}
 		
 		//get the destination file
 		File destination = new File(GameRunner.getUserMapsFolder(), selected.getMapName() + ".zip");
 		if(destination.exists()) {
-			Util.notifyError(this, "The file " + destination + " already exists");
-			return;
+			int rVal = EventThreadJOptionPane.showConfirmDialog(this, "A map with this name already exists, delete it?", "Exit" , JOptionPane.YES_NO_OPTION);
+	        if(rVal != JOptionPane.OK_OPTION)
+	            return;
+			
+			if(!destination.delete()) {
+				Util.notifyError(this, "Error deleting file :  " + destination);
+				return;
+			}
 		}
 		
 		File tempFile = new 

@@ -11,6 +11,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -34,12 +35,28 @@ public class NewGameChooserModel extends DefaultListModel
         return (NewGameChooserEntry) super.get(i);
     }
     
+    public static Collection<String> getDefaultMapNames() {
+    	Collection<String> rVal = new ArrayList<String>();
+    	for(File f : getDefaultMapsDir().listFiles()) {
+    		if(f.getName().toLowerCase().endsWith(".zip")) {
+    			rVal.add(f.getName().substring(0, f.getName().length() - ".zip".length()));
+    		} else {
+    			rVal.add(f.getName());
+    		}
+    	}
+    	return rVal;
+    }
+    
     private List<File> allMapFiles() {
     	List<File> rVal = new ArrayList<File>();
-    	rVal.addAll(safeListFiles(new File(GameRunner.getRootFolder(), "maps")));
+    	rVal.addAll(safeListFiles(getDefaultMapsDir()));
     	rVal.addAll(safeListFiles(GameRunner.getUserMapsFolder()));
     	return rVal;
     }
+
+	private static File getDefaultMapsDir() {
+		return new File(GameRunner.getRootFolder(), "maps");
+	}
     
     private List<File> safeListFiles(File f) {
     	File[] files = f.listFiles();
