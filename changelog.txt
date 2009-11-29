@@ -1,3 +1,5 @@
+* new neutral flag images (Veqryn)
+
 * allow users the option to replace downloaded maps when downloading (sgb)
 
 * don't allow downloading a map with the same name as one that comes with the default TripleA install (sgb)
