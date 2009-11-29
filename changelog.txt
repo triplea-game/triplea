@@ -1,3 +1,5 @@
+Changes for 1.1.1
+
 * new neutral flag images (Veqryn)
 
 * allow users the option to replace downloaded maps when downloading (sgb)
