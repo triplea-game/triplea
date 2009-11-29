@@ -143,7 +143,7 @@ public class UIContext
         //check for existence
         try
         {
-            ResourceLoader.getMapresourceLoader(mapDir);
+            ResourceLoader.getMapresourceLoader(mapDir).close();
         }
         catch(RuntimeException re)
         {
@@ -188,6 +188,9 @@ public class UIContext
         
         ResourceLoader loader = ResourceLoader.getMapresourceLoader(dir);
 
+        if(m_mapData != null) {
+        	m_mapData.close();
+        }
         m_mapData = new MapData(loader);
         
         double unitScale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, m_mapData.getDefaultUnitScale());
@@ -426,6 +429,8 @@ public class UIContext
         m_activeToDeactivate.clear();
         m_windowsToCloseOnShutdown.clear();
         m_latchesToCloseOnShutdown.clear();
+        
+        m_mapData.close();
     }
     
     /**

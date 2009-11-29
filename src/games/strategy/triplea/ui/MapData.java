@@ -172,6 +172,11 @@ public class MapData
             ex.printStackTrace();
         }
     }
+    
+    public void close() 
+    {
+    	m_resourceLoader.close();
+    }
 
     private void loadDecorations() throws IOException
     {

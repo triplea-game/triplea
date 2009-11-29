@@ -1,6 +1,7 @@
 package games.strategy.triplea;
 
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.ui.ClassLoaderUtil;
 import games.strategy.util.Match;
 
 import java.io.File;
@@ -25,7 +26,7 @@ import java.util.StringTokenizer;
  */
 public class ResourceLoader
 {
-    private final ClassLoader m_loader;
+    private final URLClassLoader m_loader;
     
     public static ResourceLoader getMapresourceLoader(String mapName)
     {
@@ -88,6 +89,7 @@ public class ResourceLoader
         {
             URLClassLoader url = new URLClassLoader(new URL[] {match.toURI().toURL()});
             URL dependencesURL = url.getResource("dependencies.txt");
+            ClassLoaderUtil.closeLoader(url);
             if(dependencesURL != null)
             {
                 java.util.Properties dependenciesFile = new java.util.Properties(  );
@@ -119,6 +121,10 @@ public class ResourceLoader
         
         
         return rVal;
+    }
+    
+    public void close() {
+    	ClassLoaderUtil.closeLoader(m_loader);
     }
     
 

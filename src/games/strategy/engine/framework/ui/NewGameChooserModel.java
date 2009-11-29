@@ -6,6 +6,8 @@ import games.strategy.engine.framework.GameRunner;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -22,6 +24,8 @@ import javax.swing.DefaultListModel;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+
 
 public class NewGameChooserModel extends DefaultListModel
 {
@@ -115,6 +119,9 @@ public class NewGameChooserModel extends DefaultListModel
                     {
                         URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});
                         URL url = loader.getResource(entry.getName());
+                        //we have to close the loader to allow files to 
+                        //be deleted on windows
+                        ClassLoaderUtil.closeLoader(loader);
                         try
                         {
                             entries.add(createEntry(new URI(url.toString().replace(" ", "%20"))));
@@ -136,9 +143,6 @@ public class NewGameChooserModel extends DefaultListModel
         {
             ioe.printStackTrace();
         }
-        
-            
-        
     }
     
     public NewGameChooserEntry findByName(String name) 
