@@ -171,8 +171,12 @@ public class InstallMapDialog extends JDialog {
 	            return;
 			
 			if(!destination.delete()) {
-				Util.notifyError(this, "Error deleting file :  " + destination);
-				return;
+				//TODO
+				//we can't delete the file on windows
+				//something is leaking a file descriptor to it
+				//the source seems to be some caching in the java url libraries
+				//called from the constructor of NewGameChooserEntry
+				//we will overwrite, rather than delete the file
 			}
 		}
 		
