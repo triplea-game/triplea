@@ -1,3 +1,5 @@
+* fix bug 2905986, occupiedTerrOf don't work with capital (sgb)
+
 * skins can be downloaded/read from the users map folder (sgb)
 
 Changes for 1.1.1

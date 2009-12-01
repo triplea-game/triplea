@@ -443,15 +443,6 @@ public class Properties implements Constants {
 
     }
 
-    /*
-     * Are any territories originally occupied by enemies
-     */
-    public static boolean getOccupiedTerritories(GameData data) {
-
-        return data.getProperties().get(OCCUPIED_TERRITORIES, false);
-
-    }
-    
     public static boolean getUnplacedUnitsLive(GameData data) {
 
         return data.getProperties().get(UNPLACED_UNITS_LIVE, false);

@@ -22,7 +22,6 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
@@ -520,15 +519,11 @@ public class BattleTracker implements java.io.Serializable
         //revert to original owner if it is, unless they dont own there captital
         PlayerID terrOrigOwner;
         
-        if(isOccupiedTerritories(data))
-        {
-        	terrOrigOwner = ta.getOccupiedTerrOf(); 
-            if (terrOrigOwner == null)
-                terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
-        }
-        else
-        	terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
         
+    	terrOrigOwner = ta.getOccupiedTerrOf(); 
+        if (terrOrigOwner == null)
+            terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
+    
         PlayerID newOwner;
         if (terrOrigOwner != null && data.getAllianceTracker().isAllied(terrOrigOwner, id)
                         && (TerritoryAttachment.getCapital(terrOrigOwner, data).getOwner().equals(terrOrigOwner) ||
@@ -784,11 +779,6 @@ public class BattleTracker implements java.io.Serializable
     private boolean isPacificTheater(GameData data)
     {
         return data.getProperties().get(Constants.PACIFIC_THEATER, false);
-    }
-
-    private boolean isOccupiedTerritories(GameData data)
-    {
-        return games.strategy.triplea.Properties.getOccupiedTerritories(data);
     }
     
     public void clear()

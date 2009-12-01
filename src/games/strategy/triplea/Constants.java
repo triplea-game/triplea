@@ -124,8 +124,7 @@ public interface Constants
   public static final String CONTINUOUS_RESEARCH = "Continuous Research";
   public static final String WW2V3_LAND_PRODUCTION = "WW2V3 Land Production";
   public static final String WW2V3_AIR_NAVAL = "WW2V3 Air Naval";
-  public static final String HARI_KARI = "Hari-Kari Units";
-  public static final String OCCUPIED_TERRITORIES = "Occupied Territories";
+  public static final String HARI_KARI = "Hari-Kari Units";  
   public static final String UNPLACED_UNITS_LIVE = "Unplaced units live when not placed";
   /**
    * End individual rules for TripleA WW2V3 (All default to FALSE)
