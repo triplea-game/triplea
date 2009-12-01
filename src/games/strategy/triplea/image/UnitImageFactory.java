@@ -22,6 +22,7 @@ package games.strategy.triplea.image;
 
 import games.strategy.engine.data.*;
 import games.strategy.triplea.*;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.ui.Util;
 
@@ -229,7 +230,7 @@ public class UnitImageFactory
     		name.append("_r");
     }
     
-    if (type.getName().equals(Constants.FIGHTER_TYPE))
+    if (UnitAttachment.get(type).isAir() && !UnitAttachment.get(type).isStrategicBomber())
     {
       if (TechTracker.hasLongRangeAir(id))
       {
@@ -241,7 +242,7 @@ public class UnitImageFactory
       }
     }
 
-    if (type.getName().equals(Constants.BOMBER_TYPE))
+    if (UnitAttachment.get(type).isAir() && UnitAttachment.get(type).isStrategicBomber())
     {
       if (TechTracker.hasLongRangeAir(id))
       {
@@ -254,7 +255,7 @@ public class UnitImageFactory
       }
     }
 
-    if (type.getName().equals(Constants.SUBMARINE_TYPE))
+    if (UnitAttachment.get(type).isSub())
     {
       if (TechTracker.hasSuperSubs(id))
       {

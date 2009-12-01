@@ -1,3 +1,5 @@
+* fix bug 2899005, Long air range icon works only with "fighter" and "bomber" (sgb)
+
 * fix bug 2905298, Wrong message Cant place sea unit on land (sgb)
 
 * fix bug 2905986, occupiedTerrOf don't work with capital (sgb)
