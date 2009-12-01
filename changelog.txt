@@ -1,3 +1,5 @@
+* game engine prevents ai from repairing a territory more than the number of times it was hit (sgb)
+
 * fix bug 2899005, Long air range icon works only with "fighter" and "bomber" (sgb)
 
 * fix bug 2905298, Wrong message Cant place sea unit on land (sgb)

@@ -564,10 +564,10 @@ public class StrategicBombingRaidBattle implements Battle
             	//add a hit to the factory
             	bridge.addChange(ChangeFactory.unitsHit(hits));
             	
-            	Integer raidCost = unitProduction - cost;
+            	Integer newProduction = unitProduction - cost;
             	
             	//decrease the unitProduction capacity of the territory
-                Change change = ChangeFactory.attachmentPropertyChange(ta, raidCost.toString(), "unitProduction");
+                Change change = ChangeFactory.attachmentPropertyChange(ta, newProduction.toString(), "unitProduction");
             	bridge.addChange(change);
                 bridge.getHistoryWriter().startEvent("Bombing raid in " + m_battleSite.getName() + " costs: " + cost + " production.");
 

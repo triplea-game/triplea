@@ -16,10 +16,13 @@ package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.BattleStepStrings.*;
 import static games.strategy.triplea.delegate.GameDataTestUtil.*;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -1261,6 +1264,55 @@ public class WW2V3_41_Test extends TestCase {
 			
 		 	String error = moveDelegate(m_data).move(neEurope.getUnits().getMatches(Matches.UnitIsAir), route);
 		 	assertNotNull(error);
+        	
+        }
+        
+        
+        public void testRepair() 
+        {
+        	Territory germany = territory("Germany", m_data);
+        	Unit factory = germany.getUnits().getMatches(Matches.UnitIsFactory).get(0);
+        	PurchaseDelegate del = purchaseDelegate(m_data);
+        	del.start(getDelegateBridge(germans(m_data)), m_data);
+        	
+        	//dame a factory
+        	IntegerMap<Unit> startHits = new IntegerMap<Unit>();
+        	startHits.put(factory, 1);
+        	new ChangePerformer(m_data).perform(ChangeFactory.unitsHit(startHits));
+        	new ChangePerformer(m_data).perform(ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(germany), "9", "unitProduction"));
+        	
+        	assertEquals(factory.getHits(), 1);
+        	
+        	RepairRule repair = germans(m_data).getRepairFrontier().getRules().get(0);
+        	IntegerMap<RepairRule> repairs = new IntegerMap<RepairRule>();
+        	repairs.put(repair, 1);
+        	String error = del.purchaseRepair(Collections.singletonMap(germany, repairs));
+        	assertValid(error);
+        	
+        	assertEquals(factory.getHits(), 0);
+        }
+        
+        public void testRepairMoreThanDamaged()       
+        {
+        	Territory germany = territory("Germany", m_data);
+        	Unit factory = germany.getUnits().getMatches(Matches.UnitIsFactory).get(0);
+        	PurchaseDelegate del = purchaseDelegate(m_data);
+        	del.start(getDelegateBridge(germans(m_data)), m_data);
+        	
+        	//dame a factory
+        	IntegerMap<Unit> startHits = new IntegerMap<Unit>();
+        	startHits.put(factory, 1);
+        	new ChangePerformer(m_data).perform(ChangeFactory.unitsHit(startHits));
+        	new ChangePerformer(m_data).perform(ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(germany), "9", "unitProduction"));
+        	
+        	assertEquals(factory.getHits(), 1);
+        	
+        	RepairRule repair = germans(m_data).getRepairFrontier().getRules().get(0);
+        	IntegerMap<RepairRule> repairs = new IntegerMap<RepairRule>();
+        	//we have 1 damaged marker, but trying to repair 2
+        	repairs.put(repair, 2);
+        	String error = del.purchaseRepair(Collections.singletonMap(germany, repairs));
+        	assertError(error);
         	
         }
         

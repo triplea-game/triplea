@@ -52,6 +52,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -73,8 +74,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     private String m_displayName;
     private IDelegateBridge m_bridge;
     private PlayerID m_player;
-    private GameData m_data;
-    private static HashMap<Territory, Integer> m_repairCount = new HashMap<Territory, Integer>();
+    private GameData m_data;    
 
     public void initialize(String name, String displayName)
     {
@@ -177,7 +177,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     /**
      * Returns an error code, or null if all is good.
      */
-    public String purchaseRepair(HashMap<Territory, IntegerMap<RepairRule>> repairRules)
+    public String purchaseRepair(Map<Territory, IntegerMap<RepairRule>> repairRules)
     {	  
         IntegerMap<Resource> costs = getRepairCosts(repairRules);
 
@@ -212,19 +212,20 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
 
             }
         }
-
+        
         //Get the map of the factories that were repaired and how much for each
-        m_repairCount = getTerritoryRepairs(repairRules);
+        Map<Territory, Integer> repairMap = getTerritoryRepairs(repairRules);
 
-        if(!m_repairCount.isEmpty())
+        if(!repairMap.isEmpty())
         {
             Collection<Territory> factoryTerrs = Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasOwnedFactory(m_data, m_player));
 
             for(Territory terr : factoryTerrs)
             {
-                if (m_repairCount.containsKey(terr))
+                if (repairMap.containsKey(terr))
                 {
-                    int repairCount = m_repairCount.get(terr);
+                    int repairCount = repairMap.get(terr);
+                    
                     TerritoryAttachment ta = TerritoryAttachment.get(terr);
                     int currentDamage = ta.getUnitProduction();
 
@@ -233,8 +234,11 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
 
                     //Display appropriate damaged/repaired factory and factory damage totals
                     if(repairCount>0)
-                    {
+                    {                    
                     	int newDamageTotal = ta.getProduction() - (currentDamage + repairCount);
+                    	if(newDamageTotal < 0) {
+                    		return "You cannpt repair more than a territory has been hit";
+                    	}
                         hits.put(factories.iterator().next(), newDamageTotal);
                         changes.add(ChangeFactory.unitsHit(hits));
                     }            	
@@ -262,15 +266,13 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
         return null;
     }
 
-    private HashMap<Territory, Integer> getTerritoryRepairs(HashMap<Territory, IntegerMap<RepairRule>> repairRules)
+    private HashMap<Territory, Integer> getTerritoryRepairs(Map<Territory, IntegerMap<RepairRule>> repairRules)
     {
         HashMap<Territory, Integer> repairMap = new HashMap<Territory, Integer>();
         
-        Set entries = repairRules.keySet();
-        Iterator iter = entries.iterator();
-        while (iter.hasNext())
+        for (Territory terr : repairRules.keySet())
         {
-            Territory terr = (Territory) iter.next();
+            
             IntegerMap<RepairRule> rules = repairRules.get(terr);
 
             TreeSet<RepairRule> repRules = new TreeSet<RepairRule>(repairRuleComparator);
@@ -326,7 +328,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     }
 
 
-    private IntegerMap<Resource> getRepairCosts(HashMap<Territory, IntegerMap<RepairRule>> repairRules)
+    private IntegerMap<Resource> getRepairCosts(Map<Territory, IntegerMap<RepairRule>> repairRules)
     {        
         Collection<Territory> terrs = repairRules.keySet();
         Iterator<Territory> iter = terrs.iterator();    
@@ -361,7 +363,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
         return costs;
     }
 
-    private IntegerMap<NamedAttachable> getRepairResults(HashMap<Territory, IntegerMap<RepairRule>> repairRules)
+    private IntegerMap<NamedAttachable> getRepairResults(Map<Territory, IntegerMap<RepairRule>> repairRules)
     {
         Collection<Territory> terrs = repairRules.keySet();
         Iterator<Territory> iter = terrs.iterator();    

@@ -132,6 +132,10 @@ public class GameDataTestUtil {
         return (MoveDelegate) data.getDelegateList().getDelegate("move");
     }
     
+    public static PurchaseDelegate purchaseDelegate(GameData data) {
+        return (PurchaseDelegate) data.getDelegateList().getDelegate("purchase");
+    }    
+    
     public static BidPlaceDelegate bidPlaceDelegate(GameData data) {
         return (BidPlaceDelegate) data.getDelegateList().getDelegate("placeBid");
     }
