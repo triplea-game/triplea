@@ -163,6 +163,10 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     
     public String placeUnits(Collection<Unit> units, Territory at)
     {
+    	if(units == null || units.isEmpty()) {
+    		return null;
+    	}
+    	
         String error = isValidPlacement(units, at, m_player);
         if (error != null)
             return error;

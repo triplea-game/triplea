@@ -119,6 +119,19 @@ public class WW2V3_41_Test extends TestCase {
         }
         
         
+        public void testPlaceEmpty() 
+        {
+            PlaceDelegate del = placeDelegate(m_data);
+            del.start(getDelegateBridge( british(m_data)), m_data);
+            
+            addTo(british(m_data), 
+                  transports(m_data).create(1,british(m_data)));
+            
+            String error = del.placeUnits(Collections.EMPTY_LIST, territory("United Kingdom", m_data));
+            
+            assertNull(error);
+        }
+        
         public void testInfantryLoadOnlyTransports() 
         {
             
