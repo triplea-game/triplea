@@ -444,9 +444,14 @@ public class UIContext
         Map <String,String> rVal = new LinkedHashMap<String,String>();
         rVal.put("Original", mapName);
         
+        getSkins(mapName, rVal, new File( GameRunner.getRootFolder(), "maps" ));
+        getSkins(mapName, rVal, GameRunner.getUserMapsFolder());
         
-        File root = new File( GameRunner.getRootFolder(), "maps" );
-        for(File f : root.listFiles())
+        return rVal;
+    }
+	private static void getSkins(String mapName, Map<String, String> rVal,
+			File root) {
+		for(File f : root.listFiles())
         {
             if(!f.isDirectory())
             {
@@ -464,8 +469,7 @@ public class UIContext
                 rVal.put(f.getName().substring(f.getName().indexOf('-') +1),  f.getName());
             }
         }
-        return rVal;
-    }
+	}
 
     private void closeActor(Active actor) 
     {

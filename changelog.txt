@@ -1,3 +1,5 @@
+* skins can be downloaded/read from the users map folder (sgb)
+
 Changes for 1.1.1
 
 * new neutral flag images (Veqryn)
