@@ -42,6 +42,7 @@ import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Useful match interfaces.
@@ -695,6 +696,25 @@ public class Matches
     			if (data.getMap().getRoute(t, goTerr, validLandRoute) != null)
     				return true;
     			return false;
+    		}
+    	};
+    }
+    
+    public static Match<Territory> territoryHasRouteToEnemyCapital(final GameData data, final PlayerID player)
+    {
+    	return new Match<Territory>()
+    	{
+    		public boolean match(Territory t)
+    		{
+    	        for(PlayerID ePlayer : data.getPlayerList().getPlayers())
+    	        {
+    	            Territory capitol = TerritoryAttachment.getCapital(ePlayer, data);
+    	            if(capitol == null || data.getAllianceTracker().isAllied(player, capitol.getOwner()))
+    	                continue;
+    	            if(data.getMap().getDistance(t, capitol, Matches.TerritoryIsNotImpassable) != -1)
+    	                return true;
+    	        }
+    	        return false;
     		}
     	};
     }

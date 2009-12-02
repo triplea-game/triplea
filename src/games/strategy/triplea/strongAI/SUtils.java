@@ -203,7 +203,7 @@ public class SUtils
     public static float strengthOnContinent(GameData data, PlayerID player, Territory continentTerr)
     {
     	float continentStrength = 0.0F;
-    	boolean island = !SUtils.doesLandExistAt(continentTerr, data); //just make sure this is really a "continent"
+    	boolean island = !SUtils.doesLandExistAt(continentTerr, data, false); //just make sure this is really a "continent"
     	if (island)
     	{
     		if (Matches.isTerritoryAllied(player, data).match(continentTerr))
@@ -268,7 +268,7 @@ public class SUtils
     			if (Matches.isTerritoryEnemy(player, data).match(checkTerr) && Matches.TerritoryIsLand.match(checkTerr) && Matches.TerritoryIsNotImpassable.match(checkTerr))
     			{
     				int cDist = data.getMap().getDistance(mT, checkTerr); 
-    				if (cDist < checkDist || (cDist >= checkDist && !SUtils.doesLandExistAt(checkTerr, data)))
+    				if (cDist < checkDist || (cDist >= checkDist && !SUtils.doesLandExistAt(checkTerr, data, false)))
     				{
     					int terrProduction = TerritoryAttachment.get(checkTerr).getProduction();
     					targetMap.put(checkTerr, terrProduction);
@@ -625,6 +625,47 @@ public class SUtils
         }
         return rVal;
     }
+    
+    /**
+     * All allied Territories which have a Land Enemy Neighbor
+     * @neutral - include neutral territories
+     * @allied - include allied territories
+     * return - List of territories
+     */
+    public static List<Territory> getTerritoriesWithEnemyNeighbor(GameData data, PlayerID player, boolean allied, boolean neutral)
+    {
+    	List<Territory> ourTerr = new ArrayList<Territory>();
+    	List<Territory> enemyLandTerr = SUtils.allEnemyTerritories(data, player);
+    	if (!neutral)
+    	{
+    		Iterator<Territory> eIter = enemyLandTerr.iterator();
+    		while (eIter.hasNext())
+    		{
+    			Territory checkTerr = eIter.next();
+    			if (Matches.TerritoryIsNeutral.match(checkTerr))
+    				eIter.remove();
+    		}
+    	}
+    	Iterator<Territory> eIter = enemyLandTerr.iterator();
+    	while (eIter.hasNext())
+    	{
+    		Territory enemy = eIter.next();
+    		if (SUtils.doesLandExistAt(enemy, data, false))
+    		{
+    			List<Territory> newTerrs = new ArrayList<Territory>();
+    			if (allied)
+    				newTerrs.addAll(SUtils.getNeighboringLandTerritories(data, player, enemy));
+    			else
+    				newTerrs.addAll(data.getMap().getNeighbors(enemy, Matches.isTerritoryOwnedBy(player)));
+    			for (Territory nT : newTerrs)
+    			{
+    				if (!ourTerr.contains(nT))
+    					ourTerr.add(nT);
+    			}
+    		}
+    	}
+    	return ourTerr;
+    }
     /**
      * 
      * All territories that border our terr or allied terr
@@ -851,15 +892,26 @@ public class SUtils
 
     /**
      * Does this territory have any land? i.e. it isn't an island
+     * @neutral - count an attackable neutral as a land neighbor
      * @return boolean (true if a land territory is a neighbor to t
      */
-	public static boolean doesLandExistAt(Territory t, GameData data)
+	public static boolean doesLandExistAt(Territory t, GameData data, boolean neutral)
 	{ //simply: is this territory surrounded by water
 		boolean isLand = false;
 		Set<Territory> checkList = data.getMap().getNeighbors(t, Matches.TerritoryIsLand);
+		if (!neutral)
+		{
+			Iterator<Territory> nIter = checkList.iterator();
+			while (nIter.hasNext())
+			{
+				Territory nTerr = nIter.next();
+				if (Matches.TerritoryIsNeutral.match(nTerr))
+					nIter.remove();
+			}
+		}
 		for (Territory checkNeutral : checkList)
 		{
-			if (Matches.TerritoryIsNotImpassable.match(checkNeutral) && !t.getOwner().isNull())
+			if (Matches.TerritoryIsNotImpassable.match(checkNeutral))
 				isLand=true;
 		}
 		return isLand;
@@ -2605,7 +2657,8 @@ public class SUtils
 	 * @param remainingStrengthNeeded - total strength of units needed - stop adding when this reaches 0.0
 	 */
 	public static float inviteLandAttack(boolean nonCombat, Territory enemy, float remainingStrengthNeeded, Collection<Unit> unitsAlreadyMoved,
-								List<Collection<Unit>> moveUnits, List<Route> moveRoutes, GameData data, PlayerID player, boolean attacking, boolean forced)
+								List<Collection<Unit>> moveUnits, List<Route> moveRoutes, GameData data, PlayerID player, boolean attacking,
+								boolean forced, List<Territory> alreadyAttacked)
 	{
 		CompositeMatch<Unit> landUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotFactory);
 		
@@ -2621,7 +2674,9 @@ public class SUtils
 				Territory jTerr = ourLandNeighbors.get(j);
 				int jUnits = 0, iUnits = 0;
 				Set<Territory> jTerrNeighbors = data.getMap().getNeighbors(jTerr, Matches.territoryHasEnemyUnits(player, data));
+				jTerrNeighbors.removeAll(alreadyAttacked);
 				Set<Territory> iTerrNeighbors = data.getMap().getNeighbors(iTerr, Matches.territoryHasEnemyUnits(player, data));
+				iTerrNeighbors.removeAll(alreadyAttacked);
 				for (Territory jT : jTerrNeighbors)
 					jUnits += jT.getUnits().countMatches(Matches.enemyUnit(player, data));
 				for (Territory iT : iTerrNeighbors)
@@ -3433,6 +3488,25 @@ public class SUtils
 	}
 	
 	/**
+	 * Remove any territories which cannot be amphibiously invaded
+	 * @param territories
+	 * @param data
+	 */
+	public static void removeNonAmphibTerritories(List<Territory> territories, GameData data)
+	{
+		if (territories.isEmpty())
+			return;
+		Iterator<Territory> tIter = territories.iterator();
+		while (tIter.hasNext())
+		{
+			Territory checkTerr = tIter.next();
+			if (Matches.territoryHasWaterNeighbor(data).invert().match(checkTerr))
+				tIter.remove();
+		}
+		return;
+	}
+	
+	/**
 	 * Reorder a list of territories by a map of Territory, Float using the check specified
 	 * @param reorderTerr - Territory List
 	 * @param map - Map of float Values
@@ -4096,7 +4170,7 @@ public class SUtils
 			float rankStrength = getStrengthOfPotentialAttackers(eTerr, data, player, tFirst, true, ignoreTerr);
 			float productionValue = (float)TerritoryAttachment.get(eTerr).getProduction();
 			float eTerrValue = 0.0F;
-			boolean island = !SUtils.doesLandExistAt(eTerr, data);
+			boolean island = !SUtils.doesLandExistAt(eTerr, data, false);
 			eTerrValue += Matches.TerritoryIsVictoryCity.match(eTerr) ? 2.0F : 0.0F;
 			boolean lRCap = hasLandRouteToEnemyOwnedCapitol(eTerr, player, data);
 			eTerrValue += lRCap ? 2.0F : 0.0F;
@@ -4119,10 +4193,11 @@ public class SUtils
 			if (Matches.TerritoryIsLand.match(eTerr) && Matches.isTerritoryEnemyAndNotNeutral(player, data).match(eTerr))
 			{
 				ourEnemyTerr.add(eTerr);
-				eTerrValue += productionValue*2.0F;
+				eTerrValue += productionValue;
+				float eTerrStrength = strength(eTerr.getUnits().getMatches(Matches.enemyUnit(player, data)), false, false, tFirst);
+				eTerrValue += alliedPotential > (rankStrength + eTerrStrength) ? productionValue : 0.0F;
 				if (island)
 					eTerrValue += 5.0F;
-				float eTerrStrength = strength(eTerr.getUnits().getMatches(Matches.enemyUnit(player, data)), false, false, tFirst);
 				eTerrValue += eTerr.getUnits().countMatches(Matches.UnitIsAir)*2; //bonus for killing air units
 				eTerrValue += Matches.territoryHasEnemyFactory(data, player).match(eTerr) ? 4.0F : 0.0F;
 				eTerrValue += Matches.territoryHasAlliedFactoryNeighbor(data, player).match(eTerr) ? 8.0F : 0.0F;
