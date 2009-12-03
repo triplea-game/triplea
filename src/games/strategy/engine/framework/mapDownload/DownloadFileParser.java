@@ -79,31 +79,35 @@ public class DownloadFileParser {
 		Set<String> urls = new HashSet<String>();
 		Set<String> names = new HashSet<String>();
 		for(DownloadFileDescription d : downloads) {
-			if(isEmpty(d.getDescription())) {
-				throw new IllegalStateException("Missing game description");
-			}
+			
 			if(isEmpty(d.getUrl())) {
 				throw new IllegalStateException("Missing game url");
 			}
-			if(isEmpty(d.getMapName())) {
-				throw new IllegalStateException("Missing map name");
-			}
-			if(!urls.add(d.getUrl())) {
-				throw new IllegalStateException("duplicate url:" + d.getUrl());
-			}
-			if(!names.add(d.getMapName())) {
-				throw new IllegalStateException("duplicate mapName:" + d.getMapName());
-			}
 			
-			try {
-				URL url = new URL(d.getUrl());
-				if(!url.getProtocol().toLowerCase(Locale.ENGLISH).startsWith("http")) {
-					throw new IllegalStateException("Url must start with http:" + url);
+			//ignore urls
+			if(!d.isDummyUrl()) {
+				if(isEmpty(d.getDescription())) {
+					throw new IllegalStateException("Missing game description");
 				}
-			} catch (MalformedURLException e) {
-				throw new IllegalStateException(e);
+				if(isEmpty(d.getMapName())) {
+					throw new IllegalStateException("Missing map name");
+				}
+				if(!names.add(d.getMapName())) {
+					throw new IllegalStateException("duplicate mapName:" + d.getMapName());
+				}
+				
+				if(!urls.add(d.getUrl())) {
+					throw new IllegalStateException("duplicate url:" + d.getUrl());
+				}
+				try {
+					URL url = new URL(d.getUrl());
+					if(!url.getProtocol().toLowerCase(Locale.ENGLISH).startsWith("http")) {
+						throw new IllegalStateException("Url must start with http:" + url);
+					}
+				} catch (MalformedURLException e) {
+					throw new IllegalStateException(e);
+				}
 			}
-
 		}
 	}
 	

@@ -27,6 +27,10 @@ public class DownloadFileDescription {
 		return mapName;
 	}
 	
+	public boolean isDummyUrl() {
+		return url.startsWith("!");
+	}
+	
 	
 	
 }

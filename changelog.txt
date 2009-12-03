@@ -1,3 +1,7 @@
+* increase download map panel size (sgb)
+
+* if a url in the download games xml starts with !, ignore it and disable download button.  this allows better formatting  (sgb)
+
 * game engine prevents ai from repairing a territory more than the number of times it was hit (sgb)
 
 * fix bug 2899005, Long air range icon works only with "fighter" and "bomber" (sgb)

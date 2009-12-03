@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.mapDownload;
 
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.Util;
@@ -34,6 +33,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
@@ -67,12 +67,27 @@ public class InstallMapDialog extends JDialog {
 		m_cancelButton = new JButton("Cancel");
 
 		Vector<String> gameNames = new Vector<String>();
-		for(DownloadFileDescription d : m_games) {
-			gameNames.add(d.getMapName());
+		for(DownloadFileDescription d : m_games) {			
+			gameNames.add(d.getMapName());			
 		}
+		
 		m_gamesList = new JList(gameNames);
 		m_gamesList.setSelectedIndex(0);
 		m_gamesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		//correctly handle empty names
+		final ListCellRenderer oldRenderer = m_gamesList.getCellRenderer(); 
+		m_gamesList.setCellRenderer(new ListCellRenderer() {
+			
+			public Component getListCellRendererComponent(JList list, Object value,
+					int index, boolean isSelected, boolean cellHasFocus) {
+				if(value.toString().trim().isEmpty())
+				{
+					value = " ";
+				}
+				return oldRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			}
+		});
 		
 		
 		m_descriptionPane = new JEditorPane();
@@ -276,11 +291,17 @@ public class InstallMapDialog extends JDialog {
 			m_descriptionPane.setText("");
 			m_urlLabel.setText(DOWNLOAD_URL_PREFIX);
 			
-		} else { 
-			m_installButton.setEnabled(true);
-			DownloadFileDescription selected = getSelected();				
+		} else {
+			
+			DownloadFileDescription selected = getSelected();
+						
+			m_installButton.setEnabled(!selected.isDummyUrl());
+							
 			m_descriptionPane.setText(selected.getDescription());
-			m_urlLabel.setText(DOWNLOAD_URL_PREFIX + selected.getUrl());
+			
+			if(!selected.isDummyUrl()) {
+				m_urlLabel.setText(DOWNLOAD_URL_PREFIX + selected.getUrl());
+			}
 			
 			//scroll to the top of the notes screen
 			SwingUtilities.invokeLater(new Runnable()
@@ -292,7 +313,6 @@ public class InstallMapDialog extends JDialog {
 	        
 	        });
 		}
-			
 	}
 
 	private DownloadFileDescription getSelected() {
@@ -309,7 +329,7 @@ public class InstallMapDialog extends JDialog {
 	public static void installGames(Component parent, List<DownloadFileDescription> games) {
 		Frame parentFrame = JOptionPane.getFrameForComponent(parent);
 		InstallMapDialog dia = new InstallMapDialog(parentFrame, games);
-		dia.setSize(500,500);
+		dia.setSize(800,600);
 		dia.setLocationRelativeTo(parentFrame);
 		dia.setVisible(true);
 		
