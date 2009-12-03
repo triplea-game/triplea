@@ -298,9 +298,9 @@ public class StrategicBombingRaidBattle implements Battle
      */
     private boolean isChooseAA()
 	{
-		return m_data.getProperties().get(Constants.CHOOSE_AA, false);
-	}	
-
+    	return games.strategy.triplea.Properties.getChoose_AA_Casualties(m_data);
+		//return m_data.getProperties().get(Constants.CHOOSE_AA, false);
+	}
     /**
      * @return
      */
@@ -494,7 +494,8 @@ public class StrategicBombingRaidBattle implements Battle
             
             TerritoryAttachment ta = TerritoryAttachment.get(m_battleSite);
             int cost = 0;
-            boolean lhtrHeavyBombers = m_data.getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false);
+            boolean lhtrHeavyBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(m_data);
+            //boolean lhtrHeavyBombers = m_data.getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false);
             
             int production = ta.getProduction();
 

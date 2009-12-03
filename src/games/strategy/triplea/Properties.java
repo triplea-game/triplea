@@ -58,6 +58,11 @@ public class Properties implements Constants {
 
     }
 
+    public static boolean getPreviousUnitsFight(GameData data) {
+        return data.getProperties().get(PREVIOUS_UNITS_FIGHT, false);
+
+    }
+
     public static boolean getPartialAmphibiousRetreat(GameData data) {
         return data.getProperties().get(PARTIAL_AMPHIBIOUS_RETREAT, false);
 
@@ -539,6 +544,113 @@ public class Properties implements Constants {
 
     }
 
+    /*
+     * 
+     */
+    public static boolean getAlways_On_AA(GameData data) {
+
+        return data.getProperties().get(ALWAYS_ON_AA_PROPERTY, false);
+    }
+
+    /*
+     * 
+     */
+    public static boolean getProduce_Fighters_On_Carriers(GameData data) {
+
+        return data.getProperties().get(CAN_PRODUCE_FIGHTERS_ON_CARRIERS, false);
+    }
+
+    /*
+     * 
+     */
+    public static Integer getHeavy_Bomber_Dice_Rolls(GameData data) {
+    	try {
+            return Integer.parseInt((String) data.getProperties().get(HEAVY_BOMBER_DICE_ROLLS));
+        } catch (NumberFormatException e) {
+            return 3;
+        }
+    }
+
+    /*
+     * 
+     */
+    public static boolean getBattleships_Repair_At_End_Of_Round(GameData data) {
+
+        return data.getProperties().get(TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN, false);
+    }
+
+    /*
+     * 
+     */
+    public static boolean getChoose_AA_Casualties(GameData data) {
+
+        return data.getProperties().get(CHOOSE_AA, false);
+    }
+    
+    /*
+     * 
+     */
+    public static boolean getSubmersible_Subs(GameData data) {
+
+        return data.getProperties().get(SUBMERSIBLE_SUBS, false);
+    }
+    
+    /*
+     * 
+     */
+    public static boolean getUse_Destroyers_And_Artillery(GameData data) {
+
+        return data.getProperties().get(USE_DESTROYERS_AND_ARTILLERY, false);
+    }
+    
+    /*
+     * 
+     */
+    public static boolean getUse_Shipyards(GameData data) {
+
+        return data.getProperties().get(USE_SHIPYARDS, false);
+    }
+    
+    /*
+     * 
+     */
+    public static boolean getLow_Luck(GameData data) {
+
+        return data.getProperties().get(LOW_LUCK, false);
+    }
+    
+    /*
+     * 
+     */
+    public static boolean getKamikaze_Airplanes(GameData data) {
+
+        return data.getProperties().get(KAMIKAZE, false);
+    }
+    
+    /*
+     * 
+     */
+    public static boolean getLHTR_Heavy_Bombers(GameData data) {
+
+        return data.getProperties().get(LHTR_HEAVY_BOMBERS, false);
+    }
+    
+    /*
+     * 
+     */ 
+    public static Integer getSuper_Sub_Defense_Bonus(GameData data) {
+    	try {
+            return Integer.parseInt((String) data.getProperties().get(SUPER_SUB_DEFENSE_BONUS));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+    
+    
+    
+    
+    
+    
     private Properties() {
     }
 

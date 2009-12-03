@@ -282,7 +282,8 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         boolean isKamikaze = false;
         //boolean isHariKari = false;
         // confirm kamikaze moves, and remove them from unresolved units
-        if(m_data.getProperties().get(Constants.KAMIKAZE, false))
+        //if(m_data.getProperties().get(Constants.KAMIKAZE, false))
+        if(games.strategy.triplea.Properties.getKamikaze_Airplanes(m_data))
         {
             Collection<Unit> kamikazeUnits = result.getUnresolvedUnits(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
             if (kamikazeUnits.size() > 0 && getRemotePlayer().confirmMoveKamikaze())
@@ -418,6 +419,11 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     	return games.strategy.triplea.Properties.getWW2V2(m_data);
     }
 
+    private boolean isPreviousUnitsFight()
+    {
+    	return games.strategy.triplea.Properties.getPreviousUnitsFight(m_data);
+    }
+
     private boolean isWW2V3()
     {
         return games.strategy.triplea.Properties.getWW2V3(m_data);
@@ -498,7 +504,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         }
         CompositeChange change = new CompositeChange();
 
-        if(!m_nonCombat && isWW2V3()) 
+        if(!m_nonCombat && (isWW2V3() || isWW2V2() || isPreviousUnitsFight())) 
         {
             change.add(addLingeringSeaUnitsToBattles());
         }

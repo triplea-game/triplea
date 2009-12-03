@@ -61,7 +61,6 @@ public interface Constants
   
   public static final String HEAVY_BOMBER_DICE_ROLLS = "Heavy Bomber Dice Rolls";
   public static final String TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN = "Battleships repair at end of round";
-  //public static final String FTH_EDITION = "fth Edition";
   public static final String WW2V2 = "WW2V2";
   public static final String TOTAL_VICTORY = "Total Victory";
   public static final String HONORABLE_SURRENDER = "Honorable Surrender";
@@ -71,6 +70,7 @@ public interface Constants
   public static final String ROCKETS_CAN_FLY_OVER_IMPASSABLES = "Rockets Can Fly Over Impassables";
   public static final String NEUTRALS_ARE_IMPASSABLE = "Neutrals Are Impassable";
   public static final String PARTIAL_AMPHIBIOUS_RETREAT = "Partial Amphibious Retreat";
+  public static final String PREVIOUS_UNITS_FIGHT = "Previous Units Fight";
   
   /**
    * These are the individual rules from a game (All default to FALSE)

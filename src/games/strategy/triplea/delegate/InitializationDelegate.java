@@ -123,7 +123,8 @@ public class InitializationDelegate implements IDelegate
      */
     private void initDestroyerArtillery(GameData data, IDelegateBridge aBridge)
     {
-        boolean addArtilleryAndDestroyers = data.getProperties().get(Constants.USE_DESTROYERS_AND_ARTILLERY, false);
+    	boolean addArtilleryAndDestroyers = games.strategy.triplea.Properties.getUse_Destroyers_And_Artillery(data);
+        //boolean addArtilleryAndDestroyers = data.getProperties().get(Constants.USE_DESTROYERS_AND_ARTILLERY, false);
         if (!isWW2V2(data) && addArtilleryAndDestroyers)
         {
             CompositeChange change = new CompositeChange();
@@ -154,7 +155,8 @@ public class InitializationDelegate implements IDelegate
          */
     private void initShipyards(GameData data, IDelegateBridge aBridge)
     {
-        boolean useShipyards = data.getProperties().get(Constants.USE_SHIPYARDS, false);
+    	boolean useShipyards = games.strategy.triplea.Properties.getUse_Shipyards(data);
+        //boolean useShipyards = data.getProperties().get(Constants.USE_SHIPYARDS, false);
         if (useShipyards)
         {
             CompositeChange change = new CompositeChange();

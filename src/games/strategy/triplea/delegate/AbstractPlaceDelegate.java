@@ -229,8 +229,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
 
     private boolean canProduceFightersOnCarriers()
     {
-        return m_data.getProperties().get(
-                Constants.CAN_PRODUCE_FIGHTERS_ON_CARRIERS, false);
+        return games.strategy.triplea.Properties.getProduce_Fighters_On_Carriers(m_data);
+       //return m_data.getProperties().get(Constants.CAN_PRODUCE_FIGHTERS_ON_CARRIERS, false);
     }
 
     /**

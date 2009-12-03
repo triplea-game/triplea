@@ -312,9 +312,9 @@ public class TransportTracker
     private boolean isWW2V2(GameData data)  {
         return games.strategy.triplea.Properties.getWW2V2(data);
     }
-
-    private boolean isRestrictedTransportUnload(GameData data)  {
-        return games.strategy.triplea.Properties.getWW2V2(data);
+//TODO here's a bug COMCO    
+    private boolean isTransportUnloadRestricted(GameData data)  {
+        return games.strategy.triplea.Properties.getTransportUnloadRestricted(data);
     }
 
     // In some versions, a transport can never unload into 
@@ -332,7 +332,7 @@ public class TransportTracker
         for (Unit u : unloaded)
         {
             TripleAUnit taUnit = (TripleAUnit) u;
-            if (isWW2V2(data) || isRestrictedTransportUnload(data))
+            if (isWW2V2(data) || isTransportUnloadRestricted(data))
             {
                 // cannot unload to two different territories
                 if (!taUnit.getUnloadedTo().equals(territory))

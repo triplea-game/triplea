@@ -75,7 +75,8 @@ public abstract class AbstractEndTurnDelegate
 
     private boolean doBattleShipsRepair()
     {
-        return m_data.getProperties().get(Constants.TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN, false);
+    	return games.strategy.triplea.Properties.getBattleships_Repair_At_End_Of_Round(m_data);
+        //return m_data.getProperties().get(Constants.TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN, false);
     }
 
 

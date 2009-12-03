@@ -74,7 +74,7 @@ public class DiceRoll implements Externalizable
         if(useRadar)
             hitAt = 1;
         
-        if (data.getProperties().get(Constants.LOW_LUCK, false))
+        if (games.strategy.triplea.Properties.getLow_Luck(data))
         {
         	int power = useRadar ? 2 : 1;
         	
@@ -141,7 +141,7 @@ public class DiceRoll implements Externalizable
     public static DiceRoll rollDice(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
     {
         // Decide whether to use low luck rules or normal rules.
-        if (data.getProperties().get(Constants.LOW_LUCK, false))
+        if (games.strategy.triplea.Properties.getLow_Luck(data))
         {
             return rollDiceLowLuck(units, defending, player, bridge, data, battle, annotation);
         } else
@@ -260,8 +260,8 @@ public class DiceRoll implements Externalizable
     private static DiceRoll rollDiceNormal(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
     {
         
-
-        boolean lhtrBombers = bridge.getPlayerID().getData().getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false);
+    	boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
+        //boolean lhtrBombers = bridge.getPlayerID().getData().getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false);
         
         int rollCount = BattleCalculator.getRolls(units, player, defending);
         if (rollCount == 0)

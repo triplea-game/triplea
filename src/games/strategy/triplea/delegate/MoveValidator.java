@@ -1153,7 +1153,8 @@ public class MoveValidator
         
 		
         //find the air units that can't make it to land
-        boolean allowKamikaze =  data.getProperties().get(Constants.KAMIKAZE, false);
+        boolean allowKamikaze = games.strategy.triplea.Properties.getKamikaze_Airplanes(data);
+        //boolean allowKamikaze =  data.getProperties().get(Constants.KAMIKAZE, false);
         Collection<Unit> airThatMustLandOnCarriers = getAirThatMustLandOnCarriers(ownedAir, allowKamikaze, result, nearestLand, movementLeft);
         
         //we are done, everything can find a place to land
@@ -2106,7 +2107,8 @@ public class MoveValidator
      */
     private static boolean isSubmersibleSubsAllowed(GameData data)
     {
-    	return data.getProperties().get(Constants.SUBMERSIBLE_SUBS, false);
+    	return games.strategy.triplea.Properties.getSubmersible_Subs(data);
+    	//return data.getProperties().get(Constants.SUBMERSIBLE_SUBS, false);
     }
 
     /**

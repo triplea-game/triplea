@@ -58,7 +58,8 @@ class AAInMoveUtil implements Serializable
     
     private boolean isChooseAA()
 	{
-		return m_data.getProperties().get(Constants.CHOOSE_AA, false);
+    	return games.strategy.triplea.Properties.getChoose_AA_Casualties(m_data);
+		//return m_data.getProperties().get(Constants.CHOOSE_AA, false);
 	}
     	
     private boolean isWW2V2()
@@ -70,10 +71,10 @@ class AAInMoveUtil implements Serializable
     {
         return games.strategy.triplea.Properties.getRandomAACasualties(m_data);
     }
-    
+   
     private boolean isAlwaysONAAEnabled()
     {
-        return m_data.getProperties().get(Constants.ALWAYS_ON_AA_PROPERTY, false);
+    	return games.strategy.triplea.Properties.getAlways_On_AA(m_data);
     }
 
     private boolean isAATerritoryRestricted()

@@ -99,7 +99,7 @@ public class RocketsFireHelper
             getRemote(bridge).reportMessage("No aa guns to fire rockets with");
             return;
         }
-
+//TODO this is weird!  Check the parens
         if ((isWW2V2(data) || isAllRocketsAttack(data)) || isOneRocketAttackPerFactory(data))
             fireWW2V2(data, player, rocketTerritories, bridge);
         else

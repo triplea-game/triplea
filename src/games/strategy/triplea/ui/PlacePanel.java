@@ -177,8 +177,8 @@ public class PlacePanel extends ActionPanel
 
     private boolean canProduceFightersOnCarriers()
     {
-        return getData().getProperties().get(
-                Constants.CAN_PRODUCE_FIGHTERS_ON_CARRIERS, false);
+        return games.strategy.triplea.Properties.getProduce_Fighters_On_Carriers(getData());
+        //return getData().getProperties().get(Constants.CAN_PRODUCE_FIGHTERS_ON_CARRIERS, false);
     }
 
     private final MapSelectionListener PLACE_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()

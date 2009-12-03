@@ -478,7 +478,8 @@ public class BattleCalculator
         {
             //if lhtr
             //check for nulll id since null players dont have game data
-            if(!id.isNull() && id.getData().getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false)) 
+            //if(!id.isNull() && id.getData().getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false)) 
+            if(!id.isNull() && games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(id.getData())) 
             {
                 //if they have the heavy bomber tech, then 2 rolls for defense
                 if(unitAttachment.isStrategicBomber() && TechTracker.getTechAdvances(id).contains(TechAdvance.HEAVY_BOMBER) )

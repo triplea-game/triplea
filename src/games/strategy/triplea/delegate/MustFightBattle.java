@@ -182,7 +182,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
     
     private boolean canSubsSubmerge()
     {
-        return m_data.getProperties().get(Constants.SUBMERSIBLE_SUBS, false);
+    	return games.strategy.triplea.Properties.getSubmersible_Subs(m_data);
+        //return m_data.getProperties().get(Constants.SUBMERSIBLE_SUBS, false);
     }
 
     public boolean isOver()
@@ -2301,6 +2302,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             Change change =DelegateFinder.moveDelegate(m_data).markNoMovementChange(bombard);
             bridge.addChange(change);
         }
+        //TODO
         /**
          * This code is actually a bug- the property is intended to tell if the return fire is
          * RESTRICTED- but it's used as if it's ALLOWED.  The reason is the default values on the 
@@ -2322,9 +2324,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
      */
     private boolean isChooseAA()
 	{
-		return m_data.getProperties().get(Constants.CHOOSE_AA, false);
+    	return games.strategy.triplea.Properties.getChoose_AA_Casualties(m_data);
+		//return m_data.getProperties().get(Constants.CHOOSE_AA, false);
 	}
-    
     /**
      * @return
      */
@@ -2525,7 +2527,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             //DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge);
             // NEW VERSION
             
-            boolean lowLuck = m_data.getProperties().get(Constants.LOW_LUCK, false);
+        	boolean lowLuck = games.strategy.triplea.Properties.getLow_Luck(m_data);
+            //boolean lowLuck = m_data.getProperties().get(Constants.LOW_LUCK, false);
 
             //send defender the dice roll so he can see what the dice are while he
             // waits for attacker to select casualties
