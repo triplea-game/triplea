@@ -154,6 +154,10 @@ public class DownloadMapDialog extends JDialog {
 		Vector old = getStoredDownloadSites();
 		old.remove(url);
 		old.add(0, url);
+		
+		if(old.size() > 10) {
+			old = new Vector(old.subList(0, 10));
+		}
 		ByteArrayOutputStream sink = new ByteArrayOutputStream();
 		try
 		{
