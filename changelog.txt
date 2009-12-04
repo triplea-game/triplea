@@ -1,3 +1,5 @@
+* fix null pointer in move with Twilight Imperium (sgb)
+
 * Create/use Properties for various entries in Constants for consistency (ComradeKev)
 
 * Fix invalid property used in isTransportUnloadRestricted of TransportTracker (ComradeKev)

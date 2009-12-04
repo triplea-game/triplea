@@ -2028,6 +2028,10 @@ public class MoveValidator
         if (defaultRoute == null)
         	defaultRoute = data.getMap().getRoute(start, end);
         
+        if(defaultRoute == null) {
+        	return null;
+        }
+        
         //If start and end are land, try a land route.
         //don't force a land route, since planes may be moving
         if(!start.isWater() && !end.isWater())

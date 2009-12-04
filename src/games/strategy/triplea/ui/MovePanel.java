@@ -777,7 +777,7 @@ public class MovePanel extends ActionPanel
     
     private void updateUnitsThatCanMoveOnRoute(Collection<Unit> units, final Route route)
     {
-        if(route.getLength() == 0)
+        if(route == null || route.getLength() == 0)
         {
             m_frame.clearStatusMessage();
             getMap().showMouseCursor();
