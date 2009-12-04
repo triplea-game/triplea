@@ -705,6 +705,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             //we should put 1 infantry in each transport.
             //the algorithm below does not guarantee even distribution in all cases
             //but it solves most of the cases
+            //TODO review the following loop in light of bug ticket 2827064- previously unloaded trns perhaps shouldn't be included.
             Iterator<Unit> transportIter = Util.shiftElementsToEnd(canTransport, transportIndex).iterator();
             while (transportIter.hasNext() && !loaded)
             {

@@ -407,7 +407,7 @@ public class BattleTracker implements java.io.Serializable
         }
 
         //if neutral
-        if (territory.getOwner().isNull())
+        if (territory.getOwner().isNull() && !territory.isWater())
         {
             Resource PUs = data.getResourceList().getResource(Constants.PUS);
             int PUCharge = -games.strategy.triplea.Properties.getNeutralCharge(data);
@@ -527,7 +527,8 @@ public class BattleTracker implements java.io.Serializable
         PlayerID newOwner;
         if (terrOrigOwner != null && data.getAllianceTracker().isAllied(terrOrigOwner, id)
                         && (TerritoryAttachment.getCapital(terrOrigOwner, data).getOwner().equals(terrOrigOwner) ||
-                                        TerritoryAttachment.getCapital(terrOrigOwner, data).getOwner().equals(PlayerID.NULL_PLAYERID)))
+                                        TerritoryAttachment.getCapital(terrOrigOwner, data).getOwner().equals(PlayerID.NULL_PLAYERID) || 
+                                        territory.equals(TerritoryAttachment.getCapital(terrOrigOwner, data))))
            
             newOwner = terrOrigOwner;
         else

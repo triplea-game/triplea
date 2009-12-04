@@ -584,6 +584,9 @@ class ProductionStat extends AbstractStat
                 		//Can't get PUs for capturing a CC, only original owner can get them.
                     	if (origOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID && origOwnerTracker.getOriginalOwner(place) == player)
                     		isOwnedConvoyOrLand = true;
+                    	
+                    	if(origOwnerTracker.getOriginalOwner(place) == null)
+                    		isOwnedConvoyOrLand = true;
                     }
                     else
                     {

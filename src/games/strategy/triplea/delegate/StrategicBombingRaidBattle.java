@@ -516,8 +516,8 @@ public class StrategicBombingRaidBattle implements Battle
                     int max = 0;
                     for(int i =0; i < rolls; i++)
                     {
-                        //+1 since 0 based
-                        max = Math.max(max, m_dice[index]  + 1);
+                        //+2 since 0 based (LHTR adds +1 to base roll)
+                        max = Math.max(max, m_dice[index]  + 2);
                         index++;
                     }
 

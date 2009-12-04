@@ -1,3 +1,9 @@
+* Fix bug 1717403 neutral convoy routes can't be captured (ComradeKev)
+
+* Fix bug 2905542 LHTR HB not adding +1 to SBR rolls (ComradeKev)
+
+* Fix bug 2908897 occupiedTerrOf not working when liberating allied capital (ComradeKev)
+
 * fix null pointer in move with Twilight Imperium (sgb)
 
 * Create/use Properties for various entries in Constants for consistency (ComradeKev)

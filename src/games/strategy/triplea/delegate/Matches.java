@@ -1013,7 +1013,7 @@ public class Matches
             {
                 if(t.getOwner().equals(player))
                     return false;
-                if(t.isWater() && t.getOwner().isNull())
+                if(t.isWater() && t.getOwner().isNull() && TerritoryAttachment.get(t) == null)
                     return false;
                 return !data.getAllianceTracker().isAllied(player, t.getOwner());
             }
@@ -1029,7 +1029,7 @@ public class Matches
             {
                 if(t.getOwner().equals(player))
                     return false;
-                if(t.getOwner().equals(PlayerID.NULL_PLAYERID))
+                if(t.getOwner().equals(PlayerID.NULL_PLAYERID) && !t.isWater())
                     return false;
                 return !data.getAllianceTracker().isAllied(player, t.getOwner());
             }
