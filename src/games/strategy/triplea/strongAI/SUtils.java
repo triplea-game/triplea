@@ -33,7 +33,9 @@ import games.strategy.util.IntegerMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Iterator;
 import java.util.HashMap;
@@ -119,7 +121,7 @@ public class SUtils
 				enemyMap.put(eTerr, eStrength);
 			}
 		}
-		SUtils.reorderTerrByFloat(enemyTerrs, enemyMap, true);
+		SUtils.reorder(enemyTerrs, enemyMap, true);
 		largestTerr = enemyTerrs.get(0);
 		return largestTerr;
 	}
@@ -516,7 +518,7 @@ public class SUtils
     		else
     			cIter.remove();
     	}
-    	SUtils.reorderTerrByInt(contiguousTerritories, distanceMap, false);
+    	SUtils.reorder(contiguousTerritories, distanceMap, false);
     	SUtils.trimTerritoryList(contiguousTerritories, 3); //look at the top 3
     	boolean isWaterNeighbor = false;
     	Territory goTerr = null;
@@ -531,7 +533,7 @@ public class SUtils
     	}
     	if (goTerr == null)
     	{
-    		SUtils.reorderTerrByInt(contiguousTerritories, unitMap, true);
+    		SUtils.reorder(contiguousTerritories, unitMap, true);
     		if (!contiguousTerritories.isEmpty())
     			goTerr = contiguousTerritories.get(0);
     	}
@@ -798,7 +800,7 @@ public class SUtils
 			waterStrength.put(xWaterTerr, -eStrength);
 		}
 		List<Territory> waterTerrList = new ArrayList<Territory>(waterTerr);
-		reorderTerrByFloat(waterTerrList, waterStrength, true);
+		reorder(waterTerrList, waterStrength, true);
 		float maxStrength = -10000.0F;
 		List<Territory> safeTerrList = new ArrayList<Territory>();
 		for (Territory checkTerr : waterTerrList)
@@ -2321,7 +2323,7 @@ public class SUtils
 			attackUnitMap.put(shipTerr, attackShips);
 			attackShipMap.put(shipTerr, terrStrength);
 		}
-		reorderTerrByFloat(possibleShipTerr, attackShipMap, false);
+		reorder(possibleShipTerr, attackShipMap, false);
 		//now that they are ordered, add them in whole groups
 		float unitStrength = 0.0F;
 		for (Territory addShipTerr : possibleShipTerr)
@@ -3285,7 +3287,7 @@ public class SUtils
 						if (Matches.TerritoryIsWater.match(newTerr) || Matches.isTerritoryAllied(player, data).invert().match(newTerr))
 							eIter.remove();
 					}
-					SUtils.reorderTerrByFloat(endNeighbors, strengthDiffMap, false);
+					SUtils.reorder(endNeighbors, strengthDiffMap, false);
 					Iterator<Territory> eIter2 = endNeighbors.iterator();
 					while (eIter.hasNext() && !safePlane)
 					{
@@ -3506,91 +3508,67 @@ public class SUtils
 		return;
 	}
 	
-	/**
-	 * Reorder a list of territories by a map of Territory, Float using the check specified
-	 * @param reorderTerr - Territory List
-	 * @param map - Map of float Values
-	 * @param greaterThan - true: order greatest to least -- false: order least to greatest
-	 */
-	public static void reorderTerrByFloat(List<Territory> reorderTerr, HashMap<Territory, Float> map, boolean greaterThan)
+	@SuppressWarnings("unchecked")
+	public static void reorder(List<?> reorder, final IntegerMap map, final boolean greaterThan)
 	{
-		int terrCount = reorderTerr.size();
-		if (terrCount <= 1)
-			return;
-		for (int i=0; i < terrCount -1; i++)
-		{
-			for (int j=i+1; j < terrCount; j++)
-			{
-				Territory iTerr = reorderTerr.get(i);
-				Territory jTerr = reorderTerr.get(j);
-				boolean switchThem = greaterThan ? (map.get(iTerr).floatValue() < map.get(jTerr).floatValue()) : (map.get(iTerr).floatValue() > map.get(jTerr).floatValue());
-				if (switchThem)
-				{
-					reorderTerr.remove(iTerr);
-					reorderTerr.remove(jTerr);
-					reorderTerr.add(i, jTerr);
-					reorderTerr.add(j, iTerr);
-				}
-			}
+		if(!map.keySet().containsAll(reorder)) {
+			throw new IllegalArgumentException("Not all of:" + reorder + " in:" + map.keySet());
 		}
-	}
-	/**
-	 * Reorder a list of territories by a map of Territory, Integer using the check specified
-	 * @param reorderTerr - Territory List
-	 * @param map - Map of Integer Values
-	 * @param greaterThan - true: order greatest to least -- false: order least to greatest
-	 */
-	public static void reorderTerrByInt(List<Territory> reorderTerr, IntegerMap<Territory> map, boolean greaterThan)
-	{
-		int terrCount = reorderTerr.size();
-		if (terrCount <= 1)
-			return;
-		for (int i=0; i < terrCount -1; i++)
-		{
-			for (int j=i+1; j < terrCount; j++)
-			{
-				Territory iTerr = reorderTerr.get(i);
-				Territory jTerr = reorderTerr.get(j);
-				boolean switchThem = greaterThan ? (map.getInt(iTerr) < map.getInt(jTerr)) : (map.getInt(iTerr) > map.getInt(jTerr));
-				if (switchThem)
-				{
-					reorderTerr.remove(iTerr);
-					reorderTerr.remove(jTerr);
-					reorderTerr.add(i, jTerr);
-					reorderTerr.add(j, iTerr);
-				}
-			}
-		}
-	}
-	/**
-	 * Reorder a list of units by a map of Unit, Integer using the check specified
-	 * @param reorderUnit - Unit List
-	 * @param map - Map of Integer Values
-	 * @param greaterThan - true: order greatest to least -- false: order least to greatest
-	 */
-	public static void reorderUnitByInt(List<Unit> reorderUnit, IntegerMap<Unit> map, boolean greaterThan)
-	{
-		int unitCount = reorderUnit.size();
-		if (unitCount <= 1)
-			return;
-		for (int i=0; i < unitCount -1; i++)
-		{
-			for (int j=i+1; j < unitCount; j++)
-			{
-				Unit iUnit = reorderUnit.get(i);
-				Unit jUnit = reorderUnit.get(j);
-				boolean switchThem = greaterThan ? (map.getInt(iUnit) < map.getInt(jUnit)) : (map.getInt(iUnit) > map.getInt(jUnit));
-				if (switchThem)
-				{
-					reorderUnit.remove(iUnit);
-					reorderUnit.remove(jUnit);
-					reorderUnit.add(i, jUnit);
-					reorderUnit.add(j, iUnit);
-				}
-			}
-		}
-	}
+		
+		Collections.sort(reorder, new Comparator<Object>() {
 
+			public int compare(Object o1, Object o2) {
+				//get int returns 0 if no value
+				int v1 = map.getInt(o1);
+				int v2 = map.getInt(o2);
+				
+				if(greaterThan) {
+					int t = v1;
+					v1 = v2;
+					v2 = t;
+				}
+				
+				if(v1 > v2) {
+					return 1;
+				} else if(v1 == v2) {
+					return 0;
+				} else {
+					return -1;
+				}
+			}			
+		});
+	}
+	
+	public static void reorder(List<?> reorder, final Map<?, ? extends Number> map, final boolean greaterThan)
+	{
+		if(!map.keySet().containsAll(reorder)) {
+			throw new IllegalArgumentException("Not all of:" + reorder + " in:" + map.keySet());
+		}
+		
+		Collections.sort(reorder, new Comparator<Object>() {
+
+			public int compare(Object o1, Object o2) {
+				double v1 = map.get(o1).doubleValue();
+				double v2 = map.get(o2).doubleValue();
+				
+				if(greaterThan) {
+					double t = v1;
+					v1 = v2;
+					v2 = t;
+				}
+				
+				if(v1 > v2) {
+					return 1;
+				} else if(v1 == v2) {
+					return 0;
+				} else {
+					return -1;
+				}
+			}			
+		});
+	}
+	
+	
 	/**
 	 * Take the mix of Production Rules and determine the best purchase set for attack, defense or transport
 	 * 

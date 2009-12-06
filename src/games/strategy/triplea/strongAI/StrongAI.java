@@ -643,7 +643,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				{
 					fighterMoveMap.put(f1, TripleAUnit.get(f1).getMovementLeft());
 				}
-				SUtils.reorderUnitByInt(myFighters, fighterMoveMap, false);
+				SUtils.reorder(myFighters, fighterMoveMap, false);
 				int fACDist = fACRoute.getLength();
 				int fightMove = MoveValidator.getMaxMovement(myFighters);
 				if (MoveValidator.canLand(myFighters, ACTerr, player, data))
@@ -1111,7 +1111,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	    //Target allied territories next to a bad guy
 		List<Territory> allAlliedWithEnemyNeighbor = SUtils.getTerritoriesWithEnemyNeighbor(data, player, true, false);
 		allAlliedWithEnemyNeighbor.retainAll(targetTerrs);
-		SUtils.reorderTerrByFloat(allAlliedWithEnemyNeighbor, rankMap, true);
+		SUtils.reorder(allAlliedWithEnemyNeighbor, rankMap, true);
 		for (Territory aT : allAlliedWithEnemyNeighbor)
 		{
 			SUtils.inviteTransports(true, aT, 1000.0F, unitsAlreadyMoved, moveUnits, moveRoutes, data, player, tFirst, false, null);
@@ -1190,7 +1190,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						rankMap2.put(target, rankValue);
 				}
 			}
-			SUtils.reorderTerrByFloat(targetTerrs, rankMap2, true);
+			SUtils.reorder(targetTerrs, rankMap2, true);
 			Territory targetCap = SUtils.closestEnemyCapital(t, data, player);
 			int tDistance = MoveValidator.getMaxMovement(mytrans);
 			Iterator<Territory> tTIter = targetTerrs.iterator();
@@ -1335,13 +1335,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	Set<Territory> rankTerr = rankMap.keySet();
     	inRangeTerr.retainAll(rankTerr); //should clear out any neutrals that are not common between the two
     	oneUnitTerr.retainAll(rankTerr);
-    	SUtils.reorderTerrByFloat(inRangeTerr, rankMap, true);
+    	SUtils.reorder(inRangeTerr, rankMap, true);
     	/*
     	 * RankTerritories heavily emphasizes the land based attacks. One Unit Terr will get the amphib attacker
     	 * going after easy to take islands...using RankTerr, but not comparing to territories which have a direct
     	 * line to an enemy cap. Adjust the number of units allowed in the count for landUnits.
     	 */
-    	SUtils.reorderTerrByFloat(oneUnitTerr, rankMap, true);
+    	SUtils.reorder(oneUnitTerr, rankMap, true);
     	List<Territory> landTerrConquered = new ArrayList<Territory>();
     	List<Unit> unitsAlreadyMoved = new ArrayList<Unit>();
     	Route goRoute = new Route();
@@ -1555,7 +1555,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		IntegerMap<Territory> transCountMap = new IntegerMap<Territory>();
 		for (Territory transTerr : occTransTerr)
 			transCountMap.put(transTerr, transTerr.getUnits().countMatches(transportingUnit));
-		SUtils.reorderTerrByInt(occTransTerr, transCountMap, true);
+		SUtils.reorder(occTransTerr, transCountMap, true);
 		
 		List<Territory> ourFriendlyTerr = new ArrayList<Territory>();
 		List<Territory> ourEnemyTerr = new ArrayList<Territory>();
@@ -1625,7 +1625,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				Float newVal = landTerrMap2.get(lT) - (minDist-1)*(targetTerritories.contains(lT) ? 1 : 2);
 				landTerrMap2.put(lT, newVal);
 			}
-			SUtils.reorderTerrByFloat(tmpTerrList, landTerrMap2, true);
+			SUtils.reorder(tmpTerrList, landTerrMap2, true);
 			if (ourTransports.isEmpty())
 				continue;
 			//first pass
@@ -1930,14 +1930,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         List<Territory> ourTerrNextToEnemyTerr = SUtils.getTerritoriesWithEnemyNeighbor(data, player, true, false);
         SUtils.removeNonAmphibTerritories(ourTerrNextToEnemyTerr, data);
         if (ourTerrNextToEnemyTerr.size() > 1)
-        	SUtils.reorderTerrByFloat(ourTerrNextToEnemyTerr, rankMap, true);
+        	SUtils.reorder(ourTerrNextToEnemyTerr, rankMap, true);
         for (Territory xT : transTerr)
         {
         	List<Territory> xTNeighbors = new ArrayList<Territory>(data.getMap().getNeighbors(xT, Matches.isTerritoryAllied(player, data)));
         	xTNeighbors.retainAll(ourTerrNextToEnemyTerr);
         	if (xTNeighbors.isEmpty())
         		continue;
-        	SUtils.reorderTerrByFloat(xTNeighbors, rankMap, true);
+        	SUtils.reorder(xTNeighbors, rankMap, true);
         	Territory landingTerr = xTNeighbors.get(0); //put them all here... TODO: check for need
         	Route landingRoute = data.getMap().getRoute(xT, landingTerr);
         	List<Unit> transUnits = xT.getUnits().getMatches(transUnit);
@@ -2026,7 +2026,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		HashMap<Territory, Float> rankMap =	SUtils.rankTerritories(data, ourFriendlyTerr, ourEnemyTerr, null, player, tFirst, true, false);
 
 		List<Territory> goTerr = new ArrayList<Territory>(rankMap.keySet());
-		SUtils.reorderTerrByFloat(goTerr, rankMap, true);
+		SUtils.reorder(goTerr, rankMap, true);
 		CompositeMatch<Territory> enemyLand = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
 		for (Territory qT : tempECaps) //add all neighbors
 		{
@@ -2039,7 +2039,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 //			maxPasses=1;
 		Territory tempTerr=null, tempTerr2 = null;
 		enemyCaps.retainAll(goTerr);
-		SUtils.reorderTerrByFloat(enemyCaps, rankMap, true);
+		SUtils.reorder(enemyCaps, rankMap, true);
 /*		for (int j=0; j < maxCap-1; j++) //sort the caps & neighbors by their production value
 		{
 			for (int iCap=j+1; iCap < maxCap; iCap++)
@@ -2589,7 +2589,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         			threatMap.put(checkThreat, eStrength);
         		}
         		List<Territory> allThreatTerr = new ArrayList<Territory>(allThreats);
-        		SUtils.reorderTerrByFloat(allThreatTerr, threatMap, true);
+        		SUtils.reorder(allThreatTerr, threatMap, true);
         		List<Collection<Unit>> xMovesKeep = new ArrayList<Collection<Unit>>();
         		List<Route> xRoutesKeep = new ArrayList<Route>();
         		List<Unit> xMovedKeep = new ArrayList<Unit>();
@@ -2750,7 +2750,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	   else
     		   attackAtTrans.put(aT, aTEStrength);
        }
-       SUtils.reorderTerrByFloat(alliedTransTerr, attackAtTrans, true);
+       SUtils.reorder(alliedTransTerr, attackAtTrans, true);
        for (Territory sendToTrans : alliedTransTerr)
        {
     	   float enemyStrength =  attackAtTrans.get(sendToTrans);
@@ -3027,7 +3027,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	   transStrengthMap.put(tT, tStrength);
     	   
        }
-       SUtils.reorderTerrByInt(transTerr, transMap, true);
+       SUtils.reorder(transTerr, transMap, true);
        List<Territory> transTerr2 = new ArrayList<Territory>(transTerr);
        for (Territory trans : transTerr2)
        {
@@ -3126,7 +3126,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			  }
 			  Set<Territory> MNterrs = MNmap.keySet();
 			  List<Territory> MNterrs2 = new ArrayList<Territory>(MNterrs);
-			  SUtils.reorderTerrByFloat(MNterrs2, MNmap, true);
+			  SUtils.reorder(MNterrs2, MNmap, true);
 			  Iterator<Territory> MNIter = MNterrs2.iterator();
 			  boolean MNdone = false;
 			  goHere = null;
@@ -3248,7 +3248,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	   {
 	       enemyMap.put(t2, SUtils.strength(t2.getUnits().getMatches(enemySeaUnit), false, true, tFirst));
 	   }
-	   SUtils.reorderTerrByFloat(enemyTerr, enemyMap, true);
+	   SUtils.reorder(enemyTerr, enemyMap, true);
 	   for (Territory enemy : enemyTerr)
 	   {
 		   List<Territory> ourShipTerrs = SUtils.findOurShips(enemy, data, player);
@@ -3543,7 +3543,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         	float ACMapStrength = SUtils.getStrengthOfPotentialAttackers(ACMap, data, player, tFirst, false, null);
         	acAttackMap.put(ACMap, ACMapStrength);
         }
-        SUtils.reorderTerrByFloat(acTerr1, acAttackMap, true);
+        SUtils.reorder(acTerr1, acAttackMap, true);
         for (Territory ACMap : acTerr1)
         {
         	List<Unit> ACMapUnits = ACMap.getUnits().getMatches(ACOwned);
@@ -3688,7 +3688,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				numTerr++;
 			}
 		}
-		SUtils.reorderTerrByFloat(enemyTerr, sortTerritories, true);
+		SUtils.reorder(enemyTerr, sortTerritories, true);
 		//Find Bombers
         for (Territory bTerr: data.getMap())
         {
@@ -4207,7 +4207,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         	}
         	goBlockTerr.addAll(myNeighbors);
         }
-        SUtils.reorderTerrByFloat(goBlockTerr, blockTerrMap, false);
+        SUtils.reorder(goBlockTerr, blockTerrMap, false);
         if (capDanger)
         	goBlockTerr.remove(myCapital);
         for (Territory moveFrom : goBlockTerr)
@@ -4401,7 +4401,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		{
 			SNeighbor.put(xNeighbor, SUtils.getStrengthOfPotentialAttackers(xNeighbor, data, player, tFirst, true, null));
 		}
-		SUtils.reorderTerrByFloat(myNeighbors, SNeighbor, false);
+		SUtils.reorder(myNeighbors, SNeighbor, false);
 		HashMap<Territory, Float> addStrength = new HashMap<Territory, Float>();
 		for (Territory qT : alliedTerr)
 		{
@@ -4472,7 +4472,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				outerMap.put(outerTerr, myStrength);
 				outerEMap.put(outerTerr, outerEStrength);
 			}
-			SUtils.reorderTerrByFloat(outerTerrs, outerEMap, false); //try based on enemy strength...lowest first
+			SUtils.reorder(outerTerrs, outerEMap, false); //try based on enemy strength...lowest first
 			float strengthNeeded = capStrEval.strengthMissing(dangerFactor); 
 			for (Territory outerTerr : outerTerrs) //need combination of closest to capital and least likely to get mauled
 			{
@@ -4491,7 +4491,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					else
 						oTNIter.remove();
 				}
-				SUtils.reorderTerrByFloat(oTNeighbors, oTNMap, false);
+				SUtils.reorder(oTNeighbors, oTNMap, false);
 				float outerEStrength = SUtils.getStrengthOfPotentialAttackers(outerTerr, data, player, tFirst, true, null);
 				List<Unit> ourOuterUnits = outerTerr.getUnits().getMatches(landUnit);
 				ourOuterUnits.removeAll(alreadyMoved);
@@ -4787,7 +4787,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             			IntegerMap<Territory> transMap = new IntegerMap<Territory>();
             			for (Territory xTransTerr : transportTerrs)
             				transMap.put(xTransTerr, xTransTerr.getUnits().countMatches(myTransportUnit));
-            			SUtils.reorderTerrByInt(transportTerrs, transMap, true);
+            			SUtils.reorder(transportTerrs, transMap, true);
             		}
             		for (Territory tTerr : transportTerrs)
             		{
@@ -4878,7 +4878,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     				if (unMovedLandTerr.contains(lN))
     					grabFromTerr.add(lN);
     			}
-    			SUtils.reorderTerrByFloat(grabFromTerr, landMap, false);
+    			SUtils.reorder(grabFromTerr, landMap, false);
     			Iterator<Territory> grabIter = grabFromTerr.iterator();
     			while (grabIter.hasNext() && diffStrength > 0.0F)
     			{
@@ -5134,7 +5134,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				}
 				if (fighterNeighbors.isEmpty())
 					continue;
-				SUtils.reorderTerrByFloat(fighterNeighbors, rankMap, false); //reverse list should show safest terr first
+				SUtils.reorder(fighterNeighbors, rankMap, false); //reverse list should show safest terr first
 				boolean sentFighters = false;
 				int totFighters = fighters.size();
 				Iterator<Territory> fNIter = fighterNeighbors.iterator();
@@ -5198,7 +5198,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	List<Territory> checkTerrs = new ArrayList<Territory>(shipMap.keySet());
     	if (!checkTerrs.isEmpty())
     	{
-    		SUtils.reorderTerrByInt(checkTerrs, shipMap, false);
+    		SUtils.reorder(checkTerrs, shipMap, false);
     		for (Territory checkTerr : checkTerrs)
     		{
     			for (Territory bTerr : bomberTerrs)
@@ -5234,7 +5234,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     		}
     		checkTerrs.clear();
     		checkTerrs.addAll(strengthMap.keySet());
-    		SUtils.reorderTerrByFloat(checkTerrs, strengthMap, true);
+    		SUtils.reorder(checkTerrs, strengthMap, true);
     		for (Territory checkTerr : checkTerrs)
     		{
     			for (Territory bTerr : bomberTerrs)
@@ -5339,7 +5339,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		Territory xTerr = null;
 		HashMap<Territory, Float> enemyMap = new HashMap<Territory, Float>();
 		Territory maxAttackTerr = SUtils.landAttackMap(data, player, enemyMap);
-		SUtils.reorderTerrByFloat(enemyOwned, enemyMap, true);
+		SUtils.reorder(enemyOwned, enemyMap, true);
 		numTerr = enemyMap.size();
 		float aggregateStrength = 0.0F;
 		Iterator<Territory> bPIter = bigProblem2.iterator();
@@ -5361,7 +5361,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			sortProblems.put(tProb, xStrength);
 			numTerrProblem++;
 		}
- 		SUtils.reorderTerrByFloat(bigProblem2, sortProblems, true);
+ 		SUtils.reorder(bigProblem2, sortProblems, true);
 		List<Territory> seaTerrAttacked = getSeaTerrAttacked();
 
         List<Collection<Unit>> xMoveUnits = new ArrayList<Collection<Unit>>();
@@ -5435,7 +5435,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     				maxSTerr = eCapTerr;
     			}
     		}
-    		SUtils.reorderTerrByFloat(eCapTerrs, eCapMap, true);
+    		SUtils.reorder(eCapTerrs, eCapMap, true);
     		List<Collection<Unit>> tempMoves = new ArrayList<Collection<Unit>>();
     		List<Route> tempRoutes = new ArrayList<Route>();
     		List<Unit> tempAMoved = new ArrayList<Unit>();
@@ -5521,7 +5521,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	List<Territory> ourEnemyTerr = new ArrayList<Territory>();
     	HashMap<Territory, Float> rankMap = SUtils.rankTerritories(data, ourFriendlyTerr, ourEnemyTerr, null, player, tFirst, false, false);
 
-    	SUtils.reorderTerrByFloat(enemyCaps, rankMap, true);
+    	SUtils.reorder(enemyCaps, rankMap, true);
 		for (Territory badCapitol : enemyCaps)
 		{
 			xAlreadyMoved.addAll(unitsAlreadyMoved);
@@ -5590,7 +5590,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         //find the territories we can just walk into
 		enemyOwned.removeAll(alreadyAttacked);
 		enemyOwned.retainAll(rankMap.keySet());
-		SUtils.reorderTerrByFloat(enemyOwned, rankMap, true);
+		SUtils.reorder(enemyOwned, rankMap, true);
         for(Territory enemy : enemyOwned)
         {
         	xAlreadyMoved.addAll(unitsAlreadyMoved);
@@ -5693,7 +5693,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
  		boolean weAttacked = false, weAttacked2 = false;
  		int EinfArtCount = 0, OinfArtCount = 0;
  		bigProblem2.removeAll(alreadyAttacked);
- 		SUtils.reorderTerrByFloat(bigProblem2, rankMap, true);
+ 		SUtils.reorder(bigProblem2, rankMap, true);
 //TODO: Rewrite this section. It could be much cleaner.
  		xAlreadyMoved.clear();
  		xMoveUnits.clear();
@@ -5789,7 +5789,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	boolean useCapNeighbors = true;
     	if (capStrEval.inDanger(0.90F)) //TODO: really evaluate the territories around the capitol
     		useCapNeighbors = false; //don't use the capital neighbors to attack terr which are not adjacent to cap
-    	SUtils.reorderTerrByFloat(enemyOwned, rankMap, true);
+    	SUtils.reorder(enemyOwned, rankMap, true);
     	enemyOwned.removeAll(alreadyAttacked);
         for(Territory enemy : enemyOwned)
         {
@@ -5811,7 +5811,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					strengthMap.put(aCheck, SUtils.getStrengthOfPotentialAttackers(aCheck, data, player, tFirst, true, alreadyAttacked));
 				List<Unit> dontMoveWithUnits = new ArrayList<Unit>();
 				List<Territory> attackList = new ArrayList<Territory>(attackFrom);
-				SUtils.reorderTerrByFloat(attackList, strengthMap, false); //order our available terr by weakest enemy potential
+				SUtils.reorder(attackList, strengthMap, false); //order our available terr by weakest enemy potential
 				List<Unit> myAUnits = new ArrayList<Unit>();
                 for (Territory checkTerr2 : attackList)
                 {
@@ -5941,7 +5941,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     		List<Territory> unloadTerr = SUtils.getNeighboringLandTerritories(data, player, t);
     		if (unloadTerr.isEmpty())
     			continue;
-    		SUtils.reorderTerrByFloat(unloadTerr, rankMap, true);
+    		SUtils.reorder(unloadTerr, rankMap, true);
     		Territory landOn = unloadTerr.get(0);
     		Route landRoute = data.getMap().getRoute(t, landOn);
     		if (landRoute != null)
@@ -5973,7 +5973,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         	factProduction = unitProduction ? TerritoryAttachment.get(eFact).getUnitProduction() : TerritoryAttachment.get(eFact).getProduction();
         	bomberImpactMap.put(eFact, factProduction);
         }
-        SUtils.reorderTerrByInt(enemyFactories, bomberImpactMap, true);
+        SUtils.reorder(enemyFactories, bomberImpactMap, true);
     	List<Territory> bomberTerrs = SUtils.findCertainShips(data, player, Matches.UnitIsStrategicBomber);
         for(Territory t: enemyFactories)
         {
@@ -7085,7 +7085,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         	ourTerrs.remove(capitol); //we'll check the cap last
         	HashMap<Territory, Float> rankMap = SUtils.rankTerritories(data, ourFriendlyTerr, ourEnemyTerr, null, player, tFirst, false, true);
 
-        	SUtils.reorderTerrByFloat(ourFriendlyTerr, rankMap, true);
+        	SUtils.reorder(ourFriendlyTerr, rankMap, true);
         	ourFriendlyTerr.retainAll(ourTerrs);
         	Territory bidLandTerr = null;
         	if (ourFriendlyTerr.size() > 0)
@@ -7746,7 +7746,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             		List<Territory> ourEnemyTerr = new ArrayList<Territory>();
             		HashMap<Territory, Float> rankMap = SUtils.rankTerritories(data, ourFriendlyTerr, ourEnemyTerr, null, player, false, false, true);
             		if (ourFriendlyTerr.containsAll(possibleTerritories))
-            			SUtils.reorderTerrByFloat(ourFriendlyTerr, rankMap, true);
+            			SUtils.reorder(ourFriendlyTerr, rankMap, true);
             		ourFriendlyTerr.retainAll(possibleTerritories);
             		Territory myCapital = TerritoryAttachment.getCapital(player, data);
             		for (Territory capTerr : ourFriendlyTerr)
