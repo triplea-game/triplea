@@ -3539,17 +3539,15 @@ public class SUtils
 		});
 	}
 	
+	
 	public static void reorder(List<?> reorder, final Map<?, ? extends Number> map, final boolean greaterThan)
 	{
-		if(!map.keySet().containsAll(reorder)) {
-			throw new IllegalArgumentException("Not all of:" + reorder + " in:" + map.keySet());
-		}
-		
+	
 		Collections.sort(reorder, new Comparator<Object>() {
 
 			public int compare(Object o1, Object o2) {
-				double v1 = map.get(o1).doubleValue();
-				double v2 = map.get(o2).doubleValue();
+				double v1 = safeGet(map, o1);
+				double v2 = safeGet(map, o2);
 				
 				if(greaterThan) {
 					double t = v1;
@@ -3564,6 +3562,13 @@ public class SUtils
 				} else {
 					return -1;
 				}
+			}
+
+			private double safeGet(final Map<?, ? extends Number> map, Object o1) {
+				if(!map.containsKey(o1)) {
+					return 0;
+				}
+				return map.get(o1).doubleValue();
 			}			
 		});
 	}
