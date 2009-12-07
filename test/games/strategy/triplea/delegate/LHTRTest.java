@@ -228,9 +228,9 @@ public class LHTRTest extends TestCase
         
         int PUsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
         
-        //largets dice is 4, so damage is 1 + 4 = 5
-        //Changed to match StrategicBombingRaidBattle changes (removed the +1)
-        assertEquals(PUsBeforeRaid - 4, PUsAfterRaid);
+        //targets dice is 4, so damage is 1 + 4 = 5
+        //Changed to match StrategicBombingRaidBattle changes
+        assertEquals(PUsBeforeRaid - 5, PUsAfterRaid);
         
         
     }
@@ -282,10 +282,10 @@ public class LHTRTest extends TestCase
         
         int PUsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
         
-        //largets dice is 4, so damage is 1 + 4 = 5
-        //bomber 2 hits at 2, so damage is 3 
-        //Changed to match StrategicBombingRaidBattle changes (removed the +1)
-        assertEquals(PUsBeforeRaid - 6, PUsAfterRaid);
+        //targets dice is 4, so damage is 1 + 4 = 5
+        //bomber 2 hits at 2, so damage is 3, for a total of 8
+        //Changed to match StrategicBombingRaidBattle changes
+        assertEquals(PUsBeforeRaid - 8, PUsAfterRaid);
         
         
     }

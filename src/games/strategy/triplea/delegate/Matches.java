@@ -1029,7 +1029,7 @@ public class Matches
             {
                 if(t.getOwner().equals(player))
                     return false;
-                if(t.getOwner().equals(PlayerID.NULL_PLAYERID) && !t.isWater())
+                if(t.getOwner().equals(PlayerID.NULL_PLAYERID) && t.isWater())
                     return false;
                 return !data.getAllianceTracker().isAllied(player, t.getOwner());
             }
