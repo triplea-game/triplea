@@ -795,6 +795,12 @@ public class WW2V3_41_Test extends TestCase {
             Territory li = territory("Libya", m_data);
             Territory balkans = territory("Balkans", m_data);
             
+            //Clear all units from the attacked terr 
+            removeFrom(eg, eg.getUnits().getUnits());
+
+            //Add 2 inf
+        	PlayerID british = m_data.getPlayerList().getPlayerID("British");
+            addTo(eg, infantry(m_data).create(2,british));
             
             //load the transports
             load(balkans.getUnits().getMatches(Matches.UnitIsInfantry), new Route(balkans,sz14));
@@ -817,9 +823,18 @@ public class WW2V3_41_Test extends TestCase {
             
             
             //only 2 battleships are allowed to bombard
-            //Currently no units will bombard so test will fail.
             assertEquals(2, mfb.getBombardingUnits().size());
+            
+            //Show that bombard casualties can return fire
+            bridge.setRandomSource(new ScriptedRandomSource(0,0,0,0,6,6,6,6));
+			battleDelegate(m_data).start(bridge, m_data);
+			
+			battleDelegate(m_data).fightBattle(eg, false);
+			
+
+            assertEquals(2, eg.getUnits().size());
         }
+
         
         public void testAmphAttackUndoAndAttackAgainBombard() 
         {
@@ -1312,8 +1327,98 @@ public class WW2V3_41_Test extends TestCase {
         	//we have 1 damaged marker, but trying to repair 2
         	repairs.put(repair, 2);
         	String error = del.purchaseRepair(Collections.singletonMap(germany, repairs));
-        	assertError(error);
+        	assertError(error);        	
+        }
+        
+        public void testOccupiedTerrOfAttachment()       
+        {        	
+        	//Set up test
+        	PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        	ITestDelegateBridge delegateBridge = getDelegateBridge(british(m_data));
+
+        	//Set up the move delegate
+        	MoveDelegate moveDelegate = moveDelegate(m_data);
+        	delegateBridge.setStepName("CombatMove");
+        	moveDelegate.start(delegateBridge, m_data);
+
+        	//Set up the territories
+        	Territory hupeh = territory("Hupeh", m_data);
+        	Territory kiangsu = territory("Kiangsu", m_data);
+
+        	//Remove all units
+        	removeFrom(kiangsu, kiangsu.getUnits().getUnits());
+        	removeFrom(hupeh, hupeh.getUnits().getUnits());
         	
+        	//Set up the unit types
+            addTo(hupeh, infantry(m_data).create(1,british));
+        	
+        	//Get units
+        	Collection<Unit> moveUnits = hupeh.getUnits().getUnits();
+        	
+        	//Get Owner prior to battle
+        	String preOwner = kiangsu.getOwner().getName();
+        	assertEquals(preOwner, "Japanese");
+        	
+        	//add a VALID attack
+        	String validResults = moveDelegate.move(moveUnits, new Route(hupeh, kiangsu));
+        	assertValid(validResults);
+
+        	//Ensure owner after attack doesn't match attacker
+        	String postOwner = kiangsu.getOwner().getName();
+        	assertNotSame(postOwner, "British");
+        	
+        	//Check that original owner is now owner
+        	assertEquals(postOwner, "Chinese");
+        }
+
+        public void testOccupiedTerrOfAttachmentWithCapital()       
+        {        	
+        	//Set up test
+        	PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        	ITestDelegateBridge delegateBridge = getDelegateBridge(british(m_data));
+
+        	//Set up the move delegate
+        	MoveDelegate moveDelegate = moveDelegate(m_data);
+        	delegateBridge.setStepName("CombatMove");
+        	moveDelegate.start(delegateBridge, m_data);
+
+        	//Set up the territories
+        	Territory hupeh = territory("Hupeh", m_data);
+        	Territory kiangsu = territory("Kiangsu", m_data);
+        	Territory mongolia = territory("Mongolia", m_data);
+        	
+        	//Remove original capital
+            TerritoryAttachment taMongolia = TerritoryAttachment.get(mongolia);
+            taMongolia.setCapital(null);
+            
+            //Set as NEW capital
+            TerritoryAttachment taKiangsu = TerritoryAttachment.get(kiangsu);
+            taKiangsu.setCapital("Chinese");
+
+        	//Remove all units
+        	removeFrom(kiangsu, kiangsu.getUnits().getUnits());
+        	removeFrom(hupeh, hupeh.getUnits().getUnits());
+        	
+        	//Set up the unit types
+            addTo(hupeh, infantry(m_data).create(1,british));
+        	
+        	//Get units
+        	Collection<Unit> moveUnits = hupeh.getUnits().getUnits();
+        	
+        	//Get Owner prior to battle
+        	String preOwner = kiangsu.getOwner().getName();
+        	assertEquals(preOwner, "Japanese");
+        	
+        	//add a VALID attack
+        	String validResults = moveDelegate.move(moveUnits, new Route(hupeh, kiangsu));
+        	assertValid(validResults);
+
+        	//Ensure owner after attack doesn't match attacker
+        	String postOwner = kiangsu.getOwner().getName();
+        	assertNotSame(postOwner, "British");
+        	
+        	//Check that original owner is now owner
+        	assertEquals(postOwner, "Chinese");
         }
         
         /***********************************************************/
