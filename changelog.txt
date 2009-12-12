@@ -1,3 +1,5 @@
+Changes for 1.1.2
+
 * Upgrade NWO to NWO EB (OnanTheBrBr)
 
 * Fix bug 2909898 2-move units allowed to move 'through' enemy forces (ComradeKev)'
