@@ -177,6 +177,10 @@ public class PointFileReaderWriter
     public static void writeOneToMany(OutputStream sink, Map mapping) throws Exception
     {
         StringBuilder out = new StringBuilder();
+        if(mapping == null) {
+        	mapping = new HashMap();
+        }
+        
         Iterator keyIter = mapping.keySet().iterator();
         while (keyIter.hasNext())
         {
