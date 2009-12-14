@@ -81,7 +81,7 @@ public class InstallMapDialog extends JDialog {
 			
 			public Component getListCellRendererComponent(JList list, Object value,
 					int index, boolean isSelected, boolean cellHasFocus) {
-				if(value.toString().trim().isEmpty())
+				if(value.toString().trim().length() == 0)
 				{
 					value = " ";
 				}
