@@ -79,6 +79,7 @@
 	    <territory name="West Europe"/>
 	    <territory name="West US"/>
 	    <territory name="Yakut S.S.R."/>
+	    <territory name="Yunnan"/>
 	    <territory name="Alaska Sea Zone" water="true" />
 	    <territory name="Angola Sea Zone" water="true" />
 	    <territory name="Antartic Sea Zone" water="true" />
@@ -440,10 +441,12 @@
 		<player name="Japanese" optional="false"/>
 		<player name="Germans" optional="false"/>
 		<player name="British" optional="false"/>
+		<player name="Chinese" optional="false"/>
 		<player name="Americans" optional="false"/>
 		<player name="Russians" optional="false"></player>
 		<alliance player="Americans" alliance="imperial"/>
 		<alliance player="British" alliance="imperial"/>
+		<alliance player="Chinese" alliance="imperial"/>
 		<alliance player="Russians" alliance="imperial"/>
 		
 		<alliance player="Germans" alliance="Axis"/>
@@ -468,7 +471,9 @@
 		<delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate"/>
 		<delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate"/>
 		<delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate"/>
+		<delegate name="purchaseNoPU" javaClass="games.strategy.triplea.delegate.NoPUPurchaseDelegate" display="Purchase Units"/>
 		<delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate"/>
+		<delegate name="endTurnNoPU" javaClass="games.strategy.triplea.delegate.NoPUEndTurnDelegate" display="Turn Complete"/>
 		<sequence>
 
 			<step name="gameInitDelegate" delegate="initDelegate"/>
@@ -496,6 +501,14 @@
 			<step name="americanNonCombatMove" delegate="move" player="Americans"/>
 			<step name="americanPlace" delegate="place" player="Americans"/>
 			<step name="americanEndTurn" delegate="endTurn" player="Americans"/>
+						
+			<step name="chinesePurchase" delegate="purchaseNoPU" player="Chinese"/>
+			<step name="chineseCombatMove" delegate="move" player="Chinese"/>
+			<step name="chineseBattle" delegate="battle" player="Chinese"/>
+			<step name="chineseNonCombatMove" delegate="move" player="Chinese"/>
+			<step name="chinesePlace" delegate="place" player="Chinese"/>
+			<step name="chineseEndTurn" delegate="endTurnNoPU" player="Chinese"/>
+							
 		</sequence>
 	</gamePlay>
 	<production>
@@ -710,7 +723,7 @@
 
 
 
-	    <attatchment name="territoryAttatchment" 
+	    <attatchment name="territoryAttatchment"
 			 attatchTo="United Kingdom"
 			 javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
 			 type="territory">
@@ -1202,8 +1215,23 @@
 	    >
 		    <option name="production" value="2" />
 	    </attatchment>
+	    
+	    <attatchment name="territoryAttatchment" 
+	    	attatchTo="Yunnan" 
+	    	javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" 
+	    	type="territory">
+			<option name="production" value="1"/>
+		</attatchment>
 
-
+<!-- Chinese Rules -->
+				<attatchment name="rulesAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="movementRestrictionTerritories" value="Chinghai:Ningxia:Sikang:Yunnan:Hupeh:Fukien:Suiyuan:Manchuria:Kiangsu:Kwangtung"/>
+                	<option name="movementRestrictionType" value="allowed"/>
+                	<option name="productionPerXTerritories" value="2"/>
+                	<option name="placementAnyTerritory" value="true"/>
+                	<option name="placementCapturedTerritory" value="true"/>
+                	<option name="placementPerTerritory" value="3"/>
+                </attatchment>
 
 
 	</attatchmentList>
@@ -1228,6 +1256,7 @@
 			<territoryOwner territory="French Equatorial Africa" owner="British"/>
 
 			<territoryOwner territory="India" owner="Americans"/>
+			<territoryOwner territory="Yunnan" owner="Chinese"/>
 
 		</ownerInitialize>
 		<unitInitialize>
@@ -1238,7 +1267,7 @@
 			<unitPlacement unitType="armour" territory="India" quantity = "2" owner="Americans"/>
 			
 			<unitPlacement unitType="factory" territory="Japan" quantity="1" owner="Japanese"/>
-    			<unitPlacement unitType="aaGun" territory="Japan" quantity="1" owner="Japanese"/>
+    		<unitPlacement unitType="aaGun" territory="Japan" quantity="1" owner="Japanese"/>
 			<unitPlacement unitType="transport" territory="Japan Sea Zone" quantity="2" owner="Japanese"/>
 			<unitPlacement unitType="battleship" territory="Japan Sea Zone" quantity="1" owner="Japanese"/>
 			
@@ -1302,11 +1331,16 @@
 			<unitPlacement unitType="carrier" territory="South Brazil Sea Zone" quantity="2" owner="Japanese" />
 			<unitPlacement unitType="fighter" territory="South Brazil Sea Zone" quantity="3" owner="Japanese" />
 
+			<unitPlacement unitType="fighter" territory="Yunnan" quantity = "1" owner="Americans"/>
+			<unitPlacement unitType="infantry" territory="Yunnan" quantity = "2" owner="Chinese"/>
 
 			<heldUnits unitType="infantry" player="British" quantity="4"/>
 			<heldUnits unitType="factory" player="British" quantity="2"/>
 			<heldUnits unitType="aaGun" player="British" quantity="2"/>
 			<heldUnits unitType="transport" player="British" quantity="2"/>
+			
+			<heldUnits unitType="infantry" player="Chinese" quantity="6"/>
+			<heldUnits unitType="aaGun" player="Germans" quantity="6"/>
 		</unitInitialize>
 		<resourceInitialize>
 			<resourceGiven player="Japanese" resource="PUs" quantity="35"/>
@@ -1317,4 +1351,17 @@
 	
 		
 	</initialize>
+	  <propertyList>                        
+
+		<!-- OPTIONAL PROPERTIES -->                
+				<property name="Place in Any Territory" value="true" editable="false">
+                        <boolean/>
+                </property>
+                            
+				<property name="Unit Placement Per Territory Restricted" value="true" editable="false">
+                        <boolean/>
+                </property>
+                
+                
+	  </propertyList>
 </game>

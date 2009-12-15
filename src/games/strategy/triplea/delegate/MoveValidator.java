@@ -1099,7 +1099,7 @@ public class MoveValidator
             }
         }
 
-        //only allow aa into a land territory if one already present unless WW2V2 or WW2V3.
+        //only allow one aa into a land territory unless WW2V2 or WW2V3 or isMultipleAAPerTerritory.
         //if ((!isWW2V3(data) && !isWW2V2(data)) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd() != null && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
         if ((!isMultipleAAPerTerritory(data) && !isWW2V3(data) && !isWW2V2(data)) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd() != null && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
                 && !route.getEnd().isWater())
@@ -1796,21 +1796,36 @@ public class MoveValidator
         
         if(nonCombat)
             return result.setErrorReturnResult("Paratroops may not move during NonCombat");
-
+        
+        TransportTracker transportTracker = new TransportTracker();
+        
         if (!getEditMode(data))
         {
             //if we can move without using paratroop tech, do so
             //this allows moving a bomber/infantry from one friendly
             //territory to another
-            if(getParatroopsRequiringTransport(units, route).isEmpty()) {
+        	List<Unit> paratroopsRequiringTransport = getParatroopsRequiringTransport(units, route);
+            if(paratroopsRequiringTransport.isEmpty()) 
+            {
             	return result;
             }
             
-            for(Unit u : getParatroopsRequiringTransport(units, route)) {
-            	if(TripleAUnit.get(u).getAlreadyMoved() != 0) {
-            		result.addDisallowedUnit("Cannot paratroop units that have already moved", u);
+            List<Unit> bombers =  Match.getMatches(units, Matches.UnitIsStrategicBomber);
+            Map<Unit, Unit> bombersAndParatroops = MoveDelegate.mapTransports(route, paratroopsRequiringTransport, bombers);
+           
+            for (Unit paratroop : bombersAndParatroops.keySet())
+			{				
+            	if(TripleAUnit.get(paratroop).getAlreadyMoved() != 0) 
+            	{
+            		result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
             	}
-            }
+
+            	Unit transport = bombersAndParatroops.get(paratroop);
+            	if(TripleAUnit.get(transport).getAlreadyMoved() != 0)
+            	{
+            		result.addDisallowedUnit("Cannot move then transport paratroops", transport);
+            	}
+			}
             
             //TODO using just allied territories causes it to go to LALA land when moving to water
             //if (Matches.isTerritoryAllied(player, data).match(route.getEnd()))

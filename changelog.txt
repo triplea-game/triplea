@@ -1,8 +1,12 @@
 Changes for 1.1.2
 
+* Fix bug 2915057 Bombers shouldn't be able to move then pick up paratroops (ComradeKev)
+
+* Add more test cases (ComradeKev)
+
 * Upgrade NWO to NWO EB (OnanTheBrBr)
 
-* Fix bug 2909898 2-move units allowed to move 'through' enemy forces (ComradeKev)'
+* Fix bug 2909898 2-move units allowed to move 'through' enemy forces (ComradeKev)
 
 * Fix test cases for LHTR rules revisions below (ComradeKev)
 

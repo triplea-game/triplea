@@ -2061,7 +2061,8 @@
 						<unitPlacement unitType="battleship" territory="53 Sea Zone" quantity="1" owner="Americans"/>
 						<unitPlacement unitType="transport" territory="56 Sea Zone" quantity="1" owner="Americans"/>
 						<unitPlacement unitType="destroyer" territory="56 Sea Zone" quantity="1" owner="Americans"/>
-                </unitInitialize>
+						
+				</unitInitialize>
         
                 <resourceInitialize>                      
                         <resourceGiven player="Germans" resource="PUs" quantity="31"/>
@@ -2113,6 +2114,10 @@
                 
                 
 				<property name="WW2V3" value="true" editable="false">
+                        <boolean/>
+                </property>                
+                
+				<property name="Multiple AA Per Territory" value="true" editable="false">
                         <boolean/>
                 </property>
                 

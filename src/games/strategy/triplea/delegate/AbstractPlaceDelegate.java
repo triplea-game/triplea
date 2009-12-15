@@ -336,7 +336,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         {
         
             //make sure only 1 AA in territory for classic
-            if (isWW2V2() || isWW2V3())
+            if (isWW2V2() || isWW2V3() || isMultipleAAPerTerritory())
             {
                 placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAA));
             } else
@@ -547,6 +547,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     private boolean isWW2V3()    
     {
         return games.strategy.triplea.Properties.getWW2V3(m_data);
+    }
+
+    private boolean isMultipleAAPerTerritory()    
+    {
+        return games.strategy.triplea.Properties.getMultipleAAPerTerritory(m_data);
     }
     
     protected boolean isUnitPlacementInEnemySeas()    

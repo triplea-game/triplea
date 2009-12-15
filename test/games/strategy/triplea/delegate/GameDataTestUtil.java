@@ -56,6 +56,10 @@ public class GameDataTestUtil {
         return data.getPlayerList().getPlayerID("British");
     }
     
+    public static PlayerID chinese(GameData data) {
+        return data.getPlayerList().getPlayerID("Chinese");
+    }
+    
     public static Territory territory(String name, GameData data) {
         Territory t = data.getMap().getTerritory(name);
         if(t == null) {
@@ -98,6 +102,10 @@ public class GameDataTestUtil {
     
     public static UnitType bomber(GameData data) {
         return unitType("bomber", data);
+    }
+
+    public static UnitType factory(GameData data) {
+        return unitType("factory", data);
     }
     
     private static UnitType unitType(String name, GameData data) {
