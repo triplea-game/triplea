@@ -482,7 +482,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveRoutes.clear();
         moveUnits.clear();
-/*
+
         s_logger.fine("Special Transport Move");
         specialTransportMove(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
@@ -494,7 +494,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveRoutes.clear();
         moveUnits.clear();
-*/
+
         firstTransportMove(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveRoutes.clear();
@@ -879,7 +879,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         if (!factTerr.contains(capitol) && ownMyCapitol)
         	factTerr.add(capitol);
         List<Unit> transportsFilled = new ArrayList<Unit>();
-
+/*
         for (Territory factory : factTerr)
         {
         	Route fRoute = SUtils.findNearest(factory, enemyAndNoWater, noEnemyOrWater, data);
@@ -940,7 +940,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		} //done with factories
 		myTerritories.removeAll(factTerr);
-		for (Territory checkThis : myTerritories)
+*/		for (Territory checkThis : myTerritories)
 		{
 		   Route xRoute = null;
 		   boolean landRoute = SUtils.landRouteToEnemyCapital(checkThis, xRoute, data, player);
@@ -1456,7 +1456,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		if (waterCapNeighbors.isEmpty()) //should not happen, but just in case on some wierd map
 			return;
 		Territory waterCap = waterCapNeighbors.iterator().next();
-		Route goRoute = SUtils.findNearest(waterCap, endOfRoute, routeCondition, data);
+		Route goRoute = SUtils.findNearest(waterCap, Matches.isTerritoryEnemyAndNotNuetralWater(player, data), routeCondition, data);
 		s_logger.fine("First Transport move Route: "+ goRoute);
 		if (goRoute == null || goRoute.getEnd() == null)
 			return;
@@ -1523,6 +1523,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	 */
     	Collection<Territory> impassableTerrs = getImpassableTerrs();
 		boolean tFirst = transportsMayDieFirst();
+		boolean isAmphib = isAmphibAttack(player);
 		boolean aggressive = SUtils.determineAggressiveAttack(data, player, 1.4F);
         TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport);
@@ -1608,22 +1609,25 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						continue;
 					}
 				}
-				Territory safeTerr = SUtils.getSafestWaterTerr(lT, transTerr, seaTerrAttacked, data, player, false, tFirst);
+				else if (Matches.isTerritoryAllied(player, data).match(lT))
+				{
+					cFIter.remove(); //List contains enemy Territories & Territories with EnemyLand Neighbor
+					continue;
+				}
+				Territory safeTerr = SUtils.getClosestWaterTerr(lT, transTerr, data, player, tFirst);
 				if (safeTerr == null || !landTerrMap2.containsKey(lT))
 				{
 					cFIter.remove();
 					continue;
 				}
 				minDist = data.getMap().getWaterDistance(transTerr, safeTerr);
-				if (minDist > tmpDistance)
+				if (minDist > tmpDistance || minDist == -1)
 				{
 					cFIter.remove();
 					continue;
 				}
-				if (minDist == -1)
-					minDist = 100;
-				Float newVal = landTerrMap2.get(lT) - (minDist-1)*(targetTerritories.contains(lT) ? 1 : 2);
-				landTerrMap2.put(lT, newVal);
+//				Float newVal = landTerrMap2.get(lT) - (minDist-1)*(targetTerritories.contains(lT) ? 1 : 2);
+//				landTerrMap2.put(lT, newVal);
 			}
 			SUtils.reorder(tmpTerrList, landTerrMap2, true);
 			if (ourTransports.isEmpty())
@@ -1867,6 +1871,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		}
 		setAmphibMap(amphibMap);
+		if (isAmphib)
+		{
+			s_logger.fine("Player: "+player.getName());
+			s_logger.fine("Units: "+moveUnits);
+			s_logger.fine("Routes: "+moveRoutes);
+		}
     }
     
     private void amphibMapUnload(GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
