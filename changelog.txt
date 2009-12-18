@@ -1,6 +1,9 @@
-Changes for 1.1.2
+* update to greate war 2.5 (Jason Clark)
 
 * Fix bug 2915057 Bombers shouldn't be able to move then pick up paratroops (ComradeKev)
+
+Changes for 1.1.2
+
 
 * Add more test cases (ComradeKev)
 
