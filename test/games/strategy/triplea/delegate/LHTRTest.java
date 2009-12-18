@@ -205,7 +205,7 @@ public class LHTRTest extends TestCase
         TechTracker.addAdvance(british, m_data, bridge, TechAdvance.HEAVY_BOMBER);
         
         //aa guns rolls 3, misses, bomber rolls 2 dice at 3 and 4
-        bridge.setRandomSource(new ScriptedRandomSource( new int[] {3,2,3} ));
+        bridge.setRandomSource(new ScriptedRandomSource( new int[] {2,2,3} ));
 
         
         //if we try to move aa, then the game will ask us if we want to move

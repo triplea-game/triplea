@@ -22,6 +22,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -29,6 +30,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -416,9 +419,36 @@ public class MoveDelegateTest extends DelegateTest
     assertEquals(16, egypt.getUnits().size());
     assertEquals(3, algeria.getUnits().size());
     assertEquals(libya.getOwner(), british);
-
   }
+  
+  public void testCant2StepBlitzWithNonBlitzingUnits()
+  {
+    IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+    map.put(armour, 1);
+    Route route = new Route();
+    route.setStart(egypt);
+    route.add(libya);
 
+    //Disable canBlitz attachment
+    new ChangePerformer(m_data).perform(ChangeFactory.attachmentPropertyChange(UnitAttachment.get(armour),"false","canBlitz"));
+    
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);    
+    assertValid( results);
+
+    //Validate move happened
+    assertEquals(1, libya.getUnits().size());
+    assertEquals(libya.getOwner(), british);
+    
+    //Try to move 2nd space
+    route = new Route();
+    route.setStart(libya);
+    route.add(algeria);
+    
+    //Fail because not 'canBlitz'
+    results = m_delegate.move( getUnits(map, route.getStart()), route);    
+    assertError(results);
+  }
+  
   public void testCantBlitzNuetral()
   {
     IntegerMap<UnitType> map = new IntegerMap<UnitType>();

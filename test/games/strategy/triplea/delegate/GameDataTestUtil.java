@@ -56,6 +56,10 @@ public class GameDataTestUtil {
         return data.getPlayerList().getPlayerID("British");
     }
     
+    public static PlayerID japanese(GameData data) {
+        return data.getPlayerList().getPlayerID("Japanese");
+    }
+    
     public static PlayerID chinese(GameData data) {
         return data.getPlayerList().getPlayerID("Chinese");
     }
@@ -138,6 +142,10 @@ public class GameDataTestUtil {
     
     public static MoveDelegate moveDelegate(GameData data) {
         return (MoveDelegate) data.getDelegateList().getDelegate("move");
+    }
+    
+    public static TechnologyDelegate techDelegate(GameData data) {
+        return (TechnologyDelegate) data.getDelegateList().getDelegate("tech");
     }
     
     public static PurchaseDelegate purchaseDelegate(GameData data) {

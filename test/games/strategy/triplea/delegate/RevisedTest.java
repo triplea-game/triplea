@@ -25,14 +25,18 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.PlayerAttachment;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
+import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
@@ -47,6 +51,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.httpclient.methods.GetMethod;
 
 import junit.framework.TestCase;
 
@@ -584,8 +590,6 @@ public class RevisedTest extends TestCase
         //make sure that loaded is not set
         assertTrue(transport.getTransporting().isEmpty());
         assertFalse(((TripleAUnit) infantry.get(0)).getWasLoadedThisTurn());
-
-        
     }
     
     
@@ -630,8 +634,6 @@ public class RevisedTest extends TestCase
         
         error = moveDelegate.move(infantry, sz5ToEee);
         assertEquals(MoveValidator.CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND, error);
-        
-        
     }
     
     public void testUnloadMultipleTerritories()
@@ -699,12 +701,10 @@ public class RevisedTest extends TestCase
         moveDelegate.start(bridge, m_data);
         error = moveDelegate.move(infantry.subList(1, 2), sz5ToEE);
         assertNull(error);
-        
     }
     
     public void testUnloadInPreviousPhase()
-    {
-        
+    {        
         //a transport may not unload in both combat and non combat
         
         Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
@@ -758,7 +758,6 @@ public class RevisedTest extends TestCase
         error = moveDelegate.move(infantry.subList(1, 2), sz5ToNorway);
         assertNotNull(error,error);
         assertTrue(error.startsWith(MoveValidator.TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE));
-        
     }
     
     public void testMoveSubAwayFromSubmergedSubsInBattleZone()
@@ -814,6 +813,121 @@ public class RevisedTest extends TestCase
         assertEquals(0, MoveDelegate.getBattleTracker(m_data).getPendingBattleSites(false).size());
     }
 
+    public void testAAOwnership()       
+    {        	
+    	//Set up players
+    	PlayerID british = m_data.getPlayerList().getPlayerID("British");
+    	PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+    	PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+
+    	//Set up the territories
+    	Territory india = territory("India", m_data);
+    	Territory fic = territory("French Indochina", m_data);
+    	Territory china = territory("China", m_data);
+    	Territory kwang = territory("Kwantung", m_data);
+
+    	//Preset units in FIC
+        UnitType infType = m_data.getUnitTypeList().getUnitType("infantry");
+        UnitType aaType = m_data.getUnitTypeList().getUnitType("aaGun");
+    	removeFrom(fic, fic.getUnits().getUnits());    	
+        addTo(fic, aaGun(m_data).create(1,japanese));	
+        addTo(fic, infantry(m_data).create(1,japanese));
+    	assertEquals(2, fic.getUnits().getUnitCount());
+    	
+    	//Get attacking units
+    	Collection<Unit> britishUnits = india.getUnits().getUnits(infType, 1);
+    	Collection<Unit> japaneseUnits = kwang.getUnits().getUnits(infType, 1);
+    	Collection<Unit> americanUnits = china.getUnits().getUnits(infType, 1);
+    	
+    	//Get Owner prior to battle
+    	assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(japanese(m_data))));    	
+    	String preOwner = fic.getOwner().getName();
+    	assertEquals(preOwner, "Japanese");
+
+    	//Set up the move delegate
+    	ITestDelegateBridge delegateBridge = getDelegateBridge(british(m_data));
+    	MoveDelegate moveDelegate = moveDelegate(m_data);
+    	delegateBridge.setStepName("CombatMove");
+    	moveDelegate.start(delegateBridge, m_data);
+
+    	/*
+    	 * add a VALID BRITISH attack
+    	 */
+    	String validResults = moveDelegate.move(britishUnits, new Route(india, fic));
+    	assertValid(validResults);
+        moveDelegate(m_data).end();
+
+    	//Set up battle        
+        MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(fic, false);
+    	
+        delegateBridge.setRemote(new DummyTripleAPlayer());
+        
+        //fight
+        ScriptedRandomSource randomSource = new ScriptedRandomSource(0,5);
+        delegateBridge.setRandomSource(randomSource);
+        battle.fight(delegateBridge);
+ 
+    	//Get Owner after to battle
+    	assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(british(m_data))));
+    	String postOwner = fic.getOwner().getName();
+    	assertEquals(postOwner, "British");
+    
+    	
+    	/*
+    	 * add a VALID JAPANESE attack
+    	 */
+    	//Set up battle  
+    	delegateBridge = getDelegateBridge(japanese(m_data));
+    	delegateBridge.setStepName("CombatMove");
+    	moveDelegate.start(delegateBridge, m_data);
+    	
+    	//Move to battle
+    	validResults = moveDelegate.move(japaneseUnits, new Route(kwang, fic));
+    	assertValid(validResults);
+        moveDelegate(m_data).end();
+      
+        battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(fic, false);
+    	
+        delegateBridge.setRemote(new DummyTripleAPlayer());
+        
+        //fight
+        randomSource = new ScriptedRandomSource(0,5);
+        delegateBridge.setRandomSource(randomSource);
+        battle.fight(delegateBridge);
+ 
+    	//Get Owner after to battle
+    	assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(japanese(m_data))));
+    	String midOwner = fic.getOwner().getName();
+    	assertEquals(midOwner, "Japanese");
+
+    	
+    	/*
+    	 * add a VALID AMERICAN attack
+    	 */
+    	//Set up battle  
+    	delegateBridge = getDelegateBridge(americans(m_data));
+    	delegateBridge.setStepName("CombatMove");
+    	moveDelegate.start(delegateBridge, m_data);
+    	
+    	//Move to battle
+    	validResults = moveDelegate.move(americanUnits, new Route(china, fic));
+    	assertValid(validResults);
+        moveDelegate(m_data).end();
+      
+        battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(fic, false);
+    	
+        delegateBridge.setRemote(new DummyTripleAPlayer());
+        
+        //fight
+        randomSource = new ScriptedRandomSource(0,5);
+        delegateBridge.setRandomSource(randomSource);
+        battle.fight(delegateBridge);
+ 
+    	//Get Owner after to battle
+    	assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(americans(m_data))));
+    	String endOwner = fic.getOwner().getName();
+    	assertEquals(endOwner, "Americans");
+    }
     
     public void testStratBombRaidWithHeavyBombers()
     {
@@ -858,10 +972,6 @@ public class RevisedTest extends TestCase
         //int PUsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
         int pusAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
         assertEquals(pusBeforeRaid - 6, pusAfterRaid);
-        
-
-        
-        
     }
     
     
@@ -902,8 +1012,7 @@ public class RevisedTest extends TestCase
             ).toString(),
             steps.toString()
         );
-     
-    }
+     }
     
     
     public void testSeaBattleNoSneakAttack() 
@@ -945,9 +1054,6 @@ public class RevisedTest extends TestCase
             ).toString(),
             steps.toString()
         );
-        
-     
-
     }
     
     public void testAttackSubsOnSubs() 
@@ -1012,7 +1118,6 @@ public class RevisedTest extends TestCase
         
         assertEquals(2, randomSource.getTotalRolled());
         assertTrue(attacked.getUnits().isEmpty());
-
     }
     
     public void testAttackSubsOnDestroyer() 
@@ -1271,10 +1376,59 @@ public class RevisedTest extends TestCase
         Set<Territory> fire = new RocketsFireHelper().getTerritoriesWithRockets(m_data, germans(m_data));
         //germany, WE, SE, but not caucusus
         assertEquals(fire.size(), 3);
-       
-        
     }
     
+    public void testTechRolls()
+    {
+    	//Set up the test
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+
+        ITestDelegateBridge delegateBridge = getDelegateBridge(germans);
+        delegateBridge.setStepName("germanTech");
+        TechnologyDelegate techDelegate = techDelegate(m_data);
+        techDelegate.start(delegateBridge, m_data);
+    	TechAttachment ta = TechAttachment.get(germans);
+    	PlayerAttachment pa = PlayerAttachment.get(germans);
+    	
+    	//Check to make sure it was successful
+    	int initPUs = germans.getResources().getQuantity("PUs"); 
+    	
+    	//Fail the roll
+    	delegateBridge.setRandomSource(new ScriptedRandomSource(new int[]{ 3, 4 }));
+    	TechResults roll = techDelegate.rollTech(2, TechAdvance.ROCKETS, 0);
+
+    	//Check to make sure it failed
+    	assertEquals(0, roll.getHits());
+    	int midPUs = germans.getResources().getQuantity("PUs"); 
+    	assertEquals(initPUs-10,midPUs);
+    	
+    	
+    	//Make a Successful roll
+    	delegateBridge.setRandomSource(new ScriptedRandomSource(new int[]{ 5 }));
+    	TechResults roll2 = techDelegate.rollTech(1, TechAdvance.ROCKETS, 0);
+    	
+    	//Check to make sure it succeeded
+    	assertEquals(1, roll2.getHits());
+    	int finalPUs = germans.getResources().getQuantity("PUs"); 
+    	assertEquals(midPUs-5,finalPUs);
+    }
+    
+    /***********************************************************/
+    /***********************************************************/
+    /***********************************************************/
+    /***********************************************************/
+    /*
+     * Add assertions here
+     */
+    public void assertValid(String string)
+    {
+        assertNull(string,string);
+    }
+    
+    public void assertError(String string)
+    {
+        assertNotNull(string,string);
+    }
     private ITripleaPlayer getDummyPlayer()
     {
         return new DummyTripleAPlayer();

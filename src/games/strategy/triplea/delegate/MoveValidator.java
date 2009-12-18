@@ -986,7 +986,7 @@ public class MoveValidator
             {
                 //check all the territories but the end,
                 //if there are enemy territories, make sure they are blitzable
-                //if they are not blitzable, or we arent all blit units
+                //if they are not blitzable, or we arent all blitz units
                 //fail
                 int enemyCount = 0;
                 boolean allEnemyBlitzable = true;
@@ -1011,7 +1011,7 @@ public class MoveValidator
                     if(NonParatroopersPresent(player, units))
                         return result.setErrorReturnResult("Cannot blitz on that route");
                    
-                } else if (enemyCount > 0 && allEnemyBlitzable)
+                } else if (enemyCount >= 0 && allEnemyBlitzable && !(route.getStart().isWater() | route.getEnd().isWater()))
                 {
                     Match<Unit> blitzingUnit = new CompositeMatchOr<Unit>(Matches.UnitCanBlitz, Matches.UnitIsAir);
                     Match<Unit> nonBlitzing = new InverseMatch<Unit>(blitzingUnit);
@@ -1023,11 +1023,11 @@ public class MoveValidator
                         if (Matches.UnitIsParatroop.match(unit))
                             continue;
                         
-                        //if((ua.isInfantry() || ua.isMarine()) && m_mechanizedSupportAvail > 0)
-                        //m_mechanizedSupportAvail --;
                         if (Matches.UnitIsInfantry.match(unit))
                             continue;
-                        else
+                        
+                        TripleAUnit tAUnit = (TripleAUnit) unit;
+                        if(tAUnit.getAlreadyMoved() != 0)
                             result.addDisallowedUnit("Not all units can blitz",unit);
                     }
                 }
@@ -1826,6 +1826,14 @@ public class MoveValidator
             		result.addDisallowedUnit("Cannot move then transport paratroops", transport);
             	}
 			}
+            
+            for (Unit paratroop : paratroopsRequiringTransport)
+            {
+            	if(TripleAUnit.get(paratroop).getAlreadyMoved() != 0) 
+            	{
+            		result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
+            	}
+            }
             
             //TODO using just allied territories causes it to go to LALA land when moving to water
             //if (Matches.isTerritoryAllied(player, data).match(route.getEnd()))

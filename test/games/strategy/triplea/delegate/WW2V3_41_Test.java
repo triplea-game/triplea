@@ -16,6 +16,7 @@ package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.BattleStepStrings.*;
 import static games.strategy.triplea.delegate.GameDataTestUtil.*;
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
@@ -33,15 +34,22 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
+import games.strategy.triplea.delegate.dataObjects.TechResults;
+import games.strategy.triplea.delegate.remote.ITechDelegate;
+import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
 
 import java.io.InputStream;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -137,10 +145,45 @@ public class WW2V3_41_Test extends TestCase {
             assertNull(error);
         }
         
-        public void testInfantryLoadOnlyTransports() 
+        public void testTechTokens()
         {
-            
-            
+        	//Set up the test
+            PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+   
+            ITestDelegateBridge delegateBridge = getDelegateBridge(germans);
+            delegateBridge.setStepName("germanTech");
+            TechnologyDelegate techDelegate = techDelegate(m_data);
+            techDelegate.start(delegateBridge, m_data);
+
+            //Add tech token
+        	new ChangePerformer(m_data).perform(ChangeFactory.changeResourcesChange(germans, m_data.getResourceList().getResource(Constants.TECH_TOKENS), 1));
+
+        	//Check to make sure it was successful
+        	int initTokens = germans.getResources().getQuantity("techTokens"); 
+        	assertEquals(1,initTokens);
+        	
+        	//Fail the roll
+        	delegateBridge.setRandomSource(new ScriptedRandomSource(new int[]{ 3 }));
+        	TechResults roll = techDelegate.rollTech(1, TechAdvance.MECHANIZED_INFANTRY, 0);
+
+        	//Check to make sure it failed
+        	assertEquals(0, roll.getHits());
+        	int midTokens = germans.getResources().getQuantity("techTokens"); 
+        	assertEquals(1,midTokens);
+        	
+        	
+        	//Make a Successful roll
+        	delegateBridge.setRandomSource(new ScriptedRandomSource(new int[]{ 5 }));
+        	TechResults roll2 = techDelegate.rollTech(1, TechAdvance.MECHANIZED_INFANTRY, 0);
+        	
+        	//Check to make sure it succeeded and all tokens were removed
+        	assertEquals(1, roll2.getHits());
+        	int finalTokens = germans.getResources().getQuantity("techTokens"); 
+        	assertEquals(0,finalTokens);        	
+        }
+        
+        public void testInfantryLoadOnlyTransports() 
+        {   
             Territory gibraltar = territory("Gibraltar", m_data);
             //add a tank to gibralter
             PlayerID british = british(m_data);
@@ -326,7 +369,7 @@ public class WW2V3_41_Test extends TestCase {
             assertError(errorResults);
         }
         
-        public void testMultipleAAInTerritory() throws Exception
+        public void testMultipleAAInTerritory()
         {
         	//Set up territories
             Territory poland = territory("Poland", m_data);     	
@@ -494,7 +537,7 @@ public class WW2V3_41_Test extends TestCase {
             assertNull(error);    
         }
 
-        public void testFactoryPlace() throws Exception
+        public void testFactoryPlace()
         {
             //Set up game
             PlayerID british = m_data.getPlayerList().getPlayerID("British");
@@ -524,54 +567,80 @@ public class WW2V3_41_Test extends TestCase {
             //get production and unit production values
             TerritoryAttachment ta = TerritoryAttachment.get(egypt);
             assertEquals(ta.getUnitProduction(), ta.getProduction());
-            
-            /*PlaceDelegate del = placeDelegate(m_data);
-            del.start(getDelegateBridge( british(m_data)), m_data);
-            
-            addTo(british(m_data), 
-                  transports(m_data).create(1,british(m_data)));
-            
-            del.end();
-            
-            //unplaced units die
-            assertEquals(1, british(m_data).getUnits().size());*/
         }
         
-        public void testChinesePlacement() throws Exception
+        public void testChinesePlacement() 
         {
+        	/*
+        	 * This tests that Chinese can place units in any territory, that they can
+        	 * place in just conquered territories, and that they can place in territories
+        	 * with up to 3 Chinese units in them.
+        	 */
             //Set up game
             PlayerID chinese = m_data.getPlayerList().getPlayerID("Chinese");
-            ITestDelegateBridge delegateBridge = getDelegateBridge( british(m_data));
-                        
+            ITestDelegateBridge delegateBridge = getDelegateBridge( chinese(m_data));
+            delegateBridge.setPlayerID(chinese);
+            delegateBridge.setStepName("CombatMove");
+
+        	MoveDelegate moveDelegate = moveDelegate(m_data);
+        	moveDelegate.start(delegateBridge, m_data);
             //Set up the territories
-            Territory yunnan = territory("Yunnan", m_data);   
+            Territory yunnan = territory("Yunnan", m_data);
+            Territory kiangsu = territory("Kiangsu", m_data);
+            Territory hupeh = territory("Hupeh", m_data);      
 
             //Set up the unit types
             UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+            
+            //Remove all units
+        	removeFrom(kiangsu, kiangsu.getUnits().getUnits());
 
-            //Set up the move delegate
+        	//add a VALID attack
+        	Collection<Unit> moveUnits = hupeh.getUnits().getUnits();
+        	String validResults = moveDelegate.move(moveUnits, new Route(hupeh, kiangsu));
+        	assertValid(validResults);
+        	
+            /*
+             * Place units in just captured territory
+             */
             PlaceDelegate placeDelegate = placeDelegate(m_data);
             delegateBridge.setStepName("Place");
-            delegateBridge.setPlayerID(chinese);
             placeDelegate.start(delegateBridge, m_data);
-            
+
             //Add the infantry
             IntegerMap<UnitType> map = new IntegerMap<UnitType>();
             map.add(infantryType, 3);
-            addTo(chinese(m_data), infantry(m_data).create(3,chinese(m_data)));
+            addTo(chinese(m_data), infantry(m_data).create(1,chinese(m_data)));
             //Get the number of units before placing
-            int preCount = yunnan.getUnits().getUnitCount();
+            int preCount = kiangsu.getUnits().getUnitCount();
             
             //Place the infantry
-            String response = placeDelegate.placeUnits(getUnits(map, chinese), yunnan);      
+            String response = placeDelegate.placeUnits(getUnits(map, chinese), kiangsu);      
+            assertValid(response);
+            assertEquals(preCount+1, kiangsu.getUnits().getUnitCount());
+            
+            /*
+             * Place units in a territory with up to 3 Chinese units
+             */
+            //Add the infantry
+            map = new IntegerMap<UnitType>();
+            map.add(infantryType, 3);
+            addTo(chinese(m_data), infantry(m_data).create(3,chinese(m_data)));
+            //Get the number of units before placing
+            preCount = yunnan.getUnits().getUnitCount();
+            
+            //Place the infantry
+            response = placeDelegate.placeUnits(getUnits(map, chinese), yunnan);      
             assertValid(response);
             
             int midCount = yunnan.getUnits().getUnitCount();
             
             //Make sure they were all placed         
             assertEquals(preCount, midCount - 3);
-            
-           //Try to place more
+
+            /*
+             * Place units in a territory with 3 or more Chinese units
+             */
             map = new IntegerMap<UnitType>();
             map.add(infantryType, 1);
             addTo(chinese(m_data), infantry(m_data).create(1,chinese(m_data)));
@@ -582,7 +651,36 @@ public class WW2V3_41_Test extends TestCase {
             int postCount = yunnan.getUnits().getUnitCount();   
             assertEquals(midCount, postCount);
         }
-       
+
+        public void testPlaceInOccupiedSZ()
+        {
+            //Set up game
+            PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+            ITestDelegateBridge delegateBridge = getDelegateBridge( british(m_data));
+
+            //Clear all units from the SZ and add an enemy unit
+            Territory sz5 = territory("5 Sea Zone", m_data);  
+            removeFrom(sz5, sz5.getUnits().getUnits()); 
+            addTo(sz5, destroyer(m_data).create(1,british(m_data)));
+
+            //Set up the unit types
+            UnitType transportType = m_data.getUnitTypeList().getUnitType("transport");
+
+            //Set up the move delegate
+            PlaceDelegate placeDelegate = placeDelegate(m_data);
+            delegateBridge.setStepName("Place");
+            delegateBridge.setPlayerID(germans);
+            placeDelegate.start(delegateBridge, m_data);
+            
+            //Add the transport
+            IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+            map.add(transportType, 1);
+            addTo(germans(m_data), transports(m_data).create(1,germans(m_data)));
+            //Place it
+            String response = placeDelegate.placeUnits(getUnits(map, germans), sz5); 
+            assertValid(response);
+        }
+        
         public void testMoveUnitsThroughSubs()
         {
             ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
@@ -715,9 +813,7 @@ public class WW2V3_41_Test extends TestCase {
                 ).toString(),
                 steps.toString()
             );
-            
-          
-            
+                                 
             bridge.setRemote(new DummyTripleAPlayer());
             
             //fight, each sub should fire
@@ -790,8 +886,7 @@ public class WW2V3_41_Test extends TestCase {
             
             assertEquals(1, randomSource.getTotalRolled());
             assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(british(m_data))).isEmpty());
-            assertEquals(2, attacked.getUnits().size());
-            
+            assertEquals(2, attacked.getUnits().size());            
         }
 
         public void testAttackDestroyerAndSubsAgainstSub() 
@@ -1040,6 +1135,62 @@ public class WW2V3_41_Test extends TestCase {
             assertEquals(2, mfb.getBombardingUnits().size());
         }
         
+        //TODO this test needs work kev
+        public void testAAFireWithRadar() 
+        {
+        	PlayerID russians = russians(m_data);
+        	PlayerID germans = germans(m_data);
+			TechAttachment.get(russians).setAARadar("true");
+			
+            MoveDelegate move = moveDelegate(m_data);
+            ITestDelegateBridge bridge = getDelegateBridge(germans);           
+            bridge.setStepName("CombatMove");
+            
+            Territory poland = territory("Poland", m_data);
+            Territory ePoland = territory("East Poland", m_data);
+            Territory belo = territory("Belorussia", m_data);
+            Territory russia = territory("Russia", m_data);
+            
+            //Add bomber to Poland and attack
+            addTo(poland, bomber(m_data).create(1,germans));
+            
+            //The game will ask us if we want to move bomb, say yes.
+            InvocationHandler handler = new InvocationHandler()
+            {
+                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+                {
+                    return true;
+                }
+            };
+            
+            ITripleaPlayer player = (ITripleaPlayer) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleaPlayer.class}, handler ); 
+            bridge.setRemote(player);
+
+            //Perform the combat movement
+            move.start(bridge, m_data);
+            move(poland.getUnits().getMatches(Matches.UnitIsStrategicBomber), m_data.getMap().getRoute(poland, russia));         
+            move.end();
+
+            
+            //start the battle phase
+            battleDelegate(m_data).start(bridge,m_data);
+            //aa guns rolls 1, hits
+            bridge.setRandomSource(new ScriptedRandomSource( new int[] {0, 6} ));
+            BattleTracker tracker = new BattleTracker();
+            StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(russia, m_data, germans, russians,  tracker );
+           
+            //aa guns rolls 1, hits
+            //bridge.setRandomSource(new ScriptedRandomSource( new int[] {0, 6} ));
+
+            int PUsBeforeRaid = russians.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+            
+            battle.fight(bridge);
+            
+            int PUsAfterRaid = russians.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+            
+            //Changed to match StrategicBombingRaidBattle changes
+            assertEquals(PUsBeforeRaid , PUsAfterRaid);
+        }
         
         public void testCarrierWithAlliedPlanes() 
         {
@@ -1060,13 +1211,11 @@ public class WW2V3_41_Test extends TestCase {
             
             //make sure the fighter moved
             assertTrue(sz8.getUnits().getUnits().isEmpty());
-            assertFalse(sz1.getUnits().getMatches(Matches.UnitIsAir).isEmpty());
- 
+            assertFalse(sz1.getUnits().getMatches(Matches.UnitIsAir).isEmpty()); 
         }
         
         public void testAirCanLandWithAlliedFighters() 
-        {
-        	
+        {        	
         	//germany owns madagascar, with 1 fighter in it
         	//also 1 carrier, and 1 allied fighter in sz 40
         	//the fighter should not be able to move from madagascar 
@@ -1120,8 +1269,7 @@ public class WW2V3_41_Test extends TestCase {
 			toMove.addAll(france.getUnits().getMatches(Matches.UnitCanBlitz));
 			toMove.add(france.getUnits().getMatches(Matches.UnitIsInfantry).get(0));
 			
-			move(toMove, r);
-						
+			move(toMove, r);						
         }
         
         public void testMechInfUnitAlreadyMovedSimple() 
@@ -1146,13 +1294,11 @@ public class WW2V3_41_Test extends TestCase {
 			Route r = new Route(france,germany);
 			String error = moveDelegate(m_data).move(france.getUnits().getUnits(), r);
 			
-			assertFalse(error == null);
-						
+			assertFalse(error == null);						
         }
         
         public void testParatroopsWalkOnWater() 
         {
-        	
         	//paratroops should stop on water
         	
         	PlayerID germans = germans(m_data);
@@ -1166,13 +1312,11 @@ public class WW2V3_41_Test extends TestCase {
 			MoveValidationResult results = MoveValidator.validateMove(
 					paratroopers, 
 					r, germans, Collections.<Unit>emptyList(), false, null, m_data);
-			assertFalse(results.isMoveValid());
-			
+			assertFalse(results.isMoveValid());			
         }
         
         public void testMoveParatroopersAsNonPartroops() 
         {
-        	
         	//move a bomber and a paratrooper
         	//one step, but as a normal movement
         	
@@ -1193,7 +1337,6 @@ public class WW2V3_41_Test extends TestCase {
 			
 			//move to nwe, this is a valid move, and it not a partroop move
 			move(bomberAndParatroop, new Route(germany, nwe));
-			
         } 
         
         public void testCantMoveParatroopersThatMovedPreviously() 
@@ -1221,8 +1364,7 @@ public class WW2V3_41_Test extends TestCase {
 			
 			//move the units to east poland
 			String error = moveDelegate(m_data).move(bomberAndParatroop, new Route(germany, poland, eastPoland));
-			
-			assertFalse(error == null);			
+			assertError(error);			
         }
 
         public void testCantTransportParatroopersWithBombersThatMovedPreviously() 
@@ -1240,7 +1382,6 @@ public class WW2V3_41_Test extends TestCase {
             moveDelegate(m_data).start(bridge, m_data);
         	
 			TechAttachment.get(germans).setParatroopers("true");
-			//germany, poland, bulgaria/romania, ukraine
 			
 			//Move the bomber first
 			List<Unit> bomber = germany.getUnits().getMatches(Matches.UnitIsStrategicBomber);			
@@ -1287,8 +1428,6 @@ public class WW2V3_41_Test extends TestCase {
         	//After a battle move to put a bomber + infantry (paratroop) in a first enemy
         	//territory, you can make a new move (in the same battle move round) to put
         	//bomber+ infantry in a more internal enemy territory.
-        	
-        	
         	PlayerID germans = germans(m_data);
         	Territory germany = territory("Germany", m_data);
         	Territory poland = territory("Poland", m_data);
@@ -1311,10 +1450,39 @@ public class WW2V3_41_Test extends TestCase {
 			
 			//try to move them further, this should fail
 			String error = moveDelegate(m_data).move(bomberAndParatroop, new Route(eastPoland, beloRussia));
+			assertError(error);
+        }
+
+        
+        public void testParatroopersFlyOverBlitzedTerritory() 
+        {
+        	//We should be able to blitz a territory, then fly over it with paratroops to battle.
+        	PlayerID germans = germans(m_data);
+        	Territory germany = territory("Germany", m_data);
+        	Territory poland = territory("Poland", m_data);
+        	Territory eastPoland = territory("East Poland", m_data);
+        	Territory beloRussia = territory("Belorussia", m_data);
+
+        	//Clear East Poland
+            removeFrom(eastPoland, eastPoland.getUnits().getUnits());
+            
+            //Set up test
+        	ITestDelegateBridge bridge = getDelegateBridge(germans);
+            bridge.setStepName("CombatMove");
+            moveDelegate(m_data).start(bridge, m_data);
+			TechAttachment.get(germans).setParatroopers("true");
 			
+			List<Unit> paratrooper = germany.getUnits().getMatches(Matches.UnitIsParatroop);
+			paratrooper = paratrooper.subList(0, 1);
+			List<Unit> bomberAndParatroop = new ArrayList<Unit>(paratrooper);
+			bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
 			
-			assertFalse(error == null);
+			List<Unit> tanks = poland.getUnits().getMatches(Matches.UnitCanBlitz);
+			move(tanks, new Route(poland, eastPoland, beloRussia));
 			
+			//Verify paratroops can overfly blitzed territory
+			String error = moveDelegate(m_data).move(bomberAndParatroop, new Route(germany, poland, eastPoland, beloRussia));
+			assertValid(error);
         }
         
         public void testAmphibAttackWithPlanesOnlyAskRetreatOnce() 

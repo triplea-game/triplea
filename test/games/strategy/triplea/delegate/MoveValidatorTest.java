@@ -124,11 +124,6 @@ public class MoveValidatorTest extends DelegateTest
 		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(good, british, m_data));	
 	}
 	
-
-	
-
-
-	
 	public void testHasNeutralBeforEnd()
 	{
 		Route route = new Route();
@@ -154,8 +149,7 @@ public class MoveValidatorTest extends DelegateTest
 		
 		assertTrue( MoveValidator.hasUnitsThatCantGoOnWater( factory.create(1,british)));
 	}
-	
-	
+		
 	public void testCarrierCapacity()
 	{
 		Collection units = carrier.create(5,british);

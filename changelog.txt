@@ -1,9 +1,12 @@
-* update to greate war 2.5 (Jason Clark)
+* Add more test cases (ComradeKev)
+
+* update to Great War 2.5 (Jason Clark)
+
+* Fix bug 2915452 Shouldn't be able to blitz with non-blitzing units by incrementally moving (ComradeKev)
 
 * Fix bug 2915057 Bombers shouldn't be able to move then pick up paratroops (ComradeKev)
 
 Changes for 1.1.2
-
 
 * Add more test cases (ComradeKev)
 
