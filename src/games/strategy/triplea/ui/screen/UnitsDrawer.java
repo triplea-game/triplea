@@ -2,6 +2,7 @@ package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.*;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
@@ -62,7 +63,7 @@ public class UnitsDrawer implements IDrawable
         
         Image img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged);
         
-        if(!m_damaged && type.getName().equals("factory") && isSBRAffectsUnitProduction(data) )
+        if(!m_damaged && UnitAttachment.get(type).isFactory() && isSBRAffectsUnitProduction(data) )
         {
         	TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));
         	int prod = ta.getProduction();
@@ -88,7 +89,7 @@ public class UnitsDrawer implements IDrawable
         }
         
         //Display Factory Damage
-        if(isSBRAffectsUnitProduction(data) && type.getName().equals("factory"))
+        if(isSBRAffectsUnitProduction(data) && UnitAttachment.get(type).isFactory())        	
         {
         	displayFactoryDamage(bounds, data, graphics, type);
         }

@@ -1017,7 +1017,6 @@ public class MoveValidator
                     Match<Unit> nonBlitzing = new InverseMatch<Unit>(blitzingUnit);
                     Collection<Unit> nonBlitzingUnits = Match.getMatches(units, nonBlitzing);
 
-                    //getMechanizedSupportAvail(route, units, player);
                     for (Unit unit : nonBlitzingUnits)
                     {                       
                         if (Matches.UnitIsParatroop.match(unit))
@@ -1027,7 +1026,7 @@ public class MoveValidator
                             continue;
                         
                         TripleAUnit tAUnit = (TripleAUnit) unit;
-                        if(tAUnit.getAlreadyMoved() != 0)
+                        if(tAUnit.getAlreadyMoved() != 0 || route.getLength() > 1)
                             result.addDisallowedUnit("Not all units can blitz",unit);
                     }
                 }

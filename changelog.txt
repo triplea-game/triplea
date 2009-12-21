@@ -1,3 +1,5 @@
+* Fix display of factory damage when unit name is "Factory" rather than "factory" (ComradeKev)
+
 * Add more test cases (ComradeKev)
 
 * update to Great War 2.5 (Jason Clark)
