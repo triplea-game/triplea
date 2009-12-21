@@ -2,7 +2,7 @@
 
 * Add more test cases (ComradeKev)
 
-* update to Great War 2.5 (Jason Clark)
+* update to Great War 3.0 (Jason Clark)
 
 * Fix bug 2915452 Shouldn't be able to blitz with non-blitzing units by incrementally moving (ComradeKev)
 

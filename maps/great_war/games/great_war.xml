@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="Great War" version="2.5"/>
+        <info name="Great War" version="3.0"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -1993,6 +1993,7 @@
                          <option name="isDestroyer" value="true"/>
                     </attatchment>
 
+
                     <attatchment name="territoryAttatchment" attatchTo="Flanders" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
                     </attatchment>
@@ -2579,7 +2580,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Sardinia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="2"/>
+                        <option name="production" value="1"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Tripoli" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2611,7 +2612,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Bosnia-Herzegovina" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="3"/>
+                        <option name="production" value="4"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Austria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2981,7 +2982,7 @@
                         <option name="production" value="1"/>
                     </attatchment>
 
-                    <attatchment name="territoryAttatchment" attatchTo="SZ 56 Central Mediterranean" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+<attatchment name="territoryAttatchment" attatchTo="SZ 56 Central Mediterranean" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
                     </attatchment>
 
@@ -3255,6 +3256,7 @@
             		<territoryOwner territory="SZ 52 Balearic Sea" owner="Italians"/>
             		<territoryOwner territory="SZ 56 Central Mediterranean" owner="Italians"/>
             		<territoryOwner territory="SZ 57 Ionian Sea" owner="Italians"/>
+			<territoryOwner territory="SZ 58 Adriatic Sea" owner="Italians"/>
 
 			<!-- Americans Owned Territories -->
             		<territoryOwner territory="United States" owner="Americans"/>
@@ -3347,7 +3349,6 @@
 
 			<!-- Austrians Owned Convoy Zones -->
 			<territoryOwner territory="SZ 59 Adriatic Sea" owner="Austrians"/>
-			<territoryOwner territory="SZ 58 Adriatic Sea" owner="Austrians"/>
 
 			<!-- Ottomans Owned Territory -->
             		<territoryOwner territory="Anatolia" owner="Ottomans"/>
@@ -3436,7 +3437,7 @@
                         <unitPlacement unitType="infantry" territory="Portugal" quantity="2" owner="British"/>
 				<unitPlacement unitType="factory" territory="Portugal" quantity="1" owner="British"/>
 
-                        <unitPlacement unitType="infantry" territory="Gibraltar" quantity="1" owner="British"/>
+                        <unitPlacement unitType="infantry" territory="Gibraltar" quantity="2" owner="British"/>
 
                         <unitPlacement unitType="transport" territory="SZ 47 Strait of Gibraltar" quantity="1" owner="British"/>
 				<unitPlacement unitType="cruiser" territory="SZ 47 Strait of Gibraltar" quantity="1" owner="British"/>
@@ -3482,7 +3483,7 @@
 
                         <unitPlacement unitType="factory" territory="ANZAC" quantity="1" owner="British"/>
                         <unitPlacement unitType="infantry" territory="ANZAC" quantity="4" owner="British"/>
-                        <unitPlacement unitType="cavalry" territory="ANZAC" quantity="2" owner="British"/>
+                        <unitPlacement unitType="cavalry" territory="ANZAC" quantity="1" owner="British"/>
 				<unitPlacement unitType="artillery" territory="ANZAC" quantity="1" owner="British"/>
 	
                         <unitPlacement unitType="cruiser" territory="SZ 82 Coral Sea" quantity="1" owner="British"/>
@@ -3495,7 +3496,7 @@
 
                         <unitPlacement unitType="factory" territory="Canada" quantity="1" owner="British"/>
                         <unitPlacement unitType="infantry" territory="Canada" quantity="4" owner="British"/>
-				<unitPlacement unitType="cavalry" territory="Canada" quantity="2" owner="British"/>
+				<unitPlacement unitType="cavalry" territory="Canada" quantity="1" owner="British"/>
 
                         <unitPlacement unitType="cruiser" territory="SZ 3 Atlantic Ocean" quantity="1" owner="British"/>
 				<unitPlacement unitType="destroyer" territory="SZ 3 Atlantic Ocean" quantity="1" owner="British"/>
@@ -3578,8 +3579,12 @@
                         <unitPlacement unitType="infantry" territory="Marseilles" quantity="3" owner="French"/>
 
                         <unitPlacement unitType="infantry" territory="French Morocco" quantity="2" owner="French"/>
+			<unitPlacement unitType="cavalry" territory="French Morocco" quantity="1" owner="French"/>
+			<unitPlacement unitType="artillery" territory="French Morocco" quantity="1" owner="French"/>
 
                         <unitPlacement unitType="infantry" territory="Algeria" quantity="2" owner="French"/>
+
+			<unitPlacement unitType="artillery" territory="Algeria" quantity="1" owner="French"/>
 
 				<unitPlacement unitType="infantry" territory="Tunisia" quantity="1" owner="French"/>
 
@@ -3587,14 +3592,17 @@
                         <unitPlacement unitType="destroyer" territory="SZ 44 Bay of Biscay" quantity="1" owner="French"/>
                         <unitPlacement unitType="submarine" territory="SZ 44 Bay of Biscay" quantity="1" owner="French"/>
                         <unitPlacement unitType="transport" territory="SZ 44 Bay of Biscay" quantity="1" owner="French"/>
+			<unitPlacement unitType="transport" territory="SZ 49 Balearic Sea" quantity="1" owner="French"/>
 
                         <unitPlacement unitType="battleship" territory="SZ 50 Gulf of Lyon" quantity="1" owner="French"/>
                         <unitPlacement unitType="cruiser" territory="SZ 50 Gulf of Lyon" quantity="1" owner="French"/>
-                        <unitPlacement unitType="destroyer" territory="SZ 50 Gulf of Lyon" quantity="1" owner="French"/>
-                        <unitPlacement unitType="transport" territory="SZ 50 Gulf of Lyon" quantity="1" owner="French"/>
+                        <unitPlacement unitType="destroyer" territory="SZ 50 Gulf of Lyon" quantity="2" owner="French"/>
+			<unitPlacement unitType="transport" territory="SZ 50 Gulf of Lyon" quantity="1" owner="French"/>
+		
 
-				<unitPlacement unitType="transport" territory="SZ 55 Tyrrhenian Sea" quantity="1" owner="French"/>
-
+			<unitPlacement unitType="transport" territory="SZ 75 Mid Atlantic" quantity="1" owner="French"/>
+			<unitPlacement unitType="battlecruiser" territory="SZ 75 Mid Atlantic" quantity="1" owner="French"/>
+				
 				<unitPlacement unitType="infantry" territory="Corsica" quantity="1" owner="French"/>
 				
                         <unitPlacement unitType="infantry" territory="Chad" quantity="1" owner="French"/>
@@ -3732,7 +3740,7 @@
 
                         <unitPlacement unitType="battleship" territory="SZ 60 Black Sea" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="cruiser" territory="SZ 60 Black Sea" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="destroyer" territory="SZ 60 Black Sea" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="destroyer" territory="SZ 60 Black Sea" quantity="3" owner="Russians"/>
                         <unitPlacement unitType="submarine" territory="SZ 60 Black Sea" quantity="1" owner="Russians"/>
 			<unitPlacement unitType="transport" territory="SZ 60 Black Sea" quantity="1" owner="Russians"/>
 
@@ -3755,16 +3763,18 @@
 			<unitPlacement unitType="factory" territory="Latium" quantity="1" owner="Italians"/>
 
                         <unitPlacement unitType="factory" territory="Rome" quantity="1" owner="Italians"/>
-                        <unitPlacement unitType="infantry" territory="Rome" quantity="1" owner="Italians"/>
+                        <unitPlacement unitType="infantry" territory="Rome" quantity="3" owner="Italians"/>
 				<unitPlacement unitType="fighter" territory="Rome" quantity="1" owner="Italians"/>
-				<unitPlacement unitType="cavalry" territory="Rome" quantity="2" owner="Italians"/>
+
+			<unitPlacement unitType="cavalry" territory="Rome" quantity="1" owner="Italians"/>
+		
 				<unitPlacement unitType="aaGun" territory="Rome" quantity="1" owner="Italians"/>
 
                         <unitPlacement unitType="infantry" territory="Apulia" quantity="1" owner="Italians"/>
 
                         <unitPlacement unitType="infantry" territory="Naples" quantity="1" owner="Italians"/>
 
-                        <unitPlacement unitType="infantry" territory="Sardinia" quantity="1" owner="Italians"/>
+                        <unitPlacement unitType="infantry" territory="Sardinia" quantity="2" owner="Italians"/>
 
                         <unitPlacement unitType="infantry" territory="Sicily" quantity="1" owner="Italians"/>
 
@@ -3772,15 +3782,19 @@
 
                         <unitPlacement unitType="infantry" territory="Cyrenaica" quantity="1" owner="Italians"/>
 	                       
-				<unitPlacement unitType="battlecruiser" territory="SZ 51 Ligurian Sea" quantity="1" owner="Italians"/>
+				<unitPlacement unitType="battleship" territory="SZ 51 Ligurian Sea" quantity="1" owner="Italians"/>
+				<unitPlacement unitType="destroyer" territory="SZ 51 Ligurian Sea" quantity="2" owner="Italians"/>
 				<unitPlacement unitType="transport" territory="SZ 51 Ligurian Sea" quantity="1" owner="Italians"/>
 
-                        <unitPlacement unitType="submarine" territory="SZ 56 Central Mediterranean" quantity="1" owner="Italians"/>
-                        <unitPlacement unitType="transport" territory="SZ 56 Central Mediterranean" quantity="1" owner="Italians"/>
 
-                        <unitPlacement unitType="battleship" territory="SZ 57 Ionian Sea" quantity="1" owner="Italians"/>
+				<unitPlacement unitType="transport" territory="SZ 55 Tyrrhenian Sea" quantity="1" owner="Italians"/>
+          
+                        <unitPlacement unitType="destroyer" territory="SZ 56 Central Mediterranean" quantity="1" owner="Italians"/>
+
+                        <unitPlacement unitType="battlecruiser" territory="SZ 57 Ionian Sea" quantity="1" owner="Italians"/>
                         <unitPlacement unitType="destroyer" territory="SZ 57 Ionian Sea" quantity="2" owner="Italians"/>
 				<unitPlacement unitType="cruiser" territory="SZ 57 Ionian Sea" quantity="1" owner="Italians"/>
+				<unitPlacement unitType="transport" territory="SZ 57 Ionian Sea" quantity="1" owner="Italians"/>
 
                         <unitPlacement unitType="destroyer" territory="SZ 58 Adriatic Sea" quantity="1" owner="Italians"/>
 
@@ -3788,7 +3802,7 @@
                         <!-- Americans  Unit Placements -->
                         <unitPlacement unitType="factory" territory="United States" quantity="1" owner="Americans"/>
 				<unitPlacement unitType="cavalry" territory="United States" quantity="2" owner="Americans"/>
-				<unitPlacement unitType="artillery" territory="United States" quantity="5" owner="Americans"/>
+				<unitPlacement unitType="artillery" territory="United States" quantity="4" owner="Americans"/>
 				<unitPlacement unitType="infantry" territory="United States" quantity="7" owner="Americans"/>
                         <unitPlacement unitType="cruiser" territory="SZ 1 Atlantic Ocean" quantity="1" owner="Americans"/>
                         <unitPlacement unitType="destroyer" territory="SZ 1 Atlantic Ocean" quantity="1" owner="Americans"/>
@@ -3831,7 +3845,7 @@
                         <unitPlacement unitType="infantry" territory="Bavaria" quantity="3" owner="Germans"/>
 				<unitPlacement unitType="cavalry" territory="Bavaria" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Munich" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Munich" quantity="2" owner="Germans"/>
 
                         <unitPlacement unitType="factory" territory="Bulgaria" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="infantry" territory="Bulgaria" quantity="7" owner="Germans"/>
@@ -3868,12 +3882,10 @@
                         <unitPlacement unitType="cavalry" territory="Weidmannshiel" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Weidmannshiel" quantity="2" owner="Germans"/>
 
-			<unitPlacement unitType="submarine" territory="SZ 6 Atlantic Ocean" quantity="2" owner="Germans"/>
+			<unitPlacement unitType="submarine" territory="SZ 4 Atlantic Ocean" quantity="3" owner="Germans"/>
 
-			<unitPlacement unitType="submarine" territory="SZ 8 Atlantic Ocean" quantity="2" owner="Germans"/>
+			<unitPlacement unitType="submarine" territory="SZ 5 Atlantic Ocean" quantity="3" owner="Germans"/>
 			
-			<unitPlacement unitType="submarine" territory="SZ 12 Atlantic Ocean" quantity="2" owner="Germans"/>
-
                         <unitPlacement unitType="submarine" territory="SZ 15 Atlantic Ocean" quantity="2" owner="Germans"/>
 
                         <unitPlacement unitType="submarine" territory="SZ 16 Atlantic Ocean" quantity="2" owner="Germans"/>
@@ -3899,33 +3911,30 @@
                         <unitPlacement unitType="submarine" territory="SZ 35 Helgoland Bight" quantity="2" owner="Germans"/>
 				<unitPlacement unitType="battleship" territory="SZ 35 Helgoland Bight" quantity="1" owner="Germans"/>
 				<unitPlacement unitType="battlecruiser" territory="SZ 35 Helgoland Bight" quantity="1" owner="Germans"/>
+				<unitPlacement unitType="submarine" territory="SZ 46 Mid Atlantic" quantity="2" owner="Germans"/>	
 
 				<unitPlacement unitType="battleship" territory="SZ 53 West Mediterranean" quantity="1" owner="Germans"/>
 				<unitPlacement unitType="cruiser" territory="SZ 53 West Mediterranean" quantity="1" owner="Germans"/>
 				<unitPlacement unitType="destroyer" territory="SZ 53 West Mediterranean" quantity="3" owner="Germans"/>
                         <unitPlacement unitType="battlecruiser" territory="SZ 53 West Mediterranean" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="submarine" territory="SZ 53 West Mediterranean" quantity="4" owner="Germans"/>
+			<unitPlacement unitType="submarine" territory="SZ 54 Tyrrhenian Sea" quantity="2" owner="Germans"/>
 			<unitPlacement unitType="transport" territory="SZ 63 Aegean Sea" quantity="1" owner="Germans"/>
-
-<unitPlacement unitType="destroyer" territory="SZ 63 Aegean Sea" quantity="1" owner="Germans"/>
-
-				<unitPlacement unitType="submarine" territory="SZ 54 Tyrrhenian Sea" quantity="1" owner="Germans"/>
-
+			<unitPlacement unitType="cruiser" territory="SZ 63 Aegean Sea" quantity="2" owner="Germans"/>
+			
                         <unitPlacement unitType="cruiser" territory="SZ 70 Indian Ocean" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="cruiser" territory="SZ 77 South Atlantic" quantity="2" owner="Germans"/>
-
-                        <unitPlacement unitType="cruiser" territory="SZ 78 Easter Island" quantity="1" owner="Germans"/>
-				<unitPlacement unitType="battlecruiser" territory="SZ 78 Easter Island" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="cruiser" territory="SZ 79 Samoa" quantity="2" owner="Germans"/>
+			<unitPlacement unitType="battlecruiser" territory="SZ 79 Samoa" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="cruiser" territory="SZ 84 Caroline Islands" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="destroyer" territory="SZ 84 Caroline Islands" quantity="2" owner="Germans"/>
 				<unitPlacement unitType="submarine" territory="SZ 84 Caroline Islands" quantity="2" owner="Germans"/>
 
-                        <unitPlacement unitType="cruiser" territory="SZ 86 Pacific Ocean" quantity="1" owner="Germans"/>
-
-                        <unitPlacement unitType="cruiser" territory="SZ 91 East China Sea" quantity="1" owner="Germans"/>
-				<unitPlacement unitType="battlecruiser" territory="SZ 91 East China Sea" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="cruiser" territory="SZ 86 Pacific Ocean" quantity="2" owner="Germans"/>
+                 
+				<unitPlacement unitType="battlecruiser" territory="SZ 83 Mariana Islands" quantity="1" owner="Germans"/>
+				<unitPlacement unitType="cruiser" territory="SZ 83 Mariana Islands" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Passchendaele" quantity="2" owner="Germans"/>       
                         <unitPlacement unitType="artillery" territory="Passchendaele" quantity="1" owner="Germans"/> 
@@ -3937,9 +3946,9 @@
 
                         <unitPlacement unitType="infantry" territory="Ghent" quantity="3" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Antwerp" quantity="3" owner="Germans"/>
-
-                        <unitPlacement unitType="infantry" territory="Cologne" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="cavalry" territory="Antwerp" quantity="2" owner="Germans"/>
+ 			
+                        <unitPlacement unitType="infantry" territory="Cologne" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Cologne" quantity="1" owner="Germans"/>
 				<unitPlacement unitType="factory" territory="Cologne" quantity="1" owner="Germans"/>
 
@@ -4022,14 +4031,15 @@
                         <unitPlacement unitType="cavalry" territory="Austria" quantity="1" owner="Austrians"/>
 
                         <unitPlacement unitType="factory" territory="Vienna" quantity="1" owner="Austrians"/>
-                        <unitPlacement unitType="infantry" territory="Vienna" quantity="5" owner="Austrians"/>
+                        <unitPlacement unitType="infantry" territory="Vienna" quantity="4" owner="Austrians"/>
                         <unitPlacement unitType="cavalry" territory="Vienna" quantity="1" owner="Austrians"/>
-                        <unitPlacement unitType="artillery" territory="Vienna" quantity="1" owner="Austrians"/>
+                        <unitPlacement unitType="artillery" territory="Vienna" quantity="2" owner="Austrians"/>
 				<unitPlacement unitType="fighter" territory="Vienna" quantity="2" owner="Austrians"/>
 				<unitPlacement unitType="aaGun" territory="Vienna" quantity="1" owner="Austrians"/>
 
                         <unitPlacement unitType="infantry" territory="Bohemia" quantity="2" owner="Austrians"/>
                         <unitPlacement unitType="cavalry" territory="Bohemia" quantity="1" owner="Austrians"/>
+			<unitPlacement unitType="artillery" territory="Bohemia" quantity="1" owner="Austrians"/>
 
                         <unitPlacement unitType="factory" territory="Hungary" quantity="1" owner="Austrians"/>
                         <unitPlacement unitType="infantry" territory="Hungary" quantity="4" owner="Austrians"/>
@@ -4047,14 +4057,16 @@
                         <unitPlacement unitType="infantry" territory="Transylvania" quantity="3" owner="Austrians"/>
                         <unitPlacement unitType="cavalry" territory="Transylvania" quantity="1" owner="Austrians"/>
                         <unitPlacement unitType="artillery" territory="Transylvania" quantity="1" owner="Austrians"/>
-
-                        <unitPlacement unitType="battleship" territory="SZ 59 Adriatic Sea" quantity="1" 
-owner="Austrians"/>
+                  
                         <unitPlacement unitType="destroyer" territory="SZ 59 Adriatic Sea" quantity="3" owner="Austrians"/>
-				<unitPlacement unitType="battlecruiser" territory="SZ 59 Adriatic Sea" quantity="1" owner="Austrians"/>
 
+			<unitPlacement unitType="cruiser" territory="SZ 59 Adriatic Sea" quantity="2" owner="Austrians"/>
+			
+				<unitPlacement unitType="battleship" territory="SZ 59 Adriatic Sea" quantity="1" owner="Austrians"/>
 				<unitPlacement unitType="transport" territory="SZ 59 Adriatic Sea" quantity="1" owner="Austrians"/>
 
+			
+				
 
                         <!-- Ottomans  Unit Placements -->
                         <unitPlacement unitType="factory" territory="Syria" quantity="1" owner="Ottomans"/>
@@ -4073,8 +4085,8 @@ owner="Austrians"/>
 				<unitPlacement unitType="fighter" territory="Istanbul" quantity="2" owner="Ottomans"/>
 				<unitPlacement unitType="aaGun" territory="Istanbul" quantity="1" owner="Ottomans"/>
 
-                        <unitPlacement unitType="infantry" territory="Anatolia" quantity="1" owner="Ottomans"/>
-
+                        <unitPlacement unitType="infantry" territory="Anatolia" quantity="2" owner="Ottomans"/>
+			
                         <unitPlacement unitType="factory" territory="Ankara" quantity="1" owner="Ottomans"/>
                         <unitPlacement unitType="infantry" territory="Ankara" quantity="4" owner="Ottomans"/>
                         <unitPlacement unitType="cavalry" territory="Ankara" quantity="3" owner="Ottomans"/>
@@ -4089,6 +4101,9 @@ owner="Austrians"/>
                         <unitPlacement unitType="artillery" territory="Armenia" quantity="1" owner="Ottomans"/>
 
                         <unitPlacement unitType="infantry" territory="Baghdad" quantity="2" owner="Ottomans"/>
+
+			<unitPlacement unitType="infantry" territory="Mosul" quantity="1" owner="Ottomans"/>
+
 
                         <unitPlacement unitType="battleship" territory="SZ 62 Black Sea" quantity="1" owner="Ottomans"/>
                         <unitPlacement unitType="cruiser" territory="SZ 62 Black Sea" quantity="1" owner="Ottomans"/>
@@ -4251,7 +4266,7 @@ owner="Austrians"/>
 		  <h2>Map Information</h2>This map is based on a unique projection developed specifically for the Great War
 		   variant and is designed to take full advantage of the<br>map scaling feature in TripleA.  Our desire to highlight the Western Front,
 		    while still giving the game a truly world-wide scope,<br>required that we make some abstractions to the map.  These include several game 
-		    boxes which connect to the major areas of conflict around<br>Europe, Africa and the Middle East. <br><br> UPDATE!!! This latest version contains a couple changes designed to make the naval game more interesting. Some additional trasports have been included to make the starting fleets slightly more effective, and some addition CP convoys have been added. The Turks have received a slight income boost, bringing the CP starting total to 200 production. Some additional destroyers were also included to balance the other adjustments. Note especially the change in Adriatic and around the Black Sea. There was there a couple additional german infantry to counter balance the Russian transport in the Gulf of Bothnia. Other than that its pretty much the same as the old game just with a slight upgrade. I fixed some centers and included some new flags for a cleaner look. Thanks again for playing, and good gaming all! -elk
+		    boxes which connect to the major areas of conflict around<br>Europe, Africa and the Middle East. <br><br> UPDATE!!! This latest version contains a couple changes designed to make the naval game more interesting and to provide a slight boost to the Central Powers. The most notable change is to the location of German uboats. They are now positioned so as not to be occupying enemy convoy zones at the begining of play. Additional trasports have been included to make the starting fleets slightly more effective, and some addition CP convoy zones have also been added, bringing their starting total to 200 production. New naval units were included to balance these adjustments. Note especially the changes around the Mid Atlantic, the Mediterranean, and the Black Sea. Some additional German infantry were added to counter balance the threat from the new Russian transport in the  Gulf of Bothnia, and the Germans now have some cavalry at Antwerp to make the Western Front a bit more interesting. Other than that its pretty much the same as the old game, just with a slight upgrade. I fixed  some centers and included new flags for a cleaner look. Thanks again for playing, and good gaming all! -Elk
 
 					
 					]]>	
