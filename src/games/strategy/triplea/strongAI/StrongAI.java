@@ -65,6 +65,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     private boolean m_AE = false, m_transports_may_die = true, m_zero_combat_attack = true, m_cap_danger = false, m_natObjective = false;
     private boolean m_bought_Attack_Ships = false, m_keep_Ships_At_Base = false;
     private HashMap<Territory, Territory> amphibMap= new HashMap<Territory, Territory>();
+    private HashMap<Territory, Collection<Unit>> shipsMovedMap = new HashMap<Territory, Collection<Unit>>();
     private Collection<Territory> m_seaTerrAttacked = new ArrayList<Territory>();
     private Collection<Territory> m_landTerrAttacked = new ArrayList<Territory>();
     private Collection<Territory> m_impassableTerrs = new ArrayList<Territory>();
@@ -191,6 +192,16 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	private void setAmphibMap(HashMap<Territory, Territory> xAmphibMap)
 	{
 		amphibMap = xAmphibMap;
+	}
+	
+	private HashMap<Territory, Collection<Unit>> getShipsMovedMap()
+	{
+		return shipsMovedMap;
+	}
+	
+	private void setShipsMovedMap(HashMap<Territory, Collection<Unit>> xMovedMap)
+	{
+		shipsMovedMap = xMovedMap;
 	}
 
 	private void setCapDanger(Boolean danger)
@@ -348,23 +359,26 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         List<Route> moveRoutes = new ArrayList<Route>();
         List<Collection<Unit>> transportsToLoad = new ArrayList<Collection<Unit>>();
         s_logger.fine("Start NonCombat for: " + player.getName());
-        
+        s_logger.fine("populateTransportLoad");
         populateTransportLoad(true, data, moveUnits, moveRoutes, transportsToLoad, player);
         doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
         moveRoutes.clear();
         moveUnits.clear();
         transportsToLoad.clear();
         
+        s_logger.fine("protectOurAllies");
         protectOurAllies(true, data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveRoutes.clear();
         moveUnits.clear();
 
+        s_logger.fine("planesToCarriers");
         planesToCarriers(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveRoutes.clear();
         moveUnits.clear();
 
+        s_logger.fine("bomberNonComMove");
         bomberNonComMove(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveRoutes.clear();
@@ -372,6 +386,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
         determineCapDanger(player, data);
 
+        s_logger.fine("populateNonComTransportMove");
         populateNonComTransportMove(data, moveUnits, moveRoutes, player);
 //        simulatedNonCombatTransportMove(data, moveUnits, moveRoutes, player);
 		doMove(moveUnits, moveRoutes, null, moveDel);
@@ -379,54 +394,64 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		moveUnits.clear();
 
         //unload the transports that can be unloaded
+        s_logger.fine("populateTransportUnLoadNonCom");
         populateTransportUnloadNonCom(true, data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveUnits.clear();
         moveRoutes.clear();
 
         //check to see if we have missed any transports
+        s_logger.fine("checkUnMovedTransports");
         checkUnmovedTransports(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveUnits.clear();
         moveRoutes.clear();
 
+        s_logger.fine("bringShipsToTransports");
         bringShipsToTransports(data, moveUnits, moveRoutes, player);
 		doMove(moveUnits, moveRoutes, null, moveDel);
 		moveUnits.clear();
 		moveRoutes.clear();
 		
+        s_logger.fine("populateNonCombatSea");
         populateNonCombatSea(true, data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveUnits.clear();
         moveRoutes.clear();
 
+        s_logger.fine("stopBlitzAttack");
         stopBlitzAttack(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveUnits.clear();
         moveRoutes.clear();
         
+        s_logger.fine("populateNonCombat");
         populateNonCombat(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveUnits.clear();
         moveRoutes.clear();
         
+        s_logger.fine("movePlanesHomeNonCom");
         movePlanesHomeNonCom(moveUnits, moveRoutes, player, data); //combine this with checkPlanes at some point
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveUnits.clear();
         moveRoutes.clear();
 
         //check to see if we have vulnerable planes
+        s_logger.fine("CheckPlanes");
         CheckPlanes(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveUnits.clear();
         moveRoutes.clear();
         transportsToLoad.clear();
 
+        s_logger.fine("secondLookSea");
         secondLookSea(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveUnits.clear();
         moveRoutes.clear();
         
+        s_logger.fine("populateTransportLoad");
         populateTransportLoad(true, data, moveUnits, moveRoutes, transportsToLoad, player); //another pass on loading
         doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
         moveRoutes.clear();
@@ -434,21 +459,25 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         transportsToLoad.clear();
 
         //unload the transports that can be unloaded
+        s_logger.fine("populateTransportUnloadNonCom");
         populateTransportUnloadNonCom(false, data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveUnits.clear();
         moveRoutes.clear();
         
+        s_logger.fine("nonCombatPlanes");
 		nonCombatPlanes(data, player, moveUnits, moveRoutes);
 		doMove(moveUnits, moveRoutes, null, moveDel);
         moveUnits.clear();
         moveRoutes.clear();
         
+        s_logger.fine("secondNonCombat");
         secondNonCombat(moveUnits, moveRoutes, player, data);
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveUnits.clear();
         moveRoutes.clear();
 
+        s_logger.fine("populateFinalTransportUnload");
         populateFinalTransportUnload(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
         s_logger.fine("Finished NonCombat for: " + player.getName());
@@ -473,6 +502,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveUnits.clear();
         moveRoutes.clear();
 
+        s_logger.fine("populateTransportLoad");
         populateTransportLoad(false, data, moveUnits, moveRoutes, transportsToLoad, player);
         doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
 		moveUnits.clear();
@@ -495,6 +525,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveRoutes.clear();
         moveUnits.clear();
 
+		s_logger.fine("Amphib Map Unload");
+		amphibMapUnload(data, moveUnits, moveRoutes, player);
+		doMove(moveUnits, moveRoutes, null, moveDel);
+		moveRoutes.clear();
+		moveUnits.clear();
+
+        s_logger.fine("firstTransportMove"); //probably don't need this anymore
         firstTransportMove(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
         moveRoutes.clear();
@@ -1302,12 +1339,16 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     {
 //    	Collection<Territory> impassableTerrs = getImpassableTerrs();
         TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
+		HashMap<Territory, Territory> amphibMap = new HashMap<Territory, Territory>();
         CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.transportIsTransporting());
     	CompositeMatch<Territory> enemyEmpty = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data),Matches.territoryHasEnemyLandUnits(player, data).invert(), Matches.TerritoryIsLand, Matches.territoryHasWaterNeighbor(data), Matches.TerritoryIsNotImpassable);
         CompositeMatch<Territory> enemyTarget = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data), Matches.territoryHasWaterNeighbor(data), Matches.TerritoryIsNotImpassable);
     	List<Territory> transTerr = SUtils.findCertainShips(data, player, transUnit);
     	if (transTerr.isEmpty())
+    	{
+    		s_logger.fine("Transports not found on entire map for player: "+player.getName());
     		return;
+    	}
     	List<Territory> seaTerrAttacked = getSeaTerrAttacked();
     	boolean tFirst = transportsMayDieFirst();
     	List<Territory> inRangeTerr = new ArrayList<Territory>();
@@ -1315,26 +1356,25 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	for (Territory startTerr : transTerr)
     	{
     		Set<Territory> enemyTerr = data.getMap().getNeighbors(startTerr, 3);
-//    		enemyTerr.removeAll(impassableTerrs);
     		for (Territory eCheck : enemyTerr)
     		{
-    			if (enemyEmpty.match(eCheck))
+    			if (!inRangeTerr.contains(eCheck) && enemyEmpty.match(eCheck))
     	    		inRangeTerr.add(eCheck);
-    			else if (enemyTarget.match(eCheck) && eCheck.getUnits().countMatches(Matches.UnitIsLand) < 3 && !SUtils.doesLandExistAt(eCheck, data, false))
+    			else if (!oneUnitTerr.contains(eCheck) && enemyTarget.match(eCheck) && eCheck.getUnits().countMatches(Matches.UnitIsLand) < 3 && !SUtils.doesLandExistAt(eCheck, data, false))
     				oneUnitTerr.add(eCheck); //islands are easy for the ranking system to miss
     		}
     	}
-    	if (inRangeTerr.isEmpty())
+    	if (inRangeTerr.isEmpty() && oneUnitTerr.isEmpty())
     		return;
-//    	s_logger.fine("Player: "+player.getName() + "; In Range Territories: "+inRangeTerr);
     	List<Territory> ourFriendlyTerr = new ArrayList<Territory>();
     	List<Territory> ourEnemyTerr = new ArrayList<Territory>();
-//    	boolean includeNeutrals = !Properties.getNeutralsImpassable(data); Sean says that this isn't really used
     	HashMap<Territory, Float> rankMap = SUtils.rankTerritories(data, ourFriendlyTerr, ourEnemyTerr, seaTerrAttacked, player, tFirst, false, false);
 
     	Set<Territory> rankTerr = rankMap.keySet();
     	inRangeTerr.retainAll(rankTerr); //should clear out any neutrals that are not common between the two
     	oneUnitTerr.retainAll(rankTerr);
+    	s_logger.fine("Attackable Territories: "+inRangeTerr);
+    	s_logger.fine("Invadable Territories: "+oneUnitTerr);
     	SUtils.reorder(inRangeTerr, rankMap, true);
     	/*
     	 * RankTerritories heavily emphasizes the land based attacks. One Unit Terr will get the amphib attacker
@@ -1350,8 +1390,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     		float eAttackPotential = SUtils.getStrengthOfPotentialAttackers(landTerr, data, player, tFirst, true, landTerrConquered);
     		PlayerID ePlayer = landTerr.getOwner();
     		float myAttackPotential = SUtils.getStrengthOfPotentialAttackers(landTerr, data, ePlayer, tFirst, true, null);
-    		if (myAttackPotential < (0.85F*eAttackPotential - 3.0F))
-    			continue;
+    		myAttackPotential += TerritoryAttachment.get(landTerr).getProduction()*2;
+//    		if (myAttackPotential < (0.75F*eAttackPotential - 3.0F))
+//    			continue;
     		for (Territory sourceTerr : transTerr)
     		{
     			Territory goTerr = SUtils.getSafestWaterTerr(landTerr, sourceTerr, seaTerrAttacked, data, player, false, tFirst);
@@ -1410,7 +1451,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     			continue;
     		strengthNeeded -= transStrength;
     		strengthNeeded = Math.max(strengthNeeded, 3.0F);
-    		float BBStrength = SUtils.inviteBBEscort(easyTerr, strengthNeeded, xAlreadyMoved, xMoveUnits, xMoveRoutes, data, player);
+    		float BBStrength = 0.0F;
+    		if (landingTerr != null)
+    			BBStrength = SUtils.inviteBBEscort(landingTerr, strengthNeeded, xAlreadyMoved, xMoveUnits, xMoveRoutes, data, player);
     		float planeStrength = 0.0F;
     		if (strengthNeeded > 0.0F)
     		{
@@ -1421,6 +1464,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     		{
     			moveUnits.addAll(xMoveUnits);
     			moveRoutes.addAll(xMoveRoutes);
+    			Iterator<Route> routeIter = moveRoutes.iterator();
+    			while (routeIter.hasNext())
+    			{
+    				Route checkRoute = routeIter.next();
+    				Territory tTerr = checkRoute.at(checkRoute.getLength());
+    				amphibMap.put(tTerr, easyTerr);
+    			}
     			unitsAlreadyMoved.addAll(xAlreadyMoved);
     			landTerrConquered.add(easyTerr);
     			if (landingTerr != null)
@@ -1436,6 +1486,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     			}
     		}
     	}
+    	setAmphibMap(amphibMap);
     	setLandTerrAttacked(landTerrConquered);
     }
     private void firstTransportMove(GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
@@ -1871,13 +1922,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		}
 		setAmphibMap(amphibMap);
-		if (isAmphib)
+/*		if (isAmphib)
 		{
 			s_logger.fine("Player: "+player.getName());
 			s_logger.fine("Units: "+moveUnits);
 			s_logger.fine("Routes: "+moveRoutes);
 		}
-    }
+*/    }
     
     private void amphibMapUnload(GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
     {
@@ -2050,22 +2101,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		Territory tempTerr=null, tempTerr2 = null;
 		enemyCaps.retainAll(goTerr);
 		SUtils.reorder(enemyCaps, rankMap, true);
-/*		for (int j=0; j < maxCap-1; j++) //sort the caps & neighbors by their production value
-		{
-			for (int iCap=j+1; iCap < maxCap; iCap++)
-			{
-				tempTerr = enemyCaps.get(j);
-				tempTerr2 = enemyCaps.get(iCap);
-				if (TerritoryAttachment.get(tempTerr).getProduction() < TerritoryAttachment.get(tempTerr2).getProduction())
-				{ //switch i & i+1
-					enemyCaps.remove(tempTerr);
-					enemyCaps.remove(tempTerr2);
-					enemyCaps.add(j, tempTerr2);
-					enemyCaps.add(iCap, tempTerr);
-				}
-			}
-		}
-*/		/*
+		/*
 		 * Search list: Production Value...capitals all have high values
 		 * if friendly, dump there first
 		 * if enemy, but we are stronger...dump next
@@ -2085,7 +2121,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			{
 				for (Territory nF : neighborTerr)
 				{
-					List<Unit> quickLandingUnits = nF.getUnits().getMatches(landAndOwned);
+					List<Unit> quickLandingUnits = new ArrayList<Unit>();
+					List<Unit> nFTrans = nF.getUnits().getMatches(transportingUnit);
+					Iterator<Unit> nFIter = nFTrans.iterator();
+					while (nFIter.hasNext())
+					{
+						Unit transport = nFIter.next();
+						quickLandingUnits.addAll(tTracker.transporting(transport));
+					}
 					Route quickLandRoute = new Route();
 					quickLandRoute.setStart(nF);
 					quickLandRoute.add(eC);
@@ -2736,6 +2779,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
        Match<Unit> alliedSeaAttackUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), Matches.UnitIsSea, Matches.UnitIsNotTransport);
        Match<Unit> alliedAirAttackUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), Matches.UnitIsAir);
        Match<Unit> alliedSeaAirAttackUnit = new CompositeMatchOr<Unit>(alliedSeaAttackUnit, alliedAirAttackUnit);
+       HashMap<Territory, Collection<Unit>> shipsMap = new HashMap<Territory, Collection<Unit>>();
        int allShips = 0;
        int enemyShips = 0;
        List <PlayerID> ePlayers = SUtils.getEnemyPlayers(data, player);
@@ -2803,13 +2847,22 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		   }
     	   float shipStrength = SUtils.inviteShipAttack(sendToTrans, targetStrength, xMoved, xUnits, xRoutes, data, player, false, tFirst, false);
     	   strengthAdded += shipStrength;
-//    	   if (strengthAdded > enemyStrength*0.22F)
-//    	   {
-    		   moveUnits.addAll(xUnits);
-    		   moveRoutes.addAll(xRoutes);
-    		   alreadyMoved.addAll(xMoved);
-//    	   }
+    	   moveUnits.addAll(xUnits);
+    	   moveRoutes.addAll(xRoutes);
+    	   alreadyMoved.addAll(xMoved);
        }
+	   int totShipMoves = moveUnits.size();
+	   for (int i=0; i < totShipMoves; i++)
+	   {
+		   Collection<Unit> newUnits = moveUnits.get(i);
+		   Route thisRoute = moveRoutes.get(i);
+		   Territory endTerr = thisRoute.getEnd();
+		   if (shipsMap.containsKey(endTerr))
+			   newUnits.addAll(shipsMap.get(endTerr));
+		   shipsMap.put(endTerr, newUnits);
+		   
+	   }
+	   setShipsMovedMap(shipsMap);
     }
     
     private void secondLookSea(final GameData data,List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
@@ -2924,7 +2977,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
        Collection<Territory> impassableTerrs = getImpassableTerrs();
        final Collection<Unit> alreadyMoved = new HashSet<Unit>();
        Territory myCapital = TerritoryAttachment.getCapital(player, data);
-
+       HashMap<Territory, Collection<Unit>> shipsMovedMap = getShipsMovedMap();
 	   Match<Unit> notAlreadyMoved =new CompositeMatchAnd<Unit>(new Match<Unit>()
 		   {
 				public boolean match(Unit o)
@@ -3061,6 +3114,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
        {
 		  List <Unit> myAttackUnits = myTerr.getUnits().getMatches(seaAirAttackUnit);
 		  List <Unit> alliedAttackUnits = myTerr.getUnits().getMatches(alliedSeaAirAttackUnit);
+		  if (shipsMovedMap.containsKey(myTerr))
+			  alreadyMoved.addAll(shipsMovedMap.get(myTerr));
 	      boolean keepGoing = true;
 	      badGuyStrength = SUtils.getStrengthOfPotentialAttackers(myTerr, data, player, tFirst, false, null);
 		  ownedStrength = SUtils.strength(myAttackUnits, false, true, tFirst);
