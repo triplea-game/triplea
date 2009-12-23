@@ -1468,7 +1468,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     			while (routeIter.hasNext())
     			{
     				Route checkRoute = routeIter.next();
-    				Territory tTerr = checkRoute.at(checkRoute.getLength());
+    				Territory tTerr = checkRoute.getEnd();
     				amphibMap.put(tTerr, easyTerr);
     			}
     			unitsAlreadyMoved.addAll(xAlreadyMoved);
@@ -2883,9 +2883,16 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         Match<Territory> endCond = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data));
         List <Territory> seaAttackTerr = SUtils.findCertainShips(data, player, seaAttackUnit);
         boolean tFirst = transportsMayDieFirst();
+        HashMap<Territory, Collection<Unit>> shipsMap = getShipsMovedMap();
+        List<Unit> alreadyMoved = new ArrayList<Unit>();
         for (Territory moveTerr : seaAttackTerr)
         {
+        	if (shipsMap.containsKey(moveTerr))
+        		alreadyMoved.addAll(shipsMap.get(moveTerr));
         	List<Unit> attackUnits = moveTerr.getUnits().getMatches(seaAirAttackUnit);
+        	attackUnits.removeAll(alreadyMoved);
+        	if (attackUnits.isEmpty())
+        		continue;
         	int moveDist = MoveValidator.getLeastMovement(attackUnits);
         	if (moveDist == 0)
         		continue;
