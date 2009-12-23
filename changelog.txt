@@ -1,5 +1,7 @@
 Changes for 1.2
 
+* Fix bug 2919513 units with 0 attack not getting artillery support (ComradeKev)
+
 * Fix display of factory damage when unit name is "Factory" rather than "factory" (ComradeKev)
 
 * Add more test cases (ComradeKev)

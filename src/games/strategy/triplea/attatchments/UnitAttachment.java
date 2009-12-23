@@ -350,9 +350,8 @@ public class UnitAttachment extends DefaultAttachment
     {
 
     	int bonus = games.strategy.triplea.Properties.getSuper_Sub_Defense_Bonus(player.getData());
-        //String bonusString = (String) player.getData().getProperties().get(Constants.SUPER_SUB_DEFENSE_BONUS, "0");
-        //int bonus = Integer.parseInt(bonusString);
-        if(bonus > 0)
+
+    	if(bonus > 0)
             return m_defense + bonus;
     }
     
@@ -365,20 +364,11 @@ public class UnitAttachment extends DefaultAttachment
     if(getAttack(player) == 0)
       return 0;
 
-    if(m_isStrategicBomber)
-    {
-     
-      if(TechTracker.hasHeavyBomber(player))
-      {
-       /* if(getData().getProperties().get(Constants.HEAVY_BOMBER_DICE_ROLLS) != null)
-            return new Integer( (String) getData().getProperties().get(Constants.HEAVY_BOMBER_DICE_ROLLS)).intValue();
-        else
-            return 3;*/
-        	
+    if(m_isStrategicBomber && TechTracker.hasHeavyBomber(player))
+    {        	
         return new Integer(games.strategy.triplea.Properties.getHeavy_Bomber_Dice_Rolls(getData()));
-    	
-      }
     }
+    
     return 1;
   }
 

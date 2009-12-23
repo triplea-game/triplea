@@ -458,27 +458,45 @@ public class BattleCalculator
 
         return false;
     }
-
-    public static int getRolls(Collection<Unit> units, PlayerID id, boolean defend)
+//kev
+    public static int getRolls(Collection<Unit> units, PlayerID id, boolean defend)    
     {
         int count = 0;
+        int unitRoll = 0;
         Iterator<Unit> iter = units.iterator();
         while (iter.hasNext())
         {
             Unit unit = iter.next();
-            count += getRolls(unit, id, defend);
+            unitRoll = getRolls(unit, id, defend);
+            
+            count += unitRoll;
+        }
+        return count;
+    }
+  //kev
+    public static int getRolls(Collection<Unit> units, PlayerID id, boolean defend, int availableSupport)
+    {    	                
+        Collection<Unit> supportableUnits = Match.getMatches(units, Matches.UnitIsArtillerySupportable);
+            
+        int count = 0;
+        int unitRoll = 0;
+        Iterator<Unit> iter = units.iterator();
+        while (iter.hasNext())
+        {
+            Unit unit = iter.next();                       
+            unitRoll = getRolls(unit, id, defend, availableSupport);       
+            count += unitRoll;       
         }
         return count;
     }
 
-    public static int getRolls(Unit unit, PlayerID id, boolean defend)
+    public static int getRolls(Unit unit, PlayerID id, boolean defend)    
     {
         UnitAttachment unitAttachment = UnitAttachment.get(unit.getType());
         if (defend)
         {
             //if lhtr
-            //check for nulll id since null players dont have game data
-            //if(!id.isNull() && id.getData().getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false)) 
+            //check for nulll id since null players dont have game data             
             if(!id.isNull() && games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(id.getData())) 
             {
                 //if they have the heavy bomber tech, then 2 rolls for defense
@@ -489,9 +507,33 @@ public class BattleCalculator
         }
         
         return unitAttachment.getAttackRolls(id);
+    }
+  
+    //Kev
+    public static int getRolls(Unit unit, PlayerID id, boolean defend, int artillerySupport)
+    {
+        UnitAttachment unitAttachment = UnitAttachment.get(unit.getType());
+        if (defend)
+        {
+            //if lhtr
+            //check for nulll id since null players dont have game data             
+            if(!id.isNull() && games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(id.getData())) 
+            {
+                //if they have the heavy bomber tech, then 2 rolls for defense
+                if(unitAttachment.isStrategicBomber() && TechTracker.getTechAdvances(id).contains(TechAdvance.HEAVY_BOMBER) )
+                    return 2;
+            }
+            return 1;
+        }
+        
+        int attackRoll = unitAttachment.getAttackRolls(id);
+        if(attackRoll == 0 && artillerySupport >0 && unitAttachment.isArtillerySupportable())
+        	attackRoll += 1;
+        
+        return attackRoll;
 
     }
-
+    
     /**
      * @return Can transports be used as cannon fodder
      */

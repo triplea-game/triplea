@@ -156,13 +156,12 @@ public class DiceRoll implements Externalizable
      */
     private static DiceRoll rollDiceLowLuck(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
     {
-        int rollCount = BattleCalculator.getRolls(units, player, defending);
+    	int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
+        int rollCount = BattleCalculator.getRolls(units, player, defending, artillerySupportAvailable);
         if (rollCount == 0)
         {
             return new DiceRoll(new ArrayList<Die>(0), 0);
         }
-
-        int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
 
         Iterator<Unit> iter = units.iterator();
 
@@ -173,8 +172,8 @@ public class DiceRoll implements Externalizable
         while (iter.hasNext())
         {
             Unit current = iter.next();
-            UnitAttachment ua = UnitAttachment.get(current.getType());
-            int rolls = defending ? 1 : ua.getAttackRolls(player);
+            UnitAttachment ua = UnitAttachment.get(current.getType());            
+            int rolls = BattleCalculator.getRolls(current, player, defending, artillerySupportAvailable);
             for (int i = 0; i < rolls; i++)
             {
                 int strength;
@@ -261,15 +260,15 @@ public class DiceRoll implements Externalizable
     {
         
     	boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
-        //boolean lhtrBombers = bridge.getPlayerID().getData().getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false);
+
+        int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
+        //int rollCount = BattleCalculator.getRolls(units, player, defending);
+        int rollCount = BattleCalculator.getRolls(units, player, defending, artillerySupportAvailable);
         
-        int rollCount = BattleCalculator.getRolls(units, player, defending);
         if (rollCount == 0)
         {
             return new DiceRoll(new ArrayList<Die>(), 0);
         }
-
-        int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
 
         int[] random;
         boolean isEditMode = EditDelegate.getEditMode(data);
@@ -291,8 +290,8 @@ public class DiceRoll implements Externalizable
         {
             Unit current = (Unit) iter.next();
             UnitAttachment ua = UnitAttachment.get(current.getType());
-
-            int rolls = BattleCalculator.getRolls(current, player, defending);
+            
+            int rolls = BattleCalculator.getRolls(current, player, defending, artillerySupportAvailable);
 
             //lhtr heavy bombers take best of n dice for both attack and defense
             if(rolls > 1 && lhtrBombers && ua.isStrategicBomber())
