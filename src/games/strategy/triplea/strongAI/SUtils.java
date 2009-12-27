@@ -4294,6 +4294,7 @@ public class SUtils
 
     /**
      * Target Territories for amphibious non-combat movement
+     * No Islands will result
      * 
      * @param data
      * @param ignoreTerr
@@ -4337,7 +4338,7 @@ public class SUtils
     	List<Territory> alliedFactories = new ArrayList<Territory>();
 		for (Territory aTerr : data.getMap().getTerritories())
 		{
-			if (!continentTerr.match(aTerr) || Matches.isTerritoryEnemy(player, data).match(aTerr) || Matches.TerritoryIsImpassable.match(aTerr))
+			if (!continentTerr.match(aTerr) || Matches.isTerritoryEnemy(player, data).match(aTerr) || Matches.TerritoryIsImpassable.match(aTerr) || Matches.territoryHasWaterNeighbor(data).invert().match(aTerr))
 				continue;
 			float alliedPotential = getStrengthOfPotentialAttackers(aTerr, data, ePlayer, tFirst, true, null);
 			float localStrength = SUtils.strength(aTerr.getUnits().getUnits(), false, false, tFirst);

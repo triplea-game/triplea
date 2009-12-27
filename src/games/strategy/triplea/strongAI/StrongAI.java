@@ -249,7 +249,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	} 
     }
 
-    private Route getAmphibRoute(final PlayerID player)
+    private Route getAmphibRoute(final PlayerID player, final boolean nonCombat)
     {
         if(!isAmphibAttack(player))
             return null;
@@ -263,19 +263,19 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             public boolean match(Territory o)
             {
                 boolean impassable = TerritoryAttachment.get(o) != null &&  TerritoryAttachment.get(o) .isImpassible();
-                return  !impassable && !o.isWater() && SUtils.hasLandRouteToEnemyOwnedCapitol(o, player, data);
+                return  !impassable && !o.isWater() && SUtils.hasLandRouteToEnemyOwnedCapitol(o, player, data) && (nonCombat == Matches.isTerritoryOwnedBy(player).match(o));
             }
 
         };
 
         Match<Territory> routeCond = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data));
 
-        Route withNoEnemy = SUtils.findNearest(ourCapitol, endMatch, routeCond, getPlayerBridge().getGameData());
+        Route withNoEnemy = SUtils.findNearest(ourCapitol, endMatch, routeCond, data);
         if(withNoEnemy != null && withNoEnemy.getLength() > 0)
             return withNoEnemy;
 
         //this will fail if our capitol is not next to water, c'est la vie.
-        Route route =  SUtils.findNearest(ourCapitol, endMatch, Matches.TerritoryIsWater, getPlayerBridge().getGameData());
+        Route route =  SUtils.findNearest(ourCapitol, endMatch, Matches.TerritoryIsWater, data);
         if(route != null && route.getLength() == 0) {
             return null;
         }
@@ -1132,10 +1132,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		if (transTerr2.isEmpty())
 			return;
 		HashMap<Territory, Float> rankMap = SUtils.rankAmphibReinforcementTerritories(data, null, player, tFirst);
+		s_logger.fine("Amphib Terr Rank: "+rankMap);
 		List<Territory> targetTerrs = new ArrayList<Territory>(rankMap.keySet());
 		List<Unit> unitsAlreadyMoved = new ArrayList<Unit>();
 		List<PlayerID> ePlayers = SUtils.getEnemyPlayers(data, player);
-		Route amphibRoute = getAmphibRoute(player);
+		Route amphibRoute = getAmphibRoute(player, true);
 		boolean isAmphib = isAmphibAttack(player);
 		if (isAmphib && amphibRoute != null && amphibRoute.getEnd() != null)
 		{
@@ -1575,6 +1576,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	Collection<Territory> impassableTerrs = getImpassableTerrs();
 		boolean tFirst = transportsMayDieFirst();
 		boolean isAmphib = isAmphibAttack(player);
+		Route amphibRoute = getAmphibRoute(player, false);
 		boolean aggressive = SUtils.determineAggressiveAttack(data, player, 1.4F);
         TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport);
@@ -1600,6 +1602,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 */		List<Territory> seaTerrAttacked = getSeaTerrAttacked();
 		alreadyAttacked.addAll(seaTerrAttacked);
+		Territory amphibAttackTerr = null;
+		//go back to the amphib route
+		if (amphibRoute != null)
+		{
+			amphibAttackTerr = amphibRoute.getEnd();
+		}
 		List<Territory> occTransTerr = SUtils.findCertainShips(data, player, transportingUnit);
 		occTransTerr.removeAll(dontMoveFrom);
 		if (occTransTerr == null || occTransTerr.isEmpty())
@@ -1676,6 +1684,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				{
 					cFIter.remove();
 					continue;
+				}
+				if (lT.equals(amphibAttackTerr))
+				{
+					Float amphibValue = landTerrMap2.get(lT) + 20.00F;
+					landTerrMap2.put(lT, amphibValue);
 				}
 //				Float newVal = landTerrMap2.get(lT) - (minDist-1)*(targetTerritories.contains(lT) ? 1 : 2);
 //				landTerrMap2.put(lT, newVal);
