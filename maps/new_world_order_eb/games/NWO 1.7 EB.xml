@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-       <info name="NEW WORLD ORDER" version="1.7"/>
+       <info name="NEW WORLD ORDER" version="1.7.1"/>
 
        <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -3927,7 +3927,7 @@
 
 
                <!-- Map Name: also used for map utils when asked -->
-               <property name="mapName" value="New World Order EB" editable="false"/>
+               <property name="mapName" value="new_world_order_eb" editable="false"/>
 
 <property name="notes">
 					<value>

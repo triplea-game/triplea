@@ -1,3 +1,5 @@
+* rename nwo map to new_world_order_eb, this is all lowercase which works on linux, and matches the other map names (sgb)
+
 * rounded neutral flags (Veqryn)
 
 * Fix bug 2919513 units with 0 attack not getting artillery support (ComradeKev)
