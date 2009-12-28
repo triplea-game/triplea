@@ -1,6 +1,8 @@
-Changes for 1.2
+* rounded neutral flags (Veqryn)
 
 * Fix bug 2919513 units with 0 attack not getting artillery support (ComradeKev)
+
+Changes for 1.2
 
 * Fix display of factory damage when unit name is "Factory" rather than "factory" (ComradeKev)
 
