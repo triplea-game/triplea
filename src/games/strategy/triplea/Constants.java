@@ -69,6 +69,7 @@ public interface Constants
   public static final String ROCKETS_CAN_VIOLATE_NEUTRALITY = "Rockets Can Violate Neutrality";
   public static final String ROCKETS_CAN_FLY_OVER_IMPASSABLES = "Rockets Can Fly Over Impassables";
   public static final String NEUTRALS_ARE_IMPASSABLE = "Neutrals Are Impassable";
+  public static final String NEUTRALS_ARE_BLITZABLE = "Neutrals Are Blitzable";  
   public static final String PARTIAL_AMPHIBIOUS_RETREAT = "Partial Amphibious Retreat";
   public static final String PREVIOUS_UNITS_FIGHT = "Previous Units Fight";
   

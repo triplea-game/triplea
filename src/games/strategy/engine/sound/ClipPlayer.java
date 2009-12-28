@@ -93,6 +93,9 @@ public class ClipPlayer
    * @param clipName String - the file name of the clip
    * @param resourceLocation Class - the location of the clip.
    */
+  /*
+   * Kev can call this to play sounds
+   */
   public void playClip(String clipName, Class<SoundPath> resourceLocation)
   {
     

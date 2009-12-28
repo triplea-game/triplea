@@ -98,6 +98,12 @@ public class Properties implements Constants {
 
     }
 
+    public static boolean getNeutralsBlitzable(GameData data) {
+
+        return data.getProperties().get(NEUTRALS_ARE_BLITZABLE, false);
+
+    }
+
     public static boolean getRocketsCanViolateNeutrality(GameData data) {
 
         return data.getProperties().get(ROCKETS_CAN_VIOLATE_NEUTRALITY, false);
@@ -558,6 +564,14 @@ public class Properties implements Constants {
     public static boolean getProduce_Fighters_On_Carriers(GameData data) {
 
         return data.getProperties().get(CAN_PRODUCE_FIGHTERS_ON_CARRIERS, false);
+    }
+
+    /*
+     * 
+     */
+    public static boolean getLHTR_Carrier_Production_Rules(GameData data) {
+
+        return data.getProperties().get(LHTR_CARRIER_PRODUCTION_RULES, false);
     }
 
     /*

@@ -240,7 +240,8 @@ public class BattleTracker implements java.io.Serializable
         //we handle the end of the route later
         conquered.remove(route.getEnd());
         Collection<Territory> blitzed = Match.getMatches(conquered, canBlitz);
-
+        //kev
+        //if(Match.someMatch(units, Matches.UnitCanBlitz))
         m_blitzed.addAll(blitzed);
         m_conquered.addAll(conquered);
 
@@ -262,7 +263,8 @@ public class BattleTracker implements java.io.Serializable
             if (precede == null)
             {
                 if (canBlitz.match(route.getEnd()))
-                {
+                {//kev
+                    //if(Match.someMatch(units, Matches.UnitCanBlitz))
                     m_blitzed.add(route.getEnd());
                 }
                 takeOver(route.getEnd(), id, bridge, data, changeTracker, units);

@@ -3885,7 +3885,10 @@
 		</property>
 
                <property name="neutralCharge" value="0"/>
-
+		
+		<property name="Neutrals Are Blitzable" value="false" editable="true">
+			<boolean/>
+		</property>
 
                <!-- Bids -->
 		<property name="Germans bid" value="0" editable="true">

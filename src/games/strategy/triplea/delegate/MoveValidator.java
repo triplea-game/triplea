@@ -328,7 +328,7 @@ public class MoveValidator
             return false;
 
         //cant blitz on neutrals
-        if(current.getOwner().isNull())
+        if(current.getOwner().isNull() && !games.strategy.triplea.Properties.getNeutralsBlitzable(data))
             return false;
 
         if(MoveDelegate.getBattleTracker(data).wasConquered(current) 
@@ -978,7 +978,7 @@ public class MoveValidator
             //if there is a neutral in the middle must stop unless all are air
             if (MoveValidator.hasNeutralBeforeEnd(route))
             {
-                if (!Match.allMatch(units, Matches.UnitIsAir))
+                if (!Match.allMatch(units, Matches.UnitIsAir) && !games.strategy.triplea.Properties.getNeutralsBlitzable(data))
                     return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
             }
 
@@ -990,6 +990,8 @@ public class MoveValidator
                 //fail
                 int enemyCount = 0;
                 boolean allEnemyBlitzable = true;
+                //Kev
+                //boolean allAlliedTerritories = true;
 
                 for (int i = 0; i < route.getLength() - 1; i++)
                 {
@@ -1003,6 +1005,8 @@ public class MoveValidator
                     {
                         enemyCount++;
                         allEnemyBlitzable &= MoveValidator.isBlitzable(current, data, player);
+                      //Kev
+                        //allAlliedTerritories = false;
                     }
                 }
                 
@@ -1011,7 +1015,9 @@ public class MoveValidator
                     if(NonParatroopersPresent(player, units))
                         return result.setErrorReturnResult("Cannot blitz on that route");
                    
-                } else if (enemyCount >= 0 && allEnemyBlitzable && !(route.getStart().isWater() | route.getEnd().isWater()))
+                } //Kev
+                //else if (enemyCount >= 0 && allEnemyBlitzable && !(allAlliedTerritories | route.getStart().isWater() | route.getEnd().isWater()))
+                else if (enemyCount >= 0 && allEnemyBlitzable && !(route.getStart().isWater() | route.getEnd().isWater()))
                 {
                     Match<Unit> blitzingUnit = new CompositeMatchOr<Unit>(Matches.UnitCanBlitz, Matches.UnitIsAir);
                     Match<Unit> nonBlitzing = new InverseMatch<Unit>(blitzingUnit);
@@ -1036,7 +1042,7 @@ public class MoveValidator
                 //ignore the end territory in our tests
                 Match<Territory> territoryIsEnd = Matches.territoryIs(route.getEnd());
                 //See if there are neutrals in the path                    	
-                if (data.getMap().getRoute(route.getStart(), route.getEnd(), new CompositeMatchOr<Territory>(noNeutral, territoryIsEnd)) == null)
+                if (data.getMap().getRoute(route.getStart(), route.getEnd(), new CompositeMatchOr<Territory>(noNeutral, territoryIsEnd)) == null  && !games.strategy.triplea.Properties.getNeutralsBlitzable(data))
                 	return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
 	                                    
             }

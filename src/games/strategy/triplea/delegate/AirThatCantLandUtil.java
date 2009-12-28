@@ -47,8 +47,7 @@ public class AirThatCantLandUtil
 
     public static boolean isLHTRCarrierProduction(GameData data)
     {
-    	return games.strategy.triplea.Properties.getProduce_Fighters_On_Carriers(data);
-        //return data.getProperties().get(Constants.LHTR_CARRIER_PRODUCTION_RULES, false);
+    	return games.strategy.triplea.Properties.getLHTR_Carrier_Production_Rules(data);
     }
 
     public Collection<Territory> getTerritoriesWhereAirCantLand(PlayerID player)

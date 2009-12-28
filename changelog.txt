@@ -1,3 +1,6 @@
+Changes for 1.2.1
+* Fix bug 2921117 can't blitz neutrals- added Neutrals Are Blitzable property (ComradeKev)
+
 * rename nwo map to new_world_order_eb, this is all lowercase which works on linux, and matches the other map names (sgb)
 
 * rounded neutral flags (Veqryn)

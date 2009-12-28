@@ -176,7 +176,9 @@ public class BattleDisplay extends JPanel
 
     public void bombingResults(int[] dice, int cost)
     {
-
+/*
+ * Kev here's how to call the sound clip player
+ */
         ClipPlayer.getInstance().playClip(SoundPath.BOMB, SoundPath.class); //play
         // sound
         m_dicePanel.setDiceRollForBombing(dice, cost);
