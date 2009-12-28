@@ -198,10 +198,8 @@ public class Route implements java.io.Serializable, Iterable<Territory>
     {
         if (t == null)
             throw new IllegalStateException("Null territory");
-        if(t.equals(m_start))
-            throw new IllegalArgumentException("Loops not allowed in m_routes");
-        if (m_route.contains(t))
-            throw new IllegalArgumentException("Loops not allowed in m_routes");
+        if(t.equals(m_start) || m_route.contains(t))
+            throw new IllegalArgumentException("Loops not allowed in m_routes, route:" + this + " new territory:" + t);
 
         m_route.add(t);
     }
