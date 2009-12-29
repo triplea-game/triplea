@@ -256,12 +256,6 @@ public class RulesAttachment extends DefaultAttachment
    */
   public void validate() throws GameParseException
   {
-/*      if(m_objectiveValue == 0 && ((m_alliedOwnershipTerritories == null || m_alliedOwnershipTerritories.length == 0) && 
-    		  (m_enemyExcludedTerritories == null || m_enemyExcludedTerritories.length == 0) && (m_alliedExcludedTerritories == null || m_alliedExcludedTerritories.length == 0) &&
-    		  m_alliedExclusion == null && m_enemyExclusion == null) && (m_movementRestrictionTerritories == null || m_movementRestrictionTerritories.length == 0) &&
-    		  (m_restrictionType == null) )
-          throw new IllegalStateException("ObjectiveAttachment error for:" + m_ruleOwner + " not all variables set");
-*/      
       if(m_alliedOwnershipTerritories != null && (!m_alliedOwnershipTerritories.equals("controlled") && !m_alliedOwnershipTerritories.equals("original") && !m_alliedOwnershipTerritories.equals("all")))
     	  getListedTerritories(m_alliedOwnershipTerritories);
 

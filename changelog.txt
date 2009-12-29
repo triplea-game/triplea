@@ -1,4 +1,8 @@
 Changes for 1.2.1
+* Fix bug (partial) 2860602 Allied air on carriers group together when carriers move through one another (ComradeKev)
+
+* Fix bug 2922798 transports with mechanized infantry aboard can move 3 spaces (ComradeKev)
+
 * Fix bug 2921117 can't blitz neutrals- added Neutrals Are Blitzable property (ComradeKev)
 
 * rename nwo map to new_world_order_eb, this is all lowercase which works on linux, and matches the other map names (sgb)

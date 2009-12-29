@@ -949,9 +949,7 @@ public class MoveValidator
             }
             
             //Initialize available Mechanized Inf support
-            //getMechanizedSupportAvail(route, units, player);
-            int mechanizedSupportAvailable = getMechanizedSupportAvail(route, units, player);
-            
+            int mechanizedSupportAvailable = getMechanizedSupportAvail(route, units, player);            
             int arialTransportSupportAvailable = getArialTransportSupportAvail(route, units, player);
                         
             // check units individually           
@@ -964,7 +962,7 @@ public class MoveValidator
                     {
                     	arialTransportSupportAvailable --;                     
                     }
-                    else if(mechanizedSupportAvailable > 0 && TripleAUnit.get(unit).getAlreadyMoved() == 0)
+                    else if(mechanizedSupportAvailable > 0 && TripleAUnit.get(unit).getAlreadyMoved() == 0 && (Matches.UnitIsInfantry.match(unit) | Matches.UnitIsMarine.match(unit)))
                     {
                     	mechanizedSupportAvailable --;
                     }
@@ -974,8 +972,10 @@ public class MoveValidator
                     }
                 }
             }
-
-            //if there is a neutral in the middle must stop unless all are air
+/*
+ * Kev need to refactor this neutral/blitz code
+ */
+            //if there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
             if (MoveValidator.hasNeutralBeforeEnd(route))
             {
                 if (!Match.allMatch(units, Matches.UnitIsAir) && !games.strategy.triplea.Properties.getNeutralsBlitzable(data))
@@ -2021,15 +2021,20 @@ public class MoveValidator
 
         int available = ua.getCarrierCapacity();
         Iterator<Unit> iter = selectFrom.iterator();
+        TripleAUnit tACarrier = (TripleAUnit) carrier;
         while (iter.hasNext())
         {
             Unit plane = (Unit) iter.next();
+    		TripleAUnit tAPlane = (TripleAUnit) plane;
             UnitAttachment planeAttatchment = UnitAttachment.get(plane.getUnitType());
             int cost = planeAttatchment.getCarrierCost();
-            if (available >= cost)
+            if (available >= cost) 
             {
-                available -= cost;
-                canCarry.add(plane);
+        		if(tACarrier.getAlreadyMoved() == tAPlane.getAlreadyMoved())
+        		{
+        			available -= cost;
+        			canCarry.add(plane);
+        		}
             }
             if (available == 0)
                 break;

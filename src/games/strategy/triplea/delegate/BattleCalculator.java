@@ -458,7 +458,7 @@ public class BattleCalculator
 
         return false;
     }
-//kev
+    
     public static int getRolls(Collection<Unit> units, PlayerID id, boolean defend)    
     {
         int count = 0;
@@ -473,7 +473,7 @@ public class BattleCalculator
         }
         return count;
     }
-  //kev
+
     public static int getRolls(Collection<Unit> units, PlayerID id, boolean defend, int availableSupport)
     {    	                
         Collection<Unit> supportableUnits = Match.getMatches(units, Matches.UnitIsArtillerySupportable);
@@ -509,14 +509,11 @@ public class BattleCalculator
         return unitAttachment.getAttackRolls(id);
     }
   
-    //Kev
     public static int getRolls(Unit unit, PlayerID id, boolean defend, int artillerySupport)
     {
         UnitAttachment unitAttachment = UnitAttachment.get(unit.getType());
         if (defend)
-        {
-            //if lhtr
-            //check for nulll id since null players dont have game data             
+        {           
             if(!id.isNull() && games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(id.getData())) 
             {
                 //if they have the heavy bomber tech, then 2 rolls for defense

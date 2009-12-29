@@ -232,10 +232,8 @@ public class BattleTracker implements java.io.Serializable
         // instead of matching with inverse neutral
         conquerable.add(Matches.isTerritoryEnemyAndNotNeutral(id, data));
 
-//       conquerable.addInverse(Matches.TerritoryIsNeutral);
 
         //check the last territory specially to see if its a naval invasion
-
         Collection<Territory> conquered = route.getMatches(conquerable);
         //we handle the end of the route later
         conquered.remove(route.getEnd());
