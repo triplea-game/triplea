@@ -6153,7 +6153,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		IntegerMap<ProductionRule> bestMobileAttack = new IntegerMap<ProductionRule>();
         ProductionRule highRule = null;
         Resource pus = data.getResourceList().getResource(Constants.PUS);
-
+        boolean isAmphib = isAmphibAttack(player);
+        
         for (ProductionRule ruleCheck : rules)
 		{
 			int costCheck = ruleCheck.getCosts().getInt(pus);
@@ -6184,11 +6185,21 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             int buyLimit = PUsToSpend / 3;
             if (buyLimit == 0)
             	buyLimit = 1;
+            boolean landPurchase = true, alreadyBought = false;
             if (PUsToSpend < 25)
             {
-            	SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, landProductionRules, PUsToSpend, buyLimit, data, player, 2);
+            	if (!isAmphib || Math.random() < 0.15)
+            	{
+            		SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, landProductionRules, PUsToSpend, buyLimit, data, player, 2);
+            	}
+            	else
+            	{
+            		landPurchase = false;
+            		buyLimit = PUsToSpend / 5; //assume a larger threshhold
+            		SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, seaProductionRules, PUsToSpend, buyLimit, data, player, 2);
+            	}
             }
-            else
+            else if (!isAmphib || Math.random() < 0.15)
             {
             	if (Math.random() > 0.80)
             	{
@@ -6215,12 +6226,25 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             				purchase.add(rule1, buyThese);
             		}
             		int landPUs = PUsToSpend;
+            		buyLimit = landPUs / 3;
             		SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, landProductionRules, landPUs, buyLimit, data, player, 2);
             	}
             }
+        	else
+        	{
+        		landPurchase = false;
+        		buyLimit = PUsToSpend / 8; //assume higher end purchase
+        		seaProductionRules.addAll(airProductionRules);
+        		SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, seaProductionRules, PUsToSpend, buyLimit, data, player, 2);
+        	}
+            List<ProductionRule> processRules = new ArrayList<ProductionRule>();
+            if (landPurchase)
+            	processRules.addAll(landProductionRules);
+            else
+            	processRules.addAll(seaProductionRules);
             boolean buyAttack = Math.random() > 0.25; //just mix it up
             int buyThese = 0;
-            for (ProductionRule rule1 : landProductionRules)
+            for (ProductionRule rule1 : processRules)
             {
             	int cost = rule1.getCosts().getInt(pus);
             	if (buyAttack)
@@ -6238,7 +6262,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             		purchase.add(rule1, buyThese);
             	}
             }
-	        purchaseDelegate.purchase(purchase);
+        	purchaseDelegate.purchase(purchase);
 	        return;
             
         }
@@ -6265,7 +6289,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         CompositeMatch<Territory> enemyOnWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data));
         
         Territory myCapital = TerritoryAttachment.getCapital(player, data);
-        boolean isAmphib = isAmphibAttack(player), factPurchased = false;
+        boolean factPurchased = false;
 		boolean isLand = SUtils.doesLandExistAt(myCapital, data, false); //gives different info than isamphib
 	    boolean skipShips = false, buyTransports = true;
 		boolean buyPlanesOnly = false, buyOnePlane=false, buyBattleShip = false, buySub = false, buyOneShip = false;
@@ -7184,6 +7208,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         			continue;
         		bidSeaTerr = SUtils.findASeaTerritoryToPlaceOn(factCheck, data, player, tFirst);
         	}
+        	placeSeaUnits(bid, data, bidSeaTerr, bidSeaTerr, placeDelegate, player);
 	        placeAllWeCanOn(bid, data, null, bidLandTerr, placeDelegate, player);
         	return;
         }
