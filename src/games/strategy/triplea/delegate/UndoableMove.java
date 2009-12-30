@@ -151,14 +151,13 @@ public class UndoableMove implements Serializable
         //undo any changes to the game data
         bridge.addChange(m_undoChange.invert());
 
-        battleTracker.undoBattle(m_route, m_units, bridge.getPlayerID(), data);
+        battleTracker.undoBattle(m_route, m_units, bridge.getPlayerID(), data, bridge);
 
         //clean up dependencies
         Iterator iter = m_iDependOn.iterator();
         while (iter.hasNext()) {
             UndoableMove other = (UndoableMove)iter.next();
             other.m_dependOnMe.remove(this);
-
         }
 
         

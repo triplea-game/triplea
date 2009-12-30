@@ -3785,7 +3785,6 @@
 
 
 <!-- Poland -->
-
 <unitPlacement unitType="Infantry" territory="C.Poland" quantity="4"/>
 <unitPlacement unitType="Armour" territory="C.Poland" quantity="1"/>
 <unitPlacement unitType="Infantry" territory="Koenigsberg" quantity="3"/>
@@ -3886,10 +3885,10 @@
 
                <property name="neutralCharge" value="0"/>
 		
-		<property name="Neutrals Are Blitzable" value="false" editable="true">
+		<property name="Neutrals Are Blitzable" value="true" editable="true">
 			<boolean/>
 		</property>
-
+		
                <!-- Bids -->
 		<property name="Germans bid" value="0" editable="true">
                        <number min="0" max="1000"/>

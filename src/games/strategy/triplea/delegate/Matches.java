@@ -1036,6 +1036,21 @@ public class Matches
         };
     }
 
+    public static Match<Territory> TerritoryIsBlitzable(final PlayerID player, final GameData data)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                if(t.getOwner().equals(player))
+                    return false;
+                if(t.getOwner().equals(PlayerID.NULL_PLAYERID) && (t.isWater() | !games.strategy.triplea.Properties.getNeutralsBlitzable(data)))
+                    return false;
+                return !data.getAllianceTracker().isAllied(player, t.getOwner());
+            }
+        };
+    }
+
     public static Match<Territory> isTerritoryFreeNeutral(final GameData data)
     {
         return new Match<Territory>()

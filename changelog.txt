@@ -1,4 +1,8 @@
 Changes for 1.2.1
+* Add 'Neutrals Are Blitzable' property with value of TRUE to NWO (ComradeKev)
+
+* Fix bug 2919694 non blitzing units allowed to incrementally make 2nd move (ComradeKev)
+
 * Fix bug (partial) 2860602 Allied air on carriers group together when carriers move through one another (ComradeKev)
 
 * Fix bug 2922798 transports with mechanized infantry aboard can move 3 spaces (ComradeKev)

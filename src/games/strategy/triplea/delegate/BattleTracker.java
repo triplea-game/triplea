@@ -22,6 +22,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
@@ -30,6 +31,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -121,7 +123,7 @@ public class BattleTracker implements java.io.Serializable
         return m_foughBattles.contains(t);
     }
 
-    public void undoBattle(Route route, Collection<Unit> units, PlayerID player, GameData data)
+    public void undoBattle(Route route, Collection<Unit> units, PlayerID player, GameData data, IDelegateBridge bridge)
     {
         Iterator<Battle> battleIter = new ArrayList<Battle>(m_pendingBattles).iterator();
         while (battleIter.hasNext())
@@ -148,6 +150,15 @@ public class BattleTracker implements java.io.Serializable
                 m_blitzed.remove(current);
             }
         }
+      //say they weren't in combat
+        CompositeChange change = new CompositeChange();    	
+    	Iterator <Unit> attackIter = units.iterator();
+                
+    	while (attackIter.hasNext())
+    		{
+    			change.add(ChangeFactory.unitPropertyChange(attackIter.next(), false, TripleAUnit.WAS_IN_COMBAT));
+    		}
+    	bridge.addChange(change);
 
     }
 
@@ -181,11 +192,19 @@ public class BattleTracker implements java.io.Serializable
             //emerging subs cant be neutral or empty
             if (route.getLength() != 0)
             {
-                addNeutralBattle(route, units, id, data, bridge, changeTracker);
                 if(games.strategy.util.Match.someMatch(units, Matches.UnitIsLand) || games.strategy.util.Match.someMatch(units, Matches.UnitIsSea))
                     addEmptyBattle(route, units, id, data, bridge, changeTracker);
             }
         }
+        //say they were in combat
+        CompositeChange change = new CompositeChange();    	
+    	Iterator <Unit> attackIter = units.iterator();
+                
+    	while (attackIter.hasNext())
+    		{
+    			change.add(ChangeFactory.unitPropertyChange(attackIter.next(), true, TripleAUnit.WAS_IN_COMBAT));
+    		}
+    	bridge.addChange(change);
     }
     
     private void addBombingBattle(Route route, Collection<Unit> units, PlayerID attacker, GameData data)
@@ -204,15 +223,14 @@ public class BattleTracker implements java.io.Serializable
             throw new IllegalStateException("Non empty change");
         }
 
-        //dont let land battles in the same territory occur before bombing
-        // battles
+        //dont let land battles in the same territory occur before bombing battles
         Battle dependent = getPendingBattle(route.getEnd(), false);
         if (dependent != null)
             addDependency(dependent, battle);
     }
 
     /**
-     * No enemies, but not neutral.
+     * No enemies.
      */
     private void addEmptyBattle(Route route, Collection<Unit> units, final PlayerID id, final GameData data,
             IDelegateBridge bridge, UndoableMove changeTracker)
@@ -227,19 +245,20 @@ public class BattleTracker implements java.io.Serializable
         };
 
         CompositeMatch<Territory> conquerable = new CompositeMatchAnd<Territory>();
-        conquerable.add(Matches.territoryIsEmptyOfCombatUnits(data, id));
+        conquerable.add(Matches.territoryIsEmptyOfCombatUnits(data, id));        
 
-        // instead of matching with inverse neutral
-        conquerable.add(Matches.isTerritoryEnemyAndNotNeutral(id, data));
+        CompositeMatch<Territory> blitzable = new CompositeMatchOr<Territory>();
+        blitzable.add(Matches.TerritoryIsBlitzable(id, data));
+        blitzable.add(Matches.isTerritoryEnemyAndNotNeutral(id, data));
+        
+        conquerable.add(blitzable);
 
-
-        //check the last territory specially to see if its a naval invasion
         Collection<Territory> conquered = route.getMatches(conquerable);
+
         //we handle the end of the route later
         conquered.remove(route.getEnd());
         Collection<Territory> blitzed = Match.getMatches(conquered, canBlitz);
-        //kev
-        //if(Match.someMatch(units, Matches.UnitCanBlitz))
+       
         m_blitzed.addAll(blitzed);
         m_conquered.addAll(conquered);
 
@@ -261,8 +280,7 @@ public class BattleTracker implements java.io.Serializable
             if (precede == null)
             {
                 if (canBlitz.match(route.getEnd()))
-                {//kev
-                    //if(Match.someMatch(units, Matches.UnitCanBlitz))
+                {
                     m_blitzed.add(route.getEnd());
                 }
                 takeOver(route.getEnd(), id, bridge, data, changeTracker, units);
@@ -288,7 +306,7 @@ public class BattleTracker implements java.io.Serializable
 
     }
 
-    private void addNeutralBattle(Route route, Collection<Unit> units, PlayerID id, GameData data, IDelegateBridge bridge,
+    private void addNeutralBattle(Route route, Collection<Unit> units, final PlayerID id, final GameData data, IDelegateBridge bridge,
             UndoableMove changeTracker)
     {
         //TODO check for pre existing battles at the sight
