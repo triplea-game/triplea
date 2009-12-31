@@ -294,7 +294,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         boolean amphibPlayer = !SUtils.hasLandRouteToEnemyOwnedCapitol(capitol, player, data);
 //        Route invasionRoute = SUtils.findNearest(capitol, Matches.isTerritoryEnemyAndNotNeutral(player, data),
 //                new CompositeMatchAnd<Territory> (Matches.TerritoryIsLand,new InverseMatch<Territory>(Matches.TerritoryIsNeutral)), data);
-    	int totProduction = 0;
+    	int totProduction = 0, allProduction = 0;
         if (amphibPlayer)
         {
         	List<Territory> allFactories = SUtils.findCertainShips(data, player, myFactory);
@@ -302,12 +302,15 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         	for (Territory checkFactory : allFactories)
         	{
         		boolean isLandRoute = SUtils.hasLandRouteToEnemyOwnedCapitol(checkFactory, player, data);
+        		int factProduction = TerritoryAttachment.get(checkFactory).getProduction();
+        		allProduction = factProduction;
         		if (isLandRoute)
-        			totProduction += TerritoryAttachment.get(checkFactory).getProduction();
+        			totProduction += factProduction;
         	}
         }
-
-        return amphibPlayer ? (totProduction <= 4) : false;
+        // if the land based production is greater than half of all factory production, turn off amphib
+        // works better on NWO where Brits start with factories in North Africa
+        return amphibPlayer ? (totProduction >= allProduction/2) : false;
     }
 
     //determine danger to the capital and set the capdanger variable...other routines can just get the CapDanger var
