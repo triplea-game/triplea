@@ -2011,8 +2011,9 @@ public class SUtils
 				if (fRoute != null && fRoute.getEnd() != null)
 					numOnContinent = prodMap.getInt(factTerr);
 			}
-			if (numOnContinent >= 6)
-				continue;
+//	        This prevents purchasing a factory in a map like NWO
+//			if (numOnContinent >= 6)
+//				continue;
 			List<Territory> twoAway = getExactNeighbors(t, 2, data, false);
 			List<Territory> threeAway = getExactNeighbors(t, 3, data, false);
 			List<Territory> closeAllies = SUtils.getNeighboringLandTerritories(data, player, t);
@@ -3605,6 +3606,9 @@ public class SUtils
 		parameters.put("maxCost", totPU); //never changed
 		parameters.put("infantry", 0);
 		parameters.put("nonInfantry", 0);
+		HashMap<ProductionRule, Boolean> infMap = new HashMap<ProductionRule, Boolean>();
+		HashMap<ProductionRule, Boolean> nonInfMap = new HashMap<ProductionRule, Boolean>();
+		HashMap<ProductionRule, Boolean> supportableInfMap = new HashMap<ProductionRule, Boolean>();
 		Iterator<ProductionRule> prodIter = rules.iterator();
 		HashMap<ProductionRule, Boolean> transportMap= new HashMap<ProductionRule, Boolean>();
 		int minCost = 10000;
@@ -3617,11 +3621,13 @@ public class SUtils
 			bestMaxUnits.put(rule, 0);
 			bestTransport.put(rule, 0);
 			UnitType x = (UnitType) rule.getResults().keySet().iterator().next();
-			boolean isTransportable = Matches.UnitTypeCanBeTransported.match(x);
-			transportMap.put(rule, isTransportable);
+			transportMap.put(rule, Matches.UnitTypeCanBeTransported.match(x));
+			infMap.put(rule, Matches.UnitTypeIsInfantry.match(x));
+			nonInfMap.put(rule, Matches.UnitTypeCanBeTransported.match(x) && Matches.UnitTypeIsInfantry.invert().match(x) && Matches.UnitTypeIsAA.invert().match(x));
+			supportableInfMap.put(rule, UnitAttachment.get(x).isArtillerySupportable());
 		}
 		int countNum = 1;
-		int goodLoop = purchaseLoop (parameters, countNum, bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, transportMap, data, player, fighters);
+		int goodLoop = purchaseLoop (parameters, countNum, bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, transportMap, infMap, nonInfMap, supportableInfMap, data, player, fighters);
 		if (goodLoop > 0 && bestAttack.size() > 0 && bestDefense.size() > 0)
 			return true;
 		else
@@ -3641,7 +3647,9 @@ public class SUtils
 	 * @return - integer which is 1 if bestAttack has changed, 2 if bestDefense has changed, 3 if both have changed
 	 */
 	public static int purchaseLoop(IntegerMap<String> parameters, int ruleNum, IntegerMap<ProductionRule> bestAttack, IntegerMap<ProductionRule> bestDefense, IntegerMap<ProductionRule> bestTransport,
-								   IntegerMap<ProductionRule> bestMaxUnits, IntegerMap<ProductionRule> bestMobileAttack, HashMap<ProductionRule, Boolean> transportMap, GameData data, PlayerID player, int fighters)
+								   IntegerMap<ProductionRule> bestMaxUnits, IntegerMap<ProductionRule> bestMobileAttack, HashMap<ProductionRule, Boolean> transportMap, 
+								   HashMap<ProductionRule, Boolean> infMap, HashMap<ProductionRule, Boolean> nonInfMap, HashMap<ProductionRule, Boolean> supportableInfMap, 
+								   GameData data, PlayerID player, int fighters)
 	{
 		/*
 		 * It is expected that this is called with a subset of possible units (i.e. just land Units or just Air Units)
@@ -3692,8 +3700,9 @@ public class SUtils
 		int parametersChanged = 0, thisParametersChanged = 0;
 		UnitType x = (UnitType) rule.getResults().keySet().iterator().next();
 		UnitAttachment u = UnitAttachment.get(x);
-		boolean thisIsSupportableInf = u.isArtillerySupportable();
-		boolean thisIsInf = u.isInfantry();
+		boolean thisIsSupportableInf = supportableInfMap.get(rule);
+		boolean thisIsInf = infMap.get(rule);
+		boolean thisIsNonInf = nonInfMap.get(rule);
 		boolean thisIsArt = u.isArtillery();
 		int uMovement = u.getMovement(player);
 		int uAttack = u.getAttack(player);
@@ -3709,11 +3718,11 @@ public class SUtils
 				if (totCost > maxCost)
 					continue;
 				if (thisIsInf)
-					infCount = i;
-				else
-					nonInfCount = i;
+					infCount++;
+				else if (thisIsNonInf)
+					nonInfCount++;
 				if (thisIsSupportableInf)
-					supportableInfCount = i;
+					supportableInfCount++;
 				//give bonus of 1 hit per 2 units and if fighters are on the capital, a bonus for carrier equal to fighter attack or defense
 				int carrierLoad = Math.min(u.getCarrierCapacity(), fightersremaining);
 				if (carrierLoad < 0)
@@ -3737,7 +3746,9 @@ public class SUtils
 				parameters.put("totMovement", totMovement);
 				parameters.put("infantry", infCount);
 				parameters.put("nonInfantry", nonInfCount);
-				parametersChanged = purchaseLoop(parameters, counter, bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, transportMap, data, player, fighters);
+				parameters.put("supportableInfCount", supportableInfCount);
+				parametersChanged = purchaseLoop(parameters, counter, bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, transportMap,
+						infMap, nonInfMap, supportableInfMap, data, player, fighters);
 				maxAttack = parameters.getInt("maxAttack");
 				maxTransAttack = parameters.getInt("maxTransAttack");
 				maxTransCost = parameters.getInt("maxTransCost");
@@ -3864,7 +3875,7 @@ public class SUtils
 				maxTransAttack = totAttack;
 				maxTransCost = totCost;
 				parameters.put("maxTransAttack", totAttack);
-				parameters.put("maxTransCost", maxUnitCost);
+				parameters.put("maxTransCost", maxTransCost);
 				bestTransport.put(rule, i);
 				if ((thisParametersChanged + 8) % 16 != 0)
 					thisParametersChanged += 8;
@@ -3899,7 +3910,22 @@ public class SUtils
 					countThis++;
 				}
 			}
-		}
+/*			Iterator <ProductionRule> intCheckIter = ruleCheck.iterator();
+			ProductionRule intCheck = null;
+			infCount = 0;
+			nonInfCount = 0;
+			supportableInfCount = 0;
+			//this biases the purchase of artillery to the transport progression
+			//need a better way to track this, but for now, we'll go with it
+			//should reduce the artillery purchase in WW2V3, which seems high anyways
+			while (intCheckIter.hasNext()) //have to clear the rules below this rule
+			{
+				intCheck = intCheckIter.next();
+				infCount += infMap.get(intCheck) ? bestTransport.getInt(intCheck) : 0;
+				nonInfCount += nonInfMap.get(intCheck) ? bestTransport.getInt(rule) : 0;
+				supportableInfCount += supportableInfMap.get(intCheck) ? bestTransport.getInt(rule) : 0;
+			}
+*/		}
 		return thisParametersChanged;
 	}
 	
