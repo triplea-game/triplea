@@ -4671,7 +4671,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 	float pValue = TerritoryAttachment.get(endTerr).getProduction();
                 	float enemyStrength = SUtils.strength(endTerr.getUnits().getUnits(), false, false, tFirst);
                   	Route xRoute = SUtils.findNearest(t, endCondition2, routeCondition, data);
-                  	if (Matches.TerritoryIsNeutral.match(endTerr) && enemyStrength > pValue*9) //why bother...focus on enemies
+                  	if (enemyStrength > pValue*9) //why bother...focus on enemies
                     {
                     	goRoute = xRoute;
                     }
@@ -4688,7 +4688,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                     		{
                     			if (Matches.TerritoryIsWater.match(nTerr) || Matches.TerritoryIsImpassable.match(nTerr))
                     				continue;
-                    			pValue += TerritoryAttachment.get(nTerr).getProduction();
+                    			int xValue = TerritoryAttachment.get(nTerr).getProduction();
+                    			if (Matches.TerritoryIsNeutral.match(nTerr))
+                    			{
+                    				float testStrength = SUtils.strength(endTerr.getUnits().getUnits(), false, false, tFirst);
+                    				if (testStrength > xValue)
+                    					xValue = 0; //not a neutral we will invade
+                    			}
+                    			pValue += xValue;
                     		}
                        		Set<Territory> enemyNeighbors = data.getMap().getNeighbors(realEnemy, Matches.isTerritoryEnemy(player, data));
                     		for (Territory nTerr : enemyNeighbors)
@@ -4699,6 +4706,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                     		}
                     		if (pValue < eValue)
                     			goRoute = xRoute;
+                    	}
+                    	Territory lastTerr = goRoute.getEnd();
+                    	if (Matches.isTerritoryEnemy(player, data).match(lastTerr))
+                    	{
+                    		lastTerr = goRoute.getTerritories().get(goRoute.getLength()-1);
+                    		goRoute = data.getMap().getRoute(t, lastTerr, Matches.isTerritoryAllied(player, data));
+                    		
                     	}
                     }
         		}
@@ -4765,6 +4779,20 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						movedInto.add(t);
 					}
 				}
+                float tmpStrength = 0.0F;
+                List<Unit> tUnits = t.getUnits().getMatches(Matches.unitIsOwnedBy(player));
+                List<Collection<Unit>> tGoUnits = new ArrayList<Collection<Unit>>();
+                SUtils.breakUnitsBySpeed(tGoUnits, data, player, tUnits);
+                for (Collection<Unit> tUnits2 : tGoUnits)
+                {
+                	Iterator<Unit> tUnitIter = tUnits2.iterator();
+                	while (tmpStrength < attackerStrength && tUnitIter.hasNext())
+                	{
+                		Unit xUnit = tUnitIter.next();
+                		alreadyMoved.add(xUnit); //lock them down
+                		tmpStrength += SUtils.uStrength(xUnit, false, false, tFirst);
+                	}
+                }
 			}
 			//if an emminent attack on capital, pull back toward capital
             List <Territory> myENeighbors = SUtils.getNeighboringEnemyLandTerritories(data, player, t);
@@ -4861,7 +4889,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					emptiedTerr.add(t);
 				}
 			}
-
+/*
             //find the nearest enemy owned capital or factory
             List<Territory> allBadTerr = SUtils.allEnemyTerritories(data, player);
             List<Territory> enemyCapTerr = SUtils.getEnemyCapitals(data, player);
@@ -4921,8 +4949,19 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             		}
             	}
             }
+*/
+            if (goRoute == null) //just advance to nearest enemy owned factory
+            {
+            	goRoute = SUtils.findNearest(t, Matches.territoryHasEnemyFactory(data, player), routeCondition, data);
+            	if (goRoute != null)
+            	{
+            		Territory endGoTerr = goRoute.getTerritories().get(goRoute.getLength()-1);
+            		goRoute = data.getMap().getRoute(t, endGoTerr, routeCondition);
+            	}
+            }
+
             boolean isAmphib = isAmphibAttack(player);
-            if(newRoute == null && isAmphib) //move toward the largest contingent of transports
+            if(goRoute == null && isAmphib) //move toward the largest contingent of transports
             {
             	if (Matches.territoryHasAlliedFactory(data, player).match(t))
             		continue;
@@ -4944,19 +4983,21 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             			while (mLIter.hasNext() && !goodRoute)
             			{
             				Territory mLT = mLIter.next();
-            				newRoute = data.getMap().getRoute(tTerr, mLT, SUtils.TerritoryIsNotImpassableToLandUnits(data));
-            				if (newRoute != null)
+            				goRoute = data.getMap().getRoute(t, mLT, SUtils.TerritoryIsNotImpassableToLandUnits(data));
+            				if (goRoute != null)
             				{
             					goodRoute = true;
             					to = mLT;
             				}
             			}
             		}
-            		if (newRoute == null)
+            		if (goRoute == null)
             			continue;
             	}
             }
-            int newDistance = newRoute.getLength();
+            if (goRoute == null)
+            	continue;
+            int newDistance = goRoute.getLength();
             List<Collection<Unit>> unitsBySpeed = new ArrayList<Collection<Unit>>();
             SUtils.breakUnitsBySpeed(unitsBySpeed, data, player, units);
             if (to != null && minDistance <= (newDistance + 1))
@@ -4965,7 +5006,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 {
                     Route rC = data.getMap().getRoute(t, to, moveThrough);
                     if (rC != null)
-                    	newRoute = rC;
+                    	goRoute = rC;
                 }
             }
             for (Collection<Unit> goUnits : unitsBySpeed)
@@ -4977,17 +5018,18 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             		continue;
             	}
             	Route newRoute2 = new Route(); //don't modify newRoute
-            	if (newRoute.getLength() < maxDist)
-            		newRoute2 = newRoute;
+            	if (goRoute.getLength() < maxDist)
+            		newRoute2 = goRoute;
             	else
             	{
-            		Iterator<Territory> newIter = newRoute.iterator();
+            		Iterator<Territory> newIter = goRoute.iterator();
             		newRoute2.setStart(t);
             		newIter.next();
             		while(newIter.hasNext() && newRoute2.getLength() <= maxDist)
             		{
             			Territory oneTerr = newIter.next();
-            			newRoute2.add(oneTerr);
+            			if (Matches.isTerritoryAllied(player, data).match(oneTerr))
+            				newRoute2.add(oneTerr);
             		}
             	}
             	moveUnits.add(goUnits);
@@ -5008,6 +5050,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     }
     /*
      * A second pass at the set of nonCombat Land Units
+     * Ignores all neutrals (for now)
      * 
      */
     private void secondNonCombat(List<Collection<Unit>> moveUnits, List<Route> moveRoutes, final PlayerID player, GameData data)
@@ -5067,38 +5110,51 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         		landMap.put(factTerr, diffStrength);
     		}
     	}
+    	CompositeMatch<Territory> endCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyUnits(player, data), Matches.TerritoryIsNotNeutral, Matches.TerritoryIsLand);
     	for (Territory ownedTerr : unMovedLandTerr)
     	{//TODO: find another territory to join if possible
     		if (ownedTerr.isWater())
     			continue;
     		float diffStrength = - landMap.get(ownedTerr).floatValue();
-    		if (diffStrength > 0.0F && ownedTerr.getUnits().getMatches(unMovedLand).size()> 1 && data.getMap().getNeighbors(ownedTerr, Matches.territoryHasEnemyUnits(player, data)).isEmpty()) 
+    		if (diffStrength > 0.0F && ownedTerr.getUnits().getMatches(unMovedLand).size()> 1 && data.getMap().getNeighbors(ownedTerr, endCondition).isEmpty()) 
     		{
-    			Route closestERoute = SUtils.findNearest(ownedTerr, Matches.territoryHasEnemyUnits(player, data), SUtils.TerritoryIsNotImpassableToLandUnits(data), data);
+    			Route closestERoute = SUtils.findNearest(ownedTerr, endCondition, SUtils.TerritoryIsNotImpassableToLandUnits(data), data);
     			if (closestERoute == null || closestERoute.getEnd() == null)
     				continue;
     			List<Unit> ourOwnedUnits = ownedTerr.getUnits().getMatches(ourUnMovedLand);
     			ourOwnedUnits.removeAll(alreadyMoved);
-    			List<Unit> moveTheseUnits = SUtils.sortTransportUnits(ourOwnedUnits);
-    			Territory goTerr = closestERoute.getTerritories().get(1);
-    			float goTerrStrength = SUtils.strength(goTerr.getUnits().getMatches(Matches.alliedUnit(player, data)), false, false, tFirst);
-    			float goTerrEStrength = SUtils.getStrengthOfPotentialAttackers(goTerr, data, player, tFirst, true, null);
+    			List<Collection<Unit>> ourOwnedUnits2 = new ArrayList<Collection<Unit>>();
+    			SUtils.breakUnitsBySpeed(ourOwnedUnits2, data, player, ourOwnedUnits);
+    			Territory targetTerr = closestERoute.getEnd();
+    			
+//    			List<Unit> moveTheseUnits = SUtils.sortTransportUnits(ourOwnedUnits);
+//    			Territory goTerr = closestERoute.getTerritories().get(1);
+    			float goTerrStrength = SUtils.strength(targetTerr.getUnits().getMatches(Matches.alliedUnit(player, data)), false, false, tFirst);
+    			float goTerrEStrength = SUtils.getStrengthOfPotentialAttackers(targetTerr, data, player, tFirst, true, null);
     			float goDiffStrength = goTerrEStrength - goTerrStrength;
     			if (goDiffStrength - diffStrength > 8.0F)
     				continue;
-    			Iterator<Unit> unitIter = moveTheseUnits.iterator();
-    			List<Unit> moveThese = new ArrayList<Unit>();
-    			while (unitIter.hasNext() && diffStrength > 0.0F)
+    			for (Collection<Unit> goUnits : ourOwnedUnits2)
     			{
-    				Unit oneUnit = unitIter.next();
-    				diffStrength -= SUtils.uStrength(oneUnit, false, false, tFirst);
-    				moveThese.add(oneUnit);
+    				Iterator<Unit> unitIter = goUnits.iterator();
+    				int moveDist = MoveValidator.getLeastMovement(goUnits);
+    				List<Unit> moveThese = new ArrayList<Unit>();
+					Territory realTargetTerr = closestERoute.getTerritories().get(closestERoute.getLength() - 1);
+					Route targetRoute = new Route();
+    				if (moveDist < closestERoute.getLength())
+    					realTargetTerr = closestERoute.getTerritories().get(moveDist);
+					targetRoute = data.getMap().getRoute(ownedTerr, realTargetTerr, Matches.isTerritoryAllied(player, data));
+					while (unitIter.hasNext() && diffStrength > 0.0F)
+					{
+						Unit oneUnit = unitIter.next();
+						diffStrength -= SUtils.uStrength(oneUnit, false, false, tFirst);
+						moveThese.add(oneUnit);
+					}
+					moveUnits.add(moveThese);
+					moveRoutes.add(targetRoute);
+					alreadyMoved.addAll(moveThese);
+					landMap.put(ownedTerr, -diffStrength);
     			}
-    			Route aRoute = data.getMap().getLandRoute(ownedTerr, goTerr);
-    			moveUnits.add(moveThese);
-    			moveRoutes.add(aRoute);
-    			alreadyMoved.addAll(moveThese);
-    			landMap.put(ownedTerr, -diffStrength);
     		}
     	}
     }

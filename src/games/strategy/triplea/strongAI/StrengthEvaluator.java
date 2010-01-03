@@ -177,7 +177,7 @@ public class StrengthEvaluator
 
 		for (Territory t: nearNeighbors)
 		{
-			if (!Matches.territoryHasEnemyUnits(player, data).match(t) && !t.isWater())
+			if (Matches.TerritoryIsLand.match(t) && (Matches.territoryHasEnemyUnits(player, data).invert().match(t) || Matches.TerritoryIsNeutral.match(t)))
 				continue;
 			if (contiguous)
 			{
