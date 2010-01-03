@@ -4686,11 +4686,15 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                     		Set<Territory> neutralNeighbors = data.getMap().getNeighbors(endTerr, Matches.isTerritoryEnemy(player, data));
                     		for (Territory nTerr : neutralNeighbors)
                     		{
+                    			if (Matches.TerritoryIsWater.match(nTerr) || Matches.TerritoryIsImpassable.match(nTerr))
+                    				continue;
                     			pValue += TerritoryAttachment.get(nTerr).getProduction();
                     		}
                        		Set<Territory> enemyNeighbors = data.getMap().getNeighbors(realEnemy, Matches.isTerritoryEnemy(player, data));
                     		for (Territory nTerr : enemyNeighbors)
                     		{
+                    			if (Matches.TerritoryIsWater.match(nTerr) || Matches.TerritoryIsImpassable.match(nTerr))
+                    				continue;
                     			eValue += TerritoryAttachment.get(nTerr).getProduction();
                     		}
                     		if (pValue < eValue)
@@ -4699,7 +4703,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                     }
         		}
         	}
-            if (goRoute != null && goRoute.getLength() > 2 && !blitzUnits.isEmpty())
+/*            if (goRoute != null && goRoute.getLength() > 2 && !blitzUnits.isEmpty())
             {
             	Route newRoute = new Route();
             	newRoute.setStart(goRoute.getStart());
@@ -4709,7 +4713,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             	moveRoutes.add(newRoute);
             	alreadyMoved.addAll(blitzUnits);
             }
-
+*/
             //these are the units we can move
             CompositeMatch<Unit> moveOfType = new CompositeMatchAnd<Unit>();
 
