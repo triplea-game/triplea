@@ -284,7 +284,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
     private boolean isAmphibAttack(PlayerID player)
     {
-    	CompositeMatch<Unit> myFactory = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsFactory);
     	GameData data = getPlayerBridge().getGameData();
         Territory capitol = TerritoryAttachment.getCapital(player, getPlayerBridge().getGameData());
         if(capitol == null || !capitol.getOwner().equals(player))
@@ -295,17 +294,16 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	int totProduction = 0, allProduction = 0;
         if (amphibPlayer)
         {
-        	List<Territory> allFactories = SUtils.findCertainShips(data, player, myFactory);
-        	allFactories.remove(capitol);
+        	List<Territory> allFactories = SUtils.findCertainShips(data, player, Matches.UnitIsFactory);
+//        	allFactories.remove(capitol);
         	for (Territory checkFactory : allFactories)
         	{
         		boolean isLandRoute = SUtils.hasLandRouteToEnemyOwnedCapitol(checkFactory, player, data);
         		int factProduction = TerritoryAttachment.get(checkFactory).getProduction();
-        		allProduction = factProduction;
+        		allProduction += factProduction;
         		if (isLandRoute)
         			totProduction += factProduction;
         	}
-        	allProduction += TerritoryAttachment.get(capitol).getProduction();
         }
         // if the land based production is greater than one-third of all factory production, turn off amphib
         // works better on NWO where Brits start with factories in North Africa
@@ -4659,11 +4657,48 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 continue;
             //check for blitzable units
             CompositeMatch<Unit> blitzUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBlitz);
-            CompositeMatch<Territory> endCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyUnits(player, data), Matches.TerritoryIsLand );
+            CompositeMatch<Territory> endCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyUnits(player, data), Matches.TerritoryIsLand);
+            CompositeMatch<Territory> endCondition2 = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyUnits(player, data), Matches.TerritoryIsLand, Matches.TerritoryIsNotNeutral);
             CompositeMatch<Territory> routeCondition = new CompositeMatchAnd<Territory>(SUtils.TerritoryIsNotImpassableToLandUnits(data), Matches.isTerritoryAllied(player, data));
             List<Unit> blitzUnits = t.getUnits().getMatches(blitzUnit);
             blitzUnits.removeAll(alreadyMoved);
-        		Route goRoute = SUtils.findNearest(t, endCondition, routeCondition, data);
+        	Route goRoute = SUtils.findNearest(t, endCondition, routeCondition, data);
+        	if (goRoute != null)
+        	{
+        		Territory endTerr = goRoute.getEnd();
+        		if (Matches.TerritoryIsNeutral.match(endTerr))
+        		{
+                	float pValue = TerritoryAttachment.get(endTerr).getProduction();
+                	float enemyStrength = SUtils.strength(endTerr.getUnits().getUnits(), false, false, tFirst);
+                  	Route xRoute = SUtils.findNearest(t, endCondition2, routeCondition, data);
+                  	if (Matches.TerritoryIsNeutral.match(endTerr) && enemyStrength > pValue*9) //why bother...focus on enemies
+                    {
+                    	goRoute = xRoute;
+                    }
+                    else
+                    { //make sure going in this direction is preferred
+                    	int neutralDist = goRoute.getLength()+1;
+                    	if (xRoute != null)
+                    	{
+                    		Territory realEnemy = xRoute.getEnd();
+                    		float eValue = TerritoryAttachment.get(realEnemy).getProduction();
+                    		int enemyDist = xRoute.getLength();
+                    		Set<Territory> neutralNeighbors = data.getMap().getNeighbors(endTerr, Matches.isTerritoryEnemy(player, data));
+                    		for (Territory nTerr : neutralNeighbors)
+                    		{
+                    			pValue += TerritoryAttachment.get(nTerr).getProduction();
+                    		}
+                       		Set<Territory> enemyNeighbors = data.getMap().getNeighbors(realEnemy, Matches.isTerritoryEnemy(player, data));
+                    		for (Territory nTerr : enemyNeighbors)
+                    		{
+                    			eValue += TerritoryAttachment.get(nTerr).getProduction();
+                    		}
+                    		if (pValue < eValue)
+                    			goRoute = xRoute;
+                    	}
+                    }
+        		}
+        	}
             if (goRoute != null && goRoute.getLength() > 2 && !blitzUnits.isEmpty())
             {
             	Route newRoute = new Route();
@@ -4685,6 +4720,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             moveOfType.add(Matches.UnitIsLand);
 
             List<Unit> units = t.getUnits().getMatches(moveOfType);
+            units.removeAll(alreadyMoved);
             if(units.size() == 0)
                 continue;
 
@@ -4738,7 +4774,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             		int minCapDist = 100;
             		Territory targetTerr = null;
             		for (Territory myTerr : myNeighbors3)
-           		{
+            		{
 						int thisCapDist = data.getMap().getLandDistance(myTerr, myCapital);
 						if (thisCapDist < minCapDist)
 						{
@@ -4845,6 +4881,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             {
 				if (!Matches.territoryHasEnemyFactory(data, player).match(badFactTerr) || enemyCapTerr.contains(badFactTerr))
 				    continue;
+           		if (Matches.TerritoryIsNeutral.match(badFactTerr))
+        		{
+                	float pValue = TerritoryAttachment.get(badFactTerr).getProduction();
+                	float enemyStrength = SUtils.strength(badFactTerr.getUnits().getUnits(), false, false, tFirst);
+                    if (enemyStrength > pValue*9) //why bother...focus on enemies
+                    	continue;
+        		}
 				Route badRoute = data.getMap().getRoute(t, badFactTerr, moveThrough);
 				if (badRoute != null)
 				{
@@ -4862,6 +4905,17 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             if(newRoute == null)
             {
               	newRoute = SUtils.findNearest(t, Matches.isTerritoryEnemy(player, data), moveThrough, data);
+            	if (newRoute != null)
+            	{
+            		Territory endTerr = newRoute.getEnd();
+            		if (Matches.TerritoryIsNeutral.match(endTerr))
+            		{
+                    	float pValue = TerritoryAttachment.get(endTerr).getProduction();
+                    	float enemyStrength = SUtils.strength(endTerr.getUnits().getUnits(), false, false, tFirst);
+                        if (enemyStrength > pValue*9) //why bother...focus on enemies
+                        	newRoute = SUtils.findNearest(t, endCondition2, routeCondition, data);
+            		}
+            	}
             }
             boolean isAmphib = isAmphibAttack(player);
             if(newRoute == null && isAmphib) //move toward the largest contingent of transports
@@ -4899,39 +4953,54 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             	}
             }
             int newDistance = newRoute.getLength();
-            Territory firstStep = null;
-            Route route = null;
+            List<Collection<Unit>> unitsBySpeed = new ArrayList<Collection<Unit>>();
+            SUtils.breakUnitsBySpeed(unitsBySpeed, data, player, units);
             if (to != null && minDistance <= (newDistance + 1))
             {
                 if(units.size() > 0)
                 {
                     Route rC = data.getMap().getRoute(t, to, moveThrough);
-                    Route routeToCapitol = new Route();
-                    routeToCapitol.setStart(t);
-                    routeToCapitol.add(rC.getTerritories().get(1));
-                    route = routeToCapitol;
+                    if (rC != null)
+                    	newRoute = rC;
                 }
-
             }
-            //if we can't move to a capitol, move towards the enemy
-            else
+            for (Collection<Unit> goUnits : unitsBySpeed)
             {
-                if(newRoute != null && units.size() > 0)
-                {
-                    firstStep = newRoute.getTerritories().get(1);
-                    route = new Route();
-                    route.setStart(t);
-                    route.add(firstStep);
-                }
+            	int maxDist = MoveValidator.getMaxMovement(goUnits);
+            	if (maxDist == 0)
+            	{
+            		alreadyMoved.addAll(goUnits);
+            		continue;
+            	}
+            	Route newRoute2 = new Route(); //don't modify newRoute
+            	if (newRoute.getLength() < maxDist)
+            		newRoute2 = newRoute;
+            	else
+            	{
+            		Iterator<Territory> newIter = newRoute.iterator();
+            		newRoute2.setStart(t);
+            		newIter.next();
+            		while(newIter.hasNext() && newRoute2.getLength() <= maxDist)
+            		{
+            			Territory oneTerr = newIter.next();
+            			newRoute2.add(oneTerr);
+            		}
+            	}
+            	moveUnits.add(goUnits);
+            	moveRoutes.add(newRoute2);
+            	alreadyMoved.addAll(goUnits);
+            	Territory endPoint = newRoute2.getEnd();
+            	if (!movedInto.contains(endPoint))
+            		movedInto.add(endPoint);
             }
-            if (firstStep != null && Matches.isTerritoryAllied(player, data).match(firstStep) && route != null)
+/*            if (firstStep != null && Matches.isTerritoryAllied(player, data).match(firstStep) && route != null)
             {
                 moveUnits.add(units);
             	moveRoutes.add(route);
             	movedInto.add(firstStep);
             	addStrength.put(firstStep, addStrength.get(firstStep) + SUtils.strength(units, false, false, tFirst));
             }
-        }
+*/        }
     }
     /*
      * A second pass at the set of nonCombat Land Units

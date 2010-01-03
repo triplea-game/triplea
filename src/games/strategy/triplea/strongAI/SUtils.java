@@ -247,6 +247,35 @@ public class SUtils
     		}
     	}
     }
+    /**
+     * Create a List which contains a series of collections each which has a different movement
+     * 
+     * @param returnUnits
+     * @param data
+     * @param player
+     * @param units
+     */
+    public static void breakUnitsBySpeed(List<Collection<Unit>> returnUnits, GameData data, PlayerID player, List<Unit> units)
+    {
+    	int maxSpeed = MoveValidator.getMaxMovement(units);
+    	List<Unit> copyOfUnits = new ArrayList<Unit>(units);
+    	for (int i=maxSpeed; i>=0; i--)
+    	{
+    		Collection<Unit> newUnits = new ArrayList<Unit>();
+    		Iterator<Unit> unitIter = copyOfUnits.iterator();
+    		while (unitIter.hasNext())
+    		{
+    			Unit unit1 = unitIter.next();
+    			if (MoveValidator.hasEnoughMovement(unit1, i))
+    			{
+    				newUnits.add(unit1);
+    				unitIter.remove();
+    			}
+    		}
+    		if (!newUnits.isEmpty())
+    			returnUnits.add(newUnits);
+    	}
+    }
 
     /**
      * Look for a set of target Territories based from factories
@@ -3710,7 +3739,10 @@ public class SUtils
 		int aRolls = u.getAttackRolls(player);
 		int cost = rule.getCosts().getInt(key);
 		int fightersremaining = fighters;
-		for (int i=0; i <= (maxUnits - totUnits); i++)
+		int usableMaxUnits = maxUnits;
+		if (usableMaxUnits*ruleCheck.size() > 1000 && Math.random() <= 0.50)
+			usableMaxUnits = usableMaxUnits/2;
+		for (int i=0; i <= (usableMaxUnits - totUnits); i++)
 		{
 			if (i > 0) //allow 0 so that this unit might be skipped...due to low value...consider special capabilities later
 			{
