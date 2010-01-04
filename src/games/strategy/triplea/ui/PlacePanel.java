@@ -177,10 +177,14 @@ public class PlacePanel extends ActionPanel
 
     private boolean canProduceFightersOnCarriers()
     {
-        return games.strategy.triplea.Properties.getProduce_Fighters_On_Carriers(getData());
-        //return getData().getProperties().get(Constants.CAN_PRODUCE_FIGHTERS_ON_CARRIERS, false);
+        return games.strategy.triplea.Properties.getProduce_Fighters_On_Carriers(getData());        
     }
 
+    private boolean canProduceNewFightersOnOldCarriers()
+    {    	
+        return games.strategy.triplea.Properties.getProduce_New_Fighters_On_Old_Carriers(getData());        
+    }
+    
     private final MapSelectionListener PLACE_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
     {
         public void territorySelected(Territory territory, MouseDetails e)
@@ -231,7 +235,7 @@ public class PlacePanel extends ActionPanel
             Collection<Unit> units = getCurrentPlayer().getUnits().getUnits();
             if (territory.isWater())
             {
-                if (!canProduceFightersOnCarriers())
+                if (!canProduceFightersOnCarriers() && !canProduceNewFightersOnOldCarriers())
                     units = Match.getMatches(units, Matches.UnitIsSea);
                 else
                 {

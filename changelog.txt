@@ -1,4 +1,25 @@
 Changes for 1.2.1
+* Update NWO xml to use the new figher/carrier properties (ComradeKev)
+
+* Break up Fighter/Carrier production rules into atomic components and added several new game properties for them (ComradeKev)
+	Produce fighters on carriers - New fighters can be placed on New carriers
+	Produce new fighters on old carriers - New fighters can be placed on Old carriers
+	Move existing fighters to new carriers - An existing fighter may be moved to a New carrier from an adjacent territory
+	Land existing fighters on new carriers - Existing fighters can end their movement where a new carrier will be placed
+* Add game property support for configurable Victory City thresholds 'xxx Total Victory VCs', 'xxx Honorable Victory VCs', & 'xxx Porjection of Power VCs' with xxx being alliance name (ComradeKev)
+
+* Add support for game property to define economic victory conditions in the form of 'xxx Victory' with xxx being alliance name (ComradeKev)
+
+* Abstract victory conditions to read teams/players from XML rather than hardcoded values (ComradeKev)
+
+* Add negateDominatingFirstRoundAttack option for RulesAttatchment- negates dominatingFirstRoundAttack for player (ComradeKev)
+ 
+* Add dominatingFirstRoundAttack option for RulesAttatchment- defenders roll at 1 (ComradeKev)
+
+* Add placementInCapitalRestricted option for RulesAttatchment- restricts unit placement to capital (ComradeKev)
+
+* Add unlimitedProduction option for RulesAttatchment- bypasses limitation of unit placement to factory production (ComradeKev)
+
 * Add 'Neutrals Are Blitzable' property with value of TRUE to NWO (ComradeKev)
 
 * Fix bug 2919694 non blitzing units allowed to incrementally make 2nd move (ComradeKev)

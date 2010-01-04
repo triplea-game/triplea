@@ -84,7 +84,11 @@ public class RulesAttachment extends DefaultAttachment
     //booleans
     private boolean m_placementAnyTerritory = false;
     private boolean m_placementCapturedTerritory = false;
-
+    private boolean m_unlimitedProduction = false;
+    private boolean m_placementInCapitalRestricted = false;
+    private boolean m_dominatingFirstRoundAttack = false;
+    private boolean m_negateDominatingFirstRoundAttack = false;
+    
     //Integers
     private int m_territoryCount = -1;
     private int m_objectiveValue = 0;
@@ -249,6 +253,46 @@ public class RulesAttachment extends DefaultAttachment
   public boolean getPlacementCapturedTerritory()
   {
       return m_placementCapturedTerritory;
+  }
+
+  public void setPlacementInCapitalRestricted(String value)
+  {
+      m_placementInCapitalRestricted = getBool(value);
+  }
+
+  public boolean getPlacementInCapitalRestricted()
+  {
+      return m_placementInCapitalRestricted;
+  }
+  
+  public void setUnlimitedProduction(String value)
+  {
+      m_unlimitedProduction = getBool(value);
+  }
+
+  public boolean getUnlimitedProduction()
+  {
+      return m_unlimitedProduction;
+  }
+  
+  public void setDominatingFirstRoundAttack(String value)
+  {
+      m_dominatingFirstRoundAttack = getBool(value);
+  }
+
+  public boolean getDominatingFirstRoundAttack()
+  {
+      return m_dominatingFirstRoundAttack;
+  }
+  
+  public void setNegateDominatingFirstRoundAttack(String value)
+  {
+      m_negateDominatingFirstRoundAttack = getBool(value);
+  }
+
+  public boolean getNegateDominatingFirstRoundAttack()
+  {
+      return m_negateDominatingFirstRoundAttack;
   }
   
   /**

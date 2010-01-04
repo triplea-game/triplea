@@ -53,10 +53,14 @@ public interface Constants
   public static final String FACTORIES_PER_COUNTRY_PROPERTY ="maxFactoriesPerTerritory";
   public static final String TWO_HIT_BATTLESHIP_PROPERTY = "Two hit battleship";
   public static final String ALWAYS_ON_AA_PROPERTY = "Always on AA";
-  //allow fighters to be placed on newly produced carriers
-  public static final String CAN_PRODUCE_FIGHTERS_ON_CARRIERS = "Produce fighters on carriers";
   //allows lhtr carrier/fighter production
   public static final String LHTR_CARRIER_PRODUCTION_RULES = "LHTR Carrier production rules";
+  //Break up fighter/carrier production into atomic units
+  //allow fighters to be placed on newly produced carriers
+  public static final String CAN_PRODUCE_FIGHTERS_ON_CARRIERS = "Produce fighters on carriers";
+  public static final String PRODUCE_NEW_FIGHTERS_ON_OLD_CARRIERS = "Produce new fighters on old carriers";
+  public static final String MOVE_EXISTING_FIGHTERS_TO_NEW_CARRIERS = "Move existing fighters to new carriers";
+  public static final String LAND_EXISTING_FIGHTERS_ON_NEW_CARRIERS = "Land existing fighters on new carriers";
   
   
   public static final String HEAVY_BOMBER_DICE_ROLLS = "Heavy Bomber Dice Rolls";

@@ -3847,10 +3847,14 @@
                        <boolean/>
 		</property>
 
-		<property name="Produce fighters on carriers" value="true" editable="true">
+		<property name="Move existing fighters to new carriers" value="true" editable="true">
                        <boolean/>
                </property>
 
+		<property name="Produce fighters on carriers" value="true" editable="true">
+                       <boolean/>
+               </property>
+               
                <property name="Battleships repair at end of round" value="true" editable="true">
                        <boolean/>
                </property>

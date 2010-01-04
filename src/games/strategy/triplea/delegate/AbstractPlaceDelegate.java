@@ -232,6 +232,16 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return games.strategy.triplea.Properties.getProduce_Fighters_On_Carriers(m_data);
     }
 
+    private boolean canProduceNewFightersOnOldCarriers()
+    {
+        return games.strategy.triplea.Properties.getProduce_New_Fighters_On_Old_Carriers(m_data);
+    }
+    
+    private boolean canMoveExistingFightersToNewCarriers()
+    {
+        return games.strategy.triplea.Properties.getMove_Existing_Fighters_To_New_Carriers(m_data);
+    }
+    
     /**
      * The rule is that new fighters can be produced on new carriers. This does
      * not allow for fighters to be produced on old carriers.
@@ -257,15 +267,10 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         {
             return "Cannot place these units in " + to;
         }
-//TODO Comco incorporate this into a rule (place_only_in_capital_restricted)
-        // can only place chinese units in pacific theater on capitol
-        if(m_data.getProperties().get(Constants.PACIFIC_THEATER, false))
-            if(TerritoryAttachment.getCapital(player, m_data) != to && player.getName().equals("Chinese"))
+
+        if(TerritoryAttachment.getCapital(player, m_data) != to && isPlacementInCapitalRestricted(player))
                 return "Cannot place these units outside of the capital";
-
-        
-
-        
+                
         if (to.isWater())
         {
             String canLand = validateNewAirCanLandOnCarriers(to, units);
@@ -308,8 +313,9 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         Territory producer = getProducer(to, player);
         Collection<Unit> allProducedUnits = new ArrayList<Unit>(units);
         allProducedUnits.addAll(getAlreadyProduced(producer));
-        if (canProduceFightersOnCarriers() &&
-                (Match.someMatch(allProducedUnits, Matches.UnitIsCarrier) || Match.someMatch(to.getUnits().getUnits(), Matches.UnitIsCarrier)))
+        //if can place new fighters on NEW CVs ---OR--- can place new fighters on OLD CVs
+        if ((canProduceFightersOnCarriers() && Match.someMatch(allProducedUnits, Matches.UnitIsCarrier)) 
+        		|| (canProduceNewFightersOnOldCarriers() && Match.someMatch(to.getUnits().getUnits(), Matches.UnitIsCarrier)))
         {
             CompositeMatch<Unit> airThatCanLandOnCarrier = new CompositeMatchAnd<Unit>();
             airThatCanLandOnCarrier.add(Matches.UnitIsAir);
@@ -744,10 +750,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         if (!territory.isWater())
             return;
         //not enabled
-        if (!canProduceFightersOnCarriers())
-            return;
-        //lhtr rules dont allow this
-        if(AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
+        //if (!canProduceFightersOnCarriers())
+        if(!canMoveExistingFightersToNewCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
             return;
         
         if (Match.noneMatch(units, Matches.UnitIsCarrier))
@@ -891,6 +895,16 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return false;
     }
 
+    private boolean isPlacementInCapitalRestricted(PlayerID player)
+    {
+            RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+            if(ra != null && ra.getPlacementInCapitalRestricted())
+            {
+                return true;
+            }      
+    
+        return false;
+    }
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */

@@ -75,7 +75,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
         PlayerID japanese = m_data.getPlayerList().getPlayerID(Constants.JAPANESE);
         PlayerID americans = m_data.getPlayerList().getPlayerID(Constants.AMERICANS);
 
-
+//TODO kev see if we can abstract this from the specific players/games
                 if(m_data.getProperties().get(Constants.PACIFIC_THEATER, false))
                 {
                     PlayerAttachment pa = PlayerAttachment.get(japanese);

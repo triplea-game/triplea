@@ -21,6 +21,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
@@ -178,7 +179,14 @@ public class DiceRoll implements Externalizable
             {
                 int strength;
                 if (defending)
+                {
                     strength = ua.getDefense(current.getOwner());
+                    //If it's a sneak attack, defenders roll at a 1
+                    if (isFirstTurnLimitedRoll(player))
+                    {
+                        strength = Math.min(1, strength);
+                    }
+                }                
                 else
                 {
                     strength = ua.getAttack(current.getOwner());
@@ -339,7 +347,7 @@ public class DiceRoll implements Externalizable
                 {
                     int strength;
                     if (defending)
-                        //If it's a sneak attack, all but Chinese defend at a 1
+                        //If it's a sneak attack, defenders roll at a 1
                     {
                         strength = ua.getDefense(current.getOwner());
                         if (isFirstTurnLimitedRoll(player))
@@ -382,15 +390,31 @@ public class DiceRoll implements Externalizable
     
     public static boolean isFirstTurnLimitedRoll(PlayerID player) 
     {
-        if(player.isNull()) {
+    	//If player is null, Round > 1, or player has negate rule set: return false
+        if(player.isNull() || player.getData().getSequence().getRound() != 1 || isNegateDominatingFirstRoundAttack(player) )
             return false;
-        }
         
-        return player.getData().getProperties().get(Constants.PACIFIC_THEATER, false) 
-        && player.getData().getSequence().getRound() == 1 
-        && player.getData().getSequence().getStep().getName().equals("japaneseBattle") 
-        && !player.equals(player.getData().getPlayerList().getPlayerID(Constants.CHINESE));
+        return isDominatingFirstRoundAttack(player.getData().getSequence().getStep().getPlayerID());        
     }
+    
+    private static boolean isDominatingFirstRoundAttack(PlayerID player)    
+    {
+        RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+        if(ra == null)
+        	return false;
+        return ra.getDominatingFirstRoundAttack();
+    }
+
+    private static boolean isNegateDominatingFirstRoundAttack(PlayerID player)    
+    {
+        RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+        if(ra == null)
+        	return false;
+        return ra.getNegateDominatingFirstRoundAttack();
+    }
+
+    
+    
     
     public static boolean isAmphibious(Collection<Unit> m_units)
     {

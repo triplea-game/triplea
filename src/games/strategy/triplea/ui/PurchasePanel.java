@@ -27,6 +27,7 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -248,7 +249,9 @@ public class PurchasePanel extends ActionPanel
                 }
             }
             
-            if(!m_bid &&  totalProduced + getCurrentPlayer().getUnits().size() > totalProd)
+            PlayerID player = getCurrentPlayer();
+            
+            if(!m_bid &&  totalProduced + player.getUnits().size() > totalProd && !isUnlimitedProduction(player))
             {                
                 int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( PurchasePanel.this), "You have purchased more than you can place, continue with purchase?", "End Purchase", JOptionPane.YES_NO_OPTION);
                 if(rVal != JOptionPane.YES_OPTION)
@@ -271,6 +274,15 @@ public class PurchasePanel extends ActionPanel
       if(ta == null)
       	return false;
       return ta.hasIncreasedFactoryProduction();
+  }
+  
+  private boolean isUnlimitedProduction(PlayerID player)    
+  {
+      RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+      if(ra == null)
+      	return false;
+      
+      return ra.getUnlimitedProduction();
   }
   
   public String toString()

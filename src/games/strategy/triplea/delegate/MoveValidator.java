@@ -1086,95 +1086,6 @@ public class MoveValidator
                 if (!Match.allMatch(units, Matches.UnitIsAir) && !games.strategy.triplea.Properties.getNeutralsBlitzable(data))
                     return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
             }
-            /*
-             * Kev refactored this blitz/Neutral code into validate combat
-             */
-            /*if (!isNonCombat && Match.someMatch(units, Matches.UnitIsLand) && route.getLength() >= 1)
-            {
-                //check all the territories but the end,
-                //if there are enemy territories, make sure they are blitzable
-                //if they are not blitzable, or we arent all blitz units
-                //fail
-                int enemyCount = 0;
-                boolean allEnemyBlitzable = true;
-
-                for (int i = 0; i < route.getLength() - 1; i++)
-                {
-                    Territory current = route.at(i);
-
-                    if (current.isWater())
-                        continue;
-
-                    if (!data.getAllianceTracker().isAllied(current.getOwner(), player)
-                            || MoveDelegate.getBattleTracker(data).wasConquered(current))
-                    {
-                        enemyCount++;
-                        allEnemyBlitzable &= MoveValidator.isBlitzable(current, data, player);                      
-                    }
-                }
-                
-                if (enemyCount > 0 && !allEnemyBlitzable)
-                {
-                    if(NonParatroopersPresent(player, units))
-                        return result.setErrorReturnResult("Cannot blitz on that route");
-                   
-                } 
-                else if (enemyCount >= 0 && allEnemyBlitzable && !(route.getStart().isWater() | route.getEnd().isWater()))
-                {
-                    Match<Unit> blitzingUnit = new CompositeMatchOr<Unit>(Matches.UnitCanBlitz, Matches.UnitIsAir);
-                    Match<Unit> nonBlitzing = new InverseMatch<Unit>(blitzingUnit);
-                    Collection<Unit> nonBlitzingUnits = Match.getMatches(units, nonBlitzing);
-
-                    for (Unit unit : nonBlitzingUnits)
-                    {                       
-                        if (Matches.UnitIsParatroop.match(unit))
-                            continue;
-                        
-                        if (Matches.UnitIsInfantry.match(unit))
-                            continue;
-                        
-                        TripleAUnit tAUnit = (TripleAUnit) unit;
-                        if(tAUnit.getAlreadyMoved() != 0 || route.getLength() > 1)
-                            result.addDisallowedUnit("Not all units can blitz",unit);
-                    }
-                }
-
-                // No neutral countries on route predicate
-                Match<Territory> noNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral));
-                //ignore the end territory in our tests
-                Match<Territory> territoryIsEnd = Matches.territoryIs(route.getEnd());
-                //See if there are neutrals in the path                    	
-                if (data.getMap().getRoute(route.getStart(), route.getEnd(), new CompositeMatchOr<Territory>(noNeutral, territoryIsEnd)) == null  && !games.strategy.triplea.Properties.getNeutralsBlitzable(data))
-                	return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
-	                                    
-            }
-            else 
-            {   
-            
-            
-            //check aircraft
-            	if (!isNonCombat && Match.someMatch(units, Matches.UnitIsAir) && route.getLength() >= 1)
-            	{
-            		// No neutral countries on route predicate
-                    Match<Territory> noNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral));
-                    //ignore the end territory in our tests                    
-                    Match<Territory> territoryIsEnd = Matches.territoryIs(route.getEnd());
-                    //See if there are neutrals in the path    
-            		if (data.getMap().getRoute(route.getStart(), route.getEnd(), new CompositeMatchOr<Territory>(noNeutral, territoryIsEnd)) == null)
-            			return result.setErrorReturnResult("Air units cannot fly over neutral territories");	
-            	}
-            }	
-            //make sure no conquered territories on route
-            if (MoveValidator.hasConqueredNonBlitzedOnRoute(route, data))
-            {
-                //unless we are all air or we are in non combat
-                if (!Match.allMatch(units, Matches.UnitIsAir) && !isNonCombat)
-                    return result.setErrorReturnResult("Cannot move through newly captured territories");
-            }
-            */
-            	/*
-                 * Kev end of refactored blitz code 
-                 */
 
         } // !isEditMode
 
@@ -1296,7 +1207,7 @@ public class MoveValidator
         Collection<Unit> placeUnits = player.getUnits().getUnits();
         CompositeMatch<Unit> unitIsSeaOrCanLandOnCarrier = new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
         placeUnits = Match.getMatches(placeUnits, unitIsSeaOrCanLandOnCarrier);        
-        boolean lhtrCarrierProdRules = AirThatCantLandUtil.isLHTRCarrierProduction(data);
+        boolean lhtrCarrierProdRules = AirThatCantLandUtil.isLHTRCarrierProduction(data) || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
         boolean hasProducedCarriers = player.getUnits().someMatch(Matches.UnitIsCarrier);
         if (lhtrCarrierProdRules && hasProducedCarriers)
         { 

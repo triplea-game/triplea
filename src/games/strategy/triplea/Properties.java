@@ -561,19 +561,33 @@ public class Properties implements Constants {
     /*
      * 
      */
+    public static boolean getLHTR_Carrier_Production_Rules(GameData data) {
+
+        return data.getProperties().get(LHTR_CARRIER_PRODUCTION_RULES, false);
+    }
+/*
+ * Atomic units of the fighter/carrier production rules
+ */
     public static boolean getProduce_Fighters_On_Carriers(GameData data) {
 
         return data.getProperties().get(CAN_PRODUCE_FIGHTERS_ON_CARRIERS, false);
     }
 
-    /*
-     * 
-     */
-    public static boolean getLHTR_Carrier_Production_Rules(GameData data) {
+    public static boolean getProduce_New_Fighters_On_Old_Carriers(GameData data) {
 
-        return data.getProperties().get(LHTR_CARRIER_PRODUCTION_RULES, false);
+        return data.getProperties().get(PRODUCE_NEW_FIGHTERS_ON_OLD_CARRIERS, false);
     }
 
+    public static boolean getMove_Existing_Fighters_To_New_Carriers(GameData data) {
+
+        return data.getProperties().get(MOVE_EXISTING_FIGHTERS_TO_NEW_CARRIERS, false);
+    }
+
+    public static boolean getLand_Existing_Fighters_On_New_Carriers(GameData data) {
+
+        return data.getProperties().get(LAND_EXISTING_FIGHTERS_ON_NEW_CARRIERS, false);
+    }
+    
     /*
      * 
      */

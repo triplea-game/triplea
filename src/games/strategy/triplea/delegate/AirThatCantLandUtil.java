@@ -50,6 +50,11 @@ public class AirThatCantLandUtil
     	return games.strategy.triplea.Properties.getLHTR_Carrier_Production_Rules(data);
     }
 
+    public static boolean isLandExistingFightersOnNewCarriers(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getLand_Existing_Fighters_On_New_Carriers(data);
+    }
+    
     public Collection<Territory> getTerritoriesWhereAirCantLand(PlayerID player)
     {
         Collection<Territory> cantLand = new ArrayList<Territory>();

@@ -173,7 +173,7 @@ public class StrategicBombingRaidBattle implements Battle
                 	bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + " production in " + m_battleSite.getName());
                 else
                 	bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + MyFormatter.pluralize("PU", m_bombingRaidCost));
-
+//TODO Kev remove the reference to the constant.japanese- replace with a rule
                 if(isPacificTheater() || isSBRVictoryPoints())
                 {
                     if(m_defender.getName().equals(Constants.JAPANESE)) 
