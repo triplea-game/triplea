@@ -5123,6 +5123,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     				continue;
     			List<Unit> ourOwnedUnits = ownedTerr.getUnits().getMatches(ourUnMovedLand);
     			ourOwnedUnits.removeAll(alreadyMoved);
+    			if (ourOwnedUnits.isEmpty())
+    				continue;
     			List<Collection<Unit>> ourOwnedUnits2 = new ArrayList<Collection<Unit>>();
     			SUtils.breakUnitsBySpeed(ourOwnedUnits2, data, player, ourOwnedUnits);
     			Territory targetTerr = closestERoute.getEnd();
@@ -6073,9 +6075,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				xRS -= blitzStrength;
             	float planeStrength = SUtils.invitePlaneAttack(false, false, enemy, xRS, xAlreadyMoved, xMoveUnits, xMoveRoutes, data, player);
             	xRS -= planeStrength;
-            	//check to see if we lose our planes on the flyback
-//            	float deleteStrength = SUtils.verifyPlaneAttack(data, xMoveUnits, xMoveRoutes, player, alreadyAttacked);
-//            	xRS += deleteStrength;
             	ourStrength += blitzStrength;
             	if (ourStrength < 1.0F)
             		continue;
@@ -6084,7 +6083,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				List<Unit> allMyUnits = new ArrayList<Unit>(myAUnits);
 				for (Collection<Unit> xUnits : xMoveUnits)
 					allMyUnits.addAll(xUnits);
-				boolean weWin = SUtils.calculateTUVDifference(enemy, allMyUnits, eUnits, costMap, player, data, aggressive, Properties.getAirAttackSubRestricted(data));
+				boolean weWin = false;
+				if (Matches.TerritoryIsNeutral.match(enemy))
+				{
+					if (ourStrength > (attackFactor2 * enemyStrength + 3.0F))
+						weWin = true;
+				}
+				else
+					weWin = SUtils.calculateTUVDifference(enemy, allMyUnits, eUnits, costMap, player, data, aggressive, Properties.getAirAttackSubRestricted(data));
                 if (!weWin)
                 {
                 	alreadyAttacked.remove(enemy);
@@ -6498,7 +6504,19 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		for (Territory ETT : enemyTransportTerr)
 			ETTCount += ETT.getUnits().countMatches(enemyTransport); //# of enemy transports
 		boolean doBuyAttackShips = false;
-
+		
+		Territory myCapWaterTerr = SUtils.findASeaTerritoryToPlaceOn(myCapital, data, player, tFirst);
+		float strength1 = 0.0F, strength2 = 0.0F, airPotential = 0.0F;
+		if (myCapWaterTerr != null)
+		{
+			strength1 = SUtils.getStrengthOfPotentialAttackers(myCapWaterTerr, data, player, tFirst, false, null);
+			strength2 = SUtils.getStrengthOfPotentialAttackers(myCapWaterTerr, data, player, tFirst, true, null);
+			airPotential = strength1 - strength2;
+		}
+		List<Territory> myShipTerrs = SUtils.findOnlyMyShips(myCapital, data, player, alliedAttackShip);
+		int shipCount = 0;
+		for (Territory shipT : myShipTerrs)
+			shipCount += shipT.getUnits().countMatches(alliedAttackShip);
         int totPU = 0, totProd = 0, PUSea = 0, PULand = 0;
 		float purchaseT;
 		String error = null;
@@ -7138,6 +7156,28 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				leftToSpend -= cost;
 				PUSea -= cost;
 				numToBuy++;
+			}
+			if (airPotential > 1.0F && shipCount <= 2)
+			{ //exchange a transport for a destroyer
+				numToBuy--;
+				leftToSpend += cost;
+				PUSea += cost;
+				unitCount--;
+				for (ProductionRule destroyerRule : seaProductionRules)
+				{
+					UnitType d = (UnitType) destroyerRule.getResults().keySet().iterator().next();
+					if (Matches.UnitTypeIsDestroyer.match(d))
+					{
+						cost = destroyerRule.getCosts().getInt(pus);
+						while (cost >= leftToSpend && unitCount < totProd)
+						{
+							purchase.add(destroyerRule, 1);
+							leftToSpend -= cost;
+							PUSea -= cost;
+							unitCount++;
+						}
+					}
+				}
 			}
 			purchase.add(tRule, numToBuy);
 		}

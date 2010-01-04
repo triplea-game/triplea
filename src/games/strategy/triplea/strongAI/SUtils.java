@@ -257,6 +257,8 @@ public class SUtils
      */
     public static void breakUnitsBySpeed(List<Collection<Unit>> returnUnits, GameData data, PlayerID player, List<Unit> units)
     {
+    	if (units.isEmpty())
+    		return;
     	int maxSpeed = MoveValidator.getMaxMovement(units);
     	List<Unit> copyOfUnits = new ArrayList<Unit>(units);
     	for (int i=maxSpeed; i>=0; i--)
