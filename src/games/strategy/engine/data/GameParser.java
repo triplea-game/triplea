@@ -684,8 +684,8 @@ public class GameParser
             String name = current.getAttribute("name");
             
             //It appears the commented line ALWAYS returns false regardless of the value of current.getAttribute("optional")
-            boolean isOptional = Boolean.getBoolean(current.getAttribute("optional"));
-            //boolean isOptional = current.getAttribute("optional").equals("true");
+            //boolean isOptional = Boolean.getBoolean(current.getAttribute("optional"));            
+            boolean isOptional = current.getAttribute("optional").equals("true");
             PlayerID newPlayer = new PlayerID(name, isOptional, data);
             playerList.addPlayerID(newPlayer);
         }

@@ -74,7 +74,7 @@ public class MoveValidator
     public static final String TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT = "Transport cannot both load AND unload after being in combat";
     
     /**
-     * Tests the given collection of units to see if they have the movement neccessary
+     * Tests the given collection of units to see if they have the movement necessary
      * to move.
      * @arg alreadyMoved maps Unit -> movement
      */
@@ -1334,9 +1334,9 @@ public class MoveValidator
 
 			// check carrierMustMoveWith, and reserve carrier capacity for allied planes as required
 			Collection<Unit> ownedCarrier = Match.getMatches(CandidateTerrUnitColl.getUnits(), 
-					new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player)));
-			Map<Unit, Collection<Unit>> mustMoveWith = carrierMustMoveWith(ownedCarrier, CandidateTerrUnitColl.getUnits(), data, player);
-
+					new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player)));			
+			Map<Unit, Collection<Unit>> mustMoveWith = carrierMustMoveWith(ownedCarrier, initialUnitsAtLocation, data, player);
+			
 			int alliedMustMoveCost = 0;
 			for (Unit unit : mustMoveWith.keySet())
 			{
@@ -1346,15 +1346,15 @@ public class MoveValidator
 				alliedMustMoveCost += MoveValidator.carrierCost(mustMovePlanes);
 			}
 
-			//If the territory is within the maxMovement
+			//If the territory is within the maxMovement put the max of the existing capacity or the new capacity
 			if((maxMovement) >= candidateRouteLength)
-				carrierCapacity.put(candidateRouteLength, carrierCapacity.getInt(candidateRouteLength) + extraCapacity - alliedMustMoveCost);            
+				carrierCapacity.put(candidateRouteLength, Math.max(carrierCapacity.getInt(candidateRouteLength), carrierCapacity.getInt(candidateRouteLength) + extraCapacity - alliedMustMoveCost));			
 			else 
 			{
 				//Can move OWNED carriers to get them.
 				//TODO KEV change the -2 to the max movement remaining for carriers in the candidate territory.
 				//This will fix finding carriers who have already used their move.
-				if((maxMovement - currRouteLength) >= candidateSeaRouteLength-2)
+				if((currRouteLength - maxMovement) >= candidateSeaRouteLength-2)
 				{
 					if(ownedCarrier.size()>0  && MoveValidator.carrierCapacity(ownedCarrier) - mustMoveWith.size() 
 							- MoveValidator.carrierCost(airThatMustLandOnCarriers) >=0 && 

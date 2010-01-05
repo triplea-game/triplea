@@ -1,4 +1,10 @@
 Changes for 1.2.1
+* Fix bug 2925146 options panel overflows screen in a single column (ComradeKev)
+
+* Fix GameParser to correctly read optional flag for players in the xml playerList (ComradeKev)
+  
+* Fix bug 2926226 fighter movement with owned carriers (ComradeKev)
+
 * Update NWO xml to use the new figher/carrier properties (ComradeKev)
 
 * Break up Fighter/Carrier production rules into atomic components and added several new game properties for them (ComradeKev)
@@ -6,7 +12,7 @@ Changes for 1.2.1
 	Produce new fighters on old carriers - New fighters can be placed on Old carriers
 	Move existing fighters to new carriers - An existing fighter may be moved to a New carrier from an adjacent territory
 	Land existing fighters on new carriers - Existing fighters can end their movement where a new carrier will be placed
-* Add game property support for configurable Victory City thresholds 'xxx Total Victory VCs', 'xxx Honorable Victory VCs', & 'xxx Porjection of Power VCs' with xxx being alliance name (ComradeKev)
+* Add game property support for configurable Victory City thresholds 'xxx Total Victory VCs', 'xxx Honorable Victory VCs', & 'xxx Projection of Power VCs' with xxx being alliance name (ComradeKev)
 
 * Add support for game property to define economic victory conditions in the form of 'xxx Victory' with xxx being alliance name (ComradeKev)
 
