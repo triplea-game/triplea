@@ -28,6 +28,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.util.IntegerMap;
 
 import java.io.Serializable;
 import java.util.*;
@@ -124,7 +125,7 @@ public class InitializationDelegate implements IDelegate
     private void initDestroyerArtillery(GameData data, IDelegateBridge aBridge)
     {
     	boolean addArtilleryAndDestroyers = games.strategy.triplea.Properties.getUse_Destroyers_And_Artillery(data);
-        //boolean addArtilleryAndDestroyers = data.getProperties().get(Constants.USE_DESTROYERS_AND_ARTILLERY, false);
+
         if (!isWW2V2(data) && addArtilleryAndDestroyers)
         {
             CompositeChange change = new CompositeChange();
@@ -156,13 +157,15 @@ public class InitializationDelegate implements IDelegate
     private void initShipyards(GameData data, IDelegateBridge aBridge)
     {
     	boolean useShipyards = games.strategy.triplea.Properties.getUse_Shipyards(data);
-        //boolean useShipyards = data.getProperties().get(Constants.USE_SHIPYARDS, false);
+
         if (useShipyards)
         {
             CompositeChange change = new CompositeChange();
             ProductionFrontier frontierShipyards = data.getProductionFrontierList().getProductionFrontier("productionShipyards");
-
-            ProductionRule buyInfantry = data.getProductionRuleList().getProductionRule("buyInfantry");
+            /*
+             * Remove the hardcoded productionRules and work through those from the XML as specified
+             */
+            /*ProductionRule buyInfantry = data.getProductionRuleList().getProductionRule("buyInfantry");
             ProductionRule buyArtillery = data.getProductionRuleList().getProductionRule("buyArtillery");
             ProductionRule buyArmour = data.getProductionRuleList().getProductionRule("buyArmour");
             ProductionRule buyFighter = data.getProductionRuleList().getProductionRule("buyFighter");
@@ -176,8 +179,30 @@ public class InitializationDelegate implements IDelegate
             change.add(ChangeFactory.addProductionRule(buyFighter, frontierShipyards));
             change.add(ChangeFactory.addProductionRule(buyBomber, frontierShipyards));
             change.add(ChangeFactory.addProductionRule(buyFactory, frontierShipyards));
-            change.add(ChangeFactory.addProductionRule(buyAAGun, frontierShipyards));
-
+            change.add(ChangeFactory.addProductionRule(buyAAGun, frontierShipyards));*/
+            
+            /*
+             * Find the productionRules, if the unit is NOT a sea unit, add it to the ShipYards prod rule.
+             */
+            ProductionFrontier frontierNONShipyards = data.getProductionFrontierList().getProductionFrontier("production");
+            Collection<ProductionRule> rules = frontierNONShipyards.getRules();
+            Iterator<ProductionRule> ruleIter = rules.iterator();
+            while(ruleIter.hasNext())
+            {
+            	ProductionRule rule = ruleIter.next();
+            	String ruleName = rule.getName();
+            	IntegerMap<NamedAttachable> ruleResults = rule.getResults();
+            	
+            	String unitName = ruleResults.keySet().iterator().next().getName();
+            	UnitType unit = data.getUnitTypeList().getUnitType(unitName);
+        		boolean isSea = UnitAttachment.get(unit).isSea();        		
+        		if(!isSea)
+        		{
+        			ProductionRule prodRule = data.getProductionRuleList().getProductionRule(ruleName);
+            		change.add(ChangeFactory.addProductionRule(prodRule, frontierShipyards));
+        		}
+            }
+            
             aBridge.getHistoryWriter().startEvent("Adding shipyard production rules - land/air units");
             aBridge.addChange(change);
         }

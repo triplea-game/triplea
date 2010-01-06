@@ -1,4 +1,6 @@
 Changes for 1.2.1
+* Remove the hardcoded productionRules for non-sea units during Shipyard initialization (ComradeKev)
+
 * Fix bug 2925146 options panel overflows screen in a single column (ComradeKev)
 
 * Fix GameParser to correctly read optional flag for players in the xml playerList (ComradeKev)
