@@ -560,8 +560,8 @@ public class MapData
         if(widthProperty == null || heightProperty == null)
             throw new IllegalStateException("Missing map.width or map.height in " + MAP_PROPERTIES);
         
-        int width = Integer.parseInt(widthProperty);
-        int height = Integer.parseInt(heightProperty);
+        int width = Integer.parseInt(widthProperty.trim());
+        int height = Integer.parseInt(heightProperty.trim());
         
         return new Dimension(width, height);
     }
