@@ -399,6 +399,9 @@ public class DiceRoll implements Externalizable
     
     private static boolean isDominatingFirstRoundAttack(PlayerID player)    
     {
+    	if(player == null) {
+    		return false;
+    	}
         RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
         if(ra == null)
         	return false;
