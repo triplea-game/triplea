@@ -4294,8 +4294,8 @@ public class SUtils
 			}
 		}
 		if (nonCombat)
-		{
-			CompositeMatch alliedLandTerr = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsLand, Matches.TerritoryIsNotNeutral);
+		{ 
+			CompositeMatch alliedLandTerr = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
 			Set<Territory> terrList = landRankMap.keySet();
 			for (Territory terr1 : alliedFactories)
 			{
