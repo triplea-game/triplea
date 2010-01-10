@@ -757,6 +757,25 @@ public class RevisedTest extends TestCase
         assertTrue(error.startsWith(MoveValidator.TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE));
     }
     
+    public void testSubAttackTransportNonCombat() 
+    {
+    	Territory sz1 = territory("1 Sea Zone",m_data);
+    	
+    	Territory sz8 = territory("8 Sea Zone",m_data);
+    	PlayerID germans = germans(m_data);
+    	
+    	//german sub tries to attack a transport in non combat
+    	//should be an error
+    	MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        ITestDelegateBridge bridge = getDelegateBridge(germans);
+        bridge.setStepName("NonCombatMove");
+        moveDelegate.start(bridge, m_data);
+
+        String error = moveDelegate(m_data).move(sz8.getUnits().getUnits(), new Route(sz8,sz1));
+        assertError(error);
+        
+    }
+    
     public void testMoveSubAwayFromSubmergedSubsInBattleZone()
     {
         Territory sz45 = m_data.getMap().getTerritory("45 Sea Zone");
