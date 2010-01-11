@@ -780,8 +780,11 @@ public class RevisedTest extends TestCase
     {
     	Territory sz2 = territory("2 Sea Zone",m_data);
     	
-    	Territory sz8 = territory("8 Sea Zone",m_data);
+    	Territory sz8 = territory("8 Sea Zone",m_data);    	
     	PlayerID germans = germans(m_data);
+    	UnitType DD = m_data.getUnitTypeList().getUnitType("destroyer");
+    	Change c = ChangeFactory.addUnits(sz2, DD.create(1, m_data.getPlayerList().getPlayerID("British")));
+    	new ChangePerformer(m_data).perform(c);
     	
     	//german sub tries to attack a transport in non combat
     	//should be an error

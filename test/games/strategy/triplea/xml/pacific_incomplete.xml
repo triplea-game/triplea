@@ -1514,6 +1514,15 @@ Coded by Iron__Cross
             <option name="giveUnitControl" value="true"/>
         </attatchment>        
         
+        //Add special rules    
+		<attatchment name="rulesAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="dominatingFirstRoundAttack" value="true"/>
+                </attatchment>
+                
+                
+		<attatchment name="rulesAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="negateDominatingFirstRoundAttack" value="true"/>
+                </attatchment>
     </attatchmentList>
     
     <initialize>

@@ -905,9 +905,7 @@ public class MoveValidator
         {
             //this is ok unless there are destroyer on the path
             if (MoveValidator.enemyDestroyerOnPath(route, player, data))
-                return result.setErrorReturnResult("Cannot move submarines under destroyers");
-            else
-                return result;
+                return result.setErrorReturnResult("Cannot move submarines under destroyers");           
         }
              
 
