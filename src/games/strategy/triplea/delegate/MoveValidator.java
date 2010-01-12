@@ -2168,8 +2168,7 @@ public class MoveValidator
      */
     private static boolean isSubmersibleSubsAllowed(GameData data)
     {
-    	return games.strategy.triplea.Properties.getSubmersible_Subs(data);
-    	//return data.getProperties().get(Constants.SUBMERSIBLE_SUBS, false);
+    	return games.strategy.triplea.Properties.getSubmersible_Subs(data) && !isWW2V2(data);
     }
 
     /**

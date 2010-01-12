@@ -1,4 +1,6 @@
 Changes for 1.2.1
+* Fix subs being able to move through enemy fleets in noncombat for WW2v2 (ComradeKev)
+
 * Fix broken code around pacific test cases for new properties (ComradeKev)
 
 * Remove the hardcoded productionRules for non-sea units during Shipyard initialization (ComradeKev)

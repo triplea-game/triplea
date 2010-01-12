@@ -183,7 +183,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private boolean canSubsSubmerge()
     {
     	return games.strategy.triplea.Properties.getSubmersible_Subs(m_data);
-        //return m_data.getProperties().get(Constants.SUBMERSIBLE_SUBS, false);
     }
 
     public boolean isOver()
