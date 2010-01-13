@@ -1,4 +1,7 @@
 Changes for 1.2.1
+
+* Update mac icons (ubernaut)
+
 * Fix subs being able to move through enemy fleets in noncombat for WW2v2 (ComradeKev)
 
 * Fix broken code around pacific test cases for new properties (ComradeKev)
