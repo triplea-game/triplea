@@ -147,29 +147,7 @@ public class SUtils
 		return new InverseMatch<Territory>(TerritoryIsImpassableToAirUnits(data));
 	}
 	
-    public static Match<Territory> TerritoryIsImpassableToLandUnits (final GameData data)
-    {
-    	return new Match<Territory>()
-    	{
-    		public boolean match(Territory t)
-    		{
-    			if (t.isWater())
-    				return true;
-    			else if (t.getOwner().equals(PlayerID.NULL_PLAYERID) && Matches.TerritoryIsImpassable.match(t))
-    				return true;
-    			else if (TerritoryAttachment.get(t).isImpassible())
-    				return true;
-    			else
-    				return false;
-    		}
-    	};
-    }
-    
-    public final static Match<Territory> TerritoryIsNotImpassableToLandUnits (final GameData data)
-    {
-    	return new InverseMatch<Territory>(TerritoryIsImpassableToLandUnits(data));
-    }
-    
+        
     /**
      * Return a list of Territories on a Continent which are allied
      * @param data
@@ -180,7 +158,7 @@ public class SUtils
      */
     public static void continentAlliedUnitTerr(GameData data, PlayerID player, Territory startTerr, List<Territory> contiguousTerr, List<Territory> ignoreTerr)
     {
-    	Set<Territory> neighbor1 = data.getMap().getNeighbors(startTerr, SUtils.TerritoryIsNotImpassableToLandUnits(data));
+    	Set<Territory> neighbor1 = data.getMap().getNeighbors(startTerr, Matches.TerritoryIsNotImpassableToLandUnits(player));
     	neighbor1.removeAll(contiguousTerr);
     	neighbor1.removeAll(ignoreTerr);
     	for (Territory n1 : neighbor1)
@@ -443,7 +421,7 @@ public class SUtils
     			List<Territory> eNeighbors = new ArrayList<Territory>();
     			for (int j=evalDistance; j > 0; j--)
     			{
-    				eNeighbors.addAll(SUtils.getExactNeighbors(eTerr, j, data, false));
+    				eNeighbors.addAll(SUtils.getExactNeighbors(eTerr, j, player, false));
     				for (Territory eN : eNeighbors)
     				{
     					if (goTerr.contains(eN))
@@ -875,14 +853,14 @@ public class SUtils
     {
     	CompositeMatch<Unit> blitzUnit = new CompositeMatchAnd<Unit>(Matches.UnitCanBlitz, Matches.enemyUnit(player, data));
     	List<Territory> blitzTerr = new ArrayList<Territory>();
-    	List<Territory> twoTerr = SUtils.getExactNeighbors(checkTerr, 2, data, false);
-    	List<Territory> oneTerr = SUtils.getExactNeighbors(checkTerr, 1, data, false);
+    	List<Territory> twoTerr = SUtils.getExactNeighbors(checkTerr, 2, player, false);
+    	List<Territory> oneTerr = SUtils.getExactNeighbors(checkTerr, 1, player, false);
     	for (Territory blitzFrom : twoTerr)
     	{
     		List<Unit> blitzUnits = blitzFrom.getUnits().getMatches(blitzUnit);
     		if (blitzUnits.isEmpty())
     			continue;
-    		List<Territory> blitzNeighbors = SUtils.getExactNeighbors(blitzFrom, 1, data, false);
+    		List<Territory> blitzNeighbors = SUtils.getExactNeighbors(blitzFrom, 1, player, false);
     		for (Territory blitzCheck : blitzNeighbors)
     		{
     			if (oneTerr.contains(blitzCheck))
@@ -898,7 +876,7 @@ public class SUtils
     public static List<Territory> getNeighboringEnemyLandTerritories(GameData data, PlayerID player, Territory check)
     {
         List<Territory> rVal = new ArrayList<Territory>();
-        List<Territory> checkList = getExactNeighbors(check, 1, data, false);
+        List<Territory> checkList = getExactNeighbors(check, 1, player, false);
         for(Territory t : checkList)
         {
             if (Matches.isTerritoryEnemy(player, data).match(t) && Matches.TerritoryIsNotImpassable.match(t) && Matches.TerritoryIsLand.match(t))
@@ -914,10 +892,10 @@ public class SUtils
     public static List<Territory> getNeighboringLandTerritories(GameData data, PlayerID player, Territory check)
     { 
     	ArrayList<Territory> rVal = new ArrayList<Territory>();
-    	List<Territory> checkList = getExactNeighbors(check, 1, data, false);
+    	List<Territory> checkList = getExactNeighbors(check, 1, player, false);
     	for (Territory t : checkList)
     	{
-			if (Matches.isTerritoryAllied(player, data).match(t) && Matches.TerritoryIsNotImpassable.match(t) && Matches.TerritoryIsLand.match(t))
+			if (Matches.isTerritoryAllied(player, data).match(t) && Matches.TerritoryIsNotImpassableToLandUnits(player).match(t))
 				rVal.add(t);
 		}
 		return rVal;
@@ -1102,7 +1080,7 @@ public class SUtils
             Territory capitol =  TerritoryAttachment.getCapital(otherPlayer, data);
 	        if(capitol != null && !data.getAllianceTracker().isAllied(player, capitol.getOwner()))
 	        {
-	            route = data.getMap().getRoute(thisTerr, capitol, TerritoryIsNotImpassableToLandUnits(data));
+	            route = data.getMap().getRoute(thisTerr, capitol, Matches.TerritoryIsNotImpassableToLandUnits(player));
 	            if(route != null)
 	           	   routeExists = true;
 	        }
@@ -1337,7 +1315,7 @@ public class SUtils
 			{
 				for (int i=2; i<=3; i++)
 				{
-					List<Territory> moreTerr = getExactNeighbors(location, i, data, false);
+					List<Territory> moreTerr = getExactNeighbors(location, i, player, false);
 					if (doIgnoreTerritories)
 						moreTerr.removeAll(ignoreTerr);
 					for (Territory shipTerr : moreTerr)
@@ -1789,7 +1767,7 @@ public class SUtils
             if(capitol == null || data.getAllianceTracker().isAllied(player, capitol.getOwner()))
                 continue;
 
-            if(data.getMap().getDistance(t, capitol, TerritoryIsNotImpassableToLandUnits(data)) != -1)
+            if(data.getMap().getDistance(t, capitol, Matches.TerritoryIsNotImpassableToLandUnits(player)) != -1)
             {
                 return true;
             }
@@ -2016,8 +1994,8 @@ public class SUtils
 	 */
     public static Territory findFactoryTerritory(GameData data, PlayerID player, float risk, boolean buyfactory)
     {
-    	CompositeMatch<Territory> enemyNoWater = new CompositeMatchAnd<Territory>(TerritoryIsNotImpassableToLandUnits(data), Matches.isTerritoryEnemyAndNotNuetralWater(player, data));
-    	CompositeMatch<Territory> alliedNoWater = new CompositeMatchAnd<Territory>(TerritoryIsNotImpassableToLandUnits(data), Matches.isTerritoryAllied(player, data));
+    	CompositeMatch<Territory> enemyNoWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryEnemyAndNotNuetralWater(player, data));
+    	CompositeMatch<Territory> alliedNoWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryAllied(player, data));
 		List<Territory> owned = allOurTerritories(data, player);
 		Territory minTerr = null;
 		float minRisk = 1.0F;
@@ -2038,15 +2016,15 @@ public class SUtils
 			int numOnContinent = 0;
 			for (Territory factTerr : existingFactories)
 			{
-				Route fRoute = data.getMap().getRoute(t, factTerr, SUtils.TerritoryIsNotImpassableToLandUnits(data));
+				Route fRoute = data.getMap().getRoute(t, factTerr, Matches.TerritoryIsNotImpassableToLandUnits(player));
 				if (fRoute != null && fRoute.getEnd() != null)
 					numOnContinent = prodMap.getInt(factTerr);
 			}
 //	        This prevents purchasing a factory in a map like NWO
 //			if (numOnContinent >= 6)
 //				continue;
-			List<Territory> twoAway = getExactNeighbors(t, 2, data, false);
-			List<Territory> threeAway = getExactNeighbors(t, 3, data, false);
+			List<Territory> twoAway = getExactNeighbors(t, 2, player, false);
+			List<Territory> threeAway = getExactNeighbors(t, 3, player, false);
 			List<Territory> closeAllies = SUtils.getNeighboringLandTerritories(data, player, t);
 			float tStrength = strength(t.getUnits().getMatches(Matches.unitIsOwnedBy(player)), false, false, false);
 			for (Territory cA : closeAllies)
@@ -2077,7 +2055,7 @@ public class SUtils
 			if (badIdea)
 				continue;
 			Route nearEnemyRoute = findNearest(t, enemyNoWater, alliedNoWater, data);
-			Route factoryRoute = findNearest(t, Matches.territoryHasEnemyFactory(data, player), SUtils.TerritoryIsNotImpassableToLandUnits(data), data);
+			Route factoryRoute = findNearest(t, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player), data);
 			if (nearEnemyRoute == null || factoryRoute == null)
 				continue;
 			int routeLength = nearEnemyRoute.getLength();
@@ -2100,8 +2078,9 @@ public class SUtils
 	 * Removes the inner circle neighbors
 	 * neutral - whether to include neutral countries
 	 */
-    public static List<Territory> getExactNeighbors(Territory territory, int distance, GameData data, boolean neutral)
+    public static List<Territory> getExactNeighbors(Territory territory, int distance, PlayerID player, boolean neutral)
 	{
+    	GameData data = player.getData();
 		if(distance < 0)
 			throw new IllegalArgumentException("Distance must be positive not:" + distance);
 
@@ -2128,7 +2107,7 @@ public class SUtils
 		{
 			for (Territory t : startX)
 			{
-			    if (TerritoryIsImpassableToLandUnits(data).match(t))
+			    if (Matches.TerritoryIsImpassableToLandUnits(player).match(t))
 			       startX.remove(t);
 		    }
 		}
@@ -2775,11 +2754,11 @@ public class SUtils
 								List<Collection<Unit>> moveUnits, List<Route> moveRoutes, GameData data, PlayerID player, boolean attacking, boolean forced)
 	{//Blitz through owned into enemy
 		CompositeMatch<Unit> blitzUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBlitz);
-		CompositeMatch<Territory> alliedAndNotWater = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), TerritoryIsNotImpassableToLandUnits(data));
-		CompositeMatch<Territory> noEnemyUnitsAndNotWater = new CompositeMatchAnd<Territory>(Matches.territoryHasNoEnemyUnits(player, data), TerritoryIsNotImpassableToLandUnits(data));
+		CompositeMatch<Territory> alliedAndNotWater = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsNotImpassableToLandUnits(player));
+		CompositeMatch<Territory> noEnemyUnitsAndNotWater = new CompositeMatchAnd<Territory>(Matches.territoryHasNoEnemyUnits(player, data), Matches.TerritoryIsNotImpassableToLandUnits(player));
 		
  	    //Are there blitzable units available?
-		List<Territory> blitzFrom = getExactNeighbors(enemy, 2, data, false);
+		List<Territory> blitzFrom = getExactNeighbors(enemy, 2, player, false);
 		List<Territory> blitzCopy = new ArrayList<Territory>(blitzFrom);
 		Route tRoute = null;
 		float totStrength = 0.0F;
@@ -2866,7 +2845,7 @@ public class SUtils
 		{
 			for (Territory eCap : enemyCap)
 			{
-				thisDist = data.getMap().getDistance(checkTerr, eCap, TerritoryIsNotImpassableToLandUnits(data));
+				thisDist = data.getMap().getDistance(checkTerr, eCap, Matches.TerritoryIsNotImpassableToLandUnits(player));
 				if (thisDist == -1)
 					continue;
 				if (thisDist < capDist)
@@ -2920,16 +2899,16 @@ public class SUtils
 	public static float determineEnemyBlitzStrength(Territory blitzHere, List<Route> blitzTerrRoutes, List<Territory> blockTerr, GameData data, PlayerID ePlayer)
 	{
 		CompositeMatch<Unit> blitzUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBlitz);
-		CompositeMatch<Territory> validBlitzRoute = new CompositeMatchAnd<Territory>(Matches.territoryHasNoEnemyUnits(ePlayer, data), TerritoryIsNotImpassableToLandUnits(data));
+		CompositeMatch<Territory> validBlitzRoute = new CompositeMatchAnd<Territory>(Matches.territoryHasNoEnemyUnits(ePlayer, data), Matches.TerritoryIsNotImpassableToLandUnits(ePlayer));
 		
 		float eStrength = 0.0F;
-		List<Territory> pBlitzTerr = getExactNeighbors(blitzHere, 2, data, false);
+		List<Territory> pBlitzTerr = getExactNeighbors(blitzHere, 2, ePlayer, false);
 		Set<Territory> blitzStepTerr = data.getMap().getNeighbors(blitzHere, validBlitzRoute);
 		Iterator<Territory> bIter = pBlitzTerr.iterator();
 		while (bIter.hasNext())
 		{
 			Territory checkTerr = bIter.next();
-			if (checkTerr.isWater() || SUtils.TerritoryIsImpassableToLandUnits(data).match(checkTerr))
+			if (checkTerr.isWater() || Matches.TerritoryIsImpassableToLandUnits(ePlayer).match(checkTerr))
 				bIter.remove();
 		}
 		if (blitzStepTerr.isEmpty())
@@ -4166,8 +4145,8 @@ public class SUtils
     {
 		HashMap<Territory, Float> landRankMap = new HashMap<Territory, Float>();
 		HashMap<Territory, Float> landStrengthMap = new HashMap<Territory, Float>();
-		CompositeMatch<Territory> noEnemyOrWater = new CompositeMatchAnd<Territory>(TerritoryIsNotImpassableToLandUnits(data), Matches.isTerritoryAllied(player, data));
-		CompositeMatch<Territory> enemyAndNoWater = new CompositeMatchAnd<Territory>(TerritoryIsNotImpassableToLandUnits(data), Matches.isTerritoryEnemyAndNotNuetralWater(player, data));
+		CompositeMatch<Territory> noEnemyOrWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryAllied(player, data));
+		CompositeMatch<Territory> enemyAndNoWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryEnemyAndNotNuetralWater(player, data));
 		TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
         List<PlayerID> ePlayers = getEnemyPlayers(data, player);
     	PlayerID ePlayer = ePlayers.get(0);
@@ -4219,7 +4198,7 @@ public class SUtils
 			eTerrValue += lRCap ? 2.0F : 0.0F;
 			if (lRCap && (!Matches.territoryHasEnemyFactory(data, player).match(eTerr) && !Matches.territoryHasAlliedFactory(data, player).match(eTerr)))
 			{
-				Route eCapRoute = findNearest(eTerr, Matches.territoryHasEnemyFactory(data, player), TerritoryIsNotImpassableToLandUnits(data), data);
+				Route eCapRoute = findNearest(eTerr, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player), data);
 				if (eCapRoute != null)
 					eTerrValue -= eCapRoute.getLength() - 1;
 			}
@@ -4367,8 +4346,8 @@ public class SUtils
     {
 		HashMap<Territory, Float> landRankMap = new HashMap<Territory, Float>();
 		HashMap<Territory, Float> landStrengthMap = new HashMap<Territory, Float>();
-		CompositeMatch<Territory> noEnemyOrWater = new CompositeMatchAnd<Territory>(TerritoryIsNotImpassableToLandUnits(data), Matches.isTerritoryAllied(player, data));
-		CompositeMatch<Territory> enemyAndNoWater = new CompositeMatchAnd<Territory>(TerritoryIsNotImpassableToLandUnits(data), Matches.isTerritoryEnemyAndNotNuetralWater(player, data));
+		CompositeMatch<Territory> noEnemyOrWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryAllied(player, data));
+		CompositeMatch<Territory> enemyAndNoWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryEnemyAndNotNuetralWater(player, data));
         List<PlayerID> ePlayers = getEnemyPlayers(data, player);
     	PlayerID ePlayer = ePlayers.get(0);
     	List<Territory> enemyCapitals = SUtils.getEnemyCapitals(data, player);

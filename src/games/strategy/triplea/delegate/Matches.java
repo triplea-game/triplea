@@ -27,8 +27,10 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -853,6 +855,55 @@ public class Matches
     };
 
     public final static Match<Territory> TerritoryIsNotImpassable = new InverseMatch<Territory>(TerritoryIsImpassable);
+    
+    public static final Match<Territory> TerritoryIsPassableAndNotRestricted (final PlayerID player)
+    {
+    	return new Match<Territory>()
+    	{
+    		public boolean match(Territory t)
+    		{
+    			GameData data = player.getData();
+    			if (Matches.TerritoryIsImpassable.match(t))
+    				return false;
+            	if(!Properties.getMovementByTerritoryRestricted(data))
+            		return true;
+            	
+            	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+            	if(ra == null || ra.getMovementRestrictionTerritories() == null)
+            		return true;
+            	
+            	String movementRestrictionType = ra.getMovementRestrictionType();
+            	Collection<Territory> listedTerritories = ra.getListedTerritories(ra.getMovementRestrictionTerritories());
+            	return (movementRestrictionType.equals("allowed") == listedTerritories.contains(t));
+    		}
+    	};
+    }
+    
+    public final static Match<Territory> TerritoryIsImpassableToLandUnits (final PlayerID player)
+    {
+    	return new Match<Territory>()
+    	{
+    		public boolean match(Territory t)
+    		{
+    			if (t.isWater())
+    				return true;
+    			else if (Matches.TerritoryIsPassableAndNotRestricted(player).invert().match(t))
+    				return true;
+    			return false;
+    		}
+    	};
+    }
+
+    public final static Match<Territory> TerritoryIsNotImpassableToLandUnits (final PlayerID player)
+    {
+    	return new Match<Territory>()
+    	{
+    		public boolean match(Territory t)
+    		{
+    			return TerritoryIsImpassableToLandUnits(player).invert().match(t);
+    		}
+    	};
+    }
 
     public static final Match<Battle> BattleIsEmpty = new Match<Battle>()
     {
