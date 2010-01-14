@@ -3631,10 +3631,10 @@ public class SUtils
 			bestMaxUnits.put(rule, 0);
 			bestTransport.put(rule, 0);
 			UnitType x = (UnitType) rule.getResults().keySet().iterator().next();
+			supportableInfMap.put(rule, UnitAttachment.get(x).isArtillerySupportable());
 			transportMap.put(rule, Matches.UnitTypeCanBeTransported.match(x));
 			infMap.put(rule, Matches.UnitTypeIsInfantry.match(x));
 			nonInfMap.put(rule, Matches.UnitTypeCanBeTransported.match(x) && Matches.UnitTypeIsInfantry.invert().match(x) && Matches.UnitTypeIsAA.invert().match(x));
-			supportableInfMap.put(rule, UnitAttachment.get(x).isArtillerySupportable());
 		}
 		int countNum = 1;
 		int goodLoop = purchaseLoop (parameters, countNum, bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, transportMap, infMap, nonInfMap, supportableInfMap, data, player, fighters);
