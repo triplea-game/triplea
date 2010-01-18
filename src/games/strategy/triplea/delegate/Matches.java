@@ -404,6 +404,8 @@ public class Matches
             return ua.getTransportCost() != -1;
         }
     };
+    
+    public static final Match<Unit> UnitCanNotBeTransported = new InverseMatch<Unit>(UnitCanBeTransported);
 
     public static final Match<Unit> UnitWasAmphibious = new Match<Unit>()
     {

@@ -1337,11 +1337,11 @@ public class MovePanel extends ActionPanel
             {
                 int capacity = getTransportTracker().getAvailableCapacity(bomber);
                 if (capacity < minTransportCost)
-                	candidateBombers.remove(bomber); //TODO need to test to see if this is valid
+                	candidateBombers.remove(bomber);
+                //If there are no more bombers- just return the empty set
+                if(candidateBombers.isEmpty())
+                    return candidateBombers;
             }
-            
-            if(candidateBombers.isEmpty())
-                return null;
             
             //Generate map of capacity
             IntegerMap<Unit> availableCapacityMap = new IntegerMap<Unit>();

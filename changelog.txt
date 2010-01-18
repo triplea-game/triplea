@@ -1,3 +1,18 @@
+Changes for 1.2.2
+* Update NWO map to version 1.7.2 (OnanTheBrBr)
+
+* Fix bug (2933998) null pointer in MoreNAble IA Non Combat movement through sea zones (ComradeKev)
+
+* Fix bug (2933797) Battle Calc in Edit Mode- removed unnecessary checks for edit mode (ComradeKev)
+
+* Allow submersible subs to travel under enemy ships in combat and non-combat (except DDs) (ComradeKev)
+
+* Update options panel height to 15 items to fit on smaller screens (ComradeKev)
+
+* Fix bug (2933341) Exception if paratroop transport cost > bomber capacity (ComradeKev)
+ 
+* Fix bug (2932947) paratroop checking code allowing naval ships to move through enemy SZ (ComradeKev)
+
 Changes for 1.2.1
 
 * Update game icons (ubernaut)

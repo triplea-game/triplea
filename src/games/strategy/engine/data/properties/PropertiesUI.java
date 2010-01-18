@@ -62,9 +62,9 @@ public class PropertiesUI extends JPanel
 
     while(iter.hasNext())
     {
-    	//Limit it to 25 rows then start a new column
+    	//Limit it to 10 rows then start a new column
     	//Don't know if this is the most elegant solution, but it works.
-    	if(m_nextRow >= 25)
+    	if(m_nextRow >= 15)
     	{
     		m_labelColumn += 2;
     		m_nextRow = 0;

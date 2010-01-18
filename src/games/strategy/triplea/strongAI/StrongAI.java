@@ -4713,9 +4713,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                     			pValue += xValue;
                     		}
                        		Set<Territory> enemyNeighbors = data.getMap().getNeighbors(realEnemy, Matches.isTerritoryEnemy(player, data));
+                       		
                     		for (Territory nTerr : enemyNeighbors)
                     		{
-                    			eValue += TerritoryAttachment.get(nTerr).getProduction();
+                    			TerritoryAttachment ta = TerritoryAttachment.get(nTerr);
+                    			if(ta != null)
+                    				eValue += ta.getProduction();
                     		}
                     		if (pValue < eValue)
                     			goRoute = xRoute;

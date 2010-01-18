@@ -1759,9 +1759,9 @@ public class MoveValidator
     {
         if(isParatroopers(player))
         {
-            for (Unit unit : Match.getMatches(units, Matches.UnitCanBeTransported))
-            {                
-                if (!Matches.UnitIsParatroop.match(unit))
+        	for (Unit unit : Match.getMatches(units, Matches.UnitCanNotBeTransported))
+            {
+                if (!Matches.UnitIsParatroop.match(unit) && !UnitAttachment.get(unit.getUnitType()).isAir())
                     return true;
             }
         }
@@ -2168,7 +2168,7 @@ public class MoveValidator
      */
     private static boolean isSubmersibleSubsAllowed(GameData data)
     {
-    	return games.strategy.triplea.Properties.getSubmersible_Subs(data) && !isWW2V2(data);
+    	return games.strategy.triplea.Properties.getSubmersible_Subs(data);
     }
 
     /**

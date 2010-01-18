@@ -174,7 +174,8 @@ public class BattleCalculator
             GameData data, DiceRoll dice, boolean defending, GUID battleID, boolean headLess, int extraHits)
     {
     	boolean isEditMode = EditDelegate.getEditMode(data);
-        if (isEditMode || dice.getHits() == 0)
+        //if (isEditMode || dice.getHits() == 0)
+    	if (dice.getHits() == 0)
             return new CasualtyDetails(Collections.<Unit>emptyList(), Collections.<Unit>emptyList(), true);
 
         int hitsRemaining = dice.getHits();
@@ -189,7 +190,8 @@ public class BattleCalculator
         {
             hitsRemaining = extraHits;
         }
-                
+
+//TODO check if isEditMode is necessary
         if (!isEditMode && allTargetsOneTypeNotTwoHit(targets, dependents))
         {
             List<Unit> killed = new ArrayList<Unit>(); 

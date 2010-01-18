@@ -58,9 +58,7 @@ public class DiceRoll implements Externalizable
         int hits = 0;
         int[] dice = new int[0];
         List<Die> sortedDice = new ArrayList<Die>();
-        boolean isEditMode = EditDelegate.getEditMode(data);
-        ITripleaPlayer player = (ITripleaPlayer)bridge.getRemote();
-        
+               
         int hitAt = 0;
         
         boolean useRadar = false;
@@ -89,12 +87,8 @@ public class DiceRoll implements Externalizable
             if (hitsFractional > 0)
             {
                 //String annotation = "Roll AA guns in " + location.getName();
-                if (isEditMode)
-                {
-                    dice = player.selectFixedDice(1, hitAt+1, true, annotation);
-                }
-                else
-                    dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
+
+            	dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
                 boolean hit = hitsFractional > dice[0];
                 Die die = new Die(dice[0], hitsFractional, hit ? DieType.HIT : DieType.MISS);
 
@@ -111,14 +105,9 @@ public class DiceRoll implements Externalizable
             
             // Normal rolling
             String annotation = "Roll AA guns in " + location.getName();
-            if (isEditMode)
-            {                
-                dice = player.selectFixedDice(numberOfAirUnits, hitAt+1, true, annotation);
-            }
-            else
-            {
-                dice = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits, annotation);
-            }
+           
+            dice = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits, annotation);
+            
             for (int i = 0; i < dice.length; i++)
             {
                 boolean hit = dice[i] <= hitAt;
@@ -217,14 +206,7 @@ public class DiceRoll implements Externalizable
         power = power % Constants.MAX_DICE;
         if (power != 0)
         {
-            boolean isEditMode = EditDelegate.getEditMode(data);
-            if (isEditMode)
-            {
-                ITripleaPlayer tripleAplayer = (ITripleaPlayer)bridge.getRemote();
-                random = tripleAplayer.selectFixedDice(1, power, false, annotation);
-            }
-            else
-                random = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
+        	random = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
             boolean hit = power > random[0]; 
             if (hit)
             {
@@ -279,14 +261,8 @@ public class DiceRoll implements Externalizable
         }
 
         int[] random;
-        boolean isEditMode = EditDelegate.getEditMode(data);
-        if (isEditMode)
-        {
-            ITripleaPlayer tripleAplayer = (ITripleaPlayer)bridge.getRemote();
-            random = tripleAplayer.selectFixedDice(rollCount, 0, true, annotation);
-        }
-        else
-            random = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
+       
+        random = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
 
         List<Die> dice = new ArrayList<Die>();
         
