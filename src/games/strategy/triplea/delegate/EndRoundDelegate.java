@@ -164,7 +164,7 @@ public class EndRoundDelegate implements IDelegate
 			{				
 				aBridge.getHistoryWriter().startEvent(alllianceName + victoryMessage + vcAmount + " Victory Cities!");
 				//Added this to end the game on victory conditions
-				signalGameOver(victoryMessage,aBridge);
+				signalGameOver(alllianceName + victoryMessage + vcAmount + " Victory Cities!",aBridge);
 			}
 		}
 	}

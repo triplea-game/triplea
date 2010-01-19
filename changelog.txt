@@ -1,4 +1,8 @@
 Changes for 1.2.2
+* Fix displayed Victory City victory message (ComradeKev)
+
+* Fix null pointer if trying to select factory in edit mode (ComradeKev)
+
 * Update NWO map to version 1.7.2 (OnanTheBrBr)
 
 * Fix bug (2933998) null pointer in MoreNAble IA Non Combat movement through sea zones (ComradeKev)

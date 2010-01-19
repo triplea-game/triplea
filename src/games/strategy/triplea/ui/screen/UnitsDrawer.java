@@ -65,13 +65,21 @@ public class UnitsDrawer implements IDrawable
         
         if(!m_damaged && UnitAttachment.get(type).isFactory() && isSBRAffectsUnitProduction(data) )
         {
-        	TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));
-        	int prod = ta.getProduction();
-        	int unitProd = ta.getUnitProduction();
-        	if(unitProd < prod)
+        	if(!m_territoryName.isEmpty())
         	{
-                img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, true);
+        		TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));
+        		int prod = ta.getProduction();
+        		int unitProd = ta.getUnitProduction();
+        		if(unitProd < prod)
+        		{
+        			img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, true);
+        		}
         	}
+        	else
+        	{
+        		img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged);
+        	}
+        	
         }
         else
         {
@@ -101,15 +109,17 @@ public class UnitsDrawer implements IDrawable
 		graphics.setColor(Color.black);
 		graphics.setFont(MapImage.MAP_FONT);
 
-		TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));       
-		int damageCount = ta.getProduction() - ta.getUnitProduction();
-
-		if(damageCount>0)
+		if(!m_territoryName.isEmpty())
 		{
-			graphics.drawString(String.valueOf(damageCount), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4),
-					m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight()/4);
+			TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));       
+			int damageCount = ta.getProduction() - ta.getUnitProduction();
+
+			if(damageCount>0)
+			{
+				graphics.drawString(String.valueOf(damageCount), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4),
+						m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight()/4);
+			}
 		}
-        
 	}
     
 
