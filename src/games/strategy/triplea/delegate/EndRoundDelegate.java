@@ -95,7 +95,7 @@ public class EndRoundDelegate implements IDelegate
 		String victoryMessage = null;
 
 		//Check for Winning conditions        
-        if(isWW2V2() || isNoEconomicVictory())
+        if(isWW2V2())
             return;
         else if(isTotalVictory()) //Check for Win by Victory Cities
 		{
@@ -112,17 +112,17 @@ public class EndRoundDelegate implements IDelegate
 			victoryMessage = " achieve victory through a PROJECTION OF POWER with ";
 		    checkVictoryCities(aBridge, m_data, victoryMessage, " Projection of Power VCs");           
 		}
-		else //Check for regular economic victory
+		else  if (isEconomicVictory()) //Check for regular economic victory
 		{
 			Iterator allianceIter = m_data.getAllianceTracker().getAlliances().iterator();
-			String alllianceName = null;
+			String allianceName = null;
 			while (allianceIter.hasNext())
 			{
-				alllianceName = (String) allianceIter.next();
+				allianceName = (String) allianceIter.next();
 				
-				int victoryAmount = getEconomicVictoryAmount(m_data, alllianceName);
+				int victoryAmount = getEconomicVictoryAmount(m_data, allianceName);
 				
-				Set<PlayerID> teamMembers = m_data.getAllianceTracker().getPlayersInAlliance(alllianceName);
+				Set<PlayerID> teamMembers = m_data.getAllianceTracker().getPlayersInAlliance(allianceName);
 				
 				Iterator<PlayerID> teamIter = teamMembers.iterator();
 				int teamProd = 0;
@@ -133,7 +133,7 @@ public class EndRoundDelegate implements IDelegate
 
 				    if(teamProd >= victoryAmount)
 				    {
-				    	victoryMessage = alllianceName + " achieve economic victory";
+				    	victoryMessage = allianceName + " achieve economic victory";
 				    	aBridge.getHistoryWriter().startEvent(victoryMessage);
 				        //Added this to end the game on victory conditions
 				        signalGameOver(victoryMessage,aBridge);
@@ -147,14 +147,14 @@ public class EndRoundDelegate implements IDelegate
 	private void checkVictoryCities(IDelegateBridge aBridge, GameData m_data, String victoryMessage, String victoryType) 
 	{
 		Iterator allianceIter = m_data.getAllianceTracker().getAlliances().iterator();
-		String alllianceName = null;
+		String allianceName = null;
 		while (allianceIter.hasNext())
 		{
-			alllianceName = (String) allianceIter.next();
+			allianceName = (String) allianceIter.next();
 			
-			int vcAmount = getVCAmount(m_data, alllianceName, victoryType);
+			int vcAmount = getVCAmount(m_data, allianceName, victoryType);
 			
-			Set<PlayerID> teamMembers = m_data.getAllianceTracker().getPlayersInAlliance(alllianceName);
+			Set<PlayerID> teamMembers = m_data.getAllianceTracker().getPlayersInAlliance(allianceName);
 			
 			Iterator<PlayerID> teamIter = teamMembers.iterator();
 			int teamVCs = Match.countMatches(m_data.getMap().getTerritories(), 
@@ -162,9 +162,9 @@ public class EndRoundDelegate implements IDelegate
 
 			if(teamVCs >= vcAmount)
 			{				
-				aBridge.getHistoryWriter().startEvent(alllianceName + victoryMessage + vcAmount + " Victory Cities!");
+				aBridge.getHistoryWriter().startEvent(allianceName + victoryMessage + vcAmount + " Victory Cities!");
 				//Added this to end the game on victory conditions
-				signalGameOver(alllianceName + victoryMessage + vcAmount + " Victory Cities!",aBridge);
+				signalGameOver(allianceName + victoryMessage + vcAmount + " Victory Cities!",aBridge);
 			}
 		}
 	}
@@ -239,9 +239,9 @@ public class EndRoundDelegate implements IDelegate
         return games.strategy.triplea.Properties.getProjectionOfPower(m_data);
     }   
 	
-    private boolean isNoEconomicVictory()
+    private boolean isEconomicVictory()
     {
-        return games.strategy.triplea.Properties.getNoEconomicVictory(m_data);
+        return games.strategy.triplea.Properties.getEconomicVictory(m_data);
     }   
 	
 	public String getName()

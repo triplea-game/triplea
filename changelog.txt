@@ -1,4 +1,6 @@
 Changes for 1.2.2
+* Change 'No Economic Victory' game property to 'Economic Victory' (ComradeKev)
+
 * Fix displayed Victory City victory message (ComradeKev)
 
 * Fix null pointer if trying to select factory in edit mode (ComradeKev)

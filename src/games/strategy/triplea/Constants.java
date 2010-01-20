@@ -140,7 +140,7 @@ public interface Constants
   public static final String PACIFIC_THEATER = "Pacific Theater";
   public static final String WW2V3 = "WW2V3";  
   public static final String EUROPE_THEATER = "Europe Theater";
-  public static final String NO_ECONOMIC_VICTORY = "No Economic Victory";
+  public static final String ECONOMIC_VICTORY = "Economic Victory";
   
   public static final String SUBMERSIBLE_SUBS = "Submersible Subs";
   public static final String TWO_HIT = "isTwoHit";

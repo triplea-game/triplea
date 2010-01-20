@@ -135,12 +135,11 @@ public class Properties implements Constants {
     }
 
     /*
-     * No Economic Victory Condition
+     * Economic Victory Condition
      */
-    public static boolean getNoEconomicVictory(GameData data) {
+    public static boolean getEconomicVictory(GameData data) {
 
-        return data.getProperties().get(NO_ECONOMIC_VICTORY, false);
-
+        return data.getProperties().get(ECONOMIC_VICTORY, false);
     }
 
     /*
