@@ -984,7 +984,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		{
 		   Route xRoute = null;
 		   boolean landRoute = SUtils.landRouteToEnemyCapital(checkThis, xRoute, data, player);
-		   boolean isLand = SUtils.doesLandExistAt(checkThis, data, false);
+		   boolean isLand = SUtils.doesLandExistAt(checkThis, data, true);
            List<Unit> unitsTmp = checkThis.getUnits().getMatches(landUnit);
            List<Unit> unitsToLoad = SUtils.sortTransportUnits(unitsTmp);
            if (unitsToLoad.size() == 0)
@@ -992,7 +992,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
            int maxMovement = MoveValidator.getMaxMovement(unitsToLoad);
            List<Territory> blockThese = new ArrayList<Territory>();
 		   List<Territory> xNeighbors = SUtils.getExactNeighbors(checkThis, 1, player, false);
-		   if (xNeighbors.size() == 1 && xNeighbors.get(0).isWater())
+		   if (!isLand)
 		   {
               Territory myIsland = xNeighbors.get(0);
               List<Unit> units = new ArrayList<Unit>();
@@ -1014,12 +1014,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		        }
 		        Iterator<Unit> tIter = unitsToLoad.iterator();
 		        boolean moveOne = false;
-		        while (tIter.hasNext())
+		        while (tIter.hasNext() && tFree > 0)
 		        {
 		           Unit current = tIter.next();
 		           UnitAttachment ua = UnitAttachment.get(current.getType());
 		           int howMuch = ua.getTransportCost();
-		           if (ua.isAir() || tFree < howMuch)
+		           if (tFree < howMuch)
 		              continue;
 		           tIter.remove();
 		           tFree -= howMuch;
@@ -1036,7 +1036,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	             moveRoutes.add(route);
 	             transportsToLoad.add( finalTransUnits);
 	             transportsFilled.addAll( finalTransUnits);
-	             unitsToLoad.removeAll(units);
 	          }
 	          continue;
 		   }
@@ -4712,7 +4711,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                     			}
                     			pValue += xValue;
                     		}
-                       		Set<Territory> enemyNeighbors = data.getMap().getNeighbors(realEnemy, Matches.isTerritoryEnemy(player, data));
+                       		Set<Territory> enemyNeighbors = data.getMap().getNeighbors(realEnemy, enemyPassableNotWater);
                        		
                     		for (Territory nTerr : enemyNeighbors)
                     		{
@@ -7206,13 +7205,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, landProductionRules, PULand, maxBuy, data, player, fighterPresent);
 			int buyThese = 0;
 			int AttackType = 1; //bestAttack
-			if (Math.random() <= 0.15 || (isLand && Math.random() > 0.080)) //just to switch it up...every once in a while, buy the defensive set
+			if (Math.random() <= 0.5 || (isLand && Math.random() > 0.080)) //just to switch it up...every once in a while, buy the defensive set
 				AttackType = 2;
 			if ((Math.random() >= 0.25 && factoryCount >= 2) || (nonCapitolFactoryThreat) ) //if we have a lot of factories, use the max Unit set most of the time
 				AttackType = 3;
 			if (isAmphib || Math.random() < 0.25)
 				AttackType = 4;
-			if (!isAmphib && minDistanceToEnemy > 4 && Math.random() >= 0.10)
+			if (!isAmphib && minDistanceToEnemy >= 4 && Math.random() >= 0.10)
 				AttackType = 5;
 			String attackString = AttackType == 1 ? "Best Attack" : AttackType == 2 ? "Best Defense" : AttackType == 3 ? "Best Max Units" : AttackType == 4 ? "Best Transport" : "Best Mobile"; 
 			for (ProductionRule rule1 : landProductionRules)
