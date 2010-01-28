@@ -1,4 +1,12 @@
 Changes for 1.2.2
+* Fix bug (2936271) Bombers allowed to continue to more battles after dropping (blitzing) paratroops (ComradeKev)
+ 
+* Fix bug (2939602) Allied fighters on attacking carriers (ComradeKev)
+
+* Fix bug (2939915) by tweaking route finding logic (ComradeKev)
+
+* Fix bug (2938275) AA on trns firing at passing aircraft (ComradeKev)
+
 * Change 'No Economic Victory' game property to 'Economic Victory' (ComradeKev)
 
 * Fix displayed Victory City victory message (ComradeKev)

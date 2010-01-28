@@ -418,6 +418,15 @@ public class Matches
 
     public static final Match<Unit> UnitWasNotAmphibious = new InverseMatch<Unit>(UnitWasAmphibious);
 
+    public static final Match<Unit> UnitWasInCombat = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            TripleAUnit taUnit = (TripleAUnit) obj;
+            return taUnit.getWasInCombat();
+        }
+    };
+
     public static final Match<Unit> UnitCanTransport  = new Match<Unit>()
     {
         public boolean match(Unit obj)

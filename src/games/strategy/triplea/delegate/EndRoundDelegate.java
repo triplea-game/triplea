@@ -172,7 +172,7 @@ public class EndRoundDelegate implements IDelegate
 	private int getEconomicVictoryAmount(GameData data, String alliance)
 	{
 		try {
-			return Integer.parseInt((String) data.getProperties().get(alliance + " Victory"));
+			return Integer.parseInt((String) data.getProperties().get(alliance + " Economic Victory"));
 		} catch (NumberFormatException e) {
 			return 1000;
 		}

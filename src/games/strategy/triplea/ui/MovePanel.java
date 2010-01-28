@@ -772,7 +772,7 @@ public class MovePanel extends ActionPanel
         // look at the units being moved to determine allies and enemies
         PlayerID owner = getUnitOwner(m_selectedUnits);
 
-        return MoveValidator.getBestRoute(start, end, getData(), owner);
+        return MoveValidator.getBestRoute(start, end, getData(), owner, m_selectedUnits);
     }
     
     private void updateUnitsThatCanMoveOnRoute(Collection<Unit> units, final Route route)

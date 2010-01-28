@@ -194,7 +194,7 @@ class AAInMoveUtil implements Serializable
         //TODO
         //there is a bug in which if you move an air unit to a battle site
         //in the middle of non combat, it wont fire
-        if (route.getStart().getUnits().someMatch(hasAA)
+        if (route.getStart().getUnits().someMatch(hasAA) && !route.getStart().isWater()
                 && !getBattleTracker().wasBattleFought(route.getStart()))
             territoriesWhereAAWillFire.add(route.getStart());
  

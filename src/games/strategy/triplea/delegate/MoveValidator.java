@@ -770,10 +770,6 @@ public class MoveValidator
             return result;
         }
 
-        /*
-         * Kev refactored this from validateBasic
-         */
-        
         //if there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
         if (MoveValidator.hasNeutralBeforeEnd(route))
         {
@@ -837,16 +833,6 @@ public class MoveValidator
         				result.addDisallowedUnit("Not all units can blitz",unit);
         		}
         	}
-
-        	//Kev don't think this is needed
-        	/*// No neutral countries on route predicate
-        	Match<Territory> noNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral));
-        	//ignore the end territory in our tests
-        	Match<Territory> territoryIsEnd = Matches.territoryIs(route.getEnd());
-        	//See if there are neutrals in the path                    	
-        	if (data.getMap().getRoute(route.getStart(), route.getEnd(), new CompositeMatchOr<Territory>(noNeutral, territoryIsEnd)) == null  && !games.strategy.triplea.Properties.getNeutralsBlitzable(data))
-        		return result.setErrorReturnResult("Must stop land units when passing through neutral territories");*/
-
         }
         else 
         {    //check aircraft
@@ -858,10 +844,10 @@ public class MoveValidator
         		Match<Territory> territoryIsEnd = Matches.territoryIs(route.getEnd());
         		//See if there are neutrals in the path    
         		if (data.getMap().getRoute(route.getStart(), route.getEnd(), new CompositeMatchOr<Territory>(noNeutral, territoryIsEnd)) == null)
-        			return result.setErrorReturnResult("Air units cannot fly over neutral territories");	
+        			return result.setErrorReturnResult("Air units cannot fly over neutral territories");        		
         	}
         }
-
+        
         //make sure no conquered territories on route
         if (MoveValidator.hasConqueredNonBlitzedOnRoute(route, data))
         {
@@ -869,12 +855,17 @@ public class MoveValidator
         	if (!Match.allMatch(units, Matches.UnitIsAir))
         		return result.setErrorReturnResult("Cannot move through newly captured territories");
         }
-        
+
+
+        //See if they've already been in combat
+        if(Match.someMatch(units, Matches.UnitWasInCombat)) 
+        {
+        	Collection<Territory> end = Collections.singleton(route.getEnd());
+        	if(Match.allMatch(end, Matches.isTerritoryEnemyAndNotNeutral(player, data)))
+        		return result.setErrorReturnResult("Units cannot participate in multiple battles");
+        }
         
         return result; 
-        /*
-         * Kev end refactor from validateBasic
-         */
     }
 
     private static MoveValidationResult validateNonCombat(GameData data, Collection<Unit> units, Route route, PlayerID player, MoveValidationResult result)
@@ -1981,7 +1972,6 @@ public class MoveValidator
 
     public static Map<Unit, Collection<Unit>> carrierMustMoveWith(Collection<Unit> units, Collection<Unit> startUnits, GameData data, PlayerID player)
     {
-
         //we want to get all air units that are owned by our allies
         //but not us that can land on a carrier
         CompositeMatch<Unit> friendlyNotOwnedAir = new CompositeMatchAnd<Unit>();
@@ -2024,7 +2014,7 @@ public class MoveValidator
             Collection<Unit> carrying = getCanCarry(carrier, alliedAir);
             alliedAir.removeAll(carrying);
 
-            mapping.put(carrier, carrying);
+            mapping.put(carrier, carrying);            
         }
 
         return mapping;
@@ -2063,7 +2053,7 @@ public class MoveValidator
      * Get the route ignoring forced territories
      */
     @SuppressWarnings("unchecked")
-    public static Route getBestRoute(Territory start, Territory end, GameData data, PlayerID player)
+    public static Route getBestRoute(Territory start, Territory end, GameData data, PlayerID player, Collection<Unit> units)
     {
         // No neutral countries on route predicate
         Match<Territory> noNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral));
@@ -2074,11 +2064,13 @@ public class MoveValidator
 
         Route defaultRoute;
         if (isWW2V2(data) || isNeutralsImpassable(data))
-        	
+
+        	//defaultRoute = data.getMap().getRoute(start, end, new CompositeMatchOr(new CompositeMatchAnd(noNeutral, notEnemyAA), territoryIsEnd));
         	defaultRoute = data.getMap().getRoute(start, end, new CompositeMatchOr(noNeutral, territoryIsEnd));
         	
         else
         {
+        	//defaultRoute = data.getMap().getRoute(start, end, new CompositeMatchOr(notEnemyAA, territoryIsEnd));
         	defaultRoute = data.getMap().getRoute(start, end);
         }
 
@@ -2103,7 +2095,11 @@ public class MoveValidator
         	
             if (landRoute != null &&
             		landRoute.getLength() == defaultRoute.getLength())
-                    return landRoute;
+            {
+            	//If there are no air units, return the land route
+            	if(Match.noneMatch(units, Matches.UnitIsAir))
+            		defaultRoute = landRoute;
+            }
         }
         
         //if the start and end are in water, try and get a water route
@@ -2114,7 +2110,7 @@ public class MoveValidator
                 Matches.TerritoryIsWater);
             if (waterRoute != null &&
                 waterRoute.getLength() == defaultRoute.getLength())
-                return waterRoute;
+            	defaultRoute = waterRoute;
         }
 
         // No aa guns on route predicate

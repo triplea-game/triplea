@@ -209,7 +209,7 @@ public class TransportTracker
 
         return change;
     }
-    
+       
     public Change combatTransportChange(TripleAUnit transport, PlayerID id)
     {
         assertTransport(transport);   

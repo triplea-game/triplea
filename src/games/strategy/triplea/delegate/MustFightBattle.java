@@ -290,6 +290,17 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (isWW2V2() || isAlliedAirDependents())
         {
             dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
+            for(Unit carrier : dependencies.keySet())
+            {
+            	Collection<Unit> fighters = dependencies.get(carrier);
+            	for (Unit fighter : fighters)
+            	{
+            		//Set transportedBy for fighter
+            		change.add(ChangeFactory.unitPropertyChange(fighter, carrier, TripleAUnit.TRANSPORTED_BY ));
+            	}
+            	//remove transported fighters from battle display
+            	m_attackingUnits.removeAll(fighters);
+            }
         }
         
         //Set the dependent paratroopers so they die if the bomber dies.        
