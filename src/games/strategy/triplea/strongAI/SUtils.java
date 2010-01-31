@@ -74,6 +74,26 @@ public class SUtils
 	}
 	
 	/**
+	 * Returns a List of all territories with a water neighbor
+	 * 
+	 * @param data
+	 * @param allTerr - List of Territories
+	 * @return
+	 */
+	public static List<Territory> stripLandLockedTerr(GameData data, List<Territory> allTerr)
+	{
+		List<Territory> waterTerrs = new ArrayList<Territory>(allTerr);
+    	Iterator<Territory> wFIter = waterTerrs.iterator();
+    	while (wFIter.hasNext())
+    	{ 
+    		Territory waterFact = wFIter.next();
+    		if (Matches.territoryHasWaterNeighbor(data).invert().match(waterFact))
+    			wFIter.remove();
+    	}
+    	return waterTerrs;
+	}
+	
+	/**
 	 * Determine if a List has any bombers in it
 	 * 
 	 * @param units
@@ -1992,16 +2012,31 @@ public class SUtils
 	 * @param buyfactory
 	 * @return
 	 */
-    public static Territory findFactoryTerritory(GameData data, PlayerID player, float risk, boolean buyfactory)
+    public static Territory findFactoryTerritory(GameData data, PlayerID player, float risk, boolean buyfactory, boolean onWater)
     {
     	CompositeMatch<Territory> enemyNoWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryEnemyAndNotNuetralWater(player, data));
     	CompositeMatch<Territory> alliedNoWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryAllied(player, data));
 		List<Territory> owned = allOurTerritories(data, player);
+		List<Territory> existingFactories = SUtils.findCertainShips(data, player, Matches.UnitIsFactory);
+		owned.removeAll(existingFactories);
+		if (onWater)
+		{
+			List<Territory> waterOwned = SUtils.stripLandLockedTerr(data, owned);
+			owned.retainAll(waterOwned);
+			if (owned.isEmpty())
+				return null;
+			IntegerMap<Territory> terrProd = new IntegerMap<Territory>();
+			for (Territory prodTerr : owned)
+			{
+				terrProd.put(prodTerr, TerritoryAttachment.get(prodTerr).getProduction());
+			}
+			SUtils.reorder(owned, terrProd, true);
+			return owned.get(0); //TODO: cleanup this to buy the best possible location
+		}
 		Territory minTerr = null;
 		float minRisk = 1.0F;
 
 		risk = 1.0F;
-		List<Territory> existingFactories = SUtils.findCertainShips(data, player, Matches.UnitIsFactory);
 		IntegerMap<Territory> prodMap = new IntegerMap<Territory>();
 		for (Territory factTerr : existingFactories)
 			prodMap.put(factTerr, TerritoryAttachment.get(factTerr).getProduction());
@@ -2834,9 +2869,10 @@ public class SUtils
 	/**
 	 * Takes a List of territories and finds the one closest to an enemy capitol by Land
 	 * @param ourTerr
+	 * @param byLand - force the route to be traced by Land
 	 * @return Territory closest or null if none has a land route
 	 */
-	public static Territory closestToEnemyCapital(List<Territory> ourTerr, GameData data, PlayerID player)
+	public static Territory closestToEnemyCapital(List<Territory> ourTerr, GameData data, PlayerID player, boolean byLand)
 	{
 		List<Territory> enemyCap = getEnemyCapitals(data, player);
 		int thisDist = 0, capDist = 100;
@@ -2845,7 +2881,10 @@ public class SUtils
 		{
 			for (Territory eCap : enemyCap)
 			{
-				thisDist = data.getMap().getDistance(checkTerr, eCap, Matches.TerritoryIsNotImpassableToLandUnits(player));
+				if (byLand)
+					thisDist = data.getMap().getDistance(checkTerr, eCap, Matches.TerritoryIsNotImpassableToLandUnits(player));
+				else
+					thisDist = data.getMap().getDistance(checkTerr, eCap);
 				if (thisDist == -1)
 					continue;
 				if (thisDist < capDist)
