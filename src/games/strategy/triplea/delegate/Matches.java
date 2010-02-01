@@ -206,6 +206,19 @@ public class Matches
 
     public static final Match<Unit> UnitIsNotStrategicBomber = new InverseMatch<Unit>(UnitIsStrategicBomber);
 
+    public static final Match<UnitType> UnitTypeCanLandOnCarrier = new Match<UnitType>()
+    {
+        public boolean match(UnitType obj)
+        {
+            UnitAttachment ua = UnitAttachment.get(obj);
+            if(ua == null)
+            	return false;
+            return ua.getCarrierCost() != -1;
+        }
+    };
+    
+    public static final Match<UnitType> UnitTypeCannotLandOnCarrier = new InverseMatch<UnitType>(UnitTypeCanLandOnCarrier);
+
     public static final Match<Unit> unitHasMoved = new Match<Unit>()
     {
         public boolean match(Unit obj)
