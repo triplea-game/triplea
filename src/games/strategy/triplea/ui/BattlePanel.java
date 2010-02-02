@@ -62,6 +62,7 @@ import javax.swing.WindowConstants;
 
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.ui.Util;
+import games.strategy.ui.Util.Task;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 
@@ -475,37 +476,47 @@ public class BattlePanel extends ActionPanel
 
     }
 
-    private CasualtyDetails getCasualtiesAA( Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice,
-            PlayerID hit, List defaultCasualties)
+    private CasualtyDetails getCasualtiesAA(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, 
+    		final int count, final String message, final DiceRoll dice,
+            final PlayerID hit, final List defaultCasualties)
     {
-        boolean isEditMode = (dice == null);
-        UnitChooser chooser = new UnitChooser(selectFrom, dependents, getData(), false, getMap().getUIContext());
+    	Task<CasualtyDetails> task = new Task<CasualtyDetails>() {
 
-        chooser.setTitle(message);
-        if (isEditMode)
-            chooser.setMax(selectFrom.size());
-        else
-            chooser.setMax(count);
+			public CasualtyDetails run() {
+				boolean isEditMode = (dice == null);
+		        UnitChooser chooser = new UnitChooser(selectFrom, dependents, getData(), false, getMap().getUIContext());
 
-        DicePanel dicePanel = new DicePanel(getMap().getUIContext());
-        if (!isEditMode)
-            dicePanel.setDiceRoll(dice);
+		        chooser.setTitle(message);
+		        if (isEditMode)
+		            chooser.setMax(selectFrom.size());
+		        else
+		            chooser.setMax(count);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.add(chooser, BorderLayout.CENTER);
-        dicePanel.setMaximumSize(new Dimension(450, 600));
+		        DicePanel dicePanel = new DicePanel(getMap().getUIContext());
+		        if (!isEditMode)
+		            dicePanel.setDiceRoll(dice);
 
-        dicePanel.setPreferredSize(new Dimension(300, (int) dicePanel.getPreferredSize().getHeight()));
-        panel.add(dicePanel, BorderLayout.SOUTH);
+		        JPanel panel = new JPanel();
+		        panel.setLayout(new BorderLayout());
+		        panel.add(chooser, BorderLayout.CENTER);
+		        dicePanel.setMaximumSize(new Dimension(450, 600));
 
-        String[] options =
-        { "OK" };
-        EventThreadJOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE,
-                null, options, null);
-        List<Unit> killed = chooser.getSelected(false);
-        CasualtyDetails response = new CasualtyDetails(killed, chooser.getSelectedFirstHit(), false);
-        return response;
+		        dicePanel.setPreferredSize(new Dimension(300, (int) dicePanel.getPreferredSize().getHeight()));
+		        panel.add(dicePanel, BorderLayout.SOUTH);
+
+		        String[] options =
+		        { "OK" };
+		        EventThreadJOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE,
+		                null, options, null);
+		        List<Unit> killed = chooser.getSelected(false);
+		        CasualtyDetails response = new CasualtyDetails(killed, chooser.getSelectedFirstHit(), false);
+		        return response;
+			}
+    		
+    	};
+    	return Util.runInSwingEventThread(task);
+    	
+        
     }
 
     public Territory getRetreat(GUID battleID, String message, Collection<Territory> possible, boolean submerge)
