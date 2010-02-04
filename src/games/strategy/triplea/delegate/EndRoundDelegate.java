@@ -20,32 +20,19 @@
 
 package games.strategy.triplea.delegate;
 
-import games.puzzle.tictactoe.ui.display.ITicTacToeDisplay;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.CanalAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.attatchments.RulesAttachment;
-import games.strategy.triplea.ui.display.ITripleaDisplay;
-import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Match;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
 import javax.swing.JOptionPane;
 
-import org.w3c.dom.Element;
 
 /**
  *
@@ -58,9 +45,9 @@ public class EndRoundDelegate implements IDelegate
 {
 	//private final static int AXIS_ECONOMIC_VICTORY = 84;
 	//private final static int ALLIES_ECONOMIC_VICTORY = 84;
-    private final static int TOTAL_VICTORY_VCS = 18;
-    private final static int SURRENDER_WITH_HONOR_VCS = 15;
-    private final static int PROJECTION_OF_POWER_VCS = 13;
+    //private final static int TOTAL_VICTORY_VCS = 18;
+    //private final static int SURRENDER_WITH_HONOR_VCS = 15;
+    //private final static int PROJECTION_OF_POWER_VCS = 13;
     //private final static String AXIS = "Axis";
     //private final static String ALLIES = "Allies";
 
@@ -95,24 +82,25 @@ public class EndRoundDelegate implements IDelegate
 		String victoryMessage = null;
 
 		//Check for Winning conditions        
-        if(isWW2V2())
-            return;
-        else if(isTotalVictory()) //Check for Win by Victory Cities
+        if(isTotalVictory()) //Check for Win by Victory Cities
 		{
         	victoryMessage = " achieve TOTAL VICTORY with ";
 		    checkVictoryCities(aBridge, m_data, victoryMessage, " Total Victory VCs");            
 		} 
-		else if(isHonorableSurrender())
+
+        if(isHonorableSurrender())
 		{
 			victoryMessage = " achieve an HONORABLE VICTORY with ";
 		    checkVictoryCities(aBridge, m_data, victoryMessage, " Honorable Victory VCs");    
 		}
-		else if (isProjectionOfPower())
+
+        if (isProjectionOfPower())
 		{
 			victoryMessage = " achieve victory through a PROJECTION OF POWER with ";
 		    checkVictoryCities(aBridge, m_data, victoryMessage, " Projection of Power VCs");           
 		}
-		else  if (isEconomicVictory()) //Check for regular economic victory
+
+        if (isEconomicVictory()) //Check for regular economic victory
 		{
 			Iterator allianceIter = m_data.getAllianceTracker().getAlliances().iterator();
 			String allianceName = null;
@@ -193,7 +181,7 @@ public class EndRoundDelegate implements IDelegate
 			}
 			else if(type == " Projection of Power VCs")
 			{
-				return 12;
+				return 13;
 			}
 				
 			return 1000;
@@ -219,11 +207,6 @@ public class EndRoundDelegate implements IDelegate
         }
     }
     
-	private boolean isWW2V2()
-    {
-    	return games.strategy.triplea.Properties.getWW2V2(m_data);
-    }
-	
     private boolean isTotalVictory()
     {
         return games.strategy.triplea.Properties.getTotalVictory(m_data);
@@ -265,7 +248,7 @@ public class EndRoundDelegate implements IDelegate
 	{
 		int sum = 0;
 
-		Iterator territories = m_data.getMap().iterator();
+		Iterator<Territory> territories = m_data.getMap().iterator();
 		while(territories.hasNext())
 		{
 			Territory current = (Territory) territories.next();

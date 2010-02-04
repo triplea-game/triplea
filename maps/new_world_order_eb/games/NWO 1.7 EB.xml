@@ -3855,21 +3855,25 @@
                         <boolean/>
                 </property>
 
-                <property name="Battleships repair at end of round" value="true" editable="false">
-                        <boolean/>
-                </property>
+        <property name="Battleships repair at end of round" value="true" editable="false">
+        	<boolean/>
+		</property>
 
 		<property name="Two hit battleship" value="true" editable="false">
                         <boolean/>
                 </property>
 
-                <property name="Territory Turn Limit" value="true" editable="false">
-                        <boolean/>
-                </property>
+		<property name="Territory Turn Limit" value="true" editable="false">
+        	<boolean/>
+		</property>
 
 		<property name="Kamikaze Airplanes" value="false" editable="false">
 			<boolean/>
-		</property>
+		</property>     
+                
+		<property name="Allied Air Dependents" value="true" editable="false">
+        	<boolean/>
+		</property>     
 
 		<property name="Tech Development" value="false" editable="false">
                 	<boolean/>

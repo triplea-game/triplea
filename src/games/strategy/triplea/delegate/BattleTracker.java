@@ -179,7 +179,11 @@ public class BattleTracker implements java.io.Serializable
             IDelegateBridge bridge, UndoableMove changeTracker)
     {
         if (bombing)
+        {
             addBombingBattle(route, units, id, data);
+            //say they were in combat
+            markWasInCombat(units, bridge, changeTracker);
+        }
         else
         {
             Change change = addMustFightBattleChange(route, units, id, data);
@@ -195,17 +199,24 @@ public class BattleTracker implements java.io.Serializable
                 if(games.strategy.util.Match.someMatch(units, Matches.UnitIsLand) || games.strategy.util.Match.someMatch(units, Matches.UnitIsSea))
                     addEmptyBattle(route, units, id, data, bridge, changeTracker);
             }
-        }
-        //say they were in combat
-        CompositeChange change = new CompositeChange();    	
-    	Iterator <Unit> attackIter = units.iterator();
-                
-    	while (attackIter.hasNext())
-    		{
-    			change.add(ChangeFactory.unitPropertyChange(attackIter.next(), true, TripleAUnit.WAS_IN_COMBAT));
-    		}
-    	bridge.addChange(change);
+        }                
     }
+
+	private void markWasInCombat(Collection<Unit> units, IDelegateBridge bridge, UndoableMove changeTracker) 
+	{
+		CompositeChange change = new CompositeChange();    	
+		Iterator <Unit> attackIter = units.iterator();
+
+		while (attackIter.hasNext())
+		{
+			change.add(ChangeFactory.unitPropertyChange(attackIter.next(), true, TripleAUnit.WAS_IN_COMBAT));
+		}
+		bridge.addChange(change);
+		if(changeTracker != null) 
+		{
+			changeTracker.addChange(change);
+		}
+	}
     
     private void addBombingBattle(Route route, Collection<Unit> units, PlayerID attacker, GameData data)
     {
@@ -482,57 +493,7 @@ public class BattleTracker implements java.io.Serializable
                 }
             }
         }
-        //moved this down to after the terr ownership is changed
-                
-       /* 
-        //take over non combatants
-        CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>();
-        enemyNonCom.add(Matches.UnitIsAAOrFactory);
-        enemyNonCom.add(Matches.enemyUnit(id, data));
-        Collection<Unit> nonCom = territory.getUnits().getMatches(enemyNonCom);
-        Change noMovementChange = DelegateFinder.moveDelegate(data).markNoMovementChange(nonCom);
-        bridge.addChange(noMovementChange);
-        if(changeTracker != null)
-            changeTracker.addChange(noMovementChange);
-        
-        //non coms revert to their original owner if once allied
-        //unless their capital is not owned
-         for (Unit currentUnit : nonCom)
-        {
-            PlayerID originalOwner = origOwnerTracker.getOriginalOwner(currentUnit);
-            
-            Territory originalOwnersCapitol = null;
-            if(originalOwner != null)
-                originalOwnersCapitol = TerritoryAttachment.getCapital(originalOwner, data); 
-            
-            
-            if(originalOwner != null && originalOwnersCapitol == null)
-                throw new IllegalStateException("No capitol found for " + originalOwner);
-
-            
-            if (originalOwner != null && data.getAllianceTracker().isAllied(originalOwner, id)
-                    && 
-                    (       
-                            originalOwnersCapitol.getOwner().equals(originalOwner) ||
-                            //we are taking over this country, so if we dont own it then
-                            //we will soon
-                            originalOwnersCapitol == territory
-                    )
-                 )
-            {
-                Change capture = ChangeFactory.changeOwner(currentUnit, originalOwner, territory);
-                bridge.addChange(capture);
-                if (changeTracker != null)
-                    changeTracker.addChange(capture);
-            } else
-            {
-                Change capture = ChangeFactory.changeOwner(currentUnit, id, territory);
-                bridge.addChange(capture);
-                if (changeTracker != null)
-                    changeTracker.addChange(capture);
-            }
-        }*/
-
+     
         //is this an allied territory
         //revert to original owner if it is, unless they dont own there captital
         PlayerID terrOrigOwner;
@@ -629,6 +590,9 @@ public class BattleTracker implements java.io.Serializable
                 }
             }
         }
+
+        //say they were in combat
+        markWasInCombat(arrivingUnits, bridge, changeTracker);
     }
 
     private Change addMustFightBattleChange(Route route, Collection<Unit> units, PlayerID id, GameData data)

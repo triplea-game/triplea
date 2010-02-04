@@ -1,4 +1,10 @@
 Changes for 1.2.2
+* Fix part of bug (2943002) AA firing rules (ComradeKev)
+
+* Fix bug (294300) Victory Conditions tweaked (ComradeKev)
+
+* Check 'Allied Air Dependents' property to see if allied air can participate in attack (ComradeKev)
+
 * Fix bug (2936271) Bombers allowed to continue to more battles after dropping (blitzing) paratroops (ComradeKev)
  
 * Fix bug (2939602) Allied fighters on attacking carriers (ComradeKev)

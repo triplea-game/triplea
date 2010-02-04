@@ -1079,7 +1079,6 @@ public class MoveDelegateTest extends DelegateTest
     Route route = new Route();
     route.setStart(egypt);
     route.add(libya);
-
     IntegerMap<UnitType> map = new IntegerMap<UnitType>();
     map.put(bomber, 1);
 
@@ -1090,12 +1089,11 @@ public class MoveDelegateTest extends DelegateTest
     route.setStart(libya);
     route.add(algeria);
 
-    //planes cannot leave a battle zone, but the territory was empty so no battle occured
+    //planes cannot leave a battle zone, but the territory was empty so no battle occurred
     map = new IntegerMap<UnitType>();
     map.put(bomber, 1);
     results = m_delegate.move( getUnits(map, route.getStart()), route);
     assertValid(results);
-
   }
 
   public void testBattleAdded()

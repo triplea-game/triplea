@@ -625,7 +625,11 @@
 
 		<property name="Low Luck" value="false" editable="true">
 			<boolean/>
-		</property>
+		</property>     
+                
+		<property name="Allied Air Dependents" value="true" editable="false">
+        	<boolean/>
+		</property>     
 
 		<property name="mapName" value="capture_the_flag" editable="false"/>
 		

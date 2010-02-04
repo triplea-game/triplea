@@ -15,8 +15,6 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.*;
@@ -26,14 +24,13 @@ import java.util.*;
 
 /**
  * 
- * Code to fire aa guns while in combat and non combat move.
+ * Code to fire AA guns while in combat and non combat move.
  * 
  * @author Sean Bridges
  */
 class AAInMoveUtil implements Serializable
 {
-    
-    private transient boolean m_nonCombat;
+	private transient boolean m_nonCombat;
     private transient GameData m_data;
     private transient IDelegateBridge m_bridge;
     private transient PlayerID m_player;
@@ -56,22 +53,6 @@ class AAInMoveUtil implements Serializable
 
     }
     
-    private boolean isChooseAA()
-	{
-    	return games.strategy.triplea.Properties.getChoose_AA_Casualties(m_data);
-		//return m_data.getProperties().get(Constants.CHOOSE_AA, false);
-	}
-    	
-    private boolean isWW2V2()
-    {
-        return games.strategy.triplea.Properties.getWW2V2(m_data);
-    }
-      	
-    private boolean isRandomAACasualties()
-    {
-        return games.strategy.triplea.Properties.getRandomAACasualties(m_data);
-    }
-   
     private boolean isAlwaysONAAEnabled()
     {
     	return games.strategy.triplea.Properties.getAlways_On_AA(m_data);
@@ -115,7 +96,7 @@ class AAInMoveUtil implements Serializable
         
         List<IExecutable> executables = new ArrayList<IExecutable>();
         
-        Iterator iter = getTerritoriesWhereAAWillFire(route, units).iterator();
+        Iterator<Territory> iter = getTerritoriesWhereAAWillFire(route, units).iterator();
         
         while (iter.hasNext())
         {
@@ -149,23 +130,25 @@ class AAInMoveUtil implements Serializable
 
     Collection<Territory> getTerritoriesWhereAAWillFire(Route route, Collection<Unit> units)
     {
-        if (m_nonCombat && !isAlwaysONAAEnabled())
+    	boolean alwaysOnAA = isAlwaysONAAEnabled();
+    	
+        //Just the attacked territory will have AA firing
+        if(!alwaysOnAA && isAATerritoryRestricted())
+        	return Collections.emptyList();
+
+        //No AA in nonCombat unless 'Always on AA'
+        if (m_nonCombat && !alwaysOnAA)
             return Collections.emptyList();
 
+        //No air, return empty list
         if (Match.noneMatch(units, Matches.UnitIsAir))
             return Collections.emptyList();
-
-        //If AA restricted, just the attacked will have AA firing.
-        if(isAATerritoryRestricted())
-        {
-        	return Collections.emptyList();
-        }
 
         // can't rely on m_player being the unit owner in Edit Mode
         // look at the units being moved to determine allies and enemies
         PlayerID ally = units.iterator().next().getOwner();
 
-        //dont iteratate over the end
+        //don't iterate over the end
         //that will be a battle
         //and handled else where in this tangled mess
         CompositeMatch<Unit> hasAA = new CompositeMatchAnd<Unit>();
@@ -178,7 +161,7 @@ class AAInMoveUtil implements Serializable
         {
             Territory current = route.at(i);
 
-            //aa guns in transports shouldnt be able to fire
+            //AA guns in transports shouldn't be able to fire
             //TODO COMCO- Chance to add rule to support air suppression naval units here
             if (current.getUnits().someMatch(hasAA) && !current.isWater())
             {
@@ -186,10 +169,10 @@ class AAInMoveUtil implements Serializable
             }
         }
 
-        //check start as well, prevent user from moving to and from aa sites
+        //check start as well, prevent user from moving to and from AA sites
         // one at a time
-        //if there was a battle fought there then dont fire
-        //this covers the case where we fight, and always on aa wants to fire
+        //if there was a battle fought there then don't fire
+        //this covers the case where we fight, and always on AA wants to fire
         //after the battle.
         //TODO
         //there is a bug in which if you move an air unit to a battle site
@@ -215,7 +198,7 @@ class AAInMoveUtil implements Serializable
         if(units.isEmpty())
             return;
         
-        //once we fire the aa guns, we cant undo
+        //once we fire the AA guns, we can't undo
         //otherwise you could keep undoing and redoing
         //until you got the roll you wanted
         currentMove.setCantUndo("Move cannot be undone after AA has fired.");
@@ -263,24 +246,13 @@ class AAInMoveUtil implements Serializable
      */
     private void selectCasualties(DiceRoll dice, Collection<Unit> units, Territory territory, GUID battleID)
     {
-        String text = "Select " + dice.getHits() + " casualties from aa fire in " + territory.getName();
-        // If WW2V2, select casualties randomnly
         Collection<Unit> casualties = null;
-
-        if ((isWW2V2() || isRandomAACasualties()) && !isChooseAA())
-        {
-            casualties = BattleCalculator.WW2V2AACasualties(units, dice, m_bridge);
-        } else
-        {
-            CasualtyDetails casualtyMsg = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice, false, battleID);
-            casualties = casualtyMsg.getKilled();
-        }
-
+       
+        casualties = BattleCalculator.GetAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, m_data, battleID, territory);
+       
         getRemotePlayer().reportMessage(dice.getHits() + " AA hits in " + territory.getName());
         
         m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " lost in " + territory.getName(), casualties);
         units.removeAll(casualties);
-    }
-    
-    
+    }    
 }

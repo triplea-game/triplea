@@ -1454,13 +1454,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return true;
     }
 
-    private boolean onlyDefencelessAttackingTransportsLeft() {
-    	if(!isTransportCasualtiesRestricted()) {
-    		return false;
-    	}
-    	return Match.allMatch(m_defendingUnits, Matches.UnitIsTransport);
-    }
-    
     private boolean onlyDefencelessDefendingTransportsLeft() {
     	if(!isTransportCasualtiesRestricted()) {
     		return false;
@@ -1771,8 +1764,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		while (transportsIter.hasNext())
 		{
 		    Unit transport = transportsIter.next();
-		    Collection unloaded = getTransportTracker().unloaded(transport);
-		    Iterator unloadedIter = unloaded.iterator();
+		    Collection<Unit> unloaded = getTransportTracker().unloaded(transport);
+		    Iterator<Unit> unloadedIter = unloaded.iterator();
 		    while (unloadedIter.hasNext())
 		    {
 		        Unit load = (Unit) unloadedIter.next();
@@ -2104,7 +2097,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection<Unit> units = new ArrayList<Unit>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
         units.addAll(m_attackingUnits);
         units.addAll(m_attackingWaitingToDie); 
-        units = Match.getMatches(units, Matches.unitIsOwnedBy(m_attacker));        
+        //See if allied air can participate in combat
+        if(isAlliedAirDependents()) 
+        	units = Match.getMatches(units, Matches.unitIsOwnedBy(m_attacker));        
         
         if(!canAirAttackSubs(m_defendingUnits, units))
         {
@@ -2156,7 +2151,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 Matches.UnitIsNotSub);
         units.addAll(Match.getMatches(m_attackingWaitingToDie,
                 Matches.UnitIsNotSub));
-        units = Match.getMatches(units,Matches.unitIsOwnedBy(m_attacker));
+        //See if allied air can participate in combat
+        if(isAlliedAirDependents())        	
+        	units = Match.getMatches(units,Matches.unitIsOwnedBy(m_attacker));
         //if restricted, remove aircraft from attackers
         if(isAirAttackSubRestricted() && !canAirAttackSubs(m_defendingUnits, units))
         {
@@ -2255,16 +2252,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 m_attackingUnits, true, ReturnFire.ALL, bridge, "Defenders fire, ");
     }
 
-    private CasualtyDetails selectCasualties(String step,
-            IDelegateBridge bridge, Collection<Unit> attackableUnits,
-            boolean defender, String text, DiceRoll dice)
-    {
-
-        PlayerID hit = defender ? m_defender : m_attacker;
-        return BattleCalculator.selectCasualties(step, hit, attackableUnits,
-                bridge, text, m_data, dice, defender, m_battleID, m_headless, dice.getHits());
-    }
-
     void removeCasualties(Collection<Unit> killed, ReturnFire returnFire,
             boolean defender, IDelegateBridge bridge, boolean isAA)
     {
@@ -2329,14 +2316,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
     }
     
-    /**
-     * @return
-     */
-    private boolean isChooseAA()
-	{
-    	return games.strategy.triplea.Properties.getChoose_AA_Casualties(m_data);
-		//return m_data.getProperties().get(Constants.CHOOSE_AA, false);
-	}
+   
     /**
      * @return
      */
@@ -2394,24 +2374,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
     	return games.strategy.triplea.Properties.getNavalBombardCasualtiesReturnFireRestricted(m_data);
     }
-    
 
-    /**
-     * @return
-     */
-    private boolean isRandomAACasualties()
-    {
-    	return games.strategy.triplea.Properties.getRandomAACasualties(m_data);
-    }
-
-    /**
-     * @return
-     */
-    private boolean isRollAAIndividually()
-    {
-        return games.strategy.triplea.Properties.getRollAAIndividually(m_data);
-    }
-        
     /**
      * @return
      */
@@ -2534,33 +2497,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         private void selectCasualties(final IDelegateBridge bridge)
         {
-            //DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge);
-            // NEW VERSION
-            
-        	boolean lowLuck = games.strategy.triplea.Properties.getLow_Luck(m_data);
-            //boolean lowLuck = m_data.getProperties().get(Constants.LOW_LUCK, false);
-
             //send defender the dice roll so he can see what the dice are while he
             // waits for attacker to select casualties
             getDisplay(bridge).notifyDice(m_battleID,  m_dice, SELECT_AA_CASUALTIES);
            
-            Collection<Unit> attackable = Match.getMatches(m_attackingUnits,
-                    Matches.UnitIsAir);
-                      
-            if(!lowLuck && isRollAAIndividually())
-            { // select casualties based on individual shots at each aircraft
-                m_casualties = BattleCalculator.individuallyFiredAACasualties(attackable, m_dice, bridge, m_defender);
-            }
-            else if (!lowLuck && (isWW2V2() || isRandomAACasualties()) && !isChooseAA())
-            { // if WW2V2 choose casualties randomly
-                m_casualties = BattleCalculator.WW2V2AACasualties(attackable,
-                        m_dice, bridge);
-            } 
-            else
-            { // allow player to select casualties from entire set
-                m_casualties = MustFightBattle.this.selectCasualties(SELECT_AA_CASUALTIES, bridge, attackable, false,
-                        "AA guns fire,", m_dice).getKilled();
-            }
+            Collection<Unit> attackable = Match.getMatches(m_attackingUnits, Matches.UnitIsAir);
+     
+            m_casualties = BattleCalculator.GetAACasualties(attackable, m_dice, bridge, m_defender, m_attacker, m_data, m_battleID, m_battleSite);
         }
 
 
@@ -3102,12 +3045,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
         m_tracker.removeBattle(this);
     }
     
-    public List getRemainingAttackingUnits()
+    public List<Unit> getRemainingAttackingUnits()
     {
         return m_attackingUnits;
     }
     
-    public List getRemainingDefendingUnits()
+    public List<Unit> getRemainingDefendingUnits()
     {
         return m_defendingUnits;
     }

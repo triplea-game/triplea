@@ -4169,7 +4169,11 @@
 
                 <property name="Produce fighters on carriers" value="true" editable="false">
                         <boolean/>
-                </property>
+                </property>     
+                
+				<property name="Allied Air Dependents" value="true" editable="false">
+                        <boolean/>
+                </property>     
 
                 <property name="Always on AA" value="true" editable="true">
                         <boolean/>

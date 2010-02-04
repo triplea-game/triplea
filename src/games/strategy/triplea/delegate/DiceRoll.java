@@ -26,7 +26,6 @@ import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.Match;
 
 import java.io.Externalizable;
@@ -73,6 +72,7 @@ public class DiceRoll implements Externalizable
         if(useRadar)
             hitAt = 1;
         
+        //LOW LUCK
         if (games.strategy.triplea.Properties.getLow_Luck(data))
         {
         	int power = useRadar ? 2 : 1;
@@ -100,10 +100,8 @@ public class DiceRoll implements Externalizable
             }
         
         } 
-        else
-        {
-            
-            // Normal rolling
+        else // Normal rolling
+        {            
             String annotation = "Roll AA guns in " + location.getName();
            
             dice = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits, annotation);
@@ -266,7 +264,7 @@ public class DiceRoll implements Externalizable
 
         List<Die> dice = new ArrayList<Die>();
         
-        Iterator iter = units.iterator();
+        Iterator<Unit> iter = units.iterator();
 
         int hitCount = 0;
         int diceIndex = 0;

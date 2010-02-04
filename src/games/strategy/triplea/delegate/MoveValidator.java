@@ -861,7 +861,8 @@ public class MoveValidator
         if(Match.someMatch(units, Matches.UnitWasInCombat)) 
         {
         	Collection<Territory> end = Collections.singleton(route.getEnd());
-        	if(Match.allMatch(end, Matches.isTerritoryEnemyAndNotNeutral(player, data)))
+        	
+        	if(Match.allMatch(end, Matches.isTerritoryEnemyAndNotNeutral(player, data)) && !route.getEnd().getUnits().isEmpty())
         		return result.setErrorReturnResult("Units cannot participate in multiple battles");
         }
         

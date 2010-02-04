@@ -604,7 +604,11 @@
 				<!-- Use WW2V2 Rules -->
 				<property name="WW2V2" value="true" editable="false">
                         <boolean/>
-                </property>
+                </property>     
+                
+				<property name="Allied Air Dependents" value="true" editable="false">
+                        <boolean/>
+                </property>     
 				
                 <property name="neutralCharge" value="9999999"/>
                 

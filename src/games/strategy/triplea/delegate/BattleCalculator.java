@@ -24,6 +24,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -35,7 +36,7 @@ import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.triplea.util.UnitSeperator; 
 import games.strategy.triplea.weakAI.WeakAI;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
@@ -51,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
 /**
  * 
  * @author Sean Bridges
@@ -61,8 +63,7 @@ import java.util.Set;
  */
 public class BattleCalculator
 {
-
-    //we want to sort in a determined way so that those looking at the dice results 
+	//we want to sort in a determined way so that those looking at the dice results 
     //can tell what dice is for who
     //we also want to sort by movement, so casualties will be choosen as the 
     //units with least movement
@@ -95,18 +96,43 @@ public class BattleCalculator
         }
         return hitCount;
     }
-
+    
     /**
-     * Choose plane casualties according to WW2V2 rules which specifies
-     * that they are randomly chosen.
+     * Choose plane casualties according to specified rules 
      */
-    public static Collection<Unit> WW2V2AACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge)
+    public static  Collection<Unit> GetAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge, PlayerID defender, PlayerID attacker, GameData data, GUID battleID, Territory terr)
+    {	
+    	//isRollAAIndividually() is the default behavior
+    	Boolean rollAAIndividually = isRollAAIndividually(data);
+    	
+    	//Random AA Casualties
+    	if(!rollAAIndividually && isRandomAACasualties(data))
+    		return(RandomAACasualties(planes, dice, bridge));
+    	
+    	// allow player to select casualties from entire set 
+    	if(!rollAAIndividually && isChooseAA(data))
+    	{    	
+    		String text = "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
+  	
+    		//CasualtyDetails casualtyMsg =  remotePlayer.selectCasualties(planes, dependents, dice.getHits(), text, dice, attacker, defaultCasualties, battleID);
+    		CasualtyDetails casualtyMsg =  selectCasualties(attacker, planes, bridge, text, data, dice, false, battleID);
+    		return  casualtyMsg.getKilled();
+    	}
+    	    
+    	return(IndividuallyFiredAACasualties(planes, dice, bridge, defender));
+    }
+
+  
+    /**
+     * Choose plane casualties randomly
+     */
+    public static Collection<Unit> RandomAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge)
     {
         Collection<Unit> casualties = new ArrayList<Unit>();
         int hits = dice.getHits();
         List<Unit> planesList = new ArrayList<Unit>(planes);
 
-        // We need to choose which planes die randomnly
+        // We need to choose which planes die randomly
         if (hits < planesList.size())
         {
             for (int i = 0; i < hits; i++)
@@ -127,7 +153,7 @@ public class BattleCalculator
     /**
      * Choose plane casualties based on individual AA shots at each aircraft.
      */
-    public static Collection<Unit> individuallyFiredAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge, PlayerID player)
+    public static Collection<Unit> IndividuallyFiredAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge, PlayerID player)
     {
         Collection<Unit> casualties = new ArrayList<Unit>();
         int hits = dice.getHits();
@@ -241,7 +267,7 @@ public class BattleCalculator
         }
         
         
-        //check right number
+        //check right number 	
         if (!isEditMode && !(numhits + damaged.size() == hitsRemaining))
         {
             tripleaPlayer.reportError("Wrong number of casualties selected");
@@ -477,9 +503,7 @@ public class BattleCalculator
     }
 
     public static int getRolls(Collection<Unit> units, PlayerID id, boolean defend, int availableSupport)
-    {    	                
-        Collection<Unit> supportableUnits = Match.getMatches(units, Matches.UnitIsArtillerySupportable);
-            
+    {
         int count = 0;
         int unitRoll = 0;
         Iterator<Unit> iter = units.iterator();
@@ -551,7 +575,30 @@ public class BattleCalculator
 	        	return false;
 	        return ta.hasAARadar();     
 	    }
+/**
+ * @return Random AA Casualties - casualties randomly assigned
+ */
+	 private static boolean isRandomAACasualties(GameData data)
+	    {
+	    	return games.strategy.triplea.Properties.getRandomAACasualties(data);
+	    }
 
+	    /**
+	     * @return Roll AA Individually - roll against each aircraft
+	     */
+	    private static boolean isRollAAIndividually(GameData data)
+	    {
+	        return games.strategy.triplea.Properties.getRollAAIndividually(data);
+	    }
+
+	    /**
+	     * @return Choose AA - attacker selects casualties
+	     */
+	    private static boolean isChooseAA(GameData data)
+		{
+	    	return games.strategy.triplea.Properties.getChoose_AA_Casualties(data);
+		}
+	    	
     /**
      * @return Can the attacker retreat non-amphibious units
      */

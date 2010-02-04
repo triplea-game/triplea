@@ -484,8 +484,7 @@ public class BattlePanel extends ActionPanel
 
 			public CasualtyDetails run() {
 				boolean isEditMode = (dice == null);
-		        UnitChooser chooser = new UnitChooser(selectFrom, dependents, getData(), false, getMap().getUIContext());
-
+				UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, getData(), false, getMap().getUIContext());
 		        chooser.setTitle(message);
 		        if (isEditMode)
 		            chooser.setMax(selectFrom.size());

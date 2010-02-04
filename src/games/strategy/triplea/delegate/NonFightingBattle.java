@@ -135,7 +135,7 @@ public class NonFightingBattle implements Battle
         return m_battleSite;
     }
 
-    public void unitsLostInPrecedingBattle(Battle battle, Collection units, IDelegateBridge bridge)
+    public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units, IDelegateBridge bridge)
     {
         Collection<Unit> lost = getDependentUnits(units);
         lost = Match.getMatches(lost, Matches.unitIsInTerritory(m_battleSite));

@@ -18,7 +18,6 @@
 
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
@@ -29,7 +28,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.PlayerAttachment;
@@ -105,7 +103,7 @@ public class StrategicBombingRaidBattle implements Battle
         return m_units.isEmpty();
     }
 
-    public void removeAttack(Route route, Collection units)
+    public void removeAttack(Route route, Collection<Unit> units)
     {
         m_units.removeAll(units);
     }
@@ -296,14 +294,6 @@ public class StrategicBombingRaidBattle implements Battle
     /**
      * @return
      */
-    private boolean isChooseAA()
-	{
-    	return games.strategy.triplea.Properties.getChoose_AA_Casualties(m_data);
-		//return m_data.getProperties().get(Constants.CHOOSE_AA, false);
-	}
-    /**
-     * @return
-     */
     private boolean isSBRAffectsUnitProduction()
 	{
     	return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data);
@@ -315,11 +305,6 @@ public class StrategicBombingRaidBattle implements Battle
     private boolean isWW2V2()
     {
     	return games.strategy.triplea.Properties.getWW2V2(m_data);
-    }
-
-    private boolean isRandomAACasualties()
-    {
-    	return games.strategy.triplea.Properties.getRandomAACasualties(m_data);
     }
 
     private boolean isLimitSBRDamageToProduction()
@@ -362,20 +347,12 @@ public class StrategicBombingRaidBattle implements Battle
             CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker, 
                     m_units, bridge, text, m_data, /*dice*/ null,/*defending*/ false, m_battleID, /*headless*/ false, 0);
             return casualtySelection.getKilled();
-        }     	
-    	else if ((isWW2V2() || isRandomAACasualties()) && !isChooseAA())
-        {
-            casualties = BattleCalculator.WW2V2AACasualties(m_units, dice, bridge);
         }
         else
         {
-            casualties = new ArrayList<Unit>(dice.getHits());
-            for (int i = 0; i < dice.getHits() && i < m_units.size(); i++)
-            {
-                casualties.add(m_units.get(i));
-            }
+        	casualties = BattleCalculator.GetAACasualties(m_units, dice, bridge, m_defender, m_attacker, m_data, m_battleID, m_battleSite);
         }
-
+    	
         if (casualties.size() != dice.getHits())
             throw new IllegalStateException("Wrong number of casualties");
         
@@ -609,9 +586,8 @@ public class StrategicBombingRaidBattle implements Battle
         return true;
     }
 
-    public void unitsLostInPrecedingBattle(Battle battle, Collection units, IDelegateBridge bridge)
+    public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units, IDelegateBridge bridge)
     {
-
         //should never happen
         throw new IllegalStateException("say what, why you telling me that");
     }
