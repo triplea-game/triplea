@@ -26,6 +26,8 @@ import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.util.UnitCategory;
+import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.Match;
 
 import java.io.Externalizable;
@@ -52,7 +54,7 @@ public class DiceRoll implements Externalizable
     //since for low luck we get many hits with few dice
     private int m_hits;
 
-    public static DiceRoll rollAA(int numberOfAirUnits, IDelegateBridge bridge, Territory location, GameData data)
+    public static DiceRoll rollAA(int numberOfAirUnits, Collection<Unit> attackingUnits, Collection<Unit> hitUnits, IDelegateBridge bridge, Territory location, GameData data)
     {
         int hits = 0;
         int[] dice = new int[0];
@@ -80,25 +82,34 @@ public class DiceRoll implements Externalizable
             String annotation = "Roll AA guns in " + location.getName();
             //If RADAR advancement, hit at a 2
                        
-            // Low luck rolling
-            hits = (numberOfAirUnits * power) / Constants.MAX_DICE;
-            int hitsFractional = (numberOfAirUnits * power) % Constants.MAX_DICE;
-
-            if (hitsFractional > 0)
+            //Categorize and loop for each aircraft type
+            Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(Match.getMatches(attackingUnits, Matches.UnitIsAir));
+            
+            Iterator<UnitCategory> ucIter = categorizedAir.iterator();
+            while(ucIter.hasNext())
             {
-                //String annotation = "Roll AA guns in " + location.getName();
+            	UnitCategory uc = ucIter.next();
+            	numberOfAirUnits = uc.getUnits().size();
+            	
+            	hits = (numberOfAirUnits * power) / Constants.MAX_DICE;
+            	
+            	hitUnits.addAll(Match.getNMatches(uc.getUnits(), hits, Matches.UnitIsAir));
+                int hitsFractional = (numberOfAirUnits * power) % Constants.MAX_DICE;
 
-            	dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
-                boolean hit = hitsFractional > dice[0];
-                Die die = new Die(dice[0], hitsFractional, hit ? DieType.HIT : DieType.MISS);
-
-                sortedDice.add(die);
-                if (hit)
+                if (hitsFractional > 0)
                 {
-                    hits++;
+                	dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
+                    boolean hit = hitsFractional > dice[0];
+                    Die die = new Die(dice[0], hitsFractional, hit ? DieType.HIT : DieType.MISS);
+
+                    sortedDice.add(die);
+                    if (hit)
+                    {
+                    	hitUnits.addAll(Match.getNMatches(uc.getUnits(), 1, Matches.UnitIsAir));
+                        hits++;
+                    }
                 }
             }
-        
         } 
         else // Normal rolling
         {            

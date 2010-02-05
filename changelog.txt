@@ -1,5 +1,9 @@
 Changes for 1.2.2
-* Fix part of bug (2943002) AA firing rules (ComradeKev)
+* Add additional unit png files to most base/images/units folders (ComradeKev)
+
+* Fix bug (2945150) 'Neutrals Are Impassable' only valid for aircraft (ComradeKev)
+
+* Fix bug (2943002) AA firing rules with and without low luck (ComradeKev)
 
 * Fix bug (294300) Victory Conditions tweaked (ComradeKev)
 

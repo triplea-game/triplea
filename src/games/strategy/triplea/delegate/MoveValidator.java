@@ -70,6 +70,7 @@ public class MoveValidator
     public static final String CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND = "Cannot load and unload an allied transport in the same round";
     public static final String CANT_MOVE_THROUGH_IMPASSIBLE = "Can't move through impassible territories";
     public static final String TOO_POOR_TO_VIOLATE_NEUTRALITY = "Not enough money to pay for violating neutrality";
+    public static final String CANNOT_VIOLATE_NEUTRALITY = "Cannot violate neutrality";
     public static final String NOT_ALL_AIR_UNITS_CAN_LAND = "Not all air units can land";
     public static final String TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT = "Transport cannot both load AND unload after being in combat";
     
@@ -328,7 +329,7 @@ public class MoveValidator
             return false;
 
         //cant blitz on neutrals
-        if(current.getOwner().isNull() && !games.strategy.triplea.Properties.getNeutralsBlitzable(data))
+        if(current.getOwner().isNull() && !isNeutralsBlitzable(data))
             return false;
 
         if(MoveDelegate.getBattleTracker(data).wasConquered(current) 
@@ -608,7 +609,12 @@ public class MoveValidator
     {
         return games.strategy.triplea.Properties.getNeutralsImpassable(data);
     }
-    
+
+    private static boolean isNeutralsBlitzable(GameData data)
+    {
+        return games.strategy.triplea.Properties.getNeutralsBlitzable(data);
+    }
+
     private static boolean isWW2V3(GameData data)
     {
         return games.strategy.triplea.Properties.getWW2V3(data);
@@ -734,12 +740,6 @@ public class MoveValidator
             }
         }
 
-        //make sure we can afford to pay neutral fees
-        int cost = getNeutralCharge(data, route);
-        int resources = player.getResources().getQuantity(Constants.PUS);
-        if (resources - cost < 0)
-            return result.setErrorReturnResult(TOO_POOR_TO_VIOLATE_NEUTRALITY);
-
         return result;
     }
 
@@ -773,7 +773,7 @@ public class MoveValidator
         //if there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
         if (MoveValidator.hasNeutralBeforeEnd(route))
         {
-        	if (!Match.allMatch(units, Matches.UnitIsAir) && !games.strategy.triplea.Properties.getNeutralsBlitzable(data))
+        	if (!Match.allMatch(units, Matches.UnitIsAir) && !isNeutralsBlitzable(data))
         		return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
         }
 
@@ -1073,7 +1073,7 @@ public class MoveValidator
             //if there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
             if (MoveValidator.hasNeutralBeforeEnd(route))
             {
-                if (!Match.allMatch(units, Matches.UnitIsAir) && !games.strategy.triplea.Properties.getNeutralsBlitzable(data))
+                if (!Match.allMatch(units, Matches.UnitIsAir) && !isNeutralsBlitzable(data))
                     return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
             }
 
@@ -1138,6 +1138,9 @@ public class MoveValidator
 
         if (canCrossNeutralTerritory(data, route, player, result).getError() != null)
             return result;
+
+        if(isNeutralsImpassable(data) && !isNeutralsBlitzable(data) && !route.getMatches(Matches.TerritoryIsNeutral).isEmpty())
+            return result.setErrorReturnResult(CANNOT_VIOLATE_NEUTRALITY);
         
         return result;
     }

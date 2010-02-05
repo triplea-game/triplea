@@ -59,6 +59,7 @@ public class StrategicBombingRaidBattle implements Battle
 
     private Territory m_battleSite;
     private List<Unit> m_units = new ArrayList<Unit>();
+    private List<Unit> m_aaCasualties = new ArrayList<Unit>();    
     private PlayerID m_defender;
     private PlayerID m_attacker;
     private GameData m_data;
@@ -243,7 +244,7 @@ public class StrategicBombingRaidBattle implements Battle
             {
                 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
-                    m_dice = DiceRoll.rollAA(m_units.size(), bridge, m_battleSite, m_data);
+                	m_dice = DiceRoll.rollAA(m_units.size(), m_units, m_aaCasualties, bridge, m_battleSite, m_data);
                 }
             };
 

@@ -113,8 +113,7 @@ public class BattleCalculator
     	if(!rollAAIndividually && isChooseAA(data))
     	{    	
     		String text = "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
-  	
-    		//CasualtyDetails casualtyMsg =  remotePlayer.selectCasualties(planes, dependents, dice.getHits(), text, dice, attacker, defaultCasualties, battleID);
+
     		CasualtyDetails casualtyMsg =  selectCasualties(attacker, planes, bridge, text, data, dice, false, battleID);
     		return  casualtyMsg.getKilled();
     	}
