@@ -1,4 +1,6 @@
 Changes for 1.2.2
+* Fix bug (2947241) combined land/amphib blitz with associated sea battle throws exception (ComradeKev)
+ 
 * Add additional unit png files to most base/images/units folders (ComradeKev)
 
 * Fix bug (2945150) 'Neutrals Are Impassable' only valid for aircraft (ComradeKev)

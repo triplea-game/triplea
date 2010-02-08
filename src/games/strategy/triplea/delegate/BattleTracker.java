@@ -204,7 +204,10 @@ public class BattleTracker implements java.io.Serializable
 
 	private void markWasInCombat(Collection<Unit> units, IDelegateBridge bridge, UndoableMove changeTracker) 
 	{
-		CompositeChange change = new CompositeChange();    	
+		if(units == null)
+			return;
+			
+		CompositeChange change = new CompositeChange();
 		Iterator <Unit> attackIter = units.iterator();
 
 		while (attackIter.hasNext())
