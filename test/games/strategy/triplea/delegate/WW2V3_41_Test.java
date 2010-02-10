@@ -1833,6 +1833,32 @@ public class WW2V3_41_Test extends TestCase {
         	assertEquals(postOwner, "Chinese");
         }
         
+        public void testTwoStepBlitz() 
+        {
+        	ITestDelegateBridge delegateBridge = getDelegateBridge(british(m_data));
+
+        	//Set up the territories
+        	Territory libya = territory("Libya", m_data);
+        	Territory egypt = territory("Egypt", m_data);
+        	Territory morrocco = territory("Morocco Algeria", m_data);
+        	
+        	
+        	removeFrom(libya, libya.getUnits().getUnits());
+        	
+        	//Set up the move delegate
+        	MoveDelegate moveDelegate = moveDelegate(m_data);
+        	delegateBridge.setStepName("CombatMove");
+        	moveDelegate.start(delegateBridge, m_data);
+        	
+        	//blitz in two steps
+        	Collection<Unit> armour = egypt.getUnits().getMatches(Matches.UnitCanBlitz);
+        	
+        	move(armour, new Route(egypt, libya));
+        	assertEquals(libya.getOwner(), british(m_data));
+        	move(armour, new Route(libya, morrocco));
+        	
+        }
+        
         /***********************************************************/
         /***********************************************************/
         /***********************************************************/
