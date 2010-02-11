@@ -64,6 +64,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     private Territory m_factTerr = null, m_seaTerr = null, m_battleTerr = null; //determine the target Territory during Purchase and Save it
     private boolean m_AE = false, m_transports_may_die = true, m_zero_combat_attack = true, m_cap_danger = false, m_natObjective = false;
     private boolean m_bought_Attack_Ships = false, m_keep_Ships_At_Base = false;
+    private boolean m_onOffense = false;
     private HashMap<Territory, Territory> amphibMap= new HashMap<Territory, Territory>();
     private HashMap<Territory, Collection<Unit>> shipsMovedMap = new HashMap<Territory, Collection<Unit>>();
     private Collection<Territory> m_seaTerrAttacked = new ArrayList<Territory>();
@@ -77,6 +78,16 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
     }
 
+    private void set_onOffense(boolean value)
+    {
+    	m_onOffense = value;
+    }
+    
+    private boolean get_onOffense()
+    {
+    	return m_onOffense;
+    }
+    
 	private void getEdition()
 	{
 		final GameData data = getPlayerBridge().getGameData();
@@ -629,7 +640,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             {
                 Territory current = nonRaidBattles.next();
                 setBattleInfo(current);
+                set_onOffense(true);
                 String error = battleDelegate.fightBattle(current, false);
+                set_onOffense(false);
                 if(error != null)
                     s_logger.fine(error);
             }
@@ -1006,53 +1019,57 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                continue;
            int maxMovement = MoveValidator.getMaxMovement(unitsToLoad);
            List<Territory> blockThese = new ArrayList<Territory>();
-		   List<Territory> xNeighbors = SUtils.getExactNeighbors(checkThis, 1, player, false);
+		   Set<Territory> xNeighbors = data.getMap().getNeighbors(checkThis);
 		   if (!isLand)
 		   {
-              Territory myIsland = xNeighbors.get(0);
-              List<Unit> units = new ArrayList<Unit>();
-		      List<Unit> transportUnits = myIsland.getUnits().getMatches(transUnit);
-		      transportUnits.removeAll(transportsFilled);
-              List<Unit> finalTransUnits = new ArrayList<Unit>();
-		      if (transportUnits.size() == 0)
-		        continue;
-		      int tCount = transportUnits.size();
-		      for (int t1=tCount-1; t1>=0; t1--)
-		      {
-		 	    Unit trans1 = transportUnits.get(t1);
-		        int tFree = tracker.getAvailableCapacity(trans1);
-		        if (tFree <=0)
-		        {
-				   transportUnits.remove(t1);
-				   tCount--;
-				   continue;
-		        }
-		        Iterator<Unit> tIter = unitsToLoad.iterator();
-		        boolean moveOne = false;
-		        while (tIter.hasNext() && tFree > 0)
-		        {
-		           Unit current = tIter.next();
-		           UnitAttachment ua = UnitAttachment.get(current.getType());
-		           int howMuch = ua.getTransportCost();
-		           if (tFree < howMuch)
-		              continue;
-		           tIter.remove();
-		           tFree -= howMuch;
-		           units.add(current);
-		           moveOne = true;
-		        }
-		        if (moveOne)
-		           finalTransUnits.add(trans1);
+			  for (Territory islandWaterTerr : xNeighbors)
+			  {
+				  
+//              Territory myIsland = xNeighbors.get(0);
+				  List<Unit> units = new ArrayList<Unit>();
+				  List<Unit> transportUnits = islandWaterTerr.getUnits().getMatches(transUnit);
+				  transportUnits.removeAll(transportsFilled);
+				  List<Unit> finalTransUnits = new ArrayList<Unit>();
+				  if (transportUnits.size() == 0)
+					  continue;
+				  int tCount = transportUnits.size();
+				  for (int t1=tCount-1; t1>=0; t1--)
+				  {
+					  Unit trans1 = transportUnits.get(t1);
+					  int tFree = tracker.getAvailableCapacity(trans1);
+					  if (tFree <=0)
+					  {
+						  transportUnits.remove(t1);
+						  tCount--;
+						  continue;
+					  }
+					  Iterator<Unit> tIter = unitsToLoad.iterator();
+					  boolean moveOne = false;
+					  while (tIter.hasNext() && tFree > 0)
+					  {
+						  Unit current = tIter.next();
+						  UnitAttachment ua = UnitAttachment.get(current.getType());
+						  int howMuch = ua.getTransportCost();
+						  if (tFree < howMuch)
+							  continue;
+						  tIter.remove();
+						  tFree -= howMuch;
+						  units.add(current);
+						  moveOne = true;
+					  }
+					  if (moveOne)
+						  finalTransUnits.add(trans1);
+				  }
+				  if(units.size() > 0)
+				  {
+					  Route route = data.getMap().getRoute(checkThis, islandWaterTerr);
+					  moveUnits.add(units );
+					  moveRoutes.add(route);
+					  transportsToLoad.add( finalTransUnits);
+					  transportsFilled.addAll( finalTransUnits);
+				  }
+				  continue;
 			  }
-	          if(units.size() > 0)
-	          {
-			     Route route = data.getMap().getRoute(checkThis, myIsland);
-	             moveUnits.add(units );
-	             moveRoutes.add(route);
-	             transportsToLoad.add( finalTransUnits);
-	             transportsFilled.addAll( finalTransUnits);
-	          }
-	          continue;
 		   }
 		   if (isLand)
 		   {
@@ -6429,12 +6446,15 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		List<ProductionRule> airProductionRules = new ArrayList<ProductionRule>();
 		List<ProductionRule> seaProductionRules = new ArrayList<ProductionRule>();
 		List<ProductionRule> transportProductionRules = new ArrayList<ProductionRule>();
+		List<ProductionRule> subProductionRules = new ArrayList<ProductionRule>();
 		IntegerMap<ProductionRule> bestAttack = new IntegerMap<ProductionRule>();
 		IntegerMap<ProductionRule> bestDefense = new IntegerMap<ProductionRule>();
 		IntegerMap<ProductionRule> bestTransport = new IntegerMap<ProductionRule>();
 		IntegerMap<ProductionRule> bestMaxUnits = new IntegerMap<ProductionRule>();
 		IntegerMap<ProductionRule> bestMobileAttack = new IntegerMap<ProductionRule>();
         ProductionRule highRule = null;
+        ProductionRule carrierRule = null, fighterRule = null;
+        int carrierFighterLimit = 0, maxFighterAttack = 0;
         Resource pus = data.getResourceList().getResource(Constants.PUS);
         boolean isAmphib = isAmphibAttack(player, true);
         
@@ -6461,6 +6481,26 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 			if (Matches.UnitTypeCanTransport.match(x) && Matches.UnitTypeIsSea.match(x))
 				transportProductionRules.add(ruleCheck);
+			if (Matches.UnitTypeIsSub.match(x))
+				subProductionRules.add(ruleCheck);
+			if (Matches.UnitTypeIsCarrier.match(x)) //might be more than 1 carrier rule...use the one which will hold the most fighters
+			{
+				int thisFighterLimit = UnitAttachment.get(x).getCarrierCapacity();
+				if (thisFighterLimit >= carrierFighterLimit)
+				{
+					carrierRule = ruleCheck;
+					carrierFighterLimit = thisFighterLimit;
+				}
+			}
+			if (Matches.UnitTypeCanLandOnCarrier.match(x)) //might be more than 1 fighter...use the one with the best attack
+			{
+				int thisFighterAttack = UnitAttachment.get(x).getAttack(player);
+				if (thisFighterAttack > maxFighterAttack)
+				{
+					fighterRule = ruleCheck;
+					maxFighterAttack = thisFighterAttack;
+				}
+			}
 		}
 
         if (purcahseForBid)
@@ -6469,9 +6509,15 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             if (buyLimit == 0)
             	buyLimit = 1;
             boolean landPurchase = true, alreadyBought = false, goTransports = false;
+            List<Territory> enemyTerritoryBorderingOurTerrs = SUtils.getNeighboringEnemyLandTerritories(data, player);
+            if (enemyTerritoryBorderingOurTerrs.isEmpty())
+            	landPurchase = false;
+			if (Math.random() > 0.25)
+				seaProductionRules.removeAll(subProductionRules);
+            
             if (PUsToSpend < 25)
             {
-            	if (!isAmphib || Math.random() < 0.15)
+            	if ((!isAmphib || Math.random() < 0.15) && landPurchase)
             	{
             		SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, landProductionRules, PUsToSpend, buyLimit, data, player, 2);
             	}
@@ -6480,47 +6526,67 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             		landPurchase = false;
             		buyLimit = PUsToSpend / 5; //assume a larger threshhold
             		if (Math.random() > 0.40)
+            		{
             			SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, seaProductionRules, PUsToSpend, buyLimit, data, player, 2);
+            		}
             		else
             		{
             			goTransports = true;
             		}
             	}
             }
-            else if (!isAmphib || Math.random() < 0.15)
+            else if ((!isAmphib || Math.random() < 0.15) && landPurchase)
             {
             	if (Math.random() > 0.80)
             	{
             		SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, landProductionRules, PUsToSpend, buyLimit, data, player, 2);
             	}
-            	else
-            	{
-            		int airPUs = PUsToSpend/6;
-            		SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, airProductionRules, airPUs, buyLimit, data, player, 2);
-            		boolean buyAttack = Math.random() > 0.50;
-            		for (ProductionRule rule1 : airProductionRules)
+            }
+            else if (Math.random() < 0.35)
+            {
+            	if (Math.random() > 0.55)
+            	{//force a carrier purchase if enough available $$ for it and at least 1 fighter
+            		int cost = carrierRule.getCosts().getInt(pus);
+        			int fighterCost = fighterRule.getCosts().getInt(pus);
+            		if ((cost+fighterCost) <= PUsToSpend)
             		{
-            			int buyThese = bestAttack.getInt(rule1);
-            			int cost = rule1.getCosts().getInt(pus);
-            			if (!buyAttack)
-            				buyThese = bestDefense.getInt(rule1); 
-            			PUsToSpend -= cost*buyThese;
-            			while (PUsToSpend < 0 && buyThese > 0)
-            			{
-            				buyThese--;
-            				PUsToSpend += cost;
+            			purchase.add(carrierRule, 1);
+            			purchase.add(fighterRule, 1);
+            			carrierFighterLimit--;
+            			PUsToSpend -= (cost+fighterCost);
+            			while ((PUsToSpend >= fighterCost) && carrierFighterLimit > 0)
+            			{ //max out the carrier
+            				purchase.add(fighterRule, 1);
+            				carrierFighterLimit--;
+            				PUsToSpend-=fighterCost;
             			}
-            			if (buyThese > 0)
-            				purchase.add(rule1, buyThese);
             		}
-            		int landPUs = PUsToSpend;
-            		buyLimit = landPUs / 3;
-            		bestAttack.clear();
-            		bestDefense.clear();
-            		bestMaxUnits.clear();
-            		bestMobileAttack.clear();
-            		SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, landProductionRules, landPUs, buyLimit, data, player, 2);
             	}
+            	int airPUs = PUsToSpend/6;
+            	SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, airProductionRules, airPUs, buyLimit, data, player, 2);
+            	boolean buyAttack = Math.random() > 0.50;
+            	for (ProductionRule rule1 : airProductionRules)
+            	{
+            		int buyThese = bestAttack.getInt(rule1);
+            		int cost = rule1.getCosts().getInt(pus);
+            		if (!buyAttack)
+            			buyThese = bestDefense.getInt(rule1); 
+            		PUsToSpend -= cost*buyThese;
+            		while (PUsToSpend < 0 && buyThese > 0)
+            		{
+            			buyThese--;
+            			PUsToSpend += cost;
+            		}
+            		if (buyThese > 0)
+            			purchase.add(rule1, buyThese);
+            	}
+            	int landPUs = PUsToSpend;
+            	buyLimit = landPUs / 3;
+            	bestAttack.clear();
+            	bestDefense.clear();
+            	bestMaxUnits.clear();
+            	bestMobileAttack.clear();
+            	SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, landProductionRules, landPUs, buyLimit, data, player, 2);
             }
         	else
         	{
@@ -7349,23 +7415,19 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					if (carrierBought && leftToSpend > 0 && unitCount < totProd)
 					{
 						boolean fighterBought = false;
-						for (ProductionRule fighterRule : airProductionRules)
-						{
-			                UnitType results = (UnitType) fighterRule.getResults().keySet().iterator().next();
-			                if (Matches.UnitTypeCanLandOnCarrier.match(results) && !fighterBought)
-			                {
-			                	int fighterCost = fighterRule.getCosts().getInt(pus);
-			                	if (leftToSpend >= fighterCost)
-			                	{
-			                		unitCount++;
-			                		PUSea -= fighterCost;
-			                		leftToSpend -= fighterCost;
-			                		purchase.add(fighterRule, 1);
-			                		maxBuy--;
-			                		fighterBought = true;
-			                	}
-			                }
-							
+		                UnitType results = (UnitType) fighterRule.getResults().keySet().iterator().next();
+		                if (!fighterBought)
+		                {
+		                	int fighterCost = fighterRule.getCosts().getInt(pus);
+		                	if (leftToSpend >= fighterCost)
+		                	{
+		                		unitCount++;
+		                		PUSea -= fighterCost;
+		                		leftToSpend -= fighterCost;
+		                		purchase.add(fighterRule, 1);
+		                		maxBuy--;
+		                		fighterBought = true;
+		                	}
 						}
 					}
 					
@@ -7413,21 +7475,17 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			                if (Matches.UnitTypeIsCarrier.match(results)) //attempt to add a fighter to every carrier purchased
 			                {
 			                	boolean fighterBought = false;
-			                	for (ProductionRule fighterRule : airProductionRules)
-			                	{
-			                		UnitType airResults = (UnitType) fighterRule.getResults().keySet().iterator().next();
-			                		if (Matches.UnitTypeCanLandOnCarrier.match(airResults) && !fighterBought)
+		                		if (!fighterBought)
+		                		{
+			                		int fighterCost = fighterRule.getCosts().getInt(pus);
+			                		if (leftToSpend >= fighterCost && unitCount < totProd)
 			                		{
-			                			int fighterCost = fighterRule.getCosts().getInt(pus);
-			                			if (leftToSpend >= fighterCost && unitCount < totProd)
-			                			{
-			                				unitCount++;
-			                				PUSea -= fighterCost;
-			                				leftToSpend -= fighterCost;
-			                				purchase.add(fighterRule, 1);
-			                				fighterBought = true;
-			                			}
-				                	}
+			                			unitCount++;
+			                			PUSea -= fighterCost;
+			                			leftToSpend -= fighterCost;
+			                			purchase.add(fighterRule, 1);
+			                			fighterBought = true;
+			                		}
 				                }
 							}
 						}
@@ -7784,12 +7842,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         	List<Territory> ourTerrs = SUtils.allOurTerritories(data, player);
         	ourTerrs.remove(capitol); //we'll check the cap last
         	HashMap<Territory, Float> rankMap = SUtils.rankTerritories(data, ourFriendlyTerr, ourEnemyTerr, null, player, tFirst, false, true);
-
-        	SUtils.reorder(ourFriendlyTerr, rankMap, true);
-        	ourFriendlyTerr.retainAll(ourTerrs);
+        	List<Territory> ourTerrWithEnemyNeighbors = SUtils.getTerritoriesWithEnemyNeighbor(data, player, false, false);
+        	SUtils.reorder(ourTerrWithEnemyNeighbors, rankMap, true);
+//        	ourFriendlyTerr.retainAll(ourTerrs);
         	Territory bidLandTerr = null;
-        	if (ourFriendlyTerr.size() > 0)
-        		bidLandTerr = ourFriendlyTerr.get(0);
+        	if (ourTerrWithEnemyNeighbors.size() > 0)
+        		bidLandTerr = ourTerrWithEnemyNeighbors.get(0);
         	if (bidLandTerr == null)
         		bidLandTerr = capitol;
         	if (player.getUnits().someMatch(Matches.UnitIsSea))
@@ -8115,7 +8173,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	List<Unit> transUnits = player.getUnits().getMatches(Matches.UnitIsTransport);
     	List<Unit> airUnits = player.getUnits().getMatches(Matches.UnitCanLandOnCarrier);
     	List<Unit> carrierUnits = player.getUnits().getMatches(Matches.UnitIsCarrier);
-    	if (carrierUnits.size() > 0 && airUnits.size() > 0 && Properties.getProduce_Fighters_On_Carriers(data))
+    	if (carrierUnits.size() > 0 && airUnits.size() > 0 && (Properties.getProduce_Fighters_On_Carriers(data) || bid))
     	{
     		int carrierSpace = 0;
     		for (Unit carrier1 : carrierUnits)
@@ -8449,6 +8507,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		//submerge anytime only subs against air units
 		//don't understand how to use this routine
         final GameData data = getPlayerBridge().getGameData();
+        boolean iamOffense = get_onOffense();
 		boolean tFirst = transportsMayDieFirst();
         TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
         BattleTracker bTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
