@@ -1283,12 +1283,9 @@ public class MovePanel extends ActionPanel
                 Route route = getRoute(getFirstSelectedTerritory(), t);
                 
                 //Load Bombers with paratroops
-                //if(!m_nonCombat && isParatroopers(getCurrentPlayer()) && Match.someMatch(m_selectedUnits, Matches.UnitIsStrategicBomber))
                 if(!m_nonCombat && isParatroopers(getCurrentPlayer()) && Match.someMatch(m_selectedUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, Matches.unitHasNotMoved)))
                 {     
                 	final PlayerID player = getCurrentPlayer();
-                	/*if(route.getEnd() == null)
-                	    route.add(t);*/
                 	
                 	CompositeMatch<Unit> unitsToLoadMatch = new CompositeMatchAnd<Unit>();
                 		unitsToLoadMatch.add(Matches.UnitIsInfantry);
@@ -1298,9 +1295,12 @@ public class MovePanel extends ActionPanel
                 	
                 	if(unitsToLoad.size() > 0)
                 	{                	
-                		Collection<Unit> bombers = getLoadedBombers(route, unitsToLoad, player);
-                		m_selectedUnits.addAll(bombers);
-                	}                    
+                		Collection<Unit> loadedBombers = getLoadedBombers(route, unitsToLoad, player);
+                		m_selectedUnits.addAll(loadedBombers);
+                    	//kev
+                    	MoveDescription message = new MoveDescription(units, route, Match.getMatches(loadedBombers, Matches.UnitCanTransport));
+                        m_moveMessage = message;
+                	}
                 }
                                 
                 updateUnitsThatCanMoveOnRoute(m_selectedUnits, route);
@@ -1533,6 +1533,13 @@ public class MovePanel extends ActionPanel
             }
 
             Collection<Unit> transports = null;
+            //TODO kev set the load/unload true for paratroops
+    		
+    		CompositeMatch<Unit> paratroopNBombers = new CompositeMatchAnd<Unit>();
+        	paratroopNBombers.add(Matches.UnitIsStrategicBomber);
+        	paratroopNBombers.add(Matches.UnitIsParatroop);
+        	boolean paratroopsLanding = Match.someMatch(units, paratroopNBombers);
+        	
             if(MoveValidator.isLoad(route) && Match.someMatch(units, Matches.UnitIsLand))
             {
               transports = getTransportsToLoad(route, units, false);
@@ -1542,12 +1549,14 @@ public class MovePanel extends ActionPanel
                   return;
               }
             }
-            else if(MoveValidator.isUnload(route) && Match.someMatch(units, Matches.UnitIsLand))
+            else if((MoveValidator.isUnload(route) && Match.someMatch(units, Matches.UnitIsLand))|| paratroopsLanding)
             {
                 List<Unit> unloadAble = Match.getMatches(m_selectedUnits,getUnloadableMatch());
                 
                 Collection<Unit> canMove = new ArrayList<Unit>(getUnitsToUnload(route, unloadAble));
                 canMove.addAll(Match.getMatches(m_selectedUnits, new InverseMatch<Unit>(getUnloadableMatch())));
+                if(paratroopsLanding)
+                	transports = canMove;
                 if(canMove.isEmpty())
                 {
                     CANCEL_MOVE_ACTION.actionPerformed(null);

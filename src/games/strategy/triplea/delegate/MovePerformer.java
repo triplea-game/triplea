@@ -91,10 +91,6 @@ public class MovePerformer implements Serializable
         
         m_currentMove = currentMove;
         
-        /*Collection<Unit> toLoad = new ArrayList<Unit>();       
-        toLoad = transportsToLoad;
-        populateStack(units, route, id, toLoad);*/
-
         populateStack(units, route, id, transportsToLoad);
 
         m_executionStack.execute(m_bridge, m_data);
@@ -175,6 +171,10 @@ public class MovePerformer implements Serializable
 
                 Collection<Unit> arrived = Util.intersection(units, (Collection<Unit>) arrivingUnits[0]);
 
+                Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, arrived, transportsToLoad);
+                
+                markTransportsMovement(arrived, transporting, route);
+                
                 if (route.someMatch(mustFightThrough) && arrivingUnits[0].size() != 0)
                 {
                     boolean bombing = false;
@@ -211,9 +211,6 @@ public class MovePerformer implements Serializable
 
                 //mark movement
                 Change moveChange = markMovementChange(arrived, route);
-
-                Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, arrived, transportsToLoad);
-                markTransportsMovement(transporting, route);
                 
                 CompositeChange change = new CompositeChange(moveChange);
                 //actually move the units
@@ -299,13 +296,34 @@ public class MovePerformer implements Serializable
     /**
      * Marks transports and units involved in unloading with no movement left.
      */
-    private void markTransportsMovement(Map<Unit, Unit> transporting, Route route)
+    private void markTransportsMovement(Collection<Unit> arrived, Map<Unit, Unit> transporting, Route route)
     {
 
         if (transporting == null)
             return;
-
-        if (MoveValidator.isUnload(route))
+        
+        CompositeMatch<Unit> paratroopNBombers = new CompositeMatchAnd<Unit>();
+        paratroopNBombers.add(Matches.UnitIsStrategicBomber);
+        paratroopNBombers.add(Matches.UnitIsParatroop);
+        boolean paratroopsLanding = Match.someMatch(arrived, paratroopNBombers);
+//kev
+        //load the transports
+        if (MoveValidator.isLoad(route) || paratroopsLanding)
+        {
+            //mark transports as having transported
+            Iterator<Unit> units = transporting.keySet().iterator();
+            while (units.hasNext())
+            {
+                Unit load = units.next();
+                Unit transport = transporting.get(load);
+                Change change = m_moveDelegate.getTransportTracker().loadTransportChange((TripleAUnit) transport, load, m_player);
+                m_currentMove.addChange(change);
+                m_currentMove.load(transport);
+                m_bridge.addChange(change);
+            }
+        }
+        
+        if (MoveValidator.isUnload(route) || paratroopsLanding)
         {
 
             Collection<Unit> units = new ArrayList<Unit>();
@@ -315,6 +333,8 @@ public class MovePerformer implements Serializable
             while (iter.hasNext())
             {
                 Unit unit = iter.next();
+            	if(paratroopsLanding && Match.allMatch(Collections.singleton(unit), Matches.UnitIsStrategicBomber))
+            		continue;
                 Change change =m_moveDelegate.markNoMovementChange(Collections.singleton(unit));
                 m_currentMove.addChange(change);                
                 m_bridge.addChange(change);
@@ -329,23 +349,6 @@ public class MovePerformer implements Serializable
                 Change change = m_moveDelegate.getTransportTracker().unloadTransportChange((TripleAUnit) load, m_currentMove.getRoute().getEnd(), m_player);
                 m_currentMove.addChange(change);
                 m_currentMove.unload(transport);
-                m_bridge.addChange(change);
-            }
-        }
-
-        //load the transports
-        if (MoveValidator.isLoad(route))
-        {
-            //mark transports as having transported
-            Iterator<Unit> units = transporting.keySet().iterator();
-            while (units.hasNext())
-            {
-
-                Unit load = units.next();
-                Unit transport = transporting.get(load);
-                Change change = m_moveDelegate.getTransportTracker().loadTransportChange((TripleAUnit) transport, load, m_player);
-                m_currentMove.addChange(change);
-                m_currentMove.load(transport);
                 m_bridge.addChange(change);
             }
         }

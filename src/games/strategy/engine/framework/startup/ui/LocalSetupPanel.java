@@ -151,7 +151,11 @@ class LocalPlayerComboBoxSelector
   {
     m_playerName = playerName;
     m_playerTypes = new JComboBox(types);
-
+    if (m_playerName.startsWith("Neutral")) {
+        m_playerTypes.setSelectedItem("Moore N. Able (AI)");
+        //Uncomment to disallow players from changing the default
+        //m_playerTypes.setEnabled(false);
+    }
   }
 
   public void layout(int row, Container container)

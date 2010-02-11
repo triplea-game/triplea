@@ -49,6 +49,7 @@ class AAInMoveUtil implements Serializable
         m_data = data;
         m_bridge = bridge;
         m_player = bridge.getPlayerID();
+        m_aaCasualties = new ArrayList<Unit>();
         return this;
 
     }

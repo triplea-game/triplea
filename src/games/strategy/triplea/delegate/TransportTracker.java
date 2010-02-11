@@ -156,7 +156,7 @@ public class TransportTracker
         
         CompositeChange change = new CompositeChange();
         //clear the loaded by
-        change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY ) );
+        //change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY ) );
         ArrayList<Unit> newUnloaded = new ArrayList<Unit>(transport.getUnloaded());
         newUnloaded.add(unit);
         
@@ -201,6 +201,8 @@ public class TransportTracker
                 
         
         change.add(ChangeFactory.unitPropertyChange(unit, Boolean.TRUE, TripleAUnit.LOADED_THIS_TURN  ));
+        //kev added
+        change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.LOADED_THIS_TURN));
         //If the transport was in combat, flag it as being loaded AFTER combat
         if (transport.getWasInCombat())
         {

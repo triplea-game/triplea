@@ -23,6 +23,7 @@ package games.strategy.engine.delegate;
 import java.util.Properties;
 
 import games.strategy.engine.data.*;
+import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.*;
 

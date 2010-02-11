@@ -1,4 +1,9 @@
 Changes for 1.2.2
+* Fix null pointer in new AA dice rolling code (ComradeKev)
+
+* Add default AI setting for 'Neutral' players (ComradeKev)
+ 
+* Fix bug related to paratroops and blitzing tank movement (ComradeKev)
 
 * Fix bug (2947241) combined land/amphib blitz with associated sea battle throws exception (ComradeKev)
  

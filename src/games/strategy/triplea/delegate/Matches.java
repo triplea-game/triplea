@@ -440,6 +440,15 @@ public class Matches
         }
     };
 
+    public static final Match<Unit> UnitWasUnloadedThisTurn = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            TripleAUnit taUnit = (TripleAUnit) obj;
+            return taUnit.getWasLoadedThisTurn();
+        }
+    };
+    
     public static final Match<Unit> UnitCanTransport  = new Match<Unit>()
     {
         public boolean match(Unit obj)

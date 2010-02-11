@@ -858,7 +858,7 @@ public class MoveValidator
 
 
         //See if they've already been in combat
-        if(Match.someMatch(units, Matches.UnitWasInCombat)) 
+        if(Match.someMatch(units, Matches.UnitWasInCombat)  && Match.someMatch(units, Matches.UnitWasUnloadedThisTurn)) 
         {
         	Collection<Territory> end = Collections.singleton(route.getEnd());
         	
@@ -1017,7 +1017,7 @@ public class MoveValidator
             return result.setErrorReturnResult("Not enough units in starting territory");
 
         //make sure transports in the destination
-        if (route.getEnd() != null && !route.getEnd().getUnits().containsAll(transportsToLoad))
+        if (route.getEnd() != null && !route.getEnd().getUnits().containsAll(transportsToLoad) && !units.containsAll(transportsToLoad))
             return result.setErrorReturnResult("Transports not found in route end");
 
         if (!isEditMode)

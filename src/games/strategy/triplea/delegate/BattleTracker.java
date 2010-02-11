@@ -353,7 +353,6 @@ public class BattleTracker implements java.io.Serializable
             Battle precede = getDependentAmphibiousAssault(route);
             if (precede == null)
             {
-
                 m_conquered.add(route.getEnd());
                 takeOver(route.getEnd(), id, bridge, data, changeTracker, units);
             } else
