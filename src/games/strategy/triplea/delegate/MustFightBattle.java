@@ -293,7 +293,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
             for(Unit carrier : dependencies.keySet())
-            {
+            {            	
+            	UnitAttachment ua = UnitAttachment.get(carrier.getUnitType());
+            	if (ua.getCarrierCapacity() == -1)
+            		continue;
             	Collection<Unit> fighters = dependencies.get(carrier);
             	for (Unit fighter : fighters)
             	{

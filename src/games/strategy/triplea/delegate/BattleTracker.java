@@ -436,19 +436,19 @@ public class BattleTracker implements java.io.Serializable
                         valuedTerritory.getOwner() + " lose " + PUCharge + " production due to the capture of the convoy route in " + territory.getName());
             }
         }
-
-        //if neutral
-        if (territory.getOwner().isNull() && !territory.isWater())
+        
+        //if neutral & not fought over
+        if (territory.getOwner().isNull() && !territory.isWater() && !MoveDelegate.getBattleTracker(data).wasConquered(territory))
         {
-            Resource PUs = data.getResourceList().getResource(Constants.PUS);
-            int PUCharge = -games.strategy.triplea.Properties.getNeutralCharge(data);
-            Change neutralFee = ChangeFactory.changeResourcesChange(id, PUs, PUCharge);
-            bridge.addChange(neutralFee);
-            if (changeTracker != null)
-                changeTracker.addChange(neutralFee);
-            bridge.getHistoryWriter().addChildToEvent(
-                    id.getName() + " loses " + -PUCharge + " " + MyFormatter.pluralize("PU", -PUCharge) + " for violating " + territory.getName()
-                            + "s neutrality");
+        	Resource PUs = data.getResourceList().getResource(Constants.PUS);
+        	int PUCharge = -games.strategy.triplea.Properties.getNeutralCharge(data);
+        	Change neutralFee = ChangeFactory.changeResourcesChange(id, PUs, PUCharge);
+        	bridge.addChange(neutralFee);
+        	if (changeTracker != null)
+        		changeTracker.addChange(neutralFee);
+        	bridge.getHistoryWriter().addChildToEvent(id.getName() + " loses " + -PUCharge + " "
+        			 + MyFormatter.pluralize("PU", -PUCharge) + " for violating " + territory.getName()
+        			+ "s neutrality");
         }
 
         //if its a capital we take the money
