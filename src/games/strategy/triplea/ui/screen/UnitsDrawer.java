@@ -65,7 +65,7 @@ public class UnitsDrawer implements IDrawable
         
         if(!m_damaged && UnitAttachment.get(type).isFactory() && isSBRAffectsUnitProduction(data) )
         {
-        	if(!m_territoryName.isEmpty())
+        	if(m_territoryName.length() != 0)
         	{
         		TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));
         		int prod = ta.getProduction();
@@ -109,7 +109,7 @@ public class UnitsDrawer implements IDrawable
 		graphics.setColor(Color.black);
 		graphics.setFont(MapImage.MAP_FONT);
 
-		if(!m_territoryName.isEmpty())
+		if(m_territoryName.length() != 0)
 		{
 			TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));       
 			int damageCount = ta.getProduction() - ta.getUnitProduction();
