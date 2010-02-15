@@ -1,4 +1,9 @@
 Changes for 1.2.2
+
+* update flag images in the base flags folder (u-boat,Veqryn)
+
+* allow flag images to be gif or png, gif's will be preferred if both are available to prevent new images in the base folder from overriding images in mods (sgb)
+
 * Fix null pointer in new AA dice rolling code (ComradeKev)
 
 * Add default AI setting for 'Neutral' players (ComradeKev)

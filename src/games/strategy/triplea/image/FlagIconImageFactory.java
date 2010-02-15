@@ -48,15 +48,17 @@ public class FlagIconImageFactory extends ImageFactory
     public Image getFlag(PlayerID id)
     {
         String key = PREFIX + id.getName() + ".gif";
+        String key2 = PREFIX + id.getName() + ".png";
         
-        return getImage(key, true);
+        return getImage(key, key2, true);
     }
 
   
     public Image getSmallFlag(PlayerID id)
     {
         String key = PREFIX + id.getName() + "_small.gif";
-        return getImage(key, true);
+        String key2 = PREFIX + id.getName() + "_small.png";
+        return getImage(key, key2, true);
     }
 
     public Image getLargeFlag(PlayerID id)
@@ -68,7 +70,8 @@ public class FlagIconImageFactory extends ImageFactory
     public Image getFadedFlag(PlayerID id)
     {
         String key = PREFIX + id.getName() +  "_fade.gif";
-        return getImage(key, true);
+        String key2 = PREFIX + id.getName() +  "_fade.png";
+        return getImage(key, key2, true);
     }
 
     

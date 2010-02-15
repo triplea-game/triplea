@@ -21,6 +21,15 @@ public class ImageFactory
         m_images.clear();
     }
 
+    protected Image getImage(String key1, String key2, boolean throwIfNotFound) {
+    	Image i1 = getImage(key1, false);
+    	
+    	if(i1 != null) {
+    		return i1;
+    	}    	
+    	return getImage(key2, throwIfNotFound);
+    }
+    
     protected Image getImage(String key, boolean throwIfNotFound)
     {
 
