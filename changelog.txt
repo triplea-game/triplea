@@ -2,7 +2,9 @@ Changes for 1.2.2.1
 * Fix bug (2951839) reporting that non-blitzed neutrals are charging fee, causing dumps (ComradeKev)
 
 * Fix bug (2951882) amphib units being ignored (ComradeKev)
- 
+
+* increase max java memory to 256m (sgb)
+
 Changes for 1.2.2
 
 * update flag images in the base flags folder (u-boat,Veqryn)
