@@ -5,6 +5,8 @@ Changes for 1.2.2.1
 
 * increase max java memory to 256m (sgb)
 
+* new icon for triplea.exe (ubernaut)
+
 Changes for 1.2.2
 
 * update flag images in the base flags folder (u-boat,Veqryn)
