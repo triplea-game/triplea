@@ -248,10 +248,12 @@ class AAInMoveUtil implements Serializable
     private void selectCasualties(DiceRoll dice, Collection<Unit> units, Territory territory, GUID battleID)
     {
         Collection<Unit> casualties = null;
+        if (games.strategy.triplea.Properties.getLow_Luck(m_data))
+        	casualties = m_aaCasualties;
+        else
+        	casualties = BattleCalculator.GetAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, m_data, battleID, territory);
        
-        casualties = BattleCalculator.GetAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, m_data, battleID, territory);
-       
-        getRemotePlayer().reportMessage(dice.getHits() + " AA hits in " + territory.getName());
+        getRemotePlayer().reportMessage(casualties.size() + " AA hits in " + territory.getName());
         
         m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " lost in " + territory.getName(), casualties);
         units.removeAll(casualties);

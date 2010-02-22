@@ -105,7 +105,9 @@ public class DiceRoll implements Externalizable
                     sortedDice.add(die);
                     if (hit)
                     {
-                    	hitUnits.addAll(Match.getNMatches(uc.getUnits(), 1, Matches.UnitIsAir));
+                    	Collection<Unit> units = uc.getUnits();
+                    	units.removeAll(hitUnits);
+                    	hitUnits.addAll(Match.getNMatches(units, 1, Matches.UnitIsAir));
                         hits++;
                     }
                 }

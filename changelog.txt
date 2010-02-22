@@ -1,4 +1,6 @@
 Changes for 1.2.2.1
+* Fix bug (2955224) Low Luck casualties not being taken (ComradeKev)
+
 * Fix bug (2951839) reporting that non-blitzed neutrals are charging fee, causing dumps (ComradeKev)
 
 * Fix bug (2951882) amphib units being ignored (ComradeKev)
