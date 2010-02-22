@@ -674,10 +674,11 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 CompositeMatchAnd<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsImpassable.invert());
                 Route newRoute = Utils.findNearest(t, Matches.territoryHasEnemyLandUnits(player, data ), routeCondition, data);
                 // move to any enemy territory
-                if(newRoute==null){
+                if(newRoute==null)
+                {
                 	newRoute = Utils.findNearest(t, Matches.isTerritoryEnemy(player, data), routeCondition, data);
                 }
-                if(newRoute != null)
+                if(newRoute != null && newRoute.getLength() != 0)
                 {
                     moveUnits.add(units);
                     Territory firstStep = newRoute.getTerritories().get(1);

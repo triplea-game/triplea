@@ -5260,7 +5260,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	CompositeMatch<Territory> endCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyUnits(player, data), Matches.TerritoryIsNotNeutral, Matches.TerritoryIsLand);
     	for (Territory ownedTerr : unMovedLandTerr)
     	{//TODO: find another territory to join if possible
-    		if (ownedTerr.isWater())
+    		//TODO: for some reason, unMovedLandTerr is containing conflicted territories where combat didn't 
+    		// complete- causing the need for the ownedTerr check below
+    		if (ownedTerr.isWater() || !ownedTerr.getOwner().equals(player))
     			continue;
     		float diffStrength = - landMap.get(ownedTerr).floatValue();
     		if (diffStrength > 0.0F && ownedTerr.getUnits().getMatches(unMovedLand).size()> 1 && data.getMap().getNeighbors(ownedTerr, endCondition).isEmpty()) 
