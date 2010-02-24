@@ -1,5 +1,7 @@
 Changes for 1.2.3
 
+* remove nwo map in default install, this allows it to be updated independently (sgb)
+
 * update xml for big world,great war, update misc images for great war, update flags for great war, update italian cruiser image, update chineese and american aa gun,
  add various flags, add various missing units (Veqryn, ubernaut, EB (OnanTheBrBr), and U-boat)
 
