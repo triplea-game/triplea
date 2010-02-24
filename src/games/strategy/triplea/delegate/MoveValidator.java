@@ -1317,9 +1317,12 @@ public class MoveValidator
 			if(initialUnitsAtLocation.isEmpty())
 				continue;
 			
-			//This is all friendly units at the location
-			Collection<Unit> alliedUnitsAtLocation = CandidateTerrUnitColl.getMatches(Matches.alliedUnit(player, data));
-			int extraCapacity = MoveValidator.carrierCapacity(initialUnitsAtLocation) - MoveValidator.carrierCost(alliedUnitsAtLocation);
+			//This is all owned units at the location
+			//TODO kev deleted this as allied air is covered in mustMoveWith calculations
+			//Collection<Unit> alliedUnitsAtLocation = CandidateTerrUnitColl.getMatches(Matches.alliedUnit(player, data));
+			//int extraCapacityAllied = MoveValidator.carrierCapacity(initialUnitsAtLocation) - MoveValidator.carrierCost(alliedUnitsAtLocation);
+			Collection<Unit> ownedUnitsAtLocation = CandidateTerrUnitColl.getMatches(Matches.unitIsOwnedBy(player));
+			int extraCapacity = MoveValidator.carrierCapacity(initialUnitsAtLocation) - MoveValidator.carrierCost(ownedUnitsAtLocation);
 			if(candidateTerr.equals(currRouteStartTerr))                
 			{
 				extraCapacity += MoveValidator.carrierCost(units);
@@ -1341,6 +1344,7 @@ public class MoveValidator
 
 			//If the territory is within the maxMovement put the max of the existing capacity or the new capacity
 			if((maxMovement) >= candidateRouteLength)
+				//carrierCapacity.put(candidateRouteLength, Math.max(carrierCapacity.getInt(candidateRouteLength), carrierCapacity.getInt(candidateRouteLength)- alliedMustMoveCost));
 				carrierCapacity.put(candidateRouteLength, Math.max(carrierCapacity.getInt(candidateRouteLength), carrierCapacity.getInt(candidateRouteLength) + extraCapacity - alliedMustMoveCost));			
 			else 
 			{
@@ -1353,7 +1357,8 @@ public class MoveValidator
 							- MoveValidator.carrierCost(airThatMustLandOnCarriers) >=0 && 
 							MoveValidator.hasEnoughMovement(ownedCarrier, route.getLength() 
 									- candidateSeaRouteLength))
-						carrierCapacity.put(candidateSeaRouteLength, carrierCapacity.getInt(candidateSeaRouteLength) + extraCapacity - alliedMustMoveCost);	
+						carrierCapacity.put(candidateSeaRouteLength, carrierCapacity.getInt(candidateSeaRouteLength) + extraCapacity - alliedMustMoveCost);
+						//carrierCapacity.put(candidateSeaRouteLength, carrierCapacity.getInt(candidateSeaRouteLength) - alliedMustMoveCost);	
 				}
 
 			}

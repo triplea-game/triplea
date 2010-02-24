@@ -1216,9 +1216,9 @@ public class WW2V3_41_Test extends TestCase {
         
         public void testAirCanLandWithAlliedFighters() 
         {        	
-        	//germany owns madagascar, with 1 fighter in it
+        	//germany owns madagascar, with 2 fighters in it
         	//also 1 carrier, and 1 allied fighter in sz 40
-        	//the fighter should not be able to move from madagascar 
+        	//the fighters should not be able to move from madagascar 
         	//to sz 40, since with the allied fighter, their is no room
         	//on the carrier
         	
@@ -1229,7 +1229,7 @@ public class WW2V3_41_Test extends TestCase {
         	Territory sz40 = territory("40 Sea Zone", m_data);
         	addTo(sz40, carrier(m_data).create(1, germans));
         	addTo(sz40, fighter(m_data).create(1, italians(m_data)));
-        	addTo(madagascar, fighter(m_data).create(1, germans));
+        	addTo(madagascar, fighter(m_data).create(2, germans));
         	
         	Route route = m_data.getMap().getRoute(madagascar, sz40);
         	

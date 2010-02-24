@@ -8,6 +8,8 @@ Changes for 1.2.3
 * add optional version number to map listing xml file.  This version number will be saved when the game is downloaded.  When the user is asked to delete
 an already downloaded map, the dialog will have the old and new versions in the overwrite message.  Version numbers are 2-4 numbers separated by a '.', eg 1.2, 12.23, 1.2.3, 1.2.3.4  (sgb)
 
+* Tweaked version error message and aircraft landing on CV validation (ComradeKev)
+ 
 * Patch bug () Dump in EasyAI non-combat movement (ComradeKev)
 
 * Patch bug (2953997) Dump in StrongAI non-combat movement (ComradeKev)
