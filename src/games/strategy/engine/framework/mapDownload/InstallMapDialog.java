@@ -5,6 +5,7 @@ import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.util.Version;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -181,7 +182,8 @@ public class InstallMapDialog extends JDialog {
 		//get the destination file
 		File destination = new File(GameRunner.getUserMapsFolder(), selected.getMapName() + ".zip");
 		if(destination.exists()) {
-			int rVal = EventThreadJOptionPane.showConfirmDialog(this, "A map with this name already exists, delete it?", "Exit" , JOptionPane.YES_NO_OPTION);
+			String msg = "You have version " + getVersionString(getVersion(destination)) + " installed, replace with version " + getVersionString(selected.getVersion()) + "?";
+			int rVal = EventThreadJOptionPane.showConfirmDialog(this, msg, "Exit" , JOptionPane.YES_NO_OPTION);
 	        if(rVal != JOptionPane.OK_OPTION)
 	            return;
 			
@@ -215,6 +217,11 @@ public class InstallMapDialog extends JDialog {
 			sink = new FileOutputStream(tempFile);
 			sink.write(download.getContents());
 			sink.getFD().sync();
+			
+			DownloadFileProperties props = new DownloadFileProperties();
+			props.setFrom(selected);
+			
+			DownloadFileProperties.saveForZip(destination, props);
 		} catch (IOException e) {
 			Util.notifyError(this, "Could not create write to temp file:" + e.getMessage());
 			return;
@@ -230,7 +237,7 @@ public class InstallMapDialog extends JDialog {
 				
 		//try to make sure it is a valid zip file
 		try
-		{			
+		{
 			 ZipInputStream zis = new ZipInputStream(new FileInputStream(tempFile));			 			 
 			 try
 			 {
@@ -335,6 +342,20 @@ public class InstallMapDialog extends JDialog {
 		
 	}
 
+	private static String getVersionString(Version v) 
+	{
+		if(v == null) 
+		{
+			return "Unknown";
+		}
+		return v.toString();
+	}
+	
+	
+	private static Version getVersion(File zipFile) { 		
+		DownloadFileProperties props = DownloadFileProperties.loadForZip(zipFile);
+		return props.getVersion();
+	}
 	
 	
 }

@@ -1,5 +1,7 @@
 package games.strategy.engine.framework.mapDownload;
 
+import games.strategy.util.Version;
+
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,7 +22,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class DownloadFileParser {
 
 	
-	public List<DownloadFileDescription> parse(InputStream is) {
+	public List<DownloadFileDescription> parse(InputStream is, final String hostedUrl) {
 		final List<DownloadFileDescription> rVal = new ArrayList<DownloadFileDescription>();
 		
 		try
@@ -33,6 +35,7 @@ public class DownloadFileParser {
 				private String url;
 				private String description;
 				private String mapName;
+				private Version version;
 				
 				
 				@Override
@@ -51,9 +54,13 @@ public class DownloadFileParser {
 						url = content.toString().trim();
 					} else if(elementName.equals("mapName")) {
 						mapName = content.toString().trim();
+					} else if(elementName.equals("version")) {
+						this.version = new Version(content.toString().trim());
 					}
 					else if(elementName.equals("game")) {						
-						rVal.add(new DownloadFileDescription(url, description, mapName));
+						rVal.add(new DownloadFileDescription(url, description, mapName, version, hostedUrl));
+						//clear optional properties
+						version = null;
 					} else if(!elementName.equals("games")) {
 						throw new IllegalStateException("unexpected tag:" + elementName);
 					}

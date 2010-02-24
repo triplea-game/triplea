@@ -10,7 +10,7 @@ public class DownloadFileParserTest extends TestCase {
 	
 	
 	public void testParse() {
-		List<DownloadFileDescription> games = new DownloadFileParser().parse(new ByteArrayInputStream(xml.getBytes()));
+		List<DownloadFileDescription> games = new DownloadFileParser().parse(new ByteArrayInputStream(xml.getBytes()), "hostedurl");
 		assertEquals(2, games.size());
 		DownloadFileDescription desc = games.get(0);
 		assertEquals(desc.getUrl(), "http://example.com/games/game.zip");
@@ -21,6 +21,7 @@ public class DownloadFileParserTest extends TestCase {
 		assertEquals(desc.getUrl(), "http://example.com/games/game2.zip");
 		assertTrue(desc.getDescription().contains("second game"));
 		assertEquals(desc.getMapName(), "mySecondGame");
+		assertEquals(desc.getHostedUrl(), "hostedurl");
 	}
 	
 	

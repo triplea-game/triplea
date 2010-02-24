@@ -93,13 +93,13 @@ public class DownloadMapDialog extends JDialog {
 		m_listGamesButton.addActionListener(new AbstractAction() {
 			
 			public void actionPerformed(ActionEvent event) {
-				final String selected = (String) m_urlComboBox.getSelectedItem();
-				if(selected == null || selected.trim().length() == 0) {
+				final String selectedUrl = (String) m_urlComboBox.getSelectedItem();
+				if(selectedUrl == null || selectedUrl.trim().length() == 0) {
 					Util.notifyError(m_cancelButton, "nothing selected");
 					return;
 				}
 				
-				DownloadRunnable download = new DownloadRunnable(selected);
+				DownloadRunnable download = new DownloadRunnable(selectedUrl);
 				
 				BackgroundTaskRunner.runInBackground(getRootPane(), "Downloading....", download);
 				
@@ -111,7 +111,7 @@ public class DownloadMapDialog extends JDialog {
 				List<DownloadFileDescription> downloads;
 				try
 				{					
-					downloads = new DownloadFileParser().parse(new ByteArrayInputStream(download.getContents()));					
+					downloads = new DownloadFileParser().parse(new ByteArrayInputStream(download.getContents()), selectedUrl);					
 					if(downloads.isEmpty()) {
 						throw new IllegalStateException("No games listed.");
 					}
@@ -120,7 +120,7 @@ public class DownloadMapDialog extends JDialog {
 					return;
 				}
 				
-				addDownloadSites(selected.trim());
+				addDownloadSites(selectedUrl.trim());
 				setVisible(false);
 				InstallMapDialog.installGames(owner, downloads);
 				
