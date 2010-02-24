@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="Great War" version="3.0"/>
+        <info name="Great War" version="3.1"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -4141,39 +4141,27 @@
 
         <propertyList>
 
-        <!-- Eliminate Economic Victory Conditions -->
-        	<property name="No Economic Victory" value="true" editable="true">
-        		<boolean/>
-			</property>
-                <!-- Use WW2V2 Rules -->
+				<!-- Low Luck -->
 
-		<property name="WW2V2" value="true" editable="false">
+                <property name="Low Luck" value="false" editable="true">
                         <boolean/>
                 </property>
-
-                <property name="Submersible Subs" value="true" editable="false">
+                
+				<property name="Tech Development" value="true" editable="true">
                         <boolean/>
                 </property>
-
-                <property name="Tech Development" value="true" editable="true">
-                        <boolean/>
-                </property>
-
-                <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+				
+				<property name="Heavy Bomber Dice Rolls" value="2" editable="false">
                         <number min="2" max="3"/>
                 </property>
 
-                <property name="Two hit battleship" value="true" editable="false">
+                <property name="LHTR Heavy Bombers" value="true" editable="true">
+                	  <boolean/>
+                </property>
+				
+				<property name="Territory Turn Limit" value="true" editable="true">
                         <boolean/>
                 </property>
-
-                <property name="Produce fighters on carriers" value="true" editable="false">
-                        <boolean/>
-                </property>     
-                
-				<property name="Allied Air Dependents" value="true" editable="false">
-                        <boolean/>
-                </property>     
 
                 <property name="Always on AA" value="true" editable="true">
                         <boolean/>
@@ -4183,23 +4171,43 @@
                         <boolean/>
                 </property>
 
-                <property name="neutralCharge" value="0"/>
+                <!-- Use WW2V2 Rules -->
 
-                <property name="maxFactoriesPerTerritory" value="1"/>
-
-                <property name="Territory Turn Limit" value="true" editable="true">
+				<property name="WW2V2" value="true" editable="false">
                         <boolean/>
                 </property>
 
-                <property name="Heavy Bombers Pick best of X Dice" value="true" editable="true">
+                <property name="Submersible Subs" value="true" editable="false">
                         <boolean/>
                 </property>
 
                 
 
+                <property name="Two hit battleship" value="true" editable="false">
+                        <boolean/>
+                </property>
+
+                <property name="Produce fighters on carriers" value="true" editable="false">
+                        <boolean/>
+                </property>
+
+                <property name="Move existing fighters to new carriers" value="true" editable="false">
+                        <boolean/>
+                </property>
+				
+                <property name="Allied Air Dependents" value="true" editable="false">
+					<boolean/>
+				</property>
+				
+				<property name="neutralCharge" value="0"/>
+
+                <property name="maxFactoriesPerTerritory" value="1"/>
+
+                
+
                 <!-- Bids -->
 
-		<property name="Germans bid" value="0" editable="true">
+				<property name="Germans bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
 
@@ -4235,11 +4243,7 @@
 
 
 
-                <!-- Low Luck -->
-
-                <property name="Low Luck" value="false" editable="true">
-                        <boolean/>
-                </property>
+                
 
 
 

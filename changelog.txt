@@ -1,5 +1,8 @@
 Changes for 1.2.3
 
+* update xml for big world,great war, update misc images for great war, update flags for great war, update italian cruiser image, update chineese and american aa gun,
+ add various flags, add various missing units (Veqryn, ubernaut, EB (OnanTheBrBr), and U-boat)
+
 * add optional version number to map listing xml file.  This version number will be saved when the game is downloaded.  When the user is asked to delete
 an already downloaded map, the dialog will have the old and new versions in the overwrite message.  Version numbers are 2-4 numbers separated by a '.', eg 1.2, 12.23, 1.2.3, 1.2.3.4  (sgb)
 
