@@ -1054,7 +1054,6 @@ public class MoveValidator
             {
                 if (!MoveValidator.hasEnoughMovement(unit, route))
                 {
-                    UnitAttachment ua = UnitAttachment.get(unit.getType());
                     if(Matches.UnitIsParatroop.match(unit) && arialTransportSupportAvailable > 0)
                     {
                     	arialTransportSupportAvailable --;                     
@@ -1770,6 +1769,7 @@ public class MoveValidator
         
         return false;
     }
+    
   //checks if there is a single paratrooper present that cause move validations to fail
     private static boolean ParatrooperPresent(PlayerID player, Unit unit)
     {
@@ -1818,9 +1818,7 @@ public class MoveValidator
         
         if(nonCombat)
             return result.setErrorReturnResult("Paratroops may not move during NonCombat");
-        
-        TransportTracker transportTracker = new TransportTracker();
-        
+                
         if (!getEditMode(data))
         {
             //if we can move without using paratroop tech, do so
