@@ -1,5 +1,7 @@
 Changes for 1.2.3
 
+* fix downloaded map skins (sgb)
+
 * Add default AI setting for 'Neutral' players in remote games (ComradeKev)
 
 * remove nwo map in default install, this allows it to be updated independently (sgb)

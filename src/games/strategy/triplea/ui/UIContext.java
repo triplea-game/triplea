@@ -459,7 +459,7 @@ public class UIContext
                 if(f.getName().endsWith(".zip") && f.getName().startsWith(mapName + "-"))
                 {
                     String nameWithExtension = f.getName().substring(f.getName().indexOf('-') +1);
-                    rVal.put(nameWithExtension.substring(0, nameWithExtension.length() - 4),  f.getName());
+                    rVal.put(nameWithExtension.substring(0, nameWithExtension.length() - 4),  f.getName().substring(0, f.getName().length() - 4));
                     
                 }
             }
