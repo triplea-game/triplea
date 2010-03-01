@@ -6725,10 +6725,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	{
     		List<Territory> allMyTerrs = SUtils.allOurTerritories(data, player);
     		float risk = 0.0F;
-    		Territory waterFact = SUtils.findFactoryTerritory(data, player, risk, true, true);
-    		waterProduction += TerritoryAttachment.get(waterFact).getProduction();//might want to buy 2
+    		Territory waterFact = SUtils.findFactoryTerritory(data, player, risk, true, true);    		
     		if (waterFact != null)
     		{
+    			waterProduction += TerritoryAttachment.get(waterFact).getProduction();//might want to buy 2
     			for (ProductionRule factoryRule : rules)
     			{
     				int cost = factoryRule.getCosts().getInt(pus);
