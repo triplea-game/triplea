@@ -82,7 +82,7 @@ public class Die
     
     public String toString()
     {
-        return "Die roll" + m_value + " rolled at:" + m_rolledAt + " type:" + m_type;
+        return "Die roll:" + m_value + " rolled at:" + m_rolledAt + " type:" + m_type;
     }
         
 }

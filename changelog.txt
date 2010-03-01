@@ -1,3 +1,5 @@
+* fix exception with casualty selection in low luck (sgb)
+
 * fix bug in strong ai when there are no transport production rules (sgb)
 
 * fix null pointer in strong ai (sgb)

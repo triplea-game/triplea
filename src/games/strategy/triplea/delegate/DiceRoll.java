@@ -566,5 +566,9 @@ public class DiceRoll implements Externalizable
         
         m_hits = in.readInt();
         
-    }    
+    }
+    
+    public String toString() {
+    	return "DiceRoll dice:" + m_rolls + " hits:" + m_hits;
+    }
 }
