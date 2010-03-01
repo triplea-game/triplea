@@ -7569,7 +7569,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		maxBuy = (totProd - unitCount);
 		maxBuy = (purchaseT > 0.25) ? maxBuy/2 : maxBuy;
 		PUSea = Math.min(PUSea, leftToSpend - PULand);
-		if (buyTransports && maxBuy > 0)
+		if (buyTransports && maxBuy > 0 && !transportProductionRules.isEmpty())
 		{ //assume a single transport rule
 			ProductionRule tRule = transportProductionRules.get(0);
 			int cost = tRule.getCosts().getInt(pus);
