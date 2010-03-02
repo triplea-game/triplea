@@ -1006,8 +1006,14 @@ class BattleModel extends DefaultTableModel
                 //If it's a sneak attack, all but Chinese defend at a 1
             {
                 strength = attachment.getDefense(category.getOwner());
-                if( DiceRoll.isFirstTurnLimitedRoll(category.getOwner()))
-                    strength = Math.min(1, strength);
+                m_data.acquireReadLock();
+                try
+                {
+	                if( DiceRoll.isFirstTurnLimitedRoll(category.getOwner()))
+	                    strength = Math.min(1, strength);
+                } finally {
+                	m_data.releaseReadLock();
+                }
             }
 
             int unitsToAdd = category.getUnits().size();
