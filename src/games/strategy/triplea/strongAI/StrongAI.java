@@ -1346,15 +1346,17 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     				lNIter.remove();
     				continue;
     			}
-    			if (Matches.territoryHasAlliedFactoryNeighbor(data, player).match(thisTerr))
+    			else if (Matches.territoryHasAlliedFactoryNeighbor(data, player).match(thisTerr))
     			{
     				Set<Territory> myFactNeighbors = data.getMap().getNeighbors(thisTerr, Matches.territoryHasAlliedFactory(data, player));
     				for (Territory newTerr : myFactNeighbors)
     				{
     					float eAttackStrength2 = SUtils.getStrengthOfPotentialAttackers(newTerr, data, player, false, true, null);
     					float defenseStrength2 = SUtils.strength(newTerr.getUnits().getUnits(), false, false, false);
-    					if (eAttackStrength2 > defenseStrength2)
+    					if (eAttackStrength2 > defenseStrength2) {
     						lNIter.remove();
+    						break;
+    					}
     				}
     			}
     		}

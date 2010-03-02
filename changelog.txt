@@ -1,3 +1,5 @@
+* fix bug 2961673 crash in strong ai (sgb)
+
 * fix bug 2943370, lock not held (sgb)
 
 * fix exception with casualty selection in low luck (sgb)
