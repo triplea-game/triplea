@@ -65,11 +65,13 @@ public class DiceRoll implements Externalizable
         boolean useRadar = false;
         Collection<Unit> allAAUnits = Match.getMatches(location.getUnits().getUnits(),Matches.UnitIsAA);
         for(Unit unit:allAAUnits)
+        {
             if(isAARadar(unit.getOwner()))
             {
                 useRadar = true;
                 break;
             }        
+        }
                
         if(useRadar)
             hitAt = 1;

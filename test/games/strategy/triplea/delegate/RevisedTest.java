@@ -983,6 +983,106 @@ public class RevisedTest extends TestCase
     	assertEquals(endOwner, "Americans");
     }
     
+    public void testStratBombCasualties()
+    {
+        Territory germany = m_data.getMap().getTerritory("Germany");
+        Territory uk = m_data.getMap().getTerritory("United Kingdom");
+        
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+        PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        
+        
+        BattleTracker tracker = new BattleTracker();
+        StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, germans,  tracker );
+        
+        List<Unit> bombers = uk.getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        addTo(germany, bombers);
+		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers);
+
+        ITestDelegateBridge bridge = getDelegateBridge(british);
+        bridge.setRemote(getDummyPlayer());
+        //aa guns rolls 0 and hits
+        bridge.setRandomSource(new ScriptedRandomSource( new int[] {0, ScriptedRandomSource.ERROR} ));
+
+        
+        //int PUsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+        int pusBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+        
+        battle.fight(bridge);
+        
+        //int PUsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+        int pusAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+        assertEquals(pusBeforeRaid, pusAfterRaid);
+        
+        assertEquals(0,germany.getUnits().getMatches(Matches.unitIsOwnedBy(british)).size());
+    }
+    
+    public void testStratBombCasualtiesLowLuck()
+    {
+    	makeGameLowLuck(m_data);
+        Territory germany = m_data.getMap().getTerritory("Germany");
+        Territory uk = m_data.getMap().getTerritory("United Kingdom");
+        
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+        PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        
+        
+        BattleTracker tracker = new BattleTracker();
+        StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, germans,  tracker );
+        
+        List<Unit> bombers = bomber(m_data).create(2, british);
+        addTo(germany, bombers);
+		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers);
+
+        ITestDelegateBridge bridge = getDelegateBridge(british);
+        bridge.setRemote(getDummyPlayer());
+        //aa guns rolls 0 and hits, second die is the bombing raid cost fir the 
+        //surviving bomber
+        bridge.setRandomSource(new ScriptedRandomSource( new int[] {0, 0,ScriptedRandomSource.ERROR} ));
+
+        int pusBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+        
+        battle.fight(bridge);
+        
+        int pusAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+        assertEquals(pusBeforeRaid - 1, pusAfterRaid);
+        
+        assertEquals(1,germany.getUnits().getMatches(Matches.unitIsOwnedBy(british)).size());
+    }
+    
+    public void testStratBombCasualtiesLowLuckManyBombers()
+    {
+    	makeGameLowLuck(m_data);
+        Territory germany = m_data.getMap().getTerritory("Germany");
+        Territory uk = m_data.getMap().getTerritory("United Kingdom");
+        
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+        PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        
+        
+        BattleTracker tracker = new BattleTracker();
+        StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, germans,  tracker );
+        
+        List<Unit> bombers = bomber(m_data).create(7, british);
+        addTo(germany, bombers);
+		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers);
+
+        ITestDelegateBridge bridge = getDelegateBridge(british);
+        bridge.setRemote(getDummyPlayer());
+        //aa guns rolls 0 and hits, next 5 dice are for the bombing raid cost for the 
+        //surviving bombers
+        bridge.setRandomSource(new ScriptedRandomSource( new int[] {0, 0, 0, 0, 0, 0, ScriptedRandomSource.ERROR} ));
+
+        int pusBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+        battle.fight(bridge);
+        int pusAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+        assertEquals(pusBeforeRaid - 5, pusAfterRaid);
+
+        
+        //2 bombers get hit
+        assertEquals(5,germany.getUnits().getMatches(Matches.unitIsOwnedBy(british)).size());
+    }
+    
     public void testStratBombRaidWithHeavyBombers()
     {
         Territory germany = m_data.getMap().getTerritory("Germany");

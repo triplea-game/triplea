@@ -24,7 +24,10 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.properties.BooleanProperty;
+import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.display.IDisplay;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.ui.display.DummyDisplay;
 
 
@@ -202,6 +205,20 @@ public class GameDataTestUtil {
             throw new AssertionFailedError("No instance:" + steps);
         }
         return rVal;
+        
+    }
+    
+    public static void makeGameLowLuck(GameData data)
+    {
+        for(IEditableProperty property : data.getProperties().getEditableProperties())
+        {
+            if(property.getName().equals(Constants.LOW_LUCK))
+            {
+                 ((BooleanProperty)  property).setValue(true);
+                 return;
+            }
+        }
+        throw new IllegalStateException();
         
     }
 }

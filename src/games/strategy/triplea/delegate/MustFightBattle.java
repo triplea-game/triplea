@@ -106,7 +106,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     //for undoing moves
     private Map<Territory,Collection<Unit>> m_attackingFromMap = new HashMap<Territory,Collection<Unit>>();
     private List<Unit> m_attackingUnits = new ArrayList<Unit>();
-    private List<Unit> m_hitUnits = new ArrayList<Unit>();
+  
     private Collection<Unit> m_attackingWaitingToDie = new ArrayList<Unit>();
     private Set<Territory> m_attackingFrom = new HashSet<Territory>();
     private Collection<Territory> m_amphibiousAttackFrom = new ArrayList<Territory>();
@@ -2446,6 +2446,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         private DiceRoll m_dice;
         private Collection<Unit> m_casualties;
+        private List<Unit> m_hitUnits = new ArrayList<Unit>();
      
         public void execute(ExecutionStack stack, final IDelegateBridge bridge, GameData data)
         {
@@ -2511,7 +2512,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             	m_casualties = m_hitUnits;
             }
             else
-            	m_casualties = BattleCalculator.GetAACasualties(attackable, m_dice, bridge, m_defender, m_attacker, m_data, m_battleID, m_battleSite);
+            	m_casualties = BattleCalculator.getAACasualties(attackable, m_dice, bridge, m_defender, m_attacker, m_data, m_battleID, m_battleSite);
         }
 
 

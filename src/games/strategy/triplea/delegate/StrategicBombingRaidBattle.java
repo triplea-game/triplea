@@ -27,6 +27,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.PlayerAttachment;
@@ -58,7 +59,7 @@ public class StrategicBombingRaidBattle implements Battle
 
     private Territory m_battleSite;
     private List<Unit> m_units = new ArrayList<Unit>();
-     
+    
     private PlayerID m_defender;
     private PlayerID m_attacker;
     private GameData m_data;
@@ -233,7 +234,7 @@ public class StrategicBombingRaidBattle implements Battle
     class FireAA implements IExecutable
     {
         DiceRoll m_dice;
-        List<Unit> m_casualties;
+        Collection<Unit> m_casualties;
         
         public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
         {
@@ -243,12 +244,20 @@ public class StrategicBombingRaidBattle implements Battle
             {
                 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
-                	m_casualties = new ArrayList<Unit>();
-                	m_dice = DiceRoll.rollAA(m_units.size(), m_units, m_casualties, bridge, m_battleSite, m_data);
+                	m_dice = DiceRoll.rollAA(m_units.size(), m_units, new ArrayList<Unit>(), bridge, m_battleSite, m_data);
                 }
             };
 
+            IExecutable calculateCasualties = new IExecutable()
+            {
             
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                {
+                    m_casualties = calculateCasualties(bridge, m_dice);
+            
+                }
+            
+            };
             
             IExecutable notifyCasualties = new IExecutable()
             {
@@ -275,7 +284,7 @@ public class StrategicBombingRaidBattle implements Battle
             //push in reverse order of execution
             stack.push(removeHits);
             stack.push(notifyCasualties);
-            
+            stack.push(calculateCasualties);
             if (!isEditMode)
                 stack.push(roll);
             
@@ -329,7 +338,27 @@ public class StrategicBombingRaidBattle implements Battle
         return games.strategy.triplea.Properties.getPacificTheater(m_data);
     }
 
-  
+    private Collection<Unit> calculateCasualties(IDelegateBridge bridge, DiceRoll dice)
+    {
+        Collection<Unit> casualties = null;
+        boolean isEditMode = EditDelegate.getEditMode(m_data);
+        if (isEditMode)
+        {
+            String text = "AA guns fire";
+            CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker, 
+                    m_units, bridge, text, m_data, /*dice*/ null,/*defending*/ false, m_battleID, /*headless*/ false, 0);
+            return casualtySelection.getKilled();
+        }
+        else
+        {
+        	casualties = BattleCalculator.getAACasualties(m_units, dice, bridge, m_defender, m_attacker, m_data, m_battleID, m_battleSite);
+        }
+    	
+        if (casualties.size() != dice.getHits())
+            throw new IllegalStateException("Wrong number of casualties, expecting:" + dice + " but got:" + casualties);
+        
+        return casualties;
+    }
 
     private void notifyAAHits(final IDelegateBridge bridge, DiceRoll dice, Collection<Unit> casualties)
     {

@@ -100,7 +100,7 @@ public class BattleCalculator
     /**
      * Choose plane casualties according to specified rules 
      */
-    public static  Collection<Unit> GetAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge, PlayerID defender, PlayerID attacker, GameData data, GUID battleID, Territory terr)
+    public static  Collection<Unit> getAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge, PlayerID defender, PlayerID attacker, GameData data, GUID battleID, Territory terr)
     {	
     	//isRollAAIndividually() is the default behavior
     	Boolean rollAAIndividually = isRollAAIndividually(data);

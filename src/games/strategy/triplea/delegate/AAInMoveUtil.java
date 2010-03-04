@@ -251,7 +251,7 @@ class AAInMoveUtil implements Serializable
         if (games.strategy.triplea.Properties.getLow_Luck(m_data))
         	casualties = m_aaCasualties;
         else
-        	casualties = BattleCalculator.GetAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, m_data, battleID, territory);
+        	casualties = BattleCalculator.getAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, m_data, battleID, territory);
        
         getRemotePlayer().reportMessage(casualties.size() + " AA hits in " + territory.getName());
         
