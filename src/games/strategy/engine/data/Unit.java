@@ -29,14 +29,12 @@ import java.io.*;
  *
  * @author  Sean Bridges
  */
-//written often over the network, so made externalizable
 public class Unit extends GameDataComponent implements Serializable
 {
   private PlayerID m_owner;
-  private GUID m_uid;
+  private final GUID m_uid;
   private int m_hits;
-  private UnitType m_type;
-  
+  private final UnitType m_type;  
 
   /**
    * Creates new Unit.  Should use a call to UnitType.create() instead.
@@ -45,17 +43,14 @@ public class Unit extends GameDataComponent implements Serializable
   protected Unit(UnitType type, PlayerID owner, GameData data)
   {
     super(data);
-    init(type, owner);
+    if(type == null) {
+    	throw new IllegalArgumentException();
+    }
+    m_type = type;    
     m_uid = new GUID();
-  }
-  
-  private void init(UnitType type, PlayerID owner)
-  {
-    m_type = type;
     setOwner(owner);
   }
-
-
+  
   public GUID getID()
   {
     return m_uid;
