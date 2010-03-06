@@ -40,7 +40,6 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
-import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.triplea.weakAI.WeakAI;
 import games.strategy.util.CompositeMatch;
@@ -2495,7 +2494,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {            
             int attackingAirCount = Match.countMatches(m_attackingUnits, Matches.UnitIsAir);
             
-            m_dice = DiceRoll.rollAA(attackingAirCount, m_attackingUnits, m_hitUnits, bridge,m_battleSite, m_data);
+            m_dice = DiceRoll.rollAA(attackingAirCount, m_attackingUnits,bridge,m_battleSite, m_data);
             
         }
 
@@ -2507,12 +2506,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
            
             Collection<Unit> attackable = Match.getMatches(m_attackingUnits, Matches.UnitIsAir);
             
-            if (games.strategy.triplea.Properties.getLow_Luck(m_data))
-            {
-            	m_casualties = m_hitUnits;
-            }
-            else
-            	m_casualties = BattleCalculator.getAACasualties(attackable, m_dice, bridge, m_defender, m_attacker, m_data, m_battleID, m_battleSite);
+            m_casualties = BattleCalculator.getAACasualties(attackable, m_dice, bridge, m_defender, m_attacker, m_data, m_battleID, m_battleSite);
         }
 
 

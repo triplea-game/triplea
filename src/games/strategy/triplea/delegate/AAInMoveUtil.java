@@ -34,8 +34,8 @@ class AAInMoveUtil implements Serializable
     private transient GameData m_data;
     private transient IDelegateBridge m_bridge;
     private transient PlayerID m_player;
-    
-    private Collection<Unit> m_aaCasualties;
+    private Collection<Unit> m_casualties;
+        
     private ExecutionStack m_executionStack = new ExecutionStack();
     
     
@@ -48,8 +48,7 @@ class AAInMoveUtil implements Serializable
         m_nonCombat = MoveDelegate.isNonCombat(bridge);
         m_data = data;
         m_bridge = bridge;
-        m_player = bridge.getPlayerID();
-        m_aaCasualties = new ArrayList<Unit>();
+        m_player = bridge.getPlayerID();        
         return this;
 
     }
@@ -83,8 +82,8 @@ class AAInMoveUtil implements Serializable
             populateExecutionStack(route, units, decreasingMovement, currentMove);
 
         m_executionStack.execute(m_bridge, m_data);
-        
-        return m_aaCasualties;
+        return m_casualties;
+
     }
 
     private void populateExecutionStack(Route route, Collection<Unit> units, Comparator<Unit> decreasingMovement, final UndoableMove currentMove)
@@ -93,7 +92,7 @@ class AAInMoveUtil implements Serializable
 
         //select units with lowest movement first
         Collections.sort(targets, decreasingMovement);
-        final Collection<Unit> originalTargets = new ArrayList<Unit>(targets);
+        
         
         List<IExecutable> executables = new ArrayList<IExecutable>();
         
@@ -114,16 +113,6 @@ class AAInMoveUtil implements Serializable
             });
         }
 
-        executables.add(new IExecutable()
-        {
-        
-            public void execute(ExecutionStack stack, IDelegateBridge bridge,
-                    GameData data)
-            {
-                m_aaCasualties = Util.difference(originalTargets, targets);
-            }
-        
-        });
         
         Collections.reverse(executables);
         m_executionStack.push(executables);
@@ -213,7 +202,7 @@ class AAInMoveUtil implements Serializable
             public void execute(ExecutionStack stack, IDelegateBridge bridge,
                     GameData data)
             {
-            	dice[0] = DiceRoll.rollAA(units.size(), units, m_aaCasualties, m_bridge, territory, m_data);
+            	dice[0] = DiceRoll.rollAA(units.size(), units, m_bridge, territory, m_data);
             }
         };
         
@@ -248,14 +237,13 @@ class AAInMoveUtil implements Serializable
     private void selectCasualties(DiceRoll dice, Collection<Unit> units, Territory territory, GUID battleID)
     {
         Collection<Unit> casualties = null;
-        if (games.strategy.triplea.Properties.getLow_Luck(m_data))
-        	casualties = m_aaCasualties;
-        else
-        	casualties = BattleCalculator.getAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, m_data, battleID, territory);
+        
+        casualties = BattleCalculator.getAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, m_data, battleID, territory);
        
         getRemotePlayer().reportMessage(casualties.size() + " AA hits in " + territory.getName());
         
         m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " lost in " + territory.getName(), casualties);
         units.removeAll(casualties);
+        m_casualties = casualties;
     }    
 }

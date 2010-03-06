@@ -281,14 +281,14 @@ public class DiceRollTest extends TestCase
         //aa hits at 0 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
         
-        DiceRoll hit = DiceRoll.rollAA(1, new ArrayList<Unit>(), new ArrayList<Unit>(), bridge, westRussia, m_data);
+        DiceRoll hit = DiceRoll.rollAA(1, new ArrayList<Unit>(), bridge, westRussia, m_data);
         assertEquals(hit.getHits(), 1);
         
 
         //aa missses at 1 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
         
-        DiceRoll miss = DiceRoll.rollAA(1, new ArrayList<Unit>(), new ArrayList<Unit>(), bridge, westRussia, m_data);
+        DiceRoll miss = DiceRoll.rollAA(1, new ArrayList<Unit>(), bridge, westRussia, m_data);
         assertEquals(miss.getHits(), 0);
         
     }
@@ -313,21 +313,21 @@ public class DiceRollTest extends TestCase
         //aa hits at 0 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
         
-        DiceRoll hit = DiceRoll.rollAA(1, fighterList, new ArrayList<Unit>(), bridge, westRussia, m_data);
+        DiceRoll hit = DiceRoll.rollAA(1, fighterList, bridge, westRussia, m_data);
         assertEquals(hit.getHits(), 1);
         
 
         //aa missses at 1 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
         
-        DiceRoll miss = DiceRoll.rollAA(1, fighterList, new ArrayList<Unit>(), bridge, westRussia, m_data);
+        DiceRoll miss = DiceRoll.rollAA(1, fighterList, bridge, westRussia, m_data);
         assertEquals(miss.getHits(), 0);
         
         //6 bombers, 1 should hit, and nothing should be rolled
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
 
         fighterList = fighterType.create(6, russians);
-        DiceRoll hitNoRoll = DiceRoll.rollAA(6, fighterList, new ArrayList<Unit>(), bridge, westRussia, m_data);
+        DiceRoll hitNoRoll = DiceRoll.rollAA(6, fighterList, bridge, westRussia, m_data);
         assertEquals(hitNoRoll.getHits(),1 );
         
         
@@ -352,20 +352,20 @@ public class DiceRollTest extends TestCase
         //aa radar hits at 1 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
         
-        DiceRoll hit = DiceRoll.rollAA(1, fighterList, new ArrayList<Unit>(), bridge, westRussia, m_data);
+        DiceRoll hit = DiceRoll.rollAA(1, fighterList, bridge, westRussia, m_data);
         assertEquals(hit.getHits(), 1);
         
         //aa missses at 2 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {2}));
         
-        DiceRoll miss = DiceRoll.rollAA(1, fighterList, new ArrayList<Unit>(), bridge, westRussia, m_data);
+        DiceRoll miss = DiceRoll.rollAA(1, fighterList, bridge, westRussia, m_data);
         assertEquals(miss.getHits(), 0);
         
         //6 bombers, 2 should hit, and nothing should be rolled
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
         
         fighterList = fighterType.create(6, russians);
-        DiceRoll hitNoRoll = DiceRoll.rollAA(6, fighterList, new ArrayList<Unit>(), bridge, westRussia, m_data);
+        DiceRoll hitNoRoll = DiceRoll.rollAA(6, fighterList, bridge, westRussia, m_data);
         assertEquals(hitNoRoll.getHits(), 2);
         
         

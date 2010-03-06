@@ -54,7 +54,7 @@ public class DiceRoll implements Externalizable
     //since for low luck we get many hits with few dice
     private int m_hits;
 
-    public static DiceRoll rollAA(int numberOfAirUnits, Collection<Unit> attackingUnits, Collection<Unit> hitUnits, IDelegateBridge bridge, Territory location, GameData data)
+    public static DiceRoll rollAA(int numberOfAirUnits, Collection<Unit> attackingUnits, IDelegateBridge bridge, Territory location, GameData data)
     {
         int hits = 0;
         int[] dice = new int[0];
@@ -95,23 +95,17 @@ public class DiceRoll implements Externalizable
             	
             	hits = (numberOfAirUnits * power) / Constants.MAX_DICE;
             	
-            	hitUnits.addAll(Match.getNMatches(uc.getUnits(), hits, Matches.UnitIsAir));
-                int hitsFractional = (numberOfAirUnits * power) % Constants.MAX_DICE;
+            	int hitsFractional = (numberOfAirUnits * power) % Constants.MAX_DICE;
 
                 if (hitsFractional > 0)
                 {
                 	dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
                     boolean hit = hitsFractional > dice[0];
-                    Die die = new Die(dice[0], hitsFractional, hit ? DieType.HIT : DieType.MISS);
-
-                    sortedDice.add(die);
-                    if (hit)
-                    {
-                    	Collection<Unit> units = uc.getUnits();
-                    	units.removeAll(hitUnits);
-                    	hitUnits.addAll(Match.getNMatches(units, 1, Matches.UnitIsAir));
-                        hits++;
+                    if(hit) {
+                    	hits++;
                     }
+                    Die die = new Die(dice[0], hitsFractional, hit ? DieType.HIT : DieType.MISS);
+                    sortedDice.add(die);                    
                 }
             }
         } 

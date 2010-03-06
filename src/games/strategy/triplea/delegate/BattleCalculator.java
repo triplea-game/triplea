@@ -30,6 +30,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
@@ -101,26 +102,42 @@ public class BattleCalculator
      * Choose plane casualties according to specified rules 
      */
     public static  Collection<Unit> getAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge, PlayerID defender, PlayerID attacker, GameData data, GUID battleID, Territory terr)
-    {	
-    	//isRollAAIndividually() is the default behavior
-    	Boolean rollAAIndividually = isRollAAIndividually(data);
+    {
     	
-    	//Random AA Casualties
-    	if(!rollAAIndividually && isRandomAACasualties(data))
-    		return(RandomAACasualties(planes, dice, bridge));
-    	
-    	// allow player to select casualties from entire set 
-    	if(!rollAAIndividually && isChooseAA(data))
-    	{    	
-    		String text = "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
+    	if(Properties.getLow_Luck(data)) {
+    		return getLowLuckAACasualties(planes, dice);
+    	} else {
+    		//isRollAAIndividually() is the default behavior
+        	Boolean rollAAIndividually = isRollAAIndividually(data);
+        	
+        	//Random AA Casualties
+        	if(!rollAAIndividually && isRandomAACasualties(data))
+        		return(RandomAACasualties(planes, dice, bridge));
+        	
+        	// allow player to select casualties from entire set 
+        	if(!rollAAIndividually && isChooseAA(data))
+        	{    	
+        		String text = "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
 
-    		CasualtyDetails casualtyMsg =  selectCasualties(attacker, planes, bridge, text, data, dice, false, battleID);
-    		return  casualtyMsg.getKilled();
-    	}
-    	    
-    	return(IndividuallyFiredAACasualties(planes, dice, bridge, defender));
+        		CasualtyDetails casualtyMsg =  selectCasualties(attacker, planes, bridge, text, data, dice, false, battleID);
+        		return  casualtyMsg.getKilled();
+        	}
+        	    
+        	return(IndividuallyFiredAACasualties(planes, dice, bridge, defender));
+        }
+    }
+    	
+    	
+    	
+    
+    private static Collection<Unit> getLowLuckAACasualties(Collection<Unit> planes, DiceRoll dice) {
+    	Collection<Unit> hitUnits = new ArrayList<Unit>();
+    	hitUnits.addAll(Match.getNMatches(planes, dice.getHits(), Matches.UnitIsAir));
+    	return hitUnits;
     }
 
+    
+    
   
     /**
      * Choose plane casualties randomly

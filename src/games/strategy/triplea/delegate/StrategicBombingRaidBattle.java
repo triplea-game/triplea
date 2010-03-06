@@ -244,7 +244,7 @@ public class StrategicBombingRaidBattle implements Battle
             {
                 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
-                	m_dice = DiceRoll.rollAA(m_units.size(), m_units, new ArrayList<Unit>(), bridge, m_battleSite, m_data);
+                	m_dice = DiceRoll.rollAA(m_units.size(), m_units, bridge, m_battleSite, m_data);
                 }
             };
 
