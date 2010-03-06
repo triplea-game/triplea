@@ -1,3 +1,7 @@
+Changes for 1.2.4
+
+* fix bug (2960696) Strategic Bombing Crash in 1.2.3.0 (sgb)
+
 * fix bug 2961673 crash in strong ai (sgb)
 
 * fix bug 2943370, lock not held (sgb)
