@@ -16,15 +16,12 @@ package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.BattleStepStrings.*;
 import static games.strategy.triplea.delegate.GameDataTestUtil.*;
-import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RepairRule;
-import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -34,23 +31,19 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
-import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
 
-import java.io.InputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1146,9 +1139,7 @@ public class WW2V3_41_Test extends TestCase {
             ITestDelegateBridge bridge = getDelegateBridge(germans);           
             bridge.setStepName("CombatMove");
             
-            Territory poland = territory("Poland", m_data);
-            Territory ePoland = territory("East Poland", m_data);
-            Territory belo = territory("Belorussia", m_data);
+            Territory poland = territory("Poland", m_data);            
             Territory russia = territory("Russia", m_data);
             
             //Add bomber to Poland and attack
@@ -1313,10 +1304,12 @@ public class WW2V3_41_Test extends TestCase {
 			assertFalse(results.isMoveValid());			
         }
         
-        public void testBomberWithTankOverWater() 
+        public void testBomberWithTankOverWaterParatroopers() 
         {
         	
         	PlayerID germans = germans(m_data);
+        	TechAttachment.get(germans).setParatroopers("true");
+        	
         	Territory sz5 = territory("5 Sea Zone", m_data);
         	Territory germany = territory("Germany", m_data);
         	Territory karelia = territory("Karelia S.S.R.", m_data);
@@ -1335,7 +1328,7 @@ public class WW2V3_41_Test extends TestCase {
 			assertFalse(results.isMoveValid());			
         }
         
-        public void testBomberOverWater() 
+        public void testBomberTankOverWater() 
         {
         	//can't transport a tank over water using a bomber
         	
@@ -1346,7 +1339,7 @@ public class WW2V3_41_Test extends TestCase {
         	
         	addTo(germany, armour(m_data).create(1, germans));
         	
-			TechAttachment.get(germans).setParatroopers("true");
+			
 			
 			Route r = new Route(germany, sz5, karelia);
 			

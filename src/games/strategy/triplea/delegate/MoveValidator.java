@@ -801,7 +801,7 @@ public class MoveValidator
 
         	if (enemyCount > 0 && !allEnemyBlitzable)
         	{
-        		if(NonParatroopersPresent(player, units))
+        		if(nonParatroopersPresent(player, units))
         			return result.setErrorReturnResult("Cannot blitz on that route");
 
         	} 
@@ -992,7 +992,7 @@ public class MoveValidator
         	return result;
       
         //omit paratroops
-        if(NonParatroopersPresent(player, units))
+        if(nonParatroopersPresent(player, units))
             return result.setErrorReturnResult("Enemy units on path");
                
         return result;
@@ -1640,15 +1640,18 @@ public class MoveValidator
 
         //make sure that the only the first or last territory is land
         //dont want situation where they go sea land sea
-        if (!isEditMode && MoveValidator.hasLand(route) && !(route.getStart().isWater() || route.getEnd().isWater()) && NonParatroopersPresent(player, land))
-            return result.setErrorReturnResult("Invalid move, only start or end can be land when route has water.");
+        if (!isEditMode && MoveValidator.hasLand(route) && !(route.getStart().isWater() || route.getEnd().isWater())) {
+        	if(nonParatroopersPresent(player, land) || !allLandUnitsAreBeingParatroopered(units, route) ) {
+        		return result.setErrorReturnResult("Invalid move, only start or end can be land when route has water.");
+        	} 
+        }
             
 
         //simply because I dont want to handle it yet
         //checks are done at the start and end, dont want to worry about just
         //using a transport as a bridge yet
         //TODO handle this
-        if (!isEditMode && !route.getEnd().isWater() && !route.getStart().isWater() && NonParatroopersPresent(player, land))
+        if (!isEditMode && !route.getEnd().isWater() && !route.getStart().isWater() && nonParatroopersPresent(player, land))
             return result.setErrorReturnResult("Must stop units at a transport on route");
             
         if (route.getEnd().isWater() && route.getStart().isWater())
@@ -1679,12 +1682,12 @@ public class MoveValidator
         if (MoveValidator.isLoad(route))
         {
 
-            if (!isEditMode && route.getLength() != 1 && NonParatroopersPresent(player, land))
+            if (!isEditMode && route.getLength() != 1 && nonParatroopersPresent(player, land))
                 return result.setErrorReturnResult("Units cannot move before loading onto transports");
                 
             CompositeMatch<Unit> enemyNonSubmerged = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), new InverseMatch<Unit>(Matches
                     .unitIsSubmerged(data)));
-            if (route.getEnd().getUnits().someMatch(enemyNonSubmerged) && NonParatroopersPresent(player, land))
+            if (route.getEnd().getUnits().someMatch(enemyNonSubmerged) && nonParatroopersPresent(player, land))
                 if(!onlyIgnoredUnitsOnPath(route, player, data, false))
                     return result.setErrorReturnResult("Cannot load when enemy sea units are present");
             
@@ -1753,35 +1756,41 @@ public class MoveValidator
         return result;
     }
     
-    //checks if there are non-paratroopers present that cause move validations to fail
-    private static boolean NonParatroopersPresent(PlayerID player, Collection<Unit> units)
-    {
-        if(isParatroopers(player))
+    private static boolean allLandUnitsAreBeingParatroopered(Collection<Unit> units, Route route) {
+    	//some units that can't be paratrooped
+    	if(Match.someMatch(units, new CompositeMatchAnd<Unit>(Matches.UnitIsParatroop.invert(), Matches.UnitIsLand))) {
+    		return false;
+    	}
+    	
+    	List<Unit> paratroopsRequiringTransport = getParatroopsRequiringTransport(units, route);
+        if(paratroopsRequiringTransport.isEmpty()) 
         {
-        	for (Unit unit : Match.getMatches(units, Matches.UnitCanNotBeTransported))
-            {
-                if (!Matches.UnitIsParatroop.match(unit) && !UnitAttachment.get(unit.getUnitType()).isAir())
-                    return true;
-            }
+        	return true;
         }
-        else
-            return true;
         
-        return false;
-    }
-    
-  //checks if there is a single paratrooper present that cause move validations to fail
-    private static boolean ParatrooperPresent(PlayerID player, Unit unit)
+        List<Unit> bombers =  Match.getMatches(units, Matches.UnitIsStrategicBomber);
+        Map<Unit, Unit> bombersAndParatroops = MoveDelegate.mapTransports(route, paratroopsRequiringTransport, bombers);
+        return bombersAndParatroops != null;
+	}
+
+	//checks if there are non-paratroopers present that cause move validations to fail
+    private static boolean nonParatroopersPresent(PlayerID player, Collection<Unit> units)
     {
-        if(isParatroopers(player))
-        {            
-            if (Matches.UnitIsParatroop.match(unit))
+        if(!isParatroopers(player)) {
+        	return true;
+        }
+        
+        
+        
+    	for (Unit unit : Match.getMatches(units, Matches.UnitCanNotBeTransported))
+        {
+            if (!Matches.UnitIsParatroop.match(unit) && !UnitAttachment.get(unit.getUnitType()).isAir())
                 return true;
         }
+    	return false;
         
-        return false;
     }
-
+    
     private static List<Unit> getParatroopsRequiringTransport(    		
             Collection<Unit> units, final Route route
             ) {
