@@ -179,6 +179,22 @@ public class Matches
     		return (ua.isTwoHit());
     	}
     };
+    
+    public static final Match<Unit> UnitIsRadarAA = new Match<Unit>() {
+
+		@Override
+		public boolean match(Unit unit) {
+			if(!UnitIsAA.match(unit)) {
+				return false;
+			}
+			
+	        TechAttachment ta = (TechAttachment) unit.getOwner().getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+	        if(ta == null)
+	        	return false;
+	        return ta.hasAARadar();  
+			
+		}
+	};
 
     public static final Match<Unit> UnitIsTransport = new Match<Unit>()
     {

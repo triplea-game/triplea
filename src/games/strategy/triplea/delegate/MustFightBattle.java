@@ -2492,9 +2492,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         private void rollDice(IDelegateBridge bridge)
         {            
-            int attackingAirCount = Match.countMatches(m_attackingUnits, Matches.UnitIsAir);
-            
-            m_dice = DiceRoll.rollAA(attackingAirCount, m_attackingUnits,bridge,m_battleSite, m_data);
+            m_dice = DiceRoll.rollAA(m_attackingUnits,bridge,m_battleSite, m_data);
             
         }
 

@@ -202,7 +202,7 @@ class AAInMoveUtil implements Serializable
             public void execute(ExecutionStack stack, IDelegateBridge bridge,
                     GameData data)
             {
-            	dice[0] = DiceRoll.rollAA(units.size(), units, m_bridge, territory, m_data);
+            	dice[0] = DiceRoll.rollAA(units, m_bridge, territory, m_data);
             }
         };
         

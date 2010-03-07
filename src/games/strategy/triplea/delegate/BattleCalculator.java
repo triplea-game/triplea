@@ -105,7 +105,7 @@ public class BattleCalculator
     {
     	
     	if(Properties.getLow_Luck(data)) {
-    		return getLowLuckAACasualties(planes, dice);
+    		return getLowLuckAACasualties(planes, dice, terr.getUnits().someMatch(Matches.UnitIsRadarAA));
     	} else {
     		//isRollAAIndividually() is the default behavior
         	Boolean rollAAIndividually = isRollAAIndividually(data);
@@ -130,10 +130,39 @@ public class BattleCalculator
     	
     	
     
-    private static Collection<Unit> getLowLuckAACasualties(Collection<Unit> planes, DiceRoll dice) {
+    private static Collection<Unit> getLowLuckAACasualties(Collection<Unit> planes, DiceRoll dice, boolean useRadar) {
+    	
     	Collection<Unit> hitUnits = new ArrayList<Unit>();
-    	hitUnits.addAll(Match.getNMatches(planes, dice.getHits(), Matches.UnitIsAir));
-    	return hitUnits;
+        //Categorize and loop for each aircraft type
+        //sort the categories, we do this in DiceRoll as well so that the order is consistent
+        Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(Match.getMatches(planes, Matches.UnitIsAir), true);
+                    
+        int power = useRadar ? 2 : 1;
+        
+        int dieIndex = 0;
+        for(UnitCategory uc : categorizedAir)
+        {            
+        	int numberOfAirUnits = uc.getUnits().size();
+        	
+        	int hits = (numberOfAirUnits * power) / Constants.MAX_DICE;
+        	
+        	int hitsFractional = (numberOfAirUnits * power) % Constants.MAX_DICE;
+
+            if (hitsFractional > 0)
+            {
+            	Die die = dice.getDie(dieIndex);
+            	dieIndex++;
+               
+                if(die.getType() == DieType.HIT) {
+                	hits++;
+                }
+            }
+            hitUnits.addAll(uc.getUnits().subList(0, hits));
+        }
+        if(hitUnits.size() != dice.getHits()) {
+        	throw new IllegalStateException("wrong number of casulaties, expected:" + dice + " but hit:" + hitUnits);
+        }
+        return hitUnits;
     }
 
     

@@ -54,7 +54,7 @@ public class DiceRoll implements Externalizable
     //since for low luck we get many hits with few dice
     private int m_hits;
 
-    public static DiceRoll rollAA(int numberOfAirUnits, Collection<Unit> attackingUnits, IDelegateBridge bridge, Territory location, GameData data)
+    public static DiceRoll rollAA(Collection<Unit> attackingUnits, IDelegateBridge bridge, Territory location, GameData data)
     {
         int hits = 0;
         int[] dice = new int[0];
@@ -62,16 +62,7 @@ public class DiceRoll implements Externalizable
                
         int hitAt = 0;
         
-        boolean useRadar = false;
-        Collection<Unit> allAAUnits = Match.getMatches(location.getUnits().getUnits(),Matches.UnitIsAA);
-        for(Unit unit:allAAUnits)
-        {
-            if(isAARadar(unit.getOwner()))
-            {
-                useRadar = true;
-                break;
-            }        
-        }
+        boolean useRadar = location.getUnits().someMatch(Matches.UnitIsRadarAA);
                
         if(useRadar)
             hitAt = 1;
@@ -85,15 +76,14 @@ public class DiceRoll implements Externalizable
             //If RADAR advancement, hit at a 2
                        
             //Categorize and loop for each aircraft type
-            Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(Match.getMatches(attackingUnits, Matches.UnitIsAir));
-            
-            Iterator<UnitCategory> ucIter = categorizedAir.iterator();
-            while(ucIter.hasNext())
-            {
-            	UnitCategory uc = ucIter.next();
-            	numberOfAirUnits = uc.getUnits().size();
+            //sort the categories, we need order to be consistent when we select casulaties
+            Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(Match.getMatches(attackingUnits, Matches.UnitIsAir), true);
+                        
+            for(UnitCategory uc : categorizedAir)
+            {            
+            	int numberOfAirUnits = uc.getUnits().size();
             	
-            	hits = (numberOfAirUnits * power) / Constants.MAX_DICE;
+            	hits += (numberOfAirUnits * power) / Constants.MAX_DICE;
             	
             	int hitsFractional = (numberOfAirUnits * power) % Constants.MAX_DICE;
 
@@ -113,7 +103,7 @@ public class DiceRoll implements Externalizable
         {            
             String annotation = "Roll AA guns in " + location.getName();
            
-            dice = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits, annotation);
+            dice = bridge.getRandom(Constants.MAX_DICE, Match.countMatches(attackingUnits, Matches.UnitIsAir), annotation);
             
             for (int i = 0; i < dice.length; i++)
             {
@@ -450,13 +440,6 @@ public class DiceRoll implements Externalizable
         return ta.hasImprovedArtillerySupport();     
     }
 
-    private static boolean isAARadar(PlayerID player)
-    {
-        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
-        if(ta == null)
-        	return false;
-        return ta.hasAARadar();     
-    }
 
     /**
      * @param units
@@ -537,6 +520,10 @@ public class DiceRoll implements Externalizable
                 rVal.add(die);
         }
         return rVal;
+    }
+    
+    public Die getDie(int index) {
+    	return m_rolls.get(index);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
