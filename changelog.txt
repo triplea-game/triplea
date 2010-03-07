@@ -1,3 +1,5 @@
+* fix low luck aa casualty selection when different plane types are present (sgb)
+
 Changes for 1.2.4
 
 * fix bug (2960696) Strategic Bombing Crash in 1.2.3.0 (sgb)

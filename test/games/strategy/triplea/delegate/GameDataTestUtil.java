@@ -76,6 +76,11 @@ public class GameDataTestUtil {
         return t;
     }
 
+    
+    public static UnitType armour(GameData data) {
+        return unitType("armour", data);
+    }
+    
     public static UnitType aaGun(GameData data) {
         return unitType("aaGun", data);
     }

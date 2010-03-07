@@ -1298,9 +1298,7 @@ public class WW2V3_41_Test extends TestCase {
         }
         
         public void testParatroopsWalkOnWater() 
-        {
-        	//paratroops should stop on water
-        	
+        {	
         	PlayerID germans = germans(m_data);
         	Territory france = territory("France", m_data);
 			TechAttachment.get(germans).setParatroopers("true");
@@ -1314,6 +1312,54 @@ public class WW2V3_41_Test extends TestCase {
 					r, germans, Collections.<Unit>emptyList(), false, null, m_data);
 			assertFalse(results.isMoveValid());			
         }
+        
+        public void testBomberWithTankOverWater() 
+        {
+        	
+        	PlayerID germans = germans(m_data);
+        	Territory sz5 = territory("5 Sea Zone", m_data);
+        	Territory germany = territory("Germany", m_data);
+        	Territory karelia = territory("Karelia S.S.R.", m_data);
+        	
+			addTo(germany, armour(m_data).create(1, germans));
+			
+			Route r = new Route(germany, sz5, karelia);
+			
+			Collection<Unit> toMove = germany.getUnits().getMatches(Matches.UnitCanBlitz);
+			toMove.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+			assertEquals(2, toMove.size());
+			
+			MoveValidationResult results = MoveValidator.validateMove(
+					toMove, 
+					r, germans, Collections.<Unit>emptyList(), false, null, m_data);
+			assertFalse(results.isMoveValid());			
+        }
+        
+        public void testBomberOverWater() 
+        {
+        	//can't transport a tank over water using a bomber
+        	
+        	PlayerID germans = germans(m_data);
+        	Territory sz5 = territory("5 Sea Zone", m_data);
+        	Territory germany = territory("Germany", m_data);
+        	Territory karelia = territory("Karelia S.S.R.", m_data);
+        	
+        	addTo(germany, armour(m_data).create(1, germans));
+        	
+			TechAttachment.get(germans).setParatroopers("true");
+			
+			Route r = new Route(germany, sz5, karelia);
+			
+			Collection<Unit> toMove = germany.getUnits().getMatches(Matches.UnitCanBlitz);
+			toMove.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+			assertEquals(2, toMove.size());
+			
+			MoveValidationResult results = MoveValidator.validateMove(
+					toMove, 
+					r, germans, Collections.<Unit>emptyList(), false, null, m_data);
+			assertFalse(results.isMoveValid());			
+        }
+        
         
         public void testMoveParatroopersAsNonPartroops() 
         {
