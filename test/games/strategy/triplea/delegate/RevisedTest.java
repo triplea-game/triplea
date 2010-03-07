@@ -1036,7 +1036,7 @@ public class RevisedTest extends TestCase
 
         ITestDelegateBridge bridge = getDelegateBridge(british);
         bridge.setRemote(getDummyPlayer());
-        //aa guns rolls 0 and hits, second die is the bombing raid cost fir the 
+        //aa guns rolls 0 and hits, second die is the bombing raid cost for the 
         //surviving bomber
         bridge.setRandomSource(new ScriptedRandomSource( new int[] {0, 0,ScriptedRandomSource.ERROR} ));
 

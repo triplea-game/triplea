@@ -28,6 +28,7 @@ import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.ui.display.DummyDisplay;
 
 
@@ -221,5 +222,11 @@ public class GameDataTestUtil {
         throw new IllegalStateException();
         
     }
+    
+    public static void givePlayerRadar(PlayerID player) 
+    { 
+    	TechAttachment.get(player).setAARadar(Boolean.TRUE.toString());
+    }
+    
 }
 
