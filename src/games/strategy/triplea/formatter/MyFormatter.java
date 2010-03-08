@@ -20,9 +20,21 @@
 
 package games.strategy.triplea.formatter;
 
-import java.util.*;
-import games.strategy.engine.data.*;
-import games.strategy.util.*;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.util.IntegerMap;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -173,6 +185,18 @@ public class MyFormatter
         return in + "s";
     }
 
+    public static String asDice(DiceRoll roll)
+    {
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0; i < roll.size(); i++)
+        {
+            buf.append(roll.getDie(i).getValue() + 1);
+            if (i + 1 < roll.size())
+                buf.append(",");
+        }
+        return buf.toString();
+    }
+    
     public static String asDice(int[] rolls)
     {
         StringBuilder buf = new StringBuilder(rolls.length * 2);

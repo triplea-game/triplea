@@ -105,6 +105,10 @@ public class BattleCalculator
     {
     	
     	if(Properties.getLow_Luck(data)) {
+    		if(isChooseAA(data)) {
+    			return chooseAACasualties(planes, dice, bridge, attacker, data,
+						battleID, terr);
+    		}
     		return getLowLuckAACasualties(planes, dice, terr.getUnits().someMatch(Matches.UnitIsRadarAA));
     	} else {
     		//isRollAAIndividually() is the default behavior
@@ -117,15 +121,22 @@ public class BattleCalculator
         	// allow player to select casualties from entire set 
         	if(!rollAAIndividually && isChooseAA(data))
         	{    	
-        		String text = "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
-
-        		CasualtyDetails casualtyMsg =  selectCasualties(attacker, planes, bridge, text, data, dice, false, battleID);
-        		return  casualtyMsg.getKilled();
+        		return chooseAACasualties(planes, dice, bridge, attacker, data,
+						battleID, terr);
         	}
         	    
         	return(IndividuallyFiredAACasualties(planes, dice, bridge, defender));
         }
     }
+
+	private static Collection<Unit> chooseAACasualties(Collection<Unit> planes,
+			DiceRoll dice, IDelegateBridge bridge, PlayerID attacker,
+			GameData data, GUID battleID, Territory terr) {
+		String text = "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
+
+		CasualtyDetails casualtyMsg =  selectCasualties(attacker, planes, bridge, text, data, dice, false, battleID);
+		return  casualtyMsg.getKilled();
+	}
     	
     	
     	

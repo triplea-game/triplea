@@ -214,6 +214,19 @@ public class GameDataTestUtil {
         
     }
     
+    public static void setSelectAACasualties(GameData data, boolean val) 
+    {
+    	for(IEditableProperty property : data.getProperties().getEditableProperties())
+        {
+            if(property.getName().equals(Constants.CHOOSE_AA))
+            {
+                 ((BooleanProperty)  property).setValue(val);
+                 return;
+            }
+        }
+        throw new IllegalStateException();
+    }
+    
     public static void makeGameLowLuck(GameData data)
     {
         for(IEditableProperty property : data.getProperties().getEditableProperties())

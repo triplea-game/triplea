@@ -20,6 +20,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
@@ -57,7 +58,7 @@ public class DiceRoll implements Externalizable
     public static DiceRoll rollAA(Collection<Unit> attackingUnits, IDelegateBridge bridge, Territory location, GameData data)
     {
         int hits = 0;
-        int[] dice = new int[0];
+        
         List<Die> sortedDice = new ArrayList<Die>();
                
         int hitAt = 0;
@@ -74,36 +75,35 @@ public class DiceRoll implements Externalizable
         	
             String annotation = "Roll AA guns in " + location.getName();
             //If RADAR advancement, hit at a 2
-                       
+
+            
+            
             //Categorize and loop for each aircraft type
             //sort the categories, we need order to be consistent when we select casulaties
-            Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(Match.getMatches(attackingUnits, Matches.UnitIsAir), true);
-                        
-            for(UnitCategory uc : categorizedAir)
-            {            
-            	int numberOfAirUnits = uc.getUnits().size();
-            	
-            	hits += (numberOfAirUnits * power) / Constants.MAX_DICE;
-            	
-            	int hitsFractional = (numberOfAirUnits * power) % Constants.MAX_DICE;
+            List<Unit> airUnits = Match.getMatches(attackingUnits, Matches.UnitIsAir);
+            if(Properties.getChoose_AA_Casualties(data)) 
+            {
+            	hits += getLowLuckHits(bridge, sortedDice, power, annotation,
+						airUnits.size());
+            } else 
+            {
+            	Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(airUnits, true);
+                
+                for(UnitCategory uc : categorizedAir)
+                {            
+                	int numberOfAirUnits = uc.getUnits().size();            
+                	hits += getLowLuckHits(bridge, sortedDice, power, annotation,
+    						numberOfAirUnits);
 
-                if (hitsFractional > 0)
-                {
-                	dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
-                    boolean hit = hitsFractional > dice[0];
-                    if(hit) {
-                    	hits++;
-                    }
-                    Die die = new Die(dice[0], hitsFractional, hit ? DieType.HIT : DieType.MISS);
-                    sortedDice.add(die);                    
                 }
+	
             }
         } 
         else // Normal rolling
         {            
             String annotation = "Roll AA guns in " + location.getName();
            
-            dice = bridge.getRandom(Constants.MAX_DICE, Match.countMatches(attackingUnits, Matches.UnitIsAir), annotation);
+            int[] dice = bridge.getRandom(Constants.MAX_DICE, Match.countMatches(attackingUnits, Matches.UnitIsAir), annotation);
             
             for (int i = 0; i < dice.length; i++)
             {
@@ -114,11 +114,31 @@ public class DiceRoll implements Externalizable
             }
         }
 
-        DiceRoll roll = new DiceRoll(sortedDice, hits);
-        String annotation = "AA guns fire in " + location + " : " + MyFormatter.asDice(dice);
+        DiceRoll roll = new DiceRoll(sortedDice, hits);        
+        String annotation = "AA guns fire in " + location + " : " + MyFormatter.asDice(roll);
         bridge.getHistoryWriter().addChildToEvent(annotation, roll);
         return roll;
     }
+
+	private static int getLowLuckHits(IDelegateBridge bridge, 
+			List<Die> sortedDice, int power, String annotation,
+			int numberOfAirUnits) {
+		
+		int hits = (numberOfAirUnits * power) / Constants.MAX_DICE;
+		int hitsFractional = (numberOfAirUnits * power) % Constants.MAX_DICE;
+
+		if (hitsFractional > 0)
+		{			
+			int[] dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
+		    boolean hit = hitsFractional > dice[0];
+		    if(hit) {
+		    	hits++;
+		    }
+		    Die die = new Die(dice[0], hitsFractional, hit ? DieType.HIT : DieType.MISS);
+		    sortedDice.add(die);      
+		}
+		return hits;
+	}
 
     /**
      * Roll dice for units.
@@ -520,6 +540,10 @@ public class DiceRoll implements Externalizable
                 rVal.add(die);
         }
         return rVal;
+    }
+    
+    public int size() {
+    	return m_rolls.size();
     }
     
     public Die getDie(int index) {
