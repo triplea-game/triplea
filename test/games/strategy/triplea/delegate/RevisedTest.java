@@ -40,6 +40,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.CompositeMatchOr;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -1565,6 +1566,57 @@ public class RevisedTest extends TestCase
     	assertEquals(1, roll2.getHits());
     	int finalPUs = germans.getResources().getQuantity("PUs"); 
     	assertEquals(midPUs-5,finalPUs);
+    }
+    
+    public void testTransportsUnloadingToMultipleTerritoriesDie() {
+    	
+    	//two transports enter a battle, but drop off
+    	//their units to two allied territories before
+    	//the begin the battle
+    	//the units they drop off should die with the transports
+    	
+    	PlayerID germans = germans(m_data);
+    	PlayerID british = british(m_data);
+    	Territory sz6 =  territory("6 Sea Zone", m_data);
+    	Territory sz5 =  territory("5 Sea Zone", m_data);
+    	Territory germany = territory("Germany", m_data);
+    	Territory norway = territory("Norway", m_data);
+    	Territory we = territory("Western Europe", m_data);
+    	
+    	addTo(sz6, destroyer(m_data).create(2, british));
+    	addTo(sz5, transports(m_data).create(1, germans));
+    	
+    	ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
+        bridge.setStepName("CombatMove");
+        bridge.setRemote(getDummyPlayer());
+        moveDelegate(m_data).start(bridge, m_data);
+         
+        //load two transports, 1 tank each
+        load(germany.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(germany, sz5));
+        load(germany.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(germany, sz5));
+        
+        //attack sz 6
+        move(sz5.getUnits().getMatches(new CompositeMatchOr<Unit>(Matches.UnitCanBlitz, Matches.UnitIsTransport)), new Route(sz5, sz6));
+        
+        //unload transports, 1 each to a different country
+        move(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, norway));
+        move(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, we));
+        
+        
+        //fight the battle
+        moveDelegate(m_data).end();
+        
+        
+        MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz6, false);
+        
+        //everything hits, this will kill both transports
+        bridge.setRandomSource(new ScriptedRandomSource(0));
+        battle.fight(bridge);
+         
+    	//the armour should have died
+        assertEquals(0, norway.getUnits().countMatches(Matches.UnitCanBlitz));
+        assertEquals(2, we.getUnits().countMatches(Matches.UnitCanBlitz));
+    	
     }
     
     /***********************************************************/

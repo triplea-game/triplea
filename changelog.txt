@@ -1,3 +1,7 @@
+* fix crash where unloading attacking transports to allied nations when a defending transport was present and the allied transport dies in the battle (sgb)
+
+* fix crash with unloading units to multiple allied territories and multiple transports die (sgb)
+
 * fix low luck aa casualty selection when different plane types are present (sgb)
 
 Changes for 1.2.4

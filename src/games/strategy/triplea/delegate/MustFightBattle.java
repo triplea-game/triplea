@@ -2716,19 +2716,21 @@ public class MustFightBattle implements Battle, BattleStepStrings
 	//Remove landed units from allied territory when their transport sinks
     private void removeFromNonCombatLandings(Collection<Unit> units, IDelegateBridge bridge)
     {
-    	units = Match.getMatches(units, Matches.UnitIsTransport);
-    	Collection<Unit> lost = getTransportDependents(units, m_data);
-    	Territory landedTerritory = null;
     	
-    	Iterator<Unit> Iter = units.iterator();
-    	while (Iter.hasNext())
+    	for(Unit transport : Match.getMatches(units, Matches.UnitIsTransport))
     	{
-    		Unit unit = Iter.next();
-    		landedTerritory = getTransportTracker().getTerritoryTransportHasUnloadedTo(unit);
+    		Collection<Unit> lost = getTransportDependents(Collections.singleton(transport), m_data);
+    		if(lost.isEmpty() ) {
+    			continue;
+    		}
+    		Territory landedTerritory = getTransportTracker().getTerritoryTransportHasUnloadedTo(transport);
+    		
+    		if(landedTerritory == null) {
+        		throw new IllegalStateException("not unloaded?:" + units);
+        	}
+            m_attackingUnits.removeAll(lost);
+            remove(lost, bridge, landedTerritory, false);
     	}
-    	                
-        m_attackingUnits.removeAll(lost);
-        remove(lost, bridge, landedTerritory, false);
     }
     
     private void clearWaitingToDie(IDelegateBridge bridge)
