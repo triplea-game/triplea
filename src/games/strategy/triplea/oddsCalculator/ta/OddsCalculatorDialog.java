@@ -69,9 +69,17 @@ public class OddsCalculatorDialog extends JDialog
         
         m_panel = new OddsCalculatorPanel(data, context, location, this);
         getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(m_panel, BorderLayout.CENTER);
-        pack();
+        getContentPane().add(m_panel, BorderLayout.CENTER);       
+        pack();        
     }
+
+	@Override
+	public void show() {		
+		super.show();		
+		m_panel.selectCalcaulteButton();
+	}
+    
+    
     
     
 }

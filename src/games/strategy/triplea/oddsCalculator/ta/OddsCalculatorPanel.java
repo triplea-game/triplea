@@ -537,6 +537,11 @@ public class OddsCalculatorPanel extends JPanel
         }
         
     }
+
+	public void selectCalcaulteButton() {
+		m_calculateButton.requestFocus();
+		
+	}
     
 }
 
