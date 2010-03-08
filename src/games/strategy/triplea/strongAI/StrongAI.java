@@ -5724,6 +5724,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		Territory xTerr = null;
 		HashMap<Territory, Float> enemyMap = new HashMap<Territory, Float>();
 		Territory maxAttackTerr = SUtils.landAttackMap(data, player, enemyMap);
+		if(maxAttackTerr == null) {
+			return;
+		}
 		SUtils.reorder(enemyOwned, enemyMap, true);
 		numTerr = enemyMap.size();
 		float aggregateStrength = 0.0F;

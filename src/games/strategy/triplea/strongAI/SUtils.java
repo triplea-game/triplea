@@ -142,6 +142,9 @@ public class SUtils
 			}
 		}
 		SUtils.reorder(enemyTerrs, enemyMap, true);
+		if(enemyTerrs.isEmpty()) {
+			return null;
+		}
 		largestTerr = enemyTerrs.get(0);
 		return largestTerr;
 	}

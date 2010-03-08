@@ -1,3 +1,5 @@
+* fix bug 2964947, minimap AI error (sgb)
+
 * allow choosing aa casualty option to work with low luck (sgb)
 
 * fix crash where unloading attacking transports to allied nations when a defending transport was present and the allied transport dies in the battle (sgb)
