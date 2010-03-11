@@ -1,3 +1,5 @@
+* updated german, italian and neutral flags (Veqryn)
+
 * better packaged windows icon file (Veqryn)
 
 * fix bug 2964947, minimap AI error (sgb)
