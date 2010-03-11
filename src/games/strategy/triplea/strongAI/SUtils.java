@@ -3243,8 +3243,8 @@ public class SUtils
 		}
 		IntegerMap<UnitType> newAttacker = removeUnits(attacker, true, deadA, aPlayer, sea);
 		IntegerMap<UnitType> newDefender = removeUnits(defender, false, deadD, dPlayer, sea);
-		if (newAttacker.totalValues() > 0 && newDefender.totalValues() > 0)
-			quickBattleEstimator(newAttacker, newDefender, aPlayer, dPlayer, sea, subRestricted);
+//		if (newAttacker.totalValues() > 0 && newDefender.totalValues() > 0)
+//			quickBattleEstimator(newAttacker, newDefender, aPlayer, dPlayer, sea, subRestricted);
 		for (UnitType nA : attackingUnits)
 			attacker.put(nA, newAttacker.getInt(nA));
 		for (UnitType nD : defendingUnits)
