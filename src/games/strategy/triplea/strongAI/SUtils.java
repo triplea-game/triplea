@@ -3178,6 +3178,18 @@ public class SUtils
 	 */
 	public static boolean quickBattleEstimator(IntegerMap<UnitType> attacker, IntegerMap<UnitType> defender, PlayerID aPlayer, PlayerID dPlayer, boolean sea, boolean subRestricted)
 	{
+		try
+		{
+			return quickBattleEstimatorInternal(attacker, defender, aPlayer, dPlayer, sea, subRestricted);
+		} catch(StackOverflowError e) {
+			//bug 2968146 NWO 1.7.7 on Hard AI
+			e.printStackTrace(System.out);
+			return false;
+		}
+	}
+	
+	private static boolean quickBattleEstimatorInternal(IntegerMap<UnitType> attacker, IntegerMap<UnitType> defender, PlayerID aPlayer, PlayerID dPlayer, boolean sea, boolean subRestricted)
+	{
 		int totAttack = 0, totDefend = 0, deadA = 0, deadD = 0, deadModA = 0, deadModD = 0, countInf = 0, countArt = 0, planeAttack = 0, subDefend = 0;
 		boolean planesOnly = true;
 		boolean destroyerPresent = false;
@@ -3243,8 +3255,11 @@ public class SUtils
 		}
 		IntegerMap<UnitType> newAttacker = removeUnits(attacker, true, deadA, aPlayer, sea);
 		IntegerMap<UnitType> newDefender = removeUnits(defender, false, deadD, dPlayer, sea);
-//		if (newAttacker.totalValues() > 0 && newDefender.totalValues() > 0)
-//			quickBattleEstimator(newAttacker, newDefender, aPlayer, dPlayer, sea, subRestricted);
+		
+		if (newAttacker.totalValues() > 0 && newDefender.totalValues() > 0)
+			quickBattleEstimatorInternal(newAttacker, newDefender, aPlayer, dPlayer, sea, subRestricted);
+		
+		
 		for (UnitType nA : attackingUnits)
 			attacker.put(nA, newAttacker.getInt(nA));
 		for (UnitType nD : defendingUnits)
