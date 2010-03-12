@@ -1313,13 +1313,15 @@ public class MovePanel extends ActionPanel
         /**
          * Allow the user to select what transports to load.
          * 
-         * If null is returned, the move should be cancelled.
+         * If null is returned, the move should be canceled.
          */
 
         public Collection<Unit> getLoadedBombers(final Route route, final Collection<Unit> unitsToLoad, PlayerID player)
         {
         	CompositeMatch<Unit> candidateBombersMatch = new CompositeMatchAnd<Unit>();
             candidateBombersMatch.add(Matches.UnitIsStrategicBomber);
+            //TODO Replace the previous line with
+            //TODO candidateBombersMatch.add(Matches.UnitIsAirTransport);
             candidateBombersMatch.add(Matches.unitIsOwnedBy(player));
             candidateBombersMatch.add(Matches.unitHasNotMoved);
                         
@@ -1327,21 +1329,23 @@ public class MovePanel extends ActionPanel
             final List<Unit> candidateBombers = Match.getMatches(route.getStart().getUnits().getUnits(), candidateBombersMatch);
            
             //Get the minimum transport cost of a candidate paratrooper
-            int minTransportCost = 5;
+            int minTransportCost = Integer.MAX_VALUE;
             for(Unit unit : unitsToLoad)
             {
                 minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
             }
 
+            Collection<Unit> bombersToLoad = new ArrayList<Unit>();
             for(Unit bomber : candidateBombers)
             {
                 int capacity = getTransportTracker().getAvailableCapacity(bomber);
-                if (capacity < minTransportCost)
-                	candidateBombers.remove(bomber);
-                //If there are no more bombers- just return the empty set
-                if(candidateBombers.isEmpty())
-                    return candidateBombers;
+                if (capacity >= minTransportCost)
+                	bombersToLoad.add(bomber);
             }
+            
+            //If no airTransports can be loaded, return the empty set
+            if(bombersToLoad.isEmpty())
+            	return bombersToLoad;
             
             //Generate map of capacity
             IntegerMap<Unit> availableCapacityMap = new IntegerMap<Unit>();

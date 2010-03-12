@@ -1,3 +1,12 @@
+Changes for 1.2.5
+* Re-added Japanese_fade.png flag file for use as kamikaze markers in Pacific (ComradeKev)
+
+* Fix bug (2965453) occupiedTerritoryOf doesn't work with Convoy Centers (ComradeKev)
+
+* Add new isTransportAndNotDestroyer match so DDs that can transport don't fall into normal transport rules (ComradeKev)
+
+* Fix bug(2961038) Can transport armor or more than transportCapacity on bomber with paratroops (ComradeKev)
+
 * fix bug stack overflow in NWO 1.7.7 on Hard AI (sgb)
 
 * updated german, italian and neutral flags (Veqryn)

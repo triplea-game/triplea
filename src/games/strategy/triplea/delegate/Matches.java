@@ -207,7 +207,15 @@ public class Matches
 
     public static final Match<Unit> UnitIsNotTransport = UnitIsTransport.invert();
 
-
+    public static final Match<Unit> UnitIsTransportAndNotDestroyer = new Match<Unit>()
+    {
+        public boolean match(Unit unit)
+        {
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            return ( !Matches.UnitIsDestroyer.match(unit) && ua.getTransportCapacity() != -1 && ua.isSea());
+        }
+    };
+    
     public static final Match<Unit> UnitIsStrategicBomber = new Match<Unit>()
     {
         public boolean match(Unit obj)

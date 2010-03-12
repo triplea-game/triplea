@@ -400,7 +400,8 @@ public class BattleTracker implements java.io.Serializable
 
             //If transports are restricted from controlling sea zones, subtract them
             if(!games.strategy.triplea.Properties.getTransportControlSeaZone(data))
-            	totalMatches -= Match.countMatches(arrivingUnits, Matches.UnitIsTransport);
+            	totalMatches -= Match.countMatches(arrivingUnits, Matches.UnitIsTransportAndNotDestroyer);
+            //TODO check if istrn and NOT isDD
             
             //If subs are restricted from controlling sea zones, subtract them
             if(games.strategy.triplea.Properties.getSubControlSeaZoneRestricted(data))

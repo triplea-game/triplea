@@ -574,46 +574,48 @@ class ProductionStat extends AbstractStat
             Territory place = (Territory) iter.next();
             OriginalOwnerTracker origOwnerTracker = new OriginalOwnerTracker();
             TerritoryAttachment ta = TerritoryAttachment.get(place);
-          
+
             /* Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone*/
             if(ta != null)
             {	
                 //if it's water, it is a Convoy Center
                 if (place.isWater())
-                    {
-                		//Can't get PUs for capturing a CC, only original owner can get them.
-                    	if (origOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID && origOwnerTracker.getOriginalOwner(place) == player)
-                    		isOwnedConvoyOrLand = true;
-                    	
-                    	if(origOwnerTracker.getOriginalOwner(place) == null)
-                    		isOwnedConvoyOrLand = true;
-                    }
-                    else
-                    {
-                        //if it's a convoy route
-                        if (TerritoryAttachment.get(place).isConvoyRoute())
-                        {
-                            //Determine if both parts of the convoy route are owned by the attacker or allies
-                            boolean ownedConvoyRoute =  data.getMap().getNeighbors(place, Matches.territoryHasConvoyOwnedBy(player, data, place)).size() > 0;
-                            if(ownedConvoyRoute)
-                                isOwnedConvoyOrLand = true;                        
-                        }
-                        //it's a regular land territory
-                        else
-                        {
-                            isOwnedConvoyOrLand = true;
-                        }
-                        
-             //       }                    
+                {
+                	//Preset th eoriginal owner
+                	PlayerID origOwner = ta.getOccupiedTerrOf();
+                	if(origOwner == null)
+                		origOwner = origOwnerTracker.getOriginalOwner(place);
+                	
+                	//Can't get PUs for capturing a CC, only original owner can get them.
+                	if (origOwner != PlayerID.NULL_PLAYERID && origOwner == player)
+                		isOwnedConvoyOrLand = true;
+
+                	if(origOwner == null)
+                		isOwnedConvoyOrLand = true;
                 }
-                
+                else
+                {
+                	//if it's a convoy route
+                	if (TerritoryAttachment.get(place).isConvoyRoute())
+                	{
+                		//Determine if both parts of the convoy route are owned by the attacker or allies
+                		boolean ownedConvoyRoute =  data.getMap().getNeighbors(place, Matches.territoryHasConvoyOwnedBy(player, data, place)).size() > 0;
+                		if(ownedConvoyRoute)
+                			isOwnedConvoyOrLand = true;                        
+                	}
+                	//it's a regular land territory
+                	else
+                	{
+                		isOwnedConvoyOrLand = true;
+                	}       
+                }
+
                 /*add 'em all up*/
                 if(place.getOwner().equals(player) && isOwnedConvoyOrLand)
                 {
-                    rVal += ta.getProduction();
+                	rVal += ta.getProduction();
                 }
-            }
-            
+            }            
         }
         return rVal;
     }
