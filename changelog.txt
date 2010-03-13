@@ -1,4 +1,5 @@
 Changes for 1.2.5
+
 * Re-added Japanese_fade.png flag file for use as kamikaze markers in Pacific (ComradeKev)
 
 * Fix bug (2965453) occupiedTerritoryOf doesn't work with Convoy Centers (ComradeKev)
