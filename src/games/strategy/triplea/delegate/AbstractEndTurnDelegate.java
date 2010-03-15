@@ -92,7 +92,7 @@ public abstract class AbstractEndTurnDelegate
         m_hasPostedTurnSummary = false;
         PlayerID player = aBridge.getPlayerID();
 
-        //cant collect unless you own your own capital
+        //can't collect unless you own your own capital
         Territory capital = TerritoryAttachment.getCapital(player, m_data);
         if(!capital.getOwner().equals(player))
             return;
@@ -227,9 +227,34 @@ public abstract class AbstractEndTurnDelegate
 
             if(attatchment == null)
                 throw new IllegalStateException("No attachment for owned territory:" + current.getName());
-            // Check if territory is convoy	
-            if(current.isWater() && DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(current).equals(current.getOwner()) || !current.isWater())
-                value += attatchment.getProduction();
+            
+            // Check if territory is originally owned convoy center
+            if(current.isWater())
+            {
+            	//Preset the original owner
+            	PlayerID origOwner = attatchment.getOccupiedTerrOf();
+            	if(origOwner == null)
+            		origOwner = DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(current);
+            	
+            	if(origOwner != PlayerID.NULL_PLAYERID && origOwner == current.getOwner())
+            		value += attatchment.getProduction();
+            }
+            else
+            {
+            	//if it's a convoy route            
+            	if (TerritoryAttachment.get(current).isConvoyRoute())
+            	{
+            		//Determine if both parts of the convoy route are owned by the attacker or allies
+            		boolean ownedConvoyRoute =  m_data.getMap().getNeighbors(current, Matches.territoryHasConvoyOwnedBy(current.getOwner(), m_data, current)).size() > 0;
+            		if(ownedConvoyRoute)
+            			value += attatchment.getProduction();   
+            		
+            	}
+            	else  //just add the normal land territories
+            	{
+            		value += attatchment.getProduction();
+            	}
+            }
         }
         return value;
     }

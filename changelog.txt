@@ -1,3 +1,6 @@
+Changes for 1.2.6
+* Re-fix bug (2965453) convoy centers/routes with original owners (ComradeKev)
+
 Changes for 1.2.5
 
 * Re-added Japanese_fade.png flag file for use as kamikaze markers in Pacific (ComradeKev)

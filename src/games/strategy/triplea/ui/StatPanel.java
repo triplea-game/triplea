@@ -581,7 +581,7 @@ class ProductionStat extends AbstractStat
                 //if it's water, it is a Convoy Center
                 if (place.isWater())
                 {
-                	//Preset th eoriginal owner
+                	//Preset the original owner
                 	PlayerID origOwner = ta.getOccupiedTerrOf();
                 	if(origOwner == null)
                 		origOwner = origOwnerTracker.getOriginalOwner(place);
