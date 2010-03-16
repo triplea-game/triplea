@@ -1,4 +1,6 @@
 Changes for 1.2.6
+* partial fix for bug (2971193) to-hit of 6 causes dump- need to revisit when moving to Dx (ComradeKev)
+
 * Re-fix bug (2965453) convoy centers/routes with original owners (ComradeKev)
 
 Changes for 1.2.5

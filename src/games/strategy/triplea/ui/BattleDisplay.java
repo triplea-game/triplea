@@ -25,6 +25,7 @@ import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -945,9 +946,10 @@ class BattleModel extends DefaultTableModel
     
     BattleModel(GameData data, Collection<Unit> units, boolean attack, UIContext uiContext)
     {
-
+//TODO find a way to softcode the array initialization kev
         super(new Object[0][0], new String[]
-        { " ", "1", "2", "3", "4", "5" });
+        { " ", "1", "2", "3", "4", "5", "6", "7" });
+                                            
         m_uiContext = uiContext;
         m_data = data;
         m_attack = attack;
@@ -974,8 +976,9 @@ class BattleModel extends DefaultTableModel
     @SuppressWarnings("unchecked")
     public void refresh()
     {
-
-        List[] columns = new List[6];
+    	//TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
+    	//Soft code the # of columns
+        List[] columns = new List[Constants.MAX_DICE +2];
         for (int i = 0; i < columns.length; i++)
         {
             columns[i] = new ArrayList();
@@ -1018,7 +1021,7 @@ class BattleModel extends DefaultTableModel
 
             int unitsToAdd = category.getUnits().size();
             int supportedUnitsToAdd = 0;
-            
+
             //Note it's statistically irrelevant whether we support the Infantry or Marines
             //factor in artillery support
             if (attachment.isArtillerySupportable() && m_attack)
@@ -1042,7 +1045,7 @@ class BattleModel extends DefaultTableModel
         }
 
         setNumRows(rowCount);
-
+//kev
         for (int row = 0; row < rowCount; row++)
         {
             for (int column = 0; column < columns.length; column++)
