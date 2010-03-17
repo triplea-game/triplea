@@ -943,12 +943,24 @@ class BattleModel extends DefaultTableModel
     private boolean m_attack;
     private Collection<Unit> m_units;
 
+    private static String[] VarArray()
+    {
+    	//TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
+    	String[] a = new String[Constants.MAX_DICE+2];{
+    		for (Integer i = 0; i < a.length ; i++)
+    		{
+    			if(i==0)
+    				a[i] = " ";
+    			else
+    				a[i] = i.toString();
+    		}
+    	}
+    	return a;
+    }
     
     BattleModel(GameData data, Collection<Unit> units, boolean attack, UIContext uiContext)
     {
-//TODO find a way to softcode the array initialization kev
-        super(new Object[0][0], new String[]
-        { " ", "1", "2", "3", "4", "5", "6", "7" });
+    	super(new Object[0][0],  VarArray());
                                             
         m_uiContext = uiContext;
         m_data = data;
