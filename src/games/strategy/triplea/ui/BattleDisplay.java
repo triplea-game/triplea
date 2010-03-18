@@ -943,24 +943,24 @@ class BattleModel extends DefaultTableModel
     private boolean m_attack;
     private Collection<Unit> m_units;
 
-    private static String[] VarArray()
+    private static String[] VarDiceArray()
     {
     	//TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
-    	String[] a = new String[Constants.MAX_DICE+2];{
-    		for (Integer i = 0; i < a.length ; i++)
+    	String[] diceColumns = new String[Constants.MAX_DICE+1];{
+    		for (Integer i = 0; i < diceColumns.length ; i++)
     		{
     			if(i==0)
-    				a[i] = " ";
+    				diceColumns[i] = " ";
     			else
-    				a[i] = i.toString();
+    				diceColumns[i] = i.toString();
     		}
     	}
-    	return a;
+    	return diceColumns;
     }
     
     BattleModel(GameData data, Collection<Unit> units, boolean attack, UIContext uiContext)
     {
-    	super(new Object[0][0],  VarArray());
+    	super(new Object[0][0],  VarDiceArray());
                                             
         m_uiContext = uiContext;
         m_data = data;
@@ -990,7 +990,7 @@ class BattleModel extends DefaultTableModel
     {
     	//TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
     	//Soft code the # of columns
-        List[] columns = new List[Constants.MAX_DICE +2];
+        List[] columns = new List[Constants.MAX_DICE +1];
         for (int i = 0; i < columns.length; i++)
         {
             columns[i] = new ArrayList();
@@ -1045,7 +1045,14 @@ class BattleModel extends DefaultTableModel
             if (unitsToAdd > 0)
                 columns[strength].add(new TableData(category.getOwner(), unitsToAdd, category.getType(), m_data, category.getDamaged(), m_uiContext));
             if (supportedUnitsToAdd > 0)
-                columns[strength + 1].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged(), m_uiContext));
+            	if(strength >= Constants.MAX_DICE)
+            	{
+            		columns[strength].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged(), m_uiContext));
+            	}
+            	else
+            	{
+            		columns[strength + 1].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged(), m_uiContext));
+            	}
         } //while
 
         //find the number of rows
@@ -1057,13 +1064,12 @@ class BattleModel extends DefaultTableModel
         }
 
         setNumRows(rowCount);
-//kev
+
         for (int row = 0; row < rowCount; row++)
         {
             for (int column = 0; column < columns.length; column++)
             {
-                //if the column has that many items, add to the table, else add
-                // null
+                //if the column has that many items, add to the table, else add null
                 if (columns[column].size() > row)
                 {
                     setValueAt(columns[column].get(row), row, column);

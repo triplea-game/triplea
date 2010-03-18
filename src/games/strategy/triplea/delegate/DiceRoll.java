@@ -350,11 +350,11 @@ public class DiceRoll implements Externalizable
                     else
                     {
                         strength = ua.getAttack(current.getOwner());
-                        if (ua.isArtillerySupportable() && artillerySupportAvailable > 0)
+                        if (ua.isArtillerySupportable() && artillerySupportAvailable > 0 && strength < Constants.MAX_DICE)
                         {
                             strength++;
                             artillerySupportAvailable--;
-                        }
+                        } 
                         if (ua.getIsMarine() && battle.isAmphibious())
                         {
                             Collection<Unit> landUnits = battle.getAmphibiousLandAttackers();
