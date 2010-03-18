@@ -1,4 +1,7 @@
 Changes for 1.2.6
+
+* fix bug 2971204 moore AI out of bounds exception when no transport rules (sgb)
+
 * partial fix for bug (2971193) to-hit of 6 causes dump- need to revisit when moving to Dx (ComradeKev)
 
 * Re-fix bug (2965453) convoy centers/routes with original owners (ComradeKev)

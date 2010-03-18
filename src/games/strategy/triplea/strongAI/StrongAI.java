@@ -7723,7 +7723,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		if (isAmphib)
 		{
 			PUSea = leftToSpend; //go ahead and make them available TODO: make sure that it is worth buying a transport
-        	if (currentRound <= 8)
+        	if (currentRound <= 8 && ! transportProductionRules.isEmpty())
         	{
         		ProductionRule transRule = transportProductionRules.get(0);
         		int cost = transRule.getCosts().getInt(pus);
