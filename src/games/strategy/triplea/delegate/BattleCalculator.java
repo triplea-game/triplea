@@ -146,7 +146,7 @@ public class BattleCalculator
     	Collection<Unit> hitUnits = new ArrayList<Unit>();
         //Categorize and loop for each aircraft type
         //sort the categories, we do this in DiceRoll as well so that the order is consistent
-        Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(Match.getMatches(planes, Matches.UnitIsAir), true);
+    	Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(Match.getMatches(planes, Matches.UnitIsAir), null, false, true);
                     
         int power = useRadar ? 2 : 1;
         

@@ -77,9 +77,6 @@ public class DiceRoll implements Externalizable
             //If RADAR advancement, hit at a 2
 
             
-            
-            //Categorize and loop for each aircraft type
-            //sort the categories, we need order to be consistent when we select casulaties
             List<Unit> airUnits = Match.getMatches(attackingUnits, Matches.UnitIsAir);
             if(Properties.getChoose_AA_Casualties(data)) 
             {
@@ -87,7 +84,9 @@ public class DiceRoll implements Externalizable
 						airUnits.size());
             } else 
             {
-            	Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(airUnits, true);
+            	//Categorize and loop for each aircraft type
+                //sort the categories, we need order to be consistent when we select casulaties
+            	Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(airUnits, null, false, true);
                 
                 for(UnitCategory uc : categorizedAir)
                 {            

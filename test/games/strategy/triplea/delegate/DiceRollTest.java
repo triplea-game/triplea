@@ -12,11 +12,11 @@ import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.xml.LoadGameUtil;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -333,6 +333,30 @@ public class DiceRollTest extends TestCase
         assertEquals(hitNoRoll.getHits(),1 );
         
         
+    }
+    
+    
+    
+    public void testAALowLuckDifferentMovement()
+    {        
+        makeGameLowLuck();
+        Territory westRussia = m_data.getMap().getTerritory("West Russia");
+        
+        PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
+
+        UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
+        List<Unit> fighterList = fighterType.create(6, russians);
+        
+        TripleAUnit.get(fighterList.get(0)).setAlreadyMoved(1);
+        
+        
+        ITestDelegateBridge bridge = getDelegateBridge(russians);
+       
+        //aa hits at 0 (0 based)
+        bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
+        
+        DiceRoll hit = DiceRoll.rollAA(fighterList, bridge, westRussia, m_data);
+        assertEquals(hit.getHits(), 1);
     }
     
     public void testAALowLuckWithRadar()

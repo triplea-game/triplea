@@ -7,6 +7,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.net.GUID;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
@@ -41,6 +42,20 @@ public class BattleCalculatorTest extends TestCase
 		assertEquals(casualties.size(), 1);
 	}
 
+	public void testAACasualtiesLowLuckDifferentMovementLetf() 
+	{
+		makeGameLowLuck(m_data);
+		setSelectAACasualties(m_data, false);
+		
+		DiceRoll roll = new DiceRoll(new int[] {0}, 1, 1, false);
+		List<Unit> planes = bomber(m_data).create(5, british(m_data));
+		
+		
+		TripleAUnit.get(planes.get(0)).setAlreadyMoved(1);
+		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, null, null, null, m_data, null, territory("Germany",m_data));
+		assertEquals(casualties.size(), 1);
+	}
+	
 	public void testAACasualtiesLowLuckMixed() 
 	{
 		makeGameLowLuck(m_data);

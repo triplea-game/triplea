@@ -45,11 +45,6 @@ public class UnitSeperator
         return categorize(units, null, false);
     }
 
-    public static Set<UnitCategory> categorize(Collection<Unit> units, boolean sort)
-    {
-        return categorize(units, null, sort);
-    }
-
     public static Set<UnitCategory> categorize(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean sort)
     {
         return categorize(units, dependent, categorizeMovement, /*ctgzTrnMovement*/ false, sort);
