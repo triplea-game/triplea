@@ -807,7 +807,13 @@ public class MovePanel extends ActionPanel
         List<Unit> bestWithDependents = addMustMoveWith(best);
         
         
-        MoveValidationResult allResults = MoveValidator.validateMove( bestWithDependents, route, getCurrentPlayer(), transportsToLoad, m_nonCombat, m_undoableMoves, getData());
+        MoveValidationResult allResults;
+        getData().acquireReadLock();
+		try {
+			allResults = MoveValidator.validateMove( bestWithDependents, route, getCurrentPlayer(), transportsToLoad, m_nonCombat, m_undoableMoves, getData());
+		} finally {
+			getData().releaseReadLock();
+		}
         MoveValidationResult lastResults = allResults;
         
         if(!allResults.isMoveValid()) {
