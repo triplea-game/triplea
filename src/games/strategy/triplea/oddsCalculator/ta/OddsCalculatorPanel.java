@@ -190,11 +190,19 @@ public class OddsCalculatorPanel extends JPanel
             
             public void actionPerformed(ActionEvent e)
             {
-                if(m_data.getAllianceTracker().isAllied(getDefender(), getAttacker()))
-                {
-                    m_defenderCombo.setSelectedItem(getNonAllied(getAttacker()));
-                }
-                updateAttacker(null);
+            	m_data.acquireReadLock();
+            	try
+            	{
+	                if(m_data.getAllianceTracker().isAllied(getDefender(), getAttacker()))
+	                {
+	                    m_defenderCombo.setSelectedItem(getNonAllied(getAttacker()));
+	                }
+            	} finally {
+            		m_data.releaseReadLock();            	
+            	}
+            	
+	                
+	            updateAttacker(null);
                 
             }
             

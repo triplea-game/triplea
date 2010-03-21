@@ -1,5 +1,7 @@
 Changes for 1.2.5.1
 
+* fix bug 2973990 repair rules bug plus new lock not held bug (sgb)
+
 * fix bug 2969991 lock not held bug, 1.2.5.0 (sgb)
 
 * fix bug 2970332 low luck aa casualties don't work when movement varies (sgb)

@@ -157,7 +157,7 @@ public class ProductionRepairPanel extends JPanel
                     	Rule rule = new Rule(repairRule, player, m_uiContext, terr);
                         //int initialQuantity = initialPurchase.getInt(repairRule);
                     	int initialQuantity = 0;
-                    	if (!initialPurchase.isEmpty())
+                    	if (initialPurchase.get(terr) != null)
                     	    initialQuantity = initialPurchase.get(terr).getInt(repairRule);
                     	    //initialQuantity = initialPurchase.get(repairRule).getInt(repairRule);
                     	rule.setQuantity(initialQuantity);
