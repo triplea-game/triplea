@@ -1,4 +1,4 @@
-Changes for 1.2.6
+Changes for 1.2.5.1
 
 * fix bug 2969991 lock not held bug, 1.2.5.0 (sgb)
 
