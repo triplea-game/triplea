@@ -1,3 +1,5 @@
+* validate zip file on downlaod (sgb)
+
 Changes for 1.2.5.1
 
 * fix bug 2973990 repair rules bug plus new lock not held bug (sgb)

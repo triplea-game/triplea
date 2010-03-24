@@ -12,6 +12,7 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -21,6 +22,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.swing.AbstractAction;
@@ -214,6 +216,9 @@ public class InstallMapDialog extends JDialog {
 		FileOutputStream sink = null;
 		try {
 			
+			
+			validateZip(download);
+			
 			sink = new FileOutputStream(tempFile);
 			sink.write(download.getContents());
 			sink.getFD().sync();
@@ -282,6 +287,22 @@ public class InstallMapDialog extends JDialog {
 		
 		EventThreadJOptionPane.showMessageDialog(getRootPane(), "Map successfully installed");
 		setVisible(false);
+	}
+
+	private void validateZip(DownloadRunnable download) throws IOException {
+		//try to unzip it to make sure it is valid
+		try
+		{
+			ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(download.getContents()));
+			ZipEntry ze;
+			while((ze = zis.getNextEntry()) != null) {
+				//make sure we can read something from each stream
+				ze.getSize();
+				zis.read(new byte[512]);
+			}
+		} catch(Exception e) {
+			throw new IOException("zip file could not be opened, it may have been corrupted during the download, please try again");
+		}
 	}
 
 	public static void copy(OutputStream sink, InputStream is) throws IOException {
