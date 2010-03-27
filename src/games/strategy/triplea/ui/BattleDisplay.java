@@ -226,7 +226,13 @@ public class BattleDisplay extends JPanel
         
         Map<Unit, Collection<Unit>> dependentsMap;
         
-        dependentsMap= BattleCalculator.getDependents(aKilledUnits, m_data);
+        m_data.acquireReadLock();
+        try {
+        	dependentsMap= BattleCalculator.getDependents(aKilledUnits, m_data);
+        } finally {
+        	m_data.releaseReadLock();
+        }
+        
         Collection<Unit> dependentUnitsReturned = new ArrayList<Unit>();
         
         Iterator<Collection<Unit>> dependentUnitsCollections = dependentsMap.values().iterator();
