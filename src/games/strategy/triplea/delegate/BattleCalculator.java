@@ -37,11 +37,12 @@ import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator; 
+import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.triplea.weakAI.WeakAI;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -109,7 +110,7 @@ public class BattleCalculator
     			return chooseAACasualties(planes, dice, bridge, attacker, data,
 						battleID, terr);
     		}
-    		return getLowLuckAACasualties(planes, dice, terr.getUnits().someMatch(Matches.UnitIsRadarAA));
+    		return getLowLuckAACasualties(planes, dice, terr.getUnits().someMatch(Matches.UnitIsRadarAA), terr, bridge);
     	} else {
     		//isRollAAIndividually() is the default behavior
         	Boolean rollAAIndividually = isRollAAIndividually(data);
@@ -139,40 +140,66 @@ public class BattleCalculator
 	}
     	
     	
+	/**
+	 * http://triplea.sourceforge.net/mywiki/Forum#nabble-td4658925%7Ca4658925
+	 * 
+	 *  returns two lists, the first list is the air units that can be evenly divided into groups of 3 or 6 (depending on radar)
+	 *  the second list is all the air units that do not fit in the first list 
+	 *  
+	 */
+	public static Tuple<List<Unit>, List<Unit>> categorizeLowLuckAirUnits(Collection<Unit> units, Territory location) {
+		
+		List<Unit> airUnits = Match.getMatches(units, Matches.UnitIsAir);
+		Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(airUnits, null, false, true);
+		
+		int groupSize = location.getUnits().someMatch(Matches.UnitIsRadarAA) ? 3 : 6;
+		
+		List<Unit> groupsOfSize = new ArrayList<Unit>();
+		List<Unit> toRoll = new ArrayList<Unit>();
+		
+		for(UnitCategory uc : categorizedAir)
+        {            
+			int remainder = uc.getUnits().size() % groupSize;        	
+        	int splitPosition = uc.getUnits().size() - remainder;
+			groupsOfSize.addAll(uc.getUnits().subList(0, splitPosition));
+        	toRoll.addAll(uc.getUnits().subList(splitPosition, uc.getUnits().size()));
+        }		
+		return new Tuple<List<Unit>, List<Unit>>(groupsOfSize, toRoll);		
+	}
+	
     	
     
-    private static Collection<Unit> getLowLuckAACasualties(Collection<Unit> planes, DiceRoll dice, boolean useRadar) {
+    private static Collection<Unit> getLowLuckAACasualties(Collection<Unit> planes, DiceRoll dice, boolean useRadar, Territory location, IDelegateBridge bridge) {
+    	
+    	Tuple<List<Unit>, List<Unit>> airSplit = categorizeLowLuckAirUnits(planes, location);
+    	int hitsLeft = dice.getHits();    	
     	
     	Collection<Unit> hitUnits = new ArrayList<Unit>();
-        //Categorize and loop for each aircraft type
-        //sort the categories, we do this in DiceRoll as well so that the order is consistent
-    	Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(Match.getMatches(planes, Matches.UnitIsAir), null, false, true);
-                    
-        int power = useRadar ? 2 : 1;
-        
-        int dieIndex = 0;
-        for(UnitCategory uc : categorizedAir)
-        {            
-        	int numberOfAirUnits = uc.getUnits().size();
-        	
-        	int hits = (numberOfAirUnits * power) / Constants.MAX_DICE;
-        	
-        	int hitsFractional = (numberOfAirUnits * power) % Constants.MAX_DICE;
+    	int groupSize = location.getUnits().someMatch(Matches.UnitIsRadarAA) ? 3 : 6;
+    	
+        //the non rolling air units
+    	for(int i = 0; i < airSplit.getFirst().size(); i+=groupSize) {
+    		hitUnits.add(airSplit.getFirst().get(i));
+    		hitsLeft--;
+    	}
 
-            if (hitsFractional > 0)
-            {
-            	Die die = dice.getDie(dieIndex);
-            	dieIndex++;
-               
-                if(die.getType() == DieType.HIT) {
-                	hits++;
-                }
-            }
-            hitUnits.addAll(uc.getUnits().subList(0, hits));
-        }
-        if(hitUnits.size() != dice.getHits()) {
-        	throw new IllegalStateException("wrong number of casulaties, expected:" + dice + " but hit:" + hitUnits);
-        }
+
+    	if(hitsLeft == airSplit.getSecond().size()) {
+    		hitUnits.addAll(airSplit.getSecond());
+    	} else {
+    		//the remainder
+        	//roll all at once to prevent frequent random calls, important for pbem games
+			int[] hitRandom = bridge.getRandom(airSplit.getSecond().size(), hitsLeft, "Deciding which planes should die due to AA fire");
+			int pos = 0;
+			for(int i =0; i < hitRandom.length; i++) {
+				pos += hitRandom[i];
+				hitUnits.add( airSplit.getSecond().remove(pos % airSplit.getSecond().size()));			
+			}
+			
+		    if(hitUnits.size() != dice.getHits()) {
+	        	throw new IllegalStateException("wrong number of casulaties, expected:" + dice + " but hit:" + hitUnits);
+	        }
+    	}
         return hitUnits;
     }
 

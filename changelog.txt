@@ -1,3 +1,5 @@
+* low luck air now works according the to the Veqryn rules (sgb)
+
 * validate zip file on downlaod (sgb)
 
 Changes for 1.2.5.1

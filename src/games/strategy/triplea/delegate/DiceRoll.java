@@ -30,6 +30,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -84,17 +85,16 @@ public class DiceRoll implements Externalizable
 						airUnits.size());
             } else 
             {
-            	//Categorize and loop for each aircraft type
-                //sort the categories, we need order to be consistent when we select casulaties
-            	Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(airUnits, null, false, true);
-                
-                for(UnitCategory uc : categorizedAir)
-                {            
-                	int numberOfAirUnits = uc.getUnits().size();            
-                	hits += getLowLuckHits(bridge, sortedDice, power, annotation,
-    						numberOfAirUnits);
+            	Tuple<List<Unit>, List<Unit>> airSplit = BattleCalculator.categorizeLowLuckAirUnits(airUnits, location);
+            	            
+            	//this will not roll any dice, since the first group is 
+            	//a multiple of 3 or 6
+            	hits += getLowLuckHits(bridge, sortedDice, power, annotation,
+						airSplit.getFirst().size());
+            	//this will roll dice, unless it is empty
+            	hits += getLowLuckHits(bridge, sortedDice, power, annotation,
+						airSplit.getSecond().size());
 
-                }
 	
             }
         } 
