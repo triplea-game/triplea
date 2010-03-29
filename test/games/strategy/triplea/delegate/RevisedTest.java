@@ -70,11 +70,6 @@ public class RevisedTest extends TestCase
     {
         m_data = null;
     }
-
-    private ITestDelegateBridge getDelegateBridge(PlayerID player)
-    {
-        return GameDataTestUtil.getDelegateBridge(player);
-    }
     
     public void testMoveBadRoute() 
     {
@@ -1613,9 +1608,47 @@ public class RevisedTest extends TestCase
         bridge.setRandomSource(new ScriptedRandomSource(0));
         battle.fight(bridge);
          
+        
     	//the armour should have died
         assertEquals(0, norway.getUnits().countMatches(Matches.UnitCanBlitz));
         assertEquals(2, we.getUnits().countMatches(Matches.UnitCanBlitz));
+    	
+    }
+    
+    public void testCanalMovePass() 
+    {
+    	
+    	Territory sz15 = territory("15 Sea Zone", m_data);
+    	Territory sz34 = territory("34 Sea Zone", m_data);
+    	
+    	
+    	
+    	ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+        bridge.setStepName("CombatMove");
+    	MoveDelegate moveDelegate = moveDelegate(m_data);
+    	
+		moveDelegate.start(bridge, m_data);
+    	String error = moveDelegate.move(sz15.getUnits().getUnits(), new Route(sz15, sz34));
+    	assertValid(error);
+    	
+    }
+    
+    public void testCanalMovementFail() 
+    {
+    	Territory sz14 = territory("14 Sea Zone", m_data);
+    	Territory sz15 = territory("15 Sea Zone", m_data);
+    	Territory sz34 = territory("34 Sea Zone", m_data);
+    	
+    	//clear the british in sz 15
+    	removeFrom(sz15, sz15.getUnits().getUnits());
+    	
+    	ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
+        bridge.setStepName("CombatMove");
+    	MoveDelegate moveDelegate = moveDelegate(m_data);
+    	
+		moveDelegate.start(bridge, m_data);
+    	String error = moveDelegate.move(sz14.getUnits().getUnits(), new Route(sz14, sz15, sz34));
+    	assertError(error);
     	
     }
     
@@ -1623,18 +1656,7 @@ public class RevisedTest extends TestCase
     /***********************************************************/
     /***********************************************************/
     /***********************************************************/
-    /*
-     * Add assertions here
-     */
-    public void assertValid(String string)
-    {
-        assertNull(string,string);
-    }
-    
-    public void assertError(String string)
-    {
-        assertNotNull(string,string);
-    }
+
     private ITripleaPlayer getDummyPlayer()
     {
         return new DummyTripleAPlayer();

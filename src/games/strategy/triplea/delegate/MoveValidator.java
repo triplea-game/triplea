@@ -1925,7 +1925,6 @@ public class MoveValidator
                     }            
                 }
             }
-            return null;
         }
         return null;
     }

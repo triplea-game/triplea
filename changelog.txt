@@ -1,3 +1,7 @@
+Changes for 1.2.5.2
+
+* fix bug 2977842 Black sea zone movement bug (sgb)
+
 * fixed bug ConcurrentModificationException (sgb)
 
 * low luck air now works according the to the Veqryn rules (sgb)

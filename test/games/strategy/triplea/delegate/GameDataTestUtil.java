@@ -31,10 +31,10 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.ui.display.DummyDisplay;
 
-
 import java.util.Collection;
 import java.util.List;
 
+import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 
 public class GameDataTestUtil {
@@ -244,6 +244,16 @@ public class GameDataTestUtil {
     public static void givePlayerRadar(PlayerID player) 
     { 
     	TechAttachment.get(player).setAARadar(Boolean.TRUE.toString());
+    }
+    
+    public static void assertValid(String string)
+    {
+        Assert.assertNull(string,string);
+    }
+    
+    public static void assertError(String string)
+    {
+        Assert.assertNotNull(string,string);
     }
     
 }
