@@ -1,3 +1,7 @@
+Changes for 1.2.5.3
+
+* fix bug 2979108 Multiplayer LL AA guns Java Error (sgb)
+
 Changes for 1.2.5.2
 
 * fix bug 2977842 Black sea zone movement bug (sgb)
@@ -6,7 +10,7 @@ Changes for 1.2.5.2
 
 * low luck air now works according the to the Veqryn rules (sgb)
 
-* validate zip file on downlaod (sgb)
+* validate zip file on map download (sgb)
 
 Changes for 1.2.5.1
 

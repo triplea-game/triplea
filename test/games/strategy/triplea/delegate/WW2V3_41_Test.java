@@ -1166,9 +1166,8 @@ public class WW2V3_41_Test extends TestCase {
             //start the battle phase
             battleDelegate(m_data).start(bridge,m_data);
             //aa guns rolls 1, hits
-            bridge.setRandomSource(new ScriptedRandomSource( new int[] {0, 6} ));
-            BattleTracker tracker = new BattleTracker();
-            StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(russia, m_data, germans, russians,  tracker );
+            bridge.setRandomSource(new ScriptedRandomSource( new int[] {0, ScriptedRandomSource.ERROR} ));            
+            StrategicBombingRaidBattle battle =  (StrategicBombingRaidBattle) battleDelegate(m_data).getBattleTracker().getPendingBattle(russia, true);
            
             //aa guns rolls 1, hits
             //bridge.setRandomSource(new ScriptedRandomSource( new int[] {0, 6} ));

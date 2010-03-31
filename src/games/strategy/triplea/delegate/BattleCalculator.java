@@ -186,7 +186,7 @@ public class BattleCalculator
 
     	if(hitsLeft == airSplit.getSecond().size()) {
     		hitUnits.addAll(airSplit.getSecond());
-    	} else {
+    	} else if(hitsLeft != 0){
     		//the remainder
         	//roll all at once to prevent frequent random calls, important for pbem games
 			int[] hitRandom = bridge.getRandom(airSplit.getSecond().size(), hitsLeft, "Deciding which planes should die due to AA fire");
@@ -194,12 +194,12 @@ public class BattleCalculator
 			for(int i =0; i < hitRandom.length; i++) {
 				pos += hitRandom[i];
 				hitUnits.add( airSplit.getSecond().remove(pos % airSplit.getSecond().size()));			
-			}
-			
-		    if(hitUnits.size() != dice.getHits()) {
-	        	throw new IllegalStateException("wrong number of casulaties, expected:" + dice + " but hit:" + hitUnits);
-	        }
+			}			
     	}
+    	
+		if(hitUnits.size() != dice.getHits()) {
+        	throw new IllegalStateException("wrong number of casulaties, expected:" + dice + " but hit:" + hitUnits);
+        }
         return hitUnits;
     }
 

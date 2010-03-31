@@ -54,6 +54,12 @@ public class PlainRandomSource implements IRandomSource
 
   public synchronized int[] getRandom(int max, int count, String annotation)
   {
+  	if(count <= 0) 
+  	{
+		throw new IllegalStateException("count must be > o, annotation:" + annotation);
+	}
+
+	  
     int[] numbers = new int[count];
     for (int i = 0; i < count; i++)
     {
