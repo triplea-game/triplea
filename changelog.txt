@@ -1,3 +1,5 @@
+* fix bug 2981512 game hangs during purchase units phase with mooreAI (sgb)
+
 Changes for 1.2.5.3
 
 * fix bug 2979108 Multiplayer LL AA guns Java Error (sgb)

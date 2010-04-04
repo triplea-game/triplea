@@ -43,6 +43,8 @@ import java.util.logging.Logger;
 
 public class SUtils
 {
+	
+	private final static int PURCHASE_LOOP_MAX_TIME_MILLIS = 10 * 1000;
     private final static Logger s_logger = Logger.getLogger(StrongAI.class.getName());
 
 	/**
@@ -3713,11 +3715,13 @@ public class SUtils
 	 * @param bestTransport - list of the rules and the number to be purchased (optimized for transport)
 	 * @return - integer which is 1 if bestAttack has changed, 2 if bestDefense has changed, 3 if both have changed
 	 */
+	
 	public static int purchaseLoop(IntegerMap<String> parameters, int ruleNum, IntegerMap<ProductionRule> bestAttack, IntegerMap<ProductionRule> bestDefense, IntegerMap<ProductionRule> bestTransport,
 								   IntegerMap<ProductionRule> bestMaxUnits, IntegerMap<ProductionRule> bestMobileAttack, HashMap<ProductionRule, Boolean> transportMap, 
 								   HashMap<ProductionRule, Boolean> infMap, HashMap<ProductionRule, Boolean> nonInfMap, HashMap<ProductionRule, Boolean> supportableInfMap, 
 								   GameData data, PlayerID player, int fighters)
 	{
+		long start = System.currentTimeMillis();
 		/*
 		 * It is expected that this is called with a subset of possible units (i.e. just land Units or just Air Units)
 		 * Routine has the potential to be very costly if the number of rules is high
@@ -3829,6 +3833,9 @@ public class SUtils
 				maxUnitAttack = parameters.getInt("maxUnitAttack");
 				maxMobileAttack = parameters.getInt("maxMobileAttack");
 				maxMovement = parameters.getInt("maxMovement");
+				if(System.currentTimeMillis() - start > PURCHASE_LOOP_MAX_TIME_MILLIS) {
+					break;
+				}
 			}
 			if (totCost == 0)
 				continue;
