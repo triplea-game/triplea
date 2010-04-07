@@ -22,7 +22,6 @@ package games.strategy.engine.gamePlayer;
 
 import java.lang.reflect.*;
 import java.util.Properties;
-
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
@@ -53,7 +52,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
     }
     
     /**
-     * Get the name of the current step being exectured.
+     * Get the name of the current step being executed.
      */
     public String getStepName()
     {

@@ -617,8 +617,8 @@ public class BattleTracker implements java.io.Serializable
         if (route.getEnd() != null && Match.allMatch(enemyUnits, Matches.UnitIsAAOrFactory))
             return ChangeFactory.EMPTY_CHANGE;
 
-        Battle battle = getPendingBattle(site, false);
         //If there are no pending battles- add one for units already in the combat zone
+        Battle battle = getPendingBattle(site, false);
         if (battle == null)
         {
         	battle = new MustFightBattle(site, id, data, this);
