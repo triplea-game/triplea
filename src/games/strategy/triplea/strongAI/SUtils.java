@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 public class SUtils
 {
 	
-	private final static int PURCHASE_LOOP_MAX_TIME_MILLIS = 10 * 1000;
+	private final static int PURCHASE_LOOP_MAX_TIME_MILLIS = 15 * 1000;
     private final static Logger s_logger = Logger.getLogger(StrongAI.class.getName());
 
 	/**
