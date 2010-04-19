@@ -23,6 +23,7 @@ package games.strategy.engine.delegate;
 import java.util.Properties;
 
 import games.strategy.engine.data.*;
+import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.*;
 
@@ -31,10 +32,10 @@ import games.strategy.engine.message.*;
  * 
  * 
  * A class that communicates with the Delegate. DelegateBridge co-ordinates
- * communication between the Delegate and both the players and the game data.
+ * comunication between the Delegate and both the players and the game data.
  * 
  * The reason for communicating through a DelegateBridge is to achieve network
- * transparency.
+ * transparancy.
  * 
  * The delegateBridge allows the Delegate to talk to the player in a safe
  * manner.
@@ -107,7 +108,7 @@ public interface IDelegateBridge
     
     /**
      * 
-     * @return the property for this step.<p>
+     * @return the propertie for this step.<p>
      */
     public Properties getStepProperties();
     
@@ -115,7 +116,7 @@ public interface IDelegateBridge
     /**
      * After this step finishes executing, the next delegate will not be called.<p>
      * 
-     * This method allows the delegate to signal that the game is over, but does not force the ui
+     * This methd allows the delegate to signal that the game is over, but does not force the ui
      * or the display to shutdown.<p>
      *
      */

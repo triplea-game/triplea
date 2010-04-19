@@ -155,6 +155,8 @@ public class TransportTracker
         }
         
         CompositeChange change = new CompositeChange();
+        //clear the loaded by
+        //change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY ) );
         ArrayList<Unit> newUnloaded = new ArrayList<Unit>(transport.getUnloaded());
         newUnloaded.add(unit);
         
@@ -163,11 +165,6 @@ public class TransportTracker
         {
             change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
             change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
-        }
-        else
-        {
-            //clear the loaded by
-            change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY ) );
         }
         
         Collection<Unit> newCarrying;

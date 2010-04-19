@@ -161,9 +161,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         m_defendingUnits.addAll(m_battleSite.getUnits().getMatches(
                 Matches.enemyUnit(attacker, data)));
-        //TODO for some reason in debug mode- addAll was causing double the number of attackers, but it went away
-        //m_attackingUnits = m_battleSite.getUnits().getMatches(Matches.unitIsOwnedBy(attacker));
-        m_attackingUnits.addAll(m_battleSite.getUnits().getMatches(Matches.unitIsOwnedBy(attacker)));
         m_defender = findDefender(battleSite);
     }
 
@@ -404,7 +401,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         if (!battleSite.isWater())
             return battleSite.getOwner();
-        //if water find the defender 
+        //if water find the defender based on who has the most units in the
+        // territory
         IntegerMap<PlayerID> players = battleSite.getUnits().getPlayerUnitCounts();
         int max = -1;
         PlayerID defender = null;
@@ -3018,16 +3016,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
             m_tracker.takeOver(m_battleSite, m_attacker, bridge, m_data,
                     null, m_attackingUnits);
         }
-        //transported units can be cleared
-        Collection<Unit> transported = Match.getMatches(m_attackingUnits, Matches.unitIsBeingTransported());
-        CompositeChange change = new CompositeChange();
-        for(Unit unit:transported)
-		{
-        	//clear the loaded by
-            change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY ) );
-		}
-        bridge.addChange(change);
-
 
         bridge.getHistoryWriter()
                 .addChildToEvent(m_attacker.getName() + " win", m_attackingUnits);

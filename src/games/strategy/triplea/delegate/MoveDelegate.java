@@ -28,6 +28,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
@@ -56,7 +57,7 @@ import java.util.Set;
  * 
  * Responsible for moving units on the board.
  * <p>
- * Responsible for checking the validity of a move, and for moving the units.
+ * Responible for checking the validity of a move, and for moving the units.
  * <br>
  * 
  * @author Sean Bridges
@@ -400,22 +401,6 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
         return null;
     }
-    
-    //KEV
-    /*public String preLoadBombers(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded, GameData data, PlayerID player)
-    {
-        MoveDelegate aDelegate = (MoveDelegate) data.getDelegateList().getDelegate("move");
-        m_bridge = aDelegate.m_bridge;
-        m_data = aDelegate.m_data;
-      
-        Map<Unit, Unit> bombersAndParatroops = MoveDelegate.mapTransports(route, units, transportsThatCanBeLoaded);
-        for (Unit unit : bombersAndParatroops.keySet())
-        {
-        	m_bridge.addChange(m_transportTracker.loadTransportChange((TripleAUnit) bombersAndParatroops.get(unit), unit, player));
-        }
-      
-        return null;
-    }*/
     
     void updateUndoableMoves(UndoableMove currentMove)
     {
@@ -795,6 +780,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                     transportIndex = 0;
                 
                 Unit transport = (Unit) transportIter.next();
+                //int capacity = transportTracker.getAvailableCapacity(transport);
                 UnitAttachment ua = UnitAttachment.get(transport.getType());
                 int capacity = ua.getTransportCapacity();
                 capacity -= addedLoad.getInt(transport);

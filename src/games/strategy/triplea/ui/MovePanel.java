@@ -20,6 +20,9 @@
 
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -27,18 +30,22 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveDelegate;
+import games.strategy.triplea.delegate.MovePerformer;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.triplea.delegate.TripleADelegateBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
@@ -114,8 +121,7 @@ public class MovePanel extends ActionPanel
     private Point m_mouseSelectedPoint;
     private Point m_mouseCurrentPoint;
     private Point m_mouseLastUpdatePoint;
-
-    //private transient MoveDelegate m_moveDelegate;
+    
     //use a LinkedHashSet because we want to know the order
     private final Set<Unit> m_selectedUnits = new LinkedHashSet<Unit>();
 
@@ -165,7 +171,6 @@ public class MovePanel extends ActionPanel
         m_nonCombat = nonCombat;
 
         m_transportTracker = new TransportTracker();
-        //m_moveDelegate = new MoveDelegate();
         
         SwingUtilities.invokeLater(new Runnable()
         {
@@ -890,7 +895,7 @@ public class MovePanel extends ActionPanel
     /**
      * Allow the user to select what transports to load.
      * 
-     * If null is returned, the move should be canceled.
+     * If null is returned, the move should be cancelled.
      */
 
     private Collection<Unit> getTransportsToLoad(final Route route, final Collection<Unit> unitsToLoad, boolean disablePrompts)
@@ -1299,20 +1304,6 @@ public class MovePanel extends ActionPanel
                 		Collection<Unit> loadedBombers = getLoadedBombers(route, unitsToLoad, player);
                 		m_selectedUnits.addAll(loadedBombers);
                     	//kev
-                		/*
-                		 CompositeMatch<Unit> candidateBombersMatch = new CompositeMatchAnd<Unit>();
-                        candidateBombersMatch.add(Matches.UnitIsStrategicBomber);
-                        //TODO Replace the previous line with
-                        //candidateBombersMatch.add(Matches.UnitIsAirTransport);
-                        candidateBombersMatch.add(Matches.unitIsOwnedBy(player));
-                        candidateBombersMatch.add(Matches.unitHasNotMoved);
-                                    
-                        //Get the list of all owned bombers in the starting terr
-                        final List<Unit> candidateBombers = Match.getMatches(route.getStart().getUnits().getUnits(), candidateBombersMatch);
-                       
-                		String loadEm = m_moveDelegate.preLoadBombers(unitsToLoad, route, candidateBombers, getData(), player);
-                		*/
-
                     	MoveDescription message = new MoveDescription(units, route, Match.getMatches(loadedBombers, Matches.UnitCanTransport));
                         m_moveMessage = message;
                 	}

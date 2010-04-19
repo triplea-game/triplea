@@ -1016,17 +1016,6 @@ public class Matches
         };
     }
 
-    public static Match<Unit> unitIsBeingTransported()
-    {
-    	return new Match<Unit>()
-        {
-            public boolean match(Unit u)
-            {
-                return TripleAUnit.get(u).getTransportedBy() != null;
-            }
-        };
-    }
-
     public static Match<Unit> unitIsTransportingSomeCategories(final Collection<Unit> units)
     {
         final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(units);

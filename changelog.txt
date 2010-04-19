@@ -1,9 +1,5 @@
 * fix bug 2981512 game hangs during purchase units phase with mooreAI (sgb)
 
-* fix bug 2983390 continued battles not fought (ComradeKev)
-
-* fix for part of bug 1981407 transportedBy not being cleared (ComradeKev)
-
 Changes for 1.2.5.3
 
 * fix bug 2979108 Multiplayer LL AA guns Java Error (sgb)
