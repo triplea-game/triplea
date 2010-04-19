@@ -1,5 +1,7 @@
 1.2.5.4
 
+* ask users to restart after downloading a map as workaround to 2981890 (sgb)
+
 * replace japanese_fade gif with png (veqryn)
 
 * new free french flags (veqryn, crystalct)

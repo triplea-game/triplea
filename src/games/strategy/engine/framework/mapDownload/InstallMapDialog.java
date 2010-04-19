@@ -285,7 +285,9 @@ public class InstallMapDialog extends JDialog {
 			
 		}
 		
-		EventThreadJOptionPane.showMessageDialog(getRootPane(), "Map successfully installed");
+		//TODO - asking the user to restart isn't good,  we should find the cause of the error, maybe a windows thing?
+		//https://sourceforge.net/tracker/?func=detail&aid=2981890&group_id=44492&atid=439737
+		EventThreadJOptionPane.showMessageDialog(getRootPane(), "Map successfully installed, please restart TripleA before playing");
 		setVisible(false);
 	}
 
