@@ -781,7 +781,7 @@ public class BattleDisplay extends JPanel
         lInstantCausalitiesPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         lInstantCausalitiesPanel.setLayout(new GridBagLayout());
 
-        JLabel lCausalities = new JLabel("Causalities", JLabel.CENTER);
+        JLabel lCausalities = new JLabel("Casualties", JLabel.CENTER);
         lCausalities.setFont(getPlayerComponent(m_attacker).getFont().deriveFont(Font.BOLD, 14));        
         lInstantCausalitiesPanel.add(
                 lCausalities,
