@@ -1,4 +1,6 @@
-1.2.5.4
+* update cruiser and Italian infantry  (veqryn, crystalct)
+
+Changes for 1.2.5.4 stable
 
 * ask users to restart after downloading a map as workaround to 2981890 (sgb)
 
