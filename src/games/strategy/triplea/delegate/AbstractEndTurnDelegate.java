@@ -153,7 +153,7 @@ public abstract class AbstractEndTurnDelegate
 
     	DiceRoll dice;
     	dice = DiceRoll.rollNDice(aBridge, count, sides, annotation);
-    	int total = dice.getDie(0).getValue();
+    	int total = dice.getDie(0).getValue() + 1;
 //TODO kev add dialog showing dice when built
     	getRemotePlayer(player).reportMessage(annotation + total);
     	return total;

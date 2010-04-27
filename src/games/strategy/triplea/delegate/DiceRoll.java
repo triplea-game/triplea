@@ -159,7 +159,7 @@ public class DiceRoll implements Externalizable
     /**
      * Roll n-sided dice.
      * @param annotation 
-     *  kev added this for generic rolls
+     * 0 based, add 1 to get actual die roll
      */
     public static DiceRoll rollNDice(IDelegateBridge bridge, int rollCount, int sides, String annotation)
     {   
