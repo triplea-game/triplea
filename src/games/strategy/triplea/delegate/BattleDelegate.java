@@ -403,9 +403,11 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
             Territory territory = (Territory) territories.next();
 
             List<Unit> attackingUnits = territory.getUnits().getMatches(ownedUnit);
+            List<Unit> enemyUnits = territory.getUnits().getMatches(enemyUnit);
                         
             Battle battle = m_battleTracker.getPendingBattle(territory, false);
-            List<Unit> enemyUnits = territory.getUnits().getMatches(enemyUnit);
+            if(battle.isEmpty())
+            	battle.addAttackChange(new Route(territory), attackingUnits);
             
            
             //Reach stalemate if all attacking and defending units are transports

@@ -127,6 +127,11 @@ public class TechTracker implements java.io.Serializable
     return rVal;
   }
   
+  public static int getTechCost(PlayerID id)
+  {
+	    TechAttachment ta = TechAttachment.get(id);
+	    return Integer.parseInt(ta.getTechCost());
+  }
   
   public static synchronized void addAdvance(PlayerID player, GameData data, IDelegateBridge bridge, TechAdvance advance)
   {

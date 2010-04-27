@@ -58,7 +58,9 @@ public class DelegateTest extends TestCase
 	protected Territory blackSea;
 	protected Territory eastAfrica;
 	protected Territory syria;
+	protected Territory manchuria;
 	protected Territory japanSeaZone;
+	protected Territory sfeSeaZone;
 	protected Territory libya;
 	protected Territory algeria;
 	protected Territory equatorialAfrica;
@@ -137,10 +139,12 @@ public class DelegateTest extends TestCase
 		uk = m_data.getMap().getTerritory("United Kingdom");
 		japan = m_data.getMap().getTerritory("Japan");
 		japanSeaZone = m_data.getMap().getTerritory("Japan Sea Zone");
+		sfeSeaZone = m_data.getMap().getTerritory("Soviet Far East Sea Zone");
 		brazil = m_data.getMap().getTerritory("Brazil");
 		westCanada = m_data.getMap().getTerritory("West Canada");
 		germany = m_data.getMap().getTerritory("Germany");
 		syria = m_data.getMap().getTerritory("Syria Jordan");
+		manchuria = m_data.getMap().getTerritory("Manchuria");
 		egypt= m_data.getMap().getTerritory("Anglo Sudan Egypt");
 		congo= m_data.getMap().getTerritory("Congo");
 		congoSeaZone = m_data.getMap().getTerritory("Congo Sea Zone");

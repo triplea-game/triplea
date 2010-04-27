@@ -20,6 +20,8 @@
 
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
+import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.ChangePerformer;
@@ -37,6 +39,7 @@ import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -696,6 +699,51 @@ public class MoveDelegateTest extends DelegateTest
       //Once loaded, shouldnt be able to unload
       String results = m_delegate.move(moveInf, route);
       assertError(results);
+  }
+
+
+  public void testLoadUnloadLoadMoveTransports()
+  {
+	  m_bridge = super.getDelegateBridge(japanese);
+	  m_bridge.setStepName("JapaneseCombatMove");
+	  m_bridge.setPlayerID(japanese);
+	  m_delegate.start(m_bridge, m_data);
+	  
+      //Set up the test
+      removeFrom(manchuria, manchuria.getUnits().getUnits());
+      manchuria.setOwner(russians);
+      removeFrom(japanSeaZone, japanSeaZone.getUnits().getUnits());
+      new ChangePerformer(m_data).perform(ChangeFactory.addUnits(japanSeaZone, transport.create(3, japanese)));
+      new ChangePerformer(m_data).perform(ChangeFactory.addUnits(japan, infantry.create(3, japanese)));
+
+      //Perform the first load
+      Route load = new Route();
+      load.setStart(japan);
+      load.add(japanSeaZone);
+      String results = m_delegate.move(Match.getNMatches(japan.getUnits().getUnits(), 1, Matches.unitIsOfType(infantry)), load, Match.getMatches(japanSeaZone.getUnits().getUnits(), Matches.unitIsOfType(transport)));      
+      assertNull(results);
+      
+      //Perform the first unload
+      Route unload = new Route();
+      unload.setStart(japanSeaZone);
+      unload.add(manchuria);      
+      results = m_delegate.move(Match.getNMatches(japanSeaZone.getUnits().getUnits(), 1, Matches.unitIsOfType(infantry)), unload);      
+      assertNull(results);
+    
+      //Load another trn
+      Route route2 = new Route();
+      route2.setStart(japan);
+      route2.add(japanSeaZone);
+      results = m_delegate.move(Match.getNMatches(japan.getUnits().getUnits(), 1, Matches.unitIsOfType(infantry)), route2, Match.getMatches(japanSeaZone.getUnits().getUnits(), Matches.unitIsOfType(transport)));      
+      assertNull(results);
+
+      //Move remaining units
+      Route route3 = new Route();
+      route3.setStart(japanSeaZone);
+      route3.add(sfeSeaZone);      
+      Collection<Unit> remainingTrns = Match.getMatches(japanSeaZone.getUnits().getUnits(), Matches.unitHasNotMoved);
+      results = m_delegate.move(Match.getNMatches(remainingTrns, 2, Matches.unitIsOfType(transport)), route3); 
+      assertNull(results);      
   }
 
   public void testUnloadedCantMove()

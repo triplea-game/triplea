@@ -54,7 +54,9 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
     private String m_name;
 
     private String m_displayName;
-
+    
+    private int m_techCost;
+    
     private GameData m_data;
 
     private IDelegateBridge m_bridge;
@@ -75,6 +77,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         m_name = name;
         m_displayName = displayName;
         m_techs = new HashMap<PlayerID, Collection>();
+        m_techCost = -1;
     }
 
     /**
@@ -241,15 +244,17 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
     boolean checkEnoughMoney(int rolls)
     {
         Resource PUs = m_data.getResourceList().getResource(Constants.PUS);
-        int cost = rolls * Constants.TECH_ROLL_COST;
+        int cost = rolls * getTechCost();
         int has = m_bridge.getPlayerID().getResources().getQuantity(PUs);
         return has >= cost;
     }
+    
 
     private void chargeForTechRolls(int rolls)
     {
         Resource PUs = m_data.getResourceList().getResource(Constants.PUS);
-        int cost = rolls * Constants.TECH_ROLL_COST;
+        //TODO techCost
+        int cost = rolls * getTechCost();
 
         String transcriptText = m_bridge.getPlayerID().getName() + " spend "
                 + cost + " on tech rolls";
@@ -350,6 +355,12 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
     public String getDisplayName()
     {
         return m_displayName;
+    }
+
+    public int getTechCost()
+    {
+    	m_techCost = TechTracker.getTechCost(m_player);
+        return m_techCost >0 ? m_techCost : Constants.TECH_ROLL_COST;        
     }
     
     /**

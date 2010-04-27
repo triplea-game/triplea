@@ -31,6 +31,7 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
@@ -40,6 +41,7 @@ import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -1067,7 +1069,10 @@ public class WW2V3_41_Test extends TestCase {
             assertEquals(2, mfb.getBombardingUnits().size());
             
             //Show that bombard casualties can return fire
-            bridge.setRandomSource(new ScriptedRandomSource(0,0,0,0,6,6,6,6));
+            /*
+             * Note- the 3 & 2 hits below show default behavior of bombarding at attack strength
+             */
+            bridge.setRandomSource(new ScriptedRandomSource(3,2,0,0,6,6,6,6));
 			battleDelegate(m_data).start(bridge, m_data);
 			
 			battleDelegate(m_data).fightBattle(eg, false);
@@ -1076,6 +1081,76 @@ public class WW2V3_41_Test extends TestCase {
             assertEquals(2, eg.getUnits().size());
         }
 
+        public void testBombardStrengthVariable() 
+        {
+            MoveDelegate move = moveDelegate(m_data);
+            ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
+            bridge.setRemote(new DummyTripleAPlayer()
+            {
+                @Override
+                public boolean selectShoreBombard(Territory unitTerritory) {
+                    return true;
+                }
+            });
+            bridge.setStepName("CombatMove");
+            move.start(bridge, m_data);
+            Territory sz14 = territory("14 Sea Zone", m_data);
+            Territory sz15 = territory("15 Sea Zone", m_data);
+            Territory eg = territory("Egypt", m_data);
+            Territory balkans = territory("Balkans", m_data);
+                        
+            //Clear all units  
+            removeFrom(eg, eg.getUnits().getUnits());
+            removeFrom(sz14, sz14.getUnits().getUnits());
+
+            //Add 2 inf to the attacked terr
+        	PlayerID british = m_data.getPlayerList().getPlayerID("British");
+            addTo(eg, infantry(m_data).create(2,british));
+            
+            //create/load the destroyers and transports 
+        	PlayerID italians = m_data.getPlayerList().getPlayerID("Italians");
+            addTo(sz14, transports(m_data).create(1,italians));
+            addTo(sz14, destroyer(m_data).create(2,italians));
+
+            //load the transports
+            load(balkans.getUnits().getMatches(Matches.UnitIsInfantry), new Route(balkans,sz14));
+            
+            //move the fleet
+            move(sz14.getUnits().getUnits(), new Route(sz14,sz15));
+          
+            //unload the transports
+            move(sz15.getUnits().getMatches(Matches.UnitIsLand), new Route(sz15,eg));            
+            move.end();
+
+            //Set the tech for DDs bombard
+            TechAttachment.get(italians).setDestroyerBombard("true");
+            
+            //Set the bombard strength for the DDs
+            Collection<Unit> dds = Match.getMatches(sz15.getUnits().getUnits(), Matches.UnitIsDestroyer);
+            Iterator<Unit> ddIter= dds.iterator();
+            while(ddIter.hasNext())
+            {
+            	Unit unit = ddIter.next();
+            	UnitAttachment ua = UnitAttachment.get(unit.getType());
+            	ua.setBombard("3");            	
+            }
+            //start the battle phase, this will ask the user to bombard
+            battleDelegate(m_data).start(bridge,m_data);
+            
+            MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(eg, false);
+            
+            //Show that bombard casualties can return fire
+            //destroyer bombard hit/miss on rolls of 4 & 3
+            //landing inf miss
+            //defending inf hit
+            bridge.setRandomSource(new ScriptedRandomSource(3,2,6,6,1,1));
+            
+			battleDelegate(m_data).start(bridge, m_data);
+			battleDelegate(m_data).fightBattle(eg, false);
+			
+			//1 defending inf remaining
+            assertEquals(1, eg.getUnits().size());
+        }
         
         public void testAmphAttackUndoAndAttackAgainBombard() 
         {
@@ -1124,7 +1199,6 @@ public class WW2V3_41_Test extends TestCase {
             
             
             //only 2 battleships are allowed to bombard
-            //Currently no units will bombard so test will fail.
             assertEquals(2, mfb.getBombardingUnits().size());
         }
         

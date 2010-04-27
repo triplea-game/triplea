@@ -285,10 +285,45 @@ public class MustFightBattle implements Battle, BattleStepStrings
             m_amphibious = true;
         }
         
-        // transports
+      //TODO add dependencies for transported units?
         Map<Unit, Collection<Unit>> dependencies = transporting(units);
-        // If WW2V2, allied air on our carriers are also dependents
-        if (isWW2V2() || isAlliedAirDependents())
+        /*if (m_amphibious)
+        {
+        	Collection<Unit> amphibUnits = Match.getMatches(units, Matches.UnitWasAmphibious);
+            Collection<Unit> transports = Match.getMatches(getAttackFrom(route).getUnits().getUnits(), Matches.UnitWasUnloadedThisTurn);
+            
+            if(!amphibUnits.isEmpty() && !transports.isEmpty())
+            {
+            	//Load capable bombers by default>
+            	Map<Unit,Unit> unitsToTransports = MoveDelegate.mapTransports(route, transports, amphibUnits, false, m_attacker);
+
+            	HashMap<Unit, Collection<Unit>> dependentUnits = new HashMap<Unit, Collection<Unit>>();
+            	Collection<Unit> singleCollection = new ArrayList<Unit>();
+            	for (Unit unit : unitsToTransports.keySet())
+            	{
+                    Collection<Unit> unitList = new ArrayList<Unit>();
+                    unitList.add(unit);
+            		Unit transport = unitsToTransports.get(unit);                
+            		singleCollection.add(unit);
+
+            		//Set transportedBy for paratrooper
+            		change.add(ChangeFactory.unitPropertyChange(unit, transport, TripleAUnit.TRANSPORTED_BY ));            	
+
+            		//Set the dependents
+            		if (dependentUnits.get(transport) != null)
+            			dependentUnits.get(transport).addAll(unitList);
+            		else
+            			dependentUnits.put(transport, unitList);
+            	}
+
+            	dependencies.putAll(dependentUnits);
+
+            	UnitSeperator.categorize(amphibUnits, dependentUnits, false);
+            }
+        }*/
+        // Allied Air as dependent units
+        //Map<Unit, Collection<Unit>> dependencies = transporting(units);
+        if (isAlliedAirDependents())
         {
             dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
             for(Unit carrier : dependencies.keySet())
@@ -341,6 +376,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             	UnitSeperator.categorize(bombers, dependentUnits, false);
             }
         }
+        
         
         addDependentUnits(dependencies);
 
@@ -1356,10 +1392,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
      */
     private boolean canAttackerRetreatPlanes()
     {
-    	if(onlyDefencelessDefendingTransportsLeft()) {
-    		return false;
-    	}
-    	
     	return (isWW2V2() || isAttackerRetreatPlanes() || isPartialAmphibiousRetreat()) && m_amphibious
                 && Match.someMatch(m_attackingUnits, Matches.UnitIsAir);
     }
@@ -1442,7 +1474,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private boolean canAttackerRetreat()
     {
-    	if(onlyDefencelessDefendingTransportsLeft()) {
+    	if(onlyDefenselessAttackingTransportsLeft() || onlyDefenselessDefendingTransportsLeft()){
     		return false;
     	}
     	
@@ -1458,11 +1490,18 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return true;
     }
 
-    private boolean onlyDefencelessDefendingTransportsLeft() {
+    private boolean onlyDefenselessDefendingTransportsLeft() {
     	if(!isTransportCasualtiesRestricted()) {
     		return false;
     	}
     	return Match.allMatch(m_defendingUnits, Matches.UnitIsTransport);
+    }
+    
+    private boolean onlyDefenselessAttackingTransportsLeft() {
+    	if(!isTransportCasualtiesRestricted()) {
+    		return false;
+    	}
+    	return Match.allMatch(m_attackingUnits, Matches.UnitIsTransport);
     }
     
     private boolean canAttackerRetreatSubs()
@@ -2310,8 +2349,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
          * property definition.  However, fixing this will entail a fix to the XML to reverse
          * all values.  We'll leave it as is for now and try to figure out a patch strategy later.
          */
-        //WW2V2, bombardment casualties cant return fire
-        boolean canReturnFire = (!isWW2V2() && isNavalBombardCasualtiesReturnFire());
+        boolean canReturnFire = (isNavalBombardCasualtiesReturnFire());
 
         if (bombard.size() > 0 && attacked.size() > 0)
         {
@@ -2631,7 +2669,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	{
     		Unit currentUnit = iter.next();
 
-    		Collection<Unit> depending = m_dependentUnits.get(currentUnit);
+     		Collection<Unit> depending = m_dependentUnits.get(currentUnit);
     		if (depending != null)
     		{
     			dependents.addAll(depending);
@@ -3016,7 +3054,25 @@ public class MustFightBattle implements Battle, BattleStepStrings
             m_tracker.takeOver(m_battleSite, m_attacker, bridge, m_data,
                     null, m_attackingUnits);
         }
+        //Clear the transported_by for successfully offloaded units
+        Collection<Unit> transports = Match.getMatches(m_attackingUnits, Matches.UnitIsTransport);
+        if(!transports.isEmpty())
+        {
+        	CompositeChange change = new CompositeChange();        
+        	
+        	Collection<Unit> dependents = getTransportDependents(transports, m_data);
+        	if(!dependents.isEmpty() ) 
+        	{
+        		for(Unit unit:dependents)
+        		{
+        			//clear the loaded by ONLY for Combat unloads.  NonCombat unloads are handled elsewhere.
+        			change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY ) );        		
+        		}
 
+        		bridge.addChange(change);
+        	}
+        }
+        
         bridge.getHistoryWriter()
                 .addChildToEvent(m_attacker.getName() + " win", m_attackingUnits);
         showCasualties(bridge);

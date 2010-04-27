@@ -880,7 +880,7 @@ public class MoveValidator
         CompositeMatch<Territory> battle = new CompositeMatchOr<Territory>();
         battle.add(Matches.TerritoryIsNeutral);
         battle.add(Matches.isTerritoryEnemyAndNotNeutral(player, data));
-
+//TODO need to account for subs AND transports that are ignored, not just OR
         if (battle.match(route.getEnd()))
         {
         	//If subs and transports can't control sea zones, it's OK to move there
@@ -915,8 +915,11 @@ public class MoveValidator
 
         if (Match.allMatch(units, Matches.UnitIsAir))
         {
-            if (route.someMatch(Matches.TerritoryIsNeutral))
-                return result.setErrorReturnResult("Air units cannot fly over neutral territories in non combat");
+        	if(isNeutralsImpassable(data))
+            {
+        		if (route.someMatch(Matches.TerritoryIsNeutral))
+        			return result.setErrorReturnResult("Air units cannot fly over neutral territories in non combat");
+            }
         } else
         {
             CompositeMatch<Territory> neutralOrEnemy = new CompositeMatchOr<Territory>(Matches.TerritoryIsNeutral, Matches.isTerritoryEnemyAndNotNeutral(player, data));
@@ -1694,6 +1697,11 @@ public class MoveValidator
             Map<Unit,Unit> unitsToTransports = MoveDelegate.mapTransports(route, land, transportsToLoad);
 
             Iterator<Unit> iter = land.iterator();
+            
+            CompositeMatch<Unit> landUnitsAtSea = new CompositeMatchOr<Unit>();
+            landUnitsAtSea.add(Matches.unitIsLandAndOwnedBy(player));
+            landUnitsAtSea.add(Matches.UnitCanBeTransported);
+            
             while (!isEditMode && iter.hasNext())
             {
                 TripleAUnit unit = (TripleAUnit) iter.next();
@@ -1702,13 +1710,30 @@ public class MoveValidator
                 Unit transport = unitsToTransports.get(unit);
                 if (transport == null)
                     continue;
+                
                 if (transportTracker.hasTransportUnloadedInPreviousPhase(transport))
                 {
                     result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE, unit);
                 }
                 else if (transportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd()))
                 {
-                    Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
+                	Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
+                	Iterator<Unit> trnIter = transportsToLoad.iterator();
+                	while (trnIter.hasNext())
+                	{
+                		TripleAUnit trn = (TripleAUnit) trnIter.next();
+                		if(!transportTracker.isTransportUnloadRestrictedToAnotherTerritory(trn, route.getEnd()))
+                		{
+                            UnitAttachment ua = UnitAttachment.get(unit.getType());
+                            UnitAttachment trna = UnitAttachment.get(trn.getType());
+                            if(transportTracker.getAvailableCapacity(trn) >= ua.getTransportCost())
+                			{
+                				alreadyUnloadedTo = null;
+                				break;
+                			}
+                		}                		
+                	}
+                	if(alreadyUnloadedTo != null)
                     result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
                 }
             }
@@ -1770,7 +1795,7 @@ public class MoveValidator
         
         List<Unit> bombers =  Match.getMatches(units, Matches.UnitIsStrategicBomber);
         Map<Unit, Unit> bombersAndParatroops = MoveDelegate.mapTransports(route, paratroopsRequiringTransport, bombers);
-        return bombersAndParatroops != null;
+        return !bombersAndParatroops.isEmpty();
 	}
 
 	//checks if there are non-paratroopers present that cause move validations to fail
@@ -1801,7 +1826,7 @@ public class MoveValidator
     				new Match<Unit>() {
 						
 						public boolean match(Unit u) {
-							return TripleAUnit.get(u).getMovementLeft() < route.getLength();
+							return TripleAUnit.get(u).getMovementLeft() < route.getLength() || route.crossesWater();
 						}
     					
     				}

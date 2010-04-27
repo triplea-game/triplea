@@ -41,6 +41,7 @@ import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.Match;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -148,12 +149,10 @@ public class RevisedTest extends TestCase
         
         String error = moveDelegate.move(sz8.getUnits().getMatches(Matches.unitIsOwnedBy(british)), m2);
         assertNull(error,error);
-
     }
     
     public void testRetreatBug()
-    {
-        
+    {        
         PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
         PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
         
@@ -224,9 +223,56 @@ public class RevisedTest extends TestCase
         assertNull(moveDelegate.move(russia.getUnits().getMatches(Matches.UnitIsAir), r) );
         //make sure they can't land, they can't because the territory was conquered
         assertEquals(1, moveDelegate.getTerritoriesWhereAirCantLand().size());
-        
-        
     }
+    
+
+    public void testContinuedBattles()
+    {
+        PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+        
+        ITestDelegateBridge bridge = getDelegateBridge(germans);
+        MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        bridge.setStepName("CombatMove");
+        moveDelegate.start(bridge, m_data);
+
+        //set up battle
+        Territory germany = m_data.getMap().getTerritory("Germany");
+        Territory karelia = m_data.getMap().getTerritory("Karelia S.S.R.");
+        Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
+        new ChangePerformer(m_data).perform(ChangeFactory.removeUnits(sz5, sz5.getUnits().getUnits()));
+
+        UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+        UnitType subType = m_data.getUnitTypeList().getUnitType("submarine");
+        UnitType trnType = m_data.getUnitTypeList().getUnitType("transport");
+        new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz5, subType.create(1, germans)));
+        new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz5, trnType.create(1, germans)));
+        new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz5, subType.create(1, russians)));
+        
+        //submerge the russian sub        
+        TripleAUnit sub = (TripleAUnit) Match.getMatches(sz5.getUnits().getUnits(), Matches.unitIsOwnedBy(russians)).iterator().next();
+        sub.setSubmerged(true);
+                        
+        //now move an infantry through the sz
+        String results = moveDelegate.move(Match.getNMatches(germany.getUnits().getUnits(), 1, Matches.unitIsOfType(infantryType)), m_data.getMap().getRoute(germany, sz5), Match.getMatches(sz5.getUnits().getUnits(), Matches.unitIsOfType(trnType)));
+        assertNull(results);
+        results = moveDelegate.move(Match.getNMatches(sz5.getUnits().getUnits(), 1, Matches.unitIsOfType(infantryType)), m_data.getMap().getRoute(sz5, karelia));
+        assertNull(results);
+        
+        moveDelegate.end();
+        
+        BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
+        battle.start(bridge, m_data);
+        
+        BattleTracker tracker = MoveDelegate.getBattleTracker(m_data);
+        
+        //The battle should NOT be empty
+        assertTrue(tracker.hasPendingBattle(sz5, false));        
+        assertFalse(tracker.getPendingBattle(sz5, false).isEmpty());
+                
+        battle.end();
+    }
+    
     
     public void testLoadAlliedTransports() 
     {
@@ -322,7 +368,6 @@ public class RevisedTest extends TestCase
     
     public void testOverFlyBombersDies()
     {
-
         PlayerID british = british(m_data);
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         ITestDelegateBridge bridge = getDelegateBridge(british);
@@ -352,6 +397,41 @@ public class RevisedTest extends TestCase
         assertTrue(se.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
         assertTrue(we.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
         assertTrue(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty()); 
+    }
+
+    public void testMultipleOverFlyBombersDies()
+    {
+        PlayerID british = british(m_data);
+        MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        ITestDelegateBridge bridge = getDelegateBridge(british);
+        bridge.setStepName("CombatMove");
+        moveDelegate.start(bridge, m_data);
+
+        bridge.setRemote(new DummyTripleAPlayer()
+        {
+            @Override
+            public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories) {
+               return true;
+            }     
+        });
+        bridge.setRandomSource(new ScriptedRandomSource(0,4));
+
+        Territory uk = territory("United Kingdom", m_data);
+        Territory sz7 = territory("7 Sea Zone", m_data);
+        Territory we = territory("Western Europe", m_data);
+        Territory se = territory("Southern Europe", m_data);
+        Territory balk = territory("Balkans", m_data);
+        addTo(uk, bomber(m_data).create(1,british));
+
+        Route route = new Route(uk, sz7, we, se, balk);
+
+        move(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), route);
+        
+        //the aa gun should have fired (one hit, one miss in each territory overflown). the bombers no longer exists
+        assertTrue(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty()); 
+        assertTrue(we.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
+        assertTrue(se.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
+        assertTrue(balk.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty()); 
     }
     
     public void testOverFlyBombersJoiningBattleDie()
@@ -1561,6 +1641,16 @@ public class RevisedTest extends TestCase
     	assertEquals(1, roll2.getHits());
     	int finalPUs = germans.getResources().getQuantity("PUs"); 
     	assertEquals(midPUs-5,finalPUs);
+    	
+    	//Test the variable tech cost
+	    ta.setTechCost("6");//Make a Successful roll
+    	delegateBridge.setRandomSource(new ScriptedRandomSource(new int[]{ 5 }));
+    	TechResults roll3 = techDelegate.rollTech(1, TechAdvance.JET_POWER, 0);
+    	
+    	//Check to make sure it succeeded
+    	assertEquals(1, roll3.getHits());
+    	int VariablePUs = germans.getResources().getQuantity("PUs"); 
+    	assertEquals(finalPUs-6,VariablePUs);	    
     }
     
     public void testTransportsUnloadingToMultipleTerritoriesDie() {

@@ -306,7 +306,7 @@ public class MovePerformer implements Serializable
         paratroopNBombers.add(Matches.UnitIsStrategicBomber);
         paratroopNBombers.add(Matches.UnitIsParatroop);
         boolean paratroopsLanding = Match.someMatch(arrived, paratroopNBombers);
-//kev
+
         //load the transports
         if (MoveValidator.isLoad(route) || paratroopsLanding)
         {
