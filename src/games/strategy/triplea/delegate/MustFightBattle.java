@@ -1859,14 +1859,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         bridge.addChange(change);
 
         units.removeAll(submerging);
-        /*if (units.isEmpty() || m_over)
-        {
-            endBattle(bridge);
-            if (defender)
-                attackerWins(bridge);
-            else
-                defenderWins(bridge);
-        } else*/
+        
         if (!units.isEmpty() && !m_over)
         {
             getDisplay(bridge).notifyRetreat(m_battleID, submerging);

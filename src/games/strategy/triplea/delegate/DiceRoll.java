@@ -141,7 +141,7 @@ public class DiceRoll implements Externalizable
 
     /**
      * Roll dice for units.
-     * @param annotation TODO
+     * @param annotation 
      *  
      */
     public static DiceRoll rollDice(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
@@ -155,7 +155,35 @@ public class DiceRoll implements Externalizable
             return rollDiceNormal(units, defending, player, bridge, data, battle, annotation);
         }
     }
+    
+    /**
+     * Roll n-sided dice.
+     * @param annotation 
+     *  kev added this for generic rolls
+     */
+    public static DiceRoll rollNDice(IDelegateBridge bridge, int rollCount, int sides, String annotation)
+    {   
+        if (rollCount == 0)
+        {
+            return new DiceRoll(new ArrayList<Die>(), 0);
+        }
 
+        int[] random;        
+        random = bridge.getRandom(sides, rollCount, annotation);
+
+        List<Die> dice = new ArrayList<Die>();
+        int diceIndex = 0;
+
+        for (int i = 0; i < rollCount; i++)
+        {
+            dice.add(new Die(random[diceIndex], 1, DieType.IGNORED ));
+            diceIndex++;
+        }
+
+        DiceRoll rVal = new DiceRoll(dice, rollCount);
+        return rVal;
+    }
+    
     /**
      * Roll dice for units using low luck rules. Low luck rules based on rules
      * in DAAK.
@@ -238,7 +266,6 @@ public class DiceRoll implements Externalizable
     }
 
     /**
-     * TODO: Determine if artillery support is available and how much
      * @param units
      * @param defending
      * @param player

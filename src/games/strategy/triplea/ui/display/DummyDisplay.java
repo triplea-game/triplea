@@ -59,7 +59,7 @@ public class DummyDisplay implements ITripleaDisplay
         // TODO Auto-generated method stub
 
     }
-
+    
     public void gotoBattleStep(GUID battleId, String step)
     {
         // TODO Auto-generated method stub

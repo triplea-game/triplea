@@ -1,4 +1,6 @@
 1.2.6
+* feature request add dialog showing results of War Bonds (ComradeKev)
+
 * fixed load of PacificTest.java (ComradeKev)
 
 * fix bug 2987400 remove ww2v2 from isNavalBombardCasualtiesReturnFire calculations (ComradeKev)

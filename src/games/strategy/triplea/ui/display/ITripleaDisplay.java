@@ -51,14 +51,14 @@ public interface ITripleaDisplay extends IDisplay
     public void listBattleSteps(GUID battleID, List<String> steps);
     
     /**
-     * The given battle has eneded. 
+     * The given battle has ended. 
      */
     public void battleEnd(GUID battleID, String message);
     
     
     
     /**
-     * Notify that the casuatlies occured
+     * Notify that the casualties occurred
      *  
      */
     public void casualtyNotification(GUID battleID,
@@ -95,8 +95,7 @@ public interface ITripleaDisplay extends IDisplay
      * @param dice
      */
     public void notifyDice(GUID battleId, DiceRoll dice, String stepName);
-
-    
+        
     public void gotoBattleStep(GUID battleId, String step);
     
     
