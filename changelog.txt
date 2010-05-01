@@ -1,4 +1,7 @@
 1.2.6
+
+* update .ico and .png icons (veqryn)
+
 * feature request add dialog showing results of War Bonds (ComradeKev)
 
 * fixed load of PacificTest.java (ComradeKev)
