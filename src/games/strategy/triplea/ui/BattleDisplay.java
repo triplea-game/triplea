@@ -176,9 +176,7 @@ public class BattleDisplay extends JPanel
 
     public void bombingResults(int[] dice, int cost)
     {
-/*
- * Kev here's how to call the sound clip player
- */
+//TODO Kev here's how to call the sound clip player
         ClipPlayer.getInstance().playClip(SoundPath.BOMB, SoundPath.class); //play
         // sound
         m_dicePanel.setDiceRollForBombing(dice, cost);
@@ -242,7 +240,7 @@ public class BattleDisplay extends JPanel
         	dependentUnitsReturned.addAll(dependentCollection);
         }
         
-        Iterator killedIter = UnitSeperator.categorize(aKilledUnits, dependentsMap, false).iterator();
+        Iterator killedIter = UnitSeperator.categorize(aKilledUnits, dependentsMap, false, false).iterator();
         while (killedIter.hasNext())
         {
             UnitCategory category = (UnitCategory) killedIter.next();
@@ -1211,7 +1209,7 @@ class CasualtyNotificationPanel extends JPanel
             m_killed.add(new JLabel("Killed"));
         }
         
-        Iterator killedIter = UnitSeperator.categorize(killed, dependents, false).iterator();
+        Iterator killedIter = UnitSeperator.categorize(killed, dependents, false, false).iterator();
         categorizeUnits(killedIter, false);
 
         damaged.removeAll(killed);
@@ -1219,7 +1217,7 @@ class CasualtyNotificationPanel extends JPanel
         {
             m_damaged.add(new JLabel("Damaged"));
         }
-        Iterator damagedIter = UnitSeperator.categorize(damaged, dependents, false).iterator();
+        Iterator damagedIter = UnitSeperator.categorize(damaged, dependents, false, false).iterator();
         categorizeUnits(damagedIter, true);
 
         invalidate();

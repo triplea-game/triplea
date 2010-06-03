@@ -28,6 +28,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.ui.MovePanel;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
@@ -298,15 +299,27 @@ public class MovePerformer implements Serializable
      */
     private void markTransportsMovement(Collection<Unit> arrived, Map<Unit, Unit> transporting, Route route)
     {
-
         if (transporting == null)
             return;
-        
-        CompositeMatch<Unit> paratroopNBombers = new CompositeMatchAnd<Unit>();
-        paratroopNBombers.add(Matches.UnitIsStrategicBomber);
-        paratroopNBombers.add(Matches.UnitIsParatroop);
-        boolean paratroopsLanding = Match.someMatch(arrived, paratroopNBombers);
 
+        CompositeMatch<Unit> paratroopNAirTransports = new CompositeMatchOr<Unit>();
+        paratroopNAirTransports.add(Matches.UnitIsAirTransport);
+        paratroopNAirTransports.add(Matches.UnitIsAirTransportable);
+        boolean paratroopsLanding = Match.someMatch(arrived, paratroopNAirTransports) && MoveValidator.allLandUnitsAreBeingParatroopered(arrived, route, m_player);
+        //kev
+        Map<Unit, Collection<Unit>> dependentAirTransportableUnits = MoveValidator.getDependents(Match.getMatches(arrived, Matches.UnitCanTransport), m_data);
+        if(dependentAirTransportableUnits.isEmpty())
+        	dependentAirTransportableUnits = MovePanel.getDependents();
+        //Map<Unit, Collection<Unit>> dependentAirTransportableUnits = MovePanel.getDependents();
+        //If paratroops moved normally (within their normal movement) remove their dependency to the airTransports
+        //So they can all continue to move normally
+        if(!paratroopsLanding && !dependentAirTransportableUnits.isEmpty())
+        {
+        		Collection<Unit> airTransports = Match.getMatches(arrived, Matches.UnitIsAirTransport);
+        		airTransports.addAll(dependentAirTransportableUnits.keySet());
+        			MovePanel.clearDependents(airTransports);
+        }
+         
         //load the transports
         if (MoveValidator.isLoad(route) || paratroopsLanding)
         {
@@ -316,31 +329,66 @@ public class MovePerformer implements Serializable
             {
                 Unit load = units.next();
                 Unit transport = transporting.get(load);
-                Change change = m_moveDelegate.getTransportTracker().loadTransportChange((TripleAUnit) transport, load, m_player);
-                m_currentMove.addChange(change);
-                m_currentMove.load(transport);
-                m_bridge.addChange(change);
+                if(!m_moveDelegate.getTransportTracker().transporting(transport).contains(load))
+                {
+                	Change change = m_moveDelegate.getTransportTracker().loadTransportChange((TripleAUnit) transport, load, m_player);
+                	m_currentMove.addChange(change);
+                	m_currentMove.load(transport);
+                	m_bridge.addChange(change);
+                }
             }
+
+        	if(transporting.isEmpty())
+        	{
+        		for(Unit airTransport:dependentAirTransportableUnits.keySet())
+        		{
+        			for(Unit unit:dependentAirTransportableUnits.get(airTransport))
+        			{
+        				Change change = m_moveDelegate.getTransportTracker().loadTransportChange((TripleAUnit) airTransport, unit, m_player);
+                        m_currentMove.addChange(change);
+                        m_currentMove.load(airTransport);
+                        m_bridge.addChange(change);
+        			}
+        		}
+        	}
         }
         
         if (MoveValidator.isUnload(route) || paratroopsLanding)
         {
-
             Collection<Unit> units = new ArrayList<Unit>();
+        	//kev readded this
             units.addAll(transporting.values());
             units.addAll(transporting.keySet());
+            
+            if(transporting.isEmpty())
+            {
+            	//kev readded this
+            	units.addAll(dependentAirTransportableUnits.keySet());
+            	for(Unit airTransport:dependentAirTransportableUnits.keySet())
+            	{
+            		units.addAll(dependentAirTransportableUnits.get(airTransport));
+            	}            	
+        	}
             Iterator<Unit> iter = units.iterator();
             while (iter.hasNext())
             {
-                Unit unit = iter.next();
-            	if(paratroopsLanding && Match.allMatch(Collections.singleton(unit), Matches.UnitIsStrategicBomber))
+            	Unit unit = iter.next();
+            	if(paratroopsLanding && Matches.UnitIsAirTransport.match(unit))
             		continue;
-                Change change =m_moveDelegate.markNoMovementChange(Collections.singleton(unit));
-                m_currentMove.addChange(change);                
-                m_bridge.addChange(change);
+            	//unload the transports
+            	Change change = m_moveDelegate.getTransportTracker().unloadTransportChange((TripleAUnit) unit, m_currentMove.getRoute().getEnd(), m_player);
+        		m_currentMove.addChange(change);     
+            	m_currentMove.unload(unit);               
+        		m_bridge.addChange(change);
+        		
+        		//set noMovement
+            	change = m_moveDelegate.markNoMovementChange(Collections.singleton(unit));
+            	m_currentMove.addChange(change);            
+            	m_bridge.addChange(change);
+                
             }
 
-            //unload the transports
+            /*//unload the transports
             Iterator<Unit> unitIter = transporting.keySet().iterator();
             while (unitIter.hasNext())
             {
@@ -350,7 +398,7 @@ public class MovePerformer implements Serializable
                 m_currentMove.addChange(change);
                 m_currentMove.unload(transport);
                 m_bridge.addChange(change);
-            }
+            }*/
         }
     }
 
@@ -390,14 +438,5 @@ public class MovePerformer implements Serializable
     private static boolean isIgnoreTransportInMovement(GameData data)
     {
     	return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);
-    }
-
-    /**
-     * @return
-     */
-    private static boolean isIgnoreSubInMovement(GameData data)
-    {
-    	return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
-    }
-    
+    }    
 }

@@ -36,6 +36,8 @@ import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.util.UnitCategory;
+import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -155,7 +157,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             
         }
     }
-
+    
     GameData getGameData()
     {
         return m_data;
@@ -348,59 +350,6 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
         return null;
     }
-    public String loadBombers(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded)
-    {        
-        PlayerID player = getUnitOwner(units);
-        MoveValidationResult result = MoveValidator.validateMove(units, 
-                                                                 route, 
-                                                                 player, 
-                                                                 transportsThatCanBeLoaded,
-                                                                 m_nonCombat,
-                                                                 m_movesToUndo,
-                                                                 m_data);
-
-        StringBuilder errorMsg = new StringBuilder(100);
-
-        int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
-
-        String numErrorsMsg = numProblems > 0 ? ("; "+ numProblems + " " + MyFormatter.pluralize("error", numProblems) + " not shown") : "";
-
-        if (result.hasError())
-            return errorMsg.append(result.getError()).append(numErrorsMsg).toString();
-
-        if (result.hasDisallowedUnits())
-            return errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString();
-        
-        if (result.hasUnresolvedUnits())
-            return errorMsg.append(result.getUnresolvedUnitWarning(0)).append(numErrorsMsg).toString();
-
-        // allow user to cancel move if aa guns will fire
-        AAInMoveUtil aaInMoveUtil = new AAInMoveUtil();
-        aaInMoveUtil.initialize(m_bridge, m_data);
-        Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAAWillFire(route, units);
-        if(!aaFiringTerritores.isEmpty())
-        {
-            if(!getRemotePlayer().confirmMoveInFaceOfAA(aaFiringTerritores))
-                return null;
-        }
-        
-        //do the move
-        UndoableMove currentMove = new UndoableMove(m_data, units, route);
-
-        /*String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " loaded on bombers in " + route.getStart().getName();
-        m_bridge.getHistoryWriter().startEvent(transcriptText);
-        
-        MoveDescription description = new MoveDescription(units, route);
-        m_bridge.getHistoryWriter().setRenderingData(description);*/
-
-        
-        /*m_tempMovePerformer = new MovePerformer();
-        m_tempMovePerformer.initialize(this, m_data, m_bridge);
-        m_tempMovePerformer.moveUnits(units, route, player, transportsThatCanBeLoaded, currentMove);
-        m_tempMovePerformer = null;*/
-
-        return null;
-    }
     
     void updateUndoableMoves(UndoableMove currentMove)
     {
@@ -583,7 +532,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         {
             PlayerID player = iter.next();
             //Check if player still has units to place
-            if (!player.equals(m_player) && player.getUnits().isEmpty()) 
+            if (!player.equals(m_player) && !player.getUnits().isEmpty()) 
                 util.removeAirThatCantLand(player, false);
         }
     }
@@ -596,8 +545,6 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
      */
     public static Map<Unit, Unit> mapTransports(Route route, Collection<Unit> units, Collection<Unit> transportsToLoad)
     {
-        if(transportsToLoad != null && Match.someMatch(transportsToLoad, Matches.UnitIsStrategicBomber))
-            return mapTransportsToLoad(units, Match.getMatches(transportsToLoad, Matches.UnitIsStrategicBomber));
         if (MoveValidator.isLoad(route))
             return mapTransportsToLoad(units, transportsToLoad);
         if (MoveValidator.isUnload(route))
@@ -612,26 +559,36 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
      * This method is static so it can be called from the client side.
      */
     public static Map<Unit, Unit> mapTransports(Route route, Collection<Unit> units, Collection<Unit> transportsToLoad, boolean isload, PlayerID player)
-    {
+    {    	
         if (isload)
-        {
-            return mapTransportsToLoad(units, transportsToLoad);
-        }
+        	return mapTransportsToLoad(units, transportsToLoad);
         if (MoveValidator.isUnload(route))
             return mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits());
         return mapTransportsAlreadyLoaded(units, units);
     }
     
     /**
-     * returns a map of unit -> bomber. returns null if no mapping can be
+     * Returns a list of max number of each type of unit that may be loaded
+     * This method is static so it can be called from the client side.
+     */
+    public static List<Unit> mapAirTransportPossibilities(Route route, Collection<Unit> units, Collection<Unit> transportsToLoad, boolean isload, PlayerID player)
+    {
+    		//return mapAirTransportsToLoad(units, Match.getMatches(transportsToLoad, Matches.UnitIsAirTransport));
+    	return mapAirTransportsToLoad2(units, Match.getMatches(transportsToLoad, Matches.UnitIsAirTransport));
+    }
+
+    /**
+     * returns a map of unit -> transport. returns null if no mapping can be
      * done either because there is not sufficient transport capacity or because
      * a unit is not with its transport
      * This method is static so it can be called from the client side.
      */
-    public static Map<Unit, Unit> mapBombers(Route route, Collection<Unit> units, Collection<Unit> bombersToLoad)
+    public static Map<Unit, Unit> mapAirTransports(Route route, Collection<Unit> units, Collection<Unit> transportsToLoad, boolean isload, PlayerID player)
     {
-            return mapBombersToLoad(units, bombersToLoad);
+    	return mapTransports(route, units, transportsToLoad, isload, player);
+    		//return mapUnitsToAirTransports(units, Match.getMatches(transportsToLoad, Matches.UnitIsAirTransport));
     }
+    
     /**
      * Returns a map of unit -> transport. Unit must already be loaded in the
      * transport.  If no units are loaded in the transports then an empty Map will
@@ -729,74 +686,144 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     }
 
     /**
-     * Returns a map of unit -> transport. Tries to find transports to load all
-     * units. If it can't succeed returns an empty Map.
+     * Returns a list of the maximum number of each type of unit that can be loaded on the transports
+     * If it can't succeed returns an empty Map.
      *  
      */
-    private static Map<Unit, Unit> mapBombersToLoad(Collection<Unit> units, Collection<Unit> bombers)
+    private static List<Unit> mapAirTransportsToLoad(Collection<Unit> units, Collection<Unit> transports)
     {
-
-        List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
-        int transportIndex = 0;
-        //TransportTracker transportTracker = new TransportTracker();
-
-        Comparator<Unit> c = new Comparator<Unit>()
+    	Comparator<Unit> c = new Comparator<Unit>()
         {
             public int compare(Unit o1, Unit o2)
             {
                 int cost1 = UnitAttachment.get(((Unit) o1).getUnitType()).getTransportCost();
                 int cost2 = UnitAttachment.get(((Unit) o2).getUnitType()).getTransportCost();
-                return cost2 - cost1;
+                return cost2 - cost1; //descending transportCost
             }
         };
-        //fill the units with the highest cost first.
-        //allows easy loading of 2 infantry and 2 tanks on 2 transports
-        //in WW2V2 rules.
-        Collections.sort(canBeTransported, c);
+        Collections.sort((List<Unit>) units, c);
+        
+        Iterator<Unit> trnIter = transports.iterator();
+    	//Spin through each transport and find the possible loads
+        List<Unit> totalLoad = new ArrayList<Unit>();
+    	while(trnIter.hasNext())
+    	{
+    		//(re)set the initial and current capacity of the air transport
+    		Unit transport = trnIter.next();
+    		UnitAttachment trnA = (UnitAttachment) transport.getType().getAttachment(Constants.UNIT_ATTATCHMENT_NAME);
+    		int initCapacity = trnA.getTransportCapacity();
+    		int currCapacity = initCapacity;
 
-        List<Unit> canTransport = Match.getMatches(bombers, Matches.UnitIsStrategicBomber);
-
-        Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
-        IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
-
-        Iterator<Unit> landIter = canBeTransported.iterator();
-        while (landIter.hasNext())
-        {
-            Unit land = (Unit) landIter.next();
-            UnitAttachment landUA = UnitAttachment.get(land.getType());
-            int cost = landUA.getTransportCost();
-            boolean loaded = false;
-
-            //we want to try to distribute units evenly to all the transports
-            //if the user has 2 infantry, and selects two transports to load
-            //we should put 1 infantry in each transport.
-            //the algorithm below does not guarantee even distribution in all cases
-            //but it solves most of the cases
-            Iterator<Unit> transportIter = Util.shiftElementsToEnd(canTransport, transportIndex).iterator();
-            while (transportIter.hasNext() && !loaded)
-            {
-                transportIndex++;
-                if(transportIndex >= canTransport.size())
-                    transportIndex = 0;
-                
-                Unit transport = (Unit) transportIter.next();
-                //int capacity = transportTracker.getAvailableCapacity(transport);
-                UnitAttachment ua = UnitAttachment.get(transport.getType());
-                int capacity = ua.getTransportCapacity();
-                capacity -= addedLoad.getInt(transport);
-                if (capacity >= cost)
-                {
-                    addedLoad.add(transport, cost);
-                    mapping.put(land, transport);
-                    loaded = true;
-                }
+    		//set up a list for a single potential load
+            List<Unit> aLoad = new ArrayList<Unit>();
+        	Iterator<Unit> unitIter = units.iterator();
+            IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
+        	while (unitIter.hasNext())
+        	{
+        		//For each potential unit, get transport cost
+        		Unit unit = unitIter.next();
+        		UnitAttachment ua = (UnitAttachment) unit.getType().getAttachment(Constants.UNIT_ATTATCHMENT_NAME);
+        		int cost = ua.getTransportCost();
+        		//Check the cost against the air transport's current capacity (including previously loaded units)
+        		currCapacity -= addedLoad.getInt(transport);
+        		if(currCapacity >= cost )
+        		{
+        			addedLoad.add(transport, cost);
+        			aLoad.add(unit);
+        		}
+        		else
+        		{
+        			//If there's no available capacity, consider the load full and add to total
+        			totalLoad.addAll(aLoad);
+        			addedLoad.clear();
+        			aLoad.clear();
+        			//see if any units like the current unit were previously loaded
+        			Iterator<Unit> ttlIter = totalLoad.listIterator();
+        			List<Integer> indices = new ArrayList<Integer>();
+        			while (ttlIter.hasNext())
+        			{
+        				Unit ttlUnit = ttlIter.next();
+        				if(unit != ttlUnit && unit.getType().equals(ttlUnit.getType()))
+        				{
+        					indices.add(totalLoad.indexOf(ttlUnit));
+        				}
+        			}
+        			//If there are any, add up their transportCosts and see if there is room for another.
+        			currCapacity = initCapacity;
+        			if(indices.isEmpty())
+        			{
+        				if(currCapacity >= cost )
+        				{
+        					addedLoad.add(transport, cost);
+        					aLoad.add(unit);
+        				}
+        			}
+        			else
+        			{
+        				//reload aLoad with any units of the same type & check capacity vs aLoad cost
+        				//this eliminates too many duplicate units in the list
+        				Iterator<Integer> indCosts = indices.listIterator();
+        				while(indCosts.hasNext())
+        				{
+        					Integer index = indCosts.next();
+        					Unit indexedUnit = totalLoad.get(index);
+        					UnitAttachment indexedUnitAtt = (UnitAttachment) indexedUnit.getType().getAttachment(Constants.UNIT_ATTATCHMENT_NAME);
+        					currCapacity -= indexedUnitAtt.getTransportCost();
+        				}
+        				if(currCapacity >= cost )
+        				{
+        					addedLoad.add(transport, cost);
+        					aLoad.add(unit);
+        				}
+        			}
+        		}    		
             }
-            
-        }
-        return mapping;
+			//If there's no available capacity, consider the load full and add to total
+			totalLoad.addAll(aLoad);
+    	}
+
+        return totalLoad;
     }
+    
+    private static List<Unit> mapAirTransportsToLoad2(Collection<Unit> units, Collection<Unit> transports)
+    {
+    	Comparator<Unit> c = new Comparator<Unit>()
+        {
+            public int compare(Unit o1, Unit o2)
+            {
+                int cost1 = UnitAttachment.get(((Unit) o1).getUnitType()).getTransportCost();
+                int cost2 = UnitAttachment.get(((Unit) o2).getUnitType()).getTransportCost();
+                return cost2 - cost1; //descending transportCost
+            }
+        };
+        Collections.sort((List<Unit>) units, c);
+        
+        //Define the max of all units that could be loaded
+        List<Unit> totalLoad = new ArrayList<Unit>();
+        
+		//Get a list of the unit categories
+        Collection<UnitCategory> unitTypes = UnitSeperator.categorize(units, null, false, true);
+        Collection<UnitCategory> transportTypes = UnitSeperator.categorize(transports, null, false, false);
+		
+        for(UnitCategory unitType : unitTypes)
+        {
+        	int transportCost = unitType.getTransportCost();
+        	
+        	for(UnitCategory transportType : transportTypes)
+        	{
+        		int transportCapacity = UnitAttachment.get(transportType.getType()).getTransportCapacity();
+        		if(transportCost > 0 && transportCapacity >= transportCost)
+        		{
+        			int transportCount = Match.countMatches(transports, Matches.unitIsOfType(transportType.getType()));
+        			int ttlTransportCapacity = transportCount * (int) Math.floor(transportCapacity/transportCost);
+        			totalLoad.addAll(Match.getNMatches(units, ttlTransportCapacity, Matches.unitIsOfType(unitType.getType())));
+        		}
+        	}
+        }
 
-
+        return totalLoad;
+    }
+    
     public Collection<Territory> getTerritoriesWhereAirCantLand()
     {
         return new AirThatCantLandUtil(m_data, m_bridge).getTerritoriesWhereAirCantLand(m_player);

@@ -16,6 +16,7 @@ package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.BattleStepStrings.*;
 import static games.strategy.triplea.delegate.GameDataTestUtil.*;
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
@@ -29,6 +30,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -50,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -1368,7 +1371,7 @@ public class WW2V3_41_Test extends TestCase {
 			TechAttachment.get(germans).setParatroopers("true");
 			
 			Route r = m_data.getMap().getRoute(france, territory("7 Sea Zone", m_data));
-			Collection<Unit> paratroopers = france.getUnits().getMatches(Matches.UnitIsParatroop);
+			Collection<Unit> paratroopers = france.getUnits().getMatches(Matches.UnitIsAirTransportable);
 			assertFalse(paratroopers.isEmpty());
 			
 			MoveValidationResult results = MoveValidator.validateMove(
@@ -1441,11 +1444,11 @@ public class WW2V3_41_Test extends TestCase {
             moveDelegate(m_data).start(bridge, m_data);
         	
 			TechAttachment.get(germans).setParatroopers("true");
-			
-			List<Unit> paratrooper = germany.getUnits().getMatches(Matches.UnitIsParatroop);
+
+			List<Unit> paratrooper = germany.getUnits().getMatches(Matches.UnitIsAirTransportable);
 			paratrooper = paratrooper.subList(0,1);
 			List<Unit> bomberAndParatroop = new ArrayList<Unit>(paratrooper);
-			bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+			bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsAirTransport));
 			
 			//move to nwe, this is a valid move, and it not a partroop move
 			move(bomberAndParatroop, new Route(germany, nwe));
@@ -1466,13 +1469,13 @@ public class WW2V3_41_Test extends TestCase {
             moveDelegate(m_data).start(bridge, m_data);
         	
 			TechAttachment.get(germans).setParatroopers("true");
-			
-			List<Unit> paratrooper = nwe.getUnits().getMatches(Matches.UnitIsParatroop);
+
+			List<Unit> paratrooper = nwe.getUnits().getMatches(Matches.UnitIsAirTransportable);
 			
 			move(paratrooper, new Route(nwe,germany));
 			
 			List<Unit> bomberAndParatroop = new ArrayList<Unit>(paratrooper);
-			bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+			bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsAirTransport));
 			
 			//move the units to east poland
 			String error = moveDelegate(m_data).move(bomberAndParatroop, new Route(germany, poland, eastPoland));
@@ -1496,7 +1499,7 @@ public class WW2V3_41_Test extends TestCase {
 			TechAttachment.get(germans).setParatroopers("true");
 			
 			//Move the bomber first
-			List<Unit> bomber = germany.getUnits().getMatches(Matches.UnitIsStrategicBomber);			
+			List<Unit> bomber = germany.getUnits().getMatches(Matches.UnitIsAirTransport);			
 			move(bomber, new Route(germany,poland));
 			
 			//Pick up a paratrooper
@@ -1525,7 +1528,7 @@ public class WW2V3_41_Test extends TestCase {
 			TechAttachment.get(germans).setParatroopers("true");
 			
 			List<Unit> bomberAndParatroop = new ArrayList<Unit>();
-			bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+			bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsAirTransport));
 			//add 2 infantry
 			bomberAndParatroop.addAll(germany.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("infantry"), 2));
 			
@@ -1551,17 +1554,30 @@ public class WW2V3_41_Test extends TestCase {
             moveDelegate(m_data).start(bridge, m_data);
         	
 			TechAttachment.get(germans).setParatroopers("true");
+
+			List<Unit> paratroopers = germany.getUnits().getMatches(Matches.UnitIsAirTransportable);
+			paratroopers = paratroopers.subList(0, 1);
+			List<Unit> bomberAndParatroop = new ArrayList<Unit>(paratroopers);
+			bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsAirTransport));
 			
-			List<Unit> paratrooper = germany.getUnits().getMatches(Matches.UnitIsParatroop);
-			paratrooper = paratrooper.subList(0, 1);
-			List<Unit> bomberAndParatroop = new ArrayList<Unit>(paratrooper);
-			bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
-			
+			Route route = new Route(germany, poland, eastPoland);
+			List<Unit> airTransports = germany.getUnits().getMatches(Matches.UnitIsAirTransport);
+			TransportTracker tracker = new TransportTracker();
+			for(Unit airTransport:airTransports)
+			{
+				for(Unit unit : paratroopers)
+				{
+					Change change = tracker.loadTransportChange((TripleAUnit)airTransport, unit, germans);
+					bridge.addChange(change);
+				}
+			}
+						
 			//move the units to east poland
-			move(bomberAndParatroop, new Route(germany, poland, eastPoland));
+			String error = moveDelegate(m_data).move(bomberAndParatroop, route); //airTransports
+			assertValid(error);
 			
 			//try to move them further, this should fail
-			String error = moveDelegate(m_data).move(bomberAndParatroop, new Route(eastPoland, beloRussia));
+			error = moveDelegate(m_data).move(bomberAndParatroop, new Route(eastPoland, beloRussia));
 			assertError(error);
         }
 
@@ -1583,14 +1599,26 @@ public class WW2V3_41_Test extends TestCase {
             bridge.setStepName("CombatMove");
             moveDelegate(m_data).start(bridge, m_data);
 			TechAttachment.get(germans).setParatroopers("true");
-			
-			List<Unit> paratrooper = germany.getUnits().getMatches(Matches.UnitIsParatroop);
+
+			List<Unit> paratrooper = germany.getUnits().getMatches(Matches.UnitIsAirTransportable);
 			paratrooper = paratrooper.subList(0, 1);
 			List<Unit> bomberAndParatroop = new ArrayList<Unit>(paratrooper);
-			bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+			bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsAirTransport));
 			
 			List<Unit> tanks = poland.getUnits().getMatches(Matches.UnitCanBlitz);
 			move(tanks, new Route(poland, eastPoland, beloRussia));
+
+			TransportTracker tracker = new TransportTracker();
+			List<Unit> airTransports = Match.getMatches(bomberAndParatroop, Matches.UnitIsAirTransport);
+			for(Unit airTransport : airTransports)
+			{
+				for(Unit unit : paratrooper)
+				{
+					Change change = tracker.loadTransportChange((TripleAUnit)airTransport, unit, germans);
+					bridge.addChange(change);
+				}
+			}
+				
 			
 			//Verify paratroops can overfly blitzed territory
 			String error = moveDelegate(m_data).move(bomberAndParatroop, new Route(germany, poland, eastPoland, beloRussia));

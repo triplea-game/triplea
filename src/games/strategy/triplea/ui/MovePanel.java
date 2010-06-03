@@ -20,38 +20,28 @@
 
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.delegate.IDelegate;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.delegate.BattleDelegate;
-import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveDelegate;
-import games.strategy.triplea.delegate.MovePerformer;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.triplea.delegate.TripleADelegateBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
-import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -125,7 +115,7 @@ public class MovePanel extends ActionPanel
     //use a LinkedHashSet because we want to know the order
     private final Set<Unit> m_selectedUnits = new LinkedHashSet<Unit>();
 
-    private Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
+    private static Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
 
     //the must move with details for the currently selected territory
     //note this is kept in sync because we do not modify m_selectedTerritory directly
@@ -201,14 +191,21 @@ public class MovePanel extends ActionPanel
     {
         return (IMoveDelegate) m_bridge.getRemote();
     }
-
-    private IBattleDelegate getBattleDelegate()
+    
+    public static Map<Unit, Collection<Unit>> getDependents()
     {
-        //return (IBattleDelegate) m_bridge.getRemote();
-        
-        IDelegate delegate =getData().getDelegateList().getDelegate("battle");
-        return (IBattleDelegate) delegate;
-        
+    	return m_dependentUnits;
+    }
+    
+    public static void clearDependents(Collection<Unit> units)
+    {
+    	for(Unit unit : units)
+    	{
+    		if(Matches.UnitIsAirTransport.match(unit))
+    		{
+    			m_dependentUnits.remove(unit);
+    		}
+    	}
     }
     
     private void updateMoves()
@@ -348,25 +345,6 @@ public class MovePanel extends ActionPanel
     
     });
       
-    }
-    private BattleTracker getBattleTracker(GameData data)
-    {     
-    	return DelegateFinder.battleDelegate(data).getBattleTracker();
-    }
-    /**
-     * @return
-     */
-    private static boolean isIgnoreTransportInMovement(GameData data)
-    {
-    	return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);
-    }
-
-    /**
-     * @return
-     */
-    private static boolean isIgnoreSubInMovement(GameData data)
-    {
-    	return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
     }
     
     private final Action cancelMove =  new AbstractAction(
@@ -550,6 +528,7 @@ public class MovePanel extends ActionPanel
                                             defaultSelections, 
                                             m_mustMoveWithDetails.getMustMoveWith(), 
                                             /*categorizeMovement*/ true, 
+                                  			/*categorizeTransportCost*/ false, 
                                             m_bridge.getGameData(), 
                                             /*allowTwoHit*/ false, 
                                             getMap().getUIContext(), 
@@ -782,14 +761,14 @@ public class MovePanel extends ActionPanel
             m_frame.clearStatusMessage();
             getMap().showMouseCursor();
             m_currentCursorImage = null;
-            m_unitsThatCanMoveOnRoute = new ArrayList<Unit>(units);
+            m_unitsThatCanMoveOnRoute = new ArrayList<Unit>(units);            
             return;
         }
 
         getMap().hideMouseCursor();
-        
+        //TODO kev check for already loaded airTransports
         Collection<Unit> transportsToLoad = Collections.emptyList();
-        if(MoveValidator.isLoad(route)) {
+        if(MoveValidator.isLoad(units, route, getData(), getCurrentPlayer())) {
             transportsToLoad = route.getEnd().getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), getData())));
         }
                 
@@ -866,12 +845,14 @@ public class MovePanel extends ActionPanel
         for(Unit u : best) {
             if(m_mustMoveWithDetails.getMustMoveWith().containsKey(u)) {
                 Collection<Unit> mustMoveWith = m_mustMoveWithDetails.getMustMoveWith().get(u);
-                for(Unit  m : mustMoveWith) {
-                    if(!bestWithDependents.contains(m)) {
-                        bestWithDependents.addAll(mustMoveWith);
-                    }
-                }
-                    
+                if(mustMoveWith != null)
+                {
+                	for(Unit  m : mustMoveWith) {
+                		if(!bestWithDependents.contains(m)) {
+                			bestWithDependents.addAll(mustMoveWith);
+                		}
+                	}
+                }   
                    
             }
         }
@@ -895,7 +876,7 @@ public class MovePanel extends ActionPanel
     /**
      * Allow the user to select what transports to load.
      * 
-     * If null is returned, the move should be cancelled.
+     * If null is returned, the move should be canceled.
      */
 
     private Collection<Unit> getTransportsToLoad(final Route route, final Collection<Unit> unitsToLoad, boolean disablePrompts)
@@ -1076,6 +1057,7 @@ public class MovePanel extends ActionPanel
                                               defaultSelections, 
                                               endMustMoveWith.getMustMoveWith(), 
                                               /*categorizeMovement*/ true, 
+                                    			/*categorizeTransportCost*/ false, 
                                               m_bridge.getGameData(), 
                                               /*allowTwoHit*/ false, 
                                               getMap().getUIContext(), 
@@ -1192,6 +1174,7 @@ public class MovePanel extends ActionPanel
                                                   m_selectedUnits,
                                                   /*mustMoveWith*/ null, 
                                                   /*categorizeMovement*/ false,
+                                        			/*categorizeTransportCost*/ false, 
                                                   getData(), 
                                                   /*allowTwoHit*/ false, 
                                                   getMap().getUIContext(),
@@ -1203,6 +1186,7 @@ public class MovePanel extends ActionPanel
                                                   m_selectedUnits,
                                                   /*mustMoveWith*/ null, 
                                                   /*categorizeMovement*/ false,
+                                      			/*categorizeTransportCost*/ false, 
                                                   getData(), 
                                                   /*allowTwoHit*/ false, 
                                                   getMap().getUIContext());
@@ -1289,23 +1273,36 @@ public class MovePanel extends ActionPanel
                 Route route = getRoute(getFirstSelectedTerritory(), t);
                 
                 //Load Bombers with paratroops
-                if(!m_nonCombat && isParatroopers(getCurrentPlayer()) && Match.someMatch(m_selectedUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, Matches.unitHasNotMoved)))
+                if(!m_nonCombat && isParatroopers(getCurrentPlayer()) && Match.someMatch(m_selectedUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsAirTransport, Matches.unitHasNotMoved)))
                 {     
                 	final PlayerID player = getCurrentPlayer();
-                	
+
+            		//TODO Transporting allied units
+                	//Get the potential units to load
                 	CompositeMatch<Unit> unitsToLoadMatch = new CompositeMatchAnd<Unit>();
-                		unitsToLoadMatch.add(Matches.UnitIsInfantry);
+                		unitsToLoadMatch.add(Matches.UnitIsAirTransportable);
                 		unitsToLoadMatch.add(Matches.unitIsOwnedBy(player));
-                		
+                		unitsToLoadMatch.add(Matches.unitHasNotMoved);
                 	Collection<Unit> unitsToLoad = Match.getMatches(route.getStart().getUnits().getUnits(),unitsToLoadMatch);
                 	
-                	if(unitsToLoad.size() > 0)
-                	{                	
-                		Collection<Unit> loadedBombers = getLoadedBombers(route, unitsToLoad, player);
-                		m_selectedUnits.addAll(loadedBombers);
-                    	//kev
-                    	MoveDescription message = new MoveDescription(units, route, Match.getMatches(loadedBombers, Matches.UnitCanTransport));
-                        m_moveMessage = message;
+                	//Get the potential air transports to load
+                	CompositeMatch<Unit> candidateAirTransportsMatch = new CompositeMatchAnd<Unit>();
+                	candidateAirTransportsMatch.add(Matches.UnitIsAirTransport);
+                	candidateAirTransportsMatch.add(Matches.unitIsOwnedBy(player));
+                	candidateAirTransportsMatch.add(Matches.unitHasNotMoved);
+                    Collection<Unit> candidateAirTransports = Match.getMatches(t.getUnits().getMatches(unitsToMoveMatch), candidateAirTransportsMatch);
+                    
+                	if(unitsToLoad.size() > 0 && candidateAirTransports.size() > 0)
+                	{
+                		Collection<Unit> airTransportsToLoad = getAirTransportsToLoad(candidateAirTransports);
+                		m_selectedUnits.addAll(airTransportsToLoad);
+                		if(!airTransportsToLoad.isEmpty())
+                		{
+                			Collection<Unit> loadedAirTransports = getLoadedAirTransports(route, unitsToLoad, airTransportsToLoad, player);
+                			m_selectedUnits.addAll(loadedAirTransports);
+                			MoveDescription message = new MoveDescription(loadedAirTransports, route, airTransportsToLoad);
+                			m_moveMessage = message;
+                		}
                 	}
                 }
                                 
@@ -1316,118 +1313,145 @@ public class MovePanel extends ActionPanel
                 setFirstSelectedTerritory(null);
         }
 
+        public Collection<Unit> getAirTransportsToLoad(final Collection<Unit> candidateAirTransports)
+        {
+        	Set<Unit> defaultSelections = new HashSet<Unit>();
+
+        	// prevent too many bombers from being selected
+        	Match<Collection<Unit>> transportsToLoadMatch = new Match<Collection<Unit>>()
+        	{
+        		public boolean match(Collection<Unit> units)
+        		{
+        			Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
+        			return (airTransports.size() <= candidateAirTransports.size());
+        		}
+        	};
+        	//Allow player to select which to load.
+        	UnitChooser chooser = new UnitChooser(candidateAirTransports, 
+        			defaultSelections, 
+        			m_dependentUnits, 
+        			/*categorizeMovement*/ true, 
+        			/*categorizeTransportCost*/ false, 
+        			m_bridge.getGameData(), 
+        			/*allowTwoHit*/ false, 
+        			getMap().getUIContext(), 
+        			transportsToLoadMatch);
+
+        	chooser.setTitle("Select air transports to load");
+        	int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
+        			chooser, "What transports do you want to load",
+        			JOptionPane.OK_CANCEL_OPTION,
+        			JOptionPane.PLAIN_MESSAGE, null, null, null);
+        	if (option != JOptionPane.OK_OPTION)
+        		return Collections.emptyList();
+
+        	return chooser.getSelected(true);        
+        }
+        
         /**
-         * Allow the user to select what transports to load.
+         * Allow the user to select what units to load.
          * 
          * If null is returned, the move should be canceled.
          */
 
-        public Collection<Unit> getLoadedBombers(final Route route, final Collection<Unit> unitsToLoad, PlayerID player)
+        public Collection<Unit> getLoadedAirTransports(final Route route, final Collection<Unit> capableUnitsToLoad, final Collection<Unit> capableTransportsToLoad, final PlayerID player)
         {
-        	CompositeMatch<Unit> candidateBombersMatch = new CompositeMatchAnd<Unit>();
-            candidateBombersMatch.add(Matches.UnitIsStrategicBomber);
-            //TODO Replace the previous line with
-            //TODO candidateBombersMatch.add(Matches.UnitIsAirTransport);
-            candidateBombersMatch.add(Matches.unitIsOwnedBy(player));
-            candidateBombersMatch.add(Matches.unitHasNotMoved);
-                        
-            //Get the list of all owned bombers in the starting terr
-            final List<Unit> candidateBombers = Match.getMatches(route.getStart().getUnits().getUnits(), candidateBombersMatch);
-           
-            //Get the minimum transport cost of a candidate paratrooper
+            //Get the minimum transport cost of a candidate unit
             int minTransportCost = Integer.MAX_VALUE;
-            for(Unit unit : unitsToLoad)
+            for(Unit unit : capableUnitsToLoad)
             {
                 minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
             }
-
-            Collection<Unit> bombersToLoad = new ArrayList<Unit>();
-            for(Unit bomber : candidateBombers)
+            
+            final Collection<Unit> airTransportsToLoad = new ArrayList<Unit>();
+            int ttlCapacity = 0;
+            for(Unit bomber : capableTransportsToLoad)
             {
                 int capacity = getTransportTracker().getAvailableCapacity(bomber);
                 if (capacity >= minTransportCost)
-                	bombersToLoad.add(bomber);
+                {
+                	airTransportsToLoad.add(bomber);
+                	ttlCapacity += capacity;
+                }
             }
+            final int ttlCap = ttlCapacity;
+           
             
             //If no airTransports can be loaded, return the empty set
-            if(bombersToLoad.isEmpty())
-            	return bombersToLoad;
-            
-            //Generate map of capacity
-            IntegerMap<Unit> availableCapacityMap = new IntegerMap<Unit>();
-            for (Unit bomber : candidateBombers)
-            {
-                int capacity = getTransportTracker().getAvailableCapacity(bomber);
-                availableCapacityMap.put(bomber, capacity);
-            }
-            
-            Collection<Unit> capableBombers = new ArrayList<Unit>(candidateBombers);
-            List<Unit> availableUnits = new ArrayList<Unit>(unitsToLoad);
-            Set<Unit> defaultSelections = new HashSet<Unit>();
-            
-            //Load capable bombers by default>
-            Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, availableUnits, capableBombers, true, player);
-            
-            m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
-            Collection<Unit> singleCollection = new ArrayList<Unit>();
-            for (Unit unit : unitsToCapableBombers.keySet())
-            {
-                Collection<Unit> unitList = new ArrayList<Unit>();
-                unitList.add(unit);
-                Unit bomber = unitsToCapableBombers.get(unit);
-                singleCollection.add(unit);
-                
-                int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
-                availableCapacityMap.add(bomber, (-1 * unitCost));
-                defaultSelections.add(bomber);
-                
-                
-            	//Set the dependents
-                if (m_dependentUnits.get(bomber) != null)
-                	m_dependentUnits.get(bomber).addAll(unitList);
-                else
-                    m_dependentUnits.put(bomber, unitList);
-            }
-            
-            m_mustMoveWithDetails = MoveValidator.getMustMoveWith(route.getStart(), 
-                capableBombers, 
-                getData(),
-                getCurrentPlayer());
-            
-            availableUnits.removeAll(unitsToCapableBombers.keySet());
+            if(airTransportsToLoad.isEmpty())
+            	return airTransportsToLoad;
 
-            // prevent too many bombers from being selected
-            Match<Collection<Unit>> transportsToLoadMatch = new Match<Collection<Unit>>()
+            Set<Unit> defaultSelections = new HashSet<Unit>();
+         
+            
+            // Check to see if there's room for the selected units
+            Match<Collection<Unit>> unitsToLoadMatch = new Match<Collection<Unit>>()
             {
                 public boolean match(Collection<Unit> units)
                 {
-                    Collection<Unit> bombers = Match.getMatches(units, Matches.UnitIsStrategicBomber);
-                    return (bombers.size() <= Math.min(unitsToLoad.size(), candidateBombers.size()));
+                    Collection<Unit> unitsToLoad = Match.getMatches(units, Matches.UnitIsAirTransportable);
+                    Map<Unit, Unit> unitMap = MoveDelegate.mapTransports(route, unitsToLoad, airTransportsToLoad, true, player);
+                    boolean ableToLoad = true;
+                    for(Unit unit : unitsToLoad)
+                    {
+                    	if(!unitMap.keySet().contains(unit))
+                    		ableToLoad = false;
+                    }
+                    return ableToLoad;
                 }
             };
+ 
+            List<Unit> loadedUnits = new ArrayList<Unit>(capableUnitsToLoad);
+            if(!airTransportsToLoad.isEmpty())
+            {
+                //Get a list of the units that could be loaded on the transport (based upon transport capacity)
+                List<Unit> unitsToLoad = MoveDelegate.mapAirTransportPossibilities(route, capableUnitsToLoad, airTransportsToLoad, true, player);
+                
+              //Allow player to select which to load.
+                UnitChooser   chooser = new UnitChooser(unitsToLoad, 
+                    defaultSelections, 
+                    m_dependentUnits, 
+                    /*categorizeMovement*/ false, 
+                    /*categorizeTransportCost*/ true,
+                    m_bridge.getGameData(), 
+                    /*allowTwoHit*/ false, 
+                    getMap().getUIContext(), 
+                    unitsToLoadMatch);
 
-            //Allow player to select which to load.
-            UnitChooser chooser = new UnitChooser(candidateBombers, 
-                defaultSelections, 
-                m_dependentUnits, 
-                /*categorizeMovement*/ true, 
-                m_bridge.getGameData(), 
-                /*allowTwoHit*/ false, 
-                getMap().getUIContext(), 
-                transportsToLoadMatch);
+                chooser.setTitle("Load air transports");
+                int  	option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
+                    chooser, "What units do you want to load",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE, null, null, null);
+                if (option != JOptionPane.OK_OPTION)
+                    return Collections.emptyList();
 
-            chooser.setTitle("Load bombers with paratroops");
-            int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
-                chooser, "What bombers do you want to load",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE, null, null, null);
-            if (option != JOptionPane.OK_OPTION)
-                return Collections.emptyList();
-
-            return chooser.getSelected(true); 
-                       
+                loadedUnits = chooser.getSelected(true);
+                    
+                
+                Map<Unit, Unit> mapping = MoveDelegate.mapTransports(route, loadedUnits, airTransportsToLoad, true, player);
+                
+                for(Unit unit : mapping.keySet())
+                {
+                	Collection<Unit> unitsColl = new ArrayList<Unit>();
+                	unitsColl.add(unit);
+                	
+                	Unit airTransport = mapping.get(unit);
+                	if(m_dependentUnits.containsKey(airTransport))
+                	{
+                		unitsColl.addAll(m_dependentUnits.get(airTransport));
+                	}
+                	m_dependentUnits.put(airTransport, unitsColl);
+                	m_mustMoveWithDetails = MoveValidator.getMustMoveWith(route.getStart(), 
+                			route.getStart().getUnits().getUnits(), 
+                			getData(),
+                			player);
+                }
+            } 
+            
+			return loadedUnits;            
         }
-        
+       
         private void deselectUnits(List<Unit> units, Territory t, MouseDetails me)
         {         
 
@@ -1443,7 +1467,9 @@ public class MovePanel extends ActionPanel
             {
                 Collection<Unit> forced = m_mustMoveWithDetails.getMustMoveWith().get(unit);
                 if(forced != null)
-                    unitsWithoutDependents.removeAll(forced);
+                {
+                    unitsWithoutDependents.removeAll(forced);                    
+                }
             }
 
             //no unit selected, remove the most recent, but skip dependents
@@ -1458,7 +1484,19 @@ public class MovePanel extends ActionPanel
                     
                     //remove the last n elements
                     for (int i=0; i<iterCount; i++) 
+                    {
                         unitsToRemove.add( unitsWithoutDependents.get(unitsWithoutDependents.size() -1 ) );
+                      //Clear the stored dependents for AirTransports
+                        if(!m_dependentUnits.isEmpty())
+                        {
+                        	for(Unit airTransport:unitsWithoutDependents)
+                        	if(m_dependentUnits.containsKey(airTransport))
+                        	{
+                        		unitsToRemove.addAll(m_dependentUnits.get(airTransport));
+                        		m_dependentUnits.remove(airTransport);
+                        	}
+                        }
+                    }
                 }
             }
             //we have actually clicked on a specific unit
@@ -1482,9 +1520,18 @@ public class MovePanel extends ActionPanel
                     
                     for(Unit unit : units)
                     {
-                        if(m_selectedUnits.contains(unit))
+                        if(m_selectedUnits.contains(unit) && !unitsToRemove.contains(unit))
                         {
                             unitsToRemove.add(unit);
+                          //Clear the stored dependents for AirTransports
+                            if(!m_dependentUnits.isEmpty())
+                            {
+                            	for(Unit airTransport:unitsWithoutDependents)
+                            	if(m_dependentUnits.containsKey(airTransport))
+                            	{
+                            		m_dependentUnits.get(airTransport).remove(unit);
+                            	}
+                            }
                             remCount++;
                             if (remCount >= iterCount) break;
                         }
@@ -1542,12 +1589,10 @@ public class MovePanel extends ActionPanel
                 return;
             }
 
-            Collection<Unit> transports = null;
-            //TODO kev set the load/unload true for paratroops
-    		
+            Collection<Unit> transports = null;   		
     		CompositeMatch<Unit> paratroopNBombers = new CompositeMatchAnd<Unit>();
-        	paratroopNBombers.add(Matches.UnitIsStrategicBomber);
-        	paratroopNBombers.add(Matches.UnitIsParatroop);
+        	paratroopNBombers.add(Matches.UnitIsAirTransport);
+        	paratroopNBombers.add(Matches.UnitIsAirTransportable);
         	boolean paratroopsLanding = Match.someMatch(units, paratroopNBombers);
         	
             if(MoveValidator.isLoad(route) && Match.someMatch(units, Matches.UnitIsLand))
@@ -1631,7 +1676,7 @@ public class MovePanel extends ActionPanel
         
         if (!mustQueryUser)
         {
-            Set<UnitCategory> categories = UnitSeperator.categorize(candidateUnits, m_mustMoveWithDetails.getMustMoveWith(), true);
+            Set<UnitCategory> categories = UnitSeperator.categorize(candidateUnits, m_mustMoveWithDetails.getMustMoveWith(), true, false);
             
             for(UnitCategory category1 : categories)
             {
@@ -1687,7 +1732,7 @@ public class MovePanel extends ActionPanel
             // sort candidateUnits in preferred order
             sortUnitsToMove(candidateUnits, route);
             UnitChooser chooser = new UnitChooser(candidateUnits, defaultSelections, m_mustMoveWithDetails.getMustMoveWith(),
-                    true, m_bridge.getGameData(), false, getMap().getUIContext(), matchCriteria);
+                    true, false, m_bridge.getGameData(), false, getMap().getUIContext(), matchCriteria);
 
             
             
@@ -1853,14 +1898,8 @@ public class MovePanel extends ActionPanel
         if(ta == null)
         	return false;
         return ta.hasParatroopers();
-    }    
-
+    }
 }
-
-
-
-
-
 /**
  * Avoid holding a strong reference to the action
  * fixes a memory leak in swing.  

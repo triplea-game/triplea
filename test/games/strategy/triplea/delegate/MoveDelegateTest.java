@@ -34,6 +34,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -741,8 +742,9 @@ public class MoveDelegateTest extends DelegateTest
       Route route3 = new Route();
       route3.setStart(japanSeaZone);
       route3.add(sfeSeaZone);      
-      Collection<Unit> remainingTrns = Match.getMatches(japanSeaZone.getUnits().getUnits(), Matches.unitHasNotMoved);
-      results = m_delegate.move(Match.getNMatches(remainingTrns, 2, Matches.unitIsOfType(transport)), route3); 
+      Collection<Unit> remainingTrns = Match.getMatches(japanSeaZone.getUnits().getUnits(), new CompositeMatchAnd<Unit> (Matches.unitHasNotMoved, Matches.UnitWasNotLoadedThisTurn));
+      
+      results = m_delegate.move(remainingTrns, route3); 
       assertNull(results);      
   }
 
@@ -791,8 +793,6 @@ public class MoveDelegateTest extends DelegateTest
     //the transports unloaded so they cant move
     results = m_delegate.move( getUnits(map, route.getStart()), route);
     assertError(results);
-
-
   }
 
   public void testTransportsCanSplit()

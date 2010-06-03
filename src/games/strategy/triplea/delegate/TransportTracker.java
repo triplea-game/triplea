@@ -146,15 +146,17 @@ public class TransportTracker
 //
     public Change unloadTransportChange(TripleAUnit unit, Territory territory, PlayerID id)
     {
-        
+        CompositeChange change = new CompositeChange();
         TripleAUnit transport = (TripleAUnit) transportedBy(unit);
+        if(transport == null)
+        	return change;
+        
         assertTransport(transport);
         if(!transport.getTransporting().contains(unit)) 
         {
             throw new IllegalStateException("Not being carried, unit:" + unit + " transport:" + transport);
         }
         
-        CompositeChange change = new CompositeChange();
         ArrayList<Unit> newUnloaded = new ArrayList<Unit>(transport.getUnloaded());
         newUnloaded.add(unit);
         
@@ -204,7 +206,6 @@ public class TransportTracker
                 
         
         change.add(ChangeFactory.unitPropertyChange(unit, Boolean.TRUE, TripleAUnit.LOADED_THIS_TURN  ));
-        //kev added
         change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.LOADED_THIS_TURN));
         //If the transport was in combat, flag it as being loaded AFTER combat
         if (transport.getWasInCombat())

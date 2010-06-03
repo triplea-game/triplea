@@ -75,7 +75,7 @@ public class UnitChooser extends JPanel
 
   
   /** Creates new UnitChooser */ 
-  public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, GameData data, UIContext context)
+  public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, GameData data, UIContext context)
   {
     m_dependents = dependent;
     m_data = data;
@@ -83,11 +83,11 @@ public class UnitChooser extends JPanel
     m_match = null;
   
     
-    createEntries(units, dependent, categorizeMovement, Collections.<Unit>emptyList());
+    createEntries(units, dependent, categorizeMovement, categorizeTransportCost, Collections.<Unit>emptyList());
     layoutEntries();
     
   }
-  public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, GameData data, UIContext context, Match<Collection<Unit>> match)
+  public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, GameData data, UIContext context, Match<Collection<Unit>> match)
   {
     m_match = match;
     
@@ -95,7 +95,7 @@ public class UnitChooser extends JPanel
     m_data = data;
     m_uiContext = context;
     
-    createEntries(units, dependent, categorizeMovement, Collections.<Unit>emptyList());
+    createEntries(units, dependent, categorizeMovement, categorizeTransportCost, Collections.<Unit>emptyList());
     layoutEntries();
     
   }
@@ -108,10 +108,10 @@ public class UnitChooser extends JPanel
 
   public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit, UIContext uiContext)
   {
-      this(units, defaultSelections, dependent, false, data, allowTwoHit, uiContext);
+      this(units, defaultSelections, dependent, false, false, data, allowTwoHit, uiContext);
   }
 
-  public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, GameData data, boolean allowTwoHit, UIContext uiContext)
+  public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, GameData data, boolean allowTwoHit, UIContext uiContext)
   {
     m_dependents = dependent;
     m_data = data;
@@ -120,11 +120,11 @@ public class UnitChooser extends JPanel
     m_match = null;
     
     
-    createEntries(units, dependent, categorizeMovement, defaultSelections);
+    createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
     layoutEntries();
   }
-
-  public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, GameData data, boolean allowTwoHit, UIContext uiContext, Match<Collection<Unit>> match)
+  
+  public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, GameData data, boolean allowTwoHit, UIContext uiContext, Match<Collection<Unit>> match)
   {
     m_dependents = dependent;
     m_data = data;
@@ -132,7 +132,7 @@ public class UnitChooser extends JPanel
     m_uiContext = uiContext;
     m_match = match;
     
-    createEntries(units, dependent, categorizeMovement, defaultSelections);
+    createEntries(units, dependent, categorizeMovement,categorizeTransportCost, defaultSelections);
     layoutEntries();
   }
 
@@ -230,10 +230,10 @@ public class UnitChooser extends JPanel
 
 
 
-  private void createEntries(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, Collection<Unit> defaultSelections)
+  private void createEntries(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, Collection<Unit> defaultSelections)
   {
-    Collection categories = UnitSeperator.categorize(units, dependent, categorizeMovement);
-    Collection defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement);
+    Collection categories = UnitSeperator.categorize(units, dependent, categorizeMovement, categorizeTransportCost);
+    Collection defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
     IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
     Iterator iter = categories.iterator();
     while(iter.hasNext())
@@ -497,6 +497,10 @@ class ChooserEntry
 
       if (m_category.getMovement() != -1)
           panel.add(new JLabel("mvt " + m_category.getMovement()),
+                new GridBagConstraints(1,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,new Insets(0,4,0,4), 0,0 ) );
+
+      if (m_category.getTransportCost() != -1)
+          panel.add(new JLabel("cst " + m_category.getTransportCost()),
                 new GridBagConstraints(1,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,new Insets(0,4,0,4), 0,0 ) );
 
       panel.add(new JLabel("x" + m_category.getUnits().size()),

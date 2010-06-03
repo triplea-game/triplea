@@ -345,20 +345,20 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //Set the dependent paratroopers so they die if the bomber dies.        
         if(isParatroopers(m_attacker))
         {
-            Collection<Unit> bombers = Match.getMatches(units, Matches.UnitIsStrategicBomber);
-            Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsParatroop);
-            if(!bombers.isEmpty() && !paratroops.isEmpty())
+            Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
+            Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
+            if(!airTransports.isEmpty() && !paratroops.isEmpty())
             {
             	//Load capable bombers by default>
-            	Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, paratroops, bombers, true, m_attacker);
+            	Map<Unit,Unit> unitsToCapableAirTransports = MoveDelegate.mapAirTransports(route, paratroops, airTransports, true, m_attacker);
 
             	HashMap<Unit, Collection<Unit>> dependentUnits = new HashMap<Unit, Collection<Unit>>();
             	Collection<Unit> singleCollection = new ArrayList<Unit>();
-            	for (Unit unit : unitsToCapableBombers.keySet())
+            	for (Unit unit : unitsToCapableAirTransports.keySet())
             	{
                     Collection<Unit> unitList = new ArrayList<Unit>();
                     unitList.add(unit);
-            		Unit bomber = unitsToCapableBombers.get(unit);                
+            		Unit bomber = unitsToCapableAirTransports.get(unit);                
             		singleCollection.add(unit);
 
             		//Set transportedBy for paratrooper
@@ -373,7 +373,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
             	dependencies.putAll(dependentUnits);
 
-            	UnitSeperator.categorize(bombers, dependentUnits, false);
+            	UnitSeperator.categorize(airTransports, dependentUnits, false, false);
             }
         }
         
@@ -2623,11 +2623,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         if(isParatroopers(m_attacker))
         {
-        	Collection<Unit> bombers = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsStrategicBomber);
+        	Collection<Unit> airTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAirTransport);
 
-        	if(!bombers.isEmpty())
+        	if(!airTransports.isEmpty())
         	{
-        		Collection<Unit> dependents = getDependentUnits(bombers);
+        		Collection<Unit> dependents = getDependentUnits(airTransports);
         		if(!dependents.isEmpty())
         		{
         			Iterator<Unit> dependentsIter = dependents.iterator();
@@ -2642,7 +2642,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         			bridge.addChange(change);
         		
         			//remove bombers from m_dependentUnits
-        			Iterator<Unit> bombersIter = bombers.iterator();
+        			Iterator<Unit> bombersIter = airTransports.iterator();
         			while(bombersIter.hasNext())
         			{
         				Unit unit = bombersIter.next();
@@ -2822,10 +2822,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         canLandOnCarrier.add(Matches.UnitCanLandOnCarrier);
         
         Collection<Unit> air = Match.getMatches(m_attackingUnits, canLandOnCarrier);
-        
+
+        //TODO interesting quirk- kamikaze aircraft may move their full movement, then one more on retreat due to this
         for(Unit unit : air)
-        {
-           
+        {           
             bridge.addChange(moveDelegate.ensureCanMoveOneSpaceChange(unit));
         }
         

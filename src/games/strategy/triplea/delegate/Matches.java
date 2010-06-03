@@ -432,6 +432,19 @@ public class Matches
         }
     };
 
+    public static final Match<Unit> UnitIsAlliedCarrier (final PlayerID player, final GameData data)
+    {
+    	return new Match<Unit>()
+    	{
+        public boolean match(Unit obj)
+        {
+            Unit unit = (Unit) obj;
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            return ua.getCarrierCapacity() != -1 && data.getAllianceTracker().isAllied(player, obj.getOwner());
+        }
+    };
+    }
+
     public static final Match<Unit> UnitCanBeTransported  = new Match<Unit>()
     {
         public boolean match(Unit obj)
@@ -472,6 +485,18 @@ public class Matches
             return taUnit.getWasLoadedThisTurn();
         }
     };
+
+    public static final Match<Unit> UnitWasLoadedThisTurn = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            TripleAUnit taUnit = (TripleAUnit) obj;
+            return taUnit.getWasLoadedThisTurn();
+        }
+    };
+
+    public static final Match<Unit> UnitWasNotLoadedThisTurn = new InverseMatch<Unit>(UnitWasLoadedThisTurn);
+    
     
     public static final Match<Unit> UnitCanTransport  = new Match<Unit>()
     {
@@ -606,7 +631,7 @@ public class Matches
 
     public static final Match<Unit> UnitIsNotMarine = new InverseMatch<Unit>(UnitIsMarine);
 
-    public static final Match<Unit> UnitIsParatroop = new Match<Unit>()
+    public static final Match<Unit> UnitIsAirTransportable = new Match<Unit>()
     {
         public boolean match(Unit obj)
         {
@@ -616,11 +641,28 @@ public class Matches
         	}        	
             UnitType type = ((Unit) obj).getUnitType();
             UnitAttachment ua = UnitAttachment.get(type);
-            return ua.isInfantry() || ua.isMarine();
+            return ua.isAirTransportable();
         }
     };
+    
+    public static final Match<Unit> UnitIsNotAirTransportable = new InverseMatch<Unit>(UnitIsAirTransportable);
 
-    public static final Match<Unit> UnitIsNotParatroop = new InverseMatch<Unit>(UnitIsParatroop);
+    public static final Match<Unit> UnitIsAirTransport = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+        	TechAttachment ta = TechAttachment.get(obj.getOwner());
+        	if(ta == null || !ta.hasParatroopers()) {
+        		return false;
+        	}        	
+            UnitType type = ((Unit) obj).getUnitType();
+            UnitAttachment ua = UnitAttachment.get(type);
+            return ua.isAirTransport();
+        }
+    };
+    
+    public static final Match<Unit> UnitIsNotAirTransport = new InverseMatch<Unit>(UnitIsAirTransport);
+
 
 
     public static final Match<Unit> UnitIsArtillery = new Match<Unit>()

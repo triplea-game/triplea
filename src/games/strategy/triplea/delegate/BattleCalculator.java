@@ -557,7 +557,7 @@ public class BattleCalculator
      */
     private static boolean allTargetsOneTypeNotTwoHit(Collection<Unit> targets, Map<Unit, Collection<Unit>> dependents)
     {
-        Set<UnitCategory> categorized = UnitSeperator.categorize(targets, dependents, false);
+        Set<UnitCategory> categorized = UnitSeperator.categorize(targets, dependents, false, false);
         if (categorized.size() == 1)
         {
             UnitCategory unitCategory =  categorized.iterator().next();

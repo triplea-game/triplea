@@ -603,18 +603,27 @@ public class RevisedTest extends TestCase
         assertNull(error);
         
         assertEquals(3, moveDelegate.getMovesMade().size());
-                 
+      
+        //the load
+        UndoableMove move1 = moveDelegate.getMovesMade().get(0);
+        
         //the first unload
-        UndoableMove move2 = moveDelegate.getMovesMade().get(1);
+        UndoableMove move2 = moveDelegate.getMovesMade().get(0);
         
         //the second unload must be done first
-        assertFalse(move2.getcanUndo());
+        assertFalse(move1.getcanUndo());
         
         error = moveDelegate.undoMove(2);
         assertNull(error);
+
+        //the second unload must be done first
+        assertFalse(move1.getcanUndo());
+        
+        error = moveDelegate.undoMove(1);
+        assertNull(error);
         
         //we can now be undone
-        assertTrue(move2.getcanUndo());
+        assertTrue(move1.getcanUndo());
     }
     
     public void testLoadUndoInWrongOrder()

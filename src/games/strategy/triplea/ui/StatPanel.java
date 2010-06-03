@@ -24,6 +24,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -414,13 +415,28 @@ public class StatPanel extends JPanel
              * .size()+1 added to stop index out of bounds errors when using an
              * Italian player.
              */
-
-            data = new String[TechAdvance.getTechAdvances(m_data).size()][colList.length + 1];
-
+            boolean useTech = false;
+            if(m_data.getResourceList().getResource(Constants.TECH_TOKENS) != null)
+        	{
+            	useTech = true;
+            	data = new String[TechAdvance.getTechAdvances(m_data).size()+1][colList.length + 2];
+        	}
+            else
+            {
+                data = new String[TechAdvance.getTechAdvances(m_data).size()][colList.length + 1];	
+            }
+            
             /* Load the technology -> row mapping */
             rowMap = new HashMap<String, Integer>();
             Iterator iter = TechAdvance.getTechAdvances(m_data).iterator();
             int row = 0;
+
+            if (useTech)
+            {
+            	rowMap.put("Tokens", new Integer(row));
+            	data[row][0] = "Tokens";
+                row++;
+            }
 
             while (iter.hasNext())
             {
@@ -478,12 +494,22 @@ public class StatPanel extends JPanel
                         throw new IllegalStateException("Unexpected player in GameData.getPlayerList()" + pid.getName());
     
                     int col = colMap.get(pid.getName()).intValue();
-    
+
+                    int row = 0;
+                    boolean useTokens = false;
+                	if(m_data.getResourceList().getResource(Constants.TECH_TOKENS) != null)
+                	{
+                		useTokens = true;
+                		Integer tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
+                		data[row][col] = tokens.toString();
+                	}
+
                     Iterator advances = TechTracker.getTechAdvances(pid).iterator();
     
                     while (advances.hasNext())
                     {
-                        int row = rowMap.get(((TechAdvance) advances.next()).getName()).intValue();
+                    	TechAdvance advance = (TechAdvance) advances.next();
+                    	row = rowMap.get(advance.getName()).intValue();
                         // System.err.println("(" + row + ", " + col + ")");
                         data[row][col] = "X";
                         // data[row][col] = colList[col].substring(0, 1);

@@ -148,7 +148,7 @@ public class EditPanel extends ActionPanel
                     String chooserText = "Remove units from " + m_selectedTerritory + ":";
     
                     UnitChooser chooser = new UnitChooser(allUnits,m_selectedUnits,
-                                                          mustMoveWithDetails.getMustMoveWith(),  true,                                                          
+                                                          mustMoveWithDetails.getMustMoveWith(),  true, false,                                                          
                                                           getData(), 
                                                           /*allowTwoHit=*/ false, 
                                                           getMap().getUIContext());
@@ -467,7 +467,7 @@ public class EditPanel extends ActionPanel
                     String text = "Remove from " + t.getName();
                     
                     UnitChooser chooser = new UnitChooser(unitsToMove, m_selectedUnits,
-                            null, false, getData(),  false, getMap().getUIContext() );
+                            null, false, false, getData(),  false, getMap().getUIContext() );
                                         
                     int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
                             chooser, text,

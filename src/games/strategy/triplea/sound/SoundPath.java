@@ -23,9 +23,7 @@ public class SoundPath {
   public static final String START_TURN = "start.wav";
   public static final String MESSAGE = "message.wav";
   public static final String BOMB = "strat_bomb.wav";
-/*
- * Kev can add sounds here to pre-load
- */
+//TODO Kev can add sounds here to pre-load
   public static void preLoadSounds()
   {
 //    ClipPlayer.getInstance().preLoadClip(NAVAL_BATTLE,SoundPath.class);

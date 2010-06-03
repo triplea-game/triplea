@@ -1094,11 +1094,11 @@
                 <attatchment name="unitAttatchment" attatchTo="infantry" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="1"/>
                          <option name="transportCost" value="2"/>
-                         <option name="isInfantry" value="true"/>                         
-                         <option name="isMechanized" value="false"/>
+                         <option name="isInfantry" value="true"/>
                          <option name="attack" value="1"/>
                          <option name="defense" value="2"/>
                          <option name="artillerySupportable" value="true"/>
+                         <option name="isAirTransportable" value="true"/>
                 </attatchment>
 				
 				
@@ -1138,6 +1138,7 @@
                          <option name="defense" value="1"/>
                          <option name="isStrategicBomber" value="true"/>
                          <option name="transportCapacity" value="2"/>
+                         <option name="isAirTransport" value="true"/>
                 </attatchment>
 
                 <!-- Transport -->
