@@ -129,22 +129,8 @@ public class TransportTracker
         return data.getSequence().getStep().getName().endsWith("NonCombatMove");
     }
     
-//    
-//    
-//    
-//    
-//    
-//    /**
-//     * Undo the unload
-//     */
-//    public void undoUnload(Unit unit, Unit transport, PlayerID id)
-//    {
-//        loadTransport(transport, unit, id);
-//        Collection unload = m_unloaded.get(transport);
-//        unload.remove(unit);
-//    }
-//
-    public Change unloadTransportChange(TripleAUnit unit, Territory territory, PlayerID id)
+    
+    public Change unloadTransportChange(TripleAUnit unit, Territory territory, PlayerID id, boolean dependentBattle)
     {
         CompositeChange change = new CompositeChange();
         TripleAUnit transport = (TripleAUnit) transportedBy(unit);
@@ -165,22 +151,15 @@ public class TransportTracker
         {
             change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
             change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
+
+            change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
+            change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
         }
-        else
+
+        if(!dependentBattle)
         {
-            //clear the loaded by ONLY for nonCombat unloads.  Combat unloads are handled elsewhere.
-            change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY ) );
-        }
-        
-        Collection<Unit> newCarrying;
-        if(transport.getTransporting().size() == 1) 
-        {
-            newCarrying = Collections.emptyList();
-        } else
-        {
-            newCarrying = new ArrayList<Unit>(transport.getTransporting());
-            newCarrying.remove(unit);
-        }
+        	change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY ) );
+        }        
         
         change.add(ChangeFactory.unitPropertyChange(transport, newUnloaded, TripleAUnit.UNLOADED));
         
@@ -263,6 +242,10 @@ public class TransportTracker
             if(taUnit.getWasInCombat()) 
             {
                 change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, TripleAUnit.WAS_IN_COMBAT));
+            }            
+            if(taUnit.getWasAmphibious()) 
+            {
+                change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, TripleAUnit.UNLOADED_AMPHIBIOUS));
             }
         }
         return change;

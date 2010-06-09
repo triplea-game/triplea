@@ -1,4 +1,6 @@
 Changes for 1.2.6
+* another fix for 2998846 & 3012752 Kamikaze fighters and unloaded troop edit-removal (ComradeKev)
+
 * fix bug 2998846 kamikaze aircraft not working (ComradeKev)
 
 * add isAirTransport(able) to support air dropping units (ComradeKev)

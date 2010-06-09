@@ -86,11 +86,11 @@ public class UnitAttachment extends DefaultAttachment
   {
   }
 
-/*  //does nothing, kept to avoid breaking maps
+  //does nothing, kept to avoid breaking maps
   public void setIsParatroop(String s) {}
 
   //does nothing, used to keep compatibility with older xml files
-  public void setIsMechanized(String s) {}*/
+  public void setIsMechanized(String s) {}
 
   public void setIsAirTransport(String s)
   {

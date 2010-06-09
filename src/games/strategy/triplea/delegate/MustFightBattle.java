@@ -512,7 +512,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return;
         }
         
-        
         bridge.getHistoryWriter().startEvent("Battle in " + m_battleSite);
         bridge.getHistoryWriter().setRenderingData(m_battleSite);
         removeAirNoLongerInTerritory();
@@ -3051,8 +3050,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection<Unit> transports = Match.getMatches(m_attackingUnits, Matches.UnitIsTransport);
         if(!transports.isEmpty())
         {
-        	CompositeChange change = new CompositeChange();        
-        	
+        	CompositeChange change = new CompositeChange();
         	Collection<Unit> dependents = getTransportDependents(transports, m_data);
         	if(!dependents.isEmpty() ) 
         	{

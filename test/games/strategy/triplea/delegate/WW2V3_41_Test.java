@@ -1303,7 +1303,7 @@ public class WW2V3_41_Test extends TestCase {
             ITestDelegateBridge bridge = getDelegateBridge(germans);
             bridge.setStepName("CombatMove");
             moveDelegate(m_data).start(bridge, m_data);
-            //don't allow kamikazee
+            //don't allow kamikaze
             bridge.setRemote(new DummyTripleAPlayer() {
 				@Override
 				public boolean confirmMoveKamikaze() {

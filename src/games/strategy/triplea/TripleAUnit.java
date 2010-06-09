@@ -269,7 +269,7 @@ public class TripleAUnit extends Unit
     /**
      * private since this should only be called by UnitPropertyChange
      */
-    private void setWasAmphibious(Boolean value)
+    public void setWasAmphibious(Boolean value)
     {
         m_wasAmphibious = Boolean.valueOf(value.booleanValue());
     }

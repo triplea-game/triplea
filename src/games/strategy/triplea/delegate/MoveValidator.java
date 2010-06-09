@@ -1258,7 +1258,7 @@ public class MoveValidator
 		
         //find the air units that can't make it to land
         //TODO interesting quirk- if true, aircraft may move their full movement, then one more on retreat due to method ensureCanMoveOneSpaceChange
-        boolean allowKamikaze = games.strategy.triplea.Properties.getKamikaze_Airplanes(data);
+        boolean allowKamikaze = isKamikazeAircraft(data);
         Collection<Unit> airThatMustLandOnCarriers = getAirThatMustLandOnCarriers(ownedAir, allowKamikaze, result, nearestLand, movementLeft);
         
         //we are done, everything can find a place to land
@@ -1344,7 +1344,8 @@ public class MoveValidator
                     carrierCapacity.put(potentialWithNonComMove,carrierCapacity.getInt(potentialWithNonComMove) - carrierCost);
                     break;
                 }
-                result.addDisallowedUnit(NOT_ALL_AIR_UNITS_CAN_LAND, unit);
+                if (!allowKamikaze)
+                	result.addDisallowedUnit(NOT_ALL_AIR_UNITS_CAN_LAND, unit);
             }
             
         }
@@ -2149,7 +2150,6 @@ public class MoveValidator
 
     private static Collection<Unit> getCanCarry(Unit carrier, Collection<Unit> selectFrom)
     {
-
         UnitAttachment ua = UnitAttachment.get(carrier.getUnitType());
         Collection<Unit> canCarry = new ArrayList<Unit>();
 
@@ -2292,6 +2292,14 @@ public class MoveValidator
     private static boolean isSubmersibleSubsAllowed(GameData data)
     {
     	return games.strategy.triplea.Properties.getSubmersible_Subs(data);
+    }
+
+    /**
+     * @return
+     */
+    private static boolean isKamikazeAircraft(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getKamikaze_Airplanes(data);
     }
     
     /**

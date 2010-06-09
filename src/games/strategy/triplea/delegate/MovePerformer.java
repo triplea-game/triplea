@@ -306,11 +306,11 @@ public class MovePerformer implements Serializable
         paratroopNAirTransports.add(Matches.UnitIsAirTransport);
         paratroopNAirTransports.add(Matches.UnitIsAirTransportable);
         boolean paratroopsLanding = Match.someMatch(arrived, paratroopNAirTransports) && MoveValidator.allLandUnitsAreBeingParatroopered(arrived, route, m_player);
-        //kev
+        
         Map<Unit, Collection<Unit>> dependentAirTransportableUnits = MoveValidator.getDependents(Match.getMatches(arrived, Matches.UnitCanTransport), m_data);
         if(dependentAirTransportableUnits.isEmpty())
         	dependentAirTransportableUnits = MovePanel.getDependents();
-        //Map<Unit, Collection<Unit>> dependentAirTransportableUnits = MovePanel.getDependents();
+        
         //If paratroops moved normally (within their normal movement) remove their dependency to the airTransports
         //So they can all continue to move normally
         if(!paratroopsLanding && !dependentAirTransportableUnits.isEmpty())
@@ -356,13 +356,11 @@ public class MovePerformer implements Serializable
         if (MoveValidator.isUnload(route) || paratroopsLanding)
         {
             Collection<Unit> units = new ArrayList<Unit>();
-        	//kev readded this
             units.addAll(transporting.values());
             units.addAll(transporting.keySet());
             
             if(transporting.isEmpty())
             {
-            	//kev readded this
             	units.addAll(dependentAirTransportableUnits.keySet());
             	for(Unit airTransport:dependentAirTransportableUnits.keySet())
             	{
@@ -370,41 +368,32 @@ public class MovePerformer implements Serializable
             	}            	
         	}
             Iterator<Unit> iter = units.iterator();
+            //any pending battles in the unloading zone? 
+            BattleTracker tracker = getBattleTracker(); 
+            boolean pendingBattles = tracker.getPendingBattle(route.getStart(), false) != null;
+
             while (iter.hasNext())
             {
             	Unit unit = iter.next();
             	if(paratroopsLanding && Matches.UnitIsAirTransport.match(unit))
             		continue;
-            	//unload the transports
-            	Change change = m_moveDelegate.getTransportTracker().unloadTransportChange((TripleAUnit) unit, m_currentMove.getRoute().getEnd(), m_player);
-        		m_currentMove.addChange(change);     
-            	m_currentMove.unload(unit);               
-        		m_bridge.addChange(change);
+            	
+                //unload the transports
+                Change change =  m_moveDelegate.getTransportTracker().unloadTransportChange((TripleAUnit) unit, m_currentMove.getRoute().getEnd(), m_player, pendingBattles);
+                m_currentMove.addChange(change);     
+                m_currentMove.unload(unit);               
+                m_bridge.addChange(change);
         		
         		//set noMovement
             	change = m_moveDelegate.markNoMovementChange(Collections.singleton(unit));
             	m_currentMove.addChange(change);            
-            	m_bridge.addChange(change);
-                
-            }
-
-            /*//unload the transports
-            Iterator<Unit> unitIter = transporting.keySet().iterator();
-            while (unitIter.hasNext())
-            {
-                Unit load = unitIter.next();
-                Unit transport = transporting.get(load);
-                Change change = m_moveDelegate.getTransportTracker().unloadTransportChange((TripleAUnit) load, m_currentMove.getRoute().getEnd(), m_player);
-                m_currentMove.addChange(change);
-                m_currentMove.unload(transport);
-                m_bridge.addChange(change);
-            }*/
+            	m_bridge.addChange(change);                
+            }           
         }
     }
 
     private boolean hasConqueredNonBlitzed(Route route)
     {
-
         BattleTracker tracker = getBattleTracker();
 
         for (int i = 0; i < route.getLength(); i++)

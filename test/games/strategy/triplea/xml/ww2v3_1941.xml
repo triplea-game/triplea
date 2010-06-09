@@ -2256,7 +2256,7 @@
                 	<boolean/>
                 </property> 
                 
-				<property name="Kamikaze Airplanes" value="true" editable="false">
+				<property name="Kamikaze Airplanes" value="false" editable="false">
                 	<boolean/>
                 </property>
                 
