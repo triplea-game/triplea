@@ -1,4 +1,7 @@
 Changes for 1.2.6
+
+* better server side INode validation (sgb)
+
 * another fix for 2998846 & 3012752 Kamikaze fighters and unloaded troop edit-removal (ComradeKev)
 
 * fix bug 2998846 kamikaze aircraft not working (ComradeKev)

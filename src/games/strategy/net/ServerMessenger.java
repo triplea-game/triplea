@@ -209,7 +209,10 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
     
     public void messageReceived(MessageHeader msg,  SocketChannel channel)
     {
-
+        INode expectedReceive = m_channelToNode.get(channel);
+        if(!expectedReceive.equals(msg.getFrom())) {
+            throw new IllegalStateException("expected:" + expectedReceive + " not:" + msg.getFrom());
+        }
         if (msg.getFor() == null)
         {
             forwardBroadcast(msg);
