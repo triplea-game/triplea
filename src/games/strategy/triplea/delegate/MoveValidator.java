@@ -1344,7 +1344,7 @@ public class MoveValidator
                     carrierCapacity.put(potentialWithNonComMove,carrierCapacity.getInt(potentialWithNonComMove) - carrierCost);
                     break;
                 }
-                if (!allowKamikaze)
+                if (i==0 && !allowKamikaze)
                 	result.addDisallowedUnit(NOT_ALL_AIR_UNITS_CAN_LAND, unit);
             }
             
@@ -2036,10 +2036,46 @@ public class MoveValidator
 
         Map<Unit, Collection<Unit>> mapping = new HashMap<Unit, Collection<Unit>>();
         mapping.putAll(transportsMustMoveWith(sortedUnits));
-        mapping.putAll(carrierMustMoveWith(sortedUnits, start, data, player));
-        mapping.putAll(airTransportsMustMoveWith(sortedUnits));
+        
+        //Check if there are combined transports (carriers that are transports) and load them.
+        if(mapping.isEmpty())
+        {
+            mapping.putAll(carrierMustMoveWith(sortedUnits, start, data, player));
+        }
+        else
+        {
+            Map<Unit, Collection<Unit>> newMapping = new HashMap<Unit, Collection<Unit>>();
+        	newMapping.putAll(carrierMustMoveWith(sortedUnits, start, data, player));
+        	if(!newMapping.isEmpty())
+        		addToMapping(mapping, newMapping);
+        }
+        
+        if(mapping.isEmpty())
+        {
+        	mapping.putAll(airTransportsMustMoveWith(sortedUnits));
+        }
+        else
+        {
+            Map<Unit, Collection<Unit>> newMapping = new HashMap<Unit, Collection<Unit>>();
+        	newMapping.putAll(airTransportsMustMoveWith(sortedUnits));
+        	if(!newMapping.isEmpty())
+        		addToMapping(mapping, newMapping);        	
+        }
         return mapping;
     }
+
+	private static void addToMapping(Map<Unit, Collection<Unit>> mapping,
+			Map<Unit, Collection<Unit>> newMapping) {
+		for(Unit key:newMapping.keySet())
+		{
+			if(mapping.containsKey(key))
+			{
+				Collection<Unit> heldUnits = mapping.get(key);
+				heldUnits.addAll(newMapping.get(key));
+				mapping.put(key, heldUnits);
+			}
+		}
+	}
 
     private static Map<Unit, Collection<Unit>> transportsMustMoveWith(Collection<Unit> units)
     {

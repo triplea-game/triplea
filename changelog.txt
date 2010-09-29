@@ -1,4 +1,7 @@
 Changes for 1.2.6
+* fix bug 3007142 Carriers that are also transports (ComradeKev)
+
+* fix bug 3028106 fighter landing bug (ComradeKev)
 
 * better server side INode validation (sgb)
 
