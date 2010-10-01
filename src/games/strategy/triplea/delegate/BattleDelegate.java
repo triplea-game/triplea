@@ -406,6 +406,14 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
             List<Unit> enemyUnits = territory.getUnits().getMatches(enemyUnit);
                         
             Battle battle = m_battleTracker.getPendingBattle(territory, false);
+            if(battle == null) 
+            {
+            	Route route = new Route();
+				route.setStart(territory);
+				getBattleTracker().addBattle(route, attackingUnits, false, player, m_data, m_bridge, null);
+				battle = m_battleTracker.getPendingBattle(territory, false);
+			}
+            		
             if(battle.isEmpty())
             	battle.addAttackChange(new Route(territory), attackingUnits);
             
