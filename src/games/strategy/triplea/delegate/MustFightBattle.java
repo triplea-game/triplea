@@ -2042,7 +2042,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //If transports are unescorted, check opposing forces to see if the Trns die automatically
     	if(alliedTransports.size() == alliedUnits.size())     
         {
-        	//Get all the ENEMY sea and air units in the territory
+        	//Get all the ENEMY sea and air units (that can attack) in the territory
             CompositeMatch<Unit> enemyUnitsMatch = new CompositeMatchAnd<Unit>();
             enemyUnitsMatch.add(Matches.UnitIsNotLand);
             enemyUnitsMatch.add(Matches.UnitIsNotTransport);
@@ -2050,9 +2050,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
             enemyUnitsMatch.add(Matches.unitCanAttack(player));            
             Collection<Unit> enemyUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), enemyUnitsMatch);
             
-    		//If there are opposing forces with attack power, kill the transports  
+    		//If there are attackers set their movement to 0 and kill the transports  
         	if (enemyUnits.size() > 0)
         	{
+        		Change change =DelegateFinder.moveDelegate(m_data).markNoMovementChange(enemyUnits);
+                bridge.addChange(change);
+                
     			remove(alliedTransports, bridge, m_battleSite, false);   
             	//and remove them from the battle display
             	if(player.equals(m_defender))

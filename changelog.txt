@@ -1,4 +1,6 @@
 Changes for 1.2.6
+* set attacking units' movement to 0 when they stop to kill undefended units (ComradeKev)
+
 * fix bug 3007142 Carriers that are also transports (ComradeKev)
 
 * fix bug 3028106 fighter landing bug (ComradeKev)
