@@ -320,7 +320,7 @@ public class UnitAttachment extends DefaultAttachment
 	  m_artilleryBonus = getInt(s);
   }*/
 
-  public void setunitSupportCount(String s)
+  public void setUnitSupportCount(String s)
   {
 	  m_unitSupportCount = getInt(s);
   }

@@ -1,4 +1,10 @@
 Changes for 1.2.6
+* fix part of bug 3012752 - unitSupportCount not working (ComradeKev)
+
+* fix bug 3081799 air units capable of landing on land included in carrier landing calculations (ComradeKev)
+
+* add SELECTABLE_ZERO_MOVEMENT_UNITS property support (Veqryn)
+
 * fix bug 3043828 pending sea battles with transports causes crash (ComradeKev)
 
 * set attacking units' movement to 0 when they stop to kill undefended units (ComradeKev)

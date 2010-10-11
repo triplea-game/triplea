@@ -467,6 +467,16 @@ public class Properties implements Constants {
         return data.getProperties().get(AIR_ATTACK_SUB_RESTRICTED, false);
 
     }
+    
+
+    /*
+     * Allows units with zero movement to be selected to be moved
+     */
+    public static boolean getSelectableZeroMovementUnits(GameData data) {
+
+        return data.getProperties().get(SELECTABLE_ZERO_MOVEMENT_UNITS, false);
+
+    }
 
     /*
      * Sub retreat before battle

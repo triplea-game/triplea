@@ -28,6 +28,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -626,7 +627,12 @@ public class MovePanel extends ActionPanel
         if (!EditDelegate.getEditMode(getData()))
             movable.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
 
-        movable.add(Matches.UnitCanMove);
+        /* if you do not have selection of zero-movement units enabled, 
+         * this will restrict selection to units with 1 or more movement
+         */
+        if (!games.strategy.triplea.Properties.getSelectableZeroMovementUnits(getData()))
+        	movable.add(Matches.UnitCanMove);
+        
         if(!m_nonCombat)
             movable.add(new InverseMatch<Unit>( Matches.UnitIsAA));
         if(route != null)

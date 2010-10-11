@@ -1235,16 +1235,19 @@ public class MoveValidator
         if (!Match.someMatch(units, Matches.UnitIsAir))
             return result;
         
+        //get Route end
+        Territory routeEnd = route.getEnd();
+        
         //we can land at the end, nothing left to check
         CompositeMatch<Territory> friendlyGround = alliedNonConqueredNonPendingTerritory(data, player);
-        if(friendlyGround.match(route.getEnd()))
+        if(friendlyGround.match(routeEnd))
             return result;
         
         //Find all the air units we'll need to account for
         Match<Unit> ownedAirMatch = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.unitOwnedBy(player) );        
         Collection<Unit> ownedAir = new ArrayList<Unit>();
         ownedAir.addAll( Match.getMatches(units, ownedAirMatch ));
-        ownedAir.addAll(Match.getMatches( route.getEnd().getUnits().getUnits(), ownedAirMatch ));
+        ownedAir.addAll(Match.getMatches( routeEnd.getUnits().getUnits(), ownedAirMatch ));
                
         //Get the farthest we need to search for places to land (including current route length)
         //Generate the IntegerMap containing each aircraft's remaining movement
@@ -1253,7 +1256,6 @@ public class MoveValidator
         //Get the distances to the nearest allied land and owned factory
         int nearestFactory = getNearestFactory(data, route, player, maxMovement, friendlyGround);
         int nearestLand = getNearestLand(data, route, player, maxMovement, friendlyGround);
-        
                 
 		
         //find the air units that can't make it to land
@@ -1280,48 +1282,33 @@ public class MoveValidator
         Collection<Unit> placeUnits = player.getUnits().getUnits();
         CompositeMatch<Unit> unitIsSeaOrCanLandOnCarrier = new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
         placeUnits = Match.getMatches(placeUnits, unitIsSeaOrCanLandOnCarrier);        
-        boolean lhtrCarrierProdRules = AirThatCantLandUtil.isLHTRCarrierProduction(data) || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
+        boolean landAirOnNewCarriers = AirThatCantLandUtil.isLHTRCarrierProduction(data) || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
         boolean hasProducedCarriers = player.getUnits().someMatch(Matches.UnitIsCarrier);
-        if (lhtrCarrierProdRules && hasProducedCarriers)
-        { 
+        if (landAirOnNewCarriers && hasProducedCarriers)
+        {
         	if(nearestFactory-1 <= maxMovement)
         	{
         		placeUnits = Match.getMatches(placeUnits, Matches.UnitIsCarrier);
         		carrierCapacity.put(new Integer(nearestFactory-1), carrierCapacity.getInt(nearestFactory-1) + MoveValidator.carrierCapacity(placeUnits) );        		
         	}
         }        
-        //Don't think we need this any more.
-        /*Collection<Unit> unitsAtEnd = route.getEnd().getUnits().getMatches(Matches.alliedUnit(player, data));
-        unitsAtEnd.addAll(units);*/
-       /* // check carrierMustMoveWith, and reserve carrier capacity for allied planes as required
-        Collection<Unit> ownedCarrier = Match.getMatches(route.getEnd().getUnits().getUnits(), 
-                                                         new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player)));
-        Map<Unit, Collection<Unit>> mustMoveWith = carrierMustMoveWith(ownedCarrier, route.getEnd().getUnits().getUnits(), data, player);
-    
-        int alliedMustMoveCost = 0;
-        for (Unit unit : mustMoveWith.keySet())
-        {
-            Collection<Unit> mustMovePlanes = mustMoveWith.get(unit);
-            if (mustMovePlanes == null)
-                continue;
-            alliedMustMoveCost += MoveValidator.carrierCost(mustMovePlanes);
-        }
-        
-        carrierCapacity.put(new Integer(0), MoveValidator.carrierCapacity(unitsAtEnd) - alliedMustMoveCost);*/
         
 
-        Territory unitTerr = route.getEnd();
-        Collection<Territory> neighbors = data.getMap().getNeighbors(unitTerr, 1);
+        Collection<Territory> neighbors = data.getMap().getNeighbors(routeEnd, 1);
         boolean anyNeighborsWater = Match.someMatch(neighbors, Matches.TerritoryIsWater);
-         
+        
         for (Unit unit : Match.getMatches(units, Matches.UnitCanLandOnCarrier))
         {
+        	//If the aircraft can already land, skip it
+        	if(!airThatMustLandOnCarriers.contains(unit))
+        		continue;
+        	
             int carrierCost = UnitAttachment.get(unit.getType()).getCarrierCost();
             int movement = movementLeft.getInt(unit);
 
             for(int i = movement; i >=-1; i--)
             {
-                if(i == -1 || (i==0 && !unitTerr.isWater()) || (i==1 && !anyNeighborsWater))
+                if(i == -1 || (i==0 && !routeEnd.isWater()) || (i==1 && !anyNeighborsWater))
                 {
                     if (!allowKamikaze)
                         result.addDisallowedUnit(NOT_ALL_AIR_UNITS_CAN_LAND, unit);

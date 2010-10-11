@@ -100,6 +100,7 @@ public interface Constants
   public static final String SURVIVING_AIR_MOVE_TO_LAND = "Surviving Air Move To Land";
   public static final String BLITZ_THROUGH_FACTORIES_AND_AA_RESTRICTED = "Blitz Through Factories And AA Restricted";
   public static final String AIR_ATTACK_SUB_RESTRICTED = "Air Attack Sub Restricted";
+  public static final String SELECTABLE_ZERO_MOVEMENT_UNITS = "Selectable Zero Movement Units";
   /**
    * End individual rules (All default to FALSE)
    */

@@ -161,7 +161,7 @@ public class DiceRollTest extends TestCase
         {
         	Unit unit = unitsIter.next();
         	UnitAttachment ua = UnitAttachment.get(unit.getType());
-        	ua.setunitSupportCount("2");            	
+        	ua.setUnitSupportCount("2");            	
         }
         
         //Now add the infantry
