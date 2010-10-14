@@ -1,4 +1,8 @@
 Changes for 1.2.6
+* Added Great War reliefs (Pulicat)
+
+* Updated BigWorld game (Veqryn, Uboat, Pulicat, and others)
+
 * fix part of bug 3012752 - unitSupportCount not working (ComradeKev)
 
 * fix bug 3081799 air units capable of landing on land included in carrier landing calculations (ComradeKev)

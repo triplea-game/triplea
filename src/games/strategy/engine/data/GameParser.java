@@ -1247,7 +1247,7 @@ public class GameParser
             PlayerID owner = getPlayerID(current, "owner", true);
             territory.setOwner(owner);
             //Set the original owner on startup.
-            
+            //TODO Look into this
             //The addition of this caused the automated tests to fail as TestAttachment can't be cast to TerritoryAttachment
             //The addition of this IF to pass the tests is wrong, but works until a better solution is found.
             //Kevin will look into it.
