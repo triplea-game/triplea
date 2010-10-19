@@ -477,6 +477,17 @@ public class Properties implements Constants {
         return data.getProperties().get(SELECTABLE_ZERO_MOVEMENT_UNITS, false);
 
     }
+    
+
+    /*
+     * Allows paratroopers to move ground units to friendly territories during non-combat move phase
+     */
+    public static boolean getParatroopersCanMoveDuringNonCombat(GameData data) {
+
+        return data.getProperties().get(PARATROOPERS_CAN_MOVE_DURING_NON_COMBAT, false);
+
+    }
+    
 
     /*
      * Sub retreat before battle

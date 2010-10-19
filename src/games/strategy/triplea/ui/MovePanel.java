@@ -1279,7 +1279,7 @@ public class MovePanel extends ActionPanel
                 Route route = getRoute(getFirstSelectedTerritory(), t);
                 
                 //Load Bombers with paratroops
-                if(!m_nonCombat && isParatroopers(getCurrentPlayer()) && Match.someMatch(m_selectedUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsAirTransport, Matches.unitHasNotMoved)))
+                if((!m_nonCombat || IsParatroopersCanMoveDuringNonCombat(getData())) && isParatroopers(getCurrentPlayer()) && Match.someMatch(m_selectedUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsAirTransport, Matches.unitHasNotMoved)))
                 {     
                 	final PlayerID player = getCurrentPlayer();
 
@@ -1904,6 +1904,12 @@ public class MovePanel extends ActionPanel
         if(ta == null)
         	return false;
         return ta.hasParatroopers();
+    }
+    
+    
+    private static boolean IsParatroopersCanMoveDuringNonCombat(GameData data)
+    {
+        return games.strategy.triplea.Properties.getParatroopersCanMoveDuringNonCombat(data);
     }
 }
 /**

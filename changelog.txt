@@ -1,4 +1,6 @@
 Changes for 1.2.6
+* fix null pointer when selecting various air transport loads (ComradeKev)
+
 * Added Great War reliefs (Pulicat)
 
 * Updated BigWorld game (Veqryn, Uboat, Pulicat, and others)

@@ -101,6 +101,7 @@ public interface Constants
   public static final String BLITZ_THROUGH_FACTORIES_AND_AA_RESTRICTED = "Blitz Through Factories And AA Restricted";
   public static final String AIR_ATTACK_SUB_RESTRICTED = "Air Attack Sub Restricted";
   public static final String SELECTABLE_ZERO_MOVEMENT_UNITS = "Selectable Zero Movement Units";
+  public static final String PARATROOPERS_CAN_MOVE_DURING_NON_COMBAT = "Paratroopers Can Move During Non Combat";
   /**
    * End individual rules (All default to FALSE)
    */
