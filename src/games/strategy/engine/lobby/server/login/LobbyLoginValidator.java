@@ -132,11 +132,17 @@ public class LobbyLoginValidator implements ILoginValidator
     {
        if(userName.toLowerCase().indexOf("admin") != -1)
            return "You can't log in anonymously with admin in the name";
-        
+
+       if(DBUserController.validateUserName(userName) != null) 
+       {
+           return DBUserController.validateUserName(userName);
+       }
+       
        if(!new DBUserController().doesUserExist(userName))
        {
            return null;
        }
+       
        return "Can't login anonymously, username already exists";
     }
 

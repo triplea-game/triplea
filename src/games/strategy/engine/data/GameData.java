@@ -20,16 +20,22 @@
 
 package games.strategy.engine.data;
 
-import java.util.*;
-
-import java.util.concurrent.locks.*;
-
-import games.strategy.engine.data.events.*;
+import games.strategy.engine.data.events.GameDataChangeListener;
+import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.framework.*;
+import games.strategy.engine.framework.IGameLoader;
+import games.strategy.engine.history.History;
 import games.strategy.thread.LockUtil;
-import games.strategy.util.*;
-import games.strategy.engine.history.*;
+import games.strategy.triplea.ResourceLoader;
+import games.strategy.util.ListenerList;
+import games.strategy.util.Version;
+
+import java.util.Iterator;
+import java.util.UUID;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+
 
 /**
  *
@@ -94,8 +100,10 @@ public class GameData implements java.io.Serializable
 	private final UnitTypeList m_unitTypeList = new UnitTypeList(this);
 	private final GameProperties m_properties = new GameProperties(this);
 	private final UnitsList m_unitsList = new UnitsList();
+	private transient ResourceLoader m_resourceLoader;
 
-	private IGameLoader m_loader;
+
+    private IGameLoader m_loader;
 	private final History m_gameHistory = new History(this);
     private volatile transient boolean m_testLockIsHeld = false;
 
@@ -414,6 +422,11 @@ public class GameData implements java.io.Serializable
     {
         m_dataChangeListeners.clear();
         m_territoryListeners.clear();
+        
+        if(m_resourceLoader != null) {
+            m_resourceLoader.close();
+            m_resourceLoader = null;
+        }
     }
 	
     /**
@@ -423,4 +436,15 @@ public class GameData implements java.io.Serializable
     public void testLocksOnRead() {
         m_testLockIsHeld = true;
     }
+    
+
+    public ResourceLoader getResourceLoader() {
+        if(m_resourceLoader != null) {
+            return m_resourceLoader;
+        }
+        m_resourceLoader = ResourceLoader.getMapresourceLoader(m_gameName);
+        return getResourceLoader();
+    }
+    
+    
 }

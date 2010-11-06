@@ -1,4 +1,9 @@
 Changes for 1.2.6
+
+* limit status message length and remove combining characters (sgb)
+ 
+* better server side INode validation (sgb)
+a
 * fix null pointer when selecting various air transport loads (ComradeKev)
 
 * Added Great War reliefs (Pulicat)
