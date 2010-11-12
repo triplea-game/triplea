@@ -58,7 +58,13 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isArtillery = false;
   private boolean m_isArtillerySupportable = false;
   private boolean m_isMarine = false;
-  private boolean m_isInfantry = false;   
+  private boolean m_isInfantry = false;
+  private boolean m_canScramble = false;
+
+  //-1 if can't scramble
+  private int m_maxScrambleDistance = -1;
+  //-1 if can't operate
+  private int m_maxOperationalDamage = -1;
   
   //-1 if cant transport
   private int m_transportCapacity = -1;
@@ -121,7 +127,7 @@ public class UnitAttachment extends DefaultAttachment
   {
     return m_canBlitz;
   }
-
+  
   public void setIsSub(String s)
   {
     m_isSub = getBool(s);
@@ -430,6 +436,37 @@ public class UnitAttachment extends DefaultAttachment
     return 1;
   }
 
+  //Kev new properties
+  public void setCanScramble(String s)
+  {
+	  m_canScramble = getBool(s);
+  }
+
+  public boolean getCanScramble()
+  {
+    return m_canScramble;
+  }
+  
+  public void setMaxScrambleDistance(String s)
+  {
+	  m_maxScrambleDistance = getInt(s);
+  }
+
+  public int getMaxScrambleDistance()
+  {
+    return m_maxScrambleDistance;
+  }
+  
+  public void setMaxOperationalDamage(String s)
+  {
+	  m_maxOperationalDamage = getInt(s);
+  }
+
+  public int getMaxOperationalDamage()
+  {
+    return m_maxOperationalDamage;
+  }
+  
   public void validate(GameData data) throws GameParseException
   {
     if(m_isAir)

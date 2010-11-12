@@ -179,5 +179,9 @@ public interface Constants
   public static final String DISPLAY_SEA_NAMES = "Display Sea Names";
   
   public static final String SHOW_ENEMY_CASUALTIES_USER_PREF = "ShowEnemyCasualties";
-
+  
+  //Kev new property names
+  public static final String SCRAMBLED_UNITS_RETURN_TO_BASE = "Scrambled Units Return To Base";
+  public static final String SCRAMBLE_TO_SEA_ONLY = "Scramble To Sea Only";
+  public static final String SCRAMBLE_FROM_ISLAND_ONLY = "Scramble From Island Only";
 }
