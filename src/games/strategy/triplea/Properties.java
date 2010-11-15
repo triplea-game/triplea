@@ -693,6 +693,39 @@ public class Properties implements Constants {
             return 0;
         }
     }
+
+    /*
+     * 
+     */
+    public static boolean getScramble_Rules_In_Effect(GameData data) {
+
+        return data.getProperties().get(SCRAMBLE_RULES_IN_EFFECT, false);
+    }
+    
+    
+    /*
+     * 
+     */
+    public static boolean getScrambled_Units_Return_To_Base(GameData data) {
+
+        return data.getProperties().get(SCRAMBLED_UNITS_RETURN_TO_BASE, false);
+    }
+    
+    /*
+     * 
+     */
+    public static boolean getScramble_To_Sea_Only(GameData data) {
+
+        return data.getProperties().get(SCRAMBLE_TO_SEA_ONLY, false);
+    }
+    
+    /*
+     * 
+     */
+    public static boolean getScramble_From_Island_Only(GameData data) {
+
+        return data.getProperties().get(SCRAMBLE_FROM_ISLAND_ONLY, false);
+    }
     
     
     

@@ -25,6 +25,7 @@ import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -39,6 +40,7 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.ui.EditProductionPanel;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.triplea.weakAI.WeakAI;
@@ -73,6 +75,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 {
 
     public static final String RETREAT_PLANES = " retreat planes?";
+    public static final String AIRBASE  = "air base";
 
 	public static enum ReturnFire {
         ALL,SUBS,NONE
@@ -111,6 +114,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private Collection<Territory> m_amphibiousAttackFrom = new ArrayList<Territory>();
     private Collection<Unit> m_amphibiousLandAttackers = new ArrayList<Unit>();
     private List<Unit> m_defendingUnits = new ArrayList<Unit>();
+    private List<Unit> m_scrambledUnits = new ArrayList<Unit>();
     private Collection<Unit> m_defendingWaitingToDie = new ArrayList<Unit>();
     private Collection<Unit> m_bombardingUnits = new ArrayList<Unit>();
     private boolean m_amphibious = false;
@@ -152,13 +156,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
     public MustFightBattle(Territory battleSite, PlayerID attacker,
             GameData data, BattleTracker tracker)
     {
-
         m_data = data;
         m_tracker = tracker;
         m_battleSite = battleSite;
         m_attacker = attacker;
         
-
         m_defendingUnits.addAll(m_battleSite.getUnits().getMatches(
                 Matches.enemyUnit(attacker, data)));
         m_defender = findDefender(battleSite);
@@ -186,6 +188,66 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	return games.strategy.triplea.Properties.getSubmersible_Subs(m_data);
     }
 
+    private boolean getScramble_Rules_In_Effect()
+    {
+    	return games.strategy.triplea.Properties.getScramble_Rules_In_Effect(m_data);
+    }
+
+    private void determineScrambledUnits(IDelegateBridge bridge)
+    {
+    	//TODO get the unit types that can scramble
+    	Collection<UnitType> unitTypesCanScramble = new ArrayList<UnitType>();
+    	//Get all the players except the attacker
+    	for (PlayerID p : m_data.getPlayerList())
+        {
+        	//Get their production rules
+            if (!p.equals(m_attacker) && !p.equals(PlayerID.NULL_PLAYERID))
+            {
+                List<ProductionRule> rules = p.getProductionFrontier().getRules();
+
+            	//Get the unit types that can scramble
+                for(ProductionRule rule : rules)
+                {                    
+                    UnitType ut = (UnitType) rule.getResults().keySet().iterator().next();
+                    if(!unitTypesCanScramble.contains(ut) && UnitAttachment.get(ut).getCanScramble())                    	
+                    	unitTypesCanScramble.add(ut);
+                }
+            }
+        }
+
+    	//TODO get their maxScrambleDistance
+    	int maxScrambleDistance = 1;
+    	
+    	for (UnitType ut:unitTypesCanScramble)
+    	{
+    		UnitAttachment ua = UnitAttachment.get(ut);
+    		int uaMaxScrambleDistance = ua.getMaxScrambleDistance();
+    		
+    		if(uaMaxScrambleDistance > maxScrambleDistance)
+    			maxScrambleDistance = uaMaxScrambleDistance;
+    	}            
+    	
+    	//TODO see if there are any airbases within that distance
+        Collection<Territory> neighbors = m_data.getMap().getNeighbors(m_battleSite, maxScrambleDistance);
+    	Collection<Territory> neighborsWithActiveAirbases = new ArrayList<Territory>();
+
+    	for (Territory t:neighbors)
+        {
+    		//TODO see if they're damaged also
+        	if(t.getUnits().someMatch(Matches.UnitIsAirBase))
+        		neighborsWithActiveAirbases.add(t);
+        }
+        
+        
+    	//TODO ask the aircraft owners if they wish to scramble the units
+    	if(!neighborsWithActiveAirbases.isEmpty())
+    	{
+    		queryScrambleUnits(SCRAMBLE_UNITS, bridge, neighborsWithActiveAirbases);
+    	}
+    	
+    	//TODO move any selected units to the site and add them to m_defendingUnits and m_scrambledUnits
+    }
+    
     public boolean isOver()
     {
         return m_over;
@@ -245,7 +307,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     public boolean isEmpty()
     {
-
         return m_attackingUnits.isEmpty() && m_attackingWaitingToDie.isEmpty();
     }
 
@@ -287,42 +348,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
       //TODO add dependencies for transported units?
         Map<Unit, Collection<Unit>> dependencies = transporting(units);
-        /*if (m_amphibious)
-        {
-        	Collection<Unit> amphibUnits = Match.getMatches(units, Matches.UnitWasAmphibious);
-            Collection<Unit> transports = Match.getMatches(getAttackFrom(route).getUnits().getUnits(), Matches.UnitWasUnloadedThisTurn);
-            
-            if(!amphibUnits.isEmpty() && !transports.isEmpty())
-            {
-            	//Load capable bombers by default>
-            	Map<Unit,Unit> unitsToTransports = MoveDelegate.mapTransports(route, transports, amphibUnits, false, m_attacker);
-
-            	HashMap<Unit, Collection<Unit>> dependentUnits = new HashMap<Unit, Collection<Unit>>();
-            	Collection<Unit> singleCollection = new ArrayList<Unit>();
-            	for (Unit unit : unitsToTransports.keySet())
-            	{
-                    Collection<Unit> unitList = new ArrayList<Unit>();
-                    unitList.add(unit);
-            		Unit transport = unitsToTransports.get(unit);                
-            		singleCollection.add(unit);
-
-            		//Set transportedBy for paratrooper
-            		change.add(ChangeFactory.unitPropertyChange(unit, transport, TripleAUnit.TRANSPORTED_BY ));            	
-
-            		//Set the dependents
-            		if (dependentUnits.get(transport) != null)
-            			dependentUnits.get(transport).addAll(unitList);
-            		else
-            			dependentUnits.put(transport, unitList);
-            	}
-
-            	dependencies.putAll(dependentUnits);
-
-            	UnitSeperator.categorize(amphibUnits, dependentUnits, false);
-            }
-        }*/
-        // Allied Air as dependent units
-        //Map<Unit, Collection<Unit>> dependencies = transporting(units);
+        
         if (isAlliedAirDependents())
         {
             dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
@@ -461,25 +487,21 @@ public class MustFightBattle implements Battle, BattleStepStrings
             //this is ok, we are a headless battle
         }
             
-
         return defender;
     }
 
     public boolean isBombingRun()
     {
-
         return false;
     }
     
     public Territory getTerritory()
     {
-
         return m_battleSite;
     }
 
     public int hashCode()
     {
-
         return m_battleSite.hashCode();
     }
 
@@ -663,20 +685,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         m_attackingUnits.removeAll(Match.getMatches(m_attackingUnits,
                 airNotInTerritory));
-
     }
 
     public List<String> determineStepStrings(boolean showFirstRun, IDelegateBridge bridge)
     {
-        
         List<String> steps = new ArrayList<String>();
-        //Special code for Edit Mode no longer necessary
-        /*if(EditDelegate.getEditMode(m_data)) 
-        {
-            steps.add(m_defender.getName() + SELECT_CASUALTIES);
-            steps.add(m_attacker.getName() + SELECT_CASUALTIES);
-            return steps;
-        }*/
         
         if (showFirstRun)
         {
@@ -705,6 +718,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
             			steps.add(LAND_PARATROOPS);
             		}
             	}
+            }
+
+            if(getScramble_Rules_In_Effect())
+            {
+            	steps.add(SCRAMBLE_UNITS_FOR_DEFENSE);
             }
         }
 
@@ -899,7 +917,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         return steps;
-
     }
 
     private boolean defenderSubsFireFirst() {
@@ -959,7 +976,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (m_over)
             return;
 
-       
         List<IExecutable> steps = getBattleExecutables();   
         
         //add in the reverse order we create them
@@ -968,7 +984,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             m_stack.push(step);
         }
-
 
         return;
     }
@@ -997,16 +1012,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //to the stack at the end
         List<IExecutable> steps = new ArrayList<IExecutable>();
         
-       /* boolean isEditMode = EditDelegate.getEditMode(m_data);
-        if(!isEditMode) 
-        {*/
-            addFightStepsNonEditMode(steps);
-        /*}
-        else 
-        {
-            addFightStepsEditMode(steps);
-        }*/
-        
+        addFightStepsNonEditMode(steps);
+                
         //we must grab these here, when we clear waiting to die, we might remove
         //all the opposing destroyers, and this would change the canRetreatSubs rVal
         final boolean canAttackerRetreatSubs = canAttackerRetreatSubs();
@@ -1149,6 +1156,16 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 pushFightLoopOnStack(bridge);
             }
         };
+
+        steps.add(new IExecutable(){
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = 669349383898975048L;            
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+            	determineScrambledUnits(bridge);                
+            }
+        });    
+        
         
         steps.add(new IExecutable() {
             // compatible with 0.9.0.2 saved games
@@ -1161,7 +1178,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                     ITripleaDisplay display = getDisplay(bridge);
                     display.listBattleSteps(m_battleID, m_stepStrings);
                     m_round++;
-
+                    
                     //continue fighting
                     //the recursive step
                     //this should always be the base of the stack
@@ -1353,28 +1370,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private boolean defendingSubsSneakAttack2() {
         return (isWW2V2() || 
         isDefendingSubsSneakAttack()) && !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer);
-    }
-
-    
-    
-    
-    private void addFightStepsEditMode(List<IExecutable> steps) {
-    
-        steps.add(new IExecutable(){
-            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-            {
-                attackAny(bridge);
-            }
-
-        });        
-
-    
-        steps.add(new IExecutable(){
-            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-            {
-                defendAny(bridge);
-            }
-        });
     }
 
     /**
@@ -1615,7 +1610,36 @@ public class MustFightBattle implements Battle, BattleStepStrings
         possible = Match.getMatches(possible, match);
         return possible;
     }
+    
+//TODO kev finish the query for scrambled units
+    private void queryScrambleUnits(String actionType, IDelegateBridge bridge, Collection<Territory> availableTerritories)
+    {
+    	Collection<Unit> units = new ArrayList<Unit>();
+    	
+    	PlayerID scramblingPlayer = null;
+        String text;
+        
+        text = scramblingPlayer.getName() + SCRAMBLE_UNITS;
+    	
+        String step;
+        step = scramblingPlayer.getName()+ SCRAMBLE_UNITS;
 
+        getDisplay(bridge).gotoBattleStep(m_battleID, step);
+/*        Territory retreatTo = getRemote(scramblingPlayer, bridge).retreatQuery(m_battleID, submerge, availableTerritories, text);
+
+        if(retreatTo != null && !availableTerritories.contains(retreatTo) && !subs)
+        {
+        	System.err.println("Invalid retreat selection :" + retreatTo + " not in " + MyFormatter.territoriesToText(availableTerritories));
+        	Thread.dumpStack();
+        	return;
+        }*/
+            
+        
+        //TODO end if nothing done
+        if (units.size() == 0)
+            return;
+    }
+    
     private void queryRetreat(boolean defender, int retreatType,
             IDelegateBridge bridge, Collection<Territory> availableTerritories)
     {
@@ -1740,7 +1764,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 getDisplay(bridge).notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
 
             }
-
         }
     }
 
@@ -1840,7 +1863,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         bridge.getHistoryWriter().addChildToEvent(transcriptText, retreating);
-
     }
 
     private void submergeUnits(Collection<Unit> submerging, boolean defender,
@@ -1866,7 +1888,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
          }
 
         bridge.getHistoryWriter().addChildToEvent(transcriptText, submerging);
-
     }
 
     private void retreatUnits(Collection<Unit> retreating, Territory to,
@@ -1918,7 +1939,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             getDisplay(bridge).notifyRetreat(m_battleID, retreating);
 
-
         }
     }
   
@@ -1969,7 +1989,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         } else
         {
             getDisplay(bridge).notifyRetreat(m_battleID, retreating);
-
 
         }
     }
@@ -2321,7 +2340,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
             m_defendingUnits.removeAll(killed);
         else
             m_attackingUnits.removeAll(killed);
-               
     }
 
     private void fireNavalBombardment(IDelegateBridge bridge)
@@ -2584,7 +2602,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 bridge.enterDelegateExecution();
             }
         }
-        
     }
     
 
@@ -2612,7 +2629,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         return Match.getMatches(units, combat);
-
     }
 
     private void removeNonCombatants()
@@ -2830,7 +2846,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {           
             bridge.addChange(moveDelegate.ensureCanMoveOneSpaceChange(unit));
         }
-        
     }
     
     
@@ -3030,7 +3045,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		m_defendingAir.removeAll(defendingAir);
 	}
     
-    GUID getBattleID()
+	GUID getBattleID()
     {
         return m_battleID;
     }
@@ -3286,24 +3301,10 @@ class Fire implements IExecutable
         
         m_dice = DiceRoll.rollDice(units, m_defending,
                 m_firingPlayer, bridge, data, m_battle, annotation);
-
     }
     
     private void selectCasualties(IDelegateBridge bridge, GameData data)
     {
-    	//Special code for edit mode no longer necessary
-    	/*boolean isEditMode = EditDelegate.getEditMode(data);
-        if (isEditMode)
-        {
-            CasualtyDetails message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
-                    m_attackableUnits, bridge, m_text, data, m_dice,!m_defending, m_battleID, m_isHeadless, m_dice.getHits());
-
-            m_killed = message.getKilled();
-            m_damaged = message.getDamaged();
-            m_confirmOwnCasualties = message.getAutoCalculated();
-        }
-        else
-        {*/
     	int hitCount = m_dice.getHits();
 
     	MustFightBattle.getDisplay(bridge).notifyDice(m_battle.getBattleID(), m_dice, m_stepName);
@@ -3399,7 +3400,6 @@ class Fire implements IExecutable
     			m_confirmOwnCasualties = message.getAutoCalculated();
     		}
     	}
-        //}
     }
     
     private void notifyCasualties(final IDelegateBridge bridge)
@@ -3447,12 +3447,6 @@ class Fire implements IExecutable
         {
             bridge.enterDelegateExecution();
         }
-        
-
-
-      
-
-        
     }
 
 
@@ -3506,7 +3500,6 @@ class Fire implements IExecutable
         stack.push(rollDice);
         
         return;
-        
     }    
 
     /**

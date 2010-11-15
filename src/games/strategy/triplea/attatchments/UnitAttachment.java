@@ -60,6 +60,8 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isMarine = false;
   private boolean m_isInfantry = false;
   private boolean m_canScramble = false;
+  private boolean m_isAirBase = false;
+  
 
   //-1 if can't scramble
   private int m_maxScrambleDistance = -1;
@@ -465,6 +467,16 @@ public class UnitAttachment extends DefaultAttachment
   public int getMaxOperationalDamage()
   {
     return m_maxOperationalDamage;
+  }
+
+  public void setIsAirBase(String s)
+  {
+	  m_isAirBase = getBool(s);
+  }
+
+  public boolean getIsAirBase()
+  {
+    return m_isAirBase;
   }
   
   public void validate(GameData data) throws GameParseException

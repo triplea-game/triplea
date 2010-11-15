@@ -357,6 +357,15 @@ public class Matches
         };
     }
 
+    public static final Match<Unit> UnitIsAirBase = new Match<Unit>()
+    {
+        public boolean match(Unit unit)
+        {
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            return !ua.getIsAirBase();
+        }
+    };
+
 
     public static Match<Unit> unitCanBombard(final PlayerID id)
     {

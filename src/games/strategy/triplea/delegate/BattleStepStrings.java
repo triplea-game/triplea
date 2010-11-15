@@ -38,6 +38,7 @@ public interface BattleStepStrings
   final static String SUBMERGE_SUBS_VS_AIR_ONLY = "Submerge subs against only air units";
   final static String AIR_ATTACK_NON_SUBS = "Air attack non subs";
   final static String AIR_DEFEND_NON_SUBS = "Air defend non subs";
+  final static String SCRAMBLE_UNITS_FOR_DEFENSE = "Scramble units for defense";
   
   final static String REMOVE_SNEAK_ATTACK_CASUALTIES = "Remove sneak attack casualties";
 
@@ -55,4 +56,6 @@ public interface BattleStepStrings
   final static String SUBS_SUBMERGE = " submerge subs?";
 
   final static String ATTACKER_WITHDRAW = " withdraw?";
+
+  final static String SCRAMBLE_UNITS = " scramble units?";
 }
