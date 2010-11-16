@@ -362,10 +362,18 @@ public class Matches
         public boolean match(Unit unit)
         {
             UnitAttachment ua = UnitAttachment.get(unit.getType());
-            return !ua.getIsAirBase();
+            return ua.getIsAirBase();
         }
     };
 
+    public static final Match<Unit> UnitCanScramble = new Match<Unit>()
+    {
+        public boolean match(Unit unit)
+        {
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            return ua.getCanScramble();
+        }
+    };
 
     public static Match<Unit> unitCanBombard(final PlayerID id)
     {

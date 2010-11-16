@@ -526,6 +526,14 @@ public class BattlePanel extends ActionPanel
         return m_battleDisplay.getRetreat(message, possible, submerge);
     }
 
+    public Collection<Territory> getScramble(GUID battleID, String message, Collection<Territory> possible)
+    {
+        //something is really wrong
+        if(!ensureBattleIsDisplayed(battleID))
+            return null;
+        return m_battleDisplay.getScramble(message, possible);
+    }
+
     public void gotoStep(GUID battleID, final String step)
     {
         SwingUtilities.invokeLater(new Runnable()

@@ -234,7 +234,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	for (Territory t:neighbors)
         {
     		//TODO see if they're damaged also
-        	if(t.getUnits().someMatch(Matches.UnitIsAirBase))
+        	if(t.getUnits().someMatch(Matches.UnitIsAirBase) && t.getUnits().someMatch(Matches.UnitCanScramble))
         		neighborsWithActiveAirbases.add(t);
         }
         
@@ -964,7 +964,17 @@ public class MustFightBattle implements Battle, BattleStepStrings
             	landParatroops(bridge);
             }
         }; 
+//kev add scrambled units
+        IExecutable scrambleUnits = new IExecutable()
+        {        	            
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+            	determineScrambledUnits(bridge);                
+            }
+        };    
+        
         //push in opposite order of execution
+        m_stack.push(scrambleUnits);
         m_stack.push(landParatroops);
         m_stack.push(removeNonCombatants);
         m_stack.push(fireNavalBombardment);
@@ -1156,15 +1166,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 pushFightLoopOnStack(bridge);
             }
         };
-
-        steps.add(new IExecutable(){
-            // compatible with 0.9.0.2 saved games
-            private static final long serialVersionUID = 669349383898975048L;            
-            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-            {
-            	determineScrambledUnits(bridge);                
-            }
-        });    
         
         
         steps.add(new IExecutable() {
@@ -1614,30 +1615,22 @@ public class MustFightBattle implements Battle, BattleStepStrings
 //TODO kev finish the query for scrambled units
     private void queryScrambleUnits(String actionType, IDelegateBridge bridge, Collection<Territory> availableTerritories)
     {
-    	Collection<Unit> units = new ArrayList<Unit>();
-    	
-    	PlayerID scramblingPlayer = null;
-        String text;
-        
-        text = scramblingPlayer.getName() + SCRAMBLE_UNITS;
-    	
-        String step;
-        step = scramblingPlayer.getName()+ SCRAMBLE_UNITS;
-
-        getDisplay(bridge).gotoBattleStep(m_battleID, step);
-/*        Territory retreatTo = getRemote(scramblingPlayer, bridge).retreatQuery(m_battleID, submerge, availableTerritories, text);
-
-        if(retreatTo != null && !availableTerritories.contains(retreatTo) && !subs)
-        {
-        	System.err.println("Invalid retreat selection :" + retreatTo + " not in " + MyFormatter.territoriesToText(availableTerritories));
-        	Thread.dumpStack();
-        	return;
-        }*/
+            //TODO break out each Scrambled Unit's owner for the query            
+            PlayerID scramblingPlayer = m_battleSite.getOwner();
+            String text = scramblingPlayer + SCRAMBLE_UNITS;
             
-        
-        //TODO end if nothing done
-        if (units.size() == 0)
-            return;
+            String step = SCRAMBLE_UNITS_FOR_DEFENSE;
+
+            getDisplay(bridge).gotoBattleStep(m_battleID, step);
+        	
+            Collection<Territory> scrambleFrom = getRemote(scramblingPlayer, bridge).scrambleQuery(m_battleID, availableTerritories, text);
+            if(scrambleFrom != null && !availableTerritories.containsAll(scrambleFrom))
+            {
+            	System.err.println("Invalid scramble selection :" + scrambleFrom + " not in " + MyFormatter.territoriesToText(availableTerritories));
+            	Thread.dumpStack();
+            	return;
+            }
+            //TODO kev actually move the units to the battle.
     }
     
     private void queryRetreat(boolean defender, int retreatType,

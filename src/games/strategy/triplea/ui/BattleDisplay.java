@@ -368,6 +368,11 @@ public class BattleDisplay extends JPanel
         }
     }
 
+    public Collection<Territory> getScramble(String message, Collection<Territory> possible)
+    {
+            return getScrambleInternal(message, possible);
+    }
+
     private Territory getSubmerge(final String message)
     {
  
@@ -563,6 +568,99 @@ public class BattleDisplay extends JPanel
         return retreatTo[0];
     }
 
+    private Collection<Territory> getScrambleInternal(final String message, final  Collection<Territory> possible)
+    {
+        if(SwingUtilities.isEventDispatchThread())
+        {
+            throw new IllegalStateException("Should not be called from dispatch thread");
+        }
+        
+        final Collection<Territory> scrambleFrom = new ArrayList<Territory>();
+        final CountDownLatch latch = new CountDownLatch(1);
+        
+        final Action action = new AbstractAction("Scramble?")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                String ok = "Scramble";
+                String cancel = "Cancel";
+                String wait = "Ask Me Later";
+                
+                String[] options =
+                { ok, cancel, wait };
+                int choice = JOptionPane.showOptionDialog(BattleDisplay.this, message, "Scramble?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
+                        cancel);
+                
+                //dialog dismissed
+                if(choice == -1)
+                    return;
+                //wait
+                if(choice == 2)
+                    return;
+                
+                //remain
+                if (choice == 1)
+                {
+                    latch.countDown();
+                    return;
+                }
+                
+                //if you have eliminated the impossible, whatever remains, no matter
+                //how improbable, must be the truth
+                //Scramble
+
+                ScrambleComponent comp = new ScrambleComponent(possible);
+                int option = JOptionPane.showConfirmDialog(BattleDisplay.this, comp, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, (Icon) null);
+                if (option == JOptionPane.OK_OPTION)
+                {
+                	scrambleFrom.addAll(comp.getSelection());
+                    if (scrambleFrom != null)
+                    {
+                        latch.countDown();
+                    }                        
+                } 
+            }            
+        };
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {        
+            public void run()
+            {
+                m_actionButton.setAction(action);
+            }
+        });
+        
+        SwingUtilities.invokeLater(new Runnable()
+                {                
+                    public void run()
+                    {
+                        action.actionPerformed(null);
+                    }
+                });
+
+        
+        try
+        {
+            latch.await();
+        } catch (InterruptedException e1)
+        {
+            e1.printStackTrace();
+        }
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {        
+            public void run()
+            {
+                m_actionButton.setAction(m_nullAction);
+        
+            }
+        
+        });
+        
+        
+        return scrambleFrom;
+    }
+
     private class RetreatComponent extends JPanel
     {
         private JList m_list;
@@ -631,6 +729,79 @@ public class BattleDisplay extends JPanel
         {
 
             return (Territory) m_list.getSelectedValue();
+        }
+    }
+
+    private class ScrambleComponent extends JPanel
+    {
+        private JList m_list;
+        private JLabel m_scrambleTerritory = new JLabel("");
+        
+        ScrambleComponent(Collection<Territory> possible)
+        {
+
+            this.setLayout(new BorderLayout());
+
+            JLabel label = new JLabel("Scramble from...");
+            label.setBorder(new EmptyBorder(0,0,10,0));
+            this.add(label, BorderLayout.NORTH);
+            JPanel imagePanel = new JPanel();
+            imagePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            imagePanel.add(m_scrambleTerritory);
+            
+            imagePanel.setBorder(new EmptyBorder(10,10,10,0));
+            
+            this.add(imagePanel, BorderLayout.EAST);
+
+            Vector<Territory> listElements = new Vector<Territory>(possible);
+
+            m_list = new JList(listElements);
+            m_list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+            if (listElements.size() >= 1)
+                m_list.setSelectedIndex(0);
+            JScrollPane scroll = new JScrollPane(m_list);
+            this.add(scroll, BorderLayout.CENTER);
+            
+            scroll.setBorder(new EmptyBorder(10,0,10,0));
+            updateImage();
+            
+            
+            m_list.addListSelectionListener(new ListSelectionListener()
+            {            
+                public void valueChanged(ListSelectionEvent e)
+                {
+                    updateImage();
+                }            
+            });            
+        }
+        
+        private void updateImage()
+        {
+            int width = 250;
+            int height = 250;
+            Image img = m_mapPanel.getTerritoryImage((Territory) m_list.getSelectedValue(), m_location); 
+            
+            Image finalImage = Util.createImage(width, height, true);
+
+            Graphics g = finalImage.getGraphics();
+            g.drawImage(img, 0, 0, width, height, this);
+            g.dispose();
+                        
+            m_scrambleTerritory.setIcon(new ImageIcon( finalImage ));
+        }
+
+        public Collection<Territory> getSelection()
+        {
+        	Collection<Territory> selectedTerritories = new ArrayList<Territory>();
+        	Object[] listedTerritories =  m_list.getSelectedValues();
+        	
+        	for(int i=0; i<listedTerritories.length; i++)
+        	{
+        		Territory aTerritory = (Territory) listedTerritories[i];
+        		selectedTerritories.add(aTerritory);
+        	}
+            
+        	return selectedTerritories;
         }
     }
 

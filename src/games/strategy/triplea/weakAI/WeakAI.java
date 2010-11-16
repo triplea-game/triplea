@@ -1274,6 +1274,11 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         return null;
     }
 
+    public Collection<Territory> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
+    {
+        return null;
+    }
+
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
      */
