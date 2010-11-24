@@ -30,19 +30,21 @@ public class UnitCategory implements Comparable
     private Collection<UnitOwner> m_dependents;
     private final int m_movement; //movement of the units
     private final int m_transportCost; //movement of the units
+    private final Territory m_originatingTerr; //movement of the units
     private final PlayerID m_owner;
     //the units in the category, may be duplicates.
     private final List<Unit> m_units = new ArrayList<Unit>();
-
+    
     private boolean m_damaged = false;
 
-    public UnitCategory(Unit unit, boolean categorizeDependents, boolean categorizeMovement, boolean categorizeTransportcost)
+    public UnitCategory(Unit unit, boolean categorizeDependents, boolean categorizeMovement, boolean categorizeTransportcost, boolean categorizeTerritory)
     {
         TripleAUnit taUnit = (TripleAUnit)unit;
         m_type = taUnit.getType();
         m_owner = taUnit.getOwner();
         m_movement = categorizeMovement ? taUnit.getMovementLeft() : -1;
-        m_transportCost = categorizeTransportcost ? UnitAttachment.get(((Unit) unit).getUnitType()).getTransportCost() : -1;        
+        m_transportCost = categorizeTransportcost ? UnitAttachment.get(((Unit) unit).getUnitType()).getTransportCost() : -1;
+        m_originatingTerr = categorizeTerritory ? taUnit.getOriginatedFrom() : null;
         m_damaged = (taUnit.getHits() > 0);
         if (categorizeDependents)
             createDependents(taUnit.getDependents());
@@ -53,7 +55,7 @@ public class UnitCategory implements Comparable
     
     public UnitCategory(Unit unit, Collection<Unit> dependents, int movement, int transportCost)
     {
-        this(unit, dependents, movement, false, transportCost);
+        this(unit, dependents, movement, false, transportCost, null);
     }
     
     public UnitCategory(UnitType type, PlayerID owner)
@@ -63,11 +65,11 @@ public class UnitCategory implements Comparable
         m_movement = -1;
         m_transportCost = -1;
         m_owner = owner;
-    
+        m_originatingTerr = null;
     }
     
 
-    public UnitCategory(Unit unit, Collection<Unit> dependents, int movement, boolean damaged, int transportCost)
+    public UnitCategory(Unit unit, Collection<Unit> dependents, int movement, boolean damaged, int transportCost, Territory t)
     {
         m_type = unit.getType();
         m_movement = movement;
@@ -75,6 +77,7 @@ public class UnitCategory implements Comparable
         m_owner = unit.getOwner();
         m_damaged = damaged;
         m_units.add(unit);
+        m_originatingTerr = t;
         createDependents(dependents);
     }
 

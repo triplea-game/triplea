@@ -139,7 +139,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
     {
         Set<UnitCategory> unresolvedUnitCategories = new HashSet<UnitCategory>();
         for (Unit unit : getUnresolvedUnits())
-            unresolvedUnitCategories.add(new UnitCategory(unit, false, false, false));
+            unresolvedUnitCategories.add(new UnitCategory(unit, false, false, false, false));
         return unresolvedUnitCategories;
     }
 

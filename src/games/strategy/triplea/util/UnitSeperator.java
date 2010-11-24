@@ -15,6 +15,7 @@
 
 package games.strategy.triplea.util;
 
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -48,7 +49,12 @@ public class UnitSeperator
 
     public static Set<UnitCategory> categorize(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, boolean sort)
     {
-        return categorize(units, dependent, categorizeMovement, categorizeTransportCost, /*ctgzTrnMovement*/ false, sort);
+        return categorize(units, dependent, categorizeMovement, categorizeTransportCost, /*ctgzTrnMovement*/ false, /*categorizeTerritories*/ false, sort);
+    }
+
+    public static Set<UnitCategory> categorize(boolean sort, Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, boolean categorizeTerritories)
+    {
+        return categorize(units, dependent, categorizeMovement, categorizeTransportCost, /*ctgzTrnMovement*/ false, categorizeTerritories, sort);
     }
 
     /**
@@ -68,6 +74,7 @@ public class UnitSeperator
                                                boolean categorizeMovement,  
                                                boolean categorizeTransportCost, 
                                                boolean categorizeTrnMovement,
+                                               boolean categorizeTerritories,
                                                boolean sort)
     {
         //somewhat odd, but we map UnitCategory->UnitCategory,
@@ -96,7 +103,13 @@ public class UnitSeperator
                 currentDependents = dependent.get(current);
             }
             boolean damaged = current.getHits() == 1;
-            UnitCategory entry = new UnitCategory(current, currentDependents, unitMovement, damaged, unitTransportCost);
+            
+            Territory originatingTerr = null;
+            if(categorizeTerritories)
+            	originatingTerr = TripleAUnit.get(current).getOriginatedFrom();
+            
+            
+            UnitCategory entry = new UnitCategory(current, currentDependents, unitMovement, damaged, unitTransportCost, originatingTerr);
 
             //we test to see if we have the key using equals, then since
             //key maps to key, we retrieve it to add the unit to the correct
@@ -134,4 +147,9 @@ public class UnitSeperator
         return categorize(units, dependent, categorizeMovement, categorizeTransportCost, true);
     }
 
+    public static Set<UnitCategory> categorize(Map<Unit, Collection<Unit>> dependent, Collection<Unit> units, boolean categorizeMovement, boolean categorizeTransportCost, boolean categorizeTerritories)
+    {
+        // sort by default
+        return categorize(true, units, dependent, categorizeMovement, categorizeTransportCost, categorizeTerritories);
+    }
 }

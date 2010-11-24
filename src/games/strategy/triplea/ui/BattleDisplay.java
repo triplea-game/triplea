@@ -12,21 +12,27 @@
 
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.util.UnitCategory;
@@ -51,9 +57,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -368,9 +378,9 @@ public class BattleDisplay extends JPanel
         }
     }
 
-    public Collection<Territory> getScramble(String message, Collection<Territory> possible)
+    public Collection<Territory> getScramble(IPlayerBridge bridge, String message, Collection<Territory> possible)
     {
-            return getScrambleInternal(message, possible);
+            return getScrambleInternal(bridge, message, possible);
     }
 
     private Territory getSubmerge(final String message)
@@ -568,7 +578,7 @@ public class BattleDisplay extends JPanel
         return retreatTo[0];
     }
 
-    private Collection<Territory> getScrambleInternal(final String message, final  Collection<Territory> possible)
+    private Collection<Territory> getScrambleInternal(final IPlayerBridge bridge, final String message, final  Collection<Territory> possible)
     {
         if(SwingUtilities.isEventDispatchThread())
         {
@@ -607,8 +617,8 @@ public class BattleDisplay extends JPanel
                 
                 //if you have eliminated the impossible, whatever remains, no matter
                 //how improbable, must be the truth
+                
                 //Scramble
-
                 ScrambleComponent comp = new ScrambleComponent(possible);
                 int option = JOptionPane.showConfirmDialog(BattleDisplay.this, comp, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, (Icon) null);
                 if (option == JOptionPane.OK_OPTION)
@@ -616,6 +626,78 @@ public class BattleDisplay extends JPanel
                 	scrambleFrom.addAll(comp.getSelection());
                     if (scrambleFrom != null)
                     {
+                    	if(!possible.containsAll(scrambleFrom))
+                    	{
+                    		System.err.println("Invalid scramble selection :" + scrambleFrom + " not in " + MyFormatter.territoriesToText(scrambleFrom));
+                    		Thread.dumpStack();
+                    		return;
+                    	}
+                    	
+                    	//TODO kev select the units to scramble.
+                        
+                     // Check to see if the selected units qualify
+  /*                      Match<Collection<Unit>> unitsToScrambleMatch = new Match<Collection<Unit>>()
+                        {
+                            public boolean match(Collection<Unit> units)
+                            {
+                                Collection<Unit> unitsToLoad = Match.getMatches(units, Matches.UnitCanScramble);
+                                
+                                boolean ableToScramble = true;
+                                for(Unit unit : unitsToLoad)
+                                {
+                                	UnitAttachment ua = UnitAttachment.get(unit.getType());
+                                	if(!ua.getCanScramble())
+                                		ableToScramble = false;
+                                }
+                                return ableToScramble;
+                            }
+                        };
+*/
+                        
+                        //TODO kev get the units from the chosen territories
+                        List<Unit> unitsToChoose = new ArrayList<Unit>();
+                        CompositeChange change = new CompositeChange();
+                        
+                        for(Territory t:scrambleFrom)
+                        {
+                        	Collection<Unit> units = Match.getMatches(t.getUnits().getUnits(),Matches.UnitCanScramble);
+                        	for(Unit u:units)
+                        	{
+                        		change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
+                        	}
+                        	unitsToChoose.addAll(units);
+                        }
+
+                        //bridge.addChange(change);
+                                                
+                        	//Map<Unit, Collection<Unit>> dependentUnits = new HashMap<Unit, Collection<Unit>>();
+                        	//Set<Unit> defaultSelections = new HashSet<Unit>();
+                        //Allow player to select which to load.
+                        UnitChooser   chooser = new UnitChooser(unitsToChoose, 
+                        		/*defaultSelections*/ null, 
+                        		/*dependentUnits*/ null, 
+                        		/*categorizeMovement*/ false, 
+                        		/*categorizeTransportCost*/ false,
+                        		/*categorizeTerritories*/ true,
+                        		bridge.getGameData(), 
+                        		/*allowTwoHit*/ false, 
+                        		m_mapPanel.getUIContext(), 
+                        		/*unitsToScrambleMatch*/ null);
+
+                        chooser.setTitle("Scramble units for defense");
+                        int  option2 = JOptionPane.showOptionDialog(getTopLevelAncestor(),
+                        		chooser, "What units do you want to scramble",
+                        		JOptionPane.OK_CANCEL_OPTION,
+                        		JOptionPane.PLAIN_MESSAGE, null, null, null);
+                        if (option2 != JOptionPane.OK_OPTION)
+                        	return;
+
+
+                        List<Unit> chosenUnits = chooser.getSelected(true); 
+
+                        //TODO kev actually move the units to the battle.
+                        //getOriginatedFrom
+                        //change.add(ChangeFactory.unitPropertyChange(attackIter.next(), true, TripleAUnit.ORIGINATED_FROM));
                         latch.countDown();
                     }                        
                 } 

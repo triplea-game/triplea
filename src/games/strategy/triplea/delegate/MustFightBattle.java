@@ -41,6 +41,8 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.EditProductionPanel;
+import games.strategy.triplea.ui.MovePanel;
+import games.strategy.triplea.ui.UnitChooser;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.triplea.weakAI.WeakAI;
@@ -62,6 +64,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.swing.JOptionPane;
 
 /**
  * 
@@ -114,7 +118,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private Collection<Territory> m_amphibiousAttackFrom = new ArrayList<Territory>();
     private Collection<Unit> m_amphibiousLandAttackers = new ArrayList<Unit>();
     private List<Unit> m_defendingUnits = new ArrayList<Unit>();
-    private List<Unit> m_scrambledUnits = new ArrayList<Unit>();
     private Collection<Unit> m_defendingWaitingToDie = new ArrayList<Unit>();
     private Collection<Unit> m_bombardingUnits = new ArrayList<Unit>();
     private boolean m_amphibious = false;
@@ -227,13 +230,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
     			maxScrambleDistance = uaMaxScrambleDistance;
     	}            
     	
-    	//TODO see if there are any airbases within that distance
+    	//TODO kev see if there are any airbases within that distance that are operable
         Collection<Territory> neighbors = m_data.getMap().getNeighbors(m_battleSite, maxScrambleDistance);
     	Collection<Territory> neighborsWithActiveAirbases = new ArrayList<Territory>();
 
     	for (Territory t:neighbors)
         {
-    		//TODO see if they're damaged also
         	if(t.getUnits().someMatch(Matches.UnitIsAirBase) && t.getUnits().someMatch(Matches.UnitCanScramble))
         		neighborsWithActiveAirbases.add(t);
         }
@@ -964,7 +966,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             	landParatroops(bridge);
             }
         }; 
-//kev add scrambled units
+
         IExecutable scrambleUnits = new IExecutable()
         {        	            
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
@@ -1612,10 +1614,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return possible;
     }
     
-//TODO kev finish the query for scrambled units
+
     private void queryScrambleUnits(String actionType, IDelegateBridge bridge, Collection<Territory> availableTerritories)
     {
-            //TODO break out each Scrambled Unit's owner for the query            
+            //TODO kev break out each Scrambled Unit's owner for the query            
             PlayerID scramblingPlayer = m_battleSite.getOwner();
             String text = scramblingPlayer + SCRAMBLE_UNITS;
             
@@ -1623,14 +1625,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
             getDisplay(bridge).gotoBattleStep(m_battleID, step);
         	
-            Collection<Territory> scrambleFrom = getRemote(scramblingPlayer, bridge).scrambleQuery(m_battleID, availableTerritories, text);
-            if(scrambleFrom != null && !availableTerritories.containsAll(scrambleFrom))
-            {
-            	System.err.println("Invalid scramble selection :" + scrambleFrom + " not in " + MyFormatter.territoriesToText(availableTerritories));
-            	Thread.dumpStack();
-            	return;
-            }
-            //TODO kev actually move the units to the battle.
+            //Ask players if they want to scramble and handle everything else
+            getRemote(scramblingPlayer, bridge).scrambleQuery(m_battleID, availableTerritories, text);
     }
     
     private void queryRetreat(boolean defender, int retreatType,

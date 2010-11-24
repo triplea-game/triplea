@@ -65,6 +65,7 @@ import games.strategy.ui.Util;
 import games.strategy.ui.Util.Task;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.gamePlayer.IPlayerBridge;
 
 /**
  * 
@@ -526,12 +527,12 @@ public class BattlePanel extends ActionPanel
         return m_battleDisplay.getRetreat(message, possible, submerge);
     }
 
-    public Collection<Territory> getScramble(GUID battleID, String message, Collection<Territory> possible)
+    public Collection<Territory> getScramble(IPlayerBridge bridge, GUID battleID, String message, Collection<Territory> possible)
     {
         //something is really wrong
         if(!ensureBattleIsDisplayed(battleID))
             return null;
-        return m_battleDisplay.getScramble(message, possible);
+        return m_battleDisplay.getScramble(bridge, message, possible);
     }
 
     public void gotoStep(GUID battleID, final String step)

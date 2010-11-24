@@ -136,6 +136,17 @@ public class UnitChooser extends JPanel
     layoutEntries();
   }
 
+  public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, boolean categorizeTerritories, GameData data, boolean allowTwoHit, UIContext uiContext, Match<Collection<Unit>> match)
+  {
+    m_dependents = dependent;
+    m_data = data;
+    m_allowTwoHit = allowTwoHit;
+    m_uiContext = uiContext;
+    m_match = match;
+    
+    createEntries(units, dependent, categorizeMovement,categorizeTransportCost, categorizeTerritories, defaultSelections);
+    layoutEntries();
+  }
 
   /**
    * Set the maximum number of units that we can choose.
@@ -243,6 +254,19 @@ public class UnitChooser extends JPanel
     }
   }
 
+
+  private void createEntries(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, boolean categorizeTerritories, Collection<Unit> defaultSelections)
+  {
+    Collection categories = UnitSeperator.categorize(dependent, units, categorizeMovement, categorizeTransportCost, categorizeTerritories);
+    Collection defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
+    IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
+    Iterator iter = categories.iterator();
+    while(iter.hasNext())
+    {
+      UnitCategory category = (UnitCategory) iter.next();
+      addCategory(category, defaultValues.getInt(category));
+    }
+  }
   private IntegerMap<UnitCategory> createDefaultSelectionsMap(Collection categories)
   {
     IntegerMap<UnitCategory> defaultValues = new IntegerMap<UnitCategory>();

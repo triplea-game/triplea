@@ -545,7 +545,11 @@ public class MovePanel extends ActionPanel
       if(option != JOptionPane.OK_OPTION)
           return Collections.emptyList();
 
-      Collection<Unit> choosenTransports = Match.getMatches(chooser.getSelected(), Matches.UnitIsTransport);
+      String title = "unload";
+      String action = "unload";
+      Collection<Unit> chosenUnits = UserChooseUnits(defaultSelections, transportsToUnloadMatch, candidateTransports, title, action);
+      Collection<Unit> choosenTransports = Match.getMatches(chosenUnits, Matches.UnitIsTransport);
+      //Collection<Unit> choosenTransports = Match.getMatches(chooser.getSelected(), Matches.UnitIsTransport);
       
       List<Unit> allUnitsInSelectedTransports = new ArrayList<Unit>();
       for (Unit transport : choosenTransports)
@@ -1379,9 +1383,7 @@ public class MovePanel extends ActionPanel
                 	airTransportsToLoad.add(bomber);
                 	ttlCapacity += capacity;
                 }
-            }
-            final int ttlCap = ttlCapacity;
-           
+            }           
             
             //If no airTransports can be loaded, return the empty set
             if(airTransportsToLoad.isEmpty())
@@ -1412,29 +1414,11 @@ public class MovePanel extends ActionPanel
             {
                 //Get a list of the units that could be loaded on the transport (based upon transport capacity)
                 List<Unit> unitsToLoad = MoveDelegate.mapAirTransportPossibilities(route, capableUnitsToLoad, airTransportsToLoad, true, player);
+                String title = "Load air transports";
+                String action = "load";
                 
-              //Allow player to select which to load.
-                UnitChooser   chooser = new UnitChooser(unitsToLoad, 
-                    defaultSelections, 
-                    m_dependentUnits, 
-                    /*categorizeMovement*/ false, 
-                    /*categorizeTransportCost*/ true,
-                    m_bridge.getGameData(), 
-                    /*allowTwoHit*/ false, 
-                    getMap().getUIContext(), 
-                    unitsToLoadMatch);
+                loadedUnits = UserChooseUnits(defaultSelections, unitsToLoadMatch, unitsToLoad, title, action);
 
-                chooser.setTitle("Load air transports");
-                int  	option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
-                    chooser, "What units do you want to load",
-                    JOptionPane.OK_CANCEL_OPTION,
-                    JOptionPane.PLAIN_MESSAGE, null, null, null);
-                if (option != JOptionPane.OK_OPTION)
-                    return Collections.emptyList();
-
-                loadedUnits = chooser.getSelected(true);
-                    
-                
                 Map<Unit, Unit> mapping = MoveDelegate.mapTransports(route, loadedUnits, airTransportsToLoad, true, player);
                 
                 for(Unit unit : mapping.keySet())
@@ -1910,6 +1894,30 @@ public class MovePanel extends ActionPanel
     private static boolean IsParatroopersCanMoveDuringNonCombat(GameData data)
     {
         return games.strategy.triplea.Properties.getParatroopersCanMoveDuringNonCombat(data);
+    }
+    
+    public List<Unit> UserChooseUnits(Set<Unit> defaultSelections,
+			Match<Collection<Unit>> unitsToLoadMatch, List<Unit> unitsToLoad, String title, String action) {
+		//Allow player to select which to load.
+            UnitChooser   chooser = new UnitChooser(unitsToLoad, 
+                defaultSelections, 
+                m_dependentUnits, 
+                /*categorizeMovement*/ false, 
+                /*categorizeTransportCost*/ true,
+                m_bridge.getGameData(), 
+                /*allowTwoHit*/ false, 
+                getMap().getUIContext(), 
+                unitsToLoadMatch);
+
+            chooser.setTitle(title);
+            int  	option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
+                chooser, "What units do you want to " + action,
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE, null, null, null);
+            if (option != JOptionPane.OK_OPTION)
+                return Collections.emptyList();
+
+		return chooser.getSelected(true); 
     }
 }
 /**
