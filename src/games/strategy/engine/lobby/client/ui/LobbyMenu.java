@@ -6,6 +6,7 @@ import games.strategy.engine.lobby.server.*;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.util.MD5Crypt;
+import games.strategy.net.BareBonesBrowserLaunch;
 
 import java.awt.event.*;
 
@@ -29,6 +30,7 @@ public class LobbyMenu extends JMenuBar
             
         createAccountMenu(this);
         createSettingsMenu(this);
+        createHelpMenu(this);
     }
 
     private void createAccountMenu(LobbyMenu menuBar)
@@ -50,10 +52,74 @@ public class LobbyMenu extends JMenuBar
         
     }
 
+    private void createHelpMenu(LobbyMenu menuBar)
+    {
+        JMenu help = new JMenu("Help");
+        menuBar.add(help);
+
+        addHelpMenu(help);
+    }
     
     /**
      * @param parentMenu
      */
+  
+        
+    private void addHelpMenu(JMenu parentMenu)
+    {
+    	JMenuItem hostingLink = new JMenuItem("How to Host...");
+    	JMenuItem mapLink = new JMenuItem("Install Maps...");
+    	JMenuItem bugReport = new JMenuItem("Bug Report...");
+
+    	hostingLink.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+            	try {
+            		BareBonesBrowserLaunch.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} 
+            }
+        });
+    	
+    	mapLink.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+            	try {
+            		BareBonesBrowserLaunch.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4074312.html");
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} 
+            }
+        });
+    	
+    	bugReport.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+            	try {
+            		BareBonesBrowserLaunch.openURL("https://sourceforge.net/tracker/?group_id=44492");
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} 
+            }
+        });    	
+    	
+    	
+        parentMenu.add(hostingLink);
+        parentMenu.add(mapLink);
+        parentMenu.add(bugReport);
+
+    }
+    
+    
+    
+    
     private void addChatTimeMenu(JMenu parentMenu)
     {
         final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
@@ -167,3 +233,4 @@ public class LobbyMenu extends JMenuBar
     
     
 }
+

@@ -333,7 +333,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         m_localCheckBox.addActionListener(m_actionListener);
         m_localCheckBox.setSelected(true);
         m_type = new JComboBox(types);
-        if (playerName.startsWith("Neutral")) {        
+        if (playerName.startsWith("Neutral") || playerName.startsWith("AI")) {        
         	m_type.setSelectedItem("Moore N. Able (AI)");
             //Uncomment to disallow players from changing the default
             //m_playerTypes.setEnabled(false);

@@ -2,6 +2,7 @@ package games.strategy.engine.framework.mapDownload;
 
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.Util;
+import games.strategy.net.BareBonesBrowserLaunch;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
@@ -32,6 +33,7 @@ public class DownloadMapDialog extends JDialog {
 	private JComboBox m_urlComboBox;
     private JButton m_listGamesButton;
 	private JButton m_cancelButton;
+	private JButton m_findMapsButton;
 	private final String DOWNLOAD_SITES_PREF = "downloadSites";
 	private final Frame owner;
 	
@@ -48,6 +50,7 @@ public class DownloadMapDialog extends JDialog {
 	private void createComponents() {
 		m_listGamesButton = new JButton("List Games");
 		m_cancelButton = new JButton("Cancel");
+		m_findMapsButton = new JButton("Find Maps and Games");
 
 		m_urlComboBox = new JComboBox(getStoredDownloadSites());
 		m_urlComboBox.setEditable(true);
@@ -68,6 +71,7 @@ public class DownloadMapDialog extends JDialog {
 		
 		buttonsPanel.add(Box.createGlue());		
 		buttonsPanel.add(m_cancelButton);
+		buttonsPanel.add(m_findMapsButton);
 		buttonsPanel.add(m_listGamesButton);
 		buttonsPanel.add(Box.createGlue());
 		buttonsPanel.setBorder(new EmptyBorder(20,20,20,20));
@@ -126,6 +130,19 @@ public class DownloadMapDialog extends JDialog {
 				
 			}
 		});
+
+		m_findMapsButton.addActionListener(new AbstractAction() {
+			
+			public void actionPerformed(ActionEvent e) {
+				try
+				{					
+					BareBonesBrowserLaunch.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4074312.html");
+				} catch(Exception ex) {
+					Util.notifyError(m_cancelButton, ex.getMessage());
+					return;
+				}
+			}
+		});
 		
 		
 	}
@@ -134,6 +151,13 @@ public class DownloadMapDialog extends JDialog {
 		Preferences pref = getPrefNode();
 		byte[] stored = pref.getByteArray(DOWNLOAD_SITES_PREF, null);
 		if(stored == null) {
+			/* Code to have a default map listing:  (choose only one)
+			
+			Vector mapVector = new Vector();
+			mapVector.add(0, "http://sourceforge.net/projects/tripleamaps/files/basic_map_list.xml");  // basic map listing with no possibly copywritten maps
+			mapVector.add(0, "http://downloads.sourceforge.net/project/tripleamaps/triplea_maps.xml");  // full map listing of all known maps
+			return mapVector;
+			 */
 			return new Vector();
 		}
 		try {
