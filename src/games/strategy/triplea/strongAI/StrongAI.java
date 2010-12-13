@@ -5174,7 +5174,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             		Iterator<Territory> newIter = goRoute.iterator();
             		newRoute2.setStart(t);
             		newIter.next();
-            		while(newIter.hasNext() && newRoute2.getLength() <= maxDist)
+            		while(newIter.hasNext() && newRoute2.getLength() < maxDist)
             		{
             			Territory oneTerr = newIter.next();
             			if (Matches.isTerritoryAllied(player, data).match(oneTerr))
