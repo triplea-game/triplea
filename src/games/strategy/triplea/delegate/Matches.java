@@ -1028,8 +1028,8 @@ public class Matches
             return battle.isEmpty();
         }
     };
-
-    public static final Match<Battle> BattleIsAmphibious = new Match<Battle>()
+	
+	public static final Match<Battle> BattleIsAmphibious = new Match<Battle>()
     {
         public boolean match(Battle battle)
         {
@@ -1051,7 +1051,25 @@ public class Matches
             }
         };
     }
-
+	
+	public final static Match<Unit> UnitIsNotStatic(PlayerID player)
+	{
+		return new InverseMatch<Unit>(UnitIsStatic(player));
+	}
+	// match units that have no movement as their attachment, like walls and fortresses (static = zero movement)
+	public static final Match<Unit> UnitIsStatic(final PlayerID player)
+	{
+		return new Match<Unit>()
+		{
+			public boolean match(Unit obj)
+			{
+				UnitType type = ((Unit) obj).getUnitType();
+				UnitAttachment ua = UnitAttachment.get(type);
+				return ua.getMovement(player) == 0;
+			}
+		};
+	}
+	
     public static Match<Unit> unitIsLandAndOwnedBy(final PlayerID player)
     {
         return new Match<Unit>()

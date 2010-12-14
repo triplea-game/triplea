@@ -1,4 +1,15 @@
 Changes for 1.2.7
+* logic bug fix for the weak/easy ai, so that it will not try to move zero movement units. (daral)
+
+* logic bug fix for the moore ai, which tries to move units out of range. (wisconsin)
+
+* Adding a browser launcher utility that works with java 5 and 6. (Veqryn)
+
+* Adding buttons to the map download dialog, as well as the lobby menu, that when clicked open a web browser to the 
+  triplea sourceforge web page for threads on how to download maps, how to host games, and how to report bugs. (veqryn & bung)
+
+* Allowing any country name which begins in "AI" to be automatically set to be AI (in addition to "Neutral"). (veqryn)
+
 * Added a few new properties to start to support next gen engine (ComradeKev)
 
 Changes for 1.2.6

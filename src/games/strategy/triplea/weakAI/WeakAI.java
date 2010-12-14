@@ -619,6 +619,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             moveOfType.add(Matches.UnitIsNotAA);
             
             //we can never move factories
+            moveOfType.add(Matches.UnitIsNotStatic(player));
             moveOfType.add(Matches.UnitIsNotFactory);
             moveOfType.add(Matches.UnitIsLand);
             
@@ -816,7 +817,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                     for(Unit unit : unitsSortedByCost)
                     {
                         
-                        Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotFactory, Matches.UnitIsNotAA );
+                        Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotFactory, Matches.UnitIsNotStatic(player), Matches.UnitIsNotAA );
                         if(!unitsAlreadyMoved.contains(unit) && match.match(unit))
                         {
                             moveRoutes.add(data.getMap().getRoute(attackFrom, enemy));
@@ -868,6 +869,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                         }
                         );
                 attackable.add(Matches.UnitIsNotAA);
+                attackable.add(Matches.UnitIsNotStatic(player));
                 attackable.add(Matches.UnitIsNotFactory);
                 attackable.add(Matches.UnitIsNotSea);
                 
