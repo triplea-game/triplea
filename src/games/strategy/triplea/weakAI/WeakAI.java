@@ -801,7 +801,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         //first find the territories we can just walk into
         for(Territory enemy : enemyOwned)
         {
-            if(AIUtils.strength(enemy.getUnits().getUnits(), true, false) == 0)
+            if(AIUtils.strength(enemy.getUnits().getUnits(), false, false) == 0)
             {
                 //only take it with 1 unit
                 boolean taken = false;
