@@ -668,13 +668,10 @@ public class BattleDisplay extends JPanel
                         	unitsToChoose.addAll(units);
                         }
 
-                        //bridge.addChange(change);
-                                                
-                        	//Map<Unit, Collection<Unit>> dependentUnits = new HashMap<Unit, Collection<Unit>>();
-                        	//Set<Unit> defaultSelections = new HashSet<Unit>();
+                        
                         //Allow player to select which to load.
                         UnitChooser   chooser = new UnitChooser(unitsToChoose, 
-                        		/*defaultSelections*/ null, 
+                        		/*defaultSelections*/ unitsToChoose, 
                         		/*dependentUnits*/ null, 
                         		/*categorizeMovement*/ false, 
                         		/*categorizeTransportCost*/ false,
@@ -693,11 +690,13 @@ public class BattleDisplay extends JPanel
                         	return;
 
 
-                        List<Unit> chosenUnits = chooser.getSelected(true); 
+                        List<Unit> chosenUnits = chooser.getSelected(false); 
 
-                        //TODO kev actually move the units to the battle.
+                        //TODO kevy actually move the units to the battle.
                         //getOriginatedFrom
                         //change.add(ChangeFactory.unitPropertyChange(attackIter.next(), true, TripleAUnit.ORIGINATED_FROM));
+                        //bridge.addChange(change);
+                        
                         latch.countDown();
                     }                        
                 } 

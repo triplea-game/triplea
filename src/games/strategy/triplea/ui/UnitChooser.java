@@ -371,15 +371,12 @@ public class UnitChooser extends JPanel
   {
     List<Unit> selectedUnits = new ArrayList<Unit>();
 
-    Iterator<ChooserEntry> entries = m_entries.iterator();
-    while(entries.hasNext())
+    for (ChooserEntry entry : m_entries)
     {
-      ChooserEntry chooserEntry = entries.next();
-      if(chooserEntry.isTwoHit())
-          addToCollection(selectedUnits, chooserEntry,  chooserEntry.getSecondHits(), selectDependents);
-      else
-          addToCollection(selectedUnits, chooserEntry, chooserEntry.getFirstHits(), selectDependents);
-
+    	if(entry.isTwoHit())
+            addToCollection(selectedUnits, entry,  entry.getSecondHits(), selectDependents);
+        else
+            addToCollection(selectedUnits, entry, entry.getFirstHits(), selectDependents);
     }
     return selectedUnits;
   }
