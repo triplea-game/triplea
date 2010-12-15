@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Minimap" version="1.1"/>
+        <info name="Minimap" version="1.2"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -563,8 +563,8 @@
                 </unitInitialize>
         
                 <resourceInitialize>
-                        <resourceGiven player="Russians" resource="PUs" quantity="31"/>
-                        <resourceGiven player="Italians" resource="PUs" quantity="31"/>
+                        <resourceGiven player="Russians" resource="PUs" quantity="25"/>
+                        <resourceGiven player="Italians" resource="PUs" quantity="40"/>
                 </resourceInitialize>
         </initialize>
 

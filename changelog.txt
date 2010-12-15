@@ -1,4 +1,8 @@
 Changes for 1.2.7
+* Small balancing change to minimap.  Russians -6 PUs, Italians +9 PUs.
+
+* MoveValidator fix, was returning true if route contained subs/trans in part of route, and surface warships in another part of route. (squidbait)
+
 * logic bug fix for easy ai: it was checking for the att value for def units in territories to walk into. (veqryn)
 
 * logic bug fix for the weak/easy ai, so that it will not try to move zero movement units. (daral)
