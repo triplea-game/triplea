@@ -293,7 +293,7 @@ public class MoveValidator
                         continue;
                     }
                     
-                    validMove = false;
+                    return false;
                 }
             }
     	return validMove;
