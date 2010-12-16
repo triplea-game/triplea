@@ -4160,8 +4160,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     			}
     			
                 boolean planesOk = !tFirst ? true :  (planeStrength > (attackFactor*enemyStrength + 3.0F) ? true : false);
-    			
-                if (!foundEnemyUnitWithDefense || (!tFirst && planeStrength > 0) || (nonTransport && (minStrengthNeeded < 0.0F || planesOk)) || (planeStrength > (attackFactor*enemyStrength + 3.0F))) //TODO: check this formula again
+                //TODO: check this formula below, again
+                if (((!tFirst || !foundEnemyUnitWithDefense) && planeStrength > 0) || (nonTransport && (minStrengthNeeded < 0.0F || planesOk || !foundEnemyUnitWithDefense)) || (planeStrength > (attackFactor*enemyStrength + 3.0F)))
     			{
     				seaTerrAttacked.add(enemy);
     				moveRoutes.addAll(xRoutes);
