@@ -1815,7 +1815,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				if (tTerrNeighbors.contains(targetTerr) && Matches.isTerritoryEnemy(player, data).match(targetTerr))
 				{
 					Route shortRoute = data.getMap().getRoute(transTerr, targetTerr);
-					if (shortRoute == null)
+					if (shortRoute != null)
 					{ //discourage invasions that don't have staying potential...add 1/4 of return potential attack
 						float eShortPotential = SUtils.getStrengthOfPotentialAttackers(targetTerr, data, player, tFirst, true, alreadyAttacked);
 						List<Unit> tLoadUnits = new ArrayList<Unit>();
@@ -2282,6 +2282,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 							continue;
 						List<Unit> localUnits = aN.getUnits().getMatches(landAndOwned);
 						localUnits.removeAll(unitsAlreadyMoved);
+						if( localUnits.isEmpty())
+							continue;
 						localStrength += SUtils.strength(localUnits, true, false, tFirst);
 						xMoveUnits.add(localUnits);
 						Route localRoute = data.getMap().getLandRoute(aN, eC);
@@ -4146,7 +4148,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					maxStrengthNeeded -= shipStrength;
     			}
     			boolean planesOk = !tFirst ? true :  (planeStrength > (attackFactor*enemyStrength + 3.0F) ? true : false);
-    			if (nonTransport && (minStrengthNeeded < 0.0F && planesOk))//TODO: check this formula again
+    			if (nonTransport && (minStrengthNeeded < 0.0F || planesOk))//TODO: check this formula again
     			{
     				seaTerrAttacked.add(enemy);
     				moveRoutes.addAll(xRoutes);
@@ -5912,6 +5914,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	SUtils.reorder(enemyCaps, rankMap, true);
 		for (Territory badCapitol : enemyCaps)
 		{
+			xMoveUnits.clear();
+			xMoveRoutes.clear();
+			xAlreadyMoved.clear();
 			xAlreadyMoved.addAll(unitsAlreadyMoved);
 			Collection <Unit> badCapUnits = badCapitol.getUnits().getUnits();
 			float badCapStrength = SUtils.strength(badCapUnits, false, false, tFirst);
@@ -5981,6 +5986,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		SUtils.reorder(enemyOwned, rankMap, true);
         for(Territory enemy : enemyOwned)
         {
+        	xMoveUnits.clear();
+    		xMoveRoutes.clear();
+    		xAlreadyMoved.clear();
         	xAlreadyMoved.addAll(unitsAlreadyMoved);
 			float eStrength = SUtils.strength(enemy.getUnits().getUnits(), true, false, tFirst);
             if( eStrength < 0.50F)
@@ -6088,6 +6096,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
  		xMoveRoutes.clear();
  		for (Territory badTerr : bigProblem2)
 		{
+ 			xMoveUnits.clear();
+ 			xMoveRoutes.clear();
+ 			xAlreadyMoved.clear();
 			weAttacked = false;
 			Collection<Unit> enemyUnits = badTerr.getUnits().getUnits();
 			badStrength = SUtils.strength(enemyUnits, false, false, tFirst);
@@ -6181,6 +6192,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	enemyOwned.removeAll(alreadyAttacked);
         for(Territory enemy : enemyOwned)
         {
+        	xMoveUnits.clear();
+    		xMoveRoutes.clear();
+    		xAlreadyMoved.clear();
 			Collection<Unit> eUnits = enemy.getUnits().getUnits();
             float enemyStrength = SUtils.strength(eUnits, false, false, tFirst);
         	TerritoryAttachment ta = TerritoryAttachment.get(enemy);

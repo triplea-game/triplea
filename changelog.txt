@@ -1,5 +1,7 @@
 Changes for 1.2.7
-* Small balancing change to minimap.  Russians -6 PUs, Italians +9 PUs.
+* Moore AI logic fixes, including amphibious attacks, and clearing of data in loops (squidbait)
+
+* Small balancing change to minimap.  Russians -6 PUs, Italians +9 PUs. (veqryn)
 
 * MoveValidator fix, was returning true if route contained subs/trans in part of route, and surface warships in another part of route. (squidbait)
 

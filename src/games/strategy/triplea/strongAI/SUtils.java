@@ -1668,7 +1668,6 @@ public class SUtils
 		for (Territory t : data.getMap().getTerritories())
 			if (Matches.isTerritoryAllied(player, data).match(t))
 				ours.add(t);
-		ours.addAll(allOurTerritories(data, player));
 		return ours;
 	}
 	/**
@@ -2777,6 +2776,8 @@ public class SUtils
 				totStrength += aStrength;
 				attackUnits.add(attackUnit);
 			}
+			if( attackUnits.isEmpty())
+				continue;
 			moveUnits.add(attackUnits);
 			moveRoutes.add(attackRoute);
 			unitsAlreadyMoved.addAll(attackUnits);
@@ -2818,8 +2819,11 @@ public class SUtils
 		{
 			for (Territory blitzTerr : blitzFrom)
 			{
+				blitzUnits.clear();
 				List<Unit> tmpBlitz = new ArrayList<Unit>();
 				blitzUnits.addAll(blitzTerr.getUnits().getMatches(blitzUnit));
+				if(blitzUnits.isEmpty())
+					continue;
 				Route blitzRoute = getTwoRoute(blitzTerr, enemy, noEnemyUnitsAndNotWater, null, data);
 				if (blitzRoute != null)
 				{
@@ -2832,6 +2836,8 @@ public class SUtils
 							tmpBlitz.add(blitzer);
 						}
 					}
+					if(tmpBlitz.isEmpty())
+						continue;
 					moveUnits.add(tmpBlitz);
 					moveRoutes.add(blitzRoute);
 					unitsAlreadyMoved.addAll(tmpBlitz);
@@ -2843,10 +2849,13 @@ public class SUtils
 		{
 			for (Territory blitzTerr : blitzFrom)
 			{
+				blitzUnits.clear();
 				Set <Territory> badTerr = data.getMap().getNeighbors(blitzTerr, Matches.territoryHasEnemyLandUnits(player, data));
 				if (badTerr.isEmpty())
 				{
 					blitzUnits.addAll(blitzTerr.getUnits().getMatches(blitzUnit));
+					if(blitzUnits.isEmpty())
+						continue;
 					List<Unit> tmpBlitz = new ArrayList<Unit>();
 					Route blitzRoute = getTwoRoute(blitzTerr, enemy, noEnemyUnitsAndNotWater, null, data);
 					if (blitzRoute != null)
@@ -2860,6 +2869,8 @@ public class SUtils
 								totStrength += bStrength;
 							}
 						}
+						if(tmpBlitz.isEmpty())
+							continue;
 						moveRoutes.add(blitzRoute);
 						moveUnits.add(tmpBlitz);
 						unitsAlreadyMoved.addAll(tmpBlitz);
@@ -4124,6 +4135,8 @@ public class SUtils
    						switchTerr = true;
    					}
    				}
+   				if(!switchTerr)
+   					return null;
    			}
    		}
    		if(r == null)
