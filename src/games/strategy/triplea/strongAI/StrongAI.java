@@ -1816,11 +1816,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				{
 					Route shortRoute = data.getMap().getRoute(transTerr, targetTerr);
 					if (shortRoute != null)
-					{ //discourage invasions that don't have staying potential...add 1/4 of return potential attack
+					{ //discourage invasions that don't have staying potential...add 1/5 of return potential attack
 						float eShortPotential = SUtils.getStrengthOfPotentialAttackers(targetTerr, data, player, tFirst, true, alreadyAttacked);
 						List<Unit> tLoadUnits = new ArrayList<Unit>();
 						float eShortStrength = SUtils.strength(targetTerr.getUnits().getMatches(Matches.enemyUnit(player, data)), false, false, tFirst);
-						float goStrength = (eShortStrength+0.25F*eShortPotential)*1.45F + 2.0F;
+						float goStrength = (eShortStrength+0.2F*eShortPotential)*1.45F + 2.0F;
 						float ourQuickStrength = 0.0F;
 						List<Unit> qtransMoved = new ArrayList<Unit>();
 						while (tIter.hasNext() && ourQuickStrength < goStrength)
@@ -4114,7 +4114,18 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
              * Remember that this will be low on the strength list, so already looked at major attacks
              */
             boolean shipsAttacked = false;
-            if (!AttackShipsPresent) //all transports
+			
+            // added by Wisconsin to detect if there are any units with a defense value greater than zero
+            boolean foundEnemyUnitWithDefense = false; 
+            for (Unit enemyUnit : enemy.getUnits().getUnits()) 
+            { 
+                if (UnitAttachment.get(enemyUnit.getUnitType()).getDefense(enemyUnit.getOwner()) > 0) 
+                { 
+                    foundEnemyUnitWithDefense = true; 
+                } 
+            }
+            
+            if (!AttackShipsPresent || !foundEnemyUnitWithDefense) //all transports (or ships with no defense)
             { 
                 if (!tFirst)
                 {
@@ -4147,8 +4158,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					minStrengthNeeded -= shipStrength;
 					maxStrengthNeeded -= shipStrength;
     			}
-    			boolean planesOk = !tFirst ? true :  (planeStrength > (attackFactor*enemyStrength + 3.0F) ? true : false);
-    			if (nonTransport && (minStrengthNeeded < 0.0F || planesOk))//TODO: check this formula again
+    			
+                boolean planesOk = !tFirst ? true :  (planeStrength > (attackFactor*enemyStrength + 3.0F) ? true : false);
+    			
+                if (!foundEnemyUnitWithDefense || (!tFirst && planeStrength > 0) || (nonTransport && (minStrengthNeeded < 0.0F || planesOk)) || (planeStrength > (attackFactor*enemyStrength + 3.0F))) //TODO: check this formula again
     			{
     				seaTerrAttacked.add(enemy);
     				moveRoutes.addAll(xRoutes);
