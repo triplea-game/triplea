@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 public class SUtils
 {
 	
-	private final static int PURCHASE_LOOP_MAX_TIME_MILLIS = 15 * 1000;
+	private final static int PURCHASE_LOOP_MAX_TIME_MILLIS = 150 * 1000;
     private final static Logger s_logger = Logger.getLogger(StrongAI.class.getName());
 
 	/**
@@ -93,6 +93,20 @@ public class SUtils
     			wFIter.remove();
     	}
     	return waterTerrs;
+	}
+	
+	// returns all territories that are water territories.  used to remove convoy zones from places the ai will put a factory (veqryn)
+	public static List<Territory> onlyWaterTerr(GameData data, List<Territory> allTerr)
+	{
+		List<Territory> water = new ArrayList<Territory>(allTerr);
+    	Iterator<Territory> wFIter = water.iterator();
+    	while (wFIter.hasNext())
+    	{ 
+    		Territory waterFact = wFIter.next();
+    		if (!Matches.TerritoryIsWater.match(waterFact))
+    			wFIter.remove();
+    	}
+    	return water;
 	}
 	
 	/**
@@ -2023,10 +2037,13 @@ public class SUtils
 		List<Territory> owned = allOurTerritories(data, player);
 		List<Territory> existingFactories = SUtils.findCertainShips(data, player, Matches.UnitIsFactory);
 		owned.removeAll(existingFactories);
+		List<Territory> isWaterConvoy = SUtils.onlyWaterTerr(data, owned);
+		owned.removeAll(isWaterConvoy);
 		if (onWater)
 		{
 			List<Territory> waterOwned = SUtils.stripLandLockedTerr(data, owned);
 			owned.retainAll(waterOwned);
+			// TODO: ai will still attempt to play factories in territories it just conquered
 			if (owned.isEmpty())
 				return null;
 			IntegerMap<Territory> terrProd = new IntegerMap<Territory>();
@@ -2037,9 +2054,12 @@ public class SUtils
 			SUtils.reorder(owned, terrProd, true);
 			return owned.get(0); //TODO: cleanup this to buy the best possible location
 		}
+		
+		// TODO: we need to put the territories in an order that is a mix between high production and closeness to the enemy
+		// because currently this entire factory location picker just picks the first good territory it finds. (veqryn)
+		Collections.shuffle(owned);
 		Territory minTerr = null;
 		float minRisk = 1.0F;
-
 		risk = 1.0F;
 		IntegerMap<Territory> prodMap = new IntegerMap<Territory>();
 		for (Territory factTerr : existingFactories)
@@ -2050,6 +2070,8 @@ public class SUtils
 			if (puValue < 2 || Matches.territoryHasOwnedFactory(data, player).match(t))
 				continue;
 			List<Territory> weOwnAll = getNeighboringEnemyLandTerritories(data, player, t);
+			List<Territory> isWater = SUtils.onlyWaterTerr(data, weOwnAll);
+			weOwnAll.removeAll(isWater);
 			if (weOwnAll.size() > 0)
 				continue;
 			int numOnContinent = 0;
@@ -2079,6 +2101,13 @@ public class SUtils
 			}
 			if (twoCheckStrength > (puValue*3.0F + tStrength))
 					badIdea = true;
+			/* TODO: (veqryn) this portion of the code counts naval vessels and any other enemy units 
+					 within 3 spaces of the territory that will have a factory.  It only compares it to the 
+					 ai's units on the territory, and does not take into account any of the ai's units in other 
+					 territories nearby.  This needs to only care about LAND and AIR units and not care about SEA units.
+					 And it needs to take into account friendly land and air within 2 spaces of the territory.
+			*/
+					 
 			for (Territory threeCheck : threeAway)
 			{
 				if (Matches.territoryHasEnemyUnits(player, data).match(threeCheck))
@@ -2087,7 +2116,8 @@ public class SUtils
 					threeCheckStrength += strength(threeCheck.getUnits().getMatches(Matches.enemyUnit(player, data)), true, false, false);
 				}
 			}
-			if ((twoCheckStrength + threeCheckStrength) > (puValue*6.0F + tStrength)) //take at least 2 moves to invade
+			
+			if ((twoCheckStrength + threeCheckStrength) > (puValue*8.0F + tStrength)*4) //take at least 2 moves to invade (veqryn multiplying friendly for now)
 			{
 				badIdea = true;
 			}
@@ -3791,6 +3821,23 @@ public class SUtils
 		int uDefense = u.getDefense(player);
 		int aRolls = u.getAttackRolls(player);
 		int cost = rule.getCosts().getInt(key);
+		// Encourage buying balanced units. Added by veqryn, to decrease the rate at which the AI buys walls, fortresses, and mortars, among other specialy units that should not be bought often if at all.
+		if (u.getMovement(player) == 0)
+			uAttack = 0;
+		if ((u.getAttack(player) == 0 || u.getDefense(player) - u.getAttack(player) >= 4) && u.getDefense(player) >= 1)
+		{
+			uDefense--;
+			if (u.getDefense(player) - u.getAttack(player) >= 4)
+				uDefense--;
+		}
+		if ((u.getDefense(player) == 0 || u.getAttack(player) - u.getDefense(player) >= 4) && u.getAttack(player) >= 1)
+		{
+			uAttack--;
+			if (u.getAttack(player) - u.getDefense(player) >= 4)
+				uAttack--;
+		}
+		// TODO: stop it from buying zero movement units under all circumstances.  Also, lessen the number of artillery type units bought slightly. And lessen sub purchases, or eliminate entirely. (veqryn)
+		// TODO: some transport ships have large capacity, others have a small capacity and are made for fighting.  Make sure if the AI is buying transports, it chooses high capacity transports even if more expensive and less att/def than normal ships
 		int fightersremaining = fighters;
 		int usableMaxUnits = maxUnits;
 		if (usableMaxUnits*ruleCheck.size() > 1000 && Math.random() <= 0.50)

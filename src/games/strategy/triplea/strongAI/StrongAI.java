@@ -323,10 +323,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         			totProduction += factProduction;
         	}
         }
-        // if the land based production is greater than one-third of all factory production, turn off amphib
+        // if the land based production is greater than half (used to be 1/3) of all factory production, turn off amphib
         // works better on NWO where Brits start with factories in North Africa
         
-        amphibPlayer = amphibPlayer ? (totProduction < allProduction/3) : false;
+        amphibPlayer = amphibPlayer ? (totProduction < allProduction/2) : false;
         return amphibPlayer;
     }
 
@@ -6469,7 +6469,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         return sum;
     }
 
-    protected void purchase(boolean purcahseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
+    protected void purchase(boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
     {   //TODO: lot of tweaks have gone into this routine without good organization...need to cleanup
         //breakdown Rules by type and cost
     	int currentRound = data.getSequence().getRound();
@@ -6537,7 +6537,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		}
 
-        if (purcahseForBid)
+        if (purchaseForBid)
         {
             int buyLimit = PUsToSpend / 3;
             if (buyLimit == 0)
@@ -6753,7 +6753,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     		Territory wFact = wIter.next();
     		waterProduction += TerritoryAttachment.get(wFact).getProduction();
     	}
-    	if (isAmphib && waterProduction < 6) //we don't have enough factories through which to launch attack
+    	//we don't have enough factories through which to launch attack
+    	if (isAmphib && ((waterProduction < 6 && PUsToSpend > 26) || (waterProduction < 4 && PUsToSpend > 15) || (waterProduction < 10 && PUsToSpend > 50) || (waterProduction < 2)))
     	{
     		List<Territory> allMyTerrs = SUtils.allOurTerritories(data, player);
     		float risk = 0.0F;
@@ -6776,9 +6777,32 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						}
 					}
 				}
-    			if (factPurchased)
+    			if (factPurchased && PUsToSpend < 16)
 					purchaseDelegate.purchase(purchase); //This is all we will purchase
-
+    			else if (factPurchased)
+    			{
+    				double random = Math.random();
+    				SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, seaProductionRules, PUsToSpend, waterProduction, data, player, 0);
+    				for (ProductionRule rule1 : seaProductionRules)
+    				{
+    					int buyThese = 0;
+    					if (random <= 0.40)
+    						buyThese = bestDefense.getInt(rule1);
+    					else
+    						buyThese = bestTransport.getInt(rule1);
+    					int cost = rule1.getCosts().getInt(pus);
+    					PUsToSpend -= cost*buyThese;
+    					while (PUsToSpend < 0 && buyThese > 0)
+    					{
+    						buyThese--;
+    						PUsToSpend+= cost;
+    					}
+    					if (buyThese <= 0)
+    						continue;
+    					purchase.add(rule1, buyThese);
+    				}
+    		        purchaseDelegate.purchase(purchase);
+    			}
 				return;
 			}
     	}
@@ -6842,7 +6866,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		{//TODO: This is a weak way of looking at it...need to localize...the problem is a player in two theaters (USA, UK)
 			if (EASCount > (OASCount + 2))
 				doBuyAttackShips = true;
-			if (EASCount > (OASCount*2))
+			if (EASCount > (OASCount*3))
 				buyPlanesOnly = true;
 			Iterator<Territory> wFIter = waterFactories.iterator();
 			Territory factTerr = null;
@@ -7237,7 +7261,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	}
 		int landConstant = 2; //we want to loop twice to spread out our purchase
 		boolean highPriceLandUnits = false;
-		if (leftToSpend > 10*(totProd-2) && !doBuyAttackShips) //if not buying ships, buy planes
+		if (leftToSpend > 10*(totProd) && !doBuyAttackShips) //if not buying ships, buy planes
 		{
 			if (Math.random() <= 0.85)
 				buyPlanesOnly = true;
@@ -7264,7 +7288,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
 		boolean buyfactory = false, buyExtraLandUnits = true; //fix this later...we might want to save PUs
         int maxPurch = leftToSpend/3;
-		if (maxPurch > (totPU + 3)) //more money than places to put units...buy more expensive units & a Factory
+		if (maxPurch > (totProd + 4)) //more money than places to put units...buy more expensive units & a Factory
 		{
 			buyfactory = true;
 			landConstant = 2;
@@ -7275,7 +7299,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			highPriceLandUnits = true;
 
 
-		if (landConstant !=1 || (highPriceLandUnits && PULand >= 15))
+		if (landConstant !=2 || (highPriceLandUnits && PULand >= 15) || totProd == 0)
 		{
 			buyfactory = true;
 			int numFactory = 0;
@@ -7532,7 +7556,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			bestTransport.clear();
 			bestMaxUnits.clear();
 		}
-		if (!doBuyAttackShips && leftToSpend >= 15) //determine factory first to make sure enough PU...doesn't count toward units
+		if (leftToSpend >= 15) //determine factory first to make sure enough PU...doesn't count toward units
 		{
 			int numFactory = 0;
 			for (Territory fT2 : factories)
@@ -7552,8 +7576,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				numFactory += enemyFactoriesInRange.size();
 				
 			}
-			if (numFactory >= 2)
+			if ((numFactory >= 2) && (leftToSpend < 50)) // some maps have a lot of cheap territories, may need more factories (veqryn)
 				buyfactory = false; //allow 2 factories on the same continent
+			if ((numFactory >= 4) && (leftToSpend < 100)) // some maps have a lot of money, may need more factories (veqryn)
+				buyfactory = false; //allow 4 factories on the same continent
 			if (!buyfactory)
 			{
 				int minDistToEnemy = 100;
@@ -7566,6 +7592,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				if (minDistToEnemy > 5) //even if a lot of factories...build a factory closer to enemy
 					buyfactory = true;
 			}
+			if (((maxPurch > (totProd + 6)) && highPriceLandUnits && PULand >= 35 && PULand > 7*totProd) || totProd == 0) // stinking rich, who cares if many factories are close by
+				buyfactory = true;
 			/*
 			 * Watch out for having a good distance to enemy, but laying factories back at your base
 			 * Goal is to get Germany building factories as the invasion of Russia takes place in NWO
@@ -7651,13 +7679,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, landProductionRules, PULand, maxBuy, data, player, fighterPresent);
 			int buyThese = 0;
 			int AttackType = 1; //bestAttack
-			if (Math.random() <= 0.5 || (isLand && Math.random() > 0.080)) //just to switch it up...every once in a while, buy the defensive set
+			if (Math.random() <= 0.65 || (isLand && Math.random() > 0.80)) //just to switch it up...every once in a while, buy the defensive set
 				AttackType = 2;
-			if ((Math.random() >= 0.25 && factoryCount >= 2) || (nonCapitolFactoryThreat) ) //if we have a lot of factories, use the max Unit set most of the time
+			if ((Math.random() >= 0.25 && factoryCount >= 2) || (nonCapitolFactoryThreat && Math.random() < 0.75)) //if we have a lot of factories, use the max Unit set most of the time
 				AttackType = 3;
-			if (isAmphib || Math.random() < 0.25)
+			if ((isAmphib && Math.random() < 0.90) || Math.random() < 0.25)
 				AttackType = 4;
-			if (!isAmphib && minDistanceToEnemy >= 4 && Math.random() >= 0.10)
+			if ((!isAmphib && minDistanceToEnemy >= 4 && Math.random() >= 0.10) || (minDistanceToEnemy >= 2 && Math.random() >= 0.85))
 				AttackType = 5;
 			String attackString = AttackType == 1 ? "Best Attack" : AttackType == 2 ? "Best Defense" : AttackType == 3 ? "Best Max Units" : AttackType == 4 ? "Best Transport" : "Best Mobile"; 
 			for (ProductionRule rule1 : landProductionRules)
@@ -7698,7 +7726,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			bestMobileAttack.clear();
 		}
 		maxBuy = totProd - unitCount;
-		if ((buyPlanesOnly || buyOnePlane) && maxBuy > 0)
+		if (((buyPlanesOnly || buyOnePlane) && maxBuy > 0) && Math.random() < 0.60)
 		{
 			maxBuy = (buyOnePlane && !buyPlanesOnly) ? 1 : maxBuy;
 			SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, airProductionRules, leftToSpend, maxBuy, data, player, fighterPresent);
@@ -7762,38 +7790,62 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         			leftToSpend -= cost*maxBuy;
         		}
         	}
-		}			
-		if ((unitCount < totProd) && buyExtraLandUnits && leftToSpend > 0)
+		}
+		bestAttack.clear();
+		bestDefense.clear();
+		bestTransport.clear();
+		bestMaxUnits.clear();
+		bestMobileAttack.clear();
+		if (unitCount < totProd && leftToSpend > 0 && buyExtraLandUnits) //attack oriented land units
 		{
-			for (ProductionRule quickProd : rules)
+			SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, landProductionRules, PULand, maxBuy, data, player, fighterPresent);
+			int buyThese = 0;
+			int AttackType = 1; //bestAttack
+			if (Math.random() <= 0.65 || (isLand && Math.random() > 0.80)) //just to switch it up...every once in a while, buy the defensive set
+				AttackType = 2;
+			if ((Math.random() >= 0.25 && factoryCount >= 2) || (nonCapitolFactoryThreat && Math.random() < 0.75)) //if we have a lot of factories, use the max Unit set most of the time
+				AttackType = 3;
+			if ((isAmphib && Math.random() < 0.90) || Math.random() < 0.25)
+				AttackType = 4;
+			if ((!isAmphib && minDistanceToEnemy >= 4 && Math.random() >= 0.10) || (minDistanceToEnemy >= 2 && Math.random() >= 0.85))
+				AttackType = 5;
+			String attackString = AttackType == 1 ? "Best Attack" : AttackType == 2 ? "Best Defense" : AttackType == 3 ? "Best Max Units" : AttackType == 4 ? "Best Transport" : "Best Mobile"; 
+			for (ProductionRule rule1 : landProductionRules)
 			{
-                int quickCost = quickProd.getCosts().getInt(pus);
-
-                if (leftToSpend < quickCost || unitCount >= totProd)
-                	continue;
-
-                UnitType intResults = (UnitType) quickProd.getResults().keySet().iterator().next();
-                if (Matches.UnitTypeIsSeaOrAir.match(intResults) || Matches.UnitTypeIsAAOrFactory.match(intResults))
-					continue;
-
-				if (quickCost <= leftToSpend && unitCount < totProd)
+				switch (AttackType)
 				{
-					int purchaseNum = totProd - unitCount;
-					int numLand = (int) (leftToSpend / quickCost);
-					int actualPNum = Math.min(purchaseNum, numLand);
-					leftToSpend -= quickCost * actualPNum;
-					while (leftToSpend < 0 && actualPNum > 0)
-					{
-						actualPNum--;
-						leftToSpend+= quickCost;
-					}
-					if (actualPNum > 0)
-					{
-						purchase.add(quickProd, actualPNum);
-						unitCount += actualPNum;
-					}
+				case 1: 
+					buyThese = bestAttack.getInt(rule1);
+					break;
+				case 2:
+					buyThese = bestDefense.getInt(rule1);
+					break;
+				case 3:
+					buyThese = bestMaxUnits.getInt(rule1);
+					break;
+				case 4:
+					buyThese = bestTransport.getInt(rule1);
+					break;
+				case 5:
+					buyThese = bestMobileAttack.getInt(rule1);
 				}
+				int cost = rule1.getCosts().getInt(pus);
+				int numToBuy = 0;
+				while (unitCount < totProd && leftToSpend >= 0 && leftToSpend >= cost && PULand >= cost && numToBuy < buyThese)
+				{
+					unitCount++;
+					leftToSpend -= cost;
+					PULand -= cost;
+					numToBuy++;
+				}
+				purchase.add(rule1, numToBuy);
 			}
+			
+			bestAttack.clear();
+			bestDefense.clear();
+			bestTransport.clear();
+			bestMaxUnits.clear();
+			bestMobileAttack.clear();
 		}
 		if (leftToSpend > 0 && (unitCount < totProd) && extraPUonPlanes)
 		{
@@ -7832,7 +7884,38 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				}
 			}
 		}
-							
+		if ((unitCount < totProd) && leftToSpend > 0)
+		{
+			for (ProductionRule quickProd : rules)
+			{
+                int quickCost = quickProd.getCosts().getInt(pus);
+
+                if (leftToSpend < quickCost || unitCount >= totProd)
+                	continue;
+
+                UnitType intResults = (UnitType) quickProd.getResults().keySet().iterator().next();
+                if (Matches.UnitTypeIsSeaOrAir.match(intResults) || Matches.UnitTypeIsAAOrFactory.match(intResults))
+					continue;
+
+				if (quickCost <= leftToSpend && unitCount < totProd)
+				{
+					int purchaseNum = totProd - unitCount;
+					int numLand = (int) (leftToSpend / quickCost);
+					int actualPNum = Math.min(purchaseNum, numLand);
+					leftToSpend -= quickCost * actualPNum;
+					while (leftToSpend < 0 && actualPNum > 0)
+					{
+						actualPNum--;
+						leftToSpend+= quickCost;
+					}
+					if (actualPNum > 0)
+					{
+						purchase.add(quickProd, actualPNum);
+						unitCount += actualPNum;
+					}
+				}
+			}
+		}
         purchaseDelegate.purchase(purchase);
     }
 
@@ -8275,6 +8358,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			if (toPlace.size() == 1) //only 1 may have been purchased...anything greater is wrong
 			{
 				doPlace(factoryPlace, toPlace, placeDelegate);
+				setFactory(null);
 				return;
 			}
 			else if (toPlace.size() > 1)

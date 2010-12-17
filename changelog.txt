@@ -1,4 +1,9 @@
 Changes for 1.2.7
+* Moore AI purchase fixes. AI was buying factories then trying to place them in water. When rich it was purchasing only the cheapest unit, 
+and even when it was supposed to it was not buying any factories. Tried to purchase all air way too often. Was attempting to place factories it did not have. 
+Was purchasing specialty units like walls, bunkers, and mortars, way too often. Was not buying factories if the enemy had any units within 3 territories of potential factory territory.
+And lots of small tweaks to purchasing algorithm to allow moore ai to work for more maps other than ww2v3, especially bigger maps. (veqryn)
+
 * Moore AI logic fix, will now attack alone transports correctly, and some small tweaks (veqryn & wisconsin)
 
 * Moore AI logic fixes, including amphibious attacks, and clearing of data in loops (squidbait)
