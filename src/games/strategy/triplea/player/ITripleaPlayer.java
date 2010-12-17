@@ -201,7 +201,7 @@ public interface ITripleaPlayer extends IRemote
      * @param message - user displayable message
      * @return the territory to retreat to, or null if the player doesn't wish to retreat
      */
-    public Collection<Territory> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message);
+    public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message);
 
     /**
      * Allows the user to pause and confirm enemy casualties

@@ -39,6 +39,12 @@ interface Battle extends java.io.Serializable
      */
     public Change addAttackChange(Route route, Collection<Unit> units);
     
+    /**
+     *  Add a bunch of defending units to the battle.
+     * @param scramblingPlayer 
+     */
+    public Change addCombatChange(Route route, Collection<Unit> units, PlayerID scramblingPlayer);
+    
 
     /**
      * Return whether this battle is a bombing run.

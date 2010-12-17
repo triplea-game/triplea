@@ -78,6 +78,18 @@ public class TripleaDisplay implements ITripleaDisplay
         m_ui.getBattlePanel().casualtyNotification(step,dice, player, killed, damaged, dependents);
         
     }
+    /* 
+     * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
+     */
+    public void scrambleNotification(GUID battleID,
+            String step,
+            PlayerID player,
+            Collection<Unit> scrambled,
+            Map<Unit,Collection<Unit>> dependents)
+    {
+        m_ui.getBattlePanel().scrambleNotification(step, player, scrambled, dependents);
+        
+    }
     /* (non-Javadoc)
      * @see games.strategy.triplea.ui.display.ITripleaDisplay#battleEnd(games.strategy.net.GUID, java.lang.String)
      */
@@ -102,6 +114,14 @@ public class TripleaDisplay implements ITripleaDisplay
         m_ui.getBattlePanel().notifyRetreat(shortMessage, message, step, retreatingPlayer);
     }
 
+    public void notifyScramble(String shortMessage, String message, String step, PlayerID scramblingPlayer)
+    {
+        //we just told the game to scramble, so we already know
+        if(m_ui.playing(scramblingPlayer))
+            return;
+        
+        m_ui.getBattlePanel().notifyScramble(shortMessage, message, step, scramblingPlayer);
+    }
     /**
      * Show dice for the given battle and step
      * 

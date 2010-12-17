@@ -53,7 +53,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
     }
     
     /**
-     * Get the name of the current step being exectured.
+     * Get the name of the current step being executed.
      */
     public String getStepName()
     {
@@ -152,8 +152,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
         
         return (IRemote)  Proxy.newProxyInstance(implementor.getClass().getClassLoader(), classes, goih);
         
-    }
-    
+    }    
 }
 
 

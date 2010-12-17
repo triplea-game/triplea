@@ -130,6 +130,21 @@ public class NonFightingBattle implements Battle
         return ChangeFactory.EMPTY_CHANGE;
     }
 
+    public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
+    {
+        Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
+        Iterator<Unit> iter = addedTransporting.keySet().iterator();
+        while(iter.hasNext())
+        {
+            Unit unit = iter.next();
+            if(m_dependentUnits.get(unit) != null)
+                m_dependentUnits.get(unit).addAll( addedTransporting.get(unit));
+            else
+                m_dependentUnits.put(unit, addedTransporting.get(unit));
+        }
+        return ChangeFactory.EMPTY_CHANGE;
+    }
+
     public Territory getTerritory()
     {
         return m_battleSite;

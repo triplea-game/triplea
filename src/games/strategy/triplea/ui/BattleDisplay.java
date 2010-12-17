@@ -12,9 +12,6 @@
 
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -25,12 +22,12 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MovePerformer;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -57,13 +54,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -102,7 +96,9 @@ public class BattleDisplay extends JPanel
     private static final String DICE_KEY = "D";
     private static final String CASUALTIES_KEY = "C";
     private static final String MESSAGE_KEY = "M";
-
+    
+    private static Map<Unit, Territory> m_ScrambledUnits = new HashMap<Unit, Territory>();
+    
     private final GUID m_battleID;
 
     private final PlayerID m_defender;
@@ -126,6 +122,8 @@ public class BattleDisplay extends JPanel
     private final JPanel m_casualtiesInstantPanelAttacker = new JPanel();
     private final JLabel LABEL_NONE_ATTACKER = new JLabel("None");
     private final JLabel LABEL_NONE_DEFENDER = new JLabel("None");
+    
+    private MovePerformer m_tempMovePerformer;
     
     private UIContext m_uiContext;
 
@@ -172,7 +170,6 @@ public class BattleDisplay extends JPanel
         //window).  Only seems to be an issue on windows
         m_actionButton.requestFocus();
     }
-
     
     public Territory getBattleLocation()
     {
@@ -183,7 +180,12 @@ public class BattleDisplay extends JPanel
     {
         return m_battleID;
     }
-
+    
+    public static Map<Unit, Territory> getScrambledUnits()
+    {
+    	return m_ScrambledUnits;
+    }
+    
     public void bombingResults(int[] dice, int cost)
     {
 //TODO Kev here's how to call the sound clip player
@@ -220,17 +222,12 @@ public class BattleDisplay extends JPanel
         
         if (aPlayerID.equals(m_defender))
         {
-         
             lCausalityPanel = m_casualtiesInstantPanelDefender;
-        
         }
         else
         {
-         
             lCausalityPanel = m_casualtiesInstantPanelAttacker;
-        
         }
-
         
         Map<Unit, Collection<Unit>> dependentsMap;
         
@@ -290,6 +287,18 @@ public class BattleDisplay extends JPanel
         }
     }
 
+    public void scrambleNotification(String step, PlayerID player, Collection<Unit> scrambled, Map<Unit, Collection<Unit>> dependents)
+    {
+        setStep(step);
+        
+        if (player.equals(m_defender))
+        {
+            m_defenderModel.addUnits(scrambled);
+        } else
+        {
+            m_attackerModel.addUnits(scrambled);
+        }
+    }
     public void waitForConfirmation(final String message)
     {
         if (SwingUtilities.isEventDispatchThread())
@@ -378,14 +387,13 @@ public class BattleDisplay extends JPanel
         }
     }
 
-    public Collection<Territory> getScramble(IPlayerBridge bridge, String message, Collection<Territory> possible)
+    public Collection<Unit> getScramble(IPlayerBridge bridge, String message, Collection<Territory> possible)
     {
             return getScrambleInternal(bridge, message, possible);
     }
 
     private Territory getSubmerge(final String message)
     {
- 
         if(SwingUtilities.isEventDispatchThread())
         {
             throw new IllegalStateException("Should not be called from dispatch thread");
@@ -433,7 +441,6 @@ public class BattleDisplay extends JPanel
         
         SwingUtilities.invokeLater(new Runnable()
         {
-        
             public void run()
             {
                 m_actionButton.setAction(action);
@@ -441,13 +448,12 @@ public class BattleDisplay extends JPanel
         });
         
         SwingUtilities.invokeLater(new Runnable()
-                {
-                
-                    public void run()
-                    {
-                        action.actionPerformed(null);
-                    }
-                });
+        {
+        	public void run()
+        	{
+        		action.actionPerformed(null);
+        	}
+        });
 
         
         m_mapPanel.getUIContext().addShutdownLatch(latch);
@@ -465,7 +471,6 @@ public class BattleDisplay extends JPanel
         
         SwingUtilities.invokeLater(new Runnable()
         {
-        
             public void run()
             {
                 m_actionButton.setAction(m_nullAction);
@@ -475,9 +480,7 @@ public class BattleDisplay extends JPanel
         });
         
         
-        return retreatTo[0];        
-        
-
+        return retreatTo[0];    
     }
 
     private Territory getRetreatInternal(final String message, final  Collection<Territory> possible)
@@ -529,16 +532,13 @@ public class BattleDisplay extends JPanel
                     {
                         retreatTo[0] =  comp.getSelection();
                         latch.countDown();
-                    }
-                        
+                    }   
                 } 
             }
-            
         };
         
         SwingUtilities.invokeLater(new Runnable()
         {
-        
             public void run()
             {
                 m_actionButton.setAction(action);
@@ -546,14 +546,12 @@ public class BattleDisplay extends JPanel
         });
         
         SwingUtilities.invokeLater(new Runnable()
-                {
-                
-                    public void run()
-                    {
-                        action.actionPerformed(null);
-                    }
-                });
-
+        {
+        	public void run()
+        	{
+        		action.actionPerformed(null);
+        	}
+        });
         
         try
         {
@@ -565,20 +563,16 @@ public class BattleDisplay extends JPanel
         
         SwingUtilities.invokeLater(new Runnable()
         {
-        
             public void run()
             {
                 m_actionButton.setAction(m_nullAction);
-        
             }
-        
         });
-        
-        
+                
         return retreatTo[0];
     }
 
-    private Collection<Territory> getScrambleInternal(final IPlayerBridge bridge, final String message, final  Collection<Territory> possible)
+    private Collection<Unit> getScrambleInternal(final IPlayerBridge bridge, final String message, final  Collection<Territory> possible)
     {
         if(SwingUtilities.isEventDispatchThread())
         {
@@ -586,12 +580,13 @@ public class BattleDisplay extends JPanel
         }
         
         final Collection<Territory> scrambleFrom = new ArrayList<Territory>();
-        final CountDownLatch latch = new CountDownLatch(1);
-        
-        final Action action = new AbstractAction("Scramble?")
+        final Collection<Unit> chosenUnits = new ArrayList<Unit>();
+        final CountDownLatch continueLatch = new CountDownLatch(1);
+
+        SwingUtilities.invokeLater(new Runnable()
         {
-            public void actionPerformed(ActionEvent e)
-            {
+        	public void run()
+        	{
                 String ok = "Scramble";
                 String cancel = "Cancel";
                 String wait = "Ask Me Later";
@@ -611,7 +606,7 @@ public class BattleDisplay extends JPanel
                 //remain
                 if (choice == 1)
                 {
-                    latch.countDown();
+                	continueLatch.countDown();
                     return;
                 }
                 
@@ -633,42 +628,21 @@ public class BattleDisplay extends JPanel
                     		return;
                     	}
                     	
-                    	//TODO kev select the units to scramble.
-                        
-                     // Check to see if the selected units qualify
-  /*                      Match<Collection<Unit>> unitsToScrambleMatch = new Match<Collection<Unit>>()
-                        {
-                            public boolean match(Collection<Unit> units)
-                            {
-                                Collection<Unit> unitsToLoad = Match.getMatches(units, Matches.UnitCanScramble);
-                                
-                                boolean ableToScramble = true;
-                                for(Unit unit : unitsToLoad)
-                                {
-                                	UnitAttachment ua = UnitAttachment.get(unit.getType());
-                                	if(!ua.getCanScramble())
-                                		ableToScramble = false;
-                                }
-                                return ableToScramble;
-                            }
-                        };
-*/
-                        
-                        //TODO kev get the units from the chosen territories
+                        //get the units from the chosen territories
                         List<Unit> unitsToChoose = new ArrayList<Unit>();
-                        CompositeChange change = new CompositeChange();
                         
                         for(Territory t:scrambleFrom)
                         {
                         	Collection<Unit> units = Match.getMatches(t.getUnits().getUnits(),Matches.UnitCanScramble);
+
+                        	unitsToChoose.addAll(units);
+
                         	for(Unit u:units)
                         	{
-                        		change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
-                        	}
-                        	unitsToChoose.addAll(units);
+                        		m_ScrambledUnits.put(u, t);
+                        	}                        	
                         }
-
-                        
+                                                
                         //Allow player to select which to load.
                         UnitChooser   chooser = new UnitChooser(unitsToChoose, 
                         		/*defaultSelections*/ unitsToChoose, 
@@ -689,57 +663,38 @@ public class BattleDisplay extends JPanel
                         if (option2 != JOptionPane.OK_OPTION)
                         	return;
 
-
-                        List<Unit> chosenUnits = chooser.getSelected(false); 
-
-                        //TODO kevy actually move the units to the battle.
-                        //getOriginatedFrom
-                        //change.add(ChangeFactory.unitPropertyChange(attackIter.next(), true, TripleAUnit.ORIGINATED_FROM));
-                        //bridge.addChange(change);
+                        //Get the units the player wants to scramble
+                        chosenUnits.addAll(chooser.getSelected(false)); 
                         
-                        latch.countDown();
-                    }                        
-                } 
-            }            
-        };
-        
-        SwingUtilities.invokeLater(new Runnable()
-        {        
-            public void run()
-            {
-                m_actionButton.setAction(action);
+                        //Determine which ones to remove from the potential list
+                        List<Unit> unitsToRemove = new ArrayList(); 
+                        for(Unit u:m_ScrambledUnits.keySet())
+                    	{
+                    		if(!chosenUnits.contains(u))
+                    			unitsToRemove.add(u);
+                    	}
+                        
+                        //Actually remove them, leaving only the scrambled units and their territories.
+                        for(Unit u:unitsToRemove)
+                        {
+                        	m_ScrambledUnits.remove(u);
+                        }
+                    }
+                }
+
+                continueLatch.countDown();
             }
         });
-        
-        SwingUtilities.invokeLater(new Runnable()
-                {                
-                    public void run()
-                    {
-                        action.actionPerformed(null);
-                    }
-                });
 
-        
         try
         {
-            latch.await();
-        } catch (InterruptedException e1)
+            continueLatch.await();
+        } catch (InterruptedException ex)
         {
-            e1.printStackTrace();
+            ex.printStackTrace();
         }
-        
-        SwingUtilities.invokeLater(new Runnable()
-        {        
-            public void run()
-            {
-                m_actionButton.setAction(m_nullAction);
-        
-            }
-        
-        });
-        
-        
-        return scrambleFrom;
+
+        return chosenUnits;        
     }
 
     private class RetreatComponent extends JPanel
@@ -778,7 +733,6 @@ public class BattleDisplay extends JPanel
             
             m_list.addListSelectionListener(new ListSelectionListener()
             {
-            
                 public void valueChanged(ListSelectionEvent e)
                 {
                     updateImage();
@@ -796,19 +750,15 @@ public class BattleDisplay extends JPanel
             
             Image finalImage = Util.createImage(width, height, true);
 
-            
-
             Graphics g = finalImage.getGraphics();
             g.drawImage(img, 0, 0, width, height, this);
             g.dispose();
-            
             
             m_retreatTerritory.setIcon(new ImageIcon( finalImage ));
         }
 
         public Territory getSelection()
         {
-
             return (Territory) m_list.getSelectedValue();
         }
     }
@@ -894,12 +844,10 @@ public class BattleDisplay extends JPanel
 
         final AtomicReference<CasualtyDetails> casualtyDetails = new AtomicReference<CasualtyDetails>();
         final CountDownLatch continueLatch = new CountDownLatch(1);
-        
+      
         SwingUtilities.invokeLater(new Runnable()
         {
-
-            
-            public void run()
+        	public void run()
             {
                 final boolean isEditMode = (dice == null);
 
@@ -1227,6 +1175,11 @@ class BattleModel extends DefaultTableModel
         refresh();
     }
 
+    public void addUnits(Collection<Unit> units)
+    {
+        m_units.addAll(units);
+        refresh();
+    }
     
     /**
      * refresh the model from m_units

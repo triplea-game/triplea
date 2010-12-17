@@ -48,6 +48,13 @@ public class DummyDisplay implements ITripleaDisplay
 
     }
 
+    public void notifyScramble(String shortMessage, String message, String step, PlayerID retreatingPlayer)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+
     public void notifyRetreat(GUID battleId, Collection<Unit> retreating)
     {
         // TODO Auto-generated method stub
@@ -77,5 +84,13 @@ public class DummyDisplay implements ITripleaDisplay
         // TODO Auto-generated method stub
 
     }
+
+	@Override
+	public void scrambleNotification(GUID battleID, String step,
+			PlayerID player, Collection<Unit> scrambled,
+			Map<Unit, Collection<Unit>> dependents) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

@@ -8759,7 +8759,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         return null;
     }
     
-    public Collection<Territory> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
+    public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
     {
         return null;
     }

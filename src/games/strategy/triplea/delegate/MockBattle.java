@@ -26,6 +26,11 @@ public class MockBattle implements Battle
         return ChangeFactory.EMPTY_CHANGE;
     }
 
+    public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
+    {
+        return ChangeFactory.EMPTY_CHANGE;
+    }
+    
     public boolean isBombingRun()
     {
         // TODO Auto-generated method stub

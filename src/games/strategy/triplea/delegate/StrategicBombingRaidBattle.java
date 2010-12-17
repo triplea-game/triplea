@@ -119,6 +119,12 @@ public class StrategicBombingRaidBattle implements Battle
         return ChangeFactory.EMPTY_CHANGE;
     }
 
+    public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
+    {
+        m_units.addAll(units);
+        return ChangeFactory.EMPTY_CHANGE;
+    }
+
     
     
     public void fight(IDelegateBridge bridge)

@@ -200,6 +200,21 @@ public class BattlePanel extends ActionPanel
 
     }
 
+    public void notifyScramble(final String messageShort, final String messageLong, final String step, final PlayerID retreatingPlayer)
+    {
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                if (m_battleDisplay != null)
+                    m_battleDisplay.battleInfo(messageShort, messageLong, step);
+            }
+        }
+
+        );
+
+    }
+
     public void showDice(final String messageShort, final DiceRoll dice, final String step)
     {
         SwingUtilities.invokeLater(new Runnable()
@@ -450,6 +465,19 @@ public class BattlePanel extends ActionPanel
             }
         });
     }
+    
+    public void scrambleNotification(final String step, final PlayerID player, final Collection<Unit> scrambled,
+            final Map<Unit, Collection<Unit>> dependents)
+    {
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                if(m_battleDisplay != null)
+                    m_battleDisplay.scrambleNotification(step, player, scrambled, dependents);
+            }
+        });
+    }
 
     public void confirmCasualties(final GUID battleId, final String message)
     {
@@ -527,7 +555,7 @@ public class BattlePanel extends ActionPanel
         return m_battleDisplay.getRetreat(message, possible, submerge);
     }
 
-    public Collection<Territory> getScramble(IPlayerBridge bridge, GUID battleID, String message, Collection<Territory> possible)
+    public Collection<Unit> getScramble(IPlayerBridge bridge, GUID battleID, String message, Collection<Territory> possible)
     {
         //something is really wrong
         if(!ensureBattleIsDisplayed(battleID))

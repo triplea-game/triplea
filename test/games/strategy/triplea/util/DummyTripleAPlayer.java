@@ -81,7 +81,7 @@ public class DummyTripleAPlayer implements ITripleaPlayer {
         return null;
     }
 
-    public Collection<Territory> scrambleQuery(GUID battleID,
+    public Collection<Unit> scrambleQuery(GUID battleID,
         Collection<Territory> possibleTerritories, String message) {
         
         return null;

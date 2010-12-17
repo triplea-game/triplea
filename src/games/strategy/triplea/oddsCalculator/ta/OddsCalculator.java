@@ -302,7 +302,7 @@ class DummyPlayer extends AbstractAI
         return null;
     }
 
-    public Collection<Territory> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
+    public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
     {
         //no scramble
         return null;

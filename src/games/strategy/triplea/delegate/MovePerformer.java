@@ -102,6 +102,17 @@ public class MovePerformer implements Serializable
         m_executionStack.execute(m_bridge, m_data);
     }
     
+    public void setOriginatingTerritory(Collection<Unit> units, Territory t)
+    {
+    	CompositeChange change = new CompositeChange();
+    	
+    	for(Unit u:units)
+    	{
+    		change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
+    	}
+    	
+    	m_bridge.addChange(change);
+    }
     /**
      * We assume that the move is valid
      */

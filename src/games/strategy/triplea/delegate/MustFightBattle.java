@@ -40,9 +40,7 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.EditProductionPanel;
-import games.strategy.triplea.ui.MovePanel;
-import games.strategy.triplea.ui.UnitChooser;
+import games.strategy.triplea.ui.BattleDisplay;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.triplea.weakAI.WeakAI;
@@ -65,7 +63,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JOptionPane;
 
 /**
  * 
@@ -141,6 +138,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     //keep track of all the units that die in the battle to show in the history
     // window
     private Collection<Unit> m_killed = new ArrayList<Unit>();
+    private Collection<Unit> m_scrambled = new ArrayList<Unit>();
     
     private int m_round = 0;
     
@@ -198,7 +196,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private void determineScrambledUnits(IDelegateBridge bridge)
     {
-    	//TODO get the unit types that can scramble
+    	//Get the unit types that can scramble
     	Collection<UnitType> unitTypesCanScramble = new ArrayList<UnitType>();
     	//Get all the players except the attacker
     	for (PlayerID p : m_data.getPlayerList())
@@ -218,7 +216,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             }
         }
 
-    	//TODO get their maxScrambleDistance
+    	//Get their maxScrambleDistance
     	int maxScrambleDistance = 1;
     	
     	for (UnitType ut:unitTypesCanScramble)
@@ -241,7 +239,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
         
         
-    	//TODO ask the aircraft owners if they wish to scramble the units
+    	//Ask the aircraft owners if they wish to scramble the units
     	if(!neighborsWithActiveAirbases.isEmpty())
     	{
     		queryScrambleUnits(SCRAMBLE_UNITS, bridge, neighborsWithActiveAirbases);
@@ -421,6 +419,126 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //TODO This checks for ignored sub/trns and skips the set of the attackers to 0 movement left
         //If attacker stops in an occupied territory, movement stops (battle is optional) 
         if(MoveValidator.onlyIgnoredUnitsOnPath(route, m_attacker, m_data, false))
+            return change;
+        
+
+        change.add(DelegateFinder.moveDelegate(m_data).markNoMovementChange(nonAir));
+        return change;
+    }
+
+    public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
+    {
+    	CompositeChange change = new CompositeChange();
+     
+    	// Filter out allied units if WW2V2
+        Match<Unit> ownedBy = Matches.unitIsOwnedBy(player);
+        Collection<Unit> fightingUnits = isWW2V2() ? Match.getMatches(units, ownedBy) : units;
+
+        Territory fightingFrom = getAttackFrom(route);
+
+        m_attackingFrom.add(fightingFrom);
+
+        if(player == m_attacker)
+        {
+        	m_attackingUnits.addAll(fightingUnits);
+        }
+        else
+        {
+        	m_defendingUnits.addAll(fightingUnits);
+        }
+
+       /* if (m_attackingFromMap.get(fightingFrom) == null)
+        {
+            m_attackingFromMap.put(fightingFrom, new ArrayList<Unit>());
+        }
+        
+        Collection<Unit> fightingFromMapUnits = m_attackingFromMap.get(fightingFrom);
+        fightingFromMapUnits.addAll(fightingUnits);
+*/
+
+        /*//are we amphibious
+        if (route.getStart().isWater() && route.getEnd() != null
+                && !route.getEnd().isWater()
+                && Match.someMatch(fightingUnits, Matches.UnitIsLand))
+        {
+            m_amphibiousAttackFrom.add(getAttackFrom(route));
+            m_amphibiousLandAttackers.addAll(Match.getMatches(fightingUnits,
+                    Matches.UnitIsLand));
+            m_amphibious = true;
+        }*/
+        
+      /*//TODO add dependencies for transported units?
+        Map<Unit, Collection<Unit>> dependencies = transporting(units);
+        
+        if (isAlliedAirDependents())
+        {
+            dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
+            for(Unit carrier : dependencies.keySet())
+            {            	
+            	UnitAttachment ua = UnitAttachment.get(carrier.getUnitType());
+            	if (ua.getCarrierCapacity() == -1)
+            		continue;
+            	Collection<Unit> fighters = dependencies.get(carrier);
+            	for (Unit fighter : fighters)
+            	{
+            		//Set transportedBy for fighter
+            		change.add(ChangeFactory.unitPropertyChange(fighter, carrier, TripleAUnit.TRANSPORTED_BY ));
+            	}
+            	//remove transported fighters from battle display
+            	m_attackingUnits.removeAll(fighters);
+            }
+        }
+        
+        //Set the dependent paratroopers so they die if the bomber dies.        
+        if(isParatroopers(m_attacker))
+        {
+            Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
+            Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
+            if(!airTransports.isEmpty() && !paratroops.isEmpty())
+            {
+            	//Load capable bombers by default>
+            	Map<Unit,Unit> unitsToCapableAirTransports = MoveDelegate.mapAirTransports(route, paratroops, airTransports, true, m_attacker);
+
+            	HashMap<Unit, Collection<Unit>> dependentUnits = new HashMap<Unit, Collection<Unit>>();
+            	Collection<Unit> singleCollection = new ArrayList<Unit>();
+            	for (Unit unit : unitsToCapableAirTransports.keySet())
+            	{
+                    Collection<Unit> unitList = new ArrayList<Unit>();
+                    unitList.add(unit);
+            		Unit bomber = unitsToCapableAirTransports.get(unit);                
+            		singleCollection.add(unit);
+
+            		//Set transportedBy for paratrooper
+            		change.add(ChangeFactory.unitPropertyChange(unit, bomber, TripleAUnit.TRANSPORTED_BY ));            	
+
+            		//Set the dependents
+            		if (dependentUnits.get(bomber) != null)
+            			dependentUnits.get(bomber).addAll(unitList);
+            		else
+            			dependentUnits.put(bomber, unitList);
+            	}
+
+            	dependencies.putAll(dependentUnits);
+
+            	UnitSeperator.categorize(airTransports, dependentUnits, false, false);
+            }
+        }
+        
+        
+        addDependentUnits(dependencies);*/
+
+        //mark units with no movement
+        //for all but air
+        Collection<Unit> nonAir = Match.getMatches(fightingUnits,Matches.UnitIsNotAir);
+        
+        //we dont want to change the movement of transported land units if this is a sea battle
+        //so restrict non air to remove land units
+        if(m_battleSite.isWater())
+            nonAir = Match.getMatches(nonAir, Matches.UnitIsNotLand);
+        
+        //TODO This checks for ignored sub/trns and skips the set of the attackers to 0 movement left
+        //If attacker stops in an occupied territory, movement stops (battle is optional) 
+        if(MoveValidator.onlyIgnoredUnitsOnPath(route, player, m_data, false))
             return change;
         
 
@@ -971,11 +1089,23 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {        	            
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
-            	determineScrambledUnits(bridge);                
+            	if(getScramble_Rules_In_Effect())
+            		determineScrambledUnits(bridge);                
+            }
+        };    
+
+        IExecutable notifyScrambleUnits = new IExecutable()
+        {        	            
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+            	if(getScramble_Rules_In_Effect())
+            		MustFightBattle.getDisplay(bridge).scrambleNotification(m_battleID, SCRAMBLE_UNITS_FOR_DEFENSE, m_battleSite.getOwner(), new ArrayList<Unit>(m_scrambled), m_dependentUnits);                
             }
         };    
         
+
         //push in opposite order of execution
+        m_stack.push(notifyScrambleUnits);
         m_stack.push(scrambleUnits);
         m_stack.push(landParatroops);
         m_stack.push(removeNonCombatants);
@@ -1625,8 +1755,33 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
             getDisplay(bridge).gotoBattleStep(m_battleID, step);
         	
-            //Ask players if they want to scramble and handle everything else
+            //Ask players if they want to scramble and get the list of scrambled units with territories
             getRemote(scramblingPlayer, bridge).scrambleQuery(m_battleID, availableTerritories, text);
+            
+            Map<Unit, Territory> scrambledUnits = BattleDisplay.getScrambledUnits();
+            //Move the scrambled units to the battle
+            if(!scrambledUnits.isEmpty())
+            {
+            	BattleTracker tracker = getBattleTracker(); 
+            	Battle battle = tracker.getPendingBattle(m_battleSite, false);
+                
+            	CompositeChange change = new CompositeChange();
+        		m_scrambled.addAll(scrambledUnits.keySet());
+            	for(Unit u:scrambledUnits.keySet())
+            	{
+            		Territory t = scrambledUnits.get(u);
+            		Route route = m_data.getMap().getRoute(t,m_battleSite);            		
+            		
+            		change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
+            		change.add(ChangeFactory.moveUnits(t,m_battleSite,Collections.singleton(u)));
+                	change.add(battle.addCombatChange(route, Collections.singleton(u),scramblingPlayer));
+            	}
+            	bridge.addChange(change);
+            	
+            	//kevy
+                String messageShort = scramblingPlayer.getName()+ " scramble units";
+            	getDisplay(bridge).notifyScramble(messageShort, messageShort, step, scramblingPlayer);
+            }
     }
     
     private void queryRetreat(boolean defender, int retreatType,
@@ -1754,6 +1909,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
             }
         }
+    }  
+    
+    private BattleTracker getBattleTracker()
+    {
+        return DelegateFinder.battleDelegate(m_data).getBattleTracker();
     }
 
     private Change retreatFromDependents(Collection<Unit> units,
@@ -1978,7 +2138,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         } else
         {
             getDisplay(bridge).notifyRetreat(m_battleID, retreating);
-
         }
     }
     
