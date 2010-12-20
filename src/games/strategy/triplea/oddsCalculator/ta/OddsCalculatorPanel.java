@@ -77,12 +77,14 @@ public class OddsCalculatorPanel extends JPanel
     private JPanel m_resultsPanel;
     private JButton m_calculateButton;
     private JButton m_closeButton;
+    private JButton m_SwapSidesButton;
     
     private PlayerUnitsPanel m_attackingUnitsPanel;
     private PlayerUnitsPanel m_defendingUnitsPanel;
     
     private JComboBox m_attackerCombo;
     private JComboBox m_defenderCombo;
+    private JComboBox m_SwapSidesCombo;
     private JCheckBox m_keepOneAttackingLandUnitCombo;
     
     private JCheckBox m_landBattle;
@@ -167,6 +169,11 @@ public class OddsCalculatorPanel extends JPanel
         return (PlayerID) m_attackerCombo.getSelectedItem();
     }
     
+    private PlayerID getSwapSides()
+    {
+        return (PlayerID) m_SwapSidesCombo.getSelectedItem();
+    }
+
     private void setupListeners()
     {
         
@@ -255,6 +262,23 @@ public class OddsCalculatorPanel extends JPanel
             
         });
         
+        m_SwapSidesButton.addActionListener(new ActionListener()
+        {
+            
+            public void actionPerformed(ActionEvent e)
+            {
+                List<Unit> getdefenders = new ArrayList<Unit>();
+                List<Unit> getattackers = new ArrayList<Unit>();
+                getdefenders = m_defendingUnitsPanel.getUnits();
+                getattackers = m_attackingUnitsPanel.getUnits();
+                m_SwapSidesCombo.setSelectedItem(getAttacker());
+                m_attackerCombo.setSelectedItem(getDefender());
+                m_defenderCombo.setSelectedItem(getSwapSides());
+                m_attackingUnitsPanel.init(getAttacker(), getdefenders, isLand());
+                m_defendingUnitsPanel.init(getDefender(), getattackers, isLand());
+            }
+            
+        });        
     }
     
     private void updateStats()
@@ -447,6 +471,7 @@ public class OddsCalculatorPanel extends JPanel
         
         resultsText.add(m_clearButton, new GridBagConstraints(0, 10, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 5, 5, 5), 0, 0));
         resultsText.add(m_calculateButton, new GridBagConstraints(0, 11, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(25, 5, 5, 5), 0, 0));
+        resultsText.add(m_SwapSidesButton, new GridBagConstraints(0, 12, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(25, 5, 5, 5), 0, 0));
         
         m_resultsPanel.add(resultsText);
         
@@ -474,6 +499,7 @@ public class OddsCalculatorPanel extends JPanel
         {
             m_attackerCombo = new JComboBox(new Vector<PlayerID>(m_data.getPlayerList().getPlayers()));
             m_defenderCombo = new JComboBox(new Vector<PlayerID>(m_data.getPlayerList().getPlayers()));
+            m_SwapSidesCombo = new JComboBox(new Vector<PlayerID>(m_data.getPlayerList().getPlayers()));
         }
         finally
         {
@@ -483,9 +509,12 @@ public class OddsCalculatorPanel extends JPanel
         
         m_defenderCombo.setRenderer(new PlayerRenderer());
         m_attackerCombo.setRenderer(new PlayerRenderer());
+        m_SwapSidesCombo.setRenderer(new PlayerRenderer());
         
         m_defendingUnitsPanel = new PlayerUnitsPanel(m_data, m_context, true);
         m_attackingUnitsPanel = new PlayerUnitsPanel(m_data, m_context, false);
+
+
         
         m_landBattle = new JCheckBox("Land Battle");
         
@@ -495,7 +524,7 @@ public class OddsCalculatorPanel extends JPanel
         m_numRuns.setMin(1);
         m_numRuns.setMax(20000);
         
-        m_numRuns.setValue(5000);
+        m_numRuns.setValue(3000);
         
         m_calculateButton = new JButton("Calculate Odds");
         m_resultsPanel = new JPanel();
@@ -513,6 +542,7 @@ public class OddsCalculatorPanel extends JPanel
         
         m_closeButton = new JButton("Close");
         m_clearButton = new JButton("Clear");
+        m_SwapSidesButton = new JButton("Swap Sides");
         
         m_keepOneAttackingLandUnitCombo = new JCheckBox("One attacking land must live");
         
@@ -546,7 +576,7 @@ public class OddsCalculatorPanel extends JPanel
         
     }
 
-	public void selectCalcaulteButton() {
+	public void selectCalculateButton() {
 		m_calculateButton.requestFocus();
 		
 	}

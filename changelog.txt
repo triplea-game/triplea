@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Added a swap sides button to the battle calculator, corrected a misspelled class, and reduced default calcs from 5000 to 3000 (dav_eagle)
+
 * Moore AI purchase fixes. AI was buying factories then trying to place them in water. When rich it was purchasing only the cheapest unit, 
 and even when it was supposed to it was not buying any factories. Tried to purchase all air way too often. Was attempting to place factories it did not have. 
 Was purchasing specialty units like walls, bunkers, and mortars, way too often. Was not buying factories if the enemy had any units within 3 territories of potential factory territory.

@@ -76,7 +76,7 @@ public class OddsCalculatorDialog extends JDialog
 	@Override
 	public void show() {		
 		super.show();		
-		m_panel.selectCalcaulteButton();
+		m_panel.selectCalculateButton();
 	}
     
     
