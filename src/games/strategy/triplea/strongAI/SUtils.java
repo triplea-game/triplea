@@ -46,7 +46,7 @@ public class SUtils
 	
 	private final static int PURCHASE_LOOP_MAX_TIME_MILLIS = 150 * 1000;
     private final static Logger s_logger = Logger.getLogger(StrongAI.class.getName());
-
+    public final static List<Territory> EMPTY_LIST = Collections.unmodifiableList(new ArrayList<Territory>());
 	/**
 	* determine the threat to the capital of the player's allies
 	* returns boolean true or false whether threat exists
@@ -2039,7 +2039,7 @@ public class SUtils
 		owned.removeAll(existingFactories);
 		List<Territory> isWaterConvoy = SUtils.onlyWaterTerr(data, owned);
 		owned.removeAll(isWaterConvoy);
-		List<Territory> beenThere = new ArrayList<Territory>(); // any territories we want to exclude from the route, for sorting
+		Collections.shuffle(owned);
 		if (onWater)
 		{
 			List<Territory> waterOwned = SUtils.stripLandLockedTerr(data, owned);
@@ -2056,20 +2056,25 @@ public class SUtils
 					territoryValue += 3;
 				if (findNearest(prodTerr, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player), data) != null)
 					territoryValue += 1;
-				int dist = distanceToEnemy(prodTerr, beenThere, data, player, false);
+				List<Territory> empty = new ArrayList<Territory>();
+				int dist = distanceToEnemy(prodTerr, empty, data, player, false);
 				if (dist != 0)
 					territoryValue += 10 - dist;
 				else
 				{
-					dist = distanceToEnemy(prodTerr, beenThere, data, player, true);
-					territoryValue += 2 - dist;
+					List<Territory> empty2 = new ArrayList<Territory>();
+					dist = distanceToEnemy(prodTerr, empty2, data, player, true);
+					territoryValue += 5 - dist;
 				}
-				territoryValue += 3 * TerritoryAttachment.get(prodTerr).getProduction();
+				territoryValue += 4 * TerritoryAttachment.get(prodTerr).getProduction();
 				List<Territory> weOwnAll = getNeighboringEnemyLandTerritories(data, player, prodTerr);
 				List<Territory> isWater = SUtils.onlyWaterTerr(data, weOwnAll);
 				weOwnAll.removeAll(isWater);
-				territoryValue -= 2 * weOwnAll.size();
-					
+				territoryValue -= 15 * weOwnAll.size();
+				if (TerritoryAttachment.get(prodTerr).getProduction() < 2)
+					territoryValue -= 100;
+				if (TerritoryAttachment.get(prodTerr).getProduction() < 1)
+					territoryValue -= 100;
 				terrProd.put(prodTerr, territoryValue);
 			}
 			SUtils.reorder(owned, terrProd, true);
@@ -2078,7 +2083,6 @@ public class SUtils
 		
 		// TODO: we need to put the territories in an order that is a mix between high production and closeness to the enemy
 		// because currently this entire factory location picker just picks the first good territory it finds. (veqryn)
-		Collections.shuffle(owned);
 		IntegerMap<Territory> terrProd = new IntegerMap<Territory>();
 		for (Territory prodTerr : owned)
 		{
@@ -2088,15 +2092,17 @@ public class SUtils
 				territoryValue += 3;
 			if (findNearest(prodTerr, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player), data) != null)
 				territoryValue += 1;
-			int dist = distanceToEnemy(prodTerr, beenThere, data, player, false);
+			List<Territory> empty = new ArrayList<Territory>();
+			int dist = distanceToEnemy(prodTerr, empty, data, player, false);
 			if (dist != 0)
 				territoryValue += 10 - dist;
 			else
 			{
-				dist = distanceToEnemy(prodTerr, beenThere, data, player, true);
-				territoryValue += 2 - dist;
+				List<Territory> empty2 = new ArrayList<Territory>();
+				dist = distanceToEnemy(prodTerr, empty2, data, player, true);
+				territoryValue += 5 - dist;
 			}
-			territoryValue += 3 * TerritoryAttachment.get(prodTerr).getProduction();
+			territoryValue += 4 * TerritoryAttachment.get(prodTerr).getProduction();
 			terrProd.put(prodTerr, territoryValue);
 		}
 		SUtils.reorder(owned, terrProd, true);

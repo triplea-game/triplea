@@ -323,10 +323,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         			totProduction += factProduction;
         	}
         }
-        // if the land based production is greater than half (used to be 1/3) of all factory production, turn off amphib
+        // if the land based production is greater than 2/5 (used to be 1/3) of all factory production, turn off amphib
         // works better on NWO where Brits start with factories in North Africa
         
-        amphibPlayer = amphibPlayer ? (totProduction < allProduction/2) : false;
+        amphibPlayer = amphibPlayer ? (totProduction * 5 < allProduction * 2) : false;
         return amphibPlayer;
     }
 
@@ -6777,7 +6777,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						}
 					}
 				}
-    			if (factPurchased && PUsToSpend < 16 && waterProduction > 0)
+    			if (factPurchased && (PUsToSpend < 16 || waterProduction <= 0))
 					purchaseDelegate.purchase(purchase); //This is all we will purchase
     			else if (factPurchased)
     			{
