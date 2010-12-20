@@ -1,4 +1,7 @@
 Changes for 1.2.7
+* More work on Moore AI's purchasing and placing. Will now sort territories into a list which represents both production ability and closeness to enemy.
+AI is now discouraged from buying submarines. And AI will now attempt to buy a factory if it has no factories. (veqryn)
+
 * Added a swap sides button to the battle calculator, corrected a misspelled class, and reduced default calcs from 5000 to 3000 (dav_eagle)
 
 * Moore AI purchase fixes. AI was buying factories then trying to place them in water. When rich it was purchasing only the cheapest unit, 

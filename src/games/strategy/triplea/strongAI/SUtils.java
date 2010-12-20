@@ -2039,6 +2039,7 @@ public class SUtils
 		owned.removeAll(existingFactories);
 		List<Territory> isWaterConvoy = SUtils.onlyWaterTerr(data, owned);
 		owned.removeAll(isWaterConvoy);
+		List<Territory> beenThere = new ArrayList<Territory>(); // any territories we want to exclude from the route, for sorting
 		if (onWater)
 		{
 			List<Territory> waterOwned = SUtils.stripLandLockedTerr(data, owned);
@@ -2049,7 +2050,27 @@ public class SUtils
 			IntegerMap<Territory> terrProd = new IntegerMap<Territory>();
 			for (Territory prodTerr : owned)
 			{
-				terrProd.put(prodTerr, TerritoryAttachment.get(prodTerr).getProduction());
+				// sorting territories to have ones with greatest production and closeness to enemy first (by land, then by sea) (veqryn)
+				int territoryValue =0;
+				if (hasLandRouteToEnemyOwnedCapitol(prodTerr, player, data))
+					territoryValue += 3;
+				if (findNearest(prodTerr, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player), data) != null)
+					territoryValue += 1;
+				int dist = distanceToEnemy(prodTerr, beenThere, data, player, false);
+				if (dist != 0)
+					territoryValue += 10 - dist;
+				else
+				{
+					dist = distanceToEnemy(prodTerr, beenThere, data, player, true);
+					territoryValue += 2 - dist;
+				}
+				territoryValue += 3 * TerritoryAttachment.get(prodTerr).getProduction();
+				List<Territory> weOwnAll = getNeighboringEnemyLandTerritories(data, player, prodTerr);
+				List<Territory> isWater = SUtils.onlyWaterTerr(data, weOwnAll);
+				weOwnAll.removeAll(isWater);
+				territoryValue -= 2 * weOwnAll.size();
+					
+				terrProd.put(prodTerr, territoryValue);
 			}
 			SUtils.reorder(owned, terrProd, true);
 			return owned.get(0); //TODO: cleanup this to buy the best possible location
@@ -2058,6 +2079,27 @@ public class SUtils
 		// TODO: we need to put the territories in an order that is a mix between high production and closeness to the enemy
 		// because currently this entire factory location picker just picks the first good territory it finds. (veqryn)
 		Collections.shuffle(owned);
+		IntegerMap<Territory> terrProd = new IntegerMap<Territory>();
+		for (Territory prodTerr : owned)
+		{
+			// sorting territories to have ones with greatest production and closeness to enemy first (by land, then by sea) (veqryn)
+			int territoryValue =0;
+			if (hasLandRouteToEnemyOwnedCapitol(prodTerr, player, data))
+				territoryValue += 3;
+			if (findNearest(prodTerr, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player), data) != null)
+				territoryValue += 1;
+			int dist = distanceToEnemy(prodTerr, beenThere, data, player, false);
+			if (dist != 0)
+				territoryValue += 10 - dist;
+			else
+			{
+				dist = distanceToEnemy(prodTerr, beenThere, data, player, true);
+				territoryValue += 2 - dist;
+			}
+			territoryValue += 3 * TerritoryAttachment.get(prodTerr).getProduction();
+			terrProd.put(prodTerr, territoryValue);
+		}
+		SUtils.reorder(owned, terrProd, true);
 		Territory minTerr = null;
 		float minRisk = 1.0F;
 		risk = 1.0F;
@@ -3821,6 +3863,12 @@ public class SUtils
 		int uDefense = u.getDefense(player);
 		int aRolls = u.getAttackRolls(player);
 		int cost = rule.getCosts().getInt(key);
+		// Discourage buying submarines, since the AI has no clue how to use them (veqryn)
+		boolean thisIsSub = u.isSub();
+		if (thisIsSub && uAttack >= 1)
+			uAttack--;
+		else if (thisIsSub && uDefense >= 1)
+			uDefense--;
 		// Encourage buying balanced units. Added by veqryn, to decrease the rate at which the AI buys walls, fortresses, and mortars, among other specialy units that should not be bought often if at all.
 		if (u.getMovement(player) == 0)
 			uAttack = 0;

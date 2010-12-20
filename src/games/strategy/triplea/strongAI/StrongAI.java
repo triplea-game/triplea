@@ -6754,7 +6754,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     		waterProduction += TerritoryAttachment.get(wFact).getProduction();
     	}
     	//we don't have enough factories through which to launch attack
-    	if (isAmphib && ((waterProduction < 6 && PUsToSpend > 26) || (waterProduction < 4 && PUsToSpend > 15) || (waterProduction < 10 && PUsToSpend > 50) || (waterProduction < 2)))
+    	if (isAmphib && ((waterProduction < 6 && PUsToSpend > 26) || (waterProduction < 4 && PUsToSpend > 15) || (waterProduction < 10 && PUsToSpend > 60) || (waterProduction < 2) || (Math.random() < 0.4 && PUsToSpend > 200)))
     	{
     		List<Territory> allMyTerrs = SUtils.allOurTerritories(data, player);
     		float risk = 0.0F;
@@ -6777,7 +6777,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						}
 					}
 				}
-    			if (factPurchased && PUsToSpend < 16)
+    			if (factPurchased && PUsToSpend < 16 && waterProduction > 0)
 					purchaseDelegate.purchase(purchase); //This is all we will purchase
     			else if (factPurchased)
     			{
@@ -7009,7 +7009,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 //        s_logger.fine("Player: "+player.getName()+"; Capital Danger: "+capDanger);
  
 		int fighterPresent = 0;
-		if (capDanger) //focus on Land Units and buy before any other decisions are made
+		if (capDanger && totProd > 0) //focus on Land Units and buy before any other decisions are made
 		{
 			landProductionRules.addAll(airProductionRules); //just in case we have a lot of PU
 			SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, landProductionRules, leftToSpend, totProd, data, player, 0);
@@ -7610,6 +7610,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						{
 							float riskFactor = 1.0F;
 							Territory factTerr = SUtils.findFactoryTerritory(data, player, riskFactor, buyfactory, false);
+							// AI will attempt to buy a factory if it has no production. Will attempt both ways of purchasing. Will fail if it has no territories of value >=2 and touching water OR no territories that are completely surrounded by friendly territories
+							if (factTerr == null && totProd <= 0)
+								factTerr = SUtils.findFactoryTerritory(data, player, riskFactor, buyfactory, true);
 
 							if (factTerr != null)
 							{
@@ -7778,7 +7781,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		if (isAmphib)
 		{
 			PUSea = leftToSpend; //go ahead and make them available TODO: make sure that it is worth buying a transport
-        	if (currentRound <= 8 && ! transportProductionRules.isEmpty())
+        	if (!transportProductionRules.isEmpty())
         	{
         		ProductionRule transRule = transportProductionRules.get(0);
         		int cost = transRule.getCosts().getInt(pus);
@@ -7796,7 +7799,49 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		bestTransport.clear();
 		bestMaxUnits.clear();
 		bestMobileAttack.clear();
-		if (unitCount < totProd && leftToSpend > 0 && buyExtraLandUnits) //attack oriented land units
+		if (leftToSpend > 0 && (unitCount < totProd) && extraPUonPlanes)
+		{
+			for (ProductionRule planeProd : rules)
+			{
+				int planeCost = planeProd.getCosts().getInt(pus);
+				if (leftToSpend < planeCost || unitCount >= totProd)
+					continue;
+				UnitType plane = (UnitType) planeProd.getResults().keySet().iterator().next();
+				if (Matches.UnitTypeIsAir.match(plane))
+				{
+					if (capDanger && !Matches.unitTypeCanBombard(player).match(plane)) //buy best defensive plane
+					{
+						int maxPlanes = totProd - unitCount;
+						int costPlanes = leftToSpend/planeCost;
+						int buyThese = Math.min(maxPlanes, costPlanes);
+						leftToSpend -= maxPlanes*planeCost;
+//						s_logger.fine("Extra Air"+"; Player: "+player.getName()+"Left To Spend: "+leftToSpend);
+						while (leftToSpend < 0 && buyThese > 0)
+						{
+							buyThese--;
+							leftToSpend+= planeCost;
+						}
+						if (buyThese > 0)
+							purchase.add(planeProd, buyThese);
+					}
+					else
+					{
+						leftToSpend -= planeCost;
+						if (leftToSpend > 0)
+						{
+							purchase.add(planeProd, 1);
+							unitCount++;
+						}
+					}
+				}
+			}
+		}
+		bestAttack.clear();
+		bestDefense.clear();
+		bestTransport.clear();
+		bestMaxUnits.clear();
+		bestMobileAttack.clear();
+		if (unitCount < totProd && leftToSpend > 2) //attack oriented land units
 		{
 			SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, landProductionRules, PULand, maxBuy, data, player, fighterPresent);
 			int buyThese = 0;
@@ -7840,50 +7885,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				}
 				purchase.add(rule1, numToBuy);
 			}
-			
-			bestAttack.clear();
-			bestDefense.clear();
-			bestTransport.clear();
-			bestMaxUnits.clear();
-			bestMobileAttack.clear();
 		}
-		if (leftToSpend > 0 && (unitCount < totProd) && extraPUonPlanes)
-		{
-			for (ProductionRule planeProd : rules)
-			{
-				int planeCost = planeProd.getCosts().getInt(pus);
-				if (leftToSpend < planeCost || unitCount >= totProd)
-					continue;
-				UnitType plane = (UnitType) planeProd.getResults().keySet().iterator().next();
-				if (Matches.UnitTypeIsAir.match(plane))
-				{
-					if (capDanger && !Matches.unitTypeCanBombard(player).match(plane)) //buy best defensive plane
-					{
-						int maxPlanes = totProd - unitCount;
-						int costPlanes = leftToSpend/planeCost;
-						int buyThese = Math.min(maxPlanes, costPlanes);
-						leftToSpend -= maxPlanes*planeCost;
-//						s_logger.fine("Extra Air"+"; Player: "+player.getName()+"Left To Spend: "+leftToSpend);
-						while (leftToSpend < 0 && buyThese > 0)
-						{
-							buyThese--;
-							leftToSpend+= planeCost;
-						}
-						if (buyThese > 0)
-							purchase.add(planeProd, buyThese);
-					}
-					else
-					{
-						leftToSpend -= planeCost;
-						if (leftToSpend > 0)
-						{
-							purchase.add(planeProd, 1);
-							unitCount++;
-						}
-					}
-				}
-			}
-		}
+		// in case we exited from the loop before finishing purchase, this will purchase the first unit in land production quickly (do not remove this)
 		if ((unitCount < totProd) && leftToSpend > 0)
 		{
 			for (ProductionRule quickProd : rules)
