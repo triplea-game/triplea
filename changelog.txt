@@ -1,10 +1,14 @@
 Changes for 1.2.7
+* Fixed Moore AI not puchasing anything when it has placeanywhere rules and no factories, and fixed it placing everything inside a capitol which is impassable (bug 2965154), 
+and fixed a list which was growing indefinitely each round with duplicates, the AI will no longer place in any impassible territory, the AI will not attempt to place factories in territories just conquered, 
+and also made further tweaks to the AI (veqryn).
+
 * More work on Moore AI's purchasing and placing. Will now sort territories into a list which represents both production ability and closeness to enemy.
 AI is now discouraged from buying submarines. And AI will now attempt to buy a factory if it has no factories. (veqryn)
 
 * Added a swap sides button to the battle calculator, corrected a misspelled class, and reduced default calcs from 5000 to 3000 (dav_eagle)
 
-* Moore AI purchase fixes. AI was buying factories then trying to place them in water. When rich it was purchasing only the cheapest unit, 
+* Moore AI purchase fixes. AI was buying factories then trying to place them in water. When rich it was purchasing only the cheapest unit (bug 2989178), 
 and even when it was supposed to it was not buying any factories. Tried to purchase all air way too often. Was attempting to place factories it did not have. 
 Was purchasing specialty units like walls, bunkers, and mortars, way too often. Was not buying factories if the enemy had any units within 3 territories of potential factory territory.
 And lots of small tweaks to purchasing algorithm to allow moore ai to work for more maps other than ww2v3, especially bigger maps. (veqryn)

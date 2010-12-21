@@ -2032,6 +2032,7 @@ public class SUtils
 	 */
     public static Territory findFactoryTerritory(GameData data, PlayerID player, float risk, boolean buyfactory, boolean onWater)
     {
+    	final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     	CompositeMatch<Territory> enemyNoWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryEnemyAndNotNuetralWater(player, data));
     	CompositeMatch<Territory> alliedNoWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryAllied(player, data));
 		List<Territory> owned = allOurTerritories(data, player);
@@ -2039,12 +2040,17 @@ public class SUtils
 		owned.removeAll(existingFactories);
 		List<Territory> isWaterConvoy = SUtils.onlyWaterTerr(data, owned);
 		owned.removeAll(isWaterConvoy);
+		List<Territory> cloneFactTerritories = new ArrayList<Territory>(owned);
+        for (Territory deleteBad : cloneFactTerritories) // removed just conquered territories (for combat before purchase games) (veqryn)
+        {
+			if (delegate.getBattleTracker().wasConquered(deleteBad))
+				owned.remove(deleteBad);
+		}
 		Collections.shuffle(owned);
 		if (onWater)
 		{
 			List<Territory> waterOwned = SUtils.stripLandLockedTerr(data, owned);
 			owned.retainAll(waterOwned);
-			// TODO: ai will still attempt to play factories in territories it just conquered
 			if (owned.isEmpty())
 				return null;
 			IntegerMap<Territory> terrProd = new IntegerMap<Territory>();
@@ -2064,7 +2070,7 @@ public class SUtils
 				{
 					List<Territory> empty2 = new ArrayList<Territory>();
 					dist = distanceToEnemy(prodTerr, empty2, data, player, true);
-					territoryValue += 5 - dist;
+					territoryValue += 8 - dist;
 				}
 				territoryValue += 4 * TerritoryAttachment.get(prodTerr).getProduction();
 				List<Territory> weOwnAll = getNeighboringEnemyLandTerritories(data, player, prodTerr);
