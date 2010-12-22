@@ -797,6 +797,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         
         }  );
         
+        List<Territory> isWaterTerr = SUtils.onlyWaterTerr(data, enemyOwned);
+        enemyOwned.removeAll(isWaterTerr);
         
         //first find the territories we can just walk into
         for(Territory enemy : enemyOwned)

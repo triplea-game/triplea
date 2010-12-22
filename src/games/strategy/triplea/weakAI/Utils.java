@@ -115,5 +115,19 @@ public class Utils
         return false;
         
     }
+    
+	// returns all territories that are water territories (veqryn)
+	public static List<Territory> onlyWaterTerr(GameData data, List<Territory> allTerr)
+	{
+		List<Territory> water = new ArrayList<Territory>(allTerr);
+    	Iterator<Territory> wFIter = water.iterator();
+    	while (wFIter.hasNext())
+    	{ 
+    		Territory waterFact = wFIter.next();
+    		if (!Matches.TerritoryIsWater.match(waterFact))
+    			wFIter.remove();
+    	}
+    	return water;
+	}
 }
 
