@@ -1,4 +1,8 @@
 Changes for 1.2.7
+* Easy AI will now purchase units for bid, however it will only purchase land units, and only place them in the capitol. (veqryn)
+
+* Easy AI bug fix, was purchasing zero units when it had to repair a factory and also had at least 1 other factory with no repairs. (veqryn)
+
 * Fixed Moore AI not puchasing anything when it has placeanywhere rules and no factories, and fixed it placing everything inside a capitol which is impassable (bug 2965154), 
 and fixed a list which was growing indefinitely each round with duplicates, the AI will no longer place in any impassible territory, the AI will not attempt to place factories in territories just conquered, 
 and also made further tweaks to the AI (veqryn).
