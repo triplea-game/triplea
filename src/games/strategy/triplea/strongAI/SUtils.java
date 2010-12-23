@@ -2203,7 +2203,6 @@ public class SUtils
 	 */
     public static List<Territory> getExactNeighbors(Territory territory, int distance, PlayerID player, boolean neutral)
 	{
-    	// (veqryn) I want to add 1 more argument: boolean allowWater
     	// This will return territories that are not impassable, but have an impassable territory in the way. (or water in the way)
     	GameData data = player.getData();
 		if(distance < 0)
@@ -2213,6 +2212,28 @@ public class SUtils
 		if(distance == 0)
 			return startClone;
 
+		startClone.addAll(data.getMap().getNeighbors(territory,distance));
+		if(distance == 1)
+			return startClone;
+		
+		startClone.removeAll(data.getMap().getNeighbors(territory,distance-1));
+		startClone.remove(territory);
+		if (!neutral || Properties.getNeutralsImpassable(data))
+		{
+			Iterator<Territory> t = startClone.iterator();
+			while (t.hasNext())
+			{
+			    if (Matches.TerritoryIsNeutral.match(t.next()))
+			       t.remove();
+		    }
+		}
+		Iterator<Territory> t2 = startClone.iterator();
+		while (t2.hasNext())
+		{
+		    if (Matches.TerritoryIsImpassable.match(t2.next()))
+		       t2.remove();
+	    }
+		/* Code for a loop version. TODO: Find things only on a path that does not include impassables, water/land, restricted territories.
 		List<Territory> startX = new ArrayList<Territory>();
 		List<Territory> innerCircle = new ArrayList<Territory>();
 		Set<Territory> start = data.getMap().getNeighbors(territory);
@@ -2231,42 +2252,6 @@ public class SUtils
 			}
 		}
 		startClone.remove(territory);
-		startX.clear();
-		startX.addAll(startClone);
-		for (Territory t : startX)
-		{
-		    if (Matches.TerritoryIsImpassable.match(t))
-		       startClone.remove(t);
-		}
-		/* current wording is incorrect on at least 2 levels, but changing it will break the entire moore ai. (veqryn)
-		if (!neutral && Properties.getNeutralsImpassable(data))
-		{
-			for (Territory t : startClone)
-			{
-			    if (Matches.TerritoryIsImpassableToLandUnits(player).match(t)) // why is kevin removing water here, when he uses this fuction for sea movement?
-			       startX.remove(t); // why is he removing it from startX?
-		    }
-		}
-		*/
-		/* This following coding is what I want to add, but can't because it needs that extra argument. (veqryn)
-		startX.clear();
-		startX.addAll(startClone);
-		if ((!neutral || Properties.getNeutralsImpassable(data)) && !allowWater)
-		{
-			for (Territory t : startX)
-			{
-			    if (Matches.TerritoryIsImpassableToLandUnits(player).match(t))
-			       startClone.remove(t);
-		    }
-		}
-		if ((!neutral || Properties.getNeutralsImpassable(data)) && allowWater)
-		{
-			for (Territory t : startX)
-			{
-			    if (Matches.TerritoryIsPassableAndNotRestricted(player).match(t)) // this will remove all territories not controlled by the player, which is really bad
-			       startClone.remove(t);
-		    }
-		}
 		*/
 		return startClone;
 	}

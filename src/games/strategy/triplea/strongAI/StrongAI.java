@@ -1612,7 +1612,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		if (goRoute == null || goRoute.getEnd() == null)
 			return;
 		Territory endTerr = goRoute.getEnd();
-		List<Territory> waterTerrs = SUtils.getExactNeighbors(endTerr, 6, player, false); //TODO: why is kevin checking distance = 6 here?
+		List<Territory> waterTerrs = new ArrayList<Territory>();
+		waterTerrs.addAll(data.getMap().getNeighbors(endTerr, 20)); // 14 (or 6) appears to be arbitrary number of territories away the enemy is, that is the maximum we can move towards with transports (20or14 are for GreatWar, 12or9 for ww2v3, 6 was original)
+		// List<Territory> waterTerrs = SUtils.getExactNeighbors(endTerr, 6, player, false); //TODO: why is kevin checking distance = 6 here?
 		Set<Territory> xWaterTerrs = data.getMap().getNeighbors(endTerr, 3); // And why remove distance 3 from it?
 		waterTerrs.removeAll(xWaterTerrs);
 		Iterator<Territory> wIter = waterTerrs.iterator();
@@ -6773,7 +6775,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     		waterProduction += TerritoryAttachment.get(wFact).getProduction();
     	}
     	//we don't have enough factories through which to launch attack
-    	if (isAmphib && ((waterProduction < 6 && PUsToSpend > 26) || (waterProduction < 4 && PUsToSpend > 15) || (waterProduction < 10 && PUsToSpend > 60) || (waterProduction < 2) || (Math.random() < 0.4 && PUsToSpend > 200)))
+    	if (isAmphib && ((waterProduction < 6 && PUsToSpend > 26) || (waterProduction < 4 && PUsToSpend > 15) || (waterProduction < 10 && PUsToSpend > 70) || (waterProduction < 2) || (Math.random() < 0.33 && PUsToSpend > 250)))
     	{
     		List<Territory> allMyTerrs = SUtils.allOurTerritories(data, player);
     		float risk = 0.0F;
@@ -7309,18 +7311,18 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
 		boolean buyfactory = false, buyExtraLandUnits = true; //fix this later...we might want to save PUs
         int maxPurch = leftToSpend/3;
-		if (maxPurch > (totProd + 4)) //more money than places to put units...buy more expensive units & a Factory
+		if ((maxPurch > (totProd + 4) && !isAmphib) || maxPurch > (totProd + 12)) //more money than places to put units...buy more expensive units & a Factory
 		{
 			buyfactory = true;
 			landConstant = 2;
 			buyOnePlane = true;
 			highPriceLandUnits=true;
 		}
-		if (realLandThreat <= 0.0F && !doBuyAttackShips && !buyTransports && !isAmphib)
+		if (realLandThreat <= 0.0F && !doBuyAttackShips && !buyTransports && !isAmphib && maxPurch > totProd + 2)
 			highPriceLandUnits = true;
 
 
-		if (landConstant !=2 || (highPriceLandUnits && PULand >= 15) || totProd == 0)
+		if (landConstant !=2 || (highPriceLandUnits && PULand >= 35) || totProd == 0)
 		{
 			buyfactory = true;
 			int numFactory = 0;
@@ -7597,9 +7599,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				numFactory += enemyFactoriesInRange.size();
 				
 			}
-			if ((numFactory >= 2) && (leftToSpend < 50)) // some maps have a lot of cheap territories, may need more factories (veqryn)
+			if ((numFactory >= 2) && (leftToSpend < 60)) // some maps have a lot of cheap territories, may need more factories (veqryn)
 				buyfactory = false; //allow 2 factories on the same continent
-			if ((numFactory >= 4) && (leftToSpend < 100)) // some maps have a lot of money, may need more factories (veqryn)
+			if ((numFactory >= 4) && (leftToSpend < 120)) // some maps have a lot of money, may need more factories (veqryn)
 				buyfactory = false; //allow 4 factories on the same continent
 			if (!buyfactory)
 			{
@@ -7613,7 +7615,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				if (minDistToEnemy > 5) //even if a lot of factories...build a factory closer to enemy
 					buyfactory = true;
 			}
-			if (((maxPurch > (totProd + 6)) && highPriceLandUnits && PULand >= 35 && PULand > 7*totProd) || totProd == 0) // stinking rich, who cares if many factories are close by
+			if (((maxPurch > (totProd + 12)) && highPriceLandUnits && PULand > 70 && PULand > 7*totProd) || totProd == 0) // stinking rich, who cares if many factories are close by
 				buyfactory = true;
 			/*
 			 * Watch out for having a good distance to enemy, but laying factories back at your base
