@@ -2220,7 +2220,7 @@ public class SUtils
 		{
 			Set<Territory> start2 = data.getMap().getNeighbors(territory, i);
 			startX.addAll(start2);
-			startX.remove(startClone);
+			startX.removeAll(startClone);
 			startClone.clear();
 			startClone.addAll(startX);
 			startX.clear();

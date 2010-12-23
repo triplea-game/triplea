@@ -5726,10 +5726,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                  });
 
         CompositeMatch<Unit> airUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir);
-        CompositeMatch<Unit> alliedAirUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), Matches.UnitIsAir);
-        CompositeMatch<Unit> alliedLandUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data),
+        CompositeMatch<Unit> alliedNotOwned = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), new InverseMatch<Unit>(Matches.unitIsOwnedBy(player)));
+        CompositeMatch<Unit> alliedAirUnit = new CompositeMatchAnd<Unit>(alliedNotOwned, Matches.UnitIsAir);
+        CompositeMatch<Unit> alliedLandUnit = new CompositeMatchAnd<Unit>(alliedNotOwned,
         											Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotFactory);
-        CompositeMatch<Unit> alliedAirLandUnit = new CompositeMatchOr<Unit>(alliedAirUnit, alliedLandUnit);
+        CompositeMatch<Unit> alliedAirLandUnitNotOwned = new CompositeMatchOr<Unit>(alliedAirUnit, alliedLandUnit);
         CompositeMatch<Unit> blitzUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBlitz);
         CompositeMatch<Unit> enemyLandAirUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsNotSea, Matches.UnitIsNotAA, Matches.UnitIsNotFactory);
         CompositeMatch<Territory> emptyEnemyTerr = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotNeutral(player, data), Matches.TerritoryIsNotImpassableToLandUnits(player));
@@ -5953,7 +5954,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			{
 				for (Territory aT : alliedCapTerr)
 				{ //alliedCUnits contains ourCUnits
-					alliedCUnits.addAll(aT.getUnits().getMatches(alliedAirLandUnit));
+					alliedCUnits.addAll(aT.getUnits().getMatches(alliedAirLandUnitNotOwned));
 					ourCUnits.addAll(aT.getUnits().getMatches(attackable));
 				}
 				ourCUnits.removeAll(unitsAlreadyMoved);
@@ -6266,7 +6267,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 		}
                 	}
                 	ourStrength += SUtils.strength(goodUnits, true, false, tFirst);
-                	List<Unit> aUnits = checkTerr2.getUnits().getMatches(alliedAirLandUnit);
+                	List<Unit> aUnits = checkTerr2.getUnits().getMatches(alliedAirLandUnitNotOwned);
                 	aUnits.removeAll(goodUnits);
                 	aUnits.removeAll(unitsAlreadyMoved);
                 	alliedStrength += SUtils.strength(aUnits, true, false, tFirst);

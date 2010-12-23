@@ -1,4 +1,7 @@
 Changes for 1.2.7
+* Moore AI logic fix, calculations for taking enemy capitol with allied help included owned strength when looking at allied strength, also 
+  getExactNeighbors was returning incorrect data by not fully removing previous iterations (getExactNeighbors still returns incorrect data if distance > 2). (squidbait)
+
 * Easy AI major fix, was considering all water territories on the map in the list of territories to attack with land units. (veqryn)
 
 * Easy AI will now purchase units for bid, however it will only purchase land units, and only place them in the capitol. (veqryn)
