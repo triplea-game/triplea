@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Moore AI SUtils getExactNeighbors() fix, was returning incorrect data for any distance greater than 2. (veqryn)
+
 * Moore AI logic fix, calculations for taking enemy capitol with allied help included owned strength when looking at allied strength, also 
   getExactNeighbors was returning incorrect data by not fully removing previous iterations (getExactNeighbors still returns incorrect data if distance > 2). (squidbait)
 

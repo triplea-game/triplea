@@ -2203,6 +2203,8 @@ public class SUtils
 	 */
     public static List<Territory> getExactNeighbors(Territory territory, int distance, PlayerID player, boolean neutral)
 	{
+    	// (veqryn) I want to add 1 more argument: boolean allowWater
+    	// This will return territories that are not impassable, but have an impassable territory in the way. (or water in the way)
     	GameData data = player.getData();
 		if(distance < 0)
 			throw new IllegalArgumentException("Distance must be positive not:" + distance);
@@ -2212,30 +2214,61 @@ public class SUtils
 			return startClone;
 
 		List<Territory> startX = new ArrayList<Territory>();
+		List<Territory> innerCircle = new ArrayList<Territory>();
 		Set<Territory> start = data.getMap().getNeighbors(territory);
 		startClone.addAll(start);
-		if(distance == 1)
-			return startClone;
-		for (int i=2; i<=distance; i++)
+		if(distance > 1)
 		{
-			Set<Territory> start2 = data.getMap().getNeighbors(territory, i);
-			startX.addAll(start2);
-			startX.removeAll(startClone);
-			startClone.clear();
-			startClone.addAll(startX);
-			startX.clear();
+			innerCircle.addAll(startClone);
+			for (int i=2; i<=distance; i++)
+			{
+				innerCircle.addAll(startX);
+				startX.clear();
+				Set<Territory> start2 = data.getMap().getNeighbors(territory, i);
+				startX.addAll(start2);
+				startClone.addAll(startX);
+				startClone.removeAll(innerCircle);
+			}
 		}
 		startClone.remove(territory);
+		startX.clear();
+		startX.addAll(startClone);
+		for (Territory t : startX)
+		{
+		    if (Matches.TerritoryIsImpassable.match(t))
+		       startClone.remove(t);
+		}
+		/* current wording is incorrect on at least 2 levels, but changing it will break the entire moore ai. (veqryn)
 		if (!neutral && Properties.getNeutralsImpassable(data))
+		{
+			for (Territory t : startClone)
+			{
+			    if (Matches.TerritoryIsImpassableToLandUnits(player).match(t)) // why is kevin removing water here, when he uses this fuction for sea movement?
+			       startX.remove(t); // why is he removing it from startX?
+		    }
+		}
+		*/
+		/* This following coding is what I want to add, but can't because it needs that extra argument. (veqryn)
+		startX.clear();
+		startX.addAll(startClone);
+		if ((!neutral || Properties.getNeutralsImpassable(data)) && !allowWater)
 		{
 			for (Territory t : startX)
 			{
 			    if (Matches.TerritoryIsImpassableToLandUnits(player).match(t))
-			       startX.remove(t);
+			       startClone.remove(t);
 		    }
 		}
+		if ((!neutral || Properties.getNeutralsImpassable(data)) && allowWater)
+		{
+			for (Territory t : startX)
+			{
+			    if (Matches.TerritoryIsPassableAndNotRestricted(player).match(t)) // this will remove all territories not controlled by the player, which is really bad
+			       startClone.remove(t);
+		    }
+		}
+		*/
 		return startClone;
-
 	}
 
     /**

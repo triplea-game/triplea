@@ -1612,8 +1612,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		if (goRoute == null || goRoute.getEnd() == null)
 			return;
 		Territory endTerr = goRoute.getEnd();
-		List<Territory> waterTerrs = SUtils.getExactNeighbors(endTerr, 6, player, false);
-		Set<Territory> xWaterTerrs = data.getMap().getNeighbors(endTerr, 3);
+		List<Territory> waterTerrs = SUtils.getExactNeighbors(endTerr, 6, player, false); //TODO: why is kevin checking distance = 6 here?
+		Set<Territory> xWaterTerrs = data.getMap().getNeighbors(endTerr, 3); // And why remove distance 3 from it?
 		waterTerrs.removeAll(xWaterTerrs);
 		Iterator<Territory> wIter = waterTerrs.iterator();
 		while (wIter.hasNext()) //clean out land and empty territories
