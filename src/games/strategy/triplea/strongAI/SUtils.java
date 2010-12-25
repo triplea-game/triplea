@@ -337,6 +337,7 @@ public class SUtils
 		List<Unit> infantry = new ArrayList<Unit>();
 		List<Unit> artillery = new ArrayList<Unit>();
 		List<Unit> armor = new ArrayList<Unit>();
+		List<Unit> others = new ArrayList<Unit>();
 
 		for (Unit x : transUnits)
 		{
@@ -346,10 +347,13 @@ public class SUtils
 				artillery.add(x);
 			else if (Matches.UnitCanBlitz.match(x))
 				armor.add(x);
+			else
+				others.add(x);
 		}
 		int artilleryCount = artillery.size();
 		int armorCount = armor.size();
 		int infCount = infantry.size();
+		int othersCount = others.size();
 		for (int j=0; j < infCount; j++) //interleave the artillery and armor with inf
 		{
 			sorted.add(infantry.get(j));
@@ -363,11 +367,22 @@ public class SUtils
 				sorted.add(artillery.get(artilleryCount-1));
 				artilleryCount--;
 			}
+			else if (othersCount > 0)
+			{
+				sorted.add(others.get(othersCount-1));
+				othersCount--;
+			}
+			
 		}
 		if (artilleryCount > 0)
 		{
 			for (int j2=0; j2 < artilleryCount; j2++)
 				sorted.add(artillery.get(j2));
+		}
+		if (othersCount > 0)
+		{
+			for (int j4=0; j4 < othersCount; j4++)
+				sorted.add(others.get(j4));
 		}
 		if (armorCount > 0)
 		{
