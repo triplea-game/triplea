@@ -516,7 +516,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         List<Collection<Unit>> transportsToLoad = new ArrayList<Collection<Unit>>();
         determineCapDanger(player, data);
         s_logger.fine("Start Combat for: "+player.getName());
-        
+
+		s_logger.fine("Sea Combat Move");
         //let sea battles occur before we load transports
         populateCombatMoveSea(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
@@ -549,7 +550,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
 		s_logger.fine("Amphib Map Unload");
 		amphibMapUnload(data, moveUnits, moveRoutes, player);
-		doMove(moveUnits, moveRoutes, null, moveDel);
+        doMove(moveUnits, moveRoutes, null, moveDel);
 		moveRoutes.clear();
 		moveUnits.clear();
 
@@ -568,13 +569,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		
 		s_logger.fine("Amphib Map Unload");
 		amphibMapUnload(data, moveUnits, moveRoutes, player);
-		doMove(moveUnits, moveRoutes, null, moveDel);
+        doMove(moveUnits, moveRoutes, null, moveDel);
 		moveRoutes.clear();
 		moveUnits.clear();
 
 		s_logger.fine("Populate Transport Unload");
 		populateTransportUnload(data, moveUnits, moveRoutes, player);
-		doMove(moveUnits, moveRoutes, null, moveDel);
+        doMove(moveUnits, moveRoutes, null, moveDel);
         moveRoutes.clear();
         moveUnits.clear();
 
@@ -594,12 +595,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveRoutes.clear();
         moveUnits.clear();
 */
+		s_logger.fine("Regular Combat Move");
         populateCombatMove(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-		moveUnits.clear();
+        moveUnits.clear();
 		moveRoutes.clear();
 
         //any planes left for an overwhelming attack?
+		s_logger.fine("Special Plane Attack");
         specialPlaneAttack(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
 
@@ -5696,7 +5699,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	
     	boolean aggressive = SUtils.determineAggressiveAttack(data, player, 1.4F);
     	float maxAttackFactor = 2.00F;
-    	float attackFactor = 1.76F;
+    	float attackFactor = 1.73F;
         float attackFactor2 = 1.11F; //emergency attack...weaken enemy
         final Collection<Unit> unitsAlreadyMoved = new HashSet<Unit>();
 		List<Territory> enemyOwned = SUtils.getNeighboringEnemyLandTerritories(data, player, true);
@@ -5718,7 +5721,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		List<Territory>enemyCaps = SUtils.getEnemyCapitals(data, player);
 
         CompositeMatch<Unit> attackable = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand,
-            Matches.UnitIsNotAA, Matches.UnitIsNotFactory,
+            Matches.UnitIsNotAA, Matches.UnitIsNotStatic(player), Matches.UnitIsNotFactory,
                 new Match<Unit>()
                 {
                     public boolean match(Unit o)
@@ -6000,6 +6003,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				unitsAlreadyMoved.addAll(xAlreadyMoved);
 				alreadyAttacked.add(badCapitol);
 			}
+			weWin = false;
 			xMoveUnits.clear();
 			xMoveRoutes.clear();
 			xAlreadyMoved.clear();
@@ -6161,7 +6165,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 if (weWin) 
                 {
                     if (bigProblem2.size() > 1)
-                    	maxAttackFactor = 1.57F;//concerned about overextending if more than 1 territory
+                    	maxAttackFactor = 1.54F;//concerned about overextending if more than 1 territory
                     remainingStrengthNeeded = (maxAttackFactor * badStrength) + 3.0F;
                     float landStrength = SUtils.inviteLandAttack(false, badTerr, remainingStrengthNeeded, unitsAlreadyMoved, moveUnits, moveRoutes, data, 	player, true, false, alreadyAttacked);
                     remainingStrengthNeeded -= landStrength;
@@ -6173,6 +6177,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                     remainingStrengthNeeded -= seaStrength;
                     weAttacked = true;
                 }
+                weWin = false;
 /* This is causing bad results
 	            remainingStrengthNeeded += 2.0F;
 	            if (weAttacked && remainingStrengthNeeded > 0.0F)
@@ -6303,6 +6308,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 	alreadyAttacked.remove(enemy);
                 	continue;
                 }
+                weWin = false;
 
                 remainingStrengthNeeded = (attackFactor * enemyStrength) + 4.0F; //limit the attackers
 				if (attackFrom.size() == 1) //if we have 1 big attacker

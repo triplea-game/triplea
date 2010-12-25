@@ -437,6 +437,20 @@ public class UnitAttachment extends DefaultAttachment
     
     return 1;
   }
+  
+  public int getDefenseRolls(PlayerID player)
+  {
+    if(getDefense(player) == 0)
+      return 0;
+    /* Strategic Bombers don't get extra dice on defense do they?
+    if(m_isStrategicBomber && TechTracker.hasHeavyBomber(player))
+    {        	
+        return new Integer(games.strategy.triplea.Properties.getHeavy_Bomber_Dice_Rolls(getData()));
+    }
+    */
+    return 1;
+  }
+  
 
   //Kev new properties
   public void setCanScramble(String s)

@@ -1,4 +1,7 @@
 Changes for 1.2.7
+* Moore AI major fix, was considering defender's attack values instead of defense values under some circumstances. Formula to remove casualty units was returning the list as is without properly sorting first, 
+and was saying that anything with zero attack value has zero rolls in any battles, even if defending. Removed zero-movement units from combat-movement considerations. Also added a debug logger to moore ai properties. (veqryn)
+
 * Moore AI major fix, was disqualifying all land units from attacking when those land units did not have artillery, isInfantry, or blitz. Much improved performance on 270BC. (veqryn)
 
 * Moore AI SUtils getExactNeighbors() fix, was returning incorrect data for any distance greater than 2. (veqryn)
