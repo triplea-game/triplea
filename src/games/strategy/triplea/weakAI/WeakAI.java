@@ -980,46 +980,12 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     {
         if (purcahseForBid)
         {
-        	// bid will only buy land units, due to placement for bid not being able to handle sea units
+        	// bid will only buy land units, due to weak ai placement for bid not being able to handle sea units
             Resource PUs = data.getResourceList().getResource(Constants.PUS);
             int leftToSpend = PUsToSpend;
             
             List<ProductionRule> rules = player.getProductionFrontier().getRules();
             IntegerMap<ProductionRule> purchase = new IntegerMap<ProductionRule>();
-
-            List<RepairRule> rrules = Collections.emptyList();
-            CompositeMatch<Unit> ourFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsFactory);
-    		List<Territory> factories = SUtils.findUnitTerr(data, player, ourFactories);
-            if(player.getRepairFrontier() != null) // figure out if anything needs to be repaired
-            {
-                rrules = player.getRepairFrontier().getRules();
-                IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
-                HashMap<Territory, IntegerMap<RepairRule>> repair = new HashMap<Territory, IntegerMap<RepairRule>>();
-                Boolean repairs = false;
-                int diff = 0;
-    		    for (RepairRule rrule : rrules)
-                {
-                    for (Territory fixTerr : factories)
-                    {
-                        if (!Matches.territoryHasOwnedFactory(data, player).match(fixTerr))
-                	 	    continue;
-            		    TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
-                	    diff = ta.getProduction() - ta.getUnitProduction();
-                	    diff = Math.min(diff, leftToSpend);
-                        if(diff > 0)
-                        {
-                            repairMap.add(rrule, diff);
-                            repair.put(fixTerr, repairMap);
-                            leftToSpend -= diff;
-                            repairs = true;
-    					}
-    				}
-            	}
-                if (repairs)
-                {
-                    purchaseDelegate.purchaseRepair(repair);
-                }
-        	}
 
             int minCost = Integer.MAX_VALUE;
             while(minCost == Integer.MAX_VALUE ||  leftToSpend >= minCost)
@@ -1070,7 +1036,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         
         Resource PUs = data.getResourceList().getResource(Constants.PUS);
 
-        int leftToSpend = player.getResources().getQuantity(PUs );
+        int totPU = player.getResources().getQuantity(PUs);
+        int leftToSpend = player.getResources().getQuantity(PUs);
         
         List<ProductionRule> rules = player.getProductionFrontier().getRules();
         IntegerMap<ProductionRule> purchase = new IntegerMap<ProductionRule>();
@@ -1083,8 +1050,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             rrules = player.getRepairFrontier().getRules();
             IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
             HashMap<Territory, IntegerMap<RepairRule>> repair = new HashMap<Territory, IntegerMap<RepairRule>>();
-            Boolean repairs = false;
             int diff = 0;
+            int allowedRepairs = totPU/2;
 		    for (RepairRule rrule : rrules)
             {
                 for (Territory fixTerr : factories)
@@ -1093,20 +1060,21 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             	 	    continue;
         		    TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
             	    diff = ta.getProduction() - ta.getUnitProduction();
+            	    diff = Math.min(diff, totPU/4);
+            	    diff = Math.min(diff, allowedRepairs);
             	    diff = Math.min(diff, leftToSpend);
                     if(diff > 0)
                     {
                         repairMap.add(rrule, diff);
                         repair.put(fixTerr, repairMap);
-                        leftToSpend-= diff;
-                        repairs = true;
+                        leftToSpend -= diff;
+                        purchaseDelegate.purchaseRepair(repair);
+                        repair.clear();
+                        repairMap.clear();
+                        allowedRepairs -= diff;
 					}
 				}
         	}
-            if (repairs)
-            {
-                purchaseDelegate.purchaseRepair(repair);
-            }
     	}
 
         int minCost = Integer.MAX_VALUE;

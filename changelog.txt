@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Moore AI and Weak AI fixes, they were not repairing any factories when they had multiple damaged factories. Both will now repair correctly, and limit repairs to half of total PUs, and limit individual factories to a repair of one quarter total PUs. (veqryn)
+
 * Moore AI fixes, will now return immediately if it has nothing to do for moves and purchasing (wisconsin), and will now repair damaged factories correctly (veqryn).
 
 * Moore AI major fix, was considering defender's attack values instead of defense values under some circumstances. Formula to remove casualty units was returning the list as is without properly sorting first, 

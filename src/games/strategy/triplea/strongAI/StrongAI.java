@@ -7027,8 +7027,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             rrules = player.getRepairFrontier().getRules();
             IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
             HashMap<Territory, IntegerMap<RepairRule>> repair = new HashMap<Territory, IntegerMap<RepairRule>>();
-            Boolean repairs = false;
             int diff = 0;
+            int allowedRepairs = totPU/2;
 		    for (RepairRule rrule : rrules)
             {
                 for (Territory fixTerr : factories)
@@ -7037,21 +7037,21 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             	 	    continue;
         		    TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
             	    diff = ta.getProduction() - ta.getUnitProduction();
-            	    diff = Math.min(diff, totPU/2);
+            	    diff = Math.min(diff, totPU/4);
+            	    diff = Math.min(diff, allowedRepairs);
             	    diff = Math.min(diff, leftToSpend);
                     if(diff > 0)
                     {
                         repairMap.add(rrule, diff);
                         repair.put(fixTerr, repairMap);
                         leftToSpend -= diff;
-                        repairs = true;
+                        purchaseDelegate.purchaseRepair(repair);
+                        repair.clear();
+                        repairMap.clear();
+                        allowedRepairs -= diff;
 					}
 				}
         	}
-            if (repairs)
-            {
-                purchaseDelegate.purchaseRepair(repair);
-            }
     	}
 
         //determine current land risk to the capitol
