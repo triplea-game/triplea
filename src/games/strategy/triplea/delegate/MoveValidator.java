@@ -552,6 +552,12 @@ public class MoveValidator
         if(!territory.isWater() 
                && MoveDelegate.getBattleTracker(data).wasConquered(territory))
             return false;
+        
+        if(getScramble_Rules_In_Effect(data))
+        {
+        	if(Match.someMatch(airUnits, Matches.UnitWasScrambled))
+        		return false;
+        }
 
         if(territory.isWater())
         {
@@ -688,7 +694,16 @@ public class MoveValidator
     {
     	return games.strategy.triplea.Properties.getMovementByTerritoryRestricted(data);
     }
-    
+
+    private static boolean getScramble_Rules_In_Effect(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data);
+    }
+
+    private static boolean getScrambled_Units_Return_To_Base(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getScrambled_Units_Return_To_Base(data);
+    }
     
     private static boolean IsBlitzThroughFactoriesAndAARestricted(GameData data)
     {
@@ -744,6 +759,9 @@ public class MoveValidator
         if (isNonCombat)
         {
             if (validateNonCombat(data, units, route, player, result).getError() != null)
+                return result;
+            
+            if (validateReturnScrambledUnits(data, units, route, player, result).getError() != null)
                 return result;
         }
         else
@@ -990,6 +1008,26 @@ public class MoveValidator
                 return result.setErrorReturnResult("Cannot move units to neutral or enemy territories in non combat");
         }
         return result;
+    }
+
+    private static MoveValidationResult validateReturnScrambledUnits(GameData data, Collection<Unit> units, Route route, PlayerID player, MoveValidationResult result)
+    {
+    	if (!getScramble_Rules_In_Effect(data))
+    		return result;
+    	
+    	if(getScrambled_Units_Return_To_Base(data))
+    	{
+    		Collection<Territory> end = Collections.singleton(route.getEnd());
+    		for (Unit unit : units)
+    		{
+    			TripleAUnit tAUnit = (TripleAUnit) unit;
+    			//if end doesn't equal beginning and territory is still in friendly hands
+    			if(route.getEnd() != tAUnit.getOriginatedFrom() && !Match.allMatch(end, Matches.isTerritoryEnemyAndNotNeutral(player, data)))
+    				result.addDisallowedUnit("Scrambled units must return to base",unit);
+    		}
+    	}
+    	
+		return result;
     }
     
     //Added to handle restriction of movement to listed territories

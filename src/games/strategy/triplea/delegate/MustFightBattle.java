@@ -194,8 +194,24 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	return games.strategy.triplea.Properties.getScramble_Rules_In_Effect(m_data);
     }
 
+    private boolean getScramble_From_Islands_Only()
+    {
+    	return games.strategy.triplea.Properties.getScramble_From_Island_Only(m_data);
+    }
+
+    private boolean getScramble_To_Sea_Only()
+    {
+    	return games.strategy.triplea.Properties.getScramble_To_Sea_Only(m_data);
+    }
+    
     private void determineScrambledUnits(IDelegateBridge bridge)
     {
+    	//If we can only scramble to water and it's not, nevermind
+    	if(!m_battleSite.isWater() && getScramble_To_Sea_Only())
+    	{
+    		return;
+    	}
+    		    	
     	//Get the unit types that can scramble
     	Collection<UnitType> unitTypesCanScramble = new ArrayList<UnitType>();
     	//Get all the players except the attacker
@@ -227,25 +243,30 @@ public class MustFightBattle implements Battle, BattleStepStrings
     		if(uaMaxScrambleDistance > maxScrambleDistance)
     			maxScrambleDistance = uaMaxScrambleDistance;
     	}            
-    	
+
     	//TODO kev see if there are any airbases within that distance that are operable
         Collection<Territory> neighbors = m_data.getMap().getNeighbors(m_battleSite, maxScrambleDistance);
     	Collection<Territory> neighborsWithActiveAirbases = new ArrayList<Territory>();
 
+    	boolean scrambleFromIsland = getScramble_From_Islands_Only();
+    	
     	for (Territory t:neighbors)
         {
+    		//If we scramble from islands only, and it's not- skip it
+    		if(scrambleFromIsland && m_data.getMap().getNeighbors(t).size() != 1)
+    			continue;
+    		
         	if(t.getUnits().someMatch(Matches.UnitIsAirBase) && t.getUnits().someMatch(Matches.UnitCanScramble))
         		neighborsWithActiveAirbases.add(t);
         }
-        
-        
-    	//Ask the aircraft owners if they wish to scramble the units
-    	if(!neighborsWithActiveAirbases.isEmpty())
+  
+    	if(neighborsWithActiveAirbases.isEmpty())
     	{
-    		queryScrambleUnits(SCRAMBLE_UNITS, bridge, neighborsWithActiveAirbases);
+    		return;
     	}
     	
-    	//TODO move any selected units to the site and add them to m_defendingUnits and m_scrambledUnits
+    	//Ask the aircraft owners if they wish to scramble the units    	
+    	queryScrambleUnits(SCRAMBLE_UNITS, bridge, neighborsWithActiveAirbases);
     }
     
     public boolean isOver()
@@ -1773,12 +1794,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
             		Route route = m_data.getMap().getRoute(t,m_battleSite);            		
             		
             		change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
+            		change.add(ChangeFactory.unitPropertyChange(u, route.getLength(), TripleAUnit.ALREADY_MOVED));
+            		change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_SCRAMBLED));
             		change.add(ChangeFactory.moveUnits(t,m_battleSite,Collections.singleton(u)));
                 	change.add(battle.addCombatChange(route, Collections.singleton(u),scramblingPlayer));
             	}
             	bridge.addChange(change);
             	
-            	//kevy
                 String messageShort = scramblingPlayer.getName()+ " scramble units";
             	getDisplay(bridge).notifyScramble(messageShort, messageShort, step, scramblingPlayer);
             }

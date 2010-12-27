@@ -68,6 +68,8 @@ public interface IMoveDelegate extends IRemote
      * Get what air units must move before the end of the players turn
      * @return a list of Territories with air units that must move
      */
+    public Collection<Territory> getTerritoriesWhereAirCantLand(PlayerID player);
+    
     public Collection<Territory> getTerritoriesWhereAirCantLand();
 
     /**

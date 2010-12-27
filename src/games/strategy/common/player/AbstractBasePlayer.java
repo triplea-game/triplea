@@ -28,6 +28,8 @@ public abstract class AbstractBasePlayer implements IGamePlayer
     protected final String m_name;
     protected PlayerID m_id;
     protected IPlayerBridge m_bridge;
+
+	protected boolean m_scrambledUnitsReturned = false;
     
     /** 
      * @param name - the name of the player.

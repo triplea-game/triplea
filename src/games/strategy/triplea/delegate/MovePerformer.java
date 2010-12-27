@@ -288,6 +288,11 @@ public class MovePerformer implements Serializable
             }
                         
             change.add(ChangeFactory.unitPropertyChange(unit, moved + unit.getAlreadyMoved(), TripleAUnit.ALREADY_MOVED));
+
+            if(MoveDelegate.isNonCombat(m_bridge))
+            {
+            	change.add(ChangeFactory.unitPropertyChange(unit, false, TripleAUnit.WAS_SCRAMBLED));
+            }
         }
 
         //if neutrals were taken over mark land units with 0 movement

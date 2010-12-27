@@ -375,6 +375,15 @@ public class Matches
         }
     };
 
+    public static final Match<Unit> UnitWasScrambled = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            TripleAUnit taUnit = (TripleAUnit) obj;
+            return taUnit.getWasScrambled();
+        }
+    };
+    
     public static Match<Unit> unitCanBombard(final PlayerID id)
     {
         return new Match<Unit>()

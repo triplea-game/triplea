@@ -87,9 +87,9 @@ public class TripleaDisplay implements ITripleaDisplay
             Collection<Unit> scrambled,
             Map<Unit,Collection<Unit>> dependents)
     {
-        m_ui.getBattlePanel().scrambleNotification(step, player, scrambled, dependents);
-        
+        m_ui.getBattlePanel().scrambleNotification(step, player, scrambled, dependents);        
     }
+    
     /* (non-Javadoc)
      * @see games.strategy.triplea.ui.display.ITripleaDisplay#battleEnd(games.strategy.net.GUID, java.lang.String)
      */

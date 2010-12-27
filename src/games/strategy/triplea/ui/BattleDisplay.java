@@ -299,6 +299,7 @@ public class BattleDisplay extends JPanel
             m_attackerModel.addUnits(scrambled);
         }
     }
+    
     public void waitForConfirmation(final String message)
     {
         if (SwingUtilities.isEventDispatchThread())

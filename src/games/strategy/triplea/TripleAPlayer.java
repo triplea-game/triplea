@@ -197,6 +197,26 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 
     private void move(boolean nonCombat)
     {
+    	//TODO kev perhaps add a first-time only flag
+    	if (!m_scrambledUnitsReturned && nonCombat && getScramble_Rules_In_Effect())
+    	{
+    		m_scrambledUnitsReturned = true;
+    		CompositeMatchAnd<Unit> unitWasScrambled = new CompositeMatchAnd<Unit>();
+    		unitWasScrambled.add(Matches.UnitWasScrambled);
+
+    		Collection<Unit> scrambledUnits = new ArrayList<Unit>();
+
+        	//territories
+    		for(Territory t : m_bridge.getGameData().getMap().getTerritories())
+    		{
+    			scrambledUnits.addAll(t.getUnits().getMatches(unitWasScrambled));
+    		}
+
+        	//units were scrambled, move them
+    		if(!scrambledUnits.isEmpty())
+    			returnScrambledUnits(scrambledUnits);
+    	}
+    	
         if (!hasUnitsThatCanMove(nonCombat))
             return;
 
@@ -205,7 +225,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         {
             if (nonCombat)
             {
-                if(!canAirLand(true))
+                if(!canAirLand(true, m_id))
                     move(nonCombat);
             }
             else
@@ -223,13 +243,43 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
             m_ui.notifyError(error);
         move(nonCombat);	
     }
+    
+    private void returnScrambledUnits(Collection<Unit> scrambledUnits)
+    {	
+    	// find only players with units in the collection
+    	Collection <PlayerID> players = new ArrayList<PlayerID>();
+    	for(Unit unit : scrambledUnits)
+    	{
+    		if(!players.contains(unit.getOwner()))
+    			players.add(unit.getOwner());
+    	}
 
-    private boolean canAirLand(boolean movePhase)
+    	for(PlayerID player : players)
+    	{
+    		MoveDescription moveDescription = m_ui.getMove(player, m_bridge, true);
+    		 if (moveDescription == null)
+    	        {
+    			 if(!canAirLand(true, player))
+    				 move(true);
+    			 return;
+    	        }
+
+    	        IMoveDelegate moveDel = (IMoveDelegate) m_bridge.getRemote();
+    	        String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute(), moveDescription.getTransportsThatCanBeLoaded());
+    	        
+    	        if (error != null )
+    	            m_ui.notifyError(error);
+    	}
+    	
+    	return;
+    }
+    
+    private boolean canAirLand(boolean movePhase, PlayerID player)
     {
         
         Collection<Territory> airCantLand;
         if(movePhase)
-            airCantLand = ((IMoveDelegate) m_bridge.getRemote()).getTerritoriesWhereAirCantLand();
+            airCantLand = ((IMoveDelegate) m_bridge.getRemote()).getTerritoriesWhereAirCantLand(player);
         else
             airCantLand = ((IAbstractPlaceDelegate) m_bridge.getRemote()).getTerritoriesWhereAirCantLand();
         
@@ -452,7 +502,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
             if(data == null)
             {
                 //this only happens in lhtr rules
-                if(canAirLand(false))
+                if(canAirLand(false, m_id))
                     return;
                 else
                     continue;
@@ -622,7 +672,11 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     {
         return games.strategy.triplea.Properties.getTechDevelopment(data);
     }
-    
+
+    private boolean getScramble_Rules_In_Effect()
+    {
+    	return games.strategy.triplea.Properties.getScramble_Rules_In_Effect(m_bridge.getGameData());
+    }
 }
 
 

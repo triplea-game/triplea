@@ -93,7 +93,7 @@ public interface ITripleaDisplay extends IDisplay
     public void notifyRetreat(String shortMessage, String message, String step, PlayerID retreatingPlayer);
 
 
-    public void notifyScramble(String shortMessage, String message, String step, PlayerID retreatingPlayer);
+    public void notifyScramble(String shortMessage, String message, String step, PlayerID scramblingPlayer);
     
     
     public void notifyRetreat(GUID battleId, Collection<Unit> retreating);

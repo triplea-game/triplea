@@ -55,6 +55,7 @@ public class TripleAUnit extends Unit
     public static final String LOADED_AFTER_COMBAT = "wasLoadedAfterCombat";
     public static final String UNLOADED_AMPHIBIOUS = "wasAmphibious";
     public static final String ORIGINATED_FROM = "originatedFrom";
+    public static final String WAS_SCRAMBLED = "wasScrambled";
     
     //the transport that is currently transporting us
     private TripleAUnit m_transportedBy = null;
@@ -80,6 +81,7 @@ public class TripleAUnit extends Unit
     private boolean m_wasAmphibious = false;
     //the territory this unit started in
     private Territory m_originatedFrom = null;
+    private boolean m_wasScrambled = false;
     
     public static TripleAUnit get(Unit u) 
     {
@@ -250,7 +252,20 @@ public class TripleAUnit extends Unit
     {
         m_wasInCombat = Boolean.valueOf(value.booleanValue());
     }
+    
+    public boolean getWasScrambled()
+    {
+        return m_wasScrambled;
+    }
 
+    /**
+     * private since this should only be called by UnitPropertyChange
+     */
+    public void setWasScrambled(Boolean value)
+    {
+        m_wasScrambled = Boolean.valueOf(value.booleanValue());
+    }
+    
     public boolean getWasLoadedAfterCombat()
     {
         return m_wasLoadedAfterCombat;

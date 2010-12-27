@@ -246,7 +246,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
     private PlayerID getUnitOwner(Collection<Unit> units)
     {
-        if (EditDelegate.getEditMode(m_data) && !units.isEmpty())
+        if (!units.isEmpty())
             return units.iterator().next().getOwner();
         else
             return m_player;
@@ -822,6 +822,11 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         }
 
         return totalLoad;
+    }
+    
+    public Collection<Territory> getTerritoriesWhereAirCantLand(PlayerID player)
+    {
+        return new AirThatCantLandUtil(m_data, m_bridge).getTerritoriesWhereAirCantLand(player);
     }
     
     public Collection<Territory> getTerritoriesWhereAirCantLand()
