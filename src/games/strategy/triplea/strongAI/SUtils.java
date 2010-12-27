@@ -357,15 +357,16 @@ public class SUtils
 		for (int j=0; j < infCount; j++) //interleave the artillery and armor with inf
 		{
 			sorted.add(infantry.get(j));
-			if (artilleryCount > 0)
-			{
-				sorted.add(artillery.get(artilleryCount-1));
-				artilleryCount--;
-			}
-			else if (armorCount > 0)
+			// this should be based on combined attack and defense powers, not on attachments like blitz
+			if (armorCount > 0)
 			{
 				sorted.add(armor.get(armorCount-1));
 				armorCount--;
+			}
+			else if (artilleryCount > 0)
+			{
+				sorted.add(artillery.get(artilleryCount-1));
+				artilleryCount--;
 			}
 			else if (othersCount > 0)
 			{

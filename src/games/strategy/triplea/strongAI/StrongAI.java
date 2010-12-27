@@ -376,6 +376,18 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     {
         GameData data = getPlayerBridge().getGameData();
 
+        boolean foundOwnedUnits = false;
+        for(Territory ter : data.getMap().getTerritories())
+        {
+            if(ter.getUnits().getMatches(Matches.unitIsOwnedBy(player)).size() > 0)
+            {
+                foundOwnedUnits = true;
+                break;
+            }
+        }
+        if(!foundOwnedUnits)
+            return; //If we don't own any units, just end right now
+
         List<Collection<Unit>> moveUnits = new ArrayList<Collection<Unit>>();
         List<Route> moveRoutes = new ArrayList<Route>();
         List<Collection<Unit>> transportsToLoad = new ArrayList<Collection<Unit>>();
@@ -508,6 +520,18 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     private void doCombatMove(IMoveDelegate moveDel, PlayerID player)
     {
         GameData data = getPlayerBridge().getGameData();
+        boolean foundOwnedUnits = false;
+        for(Territory ter : data.getMap().getTerritories())
+        {
+            if(ter.getUnits().getMatches(Matches.unitIsOwnedBy(player)).size() > 0)
+            {
+                foundOwnedUnits = true;
+                break;
+            }
+        }
+        if(!foundOwnedUnits)
+            return; //If we don't own any units, just end right now
+
         getEdition();
         setImpassableTerrs(player);
 
@@ -6489,7 +6513,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     }
 
     protected void purchase(boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
-    {   //TODO: lot of tweaks have gone into this routine without good organization...need to cleanup
+    {
+        if(PUsToSpend == 0 && player.getResources().getQuantity(data.getResourceList().getResource(Constants.PUS)) == 0) //Check whether the player has ANY PU's to spend...
+            return;
+        //TODO: lot of tweaks have gone into this routine without good organization...need to cleanup
         //breakdown Rules by type and cost
     	int currentRound = data.getSequence().getRound();
 		int highPrice = 0;
@@ -7011,18 +7038,19 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         		    TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
             	    diff = ta.getProduction() - ta.getUnitProduction();
             	    diff = Math.min(diff, totPU/2);
+            	    diff = Math.min(diff, leftToSpend);
                     if(diff > 0)
                     {
                         repairMap.add(rrule, diff);
                         repair.put(fixTerr, repairMap);
+                        leftToSpend -= diff;
                         repairs = true;
 					}
 				}
         	}
             if (repairs)
             {
-                error = purchaseDelegate.purchaseRepair(repair);
-                leftToSpend -= diff;
+                purchaseDelegate.purchaseRepair(repair);
             }
     	}
 
@@ -7957,7 +7985,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         //if we have purchased a factory, it will be a priority for placing units
         //should place most expensive on it
         //need to be able to handle AA purchase
-        if (player.getUnits().size() == 0)
+        if (player.getUnits().isEmpty())
             return;
         setImpassableTerrs(player);
         final Collection<Territory> impassableTerrs = getImpassableTerrs();
