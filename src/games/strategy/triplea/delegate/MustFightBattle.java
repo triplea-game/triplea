@@ -2242,7 +2242,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     		//If there are attackers set their movement to 0 and kill the transports  
         	if (enemyUnits.size() > 0)
         	{
-        		Change change =DelegateFinder.moveDelegate(m_data).markNoMovementChange(enemyUnits);
+        		Change change =DelegateFinder.moveDelegate(m_data).markNoMovementChange(Match.getMatches(enemyUnits, Matches.UnitIsSea));
                 bridge.addChange(change);
                 
     			remove(alliedTransports, bridge, m_battleSite, false);   
