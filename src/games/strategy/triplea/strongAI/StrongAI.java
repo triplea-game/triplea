@@ -8081,12 +8081,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         		for(Territory noRouteTerr : ourTerrs)
                 {
         			List<Territory> tempBeenThere = new ArrayList<Territory>();
-        			List<Territory> tempBeenThere2 = new ArrayList<Territory>();
         			// do not place bids on areas that have no direct land access to an enemy, unless the value is 3 or greater
-                    int temp1 = SUtils.distanceToEnemy(noRouteTerr, tempBeenThere2, data, player, false);
-                    int temp2 = TerritoryAttachment.get(noRouteTerr).getProduction();
-        			
-        			if(SUtils.distanceToEnemy(noRouteTerr, tempBeenThere, data, player, false) < 1 && TerritoryAttachment.get(noRouteTerr).getProduction() < 3)
+                    if(SUtils.distanceToEnemy(noRouteTerr, tempBeenThere, data, player, false) < 1 && TerritoryAttachment.get(noRouteTerr).getProduction() < 3)
                     {
                     	ourSemiRankedBidTerrs.remove(noRouteTerr);
                     }
