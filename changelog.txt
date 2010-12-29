@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Moore AI will now move factories if they can move them and there is more than 1 in a territory (veqryn), and some non-combat fixes and logging (squidbait)
+
 * Moore AI will now bid single units to territories, and bid to all it territories before cycling over to bid to the first one again. Starts with territories touching the enemy. Also fixed a bug in SUtils.distanceToEnemy(). (veqryn)
 
 * MustFightBattle was removing all movement from all units (including air) that stopped to kill an undefended transport, and should not remove movement of air units. (veqryn)

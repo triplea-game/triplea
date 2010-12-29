@@ -2649,7 +2649,7 @@ public class SUtils
 				if (alreadyMovedFrom.contains(otherSource))
 					continue;
 				alreadyMovedFrom.add(otherSource);
-				List<Unit> tranUnits = waterCheck.getUnits().getMatches(transportingUnit);
+				List<Unit> tranUnits = otherSource.getUnits().getMatches(transportingUnit);
 				tranUnits.removeAll(unitsAlreadyMoved);
 				if (tranUnits.isEmpty())
 					continue;
@@ -2668,7 +2668,7 @@ public class SUtils
 					else if (!tracker.isTransporting(thisTran))
 						tranIter.remove();
 				}
-				List<Unit> escorts = waterCheck.getUnits().getMatches(escortUnit);
+				List<Unit> escorts = otherSource.getUnits().getMatches(escortUnit);
 				escorts.removeAll(unitsAlreadyMoved);
 				Iterator<Unit> escortIter = escorts.iterator();
 				while(escortIter.hasNext())

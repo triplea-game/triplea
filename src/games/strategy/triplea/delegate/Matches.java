@@ -1087,7 +1087,7 @@ public class Matches
 			{
 				UnitType type = ((Unit) obj).getUnitType();
 				UnitAttachment ua = UnitAttachment.get(type);
-				return ua.getMovement(player) == 0;
+				return ua.getMovement(player) < 1;
 			}
 		};
 	}
