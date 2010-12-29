@@ -858,6 +858,19 @@ public class Matches
     		}
     	};
     }
+    
+    public static Match<Territory> territoryHasOwnedFactoryNeighbor(final GameData data, final PlayerID player)
+    {
+    	return new Match<Territory>()
+    	{
+    		public boolean match(Territory t)
+    		{
+    			if (data.getMap().getNeighbors(t, Matches.territoryHasOwnedFactory(data, player)).size() > 0)
+    				return true;
+    			return false;
+    		}
+    	};
+    }
 
     public static Match<Territory> territoryHasWaterNeighbor(final GameData data)
     {

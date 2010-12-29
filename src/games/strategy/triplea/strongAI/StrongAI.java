@@ -3623,9 +3623,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		   {
 			   if (check1 == check2 || dontMoveFrom.contains(check2))
 			      continue;
-			   List<Territory> beenThere = new ArrayList<Territory>();
-			   int check1Dist = SUtils.distanceToEnemy(check1, beenThere, data, player, true);
-			   int check2Dist = SUtils.distanceToEnemy(check2, beenThere, data, player, true);
+			   List<Territory> beenThere1 = new ArrayList<Territory>();
+			   List<Territory> beenThere2 = new ArrayList<Territory>();
+			   int check1Dist = SUtils.distanceToEnemy(check1, beenThere1, data, player, true);
+			   int check2Dist = SUtils.distanceToEnemy(check2, beenThere2, data, player, true);
 			   Territory start = null;
 			   Territory stop = null;
 			   if (check1Dist > check2Dist)
@@ -8018,6 +8019,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         {
         	List<Territory> ourFriendlyTerr = new ArrayList<Territory>();
         	List<Territory> ourEnemyTerr = new ArrayList<Territory>();
+        	List<Territory> ourSemiRankedBidTerrs = new ArrayList<Territory>();
         	List<Territory> ourTerrs = SUtils.allOurTerritories(data, player);
         	ourTerrs.remove(capitol); //we'll check the cap last
         	HashMap<Territory, Float> rankMap = SUtils.rankTerritories(data, ourFriendlyTerr, ourEnemyTerr, null, player, tFirst, false, true);
@@ -8033,7 +8035,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         	{
         		Territory bidSeaTerr = null, bidTransTerr = null;
         		CompositeMatch<Territory> enemyWaterTerr = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data));
+        		CompositeMatch<Territory> waterFactoryWaterTerr = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasOwnedFactoryNeighbor(data, player));
         		List<Territory> enemySeaTerr = SUtils.findUnitTerr(data, player, enemyAttackUnit);
+        		List<Territory> isWaterTerr = SUtils.onlyWaterTerr(data, enemySeaTerr);
+        		enemySeaTerr.retainAll(isWaterTerr);
         		Territory maxEnemySeaTerr = null;
         		int maxUnits = 0;
         		for (Territory seaTerr : enemySeaTerr)
@@ -8045,7 +8050,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         				maxEnemySeaTerr = seaTerr;
         			}
         		}
-        		Route seaRoute = SUtils.findNearest(maxEnemySeaTerr, Matches.TerritoryIsWater, Matches.territoryHasNoAlliedUnits(player, data).invert(), data);
+        		Route seaRoute = SUtils.findNearest(maxEnemySeaTerr, waterFactoryWaterTerr, Matches.territoryHasNoAlliedUnits(player, data).invert(), data);
         		if (seaRoute != null)
         		{
         			Territory checkSeaTerr = seaRoute.getEnd();
@@ -8067,9 +8072,55 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         		placeSeaUnits(bid, data, bidSeaTerr, bidSeaTerr, placeDelegate, player);
         	}
         	if (player.getUnits().someMatch(Matches.UnitIsNotSea)) //TODO: Match fighters with carrier purchase
-        		placeAllWeCanOn(bid, data, null, bidLandTerr, placeDelegate, player);
+        	{
+        		ourSemiRankedBidTerrs.addAll(ourTerrWithEnemyNeighbors);
+        		ourTerrs.removeAll(ourTerrWithEnemyNeighbors);
+        		Collections.shuffle(ourTerrs);
+        		ourSemiRankedBidTerrs.addAll(ourTerrs);
+        		// need to remove places like greenland, iceland and west indies that have no route to the enemy, but somehow keep places like borneo, gibralter, etc.
+        		for(Territory noRouteTerr : ourTerrs)
+                {
+        			List<Territory> tempBeenThere = new ArrayList<Territory>();
+        			List<Territory> tempBeenThere2 = new ArrayList<Territory>();
+        			// do not place bids on areas that have no direct land access to an enemy, unless the value is 3 or greater
+                    int temp1 = SUtils.distanceToEnemy(noRouteTerr, tempBeenThere2, data, player, false);
+                    int temp2 = TerritoryAttachment.get(noRouteTerr).getProduction();
+        			
+        			if(SUtils.distanceToEnemy(noRouteTerr, tempBeenThere, data, player, false) < 1 && TerritoryAttachment.get(noRouteTerr).getProduction() < 3)
+                    {
+                    	ourSemiRankedBidTerrs.remove(noRouteTerr);
+                    }
+                }
+                /* Currently the place delegate does not accept bids by the AI to territories that it does not own. If that gets fixed we can add the following code in order to bid to allied territories that contain our units (like Libya in ww2v3) (veqryn)
+        		for(Territory alliedTerr : ourFriendlyTerr)
+                {
+                    if(!Matches.isTerritoryOwnedBy(player).match(alliedTerr) && alliedTerr.getUnits().getMatches(Matches.unitIsOwnedBy(player)).size() > 0)
+                    {
+                    	ourSemiRankedBidTerrs.add(alliedTerr);
+                    }
+                }
+        		*/
+        		List<Territory> isWaterTerr = SUtils.onlyWaterTerr(data, ourSemiRankedBidTerrs);
+        		ourSemiRankedBidTerrs.removeAll(isWaterTerr);
+        		ourSemiRankedBidTerrs.removeAll(impassableTerrs);
+        		// This will bid a max of 5 units to ALL territories except for the capitol. The capitol gets units last, and gets unlimited units (veqryn)
+        		int maxBidPerTerritory = 5;
+        		int bidCycle = 0;
+        		while (!(player.getUnits().isEmpty()) && bidCycle < maxBidPerTerritory)
+        		{
+        			for (int i = 0; i <= ourSemiRankedBidTerrs.size()-1; i++)
+        			{
+        				bidLandTerr = ourSemiRankedBidTerrs.get(i);
+        				placeAllWeCanOn(bid, data, null, bidLandTerr, placeDelegate, player);
+        			}
+        			bidCycle++;
+        		}
+        		if (!player.getUnits().isEmpty())
+        			placeAllWeCanOn(bid, data, null, capitol, placeDelegate, player);
+        	}
         	return;
         }
+        
         determineCapDanger(player, data);
         Territory specSeaTerr = getSeaTerr();
         boolean capDanger = getCapDanger();
@@ -8433,6 +8484,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 
         List<Unit> landUnits = player.getUnits().getMatches(landOrAir);
+        Territory capitol =  TerritoryAttachment.getCapital(player, data);
 
         PlaceableUnits pu3 = placeDelegate.getPlaceableUnits(landUnits , placeAt);
         if(pu3.getErrorMessage() != null)
@@ -8440,7 +8492,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         int placementLeft3 =  pu3.getMaxUnits();
         if(placementLeft3 == -1)
             placementLeft3 = Integer.MAX_VALUE;
+        // allow placing only 1 unit per territory if a bid, unless it is the capitol (water is handled in placeseaunits)
         if (bid)
+        	placementLeft3 = 1;
+        if (bid && (placeAt == capitol))
         	placementLeft3 = 1000;
 
         if(!landUnits.isEmpty())

@@ -992,9 +992,10 @@ public class SUtils
 	 * @return int of distance to enemy
 	 */
 	public static int distanceToEnemy(Territory t, List<Territory> beenThere, GameData data, PlayerID player, boolean sea)
-	{ //find the distance to the closest land territory by recursion
-	  //xDist must be passed as 0
+	{ //find the distance to the closest enemy land territory by recursion
 	  //if no enemy territory can be found...it returns 0
+		if (Matches.TerritoryIsImpassable.match(t))
+			return 0;
 		CompositeMatch<Territory> enemyWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data));
 		CompositeMatch<Territory> noEnemyAndWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data));
 		List<Territory> thisTerr = new ArrayList<Territory>();
@@ -1005,13 +1006,14 @@ public class SUtils
 		beenThere.add(t);
 		int newDist = 1;
 
-		if (thisTerr.size() == 0) //searches land territories
+		if (thisTerr.size() == 0) //searches more territories
 		{
 			List<Territory> newTerrList = new ArrayList<Territory>();
 			if (sea)
 				newTerrList.addAll(data.getMap().getNeighbors(t, noEnemyAndWater));
 			else
 				newTerrList.addAll(getNeighboringLandTerritories(data, player, t));
+			
 			newTerrList.removeAll(beenThere);
 			if (newTerrList.size() == 0)
 				newDist = 0;
@@ -1021,14 +1023,14 @@ public class SUtils
 				for (Territory t2 : newTerrList)
 				{
 					int aDist = distanceToEnemy(t2, beenThere, data, player, sea);
-					newDist += aDist;
-					if (newDist < minDist && aDist > 0)
-						minDist = newDist;
+					if (aDist < minDist && aDist > 0)
+						minDist = aDist;
 				}
 				if (minDist < 100)
-					newDist = minDist;
+					newDist += minDist;
+				else
+					newDist = 0;
 			}
-			// xDist = 0;
 		}
 		return newDist;
 	}
