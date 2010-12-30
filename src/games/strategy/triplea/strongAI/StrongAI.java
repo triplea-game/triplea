@@ -25,7 +25,6 @@ import games.strategy.triplea.delegate.*;
 import games.strategy.triplea.delegate.dataObjects.*;
 import games.strategy.triplea.delegate.remote.*;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.weakAI.Utils;
 import games.strategy.triplea.Properties;
 import games.strategy.util.*;
 
@@ -7173,7 +7172,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		
 
 		Territory capitol = TerritoryAttachment.getCapital(player, data);
-		List<Territory> rfactories = Utils.findUnitTerr(data, player, ourFactories);
+		List<Territory> rfactories = SUtils.findUnitTerr(data, player, ourFactories);
         List<RepairRule> rrules = Collections.emptyList();
         if(player.getRepairFrontier() != null) // figure out if anything needs to be repaired
         {
