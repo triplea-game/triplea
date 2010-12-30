@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Moore AI fixed a bug in SUtils.distanceToEnemy() so that it will return the minimum distance, rather than the first distance it finds. (squidbait)
+
 * Moore AI will now move factories if they can move them and there is more than 1 in a territory (veqryn), and some non-combat fixes and logging (squidbait)
 
 * Moore AI will now bid single units to territories, and bid to all it territories before cycling over to bid to the first one again. Starts with territories touching the enemy. Also fixed a bug in SUtils.distanceToEnemy(). (veqryn)

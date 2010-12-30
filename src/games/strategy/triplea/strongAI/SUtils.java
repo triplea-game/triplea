@@ -1015,6 +1015,7 @@ public class SUtils
 				newTerrList.addAll(getNeighboringLandTerritories(data, player, t));
 			
 			newTerrList.removeAll(beenThere);
+			beenThere.addAll(newTerrList);
 			if (newTerrList.size() == 0)
 				newDist = 0;
 			else
@@ -1022,7 +1023,7 @@ public class SUtils
 				int minDist = 100;
 				for (Territory t2 : newTerrList)
 				{
-					int aDist = distanceToEnemy(t2, beenThere, data, player, sea);
+					int aDist = distanceToEnemy(t2, new ArrayList<Territory>(beenThere), data, player, sea);
 					if (aDist < minDist && aDist > 0)
 						minDist = aDist;
 				}
