@@ -1044,7 +1044,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
         List<RepairRule> rrules = Collections.emptyList();
         CompositeMatch<Unit> ourFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsFactory);
-		List<Territory> factories = Utils.findUnitTerr(data, player, ourFactories);
+		List<Territory> rfactories = Utils.findUnitTerr(data, player, ourFactories);
         if(player.getRepairFrontier() != null) // figure out if anything needs to be repaired
         {
             rrules = player.getRepairFrontier().getRules();
@@ -1056,7 +1056,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             int capDamage = 0;
             int maxUnits = (totPU - 1)/minimumUnitPrice;
             int currentProduction = 0;
-            for (Territory fixTerr : factories)
+            for (Territory fixTerr : rfactories)
             {
                 if (!Matches.territoryHasOwnedFactory(data, player).match(fixTerr))
         	 	    continue;
@@ -1068,8 +1068,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         	    if (ta.getUnitProduction() > 0)
         	    	currentProduction += ta.getUnitProduction();
             }
-            factories.remove(capitol);
-            Collections.shuffle(factories); // we should sort this
+            rfactories.remove(capitol);
+            Collections.shuffle(rfactories); // we should sort this
 		    // assume minimum unit price is 3, and that we are buying only that... if we over repair, oh well, that is better than under-repairing
             // goal is to be able to produce all our units, and at least half of that production in the capitol
             if (TerritoryAttachment.get(capitol).getUnitProduction() <= maxUnits/2) // if capitol is super safe, we don't have to do this. and if capitol is under siege, we should repair enough to place all our units here
@@ -1103,7 +1103,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         	{
     		    for (RepairRule rrule : rrules)
                 {
-                    for (Territory fixTerr : factories)
+                    for (Territory fixTerr : rfactories)
                     {
                         if (!Matches.territoryHasOwnedFactory(data, player).match(fixTerr))
                 	 	    continue;
