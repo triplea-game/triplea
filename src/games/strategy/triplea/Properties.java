@@ -727,12 +727,6 @@ public class Properties implements Constants {
         return data.getProperties().get(SCRAMBLE_FROM_ISLAND_ONLY, false);
     }
     
-    
-    
-    
-    
-    
     private Properties() {
     }
-
 }

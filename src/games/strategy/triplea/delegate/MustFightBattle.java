@@ -214,6 +214,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     		    	
     	//Get the unit types that can scramble
     	Collection<UnitType> unitTypesCanScramble = new ArrayList<UnitType>();
+    	int maxScrambleDistance = 1;
     	//Get all the players except the attacker
     	for (PlayerID p : m_data.getPlayerList())
         {
@@ -226,25 +227,18 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 for(ProductionRule rule : rules)
                 {                    
                     UnitType ut = (UnitType) rule.getResults().keySet().iterator().next();
-                    if(!unitTypesCanScramble.contains(ut) && UnitAttachment.get(ut).getCanScramble())                    	
+                    if(!unitTypesCanScramble.contains(ut) && UnitAttachment.get(ut).getCanScramble())
+                    {
                     	unitTypesCanScramble.add(ut);
+                    	//Get their maxScrambleDistance
+                    	maxScrambleDistance = UnitAttachment.get(ut).getMaxScrambleDistance() > maxScrambleDistance ? UnitAttachment.get(ut).getMaxScrambleDistance() : maxScrambleDistance;
+                    }
                 }
             }
         }
 
-    	//Get their maxScrambleDistance
-    	int maxScrambleDistance = 1;
     	
-    	for (UnitType ut:unitTypesCanScramble)
-    	{
-    		UnitAttachment ua = UnitAttachment.get(ut);
-    		int uaMaxScrambleDistance = ua.getMaxScrambleDistance();
-    		
-    		if(uaMaxScrambleDistance > maxScrambleDistance)
-    			maxScrambleDistance = uaMaxScrambleDistance;
-    	}            
-
-    	//TODO kev see if there are any airbases within that distance that are operable
+    	//See if there are any airbases within that distance that are operable
         Collection<Territory> neighbors = m_data.getMap().getNeighbors(m_battleSite, maxScrambleDistance);
     	Collection<Territory> neighborsWithActiveAirbases = new ArrayList<Territory>();
 
@@ -255,9 +249,21 @@ public class MustFightBattle implements Battle, BattleStepStrings
     		//If we scramble from islands only, and it's not- skip it
     		if(scrambleFromIsland && m_data.getMap().getNeighbors(t).size() != 1)
     			continue;
-    		
+
+    		//check if the airbase(s) is/are operational
         	if(t.getUnits().someMatch(Matches.UnitIsAirBase) && t.getUnits().someMatch(Matches.UnitCanScramble))
-        		neighborsWithActiveAirbases.add(t);
+        	{
+        		for(Unit u:t.getUnits())
+        		{
+        			//TODO we can add other types of bases here as well (naval base, fire base, etc...)
+        			//if it's an airbase and operational
+        			if(UnitAttachment.get(u.getUnitType()).getIsAirBase() && UnitAttachment.get(u.getUnitType()).getMaxOperationalDamage() >= UnitAttachment.get(u.getUnitType()).getUnitDamage())
+        			{
+        				neighborsWithActiveAirbases.add(t);
+        				break;
+        			}
+        		}
+        	}
         }
   
     	if(neighborsWithActiveAirbases.isEmpty())

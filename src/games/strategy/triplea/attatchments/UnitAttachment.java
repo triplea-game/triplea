@@ -67,7 +67,8 @@ public class UnitAttachment extends DefaultAttachment
   private int m_maxScrambleDistance = -1;
   //-1 if can't operate
   private int m_maxOperationalDamage = -1;
-  
+  //-1 if can't be damaged
+  private int m_unitDamage = -1;  
   //-1 if cant transport
   private int m_transportCapacity = -1;
   //-1 if cant be transported
@@ -483,6 +484,16 @@ public class UnitAttachment extends DefaultAttachment
     return m_maxOperationalDamage;
   }
 
+  public void setUnitDamage(String s)
+  {
+	  m_unitDamage = getInt(s);
+  }
+
+  public int getUnitDamage()
+  {
+    return m_unitDamage;
+  }
+  
   public void setIsAirBase(String s)
   {
 	  m_isAirBase = getBool(s);

@@ -197,7 +197,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 
     private void move(boolean nonCombat)
     {
-    	//TODO kev perhaps add a first-time only flag
     	if (!m_scrambledUnitsReturned && nonCombat && getScramble_Rules_In_Effect())
     	{
     		m_scrambledUnitsReturned = true;
@@ -264,11 +263,21 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     			 return;
     	        }
 
-    	        IMoveDelegate moveDel = (IMoveDelegate) m_bridge.getRemote();
-    	        String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute(), moveDescription.getTransportsThatCanBeLoaded());
-    	        
-    	        if (error != null )
-    	            m_ui.notifyError(error);
+    		 IMoveDelegate moveDel = (IMoveDelegate) m_bridge.getRemote();
+    		 String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute());
+
+    		 if (error != null )
+    			 m_ui.notifyError(error);
+
+    		 //get just the player's units
+    		 Collection <Unit> playerUnits = new ArrayList<Unit>();
+    		 playerUnits.addAll(Match.getMatches(scrambledUnits, Matches.unitIsOwnedBy(player)));
+
+    		 //if they haven't all been moved- do it again
+    		 if(Match.someMatch(playerUnits, Matches.UnitWasScrambled))
+    		 {
+    			 returnScrambledUnits(scrambledUnits);
+    		 }
     	}
     	
     	return;

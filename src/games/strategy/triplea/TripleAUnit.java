@@ -56,6 +56,8 @@ public class TripleAUnit extends Unit
     public static final String UNLOADED_AMPHIBIOUS = "wasAmphibious";
     public static final String ORIGINATED_FROM = "originatedFrom";
     public static final String WAS_SCRAMBLED = "wasScrambled";
+    public static final String UNIT_DAMAGE = "unitDamage";
+    public static final String MAX_OPERATIONAL_DAMAGE = "maxOperationalDamage";
     
     //the transport that is currently transporting us
     private TripleAUnit m_transportedBy = null;
@@ -71,6 +73,10 @@ public class TripleAUnit extends Unit
     private Boolean m_wasUnloadedInCombatPhase = Boolean.FALSE;
     //movement used this turn
     private int m_alreadyMoved = 0;
+    //amount of damage unit has sustained
+    private int m_unitDamage = 0;
+    //max damage a unit can take and still be operable
+    private int m_maxOperationalDamage = Integer.MAX_VALUE;
     //is this submarine submerged
     private boolean m_submerged = false;
     //original owner of this unit
@@ -218,6 +224,26 @@ public class TripleAUnit extends Unit
     {   
         int canMove = UnitAttachment.get(getType()).getMovement(getOwner());
         return canMove - m_alreadyMoved;
+    }
+
+    public int getUnitDamage()
+    {
+        return m_unitDamage;
+    }
+
+    public void setUnitDamage(Integer unitDamage)
+    {
+        m_unitDamage = unitDamage;
+    }
+
+    public int getMaxOperationalDamage()
+    {
+        return m_maxOperationalDamage;
+    }
+
+    public void setMaxOperationalDamage(Integer maxMaxOperationalDamage)
+    {
+        m_maxOperationalDamage = maxMaxOperationalDamage;
     }
 
     public boolean getSubmerged()
