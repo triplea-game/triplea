@@ -129,5 +129,23 @@ public class Utils
     	}
     	return water;
 	}
+	
+	/**
+	 * Return Territories containing any unit depending on unitCondition
+	 * Differs from findCertainShips because it doesn't require the units be owned 
+	 */
+	public static List<Territory> findUnitTerr(GameData data, PlayerID player, Match<Unit> unitCondition)
+	{
+		//Return territories containing a certain unit or set of Units
+		CompositeMatch<Unit> limitShips = new CompositeMatchAnd<Unit>(unitCondition);
+		List<Territory> shipTerr = new ArrayList<Territory>();
+		Collection<Territory> tNeighbors = data.getMap().getTerritories();
+		for (Territory t2 : tNeighbors)
+		{
+			if (t2.getUnits().someMatch(limitShips))
+				shipTerr.add(t2);
+		}
+		return shipTerr;
+	}
 }
 

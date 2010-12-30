@@ -7169,36 +7169,98 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		//If other factors allow, buy one plane
 		if (ACCount > fighterCount)
 			buyOnePlane = true;
+		
+
+		Territory capitol = TerritoryAttachment.getCapital(player, data);
+		
         List<RepairRule> rrules = Collections.emptyList();
         if(player.getRepairFrontier() != null) // figure out if anything needs to be repaired
         {
             rrules = player.getRepairFrontier().getRules();
             IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
             HashMap<Territory, IntegerMap<RepairRule>> repair = new HashMap<Territory, IntegerMap<RepairRule>>();
+            final int minimumUnitPrice = 3;
             int diff = 0;
-            int allowedRepairs = totPU/2;
-		    for (RepairRule rrule : rrules)
+            int totalDamage = 0;
+            int capDamage = 0;
+            int maxUnits = (totPU - 1)/minimumUnitPrice;
+            int currentProduction = 0;
+            for (Territory fixTerr : factories)
             {
-                for (Territory fixTerr : factories)
+                if (!Matches.territoryHasOwnedFactory(data, player).match(fixTerr))
+        	 	    continue;
+    		    TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
+        	    diff = ta.getProduction() - ta.getUnitProduction();
+        	    totalDamage += diff;
+        	    if (fixTerr == capitol)
+        	    	capDamage += diff;
+        	    if (ta.getUnitProduction() > 0)
+        	    	currentProduction += ta.getUnitProduction();
+            }
+            factories.remove(capitol);
+            Collections.shuffle(factories); // we should sort this
+		    // assume minimum unit price is 3, and that we are buying only that... if we over repair, oh well, that is better than under-repairing
+            // goal is to be able to produce all our units, and at least half of that production in the capitol
+            if (TerritoryAttachment.get(capitol).getUnitProduction() <= maxUnits/2) // if capitol is super safe, we don't have to do this. and if capitol is under siege, we should repair enough to place all our units here
+        	{
+                for (RepairRule rrule : rrules)
                 {
-                    if (!Matches.territoryHasOwnedFactory(data, player).match(fixTerr))
+                    if (!Matches.territoryHasOwnedFactory(data, player).match(capitol))
             	 	    continue;
-        		    TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
+        		    TerritoryAttachment ta = TerritoryAttachment.get(capitol);
             	    diff = ta.getProduction() - ta.getUnitProduction();
-            	    diff = Math.min(diff, totPU/4);
-            	    diff = Math.min(diff, allowedRepairs);
-            	    diff = Math.min(diff, leftToSpend);
+            	    diff = Math.min(diff, (maxUnits/2 - ta.getUnitProduction())+1 );
+            	    diff = Math.min(diff, leftToSpend - minimumUnitPrice);
                     if(diff > 0)
                     {
-                        repairMap.add(rrule, diff);
-                        repair.put(fixTerr, repairMap);
+                        if (ta.getUnitProduction() >= 0)
+                        	currentProduction += diff;
+                        else
+                            currentProduction += diff + ta.getUnitProduction();
+                    	repairMap.add(rrule, diff);
+                        repair.put(capitol, repairMap);
                         leftToSpend -= diff;
                         purchaseDelegate.purchaseRepair(repair);
                         repair.clear();
                         repairMap.clear();
-                        allowedRepairs -= diff;
+                        maxUnits = (leftToSpend - 1)/minimumUnitPrice; // ideally we would adjust this after each single PU spent, then re-evaluate everything. 
 					}
-				}
+                }
+        	} 
+            int i = 0;
+        	while (currentProduction < maxUnits && i < 2)
+        	{
+    		    for (RepairRule rrule : rrules)
+                {
+                    for (Territory fixTerr : factories)
+                    {
+                        if (!Matches.territoryHasOwnedFactory(data, player).match(fixTerr))
+                	 	    continue;
+                        // we will repair the first territories in the list as much as we can, until we fulfill the condition, then skip all other territories
+            		    if (currentProduction >= maxUnits)
+                        	continue;
+                        TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
+                	    diff = ta.getProduction() - ta.getUnitProduction();
+                	    if (i == 0) // first cycle will only repair for producing half of our units. if we cycle again it means we are really rich, because maxUnits is huge
+                	    	diff = Math.min(diff, (maxUnits - currentProduction) - ta.getUnitProduction());
+                	    diff = Math.min(diff, leftToSpend - minimumUnitPrice);
+                        if(diff > 0)
+                        {
+                            if (ta.getUnitProduction() >= 0)
+                            	currentProduction += diff;
+                            else
+                                currentProduction += diff + ta.getUnitProduction();
+                            repairMap.add(rrule, diff);
+                            repair.put(fixTerr, repairMap);
+                            leftToSpend -= diff;
+                            purchaseDelegate.purchaseRepair(repair);
+                            repair.clear();
+                            repairMap.clear();
+                            maxUnits = (leftToSpend - 1)/minimumUnitPrice; // ideally we would adjust this after each single PU spent, then re-evaluate everything. 
+    					}
+    				}
+            	}
+    		    i++;
         	}
     	}
 
