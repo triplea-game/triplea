@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.*;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -87,13 +88,28 @@ public class UnitsDrawer implements IDrawable
         }
         
         graphics.drawImage(img, m_placementPoint.x - bounds.x, m_placementPoint.y - bounds.y, null);
-
+        
+        // more then 1 unit of this category
         if (m_count != 1)
         {
-            graphics.setColor(Color.white);
-            graphics.setFont(MapImage.MAP_FONT);
-            graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4),
-                    m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight());
+        	if(Properties.getCountersDisplay(data)>0) { // Display more units as a stack	
+        		for(int i = 1;i < m_count && i<Properties.getCountersDisplay(data);i++) {
+        	        graphics.drawImage(img, m_placementPoint.x + 2*i - bounds.x, m_placementPoint.y - 2*i - bounds.y, null);
+        		}
+        		if(m_count>Properties.getCountersDisplay(data)) {
+        			graphics.setColor(Color.white);
+                    graphics.setFont(MapImage.MAP_FONT);
+    	            graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + 2*Properties.getCountersDisplay(data) + (m_uiContext.getUnitImageFactory().getUnitImageWidth() * 6 / 10),
+    	                    m_placementPoint.y - 2*Properties.getCountersDisplay(data)- bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight() * 1/3);
+        		}
+        	} 
+        	else 
+        	{ // Display a white number at the bottom of the unit
+        		graphics.setColor(Color.white);
+                graphics.setFont(MapImage.MAP_FONT);
+	            graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4),
+	                    m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight());
+	        }
         }
         
         //Display Factory Damage

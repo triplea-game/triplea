@@ -488,7 +488,19 @@ public class Properties implements Constants {
 
     }
     
-
+	/*
+	* Display units as counters: stacked instead of a number drawn under the unit
+	* the number means the maximum stack size, 0 means default behavior, 
+	* if a stack is above max stack size the number is drawn in the top right corner of the counter
+	*/
+	public static int getCountersDisplay(GameData data) {
+		try {
+			return Integer.parseInt((String) data.getProperties().get(COUNTERS_DISPLAY));
+		} catch (NumberFormatException e) {
+			return 0;
+		}
+	}
+	
     /*
      * Sub retreat before battle
      */

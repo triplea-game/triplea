@@ -1004,7 +1004,7 @@ public class SUtils
 		}
 		else 
 		{
-			endCondition = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data),Matches.TerritoryIsNotImpassable);
+			endCondition = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data),Matches.TerritoryIsNotImpassable, Matches.TerritoryIsLand);
 			routeCondition = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data),Matches.TerritoryIsNotImpassable, Matches.TerritoryIsLand);
 		}
 		return findNearest(t, endCondition, routeCondition, data).getLength();
