@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Moore AI SUtils fix, findNearest() and distanceToEnemy() completely re-written to be much faster. (squidbait)
+
 * Moore AI and Easy AI repair rules fix, will now repair intelligently, and never under repair at all, or over repair by more than a couple pu's. (veqryn)
 
 * Moore AI fixed a bug in SUtils.distanceToEnemy() so that it will return the minimum distance, rather than the first distance it finds. (squidbait)

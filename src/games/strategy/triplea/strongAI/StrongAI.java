@@ -3641,10 +3641,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		   {
 			   if (check1 == check2 || dontMoveFrom.contains(check2))
 			      continue;
-			   List<Territory> beenThere1 = new ArrayList<Territory>();
-			   List<Territory> beenThere2 = new ArrayList<Territory>();
-			   int check1Dist = SUtils.distanceToEnemy(check1, beenThere1, data, player, true);
-			   int check2Dist = SUtils.distanceToEnemy(check2, beenThere2, data, player, true);
+			   int check1Dist = SUtils.distanceToEnemy(check1, data, player, true);
+			   int check2Dist = SUtils.distanceToEnemy(check2, data, player, true);
 			   Territory start = null;
 			   Territory stop = null;
 			   if (check1Dist > check2Dist)
@@ -6059,14 +6057,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     						territoryValue += 1;
     					if (Matches.territoryHasWaterNeighbor(data).match(moveFactToTerr))
     						territoryValue += 3;
-    					List<Territory> empty = new ArrayList<Territory>();
-    					int dist = SUtils.distanceToEnemy(moveFactToTerr, empty, data, player, false);
+    					int dist = SUtils.distanceToEnemy(moveFactToTerr, data, player, false);
     					if (dist != 0)
     						territoryValue += 10 - dist;
     					else
     					{
-    						List<Territory> empty2 = new ArrayList<Territory>();
-    						dist = SUtils.distanceToEnemy(moveFactToTerr, empty2, data, player, true);
+    						dist = SUtils.distanceToEnemy(moveFactToTerr, data, player, true);
     						territoryValue += 8 - dist;
     					}
     					territoryValue += 4 * TerritoryAttachment.get(moveFactToTerr).getProduction();
@@ -8235,6 +8231,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         	List<Territory> ourTerrWithEnemyNeighbors = SUtils.getTerritoriesWithEnemyNeighbor(data, player, false, false);
         	SUtils.reorder(ourTerrWithEnemyNeighbors, rankMap, true);
 //        	ourFriendlyTerr.retainAll(ourTerrs);
+        	if (ourTerrWithEnemyNeighbors.contains(capitol))
+        	{
+        		ourTerrWithEnemyNeighbors.remove(capitol);
+        		ourTerrWithEnemyNeighbors.add(capitol); // move capitol to the end of the list, if it is touching enemies
+        	}
         	Territory bidLandTerr = null;
         	if (ourTerrWithEnemyNeighbors.size() > 0)
         		bidLandTerr = ourTerrWithEnemyNeighbors.get(0);
@@ -8291,9 +8292,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         		// need to remove places like greenland, iceland and west indies that have no route to the enemy, but somehow keep places like borneo, gibralter, etc.
         		for(Territory noRouteTerr : ourTerrs)
                 {
-        			List<Territory> tempBeenThere = new ArrayList<Territory>();
         			// do not place bids on areas that have no direct land access to an enemy, unless the value is 3 or greater
-                    if(SUtils.distanceToEnemy(noRouteTerr, tempBeenThere, data, player, false) < 1 && TerritoryAttachment.get(noRouteTerr).getProduction() < 3)
+                    if(SUtils.distanceToEnemy(noRouteTerr, data, player, false) < 1 && TerritoryAttachment.get(noRouteTerr).getProduction() < 3)
                     {
                     	ourSemiRankedBidTerrs.remove(noRouteTerr);
                     }

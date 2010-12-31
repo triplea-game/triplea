@@ -34,8 +34,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.Iterator;
 import java.util.HashMap;
@@ -983,6 +985,32 @@ public class SUtils
 		return isLand;
 	}
 
+	/*
+	 * distance to the closest enemy
+	 * just utilises findNearest
+	 */
+	public static int distanceToEnemy(Territory t, GameData data, PlayerID player, boolean sea) {
+		
+		// note: neutrals are enemies
+		// also note: if sea, you are finding distance to enemy sea units, not to enemy land over sea
+		if (Matches.TerritoryIsImpassable.match(t))
+			return 0;
+		Match<Territory> endCondition;
+		Match<Territory> routeCondition;
+		if(sea)
+		{
+			endCondition = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data));
+			routeCondition = Matches.TerritoryIsWater;
+		}
+		else 
+		{
+			endCondition = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data),Matches.TerritoryIsNotImpassable);
+			routeCondition = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data),Matches.TerritoryIsNotImpassable, Matches.TerritoryIsLand);
+		}
+		return findNearest(t, endCondition, routeCondition, data).getLength();
+	}
+	
+	
 	/**
 	 * Recursive routine for finding the distance to an enemy
 	 * @param t
@@ -991,7 +1019,8 @@ public class SUtils
 	 * @param player
 	 * @return int of distance to enemy
 	 */
-	public static int distanceToEnemy(Territory t, List<Territory> beenThere, GameData data, PlayerID player, boolean sea)
+	/*
+	public static int distanceToEnemyOld(Territory t, List<Territory> beenThere, GameData data, PlayerID player, boolean sea)
 	{ //find the distance to the closest enemy land territory by recursion
 	  //if no enemy territory can be found...it returns 0
 		if (Matches.TerritoryIsImpassable.match(t))
@@ -1035,7 +1064,7 @@ public class SUtils
 		}
 		return newDist;
 	}
-
+*/
 	/**
 	 * List containing the enemy Capitals
 	 */
@@ -1714,7 +1743,8 @@ public class SUtils
 				badGuys.add(t);
 		return badGuys;
 	}
-
+	
+	
 	/**
 	 * Find the Route to the nearest Territory
 	 * @param start - starting territory
@@ -1723,7 +1753,52 @@ public class SUtils
 	 * @param data
 	 * @return
 	 */
-    public static Route findNearest(Territory start, Match<Territory> endCondition, Match<Territory> routeCondition, GameData data)
+	public static Route findNearest(Territory start, Match<Territory> endCondition, Match<Territory> routeCondition, GameData data)
+    {
+		Match<Territory> canGo = new CompositeMatchOr<Territory>(endCondition,routeCondition);
+		Map<Territory,Territory> visited = new HashMap<Territory,Territory>();
+		Queue<Territory> q = new LinkedList<Territory>();
+		List<Territory> route = new ArrayList<Territory>();
+		q.add(start);
+		Territory current = null;
+		visited.put(start,null);
+		while(!q.isEmpty()){
+	        current = q.remove();
+	        if(endCondition.match(current))
+	            break;
+	        else
+	        {
+	        	for(Territory neighbor : data.getMap().getNeighbors(current, canGo)) {
+	                if(!visited.containsKey(neighbor)){
+	                    q.add(neighbor);
+	                    visited.put(neighbor, current);
+	                }
+	            }
+	        }
+	    }
+		
+		if (current == null || !endCondition.match(current)){
+	        return null;
+	    }
+	    for(Territory t = current; t != null; t = visited.get(t))
+	    {
+	        route.add(t);
+	    }
+	    Collections.reverse(route);
+
+	    return new Route(route);
+    }
+	
+	/**
+	 * Find the Route to the nearest Territory
+	 * @param start - starting territory
+	 * @param endCondition - condition for the ending Territory
+	 * @param routeCondition - condition for each Territory in Route
+	 * @param data
+	 * @return
+	 */
+	/*
+    public static Route findNearestOld(Territory start, Match<Territory> endCondition, Match<Territory> routeCondition, GameData data)
     {
         Route shortestRoute = null;
         for(Territory t : data.getMap().getTerritories())
@@ -1741,6 +1816,7 @@ public class SUtils
         }
         return shortestRoute;
     }
+    */
     /**
      * Find Route from start to a Territory having endCondition which has a maximum of a certain set of Units (unitCondition)
      * @param start - initial territory
@@ -1750,8 +1826,17 @@ public class SUtils
      * @param maxUnits - how many units were found there
      * @return - Route to the endCondition
      */
-    public static Route findNearestMaxContaining(Territory start, Match<Territory> endCondition, Match<Territory> routeCondition, Match<Unit> unitCondition, int maxUnits, GameData data)
+    public static Route findNearestMaxContaining(Territory start, Match<Territory> endCondition, Match<Territory> routeCondition, final Match<Unit> unitCondition, final int maxUnits, GameData data)
     {
+    	Match<Territory>condition = new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                return t.getUnits().getMatches( unitCondition).size()>maxUnits;
+            }
+        };
+    	return findNearest(start, new CompositeMatchAnd<Territory>(endCondition,condition), routeCondition, data);
+    	/*
         Route shortestRoute = null;
         for(Territory t : data.getMap().getTerritories())
         {
@@ -1770,10 +1855,17 @@ public class SUtils
             }
         }
         return shortestRoute;
+        */
     }
 
     public static Route findNearestNotEmpty(Territory start, Match<Territory> endCondition, Match<Territory> routeCondition, GameData data)
     {
+    	
+    	Route r = findNearest(start, new CompositeMatchAnd<Territory>(endCondition,Matches.TerritoryIsEmpty.invert()), routeCondition, data);
+    	if( r == null)
+    		r = findNearest(start, endCondition, routeCondition, data);
+    	return r;
+    	/*
         Route shortestRoute = null;
         for(Territory t : data.getMap().getTerritories())
         {
@@ -1791,6 +1883,7 @@ public class SUtils
 				}
             }
         }
+        // error here should be != null
         if (shortestRoute == null)
             return shortestRoute;
         else
@@ -1811,6 +1904,7 @@ public class SUtils
 			}
         }
         return shortestRoute;
+        */
     }
     /**
      * true or false...does a land route exist from territory to any enemy owned capitol?
@@ -2081,14 +2175,12 @@ public class SUtils
 					territoryValue += 3;
 				if (findNearest(prodTerr, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player), data) != null)
 					territoryValue += 1;
-				List<Territory> empty = new ArrayList<Territory>();
-				int dist = distanceToEnemy(prodTerr, empty, data, player, false);
+				int dist = distanceToEnemy(prodTerr, data, player, false);
 				if (dist != 0)
 					territoryValue += 10 - dist;
 				else
 				{
-					List<Territory> empty2 = new ArrayList<Territory>();
-					dist = distanceToEnemy(prodTerr, empty2, data, player, true);
+					dist = distanceToEnemy(prodTerr, data, player, true);
 					territoryValue += 8 - dist;
 				}
 				territoryValue += 4 * TerritoryAttachment.get(prodTerr).getProduction();
@@ -2124,14 +2216,12 @@ public class SUtils
 				territoryValue += 3;
 			if (findNearest(prodTerr, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player), data) != null)
 				territoryValue += 1;
-			List<Territory> empty = new ArrayList<Territory>();
-			int dist = distanceToEnemy(prodTerr, empty, data, player, false);
+			int dist = distanceToEnemy(prodTerr, data, player, false);
 			if (dist != 0)
 				territoryValue += 10 - dist;
 			else
 			{
-				List<Territory> empty2 = new ArrayList<Territory>();
-				dist = distanceToEnemy(prodTerr, empty2, data, player, true);
+				dist = distanceToEnemy(prodTerr, data, player, true);
 				territoryValue += 5 - dist;
 			}
 			territoryValue += 4 * TerritoryAttachment.get(prodTerr).getProduction();
