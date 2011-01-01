@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Moore AI fixed several of the reasons why ai can't seem to transport units intelligently or at all. Also made it buy more transports if it needs them. Added new matches and renamed findCertainShips to findTersWithUnitsMatching (wisconsin)
+
 * New Property: "Display Units as Counters" (COUNTERS_DISPLAY), will make stacks out of units up to a certain amount. (Edwin van der Wal)
 
 * Moore AI SUtils fix, findNearest() and distanceToEnemy() completely re-written to be much faster. (squidbait)
