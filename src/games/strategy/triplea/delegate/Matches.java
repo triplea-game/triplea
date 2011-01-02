@@ -278,18 +278,6 @@ public class Matches
     		}
     	};
     }
-    
-    public static Match<Unit> unitIsEnemyOf(final GameData data, final PlayerID player)
-    {
-    	return new Match<Unit>()
-    	{
-    		@Override
-    		public boolean match(Unit u)
-    		{
-    			return !data.getAllianceTracker().isAllied(u.getOwner(), player);
-    		}
-    	};
-    }
 
     public static final Match<Unit> UnitIsNotSea = new Match<Unit>()
     {
@@ -1114,20 +1102,6 @@ public class Matches
                 return !ua.isSea() &&  unit.getOwner().equals(player);
             }
         };
-    }
-    
-    public static Match<Unit> unitHasDefenseThatIsMoreThanOrEqualTo(final int minDefense)
-    {
-    	return new Match<Unit>()
-    	{
-    		public boolean match(Unit unit)
-    		{
-    			UnitAttachment ua = UnitAttachment.get(unit.getType());
-    			if(ua.isAA() || ua.isFactory())
-    				return false;
-    			return ua.getDefense(unit.getOwner()) >= minDefense;
-    		}
-    	};
     }
 
     public static Match<Unit> unitIsOwnedBy(final PlayerID player)

@@ -20,7 +20,6 @@
  */
 package games.strategy.engine.data;
 
-import games.strategy.triplea.delegate.Matches;
 import java.util.*;
 import games.strategy.util.*;
 
@@ -275,39 +274,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
         return engine.findRoute(t1,t2);
 	    
 	}
-    public Route getRouteWithEndCondIgnored(Territory t1, Territory t2, Match<Territory> cond, boolean useShuffling)
-    {
-        if (t1 == t2)
-        {
-            return new Route(t1);
-        }
-        if (getNeighbors(t1).contains(t2))
-        {
-            return new Route(t1, t2);
-        }
-
-        RouteFinder engine = new RouteFinder(this, cond);
-        return engine.findRouteIgnoringEndCond(t1, t2, useShuffling);
-    }
-
-    /**
-     * Returns a route matching condition[cond] that gets as far as it can to the specified destination[t2].
-     * This method only works if you specify a continuation match[cutEarlyContMatch] that can find the rest of the ters between the match[cond] route end territory and the destination[t2].
-     */
-    public Route getRouteWithEndCondIgnored_CutEarly(Territory t1, Territory t2, Match<Territory> cond, Match<Territory> cutEarlyContMatch, boolean useShuffling)
-    {
-        if (t1 == t2)
-        {
-            return new Route(t1);
-        }
-        if (getNeighbors(t1).contains(t2))
-        {
-            return new Route(t1, t2);
-        }
-
-        RouteFinder engine = new RouteFinder(this, cond, cutEarlyContMatch);
-        return engine.findRouteIgnoringEndCond(t1, t2, useShuffling);
-    }
 
 	/**
 	 * Returns the distance between two territories.
@@ -415,21 +381,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 		}
 		return owner;
 	}
-    public Collection<Territory> getTerritoriesWithUnitsOwnedBy(PlayerID player)
-    {
-        Iterator<Territory> iter = m_territories.iterator();
-        Collection<Territory> owner = new ArrayList<Territory>();
-
-        while (iter.hasNext())
-        {
-            Territory territory = iter.next();
-            if (territory.getUnits().someMatch(Matches.unitIsOwnedBy(player)))
-            {
-                owner.add(territory);
-            }
-        }
-        return owner;
-    }
 
 	public static final Match<Territory> IS_WATER = new Match<Territory>()
 	{
