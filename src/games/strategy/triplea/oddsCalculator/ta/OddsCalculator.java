@@ -361,6 +361,11 @@ class DummyPlayer extends AbstractAI
         throw new UnsupportedOperationException();
     }
 
+    public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units)
+    {
+        throw new UnsupportedOperationException();
+    }
+
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
      */

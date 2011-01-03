@@ -192,18 +192,34 @@ public class MovePerformer implements Serializable
                     boolean bombing = false;
                     boolean ignoreBattle = false;
                     //could it be a bombing raid
+                    //TODO will need to change this for escorts
                     boolean allCanBomb = Match.allMatch(arrived, Matches.UnitIsStrategicBomber);
 
-                    CompositeMatch<Unit> enemyFactory = new CompositeMatchAnd<Unit>();
-                    enemyFactory.add(Matches.UnitIsFactory);
-                    enemyFactory.add(Matches.enemyUnit(id, m_data));
-                    boolean targetToBomb = route.getEnd().getUnits().someMatch(enemyFactory);
-                    
                     Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, m_data));
-
+                    
+                    CompositeMatch<Unit> factory = new CompositeMatchAnd<Unit>();
+                    factory.add(Matches.UnitIsFactory);
+                    
+                    CompositeMatch<Unit> unitCanBeDamaged = new CompositeMatchAnd<Unit>();
+                    unitCanBeDamaged.add(Matches.UnitCanBeDamaged);
+                    
+                    boolean targetToBomb = Match.someMatch(enemyUnits, factory) || Match.someMatch(enemyUnits, unitCanBeDamaged);
+                    boolean targetedAttack = false;
                     if (allCanBomb && targetToBomb)
                     {
                         bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
+                        
+                        if(bombing)
+                        {
+                        	CompositeMatchOr<Unit> unitsToBeBombed = new CompositeMatchOr<Unit>(Matches.UnitIsFactory, Matches.UnitCanBeDamaged);
+                        	//TODO determine which unit to bomb
+                        	Unit target = getRemotePlayer().whatShouldBomberBomb(route.getEnd(), Match.getMatches(enemyUnits, unitsToBeBombed));
+                        	if(target != null)
+                        	{
+                        		targetedAttack = true;
+                        		getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_data, m_bridge, m_currentMove, Collections.singleton(target));
+                        	}
+                        }
                     }
                     //Ignore Trn on Trn forces.
                     if(isIgnoreTransportInMovement(data))
@@ -215,7 +231,7 @@ public class MovePerformer implements Serializable
                     		ignoreBattle=true;
                     }
                     
-                    if(!ignoreBattle && !MoveDelegate.isNonCombat(m_bridge))
+                    if(!ignoreBattle && !MoveDelegate.isNonCombat(m_bridge) && !targetedAttack)
                     {
                     	getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_data, m_bridge, m_currentMove);
                     }

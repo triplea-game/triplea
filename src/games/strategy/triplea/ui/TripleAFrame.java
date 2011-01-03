@@ -777,6 +777,36 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         return choice == 0;
     }
 
+    public Unit getStrategicBombingRaidTarget(Territory territory, final Collection<Unit> units)
+    {
+        String message = "Select bombing target in " + territory.getName();
+
+        Tuple<JPanel,JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel,JList>>() {
+
+            public Tuple<JPanel,JList> run() {
+                JList list = new JList(new Vector<Unit>(units));
+                list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                list.setSelectedIndex(0);
+                JPanel panel = new JPanel();
+                panel.setLayout(new BorderLayout());
+                JScrollPane scroll = new JScrollPane(list);
+                panel.add(scroll, BorderLayout.CENTER);
+                return new Tuple<JPanel, JList>(panel,list);
+            }
+        });
+        
+        JPanel panel = comps.getFirst();        
+        JList list = comps.getSecond();
+        String[] options =
+        { "OK" };
+
+        EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+
+        Unit selected = (Unit) list.getSelectedValue();
+
+        return selected;
+    }
+
     public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals,final String title)
     {
         DiceChooser chooser = Util.runInSwingEventThread(new Util.Task<DiceChooser>()

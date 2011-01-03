@@ -202,6 +202,34 @@ public class BattleTracker implements java.io.Serializable
         }                
     }
 
+
+    public void addBattle(Route route, Collection<Unit> units, boolean bombing, PlayerID id, GameData data,
+            IDelegateBridge bridge, UndoableMove changeTracker, Collection<Unit> targets)
+    {
+        if (bombing)
+        {
+            addBombingBattle(route, units, id, data, targets);
+            //say they were in combat
+            markWasInCombat(units, bridge, changeTracker);
+        }
+        else
+        {
+            Change change = addMustFightBattleChange(route, units, id, data);
+            bridge.addChange(change);
+            if(changeTracker != null) 
+            {
+                changeTracker.addChange(change);
+            }
+            //battles resulting from
+            //emerging subs cant be neutral or empty
+            if (route.getLength() != 0)
+            {
+                if(games.strategy.util.Match.someMatch(units, Matches.UnitIsLand) || games.strategy.util.Match.someMatch(units, Matches.UnitIsSea))
+                    addEmptyBattle(route, units, id, data, bridge, changeTracker);
+            }
+        }                
+    }
+    
 	private void markWasInCombat(Collection<Unit> units, IDelegateBridge bridge, UndoableMove changeTracker) 
 	{
 		if(units == null)
@@ -243,6 +271,28 @@ public class BattleTracker implements java.io.Serializable
             addDependency(dependent, battle);
     }
 
+    
+    private void addBombingBattle(Route route, Collection<Unit> units, PlayerID attacker, GameData data, Collection<Unit> targets)
+    {
+        Battle battle = getPendingBattle(route.getEnd(), true);
+        if (battle == null)
+        {
+            battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, route.getEnd().getOwner(), this, targets);
+            m_pendingBattles.add(battle);
+        }
+
+        Change change = battle.addAttackChange(route, units);
+        //when state is moved to the game data, this will change
+        if(!change.isEmpty()) 
+        {
+            throw new IllegalStateException("Non empty change");
+        }
+
+        //dont let land battles in the same territory occur before bombing battles
+        Battle dependent = getPendingBattle(route.getEnd(), false);
+        if (dependent != null)
+            addDependency(dependent, battle);
+    }
     /**
      * No enemies.
      */

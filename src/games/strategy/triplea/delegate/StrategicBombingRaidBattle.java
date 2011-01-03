@@ -32,6 +32,7 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
@@ -59,6 +60,7 @@ public class StrategicBombingRaidBattle implements Battle
 
     private Territory m_battleSite;
     private List<Unit> m_units = new ArrayList<Unit>();
+    private Collection<Unit> m_targets = new ArrayList<Unit>();
     
     private PlayerID m_defender;
     private PlayerID m_attacker;
@@ -76,7 +78,6 @@ public class StrategicBombingRaidBattle implements Battle
     /** Creates new StrategicBombingRaidBattle */
     public StrategicBombingRaidBattle(Territory territory, GameData data, PlayerID attacker, PlayerID defender, BattleTracker tracker)
     {
-
         m_battleSite = territory;
         m_data = data;
         m_attacker = attacker;
@@ -84,6 +85,16 @@ public class StrategicBombingRaidBattle implements Battle
         m_tracker = tracker;
     }
 
+    /** Creates new StrategicBombingRaidBattle */
+    public StrategicBombingRaidBattle(Territory territory, GameData data, PlayerID attacker, PlayerID defender, BattleTracker tracker, Collection<Unit> targets)
+    {
+        m_battleSite = territory;
+        m_data = data;
+        m_attacker = attacker;
+        m_defender = defender;
+        m_tracker = tracker;
+        m_targets = targets;
+    }
     /**
      * @param bridge
      * @return
@@ -100,8 +111,12 @@ public class StrategicBombingRaidBattle implements Battle
 
     public boolean isEmpty()
     {
-
         return m_units.isEmpty();
+    }
+
+    public boolean isTargetsEmpty()
+    {
+        return m_targets.isEmpty();
     }
 
     public void removeAttack(Route route, Collection<Unit> units)
@@ -148,6 +163,8 @@ public class StrategicBombingRaidBattle implements Battle
         hasAAMatch.add(Matches.enemyUnit(m_attacker, m_data));
 
         boolean hasAA = m_battleSite.getUnits().someMatch(hasAAMatch);
+        
+        //TODO integrated AA
 
         m_steps = new ArrayList<String>();
         if (hasAA)
@@ -174,7 +191,10 @@ public class StrategicBombingRaidBattle implements Battle
                 
                 m_tracker.removeBattle(StrategicBombingRaidBattle.this);
 
-                if(isSBRAffectsUnitProduction())
+                //TODO Kev damage a unit here.
+                if(!m_targets.isEmpty())
+                	bridge.getHistoryWriter().addChildToEvent("Bombing raid in " + m_battleSite.getName() + " causes " + m_bombingRaidCost + " " + " damage to " + m_targets.iterator().next());
+                else if (isSBRAffectsUnitProduction())
                 	bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + " production in " + m_battleSite.getName());
                 else
                 	bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + MyFormatter.pluralize("PU", m_bombingRaidCost));
@@ -204,8 +224,10 @@ public class StrategicBombingRaidBattle implements Battle
         
             public void execute(ExecutionStack stack, IDelegateBridge bridge,
                     GameData data)
-            {
-                if(isSBRAffectsUnitProduction())
+            { 
+                if(!m_targets.isEmpty())
+                	getDisplay(bridge).battleEnd(m_battleID, "Bombing raid causes " + m_bombingRaidCost + " damage.");
+                else if(isSBRAffectsUnitProduction())
                     getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidCost + " production.");
                 else
                     getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidCost + " " +  MyFormatter.pluralize("PU", m_bombingRaidCost));
@@ -454,14 +476,14 @@ public class StrategicBombingRaidBattle implements Battle
             boolean isEditMode = EditDelegate.getEditMode(m_data);
             if (isEditMode)
             {
-                String annotation = m_attacker.getName() + " fixing dice to allocate PU cost in strategic bombing raid against " + m_defender.getName() + " in "
+                String annotation = m_attacker.getName() + " fixing dice to allocate cost of strategic bombing raid against " + m_defender.getName() + " in "
                         + m_battleSite.getName();
                 ITripleaPlayer attacker = (ITripleaPlayer) bridge.getRemote(m_attacker);
                 m_dice = attacker.selectFixedDice(rollCount, 0, true, annotation);
             }
             else
             {
-                String annotation = m_attacker.getName() + " rolling to allocate PU cost in strategic bombing raid against " + m_defender.getName() + " in "
+                String annotation = m_attacker.getName() + " rolling to allocate cost of strategic bombing raid against " + m_defender.getName() + " in "
                         + m_battleSite.getName();
                 m_dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
             }
@@ -481,12 +503,12 @@ public class StrategicBombingRaidBattle implements Battle
             boolean lhtrHeavyBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(m_data);
             //boolean lhtrHeavyBombers = m_data.getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false);
             
-            int production = ta.getProduction();
-
+            int damageLimit = ta.getProduction();
+            
             Iterator<Unit> iter = m_units.iterator();
             int index = 0;
-            Boolean limitDamage = isWW2V2() || isLimitSBRDamageToProduction();
-
+            Boolean limitDamage = isWW2V2() || isLimitSBRDamageToProduction() || !m_targets.isEmpty();
+//TODO kev limit to maxDamage
             while (iter.hasNext())
             {
                 int rolls;
@@ -519,19 +541,46 @@ public class StrategicBombingRaidBattle implements Battle
                 
 
                 if (limitDamage)
-                    cost += Math.min(costThisUnit, production);
+                    cost += Math.min(costThisUnit, damageLimit);
                 else
                     cost += costThisUnit;
             }
 
-            if(isSBRAffectsUnitProduction())
+
+            if(!m_targets.isEmpty())
+            {
+            	//determine the max allowed damage
+                UnitAttachment ua = UnitAttachment.get(m_targets.iterator().next().getType());
+            	damageLimit = ua.getMaxDamage() - ua.getUnitDamage();
+            	cost = Math.min(cost, damageLimit);
+
+            	//display the results
+        		getDisplay(bridge).bombingResults(m_battleID, m_dice, cost);
+        		
+        		//apply the hits to the targets
+        		IntegerMap<Unit> hits = new IntegerMap<Unit>();
+            	
+        		for(Unit unit:m_targets)
+            	{
+            		hits.put(unit,1);
+            	}
+            	bridge.addChange(ChangeFactory.unitsHit(hits));
+            	
+            	//decrease the unitProduction capacity of the territory
+                Change change = ChangeFactory.attachmentPropertyChange(ua, cost, "unitDamage");
+            	bridge.addChange(change);
+                bridge.getHistoryWriter().startEvent("Bombing raid in " + m_battleSite.getName() + " causes: " + cost + " damage.");
+
+            	getRemote(bridge).reportMessage("Bombing raid in " + m_battleSite.getName() + " causes: " + cost + " damage.");
+            }
+            else if(isSBRAffectsUnitProduction())
             {
             	//get current production
                 int unitProduction = ta.getUnitProduction();
             	//Determine the max that can be taken as losses
-                int alreadyLost = production - unitProduction;
+                int alreadyLost = damageLimit - unitProduction;
                 
-                int limit = 2 * production  - alreadyLost;
+                int limit = 2 * damageLimit  - alreadyLost;
                 cost = Math.min(cost, limit);
         		
         		getDisplay(bridge).bombingResults(m_battleID, m_dice, cost);
@@ -564,7 +613,7 @@ public class StrategicBombingRaidBattle implements Battle
             	if (isPUCap(m_data) || isLimitSBRDamagePerTurn(m_data))
             	{
             		int alreadyLost = DelegateFinder.moveDelegate(m_data).PUsAlreadyLost(m_battleSite);
-            		int limit = Math.max(0, production - alreadyLost);
+            		int limit = Math.max(0, damageLimit - alreadyLost);
             		cost = Math.min(cost, limit);
             	}
 

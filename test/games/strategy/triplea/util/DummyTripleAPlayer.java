@@ -24,8 +24,10 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.util.Match;
 
 public class DummyTripleAPlayer implements ITripleaPlayer {
 
@@ -131,9 +133,13 @@ public class DummyTripleAPlayer implements ITripleaPlayer {
     }
 
     public boolean shouldBomberBomb(Territory territory) {
-        
         return false;
     }
+
+
+	public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units) {
+		return (Unit) Match.getNMatches(units, 1, Matches.UnitIsFactory);
+	}
 
     public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from) {
         

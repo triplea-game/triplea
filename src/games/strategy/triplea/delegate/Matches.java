@@ -597,7 +597,20 @@ public class Matches
     };
 
     public static final Match<Unit> UnitIsNotFactory = new InverseMatch<Unit>(UnitIsFactory);
+    
 
+    public static final Match<Unit> UnitCanBeDamaged = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            UnitType type = ((Unit) obj).getUnitType();
+            UnitAttachment ua = UnitAttachment.get(type);
+            return ua.getCanBeDamaged();
+        }
+    };
+
+    public static final Match<Unit> UnitCanNotBeDamaged = new InverseMatch<Unit>(UnitCanBeDamaged);
+    
 
     public static final Match<UnitType> UnitTypeIsAA = new Match<UnitType>()
     {

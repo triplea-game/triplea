@@ -61,14 +61,17 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isInfantry = false;
   private boolean m_canScramble = false;
   private boolean m_isAirBase = false;
+  private boolean m_canBeDamaged = false;
   
 
   //-1 if can't scramble
   private int m_maxScrambleDistance = -1;
-  //-1 if can't operate
+  //-1 if can't be damaged
   private int m_maxOperationalDamage = -1;
   //-1 if can't be damaged
-  private int m_unitDamage = -1;  
+  private int m_maxDamage = -1;
+  //-1 if can't be damaged
+  private int m_unitDamage = 0;
   //-1 if cant transport
   private int m_transportCapacity = -1;
   //-1 if cant be transported
@@ -483,7 +486,17 @@ public class UnitAttachment extends DefaultAttachment
   {
     return m_maxOperationalDamage;
   }
+  
+  public void setMaxDamage(String s)
+  {
+	  m_maxDamage = getInt(s);
+  }
 
+  public int getMaxDamage()
+  {
+    return m_maxDamage;
+  }
+  
   public void setUnitDamage(String s)
   {
 	  m_unitDamage = getInt(s);
@@ -502,6 +515,16 @@ public class UnitAttachment extends DefaultAttachment
   public boolean getIsAirBase()
   {
     return m_isAirBase;
+  }
+  
+  public void setCanBeDamaged(String s)
+  {
+	  m_canBeDamaged = getBool(s);
+  }
+
+  public boolean getCanBeDamaged()
+  {
+    return m_canBeDamaged;
   }
   
   public void validate(GameData data) throws GameParseException

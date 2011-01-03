@@ -1336,6 +1336,13 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         return true;
             
     }
+    /* 
+     * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
+     */
+    public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units) 
+    {
+		return (Unit) Match.getNMatches(units, 1, Matches.UnitIsFactory);            
+    }
 
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection, games.strategy.engine.data.Territory)

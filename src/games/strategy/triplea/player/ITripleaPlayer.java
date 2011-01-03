@@ -131,7 +131,12 @@ public interface ITripleaPlayer extends IRemote
      * raid can be conducted, should the bomber bomb? 
      */
     public boolean shouldBomberBomb(Territory territory);
-    
+
+    /**
+     * One or more bombers have just moved into a territory where a strategic bombing
+     * raid can be conducted, what should the bomber bomb? 
+     */
+    public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units);
     /**
      * Choose where my rockets should fire
      * 

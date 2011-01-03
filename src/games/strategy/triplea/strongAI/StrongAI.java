@@ -8882,7 +8882,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	}
     	return !thisIsAnAttack;
     }
-    
+
+	public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units) {
+		return (Unit) Match.getNMatches(units, 1, Matches.UnitIsFactory);
+	}
+	
     public boolean selectAttackSubs(Territory unitTerritory)
     {
         return true;
@@ -9123,5 +9127,4 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             return (TripleAUnit.get(o).getTransporting().size() > 0);
         }
     };
-
 }
