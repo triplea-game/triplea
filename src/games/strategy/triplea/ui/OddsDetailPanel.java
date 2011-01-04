@@ -169,34 +169,6 @@ public class OddsDetailPanel extends JPanel
         
         add(Box.createVerticalGlue());
         
-        
-//        Set units = UnitSeperator.categorize(territory.getUnits().getUnits());
-//        Iterator iter = units.iterator();
-//        PlayerID currentPlayer = null;
-//        while (iter.hasNext())
-//        {
-//            //seperate players with a seperator
-//            UnitCategory item = (UnitCategory) iter.next();
-//            if (item.getOwner() != currentPlayer)
-//            {
-//                currentPlayer = item.getOwner();
-//                add(Box.createVerticalStrut(15));
-//            }
-//
-//            ImageIcon icon = m_uiContext.getUnitImageFactory().getIcon(
-//                item.getType(), item.getOwner(), m_data, item.getDamaged());
-//            List<games.strategy.engine.data.Unit> unitList = item.getUnits();
-//            JLabel label = new JLabel("x" + item.getUnits().size(),
-//                                      icon,
-//                                      SwingConstants.LEFT
-//                                      );
-//
-//            add(label);
-//
-//            refresh();
-//
-//        }
-        
         refresh();
     }
 

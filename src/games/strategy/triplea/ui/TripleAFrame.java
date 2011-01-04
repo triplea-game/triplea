@@ -779,6 +779,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
     public Unit getStrategicBombingRaidTarget(Territory territory, final Collection<Unit> units)
     {
+    	final AtomicReference<Unit> selected = new AtomicReference<Unit>();
         String message = "Select bombing target in " + territory.getName();
 
         Tuple<JPanel,JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel,JList>>() {
@@ -798,13 +799,14 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         JPanel panel = comps.getFirst();        
         JList list = comps.getSecond();
         String[] options =
-        { "OK" };
+        { "OK", "Cancel" };
 
-        EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-
-        Unit selected = (Unit) list.getSelectedValue();
-
-        return selected;
+        int selection = EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+        
+        if (selection == 0) //OK
+        	selected.set((Unit) list.getSelectedValue());
+        //Unit selected = (Unit) list.getSelectedValue();
+        return selected.get();
     }
 
     public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals,final String title)

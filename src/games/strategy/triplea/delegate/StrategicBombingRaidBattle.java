@@ -20,6 +20,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
@@ -30,6 +31,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -559,16 +561,16 @@ public class StrategicBombingRaidBattle implements Battle
         		
         		//apply the hits to the targets
         		IntegerMap<Unit> hits = new IntegerMap<Unit>();
-            	
+        		CompositeChange change = new CompositeChange();
+        		
         		for(Unit unit:m_targets)
             	{
             		hits.put(unit,1);
+                    change.add(ChangeFactory.unitPropertyChange(unit, cost, TripleAUnit.UNIT_DAMAGE));
             	}
             	bridge.addChange(ChangeFactory.unitsHit(hits));
-            	
-            	//decrease the unitProduction capacity of the territory
-                Change change = ChangeFactory.attachmentPropertyChange(ua, cost, "unitDamage");
             	bridge.addChange(change);
+            	
                 bridge.getHistoryWriter().startEvent("Bombing raid in " + m_battleSite.getName() + " causes: " + cost + " damage.");
 
             	getRemote(bridge).reportMessage("Bombing raid in " + m_battleSite.getName() + " causes: " + cost + " damage.");

@@ -1243,6 +1243,7 @@ class BattleModel extends DefaultTableModel
                 unitsToAdd -= supportedUnitsToAdd;
             }
             if (unitsToAdd > 0)
+                //TODO Kev determine if we need to identify if the unit is hit/disabled
                 columns[strength].add(new TableData(category.getOwner(), unitsToAdd, category.getType(), m_data, category.getDamaged(), m_uiContext));
             if (supportedUnitsToAdd > 0)
             	if(strength >= Constants.MAX_DICE)
@@ -1359,6 +1360,7 @@ class TableData
     TableData(PlayerID player, int count, UnitType type, GameData data, boolean damaged, UIContext uiContext)
     {
         m_count = count;
+        //TODO Kev determine if we need to identify if the unit is hit/disabled
         m_icon = uiContext.getUnitImageFactory().getIcon(type, player, data, damaged);
     }
 
@@ -1416,27 +1418,30 @@ class CasualtyNotificationPanel extends JPanel
         }
         
         Iterator killedIter = UnitSeperator.categorize(killed, dependents, false, false).iterator();
-        categorizeUnits(killedIter, false);
+        categorizeUnits(killedIter, false, false);
 
         damaged.removeAll(killed);
         if (!damaged.isEmpty())
         {
             m_damaged.add(new JLabel("Damaged"));
         }
+        //TODO Kev determine if we need to identify if the unit is hit/disabled
+        boolean disabled = false;
         Iterator damagedIter = UnitSeperator.categorize(damaged, dependents, false, false).iterator();
-        categorizeUnits(damagedIter, true);
+        categorizeUnits(damagedIter, true, disabled);
 
         invalidate();
         validate();
     }
 
-    private void categorizeUnits(Iterator categoryIter, boolean damaged)
+    private void categorizeUnits(Iterator categoryIter, boolean damaged, boolean disabled)
     {
 
         while (categoryIter.hasNext())
         {
             UnitCategory category = (UnitCategory) categoryIter.next();
             JPanel panel = new JPanel();
+            //TODO Kev determine if we need to identify if the unit is hit/disabled
             JLabel unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, category.getDamaged()));
             panel.add(unit);
             Iterator iter = category.getDependents().iterator();

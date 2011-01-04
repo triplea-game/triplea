@@ -775,6 +775,7 @@ public class MapPanel extends ImageScrollerLargeView
             Rectangle r = m_tileManager.getUnitRect(m_highlightUnits, m_data );
             Unit first = m_highlightUnits.get(0);
             
+            //TODO Kev determine if we need to identify if the unit is hit/disabled
             BufferedImage highlight = (BufferedImage) m_uiContext.getUnitImageFactory().getHighlightImage(first.getType(), first.getOwner(), m_data, first.getHits() != 0);
             
             AffineTransform t = new AffineTransform();

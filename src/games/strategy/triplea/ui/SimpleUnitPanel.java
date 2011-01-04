@@ -118,6 +118,7 @@ public class SimpleUnitPanel extends JPanel
 
   private void addUnits(PlayerID player, GameData data, int quantity, UnitType unit, boolean damaged)
   {
+      //TODO Kev determine if we need to identify if the unit is hit/disabled
     JLabel label = new JLabel();
     label.setText(" x " + quantity);
     label.setIcon(m_uiContext.getUnitImageFactory().getIcon(unit, player,

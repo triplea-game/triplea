@@ -2739,7 +2739,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             if(m_headless)
                 return;
-            
+
+            //TODO Kev determine if we need to identify if the unit is hit/disabled
             getDisplay(bridge).casualtyNotification(m_battleID, SELECT_AA_CASUALTIES, m_dice, m_attacker, new ArrayList<Unit>(m_casualties), Collections.<Unit>emptyList(), m_dependentUnits);
                         
             getRemote(m_attacker, bridge).confirmOwnCasualties(m_battleID, "Press space to continue");
@@ -3534,7 +3535,6 @@ class Fire implements IExecutable
 
     			m_killed.addAll(message.getKilled());
     			m_confirmOwnCasualties = true;
-
     		} 
     		//exact number of combat units
     		else if(hitCount == numPossibleHits)

@@ -134,6 +134,7 @@ public class UndoableMovesPanel extends JPanel
         while (iter.hasNext())
         {
             UnitCategory category = (UnitCategory)iter.next();
+            //TODO Kev determine if we need to identify if the unit is hit/disabled
             Icon icon =   m_movePanel.getMap().getUIContext().getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, category.getDamaged());
             JLabel label =  new JLabel("x" + category.getUnits().size() + " ",  icon , SwingConstants.LEFT );
             unitsBox.add(label);
