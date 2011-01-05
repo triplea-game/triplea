@@ -120,9 +120,9 @@ public class UnitImageFactory
   /**
    * Return the appropriate unit image.
    */
-  public Image getImage(UnitType type, PlayerID player, GameData data, boolean damaged)
+  public Image getImage(UnitType type, PlayerID player, GameData data, boolean damaged, boolean disabled)
   {
-    String baseName = getBaseImageName(type, player, data, damaged);
+    String baseName = getBaseImageName(type, player, data, damaged, disabled);
     String fullName = baseName + player.getName();
     if(m_images.containsKey(fullName))
     {
@@ -176,9 +176,9 @@ public class UnitImageFactory
   }
   
   
-  public Image getHighlightImage(UnitType type, PlayerID player, GameData data, boolean damaged)
+  public Image getHighlightImage(UnitType type, PlayerID player, GameData data, boolean damaged, boolean disabled)
   {
-      Image base = getImage(type, player, data, damaged);
+      Image base = getImage(type, player, data, damaged, disabled);
       BufferedImage newImage = Util.createImage(base.getWidth(null), base.getHeight(null), true);
 
       //copy the real image
@@ -200,9 +200,9 @@ public class UnitImageFactory
   /**
    * Return a icon image for a unit.
    */
-  public ImageIcon getIcon(UnitType type, PlayerID player, GameData data, boolean damaged)
+  public ImageIcon getIcon(UnitType type, PlayerID player, GameData data, boolean damaged, boolean disabled)
   {
-    String baseName = getBaseImageName(type, player, data, damaged);
+    String baseName = getBaseImageName(type, player, data, damaged, disabled);
     String fullName = baseName + player.getName();
     if(m_icons.containsKey(fullName))
     {
@@ -216,7 +216,7 @@ public class UnitImageFactory
     return icon;
   }
 
-  public String getBaseImageName(UnitType type, PlayerID id, GameData data, boolean damaged)
+  public String getBaseImageName(UnitType type, PlayerID id, GameData data, boolean damaged, boolean disabled)
   {
     StringBuilder name = new StringBuilder(32);
     name.append(type.getName());
@@ -272,8 +272,9 @@ public class UnitImageFactory
           name.append("_it");
       }      
     }
-
-    if(damaged)
+    if(disabled)
+        name.append("_disabled");
+    else if(damaged)
       name.append("_hit");
 
     return name.toString();

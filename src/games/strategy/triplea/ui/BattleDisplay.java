@@ -252,7 +252,7 @@ public class BattleDisplay extends JPanel
         {
             UnitCategory category = (UnitCategory) killedIter.next();
             JPanel panel = new JPanel();
-            JLabel unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, false));
+            JLabel unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, false, false));
             panel.add(unit);
             panel.add(new JLabel("x " + category.getUnits().size()));
            
@@ -260,7 +260,7 @@ public class BattleDisplay extends JPanel
             while (iter.hasNext())
             {
                 UnitOwner owner = (UnitOwner) iter.next();
-                unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, false));
+                unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, false, false));
                 panel.add(unit);
                 //TODO this size is of the transport collection size, not the transportED collection size.
                 panel.add(new JLabel("x " + category.getUnits().size()));
@@ -1244,15 +1244,15 @@ class BattleModel extends DefaultTableModel
             }
             if (unitsToAdd > 0)
                 //TODO Kev determine if we need to identify if the unit is hit/disabled
-                columns[strength].add(new TableData(category.getOwner(), unitsToAdd, category.getType(), m_data, category.getDamaged(), m_uiContext));
+                columns[strength].add(new TableData(category.getOwner(), unitsToAdd, category.getType(), m_data, category.getDamaged(), category.getDisabled(), m_uiContext));
             if (supportedUnitsToAdd > 0)
             	if(strength >= Constants.MAX_DICE)
             	{
-            		columns[strength].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged(), m_uiContext));
+            		columns[strength].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged(), category.getDisabled(), m_uiContext));
             	}
             	else
             	{
-            		columns[strength + 1].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged(), m_uiContext));
+            		columns[strength + 1].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged(), category.getDisabled(), m_uiContext));
             	}
         } //while
 
@@ -1357,11 +1357,11 @@ class TableData
         
     }
 
-    TableData(PlayerID player, int count, UnitType type, GameData data, boolean damaged, UIContext uiContext)
+    TableData(PlayerID player, int count, UnitType type, GameData data, boolean damaged, boolean disabled, UIContext uiContext)
     {
         m_count = count;
         //TODO Kev determine if we need to identify if the unit is hit/disabled
-        m_icon = uiContext.getUnitImageFactory().getIcon(type, player, data, damaged);
+        m_icon = uiContext.getUnitImageFactory().getIcon(type, player, data, damaged, disabled);
     }
 
     public void updateStamp(JLabel stamp)
@@ -1442,14 +1442,14 @@ class CasualtyNotificationPanel extends JPanel
             UnitCategory category = (UnitCategory) categoryIter.next();
             JPanel panel = new JPanel();
             //TODO Kev determine if we need to identify if the unit is hit/disabled
-            JLabel unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, category.getDamaged()));
+            JLabel unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, category.getDamaged(), category.getDisabled()));
             panel.add(unit);
             Iterator iter = category.getDependents().iterator();
             while (iter.hasNext())
             {
                 UnitOwner owner = (UnitOwner) iter.next();
               //Don't use damaged icons for dependent units (bug 2984310)?
-                unit.add(new JLabel(m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, false)));
+                unit.add(new JLabel(m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, false, false)));
                 /*//we don't want to use the damaged icon for units that have just been damaged
                 boolean useDamagedIcon = category.getDamaged() && !damaged;
                 unit.add(new JLabel(m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, useDamagedIcon)));

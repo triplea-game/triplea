@@ -294,7 +294,7 @@ public class ProductionRepairPanel extends JPanel
             UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
             UnitAttachment attach= UnitAttachment.get(type);
             //TODO Kev determine if we need to identify if the unit is hit/disabled
-            Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, false);
+            Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, false, false);
             String text = " x " + (m_cost < 10 ? " " : "") + m_cost;
             JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
             JLabel info=new JLabel(repairLocation.getName().toString());

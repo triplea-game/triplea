@@ -61,9 +61,11 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isInfantry = false;
   private boolean m_canScramble = false;
   private boolean m_isAirBase = false;
+  private boolean m_isInfrastructure = false;  
+  private boolean m_isCombatInfrastructure = false;  
   private boolean m_canBeDamaged = false;
   
-
+  
   //-1 if can't scramble
   private int m_maxScrambleDistance = -1;
   //-1 if can't be damaged
@@ -516,6 +518,27 @@ public class UnitAttachment extends DefaultAttachment
   {
     return m_isAirBase;
   }
+  
+  public void setIsInfrastructure(String s)
+  {
+	  m_isInfrastructure = getBool(s);
+  }
+
+  public boolean getIsInfrastructure()
+  {
+    return m_isInfrastructure;
+  }
+  
+  public void setIsCombatInfrastructure(String s)
+  {
+	  m_isCombatInfrastructure = getBool(s);
+  }
+
+  public boolean getIsCombatInfrastructure()
+  {
+    return m_isCombatInfrastructure;
+  }
+  
   
   public void setCanBeDamaged(String s)
   {

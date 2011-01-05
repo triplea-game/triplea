@@ -762,7 +762,7 @@ class UnitPanel extends JPanel
         
         m_textField.setShowMaxAndMin(false);
         
-        Image img = m_context.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data, m_category.getDamaged());
+        Image img = m_context.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data, m_category.getDamaged(),m_category.getDisabled());
         
         setCount(m_category.getUnits().size());
         

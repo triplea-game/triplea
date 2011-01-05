@@ -40,6 +40,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -193,14 +194,13 @@ public class StrategicBombingRaidBattle implements Battle
                 
                 m_tracker.removeBattle(StrategicBombingRaidBattle.this);
 
-                //TODO Kev damage a unit here.
                 if(!m_targets.isEmpty())
                 	bridge.getHistoryWriter().addChildToEvent("Bombing raid in " + m_battleSite.getName() + " causes " + m_bombingRaidCost + " " + " damage to " + m_targets.iterator().next());
                 else if (isSBRAffectsUnitProduction())
                 	bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + " production in " + m_battleSite.getName());
                 else
                 	bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + MyFormatter.pluralize("PU", m_bombingRaidCost));
-//TODO Kev remove the reference to the constant.japanese- replace with a rule
+                //TODO Kev remove the reference to the constant.japanese- replace with a rule
                 if(isPacificTheater() || isSBRVictoryPoints())
                 {
                     if(m_defender.getName().equals(Constants.JAPANESE)) 
@@ -258,7 +258,14 @@ public class StrategicBombingRaidBattle implements Battle
 
     private List<Unit> getDefendingUnits()
     {
-        return Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAOrFactory);
+    	if(m_targets.isEmpty())
+    		return Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAOrFactory);
+    	else
+    	{
+    		List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAA);
+    		targets.addAll(m_targets);
+    		return targets;
+    	}	
     }
 
     class FireAA implements IExecutable
@@ -510,7 +517,8 @@ public class StrategicBombingRaidBattle implements Battle
             Iterator<Unit> iter = m_units.iterator();
             int index = 0;
             Boolean limitDamage = isWW2V2() || isLimitSBRDamageToProduction() || !m_targets.isEmpty();
-//TODO kev limit to maxDamage
+            
+            // limit to maxDamage
             while (iter.hasNext())
             {
                 int rolls;
@@ -548,8 +556,8 @@ public class StrategicBombingRaidBattle implements Battle
                     cost += costThisUnit;
             }
 
-
-            if(!m_targets.isEmpty())
+            //If something other than factories were targeted
+            if(!m_targets.isEmpty() && !Match.allMatch(m_targets, Matches.UnitIsFactory))
             {
             	//determine the max allowed damage
                 UnitAttachment ua = UnitAttachment.get(m_targets.iterator().next().getType());

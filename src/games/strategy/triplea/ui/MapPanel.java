@@ -776,7 +776,7 @@ public class MapPanel extends ImageScrollerLargeView
             Unit first = m_highlightUnits.get(0);
             
             //TODO Kev determine if we need to identify if the unit is hit/disabled
-            BufferedImage highlight = (BufferedImage) m_uiContext.getUnitImageFactory().getHighlightImage(first.getType(), first.getOwner(), m_data, first.getHits() != 0);
+            BufferedImage highlight = (BufferedImage) m_uiContext.getUnitImageFactory().getHighlightImage(first.getType(), first.getOwner(), m_data, first.getHits() != 0, false);
             
             AffineTransform t = new AffineTransform();
             t.translate( normalizeX(r.getX() - getXOffset()) * m_scale, (r.getY() - getYOffset()) * m_scale);
@@ -1006,7 +1006,7 @@ public class MapPanel extends ImageScrollerLargeView
             {
                 Point place = new Point( i * (icon_width + xSpace), 0);
                 UnitsDrawer drawer = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), 
-                        category.getOwner().getName(), place,category.getDamaged(), false, "", m_uiContext );
+                        category.getOwner().getName(), place,category.getDamaged(), category.getDisabled(), false, "", m_uiContext );
                 drawer.draw(bounds, m_data, g, m_uiContext.getMapData(), null, null);
                
                 i++;

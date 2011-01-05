@@ -61,9 +61,8 @@ public class SimpleUnitPanel extends JPanel
 
       UnitType unit = (UnitType) productionRule.getResults().keySet().
         iterator().next();
-      boolean damaged = false;
 
-      addUnits(player, data, quantity, unit, damaged);
+      addUnits(player, data, quantity, unit, false, false);
 
     }
   }
@@ -94,9 +93,9 @@ public class SimpleUnitPanel extends JPanel
             UnitType unit = (UnitType) repairRule.getResults().keySet().
             iterator().next();
             boolean damaged = false;
-
-            addUnits(player, data, quantity, unit, damaged);
-
+            boolean disabled = false;
+//TODO Kev determine if we need to identify if the unit is hit/disabled
+            addUnits(player, data, quantity, unit, damaged, disabled);
         }        
     }
   }
@@ -112,17 +111,18 @@ public class SimpleUnitPanel extends JPanel
     while (iter.hasNext())
     {
       UnitCategory category = (UnitCategory) iter.next();
-      addUnits(category.getOwner(), data, category.getUnits().size(), category.getType(), category.getDamaged());
+      //TODO Kev determine if we need to identify if the unit is hit/disabled
+      addUnits(category.getOwner(), data, category.getUnits().size(), category.getType(), category.getDamaged(), category.getDisabled());
     }
   }
 
-  private void addUnits(PlayerID player, GameData data, int quantity, UnitType unit, boolean damaged)
+  private void addUnits(PlayerID player, GameData data, int quantity, UnitType unit, boolean damaged, boolean disabled)
   {
       //TODO Kev determine if we need to identify if the unit is hit/disabled
     JLabel label = new JLabel();
     label.setText(" x " + quantity);
     label.setIcon(m_uiContext.getUnitImageFactory().getIcon(unit, player,
-        data, damaged));
+        data, damaged, disabled));
     add(label);
   }
 

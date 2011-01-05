@@ -103,13 +103,15 @@ public class UnitSeperator
                 currentDependents = dependent.get(current);
             }
             boolean damaged = current.getHits() == 1;
+            //if unitDamage > maxOperationalDamage it's disabled
+            boolean disabled = UnitAttachment.get(((Unit) current).getUnitType()).getUnitDamage() > 0 && UnitAttachment.get(((Unit) current).getUnitType()).getUnitDamage() > UnitAttachment.get(((Unit) current).getUnitType()).getMaxOperationalDamage();
             
             Territory originatingTerr = null;
             if(categorizeTerritories)
             	originatingTerr = TripleAUnit.get(current).getOriginatedFrom();
             
             
-            UnitCategory entry = new UnitCategory(current, currentDependents, unitMovement, damaged, unitTransportCost, originatingTerr);
+            UnitCategory entry = new UnitCategory(current, currentDependents, unitMovement, damaged, disabled, unitTransportCost, originatingTerr);
 
             //we test to see if we have the key using equals, then since
             //key maps to key, we retrieve it to add the unit to the correct

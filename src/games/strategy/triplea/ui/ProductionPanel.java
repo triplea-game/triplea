@@ -263,8 +263,7 @@ public class ProductionPanel extends JPanel
             int attack=attach.getAttack(id);
             int movement=attach.getMovement(id);
             int defense=attach.getDefense(id);
-            //TODO Kev determine if we need to identify if the unit is hit/disabled
-            Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, false);
+            Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, false, false);
             String text = " x " + (m_cost < 10 ? " " : "") + m_cost;
             JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
             JLabel info=new JLabel(attack+"/"+defense+"/"+movement);

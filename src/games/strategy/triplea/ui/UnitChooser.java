@@ -649,14 +649,14 @@ class ChooserEntry
     public void paint(Graphics g)
     {
       super.paint(g);
-      g.drawImage( m_uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data, m_forceDamaged || m_category.getDamaged()), 0,0,this);
+      g.drawImage( m_uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data, m_forceDamaged || m_category.getDamaged(), m_category.getDisabled()), 0,0,this);
       Iterator iter = m_category.getDependents().iterator();
       int index = 1;
       while(iter.hasNext())
       {
         UnitOwner holder = (UnitOwner) iter.next();
         int x = m_uiContext.getUnitImageFactory().getUnitImageWidth() * index;
-        Image unitImg = m_uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), m_data, false);
+        Image unitImg = m_uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), m_data, false, false);
         g.drawImage(unitImg, x, 0, this);
 
 

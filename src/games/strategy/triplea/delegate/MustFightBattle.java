@@ -2740,7 +2740,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
             if(m_headless)
                 return;
 
-            //TODO Kev determine if we need to identify if the unit is hit/disabled
             getDisplay(bridge).casualtyNotification(m_battleID, SELECT_AA_CASUALTIES, m_dice, m_attacker, new ArrayList<Unit>(m_casualties), Collections.<Unit>emptyList(), m_dependentUnits);
                         
             getRemote(m_attacker, bridge).confirmOwnCasualties(m_battleID, "Press space to continue");
@@ -2799,13 +2798,23 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         CompositeMatch<Unit> combat = new CompositeMatchAnd<Unit>();
         combat.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
-
+        
         if (m_battleSite.isWater())
         {
-            combat.add(new InverseMatch<Unit>(Matches.UnitIsLand));
+            combat.add(Matches.UnitIsNotLand);
         }
+        
+        List<Unit> unitList = Match.getMatches(units, combat);
+        
+        //remove infrastructure units that can't take part in combat (air/naval bases, etc...)
+        //But units like bridges or bunkers could be left to be taken as casualties
+        CompositeMatchAnd<Unit> combatInfrastructure = new CompositeMatchAnd<Unit>();
+        combatInfrastructure.add(Matches.UnitIsInfrastructure);
+        combatInfrastructure.add(new InverseMatch<Unit>(Matches.UnitIsCombatInfrastructure));
 
-        return Match.getMatches(units, combat);
+        unitList.removeAll(Match.getMatches(unitList, combatInfrastructure));
+
+        return unitList;
     }
 
     private void removeNonCombatants()

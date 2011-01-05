@@ -361,7 +361,7 @@ public class TileManager
             }
             
             UnitsDrawer drawable = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), category.getOwner().getName(), lastPlace,
-                    category.getDamaged(), overflow, territory.getName(), m_uiContext);
+                    category.getDamaged(), category.getDisabled(), overflow, territory.getName(), m_uiContext);
             drawing.add(drawable);
             m_allUnitDrawables.add(drawable);
             

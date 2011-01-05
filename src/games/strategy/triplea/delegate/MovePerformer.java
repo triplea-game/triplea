@@ -202,7 +202,7 @@ public class MovePerformer implements Serializable
                     Collection<Unit> enemyFactories = route.getEnd().getUnits().getMatches(factory);
                     
                     CompositeMatch<Unit> unitCanBeDamaged = new CompositeMatchAnd<Unit>();
-                    unitCanBeDamaged.add(Matches.UnitCanBeDamaged);
+                    unitCanBeDamaged.add(Matches.UnitIsInfrastructure);
                     Collection<Unit> otherEnemyTargets = new ArrayList<Unit>();
                     
                     //get only those targets that aren't maxed out
@@ -224,7 +224,7 @@ public class MovePerformer implements Serializable
                         //if bombing and there's something to target- ask what to bomb
                         if(bombing && targetToBomb)
                         {
-                        	CompositeMatchOr<Unit> unitsToBeBombed = new CompositeMatchOr<Unit>(Matches.UnitIsFactory, Matches.UnitCanBeDamaged);
+                        	CompositeMatchOr<Unit> unitsToBeBombed = new CompositeMatchOr<Unit>(Matches.UnitIsFactory, Matches.UnitIsInfrastructure);
                         	//determine which unit to bomb
                         	Unit target = getRemotePlayer().whatShouldBomberBomb(route.getEnd(), Match.getMatches(enemyUnits, unitsToBeBombed));
                         	if(target == null)

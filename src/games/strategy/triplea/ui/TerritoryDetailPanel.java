@@ -132,7 +132,7 @@ public class TerritoryDetailPanel extends JPanel
 
             //TODO Kev determine if we need to identify if the unit is hit/disabled
             ImageIcon unitIcon = m_uiContext.getUnitImageFactory().getIcon(
-                item.getType(), item.getOwner(), m_data, item.getDamaged());
+                item.getType(), item.getOwner(), m_data, item.getDamaged(), item.getDisabled());
             ImageIcon flagIcon = new ImageIcon(
                 m_uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
             

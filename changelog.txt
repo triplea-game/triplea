@@ -1,4 +1,14 @@
 Changes for 1.2.7
+* New Unit Option: "isAirBase" allows units to scramble to combat (ComradeKev)
+
+* New Unit Option: "maxOperationalDamage" sets max damage to be sustained before unit is disabled (ComradeKev)
+
+* New Unit Option: "maxDamage" sets total max damage for a unit (ComradeKev)
+
+* New Unit Option: "isInfrastructure" infrastructure units can be bombed (ComradeKev)
+
+* New Unit Option: "isCombatInfrastructure" units can be bombed or taken as casualties in regular combat (ComradeKev)
+
 * New Property: "Display Units as Counters" (COUNTERS_DISPLAY), will make stacks out of units up to a certain amount. (Edwin van der Wal)
 
 * Moore AI SUtils fix, findNearest() and distanceToEnemy() completely re-written to be much faster. (squidbait)

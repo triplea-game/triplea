@@ -21,17 +21,19 @@ public class UnitsDrawer implements IDrawable
     private final String m_playerName;
     private final Point m_placementPoint;
     private final boolean m_damaged;
+    private final boolean m_disabled;
     private final boolean m_overflow;
     private final String m_territoryName;
     private final UIContext m_uiContext;
     
-    public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint, final boolean damaged, boolean overflow, String territoryName, UIContext uiContext)
+    public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint, final boolean damaged, final boolean disabled, boolean overflow, String territoryName, UIContext uiContext)
     {
         m_count = count;
         m_unitType = unitType;
         m_playerName = playerName;
         m_placementPoint = placementPoint;
         m_damaged = damaged;
+        m_disabled = disabled;
         m_overflow = overflow;
         m_territoryName = territoryName;
         m_uiContext = uiContext;
@@ -62,8 +64,8 @@ public class UnitsDrawer implements IDrawable
             throw new IllegalStateException("Type not found:" + m_unitType);
         PlayerID owner = data.getPlayerList().getPlayerID(m_playerName);
         
-        Image img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged);
-        
+        Image img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
+
         if(!m_damaged && UnitAttachment.get(type).isFactory() && isSBRAffectsUnitProduction(data) )
         {
         	if(m_territoryName.length() != 0)
@@ -73,19 +75,19 @@ public class UnitsDrawer implements IDrawable
         		int unitProd = ta.getUnitProduction();
         		if(unitProd < prod)
         		{
-        			img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, true);
+        			img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, true, m_disabled);
         		}
         	}
-        	else
+        	/*else
         	{
-        		img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged);
-        	}
+        		img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
+        	}*/
         	
         }
-        else
+        /*else
         {
-            img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged);
-        }
+            img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
+        }*/
         
         graphics.drawImage(img, m_placementPoint.x - bounds.x, m_placementPoint.y - bounds.y, null);
         
