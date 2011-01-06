@@ -6032,7 +6032,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	List<Territory> moveableFactoryTerritories = SUtils.findUnitTerr(data, player, moveableFactory);
     	if (!moveableFactoryTerritories.isEmpty())
     	{
-    		List<Territory> owned = SUtils.allOurTerritories(data, player);
+    		CompositeMatch<Territory> endConditionEnemyLand = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data),Matches.TerritoryIsNotImpassable, Matches.TerritoryIsLand);
+        	CompositeMatch<Territory> routeConditionLand = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data),Matches.TerritoryIsNotImpassable, Matches.TerritoryIsLand);
+        	List<Territory> owned = SUtils.allOurTerritories(data, player);
     		List<Territory> existingFactories = SUtils.findCertainShips(data, player, Matches.UnitIsFactory);
     		owned.removeAll(existingFactories);
     		List<Territory> isWaterConvoy = SUtils.onlyWaterTerr(data, owned);
@@ -6057,13 +6059,18 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     						territoryValue += 1;
     					if (Matches.territoryHasWaterNeighbor(data).match(moveFactToTerr))
     						territoryValue += 3;
-    					int dist = SUtils.distanceToEnemy(moveFactToTerr, data, player, false);
-    					if (dist != 0)
-    						territoryValue += 10 - dist;
+    					Route r = SUtils.findNearest(moveFactToTerr, endConditionEnemyLand, routeConditionLand, data);
+    					if (r != null)
+    					{
+    						territoryValue += 10 - r.getLength();
+    					}
     					else
     					{
-    						dist = SUtils.distanceToEnemy(moveFactToTerr, data, player, true);
-    						territoryValue += 8 - dist;
+    						r = SUtils.findNearest(moveFactToTerr, endConditionEnemyLand, Matches.TerritoryIsWater, data);
+    						if (r != null)
+    							territoryValue += 8 - r.getLength();
+    						else
+    							territoryValue -= 115;
     					}
     					territoryValue += 4 * TerritoryAttachment.get(moveFactToTerr).getProduction();
     					List<Territory> weOwnAll = SUtils.getNeighboringEnemyLandTerritories(data, player, moveFactToTerr);
@@ -7181,11 +7188,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             int capDamage = 0;
             int maxUnits = (totPU - 1)/minimumUnitPrice;
             int currentProduction = 0;
+            int maxProduction = 0;
             for (Territory fixTerr : rfactories)
             {
                 if (!Matches.territoryHasOwnedFactory(data, player).match(fixTerr))
         	 	    continue;
     		    TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
+    		    maxProduction += ta.getProduction();
         	    diff = ta.getProduction() - ta.getUnitProduction();
         	    totalDamage += diff;
         	    if (fixTerr == capitol)
@@ -7197,7 +7206,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             Collections.shuffle(rfactories); // we should sort this
 		    // assume minimum unit price is 3, and that we are buying only that... if we over repair, oh well, that is better than under-repairing
             // goal is to be able to produce all our units, and at least half of that production in the capitol
-            if (TerritoryAttachment.get(capitol).getUnitProduction() <= maxUnits/2) // if capitol is super safe, we don't have to do this. and if capitol is under siege, we should repair enough to place all our units here
+            if (TerritoryAttachment.get(capitol).getUnitProduction() <= maxUnits/2 || rfactories.isEmpty()) // if capitol is super safe, we don't have to do this. and if capitol is under siege, we should repair enough to place all our units here
         	{
                 for (RepairRule rrule : rrules)
                 {
@@ -7205,7 +7214,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             	 	    continue;
         		    TerritoryAttachment ta = TerritoryAttachment.get(capitol);
             	    diff = ta.getProduction() - ta.getUnitProduction();
-            	    diff = Math.min(diff, (maxUnits/2 - ta.getUnitProduction())+1 );
+            	    if (!rfactories.isEmpty())
+            	    	diff = Math.min(diff, (maxUnits/2 - ta.getUnitProduction())+1 );
+            	    else
+            	    	diff = Math.min(diff, (maxUnits - ta.getUnitProduction()));
             	    diff = Math.min(diff, leftToSpend - minimumUnitPrice);
                     if(diff > 0)
                     {
@@ -7222,7 +7234,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                         maxUnits = (leftToSpend - 1)/minimumUnitPrice; // ideally we would adjust this after each single PU spent, then re-evaluate everything. 
 					}
                 }
-        	} 
+        	}
             int i = 0;
         	while (currentProduction < maxUnits && i < 2)
         	{
@@ -7237,8 +7249,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                         	continue;
                         TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
                 	    diff = ta.getProduction() - ta.getUnitProduction();
-                	    if (i == 0) // first cycle will only repair for producing half of our units. if we cycle again it means we are really rich, because maxUnits is huge
-                	    	diff = Math.min(diff, (maxUnits - currentProduction) - ta.getUnitProduction());
+                	    if (i == 0)
+                	    {
+                	    	if (ta.getUnitProduction() < 0)
+                    	    	diff = Math.min(diff, (maxUnits - currentProduction) - ta.getUnitProduction());
+                    	    else
+                    	    	diff = Math.min(diff, (maxUnits - currentProduction));
+                	    }
                 	    diff = Math.min(diff, leftToSpend - minimumUnitPrice);
                         if(diff > 0)
                         {
@@ -7256,6 +7273,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     					}
     				}
             	}
+    		    rfactories.add(capitol);
     		    i++;
         	}
     	}

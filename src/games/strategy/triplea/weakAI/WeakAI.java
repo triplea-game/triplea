@@ -1056,11 +1056,13 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             int capDamage = 0;
             int maxUnits = (totPU - 1)/minimumUnitPrice;
             int currentProduction = 0;
+            int maxProduction = 0;
             for (Territory fixTerr : rfactories)
             {
                 if (!Matches.territoryHasOwnedFactory(data, player).match(fixTerr))
         	 	    continue;
     		    TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
+    		    maxProduction += ta.getProduction();
         	    diff = ta.getProduction() - ta.getUnitProduction();
         	    totalDamage += diff;
         	    if (fixTerr == capitol)
@@ -1072,7 +1074,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             Collections.shuffle(rfactories); // we should sort this
 		    // assume minimum unit price is 3, and that we are buying only that... if we over repair, oh well, that is better than under-repairing
             // goal is to be able to produce all our units, and at least half of that production in the capitol
-            if (TerritoryAttachment.get(capitol).getUnitProduction() <= maxUnits/2) // if capitol is super safe, we don't have to do this. and if capitol is under siege, we should repair enough to place all our units here
+            if (TerritoryAttachment.get(capitol).getUnitProduction() <= maxUnits/2 || rfactories.isEmpty()) // if capitol is super safe, we don't have to do this. and if capitol is under siege, we should repair enough to place all our units here
         	{
                 for (RepairRule rrule : rrules)
                 {
@@ -1080,7 +1082,10 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             	 	    continue;
         		    TerritoryAttachment ta = TerritoryAttachment.get(capitol);
             	    diff = ta.getProduction() - ta.getUnitProduction();
-            	    diff = Math.min(diff, (maxUnits/2 - ta.getUnitProduction())+1 );
+            	    if (!rfactories.isEmpty())
+            	    	diff = Math.min(diff, (maxUnits/2 - ta.getUnitProduction())+1 );
+            	    else
+            	    	diff = Math.min(diff, (maxUnits - ta.getUnitProduction()));
             	    diff = Math.min(diff, leftToSpend - minimumUnitPrice);
                     if(diff > 0)
                     {
@@ -1097,7 +1102,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                         maxUnits = (leftToSpend - 1)/minimumUnitPrice; // ideally we would adjust this after each single PU spent, then re-evaluate everything. 
 					}
                 }
-        	} 
+        	}
             int i = 0;
         	while (currentProduction < maxUnits && i < 2)
         	{
@@ -1112,8 +1117,13 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                         	continue;
                         TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
                 	    diff = ta.getProduction() - ta.getUnitProduction();
-                	    if (i == 0) // first cycle will only repair for producing half of our units. if we cycle again it means we are really rich, because maxUnits is huge
-                	    	diff = Math.min(diff, (maxUnits - currentProduction) - ta.getUnitProduction());
+                	    if (i == 0)
+                	    {
+                	    	if (ta.getUnitProduction() < 0)
+                    	    	diff = Math.min(diff, (maxUnits - currentProduction) - ta.getUnitProduction());
+                    	    else
+                    	    	diff = Math.min(diff, (maxUnits - currentProduction));
+                	    }
                 	    diff = Math.min(diff, leftToSpend - minimumUnitPrice);
                         if(diff > 0)
                         {
@@ -1131,6 +1141,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     					}
     				}
             	}
+    		    rfactories.add(capitol);
     		    i++;
         	}
     	}

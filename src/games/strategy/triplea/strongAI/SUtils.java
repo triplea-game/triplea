@@ -2152,7 +2152,9 @@ public class SUtils
     	final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     	CompositeMatch<Territory> enemyNoWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryEnemyAndNotNuetralWater(player, data));
     	CompositeMatch<Territory> alliedNoWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryAllied(player, data));
-		List<Territory> owned = allOurTerritories(data, player);
+    	CompositeMatch<Territory> endConditionEnemyLand = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data),Matches.TerritoryIsNotImpassable, Matches.TerritoryIsLand);
+    	CompositeMatch<Territory> routeConditionLand = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data),Matches.TerritoryIsNotImpassable, Matches.TerritoryIsLand);
+    	List<Territory> owned = allOurTerritories(data, player);
 		List<Territory> existingFactories = SUtils.findCertainShips(data, player, Matches.UnitIsFactory);
 		owned.removeAll(existingFactories);
 		List<Territory> isWaterConvoy = SUtils.onlyWaterTerr(data, owned);
@@ -2176,16 +2178,21 @@ public class SUtils
 				// sorting territories to have ones with greatest production and closeness to enemy first (by land, then by sea) (veqryn)
 				int territoryValue =0;
 				if (hasLandRouteToEnemyOwnedCapitol(prodTerr, player, data))
-					territoryValue += 3;
+					territoryValue += 2;
 				if (findNearest(prodTerr, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player), data) != null)
-					territoryValue += 1;
-				int dist = distanceToEnemy(prodTerr, data, player, false);
-				if (dist != 0)
-					territoryValue += 10 - dist;
+					territoryValue += 2;
+				Route r = findNearest(prodTerr, endConditionEnemyLand, routeConditionLand, data);
+				if (r != null)
+				{
+					territoryValue += 10 - r.getLength();
+				}
 				else
 				{
-					dist = distanceToEnemy(prodTerr, data, player, true);
-					territoryValue += 8 - dist;
+					r = findNearest(prodTerr, endConditionEnemyLand, Matches.TerritoryIsWater, data);
+					if (r != null)
+						territoryValue += 8 - r.getLength();
+					else
+						territoryValue -= 115;
 				}
 				territoryValue += 4 * TerritoryAttachment.get(prodTerr).getProduction();
 				List<Territory> weOwnAll = getNeighboringEnemyLandTerritories(data, player, prodTerr);
@@ -2199,9 +2206,9 @@ public class SUtils
 		    			weOwnAllIter.remove();
 		    	}
 				territoryValue -= 15 * weOwnAll.size();
-				if (TerritoryAttachment.get(prodTerr).getProduction() < 2)
+				if (TerritoryAttachment.get(prodTerr).getProduction() < 2 || Matches.TerritoryIsImpassable.match(prodTerr))
 					territoryValue -= 100;
-				if (TerritoryAttachment.get(prodTerr).getProduction() < 1)
+				if (TerritoryAttachment.get(prodTerr).getProduction() < 1 || Matches.TerritoryIsImpassable.match(prodTerr))
 					territoryValue -= 100;
 				terrProd.put(prodTerr, territoryValue);
 			}
