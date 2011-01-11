@@ -23,7 +23,6 @@ package games.strategy.triplea.delegate;
 
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -1673,7 +1672,7 @@ public class Matches
     	    		unitCond.add(transport);
     	    	if(Properties.getIgnoreSubInMovement(data))
     	    		unitCond.add(sub);
-    	    	CompositeMatch<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsThatMatch(unitCond).invert(), GameMap.IS_WATER);
+    	    	CompositeMatch<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsThatMatch(unitCond).invert(), Matches.TerritoryIsWater);
 
     			return routeCondition;
     }

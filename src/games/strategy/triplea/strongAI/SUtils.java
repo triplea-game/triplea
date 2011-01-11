@@ -1,7 +1,6 @@
 package games.strategy.triplea.strongAI;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
@@ -3897,7 +3896,7 @@ public class SUtils
 		IntegerMap<UnitType> finalList = new IntegerMap<UnitType>();
 		Set<UnitType> unitList = units.keySet();
 		List<UnitType> orderedUnitList = new ArrayList<UnitType>(unitList);
-		for (int i = 0; i < unitList.size(); i++)
+		for (int i = 0; i < orderedUnitList.size(); i++)
 		{
 			UnitType unit1 = orderedUnitList.get(i);
 			boolean isInf1 = Matches.UnitTypeIsInfantry.match(unit1);
@@ -3906,6 +3905,7 @@ public class SUtils
 			if (!sea && Matches.unitTypeCanBombard(player).match(unit1))
 			{
 				orderedUnitList.remove(i);
+				i--;
 				continue;
 			}
 			int ipip = 0;
@@ -3915,7 +3915,7 @@ public class SUtils
 			else
 				ipip = ua.getDefense(player);
 			// TODO: we should interleave artillery and infantry when they both have same base attack value
-			for (int j = i+1; j < unitList.size(); j++)
+			for (int j = i+1; j < orderedUnitList.size(); j++)
 			{
 				UnitType unit2 = orderedUnitList.get(j);
 				boolean isInf2 = Matches.UnitTypeIsInfantry.match(unit2);
@@ -4588,7 +4588,7 @@ public class SUtils
     		unitCond.add(transport);
     	if(Properties.getIgnoreSubInMovement(data))
     		unitCond.add(sub);
-    	CompositeMatch<Territory> routeCond = new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsThatMatch(unitCond).invert(), GameMap.IS_WATER);
+    	CompositeMatch<Territory> routeCond = new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsThatMatch(unitCond).invert(), Matches.TerritoryIsWater);
     	CompositeMatch<Territory> routeCondition;
     	if(attacking) {
     		routeCondition = new CompositeMatchOr<Territory>(Matches.territoryIs(destination),routeCond);
