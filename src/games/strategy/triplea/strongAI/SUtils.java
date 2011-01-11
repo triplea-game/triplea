@@ -1,6 +1,7 @@
 package games.strategy.triplea.strongAI;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -979,6 +981,7 @@ public class SUtils
 		}
 		for (Territory checkNeutral : checkList)
 		{
+		
 			if (Matches.TerritoryIsNotImpassable.match(checkNeutral))
 				isLand=true;
 		}
@@ -1161,28 +1164,30 @@ public class SUtils
 	 */
 	public static boolean landRouteToEnemyCapital(Territory thisTerr, Route goRoute, GameData data, PlayerID player)
 	{//is there a land route between territory and enemy
-     //   Territory myCapital = TerritoryAttachment.getCapital(player, data);
+		//   Territory myCapital = TerritoryAttachment.getCapital(player, data);
 
-        boolean routeExists = false;
-        Route route = null;
+		boolean routeExists = false;
+		Route route = null;
 
-	    for(PlayerID otherPlayer : data.getPlayerList().getPlayers())
-        {
-            Territory capitol =  TerritoryAttachment.getCapital(otherPlayer, data);
-	        if(capitol != null && !data.getAllianceTracker().isAllied(player, capitol.getOwner()))
-	        {
-	            route = data.getMap().getRoute(thisTerr, capitol, Matches.TerritoryIsNotImpassableToLandUnits(player));
-	            if(route != null)
-	           	   routeExists = true;
-	        }
+		for(PlayerID otherPlayer : data.getPlayerList().getPlayers())
+		{
+			if( !data.getAllianceTracker().isAllied(player, otherPlayer)) {
+				Territory capitol =  TerritoryAttachment.getCapital(otherPlayer, data);
+				if(capitol != null )
+				{
+					route = data.getMap().getRoute(thisTerr, capitol, Matches.TerritoryIsNotImpassableToLandUnits(player));
+					if(route != null)
+						routeExists = true;
+				}
+			}
 
-	    }
-	    if (routeExists)
-	    	goRoute = route;
-	    else
-	    	goRoute = null;
+		}
+		if (routeExists)
+			goRoute = route;
+		else
+			goRoute = null;
 
-	    return routeExists;
+		return routeExists;
 	}
 
 	/**
@@ -1334,6 +1339,7 @@ public class SUtils
 	 */
     public static float getStrengthOfPotentialAttackers(Territory location, GameData data, PlayerID player, boolean tFirst, boolean ignoreOnlyPlanes, List<Territory> ignoreTerr)
     {
+    	
         TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
         PlayerID ePlayer = null;
 		List<PlayerID> qID = getEnemyPlayers(data, player);
@@ -1351,27 +1357,24 @@ public class SUtils
 		while (playerIter.hasNext())
 		{
 	    	float seaStrength = 0.0F, firstStrength = 0.0F, secondStrength = 0.0F, blitzStrength = 0.0F, strength=0.0F, airStrength=0.0F;
-			ePlayer = playerIter.next();
+	    	ePlayer = playerIter.next();
 			CompositeMatch<Unit> enemyPlane = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.unitIsOwnedBy(ePlayer), Matches.UnitIsNotStatic(ePlayer));
-			CompositeMatch<Unit> enemyBomber = new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(ePlayer), Matches.UnitIsNotStatic(ePlayer));
 			CompositeMatch<Unit> enemyTransport = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitIsNotStatic(ePlayer));
 			CompositeMatch<Unit> enemyShip = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitIsSea, Matches.UnitIsNotStatic(ePlayer));
 			CompositeMatch<Unit> enemyTransportable = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBeTransported, Matches.UnitIsNotAA, Matches.UnitIsNotStatic(ePlayer));
 			CompositeMatch<Unit> aTransport = new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitIsNotStatic(ePlayer));
-			//Find Maximum plane movement for this player
-			List<Territory> eFTerrs = SUtils.findUnitTerr(data, ePlayer, Matches.UnitCanLandOnCarrier);
-			List<Territory> eBTerrs = SUtils.findUnitTerr(data, ePlayer, Matches.UnitIsStrategicBomber);
+			List<Territory> eFTerrs = SUtils.findUnitTerr(data, ePlayer, enemyPlane);
 			int maxFighterDistance = 0, maxBomberDistance = 0;
+			
+			// should change this to read production frontier and tech
+			// reality is 99% of time units considered will have full move. 
+			// and likely player will have at least 1 max move plane.
 			for (Territory eFTerr : eFTerrs)
 			{
-				List<Unit> eFUnits = eFTerr.getUnits().getMatches(Matches.UnitCanLandOnCarrier);
+				List<Unit> eFUnits = eFTerr.getUnits().getMatches(enemyPlane);
 				maxFighterDistance = Math.max(maxFighterDistance, MoveValidator.getMaxMovement(eFUnits));
 			}
-			for (Territory eBTerr : eBTerrs)
-			{
-				List<Unit> eBUnits = eBTerr.getUnits().getMatches(Matches.UnitIsStrategicBomber);
-				maxBomberDistance = Math.max(maxBomberDistance, MoveValidator.getMaxMovement(eBUnits));
-			}
+			
 			maxFighterDistance--; //must be able to land...we will miss fighters who have a Carrier that can reach same sea zone...C'est la vie
 			if (maxFighterDistance < 0)
 				maxFighterDistance = 0;
@@ -1389,6 +1392,7 @@ public class SUtils
 			List<Route> blitzTerrRoutes = new ArrayList<Route>();
 			List<Territory> checked = new ArrayList<Territory>();
 			List<Unit> enemyWaterUnits = new ArrayList<Unit>();
+			
 			for(Territory t : data.getMap().getNeighbors(location,  onWater ? Matches.TerritoryIsWater :  Matches.TerritoryIsLand))
 			{
 				if (doIgnoreTerritories && ignoreTerr.contains(t))
@@ -1401,9 +1405,24 @@ public class SUtils
 			if (Matches.TerritoryIsLand.match(location))
 			{
 				blitzStrength = determineEnemyBlitzStrength(location, blitzTerrRoutes, null, data, ePlayer);
+				
 			}
 			else //get ships attack strength
-			{
+			{    //old assumed fleets won't split up, new lets them. no biggie. 
+				// assumes max ship movement is 3.
+				// note, both old and new implementations
+				// allow units to be calculated that are in
+				// territories we have already assaulted
+				// this can be easily changed
+				
+				HashSet<Integer> ignore = new HashSet<Integer>();
+				ignore.add(new Integer(1));
+				List<Route> r = new ArrayList<Route>();
+				List<Unit> ships = findAttackers(location, 3, ignore, ePlayer,data, enemyShip, Matches.territoryIsBlockedSea(ePlayer,data), ignoreTerr, r,true);
+				secondStrength = strength(ships, true, true, tFirst);
+				enemyWaterUnits.addAll(ships);
+				
+				/*
 				for (int i=2; i<=3; i++)
 				{
 					List<Territory> moreTerr = getExactNeighbors(location, i, player, false);
@@ -1427,53 +1446,13 @@ public class SUtils
 						secondStrength += strength(moreEnemies, true, true, tFirst);
 					}
 				}
+				*/
+				
 			}
-			List<Unit> allEnemyPlanes = new ArrayList<Unit>();
-			for (Territory t2 : data.getMap().getNeighbors(location, maxFighterDistance)) //get air strength
-			{
-				if (doIgnoreTerritories && ignoreTerr.contains(t2))
-					continue;
-				if (!checked.contains(t2) && t2.getUnits().someMatch(Matches.unitIsOwnedBy(ePlayer)))
-				{
-					int airDist = data.getMap().getDistance(t2, location, SUtils.TerritoryIsNotImpassableToAirUnits(data)); 
-					if (airDist <= maxFighterDistance)
-					{
-						List<Unit> attackPlanes = t2.getUnits().getMatches(enemyPlane);
-						Iterator<Unit> planeIter = attackPlanes.iterator();
-						while (planeIter.hasNext())
-						{
-							Unit ePlane = planeIter.next();
-							if (!SUtils.airUnitIsLandable(ePlane, t2, location, ePlayer, data) && !SUtils.airUnitIsLandableOnCarrier(ePlane, t2, location, ePlayer, data))
-								planeIter.remove();
-						}
-						allEnemyPlanes.addAll(attackPlanes);
-						airStrength += allairstrength(attackPlanes, true);
-					}
-				}
-			}
-			for (Territory t3 : data.getMap().getNeighbors(location, maxBomberDistance))
-			{
-				if (doIgnoreTerritories && ignoreTerr.contains(t3))
-					continue;
-				if (!checked.contains(t3) && t3.getUnits().someMatch(Matches.unitIsOwnedBy(ePlayer)))
-				{
-					int airDist = data.getMap().getDistance(t3, location, SUtils.TerritoryIsNotImpassableToAirUnits(data));
-					if (airDist <= maxBomberDistance)
-					{
-						List<Unit> bomberPlanes = t3.getUnits().getMatches(enemyBomber);
-						bomberPlanes.removeAll(allEnemyPlanes);
-						Iterator<Unit> bombIter = bomberPlanes.iterator();
-						while (bombIter.hasNext())
-						{
-							Unit bPlane = bombIter.next();
-							if (!SUtils.airUnitIsLandable(bPlane, t3, location, ePlayer, data))
-								bombIter.remove();
-						}
-						allEnemyPlanes.addAll(bomberPlanes);
-						airStrength += allairstrength(bomberPlanes, true);
-					}
-				}
-			}
+			
+	        List<Unit> attackPlanes = findPlaneAttackersThatCanLand(location, maxFighterDistance, ePlayer,data,ignoreTerr,checked);
+	        airStrength += allairstrength(attackPlanes, true);
+	        
 			if (Matches.territoryHasWaterNeighbor(data).match(location) && Matches.TerritoryIsLand.match(location))
 			{
 				for (Territory t4 : data.getMap().getNeighbors(location, maxTransportDistance))
@@ -1553,6 +1532,7 @@ public class SUtils
 					}
 				}
 			}
+			
 			strength = seaStrength + blitzStrength + firstStrength + secondStrength;
 			if (!ignoreOnlyPlanes || strength > 0.0F)
 				strength += airStrength;
@@ -1583,6 +1563,8 @@ public class SUtils
 			if (ePlayer != xP)
 				maxStrength += ePAttackMap.get(xP)*0.40F; //give 40% of other players...this is will affect a lot of decisions by AI
 		}
+		
+        
         return maxStrength;
     }
 
@@ -1748,7 +1730,159 @@ public class SUtils
 		return badGuys;
 	}
 	
+	public static List<Unit> findAttackers(Territory start, int maxDistance, HashSet<Integer> ignoreDistance, PlayerID player,GameData data, Match<Unit> unitCondition, Match<Territory> routeCondition, List<Territory> blocked, List<Route> routes, boolean sea)
+    {
+		
+		IntegerMap<Territory> distance = new IntegerMap<Territory>();
+		Map<Territory,Territory> visited = new HashMap<Territory,Territory>();
+		List<Unit> units = new ArrayList<Unit>();
+		Queue<Territory> q = new LinkedList<Territory>();
+		q.add(start);
+		Territory current = null;
+		distance.put(start, 0);
+		visited.put(start, null);
+		while(!q.isEmpty()){
+			current = q.remove();
+			if( distance.getInt(current) == maxDistance)  
+				break;
+			for(Territory neighbor : data.getMap().getNeighbors(current)) {
+				if(!distance.keySet().contains(neighbor)){
+					if(!neighbor.getUnits().someMatch(unitCondition)) 
+						if(!routeCondition.match(neighbor)) 
+							continue;
+					if(sea){
+						Route r = new Route();
+						r.setStart(neighbor);
+						r.add(current);
+						if(MoveValidator.validateCanal(r, player, data)!=null)
+							continue;
+					}
+					distance.put(neighbor, distance.getInt(current)+1);
+					visited.put(neighbor, current);
+					if( blocked != null && blocked.contains(neighbor))
+						continue;
+					q.add(neighbor);
+					Integer dist = new Integer(distance.getInt(neighbor));
+					if( ignoreDistance.contains(dist))
+						continue;
+					for(Unit u: neighbor.getUnits() ) {
+						if(unitCondition.match(u) && MoveValidator.hasEnoughMovement(u,dist)){
+							units.add(u);
+						}
+					}
+				}
+			}
+		}
+		// pain in the ass, should just redesign stop blitz attack
+		for(Territory t: visited.keySet()) {
+			Route r = new Route();
+			Territory t2 = t;
+			r.setStart(t);
+			while(t2!=null) {
+				t2=visited.get(t2);
+				if(t2!=null)
+					r.add(t2);
+			}
+			routes.add(r);
+		}
+	    return units;
+    }
+	/**
+	 * does not count planes already in the starting territory
+	 * @param start
+	 * @param maxDistance
+	 * @param player
+	 * @param data
+	 * @param ignore
+	 * @param checked
+	 * @return
+	 */
+	public static List<Unit> findPlaneAttackersThatCanLand(Territory start, int maxDistance, PlayerID player,GameData data, List ignore, List checked)
+    {
+		IntegerMap<Territory> distance = new IntegerMap<Territory>();
+		IntegerMap<Unit> unitDistance = new IntegerMap<Unit>();
+		List<Unit> units = new ArrayList<Unit>();
+		Queue<Territory> q = new LinkedList<Territory>();
+		Territory lz = null, ac=null;
+		CompositeMatch<Unit> enemyPlane = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.unitIsOwnedBy(player), Matches.UnitIsNotStatic(player));
+		CompositeMatch<Unit> enemyCarrier = new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player), Matches.UnitIsNotStatic(player));
+		q.add(start);
+		Territory current = null;
+		distance.put(start, 0);
+		while(!q.isEmpty()){
+			current = q.remove();
+			if( distance.getInt(current) == maxDistance)  
+				break;
+			for(Territory neighbor : data.getMap().getNeighbors(current, SUtils.TerritoryIsNotImpassableToAirUnits(data))) {
+				if(!distance.keySet().contains(neighbor)){
+					q.add(neighbor);
+					distance.put(neighbor, distance.getInt(current)+1);
+					if( lz == null && Matches.isTerritoryAllied(player, data).match(neighbor) && !neighbor.isWater())
+						lz = neighbor;
+					if( (ignore != null && ignore.contains(neighbor)) || (checked != null && checked.contains(neighbor) ))
+					{
+						for(Unit u: neighbor.getUnits() ) {
+							if( ac == null && enemyCarrier.match(u))
+								ac = neighbor;
+						}
+					}
+					else {
+						for(Unit u: neighbor.getUnits() ) {
+							if( ac == null && enemyCarrier.match(u))
+								ac = neighbor;
+							if( enemyPlane.match(u))
+								unitDistance.put(u, distance.getInt(neighbor));
+						}
+					}
+						
+				}
+			}
+		}
+		for(Unit u:unitDistance.keySet()){
+			if(lz != null && MoveValidator.hasEnoughMovement(u, unitDistance.getInt(u)+distance.getInt(lz)))
+				units.add(u);
+			else
+				if( ac != null && Matches.UnitCanLandOnCarrier.match(u) && 
+						MoveValidator.hasEnoughMovement(u, unitDistance.getInt(u)+distance.getInt(ac)))
+					units.add(u);
+		}
+		
+		//s_logger.fine("LZ " + lz +  " "+ distance.getInt(lz));
+	    return units;
+    }
 	
+	/**
+	 * finds all units matching some condition over route define by condtion
+	 * with maximum length
+	 * returns map of units to their distance.
+	 * 
+	 */
+	public static IntegerMap<Unit> findAllUnits(Territory start, int maxDistance, Match<Territory> routeCondition, Match<Unit> unitCondition, GameData data)
+    {
+		IntegerMap<Territory> distance = new IntegerMap<Territory>();
+		IntegerMap<Unit> unitDistance = new IntegerMap<Unit>();
+		Queue<Territory> q = new LinkedList<Territory>();
+		q.add(start);
+		Territory current = null;
+		distance.put(start, 0);
+		while(!q.isEmpty()){
+			current = q.remove();
+			if( distance.getInt(current) == maxDistance)  
+				break;
+			for(Territory neighbor : data.getMap().getNeighbors(current, routeCondition)) {
+				if(!distance.keySet().contains(neighbor)){
+					q.add(neighbor);
+					distance.put(neighbor, distance.getInt(current)+1);
+					for(Unit u: neighbor.getUnits() ) {
+						if( unitCondition.match(u))
+							unitDistance.put(u, distance.getInt(neighbor));
+					}
+				}
+			}
+		}
+		
+	    return unitDistance;
+    }
 	/**
 	 * Find the Route to the nearest Territory
 	 * @param start - starting territory
@@ -1763,9 +1897,12 @@ public class SUtils
 		Map<Territory,Territory> visited = new HashMap<Territory,Territory>();
 		Queue<Territory> q = new LinkedList<Territory>();
 		List<Territory> route = new ArrayList<Territory>();
-		q.add(start);
+		// changing to exclude checking start
+		q.addAll(data.getMap().getNeighbors(start, canGo));
 		Territory current = null;
 		visited.put(start,null);
+		for( Territory t: q)
+			visited.put(t,start);
 		while(!q.isEmpty()){
 	        current = q.remove();
 	        if(endCondition.match(current))
@@ -1791,6 +1928,52 @@ public class SUtils
 	    Collections.reverse(route);
 
 	    return new Route(route);
+    }
+	
+	/**
+	 * Finds list of territories at exactly distance from the start
+	 * 
+	 * @param start
+	 * @param endCondition condition that all end points must satisfy
+	 * @param routeCondition condition that all traversed internal territories must satisy
+	 * @param distance
+	 * @param data
+	 * @return
+	 */
+	public static List<Territory> findFontier(Territory start, Match<Territory> endCondition, Match<Territory> routeCondition, int distance, GameData data)
+    {
+		Match<Territory> canGo = new CompositeMatchOr<Territory>(endCondition,routeCondition);
+		IntegerMap<Territory> visited = new IntegerMap<Territory>();
+		Queue<Territory> q = new LinkedList<Territory>();
+		List<Territory> frontier = new ArrayList<Territory>();
+		q.addAll(data.getMap().getNeighbors(start,canGo));
+		Territory current = null;
+		visited.put(start,0);
+		for( Territory t: q) {
+			visited.put(t,1);
+			if( 1 == distance && endCondition.match(t)) 
+				frontier.add(t);
+		}
+		while(!q.isEmpty()){
+	        current = q.remove();
+	        if(visited.getInt(current)==distance)
+	            break;
+	        else
+	        {
+	        	for(Territory neighbor : data.getMap().getNeighbors(current, canGo)) {
+	                if(!visited.keySet().contains(neighbor)){
+	                    q.add(neighbor);
+	                    int dist = visited.getInt(current)+1;
+	                    visited.put(neighbor, dist);
+	                    if( dist == distance && endCondition.match(neighbor)) {
+	                    	frontier.add(neighbor);
+	                    }
+	                }
+	            }
+	        }
+	    }
+	    
+	    return frontier;
     }
 	
 	/**
@@ -1821,7 +2004,9 @@ public class SUtils
         return shortestRoute;
     }
     */
-    /**
+	
+	
+    	/**
      * Find Route from start to a Territory having endCondition which has a maximum of a certain set of Units (unitCondition)
      * @param start - initial territory
      * @param endCondition - final territory must match this
@@ -1931,38 +2116,54 @@ public class SUtils
         return false;
 
     }
-    public static boolean airUnitIsLandableOnCarrier(Unit u, Territory source, Territory target, PlayerID player, GameData data)
+    public static boolean airUnitIsLandableOnCarrier(Unit u, Territory source, Territory target, final PlayerID player, GameData data)
     {
 		// Warning: THIS DOES NOT VERIFY THE # OF PLANES PLANNING TO LAND on the AC
 		//          Calling program must verify that there is room on the AC
-		List<Territory> acTerr = ACTerritory(player, data);
-		int rDist = data.getMap().getDistance(source, target);
+		if( !Matches.UnitCanLandOnCarrier.match(u))
+			return false;
+    	final Match<Unit> ownedCarrier = new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player));
+    	Match<Territory>condition = new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                return t.getUnits().someMatch( ownedCarrier );
+            }
+        };
+		int rDist = data.getMap().getDistance(source, target, SUtils.TerritoryIsNotImpassableToAirUnits(data));
 		boolean landable = false;
 		if (MoveValidator.hasEnoughMovement(u, rDist));
 		{
-			for (Territory t : acTerr)
-			{
-				int rDist2 = data.getMap().getDistance(target, t);
-				if (MoveValidator.hasEnoughMovement(u, rDist+rDist2))
-					landable = true;
+			Route r = findNearest(target, condition, SUtils.TerritoryIsNotImpassableToAirUnits(data), data);
+			if( r == null)
+				return false;
+			int rDist2 = r.getLength();
+			if (MoveValidator.hasEnoughMovement(u, rDist+rDist2)) {
+				landable = true;
 			}
 		}
 		return landable;
 	}
 
-    public static boolean airUnitIsLandable(Unit u, Territory source, Territory target, PlayerID owner, GameData data)
+    public static boolean airUnitIsLandable(Unit u, Territory source, Territory target, final PlayerID owner, final GameData data)
     {
+    	Match<Territory>condition = new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                return Matches.isTerritoryAllied(owner, data).match(t) && !t.isWater();
+            }
+        };
 		int rDist = data.getMap().getDistance(source, target, SUtils.TerritoryIsNotImpassableToAirUnits(data));
 		boolean landable = false;
-		if (MoveValidator.hasEnoughMovement(u, rDist))
+		if (MoveValidator.hasEnoughMovement(u, rDist));
 		{
-			Collection <Territory> tNeighbors = data.getMap().getNeighbors(target,4);
-			for (Territory landOwned : tNeighbors)
-			{
-				int rDist2 = data.getMap().getDistance(target, landOwned);
-				if (MoveValidator.hasEnoughMovement(u, rDist+rDist2) & !landOwned.isWater() & landOwned.getOwner()==owner)
-					landable=true; //we can land
-										//we need to check for an available A/C
+			Route r = findNearest(target, condition, SUtils.TerritoryIsNotImpassableToAirUnits(data), data);
+			if( r == null)
+				return false;
+			int rDist2 = r.getLength();
+			if (MoveValidator.hasEnoughMovement(u, rDist+rDist2)) {
+				landable = true;
 			}
 		}
 		return landable;
@@ -2016,22 +2217,22 @@ public class SUtils
 
     /**
      * Determine the strength of a collection of airUnits
+     * Caller should guarantee units are all air.
      */
     public static float allairstrength(Collection<Unit> units, boolean attacking)
     {
 		float airstrength = 0.0F;
 		for (Unit u : units)
 		{
-//		Unit u= units;
+
 			UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
-			if (unitAttatchment.isAir())
-			{
+			
 				airstrength += 1.00F;
 				if (attacking)
 					airstrength += unitAttatchment.getAttack(u.getOwner());
 				else
 					airstrength += unitAttatchment.getDefense(u.getOwner());
-			}
+			
 		}
 		return airstrength;
     }
@@ -2337,6 +2538,14 @@ public class SUtils
 	 */
     public static List<Territory> getExactNeighbors(Territory territory, int distance, PlayerID player, boolean neutral)
 	{
+    	// old functionality retained, i.e. no route condition is imposed.
+    	// feel free to change, if you are confortable all calls to this function conform.
+    	GameData data = player.getData();
+    	CompositeMatch<Territory>endCond = new CompositeMatchAnd<Territory>(Matches.TerritoryIsImpassable.invert());
+    	if (!neutral || Properties.getNeutralsImpassable(data))
+    		endCond.add(Matches.TerritoryIsNeutral.invert());
+    	return findFontier(territory, endCond, Match.ALWAYS_MATCH, distance, data );
+    	/*
     	// This will return territories that are not impassable, but have an impassable territory in the way. (or water in the way)
     	GameData data = player.getData();
 		if(distance < 0)
@@ -2386,8 +2595,10 @@ public class SUtils
 			}
 		}
 		startClone.remove(territory);
-		*/
-		return startClone;
+		
+		
+	*/	
+		//return startClone;
 	}
 
     /**
@@ -2497,13 +2708,13 @@ public class SUtils
 			List<Unit> BBAddUnits = new ArrayList<Unit>();
 			if (BBT == goTerr)
 			{
-				unitsAlreadyMoved.addAll(BBUnits);
 				Iterator<Unit> BBIter = BBUnits.iterator();
 				while (BBIter.hasNext() && BBStrength < remainingStrengthNeeded) 
 				{
 					Unit BB = BBIter.next();
 					UnitAttachment ua = UnitAttachment.get(BB.getType());
 					BBStrength += ua.getAttack(player)*ua.getAttackRolls(player);
+					unitsAlreadyMoved.add(BB);
 				}
 				continue;
 			}
@@ -2529,6 +2740,13 @@ public class SUtils
 		}
 		return BBStrength;
 	}
+	
+	public static float inviteShipAttack(Territory eTerr, float remainingStrengthNeeded, Collection<Unit> unitsAlreadyMoved, 
+			List<Collection<Unit>> moveUnits, List<Route> moveRoutes, GameData data, PlayerID player, boolean attacking, boolean tFirst, boolean includeTransports)
+	{
+		return inviteShipAttack(eTerr, remainingStrengthNeeded, unitsAlreadyMoved, moveUnits, moveRoutes, data, player, attacking, tFirst, includeTransports, null);
+	}
+	
 	/**
 	 * Invite Ship Attack to a certain sea territory (enemy)
 	 * Air on a carrier will be included
@@ -2538,19 +2756,24 @@ public class SUtils
 	 */
 	
 	public static float inviteShipAttack(Territory eTerr, float remainingStrengthNeeded, Collection<Unit> unitsAlreadyMoved, 
-			List<Collection<Unit>> moveUnits, List<Route> moveRoutes, GameData data, PlayerID player, boolean attacking, boolean tFirst, boolean includeTransports)
+			List<Collection<Unit>> moveUnits, List<Route> moveRoutes, GameData data, PlayerID player, boolean attacking, boolean tFirst, boolean includeTransports, Match<Unit> types)
 	{
 		final BattleDelegate battleD = DelegateFinder.battleDelegate(data);
 		CompositeMatch<Unit> ownedSeaUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsSea, Matches.UnitIsNotStatic(player));
 		CompositeMatch<Unit> ownedAirUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier, Matches.UnitIsNotStatic(player));
+		if( types != null) {
+			ownedSeaUnit = new CompositeMatchAnd<Unit>(types, ownedSeaUnit);
+			ownedAirUnit = new CompositeMatchAnd<Unit>(types, ownedAirUnit);
+		}
 		CompositeMatch<Unit> carrierUnit = new CompositeMatchAnd<Unit>(ownedSeaUnit, Matches.UnitIsCarrier, Matches.UnitIsNotStatic(player));
 		CompositeMatch<Unit> carrierAndFighters = new CompositeMatchOr<Unit>(carrierUnit, ownedAirUnit);
 		CompositeMatch<Unit> ownedSeaUnitSansTransports = new CompositeMatchAnd<Unit>(ownedSeaUnit, Matches.UnitIsNotTransport, Matches.UnitIsNotStatic(player));
-		
+		if( types != null)
+			ownedSeaUnit = new CompositeMatchAnd<Unit>(types, ownedSeaUnit);
 		HashMap<Territory, Float> attackShipMap = new HashMap<Territory, Float>();
 		HashMap<Territory, List<Unit>> attackUnitMap = new HashMap<Territory, List<Unit>>();
 		HashMap<Territory, List<Unit>> carrierUnitMap = new HashMap<Territory, List<Unit>>();
-		List<Territory> possibleShipTerr = SUtils.findCertainShips(data, player, Matches.UnitIsSea);
+		List<Territory> possibleShipTerr = SUtils.findCertainShips(data, player, ownedSeaUnit);
 		Iterator<Territory> pSIter = possibleShipTerr.iterator();
 		while (pSIter.hasNext())
 		{//Remove if: 1) Land; 2) No Sea Units; 3) Battle Already Fought in Sea Zone
@@ -3189,9 +3412,20 @@ public class SUtils
 	 */
 	public static float determineEnemyBlitzStrength(Territory blitzHere, List<Route> blitzTerrRoutes, List<Territory> blockTerr, GameData data, PlayerID ePlayer)
 	{
+		HashSet<Integer> ignore = new HashSet<Integer>();
+		ignore.add(new Integer(1));
+		
 		CompositeMatch<Unit> blitzUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBlitz, Matches.UnitIsNotStatic(ePlayer));
 		CompositeMatch<Territory> validBlitzRoute = new CompositeMatchAnd<Territory>(Matches.territoryHasNoEnemyUnits(ePlayer, data), Matches.TerritoryIsNotImpassableToLandUnits(ePlayer));
-		
+		List<Route> routes = new ArrayList<Route>();
+		List<Unit> blitzUnits = findAttackers(blitzHere, 2, ignore, ePlayer,data, blitzUnit, validBlitzRoute, blockTerr, routes,false);
+		if( routes != null)
+			for( Route r: routes ) {
+				if(r.getLength()==2)
+					blitzTerrRoutes.add(r);
+			}
+		return strength(blitzUnits, true, false, true);
+		/*
 		float eStrength = 0.0F;
 		List<Territory> pBlitzTerr = getExactNeighbors(blitzHere, 2, ePlayer, false);
 		Set<Territory> blitzStepTerr = data.getMap().getNeighbors(blitzHere, validBlitzRoute);
@@ -3215,7 +3449,9 @@ public class SUtils
 			blitzTerrRoutes.add(blitzRoute);
 			eStrength += strength(blitzUnits, true, false, true);
 		}
+		
 		return eStrength;
+		*/
 	}
 	/**
 	 * Determine if a list has something other than a transport
@@ -4337,11 +4573,52 @@ public class SUtils
 
     public static Route getMaxSeaRoute(final GameData data, Territory start, Territory destination, final PlayerID player, boolean attacking, int maxDistance)
     {
+    	// note this does not care if subs are submerged or not
+    	// should it? does submerging affect movement of enemies?
     	if (start == null || destination == null || !start.isWater() || !destination.isWater())
     	{
 			return null;
 		}
-   		Match<Territory> routeCond = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data));
+    	
+    	CompositeMatch<Unit> ignore = new CompositeMatchAnd<Unit>(Matches.UnitIsAAOrFactory.invert(), Matches.alliedUnit(player, data).invert());
+    	CompositeMatch<Unit> sub = new CompositeMatchAnd<Unit>(Matches.UnitIsSub.invert());
+    	CompositeMatch<Unit> transport = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport.invert(), Matches.UnitIsLand.invert() );
+    	CompositeMatch<Unit> unitCond = ignore;
+    	if(Properties.getIgnoreTransportInMovement(data))
+    		unitCond.add(transport);
+    	if(Properties.getIgnoreSubInMovement(data))
+    		unitCond.add(sub);
+    	CompositeMatch<Territory> routeCond = new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsThatMatch(unitCond).invert(), GameMap.IS_WATER);
+    	CompositeMatch<Territory> routeCondition;
+    	if(attacking) {
+    		routeCondition = new CompositeMatchOr<Territory>(Matches.territoryIs(destination),routeCond);
+    	}
+    	else
+    		routeCondition = routeCond;
+    	Route r = data.getMap().getRoute(start, destination, routeCondition);
+    	if (r == null || r.getEnd() == null)
+   			return null;
+    	// cheating because can't do stepwise calculation with canals
+    	// shouldn't be a huge problem
+    	// if we fail due to canal, then don't go near any enemy canals
+    	if (MoveValidator.validateCanal(r, player, data) != null)
+    		r = data.getMap().getRoute(start, destination, new CompositeMatchAnd<Territory>(routeCondition,Matches.territoryHasEnemyCanal(player).invert()));
+    	if (r == null || r.getEnd() == null)
+   			return null;
+    	int rDist = r.getLength();
+   		Route route2 = new Route();
+   		if (rDist <= maxDistance)
+   			route2 =r;
+   		else
+   		{
+   			route2.setStart(start);
+   			for (int i = 1; i <= maxDistance; i++)
+   				route2.add(r.getTerritories().get(i));
+   		}
+   		return route2;
+    	/*
+    	
+    	Match<Territory> routeCond = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data));
    		Route r = data.getMap().getWaterRoute(start, destination);
    		if (r == null || r.getEnd() == null)
    			return null;
@@ -4415,7 +4692,10 @@ public class SUtils
         }
         else
         	newRoute = r;
+        	
         return newRoute;
+        
+    */
     }
     /**
      * Returns the players current pus available
@@ -4485,6 +4765,10 @@ public class SUtils
      */
     public static HashMap<Territory, Float> rankTerritories(GameData data, List<Territory> ourFriendlyTerr, List<Territory> ourEnemyTerr, List<Territory> ignoreTerr, PlayerID player, boolean tFirst, boolean waterBased, boolean nonCombat)
     {
+    	long last,now,start;
+    	last = System.currentTimeMillis();
+    	start=last;
+        
 		HashMap<Territory, Float> landRankMap = new HashMap<Territory, Float>();
 		HashMap<Territory, Float> landStrengthMap = new HashMap<Territory, Float>();
 		CompositeMatch<Territory> noEnemyOrWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryAllied(player, data));
@@ -4553,7 +4837,6 @@ public class SUtils
 			}
 			eTerrValue -= eMinDist - 1;
 //			eTerrValue += (eMinDist < minDist - 1) ? 4.0F : 0.0F; //bonus for general closeness to enemy Capital
-			
 			if (Matches.TerritoryIsLand.match(eTerr) && Matches.isTerritoryEnemyAndNotNeutral(player, data).match(eTerr))
 			{
 				ourEnemyTerr.add(eTerr);
@@ -4633,6 +4916,9 @@ public class SUtils
 				}
 			}
 		}
+		now = System.currentTimeMillis();
+        s_logger.fine("Time Takenrank " + (now-start));
+    
 		return landRankMap;
 
     }

@@ -209,7 +209,46 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 
 		return neighbors;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public Set<Territory> getNeighbors(Territory territory, int distance, Match<Territory> cond)
+	{
+		if(distance < 0)
+			throw new IllegalArgumentException("Distance must be positive not:" + distance);
 
+		if(distance == 0)
+			return Collections.EMPTY_SET;
+
+		Set<Territory> start = getNeighbors(territory, cond);
+
+		if(distance == 1)
+			return start;
+
+		Set<Territory> neighbors =  getNeighbors(start, new HashSet<Territory>(start), --distance, cond);
+		neighbors.remove(territory);
+
+		return neighbors;
+	}
+	
+	private Set<Territory> getNeighbors(Set<Territory> frontier, Set<Territory> searched, int distance, Match<Territory> cond)
+	{
+		if(distance == 0)
+			return searched;
+
+		Iterator<Territory> iter = frontier.iterator();
+		Set<Territory> newFrontier = new HashSet<Territory>();
+		while(iter.hasNext())
+		{
+			Territory t = iter.next();
+			newFrontier.addAll( getNeighbors(t,cond));
+		}
+
+		newFrontier.removeAll(searched);
+		searched.addAll(newFrontier);
+
+		return getNeighbors(newFrontier, searched, --distance, cond);
+	}
+	
 	private Set<Territory> getNeighbors(Set<Territory> frontier, Set<Territory> searched, int distance)
 	{
 		if(distance == 0)

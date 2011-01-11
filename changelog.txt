@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Moore AI speed fix, and added combined getNeighbors() to GameMap.java. Moore AI now as additional logging properties, comments, and several methods updated to work much faster. (squidbait)
+
 * New Unit Option: "isAirBase" allows units to scramble to combat (ComradeKev)
 
 * New Unit Option: "maxOperationalDamage" sets max damage to be sustained before unit is disabled (ComradeKev)

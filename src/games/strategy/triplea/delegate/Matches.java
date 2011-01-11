@@ -23,6 +23,7 @@ package games.strategy.triplea.delegate;
 
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -30,6 +31,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.CanalAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -44,7 +46,9 @@ import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Useful match interfaces.
@@ -1383,6 +1387,20 @@ public class Matches
 
   }
 
+  public static Match<Territory> territoryHasUnitsThatMatch(final Match cond)
+  {
+
+      return new Match<Territory>()
+  {
+
+    public boolean match(Territory t)
+    {
+      return t.getUnits().someMatch(cond);
+    }
+  };
+
+  } 
+  
   public static Match<Territory> territoryHasEnemyAA(final PlayerID player, final GameData data)
   {
 
@@ -1611,6 +1629,55 @@ public class Matches
         }
     };
 
+    public static Match<Territory> territoryHasEnemyCanal(final PlayerID player)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+            		GameData data = player.getData();
+                    Set<CanalAttachment> canalAttachments = CanalAttachment.get(t);
+                    if(canalAttachments.isEmpty())
+                        return false;
+                    
+                    Iterator<CanalAttachment> iter = canalAttachments.iterator();
+                    while(iter.hasNext() )
+                    {
+                        CanalAttachment attachment = iter.next();
+                        if(attachment == null)
+                            continue;
+                        for(Territory borderTerritory : attachment.getLandTerritories())
+                        {
+                            if (!data.getAllianceTracker().isAllied(player, borderTerritory.getOwner()))
+                            {
+                                return true;
+                            }
+                            if(MoveDelegate.getBattleTracker(data).wasConquered(borderTerritory))
+                            {
+                                return true;
+                            }            
+                        }
+                    }
+                    return false;
+            }
+        };
+    }
+    
+    public static Match<Territory> territoryIsBlockedSea(final PlayerID player, final GameData data)
+    {	
+    			CompositeMatch<Unit> ignore = new CompositeMatchAnd<Unit>(Matches.UnitIsAAOrFactory.invert(), Matches.alliedUnit(player, data).invert());
+    	    	CompositeMatch<Unit> sub = new CompositeMatchAnd<Unit>(Matches.UnitIsSub.invert());
+    	    	CompositeMatch<Unit> transport = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport.invert(), Matches.UnitIsLand.invert() );
+    	    	CompositeMatch<Unit> unitCond = ignore;
+    	    	if(Properties.getIgnoreTransportInMovement(data))
+    	    		unitCond.add(transport);
+    	    	if(Properties.getIgnoreSubInMovement(data))
+    	    		unitCond.add(sub);
+    	    	CompositeMatch<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsThatMatch(unitCond).invert(), GameMap.IS_WATER);
+
+    			return routeCondition;
+    }
+    
     public static final Match<Unit> UnitIsAAOrFactory = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory);
 
     /** Creates new Matches */
