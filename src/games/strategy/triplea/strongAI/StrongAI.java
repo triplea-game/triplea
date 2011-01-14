@@ -29,6 +29,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.util.*;
 
 import java.util.*;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /*
@@ -285,10 +286,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             @Override
             public boolean match(Territory o)
             {
-                boolean impassable = TerritoryAttachment.get(o) != null &&  TerritoryAttachment.get(o) .isImpassible();
-                return  !impassable && !o.isWater() && SUtils.hasLandRouteToEnemyOwnedCapitol(o, player, data) && (nonCombat == Matches.isTerritoryOwnedBy(player).match(o));
+                boolean impassable = TerritoryAttachment.get(o) != null &&  TerritoryAttachment.get(o).isImpassible();
+                boolean isLandableOn = false;
+                if(nonCombat)
+                    isLandableOn = Matches.isTerritoryAllied(player, data).match(o); //We want to land for amphibious, so we want only friendly ters
+                else
+                    isLandableOn = !Matches.isTerritoryAllied(player, data).match(o); //We want to attack, so we want only enemy ters
+                return  !impassable && !o.isWater() && SUtils.hasLandRouteToEnemyOwnedCapitol(o, player, data) && isLandableOn;
             }
-
         };
 
         Match<Territory> routeCond = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data));
@@ -298,10 +303,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             return withNoEnemy;
 
         //this will fail if our capitol is not next to water, c'est la vie.
-        Route route =  SUtils.findNearest(ourCapitol, endMatch, Matches.TerritoryIsWater, data);
-        if(route != null && route.getLength() == 0) {
+        Route route = SUtils.findNearest(ourCapitol, endMatch, Matches.TerritoryIsWater, data); //If we couldn't find an enemy free ncm sea route, just check for any water route
+        if(route == null || route.getLength() == 0)
             return null;
-        }
+
         return route;
     }
 
@@ -314,7 +319,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         
         if (requireWaterFactory)
         {
-        	List<Territory> factories = SUtils.findCertainShips(data, player, Matches.UnitIsFactory);
+        	List<Territory> factories = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsFactory);
         	List<Territory> waterFactories = SUtils.stripLandLockedTerr(data, factories);
         	if (waterFactories.isEmpty())
         		return false;
@@ -324,7 +329,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	int totProduction = 0, allProduction = 0;
         if (amphibPlayer)
         {
-        	List<Territory> allFactories = SUtils.findCertainShips(data, player, Matches.UnitIsFactory);
+        	List<Territory> allFactories = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsFactory);
 //        	allFactories.remove(capitol);
         	for (Territory checkFactory : allFactories)
         	{
@@ -352,7 +357,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         Territory myCapital = TerritoryAttachment.getCapital(player, data);
         if (myCapital == null)
         	return factMap;
-        List<Territory> factories = SUtils.findCertainShips(data, player, Matches.UnitIsFactory);
+        List<Territory> factories = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsFactory);
         if (!factories.contains(myCapital))
         	factories.add(myCapital);
   	
@@ -835,8 +840,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	CompositeMatch<Unit> seaAttackUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsNotTransport, HasntMoved);
     	CompositeMatch<Unit> seaAirAttackUnitNotMoved = new CompositeMatchOr<Unit>(seaAttackUnit, fighterUnit);
     	CompositeMatch<Territory> noNeutralOrAA = new CompositeMatchAnd<Territory>(SUtils.TerritoryIsNotImpassableToAirUnits(data), Matches.territoryHasEnemyAA(player, data).invert());
-    	List<Territory> ACTerrs = SUtils.findCertainShips(data, player, Matches.UnitIsCarrier);
-    	List<Territory> myFighterTerr = SUtils.findCertainShips(data, player, Matches.UnitCanLandOnCarrier);
+    	List<Territory> ACTerrs = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsCarrier);
+    	List<Territory> myFighterTerr = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitCanLandOnCarrier);
     	List<Unit> alreadyMoved = new ArrayList<Unit>();
     	final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     	for (Territory ACTerr : ACTerrs)
@@ -943,9 +948,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		//Simply: Move Transports Back Toward a Factory
 		CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport);
 		CompositeMatch<Unit> ourTransUnit = new CompositeMatchAnd<Unit>(transUnit, Matches.unitIsOwnedBy(player), Matches.transportIsNotTransporting(), HasntMoved);
-		List<Territory> transTerr = SUtils.findCertainShips(data, player, ourTransUnit);
+		List<Territory> transTerr = SUtils.findTersWithUnitsMatching(data, player, ourTransUnit);
 		CompositeMatch<Unit> ourTransUnit2 = new CompositeMatchAnd<Unit>(transUnit, Matches.unitIsOwnedBy(player), Matches.transportIsTransporting());
-		List<Territory> ourFactories = SUtils.findCertainShips(data, player, Matches.UnitIsFactory);
+		List<Territory> ourFactories = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsFactory);
 		List<Territory> ourSeaSpots = new ArrayList<Territory>();
 		CompositeMatch<Unit> ourLandUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotFactory);
 		CompositeMatch<Unit> escortUnit = new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.alliedUnit(player, data), Matches.UnitIsNotTransport);
@@ -1111,13 +1116,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         //List<Territory> myTerritories = SUtils.allAlliedTerritories(data, player);
         CompositeMatch<Territory> enemyAndNoWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryEnemyAndNotNuetralWater(player, data));
         CompositeMatch<Territory> noEnemyOrWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryAllied(player, data));
-        
-        List<Territory> transTerrs = SUtils.findCertainShips(data, player, Matches.UnitIsTransport);
-        if ( transTerrs.isEmpty())
+        List<Territory> transTerr = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsTransport);
+        if (transTerr.isEmpty())
         	return;
         List<Territory> myTerritories = new ArrayList<Territory>();
 		//only looking at T's next to transports. 
-        for (Territory t : transTerrs)
+        for (Territory t : transTerr)
 			for (Territory t2 : data.getMap().getNeighbors(t))
 				if (Matches.isTerritoryAllied(player, data).match(t2))
 					myTerritories.add(t2);
@@ -1299,7 +1303,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		CompositeMatch<Unit> ourTransUnit = new CompositeMatchAnd<Unit>(transUnit, Matches.unitIsOwnedBy(player), HasntMoved);
 		CompositeMatch<Unit> escortUnits = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsSea, Matches.UnitIsNotTransport);
 
-		List<Territory> transTerr2 = SUtils.findCertainShips(data, player, Matches.UnitIsTransport);
+		List<Territory> transTerr2 = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsTransport);
 		if (transTerr2.isEmpty())
 			return;
 		HashMap<Territory, Float> rankMap = SUtils.rankAmphibReinforcementTerritories(data, null, player, tFirst);
@@ -1329,7 +1333,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		{
 			for (Territory tT : transTerr2)
 			{
-				Territory amphibDockTerr = amphibRoute.at(amphibRoute.getLength()-1);
+				Territory amphibDockTerr = amphibRoute.at(amphibRoute.getLength()-2);
 				if (amphibDockTerr != null)
 				{
 					List<Unit> transUnits = tT.getUnits().getMatches(Matches.transportIsTransporting());
@@ -1418,25 +1422,36 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				Territory seaTarget = SUtils.getSafestWaterTerr(target, t, null, data, player, false, tFirst);
 				if (seaTarget == null)
 					continue;
-				Route seaRoute = SUtils.getMaxSeaRoute(data, t, seaTarget, player, false, tDistance);
-				if (seaRoute == null)
-					continue;
+				Route seaRoute = SUtils.getMaxSeaRoute(data, t, seaTarget, player, false, Integer.MAX_VALUE);
+				if (seaRoute == null) //This is half of the fix for the transport issue where AI doesn't move amphibiously in some situations, such as America on Great War
+                                {
+                                    Match<Territory> bestMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasUnitsOwnedBy(player));
+                                    Match<Territory> nextBestMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data));
+			            seaRoute = data.getMap().getCompositeRoute(t, seaTarget, bestMatch, nextBestMatch, Matches.TerritoryIsWater);
+                                    if(seaRoute == null)
+                                        continue;
+                                    seaRoute = SUtils.TrimRoute_BeforeFirstTerWithEnemyUnits(seaRoute, tDistance, player, data);
+                                    if(seaRoute == null)
+                                        continue;
+                                    float transportsStrength = SUtils.strength(mytrans, false, true, tFirst);
+                                    float existingTerStrength = SUtils.strength(seaRoute.getEnd().getUnits().getMatches(Matches.UnitIsSea), false, true, tFirst);
+                                    float newStrength = transportsStrength + existingTerStrength;
+                                    if(SUtils.getStrengthOfPotentialAttackers(seaRoute.getEnd(), data, player, tFirst, false, new ArrayList<Territory>()) > newStrength)
+                                        continue; //If the strength of the potential attackers is more than the strenth of our transports plus the sea units in the destination, cancel this move. You can take this out if you want, but it may cause suicide ncm moves
+                                }
 				Iterator<Unit> transIter = mytrans.iterator();
 				List<Unit> moveTransports = new ArrayList<Unit>();
 				List<Unit> moveLoad = new ArrayList<Unit>();
-				while (transIter.hasNext())
-				{
-					Unit transport = transIter.next();
-					if (MoveValidator.hasEnoughMovement(transport, seaRoute))
-					{
-						moveTransports.add(transport);
-						moveLoad.addAll(TripleAUnit.get(transport).getTransporting());
-					}
-				}
+                            while (transIter.hasNext())
+                            {
+                                Unit transport = transIter.next();
+                                moveTransports.add(transport);
+                                moveLoad.addAll(TripleAUnit.get(transport).getTransporting());
+                            }
 				if (!moveTransports.isEmpty())
 				{
 					moveTransports.addAll(moveLoad);
-					moveUnits.add(moveTransports);
+					moveUnits.add(moveTransports);                                        
 					moveRoutes.add(seaRoute);
 					mytrans.clear();
 				}
@@ -1580,7 +1595,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	CompositeMatch<Territory> landPassable = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsPassableAndNotRestricted( player));
     	CompositeMatch<Territory> enemyEmpty = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data),Matches.territoryHasEnemyLandUnits(player, data).invert(), landPassable, Matches.territoryHasWaterNeighbor(data));
         CompositeMatch<Territory> enemyTarget = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data), Matches.territoryHasWaterNeighbor(data), Matches.TerritoryIsNotImpassable);
-    	List<Territory> transTerr = SUtils.findCertainShips(data, player, transUnit);
+    	List<Territory> transTerr = SUtils.findTersWithUnitsMatching(data, player, transUnit);
     	if (transTerr.isEmpty())
     	{
     		s_logger.fine("Transports not found on entire map for player: "+player.getName());
@@ -1853,7 +1868,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		{
 			amphibAttackTerr = amphibRoute.getEnd();
 		}
-		List<Territory> occTransTerr = SUtils.findCertainShips(data, player, transportingUnit);
+		List<Territory> occTransTerr = SUtils.findTersWithUnitsMatching(data, player, transportingUnit);
 		// not used
 		//occTransTerr.removeAll(dontMoveFrom);
 		if (occTransTerr == null || occTransTerr.isEmpty())
@@ -2332,7 +2347,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	if (onlyMoved)
     		transUnit = new CompositeMatchAnd<Unit>(transUnit, HasntMoved.invert());
     	CompositeMatch<Unit> landUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand);
-		List<Territory> transTerr = SUtils.findCertainShips(data, player, transUnit);
+		List<Territory> transTerr = SUtils.findTersWithUnitsMatching(data, player, transUnit);
 		if (transTerr.isEmpty())
 			return;
 		List<Unit> unitsAlreadyMoved = new ArrayList<Unit>();
@@ -2444,7 +2459,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		
         float remainingStrength = 100.0F;
 
-		List<Territory>transTerr = SUtils.findCertainShips(data, player, transporting);
+		List<Territory>transTerr = SUtils.findTersWithUnitsMatching(data, player, transporting);
 		if (transTerr.isEmpty())
 			return;
 		List<Territory>enemyCaps = SUtils.findUnitTerr(data, player, enemyfactories);
@@ -3258,7 +3273,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
         Match<Territory> routeCond = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data));
         Match<Territory> endCond = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data));
-        List <Territory> seaAttackTerr = SUtils.findCertainShips(data, player, seaAttackUnit);
+        List <Territory> seaAttackTerr = SUtils.findTersWithUnitsMatching(data, player, seaAttackUnit);
         boolean tFirst = transportsMayDieFirst();
         HashMap<Territory, Collection<Unit>> shipsMap = getShipsMovedMap();
         List<Unit> alreadyMoved = new ArrayList<Unit>();
@@ -3395,7 +3410,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
        Match<Territory> noEnemyWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data));
        Match<Territory> enemyWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data));
 
-       List <Territory> seaAttackTerr = SUtils.findCertainShips(data, player, seaAttackUnit);
+       List <Territory> seaAttackTerr = SUtils.findTersWithUnitsMatching(data, player, seaAttackUnit);
        List <Territory> enemySeaTerr = SUtils.findUnitTerr(data, player, enemySeaUnit);
        List <Territory> mySubTerr = SUtils.findUnitTerr(data, player, subUnit);
        List <Territory> myFighterTerr = SUtils.findUnitTerr(data, player, fighterUnit2);
@@ -3468,7 +3483,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
        }
 
        alreadyMoved.addAll(xMoved);
-       List<Territory> transTerr = SUtils.findCertainShips(data, player, Matches.UnitIsTransport);
+       List<Territory> transTerr = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsTransport);
        IntegerMap<Territory> transMap = new IntegerMap<Territory>();
        HashMap<Territory, Float> transStrengthMap = new HashMap<Territory, Float>();
        for (Territory tT : transTerr)
@@ -4022,7 +4037,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         Territory myCapital = TerritoryAttachment.getCapital(player, data);
         boolean capDanger = markFactoryUnits(data, player, unitsAlreadyMoved);
         boolean tFirst = transportsMayDieFirst();
-        List<Territory> fighterTerr = SUtils.findCertainShips(data, player, fighterAndOwned);
+        List<Territory> fighterTerr = SUtils.findTersWithUnitsMatching(data, player, fighterAndOwned);
         List<Territory> alliedThreats = new ArrayList<Territory>();
         boolean alliedDanger = SUtils.threatToAlliedCapitals(data, player, alliedThreats, tFirst);
         if (alliedDanger)
@@ -4062,7 +4077,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         	int aSpace = ownedCarrierSpace - ACfighterUnits.size() - xAlliedSpace;
         	acSpaceMap.put(ACMap, aSpace);
         }
-        List <Territory> myFighterTerr = SUtils.findCertainShips(data, player, Matches.UnitCanLandOnCarrier);
+        List <Territory> myFighterTerr = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitCanLandOnCarrier);
         myFighterTerr.removeAll(acTerr1);
 		for (Territory t : myFighterTerr)
 		{
@@ -4218,8 +4233,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		 */
 		// why was this conditional removed? extremely invalid
 		// this is _not_ what this method does.
-		if (attackShipsPurchased)
-		{
+		//if (attackShipsPurchased)
+		//{
 			List<Collection<Unit>> xMoves2 = new ArrayList<Collection<Unit>>();
 			List<Route> xRoutes2 = new ArrayList<Route>();
 			List<Unit> xAlreadyMoved2 = new ArrayList<Unit>(unitsAlreadyMoved);
@@ -4227,7 +4242,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			// set factory to one under most threat from ships.
 			if (seaPlaceFact == null)
 			{ //if purchasing didn't specify the factory, figure it out
-				for (Territory bestTarget : SUtils.findCertainShips(data, player, Matches.UnitIsFactory))
+				for (Territory bestTarget : SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsFactory))
 				{
 					int thisShipCount = SUtils.shipThreatToTerr(bestTarget, data, player, tFirst);
 					if (thisShipCount > maxShipCount)
@@ -4329,30 +4344,45 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						localMax = localShipCount;
 					}
 				}
-				List<Territory> shipTerrAtCapitol = SUtils.findOnlyMyShips(seaPlaceFact, data, player, Matches.UnitIsSea);
-				for (Territory xT : shipTerrAtCapitol)
-				{
-					List<Unit> myShips = xT.getUnits().getMatches(Matches.unitIsOwnedBy(player));
-					myShips.removeAll(unitsAlreadyMoved);
-					if (myShips.isEmpty())
-						continue;
-					int shipDist = MoveValidator.getLeastMovement(myShips);
-					Route localShipRoute = SUtils.getMaxSeaRoute(data, xT, maxShipsTerr, player, true, shipDist);
-					if (localShipRoute != null)
-					{
-						if (myShips.size() > 0)
-						{
-							s_logger.finer("SCM moving " + myShips + " to consolidate at sea factory Route: " +localShipRoute);
-							moveUnits.add(myShips);
-							moveRoutes.add(localShipRoute);
-							unitsAlreadyMoved.addAll(myShips);
-							seaTerrAttacked.add(maxShipsTerr);
-							enemyTerr.remove(maxShipsTerr);
-						}
-					}
-				}
-				*/
-				
+                            if (maxShipsTerr != null) //This whole code block was only supposed to do stuff if maxShipsTerr was not-null, so just skip it if the var is null(even though it doesn't cause errors)
+                            {
+                                List<Territory> shipTerrAtCapitol = SUtils.findOnlyMyShips(seaPlaceFact, data, player, Matches.UnitIsSea);
+                                for (Territory xT : shipTerrAtCapitol)
+                                {
+                                    float shipBuildupTerStrength = SUtils.strength(maxShipsTerr.getUnits().getMatches(Matches.UnitIsSea), false, true, tFirst);
+                                    float shipBuildupTerEnemyStrength = SUtils.getStrengthOfPotentialAttackers(maxShipsTerr, data, player, tFirst, false, new ArrayList<Territory>());
+                                    Route amphiRoute = getAmphibRoute(player, false);
+                                    //This is the second half of the transport bug fix for when AI doesn't move amphibiously in some situations, such as America on Great War
+                                    if (shipBuildupTerStrength >= shipBuildupTerEnemyStrength) //This buildup ter is already safe
+                                    {
+                                        //and we either aren't amphibious, or the buildup ter is not neighboring our amphibious target(like it could be for Japan), so break because we don't need to consolidate everything else to this ter
+                                        if (amphiRoute == null || !data.getMap().getNeighbors(maxShipsTerr).contains(amphiRoute.getEnd()))
+                                        {
+                                            break;
+                                        }
+                                    }
+                                    List<Unit> myShips = xT.getUnits().getMatches(Matches.unitIsOwnedBy(player));
+                                    myShips.removeAll(unitsAlreadyMoved);
+                                    if (myShips.isEmpty())
+                                    {
+                                        continue;
+                                    }
+                                    int shipDist = MoveValidator.getLeastMovement(myShips);
+                                    Route localShipRoute = SUtils.getMaxSeaRoute(data, xT, maxShipsTerr, player, true, shipDist);
+                                    if (localShipRoute != null)
+                                    {
+                                        if (myShips.size() > 0)
+                                        {
+                                            s_logger.finer("SCM moving " + myShips + " to consolidate at factory Route: " + localShipRoute);
+                                            moveUnits.add(myShips);
+                                            moveRoutes.add(localShipRoute);
+                                            unitsAlreadyMoved.addAll(myShips);
+                                            seaTerrAttacked.add(maxShipsTerr);
+                                            enemyTerr.remove(maxShipsTerr);
+                                        }
+                                    }
+                                }
+                            }
 				
 			}
 /*			if (!attackGroup && seaPlaceFact != null)
@@ -4383,7 +4413,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             float strengthNeeded = attackFactor*enemyStrength + 3.0F;
             float ourStrength = 0.0F, alliedStrength = 0.0F;
             float maxStrengthNeeded = 2.4F * enemyStrength + 3.0F;
-//            float minStrengthNeeded = Math.min(strengthNeeded + 5.0F, maxStrengthNeeded);
+            //float minStrengthNeeded = Math.min(strengthNeeded + 5.0F, maxStrengthNeeded);
             float minStrengthNeeded = strengthNeeded;
             float starterStrength = minStrengthNeeded;
 			// pointless? if transports can be casualties and str == 0 is impossible
@@ -4403,7 +4433,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
              */
             boolean shipsAttacked = false;
 			
-            // added by Wisconsin to detect if there are any units with a defense value greater than zero
+            //Added by Wisconsin to detect if there are any units with a defense value greater than zero
             boolean foundEnemyUnitWithDefense = false; 
             for (Unit enemyUnit : enemy.getUnits().getUnits()) 
             { 
@@ -4413,7 +4443,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 } 
             }
             
-            if (!AttackShipsPresent || !foundEnemyUnitWithDefense) //all transports (or ships with no defense)
+            if (!AttackShipsPresent || !foundEnemyUnitWithDefense) //All transports (or ships with no defense)
             { 
                 if (!tFirst || !foundEnemyUnitWithDefense)
                 {
@@ -5565,7 +5595,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	CompositeMatch<Unit> unMovedLand = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotFactory);
     	CompositeMatch<Unit> ourUnMovedLand = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), unMovedLand, HasntMoved);
     	
-    	List<Territory> unMovedLandTerr = SUtils.findCertainShips(data, player, ourUnMovedLand);
+    	List<Territory> unMovedLandTerr = SUtils.findTersWithUnitsMatching(data, player, ourUnMovedLand);
     	HashMap<Territory, Float> landMap = new HashMap<Territory, Float>();
     	List<Territory> ourOwnedTerr = SUtils.allAlliedTerritories(data, player);
     	for (Territory ourTerr : ourOwnedTerr)
@@ -5575,7 +5605,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     		float diffStrength = eStrength - myStrength;
     		landMap.put(ourTerr, diffStrength);
     	}
-    	List<Territory> myFactories = SUtils.findCertainShips(data, player, Matches.UnitIsFactory);
+    	List<Territory> myFactories = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsFactory);
     	for (Territory factTerr : myFactories)
     	{
     		float diffStrength = landMap.get(factTerr).floatValue();
@@ -5908,7 +5938,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	CompositeMatch<Territory> waterOrLand = new CompositeMatchOr<Territory>(Matches.TerritoryIsWater, Matches.TerritoryIsLand);
     	List<Territory> alliedFactories = SUtils.findUnitTerr(data, player, alliedFactory);
     	List<Territory> enemyFactories = SUtils.findUnitTerr(data, player, enemyFactory);
-    	List<Territory> bomberTerrs = SUtils.findCertainShips(data, player, Matches.UnitIsStrategicBomber);
+    	List<Territory> bomberTerrs = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsStrategicBomber);
     	if (bomberTerrs.isEmpty())
     		return;
     	Iterator<Territory> bTerrIter = bomberTerrs.iterator();
@@ -6278,7 +6308,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     		CompositeMatch<Territory> endConditionEnemyLand = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data),Matches.TerritoryIsNotImpassable, Matches.TerritoryIsLand);
         	CompositeMatch<Territory> routeConditionLand = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data),Matches.TerritoryIsNotImpassable, Matches.TerritoryIsLand);
         	List<Territory> owned = SUtils.allOurTerritories(data, player);
-    		List<Territory> existingFactories = SUtils.findCertainShips(data, player, Matches.UnitIsFactory);
+    		List<Territory> existingFactories = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsFactory);
     		owned.removeAll(existingFactories);
     		List<Territory> isWaterConvoy = SUtils.onlyWaterTerr(data, owned);
     		owned.removeAll(isWaterConvoy);
@@ -6773,7 +6803,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		boolean tFirst = transportsMayDieFirst();
     	Match<Unit> myTransport = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsTransport);
     	Match<Unit> transports = new CompositeMatchAnd<Unit>(Matches.transportIsTransporting(), myTransport);
-    	List<Territory> transTerr = SUtils.findCertainShips(data, player, transports);
+    	List<Territory> transTerr = SUtils.findTersWithUnitsMatching(data, player, transports);
     	if (transTerr.isEmpty())
     		return;
     	List<Territory> ourFriendlyTerr = new ArrayList<Territory>();
@@ -6831,7 +6861,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         	bomberImpactMap.put(eFact, factProduction);
         }
         SUtils.reorder(enemyFactories, bomberImpactMap, true);
-    	List<Territory> bomberTerrs = SUtils.findCertainShips(data, player, Matches.UnitIsStrategicBomber);
+    	List<Territory> bomberTerrs = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsStrategicBomber);
         for(Territory t: enemyFactories)
         {
         	int bombable = bomberImpactMap.getInt(t)*(unitProduction ? 2 : 1); //WW2V3 model TODO: build all current game models into method
@@ -7417,7 +7447,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		int ACCount = 0, fighterCount = 0;
 		for (Territory ACTerr : ACTerrs)
 			ACCount += ACTerr.getUnits().countMatches(ACUnit);
-		List<Territory> fighterTerrs = SUtils.findCertainShips(data, player, Matches.UnitCanLandOnCarrier);
+		List<Territory> fighterTerrs = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitCanLandOnCarrier);
 		for (Territory fighterTerr : fighterTerrs)
 			fighterCount += fighterTerr.getUnits().countMatches(fighter);
 		//If other factors allow, buy one plane
@@ -7625,17 +7655,21 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         		purchaseT = 0.25F;
         	}
 		}
-		if (isAmphib && isLand)
-		{
-    		if (capUnitCount > 14)
-    			buyTransports = true;
-			purchaseT =0.60F;
-			if (maxShipThreat > 3 || (doBuyAttackShips && !tFirst))
-			{
-				buyTransports=false;
-				purchaseT = 0.14F;
-			}
-		}
+        if (isAmphib && isLand)
+        {
+            purchaseT = 0.60F;
+            if (capUnitCount > 14)
+            {
+                buyTransports = true;
+                purchaseT = 0.25F; //By the way, Veqryn, the lower this purchaseT var is, the more sea units we will buy
+            }
+
+            if (maxShipThreat > 3 || (doBuyAttackShips && !tFirst))
+            {
+                buyTransports = false;
+                purchaseT = 0.14F;
+            }
+        }
         if (isAmphib && doBuyAttackShips && realLandThreat < 15.0F) //we are overwhelmed on sea
 			purchaseT = 0.00F;
         else if (isAmphib && !isLand) 
@@ -7734,13 +7768,63 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     			PUSea = 0;
     			buyTransports = false;
     		}
-    		else if (transportableUnits > 2*transportUnits)
-    		{
-    			transConstant = 1;
-    			buyTransports = true;
-    			PULand = leftToSpend - 12;
-    			PULand = Math.max(PULand, 0);
-    			PUSea = leftToSpend - PULand;
+                else if (transportableUnits > 2 * transportUnits)
+                {
+                    transConstant = 1;
+                    buyTransports = true;
+                    PULand = leftToSpend - 12;
+                    PULand = Math.max(PULand, 0);
+                    PUSea = leftToSpend - PULand;
+
+                    //The following is a simple check that keeps the AI from not buying enough transports when they are obviusly needed
+                    Territory ourCap = TerritoryAttachment.getCapital(player, data);
+                    List<Unit> unitsOnCap = new ArrayList<Unit>(ourCap.getUnits().getUnits());
+                    int transportUsageOfCapUnitsAlone = 0;
+                    for (Unit unit : unitsOnCap)
+                    {
+                        UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
+                        if (ua == null)
+                            continue;
+                        transportUsageOfCapUnitsAlone += ua.getTransportCost();
+                    }
+                    int transportCapacityLeftForAllTransportsTogether = 0;
+                    for (Territory ter : data.getMap().getTerritories())
+                    {
+                        for (Unit transport : ter.getUnits())
+                        {
+                            UnitAttachment ua = UnitAttachment.get(transport.getUnitType());
+                            if (ua == null)
+                                continue;
+                            if(ua.getTransportCapacity() < 1)
+                                continue;
+                            int transportCapacity = ua.getTransportCapacity();
+                            for (Unit unitOnTransport : TripleAUnit.get(transport).getTransporting())
+                            {
+                                UnitAttachment ua2 = UnitAttachment.get(unitOnTransport.getUnitType());
+                                if (ua2 == null)
+                                    continue;
+                                transportCapacity -= ua2.getTransportCost();
+                            }
+                            transportCapacityLeftForAllTransportsTogether += transportCapacity;
+                        }
+                    }
+
+                    //If we're at the point where all our transports don't even have space for the cap units(and we're amphi), time to start buying tons of transports
+                    if (transportCapacityLeftForAllTransportsTogether < transportUsageOfCapUnitsAlone)
+                    {
+                        PUSea = leftToSpend - 12; //We want to buy almost all transports
+                        PUSea = Math.max(PUSea, leftToSpend / 2); //At least half of PUs for transports
+                        PUSea = Math.max(PUSea, 0); //Never less than zero, this would cause errors
+                        PULand = leftToSpend - PUSea; //Set the land purchase amount to whatever is left
+                    }
+
+                    //If we're at the point where all our transports don't even have space for 1 third of the cap units(and we're amphi), time to start buying all transports
+                    if (transportCapacityLeftForAllTransportsTogether < transportUsageOfCapUnitsAlone / 3)
+                    {
+                        PUSea = leftToSpend; //We want to buy all transports
+                        PUSea = Math.max(PUSea, 0); //Never less than zero, this would cause errors
+                        PULand = leftToSpend - PUSea; //Set the land purchase amount to whatever is left(nothing)
+                    }
     		}
     	}
 		//Purchase land units first
@@ -7867,7 +7951,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			maxBuy--;
 		if (isAmphib && !doBuyAttackShips)
 		{
-			List<Territory> myFTerrs = SUtils.findCertainShips(data, player, Matches.UnitCanLandOnCarrier);
+			List<Territory> myFTerrs = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitCanLandOnCarrier);
 			if (myFTerrs.isEmpty() && !buyOnePlane)
 			{
 				buyOnePlane = true;
@@ -8649,7 +8733,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		int seaAttackUnitCount = player.getUnits().countMatches(attackUnit);
 		int fighterUnitCount = player.getUnits().countMatches(Matches.UnitCanLandOnCarrier);
 		int carrierUnitCount = player.getUnits().countMatches(Matches.UnitIsCarrier);
-		List<Territory> transTerr = SUtils.findCertainShips(data, player, Matches.UnitIsTransport);
+		List<Territory> transTerr = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsTransport);
 		List<Territory> landNeighbors = new ArrayList<Territory>();
 		for (Territory tT : transTerr)
 			landNeighbors.addAll(SUtils.getNeighboringLandTerritories(data, player, tT));

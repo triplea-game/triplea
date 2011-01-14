@@ -1,4 +1,8 @@
 Changes for 1.2.7
+* Create new CompositeRouteFinder.java, which will find a route based on 3 territory composite matches. (wisconsin)
+
+* Moore AI fixed several of the reasons why ai can't seem to transport units intelligently or at all. Also made it buy more transports if it needs them. Added new matches and renamed findCertainShips to findTersWithUnitsMatching. (wisconsin)
+
 * Moore AI out of bounds exception fixed in SUtils.removeUnit(). (veqryn)
 
 * Moore AI speed fix, and added combined getNeighbors() to GameMap.java. Moore AI now as additional logging properties, comments, and several methods updated to work much faster. (squidbait)

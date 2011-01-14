@@ -20,6 +20,7 @@
  */
 package games.strategy.engine.data;
 
+import games.strategy.triplea.delegate.Matches;
 import java.util.*;
 import games.strategy.util.*;
 
@@ -274,7 +275,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 */
 	public Route getRoute(Territory t1, Territory t2)
 	{
-		return getRoute(t1,t2,IS_LAND_OR_WATER);
+		return getRoute(t1,t2,Matches.TerritoryIsLandOrWater);
 	}
 
 	/**
@@ -283,7 +284,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 */
 	public Route getLandRoute(Territory t1, Territory t2)
 	{
-		return getRoute(t1,t2,IS_LAND);
+		return getRoute(t1,t2,Matches.TerritoryIsLand);
 	}
 
 	/**
@@ -292,27 +293,49 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 */
 	public Route getWaterRoute(Territory t1, Territory t2)
 	{
-		return getRoute(t1,t2,IS_WATER);
+		return getRoute(t1,t2,Matches.TerritoryIsWater);
 	}
 
-	/**
-	 *Returns the shortest route between two territories.
-	 *That satisfies the given test.
-	 *Returns null if no route exists.
-	 */
-	public Route getRoute(Territory t1, Territory t2, Match<Territory> cond)
-	{
-	    if(t1 == t2) {
+    /**
+     *Returns the shortest route between two territories.
+     *That satisfies the given test.
+     *Returns null if no route exists.
+     */
+    public Route getRoute(Territory t1, Territory t2, Match<Territory> cond)
+    {
+        if (t1 == t2)
+        {
             return new Route(t1);
         }
-        if(getNeighbors(t1,cond).contains(t2)) {
-            return new Route(t1,t2);
+        if (getNeighbors(t1, cond).contains(t2))
+        {
+            return new Route(t1, t2);
         }
-        
         RouteFinder engine = new RouteFinder(this, cond);
-        return engine.findRoute(t1,t2);
-	    
-	}
+        return engine.findRoute(t1, t2);
+    }
+    public Route getRoute_IgnoreEnd(Territory t1, Territory t2, Match match)
+    {
+        return getRoute(t1, t2, new CompositeMatchOr<Territory>(match, Matches.territoryIs(t2)));
+    }
+    /**
+     *Returns a route between two territories while trying to match the best conditions as far as possible.
+     *Returns null if no route exists.
+     */
+    public Route getCompositeRoute(Territory t1, Territory t2, Match<Territory> bestCond, Match<Territory> nextBestCond, Match<Territory> otherwiseCond)
+    {
+        if (t1 == t2)
+        {
+            return new Route(t1);
+        }
+        CompositeMatch<Territory> allCond = new CompositeMatchOr<Territory>(bestCond, nextBestCond, otherwiseCond);
+        if (getNeighbors(t1, allCond).contains(t2))
+        {
+            return new Route(t1, t2);
+        }
+        CompositeRouteFinder engine = new CompositeRouteFinder(this, bestCond, nextBestCond, otherwiseCond);
+        return engine.findRoute(t1, t2);
+    }
 
 	/**
 	 * Returns the distance between two territories.
@@ -320,7 +343,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 */
 	public int getDistance(Territory t1, Territory t2)
 	{
-		return getDistance(t1, t2, IS_LAND_OR_WATER);
+		return getDistance(t1, t2, Matches.TerritoryIsLandOrWater);
 	}
 
 	/**
@@ -329,7 +352,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 */
 	public int getLandDistance(Territory t1, Territory t2)
 	{
-		return getDistance(t1, t2, IS_LAND);
+		return getDistance(t1, t2, Matches.TerritoryIsLand);
 	}
 
 	/**
@@ -338,7 +361,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	*/
 	public int getWaterDistance(Territory t1, Territory t2)
 	{
-		return getDistance(t1, t2, IS_WATER);
+		return getDistance(t1, t2, Matches.TerritoryIsWater);
 	}
 
 	/**
@@ -395,74 +418,49 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	}
 
 
-	public Collection<Territory> getTerritories()
-	{
-		return Collections.unmodifiableCollection(m_territories);
-	}
+    public Collection<Territory> getTerritories()
+    {
+        return Collections.unmodifiableCollection(m_territories);
+    }
 
-	public Iterator<Territory> iterator()
-	{
-		return m_territories.iterator();
-	}
+    public Iterator<Territory> iterator()
+    {
+        return m_territories.iterator();
+    }
 
-	public Collection<Territory> getTerritoriesOwnedBy(PlayerID player)
-	{
-		Iterator<Territory> iter = m_territories.iterator();
-		Collection<Territory> owner = new ArrayList<Territory>();
+    public Collection<Territory> getTerritoriesOwnedBy(PlayerID player)
+    {
+        Iterator<Territory> iter = m_territories.iterator();
+        Collection<Territory> owner = new ArrayList<Territory>();
 
-		while(iter.hasNext() )
-		{
-			Territory territory = iter.next();
-			if(territory.getOwner().equals(player))
-			{
-				owner.add(territory);
-			}
-		}
-		return owner;
-	}
-
-	public static final Match<Territory> IS_WATER = new Match<Territory>()
-	{
-		public boolean match(Territory t)
-		{
-			return t.isWater();
-		}
-
-	};
-
-	public static final Match<Territory> IS_LAND = new Match<Territory>()
-	{
-		public boolean match(Territory t)
-		{
-			return !t.isWater();
-		}
-	};
-
-	public static final Match<Territory> IS_LAND_OR_WATER = new Match<Territory>()
-	{
-		public boolean match(Territory t)
-		{
-			return true;
-		}
-	};
-
-	/**
-	 * Tests that each territory is connected to the preceding territory 
-	 */
-    public boolean isValidRoute(Route route) {
-        
-        Territory previous = null;
-        for(Territory t : route) 
+        while (iter.hasNext())
         {
-            if(previous != null) {
-                if(!getNeighbors(previous).contains(t)) {
+            Territory territory = iter.next();
+            if (territory.getOwner().equals(player))
+            {
+                owner.add(territory);
+            }
+        }
+        return owner;
+    }
+    /**
+     * Tests that each territory is connected to the preceding territory
+     */
+    public boolean isValidRoute(Route route)
+    {
+        Territory previous = null;
+        for (Territory t : route)
+        {
+            if (previous != null)
+            {
+                if (!getNeighbors(previous).contains(t))
+                {
                     return false;
                 }
-                
+
             }
             previous = t;
         }
         return true;
     }
-
 }

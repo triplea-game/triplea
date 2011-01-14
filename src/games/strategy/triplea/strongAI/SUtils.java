@@ -432,6 +432,21 @@ public class SUtils
 			maxCount++;
 		}
     }
+    public static Route TrimRoute_BeforeFirstTerWithEnemyUnits(Route route, int newRouteJumpCount, PlayerID player, GameData data)
+    {
+        List<Territory> newTers = new ArrayList<Territory>();
+        int i = 0;
+        for(Territory ter : route.getTerritories())
+        {
+            if(ter.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1), Matches.unitIsEnemyOf(data, player))).size() > 0)
+                break;
+            newTers.add(ter);
+            i++;
+            if(i > newRouteJumpCount)
+                break;
+        }
+        return new Route(newTers);
+    }
     
     public static int evaluateNonCombat(int numMoves, int evalDistance, HashMap<Integer, HashMap<Territory, Float>> reinforcedTerrList, 
     		HashMap<Integer, IntegerMap<Territory>> unitCountList, PlayerID player, GameData data, boolean tFirst)
@@ -1625,23 +1640,23 @@ public class SUtils
 		return shipTerr;
 	}
 
-	/**
-	 *
-	 * Return All Territories containing a Certain Owned Unit (Land, Sea or Air) specified by unitCondition
-	 * @return List of Territories
-	 */
-	public static List<Territory> findCertainShips(GameData data, PlayerID player, Match<Unit> unitCondition)
-	{
-		CompositeMatch<Unit> limitShips = new CompositeMatchAnd<Unit>(unitCondition, Matches.unitIsOwnedBy(player));
-		List<Territory> shipTerr = new ArrayList<Territory>();
-		Collection<Territory> allTerr = data.getMap().getTerritories();
-		for (Territory t2 : allTerr)
-		{
-			if (t2.getUnits().someMatch(limitShips))
-				shipTerr.add(t2);
-		}
-		return shipTerr;
-	}
+    /**
+     *
+     * Return all territories that have units matching unitCondition and owned by us.
+     * @return List of territories
+     */
+    public static List<Territory> findTersWithUnitsMatching(GameData data, PlayerID player, Match<Unit> unitCondition)
+    {
+        CompositeMatch<Unit> unitMatch = new CompositeMatchAnd<Unit>(unitCondition, Matches.unitIsOwnedBy(player));
+        List<Territory> result = new ArrayList<Territory>();
+        Collection<Territory> allTers = data.getMap().getTerritories();
+        for (Territory ter : allTers)
+        {
+            if (ter.getUnits().someMatch(unitMatch))
+                result.add(ter);
+        }
+        return result;
+    }
 
 	/**
 	 * Return Territories containing any unit depending on unitCondition
@@ -2355,7 +2370,7 @@ public class SUtils
     	CompositeMatch<Territory> endConditionEnemyLand = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data),Matches.TerritoryIsNotImpassable, Matches.TerritoryIsLand);
     	CompositeMatch<Territory> routeConditionLand = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data),Matches.TerritoryIsNotImpassable, Matches.TerritoryIsLand);
     	List<Territory> owned = allOurTerritories(data, player);
-		List<Territory> existingFactories = SUtils.findCertainShips(data, player, Matches.UnitIsFactory);
+		List<Territory> existingFactories = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsFactory);
 		owned.removeAll(existingFactories);
 		List<Territory> isWaterConvoy = SUtils.onlyWaterTerr(data, owned);
 		owned.removeAll(isWaterConvoy);
@@ -2772,7 +2787,7 @@ public class SUtils
 		HashMap<Territory, Float> attackShipMap = new HashMap<Territory, Float>();
 		HashMap<Territory, List<Unit>> attackUnitMap = new HashMap<Territory, List<Unit>>();
 		HashMap<Territory, List<Unit>> carrierUnitMap = new HashMap<Territory, List<Unit>>();
-		List<Territory> possibleShipTerr = SUtils.findCertainShips(data, player, ownedSeaUnit);
+		List<Territory> possibleShipTerr = SUtils.findTersWithUnitsMatching(data, player, ownedSeaUnit);
 		Iterator<Territory> pSIter = possibleShipTerr.iterator();
 		while (pSIter.hasNext())
 		{//Remove if: 1) Land; 2) No Sea Units; 3) Battle Already Fought in Sea Zone
@@ -2890,7 +2905,7 @@ public class SUtils
 		List<Territory> testCapNeighbors = new ArrayList<Territory>(tCopy);
 		List<Territory> waterNeighbors = new ArrayList<Territory>();
 		List<Territory> alreadyMovedFrom = new ArrayList<Territory>();
-		List<Territory> myFactories = findCertainShips(data, player, Matches.UnitIsFactory);
+		List<Territory> myFactories = findTersWithUnitsMatching(data, player, Matches.UnitIsFactory);
 		List<Territory> waterFactoryNeighbors = new ArrayList<Territory>();
 		for (Territory myFactory : myFactories)
 		{
