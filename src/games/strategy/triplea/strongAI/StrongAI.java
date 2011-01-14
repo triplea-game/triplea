@@ -29,7 +29,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.util.*;
 
 import java.util.*;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /*
@@ -1422,7 +1421,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				Territory seaTarget = SUtils.getSafestWaterTerr(target, t, null, data, player, false, tFirst);
 				if (seaTarget == null)
 					continue;
-				Route seaRoute = SUtils.getMaxSeaRoute(data, t, seaTarget, player, false, Integer.MAX_VALUE);
+				Route seaRoute = SUtils.getMaxSeaRoute(data, t, seaTarget, player, false, tDistance);
 				if (seaRoute == null) //This is half of the fix for the transport issue where AI doesn't move amphibiously in some situations, such as America on Great War
                                 {
                                     Match<Territory> bestMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasUnitsOwnedBy(player));
@@ -1445,8 +1444,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                             while (transIter.hasNext())
                             {
                                 Unit transport = transIter.next();
-                                moveTransports.add(transport);
-                                moveLoad.addAll(TripleAUnit.get(transport).getTransporting());
+                                if (MoveValidator.hasEnoughMovement(transport, seaRoute))
+                                {
+                                	moveTransports.add(transport);
+                                    moveLoad.addAll(TripleAUnit.get(transport).getTransporting());
+                                }
                             }
 				if (!moveTransports.isEmpty())
 				{
@@ -4332,7 +4334,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					}
 				} // end largest group is not null
 				
-				/* do not perform no com movements here
+				// TODO: do not perform non combat movements here
 				int localMax = 0, localShipCount = 0;
 				for (Territory x : data.getMap().getNeighbors(seaPlaceFact, Matches.TerritoryIsWater))
 				{
@@ -4382,8 +4384,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                                         }
                                     }
                                 }
-                            }
-				
 			}
 /*			if (!attackGroup && seaPlaceFact != null)
 			{
@@ -7210,7 +7210,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         {
         	factories = SUtils.findUnitTerr(data, player, ourFactories);
         }
-		List<Territory> waterFactories = SUtils.stripLandLockedTerr(data, factories);
+		List<Territory> waterFactories = SUtils.stripLandLockedTerr(data, SUtils.findUnitTerr(data, player, ourFactories));
      	List<Territory> enemyAttackShipTerr = SUtils.findUnitTerr(data, player, enemyAttackShip);
         List<Territory> ourAttackShipTerr = SUtils.findUnitTerr(data, player, alliedAttackShip);
         List<Territory> enemyTransportTerr = SUtils.findUnitTerr(data, player, enemyTransport);
@@ -7783,34 +7783,52 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                     for (Unit unit : unitsOnCap)
                     {
                         UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-                        if (ua == null)
+                        if (ua == null || ua.getTransportCost() < 0)
                             continue;
                         transportUsageOfCapUnitsAlone += ua.getTransportCost();
                     }
+                    
                     int transportCapacityLeftForAllTransportsTogether = 0;
-                    for (Territory ter : data.getMap().getTerritories())
+                    CompositeMatch<Unit> myAvailableTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsAirTransport, Matches.transportIsNotTransporting(), Matches.unitIsOwnedBy(player));
+                    List<Territory> myTransTerrs = SUtils.findTersWithUnitsMatching(data, player, myAvailableTransports);
+                    for (Territory ter : myTransTerrs)
                     {
+                    	int closestWFact = 9999;
+                    	// remove territories & transports that are more than 3 territories away from any owned factory that touches water
+                    	for (Territory wfact : waterFactories)
+                    	{
+                    		int dist = data.getMap().getDistance(wfact, ter, Matches.TerritoryIsLandOrWater);
+                    		if (dist >= 0)
+                    		{
+                    			if (closestWFact > dist)
+                    				closestWFact = dist;
+                    		}
+                    	}
+                    	if (closestWFact > 3)
+                    		continue;
                         for (Unit transport : ter.getUnits())
                         {
-                            UnitAttachment ua = UnitAttachment.get(transport.getUnitType());
+                            if (!myAvailableTransports.match(transport))
+                            	continue;
+                        	UnitAttachment ua = UnitAttachment.get(transport.getUnitType());
                             if (ua == null)
                                 continue;
                             if(ua.getTransportCapacity() < 1)
                                 continue;
                             int transportCapacity = ua.getTransportCapacity();
-                            for (Unit unitOnTransport : TripleAUnit.get(transport).getTransporting())
+                          /*for (Unit unitOnTransport : TripleAUnit.get(transport).getTransporting())
                             {
                                 UnitAttachment ua2 = UnitAttachment.get(unitOnTransport.getUnitType());
                                 if (ua2 == null)
                                     continue;
                                 transportCapacity -= ua2.getTransportCost();
-                            }
+                            }*/
                             transportCapacityLeftForAllTransportsTogether += transportCapacity;
                         }
                     }
 
                     //If we're at the point where all our transports don't even have space for the cap units(and we're amphi), time to start buying tons of transports
-                    if (transportCapacityLeftForAllTransportsTogether < transportUsageOfCapUnitsAlone)
+                    if (transportCapacityLeftForAllTransportsTogether + 2 < transportUsageOfCapUnitsAlone)
                     {
                         PUSea = leftToSpend - 12; //We want to buy almost all transports
                         PUSea = Math.max(PUSea, leftToSpend / 2); //At least half of PUs for transports
