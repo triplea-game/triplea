@@ -1433,8 +1433,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                                     if(seaRoute == null)
                                         continue;
                                     float transportsStrength = SUtils.strength(mytrans, false, true, tFirst);
-                                    float existingTerStrength = SUtils.strength(seaRoute.getEnd().getUnits().getMatches(Matches.UnitIsSea), false, true, tFirst);
-                                    float newStrength = transportsStrength + existingTerStrength;
+                                    float existingTerStrength = 0;
+                                    float newStrength = 0;
+                                    if (seaRoute.getLength() > 1)
+                                    	existingTerStrength = SUtils.strength(seaRoute.getEnd().getUnits().getMatches(Matches.UnitIsSea), false, true, tFirst);
+                                    newStrength = transportsStrength + existingTerStrength;
                                     if(SUtils.getStrengthOfPotentialAttackers(seaRoute.getEnd(), data, player, tFirst, false, new ArrayList<Territory>()) > newStrength)
                                         continue; //If the strength of the potential attackers is more than the strenth of our transports plus the sea units in the destination, cancel this move. You can take this out if you want, but it may cause suicide ncm moves
                                 }
@@ -7828,7 +7831,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                     }
 
                     //If we're at the point where all our transports don't even have space for the cap units(and we're amphi), time to start buying tons of transports
-                    if (transportCapacityLeftForAllTransportsTogether + 2 < transportUsageOfCapUnitsAlone)
+                    if (transportCapacityLeftForAllTransportsTogether + 3 < transportUsageOfCapUnitsAlone)
                     {
                         PUSea = leftToSpend - 12; //We want to buy almost all transports
                         PUSea = Math.max(PUSea, leftToSpend / 2); //At least half of PUs for transports
@@ -7837,7 +7840,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                     }
 
                     //If we're at the point where all our transports don't even have space for 1 third of the cap units(and we're amphi), time to start buying all transports
-                    if (transportCapacityLeftForAllTransportsTogether < transportUsageOfCapUnitsAlone / 3)
+                    if (transportCapacityLeftForAllTransportsTogether + 4 < transportUsageOfCapUnitsAlone / 3)
                     {
                         PUSea = leftToSpend; //We want to buy all transports
                         PUSea = Math.max(PUSea, 0); //Never less than zero, this would cause errors

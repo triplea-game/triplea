@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Null Pointer Exception fix in StrongAI transporting. (veqryn)
+
 * Moore AI fixes for previous update. (veqryn)
 
 * Create new CompositeRouteFinder.java, which will find a route based on 3 territory composite matches. (wisconsin)
