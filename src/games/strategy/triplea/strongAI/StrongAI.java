@@ -4238,8 +4238,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		 */
 		// why was this conditional removed? extremely invalid
 		// this is _not_ what this method does.
-		//if (attackShipsPurchased)
-		//{
+		if (attackShipsPurchased)
+		{
 			List<Collection<Unit>> xMoves2 = new ArrayList<Collection<Unit>>();
 			List<Route> xRoutes2 = new ArrayList<Route>();
 			List<Unit> xAlreadyMoved2 = new ArrayList<Unit>(unitsAlreadyMoved);
@@ -4387,6 +4387,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                                         }
                                     }
                                 }
+                            }
 			}
 /*			if (!attackGroup && seaPlaceFact != null)
 			{
@@ -7840,7 +7841,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                     }
 
                     //If we're at the point where all our transports don't even have space for 1 third of the cap units(and we're amphi), time to start buying all transports
-                    if (transportCapacityLeftForAllTransportsTogether + 4 < transportUsageOfCapUnitsAlone / 3)
+                    if (transportCapacityLeftForAllTransportsTogether + 5 < transportUsageOfCapUnitsAlone / 3)
                     {
                         PUSea = leftToSpend; //We want to buy all transports
                         PUSea = Math.max(PUSea, 0); //Never less than zero, this would cause errors

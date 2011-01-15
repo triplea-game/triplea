@@ -48,7 +48,7 @@ public class CompositeRouteFinder
      * @param map
      * @param bestCond - Most favorable route condition
      * @param nextBestCond - Next best
-     * @param otherwiseCond - Match that is used to fill any gaps the other two cannot match
+     * @param otherwiseCond - Match that is used to fill any gaps the other two cannot match. This match is expected to be IS_LAND, IS_WATER, or ALWAYS_MATCH. Others may cause loops or bad routes.
      */
     public CompositeRouteFinder(GameMap map, Match<Territory> bestCond, Match<Territory> nextBestCond, Match<Territory> otherwiseCond)
     {
@@ -70,25 +70,29 @@ public class CompositeRouteFinder
                 return null;
             int oldDistanceFromEnd = oldRoute.getLength();
 
-            Route otherwiseRouteSegment = GetNextRouteSegment(farthestPoint, end, m_otherwiseCondition);
-            if (otherwiseRouteSegment != null && otherwiseRouteSegment.getLength() > 0)
-            {
-                if(m_map.getRoute(otherwiseRouteSegment.getEnd(), end, m_otherwiseCondition).getLength() < oldDistanceFromEnd)
-                    bestRouteThatBringsUsCloser = otherwiseRouteSegment;
-            }
-            
-            Route nextBestMatchRouteSegment = GetNextRouteSegment(farthestPoint, end, m_nextBestCondition);
-            if (nextBestMatchRouteSegment != null && nextBestMatchRouteSegment.getLength() > 0)
-            {
-                if(m_map.getRoute(nextBestMatchRouteSegment.getEnd(), end, m_otherwiseCondition).getLength() < oldDistanceFromEnd)
-                    bestRouteThatBringsUsCloser = nextBestMatchRouteSegment;
-            }
-
             Route bestMatchRouteSegment = GetNextRouteSegment(farthestPoint, end, m_bestCondition);
             if (bestMatchRouteSegment != null && bestMatchRouteSegment.getLength() > 0)
             {
                 if(m_map.getRoute(bestMatchRouteSegment.getEnd(), end, m_otherwiseCondition).getLength() < oldDistanceFromEnd)
                     bestRouteThatBringsUsCloser = bestMatchRouteSegment;
+            }
+            else
+            {
+                Route nextBestMatchRouteSegment = GetNextRouteSegment(farthestPoint, end, m_nextBestCondition);
+                if (nextBestMatchRouteSegment != null && nextBestMatchRouteSegment.getLength() > 0)
+                {
+                    if (m_map.getRoute(nextBestMatchRouteSegment.getEnd(), end, m_otherwiseCondition).getLength() < oldDistanceFromEnd)
+                        bestRouteThatBringsUsCloser = nextBestMatchRouteSegment;
+                }
+                else
+                {
+                    Route otherwiseRouteSegment = GetNextRouteSegment(farthestPoint, end, m_otherwiseCondition);
+                    if (otherwiseRouteSegment != null && otherwiseRouteSegment.getLength() > 0)
+                    {
+                        if (m_map.getRoute(otherwiseRouteSegment.getEnd(), end, m_otherwiseCondition).getLength() < oldDistanceFromEnd)
+                            bestRouteThatBringsUsCloser = otherwiseRouteSegment;
+                    }
+                }
             }
 
             if(bestRouteThatBringsUsCloser == null)
@@ -98,25 +102,82 @@ public class CompositeRouteFinder
             farthestPoint = bestRouteThatBringsUsCloser.getEnd();
         }
 
-        Route route = CombineRoutes(routeSegments);
+        Route route = OptimizeRepairAndCombineRoutes(routeSegments);
         return route;
     }
-    private Route CombineRoutes(List<Route> routes)
+    /* This method attempts to remove any route loops(unlikely, but can happen in certain situations), and combines the route segments into one complete route.
+     * This method also optimizes the route by removing any 'harmless' route loops, ones that won't cause errors, but are unnecessarily long.
+     * In other words, as we loop through the route ters, if we see if we can hop to a neighboring ter that is further in the complete route, we do so, ignoring the ters between them.
+     */
+    private Route OptimizeRepairAndCombineRoutes(List<Route> routeSegments)
     {
-        List<Territory> routeTers = new ArrayList<Territory>();
-        for (Route route : routes)
+        List<Territory> routeTersWePlanToKeep = new ArrayList<Territory>();
+        List<Route> processedRoutes = new ArrayList<Route>();
+        for(Route routeSegment : routeSegments)
         {
-            if (route != null && route.getLength() > 0)
+            int index = -1;
+            for(Territory ter : routeSegment.getTerritories())
             {
-                for (Territory ter : route.getTerritories())
+                index++;
+                boolean addTer = true;
+                if(index == 0)
                 {
-                    if (routeTers.size() > 0 && ter.equals(routeTers.get(routeTers.size() - 1))) //If this ter is already there
-                        continue;
-                    routeTers.add(ter);
+                    continue; //Ter was already added as the last ter of the route before, so don't add
                 }
+                else
+                {
+                    boolean alreadyDestroyedLoop = false;
+                    for(Route route : processedRoutes) //In each route we've already added
+                    {
+                        for (Territory ter2 : route.getTerritories()) //Loop through the ters
+                        {
+                            if (ter2.equals(ter))
+                            {
+                                //We have detected a 'harmful' route loop, so remove the loop
+                                //By deleting all the loop ters
+                                boolean reachedStartOfLoop = false;
+                                List<Territory> loopTers = new ArrayList<Territory>();
+                                for (Territory ter3 : routeTersWePlanToKeep) //Loop through the ters we had planned to keep
+                                {
+                                    //And remove any ters that are part of this detected loop
+                                     if(reachedStartOfLoop)
+                                        loopTers.add(ter3);
+                                    if(ter3.equals(ter2))
+                                        reachedStartOfLoop = true;
+                                }
+                                routeTersWePlanToKeep.removeAll(loopTers);
+                                alreadyDestroyedLoop = true;
+                                addTer = false;
+                            }
+                            if(m_map.getNeighbors(ter2).contains(ter))
+                            {
+                                //We have detected a 'harmless' route loop, so remove the loop
+                                //By deleting all the loop ters
+                                boolean reachedStartOfLoop = false;
+                                List<Territory> loopTers = new ArrayList<Territory>();
+                                for (Territory ter3 : routeTersWePlanToKeep) //Loop through the ters we had planned to keep
+                                {
+                                    //And remove any ters that are part of this detected loop
+                                     if(reachedStartOfLoop)
+                                        loopTers.add(ter3);
+                                    if(ter3.equals(ter2))
+                                        reachedStartOfLoop = true;
+                                }
+                                routeTersWePlanToKeep.removeAll(loopTers);
+                                alreadyDestroyedLoop = true;
+                            }
+                            if(alreadyDestroyedLoop)
+                                break;
+                        }
+                        if(alreadyDestroyedLoop)
+                            break;
+                    }
+                }
+                if(addTer)
+                    routeTersWePlanToKeep.add(ter);
             }
         }
-        return new Route(routeTers);
+        return new Route(routeTersWePlanToKeep);
     }
     private Route GetNextRouteSegment(Territory farthestPoint, Territory dest, Match<Territory> condition)
     {
