@@ -1,12 +1,17 @@
 package games.strategy.engine.framework.startup.login;
 
 import games.strategy.engine.EngineVersion;
+import games.strategy.engine.lobby.server.userDB.BannedMacController;
+import games.strategy.engine.lobby.server.userDB.MutedIpController;
+import games.strategy.engine.lobby.server.userDB.MutedMacController;
 import games.strategy.net.ILoginValidator;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Version;
+import java.net.InetSocketAddress;
 
 import java.net.SocketAddress;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 
@@ -25,7 +30,20 @@ public class ClientLoginValidator implements ILoginValidator
 {
     public static final String SALT_PROPERTY = "Salt";
     public static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
-    
+    static final String YOU_HAVE_BEEN_BANNED = "The host has banned you from this game";
+    static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address";
+    static final String INVALID_MAC = "Invalid mac address";
+
+    //A hack, till I think of something better
+    private static ClientLoginValidator s_instance;
+    public static ClientLoginValidator getInstance()
+    {
+        return s_instance;
+    }
+    public ClientLoginValidator()
+    {
+        s_instance = this;
+    }
     
     private String m_password;
     
@@ -66,8 +84,64 @@ public class ClientLoginValidator implements ILoginValidator
         
         return challengeProperties;
     }
+    private final Object m_cachedListLock = new Object();
+    //We need to cache the mac addresses of players, because otherwise the client would have to send their mac address with each message, which would cause more network lag
+    private HashMap<String, String> m_cachedMacAddresses = new HashMap<String, String>();
+    public HashMap<String, String> GetMacAddressesOfPlayers()
+    {
+        synchronized(m_cachedListLock)
+        {
+            return m_cachedMacAddresses;
+        }
+    }
+    private HashSet<String> m_bannedIpAddresses = new HashSet<String>();
+    public void NotifyIPBanningOfPlayer(String ip)
+    {
+        synchronized (m_cachedListLock)
+        {
+            m_bannedIpAddresses.add(ip);
+        }
+    }
+    private HashSet<String> m_bannedMacAddresses = new HashSet<String>();
+    public void NotifyMacBanningOfPlayer(String mac)
+    {
+        synchronized (m_cachedListLock)
+        {
+            m_bannedMacAddresses.add(mac);
+        }
+    }
 
-    public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, SocketAddress remoteAddress)
+    private HashSet<String> m_mutedIpAddresses = new HashSet<String>();
+    public HashSet<String> GetIpAddressesOfMutedPlayers()
+    {
+        synchronized (m_cachedListLock)
+        {
+            return m_mutedIpAddresses;
+        }
+    }
+    public void NotifyIPMutingOfPlayer(String ip)
+    {
+        synchronized (m_cachedListLock)
+        {
+            m_mutedIpAddresses.add(ip);
+        }
+    }
+    private HashSet<String> m_mutedMacAddresses = new HashSet<String>();
+    public HashSet<String> GetMacAddressesOfMutedPlayers()
+    {
+        synchronized (m_cachedListLock)
+        {
+            return m_mutedMacAddresses;
+        }
+    }
+    public void NotifyMacMutingOfPlayer(String mac)
+    {
+        synchronized (m_cachedListLock)
+        {
+            m_mutedMacAddresses.add(mac);
+        }
+    }
+    public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String clientMac, SocketAddress remoteAddress)
     {
         String versionString = propertiesReadFromClient.get(ClientLogin.ENGINE_VERSION_PROPERTY);
         if(versionString == null || versionString.length() > 20 || versionString.trim().length() == 0)
@@ -79,6 +153,30 @@ public class ClientLoginValidator implements ILoginValidator
         {
             String error =  "Client is using " + clientVersion + " but server requires version " + EngineVersion.VERSION;
             return error;
+        }
+
+        String remoteIp = ((InetSocketAddress) remoteAddress).getAddress().getHostAddress();
+        if(clientMac == null)
+        {
+            return UNABLE_TO_OBTAIN_MAC;
+        }
+        if(!clientMac.matches("[0-9A-F.]+") || clientMac.length() != 17) //Must match this form exactly[00.1E.F3.C8.FC.E6] and have an exact length of 17
+        {
+            return INVALID_MAC;
+        }
+
+        synchronized(m_cachedListLock)
+        {
+            if (m_bannedIpAddresses.contains(remoteIp))
+            {
+                return YOU_HAVE_BEEN_BANNED;
+            }
+            if (m_bannedMacAddresses.contains(clientMac))
+            {
+                return YOU_HAVE_BEEN_BANNED;
+            }
+
+            m_cachedMacAddresses.put(clientName, clientMac);
         }
         
         

@@ -43,7 +43,7 @@ public class DBExplorerPanel extends JPanel
     private void createComponents()
     {
         m_execute = new JButton("Execute");
-        m_sql = new JTextArea(10, 80);
+        m_sql = new JTextArea();
         m_sql.setText("select * from ta_users " +
                 "\n\n" +
                 "update ta_users set password = \'foo\' where username = \'1152218272375\'\n\n" +
@@ -53,7 +53,6 @@ public class DBExplorerPanel extends JPanel
                 
         );
         m_table = new JTable();
-        
     }
 
     private void layoutComponents()
@@ -62,9 +61,6 @@ public class DBExplorerPanel extends JPanel
         add(m_sql, BorderLayout.NORTH);
         add(new JScrollPane(m_table), BorderLayout.CENTER);
         add(m_execute, BorderLayout.SOUTH);
-        
-        
-        
     }
 
     private void setupListeners()

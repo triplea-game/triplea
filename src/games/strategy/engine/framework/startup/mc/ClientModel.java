@@ -14,6 +14,7 @@
 
 package games.strategy.engine.framework.startup.mc;
 
+import games.strategy.engine.chat.ChatBroadcastType;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerManager;
@@ -41,6 +42,7 @@ import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
+import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
@@ -169,9 +171,10 @@ public class ClientModel implements IMessengerErrorListener
 
         try
         {
-            m_messenger = new ClientMessenger(address, port, name, m_objectStreamFactory, new ClientLogin(m_ui));
-            
-        }catch (CouldNotLogInException ioe)
+            String mac = MacFinder.GetMacAddress();
+            m_messenger = new ClientMessenger(address, port, name, mac, m_objectStreamFactory, new ClientLogin(m_ui));            
+        }
+        catch (CouldNotLogInException ioe)
         {
             //an error message should have already been reported
             return false;
@@ -190,7 +193,7 @@ public class ClientModel implements IMessengerErrorListener
         m_remoteMessenger = new RemoteMessenger(unifiedMessenger);
         
         m_channelMessenger.registerChannelSubscriber(m_channelListener, IClientChannel.CHANNEL_NAME);
-        m_chatPanel = new ChatPanel(m_messenger, m_channelMessenger, m_remoteMessenger, ServerModel.CHAT_NAME);        
+        m_chatPanel = new ChatPanel(m_messenger, m_channelMessenger, m_remoteMessenger, ServerModel.CHAT_NAME,false,null);
         
         m_remoteMessenger.registerRemote(m_observerWaitingToJoin, ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
         //save this, it will be cleared later
@@ -239,6 +242,9 @@ public class ClientModel implements IMessengerErrorListener
 
       public void gameReset()
       {
+          m_chatPanel.getChat().SetBroadcastingType(ChatBroadcastType.Public_Chat);
+          m_chatPanel.getChat().DisableEnhancedChat();
+          m_chatPanel.getChat().UpdateRecipientList();
           m_objectStreamFactory.setData(null);
           Util.runInSwingEventThread(new Runnable() {
 			

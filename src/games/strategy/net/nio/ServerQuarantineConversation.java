@@ -25,6 +25,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sun.nio.ch.SocketAdaptor;
 
 public class ServerQuarantineConversation extends QuarantineConversation 
 {
@@ -40,13 +41,14 @@ public class ServerQuarantineConversation extends QuarantineConversation
     
     private static final Logger s_logger = Logger.getLogger(ServerQuarantineConversation.class.getName());
     
-    private enum STEP {READ_NAME, CHALLENGE, ACK_ERROR};
+    private enum STEP {READ_NAME, READ_MAC, CHALLENGE, ACK_ERROR};
 
     private final ILoginValidator m_validator;
     private final SocketChannel m_channel;
     private final NIOSocket m_socket;
     private STEP m_step = STEP.READ_NAME;
     private String m_remoteName;
+    private String m_remoteMac;
     private Map<String, String> challenge;
     
     private final ServerMessenger m_serverMessenger;
@@ -68,6 +70,11 @@ public class ServerQuarantineConversation extends QuarantineConversation
         return m_remoteName;
     }
 
+    public String getRemoteMac()
+    {
+        return m_remoteMac;
+    }
+
 
     @SuppressWarnings("unchecked")
     public ACTION message(Object o)
@@ -85,10 +92,22 @@ public class ServerQuarantineConversation extends QuarantineConversation
                     {
                         s_logger.log(Level.FINER, "read name:" + m_remoteName);
                     }
-                    
+
+                    m_step = STEP.READ_MAC;
+                    return ACTION.NONE;
+
+               case  READ_MAC :
+                    //read name, send challent
+                    m_remoteMac = (String) o;
+
+                    if(s_logger.isLoggable(Level.FINER))
+                    {
+                        s_logger.log(Level.FINER, "read mac:" + m_remoteMac);
+                    }
+
                     if(m_validator != null)
                         challenge = m_validator.getChallengeProperties(m_remoteName, m_channel.socket().getRemoteSocketAddress());
-                    
+
                     if(s_logger.isLoggable(Level.FINER))
                     {
                         s_logger.log(Level.FINER, "writing challenge:" + challenge);
@@ -109,7 +128,7 @@ public class ServerQuarantineConversation extends QuarantineConversation
                      
                      if(m_validator != null)
                      {
-                         String error = m_validator.verifyConnection(challenge, response, m_remoteName, m_channel.socket().getRemoteSocketAddress());
+                         String error = m_validator.verifyConnection(challenge, response, m_remoteName, m_remoteMac, m_channel.socket().getRemoteSocketAddress());
                          
                          if (s_logger.isLoggable(Level.FINER))
                          {
@@ -141,6 +160,9 @@ public class ServerQuarantineConversation extends QuarantineConversation
                      send(new String[] {m_remoteName, m_serverMessenger.getLocalNode().getName()});
                      //send the node its and our address as we see it
                      send(new InetSocketAddress[] {(InetSocketAddress) m_channel.socket().getRemoteSocketAddress(), m_serverMessenger.getLocalNode().getSocketAddress()});
+
+                     //Login succeeded, so notify the ServerMessenger about the login with the name, mac, etc.
+                     m_serverMessenger.NotifyPlayerLogin(m_remoteName, ((SocketAdaptor)m_channel.socket()).getInetAddress().getHostAddress(), m_remoteMac);
                      //we are good
                      return ACTION.UNQUARANTINE;
                      

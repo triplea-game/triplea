@@ -509,8 +509,8 @@ public class DiceRollTest extends TestCase
         
         DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, m_data, new MockBattle(m_data.getMap().getTerritory("Germany")), "");
         
-        assertEquals(Die.DieType.IGNORED, dice.getRolls(4).get(0).getType() );
-        assertEquals(Die.DieType.HIT, dice.getRolls(4).get(1).getType() );
+        assertEquals(Die.DieType.HIT, dice.getRolls(4).get(0).getType() );
+        assertEquals(Die.DieType.IGNORED, dice.getRolls(4).get(1).getType() );
         assertEquals(1, dice.getHits());
     }
     

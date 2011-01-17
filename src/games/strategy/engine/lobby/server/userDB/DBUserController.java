@@ -42,14 +42,12 @@ public class DBUserController
         
         return validateUserName(userName);
     }
-
-
     public static String validateUserName(String userName)
     {
         //is this a valid user?
         if(userName == null || !userName.matches("[0-9a-zA-Z_-]+") || userName.length() <= 2)
         {
-            return "Invalid userName, usernames must be at least 3 characters long, and contain alpha numeric characters and _ or -"; 
+            return "Usernames must be at least 3 characters long and can only contain alpha numeric characters, -, and _";
         }
         
         if(userName.contains(InGameLobbyWatcher.LOBBY_WATCHER_NAME))
@@ -64,8 +62,6 @@ public class DBUserController
         
         return null;
     }
-     
-    
     public static void main(String[] args) throws SQLException
     {
         Database.getConnection().close();

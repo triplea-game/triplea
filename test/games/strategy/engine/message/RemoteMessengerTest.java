@@ -153,7 +153,7 @@ public class RemoteMessengerTest extends TestCase
             server = new ServerMessenger("server", SERVER_PORT);
             server.setAcceptNewConnections(true);
             
-            client = new ClientMessenger("localhost", SERVER_PORT, "client");
+            client = new ClientMessenger("localhost", SERVER_PORT, "client", MacFinder.GetMacAddress());
             
             
             UnifiedMessenger serverUM = new UnifiedMessenger( server);
@@ -203,7 +203,7 @@ public class RemoteMessengerTest extends TestCase
             server = new ServerMessenger("server", SERVER_PORT);
             server.setAcceptNewConnections(true);
             
-            client = new ClientMessenger("localhost", SERVER_PORT, "client");
+            client = new ClientMessenger("localhost", SERVER_PORT, "client", MacFinder.GetMacAddress());
            
             RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger( server));
             TestRemote testRemote = new TestRemote();
@@ -258,7 +258,7 @@ public class RemoteMessengerTest extends TestCase
             server = new ServerMessenger("server", SERVER_PORT);
             server.setAcceptNewConnections(true);
             
-            client = new ClientMessenger("localhost", SERVER_PORT, "client");
+            client = new ClientMessenger("localhost", SERVER_PORT, "client", MacFinder.GetMacAddress());
            
             UnifiedMessenger serverUM = new UnifiedMessenger( server);
             
@@ -303,7 +303,7 @@ public class RemoteMessengerTest extends TestCase
             server = new ServerMessenger("server", SERVER_PORT);
             server.setAcceptNewConnections(true);
             
-            client = new ClientMessenger("localhost", SERVER_PORT, "client");
+            client = new ClientMessenger("localhost", SERVER_PORT, "client", MacFinder.GetMacAddress());
            
             UnifiedMessenger serverUM = new UnifiedMessenger( server);
             final RemoteMessenger serverRM = new RemoteMessenger(serverUM);            

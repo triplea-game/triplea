@@ -237,8 +237,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
             m_commentSplit.setResizeWeight(0.5);
             m_commentSplit.setTopComponent(m_commentPanel);
             m_commentSplit.setBottomComponent(null);
-
-            m_chatPanel = new ChatPanel(MainFrame.getInstance().getChat());
+            m_chatPanel = new ChatPanel(MainFrame.getInstance().getChat(),true,m_data);
             m_chatPanel.setPlayerRenderer(new PlayerChatRenderer(m_game, m_uiContext ));
             
             Dimension chatPrefSize = new Dimension((int) m_chatPanel.getPreferredSize().getWidth(), 95);
@@ -1972,7 +1971,8 @@ class PlayerChatRenderer extends DefaultListCellRenderer
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
     {
        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-       
+       if(value instanceof String)
+           value = NormalizeDisplayString((String)value);
        Set<String> players = m_game.getPlayerManager().getPlayedBy(value.toString());
        
        if(players.size() > 0)
@@ -1999,7 +1999,16 @@ class PlayerChatRenderer extends DefaultListCellRenderer
        
        return this;
     }
-    
+    private String NormalizeDisplayString(String string)
+    {
+        String result = string.toString();
+        if(result.startsWith(">>"))
+            result = result.substring(2);
+        if(result.endsWith(" (Team)"))
+            result = result.substring(0,result.length() - 7);
+
+        return result;
+    }
 }
 
 

@@ -19,6 +19,7 @@ import games.strategy.engine.message.*;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
+import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
 import games.strategy.test.TestUtil;
 import junit.framework.TestCase;
@@ -42,7 +43,7 @@ public class VaultTest extends TestCase
         SERVER_PORT = TestUtil.getUniquePort();
 		m_server = new ServerMessenger("Server", SERVER_PORT);
 		m_server.setAcceptNewConnections(true);
-		m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1");		
+		m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1", MacFinder.GetMacAddress());		
 		
 		UnifiedMessenger serverUM = new UnifiedMessenger(m_server);
 		UnifiedMessenger clientUM = new UnifiedMessenger(m_client1);		

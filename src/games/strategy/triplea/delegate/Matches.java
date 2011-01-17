@@ -1711,6 +1711,17 @@ public class Matches
     			return routeCondition;
     }
     
+    public static Match<Unit> unitOwnerHasTech()
+    {	
+    	return new Match<Unit>()
+    	{
+    		public boolean match(Unit u)
+    		{
+    			return TechTracker.hasImprovedArtillerySupport(u.getOwner());
+    		}
+    	};
+    }
+    
     public static final Match<Unit> UnitIsAAOrFactory = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory);
 
     /** Creates new Matches */

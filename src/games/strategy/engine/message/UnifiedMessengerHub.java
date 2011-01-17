@@ -14,6 +14,8 @@
 
 package games.strategy.engine.message;
 
+import games.strategy.engine.chat.Chat;
+import games.strategy.engine.chat.RecipientList;
 import games.strategy.net.GUID;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.IMessageListener;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -61,15 +64,11 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
 
     private void send(Serializable msg, INode to)
     {
-        if(m_messenger.getLocalNode().equals(to))
+        if (m_messenger.getLocalNode().equals(to))
         {
             m_localUnified.messageReceived(msg, m_messenger.getLocalNode());
         }
-        else
-        {
-            m_messenger.send(msg, to);
-        }
-        
+        m_messenger.send(msg, to);
     }
 
 
@@ -223,15 +222,14 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
 
         //invoke remotely
         SpokeInvoke invoke = new SpokeInvoke(hubInvoke.methodCallID, hubInvoke.needReturnValues, hubInvoke.call, from);
+        RecipientList recipientList = hubInvoke.recipientList;
         for(INode node : remote)
         {
-            send(invoke, node);
+            if (recipientList == null || recipientList.shouldReceive(node.getName()) || !Chat.getInstance().IsEnhancedChatEnabled())
+                send(invoke, node);
         }
     }
-    
-    
-    
-    
+   
     /**
      * Wait for the messenger to know about the given endpoint.
      * 

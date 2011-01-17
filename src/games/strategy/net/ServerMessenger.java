@@ -20,10 +20,22 @@
 
 package games.strategy.net;
 
+import games.strategy.engine.chat.ChatController;
+import games.strategy.engine.chat.IChatChannel;
+import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
+import games.strategy.engine.lobby.server.userDB.BannedIpController;
+import games.strategy.engine.lobby.server.userDB.MutedIpController;
+import games.strategy.engine.lobby.server.userDB.MutedMacController;
+import games.strategy.engine.message.HubInvoke;
+import games.strategy.engine.message.RemoteMethodCall;
+import games.strategy.engine.message.RemoteName;
+import games.strategy.engine.message.SpokeInvoke;
 import games.strategy.net.nio.NIOSocket;
 import games.strategy.net.nio.NIOSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
 import games.strategy.net.nio.ServerQuarantineConversation;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -35,10 +47,14 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
@@ -72,9 +88,18 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
     //all our nodes
     private ConcurrentHashMap<INode, SocketChannel> m_nodeToChannel = new ConcurrentHashMap<INode, SocketChannel>();
     private ConcurrentHashMap<SocketChannel, INode> m_channelToNode = new ConcurrentHashMap<SocketChannel, INode>();
+
+    //A hack, till I think of something better
+    private static ServerMessenger s_instance;
+    public static ServerMessenger getInstance()
+    {
+        return s_instance;
+    }
        
     public ServerMessenger(String name, int portNumber, IObjectStreamFactory streamFactory) throws IOException
     {
+        s_instance = this;
+
         m_socketChannel = ServerSocketChannel.open();
         m_socketChannel.configureBlocking(false);
         m_socketChannel.socket().setReuseAddress(true);
@@ -130,17 +155,14 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
      * Get a list of nodes.
      */
     public Set<INode> getNodes()
-    {
-        
+    {        
         Set<INode> rVal = new HashSet<INode>(m_nodeToChannel.keySet());
         rVal.add(m_node);
-        return rVal;
-        
+        return rVal;        
     }
 
     public synchronized void shutDown()
-    {
-        
+    {        
         if (!m_shutdown)
         {
             m_shutdown = true;
@@ -206,13 +228,135 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
         forwardBroadcast(header);
     }
 
-    
+    private final Object m_cachedListLock = new Object();
+    //We need to cache the mac addresses of players, because otherwise the client would have to send their mac address with each message, which would cause more network lag
+    private HashMap<String, String> m_cachedMacAddresses = new HashMap<String, String>();
+    public HashMap<String, String> GetMacAddressesOfPlayers()
+    {
+        synchronized(m_cachedListLock)
+        {
+            return m_cachedMacAddresses;
+        }
+    }
+    //We need to cache whether players are muted, because otherwise the database would have to be accessed each time a message was sent, which can be very slow
+    private List<String> m_liveMutedIpAddresses = new ArrayList<String>();
+    public List<String> GetIpAddressesOfMutedPlayers()
+    {
+        synchronized (m_cachedListLock)
+        {
+            return m_liveMutedIpAddresses;
+        }
+    }
+    public void NotifyIPMutingOfPlayer(String ip, long expireDate)
+    {
+        synchronized (m_cachedListLock)
+        {
+            if (!m_liveMutedIpAddresses.contains(ip))
+                m_liveMutedIpAddresses.add(ip);
+
+            ScheduleIpUnmuteAt(ip, expireDate);
+        }
+    }
+    private List<String> m_liveMutedMacAddresses = new ArrayList<String>();
+    public List<String> GetMacAddressesOfMutedPlayers()
+    {
+        synchronized (m_cachedListLock)
+        {
+            return m_liveMutedMacAddresses;
+        }
+    }
+    public void NotifyMacMutingOfPlayer(String mac, long expireDate)
+    {
+        synchronized (m_cachedListLock)
+        {
+            if (!m_liveMutedMacAddresses.contains(mac))
+                m_liveMutedMacAddresses.add(mac);
+
+            ScheduleMacUnmuteAt(mac, expireDate);
+        }
+    }
+    private void ScheduleIpUnmuteAt(String ip, long checkTime)
+    {
+        Timer unmuteIpTimer = new Timer("IP unmute timer");
+        unmuteIpTimer.schedule(GetIpUnmuteTask(ip), new Date(checkTime));
+    }
+    private void ScheduleMacUnmuteAt(String mac, long checkTime)
+    {
+        Timer unmuteMacTimer = new Timer("Mac unmute timer");
+        unmuteMacTimer.schedule(GetMacUnmuteTask(mac), new Date(checkTime));
+    }
+    public void NotifyPlayerLogin(String uniquePlayerName, String ip, String mac)
+    {
+        synchronized(m_cachedListLock)
+        {
+            m_cachedMacAddresses.put(uniquePlayerName, mac);
+
+            if(!m_liveMutedIpAddresses.contains(ip))
+            {
+                long muteTill = new MutedIpController().getIpUnmuteTime(ip);
+                if(muteTill != -1 && muteTill <= System.currentTimeMillis())
+                {
+                    m_liveMutedIpAddresses.add(ip); //Signal the player as muted                    
+                    ScheduleIpUnmuteAt(ip, muteTill);
+                }
+            }
+            if(!m_liveMutedMacAddresses.contains(mac))
+            {
+                long muteTill = new MutedMacController().getMacUnmuteTime(mac);
+                if(muteTill != -1 && muteTill <= System.currentTimeMillis())
+                {
+                    m_liveMutedMacAddresses.add(mac); //Signal the player as muted
+                    ScheduleMacUnmuteAt(mac, muteTill);
+                }
+            }
+        }
+    }
+    private void NotifyPlayerRemoval(INode node)
+    {
+        synchronized (m_cachedListLock)
+        {
+            m_cachedMacAddresses.remove(node.getName());
+        }
+    }
+    public static final String YOU_HAVE_BEEN_MUTED_LOBBY = "﻿﻿﻿YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER"; //Special characters at the beginning to discourage spoofing of the 'you are muted' message.
+    public static final String YOU_HAVE_BEEN_MUTED_GAME = "﻿﻿﻿YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST"; //Special characters at the beginning to discourage spoofing of the 'you are muted' message.
     public void messageReceived(MessageHeader msg,  SocketChannel channel)
     {
         INode expectedReceive = m_channelToNode.get(channel);
-        if(!expectedReceive.equals(msg.getFrom())) {
-            throw new IllegalStateException("expected:" + expectedReceive + " not:" + msg.getFrom());
+        if(!expectedReceive.equals(msg.getFrom()))
+        {
+            throw new IllegalStateException("Expected:" + expectedReceive + " not:" + msg.getFrom());
         }
+        if (msg.getMessage() instanceof HubInvoke) //Only mute chat messages, not network communications and such
+        {
+            if (getLoginValidator() instanceof LobbyLoginValidator && ((HubInvoke)msg.getMessage()).call.getRemoteName().equals("_ChatCtrl_LOBBY_CHAT") && ((HubInvoke)msg.getMessage()).call.getArgs().length == 1) //If this messenger is for the lobby
+            {
+                if (GetIpAddressesOfMutedPlayers().contains(msg.getFrom().getAddress().getHostAddress()))
+                {
+                    sendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
+                    return;
+                }
+                else if (GetMacAddressesOfMutedPlayers().contains(GetMacAddressesOfPlayers().get(msg.getFrom().getName())))
+                {
+                    sendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
+                    return;
+                }
+            }
+            else if(((HubInvoke)msg.getMessage()).call.getRemoteName().equals("_ChatCtrlgames.strategy.engine.framework.ui.ServerStartup.CHAT_NAME") && ((HubInvoke)msg.getMessage()).call.getArgs().length == 1) //This messenger is for a hosted game
+            {
+                if (GetIpAddressesOfMutedPlayers().contains(msg.getFrom().getAddress().getHostAddress()))
+                {
+                    sendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());
+                    return;
+                }
+                if (GetMacAddressesOfMutedPlayers().contains(GetMacAddressesOfPlayers().get(msg.getFrom().getName())))
+                {
+                    sendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());
+                    return;
+                }
+            }
+        }
+
         if (msg.getFor() == null)
         {
             forwardBroadcast(msg);
@@ -226,6 +370,21 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
         {
             forward(msg);
         }
+    }
+    private void sendChatMessage(String message, INode to)
+    {
+        List<Object> args = new ArrayList<Object>();
+        Class[] argTypes = new Class[1];
+        args.add(message);
+        argTypes[0] = args.get(0).getClass();
+        RemoteName rn;
+        if (getLoginValidator() instanceof LobbyLoginValidator) //Lobby chat
+            rn = new RemoteName(ChatController.getChatChannelName("_LOBBY_CHAT"), IChatChannel.class);
+        else //Hosted game chat
+            rn = new RemoteName(ChatController.getChatChannelName("games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME"), IChatChannel.class);
+        RemoteMethodCall call = new RemoteMethodCall(rn.getName(), "chatOccured", args.toArray(), argTypes, rn.getClazz());
+        SpokeInvoke spokeInvoke = new SpokeInvoke(null, false, call, getServerNode());
+        send(spokeInvoke, to);
     }
 
     private void forward(MessageHeader msg)
@@ -261,8 +420,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
     }
 
     private boolean isNameTaken(String nodeName)
-    {
-        
+    {        
         for (INode node : getNodes())
         {
             if (node.getName().equalsIgnoreCase(nodeName))
@@ -272,12 +430,10 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
     }
 
     public String getUniqueName(String currentName)
-    {
-     
+    {     
         if (currentName.length() > 50)
         {
-            currentName = currentName.substring(0, 50);
-            
+            currentName = currentName.substring(0, 50);            
         }
         if (currentName.length() < 2)
         {
@@ -302,11 +458,8 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
                 }
             }
         }
-
-       return currentName;
+        return currentName;
     }
-
-
 
     private void notifyListeners(MessageHeader msg)
     {
@@ -452,7 +605,8 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
                             continue;
                         }
 
-                        m_nioSocket.add(socketChannel, new ServerQuarantineConversation(m_loginValidator, socketChannel, m_nioSocket,  ServerMessenger.this));
+                        ServerQuarantineConversation conversation = new ServerQuarantineConversation(m_loginValidator, socketChannel, m_nioSocket,  ServerMessenger.this);
+                        m_nioSocket.add(socketChannel, conversation);
                     } else if(!key.isValid()) {
                         key.cancel();
                     }
@@ -463,7 +617,30 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
         }
     }
 
-  
+    private TimerTask GetIpUnmuteTask(final String ip)
+    {
+        return new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                if(new MutedIpController().getIpUnmuteTime(ip) == -1) //If the mute has expired
+                    m_liveMutedIpAddresses.remove(ip); //Remove the ip from the list of live ip's muted
+            }
+        };
+    }
+    private TimerTask GetMacUnmuteTask(final String mac)
+    {
+        return new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                if(new MutedMacController().getMacUnmuteTime(mac) == -1) //If the mute has expired
+                    m_liveMutedMacAddresses.remove(mac); //Remove the mac from the list of live mac's muted
+            }
+        };
+    }
 
     public boolean isServer()
     {
@@ -475,7 +652,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
         if(node.equals(m_node))
             throw new IllegalArgumentException("Cant remove ourself!");
         
-        
+        NotifyPlayerRemoval(node);
         
         SocketChannel channel = m_nodeToChannel.remove(node);
         if(channel == null)
