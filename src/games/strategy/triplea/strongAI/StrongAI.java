@@ -6994,7 +6994,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			if (((UnitAttachment.get(x).getAttack(player) - UnitAttachment.get(x).getDefense(player) >= 3 
 					|| UnitAttachment.get(x).getDefense(player) - UnitAttachment.get(x).getAttack(player) >= 3) 
 					|| UnitAttachment.get(x).getDefense(player) < 1) 
-					&& !(UnitAttachment.get(x).isAA() || UnitAttachment.get(x).isFactory() || (UnitAttachment.get(x).getTransportCapacity() > 0) && Matches.UnitTypeIsSea.match(x)))
+					&& !(UnitAttachment.get(x).isAA() || UnitAttachment.get(x).isFactory() || (UnitAttachment.get(x).getTransportCapacity() > 0 && Matches.UnitTypeIsSea.match(x))))
 			{
 				// maybe the map only has weird units. make sure there is at least one of each type before we decide not to use it (we are relying on the fact that map makers generally put specialty units AFTER useful units in their production lists [ie: bombers listed after fighters, mortars after artillery, etc.])
 				if (Matches.UnitTypeIsAir.match(x) && !airProductionRules.isEmpty())
