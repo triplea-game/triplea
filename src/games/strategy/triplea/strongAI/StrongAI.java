@@ -65,7 +65,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     private Territory m_myCapital = null;
     private List<Territory> m_alliedTerrs = null, m_transTerrs = null;
     private boolean m_AE = false, m_transports_may_die = true, m_zero_combat_attack = true, m_cap_danger = false, m_natObjective = false;
-    private boolean m_bought_Attack_Ships = false, m_keep_Ships_At_Base = false;
+    private boolean m_bought_Attack_Ships = false, m_keep_Ships_At_Base = false, m_bought_Transports = false;
     private boolean m_onOffense = false;
     private HashMap<Territory, Territory> amphibMap= new HashMap<Territory, Territory>();
     private HashMap<Territory, Collection<Unit>> shipsMovedMap = new HashMap<Territory, Collection<Unit>>();
@@ -139,6 +139,16 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	private boolean getAttackShipPurchase()
 	{
 		return m_bought_Attack_Ships;
+	}
+
+	private void setDidPurchaseTransports(boolean didBuyTransports)
+	{
+		m_bought_Transports = didBuyTransports;
+	}
+	
+	private boolean getDidPurchaseTransports()
+	{
+		return m_bought_Transports;
 	}
 	
 	private void setSeaTerrAttacked(Collection<Territory> seaTerr)
@@ -6968,13 +6978,32 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         ProductionRule highRule = null;
         ProductionRule carrierRule = null, fighterRule = null;
         int carrierFighterLimit = 0, maxFighterAttack = 0;
+        float averageSeaMove = 0;
         Resource pus = data.getResourceList().getResource(Constants.PUS);
         boolean isAmphib = isAmphibAttack(player, true);
+        setDidPurchaseTransports(false);
         
         for (ProductionRule ruleCheck : rules)
 		{
 			int costCheck = ruleCheck.getCosts().getInt(pus);
 			UnitType x = (UnitType) ruleCheck.getResults().keySet().iterator().next();
+			// Remove from consideration any unit with Zero Movement
+			if (UnitAttachment.get(x).getMovement(player) < 1 && !(UnitAttachment.get(x).isAA() || UnitAttachment.get(x).isFactory()))
+				continue;
+			// Remove from consideration any unit with Zero defense, or 3 or more attack/defense than defense/attack, that is not a transport/factory/aa unit
+			if (((UnitAttachment.get(x).getAttack(player) - UnitAttachment.get(x).getDefense(player) >= 3 
+					|| UnitAttachment.get(x).getDefense(player) - UnitAttachment.get(x).getAttack(player) >= 3) 
+					|| UnitAttachment.get(x).getDefense(player) < 1) 
+					&& !(UnitAttachment.get(x).isAA() || UnitAttachment.get(x).isFactory() || (UnitAttachment.get(x).getTransportCapacity() > 0) && Matches.UnitTypeIsSea.match(x)))
+			{
+				// maybe the map only has weird units. make sure there is at least one of each type before we decide not to use it (we are relying on the fact that map makers generally put specialty units AFTER useful units in their production lists [ie: bombers listed after fighters, mortars after artillery, etc.])
+				if (Matches.UnitTypeIsAir.match(x) && !airProductionRules.isEmpty())
+					continue;
+				if (Matches.UnitTypeIsSea.match(x) && !seaProductionRules.isEmpty())
+					continue;
+				if (!Matches.UnitTypeIsAAOrFactory.match(x) && !landProductionRules.isEmpty())
+					continue;
+			}
 			if (Matches.UnitTypeIsAir.match(x))
 			{
 			    airProductionRules.add(ruleCheck);
@@ -6982,6 +7011,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			else if (Matches.UnitTypeIsSea.match(x))
 			{
 				seaProductionRules.add(ruleCheck);
+				averageSeaMove += UnitAttachment.get(x).getMovement(player);
 			}
 			else if (!Matches.UnitTypeIsAAOrFactory.match(x))
 			{
@@ -6993,7 +7023,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				landProductionRules.add(ruleCheck);
 			}
 			if (Matches.UnitTypeCanTransport.match(x) && Matches.UnitTypeIsSea.match(x))
-				transportProductionRules.add(ruleCheck);
+			{
+				// might be more than 1 transport rule... use ones that can hold at least "2" capacity (we should instead check for median transport cost, and then add all those at or above that capacity)
+				if (UnitAttachment.get(x).getTransportCapacity() > 1)
+					transportProductionRules.add(ruleCheck);
+			}
 			if (Matches.UnitTypeIsSub.match(x))
 				subProductionRules.add(ruleCheck);
 			if (Matches.UnitTypeIsCarrier.match(x)) //might be more than 1 carrier rule...use the one which will hold the most fighters
@@ -7015,6 +7049,16 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				}
 			}
 		}
+        if (averageSeaMove/seaProductionRules.size() >= 1.8) // most sea units move at least 2 movement, so remove any sea units with 1 movement (dumb t-boats) (some maps like 270BC have mostly 1 movement sea units, so we must be sure not to remove those)
+        {
+        	List<ProductionRule> seaProductionRulesCopy = new ArrayList<ProductionRule>(seaProductionRules);
+        	for (ProductionRule seaRule : seaProductionRulesCopy)
+        	{
+        		UnitType x = (UnitType) seaRule.getResults().keySet().iterator().next();
+        		if (UnitAttachment.get(x).getMovement(player) < 2)
+        			seaProductionRules.remove(seaRule);
+        	}
+        }
 
         if (purchaseForBid)
         {
@@ -7288,6 +7332,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     					if (buyThese <= 0)
     						continue;
     					purchase.add(rule1, buyThese);
+    					UnitType rule1UT = (UnitType) rule1.getResults().keySet().iterator().next();
+    					if (Matches.UnitTypeCanTransport.match(rule1UT) && buyThese > 0)
+    							setDidPurchaseTransports(true);
     				}
     		        purchaseDelegate.purchase(purchase);
     			}
@@ -8044,6 +8091,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				{
 					purchase.add(maxRule, buyThese);
 					unitCount+= buyThese;
+					UnitType maxRuleUT = (UnitType) maxRule.getResults().keySet().iterator().next();
+					if (Matches.UnitTypeCanTransport.match(maxRuleUT) && buyThese > 0)
+							setDidPurchaseTransports(true);
 				}
 			}
 		}
@@ -8188,6 +8238,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 							}
 						}
 						purchase.add(rule1, numToBuy);
+    					if (Matches.UnitTypeCanTransport.match(results) && numToBuy > 0)
+    							setDidPurchaseTransports(true);
 					}
 				}
 			}
@@ -8309,6 +8361,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				}
 			}
 			purchase.add(tRule, numToBuy);
+			UnitType tRuleUT = (UnitType) tRule.getResults().keySet().iterator().next();
+			if (Matches.UnitTypeCanTransport.match(tRuleUT) && numToBuy > 0)
+					setDidPurchaseTransports(true);
 		}
 		maxBuy = totProd - unitCount;
 		maxBuy = buyOnePlane ? (maxBuy - 1) : maxBuy;
@@ -8431,6 +8486,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         		{
         			purchase.add(transRule, maxBuy);
         			leftToSpend -= cost*maxBuy;
+					UnitType transRuleUT = (UnitType) transRule.getResults().keySet().iterator().next();
+					if (Matches.UnitTypeCanTransport.match(transRuleUT) && maxBuy > 0)
+							setDidPurchaseTransports(true);
         		}
         	}
 		}
