@@ -1248,35 +1248,11 @@ class BattleModel extends DefaultTableModel
             	shift[strength]++;
             }
 
-            //int unitsToAdd = category.getUnits().size();
-            //int supportedUnitsToAdd = 0;
-
-            //Note it's statistically irrelevant whether we support the Infantry or Marines
-            //factor in artillery support
-            //if (attachment.isArtillerySupportable() && m_attack)
-           // {
-              //  supportedUnitsToAdd = Math.min(artillerySupportAvailable, unitsToAdd);
-             //   artillerySupportAvailable -= supportedUnitsToAdd;
-              //  unitsToAdd -= supportedUnitsToAdd;
-            //}
             for( int i = 0; i < Constants.MAX_DICE;i++){
             	if(shift[i]>0)
-            	columns[i].add(new TableData(category.getOwner(), shift[i], category.getType(), m_data, category.getDamaged(), m_uiContext));
+            	columns[i].add(new TableData(category.getOwner(), shift[i], category.getType(), m_data, category.getDamaged(), category.getDisabled(), m_uiContext));
             }
-            /*if (unitsToAdd > 0)
-                //TODO Kev determine if we need to identify if the unit is hit/disabled
-                columns[strength].add(new TableData(category.getOwner(), unitsToAdd, category.getType(), m_data, category.getDamaged(), category.getDisabled(), m_uiContext));
-            if (supportedUnitsToAdd > 0)
-            	if(strength >= Constants.MAX_DICE)
-            	{
-            		columns[strength].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged(), category.getDisabled(), m_uiContext));
-            	}
-            	else
-            	{
-            		columns[strength + 1].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged(), category.getDisabled(), m_uiContext));
-            	}
-            */
-        } //while
+        }
 
         //find the number of rows
         //this will be the size of the largest column
