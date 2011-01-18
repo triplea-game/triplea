@@ -1098,7 +1098,7 @@ public class GameParser
             //set the values
             List values = getChildren("option", current);
         
-            setValues(attachment, values);
+            
             
             //find the attachable
             String type = current.getAttribute("type");
@@ -1113,6 +1113,7 @@ public class GameParser
             attachable.addAttachment(name, attachment);
             attachment.setAttatchedTo(attachable);
             attachment.setName(name);
+            setValues(attachment, values);
             
             if (obj instanceof RulesAttachment)
             {

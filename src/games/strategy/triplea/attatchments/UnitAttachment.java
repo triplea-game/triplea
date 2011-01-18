@@ -308,9 +308,11 @@ public class UnitAttachment extends DefaultAttachment
     return m_isArtillery;
   }
 
-  public void setArtillery(String s)
+  public void setArtillery(String s) throws GameParseException
   {
     m_isArtillery = getBool(s);
+    if(m_isArtillery)
+    	UnitSupportAttachment.addRule((UnitType) getAttatchedTo(),getData(),false);
   }
   
   public boolean isArtillerySupportable()
@@ -318,9 +320,11 @@ public class UnitAttachment extends DefaultAttachment
     return m_isArtillerySupportable;
   }
 
-  public void setArtillerySupportable(String s)
+  public void setArtillerySupportable(String s) throws GameParseException
   {
     m_isArtillerySupportable = getBool(s);
+    if( m_isArtillerySupportable )
+    	UnitSupportAttachment.addTarget((UnitType) getAttatchedTo(),getData() );
   }
   
   //TODO future use KEV
@@ -337,6 +341,7 @@ public class UnitAttachment extends DefaultAttachment
   public void setUnitSupportCount(String s)
   {
 	  m_unitSupportCount = getInt(s);
+	  UnitSupportAttachment.setOldSupportCount((UnitType) getAttatchedTo(),getData(),s);
   }
 
   
@@ -448,12 +453,12 @@ public class UnitAttachment extends DefaultAttachment
   {
     if(getDefense(player) == 0)
       return 0;
-    /* Strategic Bombers don't get extra dice on defense do they?
-    if(m_isStrategicBomber && TechTracker.hasHeavyBomber(player))
+    
+    if(m_isStrategicBomber && TechTracker.hasHeavyBomber(player) && games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(player.getData())) 
     {        	
         return new Integer(games.strategy.triplea.Properties.getHeavy_Bomber_Dice_Rolls(getData()));
     }
-    */
+    
     return 1;
   }
   

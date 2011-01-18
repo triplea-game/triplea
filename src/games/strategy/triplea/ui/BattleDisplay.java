@@ -24,6 +24,7 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
@@ -36,6 +37,7 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.Util;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.awt.BorderLayout;
@@ -55,9 +57,11 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -1198,9 +1202,14 @@ class BattleModel extends DefaultTableModel
 
         //Determine if artillery support is available and how much
         int artillerySupportAvailable = getArtillerySupportAvailable(m_units, m_attack);
-
-        Collection unitCategories = UnitSeperator.categorize(m_units);
-
+        List<Unit> units = new ArrayList<Unit>(m_units);
+    	DiceRoll.sortByStrength(units, !m_attack);
+        Set<List<UnitSupportAttachment>> supportRules = new HashSet<List<UnitSupportAttachment>>();
+        IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<UnitSupportAttachment>();
+        DiceRoll.getSupport(units,supportRules,supportLeft,m_data,!m_attack);
+        
+        //Collection unitCategories = UnitSeperator.categorize(m_units);
+        Collection unitCategories = UnitSeperator.categorize(units, null, false, false, false);
         Iterator categoriesIter = unitCategories.iterator();
 
         while (categoriesIter.hasNext())
@@ -1209,40 +1218,52 @@ class BattleModel extends DefaultTableModel
 
             int strength;
             UnitAttachment attachment = UnitAttachment.get(category.getType());
-
-            if (m_attack)
-            {
-                strength = attachment.getAttack(category.getOwner());
-                // Increase attack value if it's an assaulting marine
-                if (DiceRoll.isAmphibiousMarine(attachment, m_data))
-                	++strength;
-	        } 
-            else
-            {
-                strength = attachment.getDefense(category.getOwner());
-                m_data.acquireReadLock();
-                try
-                {
-                	//decrease strength of sneak attack defenders
-	                if( DiceRoll.isFirstTurnLimitedRoll(category.getOwner()))
-	                    strength = Math.min(1, strength);
-                } finally {
-                	m_data.releaseReadLock();
-                }
+            int[] shift = new int[Constants.MAX_DICE+1];
+            
+            for(int i = category.getUnits().size(); i > 0; i--){
+            	if (m_attack)
+            	{
+            		strength = attachment.getAttack(category.getOwner());
+            		// Increase attack value if it's an assaulting marine
+            		if (DiceRoll.isAmphibiousMarine(attachment, m_data))
+            			++strength;
+            		strength += DiceRoll.getSupport(category.getType(), supportRules, supportLeft);
+            	} 
+            	else
+            	{
+            		strength = attachment.getDefense(category.getOwner());
+            		m_data.acquireReadLock();
+            		try
+            		{
+            			//decrease strength of sneak attack defenders
+            			if( DiceRoll.isFirstTurnLimitedRoll(category.getOwner()))
+            				strength = Math.min(1, strength);
+            			else
+            				strength += DiceRoll.getSupport(category.getType(), supportRules, supportLeft);
+            		} finally {
+            			m_data.releaseReadLock();
+            		}
+            	}
+            	strength = Math.min(Math.max(strength, 0), Constants.MAX_DICE);
+            	shift[strength]++;
             }
 
-            int unitsToAdd = category.getUnits().size();
-            int supportedUnitsToAdd = 0;
+            //int unitsToAdd = category.getUnits().size();
+            //int supportedUnitsToAdd = 0;
 
             //Note it's statistically irrelevant whether we support the Infantry or Marines
             //factor in artillery support
-            if (attachment.isArtillerySupportable() && m_attack)
-            {
-                supportedUnitsToAdd = Math.min(artillerySupportAvailable, unitsToAdd);
-                artillerySupportAvailable -= supportedUnitsToAdd;
-                unitsToAdd -= supportedUnitsToAdd;
+            //if (attachment.isArtillerySupportable() && m_attack)
+           // {
+              //  supportedUnitsToAdd = Math.min(artillerySupportAvailable, unitsToAdd);
+             //   artillerySupportAvailable -= supportedUnitsToAdd;
+              //  unitsToAdd -= supportedUnitsToAdd;
+            //}
+            for( int i = 0; i < Constants.MAX_DICE;i++){
+            	if(shift[i]>0)
+            	columns[i].add(new TableData(category.getOwner(), shift[i], category.getType(), m_data, category.getDamaged(), m_uiContext));
             }
-            if (unitsToAdd > 0)
+            /*if (unitsToAdd > 0)
                 //TODO Kev determine if we need to identify if the unit is hit/disabled
                 columns[strength].add(new TableData(category.getOwner(), unitsToAdd, category.getType(), m_data, category.getDamaged(), category.getDisabled(), m_uiContext));
             if (supportedUnitsToAdd > 0)
@@ -1254,6 +1275,7 @@ class BattleModel extends DefaultTableModel
             	{
             		columns[strength + 1].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged(), category.getDisabled(), m_uiContext));
             	}
+            */
         } //while
 
         //find the number of rows

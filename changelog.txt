@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Enhanced Combat Support attachments. (squid daddy)
+
 * Moore AI purchases tweaking and speeding up. Will no longer consider for purchasing units with zero movement, units with 3 or more attack than defense or defense than attack, 
   and units with zero defense, and sea units with 1 movement, if there are 2 movement sea units available. Also now records when it purchases transports in getDidPurchaseTransports(). (veqryn)
 

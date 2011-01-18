@@ -1662,6 +1662,18 @@ public class Matches
         }
     };
 
+    public static Match<Unit> unitOwnerHasImprovedArtillerySupportTech()
+    {	
+    	return new Match<Unit>()
+    	{
+    		public boolean match(Unit u)
+    		{
+    			return TechTracker.hasImprovedArtillerySupport(u.getOwner());
+    		}
+    	};
+    }
+
+
     public static Match<Territory> territoryHasEnemyCanal(final PlayerID player)
     {
         return new Match<Territory>()
