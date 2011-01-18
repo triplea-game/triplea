@@ -458,8 +458,8 @@ public class DiceRoll implements Externalizable
                 strength = Math.min(Math.max(strength, 0), Constants.MAX_DICE);
                 
                 int minIndex = 0;
+                int min = Constants.MAX_DICE;
                 for( int i = 0; i < rolls; i++){
-                	int min = Constants.MAX_DICE;
                 	if(random[diceIndex+i] < min) {
                 		min = random[diceIndex+i];
                 		minIndex = i;

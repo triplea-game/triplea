@@ -1097,8 +1097,6 @@ public class GameParser
             attachment.setData(data);
             //set the values
             List values = getChildren("option", current);
-        
-            
             
             //find the attachable
             String type = current.getAttribute("type");

@@ -1252,6 +1252,7 @@ class BattleModel extends DefaultTableModel
             	if(shift[i]>0)
             	columns[i].add(new TableData(category.getOwner(), shift[i], category.getType(), m_data, category.getDamaged(), category.getDisabled(), m_uiContext));
             }
+            // TODO Kev determine if we need to identify if the unit is hit/disabled
         }
 
         //find the number of rows
