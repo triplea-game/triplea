@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* directOwnershipTerritories National Objective added, ownership by an ally doesn't count. (astabada/franz)
+
 * Enhanced Chat code (Wisconsin)
 
 * Enhanced Lobby management (Wisconsin)
