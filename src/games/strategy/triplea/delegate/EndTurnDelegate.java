@@ -428,6 +428,87 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     			
     			objectiveMet = checkAlliedOwnership(objectiveMet, rule.getListedTerritories(terrs), rule.getTerritoryCount(), player);			
     		}
+
+			//Direct Ownership mod by astabada
+
+    		//
+    		//Check for Direct Territory Ownership rules
+    		//
+			if(rule.getDirectOwnershipTerritories() != null && objectiveMet == true)
+    		{
+    			//Get the listed territories
+    			String[] terrs = rule.getDirectOwnershipTerritories();
+    			String value = new String();    			
+    			
+	    		//If there's only 1, it might be a 'group' (original)
+    			if(terrs.length == 1)
+    			{    				
+	    			for(String name : terrs)
+	    			{
+	    				if(name.equals("original"))
+	    				{	
+	    					Collection<PlayerID> players = data.getPlayerList().getPlayers();
+	    					Iterator<PlayerID> playersIter = players.iterator();
+	    					while(playersIter.hasNext())
+	    					{
+	    						PlayerID currPlayer = playersIter.next();
+	    						if (data.getAllianceTracker().isAllied(currPlayer, player)) // check this again (should we be looking for allied control if this is direct ownership?)
+	    						{
+	    							//get all originally owned territories
+	    	    					OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+	    	        				Collection<Territory> originalAlliedTerrs = origOwnerTracker.getOriginallyOwned(data, currPlayer);
+	    	        				rule.setTerritoryCount(String.valueOf(originalAlliedTerrs.size()));
+	    	        				//Colon delimit the collection as it would exist in the XML
+	    	        				for (Territory item : originalAlliedTerrs)
+	    	      					  	value = value + ":" + item;
+	    	        				//Remove the leading colon
+	    	        				value = value.replaceFirst(":", "");
+	    						}
+	    					}	    					
+	    				}
+	    				else if(name.equals("enemy"))
+	    				{	//TODO Perhaps add a count to signify how many territories must be controlled- currently, it's ALL
+	    					Collection<PlayerID> players = data.getPlayerList().getPlayers();
+	    					Iterator<PlayerID> playersIter = players.iterator();
+	    					while(playersIter.hasNext())
+	    					{
+	    						PlayerID currPlayer = playersIter.next();
+	    						if (!data.getAllianceTracker().isAllied(currPlayer, player))
+	    						{
+	    							//get all originally owned territories
+	    	    					OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+	    	        				Collection<Territory> originalEnemyTerrs = origOwnerTracker.getOriginallyOwned(data, currPlayer);
+	    	        				rule.setTerritoryCount(String.valueOf(originalEnemyTerrs.size()));
+	    	        				//Colon delimit the collection as it would exist in the XML
+	    	        				for (Territory item : originalEnemyTerrs)
+	    	      					  	value = value + ":" + item;
+	    	        				//Remove the leading colon
+	    	        				value = value.replaceFirst(":", "");
+	    						}
+	    					}	    					
+	    				}
+	    				else
+	    				{	//The list just contained 1 territory
+	    					value = name;
+	    				}
+	    			}	    			
+    			}
+    			else
+    			{
+    				//Get the list of territories	
+    				Collection<Territory> listedTerrs = rule.getListedTerritories(terrs);
+    				//Colon delimit the collection as it exists in the XML
+    				for (Territory item : listedTerrs)
+  					  value = value + ":" + item;
+    				//Remove the leading colon
+    				value = value.replaceFirst(":", "");
+    			}
+
+    			//create the String list from the XML/gathered territories
+    			terrs = value.split(":");
+
+    			objectiveMet = checkDirectOwnership(objectiveMet, rule.getListedTerritories(terrs), rule.getTerritoryCount(), player);			
+    		}
     		
     		//
     		//If all are satisfied add the PUs for this objective
@@ -476,6 +557,33 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		return satisfied;
 	}
 
+	/** astabada
+     * Checks for direct ownership of the collection of territories.  Once the needed number threshold is reached, the satisfied flag is set
+     * to true and returned
+     */
+	private boolean checkDirectOwnership(boolean satisfied, Collection<Territory> listedTerrs, int numberNeeded, PlayerID player) 
+	{		
+		int numberMet = 0;
+		satisfied = false;
+		
+		Iterator<Territory> listedTerrIter = listedTerrs.iterator();
+		    			
+		while(listedTerrIter.hasNext())
+		{
+			Territory listedTerr = listedTerrIter.next();
+			//if the territory owner is an ally
+			if (listedTerr.getOwner() == player)
+			{
+				numberMet += 1;
+				if(numberMet >= numberNeeded)
+				{
+					satisfied = true;
+					break;
+				}
+			}
+		}
+		return satisfied;
+	}
     /**
      * Checks for the collection of territories to see if they have units owned by the exclType alliance.  
      * It doesn't yet threshold the data

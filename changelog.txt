@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* directOwnershipTerritories National Objective added, ownership by an ally doesn't count. (astabada/franz)
+
 * Enhanced Combat Support attachments. (squid daddy)
 
 * Moore AI purchases tweaking and speeding up. Will no longer consider for purchasing units with zero movement, units with 3 or more attack than defense or defense than attack, 
