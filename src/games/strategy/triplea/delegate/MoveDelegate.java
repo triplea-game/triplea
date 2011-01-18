@@ -259,10 +259,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
     public String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded)
     {
-    	//TODO Kev: get player from step... can't blindly assign it.
-        //PlayerID player = getUnitOwner(units);
-    	//See if this works for the scrambled units.
-    	PlayerID player = m_bridge.getPlayerID();
+        PlayerID player = getUnitOwner(units);
         
         MoveValidationResult result = MoveValidator.validateMove(units, 
                                                                  route, 

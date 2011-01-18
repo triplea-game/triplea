@@ -1,6 +1,5 @@
 package games.strategy.engine.chat;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
 import games.strategy.test.TestUtil;
@@ -44,9 +43,8 @@ public class ChatTest extends TestCase
         SERVER_PORT = TestUtil.getUniquePort();
         m_server = new ServerMessenger("Server", SERVER_PORT);
         m_server.setAcceptNewConnections(true);
-
-        m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1", MacFinder.GetMacAddress());
-        m_client2 = new ClientMessenger("localhost", SERVER_PORT, "client2", MacFinder.GetMacAddress());
+        m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1");
+        m_client2 = new ClientMessenger("localhost", SERVER_PORT, "client2");
  
         
         m_sum = new UnifiedMessenger(m_server);
@@ -117,16 +115,16 @@ public class ChatTest extends TestCase
         Thread.sleep(20);
         
         
-        final Chat server = new Chat(m_server, "c", m_scm, m_srm, false, new GameData());
+        final Chat server = new Chat(m_server, "c", m_scm, m_srm);
         server.addChatListener(m_serverChatListener);
         
        
-        final Chat client1 = new Chat(m_client1, "c", m_c1cm, m_c1rm, false, new GameData());
+        final Chat client1 = new Chat(m_client1, "c", m_c1cm, m_c1rm);
         client1.addChatListener(m_client1ChatListener);
         
 
 
-        final Chat client2 = new Chat(m_client2, "c", m_c2cm, m_c2rm, false, new GameData());
+        final Chat client2 = new Chat(m_client2, "c", m_c2cm, m_c2rm);
         client2.addChatListener(m_client2ChatListener);
         
 
@@ -163,7 +161,7 @@ public class ChatTest extends TestCase
             {
                 for(int i =0; i <messageCount; i++)
                 {
-                    client2.sendMessage(new ChatMessage("Test", ChatBroadcastType.Public_Chat, Boolean.FALSE, "client2", false));
+                    client2.sendMessage("Test", false);
                 }                
             }
         
@@ -178,7 +176,7 @@ public class ChatTest extends TestCase
             {
                 for(int i =0; i <messageCount; i++)
                 {
-                    client2.sendMessage(new ChatMessage("Test", ChatBroadcastType.Public_Chat, Boolean.FALSE, "server", false));
+                    server.sendMessage("Test", false);
                 }
             }
         };
@@ -190,7 +188,7 @@ public class ChatTest extends TestCase
        
         for(int i =0; i <messageCount; i++)
         {
-            client1.sendMessage(new ChatMessage("Test", ChatBroadcastType.Public_Chat, Boolean.FALSE, "client1", false));
+            client1.sendMessage("Test", false);
         }
         
         serverThread.join();
@@ -296,13 +294,13 @@ class TestChatListener implements IChatListener
         
     }
 
-    public void addMessage(ChatMessage message, boolean thirdperson)
+    public void addMessage(String message, String from, boolean thirdperson)
     {    
         synchronized(this)
         {
-            m_messages.add(message.GetMessage());
+            m_messages.add(message);
             m_thirdPerson.add(thirdperson);
-            m_from.add(message.GetSender());
+            m_from.add(from);
         }
     }
 

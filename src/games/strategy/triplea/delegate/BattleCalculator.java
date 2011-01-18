@@ -603,16 +603,40 @@ public class BattleCalculator
     {
         UnitAttachment unitAttachment = UnitAttachment.get(unit.getType());
         if (defend)
-        	return unitAttachment.getDefenseRolls(id);
+        {
+            //if lhtr
+            //check for nulll id since null players dont have game data             
+            if(!id.isNull() && games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(id.getData())) 
+            {
+                //if they have the heavy bomber tech, then 2 rolls for defense
+                if(unitAttachment.isStrategicBomber() && TechTracker.getTechAdvances(id).contains(TechAdvance.HEAVY_BOMBER) )
+                    return 2;
+            }
+            return 1;
+        }
+        
         return unitAttachment.getAttackRolls(id);
     }
   
     public static int getRolls(Unit unit, PlayerID id, boolean defend, int artillerySupport)
     {
         UnitAttachment unitAttachment = UnitAttachment.get(unit.getType());
-        if (defend)       
-        	return unitAttachment.getDefenseRolls(id);
-        return unitAttachment.getAttackRolls(id);
+        if (defend)
+        {           
+            if(!id.isNull() && games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(id.getData())) 
+            {
+                //if they have the heavy bomber tech, then 2 rolls for defense
+                if(unitAttachment.isStrategicBomber() && TechTracker.getTechAdvances(id).contains(TechAdvance.HEAVY_BOMBER) )
+                    return 2;
+            }
+            return 1;
+        }
+        
+        int attackRoll = unitAttachment.getAttackRolls(id);
+        if(attackRoll == 0 && artillerySupport >0 && unitAttachment.isArtillerySupportable())
+        	attackRoll += 1;
+        
+        return attackRoll;
 
     }
     

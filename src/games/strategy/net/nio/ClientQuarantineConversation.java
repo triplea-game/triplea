@@ -39,7 +39,6 @@ public class ClientQuarantineConversation extends QuarantineConversation
     private final NIOSocket m_socket;
     private STEP m_step = STEP.READ_CHALLENGE;
     private String m_localName;
-    private String m_macAddress;
     private String m_serverName;
     private InetSocketAddress m_networkVisibleAddress;
     private InetSocketAddress m_serverLocalAddress;
@@ -55,30 +54,22 @@ public class ClientQuarantineConversation extends QuarantineConversation
     
     private volatile String m_errorMessage;
     
-    public ClientQuarantineConversation(final IConnectionLogin login, final SocketChannel channel, final NIOSocket socket, String localName, String mac)
+    public ClientQuarantineConversation(final IConnectionLogin login, final SocketChannel channel, final NIOSocket socket, String localName)
     {
         m_login = login;
         m_localName = localName;
-
-        m_macAddress = mac;
         
         m_socket = socket;
         m_channel = channel;
         
-        //Send the local name
+        //end the local name
         send(m_localName);
-        //Send the mac address
-        send(m_macAddress);
+        
     }
 
     public String getLocalName()
     {
         return m_localName;
-    }
-
-    public String getMacAddress()
-    {
-        return m_macAddress;
     }
     
     public String getErrorMessage()

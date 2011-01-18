@@ -24,7 +24,6 @@ package games.strategy.triplea;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.IGame;
@@ -103,10 +102,6 @@ public class TripleA implements IGameLoader
         return players;
     }
 
-    public PlayerManager getPlayerManager()
-    {
-        return m_game.getPlayerManager();
-    }
     public void shutDown()
     {
         if(m_display != null) {

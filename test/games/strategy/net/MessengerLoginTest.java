@@ -5,7 +5,6 @@ import games.strategy.engine.framework.startup.login.*;
 import games.strategy.test.TestUtil;
 import games.strategy.util.MD5Crypt;
 
-
 import java.net.SocketAddress;
 import java.util.*;
 
@@ -37,16 +36,6 @@ public class MessengerLoginTest extends TestCase
             {
                 return new HashMap<String,String>();
             }
-
-			@Override
-			public String verifyConnection(
-					Map<String, String> propertiesSentToClient,
-					Map<String, String> propertiesReadFromClient,
-					String clientName, String clientMac,
-					SocketAddress remoteAddress) {
-				// TODO Auto-generated method stub
-				return null;
-			}
         
         };
         
@@ -74,7 +63,7 @@ public class MessengerLoginTest extends TestCase
             server.setAcceptNewConnections(true);
             
             
-            ClientMessenger client = new ClientMessenger("localhost", SERVER_PORT, "fee", MacFinder.GetMacAddress(), new DefaultObjectStreamFactory(), login);
+            ClientMessenger client = new ClientMessenger("localhost", SERVER_PORT, "fee", new DefaultObjectStreamFactory(), login);
             
             client.shutDown();
         }
@@ -102,16 +91,6 @@ public class MessengerLoginTest extends TestCase
             {
                 return new HashMap<String,String>();
             }
-
-			@Override
-			public String verifyConnection(
-					Map<String, String> propertiesSentToClient,
-					Map<String, String> propertiesReadFromClient,
-					String clientName, String clientMac,
-					SocketAddress remoteAddress) {
-				// TODO Auto-generated method stub
-				return null;
-			}
 
         
         };
@@ -141,7 +120,7 @@ public class MessengerLoginTest extends TestCase
             
             try
             {
-                new ClientMessenger("localhost", SERVER_PORT, "fee", MacFinder.GetMacAddress(), new DefaultObjectStreamFactory(), login);
+                new ClientMessenger("localhost", SERVER_PORT, "fee", new DefaultObjectStreamFactory(), login);
                 fail("we should not have logged in");
             }
             catch(CouldNotLogInException expected)
@@ -204,7 +183,7 @@ public class MessengerLoginTest extends TestCase
             server.setAcceptNewConnections(true);
             
             
-            ClientMessenger client = new ClientMessenger("localhost", SERVER_PORT, "fee", MacFinder.GetMacAddress(), new DefaultObjectStreamFactory(), login);
+            ClientMessenger client = new ClientMessenger("localhost", SERVER_PORT, "fee", new DefaultObjectStreamFactory(), login);
             
             client.shutDown();
         }

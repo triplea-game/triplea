@@ -18,7 +18,6 @@
 
 package games.strategy.engine.chat;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.message.*;
 import games.strategy.net.IMessenger;
 
@@ -39,26 +38,20 @@ public class ChatPanel extends JPanel
 {
    private ChatPlayerPanel m_chatPlayerPanel;
    private ChatMessagePanel m_chatMessagePanel;
-   private Boolean m_isGameRunning = false;
     
     
     /** Creates a new instance of ChatFrame */
-    public ChatPanel(IMessenger messenger, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, String chatName, Boolean isGameRunning, GameData gameData)
+    public ChatPanel(IMessenger messenger, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, String chatName)
     {
-        m_isGameRunning = isGameRunning;
         init();
-        Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger, isGameRunning, gameData);
+        Chat chat  = new Chat(messenger, chatName, channelMessenger, remoteMessenger  );
         setChat(chat);
     }
     
 
     
-    public ChatPanel(Chat chat, Boolean isGameRunning, GameData gameData)
+    public ChatPanel(Chat chat)
     {
-        m_isGameRunning = isGameRunning;
-        chat.setGameData(gameData);
-        if(isGameRunning)
-            chat.EnableEnhancedChat();
         init();
         setChat(chat);
     }
@@ -75,11 +68,6 @@ public class ChatPanel extends JPanel
     
     public void setChat(Chat chat)
     {
-        if(getChat() != null && getChat().IsEnhancedChatEnabled())
-        {
-            getChat().SetBroadcastingType(ChatBroadcastType.Public_Chat); //When the host presses "Leave Game" to go back to the player selection screen, reset chat type to public
-            getChat().UpdateRecipientList();
-        }
         m_chatMessagePanel.setChat(chat);
         m_chatPlayerPanel.setChat(chat);
     }
@@ -109,8 +97,9 @@ public class ChatPanel extends JPanel
 
     private void createComponents()
     {
+
         m_chatPlayerPanel = new ChatPlayerPanel(null);
-        m_chatMessagePanel = new ChatMessagePanel(null,m_isGameRunning);
+        m_chatMessagePanel = new ChatMessagePanel(null);
     }
 
 

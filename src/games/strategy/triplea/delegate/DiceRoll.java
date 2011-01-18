@@ -18,7 +18,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -26,13 +25,10 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
@@ -42,14 +38,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Used to store information about a dice roll.
@@ -202,9 +192,6 @@ public class DiceRoll implements Externalizable
     {
     	int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
         int rollCount = BattleCalculator.getRolls(units, player, defending, artillerySupportAvailable);
-        Set<List<UnitSupportAttachment>> supportRules = new HashSet<List<UnitSupportAttachment>>();
-        IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<UnitSupportAttachment>();
-        getSupport(units,supportRules,supportLeft,data,defending);
         if (rollCount == 0)
         {
             return new DiceRoll(new ArrayList<Die>(0), 0);
@@ -232,23 +219,24 @@ public class DiceRoll implements Externalizable
                     {
                         strength = Math.min(1, strength);
                     }
-                    else strength += getSupport(current.getType(), supportRules, supportLeft);
                 }                
                 else
                 {
                     strength = ua.getAttack(current.getOwner());
-                    strength += getSupport(current.getType(), supportRules, supportLeft);
+                    if (ua.isArtillerySupportable() && artillerySupportAvailable > 0)
+                    {
+                        strength++;
+                        artillerySupportAvailable--;
+                    }
                     if (ua.getIsMarine() && battle.isAmphibious())
                     {
                         Collection<Unit> landUnits = battle.getAmphibiousLandAttackers();
                         if(landUnits.contains(current))
                             ++strength;
                     } 
-                    if (ua.isSea() && battle.isAmphibious())
-                    	strength = ua.getBombard(current.getOwner());  
-                    strength += getSupport(current.getType(), supportRules, supportLeft);
                 }
-                power += Math.min(Math.max(strength, 0), Constants.MAX_DICE);;
+               
+                power += strength;
             }
         }
 
@@ -305,227 +293,10 @@ public class DiceRoll implements Externalizable
         return artillerySupportAvailable;
     }
 
-    /*
-     * populates support rule set, grouped in lists of non-stacking rules
-     * populates rule use counter
-     * handling defence here for simplicity
-     */
-    public static void getSupport(List<Unit> units, Set<List<UnitSupportAttachment>> support, IntegerMap<UnitSupportAttachment> supportLeft, GameData data, boolean defending) {
-    	
-    	Iterator<UnitSupportAttachment> iter = UnitSupportAttachment.get(data).iterator();
-    	while(iter.hasNext()){	
-    		UnitSupportAttachment rule = iter.next();
-    		if( defending && rule.getDefence() || 
-    				!defending && rule.getOffence() )
-    		{
-    			Match<Unit> canSupport = Matches.unitIsOfType((UnitType)rule.getAttatchedTo());
-    			if( rule.getPlayer() != null ) 
-    				canSupport = new CompositeMatchAnd<Unit>(canSupport, Matches.unitOwnedBy(rule.getPlayer()));
-    			
-    			List<Unit> supporters = Match.getMatches(units, canSupport);
-    			int numSupport = supporters.size();
-    			if(rule.getImpArtTech())
-    				numSupport += Match.getMatches(supporters, Matches.unitOwnerHasImprovedArtillerySupportTech()).size();
-    			String bonusType = rule.getBonusType();
-    			supportLeft.put(rule, numSupport*rule.getNumber());
-    			Iterator<List<UnitSupportAttachment>> iter2 = support.iterator(); 
-    			List<UnitSupportAttachment> ruleType = null;
-    			boolean found = false;
-    			while( iter2.hasNext()){
-    				ruleType = iter2.next();
-    				if( ruleType.get(0).getBonusType().equals(bonusType) ){
-    					found = true;
-    					break;
-    				}
-    			}
-    			if( !found ) {
-    				ruleType = new ArrayList<UnitSupportAttachment>();
-    				support.add(ruleType);
-    			}
-    			ruleType.add(rule);
-    		}
-    	}
-    
-    sortSupportRules(support);
-
-}
-
-    /*
-     * get support bonus for individual unit
-     * decrements the rule counter.
-     */
-    
-    public static int getSupport (UnitType type, Set<List<UnitSupportAttachment>> support, IntegerMap<UnitSupportAttachment> supportLeft) {
-    	
-    	int strength = 0;
-    	Iterator<List<UnitSupportAttachment>> iter = support.iterator();
-    	while( iter.hasNext()) {
-    		Iterator<UnitSupportAttachment> iter2 = iter.next().iterator();
-    		while(iter2.hasNext()){
-    			UnitSupportAttachment rule = iter2.next();
-    			if( rule.getUnitTypes().contains(type) && supportLeft.getInt(rule) > 0) {
-    				strength += rule.getBonus();
-    				supportLeft.add(rule,-1);
-    				break;
-    			}
-    		}
-    	}
-    	return strength;
-    }
-    
-    public static void sortByStrength (List<Unit> units, final boolean defending){
-    	
-    	Comparator<Unit> comp = new Comparator<Unit>()
-        {
-            public int compare(Unit u1, Unit u2)
-            {
-            	Integer v1, v2;
-            	if( defending ) {
-            		v1 = new Integer(UnitAttachment.get(u1.getType()).getDefense(u1.getOwner()));
-            		v2 = new Integer(UnitAttachment.get(u2.getType()).getDefense(u2.getOwner()));
-            	}
-            	else {
-            		v1 = new Integer(UnitAttachment.get(u1.getType()).getAttack(u1.getOwner()));
-            		v2 = new Integer(UnitAttachment.get(u2.getType()).getAttack(u2.getOwner()));
-            	}
-            	return v1.compareTo(v2);
-            }
-        };
-        Collections.sort(units, comp);
-    }
-    
-    private static void sortSupportRules (Set<List<UnitSupportAttachment>> support){
-    	
-    	
-    	Comparator<UnitSupportAttachment> comp = new Comparator<UnitSupportAttachment>()
-        {
-            public int compare(UnitSupportAttachment u1, UnitSupportAttachment u2)
-            {
-            	Integer v1 = new Integer(Math.abs(u1.getBonus()));
-            	Integer v2 = new Integer(Math.abs(u2.getBonus()));
-            	return v2.compareTo(v1);	
-            }
-        };
-        Iterator<List<UnitSupportAttachment>> iter = support.iterator(); 
-		while( iter.hasNext()){
-        Collections.sort(iter.next(), comp);
-		}
-    }
     /**
      * Roll dice for units per normal rules.
      */
-    private static DiceRoll rollDiceNormal(List<Unit> unitsList, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
-    {
-        List<Unit> units = new ArrayList<Unit>(unitsList);
-    	sortByStrength(units, defending);
-    	boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
-
-        int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
-        Set<List<UnitSupportAttachment>> supportRules = new HashSet<List<UnitSupportAttachment>>();
-        IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<UnitSupportAttachment>();
-        getSupport(units,supportRules,supportLeft,data,defending);
-        int rollCount = BattleCalculator.getRolls(units, player, defending, artillerySupportAvailable);
-        if (rollCount == 0)
-        {
-            return new DiceRoll(new ArrayList<Die>(), 0);
-        }
-        int[] random;
-       
-        random = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
-
-        List<Die> dice = new ArrayList<Die>();
-        
-        Iterator<Unit> iter = units.iterator();
-
-        int hitCount = 0;
-        int diceIndex = 0;
-        while (iter.hasNext())
-        {
-            Unit current = (Unit) iter.next();
-            UnitAttachment ua = UnitAttachment.get(current.getType());
-            int rolls = BattleCalculator.getRolls(current, player, defending, artillerySupportAvailable);
-
-            //lhtr heavy bombers take best of n dice for both attack and defense
-            if(rolls > 1 && lhtrBombers && ua.isStrategicBomber())
-            {
-                int strength;
-                if(defending)
-                    strength = ua.getDefense(current.getOwner());
-                else
-                    strength = ua.getAttack(current.getOwner());
-                
-                strength += getSupport(current.getType(), supportRules, supportLeft);
-                strength = Math.min(Math.max(strength, 0), Constants.MAX_DICE);
-                
-                int minIndex = 0;
-            	int min = Constants.MAX_DICE;
-                for( int i = 0; i < rolls; i++){
-                	if(random[diceIndex+i] < min) {
-                		min = random[diceIndex+i];
-                		minIndex = i;
-                	}
-                }
-                boolean hit = strength > random[diceIndex+minIndex];
-                dice.add(new Die(random[diceIndex+minIndex], strength, hit ? DieType.HIT : DieType.MISS));
-                for( int i = 0; i < rolls; i++){
-                	if( i != minIndex)
-                		dice.add(new Die(random[diceIndex+i], strength, DieType.IGNORED));
-                }
-                if(hit)
-                    hitCount++;
-                
-                diceIndex += rolls; 
-            }
-            else
-            {
-                for (int i = 0; i < rolls; i++)
-                {
-                    int strength;
-                    if (defending)
-                    {
-                    	strength = ua.getDefense(current.getOwner());
-                    	if (isFirstTurnLimitedRoll(player))
-                    	{
-                    		strength = Math.min(1, strength);
-                    	}
-                    	else 
-                    		strength += getSupport(current.getType(), supportRules, supportLeft);
-                    }
-                    else
-                    {
-                        strength = ua.getAttack(current.getOwner());
-                        if (ua.getIsMarine() && battle.isAmphibious())
-                        {
-                            Collection<Unit> landUnits = battle.getAmphibiousLandAttackers();
-                            if(landUnits.contains(current))
-                                ++strength;
-                        } 
-                        //get bombarding unit's strength
-                        if (ua.isSea() && battle.isAmphibious())
-                        	strength = ua.getBombard(current.getOwner());  
-                        strength += getSupport(current.getType(), supportRules, supportLeft);
-                    }
-                    strength = Math.min(Math.max(strength, 0), Constants.MAX_DICE);
-                    boolean hit = strength > random[diceIndex];
-                    dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
-    
-                    if (hit)
-                        hitCount++;
-                    diceIndex++;
-                }
-            }
-        }
-
-        DiceRoll rVal = new DiceRoll(dice, hitCount);
-        bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), rVal);
-        return rVal;
-    }
-    
-    /**
-     * Roll dice for units per normal rules.
-     */
-    /*
-    private static DiceRoll rollDiceNormalold(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
+    private static DiceRoll rollDiceNormal(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
     {
         
     	boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
@@ -644,7 +415,7 @@ public class DiceRoll implements Externalizable
         bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), rVal);
         return rVal;
     }
-    */
+    
     public static boolean isFirstTurnLimitedRoll(PlayerID player) 
     {
     	//If player is null, Round > 1, or player has negate rule set: return false

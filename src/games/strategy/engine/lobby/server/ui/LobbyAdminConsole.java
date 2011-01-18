@@ -74,8 +74,8 @@ public class LobbyAdminConsole extends JFrame
         m_executor = new DBExplorerPanel();
         m_allUsers = new AllUsersPanel(m_server.getMessenger());
         m_lobbyGamePanel = new LobbyGamePanel(m_server.getMessengers());
-        Chat chat = new Chat(LobbyServer.LOBBY_CHAT, m_server.getMessengers(),false,null);
-        m_chatPanel = new ChatMessagePanel(chat,false);
+        Chat chat = new Chat(LobbyServer.LOBBY_CHAT, m_server.getMessengers());
+        m_chatPanel = new ChatMessagePanel(chat);
 
     }
 
@@ -115,8 +115,10 @@ public class LobbyAdminConsole extends JFrame
         
             public void actionPerformed(ActionEvent e)
             {
-                debugPlayer();        
-            }        
+                debugPlayer();
+        
+            }
+        
         });
         
         m_exit.addActionListener(new ActionListener()
@@ -161,11 +163,6 @@ public class LobbyAdminConsole extends JFrame
                 model.addElement(node.getName());
         }
 
-        if (model.getSize() == 1)
-        {
-            JOptionPane.showMessageDialog(this, "No remote players", "No Remote Players", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
 
         int rVal = JOptionPane.showConfirmDialog(LobbyAdminConsole.this, combo, "Select player to debug", JOptionPane.OK_CANCEL_OPTION);
         if (rVal != JOptionPane.OK_OPTION)

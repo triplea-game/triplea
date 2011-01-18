@@ -12,7 +12,6 @@
 
 package games.strategy.engine.message;
 
-import games.strategy.engine.chat.ChatMessage;
 import games.strategy.util.Tuple;
 
 import java.io.Externalizable;
@@ -70,33 +69,7 @@ public class RemoteMethodCall implements Externalizable
         }
 
     }
-        public RemoteMethodCall(final String remoteName, final String methodName,
-            final Object[] args, final Class<?>[] argTypes, int methodNumber)
-    {
-        if(argTypes == null)
-            throw new IllegalArgumentException("ArgTypes are null");
-        if(args == null && argTypes.length != 0)
-            throw new IllegalArgumentException("args but no types");
-        if(args != null && args.length != argTypes.length)
-            throw new IllegalArgumentException("Arg and arg type lengths dont match");
-
-
-
-        m_remoteName = remoteName;
-        m_methodName = methodName;
-        m_args = args;
-        m_argTypes = classesToString(argTypes, args);
-        m_methodNumber = methodNumber;
-
-        if(s_logger.isLoggable(Level.FINE)) {
-            s_logger.fine("Remote Method Call:" + debugMethodText());
-        }
-
-    }
-    public int getMethodNumber()
-    {
-        return m_methodNumber;
-    }
+    
     private String debugMethodText() {
 	if(m_argTypes == null) 
 	        return "." + m_methodName + "(" + ")";
@@ -199,7 +172,7 @@ public class RemoteMethodCall implements Externalizable
         String[] rVal = new String[classes.length];
         for(int i = 0; i < classes.length; i++)
         {
-            if(args != null && args[i] != null && classes[i] == args[i].getClass() && !(args[i] instanceof ChatMessage))
+            if(args != null && args[i] != null && classes[i] == args[i].getClass())
             {
                 rVal[i] = null;
             }

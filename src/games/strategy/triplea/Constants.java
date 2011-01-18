@@ -45,7 +45,6 @@ public interface Constants
   public static final String RULES_OBJECTIVE_PREFIX = "objectiveAttachment";
   public static final String PLAYER_ATTATCHMENT_NAME = "playerAttatchment";
   public static final String CANAL_ATTATCHMENT_PREFIX = "canalAttatchment";
-  public static final String SUPPORT_ATTACHMENT_PREFIX = "supportAttachment";
   public static final String PUS = "PUs";
   public static final String TECH_TOKENS = "techTokens";
   public static final String VPS = "VPs";
@@ -188,8 +187,4 @@ public interface Constants
   public static final String SCRAMBLED_UNITS_RETURN_TO_BASE = "Scrambled Units Return To Base";
   public static final String SCRAMBLE_TO_SEA_ONLY = "Scramble To Sea Only";
   public static final String SCRAMBLE_FROM_ISLAND_ONLY = "Scramble From Island Only";
-
-  //squid
-  public static final String OLD_ART_RULE_NAME = "ArtyOld";
-  public static final String SUPPORT_RULE_NAME_OLD = SUPPORT_ATTACHMENT_PREFIX+OLD_ART_RULE_NAME;
 }

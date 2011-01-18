@@ -14,22 +14,21 @@
 
 package games.strategy.engine.lobby.server;
 
-import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.engine.lobby.server.userDB.BannedIpController;
-import games.strategy.engine.lobby.server.userDB.BannedMacController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
-import games.strategy.engine.lobby.server.userDB.MutedIpController;
-import games.strategy.engine.lobby.server.userDB.MutedMacController;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
-import games.strategy.net.ServerMessenger;
 
+import java.net.InetAddress;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 public class ModeratorController implements IModeratorController
@@ -51,54 +50,19 @@ public class ModeratorController implements IModeratorController
     {
         m_messenger = messenger;
     }
+    
+    
+
     public void banIp(INode node, Date banExpires)
     {
         assertUserIsAdmin();
-        if(isPlayerAdmin(node))
-            throw new IllegalStateException("Can't ban an admin");
-
         new BannedIpController().addBannedIp(node.getAddress().getHostAddress(), banExpires);
         boot(node);
-    }
-    public void banMac(INode node, Date banExpires)
-    {
-        assertUserIsAdmin();
-        if(isPlayerAdmin(node))
-            throw new IllegalStateException("Can't ban an admin");
-
-        String mac = getNodeMacAddress(node);
-        new BannedMacController().addBannedMac(mac, banExpires);
-        boot(node);
-    }
-    public void muteIp(INode node, Date muteExpires)
-    {
-        assertUserIsAdmin();
-        if(isPlayerAdmin(node))
-            throw new IllegalStateException("Can't mute an admin");
-
-        new MutedIpController().addMutedIp(node.getAddress().getHostAddress(), muteExpires);
-        ServerMessenger.getInstance().NotifyIPMutingOfPlayer(node.getAddress().getHostAddress(), muteExpires.getTime());
-    }
-    public void muteMac(INode node, Date muteExpires)
-    {
-        assertUserIsAdmin();
-        if(isPlayerAdmin(node))
-            throw new IllegalStateException("Can't mute an admin");
-
-        String mac = getNodeMacAddress(node);
-        new MutedMacController().addMutedMac(mac, muteExpires);
-        ServerMessenger.getInstance().NotifyMacMutingOfPlayer(mac, muteExpires.getTime());
-    }
-    private String getNodeMacAddress(INode node)
-    {
-        return ServerMessenger.getInstance().GetMacAddressesOfPlayers().get(node.getName());
     }
 
     public void boot(INode node)
     {
         assertUserIsAdmin();
-        if(!MessageContext.getSender().getName().equals("Admin") && isPlayerAdmin(node)) //Let the master lobby administrator boot admins
-            throw new IllegalStateException("Can't boot an admin");
         
         //you can't boot the server node
         if(m_messenger.getServerNode().equals(node)) 
@@ -119,16 +83,12 @@ public class ModeratorController implements IModeratorController
     public boolean isAdmin() 
     {
         INode node = MessageContext.getSender();
-        return isPlayerAdmin(node);
-    }
-    private boolean isPlayerAdmin(INode node)
-    {
         String name = getRealName(node);
         DBUserController controller = new DBUserController();
         DBUser user = controller.getUser(name);
-        if (user == null)
+        if(user == null)
             return false;
-        return user.isAdmin();
+        return user.isAdmin(); 
     }
 
     private String getRealName(INode node)
@@ -138,7 +98,7 @@ public class ModeratorController implements IModeratorController
         return name;
     }
     
-    public String getInformationOn(INode node)
+    public String getIpAndAliases(INode node) 
     {
         assertUserIsAdmin();
         
@@ -149,47 +109,32 @@ public class ModeratorController implements IModeratorController
             if(currentNode.getAddress().equals(node.getAddress()))
                 aliases.add(currentNode.getName());            
         }
-        String mac = getNodeMacAddress(node);
                 
         StringBuilder builder = new StringBuilder();
-        builder.append("Name: ").append(node.getName());
-        builder.append("\r\nHost Name: ").append(node.getAddress().getHostName());
-        builder.append("\r\nIP Address: ").append(node.getAddress().getHostAddress());
-        builder.append("\r\nMAC Address: ").append(mac);
-        builder.append("\r\nPort: ").append(node.getPort());
-        builder.append("\r\nAliases: ").append(getAliasesFor(node));
-        return builder.toString();
-    }
-    private String getAliasesFor(INode node)
-    {
-        StringBuilder builder = new StringBuilder();
-        String nodeMac = getNodeMacAddress(node);
-        for (INode cur : m_messenger.getNodes())
-        {
-            if(cur.equals(node) || cur.getName().equals("Admin"))
-                continue;
-            if (cur.getAddress().equals(node.getAddress()) || getNodeMacAddress(cur).equals(nodeMac))
-            {
-                if(builder.length() > 0)
-                    builder.append(", ");
-                builder.append(cur.getName());
-            }
+        builder.append("Address:" + node.getAddress()).append("\n");
+        builder.append("Names:\n");
+            
+        for(String name : aliases) { 
+            builder.append("   ").append(name).append("\n");
         }
         return builder.toString();
     }
 
-    public String setPassword(INode node, String hashedPassword)
+    public boolean setPassword(INode node, String hashedPassword)
     {
         assertUserIsAdmin();
         DBUserController controller = new DBUserController();
         DBUser user = controller.getUser(getRealName(node));
         if(user == null)
-            return "Can't set the password of an anonymous player";
-        //Don't allow changing an admin password
+            return false;
+        //don't allow changing an admin password
         if(user.isAdmin()) 
-            return "Can't set the password of an admin";
+            return false;
         
         controller.updateUser(user.getName(), user.getEmail(), hashedPassword, user.isAdmin());
-        return null;
+        return true;
     }
+    
+    
+    
 }

@@ -82,7 +82,7 @@ public class ModeratorControllerTest extends TestCase
         new DBUserController().createUser(userName, "n@n.n", newPassword, false);
         INode node = new Node(userName, InetAddress.getLocalHost(), 0);
         
-        assertNull(m_controller.setPassword(node, newPassword));
+        assertTrue(m_controller.setPassword(node, newPassword));
         
         assertTrue(new DBUserController().login(node.getName(), newPassword));
     }
@@ -91,14 +91,14 @@ public class ModeratorControllerTest extends TestCase
     public void testCantResetAdminPassword() throws UnknownHostException 
     {
         String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
-        assertNotNull(m_controller.setPassword(m_adminNode, newPassword));
+        assertFalse(m_controller.setPassword(m_adminNode, newPassword));
     }
     
     public void testResetUserPassworUnknownUserd() throws UnknownHostException 
     {
         String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
         INode node = new Node(Util.createUniqueTimeStamp(), InetAddress.getLocalHost(), 0);
-        assertNotNull(m_controller.setPassword(node, newPassword));
+        assertFalse(m_controller.setPassword(node, newPassword));
     }
     
     

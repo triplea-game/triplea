@@ -14,7 +14,6 @@
 
 package games.strategy.engine.framework.startup.launcher;
 
-import games.strategy.engine.chat.ChatBroadcastType;
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.startup.mc.*;
@@ -351,9 +350,6 @@ public class ServerLauncher implements ILauncher
         final File f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, "connection_lost_on_" + format.format(new Date()) + ".tsvg");
         m_serverGame.saveGame(f);
         m_serverGame.stopGame();
-        m_serverModel.getChatPanel().getChat().SetBroadcastingType(ChatBroadcastType.Public_Chat);
-        m_serverModel.getChatPanel().getChat().DisableEnhancedChat();
-        m_serverModel.getChatPanel().getChat().UpdateRecipientList();
         
         SwingUtilities.invokeLater(new Runnable()
         {

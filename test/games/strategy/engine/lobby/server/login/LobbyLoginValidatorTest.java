@@ -4,7 +4,6 @@ import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.userDB.BadWordController;
 import games.strategy.engine.lobby.server.userDB.BannedIpController;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
-import games.strategy.net.MacFinder;
 import games.strategy.util.*;
 
 import java.net.*;
@@ -33,14 +32,14 @@ public class LobbyLoginValidatorTest extends TestCase
         assertNull(
                 new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
-                properties, name, MacFinder.GetMacAddress(),address
+                properties, name, address
                 ));
         
         
         //try to create a duplicate user, should not work
         assertNotNull(new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
-                properties, name, MacFinder.GetMacAddress(),address
+                properties, name, address
                 ));
     }
     
@@ -60,7 +59,7 @@ public class LobbyLoginValidatorTest extends TestCase
         assertNotNull(
                 new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
-                properties, name, MacFinder.GetMacAddress(), address
+                properties, name, address
                 ));
 
         
@@ -82,7 +81,7 @@ public class LobbyLoginValidatorTest extends TestCase
         assertNull(
                 new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
-                properties, name, MacFinder.GetMacAddress(), address
+                properties, name, address
                 ));
 
         
@@ -93,7 +92,7 @@ public class LobbyLoginValidatorTest extends TestCase
         //we should not be able to login now
         assertNotNull(new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
-                properties, name, MacFinder.GetMacAddress(), address
+                properties, name, address
                 ));
 
     }
@@ -114,7 +113,7 @@ public class LobbyLoginValidatorTest extends TestCase
  
         assertEquals(LobbyLoginValidator.THATS_NOT_A_NICE_NAME, new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
-                properties, name, MacFinder.GetMacAddress(), address
+                properties, name, address
                 ));
 
     }
@@ -144,7 +143,7 @@ public class LobbyLoginValidatorTest extends TestCase
         assertNull(
                 new LobbyLoginValidator().verifyConnection(
                 challengeProperties,
-                properties, name, MacFinder.GetMacAddress(), address
+                properties, name, address
                 ));
 
 
@@ -153,7 +152,7 @@ public class LobbyLoginValidatorTest extends TestCase
         assertNotNull(
                 new LobbyLoginValidator().verifyConnection(
                 challengeProperties,
-                properties, name, MacFinder.GetMacAddress(), address
+                properties, name, address
                 ));
 
         
@@ -161,7 +160,7 @@ public class LobbyLoginValidatorTest extends TestCase
         assertNotNull(
                 new LobbyLoginValidator().verifyConnection(
                 challengeProperties,
-                properties, Util.createUniqueTimeStamp() , MacFinder.GetMacAddress(), address
+                properties, Util.createUniqueTimeStamp() , address
                 ));
         
 
@@ -181,9 +180,9 @@ public class LobbyLoginValidatorTest extends TestCase
         properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
         
  
-        assertEquals(LobbyLoginValidator.YOU_HAVE_BEEN_BANNED, new LobbyLoginValidator().verifyConnection(
+        assertEquals(LobbyLoginValidator.YOUR_IP_HAS_BEEN_BANNED, new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
-                properties, name, MacFinder.GetMacAddress(), address
+                properties, name, address
                 ));
 
     }

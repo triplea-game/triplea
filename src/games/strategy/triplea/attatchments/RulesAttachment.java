@@ -78,8 +78,6 @@ public class RulesAttachment extends DefaultAttachment
     private String[] m_alliedExcludedTerritories;
     private String[] m_enemyExcludedTerritories;
     private String[] m_enemySurfaceExcludedTerritories;
-	//Territory Lists for direct ownership, astabada mod
-    private String[] m_directOwnershipTerritories;
     
     private String[] m_movementRestrictionTerritories;
     
@@ -166,19 +164,7 @@ public class RulesAttachment extends DefaultAttachment
   {
       return m_enemySurfaceExcludedTerritories;
   }
-
-
-  //Territory Lists for direct ownership
-  //exclusion types = controlled, original, all, or list
-  public void setDirectOwnershipTerritories(String value)
-  {	
-	  m_directOwnershipTerritories = value.split(":");
-  }
-
-  public String[]  getDirectOwnershipTerritories()
-  {
-      return m_directOwnershipTerritories;
-  }
+  
   public void setTerritoryCount(String value)
   {
 	  m_territoryCount = getInt(value);
@@ -326,9 +312,6 @@ public class RulesAttachment extends DefaultAttachment
       if(m_alliedExcludedTerritories != null && (!m_alliedExcludedTerritories.equals("controlled") && !m_alliedExcludedTerritories.equals("original") && !m_alliedExcludedTerritories.equals("all")))
     	  getListedTerritories(m_alliedExcludedTerritories);
       
-      //Territory Lists for direct ownership
-      if(m_directOwnershipTerritories != null && (!m_directOwnershipTerritories.equals("controlled") && !m_directOwnershipTerritories.equals("original") && !m_directOwnershipTerritories.equals("all")))
-    	  getListedTerritories(m_directOwnershipTerritories);
       if(m_movementRestrictionTerritories != null && (!m_movementRestrictionTerritories.equals("controlled") && !m_movementRestrictionTerritories.equals("original") && !m_movementRestrictionTerritories.equals("all")))
     	  getListedTerritories(m_movementRestrictionTerritories);
   }

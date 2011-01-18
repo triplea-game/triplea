@@ -230,7 +230,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
                         
             
             m_chatController = new ChatController(CHAT_NAME,m_serverMessenger, m_remoteMessenger, m_channelMessenger);
-            m_chatPanel = new ChatPanel(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME,false,null);
+            m_chatPanel = new ChatPanel(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME);
 
             m_serverMessenger.setAcceptNewConnections(true);
             
@@ -357,7 +357,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     public void connectionRemoved(INode node)
     {
-        m_chatPanel.getChat().SetBroadcastingType(ChatBroadcastType.Public_Chat);
         //will be handled elsewhere
         if(m_serverLauncher != null)
         {

@@ -31,34 +31,19 @@ public interface IModeratorController extends IRemote
     public void boot(INode node);
     
     /**
-     * Ban the ip of the given INode.
+     * Ban the ip of the given INode. The ban will last for 48 hours.
      */
     public void banIp(INode node, Date banExpires);
-
-     /**
-     * Ban the mac of the given INode.
-     */
-    public void banMac(INode node, Date banExpires);
-
-     /**
-     * Mute the ip of the given INode.
-     */
-    public void muteIp(INode node, Date muteExpires);
-
-     /**
-     * Mute the mac of the given INode.
-     */
-    public void muteMac(INode node, Date muteExpires);
     
     /**
-     * Reset the password of the given user. Returns null if the password was updated without error.<p>
+     * Reset the password of the given user. returning true if the password was updated.<p>
      * 
      * You cannot change the password of an anonymous node, and you cannot change the password for an admin user.<p>
      */
-    public String setPassword(INode node, String hashedPassword);
+    public boolean setPassword(INode node, String hashedPassword);
     
     
-    public String getInformationOn(INode node);
+    public String getIpAndAliases(INode node);
     
     /**
      * Is the current user an admin.

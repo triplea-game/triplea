@@ -2248,13 +2248,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
     		//If there are attackers set their movement to 0 and kill the transports  
         	if (enemyUnits.size() > 0)
         	{
-        		MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
-        		if(moveDelegate != null)
-        		{
-        			Change change = moveDelegate.markNoMovementChange(Match.getMatches(enemyUnits, Matches.UnitIsSea));
-        			bridge.addChange(change);
-        		}
-        		
+        		Change change =DelegateFinder.moveDelegate(m_data).markNoMovementChange(Match.getMatches(enemyUnits, Matches.UnitIsSea));
+                bridge.addChange(change);
+                
     			remove(alliedTransports, bridge, m_battleSite, false);   
             	//and remove them from the battle display
             	if(player.equals(m_defender))

@@ -13,22 +13,19 @@
  */
 package games.strategy.engine.message;
 
-import games.strategy.engine.chat.RecipientList;
 import games.strategy.net.GUID;
 
 public class HubInvoke extends Invoke
 {
+
   public HubInvoke()
   {
       super();
   }
+
   public HubInvoke(GUID methodCallID, boolean needReturnValues, RemoteMethodCall call)
   {
       super(methodCallID, needReturnValues, call);
-  }
-  public HubInvoke(GUID methodCallID, boolean needReturnValues, RemoteMethodCall call, RecipientList recipientList)
-  {
-      super(methodCallID, needReturnValues, call, recipientList);
   }
   
 }

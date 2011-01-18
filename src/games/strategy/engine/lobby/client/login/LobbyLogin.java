@@ -4,15 +4,10 @@ import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.net.*;
-import games.strategy.net.ClientMessenger;
 import games.strategy.util.MD5Crypt;
 
 import java.awt.Window;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -75,12 +70,12 @@ public class LobbyLogin
     }
 
     private LobbyClient login(final LoginPanel panel)
-    {        
+    {
+        
         
         try
         {
-            String mac = MacFinder.GetMacAddress();
-            ClientMessenger messenger = new ClientMessenger(m_serverProperties.getHost(), m_serverProperties.getPort(), panel.getUserName(), mac, new IConnectionLogin()
+            ClientMessenger messenger = new ClientMessenger(m_serverProperties.getHost(), m_serverProperties.getPort(), panel.getUserName(), new IConnectionLogin()
             {
                 
                 private final AtomicReference<String> m_internalError = new AtomicReference<String>();
@@ -151,14 +146,14 @@ public class LobbyLogin
         {
             return null;
         }
+
     }
 
     private LobbyClient createAccount(final CreateUpdateAccountPanel createAccount)
     {
         try
         {
-            String mac = MacFinder.GetMacAddress();
-            ClientMessenger messenger = new ClientMessenger(m_serverProperties.getHost(), m_serverProperties.getPort(), createAccount.getUserName(), mac, new IConnectionLogin()
+            ClientMessenger messenger = new ClientMessenger(m_serverProperties.getHost(), m_serverProperties.getPort(), createAccount.getUserName(), new IConnectionLogin()
             {
 
                 public void notifyFailedLogin(String message)

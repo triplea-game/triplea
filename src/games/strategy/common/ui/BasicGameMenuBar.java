@@ -43,8 +43,6 @@ import javax.swing.SwingUtilities;
 import com.apple.eawt.Application;
 import com.apple.eawt.ApplicationAdapter;
 import com.apple.eawt.ApplicationEvent;
-import games.strategy.engine.framework.networkMaintenance.BanPlayerAction;
-import games.strategy.engine.framework.networkMaintenance.MutePlayerAction;
 
 public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMenuBar
 {
@@ -99,8 +97,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         JMenu menuNetwork = new JMenu("Network");
         addAllowObserversToJoin(menuNetwork);
         addBootPlayer(menuNetwork);
-        addBanPlayer(menuNetwork);
-        addMutePlayer(menuNetwork);
         addSetGamePassword(menuNetwork);
         addShowPlayers(menuNetwork);
         menuBar.add(menuNetwork);
@@ -145,36 +141,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         Action boot =  new BootPlayerAction(this, messenger);
         
         parentMenu.add(boot);
-        return;
-    }
-    /**
-     * @param parentMenu
-     */
-    protected void addBanPlayer(JMenu parentMenu)
-    {
-        if(!getGame().getMessenger().isServer())
-            return;
-
-        final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
-
-        Action ban = new BanPlayerAction(this, messenger);
-
-        parentMenu.add(ban);
-        return;
-    }
-    /**
-     * @param parentMenu
-     */
-    protected void addMutePlayer(JMenu parentMenu)
-    {
-        if(!getGame().getMessenger().isServer())
-            return;
-
-        final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
-
-        Action mute = new MutePlayerAction(this, messenger);
-
-        parentMenu.add(mute);
         return;
     }
     

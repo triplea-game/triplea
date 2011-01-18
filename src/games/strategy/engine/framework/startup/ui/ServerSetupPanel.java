@@ -421,8 +421,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     {
         List<Action> rVal = new ArrayList<Action>();
         rVal.add(new BootPlayerAction(this, m_model.getMessenger()));
-        rVal.add(new BanPlayerAction(this, m_model.getMessenger()));
-        rVal.add(new MutePlayerAction(this, m_model.getMessenger()));
         rVal.add(new SetPasswordAction(this, (ClientLoginValidator) m_model.getMessenger().getLoginValidator() ));
         
         if(m_lobbyWatcher != null && m_lobbyWatcher.isActive())

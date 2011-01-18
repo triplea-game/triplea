@@ -81,9 +81,8 @@ class ServerLoginHelper
                     throw new IllegalStateException("Value must be a String");
                 }
             }
-
-            String mac = MacFinder.GetMacAddress();
-            String error = m_loginValidator.verifyConnection(challenge, (Map<String,String>) credentials, m_clientName, mac, m_remoteAddress);
+            
+            String error = m_loginValidator.verifyConnection(challenge, (Map<String,String>) credentials, m_clientName, m_remoteAddress);
             if(error == null)
             {
                 out.writeObject(null);
