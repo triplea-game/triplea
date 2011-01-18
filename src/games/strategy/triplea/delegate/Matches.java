@@ -1711,7 +1711,7 @@ public class Matches
     			return routeCondition;
     }
     
-    public static Match<Unit> unitOwnerHasTech()
+    public static Match<Unit> unitOwnerHasImprovedArtillerySupportTech()
     {	
     	return new Match<Unit>()
     	{

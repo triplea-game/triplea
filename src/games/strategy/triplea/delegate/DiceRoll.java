@@ -325,7 +325,7 @@ public class DiceRoll implements Externalizable
     			List<Unit> supporters = Match.getMatches(units, canSupport);
     			int numSupport = supporters.size();
     			if(rule.getImpArtTech())
-    				numSupport += Match.getMatches(supporters, Matches.unitOwnerHasTech()).size();
+    				numSupport += Match.getMatches(supporters, Matches.unitOwnerHasImprovedArtillerySupportTech()).size();
     			String bonusType = rule.getBonusType();
     			supportLeft.put(rule, numSupport*rule.getNumber());
     			Iterator<List<UnitSupportAttachment>> iter2 = support.iterator(); 
