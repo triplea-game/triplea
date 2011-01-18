@@ -1210,7 +1210,7 @@ class BattleModel extends DefaultTableModel
         DiceRoll.getSupport(units,supportRules,supportLeft,m_data,!m_attack);
 
         //Collection unitCategories = UnitSeperator.categorize(m_units);
-        Collection unitCategories = UnitSeperator.categorize(units, null, false, false, true);
+        Collection unitCategories = UnitSeperator.categorize(units, null, false, false, false);
         Iterator categoriesIter = unitCategories.iterator();
 
         while (categoriesIter.hasNext())

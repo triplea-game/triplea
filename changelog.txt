@@ -1,5 +1,5 @@
 Changes for 1.2.7
-* Enhanced Chat code (SquidDaddy)
+* Enhanced Chat code (Wisconsin)
 
 * Enhanced Lobby management (Wisconsin)
 
