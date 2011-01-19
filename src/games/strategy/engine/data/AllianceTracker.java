@@ -149,4 +149,13 @@ public class AllianceTracker extends GameDataComponent
 		}
 		return rVal;
 	}
+	/**
+	 * returns true if p1 is at war with p2
+	 * @param p1
+	 * @param p2
+	 * @return
+	 */
+	public boolean isAtWar(PlayerID p1, PlayerID p2) {
+		return !isAllied(p1,p2); //holder method war not yet implemented
+	}
 }

@@ -97,8 +97,10 @@ public class RulesAttachment extends DefaultAttachment
     private int m_perOwnedTerritories = -1;
     private int m_productionPerTerritory = -1;
     private int m_placementPerTerritory = -1;
+    private int m_atWarCount = -1;
+    private int m_uses = -1; 
     
-    
+    private Set<PlayerID> m_atWarPlayers = null;
   /** Creates new RulesAttachment */
   public RulesAttachment()
   {
@@ -309,6 +311,50 @@ public class RulesAttachment extends DefaultAttachment
       return m_negateDominatingFirstRoundAttack;
   }
   
+  public int getAtWarCount() {
+	  return m_atWarCount;
+  }
+  
+  public void setAtWarCount(String s) {
+	  m_atWarCount = getInt(s);
+  }
+  public int getUses() {
+	  return m_uses;
+  }
+  
+  public void setUses(String s) {
+	  m_uses = getInt(s);
+  }
+  public void setUses(int u) {
+	  m_uses = u;
+  }
+  public Set<PlayerID> getAtWarPlayers() {
+	  return m_atWarPlayers;
+  }
+  public void setAtWarPlayers( String players) throws GameParseException{
+	  {
+	    	String[] s = players.split(":");
+	    	int count = -1;
+	    	if(s.length<1)
+	    		throw new GameParseException( "Empty enemy list");
+	    	try {
+	    		count = getInt(s[0]);
+	    		m_atWarCount = count;
+	    	} catch(Exception e) {
+	    		m_atWarCount = 0;
+	    	}
+	    	if(s.length<1 || s.length ==1 && count != -1)
+	    		throw new GameParseException( "Empty enemy list");
+	    	m_atWarPlayers = new HashSet<PlayerID>();
+	    	for( int i=count==-1?0:1; i < s.length; i++){
+	    		PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
+	            if(player == null)
+	                throw new GameParseException("Could not find player. name:" + s[i]);
+	            else
+	            	m_atWarPlayers.add(player);
+	    	}
+	    }
+  }
   /**
    * Called after the attatchment is created.
    */

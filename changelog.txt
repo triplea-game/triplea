@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* national objectives addition of 'uses' and 'atWarPlayers'. Still needs some work on atWar. (squid daddy)
+
 * directOwnershipTerritories National Objective added, ownership by an ally doesn't count. (astabada/franz)
 
 * Enhanced Combat Support attachments. (squid daddy)

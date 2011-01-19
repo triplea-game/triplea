@@ -187,7 +187,9 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     	{
     		RulesAttachment rule = rulesIter.next();
     		boolean objectiveMet = true;
-
+    		Integer uses = rule.getUses();
+    		if( uses == 0)
+    			continue;
     		//
     		//Check for allied unit exclusions
     		//
@@ -509,7 +511,10 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 
     			objectiveMet = checkDirectOwnership(objectiveMet, rule.getListedTerritories(terrs), rule.getTerritoryCount(), player);			
     		}
-    		
+
+    		if( rule.getAtWarPlayers()!=null && objectiveMet == true) {
+    			objectiveMet = checkAtWar(player, rule.getAtWarPlayers(), rule.getAtWarCount(), data);
+    		}
     		//
     		//If all are satisfied add the PUs for this objective
     		//
@@ -518,9 +523,13 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     		    int total = player.getResources().getQuantity(Constants.PUS) + rule.getObjectiveValue();
     		    
     		    Change change = ChangeFactory.changeResourcesChange(player, data.getResourceList().getResource(Constants.PUS), rule.getObjectiveValue());
-    			//player.getResources().addResource(data.getResourceList().getResource(Constants.PUS), rule.getObjectiveValue());
+    		    //player.getResources().addResource(data.getResourceList().getResource(Constants.PUS), rule.getObjectiveValue());
                 bridge.addChange(change);
-    			
+        	    if( uses > 0) {
+        	    	uses--;
+        	    	Change use = ChangeFactory.attachmentPropertyChange(rule, new Integer(uses).toString(), "uses");
+                	bridge.addChange(use);
+        	    }
     			String PUMessage = player.getName() + " met a national objective for an additional " + rule.getObjectiveValue() + MyFormatter.pluralize(" PU", rule.getObjectiveValue()) +
     			"; end with " + total + MyFormatter.pluralize(" PU", total);
     			bridge.getHistoryWriter().startEvent(PUMessage);
@@ -645,6 +654,16 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		return satisfied;
 	}
     
+	private boolean checkAtWar(PlayerID player, Set<PlayerID> enemies, int count, GameData data) {
+		int found =0;
+		for( PlayerID e:enemies) 	
+			if(data.getAllianceTracker().isAtWar(player,e)) 
+				found++;
+		if( count == 0)
+			return count == found;
+		else
+			return  found >= count;
+	}
 	private boolean isNationalObjectives()
     {
     	return games.strategy.triplea.Properties.getNationalObjectives(m_data);
