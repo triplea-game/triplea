@@ -319,21 +319,29 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
         return getRoute(t1, t2, new CompositeMatchOr<Territory>(match, Matches.territoryIs(t2)));
     }
     /**
-     *Returns a route between two territories while trying to match the best conditions as far as possible.
-     *Returns null if no route exists.
+     * Returns a composite route between two territories.
+     *
+     * Example set of matches: [Friendly Land, score: 1] [Enemy Land, score: 2] [Neutral Land, score = 4]
+     *
+     * With this example set, an 8 length friendly route is considered equal in score to a 4 length enemy route and a 2 length neutral route.
+     * This is because the friendly route score is 1/2 of the enemy route score and 1/4 of the neutral route score.
+     *
+     * Note that you can choose whatever scores you want, and that the matches can mix and match with each other in any way.
+     * (Recommended that you use 2,3,4 as scores, unless you will allow routes to be much longer under certain conditions) 
+     * Returns null if there is no route that exists that matches any of the matches.
      */
-    public Route getCompositeRoute(Territory t1, Territory t2, Match<Territory> bestCond, Match<Territory> nextBestCond, Match<Territory> otherwiseCond)
+    public Route getCompositeRoute(Territory t1, Territory t2, HashMap<Match<Territory>, Integer> matches)
     {
         if (t1 == t2)
         {
             return new Route(t1);
         }
-        CompositeMatch<Territory> allCond = new CompositeMatchOr<Territory>(bestCond, nextBestCond, otherwiseCond);
+        CompositeMatch<Territory> allCond = new CompositeMatchOr<Territory>(matches.keySet());
         if (getNeighbors(t1, allCond).contains(t2))
         {
             return new Route(t1, t2);
         }
-        CompositeRouteFinder engine = new CompositeRouteFinder(this, bestCond, nextBestCond, otherwiseCond);
+        CompositeRouteFinder engine = new CompositeRouteFinder(this, matches);
         return engine.findRoute(t1, t2);
     }
 

@@ -866,6 +866,28 @@ public class Matches
     		}
     	};
     }
+    public static Match<Territory> territoryIsInList(final Collection<Territory> list)
+    {
+        return new Match<Territory>()
+        {
+            @Override
+            public boolean match(Territory ter)
+            {
+                return list.contains(ter);
+            }
+        };
+    }
+    public static Match<Territory> territoryIsNotInList(final Collection<Territory> list)
+    {
+        return new Match<Territory>()
+        {
+            @Override
+            public boolean match(Territory ter)
+            {
+                return !list.contains(ter);
+            }
+        };
+    }
     
     public static Match<Territory> territoryHasRouteToEnemyCapital(final GameData data, final PlayerID player)
     {
@@ -1472,7 +1494,17 @@ public class Matches
                 return !t.getUnits().someMatch( alliedUnit(player,data));
             }
         };
+    }
 
+    public static Match<Territory> territoryHasAlliedUnits(final PlayerID player, final GameData data)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                return t.getUnits().someMatch(alliedUnit(player,data));
+            }
+        };
     }
 
     public static Match<Territory> territoryHasNonSubmergedEnemyUnits(final PlayerID player, final GameData data)

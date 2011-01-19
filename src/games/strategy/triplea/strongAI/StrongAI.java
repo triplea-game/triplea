@@ -1429,14 +1429,17 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					continue;
 				}
 				Territory seaTarget = SUtils.getSafestWaterTerr(target, t, null, data, player, false, tFirst);
+				// TODO: getSafestWaterTerr is returning absolutely idiotic results.  For example, letting Italy to move its med transports all the way from sz51 to sz27 next to russia's baltic fleet. Or UK to move from sz1 to sz61. WTF
 				if (seaTarget == null)
 					continue;
 				Route seaRoute = SUtils.getMaxSeaRoute(data, t, seaTarget, player, false, tDistance);
 				if (seaRoute == null) //This is half of the fix for the transport issue where AI doesn't move amphibiously in some situations, such as America on Great War
                                 {
-                                    Match<Territory> bestMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasUnitsOwnedBy(player));
-                                    Match<Territory> nextBestMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data));
-			            seaRoute = data.getMap().getCompositeRoute(t, seaTarget, bestMatch, nextBestMatch, Matches.TerritoryIsWater);
+                                    HashMap<Match<Territory>, Integer> matches = new HashMap<Match<Territory>, Integer>();
+                                    matches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasAlliedUnits(player, data)), 2);
+                                    matches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data)), 3);
+                                    matches.put(Matches.TerritoryIsWater, 6);
+			            seaRoute = data.getMap().getCompositeRoute(t, seaTarget, matches);
                                     if(seaRoute == null)
                                         continue;
                                     seaRoute = SUtils.TrimRoute_BeforeFirstTerWithEnemyUnits(seaRoute, tDistance, player, data);

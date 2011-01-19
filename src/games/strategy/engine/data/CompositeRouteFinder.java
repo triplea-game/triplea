@@ -14,233 +14,143 @@
 
 package games.strategy.engine.data;
 
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class CompositeRouteFinder
 {
+    private final static Logger s_logger = Logger.getLogger(CompositeRouteFinder.class.getName());
+    public static Logger GetStaticLogger()
+    {
+        return s_logger;
+    }
     private final GameMap m_map;
-    private final Match<Territory> m_bestCondition;
-    private final Match<Territory> m_nextBestCondition;
-    private final Match<Territory> m_otherwiseCondition;
+    private final HashMap<Match<Territory>, Integer> m_matches;
 
     /**
-     * This class can find composite routes between two territories, which is useful for AI non-combat move routes targeting enemy ters behind enemy lines, etc.
+     * This class can find composite routes between two territories.
      *
-     * I'll try my best to explain how it works:
-     * Imagine that you want to get from somewhere in the southwest to somewhere in the northeast, and you want to walk on low ground as much as possible. (Valleys)
-     * You start out by figuring which path conditions are most favorable, and you decide mountains are the worst, hills are okay, and valleys are the best.
-     * So, you start at the start(let's say you somehow have access to a satellite image), and you try to find the most favorable path-segment that will get you closer to the destination.
-     * You find a path segment through the valley that will get you closer to the destination, so you remember this and add it to you're planned route. (Since you know this is the most favorable path type)
-     * Now you see that after the path through the valley, there is a path through the mountains that will bring you even closer to the destination.
-     * You remember this mountain path, but you want to find a valley or hill route(being more favorable) that will bring you closer to the destination instead of this path by mountain.
-     * You find no valley route that brings you closer(you already followed valley as far as possible), but you do find a hilly route that brings you closer, so you add that to your planned route instead of the mountain path.
-     * After this hilly path, you see that you must use a mountain path to get any closer to the destination, so you add this mountain path to your planned route.
-     * After the mountain, you see there is an open valley path directly to the destination, so you add it to your planned route.
-     * Now that the route is complete, you start out on your journey and make it to your home safe and sound. :)
+     * Example set of matches: [Friendly Land, score: 1] [Enemy Land, score: 2] [Neutral Land, score = 4]
      *
-     * This is how this route finding method here works, except that it uses Route matches instead of path types, such as the following:
-     *     Best: Land owned by us, Next Best: Land that is passable, Otherwise: Any Land
+     * With this example set, an 8 length friendly route is considered equal in score to a 4 length enemy route and a 2 length neutral route.
+     * This is because the friendly route score is 1/2 of the enemy route score and 1/4 of the neutral route score.
      *
-     * @param map
-     * @param bestCond - Most favorable route condition
-     * @param nextBestCond - Next best
-     * @param otherwiseCond - Match that is used to fill any gaps the other two cannot match. This match is expected to be IS_LAND, IS_WATER, or ALWAYS_MATCH. Others may cause loops or bad routes.
+     * Note that you can choose whatever scores you want, and that the matches can mix and match with each other in any way.
+     *
+     * @param map - Game map found through <gamedata>.getMap()
+     * @param matches - Set of matches and scores. The lower a match is scored, the more favorable it is.
      */
-    public CompositeRouteFinder(GameMap map, Match<Territory> bestCond, Match<Territory> nextBestCond, Match<Territory> otherwiseCond)
+    public CompositeRouteFinder(GameMap map, HashMap<Match<Territory>, Integer> matches)
     {
         m_map = map;
-        m_bestCondition = bestCond;
-        m_nextBestCondition = nextBestCond;
-        m_otherwiseCondition = otherwiseCond;
+        m_matches = matches;
+        s_logger.finer("Initializing CompositeRouteFinderClass...");
     }
-
+    private HashSet<Territory> ToHashSet(Collection<Territory> ters)
+    {
+        HashSet<Territory> result = new HashSet<Territory>();
+        for(Territory ter : ters)
+            result.add(ter);
+        return result;
+    }
     public Route findRoute(Territory start, Territory end)
     {
-        Territory farthestPoint = start;
-        List<Route> routeSegments = new ArrayList<Route>();
-        while (farthestPoint != end)
+        HashSet<Territory> allMatchingTers = ToHashSet(Match.getMatches(m_map.getTerritories(), new CompositeMatchOr<Territory>(m_matches.keySet())));
+
+        HashMap<Territory, Integer> terScoreMap = CreateScoreMap(allMatchingTers, start);
+        HashMap<Territory, Integer> routeScoreMap = new HashMap<Territory, Integer>();
+        int bestRouteToEndScore = Integer.MAX_VALUE;
+
+        HashMap<Territory, Territory> previous = new HashMap<Territory, Territory>();
+        List<Territory> routeLeadersToProcess = new ArrayList<Territory>();
+        for (Territory ter : m_map.getNeighbors(start, Matches.territoryIsInList(allMatchingTers)))
         {
-            Route bestRouteThatBringsUsCloser = null;
-            Route oldRoute = m_map.getRoute(farthestPoint, end, m_otherwiseCondition);
-            if(oldRoute == null)
-                return null;
-            int oldDistanceFromEnd = oldRoute.getLength();
-
-            Route bestMatchRouteSegment = GetNextRouteSegment(farthestPoint, end, m_bestCondition);
-            if (bestMatchRouteSegment != null && bestMatchRouteSegment.getLength() > 0)
-            {
-                if(m_map.getRoute(bestMatchRouteSegment.getEnd(), end, m_otherwiseCondition).getLength() < oldDistanceFromEnd)
-                    bestRouteThatBringsUsCloser = bestMatchRouteSegment;
-            }
-            else
-            {
-                Route nextBestMatchRouteSegment = GetNextRouteSegment(farthestPoint, end, m_nextBestCondition);
-                if (nextBestMatchRouteSegment != null && nextBestMatchRouteSegment.getLength() > 0)
-                {
-                    if (m_map.getRoute(nextBestMatchRouteSegment.getEnd(), end, m_otherwiseCondition).getLength() < oldDistanceFromEnd)
-                        bestRouteThatBringsUsCloser = nextBestMatchRouteSegment;
-                }
-                else
-                {
-                    Route otherwiseRouteSegment = GetNextRouteSegment(farthestPoint, end, m_otherwiseCondition);
-                    if (otherwiseRouteSegment != null && otherwiseRouteSegment.getLength() > 0)
-                    {
-                        if (m_map.getRoute(otherwiseRouteSegment.getEnd(), end, m_otherwiseCondition).getLength() < oldDistanceFromEnd)
-                            bestRouteThatBringsUsCloser = otherwiseRouteSegment;
-                    }
-                }
-            }
-
-            if(bestRouteThatBringsUsCloser == null)
-                break; //This shouldn't ever happen, as the otherwise match should always return a complete, valid route
-
-            routeSegments.add(bestRouteThatBringsUsCloser);
-            farthestPoint = bestRouteThatBringsUsCloser.getEnd();
+            int routeScore = terScoreMap.get(start) + terScoreMap.get(ter);
+            routeScoreMap.put(ter, routeScore);
+            routeLeadersToProcess.add(ter);
+            previous.put(ter, start);
         }
-
-        Route route = OptimizeRepairAndCombineRoutes(routeSegments);
-        return route;
-    }
-    /* This method attempts to remove any route loops(unlikely, but can happen in certain situations), and combines the route segments into one complete route.
-     * This method also optimizes the route by removing any 'harmless' route loops, ones that won't cause errors, but are unnecessarily long.
-     * In other words, as we loop through the route ters, if we see if we can hop to a neighboring ter that is further in the complete route, we do so, ignoring the ters between them.
-     */
-    private Route OptimizeRepairAndCombineRoutes(List<Route> routeSegments)
-    {
-        List<Territory> routeTersWePlanToKeep = new ArrayList<Territory>();
-        List<Route> processedRoutes = new ArrayList<Route>();
-        for(Route routeSegment : routeSegments)
+        while(routeLeadersToProcess.size() > 0)
         {
-            int index = -1;
-            for(Territory ter : routeSegment.getTerritories())
+            List<Territory> newLeaders = new ArrayList<Territory>();
+            for(Territory oldLeader : routeLeadersToProcess)
             {
-                index++;
-                boolean addTer = true;
-                if(index == 0)
+                for (Territory ter : m_map.getNeighbors(oldLeader, Matches.territoryIsInList(allMatchingTers)))
                 {
-                    continue; //Ter was already added as the last ter of the route before, so don't add
-                }
-                else
-                {
-                    boolean alreadyDestroyedLoop = false;
-                    for(Route route : processedRoutes) //In each route we've already added
-                    {
-                        for (Territory ter2 : route.getTerritories()) //Loop through the ters
-                        {
-                            if (ter2.equals(ter))
-                            {
-                                //We have detected a 'harmful' route loop, so remove the loop
-                                //By deleting all the loop ters
-                                boolean reachedStartOfLoop = false;
-                                List<Territory> loopTers = new ArrayList<Territory>();
-                                for (Territory ter3 : routeTersWePlanToKeep) //Loop through the ters we had planned to keep
-                                {
-                                    //And remove any ters that are part of this detected loop
-                                     if(reachedStartOfLoop)
-                                        loopTers.add(ter3);
-                                    if(ter3.equals(ter2))
-                                        reachedStartOfLoop = true;
-                                }
-                                routeTersWePlanToKeep.removeAll(loopTers);
-                                alreadyDestroyedLoop = true;
-                                addTer = false;
-                            }
-                            if(m_map.getNeighbors(ter2).contains(ter))
-                            {
-                                //We have detected a 'harmless' route loop, so remove the loop
-                                //By deleting all the loop ters
-                                boolean reachedStartOfLoop = false;
-                                List<Territory> loopTers = new ArrayList<Territory>();
-                                for (Territory ter3 : routeTersWePlanToKeep) //Loop through the ters we had planned to keep
-                                {
-                                    //And remove any ters that are part of this detected loop
-                                     if(reachedStartOfLoop)
-                                        loopTers.add(ter3);
-                                    if(ter3.equals(ter2))
-                                        reachedStartOfLoop = true;
-                                }
-                                routeTersWePlanToKeep.removeAll(loopTers);
-                                alreadyDestroyedLoop = true;
-                            }
-                            if(alreadyDestroyedLoop)
-                                break;
-                        }
-                        if(alreadyDestroyedLoop)
-                            break;
-                    }
-                }
-                if(addTer)
-                    routeTersWePlanToKeep.add(ter);
-            }
-        }
-        return new Route(routeTersWePlanToKeep);
-    }
-    private Route GetNextRouteSegment(Territory farthestPoint, Territory dest, Match<Territory> condition)
-    {
-        List<Territory> connectedTersMatchingCond = GetConnectedTersMatching(farthestPoint, condition);
-
-        Territory nextRoutePoint = GetClosestToTer(connectedTersMatchingCond, dest, m_otherwiseCondition);
-        return m_map.getRoute(farthestPoint, nextRoutePoint, condition);
-    }
-    private List<Territory> GetConnectedTersMatching(Territory ter, Match<Territory> condition)
-    {
-        Match<Territory> betterMatch = LevelUpMatch(condition);
-        List<Territory> connectedTersMatchingCond = new ArrayList<Territory>();
-        List<Territory> matchingNeighbors = new ArrayList<Territory>(m_map.getNeighbors(ter, condition));
-
-        List<Territory> toProcess = new ArrayList<Territory>();
-        for (Territory processingTer : matchingNeighbors)
-        {
-            if (!betterMatch.equals(condition) && betterMatch.match(processingTer))
-                continue; //If we're currently adding to the route with a low-favor match, stop adding when we reach a better match
-            toProcess.add(processingTer);
-            connectedTersMatchingCond.add(processingTer);
-        }
-        while(toProcess.size() > 0)
-        {
-            List<Territory> nextSet = new ArrayList<Territory>();
-            for(Territory processingTer : toProcess)
-            {
-                for(Territory matchingNeighbor : m_map.getNeighbors(processingTer, condition))
-                {
-                    if(connectedTersMatchingCond.contains(matchingNeighbor))
+                    int routeScore = routeScoreMap.get(oldLeader) + terScoreMap.get(ter);
+                    if(routeLeadersToProcess.contains(ter) || ter.equals(start)) //If we're bumping into one of the current route leaders or the start
                         continue;
-                    if(!betterMatch.equals(condition) && betterMatch.match(matchingNeighbor))
-                        continue; //If we're currently adding to the route with a low-favor match, stop adding when we reach a better match
-                    nextSet.add(matchingNeighbor);
-                    connectedTersMatchingCond.add(matchingNeighbor);
+                    if(previous.containsKey(ter)) //If we're bumping into an existing route
+                    {
+                        if(routeScore >= routeScoreMap.get(ter)) //If the already existing route route is better or the same
+                            continue;
+                    }
+                    if (bestRouteToEndScore <= routeScore)
+                        continue; //Ignore this route leader, as we know we already have a better route
+                    routeScoreMap.put(ter, routeScore);
+                    newLeaders.add(ter);
+                    previous.put(ter, oldLeader);
+                    if (ter.equals(end))
+                    {
+                        if(routeScore < bestRouteToEndScore)
+                            bestRouteToEndScore = routeScore;
+                    }
                 }
             }
-            toProcess = nextSet;
+            routeLeadersToProcess = newLeaders;
         }
-        return connectedTersMatchingCond;
+        if(bestRouteToEndScore == Integer.MAX_VALUE)
+            return null;
+        return AssembleRoute(start, end, previous);
     }
-    private Match<Territory> LevelUpMatch(Match<Territory> match)
+    private Route AssembleRoute(Territory start, Territory end, HashMap<Territory, Territory> previous)
     {
-        if(match.equals(m_otherwiseCondition))
-            return m_nextBestCondition;
-        else if(match.equals(m_nextBestCondition))
-            return m_bestCondition;
-        else
-            return match;
-    }
-    private Territory GetClosestToTer(List<Territory> ters, Territory destination, Match<Territory> routeMatch)
-    {
-        Territory closestTer = null;
-        int closestTerDistance = Integer.MAX_VALUE;
-        for(Territory ter : ters)
+        List<Territory> routeTers = new ArrayList<Territory>();
+        Territory curTer = end;
+        while(previous.containsKey(curTer))
         {
-            Route route = m_map.getRoute(ter, destination, routeMatch);
-            if (route.getLength() < closestTerDistance)
+            routeTers.add(curTer);
+            curTer = previous.get(curTer);
+        }
+        routeTers.add(start);
+        Collections.reverse(routeTers);
+        return new Route(routeTers);
+    }
+    private HashMap<Territory, Integer> CreateScoreMap(Collection<Territory> ters, Territory startTer)
+    {
+        HashMap<Territory, Integer> result = new HashMap<Territory, Integer>();
+        for (Territory ter : m_map.getTerritories())
+        {
+            result.put(ter, GetTerScore(ter));
+        }
+        return result;
+    }
+    /*
+     * Returns the score of the best match that matches this territory
+     */
+    private Integer GetTerScore(Territory ter)
+    {
+        int bestMatchingScore = Integer.MAX_VALUE;
+        for(Match<Territory> match : m_matches.keySet())
+        {
+            int score = m_matches.get(match);
+            if(score < bestMatchingScore) //If this is a 'better' match
             {
-                closestTer = ter;
-                closestTerDistance = route.getLength();
+                if(match.match(ter))
+                {
+                    bestMatchingScore = score;
+                }
             }
         }
-        return closestTer;
+        return bestMatchingScore;
     }
 }
