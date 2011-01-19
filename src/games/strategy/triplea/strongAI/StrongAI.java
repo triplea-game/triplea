@@ -7062,6 +7062,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         			seaProductionRules.remove(seaRule);
         	}
         }
+        if (subProductionRules.size()/seaProductionRules.size() < 0.3) // remove submarines from consideration, unless we are mostly subs
+        {
+        	seaProductionRules.removeAll(subProductionRules);
+        }
 
         if (purchaseForBid)
         {
