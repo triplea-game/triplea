@@ -1135,6 +1135,17 @@ public class Matches
             }
         };
     }
+    
+    /**
+     *  Match units that have at least 1 movement left
+     */
+    public static Match<Unit> unitHasMovementLeft = new Match<Unit>()
+    {
+        public boolean match(Unit o)
+        {
+            return TripleAUnit.get(o).getMovementLeft() >= 1;
+        }
+    };
 	
 	public final static Match<Unit> UnitIsNotStatic(PlayerID player)
 	{
