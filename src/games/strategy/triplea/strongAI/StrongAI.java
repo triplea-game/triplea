@@ -258,7 +258,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     	boolean capDanger = myStrength < (eStrength*1.25F + 3.0F);
     	if (capDanger) {
     		now = System.currentTimeMillis();
-            s_logger.fine("Time Taken " + (now-last));
+            s_logger.finest("Time Taken " + (now-last));
     		return;
     	}
     	if(games.strategy.triplea.Properties.getWW2V3TechModel(data)) 
@@ -279,7 +279,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     		} 
     	} 
     	now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
     }
 
     private Route getAmphibRoute(final PlayerID player, final boolean nonCombat)
@@ -431,7 +431,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveUnits.clear();
         transportsToLoad.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("protectOurAllies");
@@ -440,7 +440,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveRoutes.clear();
         moveUnits.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("planesToCarriers");
@@ -449,7 +449,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveRoutes.clear();
         moveUnits.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("bomberNonComMove");
@@ -458,7 +458,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveRoutes.clear();
         moveUnits.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         determineCapDanger(player, data);
@@ -470,7 +470,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		moveRoutes.clear();
 		moveUnits.clear();
 		now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
 
         //unload the transports that can be unloaded
@@ -480,7 +480,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveUnits.clear();
         moveRoutes.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         //check to see if we have missed any transports
@@ -490,7 +490,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveUnits.clear();
         moveRoutes.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("bringShipsToTransports");
@@ -499,7 +499,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		moveUnits.clear();
 		moveRoutes.clear();
 		now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("populateNonCombatSea");
@@ -508,7 +508,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveUnits.clear();
         moveRoutes.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("stopBlitzAttack");
@@ -517,7 +517,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveUnits.clear();
         moveRoutes.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("populateNonCombat");
@@ -526,7 +526,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveUnits.clear();
         moveRoutes.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("movePlanesHomeNonCom");
@@ -535,7 +535,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveUnits.clear();
         moveRoutes.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         //check to see if we have vulnerable planes
@@ -546,7 +546,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveRoutes.clear();
         transportsToLoad.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("secondLookSea");
@@ -555,7 +555,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveUnits.clear();
         moveRoutes.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("populateTransportLoad");
@@ -565,7 +565,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveUnits.clear();
         transportsToLoad.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         //unload the transports that can be unloaded
@@ -575,7 +575,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveUnits.clear();
         moveRoutes.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("nonCombatPlanes");
@@ -584,7 +584,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveUnits.clear();
         moveRoutes.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("secondNonCombat");
@@ -593,14 +593,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         moveUnits.clear();
         moveRoutes.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("populateFinalTransportUnload");
         populateFinalTransportUnload(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         s_logger.fine("Finished NonCombat for: " + player.getName());
 
@@ -644,112 +644,142 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         //let sea battles occur before we load transports
         populateCombatMoveSea(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        s_logger.finer("moving " + moveUnits);
-        s_logger.finer("Route " +moveRoutes);
+        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        {
+        	s_logger.finer("moving " + moveUnits);
+            s_logger.finer("Route " +moveRoutes);
+        }
         moveUnits.clear();
         moveRoutes.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("populateTransportLoad");
         populateTransportLoad(false, data, moveUnits, moveRoutes, transportsToLoad, player);
         doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
-        s_logger.finer("moving " + moveUnits);
-        s_logger.finer("Route " +moveRoutes);
+        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        {
+        	s_logger.finer("moving " + moveUnits);
+            s_logger.finer("Route " +moveRoutes);
+        }
         moveUnits.clear();
 		moveRoutes.clear();
 		now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
 		s_logger.fine("protectOurAllies");
 		protectOurAllies(true, data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        s_logger.finer("moving " + moveUnits);
-        s_logger.finer("Route " +moveRoutes);
+        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        {
+        	s_logger.finer("moving " + moveUnits);
+            s_logger.finer("Route " +moveRoutes);
+        }
         moveRoutes.clear();
         moveUnits.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("Special Transport Move");
         specialTransportMove(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        s_logger.finer("moving " + moveUnits);
-        s_logger.finer("Route " +moveRoutes);
+        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        {
+        	s_logger.finer("moving " + moveUnits);
+            s_logger.finer("Route " +moveRoutes);
+        }
         moveRoutes.clear();
         moveUnits.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("Quick transport Unload");
         quickTransportUnload(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        s_logger.finer("moving " + moveUnits);
-        s_logger.finer("Route " +moveRoutes);
+        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        {
+        	s_logger.finer("moving " + moveUnits);
+            s_logger.finer("Route " +moveRoutes);
+        }
         moveRoutes.clear();
         moveUnits.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
 		s_logger.fine("Amphib Map Unload");
 		amphibMapUnload(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        s_logger.finer("moving " + moveUnits);
-        s_logger.finer("Route " +moveRoutes);
+        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        {
+        	s_logger.finer("moving " + moveUnits);
+            s_logger.finer("Route " +moveRoutes);
+        }
         moveRoutes.clear();
 		moveUnits.clear();
 		now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("firstTransportMove"); //probably don't need this anymore
         firstTransportMove(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        s_logger.finer("moving " + moveUnits);
-        s_logger.finer("Route " +moveRoutes);
+        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        {
+        	s_logger.finer("moving " + moveUnits);
+            s_logger.finer("Route " +moveRoutes);
+        }
         moveRoutes.clear();
         moveUnits.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         s_logger.fine("Populate Transport Move");
         populateTransportMove(data, moveUnits, moveRoutes, player);
 //        simulatedTransportMove(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        s_logger.finer("moving " + moveUnits);
-        s_logger.finer("Route " +moveRoutes);
+        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        {
+        	s_logger.finer("moving " + moveUnits);
+            s_logger.finer("Route " +moveRoutes);
+        }
         moveUnits.clear();
 		moveRoutes.clear();
 		now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
 		s_logger.fine("Amphib Map Unload");
 		amphibMapUnload(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        s_logger.finer("moving " + moveUnits);
-        s_logger.finer("Route " +moveRoutes);
+        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        {
+        	s_logger.finer("moving " + moveUnits);
+            s_logger.finer("Route " +moveRoutes);
+        }
         moveRoutes.clear();
 		moveUnits.clear();
 		now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
 		s_logger.fine("Populate Transport Unload");
 		populateTransportUnload(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        s_logger.finer("moving " + moveUnits);
-        s_logger.finer("Route " +moveRoutes);
+        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        {
+        	s_logger.finer("moving " + moveUnits);
+            s_logger.finer("Route " +moveRoutes);
+        }
         moveRoutes.clear();
         moveUnits.clear();
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         //find second amphib target
 /*        Route altRoute = getAlternativeAmphibRoute( player);
@@ -770,22 +800,28 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		s_logger.fine("Regular Combat Move");
         populateCombatMove(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        s_logger.finer("moving " + moveUnits);
-        s_logger.finer("Route " +moveRoutes);
+        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        {
+        	s_logger.finer("moving " + moveUnits);
+            s_logger.finer("Route " +moveRoutes);
+        }
         moveUnits.clear();
 		moveRoutes.clear();
 		now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
         
         //any planes left for an overwhelming attack?
 		s_logger.fine("Special Plane Attack");
         specialPlaneAttack(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        s_logger.finer("moving " + moveUnits);
-        s_logger.finer("Route " +moveRoutes);
+        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        {
+        	s_logger.finer("moving " + moveUnits);
+            s_logger.finer("Route " +moveRoutes);
+        }
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         last = now;
     }
 
@@ -808,7 +844,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             //all fought
             if(listing.getBattles().isEmpty() && listing.getStrategicRaids().isEmpty()) {
             	now = System.currentTimeMillis();
-                s_logger.fine("Time Taken " + (now-start));
+                s_logger.finest("Time Taken " + (now-start));
             	return;
             }
             Iterator<Territory> raidBattles = listing.getStrategicRaids().iterator();
@@ -7346,7 +7382,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     		        purchaseDelegate.purchase(purchase);
     			}
     			now = System.currentTimeMillis();
-    	        s_logger.fine("Time Taken " + (now-last));
+    	        s_logger.finest("Time Taken " + (now-last));
 				return;
 			}
     	}
@@ -7649,7 +7685,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 	        purchaseDelegate.purchase(purchase);
 	        now = System.currentTimeMillis();
-	        s_logger.fine("Time Taken " + (now-last));
+	        s_logger.finest("Time Taken " + (now-last));
 	        return;
 		}
 
@@ -8625,7 +8661,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		}
 		now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
         purchaseDelegate.purchase(purchase);
     }
 
@@ -9055,7 +9091,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             placeAllWeCanOn(bid, data, null, t, placeDelegate, player);
         }
         now = System.currentTimeMillis();
-        s_logger.fine("Time Taken " + (now-last));
+        s_logger.finest("Time Taken " + (now-last));
     }
     
     private void placeSeaUnits(boolean bid, GameData data, Territory seaPlaceAttack, Territory seaPlaceTrans, IAbstractPlaceDelegate placeDelegate, PlayerID player)

@@ -4932,7 +4932,7 @@ public class SUtils
 			}
 		}
 		now = System.currentTimeMillis();
-        s_logger.fine("Time Takenrank " + (now-start));
+        s_logger.finest("Time Takenrank " + (now-start));
     
 		return landRankMap;
 
