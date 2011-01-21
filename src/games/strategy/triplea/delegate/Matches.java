@@ -1768,6 +1768,18 @@ public class Matches
     
     public static final Match<Unit> UnitIsAAOrFactory = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory);
 
+    public static Match<Territory> territoryIsBlockade = new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+            	TerritoryAttachment ta = TerritoryAttachment.get(t);
+            	if( ta != null )
+                return ta.isBlockadeZone();
+            	else
+            		return false;
+            }
+        };
+    
     /** Creates new Matches */
     private Matches()
     {

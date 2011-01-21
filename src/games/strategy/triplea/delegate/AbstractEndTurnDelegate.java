@@ -36,6 +36,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.remote.IAbstractEndTurnDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -47,6 +48,7 @@ import games.strategy.util.Match;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 
 /**
@@ -103,9 +105,11 @@ public abstract class AbstractEndTurnDelegate
         Collection<Territory> territories = gameData.getMap().getTerritoriesOwnedBy(player);
 
         int toAdd = getProduction(territories);
+        int blockadeLoss = getProductionLoss(player,gameData);
+        toAdd -= blockadeLoss;
         int total = player.getResources().getQuantity(PUs) + toAdd;
 
-        String transcriptText = player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd)+"; end with " + total+ MyFormatter.pluralize(" PU", total) + " total";
+        String transcriptText = player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU ", toAdd)+"("+blockadeLoss+" lost)"+"; end with " + total+ MyFormatter.pluralize(" PU", total) + " total";
         aBridge.getHistoryWriter().startEvent(transcriptText);
         
         if(isWarBonds(player))
@@ -238,6 +242,7 @@ public abstract class AbstractEndTurnDelegate
     {
         int value = 0;
         Iterator<Territory> iter = territories.iterator();
+        HashSet<Territory> canBeBlockaded = new HashSet<Territory>();
         while(iter.hasNext() )
         {
             Territory current = (Territory) iter.next();
@@ -273,10 +278,30 @@ public abstract class AbstractEndTurnDelegate
             		value += attatchment.getProduction();
             	}
             }
+           
         }
         return value;
     }
-
+    // finds losses due to blockades etc, positive value returned.
+    protected int getProductionLoss (PlayerID player, GameData data) {
+    	Collection<Territory> blockable = Match.getMatches(data.getMap().getTerritories(),Matches.territoryIsBlockade);
+    	Match<Unit> enemyUnits = new  CompositeMatchAnd<Unit>( Matches.enemyUnit(player,data));
+    	int totalLoss = 0;
+    	for( Territory b:blockable ){
+    		int maxLoss = 0;
+    		for( Territory m:data.getMap().getNeighbors(b)) {
+    			if( m.getOwner().equals(player))
+    				maxLoss += TerritoryAttachment.get(m).getProduction();
+    		}
+    		int loss = 0;
+    		Collection<Unit> enemies = Match.getMatches(b.getUnits().getUnits(), enemyUnits);
+    		for(Unit u: enemies)
+    			loss += UnitAttachment.get(u.getType()).getBlockade();
+    		totalLoss += Math.min(maxLoss,loss);
+    	}
+    	return totalLoss;
+    }
+    
     private boolean isWarBonds(PlayerID player)
     {
         TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);

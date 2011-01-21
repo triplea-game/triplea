@@ -90,6 +90,7 @@ public class TerritoryAttachment extends DefaultAttachment
     private boolean m_airBase = false;
     private boolean m_kamikazeZone = false;
     private int m_unitProduction = 0;  
+    private boolean m_blockadeZone = false;
     //private String m_unitProduction = "0";  
 
   /** Creates new TerritoryAttatchment */
@@ -246,5 +247,15 @@ public class TerritoryAttachment extends DefaultAttachment
     public void setKamikazeZone(String value)
     {
     	m_kamikazeZone = getBool(value);
+    }
+    
+    public void setBlockadeZone(String value)
+    {
+    	m_blockadeZone = getBool(value);
+    }
+    
+    public boolean isBlockadeZone()
+    {
+    	return m_blockadeZone;
     }
 }

@@ -644,7 +644,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         //let sea battles occur before we load transports
         populateCombatMoveSea(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        if (!moveUnits.isEmpty() || !moveRoutes.isEmpty())
         {
         	s_logger.finer("moving " + moveUnits);
             s_logger.finer("Route " +moveRoutes);
@@ -658,7 +658,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         s_logger.fine("populateTransportLoad");
         populateTransportLoad(false, data, moveUnits, moveRoutes, transportsToLoad, player);
         doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
-        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        if (!moveUnits.isEmpty() || !moveRoutes.isEmpty())
         {
         	s_logger.finer("moving " + moveUnits);
             s_logger.finer("Route " +moveRoutes);
@@ -672,7 +672,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		s_logger.fine("protectOurAllies");
 		protectOurAllies(true, data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        if (!moveUnits.isEmpty() || !moveRoutes.isEmpty())
         {
         	s_logger.finer("moving " + moveUnits);
             s_logger.finer("Route " +moveRoutes);
@@ -686,7 +686,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         s_logger.fine("Special Transport Move");
         specialTransportMove(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        if (!moveUnits.isEmpty() || !moveRoutes.isEmpty())
         {
         	s_logger.finer("moving " + moveUnits);
             s_logger.finer("Route " +moveRoutes);
@@ -700,7 +700,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         s_logger.fine("Quick transport Unload");
         quickTransportUnload(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        if (!moveUnits.isEmpty() || !moveRoutes.isEmpty())
         {
         	s_logger.finer("moving " + moveUnits);
             s_logger.finer("Route " +moveRoutes);
@@ -714,7 +714,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		s_logger.fine("Amphib Map Unload");
 		amphibMapUnload(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        if (!moveUnits.isEmpty() || !moveRoutes.isEmpty())
         {
         	s_logger.finer("moving " + moveUnits);
             s_logger.finer("Route " +moveRoutes);
@@ -728,7 +728,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         s_logger.fine("firstTransportMove"); //probably don't need this anymore
         firstTransportMove(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        if (!moveUnits.isEmpty() || !moveRoutes.isEmpty())
         {
         	s_logger.finer("moving " + moveUnits);
             s_logger.finer("Route " +moveRoutes);
@@ -743,7 +743,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         populateTransportMove(data, moveUnits, moveRoutes, player);
 //        simulatedTransportMove(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        if (!moveUnits.isEmpty() || !moveRoutes.isEmpty())
         {
         	s_logger.finer("moving " + moveUnits);
             s_logger.finer("Route " +moveRoutes);
@@ -757,7 +757,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		s_logger.fine("Amphib Map Unload");
 		amphibMapUnload(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        if (!moveUnits.isEmpty() || !moveRoutes.isEmpty())
         {
         	s_logger.finer("moving " + moveUnits);
             s_logger.finer("Route " +moveRoutes);
@@ -771,7 +771,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		s_logger.fine("Populate Transport Unload");
 		populateTransportUnload(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        if (!moveUnits.isEmpty() || !moveRoutes.isEmpty())
         {
         	s_logger.finer("moving " + moveUnits);
             s_logger.finer("Route " +moveRoutes);
@@ -800,7 +800,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		s_logger.fine("Regular Combat Move");
         populateCombatMove(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        if (!moveUnits.isEmpty() || !moveRoutes.isEmpty())
         {
         	s_logger.finer("moving " + moveUnits);
             s_logger.finer("Route " +moveRoutes);
@@ -815,7 +815,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		s_logger.fine("Special Plane Attack");
         specialPlaneAttack(data, moveUnits, moveRoutes, player);
         doMove(moveUnits, moveRoutes, null, moveDel);
-        if (!moveUnits.isEmpty() && !moveRoutes.isEmpty())
+        if (!moveUnits.isEmpty() || !moveRoutes.isEmpty())
         {
         	s_logger.finer("moving " + moveUnits);
             s_logger.finer("Route " +moveRoutes);

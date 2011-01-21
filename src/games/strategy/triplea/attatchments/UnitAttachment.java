@@ -86,6 +86,7 @@ public class UnitAttachment extends DefaultAttachment
 
   private int m_bombard = -1;
   private int m_unitSupportCount = -1;
+  private int m_blockade = 0;
   //TODO future use KEV
   // future private int m_artilleryBonus = -1;
   
@@ -553,6 +554,16 @@ public class UnitAttachment extends DefaultAttachment
   public boolean getCanBeDamaged()
   {
     return m_canBeDamaged;
+  }
+  
+  public void setBlockade(String s)
+  {
+	  m_blockade = getInt(s);
+  }
+
+  public int getBlockade()
+  {
+    return m_blockade;
   }
   
   public void validate(GameData data) throws GameParseException

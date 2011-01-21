@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* New Territory Attachment, blockadeZone, and Unit Attachment, blockade = value, will allow sea units to blockade territories. (squid daddy)
+
 * national objectives addition of 'uses' and 'atWarPlayers'. Still needs some work on atWar. (squid daddy)
 
 * directOwnershipTerritories National Objective added, ownership by an ally doesn't count. (astabada/franz)
