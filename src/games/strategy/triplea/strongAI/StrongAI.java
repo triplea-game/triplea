@@ -156,6 +156,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		m_seaTerrAttacked.addAll(seaTerr);
 	}
 	
+	private void clearSeaTerrAttacked()
+	{
+		m_seaTerrAttacked.clear();
+	}
+	
 	private List<Territory> getSeaTerrAttacked()
 	{
 		List<Territory> seaTerr = new ArrayList<Territory>(m_seaTerrAttacked);
@@ -165,6 +170,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	private void setLandTerrAttacked(Collection<Territory> landTerr)
 	{
 		m_landTerrAttacked.addAll(landTerr);
+	}
+
+	private void clearLandTerrAttacked()
+	{
+		m_landTerrAttacked.clear();
 	}
 	
 	private List<Territory> getLandTerrAttacked()
@@ -632,6 +642,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         //m_alliedTerrs = SUtils.allAlliedTerritories(data, player);
         //m_transTerrs = SUtils.findCertainShips(data, player, Matches.UnitIsTransport);
         m_myCapital = TerritoryAttachment.getCapital(player, data);
+        clearSeaTerrAttacked(); // clear out global vars
+        clearLandTerrAttacked();
         
         List<Collection<Unit>> moveUnits = new ArrayList<Collection<Unit>>();
         List<Route> moveRoutes = new ArrayList<Route>();
