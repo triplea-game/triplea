@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Fixed a null pointer errors in Moore AI's rank territories method. (veqryn)
+
 * Combined isTerritoryEnemyAndNotNuetralWater AND isTerritoryEnemyAndNotNeutral INTO isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted. (veqryn)
 
 * New Territory Attachment, blockadeZone, and Unit Attachment, blockade = value, will allow sea units to blockade territories. (squid daddy)

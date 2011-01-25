@@ -5005,7 +5005,7 @@ public class SUtils
 			Territory aFTerr = aFIter.next();
 			float aFPotential = SUtils.getStrengthOfPotentialAttackers(aFTerr, data, player, tFirst, true, null);
 			float alliedStrength = SUtils.strengthOfTerritory(data, aFTerr, player, false, false, tFirst, true);
-			if (aFPotential < alliedStrength * 0.75F || aFPotential < 1.0F)
+			if (aFPotential < alliedStrength * 0.75F || aFPotential < 1.0F || !Matches.TerritoryIsPassableAndNotRestricted(player).match(aFTerr))
 				aFIter.remove();
 		}
 		List<Territory> aFNeighbors = new ArrayList<Territory>();
@@ -5015,7 +5015,7 @@ public class SUtils
 		}
 		for (Territory eTerr : data.getMap().getTerritories())
 		{
-			if (eTerr.isWater() || Matches.TerritoryIsImpassable.match(eTerr))
+			if (eTerr.isWater() || Matches.TerritoryIsImpassable.match(eTerr) || !Matches.TerritoryIsPassableAndNotRestricted(player).match(eTerr))
 				continue;
 			float alliedPotential = getStrengthOfPotentialAttackers(eTerr, data, ePlayer, tFirst, true, null);
 			float rankStrength = getStrengthOfPotentialAttackers(eTerr, data, player, tFirst, true, ignoreTerr);
