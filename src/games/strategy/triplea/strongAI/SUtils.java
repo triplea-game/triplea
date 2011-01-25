@@ -4983,9 +4983,16 @@ public class SUtils
 		Territory myCapital = TerritoryAttachment.getCapital(player, data);
 		int minDist = 1000;
 		int playerPUs = getLeftToSpend(data, player);
-		for (Territory eCapTerr : enemyCapitals)
+		Iterator<Territory> eCapsIter = enemyCapitals.iterator();
+		while (eCapsIter.hasNext())
 		{
-			int dist = data.getMap().getDistance(myCapital, eCapTerr);
+			Territory eCap = eCapsIter.next();
+			if (Matches.isTerritoryFriendly(player, data).match(eCap) && Matches.territoryHasAlliedUnits(player, data).match(eCap) && !Matches.territoryHasEnemyLandNeighbor(data, player).match(eCap))
+			{
+				eCapsIter.remove();
+				continue;
+			}
+			int dist = data.getMap().getDistance(myCapital, eCap);
 			minDist = Math.min(minDist, dist);
 		}
 		
@@ -5005,7 +5012,8 @@ public class SUtils
 			Territory aFTerr = aFIter.next();
 			float aFPotential = SUtils.getStrengthOfPotentialAttackers(aFTerr, data, player, tFirst, true, null);
 			float alliedStrength = SUtils.strengthOfTerritory(data, aFTerr, player, false, false, tFirst, true);
-			if (aFPotential < alliedStrength * 0.75F || aFPotential < 1.0F || !Matches.TerritoryIsPassableAndNotRestricted(player).match(aFTerr))
+			if (aFPotential < alliedStrength * 0.75F || aFPotential < 1.0F || !Matches.TerritoryIsPassableAndNotRestricted(player).match(aFTerr) 
+					|| (Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data).match(aFTerr) && Matches.territoryHasEnemyLandNeighbor(data, player).match(aFTerr)))
 				aFIter.remove();
 		}
 		List<Territory> aFNeighbors = new ArrayList<Territory>();

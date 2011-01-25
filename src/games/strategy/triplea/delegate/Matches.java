@@ -825,7 +825,8 @@ public class Matches
     		{
     			// This method will still return true if territory t is an impassible or restricted territory With enemy neighbors. Makes sure your AI does not include any impassible or restricted territories by using this:
     			// CompositeMatch<Territory> territoryHasEnemyLandNeighborAndIsNotImpassibleOrRestricted = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player), Matches.territoryHasEnemyLandNeighbor(data, player));
-    			if (data.getMap().getNeighbors(t, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data)).size() > 0)
+    			CompositeMatch<Territory> condition = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
+    			if (data.getMap().getNeighbors(t, condition).size() > 0)
     				return true;
     			return false;
     		}
