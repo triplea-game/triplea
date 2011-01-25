@@ -265,7 +265,9 @@ public class Matches
             public boolean match(Unit unit)
             {
                 UnitAttachment ua = UnitAttachment.get(unit.getType());
-                return ua.getAttack(id) != 0;
+                if (ua.getMovement(id) <= 0)
+                	return false;
+                return ua.getAttack(id) > 0;
             }
         };
     }
@@ -277,7 +279,9 @@ public class Matches
     		public boolean match(UnitType uT)
     		{
     			UnitAttachment ua = UnitAttachment.get(uT);
-    			return ua.getAttack(id) != 0;
+                if (ua.getMovement(id) <= 0)
+                	return false;
+    			return ua.getAttack(id) > 0;
     		}
     	};
     }
