@@ -943,7 +943,7 @@ public class MoveValidator
         {
         	Collection<Territory> end = Collections.singleton(route.getEnd());
         	
-        	if(Match.allMatch(end, Matches.isTerritoryEnemyAndNotNeutral(player, data)) && !route.getEnd().getUnits().isEmpty())
+        	if(Match.allMatch(end, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data)) && !route.getEnd().getUnits().isEmpty())
         		return result.setErrorReturnResult("Units cannot participate in multiple battles");
         }
         
@@ -960,7 +960,7 @@ public class MoveValidator
 
         CompositeMatch<Territory> battle = new CompositeMatchOr<Territory>();
         battle.add(Matches.TerritoryIsNeutral);
-        battle.add(Matches.isTerritoryEnemyAndNotNeutral(player, data));
+        battle.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
 //TODO need to account for subs AND transports that are ignored, not just OR
         if (battle.match(route.getEnd()))
         {
@@ -1003,7 +1003,7 @@ public class MoveValidator
             }
         } else
         {
-            CompositeMatch<Territory> neutralOrEnemy = new CompositeMatchOr<Territory>(Matches.TerritoryIsNeutral, Matches.isTerritoryEnemyAndNotNeutral(player, data));
+            CompositeMatch<Territory> neutralOrEnemy = new CompositeMatchOr<Territory>(Matches.TerritoryIsNeutral, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
             if (route.someMatch(neutralOrEnemy))
                 return result.setErrorReturnResult("Cannot move units to neutral or enemy territories in non combat");
         }
@@ -1022,7 +1022,7 @@ public class MoveValidator
     		{
     			TripleAUnit tAUnit = (TripleAUnit) unit;
     			//if end doesn't equal beginning and territory is still in friendly hands
-    			if(route.getEnd() != tAUnit.getOriginatedFrom() && !Match.allMatch(end, Matches.isTerritoryEnemyAndNotNeutral(player, data)))
+    			if(route.getEnd() != tAUnit.getOriginatedFrom() && !Match.allMatch(end, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data)))
     				result.addDisallowedUnit("Scrambled units must return to base",unit);
     		}
     	}

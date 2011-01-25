@@ -313,7 +313,7 @@ public class BattleTracker implements java.io.Serializable
 
         CompositeMatch<Territory> blitzable = new CompositeMatchOr<Territory>();
         blitzable.add(Matches.TerritoryIsBlitzable(id, data));
-        blitzable.add(Matches.isTerritoryEnemyAndNotNeutral(id, data));
+        blitzable.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data));
         
         conquerable.add(blitzable);
 

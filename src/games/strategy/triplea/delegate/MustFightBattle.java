@@ -1602,7 +1602,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {*/
             //the air unit may have come from a conquered or enemy territory, don't allow retreating
             Match<Territory> conqueuredOrEnemy = new CompositeMatchOr<Territory>(
-                Matches.isTerritoryEnemyAndNotNeutral(m_attacker, m_data),
+                Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(m_attacker, m_data),
                 new CompositeMatchAnd<Territory>(
                     //Matches.TerritoryIsLand,
                     Matches.TerritoryIsWater,

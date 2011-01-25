@@ -819,7 +819,7 @@ public class Matches
     	{
     		public boolean match(Territory t)
     		{
-    			if (data.getMap().getNeighbors(t, Matches.isTerritoryEnemyAndNotNeutral(player, data)).size() > 0)
+    			if (data.getMap().getNeighbors(t, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data)).size() > 0)
     				return true;
     			return false;
     		}
@@ -1299,7 +1299,8 @@ public class Matches
         };
     }
 
-    public static Match<Territory> isTerritoryEnemyAndNotNuetralWater(final PlayerID player, final GameData data)
+
+    public static Match<Territory> isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(final PlayerID player, final GameData data)
     {
         return new Match<Territory>()
         {
@@ -1307,24 +1308,12 @@ public class Matches
             {
                 if(t.getOwner().equals(player))
                     return false;
-                if(t.isWater() && t.getOwner().isNull() && TerritoryAttachment.get(t) == null)
+                // if we look at territory attachments, may have funny results for blockades or other things that are passable and not owned. better to check them by alliance. (veqryn)
+                // OLD code included: if(t.isWater() && t.getOwner().isNull() && TerritoryAttachment.get(t) == null){return false;}
+                if(t.getOwner().equals(PlayerID.NULL_PLAYERID) && t.isWater()) // this will still return true for enemy and neutral owned convoy zones (water)
                     return false;
-                return !data.getAllianceTracker().isAllied(player, t.getOwner());
-            }
-        };
-    }
-
-
-    public static Match<Territory> isTerritoryEnemyAndNotNeutral(final PlayerID player, final GameData data)
-    {
-        return new Match<Territory>()
-        {
-            public boolean match(Territory t)
-            {
-                if(t.getOwner().equals(player))
-                    return false;
-                if(t.getOwner().equals(PlayerID.NULL_PLAYERID) && t.isWater())
-                    return false;
+                if(!Matches.TerritoryIsPassableAndNotRestricted(player).match(t))
+                	return false;
                 return !data.getAllianceTracker().isAllied(player, t.getOwner());
             }
         };

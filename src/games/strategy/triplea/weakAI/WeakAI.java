@@ -101,7 +101,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             return false;
         
         //find a land route to an enemy territory from our capitol
-        Route invasionRoute = Utils.findNearest(capitol, Matches.isTerritoryEnemyAndNotNeutral(player, getPlayerBridge().getGameData()),
+        Route invasionRoute = Utils.findNearest(capitol, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, getPlayerBridge().getGameData()),
                 new CompositeMatchAnd<Territory> (Matches.TerritoryIsLand,new InverseMatch<Territory>(Matches.TerritoryIsNeutral)), 
                 getPlayerBridge().getGameData());
         
@@ -752,7 +752,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         final Collection<Unit> unitsAlreadyMoved = new HashSet<Unit>();
         //find the territories we can just walk into
         
-        CompositeMatchOr<Territory> walkInto = new CompositeMatchOr<Territory>(Matches.isTerritoryEnemyAndNotNeutral(player, data), Matches.isTerritoryFreeNeutral(data));
+        CompositeMatchOr<Territory> walkInto = new CompositeMatchOr<Territory>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data), Matches.isTerritoryFreeNeutral(data));
         List<Territory> enemyOwned = Match.getMatches(data.getMap().getTerritories(), walkInto);
 
         
