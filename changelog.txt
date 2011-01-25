@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Moore AI improvement: created a new method so that the AI will attempt to defend the beginning and end of its transport chain. (veqryn)
+
 * Fixed a null pointer errors in Moore AI's rank territories method. (veqryn)
 
 * Combined isTerritoryEnemyAndNotNuetralWater AND isTerritoryEnemyAndNotNeutral INTO isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted. (veqryn)

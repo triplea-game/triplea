@@ -652,9 +652,24 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		s_logger.fine("Start Combat for: " + player.getName());
 		
 		last = System.currentTimeMillis();
+		
 		s_logger.fine("Sea Combat Move");
 		// let sea battles occur before we load transports
 		populateCombatMoveSea(data, moveUnits, moveRoutes, player);
+		doMove(moveUnits, moveRoutes, null, moveDel);
+		if (!moveUnits.isEmpty() || !moveRoutes.isEmpty())
+		{
+			s_logger.finer("moving " + moveUnits);
+			s_logger.finer("Route " + moveRoutes);
+		}
+		moveUnits.clear();
+		moveRoutes.clear();
+		now = System.currentTimeMillis();
+		s_logger.finest("Time Taken " + (now - last));
+		last = now;
+		
+		s_logger.fine("Defend Start and End of Transport Chain");
+		defendTransportLocations(data, moveUnits, moveRoutes, player);
 		doMove(moveUnits, moveRoutes, null, moveDel);
 		if (!moveUnits.isEmpty() || !moveRoutes.isEmpty())
 		{
@@ -1883,6 +1898,81 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			transUnits.addAll(transportedUnits);
 			moveUnits.add(transUnits);
 			moveRoutes.add(seaRoute);
+		}
+	}
+	
+	private void defendTransportLocations(GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
+	{
+		// (VEQRYN) the purpose of this method is to put 1 decent ship at the beginning and the end of a amphibious route, if there is an amphibious route and we own transports
+		// because the ships may already be there, they will show up as still having movement after this method unless we do something, 
+		// so since we don't want the next method to move them, we must manually set their movement to zero that way they will not be included in future methods
+		CompositeMatch<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater);
+		CompositeMatch<Unit> ourTransports = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsTransport);
+		Territory capitol = TerritoryAttachment.getCapital(player, data);
+		
+		if (!isAmphibAttack(player, false) || !Matches.territoryHasWaterNeighbor(data).match(capitol)) // will return if capitol is not next to water
+			return;
+		Set<Territory> waterCapNeighbors = data.getMap().getNeighbors(capitol, Matches.TerritoryIsWater);
+		if (waterCapNeighbors.isEmpty()) // should not happen, but just in case on some weird map
+			return;
+		List<Territory> terrsWithOurTransports = SUtils.findUnitTerr(data, player, ourTransports);
+		//Set<Territory> waterNearCap = data.getMap().getNeighbors(capitol, 4);
+		//terrsWithOurTransports.retainAll(waterNearCap);
+		if (terrsWithOurTransports.isEmpty() && !getDidPurchaseTransports())
+			return;
+		// populate alreadyMoved before we begin
+		List<Unit> unitsAlreadyMoved = new ArrayList<Unit>();
+		for (Unit u : data.getUnits().getUnits())
+		{
+			if (u.getOwner().equals(player) && TripleAUnit.get(u).getMovementLeft() < 1)
+				unitsAlreadyMoved.add(u);
+		}
+		
+		Territory waterCap = waterCapNeighbors.iterator().next();
+		Route goRoute = SUtils.findNearest(waterCap, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data), routeCondition, data);
+		if (goRoute == null)
+			return;
+		Territory startTerr = goRoute.getStart();
+		Territory endTerr = goRoute.getStart();
+		if (goRoute.getLength() > 1)
+		{
+			endTerr = goRoute.at(goRoute.getLength()-2);
+		}
+		
+		List<Collection<Unit>> xUnits = new ArrayList<Collection<Unit>>();
+		List<Route> xRoutes = new ArrayList<Route>();
+		List<Collection<Unit>> yUnits = new ArrayList<Collection<Unit>>();
+		List<Route> yRoutes = new ArrayList<Route>();
+		
+		// put a ship at the beginning of the route
+		// TODO: don't need this if the enemy has no ships within 2 or air within 3-4
+		if (Matches.TerritoryIsWater.match(startTerr) && Matches.territoryHasNoEnemyUnits(player, data).match(startTerr))
+		{
+			SUtils.inviteShipAttack(startTerr, 1, unitsAlreadyMoved, xUnits, xRoutes, data, player, false, false, false);
+			if (xRoutes.equals(null) && xUnits.size() > 0)
+			{
+				int x = UnitAttachment.get(TripleAUnit.get(xUnits.get(0).iterator().next()).getType()).getMovement(player);
+				TripleAUnit.get(xUnits.get(0).iterator().next()).setAlreadyMoved(x);
+			}
+			moveUnits.addAll(xUnits);
+			moveRoutes.addAll(xRoutes);
+			//unitsAlreadyMoved.addAll(xUnits);
+		}
+		
+		// put a ship at the end of the route, unless it is a 1 territory route
+		// TODO: don't need this if the enemy has no ships within 2 or air within 3-4
+		if (startTerr.equals(endTerr) || terrsWithOurTransports.isEmpty())
+			return;
+		if (Matches.TerritoryIsWater.match(endTerr) && Matches.territoryHasNoEnemyUnits(player, data).match(endTerr))
+		{
+			SUtils.inviteShipAttack(endTerr, 1, unitsAlreadyMoved, yUnits, yRoutes, data, player, false, false, false);
+			if (yRoutes.equals(null) && yUnits.size() > 0)
+			{
+				int x = UnitAttachment.get(TripleAUnit.get(yUnits.get(0).iterator().next()).getType()).getMovement(player);
+				TripleAUnit.get(yUnits.get(0).iterator().next()).setAlreadyMoved(x);
+			}
+			moveUnits.addAll(yUnits);
+			moveRoutes.addAll(yRoutes);
 		}
 	}
 	
