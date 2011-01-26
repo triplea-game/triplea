@@ -5032,14 +5032,14 @@ public class SUtils
 			boolean island = !SUtils.doesLandExistAt(eTerr, data, false);
 			eTerrValue += Matches.TerritoryIsVictoryCity.match(eTerr) ? 2.0F : 0.0F;
 			boolean lRCap = hasLandRouteToEnemyOwnedCapitol(eTerr, player, data);
-			eTerrValue += lRCap ? 10.0F : 0.0F;
+			eTerrValue += lRCap ? 16.0F : 0.0F; // 16 might be too much, consider changing to 8
 			if (lRCap && (!Matches.territoryHasEnemyFactory(data, player).match(eTerr) && !Matches.territoryHasAlliedFactory(data, player).match(eTerr)))
 			{
 				Route eCapRoute = findNearest(eTerr, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player), data);
 				if (eCapRoute != null)
-					eTerrValue = Math.max(eTerrValue - 7, eTerrValue - (eCapRoute.getLength() - 1));
+					eTerrValue = Math.max(eTerrValue - 8, eTerrValue - (eCapRoute.getLength() - 1)); // 8 might be too much, consider changing to 4
 			}
-			eTerrValue += Matches.territoryHasEnemyFactoryNeighbor(data, player).match(eTerr) ? 2.0F : 0.0F;
+			eTerrValue += Matches.territoryHasEnemyFactoryNeighbor(data, player).match(eTerr) ? 3.0F : 0.0F;
 			int eMinDist = 1000;
 			for (Territory eTerrCap : enemyCapitals)
 			{
@@ -5051,7 +5051,7 @@ public class SUtils
 			if (Matches.TerritoryIsLand.match(eTerr) && Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data).match(eTerr))
 			{
 				ourEnemyTerr.add(eTerr);
-				eTerrValue += productionValue;
+				eTerrValue += productionValue * 2;
 				float eTerrStrength = strength(eTerr.getUnits().getMatches(Matches.enemyUnit(player, data)), false, false, tFirst);
 				eTerrValue += alliedPotential > (rankStrength + eTerrStrength) ? productionValue : 0.0F;
 				if (island)
@@ -5066,7 +5066,7 @@ public class SUtils
 									eTerrValue += SUtils.doesLandExistAt(eTerr, data) ? 0.0F : 50.0F;
 								}
 				*/
-				float netStrength = eTerrStrength - alliedPotential + 0.5F * rankStrength;
+				float netStrength = (eTerrStrength - alliedPotential + 0.5F * rankStrength);
 				landStrengthMap.put(eTerr, netStrength);
 				landRankMap.put(eTerr, eTerrValue + netStrength * 0.25F);
 			}
@@ -5074,10 +5074,11 @@ public class SUtils
 			{
 				boolean hasENeighbors = Matches.territoryHasEnemyLandNeighbor(data, player).match(eTerr);
 				Route testERoute = findNearest(eTerr, enemyAndNoWater, noEnemyOrWater, data);
-				
-				eTerrValue += (hasENeighbors ? 1.0F : -1.0F);
+				if (island)
+					eTerrValue += -5.0F;
+				eTerrValue += (hasENeighbors ? 2.0F : -2.0F);
 				eTerrValue += (aFNeighbors.contains(eTerr)) ? 8.0F : 0.0F;
-				eTerrValue += (testERoute == null ? -1.0F : -(testERoute.getLength() - 2));
+				eTerrValue += (testERoute == null ? -20.0F : Math.max(-10.0F, -(testERoute.getLength() - 2))); // -20 and -10 might be too much, consider changing to -8 and -4
 				eTerrValue += (testERoute != null ? productionValue : 0.0F);
 				float aTerrStrength = strength(eTerr.getUnits().getMatches(Matches.alliedUnit(player, data)), false, false, tFirst);
 				// bonus for allied factory and allied factory with enemy neighbor
