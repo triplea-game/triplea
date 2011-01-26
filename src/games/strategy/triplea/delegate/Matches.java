@@ -1712,6 +1712,28 @@ public class Matches
     	};
     }
 
+    public static Match<Unit> unitIsNotInTerritories(final Collection<Territory> list)
+    {	
+    	return new Match<Unit>()
+    	{
+    		public boolean match(Unit u)
+    		{
+    			if (u.equals(null))
+    				return false;
+    			if (list.isEmpty())
+    				return true;
+    			Iterator<Territory> tIter = list.iterator();
+    			while (tIter.hasNext())
+    			{
+    				Territory t = tIter.next();
+    				if (t.getUnits().getUnits().contains(u))
+    					return false;
+    			}
+    			return true;
+    		}
+    	};
+    }
+
 
     public static Match<Territory> territoryHasEnemyCanal(final PlayerID player)
     {

@@ -2817,7 +2817,7 @@ public class SUtils
 	 */
 	public static float inviteBBEscort(Territory goTerr, float remainingStrengthNeeded, Collection<Unit> unitsAlreadyMoved, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, GameData data, PlayerID player)
 	{
-		CompositeMatch<Unit> BBUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitCanBombard(player), Matches.UnitIsNotStatic(player));
+		CompositeMatch<Unit> BBUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitCanBombard(player), Matches.UnitIsNotStatic(player), Matches.unitHasMovementLeft);
 		float BBStrength = 0.0F;
 		List<Territory> BBTerr = findOurShips(goTerr, data, player, BBUnit);
 		for (Territory BBT : BBTerr)
@@ -2880,16 +2880,16 @@ public class SUtils
 				boolean includeTransports, Match<Unit> types)
 	{
 		final BattleDelegate battleD = DelegateFinder.battleDelegate(data);
-		CompositeMatch<Unit> ownedSeaUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsSea, Matches.UnitIsNotStatic(player));
-		CompositeMatch<Unit> ownedAirUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier, Matches.UnitIsNotStatic(player));
+		CompositeMatch<Unit> ownedSeaUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsSea, Matches.UnitIsNotStatic(player), Matches.unitHasMovementLeft);
+		CompositeMatch<Unit> ownedAirUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier, Matches.UnitIsNotStatic(player), Matches.unitHasMovementLeft);
 		if (types != null)
 		{
 			ownedSeaUnit = new CompositeMatchAnd<Unit>(types, ownedSeaUnit);
 			ownedAirUnit = new CompositeMatchAnd<Unit>(types, ownedAirUnit);
 		}
-		CompositeMatch<Unit> carrierUnit = new CompositeMatchAnd<Unit>(ownedSeaUnit, Matches.UnitIsCarrier, Matches.UnitIsNotStatic(player));
+		CompositeMatch<Unit> carrierUnit = new CompositeMatchAnd<Unit>(ownedSeaUnit, Matches.UnitIsCarrier, Matches.UnitIsNotStatic(player), Matches.unitHasMovementLeft);
 		CompositeMatch<Unit> carrierAndFighters = new CompositeMatchOr<Unit>(carrierUnit, ownedAirUnit);
-		CompositeMatch<Unit> ownedSeaUnitSansTransports = new CompositeMatchAnd<Unit>(ownedSeaUnit, Matches.UnitIsNotTransport, Matches.UnitIsNotStatic(player));
+		CompositeMatch<Unit> ownedSeaUnitSansTransports = new CompositeMatchAnd<Unit>(ownedSeaUnit, Matches.UnitIsNotTransport, Matches.UnitIsNotStatic(player), Matches.unitHasMovementLeft);
 		if (types != null)
 			ownedSeaUnit = new CompositeMatchAnd<Unit>(types, ownedSeaUnit);
 		HashMap<Territory, Float> attackShipMap = new HashMap<Territory, Float>();
@@ -3008,10 +3008,10 @@ public class SUtils
 				boolean tFirst, boolean allowEnemy, List<Territory> seaTerrAttacked)
 	{ // needs a check for remainingStrength
 		TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
-		CompositeMatch<Unit> airUnits = new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player), Matches.UnitIsNotStatic(player));
-		CompositeMatch<Unit> escortShip = new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsNotTransport, Matches.unitIsOwnedBy(player), Matches.UnitIsNotStatic(player));
+		CompositeMatch<Unit> airUnits = new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player), Matches.UnitIsNotStatic(player), Matches.unitHasMovementLeft);
+		CompositeMatch<Unit> escortShip = new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsNotTransport, Matches.unitIsOwnedBy(player), Matches.UnitIsNotStatic(player), Matches.unitHasMovementLeft);
 		CompositeMatch<Unit> escortUnit = new CompositeMatchOr<Unit>(airUnits, escortShip);
-		CompositeMatch<Unit> transportingUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.unitIsOwnedBy(player), Matches.UnitIsNotStatic(player));
+		CompositeMatch<Unit> transportingUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.unitIsOwnedBy(player), Matches.UnitIsNotStatic(player), Matches.unitHasMovementLeft);
 		Set<Territory> tCopy = data.getMap().getNeighbors(target, 3);
 		List<Territory> testCapNeighbors = new ArrayList<Territory>(tCopy);
 		List<Territory> waterNeighbors = new ArrayList<Territory>();
@@ -3183,9 +3183,9 @@ public class SUtils
 	public static float invitePlaneAttack(boolean noncombat, boolean fightersOnly, Territory target, float remainingStrengthNeeded, Collection<Unit> unitsAlreadyMoved, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, GameData data,
 				PlayerID player)
 	{
-		CompositeMatch<Unit> airUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir, Matches.UnitIsNotStatic(player));
-		CompositeMatch<Unit> fighterUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanLandOnCarrier, Matches.UnitIsNotStatic(player));
-		CompositeMatch<Unit> carrierUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsCarrier, Matches.UnitIsNotStatic(player));
+		CompositeMatch<Unit> airUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir, Matches.UnitIsNotStatic(player), Matches.unitHasMovementLeft);
+		CompositeMatch<Unit> fighterUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanLandOnCarrier, Matches.UnitIsNotStatic(player), Matches.unitHasMovementLeft);
+		CompositeMatch<Unit> carrierUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsCarrier, Matches.UnitIsNotStatic(player), Matches.unitHasMovementLeft);
 		List<Territory> planeTerr = findOurPlanes(target, data, player);
 		List<Territory> planeOnWater = new ArrayList<Territory>(planeTerr);
 		for (Territory qP : planeTerr)
@@ -3303,7 +3303,7 @@ public class SUtils
 	public static float inviteLandAttack(boolean nonCombat, Territory enemy, float remainingStrengthNeeded, Collection<Unit> unitsAlreadyMoved, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, GameData data, PlayerID player,
 				boolean attacking, boolean forced, List<Territory> alreadyAttacked)
 	{
-		CompositeMatch<Unit> landUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotStatic(player), Matches.UnitIsNotFactory);
+		CompositeMatch<Unit> landUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotStatic(player), Matches.UnitIsNotFactory, Matches.unitHasMovementLeft);
 		
 		List<Territory> ourLandNeighbors = getNeighboringLandTerritories(data, player, enemy);
 		float totStrength = 0.0F;
@@ -3385,7 +3385,7 @@ public class SUtils
 	public static float inviteBlitzAttack(boolean nonCombat, Territory enemy, float remainingStrengthNeeded, Collection<Unit> unitsAlreadyMoved, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, GameData data, PlayerID player,
 				boolean attacking, boolean forced)
 	{// Blitz through owned into enemy
-		CompositeMatch<Unit> blitzUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBlitz, Matches.UnitIsNotStatic(player));
+		CompositeMatch<Unit> blitzUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBlitz, Matches.UnitIsNotStatic(player), Matches.unitHasMovementLeft);
 		CompositeMatch<Territory> alliedAndNotWater = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsNotImpassableToLandUnits(player));
 		CompositeMatch<Territory> noEnemyUnitsAndNotWater = new CompositeMatchAnd<Territory>(Matches.territoryHasNoEnemyUnits(player, data), Matches.TerritoryIsNotImpassableToLandUnits(player));
 		
@@ -5032,12 +5032,12 @@ public class SUtils
 			boolean island = !SUtils.doesLandExistAt(eTerr, data, false);
 			eTerrValue += Matches.TerritoryIsVictoryCity.match(eTerr) ? 2.0F : 0.0F;
 			boolean lRCap = hasLandRouteToEnemyOwnedCapitol(eTerr, player, data);
-			eTerrValue += lRCap ? 2.0F : 0.0F;
+			eTerrValue += lRCap ? 10.0F : 0.0F;
 			if (lRCap && (!Matches.territoryHasEnemyFactory(data, player).match(eTerr) && !Matches.territoryHasAlliedFactory(data, player).match(eTerr)))
 			{
 				Route eCapRoute = findNearest(eTerr, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player), data);
 				if (eCapRoute != null)
-					eTerrValue -= eCapRoute.getLength() - 1;
+					eTerrValue = Math.max(eTerrValue - 7, eTerrValue - (eCapRoute.getLength() - 1));
 			}
 			eTerrValue += Matches.territoryHasEnemyFactoryNeighbor(data, player).match(eTerr) ? 2.0F : 0.0F;
 			int eMinDist = 1000;

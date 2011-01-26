@@ -63,7 +63,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	private final static Logger s_logger = Logger.getLogger(StrongAI.class.getName());
 	private Territory m_factTerr = null, m_seaTerr = null, m_battleTerr = null; // determine the target Territory during Purchase and Save it
 	private Territory m_myCapital = null;
-	private List<Territory> m_alliedTerrs = null, m_transTerrs = null;
+	// private List<Territory> m_alliedTerrs = new ArrayList<Territory>(), m_transTerrs = new ArrayList<Territory>();
+	private List<Territory> m_transportDropOffLocales = new ArrayList<Territory>();
 	private boolean m_AE = false, m_transports_may_die = true, m_zero_combat_attack = true, m_cap_danger = false, m_natObjective = false;
 	private boolean m_bought_Attack_Ships = false, m_keep_Ships_At_Base = false, m_bought_Transports = false;
 	private boolean m_onOffense = false;
@@ -148,6 +149,16 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	private boolean getDidPurchaseTransports()
 	{
 		return m_bought_Transports;
+	}
+	
+	private void setTransportDropOffLocales(List<Territory> transportDropOffLocales)
+	{
+		m_transportDropOffLocales = transportDropOffLocales;
+	}
+	
+	private List<Territory> getTransportDropOffLocales()
+	{
+		return m_transportDropOffLocales;
 	}
 	
 	private void setSeaTerrAttacked(Collection<Territory> seaTerr)
@@ -653,9 +664,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		
 		last = System.currentTimeMillis();
 		
-		s_logger.fine("Sea Combat Move");
-		// let sea battles occur before we load transports
-		populateCombatMoveSea(data, moveUnits, moveRoutes, player);
+		s_logger.fine("Defend Start and End of Transport Chain");
+		defendTransportingLocations(data, moveUnits, moveRoutes, player);
 		doMove(moveUnits, moveRoutes, null, moveDel);
 		if (!moveUnits.isEmpty() || !moveRoutes.isEmpty())
 		{
@@ -668,8 +678,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		s_logger.finest("Time Taken " + (now - last));
 		last = now;
 		
-		s_logger.fine("Defend Start and End of Transport Chain");
-		defendTransportLocations(data, moveUnits, moveRoutes, player);
+		s_logger.fine("Sea Combat Move");
+		// let sea battles occur before we load transports
+		populateCombatMoveSea(data, moveUnits, moveRoutes, player);
 		doMove(moveUnits, moveRoutes, null, moveDel);
 		if (!moveUnits.isEmpty() || !moveRoutes.isEmpty())
 		{
@@ -1901,16 +1912,18 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 	}
 	
-	private void defendTransportLocations(GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
+	private void defendTransportingLocations(GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
 	{
 		// (VEQRYN) the purpose of this method is to put 1 decent ship at the beginning and the end of a amphibious route, if there is an amphibious route and we own transports
 		// because the ships may already be there, they will show up as still having movement after this method unless we do something, 
 		// so since we don't want the next method to move them, we must manually set their movement to zero that way they will not be included in future methods
 		CompositeMatch<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater);
-		CompositeMatch<Unit> ourTransports = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsTransport);
-		CompositeMatch<Unit> ourWarships = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsSea, Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1), Matches.UnitIsNotSub);
+		CompositeMatch<Territory> endCondition = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data), Matches.TerritoryIsLand);
+		//CompositeMatch<Unit> ourTransports = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsTransport);
+		CompositeMatch<Unit> ourWarships = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsSea, Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1), Matches.UnitIsNotSub, Matches.UnitIsNotTransport);
 		CompositeMatch<Unit> enemyWarships = new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, player), Matches.UnitIsSea, Matches.unitCanAttack(player));
 		CompositeMatch<Unit> enemyAir = new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, player), Matches.UnitIsAir, Matches.unitCanAttack(player));
+		CompositeMatch<Unit> enemyAttackStuff = new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, player), Matches.unitCanAttack(player));
 		Territory capitol = TerritoryAttachment.getCapital(player, data);
 		
 		if (!isAmphibAttack(player, false) || !Matches.territoryHasWaterNeighbor(data).match(capitol)) // will return if capitol is not next to water
@@ -1918,11 +1931,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		Set<Territory> waterCapNeighbors = data.getMap().getNeighbors(capitol, Matches.TerritoryIsWater);
 		if (waterCapNeighbors.isEmpty()) // should not happen, but just in case on some weird map
 			return;
-		List<Territory> terrsWithOurTransports = SUtils.findUnitTerr(data, player, ourTransports);
+		//List<Territory> terrsWithOurTransports = SUtils.findUnitTerr(data, player, ourTransports);
 		//Set<Territory> waterNearCap = data.getMap().getNeighbors(capitol, 4);
 		//terrsWithOurTransports.retainAll(waterNearCap);
-		if (terrsWithOurTransports.isEmpty() && !getDidPurchaseTransports())
-			return;
+		//if (terrsWithOurTransports.isEmpty() && !getDidPurchaseTransports())
+		//	return;
+		
 		// populate alreadyMoved before we begin
 		List<Unit> unitsAlreadyMoved = new ArrayList<Unit>();
 		for (Unit u : data.getUnits().getUnits())
@@ -1932,80 +1946,193 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		
 		Territory waterCap = waterCapNeighbors.iterator().next();
-		Route goRoute = SUtils.findNearest(waterCap, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data), routeCondition, data);
+		Route goRoute = SUtils.findNearest(waterCap, endCondition, routeCondition, data);
 		if (goRoute == null)
 			return;
 		Territory startTerr = goRoute.getStart();
 		Territory endTerr = goRoute.getStart();
+		Territory firstEndTerr = goRoute.getStart();
 		if (goRoute.getLength() > 1)
 		{
 			endTerr = goRoute.at(goRoute.getLength()-2);
+			firstEndTerr = goRoute.at(goRoute.getLength()-2);
 		}
+		List<Territory> TransportDropOffLocales = new ArrayList<Territory>(getTransportDropOffLocales());
+		if (TransportDropOffLocales.isEmpty())
+		{
+			List<Territory> firstEndTerrs = new ArrayList<Territory>();
+			firstEndTerrs.add(endTerr);
+			setTransportDropOffLocales(firstEndTerrs);
+		}
+		else
+			firstEndTerr = TransportDropOffLocales.get(0);
+		// TODO: this could be greatly improved by using the route finding info from each way moore finds transporting routes AND by making some of the routine stuff here into a separate method
 		
 		List<Collection<Unit>> xUnits = new ArrayList<Collection<Unit>>();
 		List<Route> xRoutes = new ArrayList<Route>();
-		List<Collection<Unit>> yUnits = new ArrayList<Collection<Unit>>();
-		List<Route> yRoutes = new ArrayList<Route>();
 		
 		List<Territory> terrsWithEnemyWarships = SUtils.findUnitTerr(data, player, enemyWarships);
 		List<Territory> terrsWithEnemyAir = SUtils.findUnitTerr(data, player, enemyAir);
+		List<Territory> terrsWithEnemyAttackStuff = SUtils.findUnitTerr(data, player, enemyAttackStuff);
 		Set<Territory> startTerrNeighborsW = data.getMap().getNeighbors(startTerr, 2);
 		Set<Territory> endTerrNeighborsW = data.getMap().getNeighbors(endTerr, 2);
+		Set<Territory> firstEndTerrNeighborsW = data.getMap().getNeighbors(firstEndTerr, 2);
 		Set<Territory> startTerrNeighborsA = data.getMap().getNeighbors(startTerr, 3); // could be anywhere from 3 to 5, if you imagine the range of bombers
 		Set<Territory> endTerrNeighborsA = data.getMap().getNeighbors(endTerr, 3);
+		Set<Territory> firstEndTerrNeighborsA = data.getMap().getNeighbors(firstEndTerr, 3);
+		Set<Territory> startFar = data.getMap().getNeighbors(startTerr, 7);
 		startTerrNeighborsW.retainAll(terrsWithEnemyWarships);
 		startTerrNeighborsA.retainAll(terrsWithEnemyAir);
 		endTerrNeighborsW.retainAll(terrsWithEnemyWarships);
 		endTerrNeighborsA.retainAll(terrsWithEnemyAir);
+		firstEndTerrNeighborsW.retainAll(terrsWithEnemyWarships);
+		firstEndTerrNeighborsA.retainAll(terrsWithEnemyAir);
+		startFar.retainAll(terrsWithEnemyAttackStuff);
 		
-		float startNeededStrength = SUtils.getStrengthOfPotentialAttackers(startTerr, data, player, false, false, null);
-		float endNeededStrength = SUtils.getStrengthOfPotentialAttackers(endTerr, data, player, false, false, null);
+		//List<PlayerID> enemyplayers = SUtils.getEnemyPlayers(data, player);
+		//PlayerID ePlayer = enemyplayers.get(0);
+		
+		float startNeededStrength = 1 + SUtils.getStrengthOfPotentialAttackers(startTerr, data, player, false, false, null);
+		float endNeededStrength = 1 + SUtils.getStrengthOfPotentialAttackers(endTerr, data, player, false, false, null);
+		float firstEndNeededStrength = 1 + SUtils.getStrengthOfPotentialAttackers(firstEndTerr, data, player, false, false, null);
 		startNeededStrength = Math.max(startNeededStrength, 5*startTerrNeighborsW.size());
 		startNeededStrength = Math.max(startNeededStrength, 3*startTerrNeighborsA.size());
 		endNeededStrength = Math.max(endNeededStrength, 5*endTerrNeighborsW.size());
 		endNeededStrength = Math.max(endNeededStrength, 3*endTerrNeighborsA.size());
+		firstEndNeededStrength = Math.max(firstEndNeededStrength, 5*firstEndTerrNeighborsW.size());
+		firstEndNeededStrength = Math.max(firstEndNeededStrength, 3*firstEndTerrNeighborsA.size());
 
-		// TODO: inviteshipattack sends aircraft sometimes instead of boats. also it sends too many units. ideally we send fewer units and put this before combatmovesea
 		// put a ship at the beginning of the route
-		if (Matches.TerritoryIsWater.match(startTerr) && Matches.territoryHasNoEnemyUnits(player, data).match(startTerr) && startNeededStrength > 0 && (startTerrNeighborsW.size() > 0 || startTerrNeighborsA.size() > 0))
+		if (Matches.TerritoryIsWater.match(startTerr) && Matches.territoryHasNoEnemyUnits(player, data).match(startTerr) && startNeededStrength > 0)
 		{
-			SUtils.inviteShipAttack(startTerr, startNeededStrength, unitsAlreadyMoved, xUnits, xRoutes, data, player, false, false, false);
-			if (xRoutes.equals(null) && xUnits.size() > 0)
-			{   // invite ships doesn't appear to send ships if you already have ships there, so this block may not be needed
-				int x = UnitAttachment.get(TripleAUnit.get(xUnits.get(0).iterator().next()).getType()).getMovement(player);
-				TripleAUnit.get(xUnits.get(0).iterator().next()).setAlreadyMoved(x);
+			// check to see if there is no way we can win if we move there
+			CompositeMatch<Unit> ourWarshipsZ = new CompositeMatchAnd<Unit>(ourWarships, Matches.unitIsInTerritory(startTerr).invert(), Matches.unitIsInTerritory(firstEndTerr).invert(), Matches.unitIsInTerritory(endTerr).invert());
+			float ourNeighborsStrength = SUtils.inviteShipAttack(startTerr, startNeededStrength, new ArrayList<Unit>(unitsAlreadyMoved), new ArrayList<Collection<Unit>>(), new ArrayList<Route>(), data, player, false, false, false, ourWarshipsZ);
+			ourNeighborsStrength += SUtils.strengthOfTerritory(data, startTerr, player, false, true, false, false);
+			if ((ourNeighborsStrength < startNeededStrength * 0.8F && startNeededStrength > 3) || ourNeighborsStrength > startNeededStrength * 1.4F + 1)
+			{
+				if (data.getSequence().getRound() <= 2 || startFar.isEmpty()) // it takes a few turns for stuff to settle, and we may want to attack things or move elsewhere
+					startNeededStrength = 0;
+				else if (firstEndTerr.equals(startTerr))
+					startNeededStrength = 12;
+				else
+					startNeededStrength = 1; // we want to gradually wear down the enemy's air force even if it costs us, to relieve pressure on russia
 			}
-			if (xUnits.size() == 0 && Matches.territoryHasUnitsThatMatch(ourWarships).match(startTerr))
+			// check if we have anything there already, and if so, set it to zero movement and reduce needed strength
+			if (Matches.territoryHasUnitsThatMatch(ourWarships).match(startTerr))
 			{
 				List<Unit> myWarships = startTerr.getUnits().getMatches(ourWarships);
-				int x = UnitAttachment.get(TripleAUnit.get(myWarships.get(0)).getType()).getMovement(player);
-				TripleAUnit.get(myWarships.get(0)).setAlreadyMoved(x);
+				Collections.shuffle(myWarships); // we don't always want to have the weakest units stay first, in case we may need those destroyers for anti sub warfare
+				//float myWarshipsStrength = SUtils.strength(myWarships, false, true, false);
+				Iterator<Unit> shipIter = myWarships.iterator();
+				while (shipIter.hasNext() && startNeededStrength > 0)
+				{
+					Unit ship = shipIter.next();
+					int x = UnitAttachment.get(TripleAUnit.get(ship).getType()).getMovement(player);
+					TripleAUnit.get(ship).setAlreadyMoved(x);
+					List<Unit> shipTemp = new ArrayList<Unit>();
+					shipTemp.add(ship);
+					startNeededStrength = Math.max(0, startNeededStrength - SUtils.strength(shipTemp, false, true, false));
+				}
 			}
-			moveUnits.addAll(xUnits);
-			moveRoutes.addAll(xRoutes);
+			if (startNeededStrength > 0)
+			{
+				CompositeMatch<Unit> ourWarshipsX = new CompositeMatchAnd<Unit>(ourWarships);
+				if (endNeededStrength > 1 && !startTerr.equals(endTerr))
+					ourWarshipsX.addInverse(Matches.unitIsInTerritory(endTerr));
+				SUtils.inviteShipAttack(startTerr, startNeededStrength, unitsAlreadyMoved, xUnits, xRoutes, data, player, false, false, false, ourWarshipsX);
+				moveUnits.addAll(xUnits);
+				moveRoutes.addAll(xRoutes);
+			}
+			xUnits.clear();
+			xRoutes.clear();
 		}
 		
-		// put a ship at the end of the route, unless it is a 1 territory route
-		if (startTerr.equals(endTerr) || terrsWithOurTransports.isEmpty())
-			return;
-		if (Matches.TerritoryIsWater.match(endTerr) && Matches.territoryHasNoEnemyUnits(player, data).match(endTerr) && endNeededStrength > 0 && (endTerrNeighborsW.size() > 0 || endTerrNeighborsA.size() > 0))
+		// put a ship at the end of the first route we ever made, unless it is a 1 territory route
+		//if (terrsWithOurTransports.isEmpty())
+		//	return;
+		if (!firstEndTerr.equals(startTerr) && Matches.TerritoryIsWater.match(firstEndTerr) && Matches.territoryHasNoEnemyUnits(player, data).match(firstEndTerr) && firstEndNeededStrength > 0)
 		{
-			SUtils.inviteShipAttack(endTerr, endNeededStrength, unitsAlreadyMoved, yUnits, yRoutes, data, player, false, false, false);
-			if (yRoutes.equals(null) && yUnits.size() > 0)
-			{   // invite ships doesn't appear to send ships if you already have ships there, so this block may not be needed
-				int x = UnitAttachment.get(TripleAUnit.get(yUnits.get(0).iterator().next()).getType()).getMovement(player);
-				TripleAUnit.get(yUnits.get(0).iterator().next()).setAlreadyMoved(x);
+			// check to see if there is no way we can win if we move there
+			CompositeMatch<Unit> ourWarshipsZ = new CompositeMatchAnd<Unit>(ourWarships, Matches.unitIsInTerritory(firstEndTerr).invert(), Matches.unitIsInTerritory(endTerr).invert());
+			float ourNeighborsStrength = SUtils.inviteShipAttack(firstEndTerr, firstEndNeededStrength, new ArrayList<Unit>(unitsAlreadyMoved), new ArrayList<Collection<Unit>>(), new ArrayList<Route>(), data, player, false, false, false, ourWarshipsZ);
+			ourNeighborsStrength += SUtils.strengthOfTerritory(data, firstEndTerr, player, false, true, false, false);
+			if ((ourNeighborsStrength < firstEndNeededStrength * 0.9F && firstEndNeededStrength > 3) || ourNeighborsStrength > firstEndNeededStrength * 1.4F + 1 || data.getSequence().getRound() <= 2) // first 2 rounds, don't try to defend route end, instead attack stuff
+			{
+				if (data.getSequence().getRound() <= 2) // it takes a few turns for stuff to settle, and we may want to attack things or move elsewhere
+					firstEndNeededStrength = 0;
+				else
+					firstEndNeededStrength = 12; // we want to gradually wear down the enemy's air force even if it costs us, to relieve pressure on russia
 			}
-			if (yUnits.size() == 0 && Matches.territoryHasUnitsThatMatch(ourWarships).match(endTerr))
+			// check if we have anything there already, and if so, set it to zero movement and reduce needed strength
+			if (Matches.territoryHasUnitsThatMatch(ourWarships).match(firstEndTerr))
+			{
+				List<Unit> myWarships = firstEndTerr.getUnits().getMatches(ourWarships);
+				Collections.shuffle(myWarships); // we don't always want to have the weakest units stay first, in case we may need those destroyers for anti sub warfare
+				//float myWarshipsStrength = SUtils.strength(myWarships, false, true, false);
+				Iterator<Unit> shipIter = myWarships.iterator();
+				while (shipIter.hasNext() && firstEndNeededStrength > 0)
+				{
+					Unit ship = shipIter.next();
+					int x = UnitAttachment.get(TripleAUnit.get(ship).getType()).getMovement(player);
+					TripleAUnit.get(ship).setAlreadyMoved(x);
+					List<Unit> shipTemp = new ArrayList<Unit>();
+					shipTemp.add(ship);
+					firstEndNeededStrength = Math.max(0, firstEndNeededStrength - SUtils.strength(shipTemp, false, true, false));
+				}
+			}
+			if (firstEndNeededStrength > 0)
+			{
+				SUtils.inviteShipAttack(firstEndTerr, firstEndNeededStrength, unitsAlreadyMoved, xUnits, xRoutes, data, player, false, false, false, ourWarships);
+				moveUnits.addAll(xUnits);
+				moveRoutes.addAll(xRoutes);
+			}
+			xUnits.clear();
+			xRoutes.clear();
+		}
+		
+		// put a ship at the end of the newest route, unless it is a 1 territory route
+		if (!endTerr.equals(startTerr) && !endTerr.equals(firstEndTerr) && Matches.TerritoryIsWater.match(endTerr) && Matches.territoryHasNoEnemyUnits(player, data).match(endTerr) && endNeededStrength > 0)
+		{
+			// check to see if there is no way we can win if we move there
+			CompositeMatch<Unit> ourWarshipsZ = new CompositeMatchAnd<Unit>(ourWarships, Matches.unitIsInTerritory(endTerr).invert());
+			float ourNeighborsStrength = SUtils.inviteShipAttack(endTerr, endNeededStrength, new ArrayList<Unit>(unitsAlreadyMoved), new ArrayList<Collection<Unit>>(), new ArrayList<Route>(), data, player, false, false, false, ourWarshipsZ);
+			ourNeighborsStrength += SUtils.strengthOfTerritory(data, endTerr, player, false, true, false, false);
+			if ((ourNeighborsStrength < endNeededStrength * 0.9F && endNeededStrength > 3) || ourNeighborsStrength > endNeededStrength * 1.4F + 1 || data.getSequence().getRound() <= 2) // first 2 rounds, don't try to defend route end, instead attack stuff
+			{
+				if (data.getSequence().getRound() <= 3) // it takes a few turns for stuff to settle, and we may want to attack things or move elsewhere
+					endNeededStrength = 0;
+				else
+					endNeededStrength = 6; // we want to gradually wear down the enemy's air force even if it costs us, to relieve pressure on russia
+			}
+			// check if we have anything there already, and if so, set it to zero movement and reduce needed strength
+			if (Matches.territoryHasUnitsThatMatch(ourWarships).match(endTerr))
 			{
 				List<Unit> myWarships = endTerr.getUnits().getMatches(ourWarships);
-				int x = UnitAttachment.get(TripleAUnit.get(myWarships.get(0)).getType()).getMovement(player);
-				TripleAUnit.get(myWarships.get(0)).setAlreadyMoved(x);
+				Collections.shuffle(myWarships); // we don't always want to have the weakest units stay first, in case we may need those destroyers for anti sub warfare
+				//float myWarshipsStrength = SUtils.strength(myWarships, false, true, false);
+				Iterator<Unit> shipIter = myWarships.iterator();
+				while (shipIter.hasNext() && endNeededStrength > 0)
+				{
+					Unit ship = shipIter.next();
+					int x = UnitAttachment.get(TripleAUnit.get(ship).getType()).getMovement(player);
+					TripleAUnit.get(ship).setAlreadyMoved(x);
+					List<Unit> shipTemp = new ArrayList<Unit>();
+					shipTemp.add(ship);
+					endNeededStrength = Math.max(0, endNeededStrength - SUtils.strength(shipTemp, false, true, false));
+				}
 			}
-			moveUnits.addAll(yUnits);
-			moveRoutes.addAll(yRoutes);
+			if (endNeededStrength > 0)
+			{
+				SUtils.inviteShipAttack(endTerr, endNeededStrength, unitsAlreadyMoved, xUnits, xRoutes, data, player, false, false, false, ourWarships);
+				moveUnits.addAll(xUnits);
+				moveRoutes.addAll(xRoutes);
+			}
+			xUnits.clear();
+			xRoutes.clear();
 		}
 	}
+	
 	
 	private void populateTransportMove(GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
 	{
