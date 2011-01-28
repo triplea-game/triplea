@@ -190,10 +190,11 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     		Integer uses = rule.getUses();
     		if( uses == 0)
     			continue;
+    		objectiveMet = rule.isSatisfied(data, player);
     		//
     		//Check for allied unit exclusions
     		//
-    		if(rule.getAlliedExclusionTerritories() != null)
+    		/*if(rule.getAlliedExclusionTerritories() != null)
     		{
     			//Get the listed territories
     			String[] terrs = rule.getAlliedExclusionTerritories();
@@ -514,7 +515,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 
     		if( rule.getAtWarPlayers()!=null && objectiveMet == true) {
     			objectiveMet = checkAtWar(player, rule.getAtWarPlayers(), rule.getAtWarCount(), data);
-    		}
+    		}*/
     		//
     		//If all are satisfied add the PUs for this objective
     		//

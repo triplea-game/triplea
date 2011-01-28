@@ -26,7 +26,6 @@ import games.strategy.triplea.Constants;
 
 import java.util.*;
 import java.util.logging.*;
-import java.util.logging.Logger;
 
 /**
  * @author Sean Bridges
@@ -87,6 +86,14 @@ public abstract class TechAdvance implements java.io.Serializable
     {
         return s_WW2V3AdvanceCategories;
     }
+    
+    public static TechAdvance findAdvance(String s,GameData data){
+		for(TechAdvance t: getTechAdvances(data)){
+			if(t.getProperty().equals(s))
+				return t;
+		}
+		throw new IllegalArgumentException(s + " is not a valid technology");
+	}
     //initialize the advances, note s_advances is made unmodifiable
     static
     {

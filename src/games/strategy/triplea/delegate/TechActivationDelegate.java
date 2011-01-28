@@ -23,6 +23,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
+import games.strategy.triplea.attatchments.TriggerAttachment;
 
 import java.io.Serializable;
 import java.util.*;
@@ -82,6 +83,7 @@ public class TechActivationDelegate implements IDelegate
         }
         //empty
         techMap.put(m_player, null);
+        TriggerAttachment.triggerTechChange(m_player, aBridge, m_data);
         
     }
 

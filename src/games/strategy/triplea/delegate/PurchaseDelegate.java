@@ -38,6 +38,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.attatchments.UnitTypeComparator;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -91,6 +92,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
         m_bridge = aBridge;
         m_player = aBridge.getPlayerID();
         m_data = gameData;
+        TriggerAttachment.triggerProductionChange(m_player,m_bridge,m_data); 
     }
 
     public String getName()

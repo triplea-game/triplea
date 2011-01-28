@@ -1786,7 +1786,7 @@ public class Matches
     
     public static final Match<Unit> UnitIsAAOrFactory = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory);
 
-    public static Match<Territory> territoryIsBlockade = new Match<Territory>()
+    public static Match<Territory> territoryIsBlockadeZone = new Match<Territory>()
         {
             public boolean match(Territory t)
             {

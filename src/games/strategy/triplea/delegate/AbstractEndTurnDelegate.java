@@ -284,7 +284,7 @@ public abstract class AbstractEndTurnDelegate
     }
     // finds losses due to blockades etc, positive value returned.
     protected int getProductionLoss (PlayerID player, GameData data) {
-    	Collection<Territory> blockable = Match.getMatches(data.getMap().getTerritories(),Matches.territoryIsBlockade);
+    	Collection<Territory> blockable = Match.getMatches(data.getMap().getTerritories(),Matches.territoryIsBlockadeZone);
     	Match<Unit> enemyUnits = new  CompositeMatchAnd<Unit>( Matches.enemyUnit(player,data));
     	int totalLoss = 0;
     	for( Territory b:blockable ){

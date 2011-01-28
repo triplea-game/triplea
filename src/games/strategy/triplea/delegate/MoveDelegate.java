@@ -30,6 +30,7 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
@@ -189,7 +190,9 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         if (m_firstRun)
             firstRun();
         
-        
+        // placing triggered units at beginning of combat move.
+        if(!m_nonCombat)
+        	TriggerAttachment.triggerUnitPlacement(player,m_bridge,gameData);
         if(m_tempMovePerformer != null)
         {
             m_tempMovePerformer.initialize(this, m_data, aBridge);

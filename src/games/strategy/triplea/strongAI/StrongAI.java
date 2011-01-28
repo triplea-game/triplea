@@ -1981,6 +1981,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		Set<Territory> endTerrNeighborsA = data.getMap().getNeighbors(endTerr, 3);
 		Set<Territory> firstEndTerrNeighborsA = data.getMap().getNeighbors(firstEndTerr, 3);
 		Set<Territory> startFar = data.getMap().getNeighbors(startTerr, 7);
+		Set<Territory> firstEndFar = data.getMap().getNeighbors(firstEndTerr, 7);
 		startTerrNeighborsW.retainAll(terrsWithEnemyWarships);
 		startTerrNeighborsA.retainAll(terrsWithEnemyAir);
 		endTerrNeighborsW.retainAll(terrsWithEnemyWarships);
@@ -1988,6 +1989,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		firstEndTerrNeighborsW.retainAll(terrsWithEnemyWarships);
 		firstEndTerrNeighborsA.retainAll(terrsWithEnemyAir);
 		startFar.retainAll(terrsWithEnemyAttackStuff);
+		firstEndFar.retainAll(terrsWithEnemyAttackStuff);
 		
 		//List<PlayerID> enemyplayers = SUtils.getEnemyPlayers(data, player);
 		//PlayerID ePlayer = enemyplayers.get(0);
@@ -2059,7 +2061,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			ourNeighborsStrength += SUtils.strengthOfTerritory(data, firstEndTerr, player, false, true, false, false);
 			if ((ourNeighborsStrength < firstEndNeededStrength * 0.9F && firstEndNeededStrength > 3) || ourNeighborsStrength > firstEndNeededStrength * 1.4F + 1 || data.getSequence().getRound() <= 2) // first 2 rounds, don't try to defend route end, instead attack stuff
 			{
-				if (data.getSequence().getRound() <= 2) // it takes a few turns for stuff to settle, and we may want to attack things or move elsewhere
+				if (data.getSequence().getRound() <= 2 || firstEndFar.isEmpty()) // it takes a few turns for stuff to settle, and we may want to attack things or move elsewhere
 					firstEndNeededStrength = 0;
 				else
 					firstEndNeededStrength = 8; // we want to gradually wear down the enemy's air force even if it costs us, to relieve pressure on russia
