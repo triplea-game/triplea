@@ -101,7 +101,7 @@ public class ClientLoginValidator implements ILoginValidator
         {
             return UNABLE_TO_OBTAIN_MAC;
         }
-        if(hashedMac.length() != 28 || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$"))
+        if(hashedMac.length() != 28 || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$")|| !hashedMac.matches("[0-9a-zA-Z_$-]+"))
         {
             return INVALID_MAC; //Must have been tampered with
         }

@@ -4,6 +4,7 @@ import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.userDB.BadWordController;
 import games.strategy.engine.lobby.server.userDB.BannedIpController;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
+import games.strategy.net.MacFinder;
 import games.strategy.util.*;
 
 import java.net.*;
@@ -21,7 +22,7 @@ public class LobbyLoginValidatorTest extends TestCase
         SocketAddress address = new  InetSocketAddress(5000);
         
         String name = Util.createUniqueTimeStamp();
-        String mac = null;
+        String mac = MacFinder.GetHashedMacAddress();
         
         Map<String,String> properties = new HashMap<String,String>();
         properties.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
@@ -51,7 +52,7 @@ public class LobbyLoginValidatorTest extends TestCase
         SocketAddress address = new  InetSocketAddress(5000);
         
         String name = Util.createUniqueTimeStamp();
-        String mac = null;
+        String mac = MacFinder.GetHashedMacAddress();
         
         Map<String,String> properties = new HashMap<String,String>();
         properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
@@ -75,7 +76,7 @@ public class LobbyLoginValidatorTest extends TestCase
         SocketAddress address = new  InetSocketAddress(5000);
         
         String name = Util.createUniqueTimeStamp();
-        String mac = null;
+        String mac = MacFinder.GetHashedMacAddress();
         
         Map<String,String> properties = new HashMap<String,String>();
         properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
@@ -106,7 +107,7 @@ public class LobbyLoginValidatorTest extends TestCase
         SocketAddress address = new  InetSocketAddress(5000);
         
         String name = "bitCh" + Util.createUniqueTimeStamp();
-        String mac = null;
+        String mac = MacFinder.GetHashedMacAddress();
         
         new BadWordController().addBadWord("bitCh");
         Map<String,String> properties = new HashMap<String,String>();
@@ -129,7 +130,7 @@ public class LobbyLoginValidatorTest extends TestCase
         SocketAddress address = new  InetSocketAddress(5000);
         
         String name = Util.createUniqueTimeStamp();
-        String mac = null;
+        String mac = MacFinder.GetHashedMacAddress();
         
         String email = "none@none.none";
         String password = "foo";
@@ -181,7 +182,7 @@ public class LobbyLoginValidatorTest extends TestCase
         SocketAddress address = new  InetSocketAddress(InetAddress.getByAddress(new byte[] {1,1,1,1}), 5000);
         
         String name = "name" + Util.createUniqueTimeStamp();
-        String mac = null;
+        String mac = MacFinder.GetHashedMacAddress();
         
         Map<String,String> properties = new HashMap<String,String>();
         properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());

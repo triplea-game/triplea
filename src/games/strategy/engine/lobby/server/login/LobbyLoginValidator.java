@@ -97,7 +97,7 @@ public class LobbyLoginValidator implements ILoginValidator
         {
             return UNABLE_TO_OBTAIN_MAC;
         }
-        if(hashedMac.length() != 28 || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$"))
+        if(hashedMac.length() != 28 || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$")|| !hashedMac.matches("[0-9a-zA-Z_$-]+"))
         {
             return INVALID_MAC; //Must have been tampered with
         }
@@ -147,7 +147,10 @@ public class LobbyLoginValidator implements ILoginValidator
     }
     private String anonymousLogin(Map<String, String> propertiesReadFromClient, String userName)
     {
-        if (propertiesReadFromClient.get(LOBBY_WATCHER_LOGIN) != null && propertiesReadFromClient.get(LOBBY_WATCHER_LOGIN).equals(Boolean.TRUE.toString())) //If this is a lobby watcher, use a different set of validation
+    	if (new DBUserController().doesUserExist(userName))
+    		return "Can't login anonymously, username already exists";
+    	
+    	if (propertiesReadFromClient.get(LOBBY_WATCHER_LOGIN) != null && propertiesReadFromClient.get(LOBBY_WATCHER_LOGIN).equals(Boolean.TRUE.toString())) //If this is a lobby watcher, use a different set of validation
         {
             if(!userName.endsWith(InGameLobbyWatcher.LOBBY_WATCHER_NAME))
                 return "Lobby watcher usernames must end with 'lobby_watcher'";

@@ -2014,7 +2014,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				if (data.getSequence().getRound() <= 2 || startFar.isEmpty()) // it takes a few turns for stuff to settle, and we may want to attack things or move elsewhere
 					startNeededStrength = 0;
 				else if (firstEndTerr.equals(startTerr))
-					startNeededStrength = 12;
+					startNeededStrength = 8;
 				else
 					startNeededStrength = 1; // we want to gradually wear down the enemy's air force even if it costs us, to relieve pressure on russia
 			}
@@ -2062,7 +2062,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				if (data.getSequence().getRound() <= 2) // it takes a few turns for stuff to settle, and we may want to attack things or move elsewhere
 					firstEndNeededStrength = 0;
 				else
-					firstEndNeededStrength = 12; // we want to gradually wear down the enemy's air force even if it costs us, to relieve pressure on russia
+					firstEndNeededStrength = 8; // we want to gradually wear down the enemy's air force even if it costs us, to relieve pressure on russia
 			}
 			// check if we have anything there already, and if so, set it to zero movement and reduce needed strength
 			if (Matches.territoryHasUnitsThatMatch(ourWarships).match(firstEndTerr))
@@ -2103,7 +2103,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				if (data.getSequence().getRound() <= 3) // it takes a few turns for stuff to settle, and we may want to attack things or move elsewhere
 					endNeededStrength = 0;
 				else
-					endNeededStrength = 6; // we want to gradually wear down the enemy's air force even if it costs us, to relieve pressure on russia
+					endNeededStrength = 1; // we want to gradually wear down the enemy's air force even if it costs us, to relieve pressure on russia
 			}
 			// check if we have anything there already, and if so, set it to zero movement and reduce needed strength
 			if (Matches.territoryHasUnitsThatMatch(ourWarships).match(endTerr))

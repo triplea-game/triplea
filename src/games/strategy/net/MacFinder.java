@@ -19,7 +19,11 @@ import java.util.Enumeration;
  */
 public class MacFinder
 {
-    public static String GetHashedMacAddress()
+    /**
+     * Should result in something like this: $1$MH$345ntXD4G3AKpAeHZdaGe3
+     * @return
+     */
+	public static String GetHashedMacAddress()
     {
         String mac = GetMacAddress();
         return MD5Crypt.crypt(mac, "MH");
