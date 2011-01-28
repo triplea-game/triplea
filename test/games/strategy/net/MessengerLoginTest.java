@@ -25,9 +25,8 @@ public class MessengerLoginTest extends TestCase
     public void testSimple() throws Exception
     {
         ILoginValidator validator = new ILoginValidator()
-        {
-        
-            public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, SocketAddress remoteAddress)
+        {        
+            public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String mac, SocketAddress remoteAddress)
             {
                 return null;
             }
@@ -35,8 +34,7 @@ public class MessengerLoginTest extends TestCase
             public Map<String,String> getChallengeProperties(String userName, SocketAddress remoteAddress)
             {
                 return new HashMap<String,String>();
-            }
-        
+            }        
         };
         
         IConnectionLogin login = new IConnectionLogin()
@@ -62,8 +60,8 @@ public class MessengerLoginTest extends TestCase
             
             server.setAcceptNewConnections(true);
             
-            
-            ClientMessenger client = new ClientMessenger("localhost", SERVER_PORT, "fee", new DefaultObjectStreamFactory(), login);
+            String mac = MacFinder.GetHashedMacAddress();
+            ClientMessenger client = new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);
             
             client.shutDown();
         }
@@ -80,9 +78,8 @@ public class MessengerLoginTest extends TestCase
     public void testRefused() throws Exception
     {
         ILoginValidator validator = new ILoginValidator()
-        {
-        
-            public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, SocketAddress remoteAddress)
+        {        
+            public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String mac, SocketAddress remoteAddress)
             {
                 return "error";
             }
@@ -91,8 +88,6 @@ public class MessengerLoginTest extends TestCase
             {
                 return new HashMap<String,String>();
             }
-
-        
         };
         
         IConnectionLogin login = new IConnectionLogin()
@@ -120,7 +115,8 @@ public class MessengerLoginTest extends TestCase
             
             try
             {
-                new ClientMessenger("localhost", SERVER_PORT, "fee", new DefaultObjectStreamFactory(), login);
+                String mac = MacFinder.GetHashedMacAddress();
+                new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);
                 fail("we should not have logged in");
             }
             catch(CouldNotLogInException expected)
@@ -182,8 +178,8 @@ public class MessengerLoginTest extends TestCase
             
             server.setAcceptNewConnections(true);
             
-            
-            ClientMessenger client = new ClientMessenger("localhost", SERVER_PORT, "fee", new DefaultObjectStreamFactory(), login);
+            String mac = MacFinder.GetHashedMacAddress();
+            ClientMessenger client = new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);
             
             client.shutDown();
         }

@@ -21,6 +21,7 @@ public class LobbyLoginValidatorTest extends TestCase
         SocketAddress address = new  InetSocketAddress(5000);
         
         String name = Util.createUniqueTimeStamp();
+        String mac = null;
         
         Map<String,String> properties = new HashMap<String,String>();
         properties.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
@@ -32,14 +33,14 @@ public class LobbyLoginValidatorTest extends TestCase
         assertNull(
                 new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
-                properties, name, address
+                properties, name, mac, address
                 ));
         
         
         //try to create a duplicate user, should not work
         assertNotNull(new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
-                properties, name, address
+                properties, name, mac, address
                 ));
     }
     
@@ -50,6 +51,7 @@ public class LobbyLoginValidatorTest extends TestCase
         SocketAddress address = new  InetSocketAddress(5000);
         
         String name = Util.createUniqueTimeStamp();
+        String mac = null;
         
         Map<String,String> properties = new HashMap<String,String>();
         properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
@@ -59,7 +61,7 @@ public class LobbyLoginValidatorTest extends TestCase
         assertNotNull(
                 new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
-                properties, name, address
+                properties, name, mac, address
                 ));
 
         
@@ -73,6 +75,7 @@ public class LobbyLoginValidatorTest extends TestCase
         SocketAddress address = new  InetSocketAddress(5000);
         
         String name = Util.createUniqueTimeStamp();
+        String mac = null;
         
         Map<String,String> properties = new HashMap<String,String>();
         properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
@@ -81,7 +84,7 @@ public class LobbyLoginValidatorTest extends TestCase
         assertNull(
                 new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
-                properties, name, address
+                properties, name, mac, address
                 ));
 
         
@@ -92,7 +95,7 @@ public class LobbyLoginValidatorTest extends TestCase
         //we should not be able to login now
         assertNotNull(new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
-                properties, name, address
+                properties, name, mac, address
                 ));
 
     }
@@ -103,6 +106,8 @@ public class LobbyLoginValidatorTest extends TestCase
         SocketAddress address = new  InetSocketAddress(5000);
         
         String name = "bitCh" + Util.createUniqueTimeStamp();
+        String mac = null;
+        
         new BadWordController().addBadWord("bitCh");
         Map<String,String> properties = new HashMap<String,String>();
         properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
@@ -113,7 +118,7 @@ public class LobbyLoginValidatorTest extends TestCase
  
         assertEquals(LobbyLoginValidator.THATS_NOT_A_NICE_NAME, new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
-                properties, name, address
+                properties, name, mac, address
                 ));
 
     }
@@ -124,6 +129,8 @@ public class LobbyLoginValidatorTest extends TestCase
         SocketAddress address = new  InetSocketAddress(5000);
         
         String name = Util.createUniqueTimeStamp();
+        String mac = null;
+        
         String email = "none@none.none";
         String password = "foo";
         String hashedPassword = MD5Crypt.crypt(password);
@@ -143,7 +150,7 @@ public class LobbyLoginValidatorTest extends TestCase
         assertNull(
                 new LobbyLoginValidator().verifyConnection(
                 challengeProperties,
-                properties, name, address
+                properties, name, mac, address
                 ));
 
 
@@ -152,7 +159,7 @@ public class LobbyLoginValidatorTest extends TestCase
         assertNotNull(
                 new LobbyLoginValidator().verifyConnection(
                 challengeProperties,
-                properties, name, address
+                properties, name, mac, address
                 ));
 
         
@@ -160,7 +167,7 @@ public class LobbyLoginValidatorTest extends TestCase
         assertNotNull(
                 new LobbyLoginValidator().verifyConnection(
                 challengeProperties,
-                properties, Util.createUniqueTimeStamp() , address
+                properties, Util.createUniqueTimeStamp(), mac, address
                 ));
         
 
@@ -174,15 +181,16 @@ public class LobbyLoginValidatorTest extends TestCase
         SocketAddress address = new  InetSocketAddress(InetAddress.getByAddress(new byte[] {1,1,1,1}), 5000);
         
         String name = "name" + Util.createUniqueTimeStamp();
+        String mac = null;
         
         Map<String,String> properties = new HashMap<String,String>();
         properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
         properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
         
  
-        assertEquals(LobbyLoginValidator.YOUR_IP_HAS_BEEN_BANNED, new LobbyLoginValidator().verifyConnection(
+        assertEquals(LobbyLoginValidator.YOU_HAVE_BEEN_BANNED, new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
-                properties, name, address
+                properties, name, mac, address
                 ));
 
     }

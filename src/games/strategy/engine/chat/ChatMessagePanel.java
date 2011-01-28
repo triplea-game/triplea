@@ -20,6 +20,7 @@ package games.strategy.engine.chat;
 
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.INode;
+import games.strategy.net.ServerMessenger;
 import games.strategy.triplea.sound.SoundPath;
 
 import java.awt.BorderLayout;
@@ -144,10 +145,22 @@ public class ChatMessagePanel extends JPanel implements IChatListener
                m_text.setText("");
                for(ChatMessage message : m_chat.getChatHistory())
                {
+                   if (message.getFrom().equals(m_chat.getServerNode().getName()))
+                   {
+                       if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY))
+                       {
+                           addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER", "ADMIN_CHAT_CONTROL", false);
+                           continue;
+                       }
+                       else if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_GAME))
+                       {
+                           addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
+                           continue;
+                       }
+                   }
                    addChatMessage(message.getMessage(), message.getFrom(), message.isMeMessage());
                }
-           }
-           
+           }           
         }
         else
         {
@@ -191,7 +204,6 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 
     private void createComponents()
     {
-
         m_text = new JTextPane();
         m_text.setEditable(false);
       
@@ -207,11 +219,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener
         Insets inset = new Insets(3, 3, 3, 3);
         m_send = new JButton(m_sendAction);
         m_send.setMargin(inset);
-        m_send.setFocusable(false);
-
-        
+        m_send.setFocusable(false);       
     }
-
 
     private void setupKeyMap()
     {
@@ -241,9 +250,22 @@ public class ChatMessagePanel extends JPanel implements IChatListener
         {
             public void run()
             {
-                if(!floodControl.allow(from, System.currentTimeMillis())) 
+                if (from.equals(m_chat.getServerNode().getName()))
                 {
-                    if(from.equals(m_chat.getLocalNode().getName())) 
+                    if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY))
+                    {
+                        addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER", "ADMIN_CHAT_CONTROL", false);
+                        return;
+                    }
+                    else if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_GAME))
+                    {
+                        addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
+                        return;
+                    }
+                }
+                if(!floodControl.allow(from, System.currentTimeMillis()))
+                {
+                    if(from.equals(m_chat.getLocalNode().getName()))
                     {
                         addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL", false);
                     }
@@ -289,6 +311,19 @@ public class ChatMessagePanel extends JPanel implements IChatListener
             
             
         } catch (BadLocationException ble)
+        {
+            ble.printStackTrace();
+        }
+    }
+
+    public void addServerMessage(String message)
+    {
+        try
+        {
+            Document doc = m_text.getDocument();
+            doc.insertString(doc.getLength(), message + "\n", normal);
+        }
+        catch (BadLocationException ble)
         {
             ble.printStackTrace();
         }
@@ -391,22 +426,20 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 
     private Action m_sendAction = new AbstractAction("Send")
     {
-
         public void actionPerformed(ActionEvent e)
         {
             if (m_nextMessage.getText().trim().length() == 0)
                 return;
-         
-            
-            if(isThirdPerson(m_nextMessage.getText()))
+
+            if (isThirdPerson(m_nextMessage.getText()))
             {
                 m_chat.sendMessage(m_nextMessage.getText().substring(ME.length()), true);
-                
-            } else 
+            }
+            else
             {
                 m_chat.sendMessage(m_nextMessage.getText(), false);
             }
-            
+
             m_nextMessage.setText("");
         }
     };

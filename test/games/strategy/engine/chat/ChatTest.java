@@ -43,8 +43,9 @@ public class ChatTest extends TestCase
         SERVER_PORT = TestUtil.getUniquePort();
         m_server = new ServerMessenger("Server", SERVER_PORT);
         m_server.setAcceptNewConnections(true);
-        m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1");
-        m_client2 = new ClientMessenger("localhost", SERVER_PORT, "client2");
+        String mac = MacFinder.GetHashedMacAddress();
+        m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
+        m_client2 = new ClientMessenger("localhost", SERVER_PORT, "client2", mac);
  
         
         m_sum = new UnifiedMessenger(m_server);

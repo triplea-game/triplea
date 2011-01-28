@@ -19,6 +19,7 @@ import games.strategy.engine.message.*;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
+import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
 import games.strategy.test.TestUtil;
 import junit.framework.TestCase;
@@ -28,55 +29,50 @@ import junit.framework.TestCase;
  */
 public class VaultTest extends TestCase
 {
+    private static int SERVER_PORT = -1;
+    private IServerMessenger m_server;
+    private IMessenger m_client1;
+    private Vault m_clientVault;
+    private Vault m_serverVault;
 
-	private static int SERVER_PORT = -1;
-
-	private IServerMessenger m_server;
-	private IMessenger m_client1;
-	
-	private Vault m_clientVault;
-	private Vault m_serverVault;
-
-	public void setUp() throws IOException
-	{
+    public void setUp() throws IOException
+    {
         SERVER_PORT = TestUtil.getUniquePort();
-		m_server = new ServerMessenger("Server", SERVER_PORT);
-		m_server.setAcceptNewConnections(true);
-		m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1");		
-		
-		UnifiedMessenger serverUM = new UnifiedMessenger(m_server);
-		UnifiedMessenger clientUM = new UnifiedMessenger(m_client1);		
-		
-		m_serverVault = new Vault(new ChannelMessenger(serverUM));
-		m_clientVault =  new Vault(new ChannelMessenger(clientUM));
-		
-		Thread.yield();
-		
-		
-	}
- 
-	public void tearDown()
-	{
-		try
-		{
-			if(m_server != null)
-				m_server.shutDown();
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+        m_server = new ServerMessenger("Server", SERVER_PORT);
+        m_server.setAcceptNewConnections(true);
+        String mac = MacFinder.GetHashedMacAddress();
+        m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
 
-		try
-		{
-			if(m_client1 != null)
-				m_client1.shutDown();
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+        UnifiedMessenger serverUM = new UnifiedMessenger(m_server);
+        UnifiedMessenger clientUM = new UnifiedMessenger(m_client1);
 
-	}
-	
+        m_serverVault = new Vault(new ChannelMessenger(serverUM));
+        m_clientVault = new Vault(new ChannelMessenger(clientUM));
+
+        Thread.yield();
+    }
+    public void tearDown()
+    {
+        try
+        {
+            if (m_server != null)
+                m_server.shutDown();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        try
+        {
+            if (m_client1 != null)
+                m_client1.shutDown();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 	
     public VaultTest(String arg0)
     {

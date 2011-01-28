@@ -170,6 +170,42 @@ public class Database
                         );
                     s.close();
                 }
+
+                if(!existing.contains("BANNED_MACS"))
+                {
+                    Statement s = conn.createStatement();
+                    s.execute("create table banned_macs" +
+                            "(" +
+                            "mac varchar(40) NOT NULL PRIMARY KEY, " +
+                            "ban_till timestamp  " +
+                            ")"
+                        );
+                    s.close();
+                }
+
+                if(!existing.contains("MUTED_IPS"))
+                {
+                    Statement s = conn.createStatement();
+                    s.execute("create table muted_ips" +
+                            "(" +
+                            "ip varchar(40) NOT NULL PRIMARY KEY, " +
+                            "mute_till timestamp  " +
+                            ")"
+                        );
+                    s.close();
+                }
+
+                if(!existing.contains("MUTED_MACS"))
+                {
+                    Statement s = conn.createStatement();
+                    s.execute("create table muted_macs" +
+                            "(" +
+                            "mac varchar(40) NOT NULL PRIMARY KEY, " +
+                            "mute_till timestamp  " +
+                            ")"
+                        );
+                    s.close();
+                }
                 
                 if(!existing.contains("BAD_WORDS")) 
                 {

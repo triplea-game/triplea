@@ -49,34 +49,34 @@ public class ClientMessenger implements IMessenger , NIOSocketListener
      * Note, the name paramater passed in here may not match the name of the
      * ClientMessenger after it has been constructed.
      */
-    public ClientMessenger(String host, int port, String name, IConnectionLogin login) throws IOException, UnknownHostException, CouldNotLogInException
+    public ClientMessenger(String host, int port, String name, String mac, IConnectionLogin login) throws IOException, UnknownHostException, CouldNotLogInException
     {
-        this(host, port, name, new DefaultObjectStreamFactory(), login);
+        this(host, port, name, mac, new DefaultObjectStreamFactory(), login);
     }
 
     /**
      * Note, the name paramater passed in here may not match the name of the
      * ClientMessenger after it has been constructed.
      */
-    public ClientMessenger(String host, int port, String name) throws IOException, UnknownHostException, CouldNotLogInException
+    public ClientMessenger(String host, int port, String name, String mac) throws IOException, UnknownHostException, CouldNotLogInException
     {
-        this(host, port, name, new DefaultObjectStreamFactory());
+        this(host, port, name, mac, new DefaultObjectStreamFactory());
     }
     
     /**
      * Note, the name paramater passed in here may not match the name of the
      * ClientMessenger after it has been constructed.
      */
-    public ClientMessenger(String host, int port, String name, IObjectStreamFactory streamFact) throws IOException, UnknownHostException, CouldNotLogInException
+    public ClientMessenger(String host, int port, String name, String mac, IObjectStreamFactory streamFact) throws IOException, UnknownHostException, CouldNotLogInException
     {
-        this(host, port, name, streamFact, null);
+        this(host, port, name, mac, streamFact, null);
     }
 
     /**
      * Note, the name paramater passed in here may not match the name of the
      * ClientMessenger after it has been constructed.
      */
-    public ClientMessenger(String host, int port, String name, IObjectStreamFactory streamFact, IConnectionLogin login) throws IOException, UnknownHostException, CouldNotLogInException
+    public ClientMessenger(String host, int port, String name, String mac, IObjectStreamFactory streamFact, IConnectionLogin login) throws IOException, UnknownHostException, CouldNotLogInException
     {
         m_socketChannel = SocketChannel.open();
         m_socketChannel.configureBlocking(false);
@@ -107,7 +107,7 @@ public class ClientMessenger implements IMessenger , NIOSocketListener
         
         
         m_socket = new NIOSocket(streamFact, this, name);
-        ClientQuarantineConversation conversation = new ClientQuarantineConversation(login, m_socketChannel, m_socket, name);
+        ClientQuarantineConversation conversation = new ClientQuarantineConversation(login, m_socketChannel, m_socket, name, mac);
         m_socket.add(m_socketChannel, conversation);
         
         

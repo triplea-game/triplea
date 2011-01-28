@@ -319,8 +319,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
         {
             return node.getName();
         }
-        if(status.length() > 15) {
-            status = status.substring(0, 15);
+        if(status.length() > 25) {
+            status = status.substring(0, 25);
         }
         
         StringBuilder sb = new StringBuilder();

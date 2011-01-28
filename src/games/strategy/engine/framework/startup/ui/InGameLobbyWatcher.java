@@ -36,6 +36,7 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
+import games.strategy.net.MacFinder;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -136,6 +137,7 @@ public class InGameLobbyWatcher
                 Map<String,String> rVal = new HashMap<String,String>();
                 rVal.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
                 rVal.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+                rVal.put(LobbyLoginValidator.LOBBY_WATCHER_LOGIN, Boolean.TRUE.toString());
                 return rVal;
             }
         };
@@ -143,7 +145,8 @@ public class InGameLobbyWatcher
         try
         {
             System.out.println("host:" + host + " port:" + port);
-            ClientMessenger messenger = new ClientMessenger(host, Integer.parseInt(port), hostedBy + "_" + LOBBY_WATCHER_NAME, login);
+            String mac = MacFinder.GetHashedMacAddress();
+            ClientMessenger messenger = new ClientMessenger(host, Integer.parseInt(port), getRealName(hostedBy) + "_" + LOBBY_WATCHER_NAME, mac, login);
             UnifiedMessenger um = new UnifiedMessenger(messenger);
             RemoteMessenger rm = new RemoteMessenger(um);
             
@@ -151,14 +154,19 @@ public class InGameLobbyWatcher
             rm.registerRemote(h, HeartBeat.getHeartBeatName(um.getLocalNode()));
             
             return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent);
-        }  catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
             return null;
         }
     }
-
-
+    private static String getRealName(String uniqueName)
+    {
+        //Remove any (n) that is added to distinguish duplicate names
+        String name = uniqueName.split(" ")[0];
+        return name;
+    }
     public void setGame(IGame game)
     {
         if(m_game != null)

@@ -1,8 +1,10 @@
 package games.strategy.engine.lobby.server.login;
 
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.userDB.BadWordController;
 import games.strategy.engine.lobby.server.userDB.BannedIpController;
+import games.strategy.engine.lobby.server.userDB.BannedMacController;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.net.ILoginValidator;
 import games.strategy.util.MD5Crypt;
@@ -17,20 +19,26 @@ import java.util.logging.Logger;
 
 public class LobbyLoginValidator implements ILoginValidator
 {
-    static final String THATS_NOT_A_NICE_NAME = "Thats not a nice name";
-    static final String YOUR_IP_HAS_BEEN_BANNED = "Your ip has been banned";
-
+    static final String THATS_NOT_A_NICE_NAME = "That's not a nice name";
+    static final String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby";
+    static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address";
+    static final String INVALID_MAC = "Invalid mac address";
     
     private final static Logger s_logger = Logger.getLogger(LobbyLoginValidator.class.getName());
 
     public static final String LOBBY_VERSION = "LOBBY_VERSION";
     public static final String REGISTER_NEW_USER_KEY = "REGISTER_USER";
     public static final String ANONYMOUS_LOGIN = "ANONYMOUS_LOGIN";
+    public static final String LOBBY_WATCHER_LOGIN = "LOBBY_WATCHER_LOGIN";
     public static final String LOGIN_KEY = "LOGIN";
     public static final String HASHED_PASSWORD_KEY = "HASHEDPWD";
     
     public static final String EMAIL_KEY = "EMAIL";
     public static final String SALT_KEY = "SALT";
+
+    public LobbyLoginValidator()
+    {
+    }
     
     public Map<String, String> getChallengeProperties(String userName, SocketAddress remoteAddress)
     {
@@ -43,9 +51,9 @@ public class LobbyLoginValidator implements ILoginValidator
         return rVal;
     }
     
-    public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, SocketAddress remoteAddress)
+    public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String clientMac, SocketAddress remoteAddress)
     {
-        String error = verifyConnectionInternal(propertiesSentToClient, propertiesReadFromClient, clientName, remoteAddress);
+        String error = verifyConnectionInternal(propertiesSentToClient, propertiesReadFromClient, clientName, clientMac, remoteAddress);
         
         if(error != null)
         {
@@ -60,8 +68,7 @@ public class LobbyLoginValidator implements ILoginValidator
         
         return error;
     }
-
-    private String verifyConnectionInternal(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, SocketAddress remoteAddress)
+    private String verifyConnectionInternal(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String hashedMac, SocketAddress remoteAddress)
     {
         String clientVersionString = propertiesReadFromClient.get(LOBBY_VERSION);
         if(clientVersionString == null)
@@ -82,10 +89,22 @@ public class LobbyLoginValidator implements ILoginValidator
         }
         
         String remoteIp = ((InetSocketAddress) remoteAddress).getAddress().getHostAddress();
-        if(new BannedIpController().isIpBanned(remoteIp)) {
-            return YOUR_IP_HAS_BEEN_BANNED;
+        if(new BannedIpController().isIpBanned(remoteIp))
+        {
+            return YOU_HAVE_BEEN_BANNED;
         }
-        
+        if(hashedMac == null)
+        {
+            return UNABLE_TO_OBTAIN_MAC;
+        }
+        if(hashedMac.length() != 28 || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$"))
+        {
+            return INVALID_MAC; //Must have been tampered with
+        }
+        if(new BannedMacController().isMacBanned(hashedMac))
+        {
+            return YOU_HAVE_BEEN_BANNED;
+        }
        
         if(propertiesReadFromClient.containsKey(REGISTER_NEW_USER_KEY))
         {
@@ -124,26 +143,26 @@ public class LobbyLoginValidator implements ILoginValidator
         else
         {
             return null;
-        }
-        
+        }        
     }
-
-    private String anonymousLogin(Map<String, String> propertiesReadFromClient,String  userName)
+    private String anonymousLogin(Map<String, String> propertiesReadFromClient, String userName)
     {
-       if(userName.toLowerCase().indexOf("admin") != -1)
-           return "You can't log in anonymously with admin in the name";
-
-       if(DBUserController.validateUserName(userName) != null) 
-       {
-           return DBUserController.validateUserName(userName);
-       }
-       
-       if(!new DBUserController().doesUserExist(userName))
-       {
-           return null;
-       }
-       
-       return "Can't login anonymously, username already exists";
+        if (propertiesReadFromClient.get(LOBBY_WATCHER_LOGIN) != null && propertiesReadFromClient.get(LOBBY_WATCHER_LOGIN).equals(Boolean.TRUE.toString())) //If this is a lobby watcher, use a different set of validation
+        {
+            if(!userName.endsWith(InGameLobbyWatcher.LOBBY_WATCHER_NAME))
+                return "Lobby watcher usernames must end with 'lobby_watcher'";
+            String hostName = userName.substring(0, userName.indexOf(InGameLobbyWatcher.LOBBY_WATCHER_NAME));
+            String issue = DBUserController.validateUserName(hostName);
+            if(issue != null)
+                return issue;
+        }
+        else
+        {
+            String issue = DBUserController.validateUserName(userName);
+            if(issue != null)
+                return issue;
+        }
+        return null;
     }
 
     private String createUser(Map<String, String> propertiesReadFromClient, String userName)
@@ -166,8 +185,6 @@ public class LobbyLoginValidator implements ILoginValidator
         catch(IllegalStateException ise)
         {
             return ise.getMessage();
-        }
-        
+        }        
     }
-
 }

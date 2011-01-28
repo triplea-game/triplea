@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Lobby Moderator Enhancement patch added. (wisconsin)
+
 * Moore AI fix to Rank Territories, was considering islands as being closer to enemy capitols than other territories with a land route. Also much improved the defense of transports and trasporting locations. (veqryn)
 
 * Moore AI improvement: created a new method so that the AI will attempt to defend the beginning and end of its transport chain. (veqryn)

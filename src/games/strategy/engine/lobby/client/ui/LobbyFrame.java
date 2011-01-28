@@ -42,9 +42,15 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
+import javax.swing.JTextPane;
+import javax.swing.SpinnerNumberModel;
 
 public class LobbyFrame extends JFrame
 {
@@ -133,95 +139,268 @@ public class LobbyFrame extends JFrame
     {
         if(props.getServerMessage() != null && props.getServerMessage().length() > 0) 
         {
-            m_chatMessagePanel.addMessage(props.getServerMessage(), "SERVER", false);
+            m_chatMessagePanel.addServerMessage(props.getServerMessage());
         }
     }
     
     private List<Action> createAdminActions(final INode clickedOn)
     {
-        if(!m_client.isAdmin()) 
+        if(!m_client.isAdmin())
             return Collections.emptyList();
-        
-        if(clickedOn.equals(m_client.getMessenger().getLocalNode())) 
+
+        if(clickedOn.equals(m_client.getMessenger().getLocalNode()))
             return Collections.emptyList();
-        
-        
+
         final IModeratorController controller = (IModeratorController) m_client.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
         List<Action> rVal = new ArrayList<Action>();
         rVal.add(new AbstractAction("Boot " + clickedOn.getName())
         {
-        
+
             public void actionPerformed(ActionEvent e)
             {
-                if(!confirm("Boot " + clickedOn.getName())) 
+                if(!confirm("Boot " + clickedOn.getName()))
                 {
                     return;
                 }
-                
+
                 controller.boot(clickedOn);
             }
-        
-        });
-        
-        rVal.add(new AbstractAction("Ban IP for 1 day")
-        {
-            
-            public void actionPerformed(ActionEvent e)
-            {
-                if(!confirm("Ban ip for 1 day?")) 
-                {
-                    return;
-                }
-                
-                long expire = System.currentTimeMillis() +
-                              24 * 60 * 60 * 1000;
-                controller.banIp(clickedOn, new Date(expire));
-            }        
+
         });
 
-        rVal.add(new AbstractAction("Ban IP forever")
+        rVal.add(new AbstractAction("Ban IP address")
         {
-            
             public void actionPerformed(ActionEvent e)
             {
-                if(!confirm("Ban ip forever?")) 
+                List<String> timeUnits = new ArrayList<String>();
+                timeUnits.add("Minute");
+                timeUnits.add("Hour");
+                timeUnits.add("Day");
+                timeUnits.add("Week");
+                timeUnits.add("Month");
+                timeUnits.add("Year");
+                timeUnits.add("Forever");
+
+                int result = JOptionPane.showOptionDialog(LobbyFrame.this,"Please select the timespan unit of measurement: ", "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,null, timeUnits.toArray(),timeUnits.toArray()[3]);
+
+                if(result < 0)
+                    return;
+
+                String selectedTimeUnit = (String)timeUnits.toArray()[result];
+
+                if(selectedTimeUnit.equals("Forever"))
                 {
+                    controller.banIp(clickedOn, null);
                     return;
                 }
-                
-                controller.banIp(clickedOn, null);
-            }        
+
+                String stringr = JOptionPane.showInputDialog(LobbyFrame.this, "Please enter the amount of time to ban the player: (In " + selectedTimeUnit + "s)", 1);
+
+                if(stringr == null)
+                    return;
+
+                long result2 = Long.parseLong(stringr);
+                if(result2 < 0)
+                    return;
+
+                long ticks = 0;
+
+                if(selectedTimeUnit.equals("Minute"))
+                    ticks = result2 * 1000 * 60;
+                else if(selectedTimeUnit.equals("Hour"))
+                    ticks = result2 * 1000 * 60 * 60;
+                else if(selectedTimeUnit.equals("Day"))
+                    ticks = result2 * 1000 * 60 * 60 * 24;
+                else if(selectedTimeUnit.equals("Week"))
+                    ticks = result2 * 1000 * 60 * 60 * 24 * 7;
+                else if(selectedTimeUnit.equals("Month"))
+                    ticks = result2 * 1000 * 60 * 60 * 24 * 30;
+                else if(selectedTimeUnit.equals("Year"))
+                    ticks = result2 * 1000 * 60 * 60 * 24 * 365;
+
+                long expire = System.currentTimeMillis() +
+                              ticks;
+
+                controller.banIp(clickedOn, new Date(expire));
+            }
         });
-        
-        rVal.add(new AbstractAction("Get IP and Aliases")
+
+        rVal.add(new AbstractAction("Ban Mac address")
         {
-            
             public void actionPerformed(ActionEvent e)
-            {                
-                String text = controller.getIpAndAliases(clickedOn);
-                JOptionPane.showMessageDialog(LobbyFrame.this, text);
-            }        
+            {
+                List<String> timeUnits = new ArrayList<String>();
+                timeUnits.add("Minute");
+                timeUnits.add("Hour");
+                timeUnits.add("Day");
+                timeUnits.add("Week");
+                timeUnits.add("Month");
+                timeUnits.add("Year");
+                timeUnits.add("Forever");
+
+                int result = JOptionPane.showOptionDialog(LobbyFrame.this,"Please select the timespan unit of measurement: ", "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,null, timeUnits.toArray(),timeUnits.toArray()[3]);
+
+                if(result < 0)
+                    return;
+
+                String selectedTimeUnit = (String)timeUnits.toArray()[result];
+
+                if(selectedTimeUnit.equals("Forever"))
+                {
+                    controller.banMac(clickedOn, null);
+                    return;
+                }
+
+                String stringr = JOptionPane.showInputDialog(LobbyFrame.this, "Please enter the amount of time to ban the player: (In " + selectedTimeUnit + "s)", 1);
+
+                if(stringr == null)
+                    return;
+
+                long result2 = Long.parseLong(stringr);
+                if(result2 < 0)
+                    return;
+
+                long ticks = 0;
+
+                if(selectedTimeUnit.equals("Minute"))
+                    ticks = result2 * 1000 * 60;
+                else if(selectedTimeUnit.equals("Hour"))
+                    ticks = result2 * 1000 * 60 * 60;
+                else if(selectedTimeUnit.equals("Day"))
+                    ticks = result2 * 1000 * 60 * 60 * 24;
+                else if(selectedTimeUnit.equals("Week"))
+                    ticks = result2 * 1000 * 60 * 60 * 24 * 7;
+                else if(selectedTimeUnit.equals("Month"))
+                    ticks = result2 * 1000 * 60 * 60 * 24 * 30;
+                else if(selectedTimeUnit.equals("Year"))
+                    ticks = result2 * 1000 * 60 * 60 * 24 * 365;
+
+                long expire = System.currentTimeMillis() +
+                              ticks;
+
+                controller.banMac(clickedOn, new Date(expire));
+            }
         });
-        
-        
+
+        rVal.add(new AbstractAction("Ban IP and Mac addresses")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                List<String> timeUnits = new ArrayList<String>();
+                timeUnits.add("Minute");
+                timeUnits.add("Hour");
+                timeUnits.add("Day");
+                timeUnits.add("Week");
+                timeUnits.add("Month");
+                timeUnits.add("Year");
+                timeUnits.add("Forever");
+
+                int result = JOptionPane.showOptionDialog(LobbyFrame.this,"Please select the timespan unit of measurement: ", "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,null, timeUnits.toArray(),timeUnits.toArray()[3]);
+
+                if(result < 0)
+                    return;
+
+                String selectedTimeUnit = (String)timeUnits.toArray()[result];
+
+                if(selectedTimeUnit.equals("Forever"))
+                {
+                    controller.banIp(clickedOn, null);
+                    controller.banMac(clickedOn, null);
+                    return;
+                }
+
+                String stringr = JOptionPane.showInputDialog(LobbyFrame.this, "Please enter the amount of time to ban the player: (In " + selectedTimeUnit + "s)", 1);
+
+                if(stringr == null)
+                    return;
+
+                long result2 = Long.parseLong(stringr);
+                if(result2 < 0)
+                    return;
+
+                long ticks = 0;
+
+                if(selectedTimeUnit.equals("Minute"))
+                    ticks = result2 * 1000 * 60;
+                else if(selectedTimeUnit.equals("Hour"))
+                    ticks = result2 * 1000 * 60 * 60;
+                else if(selectedTimeUnit.equals("Day"))
+                    ticks = result2 * 1000 * 60 * 60 * 24;
+                else if(selectedTimeUnit.equals("Week"))
+                    ticks = result2 * 1000 * 60 * 60 * 24 * 7;
+                else if(selectedTimeUnit.equals("Month"))
+                    ticks = result2 * 1000 * 60 * 60 * 24 * 30;
+                else if(selectedTimeUnit.equals("Year"))
+                    ticks = result2 * 1000 * 60 * 60 * 24 * 365;
+
+                long expire = System.currentTimeMillis() +
+                              ticks;
+
+                controller.banIp(clickedOn, new Date(expire));
+                controller.banMac(clickedOn, new Date(expire));
+            }
+        });
+
+        rVal.add(new AbstractAction("Mute IP and Mac addresses")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                JLabel label = new JLabel("How many minutes should this player be muted?");
+                JSpinner spinner = new JSpinner(new SpinnerNumberModel(10, 0, 60 * 24 * 7, 1));
+                JPanel panel = new JPanel();
+                panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+                panel.add(label);
+                panel.add(spinner);
+                if (JOptionPane.showConfirmDialog(LobbyFrame.this, panel, "Mute Player", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)
+                {
+                    Object value = spinner.getValue();
+
+                    if (value == null)
+                        return;
+
+                    long result2 = Long.parseLong(value.toString());
+                    if (result2 < 0)
+                    {
+                        return;
+                    }
+
+                    long ticks = result2 * 1000 * 60;
+
+                    long expire = System.currentTimeMillis()
+                            + ticks;
+
+                    controller.muteIp(clickedOn, new Date(expire));
+                    controller.muteMac(clickedOn, new Date(expire));
+                }
+            }
+        });
+
+        rVal.add(new AbstractAction("Show player information")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                String text = controller.getInformationOn(clickedOn);
+                JTextPane textPane = new JTextPane();
+                textPane.setEditable(false);
+                textPane.setText(text);
+                JOptionPane.showMessageDialog(null, textPane, "Player Info", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
 
         rVal.add(new AbstractAction("Reset password")
         {
-            
             public void actionPerformed(ActionEvent e)
             {
                 String newPassword = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(LobbyFrame.this), "Enter new password");
                 if(newPassword == null || newPassword.length() < 2)
-                    return;                
-                                
-                boolean set = controller.setPassword(clickedOn,MD5Crypt.crypt(newPassword));
-                String msg = set ? "Password set" : "Password not set";
-                
+                    return;
+
+                String error = controller.setPassword(clickedOn,MD5Crypt.crypt(newPassword));
+                String msg = error == null ? "Password set" : error;
+
                 JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(LobbyFrame.this), msg);
             }
         });
-        
-        
         return rVal;
     }
     

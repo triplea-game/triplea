@@ -2,11 +2,15 @@ package games.strategy.engine.framework.startup.login;
 
 import games.strategy.engine.EngineVersion;
 import games.strategy.net.ILoginValidator;
+import games.strategy.net.ServerMessenger;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Version;
+import java.net.InetSocketAddress;
 
 import java.net.SocketAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -25,7 +29,20 @@ public class ClientLoginValidator implements ILoginValidator
 {
     public static final String SALT_PROPERTY = "Salt";
     public static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
-    
+    static final String YOU_HAVE_BEEN_BANNED = "The host has banned you from this game";
+    static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address";
+    static final String INVALID_MAC = "Invalid mac address";
+
+    //A hack, till I think of something better
+    private static ClientLoginValidator s_instance;
+    public static ClientLoginValidator getInstance()
+    {
+        return s_instance;
+    }
+    public ClientLoginValidator()
+    {
+        s_instance = this;
+    }
     
     private String m_password;
     
@@ -40,16 +57,11 @@ public class ClientLoginValidator implements ILoginValidator
 
     public Map<String,String> getChallengeProperties(String userName, SocketAddress remoteAddress)
     {
-         
-        Map<String,String> challengeProperties = new HashMap<String,String>();
-        
+        Map<String,String> challengeProperties = new HashMap<String,String>();        
         challengeProperties.put("Sever Version", EngineVersion.VERSION.toString());
         
-        
-        
         if(m_password != null)
-        {
-            
+        {            
             /**
              * Get a new random salt. 
              */
@@ -61,13 +73,12 @@ public class ClientLoginValidator implements ILoginValidator
         else
         {
             challengeProperties.put(PASSWORD_REQUIRED_PROPERTY, Boolean.FALSE.toString());
-        }
-        
+        }        
         
         return challengeProperties;
     }
 
-    public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, SocketAddress remoteAddress)
+    public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String hashedMac, SocketAddress remoteAddress)
     {
         String versionString = propertiesReadFromClient.get(ClientLogin.ENGINE_VERSION_PROPERTY);
         if(versionString == null || versionString.length() > 20 || versionString.trim().length() == 0)
@@ -80,8 +91,24 @@ public class ClientLoginValidator implements ILoginValidator
             String error =  "Client is using " + clientVersion + " but server requires version " + EngineVersion.VERSION;
             return error;
         }
-        
-        
+
+        String remoteIp = ((InetSocketAddress) remoteAddress).getAddress().getHostAddress();
+        if(ServerMessenger.getInstance().IsIpMiniBanned(remoteIp))
+        {
+            return YOU_HAVE_BEEN_BANNED;
+        }
+        if(hashedMac == null)
+        {
+            return UNABLE_TO_OBTAIN_MAC;
+        }
+        if(hashedMac.length() != 28 || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$"))
+        {
+            return INVALID_MAC; //Must have been tampered with
+        }
+        if(ServerMessenger.getInstance().IsMacMiniBanned(hashedMac))
+        {
+            return YOU_HAVE_BEEN_BANNED;
+        }
 
         if(propertiesSentToClient.get(PASSWORD_REQUIRED_PROPERTY).equals(Boolean.TRUE.toString()) )
         {
@@ -89,8 +116,7 @@ public class ClientLoginValidator implements ILoginValidator
             if(readPassword == null)
             {
                 return "No password";
-            }
-            
+            }            
                         
             if(!readPassword.equals( MD5Crypt.crypt(m_password, propertiesSentToClient.get(SALT_PROPERTY)) ))
             {
@@ -100,11 +126,11 @@ public class ClientLoginValidator implements ILoginValidator
                     //try to prevent flooding to guess the 
                     //password
                     Thread.sleep((int) (4000 * Math.random()));
-                } catch (InterruptedException e)
+                }
+                catch (InterruptedException e)
                 {
                     //ignore
                 }
-
                 
                 return "Invalid password";
             }
@@ -112,7 +138,4 @@ public class ClientLoginValidator implements ILoginValidator
         
         return null;
     }
-
-    
-    
 }

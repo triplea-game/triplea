@@ -143,8 +143,8 @@ public class CreateUpdateAccountPanel extends JPanel
             m_password.setText("");
             m_password2.setText("");
             return;
-        }        
-        if(!games.strategy.util.Util.isMailValid( m_email.getText() ))
+        }
+        if(!games.strategy.util.Util.isMailValid(m_email.getText()))
         {
             JOptionPane.showMessageDialog(this, "You must enter a valid email", "No email" , JOptionPane.ERROR_MESSAGE);
             return;
@@ -154,12 +154,19 @@ public class CreateUpdateAccountPanel extends JPanel
             JOptionPane.showMessageDialog(this, DBUserController.validateUserName(m_userName.getText()), "Invalid Username" , JOptionPane.ERROR_MESSAGE);
             return;
         }
+        else if(m_password.getPassword().length == 0)
+        {
+            JOptionPane.showMessageDialog(this, "You must enter a password", "No Password" , JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        else if(m_password.getPassword().length < 3)
+        {
+            JOptionPane.showMessageDialog(this, "Passwords must be at least three characters long", "Invalid password" , JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         
         m_returnValue = ReturnValue.OK;
         m_dialog.setVisible(false);
-        
-        
-        
     }
 
     private void setWidgetActivation()
@@ -185,9 +192,6 @@ public class CreateUpdateAccountPanel extends JPanel
         return m_returnValue;
     }
     
-    
-    
-    
     @SuppressWarnings("deprecation")
     public String getPassword()
     {
@@ -204,7 +208,4 @@ public class CreateUpdateAccountPanel extends JPanel
     {
         return m_userName.getText();
     }
-    
-    
-    
 }

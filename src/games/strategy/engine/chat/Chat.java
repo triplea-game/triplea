@@ -226,6 +226,10 @@ public class Chat
    {
        return m_messengers.getMessenger().getLocalNode();
    }
+   public INode getServerNode()
+   {
+       return m_messengers.getMessenger().getServerNode();
+   }
 
     private IChatChannel m_chatChannelSubscribor = new IChatChannel()
     {

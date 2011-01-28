@@ -115,10 +115,8 @@ public class LobbyAdminConsole extends JFrame
         
             public void actionPerformed(ActionEvent e)
             {
-                debugPlayer();
-        
-            }
-        
+                debugPlayer();        
+            }        
         });
         
         m_exit.addActionListener(new ActionListener()
@@ -163,6 +161,11 @@ public class LobbyAdminConsole extends JFrame
                 model.addElement(node.getName());
         }
 
+        if (model.getSize() == 1)
+        {
+            JOptionPane.showMessageDialog(this, "No remote players", "No Remote Players", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         int rVal = JOptionPane.showConfirmDialog(LobbyAdminConsole.this, combo, "Select player to debug", JOptionPane.OK_CANCEL_OPTION);
         if (rVal != JOptionPane.OK_OPTION)

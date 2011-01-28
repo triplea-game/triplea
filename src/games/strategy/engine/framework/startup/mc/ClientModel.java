@@ -41,6 +41,7 @@ import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
+import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
@@ -169,9 +170,10 @@ public class ClientModel implements IMessengerErrorListener
 
         try
         {
-            m_messenger = new ClientMessenger(address, port, name, m_objectStreamFactory, new ClientLogin(m_ui));
-            
-        }catch (CouldNotLogInException ioe)
+            String mac = MacFinder.GetHashedMacAddress();
+            m_messenger = new ClientMessenger(address, port, name, mac, m_objectStreamFactory, new ClientLogin(m_ui));            
+        }
+        catch (CouldNotLogInException ioe)
         {
             //an error message should have already been reported
             return false;

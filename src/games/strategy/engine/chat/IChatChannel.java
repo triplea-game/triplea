@@ -8,7 +8,7 @@ import games.strategy.net.INode;
  * 
  * @author sgb
  */
-interface IChatChannel extends IChannelSubscribor
+public interface IChatChannel extends IChannelSubscribor
 {
     //we get the sender from MessageContext
     public void chatOccured(String message);
