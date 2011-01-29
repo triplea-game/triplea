@@ -313,16 +313,33 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
             random = tripleaPlayer.selectFixedDice(hits, 0, true, annotation);
 
         }
-        else
-            random = m_bridge.getRandom(Constants.MAX_DICE, hits, annotation);
-        m_bridge.getHistoryWriter().startEvent(
-                "Rolls to resolve tech hits:" + MyFormatter.asDice(random));
+        else {
+        	random = new int[hits];
+        	List<Integer> rolled = new ArrayList<Integer>();
+        	// generating discrete rolls. messy, can't think of a more elegant way
+        	// hits guaranteed to be less than available at this point.
+        	for(int i = 0; i<hits;i++){
+        		int roll = m_bridge.getRandom(available.size()-i, annotation);
+        		for(int r:rolled){
+        			if( roll>= r)
+        				roll++;
+        		}
+        		random[i] = roll;
+        		rolled.add(roll);
+        	}
+        }
+    	List<Integer> rolled = new ArrayList<Integer>();
         for (int i = 0; i < random.length; i++)
         {
-            int index = random[i] % available.size();
-            newAdvances.add(available.get(index));
-            available.remove(index);
+            int index = random[i];
+            // check in case of dice chooser.
+            if( !rolled.contains(index) && index < available.size() - 1) {
+            	newAdvances.add(available.get(index));
+            	rolled.add(index);
+            }
         }
+        m_bridge.getHistoryWriter().startEvent(
+                "Rolls to resolve tech hits:" + MyFormatter.asDice(random));
         return newAdvances;
     }
 

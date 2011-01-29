@@ -24,6 +24,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -181,9 +182,13 @@ public class TriggerAttachment extends DefaultAttachment{
 		for(UnitType u: uMap.keySet()) {
 			units.addAll(u.create(uMap.getInt(u), player));
 		}
-		// place units
 		CompositeChange change = new CompositeChange();
-        
+		// mark no movement
+		for(Unit unit:units){
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
+	        change.add(ChangeFactory.unitPropertyChange(unit, ua.getMovement(unit.getOwner()), TripleAUnit.ALREADY_MOVED));
+		}
+		// place units
         Collection<Unit> factoryAndAA = Match.getMatches(units,
                 Matches.UnitIsAAOrFactory);
         change.add(DelegateFinder.battleDelegate(data).getOriginalOwnerTracker()

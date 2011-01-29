@@ -200,6 +200,7 @@ public class DiceRoll implements Externalizable
      */
     private static DiceRoll rollDiceLowLuck(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
     {
+    	boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
     	int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
         int rollCount = BattleCalculator.getRolls(units, player, defending, artillerySupportAvailable);
         Set<List<UnitSupportAttachment>> supportRules = new HashSet<List<UnitSupportAttachment>>();
@@ -221,8 +222,17 @@ public class DiceRoll implements Externalizable
             Unit current = iter.next();
             UnitAttachment ua = UnitAttachment.get(current.getType());            
             int rolls = BattleCalculator.getRolls(current, player, defending, artillerySupportAvailable);
+            int totalStr =0;
             for (int i = 0; i < rolls; i++)
             {
+            	if(i > 1 && lhtrBombers && ua.isStrategicBomber() )
+            	{
+            		if( totalStr < Constants.MAX_DICE) {
+            			power+=1;
+            			totalStr+=1;
+            		}
+            		continue;
+            	}
                 int strength;
                 if (defending)
                 {
@@ -248,6 +258,7 @@ public class DiceRoll implements Externalizable
                     	strength = ua.getBombard(current.getOwner());  
                     strength += getSupport(current.getType(), supportRules, supportLeft);
                 }
+                totalStr += strength;
                 power += Math.min(Math.max(strength, 0), Constants.MAX_DICE);;
             }
         }

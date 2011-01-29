@@ -1,4 +1,8 @@
 Changes for 1.2.7
+* Fixed giving technology to be actually random, as previously when the list was smaller than 6, some techs had a higher chance of getting picked than others. (squid daddy)
+
+* Changing LHTR Heavy Bombers with Low Luck to give strength+1 instead of 2*strength for attacks, maxing out at max_dice. (squid daddy)
+
 * Triggered Rule Changes patch added. (squid daddy)
 
 * Lobby Moderator Enhancement patch added. (wisconsin)
