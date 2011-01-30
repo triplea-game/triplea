@@ -2985,7 +2985,7 @@
                 <resourceInitialize>
                         <resourceGiven player="British" resource="PUs" quantity="40"/>
                         <resourceGiven player="Americans" resource="PUs" quantity="50"/>
-                        <resourceGiven player="Japanese" resource="PUs" quantity="38"/>
+                        <resourceGiven player="Japanese" resource="PUs" quantity="41"/>
                         <resourceGiven player="Chinese" resource="PUs" quantity="10"/>
                         <resourceGiven player="Russians" resource="PUs" quantity="34"/>
                         <resourceGiven player="Germans" resource="PUs" quantity="60"/>
@@ -3151,8 +3151,6 @@
 				turning point at Midway (May 1942). 
 				
 				<br><br>
-				Axis should have a bid between 3 and 12 PUs.
-				<br><br>
 				Standard TripleA 'WW2V2' + 'LHTR' bomber rules apply. 
 				However, there are also variant rules to consider.<br>Also 'LHTR' 
 				delayed tech activation is applied.<br>
@@ -3182,7 +3180,7 @@
 				<br>Projection of Power: 14 victory cities
 				<br>
 				<br>Notable changes since version 2.4:
-				<br>Iwo Gima, Guam, and Wake are now worth 1 pu each.
+				<br>Iwo Gima, Guam, and Wake are now worth 1 pu each (and Japan starts with 3 more pu's).
 				<br>Addition of relief tiles, flags, victory cities, and other minor corrections to the xml.
 				
 					]]>	
