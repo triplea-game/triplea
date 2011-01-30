@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Minor Updates to Big World and Great War, updates for bugs in the xml as well as small balancing changes. (veqryn)
+
 * Added Purchases to the Trigger Attachment. (squid daddy)
 
 * Fixed giving technology to be actually random, as previously when the list was smaller than 6, some techs had a higher chance of getting picked than others. (squid daddy)

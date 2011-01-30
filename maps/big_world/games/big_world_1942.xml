@@ -1254,7 +1254,7 @@
                         <step name="britishBidPlace" delegate="placeBid" player="British" maxRunCount="1"/>
                         
                         <step name="japaneseBid" delegate="bid" player="Japanese" maxRunCount="1"/>
-                        <step name="japanesedPlace" delegate="placeBid" player="Japanese" maxRunCount="1"/>
+                        <step name="japaneseBidPlace" delegate="placeBid" player="Japanese" maxRunCount="1"/>
 
                         <step name="americanBid" delegate="bid" player="Americans" maxRunCount="1"/>
                         <step name="americanBidPlace" delegate="placeBid" player="Americans" maxRunCount="1"/>
@@ -1842,7 +1842,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Iwo Jima" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="0"/>
+                        <option name="production" value="1"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Hungary-Romania" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2220,7 +2220,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Wake" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="0"/>
+                        <option name="production" value="1"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="New Guinea" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2236,7 +2236,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Guam" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="0"/>
+                        <option name="production" value="1"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Southwestern Siberia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -3151,7 +3151,7 @@
 				turning point at Midway (May 1942). 
 				
 				<br><br>
-				Axis should have a bid between 7 and 14 PUs.
+				Axis should have a bid between 3 and 12 PUs.
 				<br><br>
 				Standard TripleA 'WW2V2' + 'LHTR' bomber rules apply. 
 				However, there are also variant rules to consider.<br>Also 'LHTR' 
@@ -3181,6 +3181,9 @@
 				<br>Honorable Surrender: 15 victory cities
 				<br>Projection of Power: 14 victory cities
 				<br>
+				<br>Notable changes since version 2.4:
+				<br>Iwo Gima, Guam, and Wake are now worth 1 pu each.
+				<br>Addition of relief tiles, flags, victory cities, and other minor corrections to the xml.
 				
 					]]>	
 					</value>
