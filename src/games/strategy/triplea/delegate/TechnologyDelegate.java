@@ -333,7 +333,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         {
             int index = random[i];
             // check in case of dice chooser.
-            if( !rolled.contains(index) && index < available.size() - 1) {
+            if( !rolled.contains(index) && index < available.size()) {
             	newAdvances.add(available.get(index));
             	rolled.add(index);
             }

@@ -46,7 +46,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	private boolean m_invert = false;
 	private String m_tech = null;
 	private Map<Territory,IntegerMap<UnitType>> m_placement = null;
-	
+	private IntegerMap<UnitType> m_purchase = null;
 	
 	public TriggerAttachment() {
 	}
@@ -139,6 +139,36 @@ public class TriggerAttachment extends DefaultAttachment{
     	}	
 	}
 	
+	public void setPurchase(String place) throws GameParseException{
+		String[] s = place.split(":");
+    	int count = -1,i=0;
+    	if(s.length<1)
+    		throw new GameParseException( "Empty purchase list");
+    	try {
+    		count = getInt(s[0]);
+    		i++;
+    	} catch(Exception e) {
+    		count = 1;
+    	}
+    	if(s.length<1 || s.length ==1 && count != -1)
+    		throw new GameParseException( "Empty purchase list");
+    	else {
+    		if(m_purchase == null ) 
+    			m_purchase = new IntegerMap<UnitType>();
+    		for( ; i < s.length; i++){
+    			UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
+    			if(type == null)
+    				throw new GameParseException( "UnitType does not exist " + s[i]);
+    			else
+    				m_purchase.add(type, count);
+    		}	
+    	}
+
+
+	}
+	public IntegerMap<UnitType> getPurchase() {
+		return m_purchase;
+	}
 	public static void triggerProductionChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
 		Set<TriggerAttachment> trigs = getTriggers(player,data,prodMatch);
 		CompositeChange change = new CompositeChange();
@@ -173,6 +203,26 @@ public class TriggerAttachment extends DefaultAttachment{
 					placeUnits(ter,t.getPlacement().get(ter),player,data,aBridge);
 				}
 			}
+		}
+	}
+	
+	public static void triggerPurchase(PlayerID player, IDelegateBridge aBridge, GameData data) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,purchaseMatch);
+		List<Unit> units = new ArrayList<Unit>();;
+		for(TriggerAttachment t:trigs) {
+			if(t.getTrigger().isSatisfied(data,player)!=t.getInvert()) {
+				for(UnitType u: t.getPurchase().keySet()) {
+					units.addAll(u.create(t.getPurchase().getInt(u), player));
+				}
+			}
+		}
+		if(!units.isEmpty()) {
+			String transcriptText = MyFormatter.unitsToTextNoOwner(units)
+			+ " gained by " + player;
+			aBridge.getHistoryWriter().startEvent(transcriptText);
+			aBridge.getHistoryWriter().setRenderingData(units);
+			Change place = ChangeFactory.addUnits(player, units);
+			aBridge.addChange(place);
 		}
 	}
 	
@@ -241,6 +291,13 @@ public class TriggerAttachment extends DefaultAttachment{
 		}
 	};
 	
+	private static Match<TriggerAttachment> purchaseMatch = new Match<TriggerAttachment>()
+	{
+		public boolean match(TriggerAttachment t)
+		{
+			return t.getPurchase() != null;
+		}
+	};
 	// shameless cheating. making a fake route, so as to handle battles 
 	// properly without breaking battleTracker protected status or duplicating 
 	// a zillion lines of code.

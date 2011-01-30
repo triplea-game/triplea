@@ -93,6 +93,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
         m_player = aBridge.getPlayerID();
         m_data = gameData;
         TriggerAttachment.triggerProductionChange(m_player,m_bridge,m_data); 
+        TriggerAttachment.triggerPurchase(m_player,m_bridge,m_data); 
     }
 
     public String getName()
