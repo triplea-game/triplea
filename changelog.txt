@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Added isLandTransport to support moving isInfantry land units using Mechanized Infantry tech, now separated from canBlitz and isMarine. (veqryn)
+
 * Minor Updates to Big World and Great War, updates for bugs in the xml as well as small balancing changes. (veqryn)
 
 * Added Purchases to the Trigger Attachment. (squid daddy)
@@ -155,7 +157,7 @@ Changes for 1.2.6
 
 * fix bug 2998846 kamikaze aircraft not working (ComradeKev)
 
-* add isAirTransport(able) to support air dropping units (ComradeKev)
+* add isAirTransport(able) to support air dropping units, now separated from isStrategicBomber (ComradeKev)
 
 * fix bug 2994004 air landing on newly produced carrier in multi-national SZ disappears (ComradeKev)
  

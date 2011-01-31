@@ -102,8 +102,8 @@ public class MoveValidator
     	
     	if(isMechanizedInfantry(player))
     	{	
-    		CompositeMatch<Unit> transportArmor = new CompositeMatchAnd<Unit>(Matches.UnitCanBlitz, Matches.unitIsOwnedBy(player));
-    		mechanizedSupportAvailable = Match.countMatches(units, transportArmor);
+    		CompositeMatch<Unit> transportLand = new CompositeMatchAnd<Unit>(Matches.UnitIsLandTransport, Matches.unitIsOwnedBy(player));
+    		mechanizedSupportAvailable = Match.countMatches(units, transportLand);
     	}
         return mechanizedSupportAvailable;
     }
@@ -198,22 +198,6 @@ public class MoveValidator
             	}
             }
         }
-
-        //TODO COMCO add rule to allow non-combat paratroops
-        /*if(isParatroopers(player) && ua.isStrategicBomber())
-        {
-            if (stepName.getDisplayName().equals("Combat Move"))
-            {   
-                Collection<Unit> ownedUnits = route.getStart().getUnits().getMatches(Matches.unitIsOwnedBy(player));
-                
-                CompositeMatch<Unit> ownedInfantry = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), 
-                                Matches.UnitIsLand, Matches.UnitCanBeTransported, Matches.UnitIsNotAA, Matches.UnitIsNotArmour);
-                
-                if(Match.countMatches(ownedUnits, ownedInfantry)>0)
-                {
-                }
-            }            
-        }*/
             
         if(left == -1 || left < route.getLength())
             return false;
@@ -1182,7 +1166,7 @@ public class MoveValidator
                     	if(!unitOK)
                     		result.addDisallowedUnit("Not all units have enough movement",unit);
                     }
-                    else if(mechanizedSupportAvailable > 0 && TripleAUnit.get(unit).getAlreadyMoved() == 0 && (Matches.UnitIsInfantry.match(unit) | Matches.UnitIsMarine.match(unit)))
+                    else if(mechanizedSupportAvailable > 0 && TripleAUnit.get(unit).getAlreadyMoved() == 0 && Matches.UnitIsInfantry.match(unit))
                     {
                     	mechanizedSupportAvailable --;
                     }

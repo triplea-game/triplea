@@ -444,6 +444,16 @@ public class Matches
         }
     };
 
+    public static final Match<Unit> UnitIsLandTransport = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            Unit unit = (Unit) obj;
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            return ua.getIsLandTransport();
+        }
+    };
+
     public static final Match<Unit> UnitIsDestructible = new Match<Unit>()
     {
         public boolean match(Unit obj)
@@ -666,8 +676,6 @@ public class Matches
     };
 
     public static final Match<Unit> UnitIsNotAA = new InverseMatch<Unit>(UnitIsAA);
-
-    public static final Match<Unit> UnitIsNotArmour = new InverseMatch<Unit>(UnitCanBlitz);
 
     public static final Match<Unit> UnitIsInfantry = new Match<Unit>()
     {

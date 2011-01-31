@@ -59,6 +59,7 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isArtillerySupportable = false;
   private boolean m_isMarine = false;
   private boolean m_isInfantry = false;
+  private boolean m_isLandTransport = false;
   private boolean m_canScramble = false;
   private boolean m_isAirBase = false;
   private boolean m_isInfrastructure = false;  
@@ -224,6 +225,11 @@ public class UnitAttachment extends DefaultAttachment
     return m_isMarine;
   }
 
+  public boolean isLandTransport()
+  {
+    return m_isLandTransport;
+  }
+
   public void setIsFactory(String s)
   {
     m_isFactory = getBool(s);
@@ -252,6 +258,16 @@ public class UnitAttachment extends DefaultAttachment
   public boolean getIsInfantry()
   {
     return m_isInfantry;
+  }
+
+  public void setIsLandTransport(String s)
+  {
+    m_isLandTransport = getBool(s);
+  }
+  
+  public boolean getIsLandTransport()
+  {
+    return m_isLandTransport;
   }
   
   public void setTransportCapacity(String s)
@@ -579,7 +595,10 @@ public class UnitAttachment extends DefaultAttachment
         m_carrierCapacity != -1 ||
         m_canBlitz ||
         m_canBombard || 
-        m_isMarine
+        m_isMarine ||
+        m_isInfantry ||
+        m_isLandTransport ||
+        m_isAirTransportable
         )
         throw new GameParseException("Invalid Unit attatchment" + this);
 
@@ -593,7 +612,11 @@ public class UnitAttachment extends DefaultAttachment
         m_isStrategicBomber ||
         m_carrierCost != -1 ||
         m_transportCost != -1 ||
-        m_isMarine
+        m_isMarine ||
+        m_isInfantry ||
+        m_isLandTransport ||
+        m_isAirTransportable ||
+        m_isAirTransport
         )
         throw new GameParseException("Invalid Unit Attatchment" + this);
     }
@@ -604,7 +627,8 @@ public class UnitAttachment extends DefaultAttachment
         m_isSub ||
         m_carrierCapacity != -1 ||
         m_bombard != -1 ||
-        m_transportCapacity != -1
+        m_transportCapacity != -1 ||
+        m_isAirTransport
         )
         throw new GameParseException("Invalid Unit Attatchment" + this);
     }
