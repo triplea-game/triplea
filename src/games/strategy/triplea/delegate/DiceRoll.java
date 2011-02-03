@@ -326,13 +326,12 @@ public class DiceRoll implements Externalizable
     	Iterator<UnitSupportAttachment> iter = UnitSupportAttachment.get(data).iterator();
     	while(iter.hasNext()){	
     		UnitSupportAttachment rule = iter.next();
+    		if(rule.getPlayers().isEmpty())
+    			continue;
     		if( defending && rule.getDefence() || 
     				!defending && rule.getOffence() )
     		{
-    			Match<Unit> canSupport = Matches.unitIsOfType((UnitType)rule.getAttatchedTo());
-    			if( rule.getPlayer() != null ) 
-    				canSupport = new CompositeMatchAnd<Unit>(canSupport, Matches.unitOwnedBy(rule.getPlayer()));
-    			
+    			CompositeMatchAnd<Unit> canSupport = new CompositeMatchAnd<Unit>(Matches.unitIsOfType((UnitType)rule.getAttatchedTo()),Matches.unitOwnedBy(rule.getPlayers()));  			
     			List<Unit> supporters = Match.getMatches(units, canSupport);
     			int numSupport = supporters.size();
     			if(rule.getImpArtTech())

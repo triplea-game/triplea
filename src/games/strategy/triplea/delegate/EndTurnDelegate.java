@@ -47,6 +47,7 @@ import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
@@ -190,7 +191,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     		Integer uses = rule.getUses();
     		if( uses == 0)
     			continue;
-    		objectiveMet = rule.isSatisfied(data, player);
+    		objectiveMet = rule.isSatisfied(data);
     		//
     		//Check for allied unit exclusions
     		//
@@ -521,9 +522,13 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     		//
     		if (objectiveMet)
     		{
-    		    int total = player.getResources().getQuantity(Constants.PUS) + rule.getObjectiveValue();
-    		    
-    		    Change change = ChangeFactory.changeResourcesChange(player, data.getResourceList().getResource(Constants.PUS), rule.getObjectiveValue());
+    			int toAdd = rule.getObjectiveValue();
+    			int total = player.getResources().getQuantity(Constants.PUS) + toAdd;
+    		    if(total < 0) {
+    		    	toAdd -= total;
+    		    	total = 0;
+    		    }
+    		    Change change = ChangeFactory.changeResourcesChange(player, data.getResourceList().getResource(Constants.PUS), toAdd);
     		    //player.getResources().addResource(data.getResourceList().getResource(Constants.PUS), rule.getObjectiveValue());
                 bridge.addChange(change);
         	    if( uses > 0) {
@@ -535,7 +540,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     			"; end with " + total + MyFormatter.pluralize(" PU", total);
     			bridge.getHistoryWriter().startEvent(PUMessage);
     		}    		
-    	} //end while        	
+    	} //end while     
+    	TriggerAttachment.triggerResourceChange(player, bridge, data);
     } //end determineNationalObjectives
 
     

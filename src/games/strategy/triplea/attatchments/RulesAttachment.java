@@ -96,6 +96,7 @@ public class RulesAttachment extends DefaultAttachment
     private boolean m_placementInCapitalRestricted = false;
     private boolean m_dominatingFirstRoundAttack = false;
     private boolean m_negateDominatingFirstRoundAttack = false;
+    private boolean m_invert = false;
     
     //Integers
     private int m_territoryCount = -1;
@@ -339,6 +340,15 @@ public class RulesAttachment extends DefaultAttachment
   public void setUses(int u) {
 	  m_uses = u;
   }
+  
+  public boolean getInvert() {
+	  return m_invert;
+  }
+
+  public void setInvert(String s) {
+	  m_invert = getBool(s);
+  }
+
   public Set<PlayerID> getAtWarPlayers() {
 	  return m_atWarPlayers;
   }
@@ -424,9 +434,9 @@ public class RulesAttachment extends DefaultAttachment
 	  return false;
   }
   
-  public boolean isSatisfied(GameData data, PlayerID player) {
+  public boolean isSatisfied(GameData data) {
 	  boolean objectiveMet = true;
-	  
+	  PlayerID player = (PlayerID) getAttatchedTo();
 	  //
 	  //check turn limits
 	  //
@@ -760,7 +770,7 @@ public class RulesAttachment extends DefaultAttachment
 		if( m_techs!=null && objectiveMet == true) {
 			objectiveMet = checkTechs(player, data);
 		}
-		return objectiveMet;
+		return objectiveMet!=m_invert;
   }
   /**
    * Called after the attatchment is created.

@@ -52,7 +52,18 @@ public class PropertyUtil
             throw new IllegalStateException("Could not get property:" + propertyName + " subject:" + subject,  e);
         }
     }
-    
+    public static Object getRaw(String property, Object subject) 
+    {
+        try
+        {
+          Method getter = subject.getClass().getMethod("getRawProperty", String.class);
+          return getter.invoke(subject, property);
+        }
+        catch(Exception e)
+        {
+            throw new IllegalStateException("Could not get property:" + property + " subject:" + subject,  e);
+        }
+    }
 
     private static String capitalizeFirstLetter(String aString)
     {

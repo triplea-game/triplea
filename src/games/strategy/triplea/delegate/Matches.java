@@ -1396,7 +1396,21 @@ public class Matches
         };
 
     }
+    
+    public static Match<Unit> unitOwnedBy(final List<PlayerID> players)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit o)
+            {
+                for(PlayerID p:players)
+                	if( o.getOwner().equals(p))
+                		return true;
+                return false;
+            }
+        };
 
+    }
 
 
     public static Match<Unit> alliedUnit(final PlayerID player, final GameData data)

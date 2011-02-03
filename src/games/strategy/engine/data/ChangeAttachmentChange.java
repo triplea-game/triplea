@@ -44,10 +44,17 @@ public class ChangeAttachmentChange extends Change
     m_attatchedTo = attatchment.getAttatchedTo();
     
     m_attatchmentName = attatchment.getName();
-    m_newValue = newValue;
-    m_property = property;
-
-    m_oldValue = PropertyUtil.get(property, attatchment);
+    if(property.equals("rawProperty")) {
+    	String[] s = ((String) newValue).split(":");
+    	m_oldValue = PropertyUtil.getRaw(s[0], attatchment);
+    	m_newValue = s[1];
+        m_property = s[0];
+    }
+    else {
+    	m_oldValue = PropertyUtil.get(property, attatchment);
+    	m_newValue = newValue;
+        m_property = property;
+    }
     
   }
 

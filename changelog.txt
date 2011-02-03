@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Trigger Attachment and Rules Attachment updates. (squid daddy)
+
 * Added isLandTransport to support moving isInfantry land units using Mechanized Infantry tech, now separated from canBlitz and isMarine. (veqryn)
 
 * Minor Updates to Big World and Great War, updates for bugs in the xml as well as small balancing changes. (veqryn)

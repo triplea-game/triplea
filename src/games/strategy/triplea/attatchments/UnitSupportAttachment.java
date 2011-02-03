@@ -63,7 +63,7 @@ public class UnitSupportAttachment extends DefaultAttachment{
     private boolean m_allied = false;
     private boolean m_enemy = false;
     private String m_bonusType = null;
-    private PlayerID m_player = null;
+    private List<PlayerID> m_players = new ArrayList<PlayerID>();
     private boolean m_impArtTech = false;
 
     public UnitSupportAttachment()
@@ -159,13 +159,21 @@ public class UnitSupportAttachment extends DefaultAttachment{
     	m_bonusType = type;
     }
     
-    public void setPlayer(String name) throws GameParseException
+    public void setPlayers(String names) throws GameParseException
     {
-            
-            PlayerID player = getData().getPlayerList().getPlayerID(name);
+    	String[] s = names.split(":");
+    	for( int i=0; i < s.length; i++){
+    		PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
             if(player == null)
-                throw new GameParseException("Could not find player. name:" + name);
-            m_player = player;
+                throw new GameParseException("Could not find player. name:" + s[i]);
+            else
+            	m_players.add(player);
+    	}       
+    }
+    
+    public void setPlayers(List<PlayerID> players)
+    {
+    	m_players = players;
     }
     
     public void setImpArtTech(String tech) {
@@ -176,8 +184,8 @@ public class UnitSupportAttachment extends DefaultAttachment{
     	return m_unitTypes;
     }
     
-    public PlayerID getPlayer() {
-    	return m_player;
+    public List<PlayerID> getPlayers() {
+    	return m_players;
     }
     
     public int getNumber() {
@@ -277,39 +285,5 @@ public class UnitSupportAttachment extends DefaultAttachment{
     		addRule(type, data, first);
     		
     }
-    
-    /*
-    public UnitType getUnitType() {
-    	return m_unitType;
-    }
-    
-    public UnitType getUnitType() {
-    	return m_unitType;
-    }
-    
-    public UnitType getUnitType() {
-    	return m_unitType;
-    }
-    
-    public UnitType getUnitType() {
-    	return m_unitType;
-    }
-    
-    public UnitType getUnitType() {
-    	return m_unitType;
-    }
-    
-    public UnitType getUnitType() {
-    	return m_unitType;
-    }
-    
-    public UnitType getUnitType() {
-    	return m_unitType;
-    }
-    
-    public UnitType getUnitType() {
-    	return m_unitType;
-    }
-	*/
 
 }
