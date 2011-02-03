@@ -109,7 +109,11 @@ public abstract class AbstractEndTurnDelegate
         toAdd -= blockadeLoss;
         int total = player.getResources().getQuantity(PUs) + toAdd;
 
-        String transcriptText = player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU ", toAdd)+"("+blockadeLoss+" lost)"+"; end with " + total+ MyFormatter.pluralize(" PU", total) + " total";
+        String transcriptText;
+        if (blockadeLoss == 0)
+        	transcriptText = player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd)+"; end with " + total+ MyFormatter.pluralize(" PU", total) + " total";
+        else
+        	transcriptText = player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd)+" ("+blockadeLoss+" lost to blockades)"+"; end with " + total+ MyFormatter.pluralize(" PU", total) + " total";
         aBridge.getHistoryWriter().startEvent(transcriptText);
         
         if(isWarBonds(player))

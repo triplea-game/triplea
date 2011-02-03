@@ -634,10 +634,10 @@ public class RulesAttachment extends DefaultAttachment
   	        				//Colon delimit the collection as it would exist in the XML
   	        				for (Territory item : originalAlliedTerrs)
   	      					  	value = value + ":" + item;
-  	        				//Remove the leading colon
-  	        				value = value.replaceFirst(":", "");
   						}
-  					}	    					
+  					}
+      				//Remove the leading colon
+      				value = value.replaceFirst(":", "");
   				}
   				else if(name.equals("enemy"))
   				{	//TODO Perhaps add a count to signify how many territories must be controlled- currently, it's ALL
@@ -655,10 +655,10 @@ public class RulesAttachment extends DefaultAttachment
   	        				//Colon delimit the collection as it would exist in the XML
   	        				for (Territory item : originalEnemyTerrs)
   	      					  	value = value + ":" + item;
-  	        				//Remove the leading colon
-  	        				value = value.replaceFirst(":", "");
   						}
-  					}	    					
+  					}
+      				//Remove the leading colon
+      				value = value.replaceFirst(":", "");
   				}
   				else
   				{	//The list just contained 1 territory
@@ -700,25 +700,16 @@ public class RulesAttachment extends DefaultAttachment
   			for(String name : terrs)
   			{
   				if(name.equals("original"))
-  				{	
-  					Collection<PlayerID> players = data.getPlayerList().getPlayers();
-  					Iterator<PlayerID> playersIter = players.iterator();
-  					while(playersIter.hasNext())
-  					{
-  						PlayerID currPlayer = playersIter.next();
-  						if (data.getAllianceTracker().isAllied(currPlayer, player)) // check this again (should we be looking for allied control if this is direct ownership?)
-  						{
-  							//get all originally owned territories
-  	    					OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
-  	        				Collection<Territory> originalAlliedTerrs = origOwnerTracker.getOriginallyOwned(data, currPlayer);
-  	        				setTerritoryCount(String.valueOf(originalAlliedTerrs.size()));
-  	        				//Colon delimit the collection as it would exist in the XML
-  	        				for (Territory item : originalAlliedTerrs)
-  	      					  	value = value + ":" + item;
-  	        				//Remove the leading colon
-  	        				value = value.replaceFirst(":", "");
-  						}
-  					}	    					
+  				{
+					//get all originally owned territories
+					OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+    				Collection<Territory> originalAlliedTerrs = origOwnerTracker.getOriginallyOwned(data, player);
+    				setTerritoryCount(String.valueOf(originalAlliedTerrs.size()));
+    				//Colon delimit the collection as it would exist in the XML
+    				for (Territory item : originalAlliedTerrs)
+  					  	value = value + ":" + item;
+      				//Remove the leading colon
+      				value = value.replaceFirst(":", "");
   				}
   				else if(name.equals("enemy"))
   				{	//TODO Perhaps add a count to signify how many territories must be controlled- currently, it's ALL
@@ -736,10 +727,10 @@ public class RulesAttachment extends DefaultAttachment
   	        				//Colon delimit the collection as it would exist in the XML
   	        				for (Territory item : originalEnemyTerrs)
   	      					  	value = value + ":" + item;
-  	        				//Remove the leading colon
-  	        				value = value.replaceFirst(":", "");
   						}
-  					}	    					
+  					}
+      				//Remove the leading colon
+      				value = value.replaceFirst(":", "");
   				}
   				else
   				{	//The list just contained 1 territory

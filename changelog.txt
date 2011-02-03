@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Bug fix in alliedOwnership and directOwnership NatObj's use of original and enemy, was returning a list of territories that did not exist. (veqryn)
+
 * Trigger Attachment and Rules Attachment updates. (squid daddy)
 
 * Added isLandTransport to support moving isInfantry land units using Mechanized Infantry tech, now separated from canBlitz and isMarine. (veqryn)
