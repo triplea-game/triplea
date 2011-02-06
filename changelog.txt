@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Small bug in triggers, production changes were always occuring no matter what, missing brackets. (veqryn)
+
 * Further updates to Trigger Attachments and Support attachments, as well as creating a new property to turn triggers on and off, defaults to false: "Use Triggers". (squid daddy)
 
 * Bug fix in alliedOwnership and directOwnership NatObj's use of original and enemy, was returning a list of territories that did not exist. (veqryn)

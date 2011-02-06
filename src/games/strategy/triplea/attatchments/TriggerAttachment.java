@@ -292,10 +292,12 @@ public class TriggerAttachment extends DefaultAttachment{
 					break;
 			}
 			if(met!=t.getInvert())
+			{
 				t.use(aBridge);
 				for( PlayerID aPlayer: t.getPlayers()){
 					change.add(ChangeFactory.changeProductionFrontier(aPlayer, t.getFrontier()));
 				}
+			}
 		}
 		if( !change.isEmpty())
 			aBridge.addChange(change);
