@@ -3,6 +3,7 @@ package games.strategy.triplea.attatchments;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -51,10 +52,11 @@ public class TriggerAttachment extends DefaultAttachment{
 	private String m_resource = null;
 	private int m_resourceCount = 0;
 	private int m_uses = -1;
-	private PlayerID m_player= null;
+	private List<PlayerID> m_players= new ArrayList<PlayerID>();
 	private UnitSupportAttachment m_support = null;
 	private List<String> m_unitProperty = null;
 	private UnitType m_unitType = null;
+	private boolean m_removeSupport = false;
 	public TriggerAttachment() {
 	}
 	
@@ -80,7 +82,7 @@ public class TriggerAttachment extends DefaultAttachment{
 					break;
 			}
 			if(trigger == null)
-				throw new GameParseException("Could not find rule. name:" + s);
+				throw new GameParseException("Could not find trigger rule. name:" + s[i]);
 			if(m_trigger == null)
 				m_trigger = new ArrayList<RulesAttachment>();
 			m_trigger.add(trigger);
@@ -128,6 +130,9 @@ public class TriggerAttachment extends DefaultAttachment{
 		m_invert = getBool(s);
 	}
 	
+	public boolean getRemoveSupport() {
+		return m_removeSupport;
+	}
 	public String getTech() {
 		return m_tech;
 	}
@@ -152,7 +157,10 @@ public class TriggerAttachment extends DefaultAttachment{
 	}
 	
 	public void setSupport(String s) throws GameParseException{
-		
+		if( s.startsWith("-")) {
+			m_removeSupport = true;
+			s = s.substring(1);
+		}
 		for(UnitSupportAttachment support:UnitSupportAttachment.get(getData())) {
 			if( support.getName().equals(s)) {
 				m_support = support;
@@ -162,16 +170,21 @@ public class TriggerAttachment extends DefaultAttachment{
 		if(m_support == null)
 			throw new GameParseException("Could not find unitSupportAttachment. name:" + s);
 	}
-	public void setPlayer(String name) throws GameParseException
-    {
-            
-            PlayerID player = getData().getPlayerList().getPlayerID(name);
-            if(player == null)
-                throw new GameParseException("Could not find player. name:" + name);
-            m_player = player;
-    }
-	public PlayerID getPlayer() {
-    	return (PlayerID) (m_player==null?getAttatchedTo():m_player);
+	public void setPlayers(String names) throws GameParseException
+	{
+		String[] s = names.split(":");
+		for(int i =0;i<s.length;i++) {
+			PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
+			if(player == null)
+				throw new GameParseException("Could not find player (in triggers). name:" + s[i]);
+			m_players.add(player);
+		}
+	}
+	public List<PlayerID> getPlayers() {
+		if(m_players.isEmpty()) 
+			return Collections.singletonList((PlayerID)getAttatchedTo());
+		else
+			return m_players;
     }
 	public String getResource() {
 		return m_resource;
@@ -279,7 +292,10 @@ public class TriggerAttachment extends DefaultAttachment{
 					break;
 			}
 			if(met!=t.getInvert())
-				change.add(ChangeFactory.changeProductionFrontier(t.getPlayer(), t.getFrontier()));
+				t.use(aBridge);
+				for( PlayerID aPlayer: t.getPlayers()){
+					change.add(ChangeFactory.changeProductionFrontier(aPlayer, t.getFrontier()));
+				}
 		}
 		if( !change.isEmpty())
 			aBridge.addChange(change);
@@ -295,13 +311,16 @@ public class TriggerAttachment extends DefaultAttachment{
 					break;
 			}
 			if(met!=t.getInvert()) {
-				TechAdvance advance = TechAdvance.findAdvance(t.getTech(),data);
-				Collection<TechAdvance> alreadyHave = TechTracker.getTechAdvances(t.getPlayer());
-				if(alreadyHave.contains(advance))
-					continue;
-				aBridge.getHistoryWriter().startEvent(t.getPlayer().getName() + " activating " + advance);
-				advance.perform(t.getPlayer(), aBridge, data);
-				TechTracker.addAdvance(t.getPlayer(), data, aBridge, advance);
+				t.use(aBridge);
+				for( PlayerID aPlayer: t.getPlayers()){
+					TechAdvance advance = TechAdvance.findAdvance(t.getTech(),data);
+					Collection<TechAdvance> alreadyHave = TechTracker.getTechAdvances(aPlayer);
+					if(alreadyHave.contains(advance))
+						continue;
+					aBridge.getHistoryWriter().startEvent(aPlayer.getName() + " activating " + advance);
+					advance.perform(aPlayer, aBridge, data);
+					TechTracker.addAdvance(aPlayer, data, aBridge, advance);
+				}
 			}
 		}
 	}
@@ -316,8 +335,11 @@ public class TriggerAttachment extends DefaultAttachment{
 					break;
 			}
 			if(met!=t.getInvert()) {
-				for(Territory ter: t.getPlacement().keySet()) {
-					placeUnits(ter,t.getPlacement().get(ter),t.getPlayer(),data,aBridge);
+				t.use(aBridge);
+				for( PlayerID aPlayer: t.getPlayers()){
+					for(Territory ter: t.getPlacement().keySet()) {
+						placeUnits(ter,t.getPlacement().get(ter),aPlayer,data,aBridge);
+					}
 				}
 			}
 		}
@@ -326,7 +348,6 @@ public class TriggerAttachment extends DefaultAttachment{
 	public static void triggerPurchase(PlayerID player, IDelegateBridge aBridge, GameData data) {
 		Set<TriggerAttachment> trigs = getTriggers(player,data,purchaseMatch);
 		for(TriggerAttachment t:trigs) {
-			List<Unit> units = new ArrayList<Unit>();
 			boolean met = false;
 			for(RulesAttachment c:t.getTrigger()) {
 				met = c.isSatisfied(data);
@@ -334,18 +355,22 @@ public class TriggerAttachment extends DefaultAttachment{
 					break;
 			}
 			if(met!=t.getInvert()) {
-				for(UnitType u: t.getPurchase().keySet()) {
-					units.addAll(u.create(t.getPurchase().getInt(u), t.getPlayer()));
+				t.use(aBridge);
+				for( PlayerID aPlayer: t.getPlayers()){
+					List<Unit> units = new ArrayList<Unit>();
+					for(UnitType u: t.getPurchase().keySet()) {
+						units.addAll(u.create(t.getPurchase().getInt(u), aPlayer));
+					}
+					if(!units.isEmpty()) {
+						String transcriptText = MyFormatter.unitsToTextNoOwner(units)
+						+ " gained by " + aPlayer;
+						aBridge.getHistoryWriter().startEvent(transcriptText);
+						aBridge.getHistoryWriter().setRenderingData(units);
+						Change place = ChangeFactory.addUnits(aPlayer, units);
+						aBridge.addChange(place);
+					}
 				}
 			}	
-			if(!units.isEmpty()) {
-				String transcriptText = MyFormatter.unitsToTextNoOwner(units)
-				+ " gained by " + t.getPlayer();
-				aBridge.getHistoryWriter().startEvent(transcriptText);
-				aBridge.getHistoryWriter().setRenderingData(units);
-				Change place = ChangeFactory.addUnits(t.getPlayer(), units);
-				aBridge.addChange(place);
-			}
 		}
 	}
 	
@@ -354,29 +379,25 @@ public class TriggerAttachment extends DefaultAttachment{
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t:trigs) {
 			boolean met = false;
-			int uses = t.getUses();
-			if(uses == 0)
-				continue;
 			for(RulesAttachment c:t.getTrigger()) {
 				met = c.isSatisfied(data);
 				if(!met)
 					break;
 			}
 			if(met!=t.getInvert()){
-				int toAdd = t.getResourceCount();
-				int total = t.getPlayer().getResources().getQuantity(t.getResource()) + toAdd;
-    		    if(total < 0) {
-    		    	toAdd -= total;
-    		    	total = 0;
-    		    }
-    		    change.add(ChangeFactory.changeResourcesChange(t.getPlayer(), data.getResourceList().getResource(t.getResource()), toAdd));
-        	    if( uses > 0) {
-        	    	uses--;
-        	    	change.add(ChangeFactory.attachmentPropertyChange(t, new Integer(uses).toString(), "uses"));
-        	    }
-    			String PUMessage = t.getPlayer().getName() + " met a national objective for an additional " + t.getResourceCount() + " " + t.getResource()+
-    			"; end with " + total + " " +t.getResource();
-    			aBridge.getHistoryWriter().startEvent(PUMessage);
+				t.use(aBridge);
+				for( PlayerID aPlayer: t.getPlayers()){
+					int toAdd = t.getResourceCount();
+					int total = aPlayer.getResources().getQuantity(t.getResource()) + toAdd;
+					if(total < 0) {
+						toAdd -= total;
+						total = 0;
+					}
+					change.add(ChangeFactory.changeResourcesChange(aPlayer, data.getResourceList().getResource(t.getResource()), toAdd));
+					String PUMessage = aPlayer.getName() + " met a national objective for an additional " + t.getResourceCount() + " " + t.getResource()+
+					"; end with " + total + " " +t.getResource();
+					aBridge.getHistoryWriter().startEvent(PUMessage);
+				}
 			}
 				
 		}
@@ -396,12 +417,23 @@ public class TriggerAttachment extends DefaultAttachment{
 					break;
 			}
 			if(met!=t.getInvert()){
-				if(t.getSupport().getPlayers().contains(t.getPlayer()))
-					continue;
-				List<PlayerID> p = new ArrayList<PlayerID>(t.getSupport().getPlayers());
-				p.add(t.getPlayer());
-				change.add(ChangeFactory.attachmentPropertyChange(t.getSupport(), p, "players"));
-			}	
+				t.use(aBridge);
+				for( PlayerID aPlayer: t.getPlayers()){
+					List<PlayerID> p = new ArrayList<PlayerID>(t.getSupport().getPlayers());
+					if(p.contains(aPlayer)) {
+						if(t.getRemoveSupport()) {
+							p.remove(aPlayer);
+							change.add(ChangeFactory.attachmentPropertyChange(t.getSupport(), p, "players"));
+						}
+					}
+					else {
+						if(!t.getRemoveSupport()) {
+							p.add(aPlayer);
+							change.add(ChangeFactory.attachmentPropertyChange(t.getSupport(), p, "players"));
+						}	
+					}
+				}
+			}
 		}
 		if( !change.isEmpty())
 			aBridge.addChange(change);
@@ -418,6 +450,7 @@ public class TriggerAttachment extends DefaultAttachment{
 					break;
 			}
 			if(met!=t.getInvert()){
+				t.use(aBridge);
 				for(String property:t.getUnitProperty()) {
 					String[] s = property.split(":");
 					if(UnitAttachment.get(t.getUnitType()).getRawProperty(s[0]).equals(s[1]))
@@ -471,11 +504,17 @@ public class TriggerAttachment extends DefaultAttachment{
         if( Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data).match(terr))
         	DelegateFinder.battleDelegate(data).getBattleTracker().addBattle(new CRoute(terr), units, false, player, data, aBridge, null);
 	}
+	private void use (IDelegateBridge aBridge) {
+		if( m_uses > 0) {
+			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, new Integer(m_uses-1).toString(), "uses"));
+		}
+	}
+	
 	private static Match<TriggerAttachment> prodMatch = new Match<TriggerAttachment>()
 	{
 		public boolean match(TriggerAttachment t)
 		{
-			return t.getFrontier() != null;
+			return t.getFrontier() != null && t.getUses()!=0;
 		}
 	};
 
@@ -483,7 +522,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	{
 		public boolean match(TriggerAttachment t)
 		{
-			return t.getTech() != null;
+			return t.getTech() != null && t.getUses()!=0;
 		}
 	};
 	
@@ -491,7 +530,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	{
 		public boolean match(TriggerAttachment t)
 		{
-			return t.getPlacement() != null;
+			return t.getPlacement() != null && t.getUses()!=0;
 		}
 	};
 	
@@ -499,7 +538,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	{
 		public boolean match(TriggerAttachment t)
 		{
-			return t.getPurchase() != null;
+			return t.getPurchase() != null && t.getUses()!=0;
 		}
 	};
 	
@@ -507,7 +546,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	{
 		public boolean match(TriggerAttachment t)
 		{
-			return t.getResource() != null && t.getResourceCount() != 0;
+			return t.getResource() != null && t.getResourceCount() != 0 && t.getUses()!=0;
 		}
 	};
 	
@@ -515,7 +554,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	{
 		public boolean match(TriggerAttachment t)
 		{
-			return t.getSupport() != null;
+			return t.getSupport() != null && t.getUses()!=0;
 		}
 	};
 	
@@ -523,7 +562,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	{
 		public boolean match(TriggerAttachment t)
 		{
-			return t.getUnitType() != null && t.getUnitProperty() !=null;
+			return t.getUnitType() != null && t.getUnitProperty() !=null && t.getUses()!=0;
 		}
 	};
 	public void validate(GameData data) throws GameParseException

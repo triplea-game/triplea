@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Further updates to Trigger Attachments and Support attachments, as well as creating a new property to turn triggers on and off, defaults to false: "Use Triggers". (squid daddy)
+
 * Bug fix in alliedOwnership and directOwnership NatObj's use of original and enemy, was returning a list of territories that did not exist. (veqryn)
 
 * Trigger Attachment and Rules Attachment updates. (squid daddy)

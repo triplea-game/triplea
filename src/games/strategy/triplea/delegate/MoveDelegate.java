@@ -191,7 +191,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             firstRun();
         
         // placing triggered units at beginning of combat move.
-        if(!m_nonCombat)
+        if(!m_nonCombat && games.strategy.triplea.Properties.getTriggers(m_data))
         	TriggerAttachment.triggerUnitPlacement(player,m_bridge,gameData);
         if(m_tempMovePerformer != null)
         {

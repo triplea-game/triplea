@@ -565,6 +565,15 @@ public class Properties implements Constants {
     }
 
     /*
+     * Triggers USED
+     */
+    public static boolean getTriggers(GameData data) {
+
+        return data.getProperties().get(TRIGGERS, false);
+
+    }
+    
+    /*
      * Continuous Research
      */
     public static boolean getContinuousResearch(GameData data) {

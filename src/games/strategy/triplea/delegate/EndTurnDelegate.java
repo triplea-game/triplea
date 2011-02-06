@@ -541,7 +541,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     			bridge.getHistoryWriter().startEvent(PUMessage);
     		}    		
     	} //end while     
-    	TriggerAttachment.triggerResourceChange(player, bridge, data);
+    	if(games.strategy.triplea.Properties.getTriggers(data)) 
+    		TriggerAttachment.triggerResourceChange(player, bridge, data);
     } //end determineNationalObjectives
 
     

@@ -83,9 +83,11 @@ public class TechActivationDelegate implements IDelegate
         }
         //empty
         techMap.put(m_player, null);
-        TriggerAttachment.triggerTechChange(m_player, aBridge, m_data);
-        TriggerAttachment.triggerSupportChange(m_player, aBridge, m_data);
-        TriggerAttachment.triggerUnitPropertyChange(m_player, aBridge, m_data);
+        if(games.strategy.triplea.Properties.getTriggers(m_data)){
+        	TriggerAttachment.triggerTechChange(m_player, aBridge, m_data);
+        	TriggerAttachment.triggerSupportChange(m_player, aBridge, m_data);
+        	TriggerAttachment.triggerUnitPropertyChange(m_player, aBridge, m_data);
+        }
     }
 
     // Return string representing all advances in collection

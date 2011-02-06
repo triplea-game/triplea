@@ -235,6 +235,7 @@ public class UnitSupportAttachment extends DefaultAttachment{
     		rule.addUnitTypes(Collections.singleton(type));	
     	else
     		rule.addUnitTypes(getTargets(data));	
+    	rule.setPlayers(new ArrayList<PlayerID>(data.getPlayerList().getPlayers()));
     	type.addAttachment(Constants.SUPPORT_RULE_NAME_OLD+type.getName(), rule);
     	rule.setAttatchedTo(type);
     	rule.setName(Constants.SUPPORT_RULE_NAME_OLD+type.getName()); 

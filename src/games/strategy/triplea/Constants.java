@@ -192,4 +192,5 @@ public interface Constants
   //squid
   public static final String OLD_ART_RULE_NAME = "ArtyOld";
   public static final String SUPPORT_RULE_NAME_OLD = SUPPORT_ATTACHMENT_PREFIX+OLD_ART_RULE_NAME;
+  public static final String TRIGGERS = "Use Triggers";
 }
