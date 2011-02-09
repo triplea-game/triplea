@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Deleted unused uncoded game Properties. (veqryn)
+
 * Made "LHTR Carrier production rules" completely over-ride the other 4 carrier-fighter properties, that way it is finaly a single switch toggle for the rules-set. (veqryn)
 
 * Small bug in triggers, production changes were always occuring no matter what, missing brackets. (veqryn)

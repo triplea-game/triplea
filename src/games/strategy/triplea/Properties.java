@@ -104,12 +104,6 @@ public class Properties implements Constants {
 
     }
 
-    public static boolean getRocketsCanViolateNeutrality(GameData data) {
-
-        return data.getProperties().get(ROCKETS_CAN_VIOLATE_NEUTRALITY, false);
-
-    }
-
     public static boolean getRocketsCanFlyOverImpassables(GameData data) {
 
         return data.getProperties().get(ROCKETS_CAN_FLY_OVER_IMPASSABLES, false);
@@ -140,24 +134,6 @@ public class Properties implements Constants {
     public static boolean getEconomicVictory(GameData data) {
 
         return data.getProperties().get(ECONOMIC_VICTORY, false);
-    }
-
-    /*
-     * World War 2 Version 3 Land & Production
-     */
-    public static boolean getWW2V3LandProduction(GameData data) {
-
-        return data.getProperties().get(WW2V3_LAND_PRODUCTION, false);
-
-    }
-
-    /*
-     * World War 2 Version 3 Air & Naval
-     */
-    public static boolean getWW2V3AirNaval(GameData data) {
-
-        return data.getProperties().get(WW2V3_AIR_NAVAL, false);
-
     }
 
     /*
@@ -511,15 +487,6 @@ public class Properties implements Constants {
     }
 
     /*
-     * Sub retreat restricted by DD
-     */
-    public static boolean getSubRetreatDDRestricted(GameData data) {
-
-        return data.getProperties().get(SUB_RETREAT_DD_RESTRICTED, false);
-
-    }
-
-    /*
      * Shore Bombard per Ground Unit Restricted
      */
     public static boolean getShoreBombardPerGroundUnitRestricted(GameData data) {
@@ -570,15 +537,6 @@ public class Properties implements Constants {
     public static boolean getTriggers(GameData data) {
 
         return data.getProperties().get(TRIGGERS, false);
-
-    }
-    
-    /*
-     * Continuous Research
-     */
-    public static boolean getContinuousResearch(GameData data) {
-
-        return data.getProperties().get(CONTINUOUS_RESEARCH, false);
 
     }
 

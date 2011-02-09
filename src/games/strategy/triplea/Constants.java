@@ -70,8 +70,7 @@ public interface Constants
   public static final String TOTAL_VICTORY = "Total Victory";
   public static final String HONORABLE_SURRENDER = "Honorable Surrender";
   public static final String PROJECTION_OF_POWER = "Projection of Power";  
-  public static final String ALL_ROCKETS_ATTACK = "All Rockets Attack";  
-  public static final String ROCKETS_CAN_VIOLATE_NEUTRALITY = "Rockets Can Violate Neutrality";
+  public static final String ALL_ROCKETS_ATTACK = "All Rockets Attack";
   public static final String ROCKETS_CAN_FLY_OVER_IMPASSABLES = "Rockets Can Fly Over Impassables";
   public static final String NEUTRALS_ARE_IMPASSABLE = "Neutrals Are Impassable";
   public static final String NEUTRALS_ARE_BLITZABLE = "Neutrals Are Blitzable";  
@@ -123,7 +122,6 @@ public interface Constants
   public static final String MOVEMENT_BY_TERRITORY_RESTRICTED = "Movement By Territory Restricted";
   public static final String TRANSPORT_CASUALTIES_RESTRICTED = "Transport Casualties Restricted";
   public static final String SUB_RETREAT_BEFORE_BATTLE = "Sub Retreat Before Battle"; // may be SUBMERSIBLE_SUBS below
-  public static final String SUB_RETREAT_DD_RESTRICTED = "Sub Retreat DD Restricted"; // may not be needed
   public static final String SHORE_BOMBARD_PER_GROUND_UNIT_RESTRICTED = "Shore Bombard Per Ground Unit Restricted";
   public static final String SBR_AFFECTS_UNIT_PRODUCTION = "SBR Affects Unit Production";
   public static final String AA_TERRITORY_RESTRICTED = "AA Territory Restricted";
@@ -131,9 +129,6 @@ public interface Constants
   public static final String IGNORE_TRANSPORT_IN_MOVEMENT = "Ignore Transport In Movement";
   public static final String IGNORE_SUB_IN_MOVEMENT = "Ignore Sub In Movement";  
   public static final String HARI_KARI_UNITS = "Hari-Kari Units";
-  public static final String CONTINUOUS_RESEARCH = "Continuous Research";
-  public static final String WW2V3_LAND_PRODUCTION = "WW2V3 Land Production";
-  public static final String WW2V3_AIR_NAVAL = "WW2V3 Air Naval";
   public static final String HARI_KARI = "Hari-Kari Units";  
   public static final String UNPLACED_UNITS_LIVE = "Unplaced units live when not placed";
   /**
@@ -143,8 +138,7 @@ public interface Constants
   public static final String PRODUCTION_PER_VALUED_TERRITORY_RESTRICTED = "Production Per Valued Territory Restricted";
   public static final String CHOOSE_AA = "Choose AA Casualties";
   public static final String PACIFIC_THEATER = "Pacific Theater";
-  public static final String WW2V3 = "WW2V3";  
-  public static final String EUROPE_THEATER = "Europe Theater";
+  public static final String WW2V3 = "WW2V3";
   public static final String ECONOMIC_VICTORY = "Economic Victory";
   
   public static final String SUBMERSIBLE_SUBS = "Submersible Subs";
