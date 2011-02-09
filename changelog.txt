@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Added New World Order to triplea, thanks to makers: Sieg, ErnieBommel, and others. Also updated to remove special characters from name and files, and updated to take advantage of Triggers. (veqryn)
+
 * Deleted unused uncoded game Properties. (veqryn)
 
 * Made "LHTR Carrier production rules" completely over-ride the other 4 carrier-fighter properties, that way it is finaly a single switch toggle for the rules-set. (veqryn)
