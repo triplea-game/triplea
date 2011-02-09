@@ -314,8 +314,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         Collection<Unit> allProducedUnits = new ArrayList<Unit>(units);
         allProducedUnits.addAll(getAlreadyProduced(producer));
         //if can place new fighters on NEW CVs ---OR--- can place new fighters on OLD CVs
-        if ((canProduceFightersOnCarriers() && Match.someMatch(allProducedUnits, Matches.UnitIsCarrier)) 
-        		|| (canProduceNewFightersOnOldCarriers() && Match.someMatch(to.getUnits().getUnits(), Matches.UnitIsCarrier)))
+        if (((canProduceFightersOnCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData())) && Match.someMatch(allProducedUnits, Matches.UnitIsCarrier)) 
+        		|| ((canProduceNewFightersOnOldCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData())) && Match.someMatch(to.getUnits().getUnits(), Matches.UnitIsCarrier)))
         {
             CompositeMatch<Unit> airThatCanLandOnCarrier = new CompositeMatchAnd<Unit>();
             airThatCanLandOnCarrier.add(Matches.UnitIsAir);

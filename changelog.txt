@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Made "LHTR Carrier production rules" completely over-ride the other 4 carrier-fighter properties, that way it is finaly a single switch toggle for the rules-set. (veqryn)
+
 * Small bug in triggers, production changes were always occuring no matter what, missing brackets. (veqryn)
 
 * Further updates to Trigger Attachments and Support attachments, as well as creating a new property to turn triggers on and off, defaults to false: "Use Triggers". (squid daddy)
