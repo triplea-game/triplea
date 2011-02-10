@@ -27,9 +27,17 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
+import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import com.apple.eawt.Application;
+import com.apple.eawt.ApplicationAdapter;
+import com.apple.eawt.ApplicationEvent;
 
 public class MetaSetupPanel extends SetupPanel
 {
@@ -41,6 +49,7 @@ public class MetaSetupPanel extends SetupPanel
     private JButton m_connectToHostedGame;
     private JButton m_connectToLobby;
     private JButton m_downloadMaps;
+    private JButton m_about;
     private SetupPanelModel m_model;
     
     public MetaSetupPanel(SetupPanelModel model)
@@ -59,8 +68,9 @@ public class MetaSetupPanel extends SetupPanel
         m_startPBEM = new JButton("Start PBEM Game");
         m_hostGame = new JButton("Host Networked Game");
         m_connectToHostedGame = new JButton("Connect to Networked Game");
-        m_connectToLobby = new JButton("Find Games On The Lobby Server");
+        m_connectToLobby = new JButton("Find Games Online on the Lobby Server");
         m_downloadMaps = new JButton("Download Maps");
+        m_about = new JButton("About...");
     }
 
     private void layoutComponents()
@@ -77,6 +87,7 @@ public class MetaSetupPanel extends SetupPanel
         add(m_connectToHostedGame, new GridBagConstraints(0,4,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
         add(m_connectToLobby, new GridBagConstraints(0,5,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
         add(m_downloadMaps, new GridBagConstraints(0,6,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
+        add(m_about, new GridBagConstraints(0,7,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
 
         //top space
         add(new JPanel(), new GridBagConstraints(0,100,1,1,1,1,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00,0,0,0), 0,0) );
@@ -142,12 +153,66 @@ public class MetaSetupPanel extends SetupPanel
 				downloadMaps();				
 			}
 		});
+        
+        m_about.addActionListener(new ActionListener() {			
+			public void actionPerformed(ActionEvent e) {
+				about();				
+			}
+		});
 
     }
 
     private void downloadMaps() {
     	DownloadMapDialog.downloadGames(this);
 		
+	}
+
+    private void about() {
+    	String text = "<h2>TripleA</h2>"+
+		"<p><b>Engine Version:</b> " + games.strategy.engine.EngineVersion.VERSION.toString()+
+		"<br><b>Authors:</b> Sean Bridges, and many many others"+
+		"<br>TripleA is an open-source game engine, allowing people to play many different games and maps."+
+		"<br>For more information please visit:<br>"+
+		"<b>WIKI:</b> <a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a><br>"+
+		"<b>Forum:</b> <a hlink='http://triplea.sourceforge.net/mywiki/Forum'>http://triplea.sourceforge.net/mywiki/Forum</a><br>"+
+		"<b>Ladder:</b> <a hlink='http://www.tripleawarclub.org/'>http://www.tripleawarclub.org/</a></p>"+
+		"<p><b>Very Basic How to Play:</b>"+
+		"<br>Though some games have special rules enforced, most games follow some of these basic guidelines.<br><ol>"+
+		"<li>Players start their turn by choosing what they will produce.  They spend the money they gathered during their " +
+			"<br>last turn on new units or even technology.  Units are displayed on the purchase screen as having x Cost, and " +
+			"<br>their attack/defense/movement values.  These units will be put on the board at the end of the player's turn.</li>"+
+		"<li>That Player then does a <em>Combat Move</em>, which means moving units to all the places they wish to attack this " +
+			"<br>turn.  Simply click on a unit, then move your mouse to the territory you wish to attack, and then click again " +
+			"<br>to drop it there.  You can deselect a unit by right-clicking.  You can select a path for a unit to take by holding " +
+			"<br>down 'ctrl' and clicking on all the territories on the way to the final territory.  Pressing shift or ctrl while " +
+			"<br>selecting a unit will select all units.</li>"+
+		"<li>Then everyone resolves all the combat battles.  This involves rolling dice for the attacking units and the " +
+			"<br>defending units too.  For example, a <em>Tank</em> might attack at a <em>3</em> meaning that when you roll the dice you need " +
+			"<br>a 3 or less for him to <em>hit</em> the enemy.  If the tank hits the enemy, then the other player chooses one of his " +
+			"<br>units to die, and the battle continues.  After each round of dice, the attack chooses to retreat or press on " +
+			"<br>until he has defeated all enemy units in that territory.  The game rolls the dice for you automatically.</li>"+
+		"<li>After this, the Player may move any units that have not yet moved as a <em>Non-Combat</em> move, and any air units " +
+			"<br>return to friendly territory to land.</li>"+
+		"<li>When the player has completed all of this, then he or she may place the units that they have purchased at the " +
+			"<br>beginning of their turn.  Then the game engine counts out the value of the territories they control and gives " +
+			"<br>them that much money.  The next nation then begins their turn.</li></ol>"+
+		"To see specific rules for each game, click <em>Game Notes</em> from inside that game, " +
+			"<br> accessible from the <em>Help</em> menu button at the top of the screen inside a game.</p>";
+
+		final JEditorPane editorPane = new JEditorPane();
+		editorPane.setBorder(null);
+		editorPane.setBackground(getBackground());
+		editorPane.setEditable(false);
+		editorPane.setContentType("text/html");
+		editorPane.setText(text);
+
+		JScrollPane scroll = new JScrollPane(editorPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scroll.setBorder(null);
+		
+    	JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(getParent()),
+    			editorPane,
+    		    "About...",
+    		    JOptionPane.PLAIN_MESSAGE);
 	}
 
 	private void connectToLobby()

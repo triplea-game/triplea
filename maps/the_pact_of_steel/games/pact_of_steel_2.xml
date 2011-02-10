@@ -1528,7 +1528,156 @@
                 <playerRepair player="Americans" frontier="repair"/>
 
         </production>
-
+		
+				<!-- list all available techs for this map, for all players possible -->
+				<!-- list all available techs for this player -->
+						<!-- At least minimum of 1 category needed, number of categories is unlimited. Use descriptive names, as they are shown to the player -->
+						<!-- At least minimum of 1 tech per category, max of 6 per category.  -->
+						<!-- please list techs in the order that they appear in the technoligies list, as doing otherwise may cause an error -->
+<!--
+		<technology>
+				<technologies>
+						<techname name="superSub"/>
+						<techname name="jetPower"/>
+						<techname name="shipyards"/>
+						<techname name="aARadar"/>
+						<techname name="longRangeAir"/>
+						<techname name="heavyBomber"/>
+						<techname name="improvedArtillerySupport"/>
+						<techname name="rocket"/>
+						<techname name="paratroopers"/>
+						<techname name="increasedFactoryProduction"/>
+						<techname name="warBonds"/>
+						<techname name="mechanizedInfantry"/>
+				</technologies>
+				<playerTech player="Italians">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="paratroopers"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="mechanizedInfantry"/>
+						</category>
+				</playerTech>
+				<playerTech player="Russians">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="paratroopers"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="mechanizedInfantry"/>
+						</category>
+				</playerTech>
+				<playerTech player="Germans">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="paratroopers"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="mechanizedInfantry"/>
+						</category>
+				</playerTech>
+				<playerTech player="British">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="paratroopers"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="mechanizedInfantry"/>
+						</category>
+				</playerTech>
+				<playerTech player="Japanese">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="paratroopers"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="mechanizedInfantry"/>
+						</category>
+				</playerTech>
+				<playerTech player="Americans">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="paratroopers"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="mechanizedInfantry"/>
+						</category>
+				</playerTech>
+				<playerTech player="Chinese">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="paratroopers"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="mechanizedInfantry"/>
+						</category>
+				</playerTech>
+		</technology>
+-->
         <attatchmentList>
 				<!-- the following is a list of all ww2v3 technology -->
         		<!-- Germans -->
@@ -3213,11 +3362,11 @@
 				</property>
 
 				<!-- Display Options -->
-				<property name="Display Units as Counters" value="0" editable="false">
+				<property name="Display Units as Counters" value="0" editable="true">
 						<number min="0" max="10"/>
 				</property>
 
-				<property name="Display Sea Names" value="false" editable="false">
+				<property name="Display Sea Names" value="false" editable="true">
 						<boolean/>
 				</property>
 				<!-- END OF TYPICAL OPTIONAL PROPERTIES -->
