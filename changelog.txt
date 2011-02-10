@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Added Technology Frontiers, and ability to customize which tech is available to which player. (squid daddy)
+
 * Changed Pact of Steel 2 to take advantage of new Tech choosing attachments. (veqryn)
 
 * Added a new About... dialog box to main screen. Shows TripleA, engine version, authors, website, as well as a short how-to-play. (veqryn)

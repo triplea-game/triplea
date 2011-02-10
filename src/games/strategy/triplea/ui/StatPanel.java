@@ -419,16 +419,16 @@ public class StatPanel extends JPanel
             if(m_data.getResourceList().getResource(Constants.TECH_TOKENS) != null)
         	{
             	useTech = true;
-            	data = new String[TechAdvance.getTechAdvances(m_data).size()+1][colList.length + 2];
+            	data = new String[TechAdvance.getTechAdvances(m_data,null).size()+1][colList.length + 2];
         	}
             else
             {
-                data = new String[TechAdvance.getTechAdvances(m_data).size()][colList.length + 1];	
+                data = new String[TechAdvance.getTechAdvances(m_data,null).size()][colList.length + 1];	
             }
-            
+           
             /* Load the technology -> row mapping */
             rowMap = new HashMap<String, Integer>();
-            Iterator iter = TechAdvance.getTechAdvances(m_data).iterator();
+            Iterator iter = TechAdvance.getTechAdvances(m_data,null).iterator();
             int row = 0;
 
             if (useTech)
@@ -513,6 +513,15 @@ public class StatPanel extends JPanel
                         // System.err.println("(" + row + ", " + col + ")");
                         data[row][col] = "X";
                         // data[row][col] = colList[col].substring(0, 1);
+                    }
+                    advances = TechAdvance.getTechAdvances(m_data,null).iterator();
+                    while (advances.hasNext())
+                    {
+                    	TechAdvance advance = (TechAdvance) advances.next();
+                    	if(!pid.getTechnologyFrontierList().getAdvances().contains(advance)){
+                    		row = rowMap.get(advance.getName()).intValue();     
+                    		data[row][col] = "-";
+                    	}
                     }
                 }
             }

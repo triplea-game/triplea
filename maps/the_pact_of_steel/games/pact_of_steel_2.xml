@@ -1528,14 +1528,9 @@
                 <playerRepair player="Americans" frontier="repair"/>
 
         </production>
-		
-				<!-- list all available techs for this map, for all players possible -->
-				<!-- list all available techs for this player -->
-						<!-- At least minimum of 1 category needed, number of categories is unlimited. Use descriptive names, as they are shown to the player -->
-						<!-- At least minimum of 1 tech per category, max of 6 per category.  -->
-						<!-- please list techs in the order that they appear in the technoligies list, as doing otherwise may cause an error -->
-<!--
+
 		<technology>
+				<!-- list all available techs for this map, for all players possible -->
 				<technologies>
 						<techname name="superSub"/>
 						<techname name="jetPower"/>
@@ -1550,7 +1545,11 @@
 						<techname name="warBonds"/>
 						<techname name="mechanizedInfantry"/>
 				</technologies>
+				<!-- list all available techs for this player -->
 				<playerTech player="Italians">
+						<!-- At least minimum of 1 category needed, number of categories is unlimited. Use descriptive names, as they are shown to the player -->
+						<!-- At least minimum of 1 tech per category, max of 6 per category.  -->
+						<!-- please list techs in the order that they appear in the technoligies list, as doing otherwise may cause an error -->
 						<category name="Air and Naval Advances">
 								<tech name="superSub"/>
 								<tech name="jetPower"/>
@@ -1677,7 +1676,7 @@
 						</category>
 				</playerTech>
 		</technology>
--->
+
         <attatchmentList>
 				<!-- the following is a list of all ww2v3 technology -->
         		<!-- Germans -->

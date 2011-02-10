@@ -119,7 +119,7 @@ public class TechPanel extends ActionPanel
         try
         {
             Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(getCurrentPlayer());
-            Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData());
+            Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData(),getCurrentPlayer());
             return Util.difference(allAdvances, currentAdvances);
         }
         finally 
@@ -128,13 +128,13 @@ public class TechPanel extends ActionPanel
         }
     }
     
-    private List<TechAdvance> getAvailableCategories()
+    private List<TechnologyFrontier> getAvailableCategories()
     {
         getData().acquireReadLock();
         try
         {
-            Collection<TechAdvance> currentAdvances = TechTracker.getTechCategories(getCurrentPlayer());
-            Collection<TechAdvance> allAdvances = TechAdvance.getTechCategories(getData());
+            Collection<TechnologyFrontier> currentAdvances = TechTracker.getTechCategories(getData(),getCurrentPlayer());
+            Collection<TechnologyFrontier> allAdvances = TechAdvance.getTechCategories(getData(),getCurrentPlayer());
             return Util.difference(allAdvances, currentAdvances);
         }
         finally 
@@ -181,9 +181,11 @@ public class TechPanel extends ActionPanel
                         
             if (advance == null)
                 m_techRoll = new TechRoll(null, quantity);            
-            else
-                m_techRoll = new TechRoll(advance, quantity);
-            
+            else {
+            	TechnologyFrontier front = new TechnologyFrontier("",getData());
+                front.addAdvance(advance);
+            	m_techRoll = new TechRoll(front, quantity);
+            }
             release();
 
         }
@@ -205,7 +207,7 @@ public class TechPanel extends ActionPanel
         {            
             m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
             //Notify user if there are no more techs to acheive
-            List<TechAdvance> techCategories = getAvailableCategories();
+            List<TechnologyFrontier> techCategories = getAvailableCategories();
             
             //if (available.isEmpty())
             if (techCategories.isEmpty())
@@ -214,15 +216,15 @@ public class TechPanel extends ActionPanel
                 return;
             }
             
-            TechAdvance category = null;
-            JList list = new JList(new Vector<TechAdvance>(techCategories));
+            TechnologyFrontier category = null;
+            JList list = new JList(new Vector<TechnologyFrontier>(techCategories));
             JPanel panel = new JPanel();
             panel.setLayout(new BorderLayout());
             panel.add(list, BorderLayout.CENTER);
             panel.add(new JLabel("Select which tech chart you want to roll for"), BorderLayout.NORTH);
             list.setSelectedIndex(0);
             JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart", JOptionPane.PLAIN_MESSAGE);
-            category = (TechAdvance) list.getSelectedValue();
+            category = (TechnologyFrontier) list.getSelectedValue();
             
             int PUs = getCurrentPlayer().getResources().getQuantity(Constants.PUS);
             
@@ -253,22 +255,22 @@ public class TechPanel extends ActionPanel
             //If this player has tokens, roll them.
             if(m_currTokens > 0)
               {  
-                 List<TechAdvance> techCategories = getAvailableCategories();
+                 List<TechnologyFrontier> techCategories = getAvailableCategories();
                  
                  if (techCategories.isEmpty())
                  {
                    return;
                  }
                  
-                 TechAdvance category = null;
-                 JList list = new JList(new Vector<TechAdvance>(techCategories));
+                 TechnologyFrontier category = null;
+                 JList list = new JList(new Vector<TechnologyFrontier>(techCategories));
                  JPanel panel = new JPanel();
                  panel.setLayout(new BorderLayout());
                  panel.add(list, BorderLayout.CENTER);
                  panel.add(new JLabel("Select which tech chart you want to roll for"), BorderLayout.NORTH);
                  list.setSelectedIndex(0);
                  JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart", JOptionPane.PLAIN_MESSAGE);
-                 category = (TechAdvance) list.getSelectedValue();
+                 category = (TechnologyFrontier) list.getSelectedValue();
                  m_techRoll = new TechRoll(category, m_currTokens);
               }
             else

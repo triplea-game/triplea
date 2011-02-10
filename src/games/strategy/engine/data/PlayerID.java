@@ -33,7 +33,8 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	private final UnitCollection m_unitsHeld;
 	private final ResourceCollection m_resources;
 	private ProductionFrontier m_productionFrontier;
-	private RepairFrontier m_repairFrontier;	
+	private RepairFrontier m_repairFrontier;
+	private final TechnologyFrontierList m_technologyFrontiers;
 
 	/** Creates new Player */
     public PlayerID(String name, boolean optional, GameData data)
@@ -42,6 +43,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		m_optional = optional;
 		m_unitsHeld = new UnitCollection(this, getData());
 		m_resources = new ResourceCollection(getData());
+		m_technologyFrontiers = new TechnologyFrontierList(getData());
     }
 
 	public boolean getOptional()
@@ -57,6 +59,11 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	public ResourceCollection getResources()
 	{
 		return m_resources;
+	}
+
+	public TechnologyFrontierList getTechnologyFrontierList()
+	{
+		return m_technologyFrontiers;
 	}
 
 	public void setProductionFrontier(ProductionFrontier frontier)

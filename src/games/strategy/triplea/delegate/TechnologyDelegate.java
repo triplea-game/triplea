@@ -65,7 +65,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
 
     private HashMap<PlayerID, Collection> m_techs;
 
-    private TechAdvance m_techCategory;
+    private TechnologyFrontier m_techCategory;
     
     /** Creates new TechnolgoyDelegate */
     public TechnologyDelegate()
@@ -110,7 +110,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         return games.strategy.triplea.Properties.getSelectableTechRoll(m_data);
     }
  
-    public TechResults rollTech(int techRolls, TechAdvance techToRollFor, int newTokens)
+    public TechResults rollTech(int techRolls, TechnologyFrontier techToRollFor, int newTokens)
     {
         int rollCount = techRolls;
         
@@ -157,7 +157,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
 
         boolean selectableTech = isSelectableTechRoll() || isWW2V2();
         String directedTechInfo = selectableTech ? " for "
-                + techToRollFor : "";
+                + techToRollFor.getTechs().get(0) : "";
         m_bridge.getHistoryWriter().startEvent(
                 m_player.getName()
                         + (random.hashCode() > 0 ? " roll " : " rolls : ")
@@ -185,7 +185,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         if (selectableTech)
         {
             if (techHits > 0)
-                advances = Collections.singletonList(techToRollFor);
+                advances = Collections.singletonList(techToRollFor.getTechs().get(0));
             else
                 advances = Collections.emptyList();
         } else
@@ -232,7 +232,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         try
         {
             Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(m_player);
-            Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data);
+            Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data,m_player);
             return Util.difference(allAdvances, currentAdvances);
         }
         finally 
@@ -346,7 +346,8 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
     private List<TechAdvance> getAvailableAdvances()
     {
         //too many
-        Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data);
+        Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data,m_bridge
+                .getPlayerID());
         Collection<TechAdvance> playersAdvances = TechTracker.getTechAdvances(m_bridge
                 .getPlayerID());
 
@@ -354,13 +355,13 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         return available;
     }
 
-    private List<TechAdvance> getAvailableAdvancesForCategory(TechAdvance techCategory)
+    private List<TechAdvance> getAvailableAdvancesForCategory(TechnologyFrontier techCategory)
     {
-        Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data, techCategory);
+        //Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data, techCategory);
         Collection<TechAdvance> playersAdvances = TechTracker.getTechAdvances(m_bridge
                 .getPlayerID());
 
-        List<TechAdvance> available = Util.difference(allAdvances, playersAdvances);
+        List<TechAdvance> available = Util.difference(techCategory.getTechs(), playersAdvances);
         return available;
     }
     

@@ -22,7 +22,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.Constants;
+
 
 import java.util.*;
 import java.util.logging.*;
@@ -39,7 +39,9 @@ public abstract class TechAdvance implements java.io.Serializable
     private static List<TechAdvance> s_WW2V3Advances;
     private static List<TechAdvance> s_AirNavalAdvances;
     private static List<TechAdvance> s_LandProductionAdvances;
-    private static List<TechAdvance> s_WW2V3AdvanceCategories;
+    //private static List<TechAdvance> s_WW2V3AdvanceCategories;
+    private static List<TechAdvance> s_allDefined;
+    private static List<TechnologyFrontier> s_WW2V3Categories;
     
     public static final TechAdvance JET_POWER = new JetPowerAdvance();
     public static final TechAdvance SUPER_SUBS = new SuperSubsAdvance();
@@ -56,16 +58,28 @@ public abstract class TechAdvance implements java.io.Serializable
     public static final TechAdvance AA_RADAR = new AARadarAdvance();
     public static final TechAdvance IMPROVED_SHIPYARDS = new ImprovedShipyardsAdvance();
     //Technology Categories
-    public static final TechAdvance AIR_NAVAL_ADVANCES = new AirNavalAdvances();
-    public static final TechAdvance LAND_PRODUCTION_ADVANCES = new LandProductionAdvances();
+    //public static final TechAdvance AIR_NAVAL_ADVANCES = new AirNavalAdvances();
+    //public static final TechAdvance LAND_PRODUCTION_ADVANCES = new LandProductionAdvances();
 
-    public static List<TechAdvance> getTechAdvances(GameData data)
+    public static List<TechAdvance> getTechAdvances(GameData data,PlayerID player)
     {
         boolean isWW2V2 = games.strategy.triplea.Properties.getWW2V2(data);
         boolean isWW2V3 = games.strategy.triplea.Properties.getWW2V3(data);
         
-
-        
+        if( !data.getTechnologyFrontier().isEmpty()) {
+       
+        	if(player!=null)
+        	{
+        		
+        		return player.getTechnologyFrontierList().getAdvances();
+        	}
+        	else 
+        	{
+        	
+        		return data.getTechnologyFrontier().getTechs(); 
+        	}
+        }
+     
         if(isWW2V2)
             return s_WW2V2Advances;
         else if(isWW2V3)
@@ -73,22 +87,42 @@ public abstract class TechAdvance implements java.io.Serializable
         else
             return s_WW2V1Advances;       
     }
-    
-    public static List<TechAdvance> getTechAdvances(GameData data, TechAdvance techCategory)
+    /*
+    public static List<TechAdvance> getAdvancesFromCategory(GameData data, TechAdvance techCategory)
     {        
         if(techCategory.equals(TechAdvance.AIR_NAVAL_ADVANCES))
             return s_AirNavalAdvances;  
         else
             return s_LandProductionAdvances;
     }
-
-    public static List<TechAdvance> getTechCategories(GameData data)
+*/
+    public static TechAdvance findAdvance(String s)
+    {        
+        for(TechAdvance t: s_allDefined){
+        	if(t.getProperty().equals(s))
+				return t;
+        }
+        throw new IllegalArgumentException(s + " is not a valid technology");
+    }
+    public static List<TechnologyFrontier> getTechCategories(GameData data,PlayerID player)
     {
-        return s_WW2V3AdvanceCategories;
+    	if( player != null && !data.getTechnologyFrontier().isEmpty())
+        	return player.getTechnologyFrontierList().getFrontiers();
+    	if(s_WW2V3Categories==null) {
+    		List<TechnologyFrontier> tf= new ArrayList<TechnologyFrontier>();
+    		TechnologyFrontier an = new TechnologyFrontier("Air and Naval Advances",data);
+    		an.addAdvance(s_AirNavalAdvances);
+    		TechnologyFrontier lp = new TechnologyFrontier("Land and Production Advances",data);
+    		lp.addAdvance(s_LandProductionAdvances);
+    		tf.add(an);
+    		tf.add(lp);
+    		s_WW2V3Categories = tf;
+    	}
+    	return s_WW2V3Categories;
     }
     
-    public static TechAdvance findAdvance(String s,GameData data){
-		for(TechAdvance t: getTechAdvances(data)){
+    public static TechAdvance findAdvance(String s,GameData data,PlayerID player){
+		for(TechAdvance t: getTechAdvances(data,player)){
 			if(t.getProperty().equals(s))
 				return t;
 		}
@@ -167,10 +201,20 @@ public abstract class TechAdvance implements java.io.Serializable
         /*
          * WW2V3 Land/Production Tech Categories
          */
+        /*
         s_WW2V3AdvanceCategories = new ArrayList<TechAdvance>();
         s_WW2V3AdvanceCategories.add(AIR_NAVAL_ADVANCES);
         s_WW2V3AdvanceCategories.add(LAND_PRODUCTION_ADVANCES);
         s_WW2V3AdvanceCategories = Collections.unmodifiableList(s_WW2V3AdvanceCategories);
+    	*/
+        /*
+         * List of all hardcoded Techs. 
+         */
+        s_allDefined = new ArrayList<TechAdvance>();
+        s_allDefined.addAll(s_WW2V3Advances);
+        s_allDefined.add(INDUSTRIAL_TECHNOLOGY);
+        s_allDefined.add(DESTROYER_BOMBARD);
+        s_allDefined = Collections.unmodifiableList(s_allDefined);
     }
 
     public abstract String getName();
@@ -516,6 +560,7 @@ class ImprovedShipyardsAdvance extends TechAdvance
 /*
  * Land & Production Tech Category
  */
+/*
 class LandProductionAdvances extends TechAdvance
 {
     public String getName()
@@ -533,10 +578,11 @@ class LandProductionAdvances extends TechAdvance
     }
 }
 
-
+*/
 /*
  * Land & Production Tech Category
  */
+/*
 class AirNavalAdvances extends TechAdvance
 {
     public String getName()
@@ -553,6 +599,7 @@ class AirNavalAdvances extends TechAdvance
     {
     }
 }
+*/
 /**
  * End of AA 50 rules
  */

@@ -13,6 +13,7 @@
  */
 package games.strategy.triplea.delegate.dataObjects;
 
+import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.triplea.delegate.TechAdvance;
 
 
@@ -23,17 +24,17 @@ import games.strategy.triplea.delegate.TechAdvance;
  */
 public class TechRoll
 {
-    private final TechAdvance m_tech;
+    private final TechnologyFrontier m_tech;
     private  int m_rolls;
     private  int m_newTokens;
 
-    public TechRoll(TechAdvance advance, int rolls)
+    public TechRoll(TechnologyFrontier advance, int rolls)
     {
         m_rolls = rolls;
         m_tech = advance;
     }
     
-    public TechRoll(TechAdvance advance, int rolls, int newTokens)
+    public TechRoll(TechnologyFrontier advance, int rolls, int newTokens)
     {
         m_rolls = rolls;
         m_tech = advance;
@@ -45,7 +46,7 @@ public class TechRoll
         return m_rolls;
     }
     
-    public TechAdvance getTech()
+    public TechnologyFrontier getTech()
     {
         return m_tech;
     }

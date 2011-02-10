@@ -23,6 +23,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
+import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -1628,13 +1629,16 @@ public class RevisedTest extends TestCase
         techDelegate.start(delegateBridge, m_data);
     	TechAttachment ta = TechAttachment.get(germans);
     	PlayerAttachment pa = PlayerAttachment.get(germans);
-    	
+    	TechnologyFrontier rockets = new TechnologyFrontier("",m_data);
+    	rockets.addAdvance(TechAdvance.ROCKETS);
+    	TechnologyFrontier jet = new TechnologyFrontier("",m_data);
+    	jet.addAdvance(TechAdvance.JET_POWER);
     	//Check to make sure it was successful
     	int initPUs = germans.getResources().getQuantity("PUs"); 
     	
     	//Fail the roll
     	delegateBridge.setRandomSource(new ScriptedRandomSource(new int[]{ 3, 4 }));
-    	TechResults roll = techDelegate.rollTech(2, TechAdvance.ROCKETS, 0);
+    	TechResults roll = techDelegate.rollTech(2, rockets, 0);
 
     	//Check to make sure it failed
     	assertEquals(0, roll.getHits());
@@ -1644,7 +1648,7 @@ public class RevisedTest extends TestCase
     	
     	//Make a Successful roll
     	delegateBridge.setRandomSource(new ScriptedRandomSource(new int[]{ 5 }));
-    	TechResults roll2 = techDelegate.rollTech(1, TechAdvance.ROCKETS, 0);
+    	TechResults roll2 = techDelegate.rollTech(1, rockets, 0);
     	
     	//Check to make sure it succeeded
     	assertEquals(1, roll2.getHits());
@@ -1654,7 +1658,7 @@ public class RevisedTest extends TestCase
     	//Test the variable tech cost
 	    ta.setTechCost("6");//Make a Successful roll
     	delegateBridge.setRandomSource(new ScriptedRandomSource(new int[]{ 5 }));
-    	TechResults roll3 = techDelegate.rollTech(1, TechAdvance.JET_POWER, 0);
+    	TechResults roll3 = techDelegate.rollTech(1, jet, 0);
     	
     	//Check to make sure it succeeded
     	assertEquals(1, roll3.getHits());

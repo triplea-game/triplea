@@ -315,7 +315,7 @@ public class TriggerAttachment extends DefaultAttachment{
 			if(met!=t.getInvert()) {
 				t.use(aBridge);
 				for( PlayerID aPlayer: t.getPlayers()){
-					TechAdvance advance = TechAdvance.findAdvance(t.getTech(),data);
+					TechAdvance advance = TechAdvance.findAdvance(t.getTech(),data,player);
 					Collection<TechAdvance> alreadyHave = TechTracker.getTechAdvances(aPlayer);
 					if(alreadyHave.contains(advance))
 						continue;

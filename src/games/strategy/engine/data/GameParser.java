@@ -33,6 +33,7 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.Version;
 
 import java.io.File;
@@ -120,6 +121,10 @@ public class GameParser
         if(production != null)
             parseProduction(production);     
 
+        Node technology = getSingleChild("technology", root, true);
+        if(technology != null)
+            parseTechnology(technology);
+        
         Node attachmentList = getSingleChild("attatchmentList", root, true);
         if(attachmentList != null)
             parseAttachments(attachmentList);
@@ -908,6 +913,12 @@ public class GameParser
     	parsePlayerRepair( getChildren("playerRepair", root));
     }
     
+    private void parseTechnology(Node root) throws GameParseException
+    {
+        parseTechnologies( getSingleChild("technologies", root, false));
+        parsePlayerTech(getChildren("playerTech", root));
+    }
+    
     private void parseProductionRules(List elements) throws GameParseException
     {
         for(int i = 0; i < elements.size(); i++)
@@ -1022,7 +1033,34 @@ public class GameParser
         }
     }
 
-
+    private void parseTechnologies(Node element) throws GameParseException
+    {
+        TechnologyFrontier techs = data.getTechnologyFrontier();
+        parseTechs( getChildren("techname", element), techs);
+    }
+    private void parsePlayerTech(List elements) throws GameParseException
+    {
+        for( int i = 0; i < elements.size(); i++)
+        {
+            Element current = (Element) elements.get(i);
+            PlayerID player = getPlayerID(current, "player", true);
+            TechnologyFrontierList categories = player.getTechnologyFrontierList();
+            parseCategories(getChildren("category", current),categories);
+        }
+       
+    }
+    
+    private void parseCategories(List elements,TechnologyFrontierList categories ) throws GameParseException
+    {
+        for( int i = 0; i < elements.size(); i++)
+        {
+            Element current = (Element) elements.get(i);
+            TechnologyFrontier tf = new TechnologyFrontier(current.getAttribute("name"),data);
+            parseTechs( getChildren("tech", current), tf);   
+            categories.addTechnologyFrontier(tf);
+        }
+       
+    }
     private void parseRepairFrontiers(List elements) throws GameParseException
     {
     	RepairFrontierList frontiers = data.getRepairFrontierList();
@@ -1069,6 +1107,16 @@ public class GameParser
         }
     }
 
+    private void parseTechs(List elements, TechnologyFrontier frontier) throws GameParseException
+    {
+        for(int i = 0; i < elements.size(); i++)
+        {
+            Element current = (Element) elements.get(i);
+            TechAdvance tech = TechAdvance.findAdvance(current.getAttribute("name"));
+            frontier.addAdvance(tech);
+        }
+    }
+    
     private void parseRepairFrontierRules(List elements, RepairFrontier frontier) throws GameParseException
     {
         for(int i = 0; i < elements.size(); i++)

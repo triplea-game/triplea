@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!ELEMENT game (info, loader, map, resourceList?, playerList, unitList?, gamePlay, production?, attatchmentList? , initialize?, propertyList?)>
+<!ELEMENT game (info, loader, map, resourceList?, playerList, unitList?, gamePlay, production?, technology?, attatchmentList? , initialize?, propertyList?)>
 
 <!-- version must be in the form xx.xx or xx.xx.xx where xx is a positive integer -->
 <!ELEMENT info EMPTY>
@@ -149,6 +149,26 @@
 	    player IDREF #REQUIRED
 	    frontier IDREF #REQUIRED
 	>
+	
+<!ELEMENT technology (technologies,playerTech+)>
+	
+	<!ELEMENT technologies (techname+)>
+		<!ELEMENT techname EMPTY>
+		<!ATTLIST techname 
+			name ID #REQUIRED
+		>
+	<!ELEMENT playerTech (category+)>
+	<!ATTLIST playerTech
+		player IDREF #REQUIRED
+	>
+		<!ELEMENT category (tech+)>
+		<!ATTLIST category 
+			name CDATA #REQUIRED
+		>
+			<!ELEMENT tech EMPTY>
+			<!ATTLIST tech 
+				name IDREF #REQUIRED
+			>
 	
 <!-- attatchments must implement Attatchment -->
 <!ELEMENT attatchmentList (attatchment+) >

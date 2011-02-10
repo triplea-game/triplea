@@ -100,6 +100,8 @@ public class GameData implements java.io.Serializable
 	private final UnitTypeList m_unitTypeList = new UnitTypeList(this);
 	private final GameProperties m_properties = new GameProperties(this);
 	private final UnitsList m_unitsList = new UnitsList();
+	private final TechnologyFrontier m_technologyFrontier= new TechnologyFrontier("allTechsForGame",this);
+	
 	private transient ResourceLoader m_resourceLoader;
 
 
@@ -185,6 +187,15 @@ public class GameData implements java.io.Serializable
 	{
         ensureLockHeld();
 		return m_productionRuleList;
+	}
+	
+	/**
+     * Get the Technology Frontier for this game.
+     */
+	public TechnologyFrontier getTechnologyFrontier()
+	{
+        ensureLockHeld();
+		return m_technologyFrontier;
 	}
 
     /**

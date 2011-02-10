@@ -293,11 +293,20 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				TokensToBuy = 1;
 			if (TechTokens > 0 || TokensToBuy > 0)
 			{
-				if (Math.random() > 0.35)
-					techDelegate.rollTech(TechTokens + TokensToBuy, TechAdvance.LAND_PRODUCTION_ADVANCES, TokensToBuy);
-				else
-					techDelegate.rollTech(TechTokens + TokensToBuy, TechAdvance.AIR_NAVAL_ADVANCES, TokensToBuy);
+				List<TechnologyFrontier> cats = TechAdvance.getTechCategories(data, player);
+				// retaining 65% chance of choosing land advances using basic ww2v3 model.
+				if(data.getTechnologyFrontier().isEmpty()){
+					if (Math.random() > 0.35)
+						techDelegate.rollTech(TechTokens + TokensToBuy, cats.get(1), TokensToBuy);
+					else 
+						techDelegate.rollTech(TechTokens + TokensToBuy, cats.get(0), TokensToBuy);
+				}
+				else {
+					int rand = (int)(Math.random()*cats.size());
+					techDelegate.rollTech(TechTokens + TokensToBuy, cats.get(rand), TokensToBuy);
+				}
 			}
+			
 		}
 		now = System.currentTimeMillis();
 		s_logger.finest("Time Taken " + (now - last));

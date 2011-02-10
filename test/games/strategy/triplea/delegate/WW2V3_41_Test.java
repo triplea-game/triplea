@@ -24,6 +24,7 @@ import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Route;
+import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -152,7 +153,9 @@ public class WW2V3_41_Test extends TestCase {
             delegateBridge.setStepName("germanTech");
             TechnologyDelegate techDelegate = techDelegate(m_data);
             techDelegate.start(delegateBridge, m_data);
-
+            TechnologyFrontier mech = new TechnologyFrontier("",m_data);
+        	mech.addAdvance(TechAdvance.MECHANIZED_INFANTRY);
+        	
             //Add tech token
         	new ChangePerformer(m_data).perform(ChangeFactory.changeResourcesChange(germans, m_data.getResourceList().getResource(Constants.TECH_TOKENS), 1));
 
@@ -162,7 +165,7 @@ public class WW2V3_41_Test extends TestCase {
         	
         	//Fail the roll
         	delegateBridge.setRandomSource(new ScriptedRandomSource(new int[]{ 3 }));
-        	TechResults roll = techDelegate.rollTech(1, TechAdvance.MECHANIZED_INFANTRY, 0);
+        	TechResults roll = techDelegate.rollTech(1, mech, 0);
 
         	//Check to make sure it failed
         	assertEquals(0, roll.getHits());
@@ -172,7 +175,7 @@ public class WW2V3_41_Test extends TestCase {
         	
         	//Make a Successful roll
         	delegateBridge.setRandomSource(new ScriptedRandomSource(new int[]{ 5 }));
-        	TechResults roll2 = techDelegate.rollTech(1, TechAdvance.MECHANIZED_INFANTRY, 0);
+        	TechResults roll2 = techDelegate.rollTech(1, mech, 0);
         	
         	//Check to make sure it succeeded and all tokens were removed
         	assertEquals(1, roll2.getHits());
