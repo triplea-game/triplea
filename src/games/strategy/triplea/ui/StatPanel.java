@@ -515,10 +515,12 @@ public class StatPanel extends JPanel
                         // data[row][col] = colList[col].substring(0, 1);
                     }
                     advances = TechAdvance.getTechAdvances(m_data,null).iterator();
+                    List<TechAdvance> has = TechAdvance.getTechAdvances(m_data,pid);
                     while (advances.hasNext())
                     {
                     	TechAdvance advance = (TechAdvance) advances.next();
-                    	if(!pid.getTechnologyFrontierList().getAdvances().contains(advance)){
+                    	//if(!pid.getTechnologyFrontierList().getAdvances().contains(advance)){
+                    	if(!has.contains(advance)) {
                     		row = rowMap.get(advance.getName()).intValue();     
                     		data[row][col] = "-";
                     	}

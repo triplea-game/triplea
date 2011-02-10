@@ -1532,44 +1532,47 @@
 		<technology>
 				<!-- list all available techs for this map, for all players possible -->
 				<technologies>
+						<!-- this is the current list of all HARDCODED techs that come with TripleA -->
+						<!-- superSub requires all isSub units to have a "_ss" image variant -->
 						<techname name="superSub"/>
+						<!-- jetPower requires all non-isStrategicBomber units to have a "_jp" image variant (and "_lr_jp") -->
 						<techname name="jetPower"/>
 						<techname name="shipyards"/>
+						<!-- aARadar requires all isAA units to have a "_r" image variant (and "rockets_r") -->
 						<techname name="aARadar"/>
+						<!-- longRangeAir requires all isAir units to have a "_lr" image variant (and "_lr_jp" OR "_lr_hb") -->
 						<techname name="longRangeAir"/>
+						<!-- heavyBomber requires all isStrategicBomber units to have a "_hb" image variant (and "_lr_hb") -->
 						<techname name="heavyBomber"/>
 						<techname name="improvedArtillerySupport"/>
+						<!-- rocket requires all isAA units to have a "rockets" image variant (and "rockets_r") -->
 						<techname name="rocket"/>
 						<techname name="paratroopers"/>
+						<!-- increasedFactoryProduction requires all isFactory units to have a "_it" image variant (and "_hit" and "_it_hit") -->
 						<techname name="increasedFactoryProduction"/>
 						<techname name="warBonds"/>
 						<techname name="mechanizedInfantry"/>
+						<!-- destroyerBombard requires all isDestroyer units to have a "s_" image variant -->
+						<techname name="destroyerBombard"/>
+						<techname name="industrialTechnology"/>
 				</technologies>
 				<!-- list all available techs for this player -->
 				<playerTech player="Italians">
 						<!-- At least minimum of 1 category needed, number of categories is unlimited. Use descriptive names, as they are shown to the player -->
 						<!-- At least minimum of 1 tech per category, max of 6 per category.  -->
 						<!-- please list techs in the order that they appear in the technoligies list, as doing otherwise may cause an error -->
-						<category name="Air and Naval Advances">
-								<tech name="superSub"/>
+						<category name="Italian Technology">
+								<tech name="destroyerBombard"/>
 								<tech name="jetPower"/>
 								<tech name="shipyards"/>
-								<tech name="aARadar"/>
-								<tech name="longRangeAir"/>
-								<tech name="heavyBomber"/>
-						</category>
-						<category name="Land and Production Advances">
 								<tech name="improvedArtillerySupport"/>
-								<tech name="rocket"/>
-								<tech name="paratroopers"/>
 								<tech name="increasedFactoryProduction"/>
 								<tech name="warBonds"/>
-								<tech name="mechanizedInfantry"/>
 						</category>
 				</playerTech>
 				<playerTech player="Russians">
 						<category name="Air and Naval Advances">
-								<tech name="superSub"/>
+								<tech name="destroyerBombard"/>
 								<tech name="jetPower"/>
 								<tech name="shipyards"/>
 								<tech name="aARadar"/>
@@ -1579,7 +1582,6 @@
 						<category name="Land and Production Advances">
 								<tech name="improvedArtillerySupport"/>
 								<tech name="rocket"/>
-								<tech name="paratroopers"/>
 								<tech name="increasedFactoryProduction"/>
 								<tech name="warBonds"/>
 								<tech name="mechanizedInfantry"/>
@@ -1599,13 +1601,12 @@
 								<tech name="rocket"/>
 								<tech name="paratroopers"/>
 								<tech name="increasedFactoryProduction"/>
-								<tech name="warBonds"/>
 								<tech name="mechanizedInfantry"/>
 						</category>
 				</playerTech>
 				<playerTech player="British">
 						<category name="Air and Naval Advances">
-								<tech name="superSub"/>
+								<tech name="destroyerBombard"/>
 								<tech name="jetPower"/>
 								<tech name="shipyards"/>
 								<tech name="aARadar"/>
@@ -1618,14 +1619,12 @@
 								<tech name="paratroopers"/>
 								<tech name="increasedFactoryProduction"/>
 								<tech name="warBonds"/>
-								<tech name="mechanizedInfantry"/>
 						</category>
 				</playerTech>
 				<playerTech player="Japanese">
 						<category name="Air and Naval Advances">
 								<tech name="superSub"/>
 								<tech name="jetPower"/>
-								<tech name="shipyards"/>
 								<tech name="aARadar"/>
 								<tech name="longRangeAir"/>
 								<tech name="heavyBomber"/>
@@ -1650,7 +1649,6 @@
 						</category>
 						<category name="Land and Production Advances">
 								<tech name="improvedArtillerySupport"/>
-								<tech name="rocket"/>
 								<tech name="paratroopers"/>
 								<tech name="increasedFactoryProduction"/>
 								<tech name="warBonds"/>

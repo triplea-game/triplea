@@ -47,7 +47,7 @@ public class UnitAttachment extends DefaultAttachment
 
   private boolean m_isAir = false;
   private boolean m_isSea = false;
-  private boolean m_isAA = false;   
+  private boolean m_isAA = false;
   private boolean m_isFactory = false;
   private boolean m_canBlitz = false;
   private boolean m_isAirTransport = false;
@@ -64,9 +64,10 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isLandTransport = false;
   private boolean m_canScramble = false;
   private boolean m_isAirBase = false;
-  private boolean m_isInfrastructure = false;  
-  private boolean m_isCombatInfrastructure = false;  
+  private boolean m_isInfrastructure = false;
+  private boolean m_isCombatInfrastructure = false;
   private boolean m_canBeDamaged = false;
+  private boolean m_isCombatTransport = false;
   
   
   //-1 if can't scramble
