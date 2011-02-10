@@ -563,8 +563,8 @@
                 </unitInitialize>
         
                 <resourceInitialize>
-                        <resourceGiven player="Russians" resource="PUs" quantity="25"/>
-                        <resourceGiven player="Italians" resource="PUs" quantity="40"/>
+                        <resourceGiven player="Russians" resource="PUs" quantity="24"/>
+                        <resourceGiven player="Italians" resource="PUs" quantity="42"/>
                 </resourceInitialize>
         </initialize>
 

@@ -33,10 +33,18 @@ public class ProductionRule extends DefaultNamed implements Serializable
 	private IntegerMap<Resource> m_cost = new IntegerMap<Resource>();
 	private IntegerMap<NamedAttachable> m_results = new IntegerMap<NamedAttachable>();
 	
-	/** Creates new ProductionRule */
-    public ProductionRule(String name, GameData data) 
-	{
-		super(name, data);
+    /** Creates new ProductionRule */
+    public ProductionRule(String name, GameData data)
+    {
+        super(name, data);
+    }
+
+    /** Creates new ProductionRule */
+    public ProductionRule(String name, GameData data, IntegerMap<NamedAttachable> results, IntegerMap<Resource> costs)
+    {
+        super(name, data);
+        m_results = results;
+        m_cost = costs;
     }
 
 	protected void addCost(Resource resource, int quantity)

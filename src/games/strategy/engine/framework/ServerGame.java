@@ -35,6 +35,8 @@ import games.strategy.engine.message.*;
 import games.strategy.engine.random.*;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.*;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
+import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.util.ListenerList;
 
@@ -168,6 +170,8 @@ public class ServerGame implements IGame
             m_gamePlayers.put(player, gp);
             IPlayerBridge bridge = new DefaultPlayerBridge(this);
             gp.initialize(bridge, player);
+            if(gp instanceof Dynamix_AI)
+               ((Dynamix_AI)gp).Initialize();
             
             RemoteName descriptor = getRemoteName(gp.getID(), m_data) ;
             m_remoteMessenger.registerRemote(gp, descriptor);
@@ -549,6 +553,9 @@ public class ServerGame implements IGame
                     new DelegateHistoryWriter(m_channelMessenger),
                     m_randomStats, m_delegateExecutionManager
                     );
+
+            CachedInstanceCenter.CachedDelegateBridge = bridge;
+            CachedInstanceCenter.CachedGameData = m_data;
             
             if(m_delegateRandomSource == null)
             {
@@ -587,6 +594,9 @@ public class ServerGame implements IGame
                 new DelegateHistoryWriter(m_channelMessenger),
                 m_randomStats, m_delegateExecutionManager
                 );
+
+        CachedInstanceCenter.CachedDelegateBridge = bridge;
+        CachedInstanceCenter.CachedGameData = m_data;
         
         if(m_delegateRandomSource == null)
         {

@@ -29,6 +29,7 @@ import games.strategy.engine.message.*;
 import games.strategy.engine.random.*;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.*;
+import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.util.ListenerList;
 
@@ -90,6 +91,8 @@ public class ClientGame implements IGame
 
       IPlayerBridge bridge = new DefaultPlayerBridge(this);
       gp.initialize(bridge, player);
+      if(gp instanceof Dynamix_AI)
+          ((Dynamix_AI)gp).Initialize();
 
       m_remoteMessenger.registerRemote(gp, ServerGame.getRemoteName(gp.getID(), data ) );
       

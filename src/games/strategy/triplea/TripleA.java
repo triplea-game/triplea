@@ -34,6 +34,7 @@ import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.pbem.AllYouCanUploadDotComPBEMMessenger;
 import games.strategy.engine.pbem.IPBEMMessenger;
+import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.pbem.AxisAndAlliesDotOrgPBEMMessenger;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -63,10 +64,11 @@ public class TripleA implements IGameLoader
     // compatible with 0.9.0.2 saved games
     private static final long serialVersionUID = -8374315848374732436L;
     
-    private static final String HUMAN_PLAYER_TYPE = "Human";    
+    private static final String HUMAN_PLAYER_TYPE = "Human";
     private static final String WEAK_COMPUTER_PLAYER_TYPE = "E.Z. Fodder (AI)";
     private static final String STRONG_COMPUTER_PLAYER_TYPE = "Moore N. Able (AI)";
-    
+    private static final String DYNAMIX_COMPUTER_PLAYER_TYPE = "Dynamix (AI)";
+
     private transient TripleaDisplay m_display;
     private transient IGame m_game;
 
@@ -85,9 +87,13 @@ public class TripleA implements IGameLoader
             {
                 players.add(new WeakAI(name));
             }
-            else if(type.equals(STRONG_COMPUTER_PLAYER_TYPE)) 
+            else if(type.equals(STRONG_COMPUTER_PLAYER_TYPE))
             {
                 players.add(new StrongAI(name));
+            }
+            else if(type.equals(DYNAMIX_COMPUTER_PLAYER_TYPE))
+            {
+                players.add(new Dynamix_AI(name));
             }
             else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
             {
@@ -225,7 +231,7 @@ public class TripleA implements IGameLoader
         
         return new String[]
         {
-            HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE};
+            HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE, DYNAMIX_COMPUTER_PLAYER_TYPE};
         }
 
     public IPBEMMessenger[] getPBEMMessengers()

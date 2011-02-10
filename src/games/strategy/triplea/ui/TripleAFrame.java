@@ -929,6 +929,10 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         }
         return selected.get();
      }
+    public Set<IGamePlayer> GetLocalPlayers()
+    {
+        return m_localPlayers;
+    }
 
     public boolean playing(PlayerID id)
     {

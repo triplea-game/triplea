@@ -22,6 +22,7 @@ import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
@@ -29,6 +30,8 @@ import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.engine.stats.IStat;
+import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
+import games.strategy.triplea.baseAI.AbstractAI;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.printgenerator.SetupFrame;
@@ -46,12 +49,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -173,6 +178,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         addGameOptionsMenu(menuGame);
         addShowEnemyCasualties(menuGame);
         addShowAIBattles(menuGame);
+        addChangeDynamixAISettings(menuGame);
         addAISleepDuration(menuGame);
         addShowDiceStats(menuGame);
         addBattleCalculatorMenu(menuGame);
@@ -564,6 +570,33 @@ private void addLockMap(JMenu parentMenu)
             }
         });
         parentMenu.add(showAIBattlesBox);
+    }
+    private void addChangeDynamixAISettings(JMenu parentMenu)
+    {
+        boolean areThereDynamixAIs = false;
+        Set<IGamePlayer> players = ((TripleAFrame) m_frame).GetLocalPlayers();
+        Dynamix_AI.ClearAIInstancesMemory();
+        for (IGamePlayer player : players)
+        {
+            if (player instanceof Dynamix_AI)
+            {
+                Dynamix_AI.AddDynamixAIIntoAIInstancesMemory((Dynamix_AI) player);
+                areThereDynamixAIs = true;
+            }
+        }
+
+        if (areThereDynamixAIs)
+        {
+            parentMenu.addSeparator();
+            parentMenu.add(new AbstractAction("Change Dynamix AI Settings")
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                    Dynamix_AI.ShowSettingsWindow();
+                }
+            });
+            parentMenu.addSeparator();
+        }
     }
     private void addAISleepDuration(JMenu parentMenu)
     {

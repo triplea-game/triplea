@@ -1150,6 +1150,17 @@ public class Matches
             }
         };
     }
+
+    public static Match<Unit> UnitHasEnoughMovement(final int minMovement)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unit)
+            {
+                return TripleAUnit.get(unit).getMovementLeft() >= minMovement;
+            }
+        };
+    }
     
     /**
      *  Match units that have at least 1 movement left

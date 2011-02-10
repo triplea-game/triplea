@@ -1697,7 +1697,7 @@
 				<number min="10" max="15"/>
 			</property>
 
-			<property name="Honorable Surrender" value="false" editable="false">
+			<property name="Honorable Surrender" value="false" editable="true">
 				<boolean/>
 			</property>
 

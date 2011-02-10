@@ -367,7 +367,7 @@ public class OddsCalculatorPanel extends JPanel
         m_draw.setText(formatPercentage(results.get().getDrawPercent()));
         
         m_defenderLeft.setText(formatValue(results.get().getAverageDefendingUnitsLeft()));
-        m_attackerLeft.setText(formatValue(results.get().getAverageAttackingUnits()));
+        m_attackerLeft.setText(formatValue(results.get().getAverageAttackingUnitsLeft()));
         m_count.setText(results.get().getRollCount() + "");
         m_time.setText(formatValue(results.get().getTime() / 1000.0) + "s");
         

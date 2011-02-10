@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Added a new AI, Dynamix AI, a scripted AI that seeks to be properly coded and easy to understand, as well as solving all problems in moore ai. (wisconsin)
+
 * Added some flags made by Veqryn, and some by Pulicat. Added "airfield" and "harbour" unit images to all nations, thanks to Hepster. (veqryn)
 
 * Created Pact of Steel 2, a mod of pos that runs on ww2v3 rules but with drastic changes. Designed to show off every single feature TripleA has to offer on customizing maps. 
