@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Added new unit property, "isCombatTransport", which allows a transport to fight, be taken casualty, and not allow enemies to move through it, under ww2v3 rules. (veqryn)
+
 * Added new property, "Multiply PUs", which will multiply all PUs gained or lost during a turn, but not yet multiply costs of units, repairs, or starting PUs. (squid daddy)
 
 * Added Technology Frontiers, and ability to customize which tech is available to which player. (squid daddy)

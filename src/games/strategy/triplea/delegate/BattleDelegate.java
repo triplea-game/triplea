@@ -395,7 +395,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         
         Match<Unit> ownedUnit = Matches.unitIsOwnedBy(player);
         Match<Unit> enemyUnit =  Matches.enemyUnit(player, m_data);
-    	CompositeMatchAnd<Unit> seaTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.UnitIsSea);
+    	CompositeMatchAnd<Unit> seaTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea);
     	CompositeMatchOr<Unit> seaTranportsAndSubs = new CompositeMatchOr<Unit>(seaTransports, Matches.UnitIsSub);
     	
         while (territories.hasNext())

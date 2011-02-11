@@ -134,6 +134,40 @@ public class Matches
     };
 
     public static final Match<Unit> UnitIsNotSub = new InverseMatch<Unit>(UnitIsSub);
+    
+    public static final Match<Unit> UnitIsCombatTransport = new Match<Unit>()
+    {
+        public boolean match(Unit unit)
+        {
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            return (ua.isCombatTransport() && ua.isSea());
+        }
+    };
+
+    public static final Match<Unit> UnitIsNotCombatTransport = new InverseMatch<Unit>(UnitIsCombatTransport);
+    
+    public static final Match<Unit> UnitIsTransportButNotCombatTransport = new Match<Unit>()
+    {
+        public boolean match(Unit unit)
+        {
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            return (ua.getTransportCapacity() != -1 && ua.isSea() && !ua.isCombatTransport());
+        }
+    };
+    
+    public static final Match<Unit> UnitIsNotTransportButCouldBeCombatTransport = new Match<Unit>()
+    {
+        public boolean match(Unit unit)
+        {
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            if (ua.getTransportCapacity() == -1)
+            	return true;
+            else if (ua.isCombatTransport() && ua.isSea())
+            	return true;
+            else
+            	return false;
+        }
+    };
 
     public static final Match<Unit> UnitCanMove = new Match<Unit>()
     {
@@ -1806,7 +1840,7 @@ public class Matches
     {	
     			CompositeMatch<Unit> ignore = new CompositeMatchAnd<Unit>(Matches.UnitIsAAOrFactory.invert(), Matches.alliedUnit(player, data).invert());
     	    	CompositeMatch<Unit> sub = new CompositeMatchAnd<Unit>(Matches.UnitIsSub.invert());
-    	    	CompositeMatch<Unit> transport = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport.invert(), Matches.UnitIsLand.invert() );
+    	    	CompositeMatch<Unit> transport = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport.invert(), Matches.UnitIsLand.invert() );
     	    	CompositeMatch<Unit> unitCond = ignore;
     	    	if(Properties.getIgnoreTransportInMovement(data))
     	    		unitCond.add(transport);

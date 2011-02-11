@@ -4079,7 +4079,7 @@
 				<boolean/>
 		</property>
 		
-		<property name="Multiply PUs" value="1" editable="true">
+		<property name="Multiply PUs" value="1" editable="false">
 				<number min="1" max="10"/>
 		</property>
 

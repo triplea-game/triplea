@@ -1212,6 +1212,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                     	//Get all allied transports in the territory
                         CompositeMatch<Unit> matchAllied = new CompositeMatchAnd<Unit>(); 
                         matchAllied.add(Matches.UnitIsTransport);
+                        matchAllied.add(Matches.UnitIsNotCombatTransport);
                         matchAllied.add(Matches.isUnitAllied(m_attacker, m_data));
                     	
                         List<Unit> alliedTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), matchAllied);                    	
@@ -1648,14 +1649,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	if(!isTransportCasualtiesRestricted()) {
     		return false;
     	}
-    	return Match.allMatch(m_defendingUnits, Matches.UnitIsTransport);
+    	return Match.allMatch(m_defendingUnits, Matches.UnitIsTransportButNotCombatTransport);
     }
     
     private boolean onlyDefenselessAttackingTransportsLeft() {
     	if(!isTransportCasualtiesRestricted()) {
     		return false;
     	}
-    	return Match.allMatch(m_attackingUnits, Matches.UnitIsTransport);
+    	return Match.allMatch(m_attackingUnits, Matches.UnitIsTransportButNotCombatTransport);
     }
     
     private boolean canAttackerRetreatSubs()
@@ -2217,6 +2218,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	//Get all allied transports in the territory
         CompositeMatch<Unit> matchAllied = new CompositeMatchAnd<Unit>(); 
         matchAllied.add(Matches.UnitIsTransport);
+        matchAllied.add(Matches.UnitIsNotCombatTransport);
         matchAllied.add(Matches.isUnitAllied(player, m_data));
         matchAllied.add(Matches.UnitIsSea);
     	
@@ -2240,7 +2242,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         	//Get all the ENEMY sea and air units (that can attack) in the territory
             CompositeMatch<Unit> enemyUnitsMatch = new CompositeMatchAnd<Unit>();
             enemyUnitsMatch.add(Matches.UnitIsNotLand);
-            enemyUnitsMatch.add(Matches.UnitIsNotTransport);
+            enemyUnitsMatch.add(Matches.UnitIsNotTransportButCouldBeCombatTransport);
             enemyUnitsMatch.add(Matches.unitIsNotSubmerged(m_data));
             enemyUnitsMatch.add(Matches.unitCanAttack(player));            
             Collection<Unit> enemyUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), enemyUnitsMatch);

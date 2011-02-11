@@ -245,8 +245,8 @@ public class MoveValidator
     public static boolean onlyIgnoredUnitsOnPath(Route route, PlayerID player, GameData data, boolean ignoreRouteEnd)
     {
     	CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsSub, Matches.alliedUnit(player, data));
-    	CompositeMatch<Unit> transportOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsTransport, Matches.UnitIsLand, Matches.alliedUnit(player, data));
-    	CompositeMatch<Unit> transportOrSubOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsTransport, Matches.UnitIsLand, Matches.UnitIsSub, Matches.alliedUnit(player, data));
+    	CompositeMatch<Unit> transportOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsLand, Matches.alliedUnit(player, data));
+    	CompositeMatch<Unit> transportOrSubOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsLand, Matches.UnitIsSub, Matches.alliedUnit(player, data));
     	boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
     	boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
     	int routeLength = route.getLength();

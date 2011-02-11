@@ -91,8 +91,6 @@ public class UnitAttachment extends DefaultAttachment
   private int m_bombard = -1;
   private int m_unitSupportCount = -1;
   private int m_blockade = 0;
-  //TODO future use KEV
-  // future private int m_artilleryBonus = -1;
   
 
   private int m_movement = 0;
@@ -144,6 +142,16 @@ public class UnitAttachment extends DefaultAttachment
   public void setIsSub(String s)
   {
     m_isSub = getBool(s);
+  }
+
+  public boolean isCombatTransport()
+  {
+    return m_isCombatTransport;
+  }
+  
+  public void setIsCombatTransport(String s)
+  {
+	  m_isCombatTransport = getBool(s);
   }
 
   public boolean isSub()
@@ -346,17 +354,6 @@ public class UnitAttachment extends DefaultAttachment
     if( m_isArtillerySupportable )
     	UnitSupportAttachment.addTarget((UnitType) getAttatchedTo(),getData() );
   }
-  
-  //TODO future use KEV
-  /*public int getArtilleryBonus()
-  {
-    return m_artilleryBonus >0 ? m_artilleryBonus : 1;
-  }
-  
-  public void setArtilleryBonus(String s)
-  {
-	  m_artilleryBonus = getInt(s);
-  }*/
 
   public void setUnitSupportCount(String s)
   {
@@ -612,7 +609,8 @@ public class UnitAttachment extends DefaultAttachment
         m_isMarine ||
         m_isInfantry ||
         m_isLandTransport ||
-        m_isAirTransportable
+        m_isAirTransportable || 
+        m_isCombatTransport
         )
         throw new GameParseException("Invalid Unit attatchment" + this);
 
@@ -642,7 +640,8 @@ public class UnitAttachment extends DefaultAttachment
         m_carrierCapacity != -1 ||
         m_bombard != -1 ||
         m_transportCapacity != -1 ||
-        m_isAirTransport
+        m_isAirTransport || 
+        m_isCombatTransport
         )
         throw new GameParseException("Invalid Unit Attatchment" + this);
     }
@@ -657,11 +656,15 @@ public class UnitAttachment extends DefaultAttachment
       throw new GameParseException("Invalid Unit Attatchment" + this);
     }
 
-    if(m_isSea && m_transportCapacity != -1 && Properties.getTransportCasualtiesRestricted(data) && (m_attack > 0 || m_defense > 0)) 
+    if(m_isCombatTransport && m_transportCapacity < 1)
+    {
+      throw new GameParseException("Invalid Unit Attatchment" + this);
+    }
+
+    if(m_isSea && m_transportCapacity != -1 && Properties.getTransportCasualtiesRestricted(data) && (m_attack > 0 || m_defense > 0) && !m_isCombatTransport) 
     {
     	throw new GameParseException("Restricted transports cannot have attack or defense");
     }
-
   }
 
   private boolean isWW2V3TechModel(GameData data)
@@ -672,23 +675,44 @@ public class UnitAttachment extends DefaultAttachment
   public String toString()
   {
     return
+    " air:" + m_isAir +
+    " sea:" + m_isSea +
+    " aa:" + m_isAA +
+    " factory:" + m_isFactory +
     " blitz:" + m_canBlitz +
-    " canBombard:" +m_canBombard +
-    " Bombard:" +m_bombard +
-    " aa:" +m_isAA +
-    " air:" +m_isAir +
-    " factory:" +m_isFactory +
-    " sea:" +m_isSea +
-    " strategicBomber:" +m_isStrategicBomber +
-    " sub:" +m_isSub +
-    " attack:" +m_attack +
-    " carrierCapactity:" +m_carrierCapacity +
-    " carrierCost:" +m_carrierCost +
-    " defense:" +m_defense +
-    " movement:" +m_movement +
-    " transportCapacity:" +m_transportCapacity +
-    " transportCost:" +m_transportCost+
-    " destroyer:" + m_isDestroyer;
+    " airTransport:" + m_isAirTransport +
+    " airTransportable:" + m_isAirTransportable +
+    " sub:" + m_isSub +
+    " canBombard:" + m_canBombard +
+    " strategicBomber:" + m_isStrategicBomber +
+    " twoHit:" + m_isTwoHit +
+    " destroyer:" + m_isDestroyer +
+    " artillery:" + m_isArtillery +
+    " artillerySupportable:" + m_isArtillerySupportable +
+    " marine:" + m_isMarine +
+    " infantry:" + m_isInfantry +
+    " landTransport:" + m_isLandTransport +
+    " canScramble:" + m_canScramble +
+    " airBase:" + m_isAirBase +
+    " infrastructure:" + m_isInfrastructure +
+    " combatInfrastructure:" + m_isCombatInfrastructure +
+    " canBeDamaged:" + m_canBeDamaged +
+    " combatTransport:" + m_isCombatTransport +
+    
+    " maxScrambleDistance:" + m_maxScrambleDistance +
+    " maxOperationalDamage:" + m_maxOperationalDamage +
+    " maxDamage:" + m_maxDamage +
+    " unitDamage:" + m_unitDamage +
+    " transportCapacity:" + m_transportCapacity +
+    " transportCost:" + m_transportCost +
+    " carrierCapacity:" + m_carrierCapacity +
+    " carrierCost:" + m_carrierCost +
+    " bombard:" + m_bombard +
+    " unitSupportCount:" + m_unitSupportCount +
+    " blockade:" + m_blockade +
+    " movement:" + m_movement +
+    " attack:" + m_attack +
+    " defense:" + m_defense;
   }
 
 }

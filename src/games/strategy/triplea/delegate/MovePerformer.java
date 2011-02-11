@@ -241,8 +241,8 @@ public class MovePerformer implements Serializable
                     //Ignore Trn on Trn forces.
                     if(isIgnoreTransportInMovement(data))
                     {                    	
-                    	boolean allOwnedTransports = Match.allMatch(arrived, Matches.UnitIsTransport);
-                    	boolean allEnemyTransports = Match.allMatch(enemyUnits, Matches.UnitIsTransport);
+                    	boolean allOwnedTransports = Match.allMatch(arrived, Matches.UnitIsTransportButNotCombatTransport);
+                    	boolean allEnemyTransports = Match.allMatch(enemyUnits, Matches.UnitIsTransportButNotCombatTransport);
                     	//If everybody is a transport, don't create a battle
                     	if(allOwnedTransports && allEnemyTransports)
                     		ignoreBattle=true;
