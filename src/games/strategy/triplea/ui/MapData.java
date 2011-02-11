@@ -49,7 +49,9 @@ public class MapData
     private static final String PLACEMENT_FILE = "place.txt";
     private static final String MAP_PROPERTIES = "map.properties";
     private static final String CAPITAL_MARKERS = "capitols.txt";
+    private static final String CONVOY_MARKERS = "convoy.txt";
     private static final String VC_MARKERS = "vc.txt";
+    private static final String BLOCKADE_MARKERS = "blockade.txt";
     private static final String IMPASSIBLE = "Impassible";
     private static final String PU_PLACE_FILE = "pu_place.txt";
     private static final String TERRITORY_NAME_PLACE_FILE = "name_place.txt";
@@ -75,9 +77,15 @@ public class MapData
 
     //maps String -> Point
     private Map<String,Point> m_centers;
-
+    
     //maps String -> Point    
     private Map<String,Point> m_vcPlace;
+
+    //maps String -> Point    
+    private Map<String,Point> m_blockadePlace;
+
+    //maps String -> Point    
+    private Map<String,Point> m_convoyPlace;
 
     //maps String -> Point    
     private Map<String,Point> m_PUPlace;
@@ -104,6 +112,8 @@ public class MapData
     private final ResourceLoader m_resourceLoader;
     
     private BufferedImage m_vcImage;
+    
+    private BufferedImage m_blockadeImage;
 
     private BufferedImage m_errorImage = null;
 
@@ -147,6 +157,8 @@ public class MapData
             m_polys = PointFileReaderWriter.readOneToManyPolygons(loader.getResourceAsStream(prefix + POLYGON_FILE));
             m_centers = PointFileReaderWriter.readOneToOneCenters(loader.getResourceAsStream(prefix + CENTERS_FILE));
             m_vcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + VC_MARKERS));
+            m_convoyPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CONVOY_MARKERS));
+            m_blockadePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + BLOCKADE_MARKERS));
             m_capitolPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CAPITAL_MARKERS));
             m_PUPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + PU_PLACE_FILE));
             m_namePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + TERRITORY_NAME_PLACE_FILE));
@@ -489,6 +501,13 @@ public class MapData
             return m_capitolPlace.get(terr.getName());
         return getCenter(terr);
     }
+    
+    public Point getConvoyMarkerLocation(Territory terr)
+    {
+        if(m_convoyPlace.containsKey(terr.getName()))
+            return m_convoyPlace.get(terr.getName());
+        return getCenter(terr);
+    }
 
     public Point getKamikazeMarkerLocation(Territory terr)
     {
@@ -501,6 +520,13 @@ public class MapData
     {        
         if(m_vcPlace.containsKey(terr.getName()))
             return m_vcPlace.get(terr.getName());
+        return getCenter(terr);
+    }
+
+    public Point getBlockadePlacementPoint(Territory terr)
+    {        
+        if(m_blockadePlace.containsKey(terr.getName()))
+            return m_blockadePlace.get(terr.getName());
         return getCenter(terr);
     }
     
@@ -638,6 +664,17 @@ public class MapData
         m_vcImage = loadImage("misc/vc.png");
         
         return m_vcImage;
+    }
+    
+    
+    public Image getBlockadeImage()
+    {
+        if(m_blockadeImage != null)
+            return m_blockadeImage;
+        
+        m_blockadeImage = loadImage("misc/blockade.png");
+        
+        return m_blockadeImage;
     }
 
     public Image getErrorImage()

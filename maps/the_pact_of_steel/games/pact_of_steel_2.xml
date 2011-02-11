@@ -2004,8 +2004,8 @@
                          <option name="transportCost" value="3"/>
                          <option name="movement" value="1"/>
                 </attatchment>
-		
-		
+				
+				
 				<attatchment name="territoryAttatchment" attatchTo="West Balkans" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
                 </attatchment>
@@ -2031,7 +2031,9 @@
 
                 <attatchment name="territoryAttatchment" attatchTo="Germany" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"  type="territory">
                         <option name="production" value="14"/>
+						<!-- capital uses an image located in the "flags" folder of a map called "<nation>_large.png", and the location is determined in a file called "capitols.txt" in the map's root directory -->
                         <option name="capital" value="Germans"/>
+						<!-- victoryCity uses an image located in the "misc" folder of a map called "vc.png", and the location is determined in a file called "vc.txt" in the map's root directory -->
 						<option name="victoryCity" value="true"/>
 						<!-- unitProduction is used only with ww2v3 factory damage rules. only put in territories that start with a factory. should be equal to the production of the territory -->
                         <option name="unitProduction" value="14"/>
@@ -2811,6 +2813,7 @@
                 	<option name="trigger" value="conditionAttachmentJapanese1a:conditionAttachmentJapanese1b"/>
 			    	<option name="unitType" value="jp_destroyer"/>
 					<option name="unitProperty" value="transportCapacity" count="2"/>
+					<option name="unitProperty" value="isCombatTransport" count="true"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentJapanese2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -3863,6 +3866,5 @@
 					]]>
 					</value>
 				</property>
-
         </propertyList>
 </game>

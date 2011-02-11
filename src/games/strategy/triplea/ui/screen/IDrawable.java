@@ -128,6 +128,7 @@ class TerritoryNameDrawable implements IDrawable
         	//Then overlay with any other specials
         	if(ta != null)
         	{
+        		// TODO: Allow the map maker to turn off these Convoy comments in the map.properties, AND also allow them to move the location of the comments in some file
         		if (ta.isConvoyRoute())
         		{
         			drawComments = true;
@@ -138,7 +139,16 @@ class TerritoryNameDrawable implements IDrawable
         		if (ta.getProduction() > 0 && ta.getOriginalOwner() != null)   		
         		{
         			drawComments = true;
-        			commentText = ta.getOriginalOwner().getName() + " Convoy Center";
+        			if (ta.getOccupiedTerrOf() == null)
+        				commentText = ta.getOriginalOwner().getName() + " Convoy Center";
+        			else
+        				commentText = ta.getOccupiedTerrOf().getName() + " Convoy Center";
+        		}
+        		
+        		if (ta.isConvoyRoute() && ta.getProduction() > 0 && ta.getOriginalOwner() != null)
+        		{
+        			drawComments = true;
+        			commentText = ta.getConvoyAttached() + " " + ta.getOriginalOwner().getName() + " Convoy Route";
         		}
         	}
         	
@@ -479,8 +489,9 @@ class ConvoyZoneDrawable implements IDrawable
 
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
+    	// TODO: have the engine choose a flag called "<nation>_convoy.png", but defaulting to "<nation>.png" if it does not exist.
         Image img = m_uiContext.getFlagImageFactory().getFlag(data.getPlayerList().getPlayerID(m_player));
-        Point point = mapData.getCapitolMarkerLocation(data.getMap().getTerritory(m_location));
+        Point point = mapData.getConvoyMarkerLocation(data.getMap().getTerritory(m_location));
         graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
     }
 
@@ -488,13 +499,11 @@ class ConvoyZoneDrawable implements IDrawable
     {
         return CAPITOL_MARKER_LEVEL;
     }
-
 }
 
 //Class to use 'Faded' country markers for Kamikaze Zones.
 class KamikazeZoneDrawable implements IDrawable
 {
-     
     private final String m_location;
     private final UIContext m_uiContext;
      
@@ -518,6 +527,31 @@ class KamikazeZoneDrawable implements IDrawable
     {
         return CAPITOL_MARKER_LEVEL;
     }
+}
+
+class BlockadeZoneDrawable implements IDrawable
+{
+    private final String m_location;
+    private final UIContext m_uiContext;
+     
+    public BlockadeZoneDrawable(final Territory location, UIContext uiContext)
+    {
+        super();
+        m_location = location.getName();
+        m_uiContext = uiContext;
+    }
+  
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+    {
+   	    //Find blockade.png from misc folder
+        Point point = mapData.getBlockadePlacementPoint(data.getMap().getTerritory(m_location));
+        graphics.drawImage(mapData.getBlockadeImage(), point.x - bounds.x, point.y - bounds.y, null);
+    }
+    
+	public int getLevel()
+	{
+		return CAPITOL_MARKER_LEVEL;
+	}
 }
 
 class SeaZoneOutlineDrawable implements IDrawable

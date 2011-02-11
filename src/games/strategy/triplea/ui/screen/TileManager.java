@@ -285,6 +285,11 @@ public class TileManager
             	{
             		drawing.add(new KamikazeZoneDrawable(territory.getOwner(),territory, m_uiContext));            		
             	}            	
+            	//Blockades
+            	if(TerritoryAttachment.get(territory).isBlockadeZone())
+            	{
+            		drawing.add(new BlockadeZoneDrawable(territory, m_uiContext));
+            	}
             	//Convoy Routes
             	if(TerritoryAttachment.get(territory).isConvoyRoute())
             	{
