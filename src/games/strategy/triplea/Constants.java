@@ -147,6 +147,7 @@ public interface Constants
   public static final String USE_DESTROYERS_AND_ARTILLERY = "Use Destroyers and Artillery";
   public static final String USE_SHIPYARDS = "Use Shipyards";
   public static final String LOW_LUCK = "Low Luck";
+  public static final String LL_AA_ONLY = "Low Luck for AntiAircraft";
   public static final String PU_CAP = "Territory Turn Limit";
   public static final String KAMIKAZE = "Kamikaze Airplanes";
   public static final String LHTR_HEAVY_BOMBERS = "LHTR Heavy Bombers";

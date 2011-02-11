@@ -3328,6 +3328,10 @@
 						<boolean/>
 				</property>
 
+				<property name="Low Luck for AntiAircraft" value="true" editable="true">
+						<boolean/>
+				</property>
+
 				<property name="National Objectives" value="true" editable="true">
 						<boolean/>
 				</property>

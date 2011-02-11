@@ -649,6 +649,14 @@ public class Properties implements Constants {
     /*
      * 
      */
+    public static boolean getLL_AA_ONLY(GameData data) {
+
+        return data.getProperties().get(LL_AA_ONLY, false);
+    }
+    
+    /*
+     * 
+     */
     public static boolean getKamikaze_Airplanes(GameData data) {
 
         return data.getProperties().get(KAMIKAZE, false);

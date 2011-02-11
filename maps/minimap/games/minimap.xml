@@ -591,6 +591,10 @@
                         <boolean/>
                 </property>
 
+				<property name="Low Luck for AntiAircraft" value="false" editable="true">
+						<boolean/>
+				</property>
+
                 <!-- Bids -->
 				<property name="Italians bid" value="0" editable="true">
                         <number min="0" max="1000"/>

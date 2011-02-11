@@ -80,7 +80,7 @@ public class DiceRoll implements Externalizable
             hitAt = 1;
         
         //LOW LUCK
-        if (games.strategy.triplea.Properties.getLow_Luck(data))
+        if (games.strategy.triplea.Properties.getLow_Luck(data) || games.strategy.triplea.Properties.getLL_AA_ONLY(data))
         {
         	int power = useRadar ? 2 : 1;
         	

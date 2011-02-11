@@ -105,7 +105,7 @@ public class BattleCalculator
     public static  Collection<Unit> getAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge, PlayerID defender, PlayerID attacker, GameData data, GUID battleID, Territory terr)
     {
     	
-    	if(Properties.getLow_Luck(data)) {
+    	if(Properties.getLow_Luck(data) || Properties.getLL_AA_ONLY(data)) {
     		if(isChooseAA(data)) {
     			return chooseAACasualties(planes, dice, bridge, attacker, data,
 						battleID, terr);

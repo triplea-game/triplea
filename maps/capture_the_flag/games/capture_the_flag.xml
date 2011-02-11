@@ -574,9 +574,9 @@
 	
 		<resourceInitialize>
 			<resourceGiven player="Russians" resource="PUs" quantity="12"/>
-			<resourceGiven player="Italians" resource="PUs" quantity="12"/>
-			<resourceGiven player="Germans" resource="PUs" quantity="12"/>
-			<resourceGiven player="Chinese" resource="PUs" quantity="12"/>
+			<resourceGiven player="Italians" resource="PUs" quantity="15"/>
+			<resourceGiven player="Germans" resource="PUs" quantity="18"/>
+			<resourceGiven player="Chinese" resource="PUs" quantity="21"/>
 		</resourceInitialize>
 	</initialize>
 
@@ -626,6 +626,10 @@
 		<property name="Low Luck" value="false" editable="true">
 			<boolean/>
 		</property>     
+
+		<property name="Low Luck for AntiAircraft" value="false" editable="true">
+				<boolean/>
+		</property>
                 
 		<property name="Allied Air Dependents" value="true" editable="false">
         	<boolean/>
