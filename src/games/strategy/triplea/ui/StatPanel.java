@@ -32,6 +32,7 @@ import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.stats.AbstractStat;
 import games.strategy.engine.stats.IStat;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
@@ -654,6 +655,7 @@ class ProductionStat extends AbstractStat
                 }
             }            
         }
+        rVal*= Properties.getPU_Multiplier(data);
         return rVal;
     }
     

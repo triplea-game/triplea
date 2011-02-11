@@ -31,6 +31,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -626,17 +627,17 @@ public class StrategicBombingRaidBattle implements Battle
             		int limit = Math.max(0, damageLimit - alreadyLost);
             		cost = Math.min(cost, limit);
             	}
-
+            	// Record PUs lost
+            	DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, cost);
+            	
+            	cost *= Properties.getPU_Multiplier(m_data);
             	getDisplay(bridge).bombingResults(m_battleID, m_dice, cost);
 
             	//get resources
             	Resource PUs = m_data.getResourceList().getResource(Constants.PUS);
             	int have = m_defender.getResources().getQuantity(PUs);
             	int toRemove = Math.min(cost, have);
-
-            	// Record PUs lost
-            	DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, toRemove);
-
+            	
             	Change change = ChangeFactory.changeResourcesChange(m_defender, PUs, -toRemove);
             	bridge.addChange(change);            	
             }

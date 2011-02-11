@@ -706,6 +706,14 @@ public class Properties implements Constants {
         return data.getProperties().get(SCRAMBLE_FROM_ISLAND_ONLY, false);
     }
     
+    public static Integer getPU_Multiplier(GameData data) {
+    	try {
+    		return Integer.parseInt((String) data.getProperties().get(PU_MULTIPLIER));
+    	} catch (NumberFormatException e) {
+    		return 1;
+    	}
+    }
+    
     private Properties() {
     }
 }

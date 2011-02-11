@@ -26,6 +26,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
@@ -390,6 +392,8 @@ public class TriggerAttachment extends DefaultAttachment{
 				t.use(aBridge);
 				for( PlayerID aPlayer: t.getPlayers()){
 					int toAdd = t.getResourceCount();
+					if(t.getResource().equals(Constants.PUS));
+						toAdd *= Properties.getPU_Multiplier(data);
 					int total = aPlayer.getResources().getQuantity(t.getResource()) + toAdd;
 					if(total < 0) {
 						toAdd -= total;

@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Added new property, "Multiply PUs", which will multiply all PUs gained or lost during a turn, but not yet multiply costs of units, repairs, or starting PUs. (squid daddy)
+
 * Added Technology Frontiers, and ability to customize which tech is available to which player. (squid daddy)
 
 * Changed Pact of Steel 2 to take advantage of new Tech choosing attachments. (veqryn)

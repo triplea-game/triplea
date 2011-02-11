@@ -1558,8 +1558,9 @@
 				</technologies>
 				<!-- list all available techs for this player -->
 				<playerTech player="Italians">
-						<!-- At least minimum of 1 category needed, number of categories is unlimited. Use descriptive names, as they are shown to the player -->
-						<!-- At least minimum of 1 tech per category, max of 6 per category.  -->
+						<!-- Number of categories is unlimited. Use descriptive names, as they are shown to the player -->
+						<!-- At least minimum of 0 techs per category, max of 6 per category if using ww2v3-style random selection of techs, 
+								max is unlimited if using ww2v2-style selected techs (however, any number of techs per category greater than 6 will be unreachable by the dice chooser)  -->
 						<!-- please list techs in the order that they appear in the technoligies list, as doing otherwise may cause an error -->
 						<category name="Italian Technology">
 								<tech name="destroyerBombard"/>
@@ -2831,6 +2832,7 @@
                 <attatchment name="triggerAttachmentItalians1" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentItalians1"/>
 					<option name="purchase" value="cruiser" count="1"/>
+					<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentItaliansParatroopers" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -3359,6 +3361,11 @@
 				</property>
 
 				<!-- Display Options -->
+					<!-- Multiply PUs will multiply all PUs gained or lost during a turn. It will not yet multiply costs of units or any other costs, or starting PUs -->
+				<property name="Multiply PUs" value="1" editable="true">
+						<number min="1" max="10"/>
+				</property>
+
 				<property name="Display Units as Counters" value="0" editable="true">
 						<number min="0" max="10"/>
 				</property>

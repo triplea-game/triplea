@@ -4078,6 +4078,10 @@
 		<property name="Use Triggers" value="true" editable="true">
 				<boolean/>
 		</property>
+		
+		<property name="Multiply PUs" value="1" editable="true">
+				<number min="1" max="10"/>
+		</property>
 
 		<property name="Tech Development" value="false" editable="false">
                 	<boolean/>

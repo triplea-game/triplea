@@ -22,6 +22,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatch;
@@ -271,12 +272,7 @@ public class RocketsFireHelper
             {
                 cost = territoryProduction;
             }
-        }
-        
-        // Trying to remove more PUs than the victim has is A Bad Thing[tm]
-        int availForRemoval = attacked.getResources().getQuantity(PUs);
-        if (cost > availForRemoval)
-            cost = availForRemoval;
+        }    
 
         // Record the PUs lost
         DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
@@ -293,8 +289,13 @@ public class RocketsFireHelper
         }
         else
         {
+        	cost *= Properties.getPU_Multiplier(data);
             getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs:" + cost);
-      
+            
+         // Trying to remove more PUs than the victim has is A Bad Thing[tm]
+            int availForRemoval = attacked.getResources().getQuantity(PUs);
+            if (cost > availForRemoval)
+                cost = availForRemoval;
             String transcriptText = attacked.getName() + " lost " + cost + " PUs to rocket attack by " + player.getName();
             bridge.getHistoryWriter().startEvent(transcriptText);
 

@@ -43,6 +43,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
@@ -523,6 +524,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     		if (objectiveMet)
     		{
     			int toAdd = rule.getObjectiveValue();
+    			toAdd *= Properties.getPU_Multiplier(m_data);
     			int total = player.getResources().getQuantity(Constants.PUS) + toAdd;
     		    if(total < 0) {
     		    	toAdd -= total;

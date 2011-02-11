@@ -33,6 +33,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -107,6 +108,7 @@ public abstract class AbstractEndTurnDelegate
         int toAdd = getProduction(territories);
         int blockadeLoss = getProductionLoss(player,gameData);
         toAdd -= blockadeLoss;
+        toAdd *= Properties.getPU_Multiplier(m_data);
         int total = player.getResources().getQuantity(PUs) + toAdd;
 
         String transcriptText;
