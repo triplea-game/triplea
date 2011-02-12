@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Created two new properties for map.properties, "map.showConvoyNames=true" and "map.useNation_convoyFlags=true". If useNation_convoyFlags is true, the flags folder of a game must have "<nation_name>_convoy.png" for each nation with convoys. Convoy names can be moved in name_place.txt (veqryn)
+
 * Increasing Max Memory to 512mb for linux/mac/windows, and to 192mb for the server. (veqryn)
 
 * New Property, "Low Luck for AntiAircraft", will turn on Low Luck only for Anti Aircraft shots. (veqryn)

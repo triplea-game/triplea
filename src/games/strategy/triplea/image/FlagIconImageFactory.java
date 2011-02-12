@@ -74,5 +74,12 @@ public class FlagIconImageFactory extends ImageFactory
         return getImage(key, key2, true);
     }
 
+    public Image getConvoyFlag(PlayerID id)
+    {
+        String key = PREFIX + id.getName() +  "_convoy.gif";
+        String key2 = PREFIX + id.getName() +  "_convoy.png";
+        return getImage(key, key2, true);
+    }
+
     
 }

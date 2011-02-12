@@ -126,9 +126,8 @@ class TerritoryNameDrawable implements IDrawable
         		commentText = territory.getName();
         	}
         	//Then overlay with any other specials
-        	if(ta != null)
+        	if(ta != null && mapData.drawConvoyNames())
         	{
-        		// TODO: Allow the map maker to turn off these Convoy comments in the map.properties, AND also allow them to move the location of the comments in some file
         		if (ta.isConvoyRoute())
         		{
         			drawComments = true;
@@ -489,8 +488,11 @@ class ConvoyZoneDrawable implements IDrawable
 
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
-    	// TODO: have the engine choose a flag called "<nation>_convoy.png", but defaulting to "<nation>.png" if it does not exist.
-        Image img = m_uiContext.getFlagImageFactory().getFlag(data.getPlayerList().getPlayerID(m_player));
+    	Image img;
+    	if (mapData.useNation_convoyFlags())
+    		img = m_uiContext.getFlagImageFactory().getConvoyFlag(data.getPlayerList().getPlayerID(m_player));
+    	else
+    		img = m_uiContext.getFlagImageFactory().getFlag(data.getPlayerList().getPlayerID(m_player));
         Point point = mapData.getConvoyMarkerLocation(data.getMap().getTerritory(m_location));
         graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
     }

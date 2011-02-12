@@ -43,6 +43,8 @@ public class MapData
         
     private static final String SHOW_CAPITOL_MARKERS = "map.showCapitolMarkers";
     private static final String SHOW_TERRITORY_NAMES = "map.showTerritoryNames";
+    private static final String SHOW_CONVOY_NAMES = "map.showConvoyNames";
+    private static final String USE_NATION_CONVOY_FLAGS = "map.useNation_convoyFlags";
     
     private static final String CENTERS_FILE = "centers.txt";
     private static final String POLYGON_FILE = "polygons.txt";
@@ -288,6 +290,16 @@ public class MapData
     public boolean drawTerritoryNames()
     {
         return Boolean.valueOf(m_mapProperties.getProperty(SHOW_TERRITORY_NAMES, "true")).booleanValue();
+    }
+
+    public boolean drawConvoyNames()
+    {
+        return Boolean.valueOf(m_mapProperties.getProperty(SHOW_CONVOY_NAMES, "true")).booleanValue();
+    }
+
+    public boolean useNation_convoyFlags()
+    {
+        return Boolean.valueOf(m_mapProperties.getProperty(USE_NATION_CONVOY_FLAGS, "false")).booleanValue();
     }
     
     
