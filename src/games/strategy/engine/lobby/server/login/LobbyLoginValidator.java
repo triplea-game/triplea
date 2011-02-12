@@ -97,7 +97,7 @@ public class LobbyLoginValidator implements ILoginValidator
         {
             return UNABLE_TO_OBTAIN_MAC;
         }
-        if(hashedMac.length() != 28 || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$")|| !hashedMac.matches("[0-9a-zA-Z_$-]+"))
+        if(hashedMac.length() != 28 || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$") || !hashedMac.matches("[0-9a-zA-Z$./]+"))
         {
             return INVALID_MAC; //Must have been tampered with
         }

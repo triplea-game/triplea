@@ -106,8 +106,8 @@ public class Purchase
         else
         {
             int origR = player.getResources().getQuantity(data.getResourceList().getResource(Constants.PUS));
-            DUtils.Log(Level.FINER, "  Calculating factories to build on.");
             calculateFactoriesToBuildOn(ai, purchaseForBid, PUsToSpend, purchaser, data, player);
+            DUtils.Log(Level.FINER, "  Factories to build on calculated. Ters with the factories: {0}", FactoryCenter.get(data, player).ChosenFactoryTerritories);
 
             PUsToSpend = PUsToSpend - purchaseFactoryRepairs(ai, purchaseForBid, PUsToSpend, purchaser, data, player);
             
@@ -129,7 +129,7 @@ public class Purchase
             }
             if (PUsToSpend > (int) (origR / 2)) //If we used less than half our money
             {
-                DUtils.Log(Level.FINER, "    We used less than half our money in purchases, so attempting to purchase a new factory.");
+                DUtils.Log(Level.FINER, "  We used less than half our money in purchases, so attempting to purchase a new factory.");
                 Unit factory = null;
                 int factoryCost = 0;
                 for (ProductionRule rule : player.getProductionFrontier().getRules())
