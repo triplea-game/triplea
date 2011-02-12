@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Increasing Max Memory to 512mb for linux/mac/windows, and to 192mb for the server. (veqryn)
+
 * New Property, "Low Luck for AntiAircraft", will turn on Low Luck only for Anti Aircraft shots. (veqryn)
 
 * Allowed blockade and convoy images to be moved with 2 new txt files: "blockade.txt" and "convoy.txt". Also fixed bug where a convoy zone that was occupied territory displayed the wrong owner, and the bug where a convoy route was displayed as a convoy zone. (veqryn)
