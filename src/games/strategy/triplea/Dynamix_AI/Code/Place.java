@@ -185,7 +185,7 @@ public class Place
             doPlace(ai, bestFactoryPlaceTer, units, placeDelegate);
             Dynamix_AI.Pause();
         }
-        KnowledgeCenter.get(data, player).PUsAtEndOfLastTurn = player.getResources().getQuantity(GlobalCenter.GetPUResource());
+        GlobalCenter.PUsAtEndOfLastTurn = player.getResources().getQuantity(GlobalCenter.GetPUResource());
     }
     private static boolean doPlace(Dynamix_AI ai, Territory where, Collection<Unit> toPlace, IAbstractPlaceDelegate del)
     {
@@ -225,7 +225,7 @@ public class Place
         Territory ourCapital = TerritoryAttachment.getCapital(player, data);
 
         List<Territory> facLocs = new ArrayList<Territory>(data.getMap().getTerritoriesOwnedBy(player));
-        facLocs = DUtils.SortTerritoriesByLandDistanceFrom(facLocs, ourCapital, data.getMap());
+        facLocs = DUtils.SortTerritoriesByLandDistanceFrom(facLocs, ourCapital, data);
         int lowestRange = Integer.MAX_VALUE;
         for (Territory ter : facLocs)
         {
@@ -233,7 +233,7 @@ public class Place
             {
                 continue;
             }
-            int dist = DUtils.GetJumpsFromXToY_Land(data.getMap(), ter, ourCapital);
+            int dist = DUtils.GetJumpsFromXToY_Land(data, ter, ourCapital);
             if (dist < lowestRange)
             {
                 lowestRange = dist;
@@ -247,7 +247,7 @@ public class Place
                 {
                     continue;
                 }
-                int dist = DUtils.GetJumpsFromXToY_Land(data.getMap(), ter, ourCapital);
+                int dist = DUtils.GetJumpsFromXToY_Land(data, ter, ourCapital);
                 if (dist < lowestRange)
                 {
                     lowestRange = dist;
@@ -262,7 +262,7 @@ public class Place
                 {
                     continue;
                 }
-                int dist = DUtils.GetJumpsFromXToY_NoCond(data.getMap(), ter, ourCapital);
+                int dist = DUtils.GetJumpsFromXToY_NoCond(data, ter, ourCapital);
                 if (dist < lowestRange)
                 {
                     lowestRange = dist;
@@ -282,7 +282,7 @@ public class Place
                 {
                     continue;
                 }
-                int dist = DUtils.GetJumpsFromXToY_Land(data.getMap(), ter, ourCapital);
+                int dist = DUtils.GetJumpsFromXToY_Land(data, ter, ourCapital);
                 if (dist == lowestRange)
                 {
                     closestRangeTers.add(ter);
@@ -296,7 +296,7 @@ public class Place
                     {
                         continue;
                     }
-                    int dist = DUtils.GetJumpsFromXToY_Land(data.getMap(), ter, ourCapital);
+                    int dist = DUtils.GetJumpsFromXToY_Land(data, ter, ourCapital);
                     if (dist == lowestRange)
                     {
                         closestRangeTers.add(ter);
@@ -311,7 +311,7 @@ public class Place
                     {
                         continue;
                     }
-                    int dist = DUtils.GetJumpsFromXToY_NoCond(data.getMap(), ter, ourCapital);
+                    int dist = DUtils.GetJumpsFromXToY_NoCond(data, ter, ourCapital);
                     if (dist == lowestRange)
                     {
                         closestRangeTers.add(ter);

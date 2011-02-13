@@ -64,6 +64,9 @@ public class SettingsWindow extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        v_allowSpeedUps = new javax.swing.JCheckBox();
+        v_speedUpPercentage = new javax.swing.JSpinner();
+        jLabel13 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         v_okButton = new javax.swing.JButton();
         v_cancelButton = new javax.swing.JButton();
@@ -168,7 +171,7 @@ public class SettingsWindow extends javax.swing.JFrame {
                 .addGroup(v_totalLengthGoalsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(v_placementWait_AL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         v_actionWaitGoalsPanel.setName("v_actionWaitGoalsPanel"); // NOI18N
@@ -247,7 +250,7 @@ public class SettingsWindow extends javax.swing.JFrame {
                 .addGroup(v_actionWaitGoalsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(v_placementWait_AW, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel1.setText("Purchase Phase:");
@@ -262,6 +265,16 @@ public class SettingsWindow extends javax.swing.JFrame {
         jLabel4.setText("Placement Phase:");
         jLabel4.setName("jLabel4"); // NOI18N
 
+        v_allowSpeedUps.setSelected(true);
+        v_allowSpeedUps.setText("Speed up AI thinking when an action is taking longer than the time specified by: ");
+        v_allowSpeedUps.setName("v_allowSpeedUps"); // NOI18N
+
+        v_speedUpPercentage.setModel(new javax.swing.SpinnerNumberModel(200, 100, 1000, 10));
+        v_speedUpPercentage.setName("v_speedUpPercentage"); // NOI18N
+
+        jLabel13.setText("%");
+        jLabel13.setName("jLabel13"); // NOI18N
+
         javax.swing.GroupLayout v_pausingPanelLayout = new javax.swing.GroupLayout(v_pausingPanel);
         v_pausingPanel.setLayout(v_pausingPanelLayout);
         v_pausingPanelLayout.setHorizontalGroup(
@@ -269,6 +282,13 @@ public class SettingsWindow extends javax.swing.JFrame {
             .addGroup(v_pausingPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(v_pausingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(v_pausingPanelLayout.createSequentialGroup()
+                        .addComponent(v_allowSpeedUps)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(v_speedUpPercentage, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel13)
+                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, v_pausingPanelLayout.createSequentialGroup()
                         .addComponent(v_actionLengthGoalRB)
                         .addGap(51, 51, 51)
@@ -289,23 +309,30 @@ public class SettingsWindow extends javax.swing.JFrame {
         v_pausingPanelLayout.setVerticalGroup(
             v_pausingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(v_pausingPanelLayout.createSequentialGroup()
-                .addGroup(v_pausingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(v_actionWaitGoalRB)
-                    .addComponent(v_actionLengthGoalRB))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(v_pausingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(v_actionWaitGoalsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(v_totalLengthGoalsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(v_pausingPanelLayout.createSequentialGroup()
+                        .addGroup(v_pausingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(v_actionWaitGoalRB)
+                            .addComponent(v_actionLengthGoalRB))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(v_pausingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(v_actionWaitGoalsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(v_totalLengthGoalsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(v_pausingPanelLayout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addGroup(v_pausingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(v_allowSpeedUps)
+                            .addComponent(v_speedUpPercentage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel13))))
                 .addContainerGap())
-            .addGroup(v_pausingPanelLayout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel2)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel3)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel4))
         );
 
         jPanel3.setName("jPanel3"); // NOI18N
@@ -376,7 +403,7 @@ public class SettingsWindow extends javax.swing.JFrame {
         );
 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-612)/2, (screenSize.height-311)/2, 612, 311);
+        setBounds((screenSize.width-612)/2, (screenSize.height-332)/2, 612, 332);
     }// </editor-fold>//GEN-END:initComponents
 
     private void v_actionLengthGoalRBStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_v_actionLengthGoalRBStateChanged
@@ -398,6 +425,9 @@ public class SettingsWindow extends javax.swing.JFrame {
         v_combatMoveWait_AW.setValue(250);
         v_nonCombatMoveWait_AW.setValue(250);
         v_placementWait_AW.setValue(250);
+
+        v_allowSpeedUps.setSelected(true);
+        v_speedUpPercentage.setValue(200);
     }//GEN-LAST:event_v_restoreDefaultsButtonActionPerformed
 
     private void v_okButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_v_okButtonActionPerformed
@@ -414,6 +444,9 @@ public class SettingsWindow extends javax.swing.JFrame {
         settings.CombatMoveWait_AW = Integer.parseInt(v_combatMoveWait_AW.getValue().toString());
         settings.NonCombatMoveWait_AW = Integer.parseInt(v_nonCombatMoveWait_AW.getValue().toString());
         settings.PlacementWait_AW = Integer.parseInt(v_placementWait_AW.getValue().toString());
+
+        settings.AllowSpeedUps = v_allowSpeedUps.isSelected();
+        settings.SpeedUpPercentage = Integer.parseInt(v_speedUpPercentage.getValue().toString());
 
         DSettings.SaveSettings(settings);
 
@@ -441,6 +474,9 @@ public class SettingsWindow extends javax.swing.JFrame {
         v_nonCombatMoveWait_AW.setValue(settings.NonCombatMoveWait_AW);
         v_placementWait_AW.setValue(settings.PlacementWait_AW);
 
+        v_allowSpeedUps.setSelected(settings.AllowSpeedUps);
+        v_speedUpPercentage.setValue(settings.SpeedUpPercentage);
+
         this.pack();
     }//GEN-LAST:event_formWindowOpened
 
@@ -451,6 +487,8 @@ public class SettingsWindow extends javax.swing.JFrame {
         v_combatMoveWait_AL.setEnabled(enabled);
         v_nonCombatMoveWait_AL.setEnabled(enabled);
         v_placementWait_AL.setEnabled(enabled);
+        v_allowSpeedUps.setEnabled(enabled);
+        v_speedUpPercentage.setEnabled(enabled);
     }
     private void ChangeActionWaitPanelsState(boolean enabled)
     {
@@ -467,6 +505,7 @@ public class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -479,6 +518,7 @@ public class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JRadioButton v_actionLengthGoalRB;
     private javax.swing.JRadioButton v_actionWaitGoalRB;
     private javax.swing.JPanel v_actionWaitGoalsPanel;
+    private javax.swing.JCheckBox v_allowSpeedUps;
     private javax.swing.JButton v_cancelButton;
     private javax.swing.JSpinner v_combatMoveWait_AL;
     private javax.swing.JSpinner v_combatMoveWait_AW;
@@ -491,6 +531,7 @@ public class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JSpinner v_purchaseWait_AL;
     private javax.swing.JSpinner v_purchaseWait_AW;
     private javax.swing.JButton v_restoreDefaultsButton;
+    private javax.swing.JSpinner v_speedUpPercentage;
     private javax.swing.JPanel v_totalLengthGoalsPanel;
     // End of variables declaration//GEN-END:variables
 

@@ -242,7 +242,7 @@ public class DMatches
             {
                 for (Territory ter : list)
                 {
-                    if (DUtils.CanWeGetFromXToY_ByLand(data.getMap(), ter, territory) && DUtils.GetJumpsFromXToY_Land(data.getMap(), ter, territory) <= maxJumpDist)
+                    if (DUtils.CanWeGetFromXToY_ByLand(data, ter, territory) && DUtils.GetJumpsFromXToY_Land(data, ter, territory) <= maxJumpDist)
                     {
                         return true;
                     }

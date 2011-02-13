@@ -31,11 +31,8 @@ import java.util.List;
  */
 public class NCM_AirLandingCalculator
 {
-    public static Territory CalculateLandingLocationForAirUnits(MovePackage pack, Territory ter, List<Unit> airUnits, List<NCM_Task> tasks)
+    public static Territory CalculateLandingLocationForAirUnits(GameData data, PlayerID player, Territory ter, List<Unit> airUnits, List<NCM_Task> tasks)
     {
-        GameData data = pack.Data;
-        PlayerID player = pack.Player;
-
         int speed = DUtils.GetSlowestMovementUnitInList(airUnits);
 
         float highestScore = Integer.MIN_VALUE;

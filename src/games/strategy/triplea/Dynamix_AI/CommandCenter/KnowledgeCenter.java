@@ -51,13 +51,4 @@ public class KnowledgeCenter
         m_data = data;
         m_player = player;
     }
-    private int HighestTerProduction = -1;
-    public int GetHighestTerProduction()
-    {
-        if (HighestTerProduction == -1)
-            HighestTerProduction = DUtils.GetHighestTerProduction(m_data, m_player);
-
-        return HighestTerProduction;
-    }
-    public int PUsAtEndOfLastTurn = 0;
 }

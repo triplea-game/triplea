@@ -338,7 +338,8 @@ public class CM_Task
     {
         DUtils.Log(Level.FINEST, "    Determining if cm task is worthwhile. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
 
-        if (m_target.getOwner().isNull() && Math.random() < .95F) //Atm, AI over-attacks neutrals, so for now, ignore attacks on neutrals 95% of the time
+        //Atm, AI over-attacks neutrals, so for now, ignore attacks on non-empty neutrals 90% of the time
+        if (m_target.getOwner().isNull() && m_target.getUnits().getMatches(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1)).size() > 0 && Math.random() < 9F)
             return false;
 
         if (false) //Atm, causes unwanted behavior and weird manuevers. Was: m_taskType == CM_TaskType.Attack_Offensive)

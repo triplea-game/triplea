@@ -122,7 +122,7 @@ public class DoNonCombatMove
                 if (airUnits.isEmpty())
                     continue;
 
-                Territory landingLoc = NCM_AirLandingCalculator.CalculateLandingLocationForAirUnits(pack, ter, airUnits, tasks);
+                Territory landingLoc = NCM_AirLandingCalculator.CalculateLandingLocationForAirUnits(data, player, ter, airUnits, tasks);
                 if (landingLoc == null)
                 {
                     DUtils.Log(Level.FINER, "    Landing location not found. Ter: {0} Air Units: {1}", ter, airUnits);
@@ -323,7 +323,7 @@ public class DoNonCombatMove
         IMoveDelegate mover = pack.Mover;
         PlayerID player = pack.Player;
 
-        Territory target = NCM_TargetCalculator.CalculateNCMTargetForTerritory(pack, ter, terUnits, tasks);
+        Territory target = NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ter, terUnits, tasks);
         if (target == null)
         {
             DUtils.Log(Level.FINER, "    NCM target not found for ter: {0}", ter);

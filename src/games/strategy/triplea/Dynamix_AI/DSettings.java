@@ -40,6 +40,9 @@ public class DSettings implements Serializable
     public int NonCombatMoveWait_AW = 250;
     public int PlacementWait_AW = 250;
 
+    public boolean AllowSpeedUps = true;
+    public int SpeedUpPercentage = 200;
+
     private static DSettings s_lastSettings = null;
     private static String PROGRAM_SETTINGS = "Program Settings";
     public static DSettings LoadSettings()

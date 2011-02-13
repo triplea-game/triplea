@@ -55,6 +55,7 @@ public class GlobalCenter
         MapTerCountScale = ((float)data.getMap().getTerritories().size() / 75.0F);
         if(data.getAllianceTracker().getAlliances().size() == data.getPlayerList().size())
             IsFFAGame = true;
+        HighestTerProduction = DUtils.GetHighestTerProduction(data);
 
         GenerateMergedAndAveragedProductionFrontier(data);
     }
@@ -64,6 +65,8 @@ public class GlobalCenter
     public static PhaseType CurrentPhaseType = PhaseType.Unknown;
     public static boolean IsFFAGame = false;
     public static int FastestUnitMovement = 0;
+    public static int HighestTerProduction = -1;
+    public static int PUsAtEndOfLastTurn = 0;
 
     private static ProductionFrontier MergedAndAveragedProductionFronter = null;
     /**

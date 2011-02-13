@@ -21,7 +21,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.DMatches;
 import games.strategy.triplea.Dynamix_AI.DUtils;
-import games.strategy.triplea.Dynamix_AI.Group.MovePackage;
 import java.util.List;
 
 /**
@@ -30,11 +29,8 @@ import java.util.List;
  */
 public class NCM_TargetCalculator
 {
-    public static Territory CalculateNCMTargetForTerritory(MovePackage pack, Territory ter, List<Unit> terUnits, List<NCM_Task> tasks)
+    public static Territory CalculateNCMTargetForTerritory(GameData data, PlayerID player, Territory ter, List<Unit> terUnits, List<NCM_Task> tasks)
     {
-        GameData data = pack.Data;
-        PlayerID player = pack.Player;
-
         int speed = DUtils.GetSlowestMovementUnitInList(terUnits);
 
         float highestScore = Integer.MIN_VALUE;
@@ -46,12 +42,12 @@ public class NCM_TargetCalculator
                 continue;
             if(!DMatches.territoryIsOwnedByNNEnemy(data, player).match(enemyTer))
                 continue;
-            if(!DUtils.CanWeGetFromXToY_ByLand(data.getMap(), ter, enemyTer))
+            if(!DUtils.CanWeGetFromXToY_ByLand(data, ter, enemyTer))
                 continue;
 
             float score = DUtils.GetValueOfLandTer(enemyTer, data, player);
 
-            score = score - ((DUtils.GetJumpsFromXToY_Land(data.getMap(), ter, enemyTer) * 4) * GlobalCenter.MapTerCountScale);
+            score = score - ((DUtils.GetJumpsFromXToY_Land(data, ter, enemyTer) * 4) * GlobalCenter.MapTerCountScale);
 
             if (score > highestScore)
             {

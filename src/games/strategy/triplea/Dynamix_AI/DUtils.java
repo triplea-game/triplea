@@ -25,9 +25,9 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedCalculationCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.FactoryCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
-import games.strategy.triplea.Dynamix_AI.CommandCenter.KnowledgeCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.TacticalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
 import games.strategy.triplea.Dynamix_AI.Group.PurchaseGroup;
@@ -184,29 +184,18 @@ public class DUtils
      */
     public static AggregateResults GetBattleResults(Territory ter, PlayerID player, GameData data, int runCount, boolean toTake)
     {
-        PlayerID enemy = null;
-
         List<Unit> attacking = new ArrayList<Unit>();
         List<Unit> defending = new ArrayList<Unit>();
 
         for(Unit unit : ter.getUnits().getUnits())
         {
             if(unit.getOwner().equals(player))
-            {
                 attacking.add(unit);
-            }
             else if(!data.getAllianceTracker().isAllied(player, unit.getOwner()))
-            {
-                enemy = unit.getOwner();
                 defending.add(unit);
-            }
         }
 
-        DOddsCalculator calc = new DOddsCalculator();
-        calc.setKeepOneAttackingLandUnit(toTake);
-        AggregateResults results = calc.calculate(data, player, enemy, ter, attacking, defending, new ArrayList<Unit>(), runCount);
-
-        return results;
+        return GetBattleResults(attacking, defending, ter, data, runCount, toTake);
     }
     /**
      * Used when you have two or more lists of units, etc and you want all the units in one collection.
@@ -541,11 +530,11 @@ public class DUtils
         Territory enemyCap = TerritoryAttachment.getCapital(enemy, data);
 
         //Basically, compare their distance from you on land
-        boolean hasLandRouteBetweenCaps = DUtils.CanWeGetFromXToY_ByLand(data.getMap(), ourCap, enemyCap);
+        boolean hasLandRouteBetweenCaps = DUtils.CanWeGetFromXToY_ByLand(data, ourCap, enemyCap);
 
         if(hasLandRouteBetweenCaps)
         {
-            int lDistance = DUtils.GetJumpsFromXToY_Land(data.getMap(), ourCap, enemyCap);
+            int lDistance = DUtils.GetJumpsFromXToY_Land(data, ourCap, enemyCap);
             if(lDistance < 10)
                 result = 10 - lDistance;
         }
@@ -866,7 +855,7 @@ public class DUtils
             public boolean match(Territory ter)
             {
                 TerritoryAttachment ta = TerritoryAttachment.get(ter);
-                if(ta != null && ta.isCapital() && TerritoryAttachment.getCapital(player, data) != ter)
+                if(ta != null && ta.isCapital() && data.getAllianceTracker().isAtWar(ter.getOwner(), player) && TerritoryAttachment.getCapital(player, data) != ter)
                     return true;
                 return false;
             }
@@ -905,21 +894,21 @@ public class DUtils
             {
                 int distance1 = 0;
                 int distance2 = 0;
-                if (DUtils.CanWeGetFromXToY_ByLand(data.getMap(), ourTer, t1))
+                if (DUtils.CanWeGetFromXToY_ByLand(data, ourTer, t1))
                 {
-                    distance1 = DUtils.GetJumpsFromXToY_Land(data.getMap(), ourTer, t1);
+                    distance1 = DUtils.GetJumpsFromXToY_Land(data, ourTer, t1);
                 }
                 else
                 {
-                    distance1 = DUtils.GetJumpsFromXToY_NoCond(data.getMap(), ourTer, t1) * 3;
+                    distance1 = DUtils.GetJumpsFromXToY_NoCond(data, ourTer, t1) * 3;
                 }
-                if (DUtils.CanWeGetFromXToY_ByLand(data.getMap(), ourTer, t2))
+                if (DUtils.CanWeGetFromXToY_ByLand(data, ourTer, t2))
                 {
-                    distance2 = DUtils.GetJumpsFromXToY_Land(data.getMap(), ourTer, t2);
+                    distance2 = DUtils.GetJumpsFromXToY_Land(data, ourTer, t2);
                 }
                 else
                 {
-                    distance2 = DUtils.GetJumpsFromXToY_NoCond(data.getMap(), ourTer, t2) * 3;
+                    distance2 = DUtils.GetJumpsFromXToY_NoCond(data, ourTer, t2) * 3;
                 }
 
                 return distance1 - distance2;
@@ -945,21 +934,21 @@ public class DUtils
             {
                 int distance1 = 0;
                 int distance2 = 0;
-                if (DUtils.CanWeGetFromXToY_ByLand(data.getMap(), ourTer, t1))
+                if (DUtils.CanWeGetFromXToY_ByLand(data, ourTer, t1))
                 {
-                    distance1 = DUtils.GetJumpsFromXToY_Land(data.getMap(), ourTer, t1);
+                    distance1 = DUtils.GetJumpsFromXToY_Land(data, ourTer, t1);
                 }
                 else
                 {
-                    distance1 = DUtils.GetJumpsFromXToY_NoCond(data.getMap(), ourTer, t1) * 3;
+                    distance1 = DUtils.GetJumpsFromXToY_NoCond(data, ourTer, t1) * 3;
                 }
-                if (DUtils.CanWeGetFromXToY_ByLand(data.getMap(), ourTer, t2))
+                if (DUtils.CanWeGetFromXToY_ByLand(data, ourTer, t2))
                 {
-                    distance2 = DUtils.GetJumpsFromXToY_Land(data.getMap(), ourTer, t2);
+                    distance2 = DUtils.GetJumpsFromXToY_Land(data, ourTer, t2);
                 }
                 else
                 {
-                    distance2 = DUtils.GetJumpsFromXToY_NoCond(data.getMap(), ourTer, t2) * 3;
+                    distance2 = DUtils.GetJumpsFromXToY_NoCond(data, ourTer, t2) * 3;
                 }
 
                 return distance1 - distance2;
@@ -1088,6 +1077,10 @@ public class DUtils
 
         UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
         TripleAUnit ta = TripleAUnit.get(unit);
+
+        if (CachedCalculationCenter.GetRoute(data, ter, target).getLength() > ta.getMovementLeft()) //If the unit can't even get from ter to territory on a condition-less route, we know it can't make it
+            return false;
+
         if (ua.isAir())
         {
             if(DMatches.territoryIsOwnedByXOrAlly(data, player).match(target))
@@ -1152,7 +1145,7 @@ public class DUtils
                 continue;
             List<Unit> enemyUnits = ter.getUnits().getMatches(Matches.unitIsEnemyOf(data, player));
             int unitsThatCanAttackTer = 0;
-            int dist = DUtils.GetJumpsFromXToY_Land(data.getMap(), ter, territory);
+            int dist = DUtils.GetJumpsFromXToY_Land(data, ter, territory);
             if (ter.getName().equals(territory.getName()))
                 continue;
             if(dist < 1 || dist > maxJumpDist)
@@ -1172,20 +1165,16 @@ public class DUtils
         List<PlayerID> enemyPlayers = DUtils.GetAliveEnemyPlayers(data, player);
         return DUtils.SortEnemiesByEnemyPriority_D(data, player, enemyPlayers);
     }
-    public static int GetHighestTerProduction(GameData data, PlayerID player)
+    public static int GetHighestTerProduction(GameData data)
     {
         int result = 0;
         for (Territory ter : data.getMap().getTerritories())
         {
             if (ter.isWater())
-            {
                 continue;
-            }
             TerritoryAttachment ta = TerritoryAttachment.get(ter);
             if (ta == null)
-            {
                 continue;
-            }
             if (ta.getProduction() > result)
             {
                 result = ta.getProduction();
@@ -1198,7 +1187,7 @@ public class DUtils
         float result = 1;
 
         Territory ourCap = TerritoryAttachment.getCapital(player, data);
-        int jumps = DUtils.GetJumpsFromXToY_Land(data.getMap(), target, ourCap);
+        int jumps = DUtils.GetJumpsFromXToY_Land(data, target, ourCap);
 
         //3) If this ter is 1 jump away from our cap, add 18, if 2 jumps away, add 8, if three jumps away, add 2
         if(jumps == 1)
@@ -1282,7 +1271,7 @@ public class DUtils
                 //2) Is the territory-we-would-move-to closer to the closest enemy capital than the territory-we-are-currently-in?  (ie: are we moving towards any enemy capital at all)  If so, give 6 points.
                 if (closestEnemyCapForOurTer.getName().equals(closestEnemyCapForTarget.getName()))
                 {
-                    if (DUtils.GetJumpsFromXToY_Land(data.getMap(), ter, closestEnemyCapForTarget) < DUtils.GetJumpsFromXToY_Land(data.getMap(), neighborWeAreInThatsClosestToOurCap, closestEnemyCapForTarget))
+                    if (DUtils.GetJumpsFromXToY_Land(data, ter, closestEnemyCapForTarget) < DUtils.GetJumpsFromXToY_Land(data, neighborWeAreInThatsClosestToOurCap, closestEnemyCapForTarget))
                     {
                         priority += 6.0F;
                     }
@@ -1291,9 +1280,9 @@ public class DUtils
 
             Territory closestFactToOurTer = DUtils.GetClosestTerMatchingX(data, neighborWeAreInThatsClosestToOurCap, Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.UnitIsFactory, Matches.unitIsEnemyOf(data, player))), Matches.TerritoryIsLand);
             //3) Are we moving towards the closest enemy factory?
-            if (DUtils.GetJumpsFromXToY_Land(data.getMap(), ter, closestFactToOurTer) < DUtils.GetJumpsFromXToY_Land(data.getMap(), neighborWeAreInThatsClosestToOurCap, closestFactToOurTer))
+            if (DUtils.GetJumpsFromXToY_Land(data, ter, closestFactToOurTer) < DUtils.GetJumpsFromXToY_Land(data, neighborWeAreInThatsClosestToOurCap, closestFactToOurTer))
             {
-                float productionPercentOfHighest = (float) TerritoryAttachment.get(closestFactToOurTer).getProduction() / (float) KnowledgeCenter.get(data, player).GetHighestTerProduction();
+                float productionPercentOfHighest = (float) TerritoryAttachment.get(closestFactToOurTer).getProduction() / (float) GlobalCenter.HighestTerProduction;
                 priority += productionPercentOfHighest * 5;  //If so, add 2 to 5 points, depending on value of factory and territory.
             }
         }
@@ -1333,7 +1322,7 @@ public class DUtils
             if(ua.isAir())
                 return Integer.MIN_VALUE;
 
-            Route route = data.getMap().getRoute(ter, task.GetTarget());
+            Route route = CachedCalculationCenter.GetRoute(data, ter, task.GetTarget());
             int dist = route.getLength();
             result += TripleAUnit.get(unit).getMovementLeft();
             result -= dist;
@@ -1438,7 +1427,7 @@ public class DUtils
         float result = 1;
 
         Territory ourCap = TerritoryAttachment.getCapital(player, data);
-        int jumps = DUtils.GetJumpsFromXToY_Land(data.getMap(), target, ourCap);
+        int jumps = DUtils.GetJumpsFromXToY_Land(data, target, ourCap);
 
         //3) If this ter is 1 jump away from our cap, add 18, if 2 jumps away, add 8, if three jumps away, add 2
         if(jumps == 1)
@@ -1496,7 +1485,7 @@ public class DUtils
             //2) Is the territory-we-would-move-to closer to the closest enemy capital port than the territory-we-are-currently-in?  (ie: are we moving towards any enemy capital port at all)  If so, give 6 points.
             if (closestEnemyCapPortForOurTer.equals(closestEnemyCapPortForTarget))
             {
-                if(DUtils.GetJumpsFromXToY_Land(data.getMap(), target, closestEnemyCapPortForTarget) < DUtils.GetJumpsFromXToY_Sea(data.getMap(), mainAttackFromTer, closestEnemyCapPortForTarget))
+                if(DUtils.GetJumpsFromXToY_Land(data, target, closestEnemyCapPortForTarget) < DUtils.GetJumpsFromXToY_Sea(data, mainAttackFromTer, closestEnemyCapPortForTarget))
                 {
                     result += 6.0F;
                 }
@@ -1548,9 +1537,9 @@ public class DUtils
         List<Territory> result = new ArrayList<Territory>();
         for (Territory ter : data.getMap().getTerritories())
         {
-            if (DUtils.CanWeGetFromXToY_ByLand(data.getMap(), ter, territory))
+            if (DUtils.CanWeGetFromXToY_ByLand(data, ter, territory))
             {
-                if (DUtils.GetJumpsFromXToY_Land(data.getMap(), ter, territory) <= maxJumps)
+                if (DUtils.GetJumpsFromXToY_Land(data, ter, territory) <= maxJumps)
                     result.add(ter);
             }
         }
@@ -1687,42 +1676,21 @@ public class DUtils
                 if (toTake) //If the calculation is to check for takeover and armies are empty, never set as draw, set it as defender win(defender keeps ter)
                 {
                     //Signal as defender wins
-                    MustFightBattle battle = new MustFightBattle(testingTer, PlayerID.NULL_PLAYERID, data, null);
-                    defending.add(GetRandomUnitType().create(testingTer.getOwner()));
-                    battle.setUnits(defending, attacking, new ArrayList<Unit>(), testingTer.getOwner());
-                    BattleResults result = new BattleResults(battle);
-                    AggregateResults dWins = new AggregateResults(1);
-                    dWins.addResult(result);
-                    return dWins;
+                    return CreateDefenderWinsAggregateResults(data, testingTer);
                 }
                 else
                 {
                     //Signal as draw
-                    MustFightBattle battle = new MustFightBattle(testingTer, PlayerID.NULL_PLAYERID, data, null);
-                    battle.setUnits(defending, attacking, new ArrayList<Unit>(), testingTer.getOwner());
-                    BattleResults result = new BattleResults(battle);
-                    AggregateResults dWins = new AggregateResults(1);
-                    dWins.addResult(result);
-                    return dWins;
+                    return CreateDrawAggregateResults(data, testingTer);
                 }
             }
             //Signal as defender wins
-            MustFightBattle battle = new MustFightBattle(testingTer, PlayerID.NULL_PLAYERID, data, null);
-            battle.setUnits(defending, attacking, new ArrayList<Unit>(), defending.get(0).getOwner());
-            BattleResults result = new BattleResults(battle);
-            AggregateResults dWins = new AggregateResults(1);
-            dWins.addResult(result);
-            return dWins;
+            return CreateDefenderWinsAggregateResults(data, testingTer);
         }
         if (defending == null || defending.isEmpty())
         {
             //Signal as attacker wins
-            MustFightBattle battle = new MustFightBattle(testingTer, attacking.get(0).getOwner(), data, null);
-            battle.setUnits(defending, attacking, new ArrayList<Unit>(), testingTer.getOwner());
-            BattleResults result = new BattleResults(battle);
-            AggregateResults dWins = new AggregateResults(1);
-            dWins.addResult(result);
-            return dWins;
+            return CreateAttackerWinsAggregateResults(data, testingTer);
         }
 
         PlayerID defender = defending.get(0).getOwner();
@@ -1733,13 +1701,51 @@ public class DUtils
         if(attacker == null)
             attacker = PlayerID.NULL_PLAYERID;
 
+        if(DSettings.LoadSettings().AllowSpeedUps && Dynamix_AI.GetTimeTillNextScheduledActionDisplay() == 0) //Hmmm... Let's try to speed things up to reach the user-specified action length
+            runCount = (int)DUtils.Limit(DUtils.Divide_S(runCount, (DSettings.LoadSettings().SpeedUpPercentage / 100)), 1.0F, Integer.MAX_VALUE);
+
+        float attackerUnitsStrength = DUtils.GetAttackScoreOfUnits(attacking);
+        float defenderUnitsStrength = DUtils.GetDefenseScoreOfUnits(defending);
+
+        if(attackerUnitsStrength > defenderUnitsStrength * 5) //If attacker has a huge attack/defense score advantage
+            return CreateAttackerWinsAggregateResults(data, testingTer); //We'll save calcing time by just predicting the result
+        else if(defenderUnitsStrength > attackerUnitsStrength * 5)
+            return CreateDefenderWinsAggregateResults(data, testingTer);
+
         DOddsCalculator calc = new DOddsCalculator();
         calc.setKeepOneAttackingLandUnit(toTake);
 
         AggregateResults results = calc.calculate(data, attacker, defender, testingTer, attacking, defending, new ArrayList<Unit>(), runCount);
         return results;
     }
-    public List<Unit> getMoveableUnits(List<Unit> units)
+    public static AggregateResults CreateAttackerWinsAggregateResults(GameData data, Territory ter)
+    {        
+        MustFightBattle battle = new MustFightBattle(ter, PlayerID.NULL_PLAYERID, data, null);
+        battle.setUnits(new ArrayList<Unit>(), ToList(ToArray(GetRandomUnitForPlayerMatching(null, Match.ALWAYS_MATCH))), new ArrayList<Unit>(), PlayerID.NULL_PLAYERID);
+        BattleResults result = new BattleResults(battle);
+        AggregateResults dWins = new AggregateResults(1);
+        dWins.addResult(result);
+        return dWins;
+    }
+    public static AggregateResults CreateDefenderWinsAggregateResults(GameData data, Territory ter)
+    {
+        MustFightBattle battle = new MustFightBattle(ter, PlayerID.NULL_PLAYERID, data, null);
+        battle.setUnits(ToList(ToArray(GetRandomUnitForPlayerMatching(null, Match.ALWAYS_MATCH))), new ArrayList<Unit>(), new ArrayList<Unit>(), PlayerID.NULL_PLAYERID);
+        BattleResults result = new BattleResults(battle);
+        AggregateResults dWins = new AggregateResults(1);
+        dWins.addResult(result);
+        return dWins;
+    }
+    public static AggregateResults CreateDrawAggregateResults(GameData data, Territory ter)
+    {
+        MustFightBattle battle = new MustFightBattle(ter, PlayerID.NULL_PLAYERID, data, null);
+        battle.setUnits(new ArrayList<Unit>(), new ArrayList<Unit>(), new ArrayList<Unit>(), PlayerID.NULL_PLAYERID);
+        BattleResults result = new BattleResults(battle);
+        AggregateResults dWins = new AggregateResults(1);
+        dWins.addResult(result);
+        return dWins;
+    }
+    public static List<Unit> getMoveableUnits(List<Unit> units)
     {
         List<Unit> values = new ArrayList<Unit>();
         Iterator<Unit> iter = units.iterator();
@@ -1817,42 +1823,42 @@ public class DUtils
             return false;
         return true;
     }
-    public static int GetJumpsFromXToY_NoCond(GameMap map, Territory ter1, Territory ter2)
+    public static int GetJumpsFromXToY_NoCond(GameData data, Territory ter1, Territory ter2)
     {
-        Route route = map.getRoute(ter1, ter2);
+        Route route = CachedCalculationCenter.GetRoute(data, ter1, ter2);
         if(route == null)
             return Integer.MAX_VALUE;
         return route.getLength();
     }
-    public static int GetJumpsFromXToY_Land(GameMap map, Territory ter1, Territory ter2)
+    public static int GetJumpsFromXToY_Land(GameData data, Territory ter1, Territory ter2)
     {
-        Route route = map.getRoute(ter1, ter2, Matches.TerritoryIsLand);
-        if(route == null)
-            return Integer.MAX_VALUE;
-        if(!ter1.getName().equals(ter2.getName()) && route.getLength() < 1)
-            return Integer.MAX_VALUE;
-        return route.getLength();
-    }
-    public static int GetJumpsFromXToY_Sea(GameMap map, Territory ter1, Territory ter2)
-    {
-        Route route = map.getRoute(ter1, ter2, Matches.TerritoryIsWater);
+        Route route = CachedCalculationCenter.GetLandRoute(data, ter1, ter2);
         if(route == null)
             return Integer.MAX_VALUE;
         if(!ter1.getName().equals(ter2.getName()) && route.getLength() < 1)
             return Integer.MAX_VALUE;
         return route.getLength();
     }
-    public static boolean CanWeGetFromXToY_ByLand(GameMap map, Territory ter1, Territory ter2)
+    public static int GetJumpsFromXToY_Sea(GameData data, Territory ter1, Territory ter2)
     {
-        if(ter1 == null || ter2 == null)
-            return false;
-        return map.getRoute(ter1, ter2, Matches.TerritoryIsLand) != null;
+        Route route = CachedCalculationCenter.GetSeaRoute(data, ter1, ter2);
+        if(route == null)
+            return Integer.MAX_VALUE;
+        if(!ter1.getName().equals(ter2.getName()) && route.getLength() < 1)
+            return Integer.MAX_VALUE;
+        return route.getLength();
     }
-    public static boolean CanWeGetFromXToY_BySea(GameMap map, Territory ter1, Territory ter2)
+    public static boolean CanWeGetFromXToY_ByLand(GameData data, Territory ter1, Territory ter2)
     {
         if(ter1 == null || ter2 == null)
             return false;
-        return map.getRoute(ter1, ter2, Matches.TerritoryIsWater) != null;
+        return CachedCalculationCenter.GetLandRoute(data, ter1, ter2) != null;
+    }
+    public static boolean CanWeGetFromXToY_BySea(GameData data, Territory ter1, Territory ter2)
+    {
+        if(ter1 == null || ter2 == null)
+            return false;
+        return CachedCalculationCenter.GetSeaRoute(data, ter1, ter2) != null;
     }
     public static boolean CanWeAttackFromXToY_ByLand(GameData data, PlayerID player, Territory ter1, Territory ter2)
     {
@@ -2018,7 +2024,7 @@ public class DUtils
         });
         return result;
     }
-    public static List<UnitGroup> SortUnitGroupsByDistanceFrom(List<UnitGroup> ugs, final Territory ter, final GameMap map)
+    public static List<UnitGroup> SortUnitGroupsByDistanceFrom(List<UnitGroup> ugs, final Territory ter, final GameData data)
     {
         List<UnitGroup> result = new ArrayList<UnitGroup>();
         for (UnitGroup ug : ugs)
@@ -2029,8 +2035,8 @@ public class DUtils
         {
             public int compare(UnitGroup o1, UnitGroup o2)
             {
-                int ter1D = DUtils.GetJumpsFromXToY_NoCond(map, o1.GetStartTerritory(), ter);
-                int ter2D = DUtils.GetJumpsFromXToY_NoCond(map, o2.GetStartTerritory(), ter);
+                int ter1D = DUtils.GetJumpsFromXToY_NoCond(data, o1.GetStartTerritory(), ter);
+                int ter2D = DUtils.GetJumpsFromXToY_NoCond(data, o2.GetStartTerritory(), ter);
                 if(ter1D < ter2D)
                     return -1;
                 else if(ter2D > ter1D)
@@ -2060,7 +2066,7 @@ public class DUtils
         });
         return result;
     }
-    public static List<Territory> SortTerritoriesByLandDistanceFrom(List<Territory> ters, final Territory ter, final GameMap map)
+    public static List<Territory> SortTerritoriesByLandDistanceFrom(List<Territory> ters, final Territory ter, final GameData data)
     {
         List<Territory> result = new ArrayList<Territory>();
         for (Territory ter2 : ters)
@@ -2071,14 +2077,14 @@ public class DUtils
         {
             public int compare(Territory t1, Territory t2)
             {
-                int ter1D = DUtils.GetJumpsFromXToY_Land(map, t1, ter);
-                int ter2D = DUtils.GetJumpsFromXToY_Land(map, t2, ter);
+                int ter1D = DUtils.GetJumpsFromXToY_Land(data, t1, ter);
+                int ter2D = DUtils.GetJumpsFromXToY_Land(data, t2, ter);
                 return ter1D - ter2D;
             }
         });
         return result;
     }
-    public static List<Territory> SortTerritoriesByLandThenNoCondDistanceFrom(List<Territory> ters, final Territory ter, final GameMap map)
+    public static List<Territory> SortTerritoriesByLandThenNoCondDistanceFrom(List<Territory> ters, final Territory ter, final GameData data)
     {
         List<Territory> result = new ArrayList<Territory>();
         for (Territory ter2 : ters)
@@ -2089,10 +2095,10 @@ public class DUtils
         {
             public int compare(Territory t1, Territory t2)
             {
-                int lJumps1 = DUtils.GetJumpsFromXToY_Land(map, t1, ter);
-                int lJumps2 = DUtils.GetJumpsFromXToY_Land(map, t2, ter);
-                int jumps1 = DUtils.GetJumpsFromXToY_NoCond(map, t1, ter);
-                int jumps2 = DUtils.GetJumpsFromXToY_NoCond(map, t2, ter);
+                int lJumps1 = DUtils.GetJumpsFromXToY_Land(data, t1, ter);
+                int lJumps2 = DUtils.GetJumpsFromXToY_Land(data, t2, ter);
+                int jumps1 = DUtils.GetJumpsFromXToY_NoCond(data, t1, ter);
+                int jumps2 = DUtils.GetJumpsFromXToY_NoCond(data, t2, ter);
 
                 int ter1D = lJumps1;
                 int ter2D = lJumps2;
@@ -2124,7 +2130,7 @@ public class DUtils
         });
         return result;
     }
-    public static List<Territory> SortTerritoriesByDistanceFrom(List<Territory> ters, final Territory ter, final GameMap map)
+    public static List<Territory> SortTerritoriesByDistanceFrom(List<Territory> ters, final Territory ter, final GameData data)
     {
         List<Territory> result = new ArrayList<Territory>();
         for (Territory ter2 : ters)
@@ -2135,8 +2141,8 @@ public class DUtils
         {
             public int compare(Territory t1, Territory t2)
             {
-                int ter1D = DUtils.GetJumpsFromXToY_NoCond(map, t1, ter);
-                int ter2D = DUtils.GetJumpsFromXToY_NoCond(map, t2, ter);
+                int ter1D = DUtils.GetJumpsFromXToY_NoCond(data, t1, ter);
+                int ter2D = DUtils.GetJumpsFromXToY_NoCond(data, t2, ter);
                 return ter1D - ter2D;
             }
         });
@@ -2392,14 +2398,14 @@ public class DUtils
     {
         UnitAttachment ua = UnitAttachment.get(airUnit.getUnitType());
         TripleAUnit ta = TripleAUnit.get(airUnit);
-        int jumpDist = DUtils.GetJumpsFromXToY_NoCond(data.getMap(), from, to);
+        int jumpDist = DUtils.GetJumpsFromXToY_NoCond(data, from, to);
         int movementAfterAttack = ta.getMovementLeft() - jumpDist;
         Territory landingTer = null;
         for (Territory ter : data.getMap().getTerritories())
         {
             if (!data.getAllianceTracker().isAllied(ter.getOwner(), airUnit.getOwner()))
                 continue;
-            int dist = DUtils.GetJumpsFromXToY_NoCond(data.getMap(), ter, to);
+            int dist = DUtils.GetJumpsFromXToY_NoCond(data, ter, to);
             if(dist > movementAfterAttack)
                 continue;
             List<Unit> attackers = DUtils.GetSPNNEnemyBasedOnLUnitsOnlyThatCanReach(data, ter, airUnit.getOwner(), Matches.TerritoryIsLand);
@@ -2438,6 +2444,8 @@ public class DUtils
             if (ter.getName().equals(territory.getName()))
                 continue;
             if (ter.getOwner().getName().toLowerCase().equals("neutral"))
+                continue;
+            if (CachedCalculationCenter.GetRoute(data, ter, territory).getLength() > GlobalCenter.FastestUnitMovement) //If the fastest moving unit in the game can't reach from ter to territory
                 continue;
             for (Unit u : ter.getUnits().getMatches(DMatches.unitIsNNEnemyOf(data, playerToCheckFor)))
             {
@@ -2479,7 +2487,9 @@ public class DUtils
                 continue;
             if (ter.getName().equals(territory.getName()))
                 continue;
-            if (ter.getOwner().getName().toLowerCase().equals("neutral"))
+            if (ter.getOwner().isNull())
+                continue;
+            if (CachedCalculationCenter.GetRoute(data, ter, territory).getLength() > GlobalCenter.FastestUnitMovement) //If the fastest moving unit in the game can't reach from ter to territory
                 continue;
             for (Unit u : ter.getUnits().getMatches(DMatches.unitIsNNEnemyOf(data, playerToCheckFor)))
             {
@@ -2927,6 +2937,10 @@ public class DUtils
      */
     public static Unit CalculateUnitThatWillHelpWinAttackOnXTheMostPerPU(Territory enemyTer, GameData data, PlayerID player, List<Unit> unitsOnTheWay, Match<Unit> match, List<Unit> unitsToChooseFrom, boolean addOurSurroundingUnits, int calcRunsPerUnit)
     {
+        //We have this code here to double-speed up the attack unit calculation because it's so slow (sped up here, and later for battle calcing)
+        if (DSettings.LoadSettings().AllowSpeedUps && Dynamix_AI.GetTimeTillNextScheduledActionDisplay() == 0)
+            calcRunsPerUnit = (int)DUtils.Limit(DUtils.Divide_S(calcRunsPerUnit, (DSettings.LoadSettings().SpeedUpPercentage / 100)), 1.0F, Integer.MAX_VALUE);
+
         float bestTakeoverScore = Integer.MIN_VALUE;
         Unit bestUnit = null;
         List<Unit> unitsAlreadyGoingToAttack = new ArrayList<Unit>();

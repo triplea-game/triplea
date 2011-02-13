@@ -29,10 +29,13 @@ import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.FactoryCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.KnowledgeCenter;
+import games.strategy.triplea.Dynamix_AI.DSettings;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.Dynamix_AI.Group.MovePackage;
 import games.strategy.triplea.Dynamix_AI.Group.PurchaseGroup;
+import games.strategy.triplea.Dynamix_AI.Others.NCM_TargetCalculator;
+import games.strategy.triplea.Dynamix_AI.Others.NCM_Task;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -57,11 +60,11 @@ public class Purchase
     {
         if(!purchaseForBid && false) //TODO. Was: DPlayerConfigPack.get(player).ResourceCollectionMultiplyAmount != 1.0F) //AI cheat for more interesting gameplay. Can be turned on with AI settings window.
         {
-            if(KnowledgeCenter.get(data, player).PUsAtEndOfLastTurn == 0) //This will happen when the game was saved and reloaded since the end of this country's last turn
-                KnowledgeCenter.get(data, player).PUsAtEndOfLastTurn = DUtils.GetTotalProductionOfTerritoriesInList(DUtils.ToList(data.getMap().getTerritoriesOwnedBy(player)));
-            int PUDiff = PUsToSpend - KnowledgeCenter.get(data, player).PUsAtEndOfLastTurn;
-            final int newPUs = KnowledgeCenter.get(data, player).PUsAtEndOfLastTurn + (int)((float)PUDiff * 1.0F); //TODO. Was: DPlayerConfigPack.get(player).ResourceCollectionMultiplyAmount);
-            int PUChange = newPUs - KnowledgeCenter.get(data, player).PUsAtEndOfLastTurn;
+            if(GlobalCenter.PUsAtEndOfLastTurn == 0) //This will happen when the game was saved and reloaded since the end of this country's last turn
+                GlobalCenter.PUsAtEndOfLastTurn = DUtils.GetTotalProductionOfTerritoriesInList(DUtils.ToList(data.getMap().getTerritoriesOwnedBy(player)));
+            int PUDiff = PUsToSpend - GlobalCenter.PUsAtEndOfLastTurn;
+            final int newPUs = GlobalCenter.PUsAtEndOfLastTurn + (int)((float)PUDiff * 1.0F); //TODO. Was: DPlayerConfigPack.get(player).ResourceCollectionMultiplyAmount);
+            int PUChange = newPUs - GlobalCenter.PUsAtEndOfLastTurn;
             final int fPUsToSpend = PUsToSpend; final Dynamix_AI fAI = ai;
             DUtils.Log(Level.FINER, "  Using an RCM cheat, and increasing our PUs from {0} to {1}", DUtils.ToArray(fPUsToSpend, newPUs));
             Runnable runner = new Runnable()
@@ -178,7 +181,7 @@ public class Purchase
         {
             Territory ourCap = TerritoryAttachment.getCapital(player, data);
             List<Territory> ourTers = new ArrayList<Territory>(data.getMap().getTerritoriesOwnedBy(player));
-            ourTers = DUtils.SortTerritoriesByLandThenNoCondDistanceFrom(ourTers, ourCap, data.getMap()); //We want to repair the factories close to our capital first
+            ourTers = DUtils.SortTerritoriesByLandThenNoCondDistanceFrom(ourTers, ourCap, data); //We want to repair the factories close to our capital first
 
             List<RepairRule> rrules = player.getRepairFrontier().getRules();
             HashMap<Territory, IntegerMap<RepairRule>> factoryRepairs = new HashMap<Territory, IntegerMap<RepairRule>>();
@@ -242,7 +245,7 @@ public class Purchase
         }
 
         List<Territory> ourFactoryTers = Match.getMatches(new ArrayList<Territory>(data.getMap().getTerritoriesOwnedBy(player)), Matches.territoryHasUnitsThatMatch(Matches.UnitIsFactory));
-        List<Territory> ourTersSortedByCapDistance = DUtils.SortTerritoriesByLandDistanceFrom(ourFactoryTers, ourCapital, data.getMap());
+        List<Territory> ourTersSortedByCapDistance = DUtils.SortTerritoriesByLandDistanceFrom(ourFactoryTers, ourCapital, data);
         Collections.shuffle(ourTersSortedByCapDistance); //Actually, its probably better not to sort... We shouldn't be predictable unless we know what we're doing
         for (Territory ter : ourTersSortedByCapDistance)
         {
@@ -255,8 +258,11 @@ public class Purchase
         }
         //Now do ones not having a land path to the cap
         ourFactoryTers = Match.getMatches(new ArrayList<Territory>(data.getMap().getTerritoriesOwnedBy(player)), Matches.territoryHasUnitsThatMatch(Matches.UnitIsFactory));
-        ourTersSortedByCapDistance = DUtils.SortTerritoriesByDistanceFrom(ourFactoryTers, ourCapital, data.getMap());
-        Collections.shuffle(ourTersSortedByCapDistance); //Actually, its probably better not to sort... We shouldn't be predictable unless we know what we're doing
+
+        //Actually, its probably better not to sort... We shouldn't be predictable unless we know what we're doing
+          //ourTersSortedByCapDistance = DUtils.SortTerritoriesByDistanceFrom(ourFactoryTers, ourCapital, data);
+           //Collections.shuffle(ourTersSortedByCapDistance);
+
         for (Territory ter : ourTersSortedByCapDistance)
         {
             if(enemyCaps.contains(ter) || FactoryCenter.get(data, player).ChosenFactoryTerritories.contains(ter))
@@ -296,13 +302,13 @@ public class Purchase
             }
         }
 
-        PurchaseGroup bestPurchaseGroup = CalculateBestPurchaseGroup(ter, data, player, purchaser);
+        PurchaseGroup bestPurchaseGroup = CalculateBestPurchaseGroup(ter, data, player, purchaser, PUsToSpend);
         if(bestPurchaseGroup == null)
-            return 0;
+            return result;
         int testCost = bestPurchaseGroup.GetCost();
         if (testCost < 1) //Temporary work-around
         {
-            return 0;
+            return result;
         }
         int maxPurchaseCost = PUsToSpend;
         int maxPurchaseCount = DUtils.GetCheckedUnitProduction(ter);
@@ -316,7 +322,7 @@ public class Purchase
             maxPurchaseCount--;
         bestPurchaseGroup.ApplyMaxValues(maxPurchaseCost, maxPurchaseCount);
         int cost = bestPurchaseGroup.GetCost();
-        if (PUsToSpend - cost > -1)
+        if (PUsToSpend - cost >= 0) //If we have enough money to buy this purchase group
         {
             bestPurchaseGroup.Purchase();
             FactoryCenter.get(data, player).TurnTerritoryPurchaseGroups.put(ter, bestPurchaseGroup);
@@ -326,11 +332,17 @@ public class Purchase
         return result;
     }
 
-    private static PurchaseGroup CalculateBestPurchaseGroup(Territory ter, GameData data, PlayerID player, IPurchaseDelegate purchaser)
+    private static PurchaseGroup CalculateBestPurchaseGroup(Territory ter, GameData data, PlayerID player, IPurchaseDelegate purchaser, float PUsLeftToSpend)
     {
-        Territory ncmTarget = DUtils.GetClosestEnemyCap(ter, data, player); //TODO!
+        Territory ncmTarget = NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), new ArrayList<NCM_Task>());
         if(ncmTarget == null)
             ncmTarget = TerritoryAttachment.getCapital(DUtils.GetEnemyPlayers(data, player).get(0), data);
+
+        Integer productionSpaceLeft = DUtils.GetCheckedUnitProduction(ter);
+        if(FactoryCenter.get(data, player).ChosenAAPlaceTerritories.contains(ter))
+            productionSpaceLeft--;
+        if(productionSpaceLeft <= 0)
+            return null;
 
         List<Unit> unitsOnTheWay = new ArrayList<Unit>();
         Route route = null;
@@ -359,6 +371,11 @@ public class Purchase
         for (int i = 0; i < Math.min(DUtils.GetCheckedUnitProduction(ter), 5); i++) //Do five different unit types at most because we dont want this to take too long
         {
             Unit unit = DUtils.CalculateUnitThatWillHelpWinAttackOnXTheMostPerPU(ncmTarget, data, player, unitsOnTheWay, Matches.UnitHasEnoughMovement(1), allUnits, true, 125);
+            int cost = DUtils.GetTUVOfUnit(unit, player, GlobalCenter.GetPUResource());            
+            if (PUsLeftToSpend - cost < 0) //If buying this unit will put us under
+                break;
+
+            PUsLeftToSpend -= cost;
             if (unit == null)
             {
                 i--;
@@ -366,6 +383,8 @@ public class Purchase
             }
             unitsToBuy.add(unit);
             unitsOnTheWay.add(unit);
+            if(unitsToBuy.size() >= productionSpaceLeft) //If we've already bought the most we can fit on this territory
+                break;
         }
         if(unitsToBuy.isEmpty())
             return null;
