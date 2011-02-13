@@ -24,6 +24,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -88,6 +89,8 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         m_bridge = new TripleADelegateBridge(aBridge, gameData);
         m_data = gameData;
         m_player = aBridge.getPlayerID();
+     
+        TriggerAttachment.triggerAvailableTechChange(m_player, m_bridge, m_data);
     }
 
     public Map<PlayerID, Collection> getAdvances()
@@ -231,7 +234,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         m_data.acquireReadLock();
         try
         {
-            Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(m_player);
+            Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(m_player,m_data);
             Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data,m_player);
             return Util.difference(allAdvances, currentAdvances);
         }
@@ -349,7 +352,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data,m_bridge
                 .getPlayerID());
         Collection<TechAdvance> playersAdvances = TechTracker.getTechAdvances(m_bridge
-                .getPlayerID());
+                .getPlayerID(),m_data);
 
         List<TechAdvance> available = Util.difference(allAdvances, playersAdvances);
         return available;
@@ -359,7 +362,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
     {
         //Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data, techCategory);
         Collection<TechAdvance> playersAdvances = TechTracker.getTechAdvances(m_bridge
-                .getPlayerID());
+                .getPlayerID(),m_data);
 
         List<TechAdvance> available = Util.difference(techCategory.getTechs(), playersAdvances);
         return available;

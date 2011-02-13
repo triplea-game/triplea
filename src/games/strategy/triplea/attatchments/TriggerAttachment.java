@@ -22,6 +22,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
+import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -48,7 +49,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	private List<RulesAttachment> m_trigger = null;
 	private ProductionFrontier m_frontier = null;
 	private boolean m_invert = false;
-	private String m_tech = null;
+	private List<TechAdvance> m_tech = new ArrayList<TechAdvance>();
 	private Map<Territory,IntegerMap<UnitType>> m_placement = null;
 	private IntegerMap<UnitType> m_purchase = null;
 	private String m_resource = null;
@@ -59,6 +60,9 @@ public class TriggerAttachment extends DefaultAttachment{
 	private List<String> m_unitProperty = null;
 	private UnitType m_unitType = null;
 	private boolean m_removeSupport = false;
+	//private List<TechAdvance> m_availableTech = null;
+	//private TechnologyFrontier m_techCategory = null;
+	private Map<String,List<TechAdvance>> m_availableTechs = null;
 	public TriggerAttachment() {
 	}
 	
@@ -135,12 +139,43 @@ public class TriggerAttachment extends DefaultAttachment{
 	public boolean getRemoveSupport() {
 		return m_removeSupport;
 	}
-	public String getTech() {
+	public List<TechAdvance> getTech() {
 		return m_tech;
 	}
 	
-	public void setTech(String s) {
-		m_tech = s;
+	public void setTech(String techs) throws GameParseException{
+		String[] s = techs.split(":");
+		for(int i = 0;i<s.length;i++){
+			TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(s[i]);
+			if(ta==null)
+				ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
+			if(ta==null)
+				throw new GameParseException("Technology not found :"+s[i]);
+			m_tech.add(ta);
+		}
+	}
+	
+	public Map<String,List<TechAdvance>> getAvailableTech() {
+		return m_availableTechs;
+	}
+	
+	public void setAvailableTech(String techs) throws GameParseException{
+		String[] s = techs.split(":");
+		if(s.length<2)
+    		throw new GameParseException( "Invalid tech availability: "+techs+ " should be category:techs");
+		String cat = s[0]; 
+		List<TechAdvance> tlist = new ArrayList<TechAdvance>(); 
+		for(int i = 1;i<s.length;i++){
+			TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(s[i]);
+			if(ta==null)
+				ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
+			if(ta==null)
+				throw new GameParseException("Technology not found :"+s[i]);
+			tlist.add(ta);
+		}
+		if(m_availableTechs == null)
+			m_availableTechs = new HashMap<String,List<TechAdvance>>();
+		m_availableTechs.put(cat, tlist);
 	}
 	
 	public UnitType getUnitType() {
@@ -317,13 +352,42 @@ public class TriggerAttachment extends DefaultAttachment{
 			if(met!=t.getInvert()) {
 				t.use(aBridge);
 				for( PlayerID aPlayer: t.getPlayers()){
-					TechAdvance advance = TechAdvance.findAdvance(t.getTech(),data,player);
-					Collection<TechAdvance> alreadyHave = TechTracker.getTechAdvances(aPlayer);
-					if(alreadyHave.contains(advance))
-						continue;
-					aBridge.getHistoryWriter().startEvent(aPlayer.getName() + " activating " + advance);
-					advance.perform(aPlayer, aBridge, data);
-					TechTracker.addAdvance(aPlayer, data, aBridge, advance);
+					for( TechAdvance ta:t.getTech()) {
+						if(ta.hasTech(TechAttachment.get(player))
+								|| !TechAdvance.getTechAdvances(data, player).contains(ta))
+							continue;
+						aBridge.getHistoryWriter().startEvent(aPlayer.getName() + " activating " + ta);
+						TechTracker.addAdvance(aPlayer, data, aBridge, ta);
+					}
+				}
+			}
+		}
+	}
+	
+	public static void triggerAvailableTechChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,techAMatch);
+		for(TriggerAttachment t:trigs) {
+			boolean met = false;
+			for(RulesAttachment c:t.getTrigger()) {
+				met = c.isSatisfied(data);
+				if(!met)
+					break;
+			}
+			if(met!=t.getInvert()) {
+				t.use(aBridge);
+				for( PlayerID aPlayer: t.getPlayers()){
+					for(String cat:t.getAvailableTech().keySet()){
+						TechnologyFrontier tf = aPlayer.getTechnologyFrontierList().getTechnologyFrontier(cat);
+						if(tf == null)
+							throw new IllegalStateException("tech category doesn't exist:"+cat+" for player:"+aPlayer);
+						for(TechAdvance ta: t.getAvailableTech().get(cat)){
+							//if(tf.getTechs().contains(ta))
+							//	continue;
+							aBridge.getHistoryWriter().startEvent(aPlayer.getName() + " gains access to " + ta);
+							Change change = ChangeFactory.addAvailableTech(tf, ta);
+							aBridge.addChange(change);
+						}
+					}
 				}
 			}
 		}
@@ -528,10 +592,17 @@ public class TriggerAttachment extends DefaultAttachment{
 	{
 		public boolean match(TriggerAttachment t)
 		{
-			return t.getTech() != null && t.getUses()!=0;
+			return !t.getTech().isEmpty() && t.getUses()!=0;
 		}
 	};
 	
+	private static Match<TriggerAttachment> techAMatch = new Match<TriggerAttachment>()
+	{
+		public boolean match(TriggerAttachment t)
+		{
+			return t.getAvailableTech() != null && t.getUses()!=0;
+		}
+	};
 	private static Match<TriggerAttachment> placeMatch = new Match<TriggerAttachment>()
 	{
 		public boolean match(TriggerAttachment t)

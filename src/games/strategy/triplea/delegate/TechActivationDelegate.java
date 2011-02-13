@@ -77,7 +77,7 @@ public class TechActivationDelegate implements IDelegate
             while (techsIter.hasNext())
             {
                 TechAdvance advance = (TechAdvance) techsIter.next();
-                advance.perform(m_bridge.getPlayerID(), m_bridge, m_data);
+                //advance.perform(m_bridge.getPlayerID(), m_bridge, m_data);
                 TechTracker.addAdvance(m_player, m_data, m_bridge, advance);
             }
         }

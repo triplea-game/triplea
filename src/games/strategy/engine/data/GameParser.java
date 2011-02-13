@@ -33,6 +33,7 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.Version;
 
@@ -1056,7 +1057,7 @@ public class GameParser
         {
             Element current = (Element) elements.get(i);
             TechnologyFrontier tf = new TechnologyFrontier(current.getAttribute("name"),data);
-            parseTechs( getChildren("tech", current), tf);   
+            parseCategoryTechs( getChildren("tech", current), tf);   
             categories.addTechnologyFrontier(tf);
         }
        
@@ -1112,11 +1113,34 @@ public class GameParser
         for(int i = 0; i < elements.size(); i++)
         {
             Element current = (Element) elements.get(i);
-            TechAdvance tech = TechAdvance.findAdvance(current.getAttribute("name"));
-            frontier.addAdvance(tech);
+            String name = current.getAttribute("name");
+            String tech = current.getAttribute("tech");
+            TechAdvance ta;
+            if(tech.length()>0) {
+            	ta = new GenericTechAdvance(name,TechAdvance.findDefinedAdvance(tech));
+            }
+            else {
+            	try {
+            		ta = TechAdvance.findDefinedAdvance(name);
+            	} catch (IllegalArgumentException e) {
+            		ta = new GenericTechAdvance(name,null);
+            	}
+            }
+            frontier.addAdvance(ta);
         }
     }
-    
+    private void parseCategoryTechs(List elements, TechnologyFrontier frontier) throws GameParseException{
+    	for(int i = 0; i < elements.size(); i++)
+        {
+            Element current = (Element) elements.get(i);
+            TechAdvance ta = data.getTechnologyFrontier().getAdvanceByProperty(current.getAttribute("name"));
+            if(ta==null)
+            	ta = data.getTechnologyFrontier().getAdvanceByName(current.getAttribute("name"));
+            if(ta==null)
+            	throw new GameParseException("Technology not found :"+current.getAttribute("name"));
+            frontier.addAdvance(ta);
+        }
+    }
     private void parseRepairFrontierRules(List elements, RepairFrontier frontier) throws GameParseException
     {
         for(int i = 0; i < elements.size(); i++)

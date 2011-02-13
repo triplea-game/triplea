@@ -22,6 +22,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.attatchments.TechAttachment;
 
 
 import java.util.*;
@@ -96,7 +97,7 @@ public abstract class TechAdvance implements java.io.Serializable
             return s_LandProductionAdvances;
     }
 */
-    public static TechAdvance findAdvance(String s)
+    public static TechAdvance findDefinedAdvance(String s)
     {        
         for(TechAdvance t: s_allDefined){
         	if(t.getProperty().equals(s))
@@ -220,7 +221,8 @@ public abstract class TechAdvance implements java.io.Serializable
     public abstract String getName();
     public abstract String getProperty();
     public abstract void perform(PlayerID id, IDelegateBridge bridge, GameData data);
-
+    public abstract boolean hasTech(TechAttachment ta);
+    
     public boolean equals(Object o)
     {
         if (!(o instanceof TechAdvance))
@@ -265,6 +267,9 @@ class SuperSubsAdvance extends TechAdvance
     public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
     }
+    public boolean hasTech(TechAttachment ta){
+    	return ta.hasSuperSub();
+    }
 }
 
 
@@ -284,7 +289,9 @@ class HeavyBomberAdvance extends TechAdvance
     public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
     }
-
+    public boolean hasTech(TechAttachment ta){
+    	return ta.hasHeavyBomber();
+    }
 }
 
 class IndustrialTechnologyAdvance extends TechAdvance
@@ -320,6 +327,9 @@ class IndustrialTechnologyAdvance extends TechAdvance
         Change prodChange = ChangeFactory.changeProductionFrontier(id, advancedTech);
         bridge.addChange(prodChange);
     }
+    public boolean hasTech(TechAttachment ta){
+    	return ta.hasIndustrialTechnology();
+    }
 }
 
 
@@ -339,7 +349,9 @@ class JetPowerAdvance extends TechAdvance
     public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
     }
-
+    public boolean hasTech(TechAttachment ta){
+    	return ta.hasJetPower();
+    }
 }
 
 
@@ -359,7 +371,9 @@ class RocketsAdvance extends TechAdvance
     public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
     }
-
+    public boolean hasTech(TechAttachment ta){
+    	return ta.hasRocket();
+    }
 }
 
 class DestroyerBombardTechAdvance extends TechAdvance
@@ -376,6 +390,9 @@ class DestroyerBombardTechAdvance extends TechAdvance
 
     public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
+    }
+    public boolean hasTech(TechAttachment ta){
+    	return ta.hasDestroyerBombard();
     }
 }
 
@@ -395,6 +412,9 @@ class LongRangeAircraftAdvance extends TechAdvance
 
     public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
+    }
+    public boolean hasTech(TechAttachment ta){
+    	return ta.hasLongRangeAir();
     }
 }
 
@@ -419,6 +439,9 @@ class ImprovedArtillerySupportAdvance extends TechAdvance
     public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
     }
+    public boolean hasTech(TechAttachment ta){
+    	return ta.hasImprovedArtillerySupport();
+    }
 }
 
 /*
@@ -438,6 +461,9 @@ class ParatroopersAdvance extends TechAdvance
 
     public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
+    }
+    public boolean hasTech(TechAttachment ta){
+    	return ta.hasParatroopers();
     }
 }
 
@@ -459,6 +485,9 @@ class IncreasedFactoryProductionAdvance extends TechAdvance
     public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
     }
+    public boolean hasTech(TechAttachment ta){
+    	return ta.hasIncreasedFactoryProduction();
+    }
 }
 
 /*
@@ -478,6 +507,9 @@ class WarBondsAdvance extends TechAdvance
 
     public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
+    }
+    public boolean hasTech(TechAttachment ta){
+    	return ta.hasWarBonds();
     }
 }
 
@@ -499,6 +531,9 @@ class MechanizedInfantryAdvance extends TechAdvance
     public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
     }
+    public boolean hasTech(TechAttachment ta){
+    	return ta.hasMechanizedInfantry();
+    }
 }
 
 /*
@@ -518,6 +553,9 @@ class AARadarAdvance extends TechAdvance
 
     public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
+    }
+    public boolean hasTech(TechAttachment ta){
+    	return ta.hasAARadar();
     }
 }
 
@@ -553,6 +591,9 @@ class ImprovedShipyardsAdvance extends TechAdvance
         
         Change prodChange = ChangeFactory.changeProductionFrontier(id, advancedTech);
         bridge.addChange(prodChange);
+    }
+    public boolean hasTech(TechAttachment ta){
+    	return ta.hasShipyards();
     }
 }
 

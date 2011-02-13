@@ -505,10 +505,11 @@ public class StatPanel extends JPanel
                 		data[row][col] = tokens.toString();
                 	}
 
-                    Iterator advances = TechTracker.getTechAdvances(pid).iterator();
+                    Iterator advances = TechTracker.getTechAdvances(pid,m_data).iterator();
     
                     while (advances.hasNext())
                     {
+                    	
                     	TechAdvance advance = (TechAdvance) advances.next();
                     	row = rowMap.get(advance.getName()).intValue();
                         // System.err.println("(" + row + ", " + col + ")");

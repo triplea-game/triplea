@@ -111,7 +111,7 @@ public class RulesAttachment extends DefaultAttachment
     private Set<PlayerID> m_atWarPlayers = null;
  // using map as tuple set, describes ranges from Integer-Integer
     private Map<Integer,Integer> m_turns = null;  
-    private List<String> m_techs = null;
+    private List<TechAdvance> m_techs = null;
     
   /** Creates new RulesAttachment */
   public RulesAttachment()
@@ -391,9 +391,14 @@ public class RulesAttachment extends DefaultAttachment
 	    	}
 	    	if(s.length<1 || s.length ==1 && count != -1)
 	    		throw new GameParseException( "Empty tech list");
-	    	m_techs = new ArrayList<String>();
+	    	m_techs = new ArrayList<TechAdvance>();
 	    	for( int i=count==-1?0:1; i < s.length; i++){
-	    		m_techs.add(s[i]);
+	    		TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(s[i]);
+	            if(ta==null)
+	            	ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
+	            if(ta==null)
+	            	throw new GameParseException("Technology not found :"+s);
+	    		m_techs.add(ta);
 	    	}
 	    }
   }
@@ -949,8 +954,8 @@ public class RulesAttachment extends DefaultAttachment
 	
 	private boolean checkTechs(PlayerID player, GameData data) {
 		int found =0;
-		for( TechAdvance a: TechTracker.getTechAdvances(player)) 	
-			if(m_techs.contains(a.getProperty())) 
+		for( TechAdvance a: TechTracker.getTechAdvances(player,data)) 	
+			if(m_techs.contains(a)) 
 				found++;
 		if( m_techCount == 0)
 			return m_techCount == found;

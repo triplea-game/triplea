@@ -1,4 +1,8 @@
 Changes for 1.2.7
+* Updating Pact of Steel 2, to take advantage of latest technology list abilities. (veqryn)
+
+* Patch for technology lists, to allow creation of new technologies and renaming of old ones. Allows adding new technologies by trigger. (squid daddy)
+
 * Created two new properties for map.properties, "map.showConvoyNames=true" and "map.useNation_convoyFlags=true". If useNation_convoyFlags is true, the flags folder of a game must have "<nation_name>_convoy.png" for each nation with convoys. Convoy names can be moved in name_place.txt (veqryn)
 
 * Increasing Max Memory to 512mb for linux/mac/windows, and to 192mb for the server. (veqryn)

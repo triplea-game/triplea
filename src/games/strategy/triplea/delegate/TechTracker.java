@@ -43,9 +43,17 @@ public class TechTracker implements java.io.Serializable
   {
   }
 
-  public static Collection<TechAdvance> getTechAdvances(PlayerID id)
+  public static Collection<TechAdvance> getTechAdvances(PlayerID id,GameData data)
   {
     Collection<TechAdvance> rVal = new ArrayList<TechAdvance>();
+    TechAttachment attatchment = TechAttachment.get(id);
+    for(TechAdvance ta: TechAdvance.getTechAdvances(data, id)){
+    	if(ta.hasTech(attatchment))
+    		rVal.add(ta);
+    }
+    
+    
+    /*
     TechAttachment attatchment = TechAttachment.get(id);
 
     if(attatchment.hasHeavyBomber())
@@ -105,7 +113,7 @@ public class TechTracker implements java.io.Serializable
       rVal.add(TechAdvance.IMPROVED_SHIPYARDS);
     }
 
-
+*/
 
     return rVal;
   }
@@ -113,12 +121,12 @@ public class TechTracker implements java.io.Serializable
   public static Collection<TechnologyFrontier> getTechCategories(GameData data,PlayerID id)
   {
     Collection<TechnologyFrontier> rVal = new ArrayList<TechnologyFrontier>();
-    //TechAttachment attachment = TechAttachment.get(id);
+    TechAttachment attachment = TechAttachment.get(id);
     
     for(TechnologyFrontier tf: TechAdvance.getTechCategories(data, id)) {
     	boolean has = true;
     	for(TechAdvance t: tf.getTechs()){
-    		has = hasTech(id,t);
+    		has = t.hasTech(attachment);
     		if(!has)
     			break;
     	}
@@ -142,17 +150,6 @@ public class TechTracker implements java.io.Serializable
     return rVal;
   }
   
-  public static boolean hasTech(PlayerID player, TechAdvance ta) {
-	  TechAttachment attachment = TechAttachment.get(player);
-	  boolean has = false;
-	  try {
-		  Method m = attachment.getClass().getMethod("has"+capitalizeFirstLetter(ta.getProperty()),new Class[0]);
-		  has = (Boolean) m.invoke(attachment, new Object[0]);
-	  }catch (Exception e) {
-		  throw new IllegalStateException("No such tech: " + ta.getProperty()+e);
-	  }
-	  return has;
-  }
   public static int getTechCost(PlayerID id)
   {
 	    TechAttachment ta = TechAttachment.get(id);
@@ -161,9 +158,18 @@ public class TechTracker implements java.io.Serializable
   
   public static synchronized void addAdvance(PlayerID player, GameData data, IDelegateBridge bridge, TechAdvance advance)
   {
-    Change attatchmentChange = ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "true", advance.getProperty());
-    bridge.addChange(attatchmentChange);
-    advance.perform(player, bridge, data);
+	  Change attatchmentChange;
+	  if(advance instanceof GenericTechAdvance) {
+		  if(((GenericTechAdvance) advance).getAdvance()==null){
+			  attatchmentChange = ChangeFactory.genericTechChange(TechAttachment.get(player), true, advance.getProperty());
+		  }
+		  else
+			  attatchmentChange = ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "true", advance.getProperty());
+	  }
+	  else
+		  attatchmentChange = ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "true", advance.getProperty());
+	  bridge.addChange(attatchmentChange);
+	  advance.perform(player, bridge, data);
   }
 
   private static String capitalizeFirstLetter(String aString)

@@ -20,7 +20,9 @@ package games.strategy.engine.data;
 
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.net.GUID;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PropertyUtil;
 
@@ -174,6 +176,11 @@ public class ChangeFactory
         return new RemoveProductionRule(rule, frontier);
     }    
     
+    public static Change addAvailableTech(TechnologyFrontier tf, TechAdvance ta)
+    {
+        return new AddAvailableTech(tf, ta);
+    }
+  
     public static Change attachmentPropertyChange(IAttachment attatchment, Object newValue, String property)
     {
         return new ChangeAttachmentChange(attatchment, newValue, property);
@@ -182,6 +189,11 @@ public class ChangeFactory
     public static Change attachmentPropertyChange(Attachable attatchment, String attatchmentName, Object newValue, Object oldValue, String property)
     {
         return new ChangeAttachmentChange(attatchment, attatchmentName, newValue, oldValue, property);
+    }
+    
+    public static Change genericTechChange(TechAttachment attatchment, Boolean value, String property)
+    {
+        return new GenericTechChange(attatchment, value, property);
     }
     
     public static Change changeGameSteps(GameSequence oldSequence, GameStep[] newSteps)
@@ -643,6 +655,64 @@ class RemoveProductionRule extends Change
 
 }
 
+class AddAvailableTech extends Change
+{
+
+    private TechAdvance m_tech;
+    private TechnologyFrontier m_frontier;
+
+    public AddAvailableTech(TechnologyFrontier front, TechAdvance tech)
+    {
+        if(front == null)
+            throw new IllegalArgumentException("Null tech category");
+        if(tech == null)
+            throw new IllegalArgumentException("Null tech");            
+
+        m_tech = tech;
+        m_frontier = front;
+    }
+
+    public void perform(GameData data)
+    {
+
+        m_frontier.addAdvance(m_tech);
+    }
+
+    public Change invert()
+    {
+        return new RemoveAvailableTech(m_frontier,m_tech);
+
+    }
+}
+class RemoveAvailableTech extends Change
+{
+
+    private TechAdvance m_tech;
+    private TechnologyFrontier m_frontier;
+
+    public RemoveAvailableTech(TechnologyFrontier front, TechAdvance tech)
+    {
+        if(front == null)
+            throw new IllegalArgumentException("Null tech category");
+        if(tech == null)
+            throw new IllegalArgumentException("Null tech");            
+
+        m_tech = tech;
+        m_frontier = front;
+    }
+
+    public void perform(GameData data)
+    {
+
+        m_frontier.removeAdvance(m_tech);
+    }
+
+    public Change invert()
+    {
+        return new AddAvailableTech(m_frontier,m_tech);
+
+    }
+}
 /**
  * Change a players production frontier.
  */
@@ -876,5 +946,68 @@ class ObjectPropertyChange extends Change
     }
     
     
+    
+}
+class GenericTechChange extends Change
+{
+  private final Attachable m_attatchedTo;
+  private final String m_attatchmentName;
+  private final Boolean m_newValue;
+  private Boolean m_oldValue;
+  private final String m_property;
+
+  public Attachable getAttatchedTo()
+  {
+    return m_attatchedTo;
+  }
+
+  public String getAttatchmentName()
+  {
+    return m_attatchmentName;
+  }
+
+  GenericTechChange(TechAttachment attatchment, Boolean newValue, String property)
+  {
+    if(attatchment == null)
+        throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
+      
+    m_attatchedTo = attatchment.getAttatchedTo();
+    
+    m_attatchmentName = attatchment.getName();
+    m_oldValue = Boolean.valueOf(attatchment.hasGenericTech(property));
+    m_newValue = Boolean.valueOf(newValue);
+    m_property = property;
+    
+    
+  }
+
+  public GenericTechChange(Attachable attatchTo, String attatchmentName, Boolean newValue, Boolean oldValue, String property)
+  {
+    m_attatchmentName = attatchmentName;
+    m_attatchedTo = attatchTo;
+    m_newValue = newValue;
+    m_oldValue = oldValue;
+    m_property = property;
+
+  }
+
+
+  public void perform(GameData data)
+  {
+      TechAttachment attachment = (TechAttachment) m_attatchedTo.getAttachment(m_attatchmentName);
+      attachment.setGenericTech(m_property, m_newValue);
+  }
+  
+
+  public Change invert()
+  {
+    return new ChangeAttachmentChange(m_attatchedTo, m_attatchmentName, m_oldValue, m_newValue, m_property);
+  }
+
+  public String toString()
+  {
+      return "GenericTechChange attatched to:" + m_attatchedTo + " name:" + m_attatchmentName + " new value:" + m_newValue + " old value:" + m_oldValue;
+  }
+
 }
 

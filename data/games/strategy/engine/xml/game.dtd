@@ -156,12 +156,13 @@
 		<!ELEMENT techname EMPTY>
 		<!ATTLIST techname 
 			name ID #REQUIRED
+			tech CDATA ""
 		>
-	<!ELEMENT playerTech (category+)>
+	<!ELEMENT playerTech (category*)>
 	<!ATTLIST playerTech
 		player IDREF #REQUIRED
 	>
-		<!ELEMENT category (tech+)>
+		<!ELEMENT category (tech*)>
 		<!ATTLIST category 
 			name CDATA #REQUIRED
 		>

@@ -14,8 +14,13 @@
 
 package games.strategy.triplea.attatchments;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import games.strategy.engine.data.*;
 import games.strategy.triplea.*;
+import games.strategy.triplea.delegate.GenericTechAdvance;
+import games.strategy.triplea.delegate.TechAdvance;
 
 /**
  * @author Sean Bridges
@@ -50,6 +55,7 @@ public class TechAttachment extends DefaultAttachment
   private boolean m_mechanizedInfantry;
   private boolean m_aARadar;
   private boolean m_shipyards;
+  private final Map<String, Boolean> m_GenericTechs = new HashMap<String, Boolean>();
 
   public void setTechCost(String s)
   {
@@ -276,6 +282,22 @@ public class TechAttachment extends DefaultAttachment
       return m_shipyards;
   }
   
+  public void setData(GameData data)
+  {
+      super.setData(data);
+      for(TechAdvance ta :data.getTechnologyFrontier()){
+    	  if(ta instanceof GenericTechAdvance )
+    		  if(((GenericTechAdvance)ta).getAdvance()==null)
+    			  m_GenericTechs.put(ta.getProperty(), Boolean.FALSE);
+      }
+  }
   
+  public Boolean hasGenericTech(String name){
+	  return m_GenericTechs.get(name);
+  }
+  
+  public void setGenericTech(String name, Boolean value){
+	  m_GenericTechs.put(name, value);
+  }
 
 }

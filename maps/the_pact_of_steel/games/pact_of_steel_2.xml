@@ -1553,17 +1553,24 @@
 						<techname name="warBonds"/>
 						<techname name="mechanizedInfantry"/>
 						<!-- destroyerBombard requires all isDestroyer units to have a "s_" image variant (this may not be needed, have to look at code) -->
-						<techname name="destroyerBombard"/>
-						<techname name="industrialTechnology"/>
+						<!-- this is also an example of renaming a technology. the first part is the new name, the second is the old name (the hardcoded tech's name) -->
+						<techname name="destroyersCanBombard" tech="destroyerBombard"/>
+						<!-- industrial technology replaces a users production frontier with one called productionIndustrialTechnology (and i don't use it in this map)
+						<techname name="industrialTechnology"/> -->
+						
+						<!-- below is a list of user created techs. they do nothing by themselves, but can be used a conditions for triggers. simply use a name that isn't already taken by a hardcoded tech -->
+						<techname name="reinforcedHulls"/>
+						<techname name="wolfPackTactics"/>
 				</technologies>
 				<!-- list all available techs for this player -->
 				<playerTech player="Italians">
-						<!-- Number of categories is unlimited. Use descriptive names, as they are shown to the player -->
+						<!-- Number of categories is unlimited. Use descriptive names, as they are shown to the player. You may have empty categories, if you plan on adding to them inside the game using triggers -->
 						<!-- At least minimum of 0 techs per category, max of 6 per category if using ww2v3-style random selection of techs, 
 								max is unlimited if using ww2v2-style selected techs (however, any number of techs per category greater than 6 will be unreachable by the dice chooser)  -->
 						<!-- please list techs in the order that they appear in the technoligies list, as doing otherwise may cause an error -->
+						<!-- you can have a technology listed more than once, if you want to increase the chance of getting it -->
 						<category name="Italian Technology">
-								<tech name="destroyerBombard"/>
+								<tech name="destroyersCanBombard"/>
 								<tech name="jetPower"/>
 								<tech name="shipyards"/>
 								<tech name="improvedArtillerySupport"/>
@@ -1573,7 +1580,7 @@
 				</playerTech>
 				<playerTech player="Russians">
 						<category name="Air and Naval Advances">
-								<tech name="destroyerBombard"/>
+								<tech name="destroyersCanBombard"/>
 								<tech name="jetPower"/>
 								<tech name="shipyards"/>
 								<tech name="aARadar"/>
@@ -1581,6 +1588,7 @@
 								<tech name="heavyBomber"/>
 						</category>
 						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
 								<tech name="improvedArtillerySupport"/>
 								<tech name="rocket"/>
 								<tech name="increasedFactoryProduction"/>
@@ -1604,10 +1612,12 @@
 								<tech name="increasedFactoryProduction"/>
 								<tech name="mechanizedInfantry"/>
 						</category>
+						<category name="Submarine Technology">
+						</category>
 				</playerTech>
 				<playerTech player="British">
 						<category name="Air and Naval Advances">
-								<tech name="destroyerBombard"/>
+								<tech name="destroyersCanBombard"/>
 								<tech name="jetPower"/>
 								<tech name="shipyards"/>
 								<tech name="aARadar"/>
@@ -2526,7 +2536,7 @@
 					<option name="number" value="2"/>
 					<option name="bonusType" value="ArtyNew"/>
 					<option name="impArtTech" value="true"/>
-					<!--<option name="players" value="Russians"/>-->
+					<!--<option name="players" value="Russians:British"/>-->
 			    </attatchment>
 				
 			    <attatchment name="supportAttachmentAmericansFighter1" attatchTo="fighter" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
@@ -2537,6 +2547,39 @@
 					<option name="bonus" value="1"/>
 					<option name="number" value="1"/>
 					<option name="bonusType" value="combined_arms"/>
+					<option name="impArtTech" value="false"/>
+			    </attatchment>
+				
+			    <attatchment name="supportAttachmentGermansSubmarineReinforcedHulls" attatchTo="submarine" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+			    	<option name="unitType" value="submarine"/>
+					<option name="faction" value="allied"/>
+					<option name="side" value="defence"/>
+					<option name="dice" value="strength"/>
+					<option name="bonus" value="2"/>
+					<option name="number" value="1"/>
+					<option name="bonusType" value="hulls"/>
+					<option name="impArtTech" value="false"/>
+			    </attatchment>
+				
+			    <attatchment name="supportAttachmentGermansSubmarineWolfPackTacticsOffence" attatchTo="submarine" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+			    	<option name="unitType" value="submarine"/>
+					<option name="faction" value="allied"/>
+					<option name="side" value="offence"/>
+					<option name="dice" value="strength"/>
+					<option name="bonus" value="1"/>
+					<option name="number" value="1"/>
+					<option name="bonusType" value="tactics1"/>
+					<option name="impArtTech" value="false"/>
+			    </attatchment>
+				
+			    <attatchment name="supportAttachmentGermansSubmarineWolfPackTacticsDefence" attatchTo="submarine" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+			    	<option name="unitType" value="submarine"/>
+					<option name="faction" value="allied"/>
+					<option name="side" value="defence"/>
+					<option name="dice" value="strength"/>
+					<option name="bonus" value="1"/>
+					<option name="number" value="1"/>
+					<option name="bonusType" value="tactics2"/>
 					<option name="impArtTech" value="false"/>
 			    </attatchment>
 
@@ -2662,6 +2705,18 @@
                 	<option name="techs" value="paratroopers" count="1"/>
                 </attatchment>
 				
+                <attatchment name="conditionAttachmentGermansSuperSubs" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="techs" value="superSub" count="1"/>
+                </attatchment>
+				
+                <attatchment name="conditionAttachmentGermansReinforcedHulls" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="techs" value="reinforcedHulls" count="1"/>
+                </attatchment>
+				
+                <attatchment name="conditionAttachmentGermansWolfPackTactics" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="techs" value="wolfPackTactics" count="1"/>
+                </attatchment>
+				
 	<!-- Japanese Conditions -->
                 <attatchment name="conditionAttachmentJapanese1a" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="alliedOwnershipTerritories" value="Sinkiang:Central China:India:Burytia S.S.R." count="4"/>
@@ -2768,7 +2823,8 @@
 			uses 								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
 			invert 								values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
 			players								values: the names of the players to give these things to. if missing, defaults to attached player. (example: value="Germans:Italians")
-			tech		 						values: the name of any technology to be given to the active or specified player. given at end of tech activation phase.
+			tech		 						values: the names of any technology to be given to the active or specified player. given at end of tech activation phase. (example: value="rocket:longRangeAir")
+			availableTech						values: the name of the category to be added to, followed by the names of the technologies to add to it. (example: value="airCategory:longRangeAir:jetPower:superHeavyBomber")
 			resource							values: "PUs" or "techTokens", given at end of turn phase
 			resourceCount						values: the number of specified resource to be given
 			frontier							values: name of a production frontier, changes the player's production frontier to BE the one listed, at beginning of the purchase phase. (does not add the production to the current list, is a new list completely)
@@ -2806,6 +2862,32 @@
                 <attatchment name="triggerAttachmentGermansParatroopers" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentGermansParatroopers"/>
 					<option name="frontier" value="GermansParatroopers_production"/>
+                </attatchment>
+
+                <attatchment name="triggerAttachmentGermansSuperSubs" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentGermansSuperSubs"/>
+					<option name="availableTech" value="Submarine Technology:reinforcedHulls:wolfPackTactics"/>
+                	<option name="uses" value="1"/>
+                </attatchment>
+
+                <attatchment name="triggerAttachmentGermansSuperSubs" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentGermansSuperSubs"/>
+					<option name="availableTech" value="Italian Technology:reinforcedHulls"/>
+                	<option name="uses" value="1"/>
+                	<option name="players" value="Italians"/>
+                </attatchment>
+
+                <attatchment name="triggerAttachmentGermansReinforcedHulls" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentGermansReinforcedHulls"/>
+                	<option name="support" value="supportAttachmentGermansSubmarineReinforcedHulls"/>
+                	<option name="uses" value="1"/>
+                </attatchment>
+
+                <attatchment name="triggerAttachmentGermansWolfPackTactics" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentGermansWolfPackTactics"/>
+                	<option name="support" value="supportAttachmentGermansSubmarineWolfPackTacticsOffence"/>
+                	<option name="support" value="supportAttachmentGermansSubmarineWolfPackTacticsDefence"/>
+                	<option name="uses" value="1"/>
                 </attatchment>
 				
 	<!-- Japanese Triggers -->
@@ -3729,6 +3811,7 @@
 						<br>5. Super_Carrier is a beefed up carrier that can also transport 1 infantry and 1 other land unit like a tank or artillery.
 						<br>6. Airfield ...
 						<br>7. Harbour ...
+						<br>8. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att, +1 def to subs). Available to Germans after they get superSubs.
         				<br>
         				<br>
         				<br>
@@ -3742,6 +3825,7 @@
         				* Germany gains Mechanized Infantry if at the end of their 3rd or 4th turn, the Axis control 6 out of 7 of
 							East Balkans, Eastern Europe, Ukraine S.S.R., Belorussia, Karelia S.S.R., Archangel, Caucus<br>
 						* Germany gains Rockets if at the end of their 3rd or 4th turn, the Axis do NOT control Western Europe, but DO control Norway<br>
+						* Germany has access to additional submarine technology if they get superSubs, and getting superSubs also gives access to reinforcedHulls to Italians<br>
 						<br>
         				<i>Japan: The Greater East Asia Co-Prosperity Sphere-</i><br>
         				+4 PUs if Axis control 7 out of 7 of India, French Indochina, Kwangtung, Manchuria, China, Central China, Sinkiang<br>
@@ -3789,6 +3873,7 @@
 						* Soviets gain, only once, an additional 3 infantry in Yakut S.S.R. if at the beginning of their turn, the Allies do Not control Burytia S.S.R.<br>
 						* Soviets gain control of any American land units that are in Archangel at the end of America's turn 
 							(if USA lands an aircraft there, it will get converted to Russian control, please use edit to convert it back to USA's control til this bug is fixed).<br>
+						* Soviets have double chance of getting Improved Artillery when rolling for tech<br>
 						<br>
 						<i>China: Chinese Resistance & The Flying Tigers </i><br>
         				+1 infantry for every two territories controlled by China at the end of her turn, rounded up.
@@ -3817,6 +3902,10 @@
         				INCREASED FACTORY PRODUCTION- factories produce 2 additional units (if territory value is 3 or greater), repairs 1/2 price<br>
         				WAR BONDS- collect an 1d6 extra PUs each turn<br>
         				MECHANIZED INFANTRY- tanks may carry 1 infantry each for 2 spaces<br>
+						<br>
+						*** Submarine Technology ***<br>
+						REINFORCED HULLS- submarines get +2 defense (only shows up in battles)<br>
+						WOLF PACK TACTICS- submarines get +1 attack and +1 defense (only shows up in battles)<br>
         				<br>
         				<br>
         				<b>Victory Conditions</b><br>

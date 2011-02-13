@@ -1,8 +1,7 @@
 package games.strategy.engine.data;
 
 import games.strategy.triplea.delegate.TechAdvance;
-
-import java.io.Serializable;
+import games.strategy.util.Util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -27,10 +26,11 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 
 	public void addAdvance(TechAdvance t)
 	{
-        if(m_techs.contains(t))
-          throw new IllegalStateException("Advance already added:" + t);
-
+       // if(m_techs.contains(t))
+       //   throw new IllegalStateException("Advance already added:" + t);
+        m_cachedTechs = null;
 		m_techs.add(t);
+		Util.reorder(m_techs, getData().getTechnologyFrontier().getTechs());
 		
 	}
 	
@@ -43,11 +43,24 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 	{
         if(!m_techs.contains(t))
             throw new IllegalStateException("Advance not present:" + t);
-
-  		m_techs.remove(t);
-  		
+        m_cachedTechs = null;
+  		m_techs.remove(t);	
 	}
-
+	
+	public TechAdvance getAdvanceByProperty(String property){
+		for( TechAdvance ta: m_techs)
+			if(ta.getProperty().equals(property))
+				return ta;
+		return null;
+	}
+	
+	public TechAdvance getAdvanceByName(String name){
+		for( TechAdvance ta: m_techs)
+			if(ta.getName().equals(name))
+				return ta;
+		return null;
+	}
+	
 	public List<TechAdvance> getTechs()
 	{
 		if(m_cachedTechs == null)

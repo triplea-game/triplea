@@ -118,7 +118,7 @@ public class TechPanel extends ActionPanel
         getData().acquireReadLock();
         try
         {
-            Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(getCurrentPlayer());
+            Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(getCurrentPlayer(),getData());
             Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData(),getCurrentPlayer());
             return Util.difference(allAdvances, currentAdvances);
         }

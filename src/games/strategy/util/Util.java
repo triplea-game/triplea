@@ -186,5 +186,34 @@ public class Util
         }
         return "" +  System.currentTimeMillis();
     }
-
+    public static <T> void reorder(List<T> reorder, final List<T> order)
+	{	
+		
+		final IntegerMap<T> map = new IntegerMap<T>();
+		for(T o:order){
+			map.put(o, order.indexOf(o));
+		}
+		Collections.sort(reorder, new Comparator<T>()
+		{	
+			public int compare(T o1, T o2)
+			{
+				// get int returns 0 if no value
+				int v1 = map.getInt(o1);
+				int v2 = map.getInt(o2);
+				
+				if (v1 > v2)
+				{
+					return 1;
+				}
+				else if (v1 == v2)
+				{
+					return 0;
+				}
+				else
+				{
+					return -1;
+				}
+			}
+		});
+	}
 }
