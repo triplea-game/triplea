@@ -68,6 +68,7 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isCombatInfrastructure = false;
   private boolean m_canBeDamaged = false;
   private boolean m_isCombatTransport = false;
+  private boolean m_isConstruction = false;
   
   
   //-1 if can't scramble
@@ -249,6 +250,16 @@ public class UnitAttachment extends DefaultAttachment
   public boolean isFactory()
   {
     return m_isFactory;
+  }
+  
+  public boolean isConstruction()
+  {
+	  return m_isConstruction;
+  }
+  
+  public void setIsConstruction(String s)
+  {
+	  m_isConstruction = getBool(s);
   }
 
   public void setIsMarine(String s)
@@ -698,6 +709,7 @@ public class UnitAttachment extends DefaultAttachment
     " combatInfrastructure:" + m_isCombatInfrastructure +
     " canBeDamaged:" + m_canBeDamaged +
     " combatTransport:" + m_isCombatTransport +
+    " construction:" + m_isConstruction +
     
     " maxScrambleDistance:" + m_maxScrambleDistance +
     " maxOperationalDamage:" + m_maxOperationalDamage +

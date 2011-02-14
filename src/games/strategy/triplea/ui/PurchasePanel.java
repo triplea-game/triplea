@@ -25,6 +25,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.RulesAttachment;
@@ -38,6 +39,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.awt.event.ActionEvent;
+import java.util.Collection;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -250,9 +252,10 @@ public class PurchasePanel extends ActionPanel
             }
             
             PlayerID player = getCurrentPlayer();
-            
-            if(!m_bid &&  totalProduced + player.getUnits().size() > totalProd && !isUnlimitedProduction(player))
-            {                
+
+        	Collection<Unit> unitsNeedingFactory = Match.getMatches(player.getUnits().getUnits(), Matches.UnitIsNotFactoryOrConstruction);
+            if(!m_bid &&  totalProduced + unitsNeedingFactory.size() > totalProd && !isUnlimitedProduction(player))
+            {
                 int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( PurchasePanel.this), "You have purchased more than you can place, continue with purchase?", "End Purchase", JOptionPane.YES_NO_OPTION);
                 if(rVal != JOptionPane.YES_OPTION)
                 {

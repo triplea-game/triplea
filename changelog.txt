@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Bunker rules allowed by new unit property, isConstruction, and new game properties for it (crystalct), heavily modified and bugs fixed, with updated NWO and POS2. (veqryn)
+
 * Updating Pact of Steel 2, to take advantage of latest technology list abilities. (veqryn)
 
 * Patch for technology lists, to allow creation of new technologies and renaming of old ones. Allows adding new technologies by trigger. (squid daddy)

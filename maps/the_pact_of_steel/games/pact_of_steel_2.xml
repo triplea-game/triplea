@@ -586,6 +586,7 @@
                 <unit name="carrier"/>
                 <unit name="battleship"/>
                 <unit name="super_carrier"/>
+                <unit name="bunker"/>
                 <unit name="aaGun"/>
                 <unit name="factory"/>
                 <unit name="factory_hit"/>
@@ -787,6 +788,11 @@
                         <result resourceOrUnit="submarine" quantity="1"/>
                 </productionRule>
 
+                <productionRule name="buyBunker">
+                        <cost resource="PUs" quantity="4" />
+                        <result resourceOrUnit="bunker" quantity="1"/>
+                </productionRule>
+
                 <productionRule name="buyFactory">
                         <cost resource="PUs" quantity="15" />
                         <result resourceOrUnit="factory" quantity="1"/>
@@ -882,6 +888,11 @@
                 <productionRule name="buySubmarineIndustrialTechnology">
                         <cost resource="PUs" quantity="5" />
                         <result resourceOrUnit="submarine" quantity="1"/>
+                </productionRule>
+
+                <productionRule name="buyBunkerIndustrialTechnology">
+                        <cost resource="PUs" quantity="4" />
+                        <result resourceOrUnit="bunker" quantity="1"/>
                 </productionRule>
 
                 <productionRule name="buyFactoryIndustrialTechnology">
@@ -987,6 +998,7 @@
                         <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyBattleship"/>
                         <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
                         <frontierRules name="buyAAGun"/>
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
@@ -1007,6 +1019,7 @@
                         <frontierRules name="buyCarrierIndustrialTechnology"/>
                         <frontierRules name="buyBattleshipIndustrialTechnology"/>
                         <frontierRules name="buySuper_CarrierIndustrialTechnology"/>
+                        <frontierRules name="buyBunkerIndustrialTechnology"/>
                         <frontierRules name="buyAAGunIndustrialTechnology"/>
                         <frontierRules name="buyFactoryIndustrialTechnology"/>
                         <frontierRules name="buyAirfieldIndustrialTechnology"/>
@@ -1036,6 +1049,7 @@
                         <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyBattleship"/>
                         <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
                         <frontierRules name="buyAAGun"/>
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
@@ -1056,6 +1070,7 @@
                         <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyBattleship"/>
                         <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
                         <frontierRules name="buyAAGun"/>
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
@@ -1075,6 +1090,7 @@
                         <frontierRules name="buyCarrierIndustrialTechnology"/>
                         <frontierRules name="buyBattleshipIndustrialTechnology"/>
                         <frontierRules name="buySuper_CarrierIndustrialTechnology"/>
+                        <frontierRules name="buyBunkerIndustrialTechnology"/>
                         <frontierRules name="buyAAGunIndustrialTechnology"/>
                         <frontierRules name="buyFactoryIndustrialTechnology"/>
                         <frontierRules name="buyAirfieldIndustrialTechnology"/>
@@ -1104,6 +1120,7 @@
                         <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyBattleship"/>
                         <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
                         <frontierRules name="buyAAGun"/>
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
@@ -1124,6 +1141,7 @@
                         <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyBattleship"/>
                         <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
                         <frontierRules name="buyAAGun"/>
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
@@ -1143,6 +1161,7 @@
                         <frontierRules name="buyCarrierIndustrialTechnology"/>
                         <frontierRules name="buyBattleshipIndustrialTechnology"/>
                         <frontierRules name="buySuper_CarrierIndustrialTechnology"/>
+                        <frontierRules name="buyBunkerIndustrialTechnology"/>
                         <frontierRules name="buyAAGunIndustrialTechnology"/>
                         <frontierRules name="buyFactoryIndustrialTechnology"/>
                         <frontierRules name="buyAirfieldIndustrialTechnology"/>
@@ -1172,6 +1191,7 @@
                         <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyBattleship"/>
                         <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
                         <frontierRules name="buyAAGun"/>
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
@@ -1192,6 +1212,7 @@
                         <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyBattleship"/>
                         <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
                         <frontierRules name="buyAAGun"/>
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
@@ -1211,6 +1232,7 @@
                         <frontierRules name="buyCarrierIndustrialTechnology"/>
                         <frontierRules name="buyBattleshipIndustrialTechnology"/>
                         <frontierRules name="buySuper_CarrierIndustrialTechnology"/>
+                        <frontierRules name="buyBunkerIndustrialTechnology"/>
                         <frontierRules name="buyAAGunIndustrialTechnology"/>
                         <frontierRules name="buyFactoryIndustrialTechnology"/>
                         <frontierRules name="buyAirfieldIndustrialTechnology"/>
@@ -1240,6 +1262,7 @@
                         <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyBattleship"/>
                         <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
                         <frontierRules name="buyAAGun"/>
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
@@ -1260,6 +1283,7 @@
                         <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyBattleship"/>
                         <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
                         <frontierRules name="buyAAGun"/>
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
@@ -1279,6 +1303,7 @@
                         <frontierRules name="buyCarrierIndustrialTechnology"/>
                         <frontierRules name="buyBattleshipIndustrialTechnology"/>
                         <frontierRules name="buySuper_CarrierIndustrialTechnology"/>
+                        <frontierRules name="buyBunkerIndustrialTechnology"/>
                         <frontierRules name="buyAAGunIndustrialTechnology"/>
                         <frontierRules name="buyFactoryIndustrialTechnology"/>
                         <frontierRules name="buyAirfieldIndustrialTechnology"/>
@@ -1308,6 +1333,7 @@
                         <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyBattleship"/>
                         <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
                         <frontierRules name="buyAAGun"/>
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
@@ -1328,6 +1354,7 @@
                         <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyBattleship"/>
                         <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
                         <frontierRules name="buyAAGun"/>
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
@@ -1347,6 +1374,7 @@
                         <frontierRules name="buyCarrierIndustrialTechnology"/>
                         <frontierRules name="buyBattleshipIndustrialTechnology"/>
                         <frontierRules name="buySuper_CarrierIndustrialTechnology"/>
+                        <frontierRules name="buyBunkerIndustrialTechnology"/>
                         <frontierRules name="buyAAGunIndustrialTechnology"/>
                         <frontierRules name="buyFactoryIndustrialTechnology"/>
                         <frontierRules name="buyAirfieldIndustrialTechnology"/>
@@ -1376,6 +1404,7 @@
                         <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyBattleship"/>
                         <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
                         <frontierRules name="buyAAGun"/>
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
@@ -1396,6 +1425,7 @@
                         <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyBattleship"/>
                         <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
                         <frontierRules name="buyAAGun"/>
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
@@ -1427,6 +1457,7 @@
                         <frontierRules name="buyCarrierIndustrialTechnology"/>
                         <frontierRules name="buyBattleshipIndustrialTechnology"/>
                         <frontierRules name="buySuper_CarrierIndustrialTechnology"/>
+                        <frontierRules name="buyBunkerIndustrialTechnology"/>
                         <frontierRules name="buyAAGunIndustrialTechnology"/>
                         <frontierRules name="buyFactoryIndustrialTechnology"/>
                         <frontierRules name="buyAirfieldIndustrialTechnology"/>
@@ -1456,6 +1487,7 @@
                         <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyBattleship"/>
                         <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
                         <frontierRules name="buyAAGun"/>
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
@@ -1476,6 +1508,7 @@
                         <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyBattleship"/>
                         <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
                         <frontierRules name="buyAAGun"/>
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
@@ -1495,6 +1528,7 @@
                         <frontierRules name="buyCarrierIndustrialTechnology"/>
                         <frontierRules name="buyBattleshipIndustrialTechnology"/>
                         <frontierRules name="buySuper_CarrierIndustrialTechnology"/>
+                        <frontierRules name="buyBunkerIndustrialTechnology"/>
                         <frontierRules name="buyAAGunIndustrialTechnology"/>
                         <frontierRules name="buyFactoryIndustrialTechnology"/>
                         <frontierRules name="buyAirfieldIndustrialTechnology"/>
@@ -1971,15 +2005,19 @@
                 </attatchment>
 				
                 <!-- Bunker -->
-				<!--<attatchment name="unitAttatchment" attatchTo="bunker" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+				<attatchment name="unitAttatchment" attatchTo="bunker" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="0"/>
                          <option name="attack" value="0"/>
-                         <option name="defense" value="3"/>
+                         <option name="defense" value="4"/>
+						 <!-- isConstruction allows the unit to be placed in territories that don't contain factories. only 1 contruction per territory per turn. 
+								may have only 1 construction per territory without factory unless you enable "More Constructions without Factory", 
+								and may only have a number of constructions up to the value of the territory unless you enable "Unlimited Constructions" -->
+						 <option name="isConstruction" value="true"/>
 						 <option name="isCombatInfrastructure" value="true"/>
 						 <option name="canBeDamaged" value="true"/>
-						 <option name="maxDamage" value="4"/>
+						 <option name="maxDamage" value="3"/>
 						 <option name="maxOperationalDamage" value="0"/>
-                </attatchment>-->
+                </attatchment>
 				
 				<!-- Airfield -->
                 <attatchment name="unitAttatchment" attatchTo="airfield" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
@@ -3563,6 +3601,15 @@
 
 				<!-- specific rules -->
 				<!-- land related -->
+					<!-- if false, only 1 construction allowed per territory without factory, if true you may have up a number of constructions up to the value of the territory -->
+				<property name="More Constructions without Factory" value="false" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Unlimited Constructions" value="false" editable="true">
+						<boolean/>
+				</property>
+
 				<property name="Blitz Through Factories And AA Restricted" value="true" editable="false">
 						<boolean/>
 				</property>

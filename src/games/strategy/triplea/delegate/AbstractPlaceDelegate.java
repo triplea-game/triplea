@@ -261,7 +261,25 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     public String canUnitsBePlaced(Territory to, Collection<Unit> units,
             PlayerID player)
     {
+        //To put factory and Constructions simultaneously you need to check if there is already a Construction or MoreConstructionsWithoutFactory property
+        if (Match.someMatch(units, Matches.UnitIsConstruction) && hasConstruction(to) && !hasFactory(to) && !games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(m_data)) 
+                        return "No more Constructions allowed in " + to.getName(); 
 
+        // Only 1 Construction per turn
+        if ((Match.someMatch(units, Matches.UnitIsConstruction) && Match.someMatch(getAlreadyProduced(to), Matches.UnitIsConstruction)) || Match.countMatches(units, Matches.UnitIsConstruction) > 1)
+                        return "Only 1 Construction per turn per territory"; 
+                        
+        //If Unlimited Constructions is false you need to check if the limit is reached (territory's PUs)
+        int num_Construction = Match.countMatches(to.getUnits().getUnits(), Matches.UnitIsConstruction); 
+        TerritoryAttachment ta = TerritoryAttachment.get(to);
+        int max_Construction;
+        if (ta == null)
+        	max_Construction = 0;
+        else
+        	max_Construction = ta.getProduction();
+        if (Match.someMatch(units, Matches.UnitIsConstruction) && (!games.strategy.triplea.Properties.getUnlimitedConstructions(m_data) && num_Construction >= max_Construction))
+                          return "Only " + max_Construction + " Construction(s) in " + to.getName();
+        
         Collection<Unit> allowedUnits = getUnitsToBePlaced(to, units, player);
         if (allowedUnits == null || !allowedUnits.containsAll(units))
         {
@@ -354,9 +372,17 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             CompositeMatch<Unit> groundUnits = new CompositeMatchAnd<Unit>();
             groundUnits.add(Matches.UnitIsLand);
             groundUnits.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
-            placeableUnits.addAll(Match.getMatches(units, groundUnits));
-            placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAir));
-
+            groundUnits.addInverse(Matches.UnitIsConstruction);  // remove all possible Construction 
+            
+            if (!Match.someMatch(getAlreadyProduced(to), Matches.UnitIsConstruction))  //there is Construction to place (only 1 per turn)
+                    placeableUnits.addAll(Match.getNMatches(units, 1, Matches.UnitIsConstruction)); 
+            
+            // If you must place only one Construction, is'nt necessary to show other units (TODO: Veqryn check this again)
+            if (!Match.someMatch(getAlreadyProduced(to), Matches.UnitIsFactory) || isPlayerAllowedToPlaceAnywhere(player)) {
+                    placeableUnits.addAll(Match.getMatches(units, groundUnits));
+                    placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAir));
+            }
+            
         }
         //Were any factories built
         if (Match.countMatches(units, Matches.UnitIsFactory) >= 1)
@@ -382,6 +408,10 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             }
         }
 
+        //Construction are placeable in territory without factory
+        if (!hasFactory(to) && Match.countMatches(units, Matches.UnitIsConstruction) >= 1)
+              placeableUnits.addAll(Match.getNMatches(units, 1, Matches.UnitIsConstruction));
+        
         return placeableUnits;
     }
 
@@ -436,7 +466,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             //If there's NO factory, allow placement of the factory
             if(production <= 0 && producer.getUnits().getMatches(Matches.UnitIsFactory).size() == 0)
             {
-                return 1;
+                // Construction + factory to be placed ?
+                if (Match.countMatches(units, Matches.UnitIsConstruction) > 0 && territoryValue > 0 )
+                    return 2;
+                else
+                    return 1;
             }
             
             //Increase production if have industrial technology
@@ -499,13 +533,25 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             //check to see if we are producing a factory
             if (Match.someMatch(units, Matches.UnitIsFactory))
                 return null;
-            else
-                return "No Factory in " + producer.getName();
+            else 
+                if (Match.someMatch(units, Matches.UnitIsConstruction)) 
+                      if (!hasConstruction(producer)) //No error, Construction to place
+                            return null;
+                      else
+                          if (games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(m_data))  //only 1 Construction without factory ?
+                                  return null;
+                          else 
+                               return "No more Constructions Allowed in " + producer.getName();    
+                else            
+                      return "No Factory in " + producer.getName();   
         }
 
         //check we havent just put a factory there
         if (Match.someMatch(getAlreadyProduced(to), Matches.UnitIsFactory))
-            return "Factories cant produce until 1 turn after they are created";
+            if (Match.someMatch(units, Matches.UnitIsConstruction) && !hasConstruction(producer)) //you can still place a Construction
+                   return null; 
+            else
+                  return "Factories cant produce until 1 turn after they are created";
                    
         
         if (to.isWater() && (!isWW2V2() && !isUnitPlacementInEnemySeas())
@@ -648,6 +694,12 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return to.getUnits().someMatch(Matches.UnitIsFactory);
     }
 
+    private boolean hasConstruction(Territory to)
+    {
+
+        return to.getUnits().someMatch(Matches.UnitIsConstruction);
+    }
+    
     /**
      * Returns the territory that would do the producing if units are to be
      * placed in a given territory. Returns null if no suitable territory could

@@ -1864,6 +1864,24 @@ public class Matches
             		return false;
             }
         };
+        
+    public static final Match<Unit> UnitIsConstruction = new Match<Unit>()
+    {
+    	public boolean match(Unit obj)
+    	{
+    		Unit unit = (Unit) obj;
+    		UnitAttachment ua = UnitAttachment.get(unit.getType());
+    		if(ua == null)
+    			return false;
+    		return ua.isConstruction();
+    	}
+    };
+    
+    public static final Match<Unit> UnitIsNotConstruction = new InverseMatch<Unit>(UnitIsConstruction);
+    
+    public static final Match<Unit> UnitIsFactoryOrConstruction = new CompositeMatchOr<Unit>(UnitIsConstruction, UnitIsFactory);
+    
+    public static final Match<Unit> UnitIsNotFactoryOrConstruction = new InverseMatch<Unit>(UnitIsFactoryOrConstruction);
     
     /** Creates new Matches */
     private Matches()

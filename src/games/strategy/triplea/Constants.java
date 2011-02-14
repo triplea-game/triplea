@@ -100,10 +100,6 @@ public interface Constants
   public static final String SURVIVING_AIR_MOVE_TO_LAND = "Surviving Air Move To Land";
   public static final String BLITZ_THROUGH_FACTORIES_AND_AA_RESTRICTED = "Blitz Through Factories And AA Restricted";
   public static final String AIR_ATTACK_SUB_RESTRICTED = "Air Attack Sub Restricted";
-  public static final String COUNTERS_DISPLAY = "Display Units as Counters";
-
-  public static final String SELECTABLE_ZERO_MOVEMENT_UNITS = "Selectable Zero Movement Units";
-  public static final String PARATROOPERS_CAN_MOVE_DURING_NON_COMBAT = "Paratroopers Can Move During Non Combat";
   /**
    * End individual rules (All default to FALSE)
    */
@@ -147,7 +143,6 @@ public interface Constants
   public static final String USE_DESTROYERS_AND_ARTILLERY = "Use Destroyers and Artillery";
   public static final String USE_SHIPYARDS = "Use Shipyards";
   public static final String LOW_LUCK = "Low Luck";
-  public static final String LL_AA_ONLY = "Low Luck for AntiAircraft";
   public static final String PU_CAP = "Territory Turn Limit";
   public static final String KAMIKAZE = "Kamikaze Airplanes";
   public static final String LHTR_HEAVY_BOMBERS = "LHTR Heavy Bombers";
@@ -189,4 +184,13 @@ public interface Constants
   public static final String SUPPORT_RULE_NAME_OLD = SUPPORT_ATTACHMENT_PREFIX+OLD_ART_RULE_NAME;
   public static final String TRIGGERS = "Use Triggers";
   public static final String PU_MULTIPLIER = "Multiply PUs";
+  
+  // veqryn
+  public static final String LL_AA_ONLY = "Low Luck for AntiAircraft";
+  public static final String COUNTERS_DISPLAY = "Display Units as Counters";
+  public static final String SELECTABLE_ZERO_MOVEMENT_UNITS = "Selectable Zero Movement Units";
+  public static final String PARATROOPERS_CAN_MOVE_DURING_NON_COMBAT = "Paratroopers Can Move During Non Combat";
+  public static final String UNLIMITED_CONSTRUCTIONS = "Unlimited Constructions"; // False = Limited to territory's PUs 
+  public static final String MORE_CONSTRUCTIONS_WITHOUT_FACTORY = "More Constructions without Factory"; // False = Only 1 Construction without factory
+  
 }
