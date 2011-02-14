@@ -86,11 +86,12 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
      */
     public void start(IDelegateBridge aBridge, GameData gameData)
     {
-        m_bridge = new TripleADelegateBridge(aBridge, gameData);
-        m_data = gameData;
-        m_player = aBridge.getPlayerID();
-     
-        TriggerAttachment.triggerAvailableTechChange(m_player, m_bridge, m_data);
+    	m_bridge = new TripleADelegateBridge(aBridge, gameData);
+    	m_data = gameData;
+    	m_player = aBridge.getPlayerID();
+    	if(games.strategy.triplea.Properties.getTriggers(m_data)){
+    		TriggerAttachment.triggerAvailableTechChange(m_player, m_bridge, m_data);
+    	}
     }
 
     public Map<PlayerID, Collection> getAdvances()

@@ -181,6 +181,10 @@ public class ChangeFactory
         return new AddAvailableTech(tf, ta);
     }
   
+    public static Change removeAvailableTech(TechnologyFrontier tf, TechAdvance ta)
+    {
+        return new RemoveAvailableTech(tf, ta);
+    }
     public static Change attachmentPropertyChange(IAttachment attatchment, Object newValue, String property)
     {
         return new ChangeAttachmentChange(attatchment, newValue, property);

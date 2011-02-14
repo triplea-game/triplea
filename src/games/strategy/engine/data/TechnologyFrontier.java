@@ -78,21 +78,6 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
       return m_name;
     }
 
-    public boolean equals(Object o)
-    {
-      if (o == null || ! (o instanceof Named))
-        return false;
-
-      Named other = (Named) o;
-
-      return this.m_name.equals(other.getName());
-    }
-
-    public int hashCode()
-    {
-      return m_name.hashCode();
-    }
-    
     public boolean isEmpty() {
     	return m_techs.isEmpty();
     }

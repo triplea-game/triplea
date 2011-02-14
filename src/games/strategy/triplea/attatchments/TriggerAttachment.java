@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,13 +57,11 @@ public class TriggerAttachment extends DefaultAttachment{
 	private int m_resourceCount = 0;
 	private int m_uses = -1;
 	private List<PlayerID> m_players= new ArrayList<PlayerID>();
-	private UnitSupportAttachment m_support = null;
+	private Map<UnitSupportAttachment, Boolean> m_support = null;
 	private List<String> m_unitProperty = null;
 	private UnitType m_unitType = null;
-	private boolean m_removeSupport = false;
-	//private List<TechAdvance> m_availableTech = null;
-	//private TechnologyFrontier m_techCategory = null;
-	private Map<String,List<TechAdvance>> m_availableTechs = null;
+	private Map<String,Map<TechAdvance,Boolean>> m_availableTechs = null;
+
 	public TriggerAttachment() {
 	}
 	
@@ -136,9 +135,6 @@ public class TriggerAttachment extends DefaultAttachment{
 		m_invert = getBool(s);
 	}
 	
-	public boolean getRemoveSupport() {
-		return m_removeSupport;
-	}
 	public List<TechAdvance> getTech() {
 		return m_tech;
 	}
@@ -155,7 +151,7 @@ public class TriggerAttachment extends DefaultAttachment{
 		}
 	}
 	
-	public Map<String,List<TechAdvance>> getAvailableTech() {
+	public Map<String,Map<TechAdvance,Boolean>> getAvailableTech() {
 		return m_availableTechs;
 	}
 	
@@ -164,17 +160,24 @@ public class TriggerAttachment extends DefaultAttachment{
 		if(s.length<2)
     		throw new GameParseException( "Invalid tech availability: "+techs+ " should be category:techs");
 		String cat = s[0]; 
-		List<TechAdvance> tlist = new ArrayList<TechAdvance>(); 
+		Map<TechAdvance,Boolean> tlist = new LinkedHashMap<TechAdvance,Boolean>(); 
 		for(int i = 1;i<s.length;i++){
+			boolean add = true;
+			if( s[i].startsWith("-")) {
+				add = false;
+				s[i] = s[i].substring(1);
+			}
 			TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(s[i]);
 			if(ta==null)
 				ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
 			if(ta==null)
 				throw new GameParseException("Technology not found :"+s[i]);
-			tlist.add(ta);
+			tlist.put(ta,add);
 		}
 		if(m_availableTechs == null)
-			m_availableTechs = new HashMap<String,List<TechAdvance>>();
+			m_availableTechs = new HashMap<String,Map<TechAdvance,Boolean>>();
+		if(m_availableTechs.containsKey(cat))
+			tlist.putAll(m_availableTechs.get(cat));
 		m_availableTechs.put(cat, tlist);
 	}
 	
@@ -189,23 +192,32 @@ public class TriggerAttachment extends DefaultAttachment{
             m_unitType = type;
     	
     }
-	public UnitSupportAttachment getSupport() {
+	public Map<UnitSupportAttachment, Boolean> getSupport() {
 		return m_support;
 	}
 	
-	public void setSupport(String s) throws GameParseException{
-		if( s.startsWith("-")) {
-			m_removeSupport = true;
-			s = s.substring(1);
-		}
-		for(UnitSupportAttachment support:UnitSupportAttachment.get(getData())) {
-			if( support.getName().equals(s)) {
-				m_support = support;
-				break;
+	public void setSupport(String sup) throws GameParseException{
+		String[] s = sup.split(":");
+		for(int i =0;i<s.length;i++) {
+			boolean add = true;
+			if( s[i].startsWith("-")) {
+				add = false;
+				s[i] = s[i].substring(1);
 			}
+			boolean found = false;
+			for(UnitSupportAttachment support:UnitSupportAttachment.get(getData())) {
+				if( support.getName().equals(s[i])) {
+					found = true;
+					if(m_support == null)
+						m_support = new LinkedHashMap<UnitSupportAttachment,Boolean>();
+					m_support.put(support, add);
+					break;
+				}
+			}
+			if(!found)
+				throw new GameParseException("Could not find unitSupportAttachment. name:" + s[i]);
 		}
-		if(m_support == null)
-			throw new GameParseException("Could not find unitSupportAttachment. name:" + s);
+		
 	}
 	public void setPlayers(String names) throws GameParseException
 	{
@@ -380,12 +392,17 @@ public class TriggerAttachment extends DefaultAttachment{
 						TechnologyFrontier tf = aPlayer.getTechnologyFrontierList().getTechnologyFrontier(cat);
 						if(tf == null)
 							throw new IllegalStateException("tech category doesn't exist:"+cat+" for player:"+aPlayer);
-						for(TechAdvance ta: t.getAvailableTech().get(cat)){
-							//if(tf.getTechs().contains(ta))
-							//	continue;
-							aBridge.getHistoryWriter().startEvent(aPlayer.getName() + " gains access to " + ta);
-							Change change = ChangeFactory.addAvailableTech(tf, ta);
-							aBridge.addChange(change);
+						for(TechAdvance ta: t.getAvailableTech().get(cat).keySet()){
+							if(t.getAvailableTech().get(cat).get(ta)) {
+								aBridge.getHistoryWriter().startEvent(aPlayer.getName() + " gains access to " + ta);
+								Change change = ChangeFactory.addAvailableTech(tf, ta);
+								aBridge.addChange(change);
+							}
+							else {
+								aBridge.getHistoryWriter().startEvent(aPlayer.getName() + " loses access to " + ta);
+								Change change = ChangeFactory.removeAvailableTech(tf, ta);
+								aBridge.addChange(change);
+							}
 						}
 					}
 				}
@@ -489,18 +506,20 @@ public class TriggerAttachment extends DefaultAttachment{
 			if(met!=t.getInvert()){
 				t.use(aBridge);
 				for( PlayerID aPlayer: t.getPlayers()){
-					List<PlayerID> p = new ArrayList<PlayerID>(t.getSupport().getPlayers());
+					for(UnitSupportAttachment usa:t.getSupport().keySet()){
+					List<PlayerID> p = new ArrayList<PlayerID>(usa.getPlayers());
 					if(p.contains(aPlayer)) {
-						if(t.getRemoveSupport()) {
+						if(!t.getSupport().get(usa)) {
 							p.remove(aPlayer);
-							change.add(ChangeFactory.attachmentPropertyChange(t.getSupport(), p, "players"));
+							change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
 						}
 					}
 					else {
-						if(!t.getRemoveSupport()) {
+						if(t.getSupport().get(usa)) {
 							p.add(aPlayer);
-							change.add(ChangeFactory.attachmentPropertyChange(t.getSupport(), p, "players"));
+							change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
 						}	
+					}
 					}
 				}
 			}

@@ -2863,12 +2863,13 @@
 			players								values: the names of the players to give these things to. if missing, defaults to attached player. (example: value="Germans:Italians")
 			tech		 						values: the names of any technology to be given to the active or specified player. given at end of tech activation phase. (example: value="rocket:longRangeAir")
 			availableTech						values: the name of the category to be added to, followed by the names of the technologies to add to it. (example: value="airCategory:longRangeAir:jetPower:superHeavyBomber")
+														If prefixed with "-" then it will remove the tech from that category (if the player already has the tech, it will do nothing).
 			resource							values: "PUs" or "techTokens", given at end of turn phase
 			resourceCount						values: the number of specified resource to be given
 			frontier							values: name of a production frontier, changes the player's production frontier to BE the one listed, at beginning of the purchase phase. (does not add the production to the current list, is a new list completely)
 			placement							values: places units at beginning of combat movement phase. first in list is territory to be placed it, then list of units, then count (example: value="Moscow:artillery:infantry" count="2" [if count is missing, defaults to 1])
 			purchase							values: adds listed units to user's purchase at beginning of purchase phase (example: value="infantry:destroyer" count="3")
-			support								values: name of support attachment, adds specified player to the list of players a supportAttachment supports (example: value="supportAttachmentGermans1AwesomeArtillery")
+			support								values: name of support attachment, adds specified player to the list of players a supportAttachment supports. Can be a list. (example: value="supportAttachmentGermans1AwesomeArtillery")
 														If prefixed with "-" then it will remove that player from the support attachment (example: value="-supportAttachmentArtyOldartillery")
 			unitType							values: the exact name of the unit to be affected by a unitProperty change (example: value="cruiser")
 			unitProperty						values: the name of any actual unit property, with a count equal to the property's values (examples: value="attack" count="4", or value="isAir" count="true"), requires a unitType declared
@@ -2902,15 +2903,15 @@
 					<option name="frontier" value="GermansParatroopers_production"/>
                 </attatchment>
 
-                <attatchment name="triggerAttachmentGermansSuperSubs" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                <attatchment name="triggerAttachmentGermansSuperSubs1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentGermansSuperSubs"/>
 					<option name="availableTech" value="Submarine Technology:reinforcedHulls:wolfPackTactics"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
-                <attatchment name="triggerAttachmentGermansSuperSubs" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                <attatchment name="triggerAttachmentGermansSuperSubs2" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentGermansSuperSubs"/>
-					<option name="availableTech" value="Italian Technology:reinforcedHulls"/>
+					<option name="availableTech" value="Italian Technology:reinforcedHulls:-shipyards"/>
                 	<option name="uses" value="1"/>
                 	<option name="players" value="Italians"/>
                 </attatchment>
@@ -2923,8 +2924,8 @@
 
                 <attatchment name="triggerAttachmentGermansWolfPackTactics" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentGermansWolfPackTactics"/>
-                	<option name="support" value="supportAttachmentGermansSubmarineWolfPackTacticsOffence"/>
-                	<option name="support" value="supportAttachmentGermansSubmarineWolfPackTacticsDefence"/>
+                	<option name="support" value="supportAttachmentGermansSubmarineWolfPackTacticsOffence:supportAttachmentGermansSubmarineWolfPackTacticsDefence"/>
+                	<!--<option name="support" value="supportAttachmentGermansSubmarineWolfPackTacticsDefence"/>-->
                 	<option name="uses" value="1"/>
                 </attatchment>
 				
@@ -3872,7 +3873,7 @@
         				* Germany gains Mechanized Infantry if at the end of their 3rd or 4th turn, the Axis control 6 out of 7 of
 							East Balkans, Eastern Europe, Ukraine S.S.R., Belorussia, Karelia S.S.R., Archangel, Caucus<br>
 						* Germany gains Rockets if at the end of their 3rd or 4th turn, the Axis do NOT control Western Europe, but DO control Norway<br>
-						* Germany has access to additional submarine technology if they get superSubs, and getting superSubs also gives access to reinforcedHulls to Italians<br>
+						* Germany has access to additional submarine technology if they get superSubs, and getting superSubs also gives access to reinforcedHulls to Italians (in place of Shipyards)<br>
 						<br>
         				<i>Japan: The Greater East Asia Co-Prosperity Sphere-</i><br>
         				+4 PUs if Axis control 7 out of 7 of India, French Indochina, Kwangtung, Manchuria, China, Central China, Sinkiang<br>
