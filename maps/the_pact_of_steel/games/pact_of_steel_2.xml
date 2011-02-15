@@ -2577,7 +2577,7 @@
 					<!--<option name="players" value="Russians:British"/>-->
 			    </attatchment>
 				
-			    <attatchment name="supportAttachmentAmericansFighter1" attatchTo="fighter" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+			    <attatchment name="supportAttachmentFighter" attatchTo="fighter" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
 			    	<option name="unitType" value="infantry"/>
 					<option name="faction" value="allied"/>
 					<option name="side" value="offence"/>
@@ -2588,7 +2588,7 @@
 					<option name="impArtTech" value="false"/>
 			    </attatchment>
 				
-			    <attatchment name="supportAttachmentGermansSubmarineReinforcedHulls" attatchTo="submarine" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+			    <attatchment name="supportAttachmentSubmarineReinforcedHulls" attatchTo="submarine" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
 			    	<option name="unitType" value="submarine"/>
 					<option name="faction" value="allied"/>
 					<option name="side" value="defence"/>
@@ -2599,7 +2599,7 @@
 					<option name="impArtTech" value="false"/>
 			    </attatchment>
 				
-			    <attatchment name="supportAttachmentGermansSubmarineWolfPackTacticsOffence" attatchTo="submarine" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+			    <attatchment name="supportAttachmentSubmarineWolfPackTacticsOffence" attatchTo="submarine" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
 			    	<option name="unitType" value="submarine"/>
 					<option name="faction" value="allied"/>
 					<option name="side" value="offence"/>
@@ -2610,7 +2610,7 @@
 					<option name="impArtTech" value="false"/>
 			    </attatchment>
 				
-			    <attatchment name="supportAttachmentGermansSubmarineWolfPackTacticsDefence" attatchTo="submarine" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+			    <attatchment name="supportAttachmentSubmarineWolfPackTacticsDefence" attatchTo="submarine" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
 			    	<option name="unitType" value="submarine"/>
 					<option name="faction" value="allied"/>
 					<option name="side" value="defence"/>
@@ -2918,14 +2918,14 @@
 
                 <attatchment name="triggerAttachmentGermansReinforcedHulls" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentGermansReinforcedHulls"/>
-                	<option name="support" value="supportAttachmentGermansSubmarineReinforcedHulls"/>
+                	<option name="support" value="supportAttachmentSubmarineReinforcedHulls"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermansWolfPackTactics" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentGermansWolfPackTactics"/>
-                	<option name="support" value="supportAttachmentGermansSubmarineWolfPackTacticsOffence:supportAttachmentGermansSubmarineWolfPackTacticsDefence"/>
-                	<!--<option name="support" value="supportAttachmentGermansSubmarineWolfPackTacticsDefence"/>-->
+                	<option name="support" value="supportAttachmentSubmarineWolfPackTacticsOffence:supportAttachmentSubmarineWolfPackTacticsDefence"/>
+                	<!--<option name="support" value="supportAttachmentSubmarineWolfPackTacticsDefence"/>-->
                 	<option name="uses" value="1"/>
                 </attatchment>
 				
@@ -2965,6 +2965,12 @@
                 	<option name="trigger" value="conditionAttachmentItaliansParatroopers"/>
 					<option name="frontier" value="ItaliansParatroopers_production"/>
                 </attatchment>
+
+                <attatchment name="triggerAttachmentItaliansReinforcedHulls" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentGermansReinforcedHulls"/>
+                	<option name="support" value="supportAttachmentSubmarineReinforcedHulls"/>
+                	<option name="uses" value="1"/>
+                </attatchment>
 				
 	<!-- Americans Triggers -->
                 <!--<attatchment name="triggerAttachmentAmericans1" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -2984,7 +2990,7 @@
 
                 <attatchment name="triggerAttachmentAmericans4" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentAmericans4"/>
-                	<option name="support" value="supportAttachmentAmericansFighter1"/>
+                	<option name="support" value="supportAttachmentFighter"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentAmericansParatroopers" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
