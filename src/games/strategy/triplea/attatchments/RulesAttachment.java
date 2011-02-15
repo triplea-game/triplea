@@ -104,6 +104,7 @@ public class RulesAttachment extends DefaultAttachment
     private int m_perOwnedTerritories = -1;
     private int m_productionPerTerritory = -1;
     private int m_placementPerTerritory = -1;
+    private int m_maxPlacePerTerritory = -1;
     private int m_atWarCount = -1;
     private int m_uses = -1; 
     private int m_techCount = -1;
@@ -261,6 +262,16 @@ public class RulesAttachment extends DefaultAttachment
   public int getPlacementPerTerritory()
   {
       return m_placementPerTerritory;
+  }
+
+  public void setMaxPlacePerTerritory(String value)
+  {
+	  m_maxPlacePerTerritory = getInt(value);
+  }
+
+  public int getMaxPlacePerTerritory()
+  {
+      return m_maxPlacePerTerritory;
   }
 
   public void setPlacementAnyTerritory(String value)

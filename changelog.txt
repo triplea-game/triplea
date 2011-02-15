@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* New player rule, "maxPlacePerTerritory", overrides both factory rules and infinite placement. Also fixed a bug in isCombatTransport that stopped the casualty picker from choosing it. (veqryn)
+
 * Fixed bunker placement validation to work properly. No longer able to place infinite units by creative clicking orders. Also fixed a bug that allowed infinite placement. (veqryn)
 
 * Bunker rules allowed by new unit property, isConstruction, and new game properties for it (crystalct), heavily modified and bugs fixed, with updated NWO and POS2. (veqryn)

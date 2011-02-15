@@ -2880,22 +2880,26 @@
                 <attatchment name="triggerAttachmentGermans1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentGermans1"/>
                 	<option name="tech" value="superSub"/>
+                	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermans2" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentGermans2"/>
                 	<option name="tech" value="mechanizedInfantry"/>
+                	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermans3" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentGermans3a:conditionAttachmentGermans3b"/>
                 	<option name="tech" value="rocket"/>
+                	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermans4" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentAmericans1"/>
                 	<option name="tech" value="paratroopers"/>
                 	<option name="players" value="Americans:British"/>
+                	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermansParatroopers" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -2935,12 +2939,14 @@
 			    	<option name="unitType" value="jp_destroyer"/>
 					<option name="unitProperty" value="transportCapacity" count="2"/>
 					<option name="unitProperty" value="isCombatTransport" count="true"/>
+                	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentJapanese2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentJapanese2"/>
 			    	<option name="unitType" value="jp_transport"/>
 					<option name="unitProperty" value="transportCapacity" count="6"/>
+                	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentJapanese3" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -2976,21 +2982,25 @@
                 <!--<attatchment name="triggerAttachmentAmericans1" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentGermans3a:conditionAttachmentAmericans1"/>
                 	<option name="tech" value="paratroopers"/>
+                	<option name="uses" value="1"/>
                 </attatchment>-->
 
                 <attatchment name="triggerAttachmentAmericans2" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentAmericans2"/>
                 	<option name="tech" value="shipyards"/>
+                	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentAmericans3" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentAmericans3a:conditionAttachmentAmericans3b"/>
                 	<option name="tech" value="warBonds"/>
+                	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentAmericans4" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentAmericans4"/>
                 	<option name="support" value="supportAttachmentFighter"/>
+                	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentAmericansParatroopers" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -3002,6 +3012,7 @@
                 <attatchment name="triggerAttachmentBritish2" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentBritish2"/>
                 	<option name="tech" value="aARadar"/>
+                	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentBritishParatroopers" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -3020,12 +3031,14 @@
                 <attatchment name="triggerAttachmentRussians2" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentRussians2"/>
                 	<option name="support" value="supportAttachmentRussiansArtillery2"/>
+                	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentRussians2b" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentRussians2"/>
 					<option name="players" value="Russians"/>
                 	<option name="support" value="-supportAttachmentArtyOldartillery"/>
+                	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentRussians3" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -3071,7 +3084,11 @@
 							the amount produced will be increased by 1 infantry if you are using PacificTheater and you control territories called "India", "Burma", "Yunnan", "Szechwan" -->
                 	<option name="placementAnyTerritory" value="true"/>
                 	<option name="placementCapturedTerritory" value="true"/>
+					<!-- placementPerTerritory governs if you can or can not place in that territory.  you may place in any territory with LESS than the value 
+							A value greater than Zero is required to be able to produce infinite units (or infinite up to maxPlacePerTerritory, which you can set too) -->
                 	<option name="placementPerTerritory" value="4"/>
+					<!-- maxPlacePerTerritory governs the max you may place per turn per territory (can override factory rules and infinite placement rules) -->
+                	<option name="maxPlacePerTerritory" value="2"/>
 					<option name="unlimitedProduction" value="true"/>
 					<!-- dominatingFirstRoundAttack means that the very first round of the game, all enemies defend on a "1" instead of their normal defense. negateDominatingFirstRoundAttack means that this player is not affected by the dominatingFirstRoundAttack
 					<option name="dominatingFirstRoundAttack" value="true"/>
@@ -3930,8 +3947,8 @@
 						* Soviets have double chance of getting Improved Artillery when rolling for tech<br>
 						<br>
 						<i>China: Chinese Resistance & The Flying Tigers </i><br>
-        				+1 infantry for every two territories controlled by China at the end of her turn, rounded up.
-							These infantry must be place in a territory with less than 4 Chinese units<br>
+        				+1 infantry for every two territories controlled by China at the end of her turn, rounded up. May only place a max of 2 units per territory per turn. 
+							All units must be place in a territory with less than 4 Chinese units<br>
         				+4 PUs and the ability to produce extra units, if Allies control Sinkiang, Central China, India.
 							May use this money to produce a limited selection of units. May purchase tanks and fighters if these territories are controlled.<br>
 						* China gains 1 infantry in Sinkiang if at the beginning of their turn, there are no enemy units in 3 out of 6 of
@@ -4009,7 +4026,7 @@
 						<br>A mod by Veqryn
 						<br>And a personal thank you to Squid Daddy and ComradeKev for coding many of the new features that this map shows off
 						<br>Only actual unit changes: some destroyers turned into cruisers, and a German destroyer added to sz5.
-						<br>
+						<br>The AIs are meant to be bad at this map, please don't tell me the AIs are bad at this map.
 					]]>
 					</value>
 				</property>

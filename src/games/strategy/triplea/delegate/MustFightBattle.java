@@ -3502,8 +3502,8 @@ class Fire implements IExecutable
     	if (countTransports > 0 && isTransportCasualtiesRestricted(data))
     	{
     		CasualtyDetails message;
-    		Collection<Unit> nonTransports = Match.getMatches(m_attackableUnits, new CompositeMatchOr<Unit>(Matches.UnitIsNotTransport, Matches.UnitIsNotSea));
-    		Collection<Unit> transportsOnly = Match.getMatches(m_attackableUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.UnitIsSea));
+    		Collection<Unit> nonTransports = Match.getMatches(m_attackableUnits, new CompositeMatchOr<Unit>(Matches.UnitIsNotTransportButCouldBeCombatTransport, Matches.UnitIsNotSea));
+    		Collection<Unit> transportsOnly = Match.getMatches(m_attackableUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea));
     		int numPossibleHits = MustFightBattle.getMaxHits(nonTransports);
 
     		//more hits than combat units
@@ -3528,11 +3528,11 @@ class Fire implements IExecutable
     			{
     				PlayerID player = playerIter.next();
     				CompositeMatch<Unit> match = new CompositeMatchAnd<Unit>();
-    				match.add(Matches.UnitIsTransport);
+    				match.add(Matches.UnitIsTransportButNotCombatTransport);
     				match.add(Matches.unitIsOwnedBy(player));
     				Collection<Unit> playerTransports = Match.getMatches(transportsOnly, match);
     				int transportsToRemove = Math.max(0, playerTransports.size() - extraHits);
-    				transportsOnly.removeAll(Match.getNMatches(playerTransports, transportsToRemove, Matches.UnitIsTransport));
+    				transportsOnly.removeAll(Match.getNMatches(playerTransports, transportsToRemove, Matches.UnitIsTransportButNotCombatTransport));
     			}
 
     			m_killed = nonTransports;

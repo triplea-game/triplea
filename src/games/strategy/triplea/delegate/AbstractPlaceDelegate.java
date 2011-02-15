@@ -452,14 +452,25 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         boolean playerIsOriginalOwner = factoryUnits.size() > 0 ? m_player
                 .equals(getOriginalFactoryOwner(producer)) : false;
 
-
-        if (originalFactory && playerIsOriginalOwner && !placementRestrictedByFactory && !unitPlacementPerTerritoryRestricted)
-            return -1;
+        RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+        int unitCount = getAlreadyProduced(producer).size();
         
+        if (originalFactory && playerIsOriginalOwner && !placementRestrictedByFactory && !unitPlacementPerTerritoryRestricted)
+        {
+        	if (ra != null)
+        	{
+        		if (ra.getMaxPlacePerTerritory() == -1)
+        			return -1;
+        		else 
+        			return Math.max(0, ra.getMaxPlacePerTerritory() - unitCount);
+        	}
+        	else
+        		return -1;
+        }
+
     	//Restricts the STARTING number of units in a territory
         if (unitPlacementPerTerritoryRestricted)
         {
-        	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
         	if(ra != null && ra.getPlacementPerTerritory() > 0)
         	{
         		int allowedPlacement = ra.getPlacementPerTerritory();
@@ -467,14 +478,16 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         		
         		if (ownedUnitsInTerritory >= allowedPlacement)
         			return 0;
-        		
-        		return -1;
-        	}        		
+
+        		if (ra.getMaxPlacePerTerritory() == -1)
+        			return -1;
+        		else
+        			return Math.max(0, ra.getMaxPlacePerTerritory() - unitCount);
+        	}
         }
 
         //a factory can produce the same number of units as the number of PUs
         // the territroy generates each turn
-        int unitCount = getAlreadyProduced(producer).size();
         int production = 0;
         int territoryValue = getProduction(producer);
         
@@ -484,11 +497,18 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             //If there's NO factory, allow placement of the factory
             if(production <= 0 && producer.getUnits().getMatches(Matches.UnitIsFactory).size() == 0)
             {
-                // Construction + factory to be placed ?
-                if (Match.countMatches(units, Matches.UnitIsConstruction) > 0 && territoryValue > 0 )
+            	if (ra != null)
+            	{
+            		// TODO: returning 1 or 2 constantly should be reviewed, as the only thing stopping multiple placement is the check to remove all non-factory non-construction units
+            		if (Match.countMatches(units, Matches.UnitIsConstruction) > 0 && territoryValue > 0 ) // Construction + factory to be placed ?
+                        return Math.max(0, Math.min(2, ra.getMaxPlacePerTerritory()));
+                    else
+                    	return Math.max(0, Math.min(1, ra.getMaxPlacePerTerritory()));
+            	}
+            	else if (Match.countMatches(units, Matches.UnitIsConstruction) > 0 && territoryValue > 0 ) // Construction + factory to be placed ?
                     return 2;
                 else
-                    return 1;
+                	return 1;
             }
             
             //Increase production if have industrial technology
@@ -514,8 +534,10 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         	if (production == 0)
         		production = 1; //if it has a factory then it can produce at least        
         }
-        
-        return Math.max(production - unitCount, 0);
+        if (ra != null)
+        	return Math.max(0, Math.min(production - unitCount, ra.getMaxPlacePerTerritory() - unitCount));
+        else
+        	return Math.max(0, production - unitCount);
     }
 
     /**
