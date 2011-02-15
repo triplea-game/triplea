@@ -258,27 +258,39 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return null;
     }
 
+    public String canPlaceConstruction(Territory to, Collection<Unit> units,
+            PlayerID player)
+    {
+        if (Match.someMatch(units, Matches.UnitIsConstruction))
+        {
+	    	//To put factory and Constructions simultaneously you need to check if there is already a Construction or MoreConstructionsWithoutFactory property
+	        if (hasConstruction(to) && !hasFactory(to) && !games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(m_data)) 
+	        	return "No more Constructions allowed in " + to.getName();
+	        
+	        // Only 1 Construction per turn
+	        if (Match.someMatch(getAlreadyProduced(to), Matches.UnitIsConstruction))
+	        	return "Only 1 Construction per turn per territory"; 
+	        
+	        //If Unlimited Constructions is false you need to check if the limit is reached (territory's PUs)
+	        int num_Construction = Match.countMatches(to.getUnits().getUnits(), Matches.UnitIsConstruction); 
+	        TerritoryAttachment ta = TerritoryAttachment.get(to);
+	        int max_Construction;
+	        if (ta == null)
+	        	max_Construction = 0;
+	        else
+	        	max_Construction = ta.getProduction();
+	        if (!games.strategy.triplea.Properties.getUnlimitedConstructions(m_data) && num_Construction >= max_Construction)
+	        	return "Only " + max_Construction + " Construction(s) in " + to.getName();
+        }
+
+        return null;
+    }
+
     public String canUnitsBePlaced(Territory to, Collection<Unit> units,
             PlayerID player)
     {
-        //To put factory and Constructions simultaneously you need to check if there is already a Construction or MoreConstructionsWithoutFactory property
-        if (Match.someMatch(units, Matches.UnitIsConstruction) && hasConstruction(to) && !hasFactory(to) && !games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(m_data)) 
-                        return "No more Constructions allowed in " + to.getName(); 
-
-        // Only 1 Construction per turn
-        if ((Match.someMatch(units, Matches.UnitIsConstruction) && Match.someMatch(getAlreadyProduced(to), Matches.UnitIsConstruction)) || Match.countMatches(units, Matches.UnitIsConstruction) > 1)
-                        return "Only 1 Construction per turn per territory"; 
-                        
-        //If Unlimited Constructions is false you need to check if the limit is reached (territory's PUs)
-        int num_Construction = Match.countMatches(to.getUnits().getUnits(), Matches.UnitIsConstruction); 
-        TerritoryAttachment ta = TerritoryAttachment.get(to);
-        int max_Construction;
-        if (ta == null)
-        	max_Construction = 0;
-        else
-        	max_Construction = ta.getProduction();
-        if (Match.someMatch(units, Matches.UnitIsConstruction) && (!games.strategy.triplea.Properties.getUnlimitedConstructions(m_data) && num_Construction >= max_Construction))
-                          return "Only " + max_Construction + " Construction(s) in " + to.getName();
+    	if (canPlaceConstruction(to, units, player) != null)
+    		return canPlaceConstruction(to, units, player);
         
         Collection<Unit> allowedUnits = getUnitsToBePlaced(to, units, player);
         if (allowedUnits == null || !allowedUnits.containsAll(units))
@@ -403,14 +415,20 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
                 int maxFactory = games.strategy.triplea.Properties
                         .getFactoriesPerCountry(m_data);
 
-                placeableUnits.addAll(Match.getNMatches(units, maxFactory
-                        - factoryCount, Matches.UnitIsFactory));
+                placeableUnits.addAll(Match.getNMatches(units, Math.max(maxFactory - factoryCount, 0), Matches.UnitIsFactory));
             }
         }
 
         //Construction are placeable in territory without factory
         if (!hasFactory(to) && Match.countMatches(units, Matches.UnitIsConstruction) >= 1)
               placeableUnits.addAll(Match.getNMatches(units, 1, Matches.UnitIsConstruction));
+        
+        // the reason we check for max factories, is because in a map where you can have multiple factories per territory, you might be producing a second one in a territory that already had it, and there is no way to check to see if you had one their previously after you've already placed one there
+        if (!isPlayerAllowedToPlaceAnywhere(player) && (!hasFactory(to) || (Match.someMatch(getAlreadyProduced(to), Matches.UnitIsFactory) && games.strategy.triplea.Properties.getFactoriesPerCountry(m_data) <= 1)))
+        	placeableUnits.removeAll(Match.getMatches(units, Matches.UnitIsNotFactoryOrConstruction));
+        
+    	if (canPlaceConstruction(to, units, player) != null)
+    		placeableUnits.removeAll(Match.getMatches(units, Matches.UnitIsConstruction));
         
         return placeableUnits;
     }
@@ -477,6 +495,10 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             if(isIncreasedFactoryProduction(player) && territoryValue > 2)
                 production += 2;
             
+            // increase the production by one, if you are producing a construction
+            if (Match.countMatches(units, Matches.UnitIsConstruction) > 0 && territoryValue > 0 && canPlaceConstruction(to, units, player) == null)
+            	production += 1;
+            
             //return 0 if less than 0
             if(production < 0)
                 return 0;
@@ -484,12 +506,16 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         else
         {
         	production = territoryValue;
+        	
+            // increase the production by one, if you are producing a construction
+            if (Match.countMatches(units, Matches.UnitIsConstruction) > 0 && territoryValue > 0 && canPlaceConstruction(to, units, player) == null)
+            	production += 1;
         
         	if (production == 0)
         		production = 1; //if it has a factory then it can produce at least        
         }
         
-        return production - unitCount;
+        return Math.max(production - unitCount, 0);
     }
 
     /**
@@ -538,7 +564,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
                       if (!hasConstruction(producer)) //No error, Construction to place
                             return null;
                       else
-                          if (games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(m_data))  //only 1 Construction without factory ?
+                          if (games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(m_data))  //only 1 Construction without factory?
                                   return null;
                           else 
                                return "No more Constructions Allowed in " + producer.getName();    
@@ -892,7 +918,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             m_bridge.addChange(change);
         }
 
-        //reset ourseleves for next turn
+        //reset ourselves for next turn
         m_produced = new HashMap<Territory, Collection<Unit>>();
         m_placements.clear();
         

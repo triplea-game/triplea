@@ -87,7 +87,7 @@ public class TriggerAttachment extends DefaultAttachment{
 					break;
 			}
 			if(trigger == null)
-				throw new GameParseException("Could not find trigger rule. name:" + s[i]);
+				throw new GameParseException("Triggers: Could not find rule. name:" + s[i]);
 			if(m_trigger == null)
 				m_trigger = new ArrayList<RulesAttachment>();
 			m_trigger.add(trigger);
@@ -101,7 +101,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	public void setFrontier(String s) throws GameParseException{
 		ProductionFrontier front = getData().getProductionFrontierList().getProductionFrontier(s);
 		if(front == null)
-            throw new GameParseException("Could not find frontier. name:" + s);
+            throw new GameParseException("Triggers: Could not find frontier. name:" + s);
         m_frontier = front;
 	}
 	
@@ -146,7 +146,7 @@ public class TriggerAttachment extends DefaultAttachment{
 			if(ta==null)
 				ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
 			if(ta==null)
-				throw new GameParseException("Technology not found :"+s[i]);
+				throw new GameParseException("Triggers: Technology not found :"+s[i]);
 			m_tech.add(ta);
 		}
 	}
@@ -158,7 +158,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	public void setAvailableTech(String techs) throws GameParseException{
 		String[] s = techs.split(":");
 		if(s.length<2)
-    		throw new GameParseException( "Invalid tech availability: "+techs+ " should be category:techs");
+    		throw new GameParseException( "Triggers: Invalid tech availability: "+techs+ " should be category:techs");
 		String cat = s[0]; 
 		Map<TechAdvance,Boolean> tlist = new LinkedHashMap<TechAdvance,Boolean>(); 
 		for(int i = 1;i<s.length;i++){
@@ -171,7 +171,7 @@ public class TriggerAttachment extends DefaultAttachment{
 			if(ta==null)
 				ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
 			if(ta==null)
-				throw new GameParseException("Technology not found :"+s[i]);
+				throw new GameParseException("Triggers: Technology not found :"+s[i]);
 			tlist.put(ta,add);
 		}
 		if(m_availableTechs == null)
@@ -188,7 +188,7 @@ public class TriggerAttachment extends DefaultAttachment{
     {
             UnitType type = getData().getUnitTypeList().getUnitType(name);
             if(type == null)
-                throw new GameParseException("Could not find unitType. name:" + name);
+                throw new GameParseException("Triggers: Could not find unitType. name:" + name);
             m_unitType = type;
     	
     }
@@ -215,7 +215,7 @@ public class TriggerAttachment extends DefaultAttachment{
 				}
 			}
 			if(!found)
-				throw new GameParseException("Could not find unitSupportAttachment. name:" + s[i]);
+				throw new GameParseException("Triggers: Could not find unitSupportAttachment. name:" + s[i]);
 		}
 		
 	}
@@ -225,7 +225,7 @@ public class TriggerAttachment extends DefaultAttachment{
 		for(int i =0;i<s.length;i++) {
 			PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
 			if(player == null)
-				throw new GameParseException("Could not find player (in triggers). name:" + s[i]);
+				throw new GameParseException("Triggers: Could not find player. name:" + s[i]);
 			m_players.add(player);
 		}
 	}
@@ -242,7 +242,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	public void setResource(String s) throws GameParseException{
 		Resource r = getData().getResourceList().getResource(s);
 		if( r == null )
-			throw new GameParseException( "Invalid resource: " +s);
+			throw new GameParseException( "Triggers: Invalid resource: " +s);
 		else
 			m_resource = s;
 	}
@@ -255,7 +255,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	public void setUnitProperty(String prop) throws GameParseException{
 		String[] s = prop.split(":");
 		if(s.length!=2) 
-    		throw new GameParseException( "Invalid unitProperty declaration: " +prop);
+    		throw new GameParseException( "Triggers: Invalid unitProperty declaration: " +prop);
 		if(m_unitProperty== null)
 			m_unitProperty = new ArrayList<String>();
 		prop = s[1]+":"+s[0];
@@ -270,7 +270,7 @@ public class TriggerAttachment extends DefaultAttachment{
 		String[] s = place.split(":");
     	int count = -1,i=0;
     	if(s.length<1)
-    		throw new GameParseException( "Empty placement list");
+    		throw new GameParseException( "Triggers: Empty placement list");
     	try {
     		count = getInt(s[0]);
     		i++;
@@ -278,17 +278,17 @@ public class TriggerAttachment extends DefaultAttachment{
     		count = 1;
     	}
     	if(s.length<1 || s.length ==1 && count != -1)
-    		throw new GameParseException( "Empty placement list");
+    		throw new GameParseException( "Triggers: Empty placement list");
     	Territory territory = getData().getMap().getTerritory(s[i]);
     	if( territory == null )
-			throw new GameParseException( "Territory does not exist " + s[i]);
+			throw new GameParseException( "Triggers: Territory does not exist " + s[i]);
     	else {
     		i++;
     		IntegerMap<UnitType> map = new IntegerMap<UnitType>();
     		for( ; i < s.length; i++){
     			UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
     			if(type == null)
-    				throw new GameParseException( "UnitType does not exist " + s[i]);
+    				throw new GameParseException( "Triggers: UnitType does not exist " + s[i]);
     			else
     				map.add(type, count);
     		}
@@ -304,7 +304,7 @@ public class TriggerAttachment extends DefaultAttachment{
 		String[] s = place.split(":");
     	int count = -1,i=0;
     	if(s.length<1)
-    		throw new GameParseException( "Empty purchase list");
+    		throw new GameParseException( "Triggers: Empty purchase list");
     	try {
     		count = getInt(s[0]);
     		i++;
@@ -312,14 +312,14 @@ public class TriggerAttachment extends DefaultAttachment{
     		count = 1;
     	}
     	if(s.length<1 || s.length ==1 && count != -1)
-    		throw new GameParseException( "Empty purchase list");
+    		throw new GameParseException( "Triggers: Empty purchase list");
     	else {
     		if(m_purchase == null ) 
     			m_purchase = new IntegerMap<UnitType>();
     		for( ; i < s.length; i++){
     			UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
     			if(type == null)
-    				throw new GameParseException( "UnitType does not exist " + s[i]);
+    				throw new GameParseException( "Triggers: UnitType does not exist " + s[i]);
     			else
     				m_purchase.add(type, count);
     		}	
@@ -391,7 +391,7 @@ public class TriggerAttachment extends DefaultAttachment{
 					for(String cat:t.getAvailableTech().keySet()){
 						TechnologyFrontier tf = aPlayer.getTechnologyFrontierList().getTechnologyFrontier(cat);
 						if(tf == null)
-							throw new IllegalStateException("tech category doesn't exist:"+cat+" for player:"+aPlayer);
+							throw new IllegalStateException("Triggers: tech category doesn't exist:"+cat+" for player:"+aPlayer);
 						for(TechAdvance ta: t.getAvailableTech().get(cat).keySet()){
 							if(t.getAvailableTech().get(cat).get(ta)) {
 								aBridge.getHistoryWriter().startEvent(aPlayer.getName() + " gains access to " + ta);
@@ -664,7 +664,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	public void validate(GameData data) throws GameParseException
 	{
 		if( m_trigger==null)
-		throw new GameParseException("Invalid Unit attatchment" + this);
+		throw new GameParseException("Triggers: Invalid Unit attatchment" + this);
 	}
 	  
 	// shameless cheating. making a fake route, so as to handle battles 

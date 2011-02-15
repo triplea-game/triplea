@@ -67,7 +67,7 @@ public class RulesAttachment extends DefaultAttachment
     {
     	RulesAttachment rVal =  (RulesAttachment) r.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
         if(rVal == null)
-            throw new IllegalStateException("No rule attachment for:" + r.getName());
+            throw new IllegalStateException("Rules & Conditions: No rule attachment for:" + r.getName());
         return rVal;
     }
     //Players
@@ -357,7 +357,7 @@ public class RulesAttachment extends DefaultAttachment
 	    	String[] s = players.split(":");
 	    	int count = -1;
 	    	if(s.length<1)
-	    		throw new GameParseException( "Empty enemy list");
+	    		throw new GameParseException( "Rules & Conditions: Empty enemy list");
 	    	try {
 	    		count = getInt(s[0]);
 	    		m_atWarCount = count;
@@ -365,12 +365,12 @@ public class RulesAttachment extends DefaultAttachment
 	    		m_atWarCount = 0;
 	    	}
 	    	if(s.length<1 || s.length ==1 && count != -1)
-	    		throw new GameParseException( "Empty enemy list");
+	    		throw new GameParseException( "Rules & Conditions: Empty enemy list");
 	    	m_atWarPlayers = new HashSet<PlayerID>();
 	    	for( int i=count==-1?0:1; i < s.length; i++){
 	    		PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
 	            if(player == null)
-	                throw new GameParseException("Could not find player. name:" + s[i]);
+	                throw new GameParseException("Rules & Conditions: Could not find player. name:" + s[i]);
 	            else
 	            	m_atWarPlayers.add(player);
 	    	}
@@ -382,7 +382,7 @@ public class RulesAttachment extends DefaultAttachment
 	    	String[] s = techs.split(":");
 	    	int count = -1;
 	    	if(s.length<1)
-	    		throw new GameParseException( "Empty tech list");
+	    		throw new GameParseException( "Rules & Conditions: Empty tech list");
 	    	try {
 	    		count = getInt(s[0]);
 	    		m_techCount = count;
@@ -390,14 +390,14 @@ public class RulesAttachment extends DefaultAttachment
 	    		m_techCount = 0;
 	    	}
 	    	if(s.length<1 || s.length ==1 && count != -1)
-	    		throw new GameParseException( "Empty tech list");
+	    		throw new GameParseException( "Rules & Conditions: Empty tech list");
 	    	m_techs = new ArrayList<TechAdvance>();
 	    	for( int i=count==-1?0:1; i < s.length; i++){
 	    		TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(s[i]);
 	            if(ta==null)
 	            	ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
 	            if(ta==null)
-	            	throw new GameParseException("Technology not found :"+s);
+	            	throw new GameParseException("Rules & Conditions: Technology not found :"+s);
 	    		m_techs.add(ta);
 	    	}
 	    }
@@ -407,7 +407,7 @@ public class RulesAttachment extends DefaultAttachment
 	  m_turns = new HashMap<Integer,Integer>();
 	  String[] s = turns.split(":");
 	  if(s.length<1)
-		  throw new GameParseException( "Empty turn list");
+		  throw new GameParseException( "Rules & Conditions: Empty turn list");
 	  for( int i=0; i < s.length; i++){
 		  int start,end;
 		  try {
@@ -416,7 +416,7 @@ public class RulesAttachment extends DefaultAttachment
 		  } catch(Exception e) {
 			  String[] s2 = s[i].split("-");
 			  if(s2.length!=2)
-				  throw new GameParseException( "Invalid syntax for range, must be 'int-int'");
+				  throw new GameParseException( "Rules & Conditions: Invalid syntax for range, must be 'int-int'");
 			  start = getInt(s2[0]);
 			  if( s2[1].equals("+")) {
 				  end = Integer.MAX_VALUE;
@@ -818,7 +818,7 @@ public class RulesAttachment extends DefaultAttachment
     	  //Validate all territories exist
           Territory territory = getData().getMap().getTerritory(name);
           if(territory == null)
-              throw new IllegalStateException("No territory called:" + name); 
+              throw new IllegalStateException("Rules & Conditions: No territory called:" + name); 
           rVal.add(territory);
       }        
       return rVal;

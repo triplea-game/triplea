@@ -87,7 +87,7 @@ public class CanalAttachment extends DefaultAttachment
         {
             Territory territory = getData().getMap().getTerritory(name);
             if(territory == null)
-                throw new IllegalStateException("No territory called:" + territory); 
+                throw new IllegalStateException("Canals: No territory called:" + territory); 
             rVal.add(territory);
         }        
         return rVal;
