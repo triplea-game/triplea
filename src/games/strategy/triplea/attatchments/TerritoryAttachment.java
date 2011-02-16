@@ -64,7 +64,10 @@ public class TerritoryAttachment extends DefaultAttachment
         
         throw new IllegalStateException("Capital not found for:" + player);
     }
-    
+
+    /**
+     * will return empty list if none controlled, never returns null
+     */
     public static List<Territory> getAllCapitals(PlayerID player, GameData data)
     {
     	List<Territory> capitals = new ArrayList<Territory>();
@@ -87,10 +90,14 @@ public class TerritoryAttachment extends DefaultAttachment
         	return capitals;
         //Added check for optional players- no error thrown for them
         if(player.getOptional())
-        	return null;
+        	return capitals;
+        
         throw new IllegalStateException("Capital not found for:" + player);
     }
     
+    /**
+     * will return empty list if none controlled, never returns null
+     */
     public static List<Territory> getAllCurrentlyOwnedCapitals(PlayerID player, GameData data)
     {
     	List<Territory> capitals = new ArrayList<Territory>();
@@ -109,10 +116,7 @@ public class TerritoryAttachment extends DefaultAttachment
                 	capitals.add(current);
             }
         }
-        if(!capitals.isEmpty())
-        	return capitals;
-        
-        return null;
+        return capitals;
     }
 
     /**

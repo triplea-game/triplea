@@ -945,13 +945,16 @@ public class MoveValidator
         CompositeMatch<Territory> battle = new CompositeMatchOr<Territory>();
         battle.add(Matches.TerritoryIsNeutral);
         battle.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
+        CompositeMatch<Unit> transportsCanNotControl = new CompositeMatchAnd<Unit>();
+        transportsCanNotControl.add(Matches.UnitIsTransportAndNotDestroyer);
+        transportsCanNotControl.add(Matches.UnitIsTransportButNotCombatTransport);
 //TODO need to account for subs AND transports that are ignored, not just OR
         if (battle.match(route.getEnd()))
         {
         	//If subs and transports can't control sea zones, it's OK to move there
         	if(isSubControlSeaZoneRestricted(data) && Match.allMatch(units, Matches.UnitIsSub))
         		return result;
-        	else if(!isTransportControlSeaZone(data) && Match.allMatch(units, Matches.UnitIsTransport))
+        	else if(!isTransportControlSeaZone(data) && Match.allMatch(units, transportsCanNotControl))
         		return result;
         	else
         		return result.setErrorReturnResult("Cannot advance units to battle in non combat");

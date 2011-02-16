@@ -449,8 +449,11 @@ public class BattleTracker implements java.io.Serializable
                 Match.countMatches(arrivingUnits, Matches.unitIsSubmerged(data));
 
             //If transports are restricted from controlling sea zones, subtract them
+            CompositeMatch<Unit> transportsCanNotControl = new CompositeMatchAnd<Unit>();
+            transportsCanNotControl.add(Matches.UnitIsTransportAndNotDestroyer);
+            transportsCanNotControl.add(Matches.UnitIsTransportButNotCombatTransport);
             if(!games.strategy.triplea.Properties.getTransportControlSeaZone(data))
-            	totalMatches -= Match.countMatches(arrivingUnits, Matches.UnitIsTransportAndNotDestroyer);
+            	totalMatches -= Match.countMatches(arrivingUnits, transportsCanNotControl);
             //TODO check if istrn and NOT isDD
             
             //If subs are restricted from controlling sea zones, subtract them
@@ -575,12 +578,29 @@ public class BattleTracker implements java.io.Serializable
             terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
     
         PlayerID newOwner;
-        if (terrOrigOwner != null && data.getAllianceTracker().isAllied(terrOrigOwner, id)
-                        && (TerritoryAttachment.getCapital(terrOrigOwner, data).getOwner().equals(terrOrigOwner) ||
-                                        TerritoryAttachment.getCapital(terrOrigOwner, data).getOwner().equals(PlayerID.NULL_PLAYERID) || 
-                                        territory.equals(TerritoryAttachment.getCapital(terrOrigOwner, data))))
-           
-            newOwner = terrOrigOwner;
+        if (terrOrigOwner != null && data.getAllianceTracker().isAllied(terrOrigOwner, id))
+        {
+        	if (territory.equals(TerritoryAttachment.getCapital(terrOrigOwner, data)))
+        		newOwner = terrOrigOwner;
+        	else
+        	{
+        		List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(terrOrigOwner, data));
+            	if (!capitalsListOwned.isEmpty())
+            		newOwner = terrOrigOwner;
+            	else
+            	{
+            		List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(terrOrigOwner, data));
+                	Iterator iter = capitalsListOriginal.iterator();
+                    newOwner = id;
+                    while(iter.hasNext())
+                    {
+                        Territory current = (Territory) iter.next();
+                        if (current.getOwner().equals(PlayerID.NULL_PLAYERID))
+                        	newOwner = terrOrigOwner; // if a neutral controls our capital, our territories get liberated (ie: china in ww2v3)
+                    }
+            	}
+        	}
+        }
         else
             newOwner = id;
 
