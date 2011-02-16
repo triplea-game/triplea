@@ -246,7 +246,7 @@ public class PurchasePanel extends ActionPanel
             for(ProductionRule rule : m_purchase.keySet()) {
                 UnitAttachment ua = UnitAttachment.get((UnitType) rule.getResults().keySet().iterator().next());
                 
-                if(!ua.isFactory()) {
+                if(!ua.isFactory() && !ua.isConstruction()) {
                     totalProduced+= m_purchase.getInt(rule);
                 }
             }
