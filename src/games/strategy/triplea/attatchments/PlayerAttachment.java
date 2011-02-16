@@ -41,8 +41,11 @@ public class PlayerAttachment extends DefaultAttachment
 
     private int m_vps = 0;
     private int m_captureVps = 0; // need to store some data during a turn
+    private int m_retainCapitalNumber = 1; // number of capitals needed before we lose all our money
+    private int m_retainCapitalProduceNumber = 1; // number of capitals needed before we lose ability to gain money and produce units
     private boolean m_takeUnitControl = false;
     private boolean m_giveUnitControl = false;
+    private boolean m_destroysPUs = false; // do we lose our money and have it disappear or is that money captured?
     
     /** Creates new PlayerAttachment */
     public PlayerAttachment()
@@ -68,6 +71,26 @@ public class PlayerAttachment extends DefaultAttachment
     {
         return "" + m_captureVps;
     }
+
+    public void setRetainCapitalNumber(String value)
+    {
+    	m_retainCapitalNumber = getInt(value);
+    }
+
+    public int getRetainCapitalNumber()
+    {
+        return m_retainCapitalNumber;
+    }
+
+    public void setRetainCapitalProduceNumber(String value)
+    {
+    	m_retainCapitalProduceNumber = getInt(value);
+    }
+
+    public int getRetainCapitalProduceNumber()
+    {
+        return m_retainCapitalProduceNumber;
+    }
     
     public void setTakeUnitControl(String value)
     {
@@ -87,5 +110,15 @@ public class PlayerAttachment extends DefaultAttachment
     public boolean getGiveUnitControl()
     {
         return m_giveUnitControl;
+    }
+    
+    public void setDestroysPUs(String value)
+    {
+    	m_destroysPUs = getBool(value);
+    }
+
+    public boolean getDestroysPUs()
+    {
+        return m_destroysPUs;
     }
 }

@@ -71,13 +71,15 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
         if(m_gameOver)
             return;
         String victoryMessage = null;
+        
+        // TODO: what the heck is this used for? it doesn't even include italians or chinese, or anyone else
         PlayerID russians = m_data.getPlayerList().getPlayerID(Constants.RUSSIANS);
         PlayerID germans = m_data.getPlayerList().getPlayerID(Constants.GERMANS);
         PlayerID british = m_data.getPlayerList().getPlayerID(Constants.BRITISH);
         PlayerID japanese = m_data.getPlayerList().getPlayerID(Constants.JAPANESE);
         PlayerID americans = m_data.getPlayerList().getPlayerID(Constants.AMERICANS);
 
-//TODO kev see if we can abstract this from the specific players/games
+        //TODO kev see if we can abstract this from the specific players/games
                 if(m_data.getProperties().get(Constants.PACIFIC_THEATER, false))
                 {
                     PlayerAttachment pa = PlayerAttachment.get(japanese);

@@ -119,7 +119,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	public void setUses(String s) {
 		m_uses = getInt(s);
 	}
-	public void setUses(int u) {
+	public void setUses(Integer u) {
 		m_uses = u;
 	}
 	

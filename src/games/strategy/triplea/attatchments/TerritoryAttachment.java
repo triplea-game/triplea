@@ -64,6 +64,56 @@ public class TerritoryAttachment extends DefaultAttachment
         
         throw new IllegalStateException("Capital not found for:" + player);
     }
+    
+    public static List<Territory> getAllCapitals(PlayerID player, GameData data)
+    {
+    	List<Territory> capitals = new ArrayList<Territory>();
+    	Iterator iter = data.getMap().getTerritories().iterator();
+        while(iter.hasNext())
+        {
+            Territory current = (Territory) iter.next();
+            TerritoryAttachment ta = TerritoryAttachment.get(current);
+            if(ta != null && ta.getCapital() != null)
+            {
+                PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
+                if(whoseCapital == null)
+                    throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
+
+                if(player.equals(whoseCapital))
+                	capitals.add(current);
+            }
+        }
+        if(!capitals.isEmpty())
+        	return capitals;
+        //Added check for optional players- no error thrown for them
+        if(player.getOptional())
+        	return null;
+        throw new IllegalStateException("Capital not found for:" + player);
+    }
+    
+    public static List<Territory> getAllCurrentlyOwnedCapitals(PlayerID player, GameData data)
+    {
+    	List<Territory> capitals = new ArrayList<Territory>();
+    	Iterator iter = data.getMap().getTerritories().iterator();
+        while(iter.hasNext())
+        {
+            Territory current = (Territory) iter.next();
+            TerritoryAttachment ta = TerritoryAttachment.get(current);
+            if(ta != null && ta.getCapital() != null)
+            {
+                PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
+                if(whoseCapital == null)
+                    throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
+
+                if(player.equals(whoseCapital) && player.equals(current.getOwner()))
+                	capitals.add(current);
+            }
+        }
+        if(!capitals.isEmpty())
+        	return capitals;
+        
+        return null;
+    }
 
     /**
      * Convenience method.

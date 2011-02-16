@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -97,9 +98,11 @@ public abstract class AbstractEndTurnDelegate
         PlayerID player = aBridge.getPlayerID();
 
         //can't collect unless you own your own capital
-        Territory capital = TerritoryAttachment.getCapital(player, m_data);
-        if(!capital.getOwner().equals(player))
-            return;
+        PlayerAttachment pa = PlayerAttachment.get(player);
+        List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(player, m_data));
+        List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, m_data));
+        if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
+        	return;
 
         Resource PUs = gameData.getResourceList().getResource(Constants.PUS);
         //just collect resources
@@ -130,8 +133,6 @@ public abstract class AbstractEndTurnDelegate
         Change change = ChangeFactory.changeResourcesChange(player, PUs, toAdd);
         aBridge.addChange(change);
 
-
-        PlayerAttachment pa = PlayerAttachment.get(player);
         if(m_data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null)
         {      
             Change changeVP = (ChangeFactory.attachmentPropertyChange(pa, (new Integer(Integer.parseInt(pa.getVps()) + (toAdd / 10 + Integer.parseInt(pa.getCaptureVps()) / 10))).toString(), "vps"));

@@ -1,4 +1,10 @@
 Changes for 1.2.7
+* Fix for support/triggers/rules java error. (squid daddy)
+
+* New player attachments, "destroysPUs", which when set for a player means that player destroys their PUs rather than let them be captured. (veqryn)
+
+* New player attachments to deal with multiple capitals, "retainCapitalNumber" and "retainCapitalProduceNumber", which be set to the number of capitals need to lose money and gain/spend it respectively. (veqryn)
+
 * New player rule, "maxPlacePerTerritory", overrides both factory rules and infinite placement. Also fixed a bug in isCombatTransport that stopped the casualty picker from choosing it. (veqryn)
 
 * Fixed bunker placement validation to work properly. No longer able to place infinite units by creative clicking orders. Also fixed a bug that allowed infinite placement. (veqryn)

@@ -2026,6 +2026,7 @@
 						 <option name="maxDamage" value="6"/>
 						 <option name="maxOperationalDamage" value="3"/>
 						 <option name="isAirBase" value="true"/>
+						 <option name="isConstruction" value="true"/>
                 </attatchment>
 				
 				<!-- Harbour -->
@@ -2034,6 +2035,7 @@
 						 <option name="canBeDamaged" value="true"/>
 						 <option name="maxDamage" value="6"/>
 						 <option name="maxOperationalDamage" value="3"/>
+						 <option name="isConstruction" value="true"/>
                 </attatchment>
 				
                 <!-- Factory -->
@@ -2333,6 +2335,8 @@
                         <option name="production" value="4"/>
 						<option name="victoryCity" value="true"/>
                         <option name="unitProduction" value="4"/>
+						<!-- you can have multiple capitals per country, and can modify if they capture or destroy their PUs, and how many capitals are needed for that to happen -->
+                        <!--<option name="capital" value="Russians"/>-->
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Sinkiang" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2360,6 +2364,7 @@
 
                 <attatchment name="territoryAttatchment" attatchTo="Evanki National Okrug" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
+                        <!--<option name="capital" value="Russians"/>-->
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Sweden" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -3084,7 +3089,7 @@
 							the amount produced will be increased by 1 infantry if you are using PacificTheater and you control territories called "India", "Burma", "Yunnan", "Szechwan" -->
                 	<option name="placementAnyTerritory" value="true"/>
                 	<option name="placementCapturedTerritory" value="true"/>
-					<!-- placementPerTerritory governs if you can or can not place in that territory.  you may place in any territory with LESS than the value 
+					<!-- placementPerTerritory governs if you can or can not place in that territory, based on the number of owned units in that territory.  You may place in any territory with LESS units than the given value
 							A value greater than Zero is required to be able to produce infinite units (or infinite up to maxPlacePerTerritory, which you can set too) -->
                 	<option name="placementPerTerritory" value="4"/>
 					<!-- maxPlacePerTerritory governs the max you may place per turn per territory (can override factory rules and infinite placement rules) -->
@@ -3107,6 +3112,14 @@
 				<!-- giveUnitControl and takeUnitControl allow multiple players to give units to a single player, if those units are in a designated territory -->   
 				<attatchment name="playerAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
 					<option name="takeUnitControl" value="true"/>
+					<!-- destroysPUs means that when this player loses their capital, their PUs are destroyed instead of captured (defaults to false=capture) -->
+					<option name="destroysPUs" value="true"/>
+					<!-- retainCapitalNumber means that we do not lose our money if we still control at least this many of our capitals (defaults to 1). 
+						If a player has no playerAttachment, then it defaults to X, where X = total number of capitals (ie: you lose your money if a single capital is captured) -->
+					<!-- <option name="retainCapitalNumber" value="2"/> -->
+					<!-- retainCapitalProduceNumber is similar to above, but only affect gaining income and producing units (probably should be less than or equal to retainCapitalNumber) 
+						If a player has no playerAttachment, then it defaults to 1 (ie: you keep collecting and producing units so long as you control at least 1 capital) -->
+					<!-- <option name="retainCapitalProduceNumber" value="1"/> -->
 				</attatchment>
 				
 				<attatchment name="playerAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
@@ -3977,6 +3990,10 @@
 						*** Submarine Technology ***<br>
 						REINFORCED HULLS- submarines get +2 defense (only shows up in battles)<br>
 						WOLF PACK TACTICS- submarines get +1 attack and +1 defense (only shows up in battles)<br>
+						<br>
+						<br>Each nation has at least one technology that they can not research. This is shown by a "-" in the research tab. 
+							The Germans can't research War Bonds, Japanese can't get shipyards, Russians can't get paratroopers, 
+							British can't get Mechanized Inf, Americans can't get Rockets, and Italians can't get about half of the techs.
         				<br>
         				<br>
         				<b>Victory Conditions</b><br>

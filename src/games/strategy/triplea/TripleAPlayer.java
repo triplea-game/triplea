@@ -28,6 +28,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
+import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -380,13 +381,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         }         
         else
         {
-            //if my capital is captured, 
-            //I can't produce
-            //i may have PUs if i capture someone else's
-            //capital
-            Territory capital = TerritoryAttachment.getCapital(m_id, m_bridge.getGameData());
-            if(capital != null && !capital.getOwner().equals(m_id))
-                return;
+            //if my capital is captured, I can't produce, but I may have PUs if I captured someone else's capital
+        	List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(m_id, m_bridge.getGameData()));
+        	List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(m_id, m_bridge.getGameData()));
+        	PlayerAttachment pa = PlayerAttachment.get(m_id);
+        	if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
+        		return;
             
             int minPUsNeededToBuild = Integer.MAX_VALUE;
             m_bridge.getGameData().acquireReadLock();

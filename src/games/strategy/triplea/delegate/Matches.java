@@ -44,6 +44,8 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -938,6 +940,9 @@ public class Matches
         };
     }
     
+    /**
+     * will return true if the route is land or sea
+     */
     public static Match<Territory> territoryHasRouteToEnemyCapital(final GameData data, final PlayerID player)
     {
     	return new Match<Territory>()
@@ -946,11 +951,16 @@ public class Matches
     		{
     	        for(PlayerID ePlayer : data.getPlayerList().getPlayers())
     	        {
-    	            Territory capitol = TerritoryAttachment.getCapital(ePlayer, data);
-    	            if(capitol == null || data.getAllianceTracker().isAllied(player, capitol.getOwner()))
-    	                continue;
-    	            if(data.getMap().getDistance(t, capitol, Matches.TerritoryIsNotImpassable) != -1)
-    	                return true;
+    	        	List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(ePlayer, data));
+    	        	Iterator iter = capitalsListOwned.iterator();
+    	            while(iter.hasNext())
+    	            {
+    	            	Territory current = (Territory) iter.next();
+    	            	if (data.getAllianceTracker().isAllied(player, current.getOwner()))
+    	            		continue;
+    	            	if(data.getMap().getDistance(t, current, Matches.TerritoryIsPassableAndNotRestricted(player)) != -1)
+    	            		return true;
+    	            }
     	        }
     	        return false;
     		}

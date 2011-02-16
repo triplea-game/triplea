@@ -503,6 +503,7 @@ public class BattleTracker implements java.io.Serializable
         }
 
         //if its a capital we take the money
+        //NOTE: this is not checking to see if it is an enemy. instead it is relying on the fact that the capital should be owned by the person it is attached to
         TerritoryAttachment ta = TerritoryAttachment.get(territory);
         if (ta.getCapital() != null)
         {
@@ -510,7 +511,14 @@ public class BattleTracker implements java.io.Serializable
             //take the money
             PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
             PlayerAttachment pa = PlayerAttachment.get(id);
-            if (whoseCapital.equals(territory.getOwner()))
+            PlayerAttachment paWhoseCapital = PlayerAttachment.get(whoseCapital);
+            List<Territory> capitalsList = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(whoseCapital, data));
+            if (paWhoseCapital != null && paWhoseCapital.getRetainCapitalNumber() < capitalsList.size()) // we are losing one right now, so it is < not <=
+            {
+            	// do nothing, we keep our money since we still control enough capitals
+            	bridge.getHistoryWriter().addChildToEvent(id.getName() + " captures one of " + whoseCapital.getName() + " capitals");
+            }
+            else if (whoseCapital.equals(territory.getOwner()))
             {
                 Resource PUs = data.getResourceList().getResource(Constants.PUS);
                 int capturedPUCount = whoseCapital.getResources().getQuantity(PUs);
@@ -521,18 +529,29 @@ public class BattleTracker implements java.io.Serializable
                         Change changeVP = ChangeFactory.attachmentPropertyChange(pa, (Integer.valueOf(capturedPUCount + Integer.parseInt(pa.getCaptureVps()))).toString(), "captureVps");
                         bridge.addChange(changeVP);
                     } 
-                } 
+                }
                 Change remove = ChangeFactory.changeResourcesChange(whoseCapital, PUs, -capturedPUCount);
                 bridge.addChange(remove);
-                bridge.getHistoryWriter().addChildToEvent(
-                        id.getName() + " captures " + capturedPUCount + MyFormatter.pluralize("PU", capturedPUCount) + " while taking "
+    			if (paWhoseCapital != null && paWhoseCapital.getDestroysPUs())
+    			{
+    				bridge.getHistoryWriter().addChildToEvent(
+                        id.getName() + " destroys " + capturedPUCount + MyFormatter.pluralize("PU", capturedPUCount) + " while taking "
                                 + whoseCapital.getName() + " capital");
-                if (changeTracker != null)
-                    changeTracker.addChange(remove);
-                Change add = ChangeFactory.changeResourcesChange(id, PUs, capturedPUCount);
-                bridge.addChange(add);
-                if (changeTracker != null)
-                    changeTracker.addChange(add);
+                    if (changeTracker != null)
+                        changeTracker.addChange(remove);
+    			}
+                else
+                {
+                	bridge.getHistoryWriter().addChildToEvent(
+                                id.getName() + " captures " + capturedPUCount + MyFormatter.pluralize("PU", capturedPUCount) + " while taking "
+                                + whoseCapital.getName() + " capital");
+                    if (changeTracker != null)
+                        changeTracker.addChange(remove);
+                	Change add = ChangeFactory.changeResourcesChange(id, PUs, capturedPUCount);
+	                bridge.addChange(add);
+	                if (changeTracker != null)
+	                    changeTracker.addChange(add);
+                }
               //remove all the tokens  of the captured player
                 Resource tokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
                 if(tokens != null)
@@ -550,7 +569,6 @@ public class BattleTracker implements java.io.Serializable
         //is this an allied territory
         //revert to original owner if it is, unless they dont own there captital
         PlayerID terrOrigOwner;
-        
         
     	terrOrigOwner = ta.getOccupiedTerrOf(); 
         if (terrOrigOwner == null)

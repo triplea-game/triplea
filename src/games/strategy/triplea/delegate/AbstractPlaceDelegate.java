@@ -298,7 +298,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             return "Cannot place these units in " + to;
         }
 
-        if(TerritoryAttachment.getCapital(player, m_data) != to && isPlacementInCapitalRestricted(player))
+        List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, m_data));
+        if(!capitalsListOwned.contains(to) && isPlacementInCapitalRestricted(player))
                 return "Cannot place these units outside of the capital";
                 
         if (to.isWater())
