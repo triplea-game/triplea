@@ -176,14 +176,14 @@ public class ChangeFactory
         return new RemoveProductionRule(rule, frontier);
     }    
     
-    public static Change addAvailableTech(TechnologyFrontier tf, TechAdvance ta)
+    public static Change addAvailableTech(TechnologyFrontier tf, TechAdvance ta, PlayerID player)
     {
-        return new AddAvailableTech(tf, ta);
+        return new AddAvailableTech(tf, ta,player);
     }
   
-    public static Change removeAvailableTech(TechnologyFrontier tf, TechAdvance ta)
+    public static Change removeAvailableTech(TechnologyFrontier tf, TechAdvance ta, PlayerID player)
     {
-        return new RemoveAvailableTech(tf, ta);
+        return new RemoveAvailableTech(tf, ta,player);
     }
     public static Change attachmentPropertyChange(IAttachment attatchment, Object newValue, String property)
     {
@@ -664,8 +664,9 @@ class AddAvailableTech extends Change
 
     private TechAdvance m_tech;
     private TechnologyFrontier m_frontier;
+    private PlayerID m_player;
 
-    public AddAvailableTech(TechnologyFrontier front, TechAdvance tech)
+    public AddAvailableTech(TechnologyFrontier front, TechAdvance tech,PlayerID player)
     {
         if(front == null)
             throw new IllegalArgumentException("Null tech category");
@@ -674,17 +675,18 @@ class AddAvailableTech extends Change
 
         m_tech = tech;
         m_frontier = front;
+        m_player = player;
     }
 
     public void perform(GameData data)
     {
-
-        m_frontier.addAdvance(m_tech);
+    	TechnologyFrontier front = m_player.getTechnologyFrontierList().getTechnologyFrontier(m_frontier.getName());
+        front.addAdvance(m_tech);
     }
 
     public Change invert()
     {
-        return new RemoveAvailableTech(m_frontier,m_tech);
+        return new RemoveAvailableTech(m_frontier,m_tech,m_player);
 
     }
 }
@@ -693,8 +695,9 @@ class RemoveAvailableTech extends Change
 
     private TechAdvance m_tech;
     private TechnologyFrontier m_frontier;
-
-    public RemoveAvailableTech(TechnologyFrontier front, TechAdvance tech)
+    private PlayerID m_player;
+    
+    public RemoveAvailableTech(TechnologyFrontier front, TechAdvance tech,PlayerID player)
     {
         if(front == null)
             throw new IllegalArgumentException("Null tech category");
@@ -703,17 +706,18 @@ class RemoveAvailableTech extends Change
 
         m_tech = tech;
         m_frontier = front;
+        m_player = player;
     }
 
     public void perform(GameData data)
     {
-
-        m_frontier.removeAdvance(m_tech);
+    	TechnologyFrontier front = m_player.getTechnologyFrontierList().getTechnologyFrontier(m_frontier.getName());
+        front.removeAdvance(m_tech);
     }
 
     public Change invert()
     {
-        return new AddAvailableTech(m_frontier,m_tech);
+        return new AddAvailableTech(m_frontier,m_tech,m_player);
 
     }
 }
@@ -1005,7 +1009,7 @@ class GenericTechChange extends Change
 
   public Change invert()
   {
-    return new ChangeAttachmentChange(m_attatchedTo, m_attatchmentName, m_oldValue, m_newValue, m_property);
+    return new GenericTechChange(m_attatchedTo, m_attatchmentName, m_oldValue, m_newValue, m_property);
   }
 
   public String toString()

@@ -13,7 +13,7 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 	 * 
 	 */
 	private static final long serialVersionUID = -5245743727479551766L;
-	private final List<TechAdvance> m_techs = new ArrayList<TechAdvance>();
+	private List<TechAdvance> m_techs = new ArrayList<TechAdvance>();
 	private List<TechAdvance> m_cachedTechs;
 	private final String m_name;
 
@@ -26,8 +26,6 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 
 	public void addAdvance(TechAdvance t)
 	{
-       // if(m_techs.contains(t))
-       //   throw new IllegalStateException("Advance already added:" + t);
         m_cachedTechs = null;
 		m_techs.add(t);
 		Util.reorder(m_techs, getData().getTechnologyFrontier().getTechs());
@@ -41,9 +39,10 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 	}
 	public void removeAdvance(TechAdvance t)
 	{
-        if(!m_techs.contains(t))
+        if(!m_techs.contains(t)) {
             throw new IllegalStateException("Advance not present:" + t);
-        m_cachedTechs = null;
+        }
+            m_cachedTechs = null;
   		m_techs.remove(t);	
 	}
 	
@@ -85,4 +84,15 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
     {
       return m_name;
     }
+    
+    public boolean equals(Object o)
+    {
+      if (o == null || ! (o instanceof TechnologyFrontier))
+        return false;
+
+      TechnologyFrontier other = (TechnologyFrontier) o;
+
+      return this.m_name.equals(other.getName());
+    }
+    
 }

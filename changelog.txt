@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Fix for serializing and techs java error. (squid daddy)
+
 * Added Napoleonic Empires, a beautiful map created by Veqryn and Lssah. Updated to use triggers and combat transports. (veqryn)
 
 * Fix for support/triggers/rules java error. (squid daddy)

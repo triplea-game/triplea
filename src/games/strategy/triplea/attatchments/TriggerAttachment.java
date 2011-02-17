@@ -395,12 +395,12 @@ public class TriggerAttachment extends DefaultAttachment{
 						for(TechAdvance ta: t.getAvailableTech().get(cat).keySet()){
 							if(t.getAvailableTech().get(cat).get(ta)) {
 								aBridge.getHistoryWriter().startEvent(aPlayer.getName() + " gains access to " + ta);
-								Change change = ChangeFactory.addAvailableTech(tf, ta);
+								Change change = ChangeFactory.addAvailableTech(tf, ta,aPlayer);
 								aBridge.addChange(change);
 							}
 							else {
 								aBridge.getHistoryWriter().startEvent(aPlayer.getName() + " loses access to " + ta);
-								Change change = ChangeFactory.removeAvailableTech(tf, ta);
+								Change change = ChangeFactory.removeAvailableTech(tf, ta,aPlayer);
 								aBridge.addChange(change);
 							}
 						}
