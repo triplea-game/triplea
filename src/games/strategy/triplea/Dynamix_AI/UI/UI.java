@@ -14,15 +14,45 @@
 
 package games.strategy.triplea.Dynamix_AI.UI;
 
+import games.strategy.engine.data.GameData;
+import java.util.logging.Level;
+import javax.swing.SwingUtilities;
+
 /**
  *
  * @author Stephen
  */
 public class UI
 {
+    public static void Initialize(GameData data)
+    {
+        try
+        {
+            SwingUtilities.invokeAndWait(new Runnable()
+            {
+                public void run()
+                {
+                    s_settingsWindow = new SettingsWindow();
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            System.out.print("Error initializing Dynamix settings window. \r\n");
+        }
+    }
+
+    private static SettingsWindow s_settingsWindow = null;
     public static void ShowSettingsWindow()
     {
-        SettingsWindow settingsWindow = new SettingsWindow();
-        settingsWindow.setVisible(true);
+        s_settingsWindow.setVisible(true);
+    }
+    public static void NotifyAILogMessage(Level level, String message)
+    {
+        s_settingsWindow.addMessage(level, message);
+    }
+    public static void NotifyStartOfRound(int round)
+    {
+        s_settingsWindow.notifyNewRound(round);
     }
 }

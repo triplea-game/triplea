@@ -176,6 +176,11 @@ public class UnitGroup
         return m_units;
     }
 
+    public List<Unit> GetUnitsAsList()
+    {
+        return new ArrayList<Unit>(m_units);
+    }
+
     public Territory GetStartTerritory()
     {
         return m_startTer;
@@ -287,7 +292,7 @@ public class UnitGroup
                 return false;
 
             List<Unit> unitsToMove = new ArrayList<Unit>(m_units);
-            unitsToMove.removeAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).FrozenUnits);
+            unitsToMove.removeAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).GetFrozenUnits());
             mover.move(unitsToMove, route);
 
             m_moveIndex = movesCount;
@@ -295,14 +300,14 @@ public class UnitGroup
             m_movedTo = route.getEnd();
 
             if (route.getEnd().getUnits().containsAll(unitsToMove))
-                DUtils.Log(Level.FINER, "      Performed cm move, as far to: {0} Units: {1} Route: {2}", ter, unitsToMove, route);
+                DUtils.Log(Level.FINEST, "      Performed cm move, as far to: {0} Units: {1} Route: {2}", ter, unitsToMove, route);
             else
             {
-                DUtils.Log(Level.FINER, "        CM move failed! Target: {0} Units: {1} Route: {2}", ter, unitsToMove, route);
+                DUtils.Log(Level.FINEST, "        CM move failed! Target: {0} Units: {1} Route: {2}", ter, unitsToMove, route);
                 return false;
             }
             if (unitsToMove.size() != m_units.size())
-                DUtils.Log(Level.FINER, "      Some units in group must be frozen, because m_units and unitsToMove don't match. m_units: {0} unitsToMove: {1}", m_units, unitsToMove);
+                DUtils.Log(Level.FINEST, "      Some units in group must be frozen, because m_units and unitsToMove don't match. m_units: {0} unitsToMove: {1}", m_units, unitsToMove);
 
         /*}
         catch (NullPointerException ex)
@@ -339,7 +344,7 @@ public class UnitGroup
                 return false;
             
             List<Unit> unitsToMove = new ArrayList<Unit>(m_units);
-            unitsToMove.removeAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).FrozenUnits);
+            unitsToMove.removeAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).GetFrozenUnits());
             mover.move(unitsToMove, route);
 
             m_moveIndex = movesCount;
@@ -347,14 +352,14 @@ public class UnitGroup
             m_movedTo = route.getEnd();
 
             if (route.getEnd().getUnits().containsAll(unitsToMove))
-                DUtils.Log(Level.FINER, "      Performed ncm move, as far to: {0} Units: {1} Route: {2}", ter, unitsToMove, route);
+                DUtils.Log(Level.FINEST, "      Performed ncm move, as far to: {0} Units: {1} Route: {2}", ter, unitsToMove, route);
             else
             {
-                DUtils.Log(Level.FINER, "        NCM move failed! Target: {0} Units: {1} Route: {2}", ter, unitsToMove, route);
+                DUtils.Log(Level.FINEST, "        NCM move failed! Target: {0} Units: {1} Route: {2}", ter, unitsToMove, route);
                 return false;
             }
             if (unitsToMove.size() != m_units.size())
-                DUtils.Log(Level.FINER, "      Some units in group must be frozen, because m_units and unitsToMove don't match. m_units: {0} unitsToMove: {1}", m_units, unitsToMove);
+                DUtils.Log(Level.FINEST, "      Some units in group must be frozen, because m_units and unitsToMove don't match. m_units: {0} unitsToMove: {1}", m_units, unitsToMove);
         //}
         /*catch (NullPointerException ex)
         {
@@ -412,7 +417,7 @@ public class UnitGroup
                 return false;
 
             List<Unit> unitsToMove = new ArrayList<Unit>(m_units);
-            unitsToMove.removeAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).FrozenUnits);
+            unitsToMove.removeAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).GetFrozenUnits());
             mover.move(unitsToMove, route);
 
             m_moveIndex = movesCount;
@@ -420,14 +425,14 @@ public class UnitGroup
             m_movedTo = route.getEnd();
 
             if (route.getEnd().getUnits().containsAll(unitsToMove))
-                DUtils.Log(Level.FINER, "      Performed ncm move, as far to: {0} Units: {1} Route: {2}", fullRoute.getEnd(), unitsToMove, route);
+                DUtils.Log(Level.FINEST, "      Performed ncm move, as far to: {0} Units: {1} Route: {2}", fullRoute.getEnd(), unitsToMove, route);
             else
             {
-                DUtils.Log(Level.FINER, "        NCM move failed! Target: {0} Units: {1} Route: {2}", fullRoute.getEnd(), unitsToMove, route);
+                DUtils.Log(Level.FINEST, "        NCM move failed! Target: {0} Units: {1} Route: {2}", fullRoute.getEnd(), unitsToMove, route);
                 return false;
             }
             if (unitsToMove.size() != m_units.size())
-                DUtils.Log(Level.FINER, "      Some units in group must be frozen, because m_units and unitsToMove don't match. m_units: {0} unitsToMove: {1}", m_units, unitsToMove);
+                DUtils.Log(Level.FINEST, "      Some units in group must be frozen, because m_units and unitsToMove don't match. m_units: {0} unitsToMove: {1}", m_units, unitsToMove);
         //}
         /*catch (NullPointerException ex)
         {

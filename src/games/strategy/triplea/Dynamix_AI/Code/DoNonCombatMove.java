@@ -20,7 +20,9 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
 import games.strategy.triplea.Dynamix_AI.DMatches;
+import games.strategy.triplea.Dynamix_AI.DSettings;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.Dynamix_AI.Group.MovePackage;
@@ -110,6 +112,8 @@ public class DoNonCombatMove
             doNonCombatMoveForTer(pack, ter, terUnits, tasks);
         }
 
+        ThreatInvalidationCenter.get(data, player).ClearInvalidatedThreats(); //We clear invalidated threats because the enemy will come after air even if landing ter is next to resistant ter
+
         //Now that we've completed all the normal ncm moves, perform the special tasks
         DUtils.Log(Level.FINE, "  Attempting to land aircraft on safe territories.");
         for(Territory ter : data.getMap().getTerritories())
@@ -144,7 +148,7 @@ public class DoNonCombatMove
 
         final GameData data = pack.Data;
         final PlayerID player = pack.Player;
-        final Territory ourCap = TerritoryAttachment.getCapital(player, data);
+        final List<Territory> ourCaps = TerritoryAttachment.getAllCapitals(player, data);
         Match<Territory> isReinforce_Block = new Match<Territory>()
         {
             @Override
@@ -165,7 +169,9 @@ public class DoNonCombatMove
                 return true;
             }
         };
-        final List<Territory> capAndNeighbors = DUtils.GetTerritoriesWithinXDistanceOfY(data, ourCap, 1);
+        final List<Territory> capsAndNeighbors = new ArrayList<Territory>();
+        for(Territory cap : ourCaps)
+            capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(data, cap, 1));
         Match<Territory> isReinforce_Stabilize = new Match<Territory>()
         {
             @Override
@@ -173,26 +179,8 @@ public class DoNonCombatMove
             {
                 if (!data.getAllianceTracker().isAllied(ter.getOwner(), player))
                     return false;
-                if(!capAndNeighbors.contains(ter))
+                if(!capsAndNeighbors.contains(ter))
                     return false;
-
-                if(ter.equals(ourCap))
-                {
-                    float danger = DUtils.GetTerTakeoverChanceAtEndOfTurn(data, player, ter);
-                    danger = DUtils.GetTerTakeoverChanceAtEndOfTurn(data, player, ter);
-                    if(danger < 0.05F)
-                    {
-                        danger = DUtils.GetTerTakeoverChanceAtEndOfTurn(data, player, ter);
-                        if(danger < 0.05F)
-                            return false;
-                    }
-                }
-                else
-                {
-                    float danger = DUtils.GetTerTakeoverChanceAtEndOfTurn(data, player, ter);
-                    if (danger < 0.25F) //Ignore threat if this is a cap neighbor and danger to neighbor is less than 25%
-                        return false;
-                }
 
                 return true;
             }
@@ -231,10 +219,6 @@ public class DoNonCombatMove
                 }
 
                 if(uniqueEnemyNeighbors.isEmpty() && !isTerLinkBetweenFriendlies) //If this ter does not have unique enemy neighbors, and is not a link between two friendlies, we must not be a front
-                    return false;
-
-                float danger = DUtils.GetTerTakeoverChanceAtEndOfTurn(data, player, ter);
-                if (danger < 0.4F) //Ignore if the danger to this frontline territory is less than 40%
                     return false;
 
                 return true;
@@ -349,7 +333,7 @@ public class DoNonCombatMove
 
         if (valueOfFrom >= valueOfHighestTo * 2) //If start from ter is more than twice as valuable as move-to
         {
-            List<Float> fromDangerBeforeAndAfter = DUtils.GetTerTakeoverChanceBeforeAndAfterMoves(data, player, ter, movedToTers, terUnits, 100);
+            List<Float> fromDangerBeforeAndAfter = DUtils.GetTerTakeoverChanceBeforeAndAfterMoves(data, player, ter, movedToTers, terUnits, DSettings.LoadSettings().CA_NCM_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove);
             if (fromDangerBeforeAndAfter.get(1) > .5F && fromDangerBeforeAndAfter.get(0) < .5F) //If move-from-ter will be endangered after move, but wasn't before it
             {
                 DUtils.Log(Level.FINER, "    Regular ncm move-to-target from {0} to {1} canceled because of endangering of more valuable from ter.", ter, target);

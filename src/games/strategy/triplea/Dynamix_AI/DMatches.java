@@ -198,13 +198,13 @@ public class DMatches
             }
         };
     }
-    public static Match<Territory> TerritoryHasVulnerabilityEqualToOrMoreThan(final GameData data, final PlayerID player, final float minVulnerability)
+    public static Match<Territory> TerritoryHasVulnerabilityEqualToOrMoreThan(final GameData data, final PlayerID player, final float minVulnerability, final int runCount)
     {
     	return new Match<Territory>()
     	{
             public boolean match(Territory ter)
             {
-                if (DUtils.GetVulnerabilityOfArmy(data, player, ter, DUtils.ToList(ter.getUnits().getUnits())) >= minVulnerability)
+                if (DUtils.GetVulnerabilityOfArmy(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), runCount) >= minVulnerability)
                     return true;
                 else
                     return false;

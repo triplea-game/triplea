@@ -53,6 +53,7 @@ import games.strategy.util.Match;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -84,7 +85,7 @@ public class DOddsCalculator
         {
             try
             {
-                s_dataForSimulation = GameDataUtils.cloneGameData(data, true);
+                s_dataForSimulation = GameDataUtils.cloneGameData(data, false);
             }
             finally
             {
@@ -99,7 +100,7 @@ public class DOddsCalculator
         data.acquireReadLock();
         try
         {
-            s_dataForSimulation = GameDataUtils.cloneGameData(data, true);
+            s_dataForSimulation = GameDataUtils.cloneGameData(data, false);
         }
         finally
         {
@@ -143,15 +144,11 @@ public class DOddsCalculator
         m_keepOneAttackingLandUnit = aBool;
     }
 
-
-
     private AggregateResults calculate(int count)
     {
-
         long start = System.currentTimeMillis();
         AggregateResults rVal = new AggregateResults(count);
         BattleTracker battleTracker = new BattleTracker();
-
 
         for(int i =0; i < count && !m_cancelled; i++)
         {
@@ -166,29 +163,24 @@ public class DOddsCalculator
 
             rVal.addResult(new BattleResults(battle));
 
-            //restore the game to its original state
-            new ChangePerformer(s_dataForSimulation).perform( allChanges.invert());
+            //Restore the game to its original state
+            new ChangePerformer(s_dataForSimulation).perform(allChanges.invert());
 
             battleTracker.clear();
-
         }
         rVal.setTime(System.currentTimeMillis() - start);
 
         return rVal;
     }
 
-
-
     public void cancel()
     {
         m_cancelled = true;
     }
-
 }
 
 class DummyDelegateBridge implements IDelegateBridge
 {
-
     private final PlainRandomSource m_randomSource = new PlainRandomSource();
     private final DummyDisplay m_display = new DummyDisplay();
     private final DummyPlayer m_attackingPlayer;
@@ -272,11 +264,9 @@ class DummyDelegateBridge implements IDelegateBridge
 
        m_allChanges.add(aChange);
        m_changePerformer.perform(aChange);
-
    }
 
    public void stopGameSequence() {}
-
 };
 
 
@@ -284,7 +274,6 @@ class DummyDelegateBridge implements IDelegateBridge
 
 class DummyGameModifiedChannel implements IGameModifiedChannel
 {
-
     public void addChildToEvent(String text, Object renderingData)
     {
     }
@@ -308,12 +297,10 @@ class DummyGameModifiedChannel implements IGameModifiedChannel
     public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName, boolean loadedFromSavedGame)
     {
     }
-
 }
 
 class DummyPlayer extends AbstractAI
 {
-
     private final boolean m_keepAtLeastOneLand;
 
     public DummyPlayer(String name, boolean keepAtLeastOneLand)
@@ -359,11 +346,12 @@ class DummyPlayer extends AbstractAI
         //no scramble
         return null;
     }
+
     boolean useDefaultSelectionThisTime = false;
     @Override
     public void reportError(String error)
     {
-        DUtils.Log_Finer("Error message reported: ", error);
+        DUtils.Log_Finer("Error message reported in DOddsCalculator class: {0}", error);
         if (error.equals("Wrong number of casualties selected") || error.equals("Cannot remove enough units of those types"))
         {
             useDefaultSelectionThisTime = true;
@@ -372,8 +360,8 @@ class DummyPlayer extends AbstractAI
     //Added new collection autoKilled to handle killing units prior to casualty selection
     public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
     {
-        List<Unit> damaged = new ArrayList<Unit>();
-        List<Unit> destroyed = new ArrayList<Unit>();
+        HashSet<Unit> damaged = new HashSet<Unit>();
+        HashSet<Unit> destroyed = new HashSet<Unit>();
 
         if (useDefaultSelectionThisTime)
         {
@@ -387,7 +375,9 @@ class DummyPlayer extends AbstractAI
                 else if(!destroyed.contains(unit))
                     destroyed.add(unit);
                 else
-                    damaged.add(unit); //Fix for strange 'three default casualty units are equal' problem
+                    throw new Error("Wisc: If this error has occured, it most likely means that the attacking/defending units sent to the DUtils.GetBattleResults method contains duplicate units. " +
+                            "(The list of attackers/defenders contains units that are in the list multiple times)\r\n" +
+                            " Please look back into your code and remove anything that could be causing a unit to be added to the attacking/defending list of units multiple times.");
             }
         }
         else
@@ -398,10 +388,8 @@ class DummyPlayer extends AbstractAI
                 //If it appears in casualty list once, it's damaged, if twice, it's damaged and additionally destroyed
                 if (unit.getHits() == 0 && twoHit && !damaged.contains(unit))
                     damaged.add(unit);
-                else if(!destroyed.contains(unit))
-                    destroyed.add(unit);
                 else
-                    damaged.add(unit); //Fix for strange 'three default casualty units are equal' problem
+                    destroyed.add(unit);
             }
 
 
@@ -420,15 +408,14 @@ class DummyPlayer extends AbstractAI
                     Collections.sort(notKilledAndNotLand, AIUtils.getCostComparator());
 
                     //remove the last killed unit, this should be the strongest
-                    destroyed.remove(destroyed.size() - 1);
+                    destroyed.remove((Unit)destroyed.toArray()[destroyed.size() - 1]);
                     //add the cheapest unit
                     destroyed.add(notKilledAndNotLand.get(0));
                 }
-
             }
         }
 
-        CasualtyDetails m2 = new CasualtyDetails(destroyed, damaged, false);
+        CasualtyDetails m2 = new CasualtyDetails(DUtils.ToList(destroyed), DUtils.ToList(damaged), false);
         return m2;
     }
 
@@ -457,5 +444,4 @@ class DummyPlayer extends AbstractAI
         }
         return dice;
     }
-
 }

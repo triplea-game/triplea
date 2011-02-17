@@ -25,9 +25,9 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -50,8 +50,8 @@ public class SelectCasualties
     public static CasualtyDetails selectCasualties(Dynamix_AI ai, GameData data, Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
     {
         ai.pause();
-        List<Unit> damaged = new ArrayList<Unit>();
-        List<Unit> destroyed = new ArrayList<Unit>();
+        HashSet<Unit> damaged = new HashSet<Unit>();
+        HashSet<Unit> destroyed = new HashSet<Unit>();
         if (useDefaultSelectionThisTime)
         {
             useDefaultSelectionThisTime = false;
@@ -61,10 +61,8 @@ public class SelectCasualties
                 //If it appears in casualty list once, it's damaged, if twice, it's damaged and additionally destroyed
                 if (unit.getHits() == 0 && twoHit && !damaged.contains(unit))
                     damaged.add(unit);
-                else if(!destroyed.contains(unit))
-                    destroyed.add(unit);
                 else
-                    damaged.add(unit); //Fix for strange 'three default casualty units are equal' problem
+                    destroyed.add(unit);
             }
         }
         else
@@ -124,9 +122,9 @@ public class SelectCasualties
             }
         }
 
-        DUtils.Log(Level.FINER, "  Casualties selected. Damaged: {0}, Destroyed {1}", DUtils.ToArray(DUtils.GetBasicListContentDump(damaged, false, false), DUtils.GetBasicListContentDump(destroyed, false, false)));
+        DUtils.Log(Level.FINER, "  Casualties selected. Damaged: {0}, Destroyed {1}", damaged, destroyed);
 
-        CasualtyDetails m2 = new CasualtyDetails(destroyed, damaged, false);
+        CasualtyDetails m2 = new CasualtyDetails(DUtils.ToList(destroyed), DUtils.ToList(damaged), false);
         return m2;
     }
 }

@@ -109,9 +109,10 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 
     public void Initialize()
     {
+        UI.Initialize(getGameData()); //Must be done first
         DUtils.Log(Level.FINE, "Initializing Dynamix_AI class for the following country: {0}", getWhoAmI().getName());
         GlobalCenter.Initialize(getGameData());
-        DOddsCalculator.Initialize(getGameData());
+        DOddsCalculator.Initialize(getGameData());        
         FactoryCenter.ClearStaticInstances();
         TacticalCenter.ClearStaticInstances();
         KnowledgeCenter.ClearStaticInstances();
@@ -201,19 +202,32 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         return timeTill;
     }
 
+    private void NotifyGameRound(GameData data)
+    {
+        if (GlobalCenter.GameRound != data.getSequence().getRound())
+        {
+            GlobalCenter.GameRound = data.getSequence().getRound();
+
+            UI.NotifyStartOfRound(GlobalCenter.GameRound);
+            DUtils.Log(Level.FINER, "-----Start of turn notification sent out. Round {0}-----", GlobalCenter.GameRound);
+            TacticalCenter.NotifyStartOfRound();
+            FactoryCenter.NotifyStartOfRound();
+            KnowledgeCenter.NotifyStartOfRound();
+            StatusCenter.NotifyStartOfRound();
+            ThreatInvalidationCenter.NotifyStartOfRound();
+        }
+    }
+
     protected void place(boolean bid, IAbstractPlaceDelegate placeDelegate, GameData data, PlayerID player)
     {
         DUtils.Log(Level.FINE, "Placement phase starting.");
+        NotifyGameRound(data);
         GlobalCenter.CurrentPlayer = player;
         GlobalCenter.CurrentPhaseType = PhaseType.Place;
         Place.place(this, bid, placeDelegate, data, player);
-        //Because some maps may have players that do not end with the placement phase, we should move these notifications at some point...
-        DUtils.Log(Level.FINER, "*****End of turn notification sent out. Round {0}*****", GlobalCenter.GameRound);
-        TacticalCenter.NotifyEndOfTurn();
-        FactoryCenter.NotifyEndOfTurn();
-        KnowledgeCenter.NotifyEndOfTurn();
-        StatusCenter.NotifyEndOfTurn();
-        ThreatInvalidationCenter.NotifyEndOfTurn();
+
+        //Place phase isn't necessarily the last phase, but for now, we can assume this
+        DUtils.Log(Level.FINE, "-----End of turn notification sent out. Player: {0}-----", player.getName());
     }
 
     int m_moveLastType = -1;
@@ -228,27 +242,27 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
                 GlobalCenter.FirstDynamixPhase = PhaseType.Combat_Move;
                 GlobalCenter.FirstDynamixPlayer = player;
             }
-            if (GlobalCenter.FirstDynamixPhase == PhaseType.Combat_Move)
-                GlobalCenter.GameRound++;
-
+            
             DUtils.Log(Level.FINE, "Combat move phase starting.");
+            NotifyGameRound(data);
             GlobalCenter.CurrentPlayer = player;       
             GlobalCenter.CurrentPhaseType = PhaseType.Combat_Move;
             ThreatInvalidationCenter.get(data, player).ClearInvalidatedThreats();
             DoCombatMove.doCombatMove(this, data, moveDel, player);
             TacticalCenter.get(data, player).AllDelegateUnitGroups.clear();
-            TacticalCenter.get(data, player).FrozenUnits.clear();
+            TacticalCenter.get(data, player).ClearFrozenUnits();
             pause();
         }
         else
         {
             DUtils.Log(Level.FINE, "Non-combat move phase starting.");
+            NotifyGameRound(data);
             GlobalCenter.CurrentPlayer = player;
             GlobalCenter.CurrentPhaseType = PhaseType.Non_Combat_Move;
             ThreatInvalidationCenter.get(data, player).ClearInvalidatedThreats();
             DoNonCombatMove.doNonCombatMove(this, data, moveDel, player);
             TacticalCenter.get(data, player).AllDelegateUnitGroups.clear();
-            TacticalCenter.get(data, player).FrozenUnits.clear();
+            TacticalCenter.get(data, player).ClearFrozenUnits();
             pause();
         }
 
@@ -266,6 +280,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
     protected void tech(ITechDelegate techDelegate, GameData data, PlayerID player)
     {
         DUtils.Log(Level.FINE, "Tech phase starting.");
+        NotifyGameRound(data);
         GlobalCenter.CurrentPlayer = player;
         GlobalCenter.CurrentPhaseType = PhaseType.Tech;
         Tech.tech(this, techDelegate, data, player);
@@ -278,9 +293,9 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
             GlobalCenter.FirstDynamixPhase = PhaseType.Purchase;
             GlobalCenter.FirstDynamixPlayer = player;
         }
-        if(GlobalCenter.FirstDynamixPhase == PhaseType.Purchase)
-            GlobalCenter.GameRound++;
+        NotifyGameRound(data);
         DUtils.Log(Level.FINE, "Purchase phase starting for Dynamix_AI player named {0}", this.getName());
+        NotifyGameRound(data);
         GlobalCenter.CurrentPlayer = player;
         GlobalCenter.CurrentPhaseType = PhaseType.Purchase;
         Purchase.purchase(this, purchaseForBid, PUsToSpend, purchaser, data, player);
@@ -290,6 +305,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
     protected void battle(IBattleDelegate battleDelegate, GameData data, PlayerID player)
     {
         DUtils.Log(Level.FINE, "Battle phase starting");
+        NotifyGameRound(data);
         GlobalCenter.CurrentPlayer = player;
         GlobalCenter.CurrentPhaseType = PhaseType.Battle;
         //Generally all AI's will follow the same logic: loop until all battles are fought
@@ -346,7 +362,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         if(battleTerr == null) //This will be null if we're defending and TripleA calls this method to ask if we want to retreat(submerge) our subs when being attacked
             return null; //Don't submerge
         DUtils.Log(Level.FINE, "Territory of battle querying retreat: {0}", battleTerr.getName());
-        AggregateResults results = DUtils.GetBattleResults(battleTerr, getWhoAmI(), data, 250, false);
+        AggregateResults results = DUtils.GetBattleResults(battleTerr, getWhoAmI(), data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, false);
         float retreatChance = .6F;
         if(TacticalCenter.get(data, getID()).BattleRetreatChanceAssignments.containsKey(battleTerr))
         {
@@ -414,7 +430,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
     @Override
     public void reportError(String error)
     {
-        DUtils.Log_Finer("Error message reported: ", error);
+        DUtils.Log_Finer("Error message reported: {0}", error);
         if (error.equals("Wrong number of casualties selected") || error.equals("Cannot remove enough units of those types"))
         {
             SelectCasualties.NotifyCasualtySelectionError(error);

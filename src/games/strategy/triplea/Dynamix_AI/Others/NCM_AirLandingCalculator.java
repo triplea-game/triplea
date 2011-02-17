@@ -57,9 +57,10 @@ public class NCM_AirLandingCalculator
             }
 
             List<Unit> afterDefenders = DUtils.ToList(landingTer.getUnits().getUnits());
+            afterDefenders.removeAll(airUnits);
             afterDefenders.addAll(airUnits);
 
-            float vulnerability = DUtils.GetVulnerabilityOfArmy(data, player, ter, afterDefenders);
+            float vulnerability = DUtils.GetVulnerabilityOfArmy(data, player, ter, afterDefenders, 500);
 
             if(vulnerability < .15F) //If this landing ter is really safe
                 vulnerability = .15F; //Then accept similar chances as equal

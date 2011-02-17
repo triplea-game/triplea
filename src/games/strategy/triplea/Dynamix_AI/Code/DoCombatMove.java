@@ -19,6 +19,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
+import games.strategy.triplea.Dynamix_AI.DSettings;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.Dynamix_AI.Group.MovePackage;
@@ -100,7 +101,7 @@ public class DoCombatMove
 
         final GameData data = pack.Data;
         final PlayerID player = pack.Player;
-        final Territory ourCap = TerritoryAttachment.getCapital(player, data);
+        final List<Territory> ourCaps = TerritoryAttachment.getAllCapitals(player, data);
         Match<Territory> isLandGrab = new Match<Territory>()
         {
             @Override
@@ -120,7 +121,9 @@ public class DoCombatMove
                 return true;
             }
         };
-        final List<Territory> capAndNeighbors = DUtils.GetTerritoriesWithinXDistanceOfY(data, ourCap, 1);
+        final List<Territory> capsAndNeighbors = new ArrayList<Territory>();
+        for(Territory cap : ourCaps)
+            capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(data, cap, 1));
         Match<Territory> isAttack_Stabilize = new Match<Territory>()
         {
             @Override
@@ -128,7 +131,7 @@ public class DoCombatMove
             {
                 if (ter.getOwner() != null && data.getAllianceTracker().isAllied(ter.getOwner(), player))
                     return false;
-                if (!capAndNeighbors.contains(ter)) //If this ter is neither cap or cap neighbor, it's not a stabalization task (yet)
+                if (!capsAndNeighbors.contains(ter)) //If this ter is neither cap or cap neighbor, it's not a stabalization task (have stablize tasks for other things later on)
                     return false;
 
                 return true;
@@ -150,7 +153,7 @@ public class DoCombatMove
             }
         };
         List<Territory> tersWeCanAttack = DUtils.GetEnemyTersThatCanBeAttackedByUnitsOwnedBy(data, player);
-        DUtils.Log(Level.FINEST, "  Beginning task creation loop. tersWeCanAttack: {0}", tersWeCanAttack);
+        DUtils.Log(Level.FINE, "  Beginning task creation loop. tersWeCanAttack: {0}", tersWeCanAttack);
         for (Territory ter : tersWeCanAttack)
         {
             //Hey, just a note to any developers reading this code:
@@ -172,7 +175,7 @@ public class DoCombatMove
                         continue;
                     List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
                     possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.UnitIsAir));
-                    AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data, 250, true);
+                    AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data, DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
                     if(results.getAttackerWinPercent() < .25F)
                         continue;
                 }
@@ -180,7 +183,7 @@ public class DoCombatMove
                 {
                     List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLand);
                     possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
-                    AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data, 250, true);
+                    AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data, DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
                     if(results.getAttackerWinPercent() < .25F)
                         continue;
                 }                
@@ -197,7 +200,7 @@ public class DoCombatMove
                         continue;
                     List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
                     possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.UnitIsAir));
-                    AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data, 250, true);
+                    AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data, DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
                     if(results.getAttackerWinPercent() < .20F)
                         continue;
                 }
@@ -205,7 +208,7 @@ public class DoCombatMove
                 {
                     List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLand);
                     possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
-                    AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data, 250, true);
+                    AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data, DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
                     if(results.getAttackerWinPercent() < .20F)
                         continue;
                 }

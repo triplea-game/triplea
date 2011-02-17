@@ -51,7 +51,7 @@ import java.util.logging.Level;
 import javax.swing.SwingUtilities;
 
 /**
- *
+ * This class really needs a rewrite...
  * @author Stephen
  */
 public class Purchase
@@ -370,7 +370,9 @@ public class Purchase
         List<Unit> unitsToBuy = new ArrayList<Unit>();
         for (int i = 0; i < Math.min(DUtils.GetCheckedUnitProduction(ter), 5); i++) //Do five different unit types at most because we dont want this to take too long
         {
-            Unit unit = DUtils.CalculateUnitThatWillHelpWinAttackOnXTheMostPerPU(ncmTarget, data, player, unitsOnTheWay, Matches.UnitHasEnoughMovement(1), allUnits, true, 125);
+            Unit unit = DUtils.CalculateUnitThatWillHelpWinAttackOnXTheMostPerPU(ncmTarget, data, player, unitsOnTheWay, allUnits, Matches.UnitHasEnoughMovement(1), DSettings.LoadSettings().CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost);
+            unit = unit.getType().create(player); //Don't add the actual unit we created before, otherwise if we purchase the same unit type twice, we will end up doing calc's with multiples of the same unit, which is bad
+
             int cost = DUtils.GetTUVOfUnit(unit, player, GlobalCenter.GetPUResource());            
             if (PUsLeftToSpend - cost < 0) //If buying this unit will put us under
                 break;

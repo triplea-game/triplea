@@ -43,7 +43,7 @@ public class FactoryCenter
     {
         s_FCInstances.clear();
     }
-    public static void NotifyEndOfTurn()
+    public static void NotifyStartOfRound()
     {
         s_FCInstances.clear();
     }

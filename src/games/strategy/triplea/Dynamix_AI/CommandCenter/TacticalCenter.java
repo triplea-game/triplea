@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  *
@@ -46,7 +47,7 @@ public class TacticalCenter
     {
         s_TCInstances.clear();
     }
-    public static void NotifyEndOfTurn()
+    public static void NotifyStartOfRound()
     {
         s_TCInstances.clear();
     }
@@ -60,7 +61,21 @@ public class TacticalCenter
 
     private List<PlayerID> EnemyPlayersSortedByPriority = new ArrayList<PlayerID>();
     public List<UnitGroup> AllDelegateUnitGroups = new ArrayList<UnitGroup>();
-    public HashSet<Unit> FrozenUnits = new HashSet<Unit>();
+    private HashSet<Unit> FrozenUnits = new HashSet<Unit>();
+    public void FreezeUnits(List<Unit> units)
+    {
+        DUtils.Log(Level.FINEST, "      Freezing units for the rest of this phase. Units: {0} New Total Size: {1}", units, FrozenUnits.size());
+        FrozenUnits.addAll(units);
+    }
+    public HashSet<Unit> GetFrozenUnits()
+    {
+        return FrozenUnits;
+    }
+    public void ClearFrozenUnits()
+    {
+        FrozenUnits.clear();
+    }
+
     public List<PlayerID> GetEnemyListSortedByPriority()
     {
         if(EnemyPlayersSortedByPriority == null || EnemyPlayersSortedByPriority.isEmpty())
@@ -68,9 +83,11 @@ public class TacticalCenter
 
         return EnemyPlayersSortedByPriority;
     }
+
     public void ClearEnemyListSortedByPriority()
     {
         EnemyPlayersSortedByPriority.clear();
     }
+
     public HashMap<Territory, Float> BattleRetreatChanceAssignments = new HashMap<Territory, Float>();
 }

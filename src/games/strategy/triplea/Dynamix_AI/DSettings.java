@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -40,8 +41,22 @@ public class DSettings implements Serializable
     public int NonCombatMoveWait_AW = 250;
     public int PlacementWait_AW = 250;
 
-    public boolean AllowSpeedUps = true;
-    public int SpeedUpPercentage = 200;
+    public boolean AllowCalcingDecrease = true;
+    public int CalcingDecreaseToPercentage = 50;
+
+    public boolean EnableAILogging = true;
+    public Level AILoggingDepth = Level.FINEST;
+
+    public int CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost = 125;
+    public int CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance = 250;
+    public int CA_CMNCM_sortsPossibleTaskRecruitsForOptimalAttackDefense = 25;
+    public int CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop = 250;
+    public int CA_CM_determinesAttackResultsToSeeIfTaskWorthwhile = 500;
+    public int CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile = 500;
+    public int CA_CMNCM_determinesIfTaskEndangersCap = 250;
+    public int CA_CMNCM_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers = 250;
+    public int CA_NCM_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove = 100;
+    public int CA_Retreat_determinesIfAIShouldRetreat = 250;
 
     private static DSettings s_lastSettings = null;
     private static String PROGRAM_SETTINGS = "Program Settings";

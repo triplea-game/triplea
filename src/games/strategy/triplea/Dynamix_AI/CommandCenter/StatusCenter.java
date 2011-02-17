@@ -44,7 +44,7 @@ public class StatusCenter
     {
         s_SCInstances.clear();
     }
-    public static void NotifyEndOfTurn()
+    public static void NotifyStartOfRound()
     {
         s_SCInstances.clear();
     }

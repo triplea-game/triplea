@@ -40,7 +40,7 @@ public class KnowledgeCenter
     {
         s_KCInstances.clear();
     }
-    public static void NotifyEndOfTurn()
+    public static void NotifyStartOfRound()
     {
         s_KCInstances.clear();
     }

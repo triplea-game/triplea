@@ -25,6 +25,7 @@ import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.TacticalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
 import games.strategy.triplea.Dynamix_AI.DMatches;
+import games.strategy.triplea.Dynamix_AI.DSettings;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
@@ -131,7 +132,7 @@ public class CM_Task
                 return (int) (possibles.get(ug2) - possibles.get(ug1));
             }
         });
-        sortedPossibles = DUtils.PairUpUnitGroupsInListForOptimalAttack(m_data, GlobalCenter.CurrentPlayer, sortedPossibles, m_target, 25); //We want this list paired up, in case suitability is the same
+        sortedPossibles = DUtils.PairUpUnitGroupsInListForOptimalAttack(m_data, GlobalCenter.CurrentPlayer, sortedPossibles, m_target, DSettings.LoadSettings().CA_CMNCM_sortsPossibleTaskRecruitsForOptimalAttackDefense); //We want this list paired up, in case suitability is the same
         Collections.sort(sortedPossibles, new Comparator<UnitGroup>()
         {
             public int compare(UnitGroup ug1, UnitGroup ug2)
@@ -280,7 +281,7 @@ public class CM_Task
             AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 5, false);
             List<Unit> responseAttackers = DUtils.DetermineResponseAttackers(m_data, GlobalCenter.CurrentPlayer, m_target, simulatedAttack);
             List<Unit> responseDefenders = Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); //Air can't defend ter because they need to land
-            AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, 5, false);
+            AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, 1, false);
 
             float howCloseToMeetingTakeoverChanceMin = getMeetingOfTakeoverChanceScore(simulatedAttack, minChance);
             float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedResponse, maxVulnerability);
@@ -303,7 +304,7 @@ public class CM_Task
             AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 250, false);
             List<Unit> responseAttackers = DUtils.DetermineResponseAttackers(m_data, GlobalCenter.CurrentPlayer, m_target, simulatedAttack);
             List<Unit> responseDefenders = Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); //Air can't defend ter because they need to land
-            AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, 250, false);
+            AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, false);
 
             float howCloseToMeetingTakeoverChanceMin = getMeetingOfTakeoverChanceScore(simulatedAttack, minChance);
             float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedResponse, maxVulnerability);
@@ -338,8 +339,8 @@ public class CM_Task
     {
         DUtils.Log(Level.FINEST, "    Determining if cm task is worthwhile. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
 
-        //Atm, AI over-attacks neutrals, so for now, ignore attacks on non-empty neutrals 90% of the time
-        if (m_target.getOwner().isNull() && m_target.getUnits().getMatches(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1)).size() > 0 && Math.random() < 9F)
+        //Atm, AI over-attacks neutrals on FFA maps, so for now, ignore attacks on non-empty neutrals 90% of the time on FFA maps
+        if (GlobalCenter.IsFFAGame && m_target.getOwner().isNull() && m_target.getUnits().getMatches(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1)).size() > 0 && Math.random() < .9F)
             return false;
 
         if (false) //Atm, causes unwanted behavior and weird manuevers. Was: m_taskType == CM_TaskType.Attack_Offensive)
@@ -383,7 +384,7 @@ public class CM_Task
 
         if (areRecruitsFromCapOrNeighbor)
         {
-            List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, GlobalCenter.CurrentPlayer, ourCap, m_target, GetRecruitedUnitsAsUnitList(), 250);
+            List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, GlobalCenter.CurrentPlayer, ourCap, m_target, GetRecruitedUnitsAsUnitList(), DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
             if (capTakeoverChances.get(1) > .01F) //If takeover chance is 1% or more after move
             {
                 if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .005) //and takeover chance before and after move is at least half a percent different
@@ -391,10 +392,10 @@ public class CM_Task
             }
         }
 
-        AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 500, false);
+        AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, DSettings.LoadSettings().CA_CM_determinesAttackResultsToSeeIfTaskWorthwhile, false);
         List<Unit> responseAttackers = DUtils.DetermineResponseAttackers(m_data, GlobalCenter.CurrentPlayer, m_target, simulatedAttack);
         List<Unit> responseDefenders = Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); //Air can't defend ter because they need to land
-        AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, 500, false);
+        AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile, false);
 
         if (m_taskType == CM_TaskType.Attack_Offensive)
         {
@@ -465,23 +466,29 @@ public class CM_Task
     {
         if (m_recruitedUnits.isEmpty()) //Can happen if all recruits are waiting for reinforcements to complete a better, nearby task
             return false;
-        Territory ourCap = TerritoryAttachment.getCapital(GlobalCenter.CurrentPlayer, m_data);
 
-        List<Territory> capAndNeighbors = DUtils.GetTerritoriesWithinXDistanceOfY(m_data, ourCap, 1);
-        HashSet<Unit> capAndNeighborsUnits = DUtils.ToHashSet(DUtils.GetUnitsInTerritories(capAndNeighbors));
-        boolean areRecruitsFromCapOrNeighbor = false;
+        PlayerID player = GlobalCenter.CurrentPlayer;
+
+        List<Territory> ourCaps = TerritoryAttachment.getAllCapitals(player, m_data);
+
+        List<Territory> capsAndNeighbors = new ArrayList<Territory>();
+        for(Territory cap : ourCaps)
+            capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, cap, 1));
+        HashSet<Unit> capsAndNeighborsUnits = DUtils.ToHashSet(DUtils.GetUnitsInTerritories(capsAndNeighbors));
+        boolean areRecruitsFromCapsOrNeighbors = false;
         for (Unit recruit : GetRecruitedUnitsAsUnitList())
         {
-            if (capAndNeighborsUnits.contains(recruit))
+            if (capsAndNeighborsUnits.contains(recruit))
             {
-                areRecruitsFromCapOrNeighbor = true;
+                areRecruitsFromCapsOrNeighbors = true;
                 break;
             }
         }
 
-        if (areRecruitsFromCapOrNeighbor)
+        if (areRecruitsFromCapsOrNeighbors)
         {
-            List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, GlobalCenter.CurrentPlayer, ourCap, m_target, GetRecruitedUnitsAsUnitList(), 250);
+            Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
+            List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, GlobalCenter.CurrentPlayer, ourClosestCap, m_target, GetRecruitedUnitsAsUnitList(), DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
             if (capTakeoverChances.get(1) > .01F) //If takeover chance is 1% or more after move
             {
                 if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .005) //and takeover chance before and after move is at least half a percent different
@@ -514,12 +521,12 @@ public class CM_Task
 
         if (m_taskType == CM_TaskType.Attack_Offensive)
         {
-            AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 5, false);
+            AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 250, false);
             List<Unit> threats = DUtils.DetermineResponseAttackers(m_data, GlobalCenter.CurrentPlayer, m_target, simulatedAttack);
             if(threats.isEmpty()) //No threats to invalidate
                 return;
             List<Unit> responseDefenders = Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); //Air can't defend ter because they need to land
-            AggregateResults simulatedResponse = DUtils.GetBattleResults(threats, responseDefenders, m_target, m_data, 250, false);
+            AggregateResults simulatedResponse = DUtils.GetBattleResults(threats, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers, false);
 
             if (simulatedResponse.getDefenderWinPercent() > .4F)
             {
@@ -529,12 +536,12 @@ public class CM_Task
         }
         else if (m_taskType == CM_TaskType.Attack_Stabilize)
         {
-            AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 5, false);
+            AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 250, false);
             List<Unit> threats = DUtils.DetermineResponseAttackers(m_data, GlobalCenter.CurrentPlayer, m_target, simulatedAttack);
             if(threats.isEmpty()) //No threats to invalidate
                 return;
             List<Unit> responseDefenders = Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); //Air can't defend ter because they need to land
-            AggregateResults simulatedResponse = DUtils.GetBattleResults(threats, responseDefenders, m_target, m_data, 250, false);
+            AggregateResults simulatedResponse = DUtils.GetBattleResults(threats, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers, false);
 
             if (simulatedResponse.getDefenderWinPercent() > .4F)
             {
@@ -557,7 +564,8 @@ public class CM_Task
             DUtils.Log(Level.FINEST, "      Task is called to perform, but there are no recruits! Target: {0} Task Type: {1} Priority: {2}", m_target, m_taskType, m_priority);
             return;
         }
-        Dynamix_AI.Pause();
+        if(!m_completed) //Only pause if this is the initial attack group
+            Dynamix_AI.Pause();
         for(UnitGroup ug : m_recruitedUnits)
         {
             ug.MoveAsFarTo_CM(m_target, mover);

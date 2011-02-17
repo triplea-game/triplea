@@ -44,7 +44,7 @@ public class ThreatInvalidationCenter
     {
         s_TICInstances.clear();
     }
-    public static void NotifyEndOfTurn()
+    public static void NotifyStartOfRound()
     {
         s_TICInstances.clear();
     }

@@ -15,6 +15,12 @@
 package games.strategy.triplea.Dynamix_AI.UI;
 
 import games.strategy.triplea.Dynamix_AI.DSettings;
+import java.awt.GridLayout;
+import java.util.logging.Level;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -36,9 +42,21 @@ public class SettingsWindow extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
+        jPanel7 = new javax.swing.JPanel();
+        v_okButton = new javax.swing.JButton();
+        v_cancelButton = new javax.swing.JButton();
+        v_restoreDefaultsButton = new javax.swing.JButton();
+        v_helpButton = new javax.swing.JButton();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel14 = new javax.swing.JLabel();
+        v_battleCalculator = new javax.swing.JRadioButton();
+        basicStrengthEval = new javax.swing.JRadioButton();
+        v_basicScoreEval = new javax.swing.JRadioButton();
+        v_quickBattleCalculator = new javax.swing.JRadioButton();
         v_pausingPanel = new javax.swing.JPanel();
         v_actionLengthGoalRB = new javax.swing.JRadioButton();
         v_actionWaitGoalRB = new javax.swing.JRadioButton();
@@ -64,15 +82,66 @@ public class SettingsWindow extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        v_allowSpeedUps = new javax.swing.JCheckBox();
-        v_speedUpPercentage = new javax.swing.JSpinner();
+        v_allowCalcingDecrease = new javax.swing.JCheckBox();
+        v_calcDecreaseToPercentage = new javax.swing.JSpinner();
         jLabel13 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        v_allowAILearning = new javax.swing.JCheckBox();
+        jPanel6 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        v_okButton = new javax.swing.JButton();
-        v_cancelButton = new javax.swing.JButton();
-        v_restoreDefaultsButton = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        v_calcRunCountAssignmentsScrollPane = new javax.swing.JScrollPane();
+        v_calcRunCountAssignmentsHolderPanel = new javax.swing.JPanel();
+        jLabel17 = new javax.swing.JLabel();
+        v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost = new javax.swing.JSpinner();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance = new javax.swing.JSpinner();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense = new javax.swing.JSpinner();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        v_cacmncm_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop = new javax.swing.JSpinner();
+        jLabel25 = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        jLabel27 = new javax.swing.JLabel();
+        jLabel28 = new javax.swing.JLabel();
+        jLabel29 = new javax.swing.JLabel();
+        jLabel30 = new javax.swing.JLabel();
+        v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile = new javax.swing.JSpinner();
+        v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile = new javax.swing.JSpinner();
+        jLabel31 = new javax.swing.JLabel();
+        jLabel32 = new javax.swing.JLabel();
+        jLabel33 = new javax.swing.JLabel();
+        jLabel34 = new javax.swing.JLabel();
+        jLabel35 = new javax.swing.JLabel();
+        jLabel36 = new javax.swing.JLabel();
+        v_cacmncm_determinesIfTaskEndangersCap = new javax.swing.JSpinner();
+        jLabel37 = new javax.swing.JLabel();
+        v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers = new javax.swing.JSpinner();
+        jLabel38 = new javax.swing.JLabel();
+        jLabel39 = new javax.swing.JLabel();
+        jLabel40 = new javax.swing.JLabel();
+        jLabel41 = new javax.swing.JLabel();
+        v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove = new javax.swing.JSpinner();
+        jLabel42 = new javax.swing.JLabel();
+        jLabel43 = new javax.swing.JLabel();
+        v_caretreat_determinesIfAIShouldRetreat = new javax.swing.JSpinner();
+        jLabel44 = new javax.swing.JLabel();
+        jLabel45 = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        v_logHolderTabbedPane = new javax.swing.JTabbedPane();
+        jPanel9 = new javax.swing.JPanel();
+        v_aiOutputLogAreaScrollPane = new javax.swing.JScrollPane();
+        v_aiOutputLogArea = new javax.swing.JTextArea();
+        v_enableAILogging = new javax.swing.JCheckBox();
+        jLabel15 = new javax.swing.JLabel();
+        v_logDepth = new javax.swing.JComboBox();
+        jPanel2 = new javax.swing.JPanel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Dynamix AI Settings");
         setAlwaysOnTop(true);
         setResizable(false);
@@ -82,7 +151,119 @@ public class SettingsWindow extends javax.swing.JFrame {
             }
         });
 
-        v_pausingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("AI Pausing"));
+        jPanel7.setName("jPanel3"); // NOI18N
+
+        v_okButton.setText("OK");
+        v_okButton.setName("v_okButton"); // NOI18N
+        v_okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                v_okButtonActionPerformed(evt);
+            }
+        });
+
+        v_cancelButton.setText("Cancel");
+        v_cancelButton.setName("v_cancelButton"); // NOI18N
+        v_cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                v_cancelButtonActionPerformed(evt);
+            }
+        });
+
+        v_restoreDefaultsButton.setText("Restore Defaults");
+        v_restoreDefaultsButton.setName("v_restoreDefaultsButton"); // NOI18N
+        v_restoreDefaultsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                v_restoreDefaultsButtonActionPerformed(evt);
+            }
+        });
+
+        v_helpButton.setText("Help");
+        v_helpButton.setName("v_helpButton"); // NOI18N
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addComponent(v_restoreDefaultsButton)
+                .addGap(194, 194, 194)
+                .addComponent(v_okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(v_cancelButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 249, Short.MAX_VALUE)
+                .addComponent(v_helpButton))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(v_okButton)
+                    .addComponent(v_cancelButton)
+                    .addComponent(v_restoreDefaultsButton)
+                    .addComponent(v_helpButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.setName("jTabbedPane1"); // NOI18N
+
+        jPanel1.setName("jPanel1"); // NOI18N
+
+        jLabel14.setText("Battle Calculation Method:");
+        jLabel14.setName("jLabel14"); // NOI18N
+
+        buttonGroup2.add(v_battleCalculator);
+        v_battleCalculator.setSelected(true);
+        v_battleCalculator.setText("Battle Calculator");
+        v_battleCalculator.setName("v_battleCalculator"); // NOI18N
+
+        buttonGroup2.add(basicStrengthEval);
+        basicStrengthEval.setText("Basic Strength Eval");
+        basicStrengthEval.setEnabled(false);
+        basicStrengthEval.setName("basicStrengthEval"); // NOI18N
+
+        buttonGroup2.add(v_basicScoreEval);
+        v_basicScoreEval.setText("Basic Score Eval");
+        v_basicScoreEval.setEnabled(false);
+        v_basicScoreEval.setName("v_basicScoreEval"); // NOI18N
+
+        buttonGroup2.add(v_quickBattleCalculator);
+        v_quickBattleCalculator.setText("Quick Battle Calculator");
+        v_quickBattleCalculator.setEnabled(false);
+        v_quickBattleCalculator.setName("v_quickBattleCalculator"); // NOI18N
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel14)
+                .addGap(18, 18, 18)
+                .addComponent(basicStrengthEval)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(v_basicScoreEval)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(v_quickBattleCalculator)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(v_battleCalculator)
+                .addContainerGap(123, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(basicStrengthEval)
+                    .addComponent(v_basicScoreEval)
+                    .addComponent(v_quickBattleCalculator)
+                    .addComponent(v_battleCalculator))
+                .addContainerGap(313, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("General", jPanel1);
+
         v_pausingPanel.setName("v_pausingPanel"); // NOI18N
 
         buttonGroup1.add(v_actionLengthGoalRB);
@@ -265,12 +446,18 @@ public class SettingsWindow extends javax.swing.JFrame {
         jLabel4.setText("Placement Phase:");
         jLabel4.setName("jLabel4"); // NOI18N
 
-        v_allowSpeedUps.setSelected(true);
-        v_allowSpeedUps.setText("Speed up AI thinking when an action is taking longer than the time specified by: ");
-        v_allowSpeedUps.setName("v_allowSpeedUps"); // NOI18N
+        v_allowCalcingDecrease.setSelected(true);
+        v_allowCalcingDecrease.setText("When an action is taking longer than the time specified, reduce the calc'ing run count to:");
+        v_allowCalcingDecrease.setName("v_allowCalcingDecrease"); // NOI18N
+        v_allowCalcingDecrease.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                v_allowCalcingDecreaseStateChanged(evt);
+            }
+        });
 
-        v_speedUpPercentage.setModel(new javax.swing.SpinnerNumberModel(200, 100, 1000, 10));
-        v_speedUpPercentage.setName("v_speedUpPercentage"); // NOI18N
+        v_calcDecreaseToPercentage.setModel(new javax.swing.SpinnerNumberModel(50, 1, 100, 1));
+        v_calcDecreaseToPercentage.setToolTipText("");
+        v_calcDecreaseToPercentage.setName("v_calcDecreaseToPercentage"); // NOI18N
 
         jLabel13.setText("%");
         jLabel13.setName("jLabel13"); // NOI18N
@@ -282,33 +469,33 @@ public class SettingsWindow extends javax.swing.JFrame {
             .addGroup(v_pausingPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(v_pausingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(v_pausingPanelLayout.createSequentialGroup()
-                        .addComponent(v_allowSpeedUps)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(v_speedUpPercentage, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel13)
-                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, v_pausingPanelLayout.createSequentialGroup()
                         .addComponent(v_actionLengthGoalRB)
                         .addGap(51, 51, 51)
                         .addComponent(v_actionWaitGoalRB)
-                        .addGap(35, 35, 35))
+                        .addGap(25, 25, 25))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, v_pausingPanelLayout.createSequentialGroup()
                         .addGroup(v_pausingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 273, Short.MAX_VALUE)
                         .addComponent(v_totalLengthGoalsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(v_actionWaitGoalsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addComponent(v_actionWaitGoalsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(v_pausingPanelLayout.createSequentialGroup()
+                        .addComponent(v_allowCalcingDecrease)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(v_calcDecreaseToPercentage, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel13)))
+                .addContainerGap())
         );
         v_pausingPanelLayout.setVerticalGroup(
             v_pausingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(v_pausingPanelLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(v_pausingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(v_pausingPanelLayout.createSequentialGroup()
                         .addGroup(v_pausingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -317,69 +504,526 @@ public class SettingsWindow extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(v_pausingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(v_actionWaitGoalsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(v_totalLengthGoalsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(v_totalLengthGoalsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(v_pausingPanelLayout.createSequentialGroup()
                         .addGap(34, 34, 34)
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel3)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                        .addGroup(v_pausingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(v_allowSpeedUps)
-                            .addComponent(v_speedUpPercentage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel13))))
+                        .addComponent(jLabel4)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(v_pausingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(v_allowCalcingDecrease, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(v_calcDecreaseToPercentage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13))
+                .addContainerGap(148, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("AI Pausing", v_pausingPanel);
+
+        jPanel5.setName("jPanel5"); // NOI18N
+
+        v_allowAILearning.setText("Allow AI learning");
+        v_allowAILearning.setEnabled(false);
+        v_allowAILearning.setName("v_allowAILearning"); // NOI18N
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(v_allowAILearning)
+                .addContainerGap(624, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(v_allowAILearning)
+                .addContainerGap(313, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("AI Learning", jPanel5);
+
+        jPanel6.setName("jPanel6"); // NOI18N
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 735, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 343, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("AI Cheating", jPanel6);
+
+        jPanel3.setName("jPanel3"); // NOI18N
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 735, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 343, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("AI Control", jPanel3);
+
+        jPanel4.setName("jPanel4"); // NOI18N
+
+        v_calcRunCountAssignmentsScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        v_calcRunCountAssignmentsScrollPane.setName("v_calcRunCountAssignmentsScrollPane"); // NOI18N
+
+        v_calcRunCountAssignmentsHolderPanel.setName("v_calcRunCountAssignmentsHolderPanel"); // NOI18N
+
+        jLabel17.setText("calculations");
+        jLabel17.setName("jLabel17"); // NOI18N
+
+        v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost.setModel(new javax.swing.SpinnerNumberModel(125, 1, 5000, 10));
+        v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost.setName("v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost"); // NOI18N
+
+        jLabel16.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel16.setText("Purchase - Calculation That Determines The Unit That Would Help Win Invasion On Enemy Target The Most:");
+        jLabel16.setName("jLabel16"); // NOI18N
+
+        jLabel18.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel18.setText("(Frequency: Very High, Suggested Range: 10 - 250)");
+        jLabel18.setName("jLabel18"); // NOI18N
+
+        jLabel19.setText("calculations");
+        jLabel19.setName("jLabel19"); // NOI18N
+
+        v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance.setModel(new javax.swing.SpinnerNumberModel(250, 1, 5000, 10));
+        v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance.setName("v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance"); // NOI18N
+
+        jLabel20.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel20.setText("CM - Calculation That Determines If The Creation Of A Task Is Worthwhile Based On Takeover Chance:");
+        jLabel20.setName("jLabel20"); // NOI18N
+
+        jLabel21.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel21.setText("(Frequency: Average, Suggested Range: 50 - 500)");
+        jLabel21.setName("jLabel21"); // NOI18N
+
+        jLabel22.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel22.setText("CM & NCM - Calculation That Sorts Possible Task Recruits For Optimal Attack/Defense:");
+        jLabel22.setName("jLabel22"); // NOI18N
+
+        v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense.setModel(new javax.swing.SpinnerNumberModel(25, 1, 5000, 5));
+        v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense.setName("v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense"); // NOI18N
+
+        jLabel23.setText("calculations");
+        jLabel23.setName("jLabel23"); // NOI18N
+
+        jLabel24.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel24.setText("(Frequency: Very High, Suggested Range: 5 - 250)");
+        jLabel24.setName("jLabel24"); // NOI18N
+
+        v_cacmncm_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop.setModel(new javax.swing.SpinnerNumberModel(250, 1, 5000, 10));
+        v_cacmncm_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop.setName("v_cacmncm_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop"); // NOI18N
+
+        jLabel25.setText("calculations");
+        jLabel25.setName("jLabel25"); // NOI18N
+
+        jLabel26.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel26.setText("CM & NCM - Calculation That Determines If The Task's Requirements Are Met Enough For Unit Recruiting To Stop:");
+        jLabel26.setName("jLabel26"); // NOI18N
+
+        jLabel27.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel27.setText("(Frequency: High, Suggested Range: 50 - 1000)");
+        jLabel27.setName("jLabel27"); // NOI18N
+
+        jLabel28.setText("calculations");
+        jLabel28.setName("jLabel28"); // NOI18N
+
+        jLabel29.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel29.setText("CM - Calculation That Determines Attack Results For Determining If Task Is Worthwhile:");
+        jLabel29.setName("jLabel29"); // NOI18N
+
+        jLabel30.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel30.setText("(Frequency: Average, Suggested Range: 250 - 2500)");
+        jLabel30.setName("jLabel30"); // NOI18N
+
+        v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile.setModel(new javax.swing.SpinnerNumberModel(500, 1, 5000, 10));
+        v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile.setName("v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile"); // NOI18N
+
+        v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile.setModel(new javax.swing.SpinnerNumberModel(500, 1, 5000, 10));
+        v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile.setName("v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile"); // NOI18N
+
+        jLabel31.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel31.setText("(Frequency: Average, Suggested Range: 250 - 2500)");
+        jLabel31.setName("jLabel31"); // NOI18N
+
+        jLabel32.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel32.setText("CM & NCM - Calculation That Determines Response Results For Determining If Task Is Worthwhile:");
+        jLabel32.setName("jLabel32"); // NOI18N
+
+        jLabel33.setText("calculations");
+        jLabel33.setName("jLabel33"); // NOI18N
+
+        jLabel34.setText("calculations");
+        jLabel34.setName("jLabel34"); // NOI18N
+
+        jLabel35.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel35.setText("CM & NCM - Calculation That Determines If Task Endangers The Capital:");
+        jLabel35.setName("jLabel35"); // NOI18N
+
+        jLabel36.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel36.setText("(Frequency: Low, Suggested Range: 100 - 1500)");
+        jLabel36.setName("jLabel36"); // NOI18N
+
+        v_cacmncm_determinesIfTaskEndangersCap.setModel(new javax.swing.SpinnerNumberModel(250, 1, 5000, 10));
+        v_cacmncm_determinesIfTaskEndangersCap.setName("v_cacmncm_determinesIfTaskEndangersCap"); // NOI18N
+
+        jLabel37.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel37.setText("(Frequency: Very Low, Suggested Range: 50 - 1000)");
+        jLabel37.setName("jLabel37"); // NOI18N
+
+        v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers.setModel(new javax.swing.SpinnerNumberModel(250, 1, 5000, 10));
+        v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers.setName("v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers"); // NOI18N
+
+        jLabel38.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel38.setText("CM & NCM - Calculation That Determines Vulnerability After Task For Checking Whether To Invalidate Attackers:");
+        jLabel38.setName("jLabel38"); // NOI18N
+
+        jLabel39.setText("calculations");
+        jLabel39.setName("jLabel39"); // NOI18N
+
+        jLabel40.setText("calculations");
+        jLabel40.setName("jLabel40"); // NOI18N
+
+        jLabel41.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel41.setText("NCM - Calculation That Determines Vulnerability Of From Ter After Move For Checking Whether To Cancel Move:");
+        jLabel41.setName("jLabel41"); // NOI18N
+
+        v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove.setModel(new javax.swing.SpinnerNumberModel(100, 1, 5000, 10));
+        v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove.setName("v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove"); // NOI18N
+
+        jLabel42.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel42.setText("(Frequency: Average, Suggested Range: 25 - 1000)");
+        jLabel42.setName("jLabel42"); // NOI18N
+
+        jLabel43.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel43.setText("(Frequency: Low, Suggested Range: 250 - 5000)");
+        jLabel43.setName("jLabel43"); // NOI18N
+
+        v_caretreat_determinesIfAIShouldRetreat.setModel(new javax.swing.SpinnerNumberModel(500, 1, 5000, 10));
+        v_caretreat_determinesIfAIShouldRetreat.setName("v_caretreat_determinesIfAIShouldRetreat"); // NOI18N
+
+        jLabel44.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel44.setText("Retreat Query - Calculation That Determines If AI Should Retreat:");
+        jLabel44.setName("jLabel44"); // NOI18N
+
+        jLabel45.setText("calculations");
+        jLabel45.setName("jLabel45"); // NOI18N
+
+        javax.swing.GroupLayout v_calcRunCountAssignmentsHolderPanelLayout = new javax.swing.GroupLayout(v_calcRunCountAssignmentsHolderPanel);
+        v_calcRunCountAssignmentsHolderPanel.setLayout(v_calcRunCountAssignmentsHolderPanelLayout);
+        v_calcRunCountAssignmentsHolderPanelLayout.setHorizontalGroup(
+            v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel21))
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel24))
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, 586, Short.MAX_VALUE)
+                        .addGap(111, 111, 111))
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel27))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel26, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                                .addComponent(v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel23))
+                            .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                                .addComponent(v_cacmncm_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel25))))
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel30))
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel29, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel28))
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel31))
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel32, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel33))
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel36))
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel35, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(v_cacmncm_determinesIfTaskEndangersCap, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel34))
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel37))
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel38, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel39))
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jLabel42))
+                            .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                                .addComponent(jLabel41, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(131, 131, 131)))
+                        .addGap(53, 53, 53))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addComponent(v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel40))
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jLabel18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 325, Short.MAX_VALUE))
+                            .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE)
+                            .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 566, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                                .addComponent(v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel19))
+                            .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                                .addComponent(v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel17))))
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jLabel43))
+                            .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                                .addComponent(jLabel44, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)
+                                .addGap(131, 131, 131)))
+                        .addGap(53, 53, 53))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addComponent(v_caretreat_determinesIfAIShouldRetreat, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel45)))
+                .addContainerGap())
+        );
+        v_calcRunCountAssignmentsHolderPanelLayout.setVerticalGroup(
+            v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel18)
+                        .addGap(31, 31, 31))
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
+                        .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel17)
+                            .addComponent(v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel16))
+                        .addGap(50, 50, 50))
+                    .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel19)
+                        .addComponent(v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel20)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel21)
+                .addGap(18, 18, 18)
+                .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel22)
+                    .addComponent(jLabel23)
+                    .addComponent(v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel24)
+                .addGap(18, 18, 18)
+                .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel26)
+                    .addComponent(jLabel25)
+                    .addComponent(v_cacmncm_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel27)
+                .addGap(18, 18, 18)
+                .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel29)
+                    .addComponent(jLabel28)
+                    .addComponent(v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel30)
+                .addGap(18, 18, 18)
+                .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel32)
+                    .addComponent(jLabel33)
+                    .addComponent(v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel31)
+                .addGap(18, 18, 18)
+                .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel35)
+                    .addComponent(jLabel34)
+                    .addComponent(v_cacmncm_determinesIfTaskEndangersCap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel36)
+                .addGap(18, 18, 18)
+                .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel38)
+                    .addComponent(jLabel39)
+                    .addComponent(v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel37)
+                .addGap(18, 18, 18)
+                .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel41)
+                    .addComponent(jLabel40)
+                    .addComponent(v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel42)
+                .addGap(18, 18, 18)
+                .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel44)
+                    .addComponent(jLabel45)
+                    .addComponent(v_caretreat_determinesIfAIShouldRetreat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel43)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        v_calcRunCountAssignmentsScrollPane.setViewportView(v_calcRunCountAssignmentsHolderPanel);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(v_calcRunCountAssignmentsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 735, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(v_calcRunCountAssignmentsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Calc Run Counts", jPanel4);
+
+        jPanel8.setName("jPanel8"); // NOI18N
+
+        v_logHolderTabbedPane.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
+        v_logHolderTabbedPane.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        v_logHolderTabbedPane.setName("v_logHolderTabbedPane"); // NOI18N
+
+        jPanel9.setName("jPanel9"); // NOI18N
+
+        v_aiOutputLogAreaScrollPane.setName("v_aiOutputLogAreaScrollPane"); // NOI18N
+
+        v_aiOutputLogArea.setColumns(20);
+        v_aiOutputLogArea.setEditable(false);
+        v_aiOutputLogArea.setFont(new java.awt.Font("Segoe UI", 0, 10));
+        v_aiOutputLogArea.setRows(5);
+        v_aiOutputLogArea.setName("v_aiOutputLogArea"); // NOI18N
+        v_aiOutputLogAreaScrollPane.setViewportView(v_aiOutputLogArea);
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(v_aiOutputLogAreaScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(v_aiOutputLogAreaScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
+        );
+
+        v_logHolderTabbedPane.addTab("Pre-Game", jPanel9);
+
+        v_enableAILogging.setSelected(true);
+        v_enableAILogging.setText("Enable AI Logging");
+        v_enableAILogging.setName("v_enableAILogging"); // NOI18N
+        v_enableAILogging.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                v_enableAILoggingStateChanged(evt);
+            }
+        });
+
+        jLabel15.setText("Log Depth:");
+        jLabel15.setName("jLabel15"); // NOI18N
+
+        v_logDepth.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Fine", "Finer", "Finest" }));
+        v_logDepth.setSelectedItem(v_logDepth.getItemAt(2));
+        v_logDepth.setName("v_logDepth"); // NOI18N
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(v_logHolderTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 715, Short.MAX_VALUE)
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addComponent(v_enableAILogging)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel15)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(v_logDepth, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(v_enableAILogging)
+                    .addComponent(jLabel15)
+                    .addComponent(v_logDepth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(v_logHolderTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        jPanel3.setName("jPanel3"); // NOI18N
-        jPanel3.setLayout(new java.awt.GridBagLayout());
+        jTabbedPane1.addTab("Debugging", jPanel8);
 
-        v_okButton.setText("OK");
-        v_okButton.setName("v_okButton"); // NOI18N
-        v_okButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                v_okButtonActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.ipadx = 13;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(11, 99, 11, 0);
-        jPanel3.add(v_okButton, gridBagConstraints);
+        jPanel2.setName("jPanel2"); // NOI18N
 
-        v_cancelButton.setText("Cancel");
-        v_cancelButton.setName("v_cancelButton"); // NOI18N
-        v_cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                v_cancelButtonActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(11, 6, 11, 220);
-        jPanel3.add(v_cancelButton, gridBagConstraints);
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 735, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 343, Short.MAX_VALUE)
+        );
 
-        v_restoreDefaultsButton.setText("Restore Defaults");
-        v_restoreDefaultsButton.setName("v_restoreDefaultsButton"); // NOI18N
-        v_restoreDefaultsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                v_restoreDefaultsButtonActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(11, 0, 11, 0);
-        jPanel3.add(v_restoreDefaultsButton, gridBagConstraints);
+        jTabbedPane1.addTab("Advanced", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -388,50 +1032,74 @@ public class SettingsWindow extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(v_pausingPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE))
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 740, Short.MAX_VALUE)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(v_pausingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(4, 4, 4))
         );
 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-612)/2, (screenSize.height-332)/2, 612, 332);
+        setBounds((screenSize.width-776)/2, (screenSize.height-475)/2, 776, 475);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void v_actionLengthGoalRBStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_v_actionLengthGoalRBStateChanged
-    {//GEN-HEADEREND:event_v_actionLengthGoalRBStateChanged
-        ChangeTotalLengthPanelsState(v_actionLengthGoalRB.isSelected());
-        ChangeActionWaitPanelsState(!v_actionLengthGoalRB.isSelected());
-    }//GEN-LAST:event_v_actionLengthGoalRBStateChanged
+    private void formWindowOpened(java.awt.event.WindowEvent evt)//GEN-FIRST:event_formWindowOpened
+    {//GEN-HEADEREND:event_formWindowOpened
+        LoadSettings(DSettings.LoadSettings());
 
-    private void v_restoreDefaultsButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_v_restoreDefaultsButtonActionPerformed
-    {//GEN-HEADEREND:event_v_restoreDefaultsButtonActionPerformed
-        v_actionLengthGoalRB.setSelected(false); //Also triggers change of enabled state of panels
+        this.pack();
+    }//GEN-LAST:event_formWindowOpened
 
-        v_purchaseWait_AL.setValue(750);
-        v_combatMoveWait_AL.setValue(750);
-        v_nonCombatMoveWait_AL.setValue(750);
-        v_placementWait_AL.setValue(750);
+    /**
+     * Loads the settings provided and displays it in this settings window.
+     * @param settings
+     */
+    private void LoadSettings(DSettings settings)
+    {
+        v_actionLengthGoalRB.setSelected(settings.UseActionLengthGoals); //Also triggers change of enabled state of panels
 
-        v_purchaseWait_AW.setValue(250);
-        v_combatMoveWait_AW.setValue(250);
-        v_nonCombatMoveWait_AW.setValue(250);
-        v_placementWait_AW.setValue(250);
+        v_purchaseWait_AL.setValue(settings.PurchaseWait_AL);
+        v_combatMoveWait_AL.setValue(settings.CombatMoveWait_AL);
+        v_nonCombatMoveWait_AL.setValue(settings.NonCombatMoveWait_AL);
+        v_placementWait_AL.setValue(settings.PlacementWait_AL);
 
-        v_allowSpeedUps.setSelected(true);
-        v_speedUpPercentage.setValue(200);
-    }//GEN-LAST:event_v_restoreDefaultsButtonActionPerformed
+        v_purchaseWait_AW.setValue(settings.PurchaseWait_AW);
+        v_combatMoveWait_AW.setValue(settings.CombatMoveWait_AW);
+        v_nonCombatMoveWait_AW.setValue(settings.NonCombatMoveWait_AW);
+        v_placementWait_AW.setValue(settings.PlacementWait_AW);
 
-    private void v_okButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_v_okButtonActionPerformed
-    {//GEN-HEADEREND:event_v_okButtonActionPerformed
+        v_allowCalcingDecrease.setSelected(settings.AllowCalcingDecrease);
+        v_calcDecreaseToPercentage.setValue(settings.CalcingDecreaseToPercentage);
+
+        v_enableAILogging.setSelected(settings.EnableAILogging);
+        if (settings.AILoggingDepth.equals(Level.FINE))
+            v_logDepth.setSelectedIndex(0);
+        else if(settings.AILoggingDepth.equals(Level.FINER))
+            v_logDepth.setSelectedIndex(1);
+        else if(settings.AILoggingDepth.equals(Level.FINEST))
+            v_logDepth.setSelectedIndex(2);
+
+        v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost.setValue(settings.CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost);
+        v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance.setValue(settings.CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance);
+        v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense.setValue(settings.CA_CMNCM_sortsPossibleTaskRecruitsForOptimalAttackDefense);
+        v_cacmncm_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop.setValue(settings.CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop);
+        v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile.setValue(settings.CA_CM_determinesAttackResultsToSeeIfTaskWorthwhile);
+        v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile.setValue(settings.CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile);
+        v_cacmncm_determinesIfTaskEndangersCap.setValue(settings.CA_CMNCM_determinesIfTaskEndangersCap);
+        v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers.setValue(settings.CA_CMNCM_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers);
+        v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove.setValue(settings.CA_NCM_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove);
+        v_caretreat_determinesIfAIShouldRetreat.setValue(settings.CA_Retreat_determinesIfAIShouldRetreat);
+    }
+
+    public DSettings CreateSettings()
+    {
         DSettings settings = new DSettings();
         settings.UseActionLengthGoals = v_actionLengthGoalRB.isSelected();
 
@@ -445,40 +1113,65 @@ public class SettingsWindow extends javax.swing.JFrame {
         settings.NonCombatMoveWait_AW = Integer.parseInt(v_nonCombatMoveWait_AW.getValue().toString());
         settings.PlacementWait_AW = Integer.parseInt(v_placementWait_AW.getValue().toString());
 
-        settings.AllowSpeedUps = v_allowSpeedUps.isSelected();
-        settings.SpeedUpPercentage = Integer.parseInt(v_speedUpPercentage.getValue().toString());
+        settings.AllowCalcingDecrease = v_allowCalcingDecrease.isSelected();
+        settings.CalcingDecreaseToPercentage = Integer.parseInt(v_calcDecreaseToPercentage.getValue().toString());
 
-        DSettings.SaveSettings(settings);
+        settings.EnableAILogging = v_enableAILogging.isSelected();
+        if (v_logDepth.getSelectedIndex() == 0)
+            settings.AILoggingDepth = Level.FINE;
+        else if (v_logDepth.getSelectedIndex() == 1)
+            settings.AILoggingDepth = Level.FINER;
+        else if (v_logDepth.getSelectedIndex() == 2)
+            settings.AILoggingDepth = Level.FINEST;
 
-        this.dispose();
+        settings.CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost = Integer.parseInt(v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost.getValue().toString());
+        settings.CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance = Integer.parseInt(v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance.getValue().toString());
+        settings.CA_CMNCM_sortsPossibleTaskRecruitsForOptimalAttackDefense = Integer.parseInt(v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense.getValue().toString());
+        settings.CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop = Integer.parseInt(v_cacmncm_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop.getValue().toString());
+        settings.CA_CM_determinesAttackResultsToSeeIfTaskWorthwhile = Integer.parseInt(v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile.getValue().toString());
+        settings.CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile = Integer.parseInt(v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile.getValue().toString());
+        settings.CA_CMNCM_determinesIfTaskEndangersCap = Integer.parseInt(v_cacmncm_determinesIfTaskEndangersCap.getValue().toString());
+        settings.CA_CMNCM_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers = Integer.parseInt(v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers.getValue().toString());
+        settings.CA_NCM_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove = Integer.parseInt(v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove.getValue().toString());
+        settings.CA_Retreat_determinesIfAIShouldRetreat = Integer.parseInt(v_caretreat_determinesIfAIShouldRetreat.getValue().toString());
+
+        return settings;
+    }
+
+    private void v_allowCalcingDecreaseStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_v_allowCalcingDecreaseStateChanged
+    {//GEN-HEADEREND:event_v_allowCalcingDecreaseStateChanged
+        v_calcDecreaseToPercentage.setEnabled(v_actionLengthGoalRB.isSelected() && v_allowCalcingDecrease.isSelected());
+    }//GEN-LAST:event_v_allowCalcingDecreaseStateChanged
+
+    private void v_actionLengthGoalRBStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_v_actionLengthGoalRBStateChanged
+    {//GEN-HEADEREND:event_v_actionLengthGoalRBStateChanged
+        ChangeTotalLengthPanelsState(v_actionLengthGoalRB.isSelected());
+        ChangeActionWaitPanelsState(!v_actionLengthGoalRB.isSelected());
+    }//GEN-LAST:event_v_actionLengthGoalRBStateChanged
+
+    private void v_okButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_v_okButtonActionPerformed
+    {//GEN-HEADEREND:event_v_okButtonActionPerformed
+        DSettings newSettings = CreateSettings();
+        DSettings.SaveSettings(newSettings);
+
+        this.setVisible(false);
     }//GEN-LAST:event_v_okButtonActionPerformed
+
+    private void v_restoreDefaultsButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_v_restoreDefaultsButtonActionPerformed
+    {//GEN-HEADEREND:event_v_restoreDefaultsButtonActionPerformed
+        DSettings defaultSettings = new DSettings(); //Default settings are already contained in a new DSettings instance
+        LoadSettings(defaultSettings);
+    }//GEN-LAST:event_v_restoreDefaultsButtonActionPerformed
 
     private void v_cancelButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_v_cancelButtonActionPerformed
     {//GEN-HEADEREND:event_v_cancelButtonActionPerformed
-        this.dispose();
+        this.setVisible(false);
     }//GEN-LAST:event_v_cancelButtonActionPerformed
 
-    private void formWindowOpened(java.awt.event.WindowEvent evt)//GEN-FIRST:event_formWindowOpened
-    {//GEN-HEADEREND:event_formWindowOpened
-        DSettings settings = DSettings.LoadSettings();
-
-        v_actionLengthGoalRB.setSelected(settings.UseActionLengthGoals); //Also triggers change of enabled state of panels
-
-        v_purchaseWait_AL.setValue(settings.PurchaseWait_AL);
-        v_combatMoveWait_AL.setValue(settings.CombatMoveWait_AL);
-        v_nonCombatMoveWait_AL.setValue(settings.NonCombatMoveWait_AL);
-        v_placementWait_AL.setValue(settings.PlacementWait_AL);
-
-        v_purchaseWait_AW.setValue(settings.PurchaseWait_AW);
-        v_combatMoveWait_AW.setValue(settings.CombatMoveWait_AW);
-        v_nonCombatMoveWait_AW.setValue(settings.NonCombatMoveWait_AW);
-        v_placementWait_AW.setValue(settings.PlacementWait_AW);
-
-        v_allowSpeedUps.setSelected(settings.AllowSpeedUps);
-        v_speedUpPercentage.setValue(settings.SpeedUpPercentage);
-
-        this.pack();
-    }//GEN-LAST:event_formWindowOpened
+    private void v_enableAILoggingStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_v_enableAILoggingStateChanged
+    {//GEN-HEADEREND:event_v_enableAILoggingStateChanged
+        v_logDepth.setEnabled(v_enableAILogging.isSelected());
+    }//GEN-LAST:event_v_enableAILoggingStateChanged
 
     private void ChangeTotalLengthPanelsState(boolean enabled)
     {
@@ -487,9 +1180,9 @@ public class SettingsWindow extends javax.swing.JFrame {
         v_combatMoveWait_AL.setEnabled(enabled);
         v_nonCombatMoveWait_AL.setEnabled(enabled);
         v_placementWait_AL.setEnabled(enabled);
-        v_allowSpeedUps.setEnabled(enabled);
-        v_speedUpPercentage.setEnabled(enabled);
+        v_allowCalcingDecrease.setEnabled(enabled);
     }
+    
     private void ChangeActionWaitPanelsState(boolean enabled)
     {
         v_actionWaitGoalsPanel.setEnabled(enabled);
@@ -499,29 +1192,146 @@ public class SettingsWindow extends javax.swing.JFrame {
         v_placementWait_AW.setEnabled(enabled);
     }
 
+    private JTextArea currentLogTextArea = null;
+    public void addMessage(Level level, String message)
+    {
+        if (currentLogTextArea == null)
+            currentLogTextArea = v_aiOutputLogArea;
+        currentLogTextArea.append(level.getName() + ": " + getIndentationCompensation(level));
+        currentLogTextArea.append(message + "\r\n");
+    }
+
+    private static String getIndentationCompensation(Level level)
+    {
+        if (level.equals(Level.FINE))
+            return "  ";
+        else if (level.equals(Level.FINER))
+            return " ";
+        else
+            return " ";
+    }
+    
+    public void notifyNewRound(final int roundNumber)
+    {
+        try
+        {
+            SwingUtilities.invokeAndWait(new Runnable()
+            {
+                public void run()
+                {
+                    JPanel newPanel = new JPanel();
+                    JScrollPane newScrollPane = new JScrollPane();
+                    JTextArea newTextArea = new JTextArea();
+
+                    newTextArea.setColumns(20);
+                    newTextArea.setRows(5);
+                    newTextArea.setFont(new java.awt.Font("Segoe UI", 0, 10));
+                    newTextArea.setEditable(false);
+
+                    newScrollPane.getHorizontalScrollBar().setEnabled(true);
+                    newScrollPane.setViewportView(newTextArea);
+                    newPanel.setLayout(new GridLayout());
+                    newPanel.add(newScrollPane);
+                    v_logHolderTabbedPane.addTab(Integer.toString(roundNumber), newPanel);
+
+                    currentLogTextArea = newTextArea;
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            System.out.print("Error initializing Dynamix settings window. \r\n");
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton basicStrengthEval;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
+    private javax.swing.JLabel jLabel36;
+    private javax.swing.JLabel jLabel37;
+    private javax.swing.JLabel jLabel38;
+    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel40;
+    private javax.swing.JLabel jLabel41;
+    private javax.swing.JLabel jLabel42;
+    private javax.swing.JLabel jLabel43;
+    private javax.swing.JLabel jLabel44;
+    private javax.swing.JLabel jLabel45;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JRadioButton v_actionLengthGoalRB;
     private javax.swing.JRadioButton v_actionWaitGoalRB;
     private javax.swing.JPanel v_actionWaitGoalsPanel;
-    private javax.swing.JCheckBox v_allowSpeedUps;
+    private javax.swing.JTextArea v_aiOutputLogArea;
+    private javax.swing.JScrollPane v_aiOutputLogAreaScrollPane;
+    private javax.swing.JCheckBox v_allowAILearning;
+    private javax.swing.JCheckBox v_allowCalcingDecrease;
+    private javax.swing.JRadioButton v_basicScoreEval;
+    private javax.swing.JRadioButton v_battleCalculator;
+    private javax.swing.JSpinner v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile;
+    private javax.swing.JSpinner v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance;
+    private javax.swing.JSpinner v_cacmncm_determinesIfTaskEndangersCap;
+    private javax.swing.JSpinner v_cacmncm_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop;
+    private javax.swing.JSpinner v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile;
+    private javax.swing.JSpinner v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers;
+    private javax.swing.JSpinner v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense;
+    private javax.swing.JSpinner v_calcDecreaseToPercentage;
+    private javax.swing.JPanel v_calcRunCountAssignmentsHolderPanel;
+    private javax.swing.JScrollPane v_calcRunCountAssignmentsScrollPane;
     private javax.swing.JButton v_cancelButton;
+    private javax.swing.JSpinner v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove;
+    private javax.swing.JSpinner v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost;
+    private javax.swing.JSpinner v_caretreat_determinesIfAIShouldRetreat;
     private javax.swing.JSpinner v_combatMoveWait_AL;
     private javax.swing.JSpinner v_combatMoveWait_AW;
+    private javax.swing.JCheckBox v_enableAILogging;
+    private javax.swing.JButton v_helpButton;
+    private javax.swing.JComboBox v_logDepth;
+    private javax.swing.JTabbedPane v_logHolderTabbedPane;
     private javax.swing.JSpinner v_nonCombatMoveWait_AL;
     private javax.swing.JSpinner v_nonCombatMoveWait_AW;
     private javax.swing.JButton v_okButton;
@@ -530,8 +1340,8 @@ public class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JSpinner v_placementWait_AW;
     private javax.swing.JSpinner v_purchaseWait_AL;
     private javax.swing.JSpinner v_purchaseWait_AW;
+    private javax.swing.JRadioButton v_quickBattleCalculator;
     private javax.swing.JButton v_restoreDefaultsButton;
-    private javax.swing.JSpinner v_speedUpPercentage;
     private javax.swing.JPanel v_totalLengthGoalsPanel;
     // End of variables declaration//GEN-END:variables
 

@@ -29,7 +29,7 @@ import junit.framework.TestCase;
  *
  * @author Stephen
  */
-public class DUtilsTests extends TestCase
+public class DOddsCalculatorTests extends TestCase
 {
     private GameData m_data;
 
@@ -58,13 +58,23 @@ public class DUtilsTests extends TestCase
 
         List<Unit> attacking = new ArrayList<Unit>();
         List<Unit> defending = new ArrayList<Unit>();
-        attacking.add(infantry.create(superior));
-
+        for (int i = 0; i < 100; i++)
+        {
+            attacking.add(infantry.create(superior));
+            attacking.add(fighter.create(superior));
+        }
+        for (int i = 0; i < 100; i++)
+        {
+            defending.add(infantry.create(huron));
+        }
+        
         DOddsCalculator.Initialize(m_data);
         AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 2500, true);
+
+        System.out.print("Time Taken To Calculate: " + results.getTime() + "\r\n");
+
         assertEquals(1.0D, results.getAttackerWinPercent());
-        assertEquals(1.0D, results.getAverageAttackingUnitsLeft());
         assertEquals(0.0D, results.getAverageDefendingUnitsLeft());
-        assertEquals(0.0D, results.getAverageBattleRoundsFought());
+        assertEquals(0.0D, results.getDefenderWinPercent());
     }
 }

@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Major patch for Dynamix AI, including new settings window to customize in-game certain variables the AI uses. (Wisconsin)
+
 * Fix for serializing and techs java error. (squid daddy)
 
 * Added Napoleonic Empires, a beautiful map created by Veqryn and Lssah. Updated to use triggers and combat transports. (veqryn)
