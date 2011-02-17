@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Added Napoleonic Empires, a beautiful map created by Veqryn and Lssah. Updated to use triggers and combat transports. (veqryn)
+
 * Fix for support/triggers/rules java error. (squid daddy)
 
 * New player attachments, "destroysPUs", which when set for a player means that player destroys their PUs rather than let them be captured. (veqryn)

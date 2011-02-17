@@ -70,6 +70,13 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isCombatTransport = false;
   private boolean m_isConstruction = false;
   
+  // can be any String except for "none" if isConstruction is true
+  private String m_constructionType = "none";
+
+  // -1 if not set, is meaningless
+  private int m_constructionsPerTerrPerTypePerTurn = -1;
+  // -1 if not set, is meaningless
+  private int m_maxConstructionsPerTypePerTerr = -1;
   
   //-1 if can't scramble
   private int m_maxScrambleDistance = -1;
@@ -260,6 +267,36 @@ public class UnitAttachment extends DefaultAttachment
   public void setIsConstruction(String s)
   {
 	  m_isConstruction = getBool(s);
+  }
+
+  public void setConstructionType(String s)
+  {
+	  m_constructionType = s;
+  }
+
+  public String getConstructionType()
+  {
+    return m_constructionType;
+  }
+
+  public void setConstructionsPerTerrPerTypePerTurn(String s)
+  {
+	  m_constructionsPerTerrPerTypePerTurn = getInt(s);
+  }
+
+  public int getConstructionsPerTerrPerTypePerTurn()
+  {
+    return m_constructionsPerTerrPerTypePerTurn;
+  }
+
+  public void setMaxConstructionsPerTypePerTerr(String s)
+  {
+	  m_maxConstructionsPerTypePerTerr = getInt(s);
+  }
+
+  public int getMaxConstructionsPerTypePerTerr()
+  {
+    return m_maxConstructionsPerTypePerTerr;
   }
 
   public void setIsMarine(String s)
@@ -676,6 +713,17 @@ public class UnitAttachment extends DefaultAttachment
     {
     	throw new GameParseException("Restricted transports cannot have attack or defense");
     }
+    
+    /* TODO: comment this out once Veqryn create a better way of doing constructions
+    if(m_isConstruction && (m_constructionType == "none" || m_constructionType == "" || m_constructionType == null || m_constructionsPerTerrPerType < 0 || m_maxConstructionsPerType < 0))
+    {
+    	throw new GameParseException("Constructions must have constructionType and positive constructionsPerTerrPerType and maxConstructionsPerType");
+    }
+    
+    if(!m_isConstruction && ((m_constructionType != "none" && m_constructionType != "" && m_constructionType != null) || m_constructionsPerTerrPerType >= 0 || m_maxConstructionsPerType >= 0))
+    {
+    	throw new GameParseException("Constructions must have isConstruction true");
+    }*/
   }
 
   private boolean isWW2V3TechModel(GameData data)
@@ -711,6 +759,10 @@ public class UnitAttachment extends DefaultAttachment
     " combatTransport:" + m_isCombatTransport +
     " construction:" + m_isConstruction +
     
+    " constructionType:" + m_constructionType +
+    
+    " constructionsPerTerrPerType:" + m_constructionsPerTerrPerTypePerTurn +
+    " maxConstructionsPerType:" + m_maxConstructionsPerTypePerTerr +
     " maxScrambleDistance:" + m_maxScrambleDistance +
     " maxOperationalDamage:" + m_maxOperationalDamage +
     " maxDamage:" + m_maxDamage +

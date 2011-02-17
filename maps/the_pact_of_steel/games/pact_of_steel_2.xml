@@ -3958,6 +3958,7 @@
 						* Soviets gain control of any American land units that are in Archangel at the end of America's turn 
 							(if USA lands an aircraft there, it will get converted to Russian control, please use edit to convert it back to USA's control til this bug is fixed).<br>
 						* Soviets have double chance of getting Improved Artillery when rolling for tech<br>
+						* Soviets destroy their industrial production (PUs) instead of letting it be captured, when they lose their capital<br>
 						<br>
 						<i>China: Chinese Resistance & The Flying Tigers </i><br>
         				+1 infantry for every two territories controlled by China at the end of her turn, rounded up. May only place a max of 2 units per territory per turn. 

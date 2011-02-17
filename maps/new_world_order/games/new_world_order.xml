@@ -4740,7 +4740,7 @@ General:
 	<li>Renamed to remove special characters from folder and xml names. (veqryn)
 	<li>Included with TripleA download. (veqryn)
 	<li>Coded and Added "Low Luck for AntiAircraft" as an option, so that people make play with dice for normal units and LL for AA units only. (veqryn)
-	<li>Coded and added Bunker rules, included as an option. No longer need edit mode to place factories. Turn off unlimited bunkers to only allow a maximum number of bunkers equal to territory value. (code by crystalct, added by veqryn)
+	<li>Coded and added Bunker rules, included as an option. No longer need edit mode to place factories. Turn off unlimited bunkers to only allow a maximum number of bunkers equal to territory value. (code by crystalct and veqryn)
 	<li>Updated NWO to take advantage of triggered rule changes to have red dot units and bunkers not appear for purchasing during beginning turns, and the ability to turn them off completely by deselecting "Use Triggers". (added to nwo by Veqryn, code by Squid Daddy)
 	</ul>
 
