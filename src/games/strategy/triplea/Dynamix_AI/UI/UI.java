@@ -45,14 +45,20 @@ public class UI
     private static SettingsWindow s_settingsWindow = null;
     public static void ShowSettingsWindow()
     {
+        if (s_settingsWindow == null) //Shouldn't happen
+            return;
         s_settingsWindow.setVisible(true);
     }
     public static void NotifyAILogMessage(Level level, String message)
     {
+        if(s_settingsWindow == null) //Shouldn't happen
+            return;
         s_settingsWindow.addMessage(level, message);
     }
     public static void NotifyStartOfRound(int round)
     {
+        if (s_settingsWindow == null) //Shouldn't happen
+            return;
         s_settingsWindow.notifyNewRound(round);
     }
 }

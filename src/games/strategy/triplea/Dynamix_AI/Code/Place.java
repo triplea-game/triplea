@@ -25,7 +25,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.FactoryCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
-import games.strategy.triplea.Dynamix_AI.CommandCenter.KnowledgeCenter;
+import games.strategy.triplea.Dynamix_AI.DSorting;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.Dynamix_AI.Group.PurchaseGroup;
@@ -225,7 +225,7 @@ public class Place
         Territory ourCapital = TerritoryAttachment.getCapital(player, data);
 
         List<Territory> facLocs = new ArrayList<Territory>(data.getMap().getTerritoriesOwnedBy(player));
-        facLocs = DUtils.SortTerritoriesByLandDistanceFrom(facLocs, ourCapital, data);
+        facLocs = DSorting.SortTerritoriesByLandDistance_A(facLocs, data, ourCapital);
         int lowestRange = Integer.MAX_VALUE;
         for (Territory ter : facLocs)
         {

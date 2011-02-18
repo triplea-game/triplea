@@ -22,6 +22,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
 import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
 import games.strategy.triplea.Dynamix_AI.Others.TerritoryStatus;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
@@ -340,6 +341,34 @@ public class DMatches
                     if(!data.getAllianceTracker().isAllied(lastPlayer, unit.getOwner()))
                         return true;
                 }
+                return false;
+            }
+        };
+    }
+    public static Match<Territory> territoryIsCapitalAndOwnedByEnemy(final GameData data, final PlayerID player)
+    {
+        return new Match<Territory>()
+        {
+            @Override
+            public boolean match(Territory ter)
+            {
+                TerritoryAttachment ta = TerritoryAttachment.get(ter);
+                if(ta != null && ta.isCapital() && data.getAllianceTracker().isAtWar(ter.getOwner(), player))
+                    return true;
+                return false;
+            }
+        };
+    }
+    public static Match<Territory> territoryIsCapitalAndOwnedByAliveEnemy(final GameData data, final PlayerID player)
+    {
+        return new Match<Territory>()
+        {
+            @Override
+            public boolean match(Territory ter)
+            {
+                TerritoryAttachment ta = TerritoryAttachment.get(ter);
+                if(ta != null && ta.isCapital() && data.getAllianceTracker().isAtWar(ter.getOwner(), player) && TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data).size() > 0)
+                    return true;
                 return false;
             }
         };

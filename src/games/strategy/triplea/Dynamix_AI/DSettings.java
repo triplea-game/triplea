@@ -42,9 +42,9 @@ public class DSettings implements Serializable
     public int PlacementWait_AW = 250;
 
     public boolean AllowCalcingDecrease = true;
-    public int CalcingDecreaseToPercentage = 50;
+    public int CalcingDecreaseToPercentage = 75;
 
-    public boolean EnableAILogging = true;
+    public boolean EnableAILogging = false;
     public Level AILoggingDepth = Level.FINEST;
 
     public int CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost = 125;

@@ -88,7 +88,6 @@ public class SettingsWindow extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         v_allowAILearning = new javax.swing.JCheckBox();
         jPanel6 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         v_calcRunCountAssignmentsScrollPane = new javax.swing.JScrollPane();
         v_calcRunCountAssignmentsHolderPanel = new javax.swing.JPanel();
@@ -564,21 +563,6 @@ public class SettingsWindow extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("AI Cheating", jPanel6);
 
-        jPanel3.setName("jPanel3"); // NOI18N
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 735, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 343, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("AI Control", jPanel3);
-
         jPanel4.setName("jPanel4"); // NOI18N
 
         v_calcRunCountAssignmentsScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -592,11 +576,11 @@ public class SettingsWindow extends javax.swing.JFrame {
         v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost.setModel(new javax.swing.SpinnerNumberModel(125, 1, 5000, 10));
         v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost.setName("v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost"); // NOI18N
 
-        jLabel16.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel16.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel16.setText("Purchase - Calculation That Determines The Unit That Would Help Win Invasion On Enemy Target The Most:");
         jLabel16.setName("jLabel16"); // NOI18N
 
-        jLabel18.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel18.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel18.setText("(Frequency: Very High, Suggested Range: 10 - 250)");
         jLabel18.setName("jLabel18"); // NOI18N
 
@@ -606,15 +590,15 @@ public class SettingsWindow extends javax.swing.JFrame {
         v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance.setModel(new javax.swing.SpinnerNumberModel(250, 1, 5000, 10));
         v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance.setName("v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance"); // NOI18N
 
-        jLabel20.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel20.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel20.setText("CM - Calculation That Determines If The Creation Of A Task Is Worthwhile Based On Takeover Chance:");
         jLabel20.setName("jLabel20"); // NOI18N
 
-        jLabel21.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel21.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel21.setText("(Frequency: Average, Suggested Range: 50 - 500)");
         jLabel21.setName("jLabel21"); // NOI18N
 
-        jLabel22.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel22.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel22.setText("CM & NCM - Calculation That Sorts Possible Task Recruits For Optimal Attack/Defense:");
         jLabel22.setName("jLabel22"); // NOI18N
 
@@ -624,7 +608,7 @@ public class SettingsWindow extends javax.swing.JFrame {
         jLabel23.setText("calculations");
         jLabel23.setName("jLabel23"); // NOI18N
 
-        jLabel24.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel24.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel24.setText("(Frequency: Very High, Suggested Range: 5 - 250)");
         jLabel24.setName("jLabel24"); // NOI18N
 
@@ -634,22 +618,22 @@ public class SettingsWindow extends javax.swing.JFrame {
         jLabel25.setText("calculations");
         jLabel25.setName("jLabel25"); // NOI18N
 
-        jLabel26.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel26.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel26.setText("CM & NCM - Calculation That Determines If The Task's Requirements Are Met Enough For Unit Recruiting To Stop:");
         jLabel26.setName("jLabel26"); // NOI18N
 
-        jLabel27.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel27.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel27.setText("(Frequency: High, Suggested Range: 50 - 1000)");
         jLabel27.setName("jLabel27"); // NOI18N
 
         jLabel28.setText("calculations");
         jLabel28.setName("jLabel28"); // NOI18N
 
-        jLabel29.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel29.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel29.setText("CM - Calculation That Determines Attack Results For Determining If Task Is Worthwhile:");
         jLabel29.setName("jLabel29"); // NOI18N
 
-        jLabel30.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel30.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel30.setText("(Frequency: Average, Suggested Range: 250 - 2500)");
         jLabel30.setName("jLabel30"); // NOI18N
 
@@ -659,11 +643,11 @@ public class SettingsWindow extends javax.swing.JFrame {
         v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile.setModel(new javax.swing.SpinnerNumberModel(500, 1, 5000, 10));
         v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile.setName("v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile"); // NOI18N
 
-        jLabel31.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel31.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel31.setText("(Frequency: Average, Suggested Range: 250 - 2500)");
         jLabel31.setName("jLabel31"); // NOI18N
 
-        jLabel32.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel32.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel32.setText("CM & NCM - Calculation That Determines Response Results For Determining If Task Is Worthwhile:");
         jLabel32.setName("jLabel32"); // NOI18N
 
@@ -673,25 +657,25 @@ public class SettingsWindow extends javax.swing.JFrame {
         jLabel34.setText("calculations");
         jLabel34.setName("jLabel34"); // NOI18N
 
-        jLabel35.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel35.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel35.setText("CM & NCM - Calculation That Determines If Task Endangers The Capital:");
         jLabel35.setName("jLabel35"); // NOI18N
 
-        jLabel36.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel36.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel36.setText("(Frequency: Low, Suggested Range: 100 - 1500)");
         jLabel36.setName("jLabel36"); // NOI18N
 
         v_cacmncm_determinesIfTaskEndangersCap.setModel(new javax.swing.SpinnerNumberModel(250, 1, 5000, 10));
         v_cacmncm_determinesIfTaskEndangersCap.setName("v_cacmncm_determinesIfTaskEndangersCap"); // NOI18N
 
-        jLabel37.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel37.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel37.setText("(Frequency: Very Low, Suggested Range: 50 - 1000)");
         jLabel37.setName("jLabel37"); // NOI18N
 
         v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers.setModel(new javax.swing.SpinnerNumberModel(250, 1, 5000, 10));
         v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers.setName("v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers"); // NOI18N
 
-        jLabel38.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel38.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel38.setText("CM & NCM - Calculation That Determines Vulnerability After Task For Checking Whether To Invalidate Attackers:");
         jLabel38.setName("jLabel38"); // NOI18N
 
@@ -701,25 +685,25 @@ public class SettingsWindow extends javax.swing.JFrame {
         jLabel40.setText("calculations");
         jLabel40.setName("jLabel40"); // NOI18N
 
-        jLabel41.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel41.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel41.setText("NCM - Calculation That Determines Vulnerability Of From Ter After Move For Checking Whether To Cancel Move:");
         jLabel41.setName("jLabel41"); // NOI18N
 
         v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove.setModel(new javax.swing.SpinnerNumberModel(100, 1, 5000, 10));
         v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove.setName("v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove"); // NOI18N
 
-        jLabel42.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel42.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel42.setText("(Frequency: Average, Suggested Range: 25 - 1000)");
         jLabel42.setName("jLabel42"); // NOI18N
 
-        jLabel43.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel43.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel43.setText("(Frequency: Low, Suggested Range: 250 - 5000)");
         jLabel43.setName("jLabel43"); // NOI18N
 
         v_caretreat_determinesIfAIShouldRetreat.setModel(new javax.swing.SpinnerNumberModel(500, 1, 5000, 10));
         v_caretreat_determinesIfAIShouldRetreat.setName("v_caretreat_determinesIfAIShouldRetreat"); // NOI18N
 
-        jLabel44.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel44.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel44.setText("Retreat Query - Calculation That Determines If AI Should Retreat:");
         jLabel44.setName("jLabel44"); // NOI18N
 
@@ -936,7 +920,7 @@ public class SettingsWindow extends javax.swing.JFrame {
         jPanel8.setName("jPanel8"); // NOI18N
 
         v_logHolderTabbedPane.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
-        v_logHolderTabbedPane.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        v_logHolderTabbedPane.setFont(new java.awt.Font("Segoe UI", 0, 10));
         v_logHolderTabbedPane.setName("v_logHolderTabbedPane"); // NOI18N
 
         jPanel9.setName("jPanel9"); // NOI18N
@@ -1295,7 +1279,6 @@ public class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;

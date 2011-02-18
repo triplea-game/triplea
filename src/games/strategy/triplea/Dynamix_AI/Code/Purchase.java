@@ -28,11 +28,10 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.FactoryCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
-import games.strategy.triplea.Dynamix_AI.CommandCenter.KnowledgeCenter;
 import games.strategy.triplea.Dynamix_AI.DSettings;
+import games.strategy.triplea.Dynamix_AI.DSorting;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
-import games.strategy.triplea.Dynamix_AI.Group.MovePackage;
 import games.strategy.triplea.Dynamix_AI.Group.PurchaseGroup;
 import games.strategy.triplea.Dynamix_AI.Others.NCM_TargetCalculator;
 import games.strategy.triplea.Dynamix_AI.Others.NCM_Task;
@@ -181,7 +180,7 @@ public class Purchase
         {
             Territory ourCap = TerritoryAttachment.getCapital(player, data);
             List<Territory> ourTers = new ArrayList<Territory>(data.getMap().getTerritoriesOwnedBy(player));
-            ourTers = DUtils.SortTerritoriesByLandThenNoCondDistanceFrom(ourTers, ourCap, data); //We want to repair the factories close to our capital first
+            ourTers = DSorting.SortTerritoriesByLandThenNoCondDistance_A(ourTers, data, ourCap); //We want to repair the factories close to our capital first
 
             List<RepairRule> rrules = player.getRepairFrontier().getRules();
             HashMap<Territory, IntegerMap<RepairRule>> factoryRepairs = new HashMap<Territory, IntegerMap<RepairRule>>();
@@ -245,7 +244,7 @@ public class Purchase
         }
 
         List<Territory> ourFactoryTers = Match.getMatches(new ArrayList<Territory>(data.getMap().getTerritoriesOwnedBy(player)), Matches.territoryHasUnitsThatMatch(Matches.UnitIsFactory));
-        List<Territory> ourTersSortedByCapDistance = DUtils.SortTerritoriesByLandDistanceFrom(ourFactoryTers, ourCapital, data);
+        List<Territory> ourTersSortedByCapDistance = DSorting.SortTerritoriesByLandDistance_A(ourFactoryTers, data, ourCapital);
         Collections.shuffle(ourTersSortedByCapDistance); //Actually, its probably better not to sort... We shouldn't be predictable unless we know what we're doing
         for (Territory ter : ourTersSortedByCapDistance)
         {

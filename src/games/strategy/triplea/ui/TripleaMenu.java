@@ -575,18 +575,20 @@ private void addLockMap(JMenu parentMenu)
     {
         boolean areThereDynamixAIs = false;
         Set<IGamePlayer> players = ((TripleAFrame) m_frame).GetLocalPlayers();
-        Dynamix_AI.ClearAIInstancesMemory();
         for (IGamePlayer player : players)
         {
             if (player instanceof Dynamix_AI)
-            {
-                Dynamix_AI.AddDynamixAIIntoAIInstancesMemory((Dynamix_AI) player);
                 areThereDynamixAIs = true;
-            }
         }
 
         if (areThereDynamixAIs)
         {
+            Dynamix_AI.ClearAIInstancesMemory();
+            for (IGamePlayer player : players)
+            {
+                if (player instanceof Dynamix_AI)
+                    Dynamix_AI.AddDynamixAIIntoAIInstancesMemory((Dynamix_AI) player);
+            }
             parentMenu.addSeparator();
             parentMenu.add(new AbstractAction("Change Dynamix AI Settings")
             {

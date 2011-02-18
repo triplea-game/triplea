@@ -356,7 +356,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 
     public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message)
     {
-        DUtils.Log(Level.FINE, "Retreat query starting. Possible retreat locations: {0}", DUtils.GetBasicListContentDump(possibleTerritories, false, false));
+        DUtils.Log(Level.FINE, "Retreat query starting. Possible retreat locations: {0}", possibleTerritories);
         final GameData data = getPlayerBridge().getGameData();
         Territory battleTerr = getBattleTerritory();
         if(battleTerr == null) //This will be null if we're defending and TripleA calls this method to ask if we want to retreat(submerge) our subs when being attacked

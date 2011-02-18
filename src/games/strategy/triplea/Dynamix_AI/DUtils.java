@@ -47,7 +47,6 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -246,38 +245,6 @@ public class DUtils
         return toSmashIntoArray;
     }
     /**
-     * Return the safest ter in the list, based on takeover chance. (Based on defense score if the takeover chances for the ters are equal)
-     */
-    public static Territory GetSafestTerInList(GameData data, List<Territory> list, PlayerID player)
-    {
-        float highestDefendingTerDefenseChance = Integer.MIN_VALUE;
-        Territory highestDefendingTer = null;
-        for (Territory ter : list)
-        {
-            List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
-            AggregateResults results = DUtils.GetBattleResults(attackers, new ArrayList<Unit>(ter.getUnits().getUnits()), ter, data, 250, false);
-            if (results.getDefenderWinPercent() > highestDefendingTerDefenseChance)
-            {
-                highestDefendingTerDefenseChance = (float)results.getDefenderWinPercent();
-                highestDefendingTer = ter;
-            }
-        }
-        if (highestDefendingTer == null)
-        {
-            for (Territory ter : list)
-            {
-                List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
-                float defense = DUtils.GetDefenseStrengthOfUnits(new ArrayList<Unit>(ter.getUnits().getUnits()));
-                if (defense > highestDefendingTerDefenseChance)
-                {
-                    highestDefendingTerDefenseChance = defense;
-                    highestDefendingTer = ter;
-                }
-            }
-        }
-        return highestDefendingTer;
-    }
-    /**
      * First, determines if <code>map</code> contains <code>key</code>.
      * If it does, it retrieves the value(which is expected to be a List) of <code>key</code> in <code>map</code>, adds <code>obj</code> to the list,
      * and puts the updated list back into <code>map</code> using <code>key</code> as the key.
@@ -334,15 +301,13 @@ public class DUtils
         }
         return result;
     }
-    public static List<PlayerID> GetAliveEnemyPlayers(GameData data, PlayerID us)
+    public static List<PlayerID> GetAliveEnemyPlayers(GameData data, PlayerID player)
     {
         List<PlayerID> result = new ArrayList<PlayerID>();
-        for (PlayerID player : data.getPlayerList().getPlayers())
+        for (PlayerID enemy : data.getPlayerList().getPlayers())
         {
-            if (!data.getAllianceTracker().isAllied(us, player) && TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data).size() > 0)
-            {
-                result.add(player);                
-            }
+            if (!data.getAllianceTracker().isAllied(player, enemy) && TerritoryAttachment.getAllCurrentlyOwnedCapitals(enemy, data).size() > 0)
+                result.add(enemy);
         }
         return result;
     }
@@ -352,9 +317,7 @@ public class DUtils
         for (PlayerID player : data.getPlayerList().getPlayers())
         {
             if (!data.getAllianceTracker().isAllied(us, player))
-            {
                 result.add(player);
-            }
         }
         return result;
     }
@@ -364,9 +327,7 @@ public class DUtils
         for (PlayerID player : data.getPlayerList().getPlayers())
         {
             if (data.getAllianceTracker().isAllied(us, player))
-            {
                 result.add(player);
-            }
         }
         return result;
     }
@@ -400,6 +361,10 @@ public class DUtils
         });
         return result;
     }
+    /**
+     * Used to find the x closest routes between two territories that are of similar length.
+     * This can be used to find the friendly/enemy units in the general area between two countries to determine how many units to send in one direction.
+     */
     public static List<Route> GetXClosestSimiliarLengthLandRoutesBetweenTers(GameData data, int maxNumberOfRoutes, Territory ter1, Territory ter2)
     {
         List<Route> result = new ArrayList<Route>();
@@ -526,8 +491,8 @@ public class DUtils
     {
         int result = 0;
 
-        List<Territory> ourCaps = TerritoryAttachment.getAllCurrentlyOwnedCapitals(us, data);
-        List<Territory> enemyCaps = TerritoryAttachment.getAllCurrentlyOwnedCapitals(enemy, data);
+        List<Territory> ourCaps = TerritoryAttachment.getAllCapitals(us, data);
+        List<Territory> enemyCaps = GetAliveEnemyCaps(data, us);
 
         for (Territory ourCap : ourCaps)
         {
@@ -623,8 +588,7 @@ public class DUtils
     }
     public static List<Territory> SortTerritoriesByNNEnemyNeighbors_A(List<Territory> list, final GameData data, final PlayerID player)
     {
-        List<Territory> result = new ArrayList<Territory>(list);
-        Collections.sort(result, new Comparator<Territory>()
+        return DSorting.SortTerritoriesByX(list, new Comparator<Territory>()
         {
             public int compare(Territory ter1, Territory ter2)
             {
@@ -633,8 +597,7 @@ public class DUtils
 
                 return val1 - val2;
             }
-        });
-        return result;
+        });        
     }
     public static List<Territory> GetTerritoriesInListThatAreNotInRoute(List<Territory> list, Route exludeRoute)
     {
@@ -642,29 +605,20 @@ public class DUtils
         for (Territory ter : list)
         {
             if (!exludeRoute.getTerritories().contains(ter))
-            {
                 result.add(ter);
-            }
         }
         return result;
     }
-    public static List<Territory> GetTerritoriesInListThatAreInList(List<Territory> list, List<Territory> includeList)
+    public static HashMap<Object, Object> ReverseHashMap(HashMap<Object, Object> map, final GameData data, final PlayerID player)
     {
-        List<Territory> result = new ArrayList<Territory>(list);
-        result.retainAll(includeList);
-        return result;
-    }
-    public static HashMap<Territory, List<Unit>> ReversePossibleBattlesMap(HashMap<Territory, List<Unit>> map, final GameData data, final PlayerID player)
-    {
-        HashMap<Territory, List<Unit>> result = new HashMap<Territory, List<Unit>>();
-        List<Territory> keys = new ArrayList<Territory>();
-        for (Territory ter : map.keySet())
+        HashMap<Object, Object> result = new HashMap<Object, Object>();
+        List<Object> invertedKeys = new ArrayList<Object>();
+        for (Object obj : map.keySet())
+            invertedKeys.add(obj);
+        Collections.reverse(invertedKeys);
+        for (Object obj : invertedKeys)
         {
-            keys.add(0, ter);
-        }
-        for (Territory ter : keys)
-        {
-            result.put(ter, map.get(ter));
+            result.put(obj, map.get(obj));
         }
         return result;
     }
@@ -698,21 +652,6 @@ public class DUtils
             return -1;
         return fastestMovement;
     }
-    public static int GetFastestMovementLandUnitInList(List<Unit> list)
-    {
-        int fastestMovement = Integer.MIN_VALUE;
-        for (Unit unit : list)
-        {
-            TripleAUnit tu = TripleAUnit.get(unit);
-            if (!UnitAttachment.get(unit.getUnitType()).isAir() && tu.getMovementLeft() > fastestMovement)
-            {
-                fastestMovement = tu.getMovementLeft();
-            }
-        }
-        if(fastestMovement == Integer.MIN_VALUE)
-            return -1;
-        return fastestMovement;
-    }
     public static Unit GetCheapestUnitInList(List<Unit> list)
     {
         int cheapest = Integer.MAX_VALUE;
@@ -728,6 +667,11 @@ public class DUtils
         }
         return cheapestUnit;
     }
+    /**
+     * Separates all the units in the list into separate lists and puts them into a hashmap with the key as the movement speed and the value as the list of units with that speed.
+     * @param list - List of units to seperate
+     * @return - a hashmap containing all the units separated by speed.
+     */
     public static HashMap<Integer, List<Unit>> SeperateUnitsInListIntoSeperateMovementLists(List<Unit> list)
     {
         HashMap<Integer, List<Unit>> result = new HashMap<Integer, List<Unit>>();
@@ -771,71 +715,22 @@ public class DUtils
     }
     public static Territory GetClosestEnemyCap(Territory ter, final GameData data, final PlayerID player, Match<Territory> capMatch, Match<Territory> routeMatch)
     {
-        return GetClosestTerMatchingX(data, ter, CompMatchAnd(new Match<Territory>()
-        {
-            @Override
-            public boolean match(Territory ter)
-            {
-                TerritoryAttachment ta = TerritoryAttachment.get(ter);
-                if(ta != null && ta.isCapital() && data.getAllianceTracker().isAtWar(ter.getOwner(), player) && TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data).contains(ter))
-                    return true;
-                return false;
-            }
-        }, capMatch), routeMatch);
+        return GetClosestTerMatchingX(data, ter, DUtils.CompMatchAnd(DMatches.territoryIsCapitalAndOwnedByEnemy(data, player), capMatch), routeMatch);
     }
     public static Territory GetClosestTerMatchingX(GameData data, Territory start, Match<Territory> match, Match<Territory> routeMatch)
     {
         List<Territory> matches = GetTerritoriesMatching(data, match);
-        return GetClosestTerInList(data, start, matches, routeMatch);
+        return GetClosestTerInList(data, matches, start, routeMatch);
     }
-    public static Territory GetClosestTerInList(GameData data, Territory start, List<Territory> list, Match<Territory> routeMatch)
+    public static Territory GetClosestTerInList(GameData data, List<Territory> list, Territory target, Match<Territory> routeMatch)
     {
-        int closestDist = Integer.MAX_VALUE;
-        Territory closestTer = null;
-        for(Territory ter : list)
-        {
-            Route route = data.getMap().getRoute_IgnoreEnd(start, ter, routeMatch);
-            if(route == null)
-                continue;
-            int dist = route.getLength();
-            if(dist < closestDist)
-            {
-                closestDist = dist;
-                closestTer = ter;
-            }
-        }
-        return closestTer;
+        return DSorting.SortTerritoriesByLandThenNoCondDistance_A(list, data, target).get(0);
     }
-    public static List<Territory> GetXClosestAliveEnemyCaps(final Territory ourTer, final GameData data, PlayerID player, int maxEnemyCapsToReturn)
+    public static List<Territory> GetXClosestAliveEnemyCaps(final GameData data, PlayerID player, final Territory target, int maxEnemyCapsToReturn)
     {
         List<Territory> result = new ArrayList<Territory>();
-        List<Territory> enemyCaps = GetEnemyCaps(data, player);
-        Collections.sort(enemyCaps, new Comparator<Territory>()
-        {
-            public int compare(Territory t1, Territory t2)
-            {
-                int distance1 = 0;
-                int distance2 = 0;
-                if (DUtils.CanWeGetFromXToY_ByLand(data, ourTer, t1))
-                {
-                    distance1 = DUtils.GetJumpsFromXToY_Land(data, ourTer, t1);
-                }
-                else
-                {
-                    distance1 = DUtils.GetJumpsFromXToY_NoCond(data, ourTer, t1) * 3;
-                }
-                if (DUtils.CanWeGetFromXToY_ByLand(data, ourTer, t2))
-                {
-                    distance2 = DUtils.GetJumpsFromXToY_Land(data, ourTer, t2);
-                }
-                else
-                {
-                    distance2 = DUtils.GetJumpsFromXToY_NoCond(data, ourTer, t2) * 3;
-                }
-
-                return distance1 - distance2;
-            }
-        });
+        List<Territory> enemyCaps = GetAliveEnemyCaps(data, player);
+        enemyCaps = DSorting.SortTerritoriesByLandThenNoCondDistance_A(result, data, target);
 
         for (int i = 0; i < maxEnemyCapsToReturn; i++)
         {
@@ -846,36 +741,11 @@ public class DUtils
         }
         return result;
     }
-    public static List<Territory> GetXClosestEnemyCaps(final Territory ourTer, final GameData data, PlayerID player, int maxEnemyCapsToReturn)
+    public static List<Territory> GetXClosestEnemyCaps(final GameData data, PlayerID player, final Territory target, int maxEnemyCapsToReturn)
     {
         List<Territory> result = new ArrayList<Territory>();        
         List<Territory> enemyCaps = GetEnemyCaps(data, player);
-        Collections.sort(enemyCaps, new Comparator<Territory>()
-        {
-            public int compare(Territory t1, Territory t2)
-            {
-                int distance1 = 0;
-                int distance2 = 0;
-                if (DUtils.CanWeGetFromXToY_ByLand(data, ourTer, t1))
-                {
-                    distance1 = DUtils.GetJumpsFromXToY_Land(data, ourTer, t1);
-                }
-                else
-                {
-                    distance1 = DUtils.GetJumpsFromXToY_NoCond(data, ourTer, t1) * 3;
-                }
-                if (DUtils.CanWeGetFromXToY_ByLand(data, ourTer, t2))
-                {
-                    distance2 = DUtils.GetJumpsFromXToY_Land(data, ourTer, t2);
-                }
-                else
-                {
-                    distance2 = DUtils.GetJumpsFromXToY_NoCond(data, ourTer, t2) * 3;
-                }
-
-                return distance1 - distance2;
-            }
-        });
+        enemyCaps = DSorting.SortTerritoriesByLandThenNoCondDistance_A(result, data, target);
 
         for (int i = 0; i < maxEnemyCapsToReturn; i++)
         {
@@ -888,42 +758,15 @@ public class DUtils
     }
     public static List<Territory> GetEnemyCaps(GameData data, PlayerID player)
     {
-        List<Territory> result = new ArrayList<Territory>();
-        for (PlayerID enemy : GetEnemyPlayers(data, player))
-        {
-            result.addAll(TerritoryAttachment.getAllCapitals(enemy, data));
-        }
-        return result;
+        return Match.getMatches(data.getMap().getTerritories(), DMatches.territoryIsCapitalAndOwnedByEnemy(data, player));
     }
-    public static List<Territory> GetAliveEnemyCaps(GameData data, PlayerID player)
+    public static List<Territory> GetAliveEnemyCaps(final GameData data, final PlayerID player)
     {
-        List<Territory> result = new ArrayList<Territory>();
-        for (PlayerID enemy : GetEnemyPlayers(data, player))
-        {
-            result.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(enemy, data));
-        }
-        return result;
+        return Match.getMatches(data.getMap().getTerritories(), DMatches.territoryIsCapitalAndOwnedByAliveEnemy(data, player));
     }
     public static Territory GetOurClosestCap(GameData data, PlayerID player, Territory ter)
     {
-        return GetClosestTerMatchingX(data, ter, Matches.territoryIsInList(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data)), Match.ALWAYS_MATCH);
-    }
-    public static boolean IsClosestEnemyCapOfTerAlsoClosestEnemyCapOfClosestCapOfOurTer(Territory ter, GameData data, PlayerID player)
-    {
-        Territory ourCap = GetOurClosestCap(data, player, ter);
-
-        Territory closestCapForTer = GetClosestEnemyCap(ter, data, player);
-        Territory closestCapForOurCap = GetClosestEnemyCap(ourCap, data, player);
-
-        if(closestCapForTer == null)
-            return false;
-        if(closestCapForOurCap == null)
-            return true;
-
-        if(!closestCapForOurCap.getName().equals(closestCapForTer.getName()))
-            return true;
-        else
-            return false;
+        return GetClosestTerMatchingX(data, ter, Matches.territoryIsInList(TerritoryAttachment.getAllCapitals(player, data)), Match.ALWAYS_MATCH);
     }
     public static Territory GetTerritoryWithTheMostUnitsOwnedByXThatCanAttack(Territory territory, GameData data, PlayerID player)
     {
@@ -1063,22 +906,22 @@ public class DUtils
         List<Territory> result = new ArrayList<Territory>();
         for (Territory ter : data.getMap().getTerritories())
         {
+            if (ter.getName().equals(territory.getName()))
+                continue;
             if(data.getAllianceTracker().isAllied(player, ter.getOwner()))
                 continue;
             List<Unit> enemyUnits = ter.getUnits().getMatches(Matches.unitIsEnemyOf(data, player));
-            int unitsThatCanAttackTer = 0;
             int dist = DUtils.GetJumpsFromXToY_Land(data, ter, territory);
-            if (ter.getName().equals(territory.getName()))
-                continue;
             if(dist < 1 || dist > maxJumpDist)
                 continue;
             for (Unit u : enemyUnits)
             {
                 if(CanUnitReachTer(data, ter, u, territory))
-                    unitsThatCanAttackTer++;
+                {
+                    result.add(ter);
+                    break;
+                }
             }
-            if (unitsThatCanAttackTer > 0)
-                result.add(ter);
         }
         return result;
     }
@@ -1098,9 +941,7 @@ public class DUtils
             if (ta == null)
                 continue;
             if (ta.getProduction() > result)
-            {
                 result = ta.getProduction();
-            }
         }
         return result;
     }
@@ -1119,7 +960,7 @@ public class DUtils
         else if(jumps == 3)
             result += 2;
 
-        List<Territory> enemyCaps = DUtils.GetXClosestEnemyCaps(ourCap, data, player, Integer.MAX_VALUE);
+        List<Territory> enemyCaps = DUtils.GetXClosestEnemyCaps(data, player, ourCap, Integer.MAX_VALUE);
         if(enemyCaps.contains(target))
             result += 25; //Give enemy caps a large score boost
 
@@ -1162,8 +1003,6 @@ public class DUtils
         float priority = 0F;
         final Territory ourCap = GetOurClosestCap(data, player, ter);
         DUtils.GetValueOfLandTer(ter, data, player);
-        if (DUtils.IsClosestEnemyCapOfTerAlsoClosestEnemyCapOfClosestCapOfOurTer(ter, data, player))
-            priority += 6.0F;
 
         Territory neighborWeAreInThatsClosestToOurCap = null;
         int closestToCapDist = Integer.MAX_VALUE;
@@ -1299,6 +1138,13 @@ public class DUtils
         priority += GetValueOfLandTer(ter, data, player);
         return priority;
     }
+    /**
+     * Determines the TUV lost by the attacker and defender based on the average battle outcome contained in the AggregateResults object.
+     * @param initialAttackers - The list of attackers before any casualties
+     * @param initialDefenders - The list of defenders before any casualties
+     * @param results - The AggregateResults object that contains the average battle outcome.
+     * @return a list of two integers. The first being the attacker's average TUV loss, the second being the defender's average TUV loss.
+     */
     public static List<Integer> GetTUVChangeOfAttackerAndDefender(List<Unit> initialAttackers, List<Unit> initialDefenders, AggregateResults results)
     {
         PlayerID attacker = null;
@@ -1329,7 +1175,7 @@ public class DUtils
         return result;
     }
     /**
-     * First array int represents tuv gained or lossed for attacker, second for defender.
+     * Returns defender's tuv loss minus attacker's TUV loss. TUV losses are contained in the array supplied, where first array int represents tuv loss for attacker, second for defender.
      */
     public static int GetTUVSwingForTUVChange(List<Integer> attackerAndDefenderTUVChanges)
     {
@@ -1343,16 +1189,7 @@ public class DUtils
     {
         return beforeAndAfter.get(1) - beforeAndAfter.get(0);
     }
-    public static float GetOurLandTerValue(Territory ter, GameData data, PlayerID player)
-    {
-        float result = (float)TerritoryAttachment.get(ter).getProduction();
-        return result;
-    }
-    public static float GetOurSeaTerValue(Territory ter, GameData data, PlayerID player)
-    {
-        return 0;
-    }
-    public static List<Territory> GetTerritoriesWithinXLJumpsOfTer(GameData data, Territory territory, int maxJumps, Match<Territory> resultTerMatch)
+    public static List<Territory> GetTerritoriesWithinXLandJumpsOfTer(GameData data, Territory territory, int maxJumps, Match<Territory> resultTerMatch)
     {
         List<Territory> result = new ArrayList<Territory>();
         for (Territory ter : data.getMap().getTerritories())
@@ -1365,6 +1202,9 @@ public class DUtils
         }
         return result;
     }
+    /**
+     * Returns the chance of destruction of the supplied army if StrongestPlayerNonNullEnemyUnits that can reach army attack.
+     */
     public static float GetVulnerabilityOfArmy(GameData data, PlayerID player, Territory ter, List<Unit> defendUnits, int calcRuns)
     {
         List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
@@ -1378,9 +1218,7 @@ public class DUtils
     {
         float total = 0.0F;
         for(Float val : values)
-        {
             total += val;
-        }
         return total / values.length;
     }
     public static List<Territory> GetTerritoriesWithinXDistanceOfY(GameData data, Territory start, int maxDistance)
@@ -1447,14 +1285,6 @@ public class DUtils
         {
             if(!ter.isWater())
                 continue;
-            if (data.getAllianceTracker().isAllied(ter.getOwner(), player))
-            {
-                continue;
-            }
-            if(ter.getOwner().getName().toLowerCase().equals("neutral"))
-            {
-                continue;
-            }
 
             List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLand);
             possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.UnitIsAir));
@@ -1466,12 +1296,7 @@ public class DUtils
     }
     public static List CloneList(List list)
     {
-        List result = new ArrayList();
-        for (Object obj : list)
-        {
-            result.add(obj);
-        }
-        return result;
+        return new ArrayList(list);
     }
     public static UnitType GetRandomUnitType()
     {
@@ -1621,13 +1446,6 @@ public class DUtils
             return null;
         return new Route(newTers);
     }
-    public static boolean CanWeGetFromXToY_WithCond(GameMap map, Territory ter1, Territory ter2, Match<Territory> routeCond)
-    {
-        Route route = map.getRoute_IgnoreEnd(ter1, ter2, routeCond);
-        if (route == null)
-            return false;
-        return true;
-    }
     public static int GetJumpsFromXToY_NoCond(GameData data, Territory ter1, Territory ter2)
     {
         Route route = CachedCalculationCenter.GetRoute(data, ter1, ter2);
@@ -1639,18 +1457,18 @@ public class DUtils
     {
         Route route = CachedCalculationCenter.GetLandRoute(data, ter1, ter2);
         if(route == null)
-            return Integer.MAX_VALUE;
-        if(!ter1.getName().equals(ter2.getName()) && route.getLength() < 1)
-            return Integer.MAX_VALUE;
+            return DConstants.Integer_HalfMax;
+        if(ter1.getName().equals(ter2.getName()) || route.getLength() < 1)
+            return DConstants.Integer_HalfMax;
         return route.getLength();
     }
     public static int GetJumpsFromXToY_Sea(GameData data, Territory ter1, Territory ter2)
     {
         Route route = CachedCalculationCenter.GetSeaRoute(data, ter1, ter2);
         if(route == null)
-            return Integer.MAX_VALUE;
-        if(!ter1.getName().equals(ter2.getName()) && route.getLength() < 1)
-            return Integer.MAX_VALUE;
+            return DConstants.Integer_HalfMax;
+        if(ter1.getName().equals(ter2.getName()) || route.getLength() < 1)
+            return DConstants.Integer_HalfMax;
         return route.getLength();
     }
     public static boolean CanWeGetFromXToY_ByLand(GameData data, Territory ter1, Territory ter2)
@@ -1699,7 +1517,7 @@ public class DUtils
             return null;
         return data.getMap().getRoute_IgnoreEnd(ter1, ter2, new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, new InverseMatch<Territory>(Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, player), Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1))))));
     }
-    public static Route GetReinforceRouteFromXToY_ByLand(GameData data, PlayerID player, Territory ter1, Territory ter2)
+    public static Route GetNCMRouteFromXToY_ByLand(GameData data, PlayerID player, Territory ter1, Territory ter2)
     {
         if(ter2.isWater())
             return null;
@@ -1723,264 +1541,6 @@ public class DUtils
             result += ta.getProduction();
         }
         return result;
-    }
-    public static List<UnitGroup> SortUnitGroupsBy(List<UnitGroup> ugs, Comparator<UnitGroup> comparer)
-    {
-        List<UnitGroup> result = new ArrayList<UnitGroup>();
-        for (UnitGroup ug : ugs)
-        {
-            result.add(ug);
-        }
-        Collections.sort(result, comparer);
-        return result;
-    }
-    public static List<UnitGroup> SortUnitGroupsByCost(List<UnitGroup> ugs, final Resource resource)
-    {
-        List<UnitGroup> result = new ArrayList<UnitGroup>();
-        for (UnitGroup ug : ugs)
-        {
-            result.add(ug);
-        }
-        Collections.sort(result, new Comparator<UnitGroup>()
-        {
-            public int compare(UnitGroup o1, UnitGroup o2)
-            {
-                int cost1 = GetTUVOfUnits(o1.GetUnits(), o1.GetFirstUnit().getOwner(), resource);
-                int cost2 = GetTUVOfUnits(o2.GetUnits(), o2.GetFirstUnit().getOwner(), resource);
-
-                return cost1 - cost2;
-            }
-        });
-        return result;
-    }
-    public static List<UnitGroup> SortUnitGroupsByAttackableEnemies(final GameData data, List<UnitGroup> ugs)
-    {
-        List<UnitGroup> result = new ArrayList<UnitGroup>();
-        for (UnitGroup ug : ugs)
-        {
-            result.add(ug);
-        }
-        Collections.sort(result, new Comparator<UnitGroup>()
-        {
-            public int compare(UnitGroup o1, UnitGroup o2)
-            {
-                int val1 = DUtils.GetTersThatMatchXThatUnitGroupCanAttack(data, o1, DMatches.territoryIsOwnedByNNEnemy(data, o1.GetFirstUnit().getOwner())).size();
-                int val2 = DUtils.GetTersThatMatchXThatUnitGroupCanAttack(data, o2, DMatches.territoryIsOwnedByNNEnemy(data, o2.GetFirstUnit().getOwner())).size();
-
-                return val1 - val2;
-            }
-        });
-        return result;
-    }
-    public static List<UnitGroup> SortUnitGroupsByReachableTersMatchingX_A(final GameData data, List<UnitGroup> ugs, final Match<Territory> match)
-    {
-        List<UnitGroup> result = new ArrayList<UnitGroup>();
-        for (UnitGroup ug : ugs)
-        {
-            result.add(ug);
-        }
-        Collections.sort(result, new Comparator<UnitGroup>()
-        {
-            public int compare(UnitGroup o1, UnitGroup o2)
-            {
-                int val1 = DUtils.GetTersThatMatchXThatUnitGroupCanAttack(data, o1, match).size();
-                int val2 = DUtils.GetTersThatMatchXThatUnitGroupCanAttack(data, o2, match).size();
-
-                return val1 - val2;
-            }
-        });
-        return result;
-    }
-    public static List<UnitGroup> SortUnitGroupsByNumberOfEmptyEnemyNeighbors(final GameData data, List<UnitGroup> ugs, final PlayerID player)
-    {
-        List<UnitGroup> result = new ArrayList<UnitGroup>();
-        for (UnitGroup ug : ugs)
-        {
-            result.add(ug);
-        }
-        Collections.sort(result, new Comparator<UnitGroup>()
-        {
-            public int compare(UnitGroup o1, UnitGroup o2)
-            {
-                int val1 = DUtils.GetTersThatMatchXThatUnitGroupCanAttack(data, o1, new CompositeMatchAnd<Territory>(DMatches.territoryIsOwnedByEnemy(data, player), new InverseMatch<Territory>(Matches.territoryHasUnitsThatMatch(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1))))).size();
-                int val2 = DUtils.GetTersThatMatchXThatUnitGroupCanAttack(data, o2, new CompositeMatchAnd<Territory>(DMatches.territoryIsOwnedByEnemy(data, player), new InverseMatch<Territory>(Matches.territoryHasUnitsThatMatch(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1))))).size();
-
-                return val1 - val2;
-            }
-        });
-        return result;
-    }
-    public static List<Unit> SortUnitsByCost_A(List<Unit> us, final Resource resource)
-    {
-        List<Unit> result = new ArrayList<Unit>();
-        for (Unit ug : us)
-        {
-            result.add(ug);
-        }
-        Collections.sort(result, new Comparator<Unit>()
-        {
-            public int compare(Unit o1, Unit o2)
-            {
-                int cost1 = GetTUVOfUnits(Collections.singletonList(o1), o1.getOwner(), resource);
-                int cost2 = GetTUVOfUnits(Collections.singletonList(o2), o2.getOwner(), resource);
-
-                return cost1 - cost2;
-            }
-        });
-        return result;
-    }
-    public static List<UnitGroup> SortUnitGroupsByDistanceFrom(List<UnitGroup> ugs, final Territory ter, final GameData data)
-    {
-        List<UnitGroup> result = new ArrayList<UnitGroup>();
-        for (UnitGroup ug : ugs)
-        {
-            result.add(ug);
-        }
-        Collections.sort(result, new Comparator<UnitGroup>()
-        {
-            public int compare(UnitGroup o1, UnitGroup o2)
-            {
-                int ter1D = DUtils.GetJumpsFromXToY_NoCond(data, o1.GetStartTerritory(), ter);
-                int ter2D = DUtils.GetJumpsFromXToY_NoCond(data, o2.GetStartTerritory(), ter);
-                if(ter1D < ter2D)
-                    return -1;
-                else if(ter2D > ter1D)
-                    return 1;
-                else
-                    return 0;
-            }
-        });
-        return result;
-    }    
-    public static List<Territory> SortTerritoriesByFriendlyNeighborCount_A(List<Territory> ters, final GameData data, final PlayerID player)
-    {
-        List<Territory> result = new ArrayList<Territory>();
-        for (Territory ter2 : ters)
-        {
-            result.add(ter2);
-        }
-        Collections.sort(result, new Comparator<Territory>()
-        {
-            public int compare(Territory ter1, Territory ter2)
-            {
-                int val1 = DUtils.GetTersThatMatchXThatUnitsOnTerCanAttack(data, ter1, new InverseMatch<Territory>(DMatches.territoryIsOwnedByEnemy(data, player)), player).size();
-                int val2 = DUtils.GetTersThatMatchXThatUnitsOnTerCanAttack(data, ter2, new InverseMatch<Territory>(DMatches.territoryIsOwnedByEnemy(data, player)), player).size();
-
-                return val1 - val2;
-            }
-        });
-        return result;
-    }
-    public static List<Territory> SortTerritoriesByLandDistanceFrom(List<Territory> ters, final Territory ter, final GameData data)
-    {
-        List<Territory> result = new ArrayList<Territory>();
-        for (Territory ter2 : ters)
-        {
-            result.add(ter2);
-        }
-        Collections.sort(result, new Comparator<Territory>()
-        {
-            public int compare(Territory t1, Territory t2)
-            {
-                int ter1D = DUtils.GetJumpsFromXToY_Land(data, t1, ter);
-                int ter2D = DUtils.GetJumpsFromXToY_Land(data, t2, ter);
-                return ter1D - ter2D;
-            }
-        });
-        return result;
-    }
-    public static List<Territory> SortTerritoriesByLandThenNoCondDistanceFrom(List<Territory> ters, final Territory ter, final GameData data)
-    {
-        List<Territory> result = new ArrayList<Territory>();
-        for (Territory ter2 : ters)
-        {
-            result.add(ter2);
-        }
-        Collections.sort(result, new Comparator<Territory>()
-        {
-            public int compare(Territory t1, Territory t2)
-            {
-                int lJumps1 = DUtils.GetJumpsFromXToY_Land(data, t1, ter);
-                int lJumps2 = DUtils.GetJumpsFromXToY_Land(data, t2, ter);
-                int jumps1 = DUtils.GetJumpsFromXToY_NoCond(data, t1, ter);
-                int jumps2 = DUtils.GetJumpsFromXToY_NoCond(data, t2, ter);
-
-                int ter1D = lJumps1;
-                int ter2D = lJumps2;
-                if(jumps1 > lJumps1) //If noCondition jumps is more than land jumps, there is no land route between them, otherwise land and no cond routes would be the same
-                    ter1D = jumps1 * GlobalCenter.MapTerCount; //So use a multiplied noCond route instead
-                if(jumps2 > lJumps2) //If noCondition jumps is more than land jumps, there is no land route between them, otherwise land and no cond routes would be the same
-                    ter2D = jumps2 * GlobalCenter.MapTerCount; //So use a multiplied noCond route instead
-
-                return ter1D - ter2D;
-            }
-        });
-        return result;
-    }
-    public static List<Territory> SortTerritoriesByLandTerValue_A(List<Territory> ters, final GameData data)
-    {
-        List<Territory> result = new ArrayList<Territory>();
-        for (Territory ter2 : ters)
-        {
-            result.add(ter2);
-        }
-        Collections.sort(result, new Comparator<Territory>()
-        {
-            public int compare(Territory t1, Territory t2)
-            {
-                int ter1D = (int)DUtils.GetValueOfLandTer(t1, data, t1.getOwner());
-                int ter2D = (int)DUtils.GetValueOfLandTer(t2, data, t2.getOwner());
-                return ter1D - ter2D;
-            }
-        });
-        return result;
-    }
-    public static List<Territory> SortTerritoriesByDistanceFrom(List<Territory> ters, final Territory ter, final GameData data)
-    {
-        List<Territory> result = new ArrayList<Territory>();
-        for (Territory ter2 : ters)
-        {
-            result.add(ter2);
-        }
-        Collections.sort(result, new Comparator<Territory>()
-        {
-            public int compare(Territory t1, Territory t2)
-            {
-                int ter1D = DUtils.GetJumpsFromXToY_NoCond(data, t1, ter);
-                int ter2D = DUtils.GetJumpsFromXToY_NoCond(data, t2, ter);
-                return ter1D - ter2D;
-            }
-        });
-        return result;
-    }
-    /**
-     * (SortTerritoriesByTUVOfUnits_Ascending)
-     */
-    public static List<Territory> SortTerritoriesByTUVOfUnits_A(List<Territory> ters, final GameMap map)
-    {
-        List<Territory> result = new ArrayList<Territory>();
-        for (Territory ter2 : ters)
-        {
-            result.add(ter2);
-        }
-        Collections.sort(result, new Comparator<Territory>()
-        {
-            public int compare(Territory t1, Territory t2)
-            {
-                int ter1D = DUtils.GetTUVOfUnits(t1.getUnits().getUnits(), t1.getOwner(), GlobalCenter.GetPUResource());
-                int ter2D = DUtils.GetTUVOfUnits(t2.getUnits().getUnits(), t2.getOwner(), GlobalCenter.GetPUResource());
-                return ter1D - ter2D;
-            }
-        });
-        return result;
-    }
-
-    /**
-     * (SortTerritoriesByTUVOfUnits_Descending)
-     */
-    public static List<Territory> SortTerritoriesByTUVOfUnits_D(List<Territory> ters, final GameMap map)
-    {
-        return InvertList(SortTerritoriesByTUVOfUnits_A(ters, map));
     }
 
     /**
@@ -2802,36 +2362,6 @@ public class DUtils
         }
         return result;
     }
-    public static String GetBasicListContentDump(Collection list, boolean writeClassNames, boolean multiLine)
-    {
-        StringBuilder builder = new StringBuilder();
-        if(multiLine)
-            builder.append("\r\n    ");
-        else
-            builder.append("|");
-        builder.append("(");
-        if(writeClassNames)
-            builder.append("CN: Class Name, ");
-        builder.append("TS: toString())");
-        for (Object obj : list)
-        {
-            if(writeClassNames)
-            {
-                if(multiLine)
-                    builder.append("\r\n        ");
-                else
-                    builder.append("|");
-                builder.append("CN: ").append(obj.getClass().getName());
-            }
-            if(multiLine)
-                builder.append("\r\n        ");
-            else
-                builder.append("|");
-            builder.append("TS: ").append(obj.toString());
-        }
-        builder.append("|");
-        return builder.toString();
-    }
     public static List<Unit> GetUnitsMatchingXInTerritories(GameData data, List<Territory> territories, Match<Unit> unitMatch)
     {
         List<Unit> result = new ArrayList<Unit>();
@@ -2959,54 +2489,8 @@ public class DUtils
     }
     public static List<Unit> GetEndingCapitalUnits(GameData data, PlayerID player)
     {
-        //Initialize some commonly used values.
         Territory ourCapital = TerritoryAttachment.getCapital(player, data);
 
-        List<Unit> existing = ourCapital.getUnits().getMatches(Matches.unitIsOwnedBy(player));
-        if(FactoryCenter.get(data, player).TurnTerritoryPurchaseGroups.containsKey(ourCapital))
-        {
-            existing.addAll(FactoryCenter.get(data, player).TurnTerritoryPurchaseGroups.get(ourCapital).GetSampleUnits());
-        }
-        else //If the game was reloaded and we can't use the dynamix command centers
-        {
-            int left = DUtils.GetCheckedUnitProduction(ourCapital);
-            for (Unit u : player.getUnits())
-            {
-                UnitAttachment ua = UnitAttachment.get(u.getUnitType());
-                if (ua.isSea() || ua.isFactory())
-                {
-                    continue;
-                }
-                else if (left < 1)
-                {
-                    break;
-                }
-                else
-                {
-                    existing.add(u);
-                    left--;
-                }
-            }
-        }
-        return existing;
-    }
-    public static boolean IsCapitalInDangerOfBeingTaken(GameData data, PlayerID player)
-    {
-        //Initialize some commonly used values.
-        Territory ourCapital = TerritoryAttachment.getCapital(player, data);
-
-        if (data.getMap().getNeighbors(ourCapital, new CompositeMatchAnd<Territory>(DMatches.territoryHasNNEnemyLandUnits(player, data), DMatches.territoryContainsMultipleAlliances(data))).isEmpty())
-        {
-            return false;
-        }
-        List<Unit> units = GetEndingCapitalUnits(data, player);
-        List<Unit> capEnemies = DUtils.GetSPNNEnemyWithLUnitsThatCanReach(data, ourCapital, player, new InverseMatch<Territory>(DMatches.territoryContainsMultipleAlliances(data)));
-        int lUC = DUtils.CountLandUnits(capEnemies);
-        if (lUC == 0 || (capEnemies.size() - DUtils.GetBattleResults(capEnemies, units, ourCapital, data, 10, false).getAverageAttackingUnitsLeft()) / 1.3F > lUC)
-        {
-            return false;
-        }
-
-        return true;
+        return GetTerUnitsAtEndOfTurn(data, player, ourCapital);
     }
 }
