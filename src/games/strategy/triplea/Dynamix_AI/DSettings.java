@@ -14,6 +14,7 @@
 
 package games.strategy.triplea.Dynamix_AI;
 
+import games.strategy.triplea.Dynamix_AI.Others.BattleCalculationType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -57,6 +58,19 @@ public class DSettings implements Serializable
     public int CA_CMNCM_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers = 250;
     public int CA_NCM_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove = 100;
     public int CA_Retreat_determinesIfAIShouldRetreat = 250;
+
+    public boolean LimitLogHistory = true;
+    public int LimitLogHistoryTo = 3;
+
+    public BattleCalculationType BattleCalculationMethod = BattleCalculationType.BattleCalculator;
+
+    public boolean EnableResourceCollectionMultiplier = false;
+    public int ResourceCollectionMultiplyPercent = 100;
+    public boolean EnableUnitPlacementMultiplier = false;
+    public int UnitPlacementMultiplyPercent = 100;
+
+    public int AA_resourcePercentageThatMustExistForFactoryBuy = 50;
+    public int AA_percentageOfTaskRequirementsNeededToPerformTask = 96;
 
     private static DSettings s_lastSettings = null;
     private static String PROGRAM_SETTINGS = "Program Settings";

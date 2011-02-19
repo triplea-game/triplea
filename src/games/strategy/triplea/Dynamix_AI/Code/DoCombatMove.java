@@ -58,6 +58,7 @@ public class DoCombatMove
         {
             if(task.IsCompleted())
             {
+                task.RecruitUnits2();
                 if (task.IsTaskWithAdditionalRecruitsWorthwhile())
                 {
                     task.PerformTask(mover);

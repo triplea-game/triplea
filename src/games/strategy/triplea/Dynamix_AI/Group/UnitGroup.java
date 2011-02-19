@@ -210,17 +210,11 @@ public class UnitGroup
         if(slowest < 1)
             return null;
         if(UnitAttachment.get(GetFirstUnit().getUnitType()).isAir())
-        {
             route = DUtils.TrimRoute_ToLength(route, slowest, GetFirstUnit().getOwner(), m_data);
-        }
         else if(UnitAttachment.get(GetFirstUnit().getUnitType()).isSea())
-        {
             route = DUtils.TrimRoute_AtFirstTerWithEnemyUnits(route, slowest, GetFirstUnit().getOwner(), m_data);
-        }
         else
-        {
             route = DUtils.TrimRoute_AtFirstTerWithEnemyUnits(route, slowest, GetFirstUnit().getOwner(), m_data);
-        }
 
         if (route == null || route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName()))
             return null;
@@ -244,17 +238,11 @@ public class UnitGroup
         if(slowest < 1)
             return null;
         if(UnitAttachment.get(GetFirstUnit().getUnitType()).isAir())
-        {
             route = DUtils.TrimRoute_ToLength(route, slowest, GetFirstUnit().getOwner(), m_data);
-        }
         else if(UnitAttachment.get(GetFirstUnit().getUnitType()).isSea())
-        {
             route = DUtils.TrimRoute_BeforeFirstTerWithEnemyUnits(route, slowest, GetFirstUnit().getOwner(), m_data);
-        }
         else
-        {
             route = DUtils.TrimRoute_AtLastFriendlyTer(route, slowest, GetFirstUnit().getOwner(), m_data);
-        }
 
         if (route == null || route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName()))
             return null;
@@ -269,31 +257,35 @@ public class UnitGroup
     }
 
     /**
-     * Returns false if move failed. Possible causes of move failure:
-     * unit group already moved,
-     * target is unit group start ter,
-     * route is null,
-     * trimmed route end is an abandoned territory.
+     * Returns error message if move failed, if successful, returns null.
      */
-    public boolean MoveAsFarTo_CM(Territory ter, IMoveDelegate mover)
+    public String MoveAsFarTo_CM(Territory ter, IMoveDelegate mover)
     {
         Route route = null;
         //try
         //{
-            if(m_movedTo != null || GetStartTerritory().getName().equals(ter.getName()))
-                return false;
+            if (m_movedTo != null || GetStartTerritory().getName().equals(ter.getName()))
+                return "This unit group has either already moved, or the unit group's starting location is the target";
 
             route = GetCMRoute(ter);
 
             if(route == null)
-                return false;
-
-            if(StatusCenter.get(m_data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(route.getEnd()).WasAbandoned)
-                return false;
+                return "Calculated CM route is null";
 
             List<Unit> unitsToMove = new ArrayList<Unit>(m_units);
-            unitsToMove.removeAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).GetFrozenUnits());
-            mover.move(unitsToMove, route);
+
+            List<Unit> frozenOnes = new ArrayList<Unit>(unitsToMove);
+            frozenOnes.retainAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).GetFrozenUnits());
+            if(frozenOnes.size() > 0)
+                DUtils.Log(Level.FINEST, "      Some units we're trying to move are frozen: {0}", frozenOnes);
+
+            unitsToMove.removeAll(frozenOnes);
+            if(unitsToMove.isEmpty())
+                DUtils.Log(Level.FINEST, "      Move failed because there are no un-frozen units to move!");
+
+            String moveError = mover.move(unitsToMove, route);
+            if(moveError != null)
+                return "Error given by call mover.move(...): " + moveError;
 
             m_moveIndex = movesCount;
             movesCount++;
@@ -302,13 +294,7 @@ public class UnitGroup
             if (route.getEnd().getUnits().containsAll(unitsToMove))
                 DUtils.Log(Level.FINEST, "      Performed cm move, as far to: {0} Units: {1} Route: {2}", ter, unitsToMove, route);
             else
-            {
-                DUtils.Log(Level.FINEST, "        CM move failed! Target: {0} Units: {1} Route: {2}", ter, unitsToMove, route);
-                return false;
-            }
-            if (unitsToMove.size() != m_units.size())
-                DUtils.Log(Level.FINEST, "      Some units in group must be frozen, because m_units and unitsToMove don't match. m_units: {0} unitsToMove: {1}", m_units, unitsToMove);
-
+                return DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Target: {0} Units: {1} Route: {2}", ter, m_units, route);
         /*}
         catch (NullPointerException ex)
         {
@@ -320,32 +306,39 @@ public class UnitGroup
             }
             System.out.append(ex.toString());
         }*/
-        return true;
+        return null;
     }
 
     /**
-     * Returns false if move failed. Possible causes of move failure:
-     * unit group already moved,
-     * target is unit group start ter,
-     * route is null,
-     * trimmed route end is an abandoned territory.
+     * Returns error message if move failed, if successful, returns null.
      */
-    public boolean MoveAsFarTo_NCM(Territory ter, IMoveDelegate mover)
+    public String MoveAsFarTo_NCM(Territory ter, IMoveDelegate mover)
     {
         Route route = null;
         //try
         //{
             if (m_movedTo != null || GetStartTerritory().getName().equals(ter.getName()))
-                return false;
+                return "This unit group has either already moved, or the unit group's starting location is the target";
 
             route = GetNCMRoute(ter);
 
             if(route == null)
-                return false;
-            
+                return "Calculated NCM route is null";
+
             List<Unit> unitsToMove = new ArrayList<Unit>(m_units);
-            unitsToMove.removeAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).GetFrozenUnits());
-            mover.move(unitsToMove, route);
+
+            List<Unit> frozenOnes = new ArrayList<Unit>(unitsToMove);
+            frozenOnes.retainAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).GetFrozenUnits());
+            if(frozenOnes.size() > 0)
+                DUtils.Log(Level.FINEST, "      Some units we're trying to move are frozen: {0}", frozenOnes);
+
+            unitsToMove.removeAll(frozenOnes);
+            if(unitsToMove.isEmpty())
+                DUtils.Log(Level.FINEST, "      Move failed because there are no un-frozen units to move!");
+
+            String moveError = mover.move(unitsToMove, route);
+            if(moveError != null)
+                return "Error given by call mover.move(...): " + moveError;
 
             m_moveIndex = movesCount;
             movesCount++;
@@ -354,12 +347,7 @@ public class UnitGroup
             if (route.getEnd().getUnits().containsAll(unitsToMove))
                 DUtils.Log(Level.FINEST, "      Performed ncm move, as far to: {0} Units: {1} Route: {2}", ter, unitsToMove, route);
             else
-            {
-                DUtils.Log(Level.FINEST, "        NCM move failed! Target: {0} Units: {1} Route: {2}", ter, unitsToMove, route);
-                return false;
-            }
-            if (unitsToMove.size() != m_units.size())
-                DUtils.Log(Level.FINEST, "      Some units in group must be frozen, because m_units and unitsToMove don't match. m_units: {0} unitsToMove: {1}", m_units, unitsToMove);
+                return DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Target: {0} Units: {1} Route: {2}", ter, m_units, route);
         //}
         /*catch (NullPointerException ex)
         {
@@ -371,68 +359,64 @@ public class UnitGroup
             }
             System.out.append(ex.toString());
         }*/
-        return true;
+        return null;
     }
 
     /**
-     * Returns false if move failed. Possible causes of move failure:
-     * units have no movement,
-     * route is null, invalid, or a loop,
-     * trimmed route is null, invalid, or a loop,
-     * trimmed route end is an abandoned territory.
+     * Returns error message if move failed, if successful, returns null.
      */
-    public boolean MoveAsFarAlongRoute_NCM(IMoveDelegate mover, Route fullRoute)
+    public String MoveAsFarAlongRoute_NCM(IMoveDelegate mover, Route fullRoute)
     {
         Route route = fullRoute;
         //try
         //{
             if (m_movedTo != null)
-                return false;
+                return "This unit group has already moved";
 
             int slowest = DUtils.GetSlowestMovementUnitInList(new ArrayList<Unit>(m_units));
             if (route == null || route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName()))
-                return false;
+                return "The route given is either null, too short(no actual route), or the start ter is the same as the end ter";
             if(slowest < 1)
-                return false;
+                return "Some of the units in this unit group don't have any movement left";
             if(UnitAttachment.get(GetFirstUnit().getUnitType()).isAir())
-            {
                 route = DUtils.TrimRoute_ToLength(route, slowest, GetFirstUnit().getOwner(), m_data);
-            }
             else if(UnitAttachment.get(GetFirstUnit().getUnitType()).isSea())
-            {
                 route = DUtils.TrimRoute_BeforeFirstTerWithEnemyUnits(route, slowest, GetFirstUnit().getOwner(), m_data);
-            }
             else
-            {
                 route = DUtils.TrimRoute_AtLastFriendlyTer(route, slowest, GetFirstUnit().getOwner(), m_data);
-            }
             
             if (route == null || route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName()))
-                return false;
+                return "After trimming, the route given is either null, too short(no actual route), or the start ter is the same as the end ter";
             
             if(StatusCenter.get(m_data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(route.getEnd()).WasAbandoned)
                 route = DUtils.TrimRoute_BeforeFirstTerMatching(route, slowest, GlobalCenter.CurrentPlayer, m_data, DMatches.territoryMatchesDMatch(m_data, GlobalCenter.CurrentPlayer, DMatches.TS_WasAbandoned));
 
             if (route == null || route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName()))
-                return false;
+                return "After secondary trimming, the route given is either null, too short(no actual route), or the start ter is the same as the end ter";
 
             List<Unit> unitsToMove = new ArrayList<Unit>(m_units);
-            unitsToMove.removeAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).GetFrozenUnits());
-            mover.move(unitsToMove, route);
+
+            List<Unit> frozenOnes = new ArrayList<Unit>(unitsToMove);
+            frozenOnes.retainAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).GetFrozenUnits());
+            if(frozenOnes.size() > 0)
+                DUtils.Log(Level.FINEST, "      Some units we're trying to move are frozen: {0}", frozenOnes);
+
+            unitsToMove.removeAll(frozenOnes);
+            if(unitsToMove.isEmpty())
+                DUtils.Log(Level.FINEST, "      Move failed because there are no un-frozen units to move!");
+
+            String moveError = mover.move(unitsToMove, route);
+            if(moveError != null)
+                return "Error given by call mover.move(...): " + moveError;
 
             m_moveIndex = movesCount;
             movesCount++;
             m_movedTo = route.getEnd();
 
             if (route.getEnd().getUnits().containsAll(unitsToMove))
-                DUtils.Log(Level.FINEST, "      Performed ncm move, as far to: {0} Units: {1} Route: {2}", fullRoute.getEnd(), unitsToMove, route);
+                DUtils.Log(Level.FINEST, "      Performed ncm move, as far along route: {0} Units: {1}", route, unitsToMove);
             else
-            {
-                DUtils.Log(Level.FINEST, "        NCM move failed! Target: {0} Units: {1} Route: {2}", fullRoute.getEnd(), unitsToMove, route);
-                return false;
-            }
-            if (unitsToMove.size() != m_units.size())
-                DUtils.Log(Level.FINEST, "      Some units in group must be frozen, because m_units and unitsToMove don't match. m_units: {0} unitsToMove: {1}", m_units, unitsToMove);
+                return DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Units: {0} Route: {1}", m_units, route);
         //}
         /*catch (NullPointerException ex)
         {
@@ -444,7 +428,7 @@ public class UnitGroup
             }
             System.out.append(ex.toString());
         }*/
-        return true;
+        return null;
     }
 
     public Territory GetMovedTo()
@@ -518,7 +502,7 @@ public class UnitGroup
         builder.append("|UG|Units: ");
         for(Unit unit : m_units)
         {
-            builder.append(unit.toString());
+            builder.append(unit.toString()).append(", ");
         }
         return builder.toString();
     }

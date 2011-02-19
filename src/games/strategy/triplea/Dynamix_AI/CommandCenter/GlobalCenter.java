@@ -35,6 +35,8 @@ import java.util.List;
  */
 public class GlobalCenter
 {
+    public static boolean IsPaused = false;
+
     public static PhaseType FirstDynamixPhase = PhaseType.Unknown;
     public static PlayerID FirstDynamixPlayer = null;
     public static int GameRound = 0;

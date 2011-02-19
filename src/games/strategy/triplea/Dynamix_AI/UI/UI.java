@@ -14,7 +14,6 @@
 
 package games.strategy.triplea.Dynamix_AI.UI;
 
-import games.strategy.engine.data.GameData;
 import java.util.logging.Level;
 import javax.swing.SwingUtilities;
 
@@ -24,7 +23,7 @@ import javax.swing.SwingUtilities;
  */
 public class UI
 {
-    public static void Initialize(GameData data)
+    public static void Initialize()
     {
         try
         {

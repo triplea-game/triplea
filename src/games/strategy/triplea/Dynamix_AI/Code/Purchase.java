@@ -57,12 +57,12 @@ public class Purchase
 {
     public static void purchase(Dynamix_AI ai, boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaser, GameData data, PlayerID player)
     {
-        if(!purchaseForBid && false) //TODO. Was: DPlayerConfigPack.get(player).ResourceCollectionMultiplyAmount != 1.0F) //AI cheat for more interesting gameplay. Can be turned on with AI settings window.
+        if(!purchaseForBid && DSettings.LoadSettings().EnableResourceCollectionMultiplier && DSettings.LoadSettings().ResourceCollectionMultiplyPercent != 100)
         {
             if(GlobalCenter.PUsAtEndOfLastTurn == 0) //This will happen when the game was saved and reloaded since the end of this country's last turn
                 GlobalCenter.PUsAtEndOfLastTurn = DUtils.GetTotalProductionOfTerritoriesInList(DUtils.ToList(data.getMap().getTerritoriesOwnedBy(player)));
             int PUDiff = PUsToSpend - GlobalCenter.PUsAtEndOfLastTurn;
-            final int newPUs = GlobalCenter.PUsAtEndOfLastTurn + (int)((float)PUDiff * 1.0F); //TODO. Was: DPlayerConfigPack.get(player).ResourceCollectionMultiplyAmount);
+            final int newPUs = GlobalCenter.PUsAtEndOfLastTurn + (int)((float)PUDiff * (DSettings.LoadSettings().ResourceCollectionMultiplyPercent / 100.0F));
             int PUChange = newPUs - GlobalCenter.PUsAtEndOfLastTurn;
             final int fPUsToSpend = PUsToSpend; final Dynamix_AI fAI = ai;
             DUtils.Log(Level.FINER, "  Using an RCM cheat, and increasing our PUs from {0} to {1}", DUtils.ToArray(fPUsToSpend, newPUs));
@@ -129,7 +129,8 @@ public class Purchase
                     factoryPurchase = "aaGun owned by " + player.getName();
                 DUtils.Log(Level.FINER, "    Purchase for factory complete. Ter: {0} Purchases: {1}", factoryTer.getName(), factoryPurchase);
             }
-            if (PUsToSpend > (int) (origR / 2)) //If we used less than half our money
+            float percentageOfInitialPUsNeededForFactoryPurchase = (DSettings.LoadSettings().AA_resourcePercentageThatMustExistForFactoryBuy / 100.0F);
+            if (PUsToSpend > (int)(origR * percentageOfInitialPUsNeededForFactoryPurchase)) //If we used less than X% our money (user set)
             {
                 DUtils.Log(Level.FINER, "  We used less than half our money in purchases, so attempting to purchase a new factory.");
                 Unit factory = null;

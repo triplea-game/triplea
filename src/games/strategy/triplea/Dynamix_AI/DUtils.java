@@ -57,6 +57,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -1332,7 +1333,7 @@ public class DUtils
         PlayerID defender = defending.get(0).getOwner();
 
         if(DSettings.LoadSettings().AllowCalcingDecrease && Dynamix_AI.GetTimeTillNextScheduledActionDisplay() == 0) //Hmmm... Let's try to speed things up to reach the user-specified action length
-            runCount = (int)DUtils.Limit(runCount * (DSettings.LoadSettings().CalcingDecreaseToPercentage / 100), 1.0F, Integer.MAX_VALUE);
+            runCount = (int)DUtils.Limit(runCount * (DSettings.LoadSettings().CalcingDecreaseToPercentage / 100.0F), 1.0F, Integer.MAX_VALUE);
 
         float attackerUnitsStrength = DUtils.GetAttackScoreOfUnits(attacking);
         float defenderUnitsStrength = DUtils.GetDefenseScoreOfUnits(defending);
@@ -1564,6 +1565,29 @@ public class DUtils
     public static List<Unit> GetSPNNEnemyUnitsThatCanReach(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terSearchMatch)
     {
         List<Unit> result = GetNNEnemyUnitsThatCanReach(data, territory, playerToCheckFor, terSearchMatch);
+        return GetTheUnitsOfTheStrongestPlayerContainedInList(result);
+    }
+
+    /**
+     * (GetStrongestPlayerNonNullEnemyUnitsThatCanReach_CountXAsPassthrough)
+     * First, determines all the enemy units that can reach territory, or could reach territory if passthrough ter were empty of enemies.
+     * Then, it determines which player owns most of those units.
+     * Then, it returns all the units owned by that player that can reach territory.
+     */
+    public static List<Unit> GetSPNNEnemyUnitsThatCanReach_CountXAsPassthrough(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terSearchMatch, Territory passthroughTer)
+    {
+        return GetSPNNEnemyUnitsThatCanReach_CountXAsPassthroughs(data, territory, playerToCheckFor, terSearchMatch, Collections.singletonList(passthroughTer));
+    }
+
+    /**
+     * (GetStrongestPlayerNonNullEnemyUnitsThatCanReach_CountXAsPassthroughs)
+     * First, determines all the enemy units that can reach territory, or could reach territory if passthrough ters were empty of enemies.
+     * Then, it determines which player owns most of those units.
+     * Then, it returns all the units owned by that player that can reach territory.
+     */
+    public static List<Unit> GetSPNNEnemyUnitsThatCanReach_CountXAsPassthroughs(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terSearchMatch, List<Territory> passthroughTers)
+    {
+        List<Unit> result = GetNNEnemyUnitsThatCanReach_CountXAsPassthroughs(data, territory, playerToCheckFor, terSearchMatch, passthroughTers);
         return GetTheUnitsOfTheStrongestPlayerContainedInList(result);
     }
 
@@ -2297,7 +2321,7 @@ public class DUtils
     {
         //We have this code here to reduce calc count because it's so slow (calc count reduction here as well as in battle calc method, twice because of how slow this temp method is)
         if (DSettings.LoadSettings().AllowCalcingDecrease && Dynamix_AI.GetTimeTillNextScheduledActionDisplay() == 0) //Hmmm... Let's try to speed things up to reach the user-specified action length
-            calcRunsPerUnit = (int)DUtils.Limit(calcRunsPerUnit * (DSettings.LoadSettings().CalcingDecreaseToPercentage / 100), 1.0F, Integer.MAX_VALUE);
+            calcRunsPerUnit = (int)DUtils.Limit(calcRunsPerUnit * (DSettings.LoadSettings().CalcingDecreaseToPercentage / 100.0F), 1.0F, Integer.MAX_VALUE);
 
         float bestTakeoverScore = Integer.MIN_VALUE;
         Unit bestUnit = null;
@@ -2412,6 +2436,9 @@ public class DUtils
      */
     public static void Log(Level level, String message, Object ... args)
     {
+        while(GlobalCenter.IsPaused) //Used to pause AI's temporarily while the user is examining the AI logs
+        {try{Thread.sleep(250);}catch(InterruptedException ex){}}
+
         if(!DSettings.LoadSettings().EnableAILogging)
             return;
         Level logDepth = DSettings.LoadSettings().AILoggingDepth;

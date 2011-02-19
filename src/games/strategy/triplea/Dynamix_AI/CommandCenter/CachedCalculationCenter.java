@@ -56,7 +56,7 @@ public class CachedCalculationCenter
     }
 
     /**
-     * The same as data.getMap().getSeaRoute(ter1, ter2), except that this method caches the resulting Route for quick retrieval later on.
+     * The same as data.getMap().getWaterRoute(ter1, ter2), except that this method caches the resulting Route for quick retrieval later on.
      */
     public static Route GetSeaRoute(GameData data, Territory ter1, Territory ter2)
     {

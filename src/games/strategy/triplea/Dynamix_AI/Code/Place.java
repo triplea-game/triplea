@@ -25,6 +25,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.FactoryCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
+import games.strategy.triplea.Dynamix_AI.DSettings;
 import games.strategy.triplea.Dynamix_AI.DSorting;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
@@ -74,7 +75,6 @@ public class Place
                 }
                 Unit nextAA = matchingAA.get(0);
                 doPlace(ai, aaBuildTer, Collections.singleton(nextAA), placeDelegate);
-                Dynamix_AI.Pause();
             }
         }
         for (Territory factoryTer : FactoryCenter.get(data, player).ChosenFactoryTerritories)
@@ -83,47 +83,9 @@ public class Place
             if(pg == null)
                 break;
             List<Unit> units = GetPlayerUnitsMatchingUnitsInList(pg.GetSampleUnits(), player);
-            if (false) //TODO. Used to be: DPlayerConfigPack.get(player).PlacementUnitMultiplyAmount < 1.0F) //AI cheat for more interesting gameplay. Can be turned on with AI settings window.
+            if (DSettings.LoadSettings().EnableUnitPlacementMultiplier && DSettings.LoadSettings().UnitPlacementMultiplyPercent != 100) //AI cheat for more interesting gameplay. Can be turned on with AI settings window.
             {
-                float multiplyAmount = 1.0F; //TODO. Was: DPlayerConfigPack.get(player).PlacementUnitMultiplyAmount;
-                List<Unit> hackedUnits = new ArrayList<Unit>();
-                long time = new Date().getTime();
-                int count = 0;
-                for (Unit unit : units)
-                {
-                    time = new Date().getTime();
-                    Random rand = new Random(time + count);
-                    int randNum = rand.nextInt(10);
-                    if(randNum < (multiplyAmount * 10.0F))
-                        hackedUnits.add(unit.getUnitType().create(player));
-                    count++;
-                }
-                final List<Unit> fHackedUnits = hackedUnits; final Territory fFactoryTer = factoryTer; final Dynamix_AI fAI = ai;
-                Runnable runner = new Runnable()
-                {
-                    public void run()
-                    {
-                        CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(fAI.getName() + " use a UPM cheat, and place " + fHackedUnits.size() + " units on " + fFactoryTer.getName());
-                        CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().setRenderingData(fHackedUnits);
-                    }
-                };
-                try
-                {
-                    SwingUtilities.invokeAndWait(runner);
-                }
-                catch (Exception ex)
-                {
-                    System.out.println(ex.toString());
-                }
-                Change change = ChangeFactory.addUnits(factoryTer, hackedUnits);
-                //data.getHistory().getHistoryWriter().addChange(change);
-                //new ChangePerformer(data).perform(change);
-                CachedInstanceCenter.CachedDelegateBridge.addChange(change);
-                Dynamix_AI.Pause();
-            }
-            else if (false) //TODO. Was: DPlayerConfigPack.get(player).PlacementUnitMultiplyAmount > 1.0F) //AI cheat for more interesting gameplay. Can be turned on with AI settings window.
-            {
-                float multiplyAmount = 1.0F; //TODO. Was: DPlayerConfigPack.get(player).PlacementUnitMultiplyAmount;
+                float multiplyAmount = (DSettings.LoadSettings().UnitPlacementMultiplyPercent / 100.0F);
                 List<Unit> hackedUnits = new ArrayList<Unit>();
                 long time = new Date().getTime();
                 int count = 0;
@@ -170,7 +132,6 @@ public class Place
             else
             {
                 doPlace(ai, factoryTer, units, placeDelegate);
-                Dynamix_AI.Pause();
             }
         }
         for (PurchaseGroup factory : FactoryCenter.get(data, player).FactoryPurchaseGroups)
@@ -183,13 +144,11 @@ public class Place
             }
             List<Unit> units = GetPlayerUnitsMatchingUnitsInList(factory.GetSampleUnits(), player);
             doPlace(ai, bestFactoryPlaceTer, units, placeDelegate);
-            Dynamix_AI.Pause();
         }
         GlobalCenter.PUsAtEndOfLastTurn = player.getResources().getQuantity(GlobalCenter.GetPUResource());
     }
     private static boolean doPlace(Dynamix_AI ai, Territory where, Collection<Unit> toPlace, IAbstractPlaceDelegate del)
     {
-        ai.pause();
         String message = del.placeUnits(new ArrayList<Unit>(toPlace), where);
         if (message != null)
         {

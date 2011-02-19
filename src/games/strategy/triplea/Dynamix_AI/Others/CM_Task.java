@@ -290,7 +290,9 @@ public class CM_Task
             float totalScore = howCloseToMeetingTakeoverChanceMin + howCloseToMeetingVulnerabilityMax + howCloseToMeetingMaxBattleVolleys;
             float howCloseToTaskBeingWorthwhile = totalScore / 3; //Average closeness
 
-            if(howCloseToTaskBeingWorthwhile < .98F) //If we haven't met our '98% of requirements' goal
+            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfTaskRequirementsNeededToPerformTask / 100.0F) + .02F; //We do it a little higher for recruiting
+
+            if(howCloseToTaskBeingWorthwhile < percentOfRequirementNeeded) //If we haven't met our 'X% of requirements' goal set by user
                 m_recruitedUnits.add(ug);
             else
                  break;
@@ -313,7 +315,9 @@ public class CM_Task
             float totalScore = howCloseToMeetingTakeoverChanceMin + howCloseToMeetingVulnerabilityMax + howCloseToMeetingMaxBattleVolleys;
             float howCloseToTaskBeingWorthwhile = totalScore / 3; //Average closeness
 
-            if(howCloseToTaskBeingWorthwhile < .98F) //If we haven't met our '98% of requirements' goal
+            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfTaskRequirementsNeededToPerformTask / 100.0F) + .02F; //We do it a little higher for recruiting
+
+            if(howCloseToTaskBeingWorthwhile < percentOfRequirementNeeded) //If we haven't met our 'X% of requirements' goal set by user
                 m_recruitedUnits.add(ug);
             else
                  break;
@@ -413,7 +417,9 @@ public class CM_Task
 
             DUtils.Log(Level.FINEST, "        Determining if cm task is worthwhile. HowCloseToTask, BeingWorthWhile: {0} MeetingTakeoverMin: {1} MeetingVulnerabilityMax: {2}, MeetingMaxBattleVolleys: {3}", howCloseToTaskBeingWorthwhile, howCloseToMeetingTakeoverChanceMin, howCloseToMeetingVulnerabilityMax, howCloseToMeetingMaxBattleVolleys);
 
-            if(howCloseToTaskBeingWorthwhile < .96F) //If we haven't met our '96% of requirements' goal
+            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfTaskRequirementsNeededToPerformTask / 100.0F);
+
+            if(howCloseToTaskBeingWorthwhile < percentOfRequirementNeeded) //If we haven't met our 'X% of requirements' goal set by user
                 return false;
         }
         else if (m_taskType.equals(m_taskType.Attack_Stabilize))
@@ -427,7 +433,9 @@ public class CM_Task
 
             DUtils.Log(Level.FINEST, "        Determining if cm task is worthwhile. HowCloseToTask, BeingWorthWhile: {0} MeetingTakeoverMin: {1} MeetingVulnerabilityMax: {2}, MeetingMaxBattleVolleys: {3}", howCloseToTaskBeingWorthwhile, howCloseToMeetingTakeoverChanceMin, howCloseToMeetingVulnerabilityMax, howCloseToMeetingMaxBattleVolleys);
 
-            if(howCloseToTaskBeingWorthwhile < .96F) //If we haven't met our '96% of requirements' goal
+            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfTaskRequirementsNeededToPerformTask / 100.0F);
+
+            if(howCloseToTaskBeingWorthwhile < percentOfRequirementNeeded) //If we haven't met our 'X% of requirements' goal set by user
                 return false;
         }
         else
@@ -560,15 +568,16 @@ public class CM_Task
     public void PerformTask(IMoveDelegate mover)
     {
         if (m_recruitedUnits.isEmpty())
-        {
             DUtils.Log(Level.FINEST, "      Task is called to perform, but there are no recruits! Target: {0} Task Type: {1} Priority: {2}", m_target, m_taskType, m_priority);
-            return;
-        }
         if(!m_completed) //Only pause if this is the initial attack group
             Dynamix_AI.Pause();
         for(UnitGroup ug : m_recruitedUnits)
         {
-            ug.MoveAsFarTo_CM(m_target, mover);
+            if(ug.GetMovedTo() != null)
+                continue; //If this recruit has already moved
+            String error = ug.MoveAsFarTo_CM(m_target, mover);
+            if (error != null)
+                DUtils.Log(Level.FINEST, "        CM task perfoming move failed, reason: {0}", error);
         }
         m_completed = true;              
     }

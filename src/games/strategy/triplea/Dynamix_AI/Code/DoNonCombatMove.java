@@ -19,6 +19,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
 import games.strategy.triplea.Dynamix_AI.DMatches;
@@ -64,8 +65,10 @@ public class DoNonCombatMove
         for (NCM_Task task : tasks)
         {
             if (task.IsDisqualified())
+            {
                 task.PerformTargetRetreat(tasks, mover);
-
+                StatusCenter.get(data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(task.GetTarget()).WasAbandoned = true;
+            }
         }
 
         //We now allow the worthwhile tasks to recruit additional units to make the task even more favorable.
@@ -136,7 +139,9 @@ public class DoNonCombatMove
                 DUtils.Log(Level.FINER, "    Landing aircraft at {0}. From: {1}.", landingLoc, ter);
                 for (UnitGroup ug : ugs)
                 {
-                    ug.MoveAsFarTo_NCM(landingLoc, mover);
+                    String error = ug.MoveAsFarTo_NCM(landingLoc, mover);
+                    if(error != null)
+                        DUtils.Log(Level.FINEST, "        Landing failed, reason: {0}", error);
                 }
             }
         }
@@ -336,16 +341,19 @@ public class DoNonCombatMove
             List<Float> fromDangerBeforeAndAfter = DUtils.GetTerTakeoverChanceBeforeAndAfterMoves(data, player, ter, movedToTers, terUnits, DSettings.LoadSettings().CA_NCM_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove);
             if (fromDangerBeforeAndAfter.get(1) > .5F && fromDangerBeforeAndAfter.get(0) < .5F) //If move-from-ter will be endangered after move, but wasn't before it
             {
-                DUtils.Log(Level.FINER, "    Regular ncm move-to-target from {0} to {1} canceled because of endangering of more valuable from ter.", ter, target);
+                DUtils.Log(Level.FINER, "    Regular ncm move-to-target from {0} to {1} canceled because of endangering of more valuable from ter. Units: {2}", ter, target, ugs);
                 return; //Then skip this move. TODO: Get code to just leave enough for ter to be safe
             }
         }
         
-        DUtils.Log(Level.FINER, "    Performing regular ncm move-to-target move from {0} to {1}.", ter, target);
-        Dynamix_AI.Pause();
+        DUtils.Log(Level.FINER, "    Performing regular ncm move-to-target move from {0} to {1}. Units: {2}", ter, target, ugs);        
         for (UnitGroup ug : ugs)
         {
-            ug.MoveAsFarTo_NCM(target, mover);
+            String error = ug.MoveAsFarTo_NCM(target, mover);
+            if (error != null)
+                DUtils.Log(Level.FINEST, "      NCM move-to-target move failed, reason: {0}", error);
+            else
+                Dynamix_AI.Pause();
         }
     }
 }
