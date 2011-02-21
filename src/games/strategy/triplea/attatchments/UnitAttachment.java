@@ -291,7 +291,10 @@ public class UnitAttachment extends DefaultAttachment
 
   public void setMaxConstructionsPerTypePerTerr(String s)
   {
-	  m_maxConstructionsPerTypePerTerr = getInt(s);
+	  if (games.strategy.triplea.Properties.getUnlimitedConstructions(getData()))
+		  m_maxConstructionsPerTypePerTerr = 10000;
+	  else
+		  m_maxConstructionsPerTypePerTerr = getInt(s);
   }
 
   public int getMaxConstructionsPerTypePerTerr()
@@ -714,16 +717,20 @@ public class UnitAttachment extends DefaultAttachment
     	throw new GameParseException("Restricted transports cannot have attack or defense");
     }
     
-    /* TODO: comment this out once Veqryn create a better way of doing constructions
-    if(m_isConstruction && (m_constructionType == "none" || m_constructionType == "" || m_constructionType == null || m_constructionsPerTerrPerType < 0 || m_maxConstructionsPerType < 0))
+    if(m_isConstruction && (m_constructionType == "none" || m_constructionType == "" || m_constructionType == null || m_constructionsPerTerrPerTypePerTurn < 0 || m_maxConstructionsPerTypePerTerr < 0))
     {
     	throw new GameParseException("Constructions must have constructionType and positive constructionsPerTerrPerType and maxConstructionsPerType");
     }
     
-    if(!m_isConstruction && ((m_constructionType != "none" && m_constructionType != "" && m_constructionType != null) || m_constructionsPerTerrPerType >= 0 || m_maxConstructionsPerType >= 0))
+    if(!m_isConstruction && ((m_constructionType != "none" && m_constructionType != "" && m_constructionType != null) || m_constructionsPerTerrPerTypePerTurn >= 0 || m_maxConstructionsPerTypePerTerr >= 0))
     {
     	throw new GameParseException("Constructions must have isConstruction true");
-    }*/
+    }
+    
+    if(m_constructionsPerTerrPerTypePerTurn > m_maxConstructionsPerTypePerTerr)
+    {
+    	throw new GameParseException("Constructions must have constructionsPerTerrPerTypePerTurn Less than maxConstructionsPerTypePerTerr");
+    }
   }
 
   private boolean isWW2V3TechModel(GameData data)

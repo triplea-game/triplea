@@ -2009,14 +2009,24 @@
                          <option name="movement" value="0"/>
                          <option name="attack" value="0"/>
                          <option name="defense" value="4"/>
-						 <!-- isConstruction allows the unit to be placed in territories that don't contain factories. only 1 contruction per territory per turn. 
-								may have only 1 construction per territory without factory unless you enable "More Constructions without Factory", 
-								and may only have a number of constructions up to the value of the territory unless you enable "Unlimited Constructions" -->
-						 <option name="isConstruction" value="true"/>
 						 <option name="isCombatInfrastructure" value="true"/>
 						 <option name="canBeDamaged" value="true"/>
 						 <option name="maxDamage" value="3"/>
 						 <option name="maxOperationalDamage" value="0"/>
+						 <!-- isConstruction allows the unit to be placed in territories that don't contain factories. only "constructionsPerTerrPerTypePerTurn" contruction per territory per turn. 
+								may have only "maxConstructionsPerTypePerTerr" construction per territory without factory unless you enable "More Constructions without Factory", 
+								and may only have a number of constructions up to the value of the territory unless you enable "Unlimited Constructions" -->
+						 <option name="isConstruction" value="true"/>
+						 <!-- constructionType is just a unique string which identifies what kind of construction this. 
+								if two or more constructions have the exact same constructionType (and the same PerType rules), then will follow the same rules for placement.
+								example: if you have little_bunker and big_bunker both as type "bunker", with constructionsPerTerrPerTypePerTurn=2, then you could place 2 littles, or 2 bigs, or 1 little and 1 big in a territory -->
+						 <option name="constructionType" value="bunker"/>
+						 <!-- constructionsPerTerrPerTypePerTurn is how many of this type you can place in a territory every turn -->
+						 <option name="constructionsPerTerrPerTypePerTurn" value="1"/>
+						 <!-- maxConstructionsPerTypePerTerr is how many max of this type may be in a territory. this must be greater than constructionsPerTerrPerTypePerTurn
+								if More Constructions without Factory = true, then the minimum will be either maxConstructionsPerTypePerTerr or the PU value of the territory (whichever number is greater) in territories without factories, while in territories with factories the limit is 10000.
+								if Unlimited Constructions = true, then this number becomes 10000 -->
+						 <option name="maxConstructionsPerTypePerTerr" value="1"/>
                 </attatchment>
 				
 				<!-- Airfield -->
@@ -2027,6 +2037,9 @@
 						 <option name="maxOperationalDamage" value="3"/>
 						 <option name="isAirBase" value="true"/>
 						 <option name="isConstruction" value="true"/>
+						 <option name="constructionType" value="airfield"/>
+						 <option name="constructionsPerTerrPerTypePerTurn" value="1"/>
+						 <option name="maxConstructionsPerTypePerTerr" value="1"/>
                 </attatchment>
 				
 				<!-- Harbour -->
@@ -2036,6 +2049,9 @@
 						 <option name="maxDamage" value="6"/>
 						 <option name="maxOperationalDamage" value="3"/>
 						 <option name="isConstruction" value="true"/>
+						 <option name="constructionType" value="harbour"/>
+						 <option name="constructionsPerTerrPerTypePerTurn" value="1"/>
+						 <option name="maxConstructionsPerTypePerTerr" value="1"/>
                 </attatchment>
 				
                 <!-- Factory -->
@@ -3638,7 +3654,12 @@
 
 				<!-- specific rules -->
 				<!-- land related -->
-					<!-- if false, only 1 construction allowed per territory without factory, if true you may have up a number of constructions up to the value of the territory -->
+					<!-- if true you may have a number of constructions up to the value of the territory, in territories with factories -->
+				<property name="More Constructions with Factory" value="true" editable="true">
+						<boolean/>
+				</property>
+				
+					<!-- if true you may have a number of constructions up to the value of the territory, in territories without factories -->
 				<property name="More Constructions without Factory" value="false" editable="true">
 						<boolean/>
 				</property>
@@ -3891,7 +3912,7 @@
 						<br>1. 4 and 5 Sea Zones are Russian Convoy Zones. If Russia controls it, they get the income from it. If someone else controls it, that player gets no income from it, but they deny the income to Russia. It can not be captured during non-combat phase.
         				<br>2. Sea Zones 5 and 6, are Convoy Routes. They are linked to the land territory of Norway. At least one Convoy Zone must be controlled by the same power that controls the land territory for that power to gain the income from the land territory. They can not be captured during non-combat phase. If more than 1 route is linked to a single land territory, only 1 route needs to be controlled to get the income from land territory. Routes can have PU values just like convoy zones.
         				<br>3. Sea Zones 37, 47, 48, 49, 58, are Blockade Zones. Each enemy warship in these zones reduces the income of attached land territories by 1 per warship, 2 per submarine.
-        				<br>4. Air_Transport is an air unit that specializes in dropping off units, costs 11 with 4 movement, and can carry into battle or drop off in a friendly territory" 1 infantry AND 1 other unit like a tank or artillery.
+        				<br>4. Air_Transport is an air unit that specializes in dropping off units, costs 11 with 4 movement, and can carry into battle or drop off in a friendly territory: 1 infantry AND 1 other unit like a tank or artillery.
 						<br>5. Super_Carrier is a beefed up carrier that can also transport 1 infantry and 1 other land unit like a tank or artillery.
 						<br>6. Airfield ...
 						<br>7. Harbour ...

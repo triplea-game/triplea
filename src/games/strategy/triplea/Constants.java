@@ -190,7 +190,8 @@ public interface Constants
   public static final String COUNTERS_DISPLAY = "Display Units as Counters";
   public static final String SELECTABLE_ZERO_MOVEMENT_UNITS = "Selectable Zero Movement Units";
   public static final String PARATROOPERS_CAN_MOVE_DURING_NON_COMBAT = "Paratroopers Can Move During Non Combat";
-  public static final String UNLIMITED_CONSTRUCTIONS = "Unlimited Constructions"; // False = Limited to territory's PUs 
-  public static final String MORE_CONSTRUCTIONS_WITHOUT_FACTORY = "More Constructions without Factory"; // False = Only 1 Construction without factory
+  public static final String UNLIMITED_CONSTRUCTIONS = "Unlimited Constructions";
+  public static final String MORE_CONSTRUCTIONS_WITHOUT_FACTORY = "More Constructions without Factory";
+  public static final String MORE_CONSTRUCTIONS_WITH_FACTORY = "More Constructions with Factory";
   
 }

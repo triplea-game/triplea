@@ -730,6 +730,10 @@ public class Properties implements Constants {
     	return data.getProperties().get(MORE_CONSTRUCTIONS_WITHOUT_FACTORY, false);
     }
     
+    public static boolean getMoreConstructionsWithFactory(GameData data) {
+    	return data.getProperties().get(MORE_CONSTRUCTIONS_WITH_FACTORY, false);
+    }
+    
     private Properties() {
     }
 }

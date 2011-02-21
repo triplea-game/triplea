@@ -31,6 +31,7 @@ import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegate;
@@ -41,12 +42,14 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 
@@ -258,6 +261,105 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return null;
     }
 
+    public IntegerMap<String> howManyOfEachConstructionCanPlace(Territory to, Collection<Unit> units,
+                PlayerID player)
+    {
+            if (Match.someMatch(units, Matches.UnitIsFactoryOrConstruction))
+            {
+            	// build an integer map of each unit we have in our list of held units, as well as integer maps for maximum units and units per turn
+            	IntegerMap<String> unitMapHeld = new IntegerMap<String>();
+                IntegerMap<String> unitMapMaxType = new IntegerMap<String>();
+                IntegerMap<String> unitMapTypePerTurn = new IntegerMap<String>();
+                int maxFactory = games.strategy.triplea.Properties.getFactoriesPerCountry(m_data);
+                Iterator<Unit> unitHeldIter = units.iterator();
+                while(unitHeldIter.hasNext())
+                {
+                	Unit currentUnit = (Unit) unitHeldIter.next();
+                	if (!Matches.UnitIsFactoryOrConstruction.match(currentUnit))
+                		continue;
+                	UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+                	if (Matches.UnitIsFactory.match(currentUnit) && !ua.isConstruction())
+                	{
+                		unitMapHeld.add("factory", 1);
+                		if (unitMapMaxType.getInt("factory") == 0)
+                			unitMapMaxType.put("factory", maxFactory);
+                		if (unitMapTypePerTurn.getInt("factory") == 0)
+                			unitMapTypePerTurn.put("factory", 1);
+                	}
+                	else
+                	{
+                		unitMapHeld.add(ua.getConstructionType(), 1);
+                		if (unitMapMaxType.getInt(ua.getConstructionType()) == 0)
+                			unitMapMaxType.put(ua.getConstructionType(), ua.getMaxConstructionsPerTypePerTerr());
+                		if (unitMapTypePerTurn.getInt(ua.getConstructionType()) == 0)
+                			unitMapTypePerTurn.put(ua.getConstructionType(), ua.getConstructionsPerTerrPerTypePerTurn());
+                	}
+                }
+
+                boolean moreWithoutFactory = games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(m_data);
+                boolean moreWithFactory = games.strategy.triplea.Properties.getMoreConstructionsWithFactory(m_data);
+                TerritoryAttachment ta = TerritoryAttachment.get(to);
+                Collection<Unit> unitsInTO = to.getUnits().getUnits();
+                Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
+                Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
+                unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
+                boolean wasFactoryThereAtStart = Match.someMatch(unitsAtStartOfTurnInTO, Matches.UnitIsFactory);
+                
+                // build an integer map of each construction unit in the territory
+                IntegerMap<String> unitMapTO = new IntegerMap<String>();
+                if (Match.someMatch(unitsInTO, Matches.UnitIsFactoryOrConstruction))
+                {
+                	Iterator<Unit> unitTOIter = unitsInTO.iterator();
+                    while(unitTOIter.hasNext())
+                    {
+                    	Unit currentUnit = (Unit) unitTOIter.next();
+                    	if (!Matches.UnitIsFactoryOrConstruction.match(currentUnit))
+                    		continue;
+                    	UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+                    	if (Matches.UnitIsFactory.match(currentUnit) && !ua.isConstruction())
+                    		unitMapTO.add("factory", 1);
+                    	else
+                    		unitMapTO.add(ua.getConstructionType(), 1);
+                    }
+                    
+                    // account for units already in the territory, based on max
+                    Iterator<String> mapString = unitMapHeld.keySet().iterator();
+                    while (mapString.hasNext())
+                    {
+                    	String constructionType = mapString.next();
+                    	int unitInTO = unitMapTO.getInt(constructionType);
+                    	int unitHeld = unitMapHeld.getInt(constructionType);
+                		int unitMax = unitMapMaxType.getInt(constructionType);
+                		// unlimited constructions game property gets set when the unit is initialized in UnitAttachment.java, so we don't bother with it here
+                		if (moreWithFactory && wasFactoryThereAtStart && constructionType != "factory")
+                			unitMax = Math.max(unitMax, ta.getProduction());
+                		if (moreWithoutFactory && !wasFactoryThereAtStart && constructionType != "factory")
+                			unitMax = Math.max(unitMax, ta.getProduction());
+                		unitMapHeld.put(constructionType, Math.max(0, Math.min(unitMax - unitInTO, unitHeld)));
+                    }
+                }
+                
+            	// modify this list based on how many we can place per turn
+                IntegerMap<String> unitsAllowed = new IntegerMap<String>();
+                Iterator<String> mapString2 = unitMapHeld.keySet().iterator();
+                while (mapString2.hasNext())
+                {
+                	String constructionType = mapString2.next();
+                	int unitHeld = unitMapHeld.getInt(constructionType);
+                	int unitPerTurn = unitMapTypePerTurn.getInt(constructionType);
+                	int unitAllowed = Math.max(0, Math.min(unitPerTurn, unitHeld));
+                	if (unitAllowed > 0)
+                		unitsAllowed.put(constructionType, unitAllowed);
+                }
+                
+            	// return our integer map
+                return unitsAllowed;
+            }
+
+            // no constructions or factories
+            return null;
+    }
+    
     public String canPlaceConstruction(Territory to, Collection<Unit> units,
             PlayerID player)
     {
@@ -563,7 +665,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     protected String canProduce(Territory to, Collection<Unit> units,
             PlayerID player)
     {
-        Territory producer = getProducer(to, player);
+    	Territory producer = getProducer(to, player);
         //the only reason to could be null is if its water and no
         //territories adjacent have factories
         if (producer == null)
@@ -582,25 +684,22 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             //check to see if we are producing a factory
             if (Match.someMatch(units, Matches.UnitIsFactory))
                 return null;
-            else 
+            else
                 if (Match.someMatch(units, Matches.UnitIsConstruction)) 
-                      if (!hasConstruction(producer)) //No error, Construction to place
-                            return null;
+                      if (howManyOfEachConstructionCanPlace(to, units, player).totalValues() > 0) //No error, Construction to place
+                    	  return null;
                       else
-                          if (games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(m_data))  //only 1 Construction without factory?
-                                  return null;
-                          else 
-                               return "No more Constructions Allowed in " + producer.getName();    
+                    	  return "No more Constructions Allowed in " + producer.getName();    
                 else            
                       return "No Factory in " + producer.getName();   
         }
 
         //check we havent just put a factory there
         if (Match.someMatch(getAlreadyProduced(to), Matches.UnitIsFactory))
-            if (Match.someMatch(units, Matches.UnitIsConstruction) && !hasConstruction(producer)) //you can still place a Construction
-                   return null; 
+            if (Match.someMatch(units, Matches.UnitIsConstruction) && howManyOfEachConstructionCanPlace(to, units, player).totalValues() > 0) //you can still place a Construction
+            	return null; 
             else
-                  return "Factories cant produce until 1 turn after they are created";
+            	return "Factories cant produce until 1 turn after they are created";
                    
         
         if (to.isWater() && (!isWW2V2() && !isUnitPlacementInEnemySeas())
@@ -745,7 +844,6 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
 
     private boolean hasConstruction(Territory to)
     {
-
         return to.getUnits().someMatch(Matches.UnitIsConstruction);
     }
     

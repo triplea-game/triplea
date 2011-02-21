@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Some work on completely rewriting isConstructions. (veqryn)
+
 * Another patch for Dynamix AI. (wisconsin)
 
 * Major patch for Dynamix AI, including new settings window to customize in-game certain variables the AI uses. (Wisconsin)

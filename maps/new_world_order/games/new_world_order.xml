@@ -2080,6 +2080,9 @@
 <option name="defense" value="3"/>
 <option name="isTwoHit" value="true"/>
 <option name="isConstruction" value="true"/>
+<option name="constructionType" value="bunker"/>
+<option name="constructionsPerTerrPerTypePerTurn" value="1"/>
+<option name="maxConstructionsPerTypePerTerr" value="1"/>
 </attatchment>
 
 
@@ -4087,11 +4090,17 @@
 				<number min="1" max="10"/>
 		</property>
 		
-		<!-- if false, only 1 construction allowed per territory without factory, if true you may have up a number of constructions up to the value of the territory -->
+			<!-- if true you may have a number of constructions up to the value of the territory, in territories with factories -->
+		<property name="More Constructions with Factory" value="true" editable="false">
+				<boolean/>
+		</property>
+		
+			<!-- if true you may have a number of constructions up to the value of the territory, in territories without factories -->
 		<property name="More Constructions without Factory" value="true" editable="false">
 				<boolean/>
 		</property>
 
+			<!-- allows you to go to unlimited constructions in all territories -->
 		<property name="Unlimited Constructions" value="true" editable="true">
 				<boolean/>
 		</property>
