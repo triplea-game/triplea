@@ -1,7 +1,9 @@
 Changes for 1.2.7
-* Added relief tiles to Pact of Steel. (conarymor)
+* Fixed battle calc to show correct results in battles where artillery and supportables had same attack power. (veqryn)
 
 * Changed default casualty picker to choose optimal casualties based on artillery and supportability. (veqryn)
+
+* Added relief tiles to Pact of Steel. (conarymor)
 
 * Fixed a bug where Undo-ing the placement of a factory, to a territory that already had a factory, under ww2v3 isSBRAffectsUnitProduction rules, caused max damage to be done to the original factory. (veqryn)
 
