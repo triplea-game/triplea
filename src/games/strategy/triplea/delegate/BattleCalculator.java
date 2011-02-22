@@ -33,8 +33,10 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.delegate.Die.DieType;
+import games.strategy.triplea.attatchments.UnitSupportAttachment;
+import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -49,6 +51,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -444,8 +447,8 @@ public class BattleCalculator
         }
 
         // Sort units by power and cost in ascending order
-        List<Unit> sorted = new ArrayList<Unit>(targets);
-        Collections.sort(sorted, new UnitBattleComparator(defending, player, costs));
+        List<Unit> sorted = new ArrayList<Unit>(sortUnitsForCasualtiesWithSupport(targets, defending, player, costs, data));
+        
         // Select units
         Iterator<Unit> sortedIter = sorted.iterator();
         while (sortedIter.hasNext())
@@ -462,6 +465,211 @@ public class BattleCalculator
         }
 
         return defaultCasualties;
+    }
+
+    /**
+     * he purpose of this is to return a list in the PERFECT order of which units should be selected to die first, 
+     * And that means that certain units MUST BE INTERLEAVED.  
+     * This list assumes that you have already taken any extra hit points away from any 2 hitpoint units.  
+     * Example: You have a 1 attack Artillery unit that supports, and a 1 attack infantry unit that can receive support.
+     * The best selection of units to die is first to take whichever unit has excess, then cut that down til they are both the same size, 
+     * then to take 1 artillery followed by 1 infantry, followed by 1 artillery, then 1 inf, etc, until everyone is dead.  
+     * If you just return all infantry followed by all artillery, or the other way around, you will be missing out on some important support provided.  
+     * (Veqryn)
+     */
+    public static Collection<Unit> sortUnitsForCasualtiesWithSupport(Collection<Unit> targets, boolean defending, PlayerID player, IntegerMap<UnitType> costs, GameData data)
+    {
+    	List<Unit> sortedUnitsList = new ArrayList<Unit>(targets);
+    	Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, player, costs));
+    	List<Unit> perfectlySortedUnitsList = new ArrayList<Unit>();
+
+        int artillerySupportAvailable = DiceRoll.getArtillerySupportAvailable(sortedUnitsList, defending, player);
+        int supportableAvailable = DiceRoll.getSupportableAvailable(sortedUnitsList, defending, player);
+        if (artillerySupportAvailable == 0 || supportableAvailable == 0)
+        	return sortedUnitsList;
+        
+        // reset, as we don't want to count units which support themselves
+        artillerySupportAvailable = 0;
+        supportableAvailable = 0;
+        List<List<Unit>> unitsByPowerAll = new ArrayList<List<Unit>>();
+        List<List<Unit>> unitsByPowerBoth = new ArrayList<List<Unit>>();
+        List<List<Unit>> unitsByPowerGives = new ArrayList<List<Unit>>();
+        List<List<Unit>> unitsByPowerReceives = new ArrayList<List<Unit>>();
+        List<List<Unit>> unitsByPowerNone = new ArrayList<List<Unit>>();
+        // in order to merge lists, we need to separate sortedUnitsList into multiple lists by power
+        for (int i = 0; i <= Constants.MAX_DICE; i++)
+        {
+        	List<Unit> powerAll = new ArrayList<Unit>();
+        	List<Unit> powerBoth = new ArrayList<Unit>();
+        	List<Unit> powerGives = new ArrayList<Unit>();
+        	List<Unit> powerReceives = new ArrayList<Unit>();
+        	List<Unit> powerNone = new ArrayList<Unit>();
+            Iterator<Unit> sortedIter = sortedUnitsList.iterator();
+            while (sortedIter.hasNext())
+            {
+            	Unit current = (Unit) sortedIter.next();
+            	if (getUnitPowerForSorting(current, defending, player) == i)
+            	{
+            		// TODO: if a unit supports itself, it should be in a different power list, as it will always support itself.  getUnitPowerForSorting() should test for this and return a higher number.
+            		powerAll.add(current);
+            		if (UnitAttachment.get(current.getType()).isArtillery() && UnitAttachment.get(current.getType()).isArtillerySupportable())
+            			powerBoth.add(current);
+            		else if (UnitAttachment.get(current.getType()).isArtillery())
+            			powerGives.add(current);
+            		else if (UnitAttachment.get(current.getType()).isArtillerySupportable())
+            			powerReceives.add(current);
+            		else
+            			powerNone.add(current);
+            	}
+            }
+            unitsByPowerAll.add(powerAll);
+            unitsByPowerBoth.add(powerBoth);
+            unitsByPowerGives.add(powerGives);
+            unitsByPowerReceives.add(powerReceives);
+            unitsByPowerNone.add(powerNone);
+            artillerySupportAvailable += DiceRoll.getArtillerySupportAvailable(powerGives, defending, player);
+            supportableAvailable += DiceRoll.getSupportableAvailable(powerReceives, defending, player);
+        }
+        // now merge the lists
+        List<Unit> tempList1 = new ArrayList<Unit>();
+        List<Unit> tempList2 = new ArrayList<Unit>();
+        for (int i = 0; i <= Constants.MAX_DICE; i++)
+        {
+            int iArtillery = DiceRoll.getArtillerySupportAvailable(unitsByPowerGives.get(i), defending, player);
+            int aboveArtillery = artillerySupportAvailable - iArtillery;
+            artillerySupportAvailable -= iArtillery;
+            int iSupportable = DiceRoll.getSupportableAvailable(unitsByPowerReceives.get(i), defending, player);
+            int aboveSupportable = supportableAvailable - iSupportable;
+            supportableAvailable -= iSupportable;
+            if ((iArtillery == 0 && iSupportable == 0) || (iArtillery == 0 && aboveSupportable >= aboveArtillery)
+            			|| ((iSupportable == 0 || iArtillery == 0) && aboveSupportable == aboveArtillery)
+            			|| (iSupportable == 0 && aboveSupportable <= aboveArtillery))
+            	perfectlySortedUnitsList.addAll(unitsByPowerAll.get(i));
+            else
+            {
+	        	while (0 < unitsByPowerBoth.get(i).size() || 0 < unitsByPowerGives.get(i).size()
+	        				 || 0 < unitsByPowerReceives.get(i).size() || 0 < unitsByPowerNone.get(i).size())
+	        	{
+	        		tempList1.clear();
+	        		tempList2.clear();
+	        		// four variables: we have artillery, we have support, above has artillery, above has support.  need every combination covered.
+	        		if (iArtillery == 0 && aboveArtillery - aboveSupportable > 0)
+	        		{
+	        			while (aboveArtillery - aboveSupportable > 0 && unitsByPowerReceives.get(i).size() > 0)
+	        			{
+	        				int last = unitsByPowerReceives.get(i).size()-1;
+	        				tempList2.add(unitsByPowerReceives.get(i).get(last));
+	        				aboveSupportable += DiceRoll.getSupportableAvailable(unitsByPowerReceives.get(i).get(last), defending, player);
+	        				unitsByPowerReceives.get(i).remove(last);
+	        			}
+	        			tempList1.addAll(unitsByPowerNone.get(i));
+	        			tempList1.addAll(unitsByPowerGives.get(i));
+	        			tempList1.addAll(unitsByPowerReceives.get(i));
+	        			tempList1.addAll(unitsByPowerBoth.get(i));
+	        			unitsByPowerNone.get(i).clear();
+	        			unitsByPowerGives.get(i).clear();
+	        			unitsByPowerReceives.get(i).clear();
+	        			unitsByPowerBoth.get(i).clear();
+	        			Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs));
+	        			Collections.sort(tempList2, new UnitBattleComparator(defending, player, costs));
+	        			perfectlySortedUnitsList.addAll(tempList1);
+	        			perfectlySortedUnitsList.addAll(tempList2);
+	        			continue;
+	        		}
+	        		if (iSupportable == 0 && aboveSupportable - aboveArtillery > 0)
+	        		{
+	        			while (aboveSupportable - aboveArtillery > 0 && unitsByPowerGives.get(i).size() > 0)
+	        			{
+	        				int last = unitsByPowerGives.get(i).size()-1;
+	        				tempList2.add(unitsByPowerGives.get(i).get(last));
+	        				aboveArtillery += DiceRoll.getArtillerySupportAvailable(unitsByPowerGives.get(i).get(last), defending, player);
+	        				unitsByPowerGives.get(i).remove(last);
+	        			}
+	        			tempList1.addAll(unitsByPowerNone.get(i));
+	        			tempList1.addAll(unitsByPowerGives.get(i));
+	        			tempList1.addAll(unitsByPowerReceives.get(i));
+	        			tempList1.addAll(unitsByPowerBoth.get(i));
+	        			unitsByPowerNone.get(i).clear();
+	        			unitsByPowerGives.get(i).clear();
+	        			unitsByPowerReceives.get(i).clear();
+	        			unitsByPowerBoth.get(i).clear();
+	        			Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs));
+	        			Collections.sort(tempList2, new UnitBattleComparator(defending, player, costs));
+	        			perfectlySortedUnitsList.addAll(tempList1);
+	        			perfectlySortedUnitsList.addAll(tempList2);
+	        			continue;
+	        		}
+	        		if (iSupportable + aboveSupportable > iArtillery + aboveArtillery)
+	        		{
+	        			while (iSupportable + aboveSupportable > iArtillery + aboveArtillery && unitsByPowerReceives.get(i).size() > 0)
+	        			{
+	        				int first = 0;
+	        				tempList1.add(unitsByPowerReceives.get(i).get(first));
+	        				aboveSupportable -= DiceRoll.getSupportableAvailable(unitsByPowerReceives.get(i).get(first), defending, player);
+	        				unitsByPowerReceives.get(i).remove(first);
+	        			}
+	        			tempList1.addAll(unitsByPowerNone.get(i));
+	        			tempList1.addAll(unitsByPowerBoth.get(i));
+	        			unitsByPowerNone.get(i).clear();
+	        			unitsByPowerBoth.get(i).clear();
+	        			Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs));
+	        			perfectlySortedUnitsList.addAll(tempList1);
+	        			continue;
+	        		}
+	        		if (iSupportable + aboveSupportable < iArtillery + aboveArtillery)
+	        		{
+	        			while (iSupportable + aboveSupportable < iArtillery + aboveArtillery && unitsByPowerGives.get(i).size() > 0)
+	        			{
+	        				int first = 0;
+	        				tempList1.add(unitsByPowerGives.get(i).get(first));
+	        				aboveArtillery -= DiceRoll.getArtillerySupportAvailable(unitsByPowerGives.get(i).get(first), defending, player);
+	        				unitsByPowerGives.get(i).remove(first);
+	        			}
+	        			tempList1.addAll(unitsByPowerNone.get(i));
+	        			tempList1.addAll(unitsByPowerBoth.get(i));
+	        			unitsByPowerNone.get(i).clear();
+	        			unitsByPowerBoth.get(i).clear();
+	        			Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs));
+	        			perfectlySortedUnitsList.addAll(tempList1);
+	        			continue;
+	        		}
+	        		if (iSupportable + aboveSupportable == iArtillery + aboveArtillery)
+	        		{
+	        			tempList1.addAll(unitsByPowerNone.get(i));
+	        			tempList1.addAll(unitsByPowerBoth.get(i));
+	        			unitsByPowerNone.get(i).clear();
+	        			unitsByPowerBoth.get(i).clear();
+	        			if (!unitsByPowerGives.get(i).isEmpty())
+	        				tempList2.add(unitsByPowerGives.get(i).get(0));
+	        			if (!unitsByPowerReceives.get(i).isEmpty())
+	        				tempList2.add(unitsByPowerReceives.get(i).get(0));
+	        			Collections.sort(tempList2, new UnitBattleComparator(defending, player, costs));
+	        			Unit u = tempList2.get(0);
+	        			tempList1.add(u);
+	        			UnitAttachment ua = UnitAttachment.get(u.getType());
+	        			if (ua.isArtillery())
+	        			{
+	        				unitsByPowerGives.get(i).remove(0);
+	        				iArtillery--;
+	        			}
+	        			else
+	        			{
+	        				unitsByPowerReceives.get(i).remove(0);
+	        				iSupportable--;
+	        			}
+	        			Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs));
+	        			perfectlySortedUnitsList.addAll(tempList1);
+	        			continue;
+	        		}
+	        		// and we should never get down here
+	        		throw new IllegalStateException("Possibility not accounted for in sortUnitsForCasualtiesWithSupport.");
+	        	}
+            }
+        }
+        if (perfectlySortedUnitsList.isEmpty())
+        	throw new IllegalStateException("Possibility not accounted for in sortUnitsForCasualtiesWithSupport.");
+        
+        return perfectlySortedUnitsList;
     }
 
     public static Map<Unit, Collection<Unit>> getDependents(Collection<Unit> targets, GameData data)
@@ -670,6 +878,113 @@ public class BattleCalculator
     private BattleCalculator()
     {
     }
+    
+    /**
+     * This returns the exact Power that a unit has according to what DiceRoll.rollDiceLowLuck() would give it.  
+     * As such, it needs to exactly match DiceRoll, otherwise this method will become useless.  
+     * It does NOT take into account SUPPORT.
+     * It DOES take into account ROLLS.
+     * It needs to be updated to take into account isMarine.
+     */
+    public static int getUnitPowerForSorting(Unit current, boolean defending, PlayerID player)
+    {
+        /* this is needed if i plan to have it account for support
+        Set<List<UnitSupportAttachment>> supportRules = new HashSet<List<UnitSupportAttachment>>();
+        IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<UnitSupportAttachment>();
+        DiceRoll.getSupport(sortedUnitsList,supportRules,supportLeft,data,defending);
+        */
+    	boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(player.getData());
+    	UnitAttachment ua = UnitAttachment.get(current.getType());
+    	int rolls;
+    	if (defending)       
+        	rolls = ua.getDefenseRolls(current.getOwner());
+    	else
+    		rolls = ua.getAttackRolls(current.getOwner());
+
+    	//int strength = 0;
+    	int strengthWithoutSupport = 0;
+        
+        //Find the strength the unit has without support
+        //lhtr heavy bombers take best of n dice for both attack and defense
+        if(rolls > 1 && lhtrBombers && ua.isStrategicBomber())
+        {
+            if(defending)
+            	strengthWithoutSupport = ua.getDefense(current.getOwner());
+            else
+            	strengthWithoutSupport = ua.getAttack(current.getOwner());
+
+            // just add one like LL if we are LHTR bombers
+            strengthWithoutSupport = Math.min(Math.max(strengthWithoutSupport+1, 0), Constants.MAX_DICE);
+            //strength += DiceRoll.getSupport(current.getType(), supportRules, supportLeft);
+            //strength = Math.min(Math.max(strength+1, 0), Constants.MAX_DICE);
+        }
+        else
+        {
+            for (int i = 0; i < rolls; i++)
+            {
+                int tempStrength;
+                if(defending)
+                	tempStrength = ua.getDefense(current.getOwner());
+                else
+                	tempStrength = ua.getAttack(current.getOwner());
+                
+            	if (defending)
+                {
+                	if (DiceRoll.isFirstTurnLimitedRoll(player))
+                		tempStrength = Math.min(1, tempStrength);
+                }
+                else
+                {
+                    /* TODO: figure out how to find if we are in a battle, and if that battle is amphibious
+                	if (ua.getIsMarine() && battle.isAmphibious())
+                    {
+                        Collection<Unit> landUnits = battle.getAmphibiousLandAttackers();
+                        if(landUnits.contains(current))
+                            ++tempStrength;
+                    } */
+                }
+            	strengthWithoutSupport += Math.min(Math.max(tempStrength, 0), Constants.MAX_DICE);
+            	//tempStrength += DiceRoll.getSupport(current.getType(), supportRules, supportLeft);
+                //strength += Math.min(Math.max(tempStrength, 0), Constants.MAX_DICE);
+            }
+        }
+        return strengthWithoutSupport;
+        /*
+        //Find the strength this unit gives to other units
+        Iterator<UnitSupportAttachment> iter = UnitSupportAttachment.get(data).iterator();
+    	while(iter.hasNext())
+    	{
+    		UnitSupportAttachment rule = iter.next();
+    		if(rule.getPlayers().isEmpty())
+    			continue;
+    		if( defending && rule.getDefence() || 
+    				!defending && rule.getOffence() )
+    		{
+    			CompositeMatchAnd<Unit> canSupport = new CompositeMatchAnd<Unit>(Matches.unitIsOfType((UnitType)rule.getAttatchedTo()),Matches.unitOwnedBy(rule.getPlayers()));
+    			List<Unit> supporters = Match.getMatches(sortedUnitsList, canSupport);
+    			int numSupport = supporters.size();
+    			if(rule.getImpArtTech())
+    				numSupport += Match.getMatches(supporters, Matches.unitOwnerHasImprovedArtillerySupportTech()).size();
+    			String bonusType = rule.getBonusType();
+    			//supportLeft.put(rule, numSupport*rule.getNumber());
+    			Iterator<List<UnitSupportAttachment>> iter2 = supportRules.iterator(); 
+    			List<UnitSupportAttachment> ruleType = null;
+    			boolean found = false;
+    			while( iter2.hasNext()){
+    				ruleType = iter2.next();
+    				if( ruleType.get(0).getBonusType().equals(bonusType) ){
+    					found = true;
+    					break;
+    				}
+    			}
+    			if( !found ) {
+    				ruleType = new ArrayList<UnitSupportAttachment>();
+    				supportRules.add(ruleType);
+    			}
+    			ruleType.add(rule);
+    		}
+    	}*/
+    }
 }
 
 class UnitBattleComparator implements Comparator<Unit>
@@ -692,30 +1007,28 @@ class UnitBattleComparator implements Comparator<Unit>
         
         UnitAttachment ua1 = UnitAttachment.get(u1.getType());
         UnitAttachment ua2 = UnitAttachment.get(u2.getType());
-        
         if(ua1 == ua2)
             return 0;
         
-        int rolls1 = BattleCalculator.getRolls(u1, m_player, m_defending);
-        int rolls2 = BattleCalculator.getRolls(u2, m_player, m_defending);
-
-        if (rolls1 != rolls2)
-        {
-            return rolls1 - rolls2;
-        }
-        int power1 = m_defending ? ua1.getDefense(m_player) : ua1.getAttack(m_player);
-        int power2 = m_defending ? ua2.getDefense(m_player) : ua2.getAttack(m_player);
-
+        int power1 = BattleCalculator.getUnitPowerForSorting(u1, m_defending, m_player);
+        int power2 = BattleCalculator.getUnitPowerForSorting(u2, m_defending, m_player);
         if (power1 != power2)
         {
             return power1 - power2;
         }
+        
         int cost1 = m_costs.getInt(u1.getType());
         int cost2 = m_costs.getInt(u2.getType());
-
         if (cost1 != cost2)
         {
             return cost1 - cost2;
+        }
+        
+        int power1reverse = BattleCalculator.getUnitPowerForSorting(u1, !m_defending, m_player);
+        int power2reverse = BattleCalculator.getUnitPowerForSorting(u2, !m_defending, m_player);
+        if (power1reverse != power2reverse)
+        {
+            return power1reverse - power2reverse;
         }
 
         return 0;

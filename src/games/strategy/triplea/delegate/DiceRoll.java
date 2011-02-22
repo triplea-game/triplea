@@ -294,11 +294,11 @@ public class DiceRoll implements Externalizable
      * @param player
      * @return
      */
-    private static int getArtillerySupportAvailable(List<Unit> units, boolean defending, PlayerID player)
+    public static int getArtillerySupportAvailable(List<Unit> units, boolean defending, PlayerID player)
     {
         int artillerySupportAvailable = 0;
         if (!defending)
-        {            
+        {
             Collection<Unit> arty = Match.getMatches(units, Matches.UnitIsArtillery);
             Iterator<Unit> iter = arty.iterator();
             while (iter.hasNext())
@@ -312,8 +312,32 @@ public class DiceRoll implements Externalizable
             if(isImprovedArtillerySupport(player))
                 artillerySupportAvailable *= 2;
         }
-        
         return artillerySupportAvailable;
+    }
+    public static int getArtillerySupportAvailable(Unit u, boolean defending, PlayerID player)
+    {
+        if (Matches.UnitIsArtillery.match(u) && !defending)
+        {
+        	UnitAttachment ua = UnitAttachment.get(u.getType());
+        	int artillerySupportAvailable = ua.getUnitSupportCount(u.getOwner());
+        	if(isImprovedArtillerySupport(player))
+                artillerySupportAvailable *= 2;
+        	return artillerySupportAvailable;
+        }
+        return 0;
+    }
+
+    public static int getSupportableAvailable(List<Unit> units, boolean defending, PlayerID player)
+    {
+        if (!defending)
+        	return Match.countMatches(units, Matches.UnitIsArtillerySupportable);
+        return 0;
+    }
+    public static int getSupportableAvailable(Unit u, boolean defending, PlayerID player)
+    {
+        if (Matches.UnitIsArtillerySupportable.match(u) && !defending)
+        	return 1;
+        return 0;
     }
 
     /*
@@ -324,7 +348,7 @@ public class DiceRoll implements Externalizable
     public static void getSupport(List<Unit> units, Set<List<UnitSupportAttachment>> support, IntegerMap<UnitSupportAttachment> supportLeft, GameData data, boolean defending) {
     	
     	Iterator<UnitSupportAttachment> iter = UnitSupportAttachment.get(data).iterator();
-    	while(iter.hasNext()){	
+    	while(iter.hasNext()){
     		UnitSupportAttachment rule = iter.next();
     		if(rule.getPlayers().isEmpty())
     			continue;
@@ -355,9 +379,7 @@ public class DiceRoll implements Externalizable
     			ruleType.add(rule);
     		}
     	}
-    
     sortSupportRules(support);
-
 }
 
     /*

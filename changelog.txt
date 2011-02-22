@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Changed default casualty picker to choose optimal casualties based on artillery and supportability. (veqryn)
+
 * Fixed a bug where Undo-ing the placement of a factory, to a territory that already had a factory, under ww2v3 isSBRAffectsUnitProduction rules, caused max damage to be done to the original factory. (veqryn)
 
 * Completely re-wrote isConstructions to be completely customizable. Factories now count as constructions when being placed, eliminating placement code specifically for factories. 
