@@ -1,4 +1,10 @@
 Changes for 1.2.7
+* Created a map skin for Middle Earth based on the alterate relief tiles. (veqryn)
+
+* Added Middle Earth 12 player map, thanks to original creators: (flanagany and ajmdemen)
+
+* Balancing changes to Napoleonic Empires, removed a connection, added fortress to majorca, removed tower from catalonia, changed two fortresses in candia into chasseurs. (veqryn)
+
 * Fixed battle calc to show correct results in battles where artillery and supportables had same attack power. (veqryn)
 
 * Changed default casualty picker to choose optimal casualties based on artillery and supportability. (veqryn)
@@ -206,8 +212,6 @@ And lots of small tweaks to purchasing algorithm to allow moore ai to work for m
 
 * Added a few new properties to start to support next gen engine (ComradeKev)
 
-Changes for 1.2.6
-
 * limit status message length and remove combining characters (sgb)
  
 * better server side INode validation (sgb)
@@ -231,8 +235,6 @@ Changes for 1.2.6
 * fix bug 3007142 Carriers that are also transports (ComradeKev)
 
 * fix bug 3028106 fighter landing bug (ComradeKev)
-
-* better server side INode validation (sgb)
 
 * another fix for 2998846 & 3012752 Kamikaze fighters and unloaded troop edit-removal (ComradeKev)
 
@@ -273,6 +275,11 @@ Changes for 1.2.6
 * fix type in battle screen (Bung)
 
 * update cruiser and Italian infantry  (veqryn, crystalct)
+
+
+Changes for 1.2.5.5 stable
+
+* better server side INode validation (sgb)
 
 Changes for 1.2.5.4 stable
 

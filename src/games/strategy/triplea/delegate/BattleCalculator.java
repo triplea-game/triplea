@@ -547,7 +547,6 @@ public class BattleCalculator
             	perfectlySortedUnitsList.addAll(unitsByPowerAll.get(i));
             else
             {
-            	int count = 0;
             	while (0 < unitsByPowerBoth.get(i).size() || 0 < unitsByPowerGives.get(i).size()
 	        				 || 0 < unitsByPowerReceives.get(i).size() || 0 < unitsByPowerNone.get(i).size())
 	        	{
