@@ -496,44 +496,49 @@ public class BattleCalculator
         List<List<Unit>> unitsByPowerGives = new ArrayList<List<Unit>>();
         List<List<Unit>> unitsByPowerReceives = new ArrayList<List<Unit>>();
         List<List<Unit>> unitsByPowerNone = new ArrayList<List<Unit>>();
-        // in order to merge lists, we need to separate sortedUnitsList into multiple lists by power
-        for (int i = 0; i <= Constants.MAX_DICE; i++)
+        
+        //Find what the biggest unit we have is. If they are bigger than max_dice, set to max_dice+1.
+        int maxPower = Math.max(0, Math.min(getUnitPowerForSorting(sortedUnitsList.get(sortedUnitsList.size()-1), defending, player, data), 1 + Constants.MAX_DICE));
+        //Fill the lists with the six dice numbers (plus Zero, and plus 1 above the max_dice in order to put units that have multiple rolls), or unit powers, which we will populate with the units
+        for (int i = 0; i <= maxPower; i++)
         {
-        	List<Unit> powerAll = new ArrayList<Unit>();
-        	List<Unit> powerBoth = new ArrayList<Unit>();
-        	List<Unit> powerGives = new ArrayList<Unit>();
-        	List<Unit> powerReceives = new ArrayList<Unit>();
-        	List<Unit> powerNone = new ArrayList<Unit>();
-            Iterator<Unit> sortedIter = sortedUnitsList.iterator();
-            while (sortedIter.hasNext())
-            {
-            	Unit current = (Unit) sortedIter.next();
-            	if (getUnitPowerForSorting(current, defending, player, data) == i)
-            	{
-            		// TODO: if a unit supports itself, it should be in a different power list, as it will always support itself.  getUnitPowerForSorting() should test for this and return a higher number.
-            		powerAll.add(current);
-            		if (UnitAttachment.get(current.getType()).isArtillery() && UnitAttachment.get(current.getType()).isArtillerySupportable())
-            			powerBoth.add(current);
-            		else if (UnitAttachment.get(current.getType()).isArtillery())
-            			powerGives.add(current);
-            		else if (UnitAttachment.get(current.getType()).isArtillerySupportable())
-            			powerReceives.add(current);
-            		else
-            			powerNone.add(current);
-            	}
-            }
-            unitsByPowerAll.add(powerAll);
-            unitsByPowerBoth.add(powerBoth);
-            unitsByPowerGives.add(powerGives);
-            unitsByPowerReceives.add(powerReceives);
-            unitsByPowerNone.add(powerNone);
-            artillerySupportAvailable += DiceRoll.getArtillerySupportAvailable(powerGives, defending, player);
-            supportableAvailable += DiceRoll.getSupportableAvailable(powerReceives, defending, player);
+            unitsByPowerAll.add(new ArrayList<Unit>());
+            unitsByPowerBoth.add(new ArrayList<Unit>());
+            unitsByPowerGives.add(new ArrayList<Unit>());
+            unitsByPowerReceives.add(new ArrayList<Unit>());
+            unitsByPowerNone.add(new ArrayList<Unit>());
         }
+
+        //in order to merge lists, we need to separate sortedUnitsList into multiple lists by power
+        Iterator<Unit> sortedIter = sortedUnitsList.iterator();
+        while (sortedIter.hasNext())
+        {
+            Unit current = (Unit) sortedIter.next();
+            int unitPower = getUnitPowerForSorting(current, defending, player, data);
+            unitPower = Math.max(0, Math.min(unitPower, 1 + Constants.MAX_DICE)); // getUnitPowerForSorting will return numbers over max_dice IF that units Power * DiceRolls goes over max_dice
+
+            // TODO: if a unit supports itself, it should be in a different power list, as it will always support itself.  getUnitPowerForSorting() should test for this and return a higher number.
+            unitsByPowerAll.get(unitPower).add(current);
+            if (UnitAttachment.get(current.getType()).isArtillery() && UnitAttachment.get(current.getType()).isArtillerySupportable())
+                unitsByPowerBoth.get(unitPower).add(current);
+            else if (UnitAttachment.get(current.getType()).isArtillery())
+            {
+                unitsByPowerGives.get(unitPower).add(current);
+                artillerySupportAvailable += DiceRoll.getArtillerySupportAvailable(current, defending, player);
+            }
+            else if (UnitAttachment.get(current.getType()).isArtillerySupportable())
+            {
+                unitsByPowerReceives.get(unitPower).add(current);
+                supportableAvailable += DiceRoll.getSupportableAvailable(current, defending, player);
+            }
+            else
+                unitsByPowerNone.get(unitPower).add(current);
+        }
+
         // now merge the lists
         List<Unit> tempList1 = new ArrayList<Unit>();
         List<Unit> tempList2 = new ArrayList<Unit>();
-        for (int i = 0; i <= Constants.MAX_DICE; i++)
+        for (int i = 0; i <= maxPower; i++)
         {
             int iArtillery = DiceRoll.getArtillerySupportAvailable(unitsByPowerGives.get(i), defending, player);
             int aboveArtillery = artillerySupportAvailable - iArtillery;
@@ -897,7 +902,7 @@ public class BattleCalculator
     	boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
     	UnitAttachment ua = UnitAttachment.get(current.getType());
     	int rolls;
-    	if (defending)       
+    	if (defending)
         	rolls = ua.getDefenseRolls(current.getOwner());
     	else
     		rolls = ua.getAttackRolls(current.getOwner());
