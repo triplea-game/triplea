@@ -4091,12 +4091,12 @@
 		</property>
 		
 			<!-- if true you may have a number of constructions up to the value of the territory, in territories with factories -->
-		<property name="More Constructions with Factory" value="true" editable="false">
+		<property name="More Constructions with Factory" value="true" editable="true">
 				<boolean/>
 		</property>
 		
 			<!-- if true you may have a number of constructions up to the value of the territory, in territories without factories -->
-		<property name="More Constructions without Factory" value="true" editable="false">
+		<property name="More Constructions without Factory" value="true" editable="true">
 				<boolean/>
 		</property>
 
@@ -4153,7 +4153,7 @@
                 </property>
 
 
-		<property name="Kamikaze Airplanes" value="false" editable="true">
+		<property name="Kamikaze Airplanes" value="false" editable="false">
 			<boolean/>
 		</property>
 
@@ -4202,7 +4202,7 @@
                        <number min="0" max="1000"/>
                </property>
 
-		<property name="Americans bid" value="0" editable="true">
+		<property name="Americans bid" value="0" editable="false">
                        <number min="0" max="1000"/>
                </property>
 
@@ -4740,6 +4740,7 @@
 <br>==========================================================
 <br>
 <h1 style="text-align: center;font-size:120%;000000"><em>Version History</em></h1>
+All changes by EB unless otherwise specified<br>
 
 <div style="text-align: center;">
 <br> <b>Changes NWO1.8.5 to NWO1.8.6:</b>

@@ -978,7 +978,7 @@
                 </productionRule>
 
                 <productionRule name="buyNazgul">
-                        <cost resource="PUs" quantity="25" />
+                        <cost resource="PUs" quantity="24" />
                         <result resourceOrUnit="nazgul" quantity="1"/>
                 </productionRule>
 
@@ -1008,7 +1008,7 @@
                 </productionRule>
 
                 <productionRule name="buyBalrog">
-                        <cost resource="PUs" quantity="23" />
+                        <cost resource="PUs" quantity="22" />
                         <result resourceOrUnit="balrog" quantity="1"/>
                 </productionRule>
 
@@ -3133,7 +3133,7 @@
 	&lt;td&gt;4&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
-	&lt;td&gt;25&lt;/td&gt;
+	&lt;td&gt;24&lt;/td&gt;
 	&lt;td&gt;is 2hit&lt;/td&gt;
 	&lt;/tr&gt;
 	
@@ -3150,7 +3150,7 @@
 	&lt;td&gt;5&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
-	&lt;td&gt;23&lt;/td&gt;
+	&lt;td&gt;22&lt;/td&gt;
 	&lt;td&gt;is 2hit, canDoSBR&lt;/td&gt;
 	&lt;/tr&gt;
 	
@@ -3355,10 +3355,6 @@
 &lt;br&gt;&lt;b&gt;Changelist from beta:&lt;/b&gt;
 &lt;br&gt;
 &lt;div style=&quot;text-align: left;&quot;&gt;
-&lt;br&gt;
-&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Nazgul's price increased from 24PU to 25PU.
-&lt;br&gt;
-&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Balrog's price increased from 22PU to 23PU.
 &lt;br&gt;
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Stabber's price increased from 1PU to 2PU.
 &lt;br&gt;
