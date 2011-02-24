@@ -19,6 +19,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
@@ -55,20 +56,33 @@ public class DoNonCombatMove
 
         //Then we loop through them and recruit units, discarding any tasks that we can't supply with enough units to be worthwhile.
         //This phase recruits just enough units for the task to be worthwhile.
-        DUtils.Log(Level.FINE, "  Calculating and performing worthwhile tasks.");
-        while (calculateAndPerformWorthwhileTasks(pack, tasks))
+        DUtils.Log(Level.FINE, "  Beginning initial task consideration loop section");
+        for (int i = 0; i < DSettings.LoadSettings().AA_initialTaskConsiderationLoopCount; i++)
         {
+            DUtils.Log(Level.FINE, "  Task consideration loop {0} started", i + 1);
+            for (NCM_Task task : tasks)
+            {
+                if (task.IsDisqualified())
+                    task.Reset(); //We reset disqualified tasks for another attempt (now that we know of completed tasks)
+            }
+
+            while (considerAndPerformWorthwhileTasks(pack, tasks))
+            {
+            }
         }
 
         //Now we go through tasks, and retreat from the ones we couldn't defend
         DUtils.Log(Level.FINE, "  Performing target retreats on diqualified tasks.");
         for (NCM_Task task : tasks)
         {
+            DUtils.Log(Level.FINEST, "    Checking if task is disqualified. Task Target: {0}", task.GetTarget().getName());
             if (task.IsDisqualified())
             {
                 task.PerformTargetRetreat(tasks, mover);
                 StatusCenter.get(data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(task.GetTarget()).WasAbandoned = true;
             }
+            else
+                DUtils.Log(Level.FINEST, "      Not disqualified, so not retreating from target");
         }
 
         //We now allow the worthwhile tasks to recruit additional units to make the task even more favorable.
@@ -115,7 +129,8 @@ public class DoNonCombatMove
             doNonCombatMoveForTer(pack, ter, terUnits, tasks);
         }
 
-        ThreatInvalidationCenter.get(data, player).ClearInvalidatedThreats(); //We clear invalidated threats because the enemy will come after air even if landing ter is next to resistant ter
+        //We clear invalidated threats because the enemy will come after air even if landing ter is next to resistant ter
+        ThreatInvalidationCenter.get(data, player).ClearInvalidatedThreats();
 
         //Now that we've completed all the normal ncm moves, perform the special tasks
         DUtils.Log(Level.FINE, "  Attempting to land aircraft on safe territories.");
@@ -195,7 +210,7 @@ public class DoNonCombatMove
             @Override
             public boolean match(Territory ter)
             {
-                if (!data.getAllianceTracker().isAllied(ter.getOwner(), player))
+                if (!data.getAllianceTracker().isAllied(ter.getOwner(), player) && !StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasAttacked)
                     return false;
                 if(data.getMap().getNeighbors(ter, DMatches.territoryIsOwnedByNNEnemy(data, player)).isEmpty()) //If this is not the front line
                     return false;
@@ -218,6 +233,9 @@ public class DoNonCombatMove
 
                 for (Territory neighbor : friendlyNeighbors)
                 {
+                    if(neighbor.getUnits().size() > 1) //We don't care if an almost empty friendly neighbor shares our currently unique enemy neighbors...
+                        continue;
+
                     List<Territory> n_EnemyNeighbors = DUtils.ToList(data.getMap().getNeighbors(neighbor, DMatches.territoryIsOwnedByNNEnemy(data, player)));
 
                     uniqueEnemyNeighbors.removeAll(n_EnemyNeighbors);
@@ -258,7 +276,7 @@ public class DoNonCombatMove
         return result;
     }
 
-    private static boolean calculateAndPerformWorthwhileTasks(MovePackage pack, List<NCM_Task> tasks)
+    private static boolean considerAndPerformWorthwhileTasks(MovePackage pack, List<NCM_Task> tasks)
     {
         GameData data = pack.Data;
         PlayerID player = pack.Player;

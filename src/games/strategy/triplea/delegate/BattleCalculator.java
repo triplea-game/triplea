@@ -424,6 +424,19 @@ public class BattleCalculator
     	return killed;
 	}
 
+    private static boolean s_enableCasualtySortingCaching = true;
+    public static void EnableCasualtySortingCaching()
+    {
+        s_enableCasualtySortingCaching = true;
+    }
+    public static void DisableCasualtySortingCaching()
+    {
+        s_enableCasualtySortingCaching = false;
+        s_cachedSortedCasualties.clear(); //Don't keep all this stuff in memory (basically, we just want this caching so if a battle is simulated 5000 times, we only sort units once)
+    }
+    //Key is the hash of the possible casualties collection[targets], value is the cached sorted result[perfectlySortedUnitsList]
+    private static HashMap<Integer,List<Unit>> s_cachedSortedCasualties = new HashMap<Integer, List<Unit>>();
+
     private static List<Unit> getDefaultCasualties(Collection<Unit> targets, int hits, boolean defending, PlayerID player, IntegerMap<UnitType> costs, GameData data)
     {
         // Remove two hit bb's selecting them first for default casualties
@@ -479,6 +492,18 @@ public class BattleCalculator
      */
     public static Collection<Unit> sortUnitsForCasualtiesWithSupport(Collection<Unit> targets, boolean defending, PlayerID player, IntegerMap<UnitType> costs, GameData data)
     {
+        if(s_enableCasualtySortingCaching && s_cachedSortedCasualties.containsKey(targets.hashCode()))
+        {
+        	if (s_cachedSortedCasualties.get(targets.hashCode()).isEmpty() || !s_cachedSortedCasualties.get(targets.hashCode()).containsAll(targets) 
+                		|| !targets.containsAll(s_cachedSortedCasualties.get(targets.hashCode())) || s_cachedSortedCasualties.get(targets.hashCode()).size() != targets.size())
+        		s_cachedSortedCasualties.clear();
+        	else
+        		return s_cachedSortedCasualties.get(targets.hashCode());
+        }
+        
+        if(s_enableCasualtySortingCaching && s_cachedSortedCasualties.size() > 2)
+        	s_cachedSortedCasualties.clear();
+
     	List<Unit> sortedUnitsList = new ArrayList<Unit>(targets);
     	Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, player, costs, data));
     	List<Unit> perfectlySortedUnitsList = new ArrayList<Unit>();
@@ -497,9 +522,11 @@ public class BattleCalculator
         List<List<Unit>> unitsByPowerReceives = new ArrayList<List<Unit>>();
         List<List<Unit>> unitsByPowerNone = new ArrayList<List<Unit>>();
         
-        //Find what the biggest unit we have is. If they are bigger than max_dice, set to max_dice+1.
-        int maxPower = Math.max(0, Math.min(getUnitPowerForSorting(sortedUnitsList.get(sortedUnitsList.size()-1), defending, player, data), 1 + Constants.MAX_DICE));
-        //Fill the lists with the six dice numbers (plus Zero, and plus 1 above the max_dice in order to put units that have multiple rolls), or unit powers, which we will populate with the units
+        //Decide what is the biggest size for the lists that we will support
+        int maxDiceTimesRolls = 1 + 2*Constants.MAX_DICE;
+        //Find what the biggest unit we have is. If they are bigger than maxDiceTimesRolls, set to maxDiceTimesRolls.
+        int maxPower = Math.max(0, Math.min(getUnitPowerForSorting(sortedUnitsList.get(sortedUnitsList.size()-1), defending, player, data), maxDiceTimesRolls));
+        //Fill the lists with the six dice numbers (plus Zero, and any above if we have units with multiple rolls), or unit powers, which we will populate with the units
         for (int i = 0; i <= maxPower; i++)
         {
             unitsByPowerAll.add(new ArrayList<Unit>());
@@ -515,7 +542,7 @@ public class BattleCalculator
         {
             Unit current = (Unit) sortedIter.next();
             int unitPower = getUnitPowerForSorting(current, defending, player, data);
-            unitPower = Math.max(0, Math.min(unitPower, 1 + Constants.MAX_DICE)); // getUnitPowerForSorting will return numbers over max_dice IF that units Power * DiceRolls goes over max_dice
+            unitPower = Math.max(0, Math.min(unitPower, maxPower)); // getUnitPowerForSorting will return numbers over max_dice IF that units Power * DiceRolls goes over max_dice
 
             // TODO: if a unit supports itself, it should be in a different power list, as it will always support itself.  getUnitPowerForSorting() should test for this and return a higher number.
             unitsByPowerAll.get(unitPower).add(current);
@@ -548,7 +575,8 @@ public class BattleCalculator
             supportableAvailable -= iSupportable;
             if ((iArtillery == 0 && iSupportable == 0) || (iArtillery == 0 && aboveSupportable >= aboveArtillery)
             			|| ((iSupportable == 0 || iArtillery == 0) && aboveSupportable == aboveArtillery)
-            			|| (iSupportable == 0 && aboveSupportable <= aboveArtillery))
+            			|| (iSupportable == 0 && aboveSupportable <= aboveArtillery)
+            			|| (i == maxDiceTimesRolls))
             	perfectlySortedUnitsList.addAll(unitsByPowerAll.get(i));
             else
             {
@@ -674,6 +702,9 @@ public class BattleCalculator
         if (perfectlySortedUnitsList.isEmpty() || !perfectlySortedUnitsList.containsAll(sortedUnitsList) 
         		|| !sortedUnitsList.containsAll(perfectlySortedUnitsList) || perfectlySortedUnitsList.size() != sortedUnitsList.size())
         	throw new IllegalStateException("Possibility not accounted for in sortUnitsForCasualtiesWithSupport.");
+
+        if(s_enableCasualtySortingCaching && !s_cachedSortedCasualties.containsKey(targets.hashCode()))
+            s_cachedSortedCasualties.put(targets.hashCode(), perfectlySortedUnitsList);
         
         return perfectlySortedUnitsList;
     }

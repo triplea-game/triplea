@@ -1,7 +1,9 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.delegate.MustFightBattle;
+import games.strategy.util.IntegerMap;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +36,12 @@ public class AggregateResults implements Serializable
     }
     public BattleResults GetBattleResultsClosestToAverage()
     {
-        double closestBattleDif = Integer.MAX_VALUE;
+        float closestBattleDif = Integer.MAX_VALUE;
         BattleResults closestBattle = null;
         for (BattleResults results : m_results)
         {
-            double dif = (Math.max(results.getAttackingUnitsLeft(), getAverageAttackingUnitsLeft()) - Math.min(results.getAttackingUnitsLeft(), getAverageAttackingUnitsLeft()));
-            dif += (Math.max(results.getDefendingUnitsLeft(), getAverageDefendingUnitsLeft()) - Math.min(results.getDefendingUnitsLeft(), getAverageDefendingUnitsLeft()));
+            float dif = DUtils.MNN((float)(results.getAttackingUnitsLeft() - getAverageAttackingUnitsLeft()));
+            dif += DUtils.MNN((float)(results.getDefendingUnitsLeft() - getAverageDefendingUnitsLeft()));
             if (dif < closestBattleDif)
             {
                 closestBattleDif = dif;

@@ -21,6 +21,7 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.baseAI.AIUtils;
 import games.strategy.triplea.baseAI.AbstractAI;
+import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
@@ -100,7 +101,7 @@ public class OddsCalculator
         AggregateResults rVal = new AggregateResults(count);
         BattleTracker battleTracker = new BattleTracker();
         
-        
+        BattleCalculator.EnableCasualtySortingCaching();
         for(int i =0; i < count && !m_cancelled; i++)
         {
             final CompositeChange allChanges = new CompositeChange();
@@ -117,9 +118,9 @@ public class OddsCalculator
             //restore the game to its original state
             new ChangePerformer(m_data).perform( allChanges.invert());
             
-            battleTracker.clear();
-            
+            battleTracker.clear();            
         }
+        BattleCalculator.DisableCasualtySortingCaching();
         rVal.setTime(System.currentTimeMillis() - start);
         
         return rVal;

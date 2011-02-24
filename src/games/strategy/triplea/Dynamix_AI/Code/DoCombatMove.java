@@ -19,6 +19,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
 import games.strategy.triplea.Dynamix_AI.DSettings;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
@@ -45,15 +46,27 @@ public class DoCombatMove
     public static void doCombatMove(Dynamix_AI ai, GameData data, IMoveDelegate mover, PlayerID player)
     {
         MovePackage pack = new MovePackage(ai, data, mover, player, null, null, null);
-
+        
         List<CM_Task> tasks = GenerateTasks(pack);
 
-        DUtils.Log(Level.FINE, "  Beginning first combat move loop.");
-        while (doCombatMoveLoop(pack, tasks))
+        //We loop this code so that if the AI is on a battle front, the AI will do better and attack more like a person because it'll be able to be more aggresive with attacks on ters next to an already successful attack.
+        //This looping partially solves the problem where attacks are not done because of initial uncertainty about if the other attacks will be done.
+        DUtils.Log(Level.FINE, "  Beginning initial task consideration loop section");
+        for (int i = 0; i < DSettings.LoadSettings().AA_initialTaskConsiderationLoopCount; i++)
         {
+            DUtils.Log(Level.FINE, "  Task consideration loop {0} started", i + 1);
+            for(CM_Task task : tasks)
+            {
+                if(task.IsDisqualified())
+                    task.Reset(); //We reset disqualified tasks for another attempt (now that we know of completed tasks)
+            }
+
+            while (considerAndPerformWorthwhileTasks(pack, tasks))
+            {
+            }
         }
 
-        DUtils.Log(Level.FINE, "  Beginning second combat move loop.");
+        DUtils.Log(Level.FINE, "  Calculating and adding additional task recruits. (Wave 2)");
         for(CM_Task task : tasks)
         {
             if(task.IsCompleted())
@@ -67,7 +80,7 @@ public class DoCombatMove
             }
         }
 
-        DUtils.Log(Level.FINE, "  Beginning third combat move loop.");
+        DUtils.Log(Level.FINE, "  Calculating and adding additional task recruits. (Wave 3)");
         for(CM_Task task : tasks)
         {
             if(task.IsCompleted())
@@ -81,7 +94,7 @@ public class DoCombatMove
             }
         }
 
-        DUtils.Log(Level.FINE, "  Beginning fourth combat move loop.");
+        DUtils.Log(Level.FINE, "  Calculating and adding additional task recruits. (Wave 4)");
         for(CM_Task task : tasks)
         {
             if(task.IsCompleted())
@@ -223,7 +236,7 @@ public class DoCombatMove
         return result;
     }
 
-    private static boolean doCombatMoveLoop(MovePackage pack, List<CM_Task> tasks)
+    private static boolean considerAndPerformWorthwhileTasks(MovePackage pack, List<CM_Task> tasks)
     {
         GameData data = pack.Data;
         PlayerID player = pack.Player;

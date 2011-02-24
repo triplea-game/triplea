@@ -65,7 +65,7 @@ public class TacticalCenter
     public void FreezeUnits(List<Unit> units)
     {        
         FrozenUnits.addAll(units);
-        DUtils.Log(Level.FINEST, "        Freezing units for the rest of this phase. Units: {0} New Total Size: {1}", units, FrozenUnits.size());
+        DUtils.Log(Level.FINEST, "          Freezing units for the rest of this phase. Units: {0} New Total Size: {1}", units, FrozenUnits.size());
     }
     public HashSet<Unit> GetFrozenUnits()
     {
@@ -73,7 +73,7 @@ public class TacticalCenter
     }
     public void ClearFrozenUnits()
     {
-        DUtils.Log(Level.FINEST, "        Clearing frozen units. Frozen Units: {0} Size: {1}", FrozenUnits, FrozenUnits.size());
+        DUtils.Log(Level.FINEST, "          Clearing frozen units. Frozen Units: {0} Size: {1}", FrozenUnits, FrozenUnits.size());
         FrozenUnits.clear();
     }
 

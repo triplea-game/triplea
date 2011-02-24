@@ -48,7 +48,7 @@ public class DSettings implements Serializable
     public boolean EnableAILogging = false;
     public Level AILoggingDepth = Level.FINEST;
 
-    public int CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost = 125;
+    public int CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost = 50;
     public int CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance = 250;
     public int CA_CMNCM_sortsPossibleTaskRecruitsForOptimalAttackDefense = 25;
     public int CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop = 250;
@@ -71,6 +71,9 @@ public class DSettings implements Serializable
 
     public int AA_resourcePercentageThatMustExistForFactoryBuy = 50;
     public int AA_percentageOfTaskRequirementsNeededToPerformTask = 96;
+    public int AA_percentageOfResistedThreatThatTasksInvalidate = 75;
+    public int AA_initialTaskConsiderationLoopCount = 3;
+    public int AA_maxUnitTypesForPurchaseMix = 5;
 
     private static DSettings s_lastSettings = null;
     private static String PROGRAM_SETTINGS = "Program Settings";

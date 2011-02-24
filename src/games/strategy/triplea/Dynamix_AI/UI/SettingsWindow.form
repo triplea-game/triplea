@@ -854,7 +854,7 @@
                                       <Component id="jLabel24" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel22" pref="587" max="32767" attributes="1"/>
+                                      <Component id="jLabel22" pref="593" max="32767" attributes="1"/>
                                       <EmptySpace min="-2" pref="111" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
@@ -862,7 +862,7 @@
                                       <Component id="jLabel27" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="1" attributes="0">
-                                      <Component id="jLabel26" pref="567" max="32767" attributes="1"/>
+                                      <Component id="jLabel26" pref="573" max="32767" attributes="1"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Group type="102" alignment="0" attributes="0">
@@ -882,7 +882,7 @@
                                       <Component id="jLabel30" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel29" pref="567" max="32767" attributes="1"/>
+                                      <Component id="jLabel29" pref="573" max="32767" attributes="1"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile" min="-2" pref="62" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -893,7 +893,7 @@
                                       <Component id="jLabel31" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel32" pref="567" max="32767" attributes="1"/>
+                                      <Component id="jLabel32" pref="573" max="32767" attributes="1"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile" min="-2" pref="62" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -904,7 +904,7 @@
                                       <Component id="jLabel36" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel35" pref="567" max="32767" attributes="1"/>
+                                      <Component id="jLabel35" pref="573" max="32767" attributes="1"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="v_cacmncm_determinesIfTaskEndangersCap" min="-2" pref="62" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -915,7 +915,7 @@
                                       <Component id="jLabel37" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel38" pref="567" max="32767" attributes="1"/>
+                                      <Component id="jLabel38" pref="573" max="32767" attributes="1"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers" min="-2" pref="62" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -928,7 +928,7 @@
                                               <Component id="jLabel42" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <Group type="102" alignment="0" attributes="0">
-                                              <Component id="jLabel41" pref="514" max="32767" attributes="1"/>
+                                              <Component id="jLabel41" pref="520" max="32767" attributes="1"/>
                                               <EmptySpace min="-2" pref="131" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
@@ -944,9 +944,9 @@
                                           <Group type="102" alignment="0" attributes="0">
                                               <EmptySpace min="10" pref="10" max="10" attributes="0"/>
                                               <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace pref="326" max="32767" attributes="0"/>
+                                              <EmptySpace pref="332" max="32767" attributes="0"/>
                                           </Group>
-                                          <Component id="jLabel16" alignment="0" pref="571" max="32767" attributes="1"/>
+                                          <Component id="jLabel16" alignment="0" pref="577" max="32767" attributes="1"/>
                                           <Component id="jLabel20" alignment="0" min="-2" pref="566" max="-2" attributes="1"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
@@ -970,7 +970,7 @@
                                               <Component id="jLabel43" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <Group type="102" alignment="0" attributes="0">
-                                              <Component id="jLabel44" pref="514" max="32767" attributes="1"/>
+                                              <Component id="jLabel44" pref="520" max="32767" attributes="1"/>
                                               <EmptySpace min="-2" pref="131" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
@@ -1425,7 +1425,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="v_logHolderTabbedPane" alignment="0" max="32767" attributes="0"/>
+                          <Component id="v_logHolderTabbedPane" alignment="0" pref="715" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="v_enableAILogging" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -1631,23 +1631,48 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel53" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel50" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace pref="240" max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="v_aa_resourcePercentageThatMustExistForFactoryBuy" min="-2" pref="67" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabel53" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabel50" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="234" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="v_aa_percentageOfTaskRequirementsNeededToPerformTask" min="-2" pref="67" max="-2" attributes="0"/>
+                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                              <Component id="jLabel52" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="v_aa_resourcePercentageThatMustExistForFactoryBuy" min="-2" pref="67" max="-2" attributes="0"/>
+                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                              <Component id="jLabel54" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                      </Group>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabel55" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabel51" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace pref="282" max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="v_aa_initialTaskConsiderationLoopCount" alignment="0" min="-2" pref="67" max="-2" attributes="0"/>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="v_aa_percentageOfResistedThreatsThatTasksInvalidate" min="-2" pref="67" max="-2" attributes="0"/>
+                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                              <Component id="jLabel56" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Component id="v_aa_maxUnitTypesForPurchaseMix" alignment="0" min="-2" pref="67" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                              </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jLabel54" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="v_aa_percentageOfTaskRequirementsNeededToPerformTask" min="-2" pref="67" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jLabel52" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="jLabel57" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1655,25 +1680,34 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="v_aa_resourcePercentageThatMustExistForFactoryBuy" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel54" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="v_aa_percentageOfTaskRequirementsNeededToPerformTask" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel52" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel53" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jLabel50" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabel54" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel53" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="v_aa_resourcePercentageThatMustExistForFactoryBuy" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="281" max="32767" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="v_aa_percentageOfTaskRequirementsNeededToPerformTask" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel52" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel50" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabel55" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="v_aa_percentageOfResistedThreatsThatTasksInvalidate" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel56" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabel51" alignment="3" min="-2" pref="14" max="-2" attributes="0"/>
+                          <Component id="v_aa_initialTaskConsiderationLoopCount" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabel57" alignment="3" min="-2" pref="14" max="-2" attributes="0"/>
+                          <Component id="v_aa_maxUnitTypesForPurchaseMix" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="188" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1682,7 +1716,7 @@
             <Component class="javax.swing.JLabel" name="jLabel50">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Percentage Of Task Requirements That Must Be Met To Perform Task:"/>
-                <Property name="toolTipText" type="java.lang.String" value="Can be used to make the AI more aggresive, which is most likely going to make the AI play worse."/>
+                <Property name="toolTipText" type="java.lang.String" value="Can be used to make the AI more aggresive/cautious. (You should keep this above 90% to prevent crazy attacks)"/>
                 <Property name="name" type="java.lang.String" value="jLabel50" noResource="true"/>
               </Properties>
             </Component>
@@ -1703,6 +1737,7 @@
             <Component class="javax.swing.JLabel" name="jLabel53">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Percentage Of Resources That Must Exist After Purchases For AI To Buy Factory:"/>
+                <Property name="toolTipText" type="java.lang.String" value="The percentage of the resources(PUs) that the AI had at the beginning of the purchase phase that must exist after all purchases for the AI to buy a factory."/>
                 <Property name="name" type="java.lang.String" value="jLabel53" noResource="true"/>
               </Properties>
             </Component>
@@ -1718,6 +1753,57 @@
                   <SpinnerModel initial="50" maximum="75" minimum="25" numberType="java.lang.Integer" stepSize="1" type="number"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="v_aa_resourcePercentageThatMustExistForFactoryBuy" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel51">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Initial Task Consideration Loop Count:"/>
+                <Property name="toolTipText" type="java.lang.String" value="The higher this value, the better the AI will do when attacking or defending battle fronts."/>
+                <Property name="name" type="java.lang.String" value="jLabel51" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JSpinner" name="v_aa_initialTaskConsiderationLoopCount">
+              <Properties>
+                <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                  <SpinnerModel initial="3" maximum="5" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="v_aa_initialTaskConsiderationLoopCount" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel55">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Percentage Of Resisted Threats That Task&apos;s Invalidate Around Hotspot:"/>
+                <Property name="toolTipText" type="java.lang.String" value="Threat invalidation greatly increases the AI&apos;s playing on a battle front, but an excessively high invalidation rate could cause it to leave units in vulnerable positions."/>
+                <Property name="name" type="java.lang.String" value="jLabel55" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel56">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="%"/>
+                <Property name="name" type="java.lang.String" value="jLabel56" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JSpinner" name="v_aa_percentageOfResistedThreatsThatTasksInvalidate">
+              <Properties>
+                <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                  <SpinnerModel initial="75" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="v_aa_percentageOfResistedThreatsThatTasksInvalidate" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JSpinner" name="v_aa_maxUnitTypesForPurchaseMix">
+              <Properties>
+                <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                  <SpinnerModel initial="5" maximum="25" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="v_aa_maxUnitTypesForPurchaseMix" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel57">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Max Unit Types To Calculate For Factory Purchase Mix:"/>
+                <Property name="toolTipText" type="java.lang.String" value="The lower this is, the faster the AI&apos;s purchasing will be."/>
+                <Property name="name" type="java.lang.String" value="jLabel57" noResource="true"/>
               </Properties>
             </Component>
           </SubComponents>

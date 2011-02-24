@@ -58,9 +58,10 @@ public class DOddsCalculatorTests extends TestCase
 
         List<Unit> attacking = new ArrayList<Unit>();
         List<Unit> defending = new ArrayList<Unit>();
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 50; i++)
         {
             attacking.add(infantry.create(superior));
+            attacking.add(artillery.create(superior));
             attacking.add(fighter.create(superior));
         }
         for (int i = 0; i < 100; i++)

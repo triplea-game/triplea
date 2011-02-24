@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Major patch for Dynamix AI. Updated battle calc to cache sorted casualty lists. (wisconsin)
+
 * Created a map skin for Middle Earth based on the alterate relief tiles. (veqryn)
 
 * Added Middle Earth 12 player map, thanks to original creators: (flanagany and ajmdemen)

@@ -55,25 +55,26 @@ import javax.swing.SwingUtilities;
  */
 public class Purchase
 {
-    public static void purchase(Dynamix_AI ai, boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaser, GameData data, PlayerID player)
+    public static void purchase(Dynamix_AI ai, boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaser, GameData data, final PlayerID player)
     {
         if(!purchaseForBid && DSettings.LoadSettings().EnableResourceCollectionMultiplier && DSettings.LoadSettings().ResourceCollectionMultiplyPercent != 100)
         {
             if(GlobalCenter.PUsAtEndOfLastTurn == 0) //This will happen when the game was saved and reloaded since the end of this country's last turn
-                GlobalCenter.PUsAtEndOfLastTurn = DUtils.GetTotalProductionOfTerritoriesInList(DUtils.ToList(data.getMap().getTerritoriesOwnedBy(player)));
-            int PUDiff = PUsToSpend - GlobalCenter.PUsAtEndOfLastTurn;
-            final int newPUs = GlobalCenter.PUsAtEndOfLastTurn + (int)((float)PUDiff * (DSettings.LoadSettings().ResourceCollectionMultiplyPercent / 100.0F));
-            int PUChange = newPUs - GlobalCenter.PUsAtEndOfLastTurn;
-            final int fPUsToSpend = PUsToSpend; final Dynamix_AI fAI = ai;
-            DUtils.Log(Level.FINER, "  Using an RCM cheat, and increasing our PUs from {0} to {1}", DUtils.ToArray(fPUsToSpend, newPUs));
+                GlobalCenter.PUsAtEndOfLastTurn = DUtils.GetTotalProductionOfTerritoriesInList(DUtils.ToList(data.getMap().getTerritoriesOwnedBy(player))); //This is a temp hack, should definately be changed
+            int PUsCollectedLastTurn = player.getResources().getQuantity(GlobalCenter.GetPUResource()) - GlobalCenter.PUsAtEndOfLastTurn;
+            //Since we already have the pu's we collected last turn, only add the extra
+            int PUChange = (int)((float)PUsCollectedLastTurn * (DSettings.LoadSettings().ResourceCollectionMultiplyPercent / 100.0F)) - PUsCollectedLastTurn;
+            if(PUChange <= 0)
+                return;
+            final int newPUs = player.getResources().getQuantity(GlobalCenter.GetPUResource()) + PUChange;
+
+            DUtils.Log(Level.FINER, "  Using an RCM cheat, and increasing our PUs from {0} to {1}", player.getResources().getQuantity(GlobalCenter.GetPUResource()), newPUs);
+            final Dynamix_AI fAI = ai;            
             Runnable runner = new Runnable()
             {
                 public void run()
                 {
-                    if(newPUs > fPUsToSpend)
-                        CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(fAI.getName() + " use an RCM cheat, and increase their PUs from " + fPUsToSpend + " to " + newPUs);
-                    else
-                        CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(fAI.getName() + " use an RCM cheat, and decrease their PUs from " + fPUsToSpend + " to " + newPUs);
+                    CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(fAI.getName() + " use an RCM cheat, and increase their PUs from " + player.getResources().getQuantity(GlobalCenter.GetPUResource()) + " to " + newPUs);
                 }
             };
             try
@@ -82,7 +83,7 @@ public class Purchase
             }
             catch (Exception ex)
             {
-                System.out.println(ex.toString());
+                DUtils.Log_Fine(ex.toString());
             }
 
             Change change = ChangeFactory.changeResourcesChange(player, GlobalCenter.GetPUResource(), PUChange);
@@ -368,7 +369,7 @@ public class Purchase
         }
 
         List<Unit> unitsToBuy = new ArrayList<Unit>();
-        for (int i = 0; i < Math.min(DUtils.GetCheckedUnitProduction(ter), 5); i++) //Do five different unit types at most because we dont want this to take too long
+        for (int i = 0; i < Math.min(DUtils.GetCheckedUnitProduction(ter), DSettings.LoadSettings().AA_maxUnitTypesForPurchaseMix); i++) //Do X(user-set) different unit types at most because we dont want this to take too long
         {
             Unit unit = DUtils.CalculateUnitThatWillHelpWinAttackOnXTheMostPerPU(ncmTarget, data, player, unitsOnTheWay, allUnits, Matches.UnitHasEnoughMovement(1), DSettings.LoadSettings().CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost);
             unit = unit.getType().create(player); //Don't add the actual unit we created before, otherwise if we purchase the same unit type twice, we will end up doing calc's with multiples of the same unit, which is bad
@@ -387,6 +388,8 @@ public class Purchase
             unitsOnTheWay.add(unit);
             if(unitsToBuy.size() >= productionSpaceLeft) //If we've already bought the most we can fit on this territory
                 break;
+            if(DSettings.LoadSettings().AllowCalcingDecrease && Dynamix_AI.GetTimeTillNextScheduledActionDisplay() == 0) //If we're taking longer than the user wanted...
+                break; //Don't calculate more units to add to the mix...
         }
         if(unitsToBuy.isEmpty())
             return null;

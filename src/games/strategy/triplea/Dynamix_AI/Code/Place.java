@@ -89,6 +89,7 @@ public class Place
                 List<Unit> hackedUnits = new ArrayList<Unit>();
                 long time = new Date().getTime();
                 int count = 0;
+                //If multiple amount is over 1.0(Always will), we loop and place all units until multiply amount left is less than 1.0
                 while (multiplyAmount > 1.0F)
                 {
                     for (Unit unit : units)
@@ -97,6 +98,7 @@ public class Place
                     }
                     multiplyAmount -= 1.0F;
                 }
+                //Now we loop through the units and only place the ones whose random number is less than the multiply amount left
                 for (Unit unit : units)
                 {
                     time = new Date().getTime();
@@ -112,7 +114,7 @@ public class Place
                     public void run()
                     {
                         CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(fAI.getName() + " use a UPM cheat, and place " + fHackedUnits.size() + " units on " + fFactoryTer.getName());
-                        CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().setRenderingData(fHackedUnits);
+                        CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().setRenderingData(fHackedUnits); //Let the user see the hacked units in the sidebar
                     }
                 };
                 try
@@ -188,10 +190,8 @@ public class Place
         int lowestRange = Integer.MAX_VALUE;
         for (Territory ter : facLocs)
         {
-            if (ter.getUnits().someMatch(Matches.UnitIsFactory) || ter.getName().equals(ourCapital.getName()) || DUtils.GetSPNNEnemyWithLUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand).size() > 0)
-            {
+            if (ter.getUnits().someMatch(Matches.UnitIsFactory))
                 continue;
-            }
             int dist = DUtils.GetJumpsFromXToY_Land(data, ter, ourCapital);
             if (dist < lowestRange)
             {
@@ -202,25 +202,8 @@ public class Place
         {
             for (Territory ter : facLocs)
             {
-                if (ter.getUnits().someMatch(Matches.UnitIsFactory) || ter.getName().equals(ourCapital.getName()))
-                {
+                if (ter.getUnits().someMatch(Matches.UnitIsFactory))
                     continue;
-                }
-                int dist = DUtils.GetJumpsFromXToY_Land(data, ter, ourCapital);
-                if (dist < lowestRange)
-                {
-                    lowestRange = dist;
-                }
-            }
-        }
-        if (lowestRange == Integer.MAX_VALUE)
-        {
-            for (Territory ter : facLocs)
-            {
-                if (ter.getUnits().someMatch(Matches.UnitIsFactory) || ter.getName().equals(ourCapital.getName()))
-                {
-                    continue;
-                }
                 int dist = DUtils.GetJumpsFromXToY_NoCond(data, ter, ourCapital);
                 if (dist < lowestRange)
                 {
@@ -237,7 +220,7 @@ public class Place
         {
             for (Territory ter : facLocs)
             {
-                if (ter.getUnits().someMatch(Matches.UnitIsFactory) || ter.getName().equals(ourCapital.getName()) || DUtils.GetSPNNEnemyWithLUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand).size() > 0)
+                if (ter.getUnits().someMatch(Matches.UnitIsFactory) || ter.getName().equals(ourCapital.getName()))
                 {
                     continue;
                 }
@@ -245,21 +228,6 @@ public class Place
                 if (dist == lowestRange)
                 {
                     closestRangeTers.add(ter);
-                }
-            }
-            if (closestRangeTers.size() < 1)
-            {
-                for (Territory ter : facLocs)
-                {
-                    if (ter.getUnits().someMatch(Matches.UnitIsFactory) || ter.getName().equals(ourCapital.getName()))
-                    {
-                        continue;
-                    }
-                    int dist = DUtils.GetJumpsFromXToY_Land(data, ter, ourCapital);
-                    if (dist == lowestRange)
-                    {
-                        closestRangeTers.add(ter);
-                    }
                 }
             }
             if (closestRangeTers.size() < 1)
@@ -280,22 +248,27 @@ public class Place
             lowestRange++;
         }
 
-        Territory highestProTer = null;
-        int highestProTerPro = Integer.MIN_VALUE;
+        Territory highestScoringTer = null;
+        int highestTerScore = Integer.MIN_VALUE;
         for (Territory ter : closestRangeTers)
         {
             if (TerritoryAttachment.get(ter) != null)
             {
-                if (TerritoryAttachment.get(ter).getProduction() > highestProTerPro)
+                if (TerritoryAttachment.get(ter).getProduction() > 0)
                 {
-                    highestProTer = ter;
-                    highestProTerPro = TerritoryAttachment.get(ter).getProduction();
+                    int score = TerritoryAttachment.get(ter).getProduction();
+                    score -= (DUtils.GetTerTakeoverChance(data, player, ter) * 10);
+                    if(score > highestTerScore)
+                    {
+                        highestScoringTer = ter;
+                        highestTerScore = score;
+                    }
                 }
             }
         }
-        if (highestProTer != null)
+        if (highestScoringTer != null)
         {
-            return highestProTer;
+            return highestScoringTer;
         }
         return null;
     }

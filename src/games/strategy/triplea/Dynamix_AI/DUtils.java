@@ -253,19 +253,28 @@ public class DUtils
      */
     public static void AddObjToListValueForKeyInMap(HashMap map, Object key, Object obj)
     {
+        AddObjectsToListValueForKeyInMap(map, key, Collections.singletonList(obj));
+    }
+    
+    /**
+     * Same as AddObjToListValueForKeyInMap except that it does adds a list of objects instead of one object.
+     */
+    public static void AddObjectsToListValueForKeyInMap(HashMap map, Object key, List objs)
+    {
         if (map.containsKey(key))
         {
-            List<Object> newList = (List<Object>)map.get(key);
-            newList.add(obj);
+            List<Object> newList = (List<Object>) map.get(key);
+            newList.addAll(objs);
             map.put(key, newList);
         }
         else
         {
             List<Object> newList = new ArrayList<Object>();
-            newList.add(obj);
+            newList.addAll(objs);
             map.put(key, newList);
         }
     }
+    
     /**
      * (GetHitPointsScoreOfUnits)
      */
@@ -725,6 +734,8 @@ public class DUtils
     }
     public static Territory GetClosestTerInList(GameData data, List<Territory> list, Territory target, Match<Territory> routeMatch)
     {
+        if(list.isEmpty())
+            return null;
         return DSorting.SortTerritoriesByLandThenNoCondDistance_A(list, data, target).get(0);
     }
     public static List<Territory> GetXClosestAliveEnemyCaps(final GameData data, PlayerID player, final Territory target, int maxEnemyCapsToReturn)
@@ -838,13 +849,18 @@ public class DUtils
 
         if(TacticalCenter.get(data, player).GetFrozenUnits().contains(unit))
             return false;
-        if(ThreatInvalidationCenter.get(data, GlobalCenter.CurrentPlayer).IsUnitInvalidated(unit))
+        if(ThreatInvalidationCenter.get(data, GlobalCenter.CurrentPlayer).IsUnitInvalidated(unit, ter))
             return false;
+        if(DMatches.territoryContainsMultipleAlliances(data).match(ter))
+            return false; //We don't consider units in a battle ter to be able to reach anything
 
         UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
         TripleAUnit ta = TripleAUnit.get(unit);
 
-        if (CachedCalculationCenter.GetRoute(data, ter, target).getLength() > ta.getMovementLeft()) //If the unit can't even get from ter to territory on a condition-less route, we know it can't make it
+        Route noCondRoute = CachedCalculationCenter.GetRoute(data, ter, target);
+        if(noCondRoute == null)
+            return false; //Yikes, must be a map with entirely disconnected ters... :(
+        if (noCondRoute.getLength() > ta.getMovementLeft()) //If the unit can't even get from ter to territory on a condition-less route, we know it can't make it
             return false;
 
         if (ua.isAir())
@@ -1023,7 +1039,6 @@ public class DUtils
 
         if (neighborWeAreInThatsClosestToOurCap != null) //This code block will not run if ter does not have a land path to our cap
         {
-
             Territory closestEnemyCapForOurTer = DUtils.GetClosestEnemyCap(neighborWeAreInThatsClosestToOurCap, data, player);
             Territory closestEnemyCapForTarget = DUtils.GetClosestEnemyCap(ter, data, player);
 
@@ -1059,6 +1074,9 @@ public class DUtils
         if(ter.getOwner().isNull())
             priority = priority / (enemyNeighbors * 2);
 
+        int friendlyNeighbors = data.getMap().getNeighbors(ter, CompMatchAnd(Matches.TerritoryIsLand, DMatches.territoryIsOwnedByXOrAlly(data, player))).size();
+        priority += friendlyNeighbors;
+
         priority = priority * GetEnemyPriority(data, ter.getOwner());
         return priority;
     }
@@ -1086,7 +1104,7 @@ public class DUtils
             Route route = CachedCalculationCenter.GetRoute(data, ter, task.GetTarget());
             int dist = route.getLength();
             result += TripleAUnit.get(unit).getMovementLeft();
-            result -= dist;
+            result -= dist * 2; //If we have a halftrack, we want one that blitzed a ter and is next to target to be favored over halftrack two spaces away from target that hasn't moved
         }
         return result;
     }
@@ -1121,6 +1139,7 @@ public class DUtils
         }
         return result;
     }
+    //As a note to any developers reading this, these priority deciding methods need a lot more work.
     public static float GetReinforceBlockPriority(GameData data, PlayerID player, Territory ter)
     {
         float priority = 1000F; //TODO
@@ -1332,16 +1351,19 @@ public class DUtils
         PlayerID attacker = attacking.get(0).getOwner();
         PlayerID defender = defending.get(0).getOwner();
 
-        if(DSettings.LoadSettings().AllowCalcingDecrease && Dynamix_AI.GetTimeTillNextScheduledActionDisplay() == 0) //Hmmm... Let's try to speed things up to reach the user-specified action length
-            runCount = (int)DUtils.Limit(runCount * (DSettings.LoadSettings().CalcingDecreaseToPercentage / 100.0F), 1.0F, Integer.MAX_VALUE);
+        if (runCount != 1)
+        {
+            if (DSettings.LoadSettings().AllowCalcingDecrease && Dynamix_AI.GetTimeTillNextScheduledActionDisplay() == 0) //Hmmm... Let's try to speed things up to reach the user-specified action length
+                runCount = (int) DUtils.Limit(runCount * (DSettings.LoadSettings().CalcingDecreaseToPercentage / 100.0F), 1.0F, Integer.MAX_VALUE);
 
-        float attackerUnitsStrength = DUtils.GetAttackScoreOfUnits(attacking);
-        float defenderUnitsStrength = DUtils.GetDefenseScoreOfUnits(defending);
+            float attackerUnitsStrength = DUtils.GetAttackScoreOfUnits(attacking);
+            float defenderUnitsStrength = DUtils.GetDefenseScoreOfUnits(defending);
 
-        if(attackerUnitsStrength > defenderUnitsStrength * 5) //If attacker has a huge attack/defense score advantage
-            return CreateAttackerWinsAggregateResults(data, testingTer, attacker); //We'll save calcing time by just predicting the result
-        else if(defenderUnitsStrength > attackerUnitsStrength * 5)
-            return CreateDefenderWinsAggregateResults(data, testingTer);
+            if (attackerUnitsStrength > defenderUnitsStrength * 2) //If attacker has a huge attack/defense score advantage
+                runCount = (int) DUtils.Limit(runCount / ((attackerUnitsStrength / defenderUnitsStrength) * 5), 1.0F, Integer.MAX_VALUE); //Then reduce calcing count, as we're pretty sure attacker will win
+            else if (defenderUnitsStrength > attackerUnitsStrength * 2)
+                runCount = (int) DUtils.Limit(runCount / ((defenderUnitsStrength / attackerUnitsStrength) * 5), 1.0F, Integer.MAX_VALUE); //Then reduce calcing count, as we're pretty sure defender will win
+        }
 
         DOddsCalculator calc = new DOddsCalculator();
         calc.setKeepOneAttackingLandUnit(toTake);
@@ -1785,11 +1807,9 @@ public class DUtils
     }
     public static boolean CanAirUnitLandIfAttackingFromXToY(GameData data, final Territory from, Territory to, Unit airUnit)
     {
-        UnitAttachment ua = UnitAttachment.get(airUnit.getUnitType());
         TripleAUnit ta = TripleAUnit.get(airUnit);
         int jumpDist = DUtils.GetJumpsFromXToY_NoCond(data, from, to);
         int movementAfterAttack = ta.getMovementLeft() - jumpDist;
-        Territory landingTer = null;
         for (Territory ter : data.getMap().getTerritories())
         {
             if (!data.getAllianceTracker().isAllied(ter.getOwner(), airUnit.getOwner()))
@@ -1797,21 +1817,14 @@ public class DUtils
             int dist = DUtils.GetJumpsFromXToY_NoCond(data, ter, to);
             if(dist > movementAfterAttack)
                 continue;
-            List<Unit> attackers = DUtils.GetSPNNEnemyBasedOnLUnitsOnlyThatCanReach(data, ter, airUnit.getOwner(), Matches.TerritoryIsLand);
-            if (attackers.isEmpty())
-            {
-                landingTer = ter;
-                break;
-            }
+
+            return true; //We found a place to land
         }
-        if(landingTer == null)
-            return false;
-        else
-            return true;
+        return false;
     }
     /**
      * (GetNonNullEnemyUnitsThatCanReach)
-     * Returns all the enemy units that can reach territory.
+     * Returns all the non-null-enemy units that can reach territory.
      */
     public static List<Unit> GetNNEnemyUnitsThatCanReach(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terSearchMatch)
     {
@@ -1832,7 +1845,7 @@ public class DUtils
                 continue;
             if (ter.getName().equals(territory.getName()))
                 continue;
-            if (ter.getOwner().getName().toLowerCase().equals("neutral"))
+            if (ter.getOwner().isNull())
                 continue;
             if (CachedCalculationCenter.GetRoute(data, ter, territory).getLength() > GlobalCenter.FastestUnitMovement) //If the fastest moving unit in the game can't reach from ter to territory
                 continue;
@@ -1862,8 +1875,8 @@ public class DUtils
         return GetNNEnemyUnitsThatCanReach(data, territory, playerToCheckFor, CompMatchOr(matches));
     }
     /**
-     * (GetNonNullEnemyLandUnitsThatCanReach_CountXAsPassthroughs)
-     * Returns all the enemy land units that can reach territory.
+     * (GetNonNullEnemyLandUnitsThatCanReach)
+     * Returns all the non-null-enemy land units that can reach territory.
      */
     public static List<Unit> GetNNEnemyLUnitsThatCanReach(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terSearchMatch)
     {
@@ -1896,12 +1909,35 @@ public class DUtils
     }
     public static List InvertList(List list)
     {
+        ArrayList result = new ArrayList(list);
+        Collections.reverse(result);
+        return result;
+    }
+    public static List ShuffleList(List list)
+    {
+        ArrayList result = new ArrayList(list);
+        Collections.shuffle(result);
+        return result;
+    }
+    public static List GetXPercentOfTheItemsInList(List list, float percentageToKeep)
+    {
+        if(percentageToKeep == 1.0F)
+            return new ArrayList(list);
+        if(percentageToKeep == 0.0F)
+            return new ArrayList();
         ArrayList result = new ArrayList();
-        Collections.reverse(list);
         for (Object obj : list)
         {
-            result.add(obj);
+            if(Math.random() < percentageToKeep)
+                result.add(obj);
         }
+        return result;
+    }
+    public static List<Unit> ToUnitList(List<UnitGroup> ugs)
+    {
+        List<Unit> result = new ArrayList<Unit>();
+        for(UnitGroup ug : ugs)
+            result.addAll(ug.GetUnits());
         return result;
     }
     public static List<Unit> DetermineResponseAttackers(GameData data, PlayerID player, Territory battleTer, AggregateResults results)
@@ -2494,7 +2530,7 @@ public class DUtils
         Log(Level.FINEST, message, args);
     }
     /**
-     * Only use this if you know that all the units have the same movement speed and movement amount left
+     * Only use this if you know that all the units have the same movement amount left, otherwise the units with more movement left will not go as far as they could
      */
     public static UnitGroup CreateUnitGroupForUnits(Collection<Unit> units, Territory ter, GameData data)
     {
@@ -2502,6 +2538,7 @@ public class DUtils
     }
     /**
      * This method is very handy when you want to move a territory's units, you want the units to move to a target as far as possible, and in the largest groups possible.
+     * (If this method were not used, any units with more movement left in the list would not go as far as they could)
      */
     public static List<UnitGroup> CreateSpeedSplitUnitGroupsForUnits(Collection<Unit> units, Territory ter, GameData data)
     {

@@ -18,9 +18,7 @@ import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.DSettings;
 import games.strategy.triplea.Dynamix_AI.Others.BattleCalculationType;
 import java.awt.GridLayout;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -161,6 +159,13 @@ public class SettingsWindow extends javax.swing.JFrame {
         jLabel53 = new javax.swing.JLabel();
         jLabel54 = new javax.swing.JLabel();
         v_aa_resourcePercentageThatMustExistForFactoryBuy = new javax.swing.JSpinner();
+        jLabel51 = new javax.swing.JLabel();
+        v_aa_initialTaskConsiderationLoopCount = new javax.swing.JSpinner();
+        jLabel55 = new javax.swing.JLabel();
+        jLabel56 = new javax.swing.JLabel();
+        v_aa_percentageOfResistedThreatsThatTasksInvalidate = new javax.swing.JSpinner();
+        v_aa_maxUnitTypesForPurchaseMix = new javax.swing.JSpinner();
+        jLabel57 = new javax.swing.JLabel();
 
         setTitle("Dynamix AI Settings");
         setAlwaysOnTop(true);
@@ -804,13 +809,13 @@ public class SettingsWindow extends javax.swing.JFrame {
                         .addGap(10, 10, 10)
                         .addComponent(jLabel24))
                     .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, 587, Short.MAX_VALUE)
+                        .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
                         .addGap(111, 111, 111))
                     .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addComponent(jLabel27))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel26, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
+                        .addComponent(jLabel26, javax.swing.GroupLayout.DEFAULT_SIZE, 573, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
@@ -825,7 +830,7 @@ public class SettingsWindow extends javax.swing.JFrame {
                         .addGap(10, 10, 10)
                         .addComponent(jLabel30))
                     .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel29, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
+                        .addComponent(jLabel29, javax.swing.GroupLayout.DEFAULT_SIZE, 573, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -834,7 +839,7 @@ public class SettingsWindow extends javax.swing.JFrame {
                         .addGap(10, 10, 10)
                         .addComponent(jLabel31))
                     .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel32, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
+                        .addComponent(jLabel32, javax.swing.GroupLayout.DEFAULT_SIZE, 573, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -843,7 +848,7 @@ public class SettingsWindow extends javax.swing.JFrame {
                         .addGap(10, 10, 10)
                         .addComponent(jLabel36))
                     .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel35, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
+                        .addComponent(jLabel35, javax.swing.GroupLayout.DEFAULT_SIZE, 573, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(v_cacmncm_determinesIfTaskEndangersCap, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -852,7 +857,7 @@ public class SettingsWindow extends javax.swing.JFrame {
                         .addGap(10, 10, 10)
                         .addComponent(jLabel37))
                     .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel38, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
+                        .addComponent(jLabel38, javax.swing.GroupLayout.DEFAULT_SIZE, 573, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -863,7 +868,7 @@ public class SettingsWindow extends javax.swing.JFrame {
                                 .addGap(10, 10, 10)
                                 .addComponent(jLabel42))
                             .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel41, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
+                                .addComponent(jLabel41, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
                                 .addGap(131, 131, 131)))
                         .addGap(53, 53, 53))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
@@ -875,8 +880,8 @@ public class SettingsWindow extends javax.swing.JFrame {
                             .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
                                 .addGap(10, 10, 10)
                                 .addComponent(jLabel18)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 326, Short.MAX_VALUE))
-                            .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, 571, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 332, Short.MAX_VALUE))
+                            .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
                             .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 566, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -894,7 +899,7 @@ public class SettingsWindow extends javax.swing.JFrame {
                                 .addGap(10, 10, 10)
                                 .addComponent(jLabel43))
                             .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel44, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
+                                .addComponent(jLabel44, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
                                 .addGap(131, 131, 131)))
                         .addGap(53, 53, 53))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
@@ -1078,7 +1083,7 @@ public class SettingsWindow extends javax.swing.JFrame {
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(v_logHolderTabbedPane)
+                    .addComponent(v_logHolderTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 715, Short.MAX_VALUE)
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(v_enableAILogging)
                         .addGap(18, 18, 18)
@@ -1118,7 +1123,7 @@ public class SettingsWindow extends javax.swing.JFrame {
         jPanel2.setName("jPanel2"); // NOI18N
 
         jLabel50.setText("Percentage Of Task Requirements That Must Be Met To Perform Task:");
-        jLabel50.setToolTipText("Can be used to make the AI more aggresive, which is most likely going to make the AI play worse.");
+        jLabel50.setToolTipText("Can be used to make the AI more aggresive/cautious. (You should keep this above 90% to prevent crazy attacks)");
         jLabel50.setName("jLabel50"); // NOI18N
 
         jLabel52.setText("%");
@@ -1128,6 +1133,7 @@ public class SettingsWindow extends javax.swing.JFrame {
         v_aa_percentageOfTaskRequirementsNeededToPerformTask.setName("v_aa_percentageOfTaskRequirementsNeededToPerformTask"); // NOI18N
 
         jLabel53.setText("Percentage Of Resources That Must Exist After Purchases For AI To Buy Factory:");
+        jLabel53.setToolTipText("The percentage of the resources(PUs) that the AI had at the beginning of the purchase phase that must exist after all purchases for the AI to buy a factory.");
         jLabel53.setName("jLabel53"); // NOI18N
 
         jLabel54.setText("%");
@@ -1136,6 +1142,30 @@ public class SettingsWindow extends javax.swing.JFrame {
         v_aa_resourcePercentageThatMustExistForFactoryBuy.setModel(new javax.swing.SpinnerNumberModel(50, 25, 75, 1));
         v_aa_resourcePercentageThatMustExistForFactoryBuy.setName("v_aa_resourcePercentageThatMustExistForFactoryBuy"); // NOI18N
 
+        jLabel51.setText("Initial Task Consideration Loop Count:");
+        jLabel51.setToolTipText("The higher this value, the better the AI will do when attacking or defending battle fronts.");
+        jLabel51.setName("jLabel51"); // NOI18N
+
+        v_aa_initialTaskConsiderationLoopCount.setModel(new javax.swing.SpinnerNumberModel(3, 1, 5, 1));
+        v_aa_initialTaskConsiderationLoopCount.setName("v_aa_initialTaskConsiderationLoopCount"); // NOI18N
+
+        jLabel55.setText("Percentage Of Resisted Threats That Task's Invalidate Around Hotspot:");
+        jLabel55.setToolTipText("Threat invalidation greatly increases the AI's playing on a battle front, but an excessively high invalidation rate could cause it to leave units in vulnerable positions.");
+        jLabel55.setName("jLabel55"); // NOI18N
+
+        jLabel56.setText("%");
+        jLabel56.setName("jLabel56"); // NOI18N
+
+        v_aa_percentageOfResistedThreatsThatTasksInvalidate.setModel(new javax.swing.SpinnerNumberModel(75, 0, 100, 1));
+        v_aa_percentageOfResistedThreatsThatTasksInvalidate.setName("v_aa_percentageOfResistedThreatsThatTasksInvalidate"); // NOI18N
+
+        v_aa_maxUnitTypesForPurchaseMix.setModel(new javax.swing.SpinnerNumberModel(5, 1, 25, 1));
+        v_aa_maxUnitTypesForPurchaseMix.setName("v_aa_maxUnitTypesForPurchaseMix"); // NOI18N
+
+        jLabel57.setText("Max Unit Types To Calculate For Factory Purchase Mix:");
+        jLabel57.setToolTipText("The lower this is, the faster the AI's purchasing will be.");
+        jLabel57.setName("jLabel57"); // NOI18N
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -1143,38 +1173,64 @@ public class SettingsWindow extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel53)
-                    .addComponent(jLabel50))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 240, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(v_aa_resourcePercentageThatMustExistForFactoryBuy, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel54))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(v_aa_percentageOfTaskRequirementsNeededToPerformTask, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel52)))
-                .addContainerGap())
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel53)
+                                    .addComponent(jLabel50))
+                                .addGap(234, 234, 234)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(v_aa_percentageOfTaskRequirementsNeededToPerformTask, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel52))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(v_aa_resourcePercentageThatMustExistForFactoryBuy, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel54))))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel55)
+                                    .addComponent(jLabel51))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 282, Short.MAX_VALUE)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(v_aa_initialTaskConsiderationLoopCount, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(v_aa_percentageOfResistedThreatsThatTasksInvalidate, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel56))
+                                    .addComponent(v_aa_maxUnitTypesForPurchaseMix, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addContainerGap())
+                    .addComponent(jLabel57)))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(v_aa_resourcePercentageThatMustExistForFactoryBuy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel54))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(v_aa_percentageOfTaskRequirementsNeededToPerformTask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel52)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel53)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel50)))
-                .addContainerGap(281, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel54)
+                    .addComponent(jLabel53)
+                    .addComponent(v_aa_resourcePercentageThatMustExistForFactoryBuy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(v_aa_percentageOfTaskRequirementsNeededToPerformTask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel52)
+                    .addComponent(jLabel50))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel55)
+                    .addComponent(v_aa_percentageOfResistedThreatsThatTasksInvalidate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel56))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel51, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(v_aa_initialTaskConsiderationLoopCount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel57, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(v_aa_maxUnitTypesForPurchaseMix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(188, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Advanced", jPanel2);
@@ -1270,6 +1326,9 @@ public class SettingsWindow extends javax.swing.JFrame {
 
         v_aa_resourcePercentageThatMustExistForFactoryBuy.setValue(settings.AA_resourcePercentageThatMustExistForFactoryBuy);
         v_aa_percentageOfTaskRequirementsNeededToPerformTask.setValue(settings.AA_percentageOfTaskRequirementsNeededToPerformTask);
+        v_aa_percentageOfResistedThreatsThatTasksInvalidate.setValue(settings.AA_percentageOfResistedThreatThatTasksInvalidate);
+        v_aa_initialTaskConsiderationLoopCount.setValue(settings.AA_initialTaskConsiderationLoopCount);
+        v_aa_maxUnitTypesForPurchaseMix.setValue(settings.AA_maxUnitTypesForPurchaseMix);
     }
 
     public DSettings CreateSettings()
@@ -1328,6 +1387,9 @@ public class SettingsWindow extends javax.swing.JFrame {
 
         settings.AA_resourcePercentageThatMustExistForFactoryBuy = Integer.parseInt(v_aa_resourcePercentageThatMustExistForFactoryBuy.getValue().toString());
         settings.AA_percentageOfTaskRequirementsNeededToPerformTask = Integer.parseInt(v_aa_percentageOfTaskRequirementsNeededToPerformTask.getValue().toString());
+        settings.AA_percentageOfResistedThreatThatTasksInvalidate = Integer.parseInt(v_aa_percentageOfResistedThreatsThatTasksInvalidate.getValue().toString());
+        settings.AA_initialTaskConsiderationLoopCount = Integer.parseInt(v_aa_initialTaskConsiderationLoopCount.getValue().toString());
+        settings.AA_maxUnitTypesForPurchaseMix = Integer.parseInt(v_aa_maxUnitTypesForPurchaseMix.getValue().toString());
 
         return settings;
     }
@@ -1554,9 +1616,13 @@ public class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel48;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel50;
+    private javax.swing.JLabel jLabel51;
     private javax.swing.JLabel jLabel52;
     private javax.swing.JLabel jLabel53;
     private javax.swing.JLabel jLabel54;
+    private javax.swing.JLabel jLabel55;
+    private javax.swing.JLabel jLabel56;
+    private javax.swing.JLabel jLabel57;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -1571,6 +1637,9 @@ public class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JSpinner v_aa_initialTaskConsiderationLoopCount;
+    private javax.swing.JSpinner v_aa_maxUnitTypesForPurchaseMix;
+    private javax.swing.JSpinner v_aa_percentageOfResistedThreatsThatTasksInvalidate;
     private javax.swing.JSpinner v_aa_percentageOfTaskRequirementsNeededToPerformTask;
     private javax.swing.JSpinner v_aa_resourcePercentageThatMustExistForFactoryBuy;
     private javax.swing.JRadioButton v_actionLengthGoalRB;

@@ -293,7 +293,7 @@ public class NCM_Task
 
     public boolean IsPlannedMoveWorthwhile(List<NCM_Task> allTasks)
     {
-        DUtils.Log(Level.FINEST, "    Determining if ncm task is worthwhile. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
+        DUtils.Log(Level.FINEST, "    Determining if ncm task is worthwhile. Target: {0} Recruits Size: {1}", m_target, m_recruitedUnits.size());
 
         //if(m_recruitedUnits.isEmpty()) //Remove check, as a reinforce task can sometimes have requirements met without any units recruited (no threats to, for example, a cap neighbor)
         //    return false;
@@ -357,6 +357,7 @@ public class NCM_Task
             float howCloseToTaskBeingWorthwhile = totalScore / 2; //Average closeness
 
             DUtils.Log(Level.FINEST, "        Determining if ncm task is worthwhile. HowCloseToTask, BeingWorthWhile: {0} MeetingVulnerabilityMax: {1}, MeetingMaxBattleVolleys: {2}", howCloseToTaskBeingWorthwhile, howCloseToMeetingVulnerabilityMax, howCloseToMeetingMaxBattleVolleys);
+            DUtils.Log(Level.FINEST, "          Simulated attack, attackers size: {0}, attacker win percent: {1}", attackers.size(), simulatedAttack.getAttackerWinPercent());
 
             float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfTaskRequirementsNeededToPerformTask / 100.0F);
 
@@ -372,6 +373,7 @@ public class NCM_Task
             float howCloseToTaskBeingWorthwhile = totalScore / 2; //Average closeness
 
             DUtils.Log(Level.FINEST, "        Determining if ncm task is worthwhile. HowCloseToTask, BeingWorthWhile: {0} MeetingVulnerabilityMax: {1}, MeetingMaxBattleVolleys: {2}", howCloseToTaskBeingWorthwhile, howCloseToMeetingVulnerabilityMax, howCloseToMeetingMaxBattleVolleys);
+            DUtils.Log(Level.FINEST, "          Simulated attack, attackers size: {0}, attacker win percent: {1}", attackers.size(), simulatedAttack.getAttackerWinPercent());
 
             float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfTaskRequirementsNeededToPerformTask / 100.0F);
 
@@ -439,17 +441,20 @@ public class NCM_Task
         List<UnitGroup> retreatUnits = new ArrayList<UnitGroup>();
 
         //If we're retreating from this ter, retreat all non air units on this ter
-        retreatUnits.add(DUtils.CreateUnitGroupForUnits(Match.getMatches(m_target.getUnits().getUnits(), DUtils.CompMatchAnd(Matches.unitIsOwnedBy(player), Matches.UnitIsNotAA, Matches.UnitIsNotAir)), m_target, m_data));
+        retreatUnits.add(DUtils.CreateUnitGroupForUnits(Match.getMatches(m_target.getUnits().getUnits(), DUtils.CompMatchAnd(Matches.unitIsOwnedBy(player), DMatches.UnitIsNonAAMoveableType, Matches.UnitIsNotAir)), m_target, m_data));
 
-        if(retreatUnits.isEmpty())
+        if(retreatUnits.get(0).GetUnits().isEmpty())
+        {
+            DUtils.Log(Level.FINEST, "        No units to retreat for task. Target: {0}", m_target);
             return; //We have nothing to do, because there are no retreat units
+        }
 
         //Have the frontline move to a safe frontline territory, if existing, otherwise, move to safest neighbor.
         if (m_taskType.equals(NCM_TaskType.Reinforce_FrontLine))
         {
             Territory bestRetreatTer = null;
             float bestRetreatTerScore = Integer.MIN_VALUE;
-            for(NCM_Task task : allTasks)
+            for(NCM_Task task : (List<NCM_Task>)DUtils.ShuffleList(allTasks)) //Shuffle, so our retreat isn't predicatable
             {
                 if(task.IsCompleted() && task.GetTaskType().equals(NCM_TaskType.Reinforce_FrontLine))
                 {
@@ -461,8 +466,9 @@ public class NCM_Task
                         List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, task.GetTarget(), GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
                         possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
                         List<Unit> defenders = DUtils.GetTerUnitsAtEndOfTurn(m_data, player, task.GetTarget());
-                        defenders.removeAll(GetRecruitedUnitsAsUnitList()); //Don't double add recruits
-                        defenders.addAll(GetRecruitedUnitsAsUnitList());
+                        defenders.retainAll(TacticalCenter.get(m_data, player).GetFrozenUnits()); //Only count units that have been frozen here
+                        defenders.removeAll(DUtils.ToUnitList(retreatUnits)); //(Don't double add)
+                        defenders.addAll(DUtils.ToUnitList(retreatUnits)); //And the units we're retreating
                         AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defenders, task.GetTarget(), m_data, 500, false);
 
                         float score = 0;
@@ -480,7 +486,7 @@ public class NCM_Task
 
             if(bestRetreatTer == null) //If we couldn't find any completed, reachable frontline ters to retreat to
             {
-                for(Territory ter : DUtils.GetTerritoriesWithinXDistanceOfY(m_data, m_target, GlobalCenter.FastestUnitMovement))
+                for(Territory ter : (List<Territory>)DUtils.ShuffleList(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, m_target, GlobalCenter.FastestUnitMovement))) //Shuffle, so our retreat isn't predicatable
                 {
                     if(ter.isWater())
                         continue;
@@ -492,16 +498,18 @@ public class NCM_Task
                         continue;
                     if (Match.allMatch(retreatUnits, DMatches.UnitGroupHasEnoughMovement_All(ncmRoute.getLength()))) //If this is a valid, reachable reinforce ter
                     {
-                        List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, ter, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
+                        List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach_CountXAsPassthrough(m_data, ter, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand, m_target);
                         possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
                         List<Unit> defenders = DUtils.GetTerUnitsAtEndOfTurn(m_data, player, ter);
-                        defenders.removeAll(GetRecruitedUnitsAsUnitList()); //Don't double add recruits
-                        defenders.addAll(GetRecruitedUnitsAsUnitList());
+                        defenders.retainAll(TacticalCenter.get(m_data, player).GetFrozenUnits()); //Only count units that have been frozen here
+                        defenders.removeAll(DUtils.ToUnitList(retreatUnits)); //(Don't double add)
+                        defenders.addAll(DUtils.ToUnitList(retreatUnits)); //And the units we're retreating
                         AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defenders, ter, m_data, 500, false);
 
                         float score = 0;
-                        score -= results.getAttackerWinPercent();
-                        score -= (DUtils.GetDefenseScoreOfUnits(results.GetAverageAttackingUnitsRemaining()) * .01F); //Have leftover invader strength only decide if takeover chances match
+                        score -= results.getAttackerWinPercent() * 1000;
+                        score -= results.GetAverageAttackingUnitsRemaining().size();
+                        score -= DUtils.GetDefenseScoreOfUnits(results.GetAverageAttackingUnitsRemaining()); //Have leftover invader strength only decide if takeover chances match
 
                         if (score > bestRetreatTerScore)
                         {
@@ -542,7 +550,7 @@ public class NCM_Task
 
             if(bestRetreatTer == null)
             {
-                for(Territory ter : DUtils.GetTerritoriesWithinXDistanceOfY(m_data, m_target, GlobalCenter.FastestUnitMovement))
+                for(Territory ter : (List<Territory>)DUtils.ShuffleList(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, m_target, GlobalCenter.FastestUnitMovement))) //Shuffle, so our retreat isn't predicatable
                 {
                     if(ter.isWater())
                         continue;
@@ -556,14 +564,17 @@ public class NCM_Task
                     {
                         List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach_CountXAsPassthrough(m_data, ter, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand, m_target);
                         possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
+                        //Note that since this ter was not a reinforce_task ter(well, at least not a successful one), it is most likely within our territory
                         List<Unit> defenders = DUtils.GetTerUnitsAtEndOfTurn(m_data, player, ter);
-                        defenders.removeAll(GetRecruitedUnitsAsUnitList()); //Don't double add recruits
-                        defenders.addAll(GetRecruitedUnitsAsUnitList());
+                        defenders.retainAll(TacticalCenter.get(m_data, player).GetFrozenUnits()); //Only count units that have been frozen here
+                        defenders.removeAll(DUtils.ToUnitList(retreatUnits)); //(Don't double add)
+                        defenders.addAll(DUtils.ToUnitList(retreatUnits)); //And the units we're retreating
                         AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defenders, ter, m_data, 500, false);
 
                         float score = 0;
-                        score -= results.getAttackerWinPercent();
-                        score -= (DUtils.GetDefenseScoreOfUnits(results.GetAverageAttackingUnitsRemaining()) * .01F); //Have leftover invader strength only decide if takeover chances match
+                        score -= results.getAttackerWinPercent() * 1000;
+                        score -= results.GetAverageAttackingUnitsRemaining().size();
+                        score -= DUtils.GetDefenseScoreOfUnits(results.GetAverageAttackingUnitsRemaining()); //Have leftover invader strength only decide if takeover chances match
 
                         if (score > bestRetreatTerScore)
                         {
@@ -595,7 +606,7 @@ public class NCM_Task
     /**
      * If this is an ncm task that is strong enough to resist all it's threats, we invalidate them because they can't attack more than one place.
      * (This method was added to fix the problem where one far-away airplane 'stack' can discourage ALL our attacks in the area, which is very bad.
-     * Now, if one task can resist the plane stack, we assume the other movements are 'safe' from this enemy stack)
+     * Now, if one task can resist the plane stack, we assume the other movements are partially 'safe' from this enemy stack)
      */
     public void InvalidateThreatsThisTaskResists()
     {
@@ -612,7 +623,7 @@ public class NCM_Task
 
             if (simulatedAttack.getDefenderWinPercent() > .4F)
             {
-                ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats);
+                ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats, m_target);
                 DUtils.Log(Level.FINER, "      Reinforce_Frontline task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
             }
         }
@@ -627,10 +638,18 @@ public class NCM_Task
 
             if (simulatedAttack.getDefenderWinPercent() > .4F)
             {
-                ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats);
+                ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats, m_target);
                 DUtils.Log(Level.FINER, "      Reinforce_Stabalize task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
             }
         }
+    }
+
+    public void Reset()
+    {
+        DUtils.Log(Level.FINEST, "        Resetting task! Target: {0} Task Type: {1} Priority: {2}", m_target, m_taskType, m_priority);
+        m_completed = false;
+        m_disqualified = false;
+        m_recruitedUnits = new ArrayList<UnitGroup>();
     }
 
     private boolean m_completed = false;
@@ -642,7 +661,11 @@ public class NCM_Task
     public void PerformTask(IMoveDelegate mover)
     {
         if(m_recruitedUnits.isEmpty())
+        {
             DUtils.Log(Level.FINEST, "      Task is called to perform, but there are no recruits! Target: {0} Task Type: {1} Priority: {2}", m_target, m_taskType, m_priority);
+            m_completed = true;
+            return; //We don't want to pause for an 'empty' task
+        }
         if(!m_completed) //Only pause if this is the initial attack group
             Dynamix_AI.Pause();
         for(UnitGroup ug : m_recruitedUnits)
@@ -652,7 +675,8 @@ public class NCM_Task
             String error = ug.MoveAsFarTo_NCM(m_target, mover);
             if (error != null)
                 DUtils.Log(Level.FINEST, "        NCM task perfoming move failed, reason: {0}", error);
-            TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).FreezeUnits(ug.GetUnitsAsList());
+            else
+                TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).FreezeUnits(ug.GetUnitsAsList());
         }
         m_completed = true;
     }

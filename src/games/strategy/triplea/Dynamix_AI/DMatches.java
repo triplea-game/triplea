@@ -124,7 +124,7 @@ public class DMatches
     
     
     ///////////////////////////////////////////////Unit Matches///////////////////////////////////////////////
-     public static Match<Unit> unitIs(final Unit u1)
+    public static Match<Unit> unitIs(final Unit u1)
     {
     	return new Match<Unit>()
     	{
@@ -169,6 +169,24 @@ public class DMatches
             }
         };
     }
+    public static Match<Unit> UnitIsMoveableType = new Match<Unit>()
+    {
+        @Override
+        public boolean match(Unit unit)
+        {
+            UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
+            return ua.getMovement(unit.getOwner()) > 0;
+        }
+    };
+    public static Match<Unit> UnitIsNonAAMoveableType = new Match<Unit>()
+    {
+        @Override
+        public boolean match(Unit unit)
+        {
+            UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
+            return ua.getMovement(unit.getOwner()) > 0 && !ua.isAA();
+        }
+    };
     ///////////////////////////////////////////////End Unit Matches///////////////////////////////////////////////
 
 

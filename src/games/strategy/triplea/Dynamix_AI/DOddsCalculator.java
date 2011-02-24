@@ -32,9 +32,11 @@ import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.net.GUID;
+import games.strategy.triplea.Dynamix_AI.Others.BattleCalculationType;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.baseAI.AIUtils;
 import games.strategy.triplea.baseAI.AbstractAI;
+import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
@@ -78,29 +80,12 @@ public class DOddsCalculator
     {
 
     }
-    public static GameData GetDataForSimulation(GameData data)
-    {
-        data.acquireReadLock();
-        if(s_dataForSimulation == null)
-        {
-            try
-            {
-                s_dataForSimulation = GameDataUtils.cloneGameData(data, false);
-            }
-            finally
-            {
-                data.releaseReadLock();
-            }
-        }
-        return s_dataForSimulation;
-    }
-
     public static void Initialize(GameData data)
     {
         data.acquireReadLock();
         try
         {
-            s_dataForSimulation = GameDataUtils.cloneGameData(data, false);
+            s_dataForSimulation = GameDataUtils.cloneGameData(data, true);
         }
         finally
         {
@@ -150,6 +135,7 @@ public class DOddsCalculator
         AggregateResults rVal = new AggregateResults(count);
         BattleTracker battleTracker = new BattleTracker();
 
+        BattleCalculator.EnableCasualtySortingCaching();
         for(int i =0; i < count && !m_cancelled; i++)
         {
             final CompositeChange allChanges = new CompositeChange();
@@ -168,6 +154,7 @@ public class DOddsCalculator
 
             battleTracker.clear();
         }
+        BattleCalculator.DisableCasualtySortingCaching();
         rVal.setTime(System.currentTimeMillis() - start);
 
         return rVal;

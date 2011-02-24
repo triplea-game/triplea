@@ -18,10 +18,12 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Dynamix_AI.DSettings;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  *
@@ -56,17 +58,40 @@ public class ThreatInvalidationCenter
         m_player = player;
     }
 
-    private HashSet<Unit> InvalidatedEnemyUnits = new HashSet<Unit>();
-    public void InvalidateThreats(List<Unit> threats)
+    private boolean ThreatInvalidationSuspended = false;
+    public void SuspendThreatInvalidation()
     {
-        InvalidatedEnemyUnits.addAll(threats);
+        ThreatInvalidationSuspended = true;
     }
-    public boolean IsUnitInvalidated(Unit unit)
+    public void ResumeThreatInvalidation()
     {
-        return InvalidatedEnemyUnits.contains(unit);
+        ThreatInvalidationSuspended = false;
+    }
+
+    private HashMap<Territory, List<Unit>> InvalidatedEnemyUnits = new HashMap<Territory, List<Unit>>();
+    public void InvalidateThreats(List<Unit> threats, Territory hotspot)
+    {
+        DUtils.Log(Level.FINEST, "            Threats we would invalidate if we invalidated all: {0}", threats);
+        threats = DUtils.GetXPercentOfTheItemsInList(threats, (DSettings.LoadSettings().AA_percentageOfResistedThreatThatTasksInvalidate / 100.0F));
+
+        List<Territory> terAndNeighbors = DUtils.GetTerritoriesWithinXDistanceOfY(m_data, hotspot, 1);
+        for (Territory ter : terAndNeighbors)
+        {
+            DUtils.AddObjectsToListValueForKeyInMap(InvalidatedEnemyUnits, ter, threats);
+        }
+        DUtils.Log(Level.FINEST, "          Invalidating threats. Units: {0} New Total Size: {1} Hotspot: {2} Ters: {3}", threats, InvalidatedEnemyUnits.get(hotspot).size(), hotspot.getName(), terAndNeighbors);
+    }
+    public boolean IsUnitInvalidated(Unit unit, Territory ter)
+    {
+        if(ThreatInvalidationSuspended)
+            return false;
+        if(!InvalidatedEnemyUnits.containsKey(ter))
+            return false;
+        return InvalidatedEnemyUnits.get(ter).contains(unit);
     }
     public void ClearInvalidatedThreats()
     {
+        DUtils.Log(Level.FINEST, "          Clearing invalidated threats.");
         InvalidatedEnemyUnits.clear();
     }
 }

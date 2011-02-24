@@ -233,7 +233,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
     int m_moveLastType = -1;
     protected void move(boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerID player)
     {
-        UnitGroup.movesCount = 0;
+        UnitGroup.movesCount = 0; //Dynamix is able to undo it's moves, via UnitGroup, but we need to reset move count each phase for it to work
 
         if (!nonCombat)
         {
@@ -358,7 +358,9 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         DUtils.Log(Level.FINE, "Retreat query starting. Possible retreat locations: {0}", possibleTerritories);
         final GameData data = getPlayerBridge().getGameData();
         Territory battleTerr = getBattleTerritory();
-        if(battleTerr == null) //This will be null if we're defending and TripleA calls this method to ask if we want to retreat(submerge) our subs when being attacked
+        //BattleTer will be null if we're defending and TripleA calls this method to ask if we want to retreat(submerge) our subs when being attacked
+        //PossibleTerritories will be empty if subs move in our sub ter, and our sub is 'attacking'
+        if(battleTerr == null || possibleTerritories.isEmpty())
             return null; //Don't submerge
         DUtils.Log(Level.FINE, "Territory of battle querying retreat: {0}", battleTerr.getName());
         AggregateResults results = DUtils.GetBattleResults(battleTerr, getWhoAmI(), data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, false);

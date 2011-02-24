@@ -19,6 +19,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
@@ -160,7 +161,7 @@ public class CM_Task
         else if (m_taskType.equals(m_taskType.Attack_Stabilize))
         {
             m_minChance = .55F;
-            m_maxVulnerability = 1.0F;
+            m_maxVulnerability = .75F;
         }
         else
             return; //Only one unit needed for land grab
@@ -341,13 +342,22 @@ public class CM_Task
 
     public boolean IsPlannedAttackWorthwhile(List<CM_Task> allTasks)
     {
-        DUtils.Log(Level.FINEST, "    Determining if cm task is worthwhile. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
+        DUtils.Log(Level.FINEST, "    Determining if cm task is worthwhile. Target: {0} Recruits Size: {1}", m_target, m_recruitedUnits.size());
 
-        //Atm, AI over-attacks neutrals on FFA maps, so for now, ignore attacks on non-empty neutrals 90% of the time on FFA maps
-        if (GlobalCenter.IsFFAGame && m_target.getOwner().isNull() && m_target.getUnits().getMatches(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1)).size() > 0 && Math.random() < .9F)
-            return false;
+        if (m_target.getOwner().isNull())
+        {
+            //Atm, AI over-attacks neutrals on FFA maps, so for now, ignore attacks on non-empty neutrals 95% of the time on FFA maps
+            if(m_target.getUnits().getMatches(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1)).size() > 0 && Math.random() < .95F)
+                return false;
+            //Atm, don't attack neutrals if the neutral attack charge is more than the territory production, 75% of the time
+            if(TerritoryAttachment.get(m_target) == null || Integer.parseInt(m_data.getProperties().get(Constants.NEUTRAL_CHARGE_PROPERTY, 0).toString()) > TerritoryAttachment.get(m_target).getProduction() && Math.random() < .75F)
+                return false;
+            //Never attack if neutral charge is over three times the ter value
+            if(TerritoryAttachment.get(m_target) == null || Integer.parseInt(m_data.getProperties().get(Constants.NEUTRAL_CHARGE_PROPERTY, 0).toString()) > TerritoryAttachment.get(m_target).getProduction() * 3)
+                return false;
+        }
 
-        if (false) //Atm, causes unwanted behavior and weird manuevers. Was: m_taskType == CM_TaskType.Attack_Offensive)
+        if (false) //Atm, causes unwanted task cancelling. Was: m_taskType == CM_TaskType.Attack_Offensive)
         {
             for (UnitGroup ug : new ArrayList<UnitGroup>(m_recruitedUnits))
             {
@@ -360,10 +370,8 @@ public class CM_Task
                     {
                         if (task.IsDisqualified()) //We're looking for higher priority tasks(higher priority ones should have already been processed) that we're currently unable to perform and complete
                         {
-                            if (DMatches.UnitGroupCanReach_Some(task.GetTarget()).match(ug)) //If this better task is reachable by this recruit
-                            {
-                                m_recruitedUnits.remove(ug); //Then remove this unit from the recruit list as we want to let this unit wait for reinforcements to complete the better task
-                            }
+                            if (DMatches.UnitGroupCanReach_Some(task.GetTarget()).match(ug)) //If this more important task is reachable by this recruit
+                                return false; //Cancel this task so we can build up units to perform the more important task
                         }
                     }
                 }
@@ -416,6 +424,7 @@ public class CM_Task
             float howCloseToTaskBeingWorthwhile = totalScore / 3; //Average closeness
 
             DUtils.Log(Level.FINEST, "        Determining if cm task is worthwhile. HowCloseToTask, BeingWorthWhile: {0} MeetingTakeoverMin: {1} MeetingVulnerabilityMax: {2}, MeetingMaxBattleVolleys: {3}", howCloseToTaskBeingWorthwhile, howCloseToMeetingTakeoverChanceMin, howCloseToMeetingVulnerabilityMax, howCloseToMeetingMaxBattleVolleys);
+            DUtils.Log(Level.FINEST, "          Simulated attack, attackers size: {0}, attacker win percent: {1} Simulated response, attackers size: {2}, defenders size: {3}, attacker win percent: {4}", GetRecruitedUnits().size(), simulatedAttack.getAttackerWinPercent(), responseAttackers.size(), responseDefenders.size(), simulatedResponse.getAttackerWinPercent());
 
             float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfTaskRequirementsNeededToPerformTask / 100.0F);
 
@@ -432,6 +441,7 @@ public class CM_Task
             float howCloseToTaskBeingWorthwhile = totalScore / 3; //Average closeness
 
             DUtils.Log(Level.FINEST, "        Determining if cm task is worthwhile. HowCloseToTask, BeingWorthWhile: {0} MeetingTakeoverMin: {1} MeetingVulnerabilityMax: {2}, MeetingMaxBattleVolleys: {3}", howCloseToTaskBeingWorthwhile, howCloseToMeetingTakeoverChanceMin, howCloseToMeetingVulnerabilityMax, howCloseToMeetingMaxBattleVolleys);
+            DUtils.Log(Level.FINEST, "          Simulated attack, attackers size: {0}, attacker win percent: {1} Simulated response, attackers size: {2}, defenders size: {3}, attacker win percent: {4}", GetRecruitedUnits().size(), simulatedAttack.getAttackerWinPercent(), responseAttackers.size(), responseDefenders.size(), simulatedResponse.getAttackerWinPercent());
 
             float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfTaskRequirementsNeededToPerformTask / 100.0F);
 
@@ -521,7 +531,7 @@ public class CM_Task
     /**
      * If this is a cm task that is strong enough to resist all it's threats, we invalidate them because they can't attack more than one place.
      * (This method was added to fix the problem where one far-away airplane 'stack' can discourage ALL our attacks in the area, which is very bad.
-     * Now, if one task can resist the plane stack, we assume the other movements are 'safe' from this enemy stack)
+     * Now, if one task can resist the plane stack, we assume the other movements are partially 'safe' from this enemy stack)
      */
     public void InvalidateThreatsThisTaskResists()
     {
@@ -529,6 +539,7 @@ public class CM_Task
 
         if (m_taskType == CM_TaskType.Attack_Offensive)
         {
+            ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation(); //We want to invalidate threats only if this task REALLY DOES resist ALL ENEMIES, including INVALIDATED ones.
             AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 250, false);
             List<Unit> threats = DUtils.DetermineResponseAttackers(m_data, GlobalCenter.CurrentPlayer, m_target, simulatedAttack);
             if(threats.isEmpty()) //No threats to invalidate
@@ -538,12 +549,14 @@ public class CM_Task
 
             if (simulatedResponse.getDefenderWinPercent() > .4F)
             {
-                ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats);
+                ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats, m_target);
                 DUtils.Log(Level.FINER, "      Attack_Offensive task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
             }
+            ThreatInvalidationCenter.get(m_data, player).ResumeThreatInvalidation();
         }
         else if (m_taskType == CM_TaskType.Attack_Stabilize)
         {
+            ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation(); //We want to invalidate threats only if this task REALLY DOES resist ALL ENEMIES, including INVALIDATED ones.
             AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 250, false);
             List<Unit> threats = DUtils.DetermineResponseAttackers(m_data, GlobalCenter.CurrentPlayer, m_target, simulatedAttack);
             if(threats.isEmpty()) //No threats to invalidate
@@ -553,10 +566,18 @@ public class CM_Task
 
             if (simulatedResponse.getDefenderWinPercent() > .4F)
             {
-                ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats);
+                ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats, m_target);
                 DUtils.Log(Level.FINER, "      Attack_Stabalize task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
             }
+            ThreatInvalidationCenter.get(m_data, player).ResumeThreatInvalidation();
         }
+    }
+
+    public void Reset()
+    {
+        m_completed = false;
+        m_disqualified = false;
+        m_recruitedUnits = new ArrayList<UnitGroup>();
     }
 
     private boolean m_completed = false;
