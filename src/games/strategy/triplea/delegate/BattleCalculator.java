@@ -424,7 +424,7 @@ public class BattleCalculator
     	return killed;
 	}
 
-    private static boolean s_enableCasualtySortingCaching = true;
+    private static boolean s_enableCasualtySortingCaching = false;
     public static void EnableCasualtySortingCaching()
     {
         s_enableCasualtySortingCaching = true;
@@ -500,9 +500,6 @@ public class BattleCalculator
         	else
         		return s_cachedSortedCasualties.get(targets.hashCode());
         }
-        
-        if(s_enableCasualtySortingCaching && s_cachedSortedCasualties.size() > 2)
-        	s_cachedSortedCasualties.clear();
 
     	List<Unit> sortedUnitsList = new ArrayList<Unit>(targets);
     	Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, player, costs, data));
