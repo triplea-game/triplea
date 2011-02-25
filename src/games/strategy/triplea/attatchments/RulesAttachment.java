@@ -149,7 +149,7 @@ public class RulesAttachment extends DefaultAttachment
       return m_alliedOwnershipTerritories;
   }
 
-  //exclusion types = controlled, original, all, or list
+  //exclusion types = controlled, controlledNoWater, original, all, or list
   public void setAlliedExclusionTerritories(String value)
   {	
 	  m_alliedExcludedTerritories = value.split(":");
@@ -182,9 +182,6 @@ public class RulesAttachment extends DefaultAttachment
       return m_enemySurfaceExcludedTerritories;
   }
 
-
-  //Territory Lists for direct ownership
-  //exclusion types = controlled, original, all, or list
   public void setDirectOwnershipTerritories(String value)
   {	
 	  m_directOwnershipTerritories = value.split(":");
@@ -467,7 +464,7 @@ public class RulesAttachment extends DefaultAttachment
 			String[] terrs = getAlliedExclusionTerritories();
 			String value = new String();    			
 			
-  		//If there's only 1, it might be a 'group' (original, controlled, all)
+  		//If there's only 1, it might be a 'group' (original, controlled, controlledNoWater, all)
 			if(terrs.length == 1)
 			{    				
   			for(String name : terrs)
@@ -489,6 +486,17 @@ public class RulesAttachment extends DefaultAttachment
       				setTerritoryCount(String.valueOf(ownedTerrs.size()));
       				//Colon delimit the collection as it would exist in the XML	        				
       				  for (Territory item : ownedTerrs)
+      					  value = value + ":" + item;
+      				  //Remove the leading colon
+      				  value = value.replaceFirst(":", "");
+      			}
+  				else if (name.equals("controlledNoWater"))
+      			{
+      				Collection<Territory> ownedTerrs = data.getMap().getTerritoriesOwnedBy(player);
+      				Collection<Territory> ownedTerrsNoWater = Match.getMatches(ownedTerrs, Matches.TerritoryIsNotImpassableToLandUnits(player));
+      				setTerritoryCount(String.valueOf(ownedTerrsNoWater.size()));
+      				//Colon delimit the collection as it would exist in the XML	        				
+      				  for (Territory item : ownedTerrsNoWater)
       					  value = value + ":" + item;
       				  //Remove the leading colon
       				  value = value.replaceFirst(":", "");
@@ -784,22 +792,22 @@ public class RulesAttachment extends DefaultAttachment
    */
   public void validate() throws GameParseException
   {
-      if(m_alliedOwnershipTerritories != null && (!m_alliedOwnershipTerritories.equals("controlled") && !m_alliedOwnershipTerritories.equals("original") && !m_alliedOwnershipTerritories.equals("all")))
+      if(m_alliedOwnershipTerritories != null && (!m_alliedOwnershipTerritories.equals("controlled") && !m_alliedOwnershipTerritories.equals("controlledNoWater") && !m_alliedOwnershipTerritories.equals("original") && !m_alliedOwnershipTerritories.equals("all")))
     	  getListedTerritories(m_alliedOwnershipTerritories);
 
-      if(m_enemyExcludedTerritories != null && (!m_enemyExcludedTerritories.equals("controlled") && !m_enemyExcludedTerritories.equals("original") && !m_enemyExcludedTerritories.equals("all")))
+      if(m_enemyExcludedTerritories != null && (!m_enemyExcludedTerritories.equals("controlled") && !m_enemyExcludedTerritories.equals("controlledNoWater") && !m_enemyExcludedTerritories.equals("original") && !m_enemyExcludedTerritories.equals("all")))
     	  getListedTerritories(m_enemyExcludedTerritories);
 
-      if(m_enemySurfaceExcludedTerritories != null && (!m_enemySurfaceExcludedTerritories.equals("controlled") && !m_enemySurfaceExcludedTerritories.equals("original") && !m_enemySurfaceExcludedTerritories.equals("all")))
+      if(m_enemySurfaceExcludedTerritories != null && (!m_enemySurfaceExcludedTerritories.equals("controlled") && !m_enemySurfaceExcludedTerritories.equals("controlledNoWater") && !m_enemySurfaceExcludedTerritories.equals("original") && !m_enemySurfaceExcludedTerritories.equals("all")))
     	  getListedTerritories(m_enemySurfaceExcludedTerritories);
       
-      if(m_alliedExcludedTerritories != null && (!m_alliedExcludedTerritories.equals("controlled") && !m_alliedExcludedTerritories.equals("original") && !m_alliedExcludedTerritories.equals("all")))
+      if(m_alliedExcludedTerritories != null && (!m_alliedExcludedTerritories.equals("controlled") && !m_alliedExcludedTerritories.equals("controlledNoWater") && !m_alliedExcludedTerritories.equals("original") && !m_alliedExcludedTerritories.equals("all")))
     	  getListedTerritories(m_alliedExcludedTerritories);
       
-      //Territory Lists for direct ownership
-      if(m_directOwnershipTerritories != null && (!m_directOwnershipTerritories.equals("controlled") && !m_directOwnershipTerritories.equals("original") && !m_directOwnershipTerritories.equals("all")))
+      if(m_directOwnershipTerritories != null && (!m_directOwnershipTerritories.equals("controlled") && !m_directOwnershipTerritories.equals("controlledNoWater") && !m_directOwnershipTerritories.equals("original") && !m_directOwnershipTerritories.equals("all")))
     	  getListedTerritories(m_directOwnershipTerritories);
-      if(m_movementRestrictionTerritories != null && (!m_movementRestrictionTerritories.equals("controlled") && !m_movementRestrictionTerritories.equals("original") && !m_movementRestrictionTerritories.equals("all")))
+      
+      if(m_movementRestrictionTerritories != null && (!m_movementRestrictionTerritories.equals("controlled") && !m_movementRestrictionTerritories.equals("controlledNoWater") && !m_movementRestrictionTerritories.equals("original") && !m_movementRestrictionTerritories.equals("all")))
     	  getListedTerritories(m_movementRestrictionTerritories);
   }
   
@@ -823,7 +831,7 @@ public class RulesAttachment extends DefaultAttachment
     	  }
     	  
     	  //Skip looking for the territory if the original list contains one of the 'group' commands
-    	  if(name.equals("controlled") || name.equals("original") || name.equals("all"))
+    	  if(name.equals("controlled") || name.equals("controlledNoWater") || name.equals("original") || name.equals("all"))
     		  break;
     	  
     	  //Validate all territories exist
@@ -881,7 +889,7 @@ public class RulesAttachment extends DefaultAttachment
 			}
 			else //if (exclType == "enemy_surface")
 			{//any enemy units (not trn/sub) in the territory
-				Collection<Unit> enemyUnits = Match.getMatches(allUnits, new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitIsNotSub, Matches.UnitIsNotTransport));
+				Collection<Unit> enemyUnits = Match.getMatches(allUnits, new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitIsNotSub, Matches.UnitIsNotTransportButCouldBeCombatTransport));
 				if (enemyUnits.size() < 1)
 				{
 					numberMet += 1;

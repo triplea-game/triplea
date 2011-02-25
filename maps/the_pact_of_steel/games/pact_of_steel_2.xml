@@ -2496,7 +2496,7 @@
 						<option name="ConvoyAttached" value="Sardinia"/>
                 </attatchment> -->
 				<attatchment name="territoryAttatchment" attatchTo="5 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-						<option name="production" value="1"/>
+						<option name="production" value="2"/>
 						<option name="ConvoyRoute" value="true"/>
 						<option name="ConvoyAttached" value="Norway"/>
                 </attatchment>
@@ -2508,11 +2508,11 @@
 				
 				<!-- Convoy Zones are simply sea zones with income. if you control your convoy zone, you get the income from it, but if an enemy takes the zone they do not get any income, they just deny you the income. can only be entered during combat movement -->
                 <attatchment name="territoryAttatchment" attatchTo="3 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="1"/>
+                        <option name="production" value="2"/>
 						<option name="occupiedTerrOf" value="Russians"/>
                 </attatchment>
 				<attatchment name="territoryAttatchment" attatchTo="4 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="1"/>
+                        <option name="production" value="2"/>
                 </attatchment>
 				
 				<!-- Blockade Zones are areas where if the enemy has ships there, they subtract money from each of the connecting land territories up to the value of the territory. if there are many enemy ships, you will collect no income from the connecting land territories. should be set to zero production otherwise they become convoy zones too -->
@@ -2653,7 +2653,7 @@
 			atWarPlayers						values: player names, in a : delimited list (example: value="Germans:Italians:Japanese" count="2" means that you must be at war with 2 of the 3 listed players) [this option currently does NOTHING]
 			alliedOwnershipTerritories			values: "original", "enemy", or a : delimited list of territories
 			directOwnershipTerritories			values: "original", "enemy", or a : delimited list of territories
-			alliedExclusionTerritories			values: "original", "controlled", "all" (all = original + controlled), or a : delimited list of territories
+			alliedExclusionTerritories			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), or a : delimited list of territories
 			enemyExclusionTerritories			values: "original", or a : delimited list of territories
 			enemySurfaceExclusionTerritories	values: "original", or a : delimited list of territories
 			techs								values: any list of technologies, : delimited (if count = zero, then must have exactly zero technologies [if count is missing, defaults to zero])
@@ -2674,12 +2674,12 @@
                 <attatchment name="objectiveAttachmentRussians1" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="4"/>
                 	<option name="alliedOwnershipTerritories" value="Archangel" count="1"/>
-                	<option name="alliedExclusionTerritories" value="controlled"/>
+                	<option name="alliedExclusionTerritories" value="controlledNoWater"/>
                 </attatchment>
 
                 <attatchment name="objectiveAttachmentRussians2" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="4"/>
-                	<option name="directOwnershipTerritories" value="Norway:Eastern Europe:East Balkans:Ukraine S.S.R.:Belorussia:West Russia" count="4"/>
+                	<option name="directOwnershipTerritories" value="Norway:Eastern Europe:East Balkans:Ukraine S.S.R.:Belorussia" count="3"/>
                 </attatchment>
 
                 <attatchment name="objectiveAttachmentRussians3" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -2721,13 +2721,13 @@
 	<!-- American Objectives -->
                 <attatchment name="objectiveAttachmentAmericans1" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="4"/>
-                	<option name="alliedOwnershipTerritories" value="Western Europe:Sardinia:Sicily:Greece:West Balkans:Algeria:Libya" count="5"/>
+                	<option name="alliedOwnershipTerritories" value="Western Europe:Sardinia:Sicily:Greece:West Balkans:Algeria:Libya" count="4"/>
                 	<option name="enemySurfaceExclusionTerritories" value="1 Sea Zone:2 Sea Zone:7 Sea Zone:8 Sea Zone:9 Sea Zone:10 Sea Zone:11 Sea Zone:12 Sea Zone:13 Sea Zone:14 Sea Zone" count="10"/>
                 </attatchment>
 
                 <attatchment name="objectiveAttachmentAmericans2" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="4"/>
-                	<option name="directOwnershipTerritories" value="East Indies:Borneo:New Guinea:Solomon Islands:Caroline Islands:Australia:New Zealand:Okinawa:Wake Island:Philipine Islands:Alaska:Hawaiian Islands:Midway" count="6"/>
+                	<option name="alliedOwnershipTerritories" value="East Indies:Borneo:New Guinea:Solomon Islands:Caroline Islands:Australia:New Zealand:Okinawa:Wake Island:Philipine Islands:Alaska:Hawaiian Islands:Midway" count="6"/>
                 </attatchment>
 
 	<!-- Chinese Objectives -->
@@ -2795,6 +2795,10 @@
                 	<option name="turns" value="1-2:3:4-+"/>
                 	<option name="directOwnershipTerritories" value="original"/>
                 	<option name="invert" value="true"/>
+                </attatchment>
+				
+                <attatchment name="conditionAttachmentJapanese4" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directOwnershipTerritories" value="Burytia S.S.R.:Soviet Far East:Yakut S.S.R.:Evanki National Okrug:Novisibirsk:Kazakh S.S.R.:Caucus:Russia:Archangel:Karelia S.S.R." count="1"/>
                 </attatchment>
 				
                 <attatchment name="conditionAttachmentJapaneseParatroopers" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -3063,7 +3067,7 @@
                 </attatchment>
 
                 <attatchment name="triggerAttachmentRussians3" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentRussians3"/>
+                	<option name="trigger" value="conditionAttachmentJapanese4"/>
                 	<option name="placement" value="Yakut S.S.R.:infantry" count="3"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
@@ -3387,8 +3391,8 @@
                         <unitPlacement unitType="battleship" territory="37 Sea Zone" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="fighter" territory="37 Sea Zone" quantity="2" owner="Japanese"/>
                         <unitPlacement unitType="carrier" territory="37 Sea Zone" quantity="1" owner="Japanese"/>
-                        <unitPlacement unitType="transport" territory="50 Sea Zone" quantity="1" owner="Japanese"/>
-                        <unitPlacement unitType="transport" territory="60 Sea Zone" quantity="1" owner="Japanese"/>
+                        <unitPlacement unitType="jp_transport" territory="50 Sea Zone" quantity="1" owner="Japanese"/>
+                        <unitPlacement unitType="jp_transport" territory="60 Sea Zone" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="battleship" territory="60 Sea Zone" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="submarine" territory="61 Sea Zone" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="fighter" territory="50 Sea Zone" quantity="1" owner="Japanese"/>
@@ -3436,8 +3440,8 @@
                         <resourceGiven player="Japanese" resource="PUs" quantity="30"/>
                         <resourceGiven player="British" resource="PUs" quantity="33"/>
                         <resourceGiven player="Americans" resource="PUs" quantity="37"/>
-                        <resourceGiven player="Russians" resource="PUs" quantity="25"/>
-                        <resourceGiven player="Germans" resource="PUs" quantity="39"/>
+                        <resourceGiven player="Russians" resource="PUs" quantity="26"/>
+                        <resourceGiven player="Germans" resource="PUs" quantity="40"/>
                         <resourceGiven player="Italians" resource="PUs" quantity="16"/>
                         <resourceGiven player="Chinese" resource="PUs" quantity="0"/>
                 </resourceInitialize>
@@ -3950,14 +3954,14 @@
 							Algeria, Libya, Anglo Egypt, Trans-Jordan<br>
         				<br>
         				<i>United States: The Arsenal of Democracy-</i><br>
-        				+4 PUs if Allies control 5 out 7 of Western Europe, Sardinia, Sicily, Greece, West Balkans, Algeria, Libya
+        				+4 PUs if Allies control 4 out 7 of Western Europe, Sardinia, Sicily, Greece, West Balkans, Algeria, Libya
 							AND no enemy surface ships in sea zones 1, 2, 7, 8, 9, 10, 11, 12, 13, and 14<br>
-        				+4 PUs if the USA controls 6 out of 13 of Alaska, East Indies, Borneo, Philipine Islands, New Guinea, Solomon Islands, Caroline Islands,
+        				+4 PUs if Allies controls 6 out of 13 of Alaska, East Indies, Borneo, Philipine Islands, New Guinea, Solomon Islands, Caroline Islands,
 							Australia, New Zealand, Okinawa, Wake Island, Hawaiian Islands, Midway<br>
 						* USA gains Paratroopers if at the end of Germany's 3rd or 4th turn, the Allies control Western Europe<br>
 						* USA gains Improved Shipyards if at the end of their 3rd, 4th or 5th turns, USA controls 4 out of 4 of
 							Alaska, Wake Island, Hawaiian Islands, Midway<br>
-						* USA gains War Bonds if at any time before the end of the 6th turn, both of the above two conditions are met<br>
+						* USA gains War Bonds if at any time before the end of the 7th turn, both of the above two conditions are met<br>
 						* USA's fighter's gain the ability to support infantry, stackable with artillery, IF at any time the USA has 2 out of 2 of War Bonds and Jet Power technologies<br>
 						* USA can give land units to Russia by landing them in Archangel<br>
         				<br>
@@ -3970,12 +3974,12 @@
 							Union of South Africa, Gibraltar, Anglo Egypt, India, Australia<br>
         				<br>
         				<i>Soviet Union: The Great Patriotic War-</i><br>
-        				+4 PUs if Soviets control 4 out of 6 of Norway, Eastern Europe, East Balkans, Ukraine S.S.R., Belorussia, West Russia<br>
-        				+4 PUs if Soviets control Archangel and no allied forces in Soviet controlled territories<br>
+        				+4 PUs if Soviets control 3 out of 5 of Norway, Eastern Europe, East Balkans, Ukraine S.S.R., Belorussia<br>
+        				+4 PUs if Soviets control Archangel and no allied forces in Soviet controlled land territories<br>
 						+2 PUs AND +1 Tech Token, only once, if Soviets control Norway or East Balkans<br>
         				* Soviet's artillery gain the ability to support 2 infantry on attack If at the end of their 3rd or 4th turn, the Soviets control
 							Karelia S.S.R. and Caucus (this effect can be doubled to 4 infantry supported if Russia gets Improved Artillery technology)<br>
-						* Soviets gain, only once, an additional 3 infantry in Yakut S.S.R. if at the beginning of their turn, the Allies do Not control Burytia S.S.R.<br>
+						* Soviets gain, only once, an additional 3 infantry in Yakut S.S.R. if at the beginning of their turn, Japan controls any original Russian territory<br>
 						* Soviets gain control of any American land units that are in Archangel at the end of America's turn 
 							(if USA lands an aircraft there, it will get converted to Russian control, please use edit to convert it back to USA's control til this bug is fixed).<br>
 						* Soviets have double chance of getting Improved Artillery when rolling for tech<br>
