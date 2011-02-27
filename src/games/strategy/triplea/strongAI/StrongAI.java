@@ -18,6 +18,8 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Dynamix_AI.DMatches;
+import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.baseAI.*;
@@ -634,6 +636,15 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		last = now;
 		s_logger.fine("Finished NonCombat for: " + player.getName());
 		
+        //In maps such as NWO, America as Moore never moves unit from center to the coast
+        s_logger.fine("populateFinalMoveToCoast");
+		populateFinalMoveToCoast(data, moveUnits, moveRoutes, player);
+		doMove(moveUnits, moveRoutes, null, moveDel);
+		moveUnits.clear();
+		moveRoutes.clear();
+		now = System.currentTimeMillis();
+		s_logger.finest("Time Taken " + (now - last));
+		last = now;
 	}
 	
 	private void doCombatMove(IMoveDelegate moveDel, PlayerID player)
@@ -7178,6 +7189,84 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			
 		}
 	}
+
+   /**
+	 * Populate final move to coast moves. (Any units that are in a non-coastal ter that have absolutely no land threats, and haven't moved, move them to the coast)
+	 *
+	 * @param data
+	 * @param unitsAlreadyMoved
+	 * @param moveUnits
+	 * @param moveRoutes
+	 * @param player
+	 */
+	private void populateFinalMoveToCoast(final GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, final PlayerID player)
+	{
+        Match<Territory> territoryIsOwnedByXOrAllyAndIsPort = new Match<Territory>()
+        {
+            public boolean match(Territory ter)
+            {
+                if(!data.getAllianceTracker().isAllied(player, ter.getOwner()))
+                    return false;
+                if(data.getMap().getNeighbors(ter, Matches.TerritoryIsWater).isEmpty())
+                    return false;
+
+                return true;
+            }
+        };
+
+		for (Territory ter : data.getMap().getTerritoriesOwnedBy(player))
+		{
+            if(ter.isWater())
+                continue;
+            if(data.getMap().getNeighbors(ter, Matches.TerritoryIsWater).size() > 0)
+                continue; //Skip, cause we're already next to water
+            
+            if(SUtils.findNearest(ter, new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data), Matches.TerritoryIsLand), Matches.TerritoryIsNotImpassableToLandUnits(player), data) != null)
+            	continue;
+            
+			List<Unit> unmovedUnits = ter.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitHasMovementLeft, Matches.UnitIsNotAA, Matches.UnitCanBeTransported, Matches.unitIsOwnedBy(player)));
+            if(unmovedUnits.isEmpty())
+                continue;
+
+            List<Unit> landThreats = SUtils.findAttackers(ter, 25, new HashSet<Integer>(), player, data, new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.unitIsEnemyOf(data, player)), Match.ALWAYS_MATCH, new ArrayList<Territory>(), new ArrayList<Route>(), false);
+
+            if(landThreats.size() > 0)
+                continue; //We're only moving to the coast if the ter is landlocked and has no land threats
+
+			Territory closestPortTer = null;
+            int closestDistance = Integer.MAX_VALUE;
+            for(Territory portTer : data.getMap().getTerritories())
+            {
+                if(portTer.isWater())
+                    continue;
+                if(!territoryIsOwnedByXOrAllyAndIsPort.match(portTer))
+                    continue;
+
+                Route passableLandRoute = data.getMap().getRoute(ter, portTer, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable));
+                if(passableLandRoute == null)
+                    continue;
+                int distance = passableLandRoute.getLength();
+                if(distance < closestDistance)
+                {
+                    closestPortTer = portTer;
+                    closestDistance = distance;
+                }
+            }
+
+            if(closestPortTer == null || closestPortTer.equals(ter))
+                continue; //No coastal ter found to go to
+
+            int slowestUnitMovement = DUtils.GetSlowestMovementUnitInList(unmovedUnits);
+
+			Route passableLandRoute = data.getMap().getRoute(ter, closestPortTer, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable));
+            passableLandRoute = DUtils.TrimRoute_BeforeFirstTerWithEnemyUnits(passableLandRoute, slowestUnitMovement, player, data);
+			if (passableLandRoute != null)
+			{
+				moveUnits.add(unmovedUnits);
+				moveRoutes.add(passableLandRoute);
+			}
+		}
+	}
 	
 	private void populateBomberCombat(GameData data, Collection<Unit> unitsAlreadyMoved, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
 	{
@@ -8048,6 +8137,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			{
 				buyTransports = false;
 				purchaseT = 0.14F;
+			}
+			if (totTransports * 5 > totLandUnits) // we have plenty of transports
+			{
+				buyTransports = false;
+				if (!doBuyAttackShips)
+					skipShips = true;
+				purchaseT = 1.00F;
 			}
 		}
 		if (isAmphib && doBuyAttackShips && realLandThreat < 15.0F) // we are overwhelmed on sea
