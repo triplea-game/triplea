@@ -6112,7 +6112,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			if (sendBombers.size() > 0 && tBomb != myCapital)
 			{
 				Route bomberRoute = data.getMap().getRoute(tBomb, myCapital, noNeutralOrAA);
-				if (MoveValidator.canLand(sendBombers, bomberRoute.getEnd(), player, data))
+				if (bomberRoute.getEnd() != null && MoveValidator.canLand(sendBombers, bomberRoute.getEnd(), player, data))
 				{
 					moveRoutes.add(bomberRoute);
 					moveUnits.add(sendBombers);

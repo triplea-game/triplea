@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Fix for Null Pointer error in Moore AI's movePlanesHomeNonCom. (veqryn)
+
 * Fix for Moore AI's horrible purchasing of transportable land units, which often resulted in the purchase of no land units. This also fixes the 'moore ai buying too many sea transports' issue. (veqryn)
 
 * Added new method for Moore AI to move landlocked units to coastal territories if amphibious (wisconsin), and fixed the purchasing of Transports to purchase land when needed and transports when needed, hopefully without over-purchasing either. (veqryn)
