@@ -8220,7 +8220,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		// If we have a land route to enemy capital...forget about it (ie: we are amphib)
 		// If we have land units close to us...forget about it
 		// If we have a ton of units in our capital or territories connected to it, then let's buy transports
-		
 		if (isAmphib & !doBuyAttackShips)
 		{
 			int transportableUnitsUsage = 0;
@@ -8245,12 +8244,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			int transportCapacityLeftForAllTransportsTogether = 0;
 			CompositeMatch<Unit> myAvailableTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.transportIsNotTransporting(), Matches.unitIsOwnedBy(player));
 			List<Territory> myTransTerrs = SUtils.findTersWithUnitsMatching(data, player, myAvailableTransports);
-			myTransTerrs.retainAll(myTerritories);
+			List<Territory> waterFactoriesByCap = new ArrayList<Territory>(waterFactories);
+			waterFactoriesByCap.retainAll(myTerritories);
 			for (Territory ter : myTransTerrs)
 			{
 				int closestWFact = 99999;
 				// remove territories & transports that are more than 3 territories away from any owned factory that touches water
-				for (Territory wfact : waterFactories)
+				for (Territory wfact : waterFactoriesByCap)
 				{
 					int dist = data.getMap().getDistance(wfact, ter, Matches.TerritoryIsLandOrWater);
 					if (dist >= 0)
