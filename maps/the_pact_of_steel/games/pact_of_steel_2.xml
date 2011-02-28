@@ -2827,12 +2827,12 @@
                 </attatchment>
 				
                 <attatchment name="conditionAttachmentAmericans3a" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="turns" value="1-6"/>
+                	<option name="turns" value="1-7"/>
                 	<option name="alliedOwnershipTerritories" value="Western Europe" count="1"/>
                 </attatchment>
 				
                 <attatchment name="conditionAttachmentAmericans3b" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="turns" value="1:2:3-5:6"/>
+                	<option name="turns" value="1:2:3-6:7"/>
                 	<option name="alliedOwnershipTerritories" value="Alaska:Wake Island:Hawaiian Islands:Midway" count="4"/>
                 </attatchment>
 				
@@ -2898,8 +2898,9 @@
 														If prefixed with "-" then it will remove that player from the support attachment (example: value="-supportAttachmentArtyOldartillery")
 			unitType							values: the exact name of the unit to be affected by a unitProperty change (example: value="cruiser")
 			unitProperty						values: the name of any actual unit property, with a count equal to the property's values (examples: value="attack" count="4", or value="isAir" count="true"), requires a unitType declared
-														Something to note is that <option name="artillery" value="true"/> AND <option name="artillerySupportable" value="true"/> AND <option name="unitSupportCount" value="1"/> are all converted into a support attachment when the game starts, so adding or removing them as unit properties will do nothing (the bonusType for them is "ArtyOld", and the supportAttachment name is "supportAttachmentArtyOld<nameofUnit>")
-														unitProperty changes are done for ALL players who use that unitType, regardless of the player specified in the trigger. In order to have a unitType+unitProperty change only affect certain players and not others, you need to make a new unit type for those players (ie: rename the unit for those players only)
+														Something to note is that <option name="artillery" value="true"/> AND <option name="artillerySupportable" value="true"/> AND <option name="unitSupportCount" value="1"/> are all converted into a support attachment when the game starts, 
+															so adding or removing them as unit properties will do nothing (the bonusType for them is "ArtyOld", and the supportAttachment name is "supportAttachmentArtyOld<nameofUnit>") unitProperty changes are done for ALL players who use that unitType, 
+															regardless of the player specified in the trigger. In order to have a unitType+unitProperty change only affect certain players and not others, you need to make a new unit type for those players (ie: rename the unit for those players only)
 	-->
 	<!-- Germans Triggers -->
                 <attatchment name="triggerAttachmentGermans1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -3914,9 +3915,10 @@
 						<br>
 						<br><b>New things:</b>
 						<br>1. 4 and 5 Sea Zones are Russian Convoy Zones. If Russia controls it, they get the income from it. If someone else controls it, that player gets no income from it, but they deny the income to Russia. It can not be captured during non-combat phase.
-        				<br>2. Sea Zones 5 and 6, are Convoy Routes. They are linked to the land territory of Norway. At least one Convoy Zone must be controlled by the same power that controls the land territory for that power to gain the income from the land territory. They can not be captured during non-combat phase. If more than 1 route is linked to a single land territory, only 1 route needs to be controlled to get the income from land territory. Routes can have PU values just like convoy zones.
-        				<br>3. Sea Zones 37, 47, 48, 49, 58, are Blockade Zones. Each enemy warship in these zones reduces the income of attached land territories by 1 per warship, 2 per submarine.
-        				<br>4. Air_Transport is an air unit that specializes in dropping off units, costs 11 with 4 movement, and can carry into battle or drop off in a friendly territory: 1 infantry AND 1 other unit like a tank or artillery.
+        				<br>2. Sea Zones 5 and 6, are Convoy Routes. They are linked to the land territory of Norway. At least one Convoy Zone must be controlled by the same power that controls the land territory for that power to gain the income from the land territory. 
+								They can not be captured during non-combat phase. If more than 1 route is linked to a single land territory, only 1 route needs to be controlled to get the income from land territory. Routes can have PU values just like convoy zones.
+        				<br>3. Sea Zones 37, 47, 48, 49, 58, are Blockade Zones. Each enemy warship in these zones reduces the income of touching land territories by 1 per warship, 2 per submarine.
+        				<br>4. Air_Transport is an air unit that specializes in dropping off units, costs 11 with 4 movement, and can carry into battle or drop off in a friendly territory: 1 infantry AND 1 other unit like a tank or artillery. Enabled when you get "paratroopers" tech.
 						<br>5. Super_Carrier is a beefed up carrier that can also transport 1 infantry and 1 other land unit like a tank or artillery.
 						<br>6. Airfield ...
 						<br>7. Harbour ...
@@ -3942,7 +3944,7 @@
 							Caroline Islands, Australia, New Zealand, Okinawa, Wake Island, Hawaiian Islands, Midway<br>
 						* Japan's destroyers gain the ability to transport a single infantry If on the 3rd or 4th turn, the Axis do NOT control 4 out of 4 of
 							Sinkiang, Central China, India, Burytia S.S.R.<br>
-						* Japan's transports gain an additional capacity of 1 (allowing 3 infantry per transport) If at the end of their 3rd, 4th, or 5th turns,
+						* Japan's transports gain an additional capacity of 1 (allowing 3 infantry or 2 tanks per transport) If at the end of their 3rd, 4th, or 5th turns,
 							Japan controls 3 out of 3 of Australia, India, Sinkiang<br>
 						* Japan gains, only once, an additional submarine in sz61 If it loses control over any of its original territories, or any of its Islands with convoy symbols get blockaded<br>
         				<br>
@@ -3998,12 +4000,12 @@
 						<br>
 						<b>Technology</b><br>
          				*** Air/Naval Tech ***<br>
-        				SUPER SUBS- subs attack at 3<br>
-        				JET POWER- fighters attack at 4<br>
+        				SUPER SUBS- submarine units get +1 attack<br>
+        				JET POWER- fighters and air transports get +1 attack<br>
         				IMPROVED SHIPYARDS- naval units are cheaper<br>
         				AA RADAR- AA hit on 2 or less<br>
         				LONG RANGE AIRCRAFT- aircraft range increased by 2<br>
-        				HEAVY BOMBER- roll 2 dice for each bomber attack (if LHTR enabled, rolls 2 dice an selects the best one, if StratBombing adds one to result)<br>
+        				HEAVY BOMBER- roll 2 dice for each bomber attack (if LHTR enabled: rolls 2 dice and selects the best one, StratBombing adds one to result)<br>
         				<br>
          				*** Land/Production Tech ***<br>
         				IMPROVED ARTILLERY SUPPORT- artillery support 2 infantry (double the support given)<br>

@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Added new method for Moore AI to move landlocked units to coastal territories if amphibious (wisconsin), and fixed the purchasing of Transports to purchase land when needed and transports when needed, hopefully without over-purchasing either. (veqryn)
+
 * Added new option for alliedExclusionTerritories: "controlledNoWater", which will not count water or impassible territories. (veqryn)
 
 * Major patch for Dynamix AI. Updated battle calc to cache sorted casualty lists. (wisconsin)

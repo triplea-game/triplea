@@ -7656,7 +7656,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.unitIsOwnedBy(player));
 		CompositeMatch<Unit> fighter = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanLandOnCarrier);
 		CompositeMatch<Unit> alliedFighter = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), Matches.UnitCanLandOnCarrier);
-		CompositeMatch<Unit> transportableUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeTransported, Matches.UnitIsNotAA);
+		CompositeMatch<Unit> transportableUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeTransported, Matches.UnitIsNotAA, Matches.UnitIsNotFactory);
 		CompositeMatch<Unit> ACUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsCarrier);
 		CompositeMatch<Territory> enemyAndNoWater = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data), Matches.TerritoryIsNotImpassableToLandUnits(player));
 		CompositeMatch<Territory> noEnemyOrWater = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsNotImpassableToLandUnits(player));
@@ -8138,7 +8138,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				buyTransports = false;
 				purchaseT = 0.14F;
 			}
-			if (totTransports * 5 > totLandUnits) // we have plenty of transports
+			if (totTransports * 6 > totLandUnits) // we have plenty of transports
 			{
 				buyTransports = false;
 				if (!doBuyAttackShips)
@@ -8217,103 +8217,98 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		int minCost = Integer.MAX_VALUE;
 		
 		// Test for how badly we want transports
-		// If we have a land route to enemy capital...forget about it
+		// If we have a land route to enemy capital...forget about it (ie: we are amphib)
 		// If we have land units close to us...forget about it
-		// If we have a ton of units in our capital, then let's buy transports
-		int transConstant = 2;
+		// If we have a ton of units in our capital or territories connected to it, then let's buy transports
 		
-		List<Territory> xy = SUtils.findOnlyMyShips(myCapital, data, player, Matches.UnitIsTransport);
-		List<Unit> capTrans = new ArrayList<Unit>();
-		for (Territory xyz : xy)
-			capTrans.addAll(xyz.getUnits().getMatches(transUnit));
-		List<Unit> capUnits = myCapital.getUnits().getMatches(Matches.UnitCanBeTransported);
 		if (isAmphib & !doBuyAttackShips)
 		{
-			int transportableUnits = 0, transportUnits = 0;
+			int transportableUnitsUsage = 0;
 			List<Territory> myTerritories = SUtils.allAlliedTerritories(data, player);
+			myTerritories.retainAll(Match.getMatches(myTerritories, Matches.territoryHasValidLandRouteTo(data, capitol)));
 			for (Territory xTerr : myTerritories)
 			{
 				if (!Matches.territoryHasEnemyLandNeighbor(data, player).match(xTerr))
-					transportableUnits += xTerr.getUnits().countMatches(transportableUnit);
+				{
+					List<Unit> unitsOnTerr = new ArrayList<Unit>(xTerr.getUnits().getUnits());
+					for (Unit unit : unitsOnTerr)
+					{
+						if (!transportableUnit.match(unit))
+							continue;
+						UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
+						if (ua == null || ua.getTransportCost() < 0)
+							continue;
+						transportableUnitsUsage += ua.getTransportCost();
+					}
+				}
 			}
-			transportUnits = countTransports(data, player) * 2;
-			if (transportUnits > transportableUnits)
+			int transportCapacityLeftForAllTransportsTogether = 0;
+			CompositeMatch<Unit> myAvailableTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.transportIsNotTransporting(), Matches.unitIsOwnedBy(player));
+			List<Territory> myTransTerrs = SUtils.findTersWithUnitsMatching(data, player, myAvailableTransports);
+			myTransTerrs.retainAll(myTerritories);
+			for (Territory ter : myTransTerrs)
+			{
+				int closestWFact = 99999;
+				// remove territories & transports that are more than 3 territories away from any owned factory that touches water
+				for (Territory wfact : waterFactories)
+				{
+					int dist = data.getMap().getDistance(wfact, ter, Matches.TerritoryIsLandOrWater);
+					if (dist >= 0)
+					{
+						if (closestWFact > dist)
+							closestWFact = dist;
+					}
+				}
+				if (closestWFact > 3)
+					continue;
+				for (Unit transport : ter.getUnits())
+				{
+					if (!myAvailableTransports.match(transport))
+						continue;
+					UnitAttachment ua = UnitAttachment.get(transport.getUnitType());
+					if (ua == null)
+						continue;
+					if (ua.getTransportCapacity() < 2) // we don't want to include frigates from Napoleonic in this list
+						continue;
+					int transportCapacity = ua.getTransportCapacity();
+					/*for (Unit unitOnTransport : TripleAUnit.get(transport).getTransporting())
+					  {
+					      UnitAttachment ua2 = UnitAttachment.get(unitOnTransport.getUnitType());
+					      if (ua2 == null)
+					          continue;
+					      transportCapacity -= ua2.getTransportCost();
+					  }*/
+					transportCapacityLeftForAllTransportsTogether += transportCapacity;
+				}
+			}
+			
+			if (transportCapacityLeftForAllTransportsTogether > transportableUnitsUsage + 15) // roughly equal to > 2-3 full transports
 			{
 				skipShips = true;
 				PULand = leftToSpend;
 				PUSea = 0;
 				buyTransports = false;
 			}
-			else if (transportableUnits > 2 * transportUnits)
+			else if (transportCapacityLeftForAllTransportsTogether < transportableUnitsUsage)
 			{
-				transConstant = 1;
 				buyTransports = true;
-				PULand = leftToSpend - 12;
+				skipShips = false;
+				PULand = leftToSpend - 12; // enough for a single transport in great war (or a cruiser)
 				PULand = Math.max(PULand, 0);
 				PUSea = leftToSpend - PULand;
 				
-				// The following is a simple check that keeps the AI from not buying enough transports when they are obviusly needed
-				Territory ourCap = TerritoryAttachment.getCapital(player, data);
-				List<Unit> unitsOnCap = new ArrayList<Unit>(ourCap.getUnits().getUnits());
-				int transportUsageOfCapUnitsAlone = 0;
-				for (Unit unit : unitsOnCap)
-				{
-					UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-					if (ua == null || ua.getTransportCost() < 0)
-						continue;
-					transportUsageOfCapUnitsAlone += ua.getTransportCost();
-				}
-				
-				int transportCapacityLeftForAllTransportsTogether = 0;
-				CompositeMatch<Unit> myAvailableTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsAirTransport, Matches.transportIsNotTransporting(), Matches.unitIsOwnedBy(player));
-				List<Territory> myTransTerrs = SUtils.findTersWithUnitsMatching(data, player, myAvailableTransports);
-				for (Territory ter : myTransTerrs)
-				{
-					int closestWFact = 9999;
-					// remove territories & transports that are more than 3 territories away from any owned factory that touches water
-					for (Territory wfact : waterFactories)
-					{
-						int dist = data.getMap().getDistance(wfact, ter, Matches.TerritoryIsLandOrWater);
-						if (dist >= 0)
-						{
-							if (closestWFact > dist)
-								closestWFact = dist;
-						}
-					}
-					if (closestWFact > 3)
-						continue;
-					for (Unit transport : ter.getUnits())
-					{
-						if (!myAvailableTransports.match(transport))
-							continue;
-						UnitAttachment ua = UnitAttachment.get(transport.getUnitType());
-						if (ua == null)
-							continue;
-						if (ua.getTransportCapacity() < 1)
-							continue;
-						int transportCapacity = ua.getTransportCapacity();
-						/*for (Unit unitOnTransport : TripleAUnit.get(transport).getTransporting())
-						  {
-						      UnitAttachment ua2 = UnitAttachment.get(unitOnTransport.getUnitType());
-						      if (ua2 == null)
-						          continue;
-						      transportCapacity -= ua2.getTransportCost();
-						  }*/
-						transportCapacityLeftForAllTransportsTogether += transportCapacity;
-					}
-				}
-				
-				// If we're at the point where all our transports don't even have space for the cap units(and we're amphi), time to start buying tons of transports
-				if (transportCapacityLeftForAllTransportsTogether + 3 < transportUsageOfCapUnitsAlone)
+				// If we're at the point where all our transports don't even have space for the cap units (and we're amphi), time to start buying tons of transports
+				if (transportCapacityLeftForAllTransportsTogether + 6 < transportableUnitsUsage)
 				{
 					PUSea = leftToSpend - 12; // We want to buy almost all transports
+					PUSea = Math.max(PUSea, 12); // At least 12 for a great war transport
 					PUSea = Math.max(PUSea, leftToSpend / 2); // At least half of PUs for transports
 					PUSea = Math.max(PUSea, 0); // Never less than zero, this would cause errors
 					PULand = leftToSpend - PUSea; // Set the land purchase amount to whatever is left
 				}
 				
-				// If we're at the point where all our transports don't even have space for 1 third of the cap units(and we're amphi), time to start buying all transports
-				if (transportCapacityLeftForAllTransportsTogether + 5 < transportUsageOfCapUnitsAlone / 3)
+				// If we're at the point where all our transports don't even have space for 1 half of the cap units(and we're amphi), time to start buying all transports
+				if (transportCapacityLeftForAllTransportsTogether + 6 < transportableUnitsUsage / 2)
 				{
 					PUSea = leftToSpend; // We want to buy all transports
 					PUSea = Math.max(PUSea, 0); // Never less than zero, this would cause errors
