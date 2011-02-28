@@ -1,4 +1,10 @@
 Changes for 1.2.7
+* Added new method for Moore AI to move unused transports back to factories. (wisconsin)
+
+* Fix for Moore AI moving units towards capitals already conquered, and not letting units leave once they get there. (wisconsin)
+
+* Fix for Null Pointer error in Moore AI's factory movement. (veqryn)
+
 * Fix for Null Pointer error in Moore AI's movePlanesHomeNonCom. (veqryn)
 
 * Fix for Moore AI's horrible purchasing of transportable land units, which often resulted in the purchase of no land units. This also fixes the 'moore ai buying too many sea transports' issue. (veqryn)

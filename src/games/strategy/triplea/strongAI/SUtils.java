@@ -1137,6 +1137,21 @@ public class SUtils
 		return enemyCapitals;
 		
 	}
+
+	/**
+	 * List containing all 'live' enemy capitals (ones owned by original owner)
+	 */
+	public static List<Territory> getLiveEnemyCapitals(GameData data, PlayerID player)
+	{ // generate a list of all enemy capitals
+		List<Territory> enemyCapitals = new ArrayList<Territory>();
+		List<PlayerID> ePlayers = SUtils.getEnemyPlayers(data, player);
+		for (PlayerID otherPlayer : ePlayers)
+		{
+			enemyCapitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
+		}
+		enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.TerritoryIsNotImpassableToLandUnits(player)));
+		return enemyCapitals;
+	}
 	
 	/**
 	 * Returns a list of all enemy players

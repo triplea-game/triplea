@@ -31,6 +31,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.util.*;
 
 import java.util.*;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /*
@@ -639,6 +640,16 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         //In maps such as NWO, America as Moore never moves unit from center to the coast
         s_logger.fine("populateFinalMoveToCoast");
 		populateFinalMoveToCoast(data, moveUnits, moveRoutes, player);
+		doMove(moveUnits, moveRoutes, null, moveDel);
+		moveUnits.clear();
+		moveRoutes.clear();
+		now = System.currentTimeMillis();
+		s_logger.finest("Time Taken " + (now - last));
+		last = now;
+
+        //In maps such as NWO, America as Moore leaves dozens of transports at the amphib destination, never coming back for units
+        s_logger.fine("populateMoveUnusedTransportsToFillLocation");
+		populateMoveUnusedTransportsToFillLocation(data, moveUnits, moveRoutes, player);
 		doMove(moveUnits, moveRoutes, null, moveDel);
 		moveUnits.clear();
 		moveRoutes.clear();
@@ -6428,7 +6439,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		boolean ownMyCapital = myCapital.getOwner() == player;
 		List<Territory> emptyBadTerr = new ArrayList<Territory>();
 		float remainingStrengthNeeded = 0.0F;
-		List<Territory> enemyCaps = SUtils.getEnemyCapitals(data, player);
+		List<Territory> liveEnemyCaps = SUtils.getLiveEnemyCapitals(data, player);
 		
 		CompositeMatch<Unit> attackable = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotStatic(player), Matches.UnitIsNotFactory, new Match<Unit>()
 		{
@@ -6711,6 +6722,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						terrValue.put(moveFactToTerr, territoryValue);
 					}
 					SUtils.reorder(goodNeighbors, terrValue, true);
+					if (goodNeighbors == null || goodNeighbors.size() == 0)
+						continue;
 					int i = 0;
 					int j = 0;
 					int diff = moveableFactoryTerr.getUnits().getMatches(ourFactory).size() - moveableFactories.size();
@@ -6733,8 +6746,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		List<Territory> ourEnemyTerr = new ArrayList<Territory>();
 		HashMap<Territory, Float> rankMap = SUtils.rankTerritories(data, ourFriendlyTerr, ourEnemyTerr, null, player, tFirst, false, false);
 		
-		SUtils.reorder(enemyCaps, rankMap, true);
-		for (Territory badCapitol : enemyCaps)
+		SUtils.reorder(liveEnemyCaps, rankMap, true);
+		for (Territory badCapitol : liveEnemyCaps)
 		{
 			xMoveUnits.clear();
 			xMoveRoutes.clear();
@@ -7259,6 +7272,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             int slowestUnitMovement = DUtils.GetSlowestMovementUnitInList(unmovedUnits);
 
 			Route passableLandRoute = data.getMap().getRoute(ter, closestPortTer, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable));
+            if(passableLandRoute != null)
             passableLandRoute = DUtils.TrimRoute_BeforeFirstTerWithEnemyUnits(passableLandRoute, slowestUnitMovement, player, data);
 			if (passableLandRoute != null)
 			{
@@ -7267,6 +7281,127 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		}
 	}
+	
+    /**
+	 * Populate move unused transports to fill location. (Any transports that have not been used AT ALL this round, and are not by any immediate land units, move them to fill location)
+     * (Really, what this method does is it finds all factories with land units waiting that do not have sufficient transports. Then it has each of those ters call for unused transports to come.
+     * After all those calls, the cap calls all other unused transports that don't have units on them or nearby.)
+	 *
+	 * @param data
+	 * @param moveUnits
+	 * @param moveRoutes
+	 * @param player
+	 */
+    private void populateMoveUnusedTransportsToFillLocation(final GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, final PlayerID player)
+    {
+        Territory ourCap = TerritoryAttachment.getCapital(player, data);
+        if (!isAmphibAttack(player, false) || !Matches.territoryHasWaterNeighbor(data).match(ourCap)) //Will return if capitol is not next to water
+			return;
+
+        Match<Unit> unusedTransportMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsTransport, Matches.transportIsNotTransporting(), Matches.unitHasMovementLeft, Matches.unitHasNotMoved);
+
+        for (Territory ter : data.getMap().getTerritoriesOwnedBy(player))
+		{
+            if(ter.isWater())
+                continue;
+            if(data.getMap().getNeighbors(ter, Matches.TerritoryIsWater).isEmpty())
+                continue; //Skip, cause we're not next to water
+            if(SUtils.findNearest(ter, new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data), Matches.TerritoryIsLand), Matches.TerritoryIsNotImpassableToLandUnits(player), data) != null)
+            	continue; //If this ter has a land route to an enemy don't try to call transports to pick them up
+
+            int transportSpaceNeededForTerUnits = 0;
+            for (Unit unit : ter.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitCanBeTransported, Matches.UnitIsNotAA)))
+            {
+                int transportCost = UnitAttachment.get(unit.getUnitType()).getTransportCost();
+                if(transportCost <= 0)
+                    continue;
+                transportSpaceNeededForTerUnits += transportCost;
+            }
+            int transportSpaceLeftNearby = 0;
+            for(Territory seaTer : DUtils.GetTerritoriesWithinXDistanceOfYMatchingZ(data, ter, 3, Matches.TerritoryIsWater))
+            {
+                for(Unit transport : seaTer.getUnits().getMatches(unusedTransportMatch))
+                    transportSpaceLeftNearby += UnitAttachment.get(transport.getUnitType()).getTransportCapacity();
+            }
+
+            if(transportSpaceLeftNearby >= transportSpaceNeededForTerUnits)
+                continue; //We already have enough transports here
+
+            boolean foundAnyUnusedTransports = false;
+
+            //Now loop through unused transports and move them to ter
+            //We keep calling unused transports till we meet the space need of ter units
+            for(Territory seaTer : data.getMap().getTerritories())
+            {
+                if(!seaTer.isWater())
+                    continue;
+                List<Unit> unitsToMoveToTer = new ArrayList<Unit>();
+                for(Unit unusedTransport : seaTer.getUnits().getMatches(unusedTransportMatch))
+                {
+                    if(transportSpaceNeededForTerUnits > transportSpaceLeftNearby)
+                    {
+                        unitsToMoveToTer.add(unusedTransport);
+                        transportSpaceLeftNearby += UnitAttachment.get(unusedTransport.getUnitType()).getTransportCapacity();
+                    }
+                    else
+                        break;
+                }
+
+                if(unitsToMoveToTer.isEmpty())
+                    continue;
+
+                int slowestUnitMovement = DUtils.GetSlowestMovementUnitInList(unitsToMoveToTer);
+
+                HashMap<Match<Territory>, Integer> matches = new HashMap<Match<Territory>, Integer>();
+                matches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasAlliedUnits(player, data)), 2);
+                matches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data)), 3);
+                matches.put(Matches.TerritoryIsWater, 6);
+                Route seaRoute = data.getMap().getCompositeRoute(seaTer, data.getMap().getNeighbors(ter, Matches.TerritoryIsWater).iterator().next(), matches);
+
+                if(seaRoute != null)
+                    seaRoute = DUtils.TrimRoute_BeforeFirstTerWithEnemyUnits(seaRoute, slowestUnitMovement, player, data);
+                if (seaRoute != null)
+                {
+                    foundAnyUnusedTransports = true;
+                    moveUnits.add(unitsToMoveToTer);
+                    moveRoutes.add(seaRoute);
+                }
+            }
+
+            if(!foundAnyUnusedTransports)
+                break;
+		}
+
+        //Now loop through unused transports and move them to cap
+        //We call all unused transports
+        for (Territory seaTer : data.getMap().getTerritories())
+        {
+            if (!seaTer.isWater())
+                continue;
+            List<Unit> unitsToMoveToTer = new ArrayList<Unit>();
+            for (Unit unusedTransport : seaTer.getUnits().getMatches(unusedTransportMatch))
+                unitsToMoveToTer.add(unusedTransport);
+
+            if (unitsToMoveToTer.isEmpty())
+                continue;
+
+            int slowestUnitMovement = DUtils.GetSlowestMovementUnitInList(unitsToMoveToTer);
+
+            HashMap<Match<Territory>, Integer> matches = new HashMap<Match<Territory>, Integer>();
+            matches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasAlliedUnits(player, data)), 2);
+            matches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data)), 3);
+            matches.put(Matches.TerritoryIsWater, 6);
+            Route seaRoute = data.getMap().getCompositeRoute(seaTer, data.getMap().getNeighbors(ourCap, Matches.TerritoryIsWater).iterator().next(), matches);
+
+            if (seaRoute != null)
+                seaRoute = DUtils.TrimRoute_BeforeFirstTerWithEnemyUnits(seaRoute, slowestUnitMovement, player, data);
+            if (seaRoute != null)
+            {
+                moveUnits.add(unitsToMoveToTer);
+                moveRoutes.add(seaRoute);
+            }
+        }
+    }
 	
 	private void populateBomberCombat(GameData data, Collection<Unit> unitsAlreadyMoved, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
 	{
