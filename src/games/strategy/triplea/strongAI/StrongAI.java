@@ -8802,7 +8802,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			if ((Math.random() >= 0.25 && factoryCount >= 2) || (nonCapitolFactoryThreat && Math.random() < 0.75)) // if we have a lot of factories, use the max Unit set most of the time
 				AttackType = 3;
 			if ((isAmphib && Math.random() < 0.90) || Math.random() < 0.25)
-				AttackType = 4;
+			{
+				if (bestTransport.totalValues() + 3 >= bestMaxUnits.totalValues() && bestTransport.totalValues() > 0) // Attack type 4 returns stupid results, like buy a single tank when you have 60 PUs to spend, so for now we are going to limit it with this
+					AttackType = 4;
+				else
+					AttackType = 3;
+			}
 			if ((!isAmphib && minDistanceToEnemy >= 4 && Math.random() >= 0.10) || (minDistanceToEnemy >= 2 && Math.random() >= 0.85))
 				AttackType = 5;
 			String attackString = AttackType == 1 ? "Best Attack" : AttackType == 2 ? "Best Defense" : AttackType == 3 ? "Best Max Units" : AttackType == 4 ? "Best Transport" : "Best Mobile";
@@ -8969,7 +8974,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			if ((Math.random() >= 0.25 && factoryCount >= 2) || (nonCapitolFactoryThreat && Math.random() < 0.75)) // if we have a lot of factories, use the max Unit set most of the time
 				AttackType = 3;
 			if ((isAmphib && Math.random() < 0.90) || Math.random() < 0.25)
-				AttackType = 4;
+			{
+				if (bestTransport.totalValues() + 3 >= bestMaxUnits.totalValues() && bestTransport.totalValues() > 0) // Attack type 4 returns stupid results, like buy a single tank when you have 60 PUs to spend, so for now we are going to limit it with this
+					AttackType = 4;
+				else
+					AttackType = 3;
+			}
 			if ((!isAmphib && minDistanceToEnemy >= 4 && Math.random() >= 0.10) || (minDistanceToEnemy >= 2 && Math.random() >= 0.85))
 				AttackType = 5;
 			String attackString = AttackType == 1 ? "Best Attack" : AttackType == 2 ? "Best Defense" : AttackType == 3 ? "Best Max Units" : AttackType == 4 ? "Best Transport" : "Best Mobile";
