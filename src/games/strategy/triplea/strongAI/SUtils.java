@@ -3026,7 +3026,8 @@ public class SUtils
 		CompositeMatch<Unit> airUnits = new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player), Matches.UnitIsNotStatic(player), Matches.unitHasMovementLeft);
 		CompositeMatch<Unit> escortShip = new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsNotTransport, Matches.unitIsOwnedBy(player), Matches.UnitIsNotStatic(player), Matches.unitHasMovementLeft);
 		CompositeMatch<Unit> escortUnit = new CompositeMatchOr<Unit>(airUnits, escortShip);
-		CompositeMatch<Unit> transportingUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.unitIsOwnedBy(player), Matches.UnitIsNotStatic(player), Matches.unitHasMovementLeft);
+        //Inviting an empty transport is useless, so only get ones with units on them
+		CompositeMatch<Unit> transportingUnitWithLoad = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.unitIsOwnedBy(player), Matches.UnitIsNotStatic(player), Matches.unitHasMovementLeft, Matches.transportIsTransporting());
 		Set<Territory> tCopy = data.getMap().getNeighbors(target, 3);
 		List<Territory> testCapNeighbors = new ArrayList<Territory>(tCopy);
 		List<Territory> waterNeighbors = new ArrayList<Territory>();
@@ -3075,7 +3076,7 @@ public class SUtils
 			{
 				int xminDist = 0;
 				List<Unit> tUnits = new ArrayList<Unit>();
-				List<Unit> tranUnits = waterCheck.getUnits().getMatches(transportingUnit);
+				List<Unit> tranUnits = waterCheck.getUnits().getMatches(transportingUnitWithLoad);
 				tranUnits.removeAll(unitsAlreadyMoved);
 				List<Unit> escorts = waterCheck.getUnits().getMatches(escortUnit);
 				escorts.removeAll(unitsAlreadyMoved);
@@ -3114,7 +3115,7 @@ public class SUtils
 				if (alreadyMovedFrom.contains(otherSource))
 					continue;
 				alreadyMovedFrom.add(otherSource);
-				List<Unit> tranUnits = otherSource.getUnits().getMatches(transportingUnit);
+				List<Unit> tranUnits = otherSource.getUnits().getMatches(transportingUnitWithLoad);
 				tranUnits.removeAll(unitsAlreadyMoved);
 				if (tranUnits.isEmpty())
 					continue;
