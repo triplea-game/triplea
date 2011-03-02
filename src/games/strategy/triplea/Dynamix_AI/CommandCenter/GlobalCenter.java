@@ -64,7 +64,7 @@ public class GlobalCenter
     public static PlayerID CurrentPlayer = null;
     public static int MapTerCount = 0;
     public static float MapTerCountScale = 1.0F;
-    public static PhaseType CurrentPhaseType = PhaseType.Unknown;
+    public static PhaseType CurrentPhaseType = null;
     public static boolean IsFFAGame = false;
     public static int FastestUnitMovement = 0;
     public static int HighestTerProduction = -1;
@@ -83,6 +83,8 @@ public class GlobalCenter
         HashMap<UnitType, List<Integer>> differentCosts = new HashMap<UnitType, List<Integer>>();
         for(PlayerID player : data.getPlayerList().getPlayers())
         {
+            if(player.getProductionFrontier() == null)
+                continue;
             for(ProductionRule rule : player.getProductionFrontier())
             {
                 UnitType ut = (UnitType)rule.getResults().keySet().iterator().next();

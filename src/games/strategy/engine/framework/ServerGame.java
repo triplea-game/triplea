@@ -37,7 +37,9 @@ import games.strategy.engine.vault.Vault;
 import games.strategy.net.*;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
+import games.strategy.triplea.oddsCalculator.ta.OddsCalculator;
 import games.strategy.triplea.ui.ErrorHandler;
+import games.strategy.triplea.ui.UIContext;
 import games.strategy.util.ListenerList;
 
 import java.io.*;
@@ -143,8 +145,8 @@ public class ServerGame implements IGame
         m_players = new PlayerManager(allPlayers);
 
         m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
-        
-        
+
+        CachedInstanceCenter.CachedGameData = data;
         
         setupLocalPlayers(localPlayers);
 
@@ -161,7 +163,6 @@ public class ServerGame implements IGame
      */
     private void setupLocalPlayers(Set<IGamePlayer> localPlayers)
     {
-  
         Iterator<IGamePlayer> localPlayersIter = localPlayers.iterator();
         while (localPlayersIter.hasNext())
         {
@@ -170,12 +171,9 @@ public class ServerGame implements IGame
             m_gamePlayers.put(player, gp);
             IPlayerBridge bridge = new DefaultPlayerBridge(this);
             gp.initialize(bridge, player);
-            if(gp instanceof Dynamix_AI)
-               ((Dynamix_AI)gp).Initialize();
-            
-            RemoteName descriptor = getRemoteName(gp.getID(), m_data) ;
-            m_remoteMessenger.registerRemote(gp, descriptor);
 
+            RemoteName descriptor = getRemoteName(gp.getID(), m_data);
+            m_remoteMessenger.registerRemote(gp, descriptor);
         }
     }
     
@@ -555,7 +553,6 @@ public class ServerGame implements IGame
                     );
 
             CachedInstanceCenter.CachedDelegateBridge = bridge;
-            CachedInstanceCenter.CachedGameData = m_data;
             
             if(m_delegateRandomSource == null)
             {

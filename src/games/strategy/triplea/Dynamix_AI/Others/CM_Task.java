@@ -32,6 +32,7 @@ import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
@@ -104,9 +105,12 @@ public class CM_Task
                 @Override
                 public boolean match(Unit unit)
                 {
+                    UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
                     if (!DUtils.CanUnitReachTer(m_data, ter, unit, m_target))
                         return false;
                     if (!Matches.unitIsOwnedBy(GlobalCenter.CurrentPlayer).match(unit))
+                        return false;
+                    if (Matches.UnitIsFactory.match(unit) && ua.getAttack(unit.getOwner()) == 0)
                         return false;
 
                     return true;
@@ -269,10 +273,10 @@ public class CM_Task
 
     private void recruitEnoughUnitsToMeetXYZ(float minChance, float maxVulnerability, int maxBattleVolleys)
     {
-        List<UnitGroup> sortedPossibles = getSortedPossibleRecruits();
-
         if(m_taskType.equals(CM_TaskType.LandGrab) && m_recruitedUnits.size() > 0)
             return; //We only need one unit
+
+        List<UnitGroup> sortedPossibles = getSortedPossibleRecruits();        
 
         for (UnitGroup ug : sortedPossibles)
         {
@@ -284,14 +288,19 @@ public class CM_Task
             List<Unit> responseDefenders = Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); //Air can't defend ter because they need to land
             AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, 1, false);
 
+            int howMuchMinTCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore;
+            int howMuchMinRADCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore;
+            int howMuchMaxBVCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore;
+            int totalVals = howMuchMinTCRMatters + howMuchMinRADCRMatters + howMuchMaxBVCRMatters;
+
             float howCloseToMeetingTakeoverChanceMin = getMeetingOfTakeoverChanceScore(simulatedAttack, minChance);
             float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedResponse, maxVulnerability);
             float howCloseToMeetingMaxBattleVolleys = getMeetingOfMaxBattleVolleysScore(simulatedAttack, maxBattleVolleys);
 
-            float totalScore = howCloseToMeetingTakeoverChanceMin + howCloseToMeetingVulnerabilityMax + howCloseToMeetingMaxBattleVolleys;
-            float howCloseToTaskBeingWorthwhile = totalScore / 3; //Average closeness
+            float totalScore = (howCloseToMeetingTakeoverChanceMin * howMuchMinTCRMatters) + (howCloseToMeetingVulnerabilityMax * howMuchMinRADCRMatters) + (howCloseToMeetingMaxBattleVolleys * howMuchMaxBVCRMatters);
+            float howCloseToTaskBeingWorthwhile = totalScore / totalVals; //Average closeness
 
-            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfTaskRequirementsNeededToPerformTask / 100.0F) + .02F; //We do it a little higher for recruiting
+            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfCMTaskRequirementsNeededToPerformTask / 100.0F) + .02F; //We do it a little higher for recruiting
 
             if(howCloseToTaskBeingWorthwhile < percentOfRequirementNeeded) //If we haven't met our 'X% of requirements' goal set by user
                 m_recruitedUnits.add(ug);
@@ -309,14 +318,19 @@ public class CM_Task
             List<Unit> responseDefenders = Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); //Air can't defend ter because they need to land
             AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, false);
 
+            int howMuchMinTCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore;
+            int howMuchMinRADCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore;
+            int howMuchMaxBVCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore;
+            int totalVals = howMuchMinTCRMatters + howMuchMinRADCRMatters + howMuchMaxBVCRMatters;
+
             float howCloseToMeetingTakeoverChanceMin = getMeetingOfTakeoverChanceScore(simulatedAttack, minChance);
             float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedResponse, maxVulnerability);
             float howCloseToMeetingMaxBattleVolleys = getMeetingOfMaxBattleVolleysScore(simulatedAttack, maxBattleVolleys);
 
-            float totalScore = howCloseToMeetingTakeoverChanceMin + howCloseToMeetingVulnerabilityMax + howCloseToMeetingMaxBattleVolleys;
-            float howCloseToTaskBeingWorthwhile = totalScore / 3; //Average closeness
+            float totalScore = (howCloseToMeetingTakeoverChanceMin * howMuchMinTCRMatters) + (howCloseToMeetingVulnerabilityMax * howMuchMinRADCRMatters) + (howCloseToMeetingMaxBattleVolleys * howMuchMaxBVCRMatters);
+            float howCloseToTaskBeingWorthwhile = totalScore / totalVals; //Average closeness
 
-            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfTaskRequirementsNeededToPerformTask / 100.0F) + .02F; //We do it a little higher for recruiting
+            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfCMTaskRequirementsNeededToPerformTask / 100.0F) + .02F; //We do it a little higher for recruiting
 
             if(howCloseToTaskBeingWorthwhile < percentOfRequirementNeeded) //If we haven't met our 'X% of requirements' goal set by user
                 m_recruitedUnits.add(ug);
@@ -380,6 +394,7 @@ public class CM_Task
 
         if(m_recruitedUnits.isEmpty()) //Can happen if all recruits are waiting for reinforcements to complete a better, nearby task
             return false;
+
         Territory ourCap = TerritoryAttachment.getCapital(GlobalCenter.CurrentPlayer, m_data);
 
         List<Territory> capAndNeighbors = DUtils.GetTerritoriesWithinXDistanceOfY(m_data, ourCap, 1);
@@ -416,37 +431,51 @@ public class CM_Task
             //    For example, you might want the 'meetTUVWants..' method to return even higher than 1.0 if the enemy, for example, loses more than twice as much TUV as us. (In attack and response)
             //    That might make an attack go through even if the other things aren't met, which may be good sometimes, like in the example situation where we'd make the enemy lose a lot more TUV.
             //    If you do make these sort of changes, though, please do it carefully, sloppy changes could mess up the code.
+            int howMuchMinTCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore;
+            int howMuchMinRADCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore;
+            int howMuchMaxBVCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore;
+            int totalVals = howMuchMinTCRMatters + howMuchMinRADCRMatters + howMuchMaxBVCRMatters;
+
             float howCloseToMeetingTakeoverChanceMin = getMeetingOfTakeoverChanceScore(simulatedAttack, m_minChance);
             float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedResponse, m_maxVulnerability);
             float howCloseToMeetingMaxBattleVolleys = getMeetingOfMaxBattleVolleysScore(simulatedAttack, m_maxBattleVolleys);
 
-            float totalScore = howCloseToMeetingTakeoverChanceMin + howCloseToMeetingVulnerabilityMax + howCloseToMeetingMaxBattleVolleys;
-            float howCloseToTaskBeingWorthwhile = totalScore / 3; //Average closeness
+            float totalScore = (howCloseToMeetingTakeoverChanceMin * howMuchMinTCRMatters) + (howCloseToMeetingVulnerabilityMax * howMuchMinRADCRMatters) + (howCloseToMeetingMaxBattleVolleys * howMuchMaxBVCRMatters);
+            float howCloseToTaskBeingWorthwhile = totalScore / totalVals; //Average closeness
 
             DUtils.Log(Level.FINEST, "        Determining if cm task is worthwhile. HowCloseToTask, BeingWorthWhile: {0} MeetingTakeoverMin: {1} MeetingVulnerabilityMax: {2}, MeetingMaxBattleVolleys: {3}", howCloseToTaskBeingWorthwhile, howCloseToMeetingTakeoverChanceMin, howCloseToMeetingVulnerabilityMax, howCloseToMeetingMaxBattleVolleys);
             DUtils.Log(Level.FINEST, "          Simulated attack, attackers size: {0}, attacker win percent: {1} Simulated response, attackers size: {2}, defenders size: {3}, attacker win percent: {4}", GetRecruitedUnits().size(), simulatedAttack.getAttackerWinPercent(), responseAttackers.size(), responseDefenders.size(), simulatedResponse.getAttackerWinPercent());
 
-            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfTaskRequirementsNeededToPerformTask / 100.0F);
+            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfCMTaskRequirementsNeededToPerformTask / 100.0F);
 
             if(howCloseToTaskBeingWorthwhile < percentOfRequirementNeeded) //If we haven't met our 'X% of requirements' goal set by user
                 return false;
+
+            return true;
         }
         else if (m_taskType.equals(m_taskType.Attack_Stabilize))
         {
+            int howMuchMinTCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore;
+            int howMuchMinRADCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore;
+            int howMuchMaxBVCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore;
+            int totalVals = howMuchMinTCRMatters + howMuchMinRADCRMatters + howMuchMaxBVCRMatters;
+
             float howCloseToMeetingTakeoverChanceMin = getMeetingOfTakeoverChanceScore(simulatedAttack, m_minChance);
             float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedResponse, m_maxVulnerability);
-            float howCloseToMeetingMaxBattleVolleys = getMeetingOfMaxBattleVolleysScore(simulatedAttack, m_maxBattleVolleys);            
+            float howCloseToMeetingMaxBattleVolleys = getMeetingOfMaxBattleVolleysScore(simulatedAttack, m_maxBattleVolleys);
 
-            float totalScore = howCloseToMeetingTakeoverChanceMin + howCloseToMeetingVulnerabilityMax + howCloseToMeetingMaxBattleVolleys;
-            float howCloseToTaskBeingWorthwhile = totalScore / 3; //Average closeness
+            float totalScore = (howCloseToMeetingTakeoverChanceMin * howMuchMinTCRMatters) + (howCloseToMeetingVulnerabilityMax * howMuchMinRADCRMatters) + (howCloseToMeetingMaxBattleVolleys * howMuchMaxBVCRMatters);
+            float howCloseToTaskBeingWorthwhile = totalScore / totalVals; //Average closeness
 
             DUtils.Log(Level.FINEST, "        Determining if cm task is worthwhile. HowCloseToTask, BeingWorthWhile: {0} MeetingTakeoverMin: {1} MeetingVulnerabilityMax: {2}, MeetingMaxBattleVolleys: {3}", howCloseToTaskBeingWorthwhile, howCloseToMeetingTakeoverChanceMin, howCloseToMeetingVulnerabilityMax, howCloseToMeetingMaxBattleVolleys);
             DUtils.Log(Level.FINEST, "          Simulated attack, attackers size: {0}, attacker win percent: {1} Simulated response, attackers size: {2}, defenders size: {3}, attacker win percent: {4}", GetRecruitedUnits().size(), simulatedAttack.getAttackerWinPercent(), responseAttackers.size(), responseDefenders.size(), simulatedResponse.getAttackerWinPercent());
 
-            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfTaskRequirementsNeededToPerformTask / 100.0F);
+            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfCMTaskRequirementsNeededToPerformTask / 100.0F);
 
             if(howCloseToTaskBeingWorthwhile < percentOfRequirementNeeded) //If we haven't met our 'X% of requirements' goal set by user
                 return false;
+
+            return true;
         }
         else
         {
@@ -467,17 +496,19 @@ public class CM_Task
                 if(ta.getMovementLeft() >= route.getLength() * 2)
                     canUnitsGetBack = true;
             }
+            if(canUnitsGetBack)
+                return true;
 
             int unitCost = DUtils.GetTUVOfUnits(GetRecruitedUnitsAsUnitList(), GlobalCenter.CurrentPlayer, GlobalCenter.GetPUResource());
             TerritoryAttachment ta = TerritoryAttachment.get(m_target);
 
             List<Unit> landAttackers = DUtils.GetNNEnemyLUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
 
-            if(ta.getProduction() < unitCost - 1 && !canUnitsGetBack && landAttackers.size() > 0)
-                return false;
-        }
+            if (unitCost - 1 < ta.getProduction() || landAttackers.isEmpty())
+                return true;
 
-        return true;
+            return false;
+        }
     }
 
     public boolean IsTaskWithAdditionalRecruitsWorthwhile()
@@ -592,6 +623,7 @@ public class CM_Task
             DUtils.Log(Level.FINEST, "      Task is called to perform, but there are no recruits! Target: {0} Task Type: {1} Priority: {2}", m_target, m_taskType, m_priority);
         if(!m_completed) //Only pause if this is the initial attack group
             Dynamix_AI.Pause();
+        UnitGroup.EnableMoveBuffering();
         for(UnitGroup ug : m_recruitedUnits)
         {
             if(ug.GetMovedTo() != null)
@@ -600,6 +632,7 @@ public class CM_Task
             if (error != null)
                 DUtils.Log(Level.FINEST, "        CM task perfoming move failed, reason: {0}", error);
         }
+        UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
         m_completed = true;              
     }
 }

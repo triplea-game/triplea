@@ -18,6 +18,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Dynamix_AI.DUtils;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.CompositeMatchAnd;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class CachedCalculationCenter
 {
     public static HashMap<List<Territory>, Route> CachedRoutes = new HashMap<List<Territory>, Route>();
     public static HashMap<List<Territory>, Route> CachedLandRoutes = new HashMap<List<Territory>, Route>();
+    public static HashMap<List<Territory>, Route> CachedPassableLandRoutes = new HashMap<List<Territory>, Route>();
     public static HashMap<List<Territory>, Route> CachedSeaRoutes = new HashMap<List<Territory>, Route>();
 
     /**
@@ -53,6 +56,18 @@ public class CachedCalculationCenter
             CachedLandRoutes.put(key, data.getMap().getLandRoute(ter1, ter2));
 
         return CachedLandRoutes.get(key);
+    }
+
+    /**
+     * The same as data.getMap().getRoute(ter1, ter2, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable)), except that this method caches the resulting Route for quick retrieval later on.
+     */
+    public static Route GetPassableLandRoute(GameData data, Territory ter1, Territory ter2)
+    {
+        List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));
+        if(!CachedPassableLandRoutes.containsKey(key))
+            CachedPassableLandRoutes.put(key, data.getMap().getRoute(ter1, ter2, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable)));
+
+        return CachedPassableLandRoutes.get(key);
     }
 
     /**

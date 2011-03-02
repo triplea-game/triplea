@@ -15,6 +15,7 @@
 package games.strategy.triplea.Dynamix_AI;
 
 import games.strategy.triplea.Dynamix_AI.Others.BattleCalculationType;
+import games.strategy.triplea.Dynamix_AI.Others.ThreatInvalidationType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -70,10 +71,22 @@ public class DSettings implements Serializable
     public int UnitPlacementMultiplyPercent = 100;
 
     public int AA_resourcePercentageThatMustExistForFactoryBuy = 50;
-    public int AA_percentageOfTaskRequirementsNeededToPerformTask = 96;
-    public int AA_percentageOfResistedThreatThatTasksInvalidate = 75;
-    public int AA_initialTaskConsiderationLoopCount = 3;
     public int AA_maxUnitTypesForPurchaseMix = 5;
+
+    public int AA_percentageOfCMTaskRequirementsNeededToPerformTask = 96;
+    public int AA_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore = 50;
+    public int AA_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore = 50;
+    public int AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore = 50;
+
+    public int AA_percentageOfNCMTaskRequirementsNeededToPerformTask = 96;
+    public int AA_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore = 50;
+    public int AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore = 50;
+
+    public int AA_initialTaskConsiderationLoopCount = 3;
+
+    public ThreatInvalidationType AA_threatInvalidationType = ThreatInvalidationType.AroundHotspot;
+    public int AA_threatInvalidationAroundHotspotRadius = 2;
+    public int AA_percentageOfResistedThreatThatTasksInvalidate = 75;
 
     private static DSettings s_lastSettings = null;
     private static String PROGRAM_SETTINGS = "Program Settings";

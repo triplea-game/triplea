@@ -33,8 +33,6 @@ public class NCM_AirLandingCalculator
 {
     public static Territory CalculateLandingLocationForAirUnits(GameData data, PlayerID player, Territory ter, List<Unit> airUnits, List<NCM_Task> tasks)
     {
-        int speed = DUtils.GetSlowestMovementUnitInList(airUnits);
-
         float highestScore = Integer.MIN_VALUE;
         Territory highestScoringTer = null;
 
@@ -47,16 +45,17 @@ public class NCM_AirLandingCalculator
             if(StatusCenter.get(data, player).GetStatusOfTerritory(landingTer).WasAttacked || StatusCenter.get(data, player).GetStatusOfTerritory(landingTer).WasBlitzed) //We can't land on ters taken this turn
                 continue;
 
-            int airUnitsUnableToMakeIt = 0;
+            int airUnitsAbleToMakeIt = 0;
             for(Unit air : airUnits)
             {
-                if(!DUtils.CanUnitReachTer(data, ter, air, landingTer))
-                {
-                    airUnitsUnableToMakeIt++;
-                }
+                if(DUtils.CanUnitReachTer(data, ter, air, landingTer))
+                    airUnitsAbleToMakeIt++;
             }
 
-            List<Unit> afterDefenders = DUtils.ToList(landingTer.getUnits().getUnits());
+            if(airUnitsAbleToMakeIt == 0) //If there are no air units that can make it
+                continue;
+
+            List<Unit> afterDefenders = DUtils.GetTerUnitsAtEndOfTurn(data, player, ter);
             afterDefenders.removeAll(airUnits);
             afterDefenders.addAll(airUnits);
 
@@ -66,7 +65,7 @@ public class NCM_AirLandingCalculator
                 vulnerability = .15F; //Then accept similar chances as equal
 
             float score = 0;
-            score -= airUnitsUnableToMakeIt * 10000; //We really dislike stranding our airplanes, but sometimes it's necessary
+            score += airUnitsAbleToMakeIt * 100000; //We really want all our planes to make it, but we can't sometimes...
             score -= vulnerability * 10000;
 
             Territory closestEnemy = DUtils.GetClosestTerMatchingX(data, landingTer, DMatches.territoryIsOwnedByNNEnemy(data, player), Matches.TerritoryIsLand);

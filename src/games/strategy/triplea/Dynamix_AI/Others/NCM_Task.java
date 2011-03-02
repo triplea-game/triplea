@@ -222,10 +222,10 @@ public class NCM_Task
 
     private void recruitEnoughUnitsToMeetXYZ(float maxVulnerability, int maxBattleVolleys)
     {
-        List<UnitGroup> sortedPossibles = getSortedPossibleRecruits();
-
         if(m_taskType.equals(NCM_TaskType.Reinforce_Block) && m_recruitedUnits.size() > 0)
             return; //We only need one unit
+
+        List<UnitGroup> sortedPossibles = getSortedPossibleRecruits();
 
         for (UnitGroup ug : sortedPossibles)
         {
@@ -237,13 +237,17 @@ public class NCM_Task
 
             AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, 1, false);
 
+            int howMuchMaxTCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore;
+            int howMuchMaxBVCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore;
+            int totalVals = howMuchMaxTCRMatters + howMuchMaxBVCRMatters;
+
             float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedAttack, maxVulnerability);
             float howCloseToMeetingMaxBattleVolleys = getMeetingOfMaxBattleVolleysScore(simulatedAttack, maxBattleVolleys);
 
-            float totalScore = howCloseToMeetingVulnerabilityMax + howCloseToMeetingMaxBattleVolleys;
-            float howCloseToTaskBeingWorthwhile = totalScore / 2; //Average closeness
+            float totalScore = (howCloseToMeetingVulnerabilityMax * howMuchMaxTCRMatters) + (howCloseToMeetingMaxBattleVolleys * howMuchMaxBVCRMatters);
+            float howCloseToTaskBeingWorthwhile = totalScore / totalVals; //Average closeness
 
-            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfTaskRequirementsNeededToPerformTask / 100.0F) + .02F; //We do it a little higher for recruiting
+            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfNCMTaskRequirementsNeededToPerformTask / 100.0F) + .02F; //We do it a little higher for recruiting
 
             if(howCloseToTaskBeingWorthwhile < percentOfRequirementNeeded) //If we haven't met our 'X% of requirements' goal set by user
                 m_recruitedUnits.add(ug);
@@ -261,13 +265,17 @@ public class NCM_Task
 
             AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, false);
 
+            int howMuchMaxTCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore;
+            int howMuchMaxBVCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore;
+            int totalVals = howMuchMaxTCRMatters + howMuchMaxBVCRMatters;
+
             float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedAttack, maxVulnerability);
             float howCloseToMeetingMaxBattleVolleys = getMeetingOfMaxBattleVolleysScore(simulatedAttack, maxBattleVolleys);
 
-            float totalScore = howCloseToMeetingVulnerabilityMax + howCloseToMeetingMaxBattleVolleys;
-            float howCloseToTaskBeingWorthwhile = totalScore / 2; //Average closeness
+            float totalScore = (howCloseToMeetingVulnerabilityMax * howMuchMaxTCRMatters) + (howCloseToMeetingMaxBattleVolleys * howMuchMaxBVCRMatters);
+            float howCloseToTaskBeingWorthwhile = totalScore / totalVals; //Average closeness
 
-            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfTaskRequirementsNeededToPerformTask / 100.0F) + .02F; //We do it a little higher for recruiting
+            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfNCMTaskRequirementsNeededToPerformTask / 100.0F) + .02F; //We do it a little higher for recruiting
 
             if(howCloseToTaskBeingWorthwhile < percentOfRequirementNeeded) //If we haven't met our 'X% of requirements' goal set by user
                 m_recruitedUnits.add(ug);
@@ -300,7 +308,7 @@ public class NCM_Task
 
         PlayerID player = GlobalCenter.CurrentPlayer;
 
-       List<Territory> ourCaps = TerritoryAttachment.getAllCapitals(player, m_data);
+        List<Territory> ourCaps = TerritoryAttachment.getAllCapitals(player, m_data);
         if(ourCaps.contains(m_target))
             return true; //Always try to reinforce our cap, even if we don't reach requirements
 
@@ -347,41 +355,53 @@ public class NCM_Task
 
             if(ta.getProduction() < unitCost - 1 && attackers.size() > 0)
                 return false;
+
+            return true;
         }
         else if (m_taskType.equals(NCM_TaskType.Reinforce_FrontLine))
         {
+            int howMuchMaxTCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore;
+            int howMuchMaxBVCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore;
+            int totalVals = howMuchMaxTCRMatters + howMuchMaxBVCRMatters;
+
             float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedAttack, m_maxVulnerability);
             float howCloseToMeetingMaxBattleVolleys = getMeetingOfMaxBattleVolleysScore(simulatedAttack, m_maxBattleVolleys);
 
-            float totalScore = howCloseToMeetingVulnerabilityMax + howCloseToMeetingMaxBattleVolleys;
-            float howCloseToTaskBeingWorthwhile = totalScore / 2; //Average closeness
+            float totalScore = (howCloseToMeetingVulnerabilityMax * howMuchMaxTCRMatters) + (howCloseToMeetingMaxBattleVolleys * howMuchMaxBVCRMatters);
+            float howCloseToTaskBeingWorthwhile = totalScore / totalVals; //Average closeness
 
             DUtils.Log(Level.FINEST, "        Determining if ncm task is worthwhile. HowCloseToTask, BeingWorthWhile: {0} MeetingVulnerabilityMax: {1}, MeetingMaxBattleVolleys: {2}", howCloseToTaskBeingWorthwhile, howCloseToMeetingVulnerabilityMax, howCloseToMeetingMaxBattleVolleys);
             DUtils.Log(Level.FINEST, "          Simulated attack, attackers size: {0}, attacker win percent: {1}", attackers.size(), simulatedAttack.getAttackerWinPercent());
 
-            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfTaskRequirementsNeededToPerformTask / 100.0F);
+            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfNCMTaskRequirementsNeededToPerformTask / 100.0F);
 
             if(howCloseToTaskBeingWorthwhile < percentOfRequirementNeeded) //If we haven't met our 'X% of requirements' goal set by user
                 return false;
+
+            return true;
         }
-        else if(m_taskType.equals(NCM_TaskType.Reinforce_Stabilize))
+        else
         {
+            int howMuchMaxTCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore;
+            int howMuchMaxBVCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore;
+            int totalVals = howMuchMaxTCRMatters + howMuchMaxBVCRMatters;
+
             float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedAttack, m_maxVulnerability);
             float howCloseToMeetingMaxBattleVolleys = getMeetingOfMaxBattleVolleysScore(simulatedAttack, m_maxBattleVolleys);
 
-            float totalScore = howCloseToMeetingVulnerabilityMax + howCloseToMeetingMaxBattleVolleys;
-            float howCloseToTaskBeingWorthwhile = totalScore / 2; //Average closeness
+            float totalScore = (howCloseToMeetingVulnerabilityMax * howMuchMaxTCRMatters) + (howCloseToMeetingMaxBattleVolleys * howMuchMaxBVCRMatters);
+            float howCloseToTaskBeingWorthwhile = totalScore / totalVals; //Average closeness
 
             DUtils.Log(Level.FINEST, "        Determining if ncm task is worthwhile. HowCloseToTask, BeingWorthWhile: {0} MeetingVulnerabilityMax: {1}, MeetingMaxBattleVolleys: {2}", howCloseToTaskBeingWorthwhile, howCloseToMeetingVulnerabilityMax, howCloseToMeetingMaxBattleVolleys);
             DUtils.Log(Level.FINEST, "          Simulated attack, attackers size: {0}, attacker win percent: {1}", attackers.size(), simulatedAttack.getAttackerWinPercent());
 
-            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfTaskRequirementsNeededToPerformTask / 100.0F);
+            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfNCMTaskRequirementsNeededToPerformTask / 100.0F);
 
             if(howCloseToTaskBeingWorthwhile < percentOfRequirementNeeded) //If we haven't met our 'X% of requirements' goal set by user
                 return false;
-        }
 
-        return true;
+            return true;
+        }
     }
 
     public boolean IsTaskWithAdditionalRecruitsWorthwhile()
@@ -524,6 +544,7 @@ public class NCM_Task
             {                
                 DUtils.Log(Level.FINEST, "      Attempting to perform target retreat. Target: {0} Retreat To: {1} Retreat Units: {2}", m_target, bestRetreatTer, retreatUnits);
                 Dynamix_AI.Pause();
+                UnitGroup.EnableMoveBuffering();
                 for (UnitGroup ug : retreatUnits)
                 {
                     String error = ug.MoveAsFarTo_NCM(bestRetreatTer, mover);
@@ -532,6 +553,7 @@ public class NCM_Task
                     else
                         DUtils.Log(Level.FINEST, "        NCM move failed, reason: {0}", error);
                 }
+                UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
             }
             else
                 DUtils.Log(Level.FINEST, "      No retreat to ter found for for task. Target: {0} Recruits: {1} Retreat Units: {2}", m_target, m_recruitedUnits, retreatUnits);
@@ -589,6 +611,7 @@ public class NCM_Task
             {                
                 DUtils.Log(Level.FINEST, "      Attempting to perform target retreat. Target: {0} Retreat To: {1} Retreat Units: {2}", m_target, bestRetreatTer, retreatUnits);
                 Dynamix_AI.Pause();
+                UnitGroup.EnableMoveBuffering();
                 for (UnitGroup ug : retreatUnits)
                 {
                     String error = ug.MoveAsFarTo_NCM(bestRetreatTer, mover);
@@ -597,6 +620,7 @@ public class NCM_Task
                     else
                         DUtils.Log(Level.FINEST, "        NCM move failed, reason: {0}", error);
                 }
+                UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
             }
             else
                 DUtils.Log(Level.FINEST, "      No retreat to ter found for for task. Target: {0} Recruits: {1} Retreat Units: {2}", m_target, m_recruitedUnits, retreatUnits);
@@ -668,6 +692,7 @@ public class NCM_Task
         }
         if(!m_completed) //Only pause if this is the initial attack group
             Dynamix_AI.Pause();
+        UnitGroup.EnableMoveBuffering();
         for(UnitGroup ug : m_recruitedUnits)
         {
             if (ug.GetMovedTo() != null)
@@ -678,6 +703,7 @@ public class NCM_Task
             else
                 TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).FreezeUnits(ug.GetUnitsAsList());
         }
+        UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
         m_completed = true;
     }
 }

@@ -42,12 +42,11 @@ public class NCM_TargetCalculator
                 continue;
             if(!DMatches.territoryIsOwnedByNNEnemy(data, player).match(enemyTer))
                 continue;
-            if(!DUtils.CanWeGetFromXToY_ByLand(data, ter, enemyTer))
+            if(!DUtils.CanWeGetFromXToY_ByPassableLand(data, ter, enemyTer))
                 continue;
 
             float score = DUtils.GetValueOfLandTer(enemyTer, data, player);
-
-            score = score - ((DUtils.GetJumpsFromXToY_Land(data, ter, enemyTer) * 4) * GlobalCenter.MapTerCountScale);
+            score -= (DUtils.GetJumpsFromXToY_PassableLand(data, ter, enemyTer) * 3) * GlobalCenter.MapTerCountScale;
 
             if (score > highestScore)
             {

@@ -20,8 +20,9 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Dynamix_AI.DSettings;
 import games.strategy.triplea.Dynamix_AI.DUtils;
+import games.strategy.triplea.Dynamix_AI.Others.ThreatInvalidationType;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -71,15 +72,25 @@ public class ThreatInvalidationCenter
     private HashMap<Territory, List<Unit>> InvalidatedEnemyUnits = new HashMap<Territory, List<Unit>>();
     public void InvalidateThreats(List<Unit> threats, Territory hotspot)
     {
-        DUtils.Log(Level.FINEST, "            Threats we would invalidate if we invalidated all: {0}", threats);
-        threats = DUtils.GetXPercentOfTheItemsInList(threats, (DSettings.LoadSettings().AA_percentageOfResistedThreatThatTasksInvalidate / 100.0F));
+        if(DSettings.LoadSettings().AA_threatInvalidationType.equals(ThreatInvalidationType.None))
+            return;
 
-        List<Territory> terAndNeighbors = DUtils.GetTerritoriesWithinXDistanceOfY(m_data, hotspot, 1);
-        for (Territory ter : terAndNeighbors)
+        if (DSettings.LoadSettings().AA_percentageOfResistedThreatThatTasksInvalidate != 100)
+        {
+            DUtils.Log(Level.FINEST, "            Threats we would invalidate if we invalidated all: {0}", threats);
+            threats = DUtils.GetXPercentOfTheItemsInList(threats, (DSettings.LoadSettings().AA_percentageOfResistedThreatThatTasksInvalidate / 100.0F));
+        }
+
+        List<Territory> tersWereInvalidatingThreatsFor = new ArrayList<Territory>();
+        if(DSettings.LoadSettings().AA_threatInvalidationType.equals(ThreatInvalidationType.Global))
+            tersWereInvalidatingThreatsFor = DUtils.ToList(m_data.getMap().getTerritories());
+        else //We're invalidating threats around the territory, the extent of the ring of ters we invalidate the threats for is user-set
+            tersWereInvalidatingThreatsFor = DUtils.GetTerritoriesWithinXDistanceOfY(m_data, hotspot, DSettings.LoadSettings().AA_threatInvalidationAroundHotspotRadius);
+        for (Territory ter : tersWereInvalidatingThreatsFor)
         {
             DUtils.AddObjectsToListValueForKeyInMap(InvalidatedEnemyUnits, ter, threats);
         }
-        DUtils.Log(Level.FINEST, "          Invalidating threats. Units: {0} New Total Size: {1} Hotspot: {2} Ters: {3}", threats, InvalidatedEnemyUnits.get(hotspot).size(), hotspot.getName(), terAndNeighbors);
+        DUtils.Log(Level.FINEST, "          Invalidating threats. Units: {0} New Total Size: {1} Hotspot: {2} Ters: {3}", threats, InvalidatedEnemyUnits.get(hotspot).size(), hotspot.getName(), tersWereInvalidatingThreatsFor);
     }
     public boolean IsUnitInvalidated(Unit unit, Territory ter)
     {

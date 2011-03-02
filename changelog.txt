@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Caching of game data to speed up dynamix ai and multiple battle calcing in one turn.  And another patch for Dynamix AI. (wisconsin)
+
 * Added new method for Moore AI to move unused transports back to factories. (wisconsin)
 
 * Fix for Moore AI moving units towards capitals already conquered, and not letting units leave once they get there. (wisconsin)

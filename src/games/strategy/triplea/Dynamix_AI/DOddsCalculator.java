@@ -32,7 +32,6 @@ import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.net.GUID;
-import games.strategy.triplea.Dynamix_AI.Others.BattleCalculationType;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.baseAI.AIUtils;
 import games.strategy.triplea.baseAI.AbstractAI;
@@ -80,7 +79,7 @@ public class DOddsCalculator
     {
 
     }
-    public static void Initialize(GameData data)
+    public static void SetGameData(GameData data)
     {
         data.acquireReadLock();
         try
@@ -108,9 +107,9 @@ public class DOddsCalculator
         data.acquireReadLock();
         try
         {
-            m_attackingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(attacking, data);
-            m_defendingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(defending, data);
-            m_bombardingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(bombarding, data);
+            m_attackingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(attacking, s_dataForSimulation);
+            m_defendingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(defending, s_dataForSimulation);
+            m_bombardingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(bombarding, s_dataForSimulation);
         }
         finally
         {

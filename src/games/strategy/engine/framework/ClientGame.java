@@ -30,6 +30,7 @@ import games.strategy.engine.random.*;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.*;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
+import games.strategy.triplea.oddsCalculator.ta.OddsCalculator;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.util.ListenerList;
 
@@ -62,47 +63,42 @@ public class ClientGame implements IGame
       return new RemoteName("games.strategy.engine.framework.ClientGame.REMOTE_STEP_ADVANCER:" + node.getName(), IGameStepAdvancer.class);  
   }
 
-  public ClientGame(GameData data, Set<IGamePlayer> gamePlayers, PlayerManager playerManager, Messengers messengers)
-  {
-    m_data = data;
-    
-    m_playerManager = playerManager;
-    if(m_playerManager == null)
-        throw new IllegalArgumentException("Player manager cant be null");
-    
-    m_messengers = messengers;
-    m_messenger = m_messengers.getMessenger();
-    
-    m_remoteMessenger = m_messengers.getRemoteMessenger();
-    m_channelMessenger = m_messengers.getChannelMessenger();
-    m_vault = new Vault(m_channelMessenger);
-    
-    
-    m_channelMessenger.registerChannelSubscriber(m_gameModificationChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
-    m_remoteMessenger.registerRemote(m_gameStepAdvancer, getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
-
-
-    Iterator<IGamePlayer> iter = gamePlayers.iterator();
-    while(iter.hasNext())
+    public ClientGame(GameData data, Set<IGamePlayer> gamePlayers, PlayerManager playerManager, Messengers messengers)
     {
-      IGamePlayer gp = iter.next();
-      PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
-      m_gamePlayers.put(player, gp);
+        m_data = data;
 
-      IPlayerBridge bridge = new DefaultPlayerBridge(this);
-      gp.initialize(bridge, player);
-      if(gp instanceof Dynamix_AI)
-          ((Dynamix_AI)gp).Initialize();
+        m_playerManager = playerManager;
+        if (m_playerManager == null)
+            throw new IllegalArgumentException("Player manager cant be null");
 
-      m_remoteMessenger.registerRemote(gp, ServerGame.getRemoteName(gp.getID(), data ) );
-      
-      IRemoteRandom remoteRandom = new RemoteRandom(this);
-      m_remoteMessenger.registerRemote(remoteRandom, ServerGame.getRemoteRandomName(player));
-      
+        m_messengers = messengers;
+        m_messenger = m_messengers.getMessenger();
+
+        m_remoteMessenger = m_messengers.getRemoteMessenger();
+        m_channelMessenger = m_messengers.getChannelMessenger();
+        m_vault = new Vault(m_channelMessenger);
+
+        m_channelMessenger.registerChannelSubscriber(m_gameModificationChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
+        m_remoteMessenger.registerRemote(m_gameStepAdvancer, getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
+
+        Iterator<IGamePlayer> iter = gamePlayers.iterator();
+        while (iter.hasNext())
+        {
+            IGamePlayer gp = iter.next();
+            PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
+            m_gamePlayers.put(player, gp);
+
+            IPlayerBridge bridge = new DefaultPlayerBridge(this);
+            gp.initialize(bridge, player);
+
+            m_remoteMessenger.registerRemote(gp, ServerGame.getRemoteName(gp.getID(), data));
+
+            IRemoteRandom remoteRandom = new RemoteRandom(this);
+            m_remoteMessenger.registerRemote(remoteRandom, ServerGame.getRemoteRandomName(player));
+        }
+
+        m_changePerformer = new ChangePerformer(m_data);
     }
-
-    m_changePerformer = new ChangePerformer(m_data);
-  }
   
   private IGameModifiedChannel m_gameModificationChannelListener = new IGameModifiedChannel()
   {

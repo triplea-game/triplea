@@ -18,6 +18,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
 import games.strategy.triplea.Dynamix_AI.DSettings;
@@ -94,6 +95,8 @@ public class DoCombatMove
             }
         }
 
+        ThreatInvalidationCenter.get(data, player).SuspendThreatInvalidation(); //Suspend the threat invalidation center, as we want wave 4 to do as much as we'd ever want
+
         DUtils.Log(Level.FINE, "  Calculating and adding additional task recruits. (Wave 4)");
         for(CM_Task task : tasks)
         {
@@ -107,6 +110,8 @@ public class DoCombatMove
                 }
             }
         }
+
+        ThreatInvalidationCenter.get(data, player).ResumeThreatInvalidation();
     }
 
     private static List<CM_Task> GenerateTasks(final MovePackage pack)
@@ -121,9 +126,11 @@ public class DoCombatMove
             @Override
             public boolean match(Territory ter)
             {
-                if (data.getAllianceTracker().isAllied(ter.getOwner(), player))
-                    return false;
                 if (ter.isWater())
+                    return false;
+                if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
+                    return false;
+                if (data.getAllianceTracker().isAllied(ter.getOwner(), player))
                     return false;
                 if (TerritoryAttachment.get(ter) == null)
                     return false;
@@ -143,10 +150,22 @@ public class DoCombatMove
             @Override
             public boolean match(Territory ter)
             {
+                if (ter.isWater())
+                    return false;
+                if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
+                    return false;
                 if (ter.getOwner() != null && data.getAllianceTracker().isAllied(ter.getOwner(), player))
                     return false;
-                if (!capsAndNeighbors.contains(ter)) //If this ter is neither cap or cap neighbor, it's not a stabalization task (have stablize tasks for other things later on)
-                    return false;
+                if (GlobalCenter.IsFFAGame)
+                {
+                    if (!capsAndNeighbors.contains(ter)) //If this ter is neither cap or cap neighbor, it's not a stabalization task (will add stablize tasks for other things later on)
+                        return false;
+                }
+                else
+                {
+                    if (!ourCaps.contains(ter)) //If this ter is not our cap, it's not a stabalization task (On non-ffa maps)
+                        return false;
+                }
 
                 return true;
             }
@@ -156,12 +175,12 @@ public class DoCombatMove
             @Override
             public boolean match(Territory ter)
             {
+                if (ter.isWater())
+                    return false;
+                if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
+                    return false;
                 if (ter.getOwner() != null && data.getAllianceTracker().isAllied(ter.getOwner(), player))
                     return false;
-
-                //I decided we can have duplicates. (ie. offensive attack as well as land grab)
-                //if (ter.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1), Matches.unitIsEnemyOf(data, player))).isEmpty())
-                //    return false;
 
                 return true;
             }

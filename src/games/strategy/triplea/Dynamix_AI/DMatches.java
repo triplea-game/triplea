@@ -19,9 +19,11 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedCalculationCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
 import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
 import games.strategy.triplea.Dynamix_AI.Others.TerritoryStatus;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -163,7 +165,7 @@ public class DMatches
             @Override
             public boolean match(Unit u)
             {
-                if(u.getOwner().getName().toLowerCase().equals("neutral"))
+                if(u.getOwner().isNull())
                     return false;
                 return !data.getAllianceTracker().isAllied(u.getOwner(), player);
             }
@@ -261,7 +263,7 @@ public class DMatches
             {
                 for (Territory ter : list)
                 {
-                    if (DUtils.CanWeGetFromXToY_ByLand(data, ter, territory) && DUtils.GetJumpsFromXToY_Land(data, ter, territory) <= maxJumpDist)
+                    if (DUtils.CanWeGetFromXToY_ByPassableLand(data, ter, territory) && DUtils.GetJumpsFromXToY_PassableLand(data, ter, territory) <= maxJumpDist)
                     {
                         return true;
                     }
@@ -288,7 +290,7 @@ public class DMatches
         {
             public boolean match(Territory t)
             {
-                if(!t.getOwner().getName().equals("Neutral") && !data.getAllianceTracker().isAllied(player, t.getOwner()))
+                if(!t.getOwner().isNull() && !data.getAllianceTracker().isAllied(player, t.getOwner()))
                     return true;
                 return false;
             }
@@ -390,6 +392,86 @@ public class DMatches
                 return false;
             }
         };
+    }
+    public static Match<Territory> territoryIsCapitalAndOwnedBy(final GameData data, final PlayerID player)
+    {
+        return new Match<Territory>()
+        {
+            @Override
+            public boolean match(Territory ter)
+            {
+                TerritoryAttachment ta = TerritoryAttachment.get(ter);
+                if(ta != null && ta.isCapital() && ter.getOwner().equals(player))
+                    return true;
+                return false;
+            }
+        };
+    }
+    public static Match<Territory> territoryCanHaveUnitsPlacedOnIt(final GameData data, final PlayerID player)
+    {
+         return new Match<Territory>()
+         {
+             @Override
+             public boolean match(Territory ter)
+             {
+                 if(ter.isWater())
+                     return false;
+                 if(!ter.getOwner().equals(player))
+                     return false;
+                 if(TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
+                     return false;
+
+                 if(ter.getUnits().someMatch(Matches.UnitIsFactory))
+                     return true;
+                 //Special placement rules for China on ww2v3, etc.
+                 if(DUtils.CanPlayerPlaceAnywhere(data, player))
+                     return true;
+
+                 return false;
+             }
+         };
+    }
+    public static Match<Territory> territoryIsIsolated(final GameData data)
+    {
+        return territoryIsNotIsolated(data).invert();
+    }
+    public static Match<Territory> territoryIsNotIsolated(final GameData data)
+    {
+         return new Match<Territory>()
+         {
+             @Override
+             public boolean match(Territory ter)
+             {
+                 if(data.getMap().getNeighbors(ter).isEmpty())
+                     return false;
+
+                 return true;
+             }
+         };
+    }
+    public static Match<Territory> territoryIsOnSmallIsland(final GameData data)
+    {
+        return territoryIsNotOnSmallIsland(data).invert();
+    }
+    public static Match<Territory> territoryIsNotOnSmallIsland(final GameData data)
+    {
+         return new Match<Territory>()
+         {
+             @Override
+             public boolean match(Territory ter)
+             {
+                 if(data.getMap().getNeighbors(ter, Matches.TerritoryIsLand).isEmpty())
+                     return false; //If we have no land neighbors, we're obviously a small island
+                 List<Territory> nearbyTersOnContinent = DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, ter, 2, Matches.TerritoryIsLand, Matches.TerritoryIsLand);
+                 nearbyTersOnContinent.remove(ter);
+                 nearbyTersOnContinent.removeAll(data.getMap().getNeighbors(ter));
+
+                 if(nearbyTersOnContinent.isEmpty())
+                     return false; //We're touching all nearby ters on continent, so we're on a small island
+
+                 return true;
+             }
+         };
     }
     ///////////////////////////////////////////////End Territory Matches///////////////////////////////////////////////
 

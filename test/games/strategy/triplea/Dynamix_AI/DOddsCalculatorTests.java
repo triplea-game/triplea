@@ -69,7 +69,7 @@ public class DOddsCalculatorTests extends TestCase
             defending.add(infantry.create(huron));
         }
         
-        DOddsCalculator.Initialize(m_data);
+        DOddsCalculator.SetGameData(m_data);
         AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 2500, true);
 
         System.out.print("Time Taken To Calculate: " + results.getTime() + "\r\n");

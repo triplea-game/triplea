@@ -584,6 +584,7 @@ private void addLockMap(JMenu parentMenu)
         if (areThereDynamixAIs)
         {
             Dynamix_AI.ClearAIInstancesMemory();
+            Dynamix_AI.Initialize(m_frame);
             for (IGamePlayer player : players)
             {
                 if (player instanceof Dynamix_AI)

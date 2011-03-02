@@ -61,11 +61,24 @@ public class TacticalCenter
 
     private List<PlayerID> EnemyPlayersSortedByPriority = new ArrayList<PlayerID>();
     public List<UnitGroup> AllDelegateUnitGroups = new ArrayList<UnitGroup>();
+
+    private HashSet<Unit> UnitsToFreezeSoon = new HashSet<Unit>();
+    public void PerformBufferedFreezes()
+    {
+        DUtils.Log(Level.FINEST, "          Freezing buffered units for the rest of this phase. Units: {0} New Total Size: {1}", UnitsToFreezeSoon, FrozenUnits.size());
+        FrozenUnits.addAll(UnitsToFreezeSoon);
+        UnitsToFreezeSoon.clear();
+    }
     private HashSet<Unit> FrozenUnits = new HashSet<Unit>();
     public void FreezeUnits(List<Unit> units)
-    {        
-        FrozenUnits.addAll(units);
-        DUtils.Log(Level.FINEST, "          Freezing units for the rest of this phase. Units: {0} New Total Size: {1}", units, FrozenUnits.size());
+    {
+        if(UnitGroup.IsBufferringMoves())
+            UnitsToFreezeSoon.addAll(units);
+        else
+        {
+            FrozenUnits.addAll(units);
+            DUtils.Log(Level.FINEST, "          Freezing units for the rest of this phase. Units: {0} New Total Size: {1}", units, FrozenUnits.size());
+        }
     }
     public HashSet<Unit> GetFrozenUnits()
     {

@@ -20,6 +20,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
+import games.strategy.triplea.oddsCalculator.ta.OddsCalculator;
 import games.strategy.triplea.xml.LoadGameUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,7 @@ public class DUtilsTests extends TestCase
         List<Unit> defending = new ArrayList<Unit>();
         attacking.add(infantry.create(superior));
 
-        DOddsCalculator.Initialize(m_data);
+        DOddsCalculator.SetGameData(m_data);
         AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 2500, true);
         assertEquals(1.0D, results.getAttackerWinPercent());
         assertEquals(1.0D, results.getAverageAttackingUnitsLeft());

@@ -14,6 +14,7 @@
 
 package games.strategy.triplea.Dynamix_AI.UI;
 
+import games.strategy.triplea.ui.TripleAFrame;
 import java.util.logging.Level;
 import javax.swing.SwingUtilities;
 
@@ -23,30 +24,23 @@ import javax.swing.SwingUtilities;
  */
 public class UI
 {
-    public static void Initialize()
+    public static void Initialize(final TripleAFrame frame)
     {
-        try
-        {
-            SwingUtilities.invokeAndWait(new Runnable()
-            {
-                public void run()
-                {
-                    s_settingsWindow = new SettingsWindow();
-                }
-            });
-        }
-        catch (Exception ex)
-        {
-            System.out.print("Error initializing Dynamix settings window. \r\n");
-        }
+        if (!SwingUtilities.isEventDispatchThread())
+            throw new IllegalStateException("Wrong thread, should be running on AWT thread.");
+
+        s_frame = frame;
+        s_settingsWindow = new SettingsWindow(frame);
     }
 
+    private static TripleAFrame s_frame = null;
     private static SettingsWindow s_settingsWindow = null;
     public static void ShowSettingsWindow()
     {
         if (s_settingsWindow == null) //Shouldn't happen
-            return;
+            return;        
         s_settingsWindow.setVisible(true);
+        s_settingsWindow.setLocationRelativeTo(s_frame);
     }
     public static void NotifyAILogMessage(Level level, String message)
     {

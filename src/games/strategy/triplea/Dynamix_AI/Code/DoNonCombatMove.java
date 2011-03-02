@@ -100,6 +100,8 @@ public class DoNonCombatMove
             }
         }
 
+        ThreatInvalidationCenter.get(data, player).SuspendThreatInvalidation(); //Suspend the threat invalidation center, as we want wave 3 to do as much as we'd ever want
+
         //We now allow the worthwhile tasks to recruit as many additional units as it sees fit.
         DUtils.Log(Level.FINE, "  Calculating and adding additional task recruits. (Wave 3)");
         for(NCM_Task task : tasks)
@@ -115,6 +117,8 @@ public class DoNonCombatMove
             }
         }
 
+        ThreatInvalidationCenter.get(data, player).ResumeThreatInvalidation();
+
         //Now that we've completed all the ncm tasks we could, we do the ordinary ncm move-to-target process.
         DUtils.Log(Level.FINE, "  Calculating and performing regular ncm move-to-target moves.");
         for(Territory ter : data.getMap().getTerritories())
@@ -129,8 +133,8 @@ public class DoNonCombatMove
             doNonCombatMoveForTer(pack, ter, terUnits, tasks);
         }
 
-        //We clear invalidated threats because the enemy will come after air even if landing ter is next to resistant ter
-        ThreatInvalidationCenter.get(data, player).ClearInvalidatedThreats();
+        //We suspend the threat invalidation center because the enemy will come after air even if landing ter is next to resistant ter
+        ThreatInvalidationCenter.get(data, player).SuspendThreatInvalidation();
 
         //Now that we've completed all the normal ncm moves, perform the special tasks
         DUtils.Log(Level.FINE, "  Attempting to land aircraft on safe territories.");
@@ -152,14 +156,18 @@ public class DoNonCombatMove
                 }
                 List<UnitGroup> ugs = DUtils.CreateUnitGroupsForUnits(airUnits, ter, data);
                 DUtils.Log(Level.FINER, "    Landing aircraft at {0}. From: {1}.", landingLoc, ter);
+                UnitGroup.EnableMoveBuffering();
                 for (UnitGroup ug : ugs)
                 {
                     String error = ug.MoveAsFarTo_NCM(landingLoc, mover);
                     if(error != null)
                         DUtils.Log(Level.FINEST, "        Landing failed, reason: {0}", error);
                 }
+                UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
             }
         }
+
+        ThreatInvalidationCenter.get(data, player).ResumeThreatInvalidation();
     }
 
     private static List<NCM_Task> GenerateTasks(final MovePackage pack)
@@ -174,6 +182,9 @@ public class DoNonCombatMove
             @Override
             public boolean match(Territory ter)
             {
+                List<Unit> attackers = DUtils.GetNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
+                if(attackers.isEmpty())
+                    return false;
                 if (!data.getAllianceTracker().isAllied(ter.getOwner(), player))
                     return false;
                 if(ter.getUnits().getMatches(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1)).size() > 0) //If this ter is already blocking enemies
@@ -197,10 +208,21 @@ public class DoNonCombatMove
             @Override
             public boolean match(Territory ter)
             {
+                List<Unit> attackers = DUtils.GetNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
+                if(attackers.isEmpty())
+                    return false;
                 if (!data.getAllianceTracker().isAllied(ter.getOwner(), player))
                     return false;
-                if(!capsAndNeighbors.contains(ter))
-                    return false;
+                if (GlobalCenter.IsFFAGame)
+                {
+                    if (!capsAndNeighbors.contains(ter))
+                        return false;
+                }
+                else
+                {
+                    if (!ourCaps.contains(ter))
+                        return false;
+                }
 
                 return true;
             }
@@ -210,6 +232,15 @@ public class DoNonCombatMove
             @Override
             public boolean match(Territory ter)
             {
+                //A territory is a frontline territory, if:
+                //    There are units that can attack the ter
+                //    The territory is owned by us or it was attacked this round
+                //    The territory has at least one non-null-enemy owned neighbor\
+                //    The territory is either a link between two friendly neighbors, or has at least one unique enemy neighbor
+                //        (though we don't let empty, friendly neighbors cause one of our enemy neighbors to be removed from the 'unique' list)
+                List<Unit> attackers = DUtils.GetNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
+                if(attackers.isEmpty())
+                    return false;
                 if (!data.getAllianceTracker().isAllied(ter.getOwner(), player) && !StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasAttacked)
                     return false;
                 if(data.getMap().getNeighbors(ter, DMatches.territoryIsOwnedByNNEnemy(data, player)).isEmpty()) //If this is not the front line
@@ -233,7 +264,7 @@ public class DoNonCombatMove
 
                 for (Territory neighbor : friendlyNeighbors)
                 {
-                    if(neighbor.getUnits().size() > 1) //We don't care if an almost empty friendly neighbor shares our currently unique enemy neighbors...
+                    if(neighbor.getUnits().size() <= 1) //We don't care if an almost empty friendly neighbor shares our currently unique enemy neighbors...
                         continue;
 
                     List<Territory> n_EnemyNeighbors = DUtils.ToList(data.getMap().getNeighbors(neighbor, DMatches.territoryIsOwnedByNNEnemy(data, player)));
@@ -342,7 +373,7 @@ public class DoNonCombatMove
         List<UnitGroup> ugs = DUtils.CreateSpeedSplitUnitGroupsForUnits(terUnits, ter, data);
         for (UnitGroup ug : ugs)
         {
-            Route ncmRoute = ug.GetNCMRoute(target);
+            Route ncmRoute = ug.GetNCMRoute(target, true);
             if(ncmRoute == null)
                 continue;
             Territory to = ncmRoute.getEnd();
@@ -364,14 +395,16 @@ public class DoNonCombatMove
             }
         }
         
-        DUtils.Log(Level.FINER, "    Performing regular ncm move-to-target move from {0} to {1}. Units: {2}", ter, target, ugs);        
+        DUtils.Log(Level.FINER, "    Performing regular ncm move-to-target move from {0} to {1}. Units: {2}", ter, target, ugs);
+        UnitGroup.EnableMoveBuffering();
         for (UnitGroup ug : ugs)
         {
-            String error = ug.MoveAsFarTo_NCM(target, mover);
+            String error = ug.MoveAsFarTo_NCM(target, mover, true);
             if (error != null)
                 DUtils.Log(Level.FINEST, "      NCM move-to-target move failed, reason: {0}", error);
             else
                 Dynamix_AI.Pause();
         }
+        UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
     }
 }

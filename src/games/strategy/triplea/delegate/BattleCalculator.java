@@ -56,6 +56,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -432,10 +433,15 @@ public class BattleCalculator
     public static void DisableCasualtySortingCaching()
     {
         s_enableCasualtySortingCaching = false;
-        s_cachedSortedCasualties.clear(); //Don't keep all this stuff in memory (basically, we just want this caching so if a battle is simulated 5000 times, we only sort units once)
+        synchronized(s_cachedLock)
+        {
+            s_cachedSortedCasualties.clear(); //Don't keep all this stuff in memory (basically, we just want this caching so if a battle is simulated 5000 times, we only sort units once)
+        }
     }
+
     //Key is the hash of the possible casualties collection[targets], value is the cached sorted result[perfectlySortedUnitsList]
     private static HashMap<Integer,List<Unit>> s_cachedSortedCasualties = new HashMap<Integer, List<Unit>>();
+    private static final Object s_cachedLock = new Object();
 
     private static List<Unit> getDefaultCasualties(Collection<Unit> targets, int hits, boolean defending, PlayerID player, IntegerMap<UnitType> costs, GameData data)
     {
@@ -492,13 +498,17 @@ public class BattleCalculator
      */
     public static Collection<Unit> sortUnitsForCasualtiesWithSupport(Collection<Unit> targets, boolean defending, PlayerID player, IntegerMap<UnitType> costs, GameData data)
     {
-        if(s_enableCasualtySortingCaching && s_cachedSortedCasualties.containsKey(targets.hashCode()))
+        if (s_enableCasualtySortingCaching)
         {
-        	if (s_cachedSortedCasualties.get(targets.hashCode()).isEmpty() || !s_cachedSortedCasualties.get(targets.hashCode()).containsAll(targets) 
-                		|| !targets.containsAll(s_cachedSortedCasualties.get(targets.hashCode())) || s_cachedSortedCasualties.get(targets.hashCode()).size() != targets.size())
-        		s_cachedSortedCasualties.clear();
-        	else
-        		return s_cachedSortedCasualties.get(targets.hashCode());
+            synchronized (s_cachedLock)
+            {
+            	/*if (s_cachedSortedCasualties.get(targets.hashCode()).isEmpty() || !s_cachedSortedCasualties.get(targets.hashCode()).containsAll(targets) 
+                    		|| !targets.containsAll(s_cachedSortedCasualties.get(targets.hashCode())) || s_cachedSortedCasualties.get(targets.hashCode()).size() != targets.size())
+            		s_cachedSortedCasualties.clear();
+            	else*/
+            	if (s_cachedSortedCasualties.containsKey(targets.hashCode()))
+                    return s_cachedSortedCasualties.get(targets.hashCode());
+            }
         }
 
     	List<Unit> sortedUnitsList = new ArrayList<Unit>(targets);
@@ -700,8 +710,14 @@ public class BattleCalculator
         		|| !sortedUnitsList.containsAll(perfectlySortedUnitsList) || perfectlySortedUnitsList.size() != sortedUnitsList.size())
         	throw new IllegalStateException("Possibility not accounted for in sortUnitsForCasualtiesWithSupport.");
 
-        if(s_enableCasualtySortingCaching && !s_cachedSortedCasualties.containsKey(targets.hashCode()))
-            s_cachedSortedCasualties.put(targets.hashCode(), perfectlySortedUnitsList);
+        if (s_enableCasualtySortingCaching)
+        {
+            synchronized (s_cachedLock)
+            {
+                if (!s_cachedSortedCasualties.containsKey(targets.hashCode()))
+                    s_cachedSortedCasualties.put(targets.hashCode(), perfectlySortedUnitsList);
+            }
+        }
         
         return perfectlySortedUnitsList;
     }

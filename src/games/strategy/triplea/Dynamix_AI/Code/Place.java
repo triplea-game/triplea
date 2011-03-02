@@ -25,21 +25,26 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.FactoryCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
+import games.strategy.triplea.Dynamix_AI.DMatches;
 import games.strategy.triplea.Dynamix_AI.DSettings;
-import games.strategy.triplea.Dynamix_AI.DSorting;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.Dynamix_AI.Group.PurchaseGroup;
+import games.strategy.triplea.Dynamix_AI.Others.Purchase_UnitPlacementLocationSorter;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
+import games.strategy.util.Match;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 import javax.swing.SwingUtilities;
 
 /**
@@ -68,9 +73,7 @@ public class Place
                 {
                     DUtils.Log_Finer("  AA unit placement on pre-assigned territory " + aaBuildTer.getName() + " failed because the player's units matching Matches.UnitIsAA is null...\r\nUnits To Place Dump:\r\n");
                     for(Unit unit : player.getUnits().getUnits())
-                    {
-                        System.out.println("    " + unit.getUnitType().getName());
-                    }
+                        DUtils.Log_Finest("    " + unit.getUnitType().getName());
                     continue;
                 }
                 Unit nextAA = matchingAA.get(0);
@@ -93,9 +96,7 @@ public class Place
                 while (multiplyAmount > 1.0F)
                 {
                     for (Unit unit : units)
-                    {
                         hackedUnits.add(unit.getUnitType().create(player));
-                    }
                     multiplyAmount -= 1.0F;
                 }
                 //Now we loop through the units and only place the ones whose random number is less than the multiply amount left
@@ -147,14 +148,71 @@ public class Place
             List<Unit> units = GetPlayerUnitsMatchingUnitsInList(factory.GetSampleUnits(), player);
             doPlace(ai, bestFactoryPlaceTer, units, placeDelegate);
         }
+        
+        if (player.getUnits().someMatch(Matches.UnitIsFactory)) //If we have leftover factories to place
+        {
+            DUtils.Log_Finer("  There are factories leftover from the purchase phase, so looping and placing extra factories.");
+            List<Unit> leftoverUnits = DUtils.ToList(player.getUnits().getUnits());
+            while(Match.someMatch(leftoverUnits, Matches.UnitIsFactory))
+            {
+                Territory bestFactoryPlaceTer = CalculateBestFactoryBuildTerritory(data, player);
+                if (bestFactoryPlaceTer == null) //This should not be happening!
+                {
+                    DUtils.Log_Finer("  No factory build ter found to place factory on!");
+                    break;
+                }
+                Unit nextFactoryToPlace = null;
+                for(Unit unit : leftoverUnits)
+                {
+                    if(Matches.UnitIsFactory.match(unit))
+                    {
+                        nextFactoryToPlace = unit;
+                        break;
+                    }
+                }
+                if(nextFactoryToPlace == null) //How could this happen... :\
+                    break;
+                if(!doPlace(ai, bestFactoryPlaceTer, Collections.singletonList(nextFactoryToPlace), placeDelegate))
+                    leftoverUnits.remove(nextFactoryToPlace); //If factory placement failed, remove from list
+            }
+        }
+
+        if (player.getUnits().size() > 0)
+        {
+            DUtils.Log_Finer("  There are units leftover from the purchase phase, so looping and placing extra units.");
+            //If the game is reloaded, this country can place anywhere, or there was some sort of issue between purchase and place phase, we need to place all the leftover units
+            List<Territory> sortedPossiblePlaceLocations = Purchase_UnitPlacementLocationSorter.CalculateAndSortUnitPlacementLocations(ai, bid, data, player);
+            for (Territory placeLoc : sortedPossiblePlaceLocations)
+            {
+                List<Unit> leftoverUnits = DUtils.ToList(player.getUnits().getUnits());
+                if(leftoverUnits.isEmpty()) //If we've placed all extra units
+                    break;
+                PlaceableUnits pu = placeDelegate.getPlaceableUnits(leftoverUnits, placeLoc);
+                if(pu.getErrorMessage() != null)
+                    continue; //Can't place here
+                int maxUnitsWeCanPlaceHere = pu.getMaxUnits();
+                if(maxUnitsWeCanPlaceHere == -1) //-1 means we can place unlimited amounts here
+                    maxUnitsWeCanPlaceHere = Integer.MAX_VALUE;
+
+                List<Unit> unitsToPlace;
+                if(maxUnitsWeCanPlaceHere >= leftoverUnits.size())
+                    unitsToPlace = leftoverUnits;
+                else
+                    unitsToPlace = leftoverUnits.subList(0, maxUnitsWeCanPlaceHere);
+                doPlace(ai, placeLoc, unitsToPlace, placeDelegate); //Place as much of the leftover as we can
+            }
+        }
+
         GlobalCenter.PUsAtEndOfLastTurn = player.getResources().getQuantity(GlobalCenter.GetPUResource());
     }
-    private static boolean doPlace(Dynamix_AI ai, Territory where, Collection<Unit> toPlace, IAbstractPlaceDelegate del)
+
+    private static boolean doPlace(Dynamix_AI ai, Territory ter, Collection<Unit> units, IAbstractPlaceDelegate placer)
     {
-        String message = del.placeUnits(new ArrayList<Unit>(toPlace), where);
+        DUtils.Log(Level.FINEST, "    Placing units. Territory: {0} Units: {1}", ter, units);
+        String message = placer.placeUnits(new ArrayList<Unit>(units), ter);
         if (message != null)
         {
-            System.out.print(message);
+            DUtils.Log_Finest("      Error occured: {0}", message);
             return false;
         }
         else
@@ -185,91 +243,31 @@ public class Place
     {
         Territory ourCapital = TerritoryAttachment.getCapital(player, data);
 
-        List<Territory> facLocs = new ArrayList<Territory>(data.getMap().getTerritoriesOwnedBy(player));
-        facLocs = DSorting.SortTerritoriesByLandDistance_A(facLocs, data, ourCapital);
-        int lowestRange = Integer.MAX_VALUE;
-        for (Territory ter : facLocs)
-        {
-            if (ter.getUnits().someMatch(Matches.UnitIsFactory))
-                continue;
-            int dist = DUtils.GetJumpsFromXToY_Land(data, ter, ourCapital);
-            if (dist < lowestRange)
-            {
-                lowestRange = dist;
-            }
-        }
-        if (lowestRange == Integer.MAX_VALUE)
-        {
-            for (Territory ter : facLocs)
-            {
-                if (ter.getUnits().someMatch(Matches.UnitIsFactory))
-                    continue;
-                int dist = DUtils.GetJumpsFromXToY_NoCond(data, ter, ourCapital);
-                if (dist < lowestRange)
-                {
-                    lowestRange = dist;
-                }
-            }
-        }
-        if(lowestRange == Integer.MAX_VALUE) //If we couldn't find any ters to build a factory on
-        {
-            return null; //Just return null to signal that no factory build territory was found
-        }
-        List<Territory> closestRangeTers = new ArrayList<Territory>();
-        while (closestRangeTers.isEmpty())
-        {
-            for (Territory ter : facLocs)
-            {
-                if (ter.getUnits().someMatch(Matches.UnitIsFactory) || ter.getName().equals(ourCapital.getName()))
-                {
-                    continue;
-                }
-                int dist = DUtils.GetJumpsFromXToY_Land(data, ter, ourCapital);
-                if (dist == lowestRange)
-                {
-                    closestRangeTers.add(ter);
-                }
-            }
-            if (closestRangeTers.size() < 1)
-            {
-                for (Territory ter : facLocs)
-                {
-                    if (ter.getUnits().someMatch(Matches.UnitIsFactory) || ter.getName().equals(ourCapital.getName()))
-                    {
-                        continue;
-                    }
-                    int dist = DUtils.GetJumpsFromXToY_NoCond(data, ter, ourCapital);
-                    if (dist == lowestRange)
-                    {
-                        closestRangeTers.add(ter);
-                    }
-                }
-            }
-            lowestRange++;
-        }
+        List<Territory> possibles = new ArrayList<Territory>(data.getMap().getTerritoriesOwnedBy(player));
 
         Territory highestScoringTer = null;
         int highestTerScore = Integer.MIN_VALUE;
-        for (Territory ter : closestRangeTers)
+        for (Territory ter : possibles)
         {
-            if (TerritoryAttachment.get(ter) != null)
+            if(ter.getUnits().someMatch(Matches.UnitIsFactory))
+                continue;
+            if(StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasAttacked || StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasBlitzed)
+                continue;
+
+            int score = 0;
+            score -= DUtils.GetVulnerabilityOfArmy(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), score) * 1000;
+            score += TerritoryAttachment.get(ter).getProduction() * 10;
+            score -= DUtils.GetJumpsFromXToY_NoCond(data, ter, ourCapital);            
+            if(DMatches.territoryIsOnSmallIsland(data).match(ter))
+                score -= 100000; //Atm, never place on islands unless we have to
+
+            if(score > highestTerScore)
             {
-                if (TerritoryAttachment.get(ter).getProduction() > 0)
-                {
-                    int score = TerritoryAttachment.get(ter).getProduction();
-                    score -= (DUtils.GetTerTakeoverChance(data, player, ter) * 10);
-                    if(score > highestTerScore)
-                    {
-                        highestScoringTer = ter;
-                        highestTerScore = score;
-                    }
-                }
+                 highestScoringTer = ter;
+                 highestTerScore = score;
             }
         }
-        if (highestScoringTer != null)
-        {
-            return highestScoringTer;
-        }
-        return null;
+
+        return highestScoringTer;
     }
 }

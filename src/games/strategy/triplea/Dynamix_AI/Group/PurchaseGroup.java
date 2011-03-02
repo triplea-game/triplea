@@ -20,6 +20,7 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.util.IntegerMap;
@@ -118,6 +119,7 @@ public class PurchaseGroup
     {
         Dynamix_AI.Pause();
         m_purchaser.purchase(m_generatedRules);
+        DUtils.Log_Finest("      Purchase made. Units: {0}", GetSampleUnits());
         return m_totalPurchasePrice;
     }
     public List<Unit> GetSampleUnits()
