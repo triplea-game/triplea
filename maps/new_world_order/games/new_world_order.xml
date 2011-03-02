@@ -4631,7 +4631,7 @@
 	</tr>
 
 	<tr>
-	<td style="font-size:100%;000000"bgcolor="FEECE2"colspan="7">**<b>BUNKER RULES</b><br> <ul><li>To Turn OFF special units, deselect "Use Triggers" in options<li>For every territory, owned at the start of the turn, a maximum of <br>ONE Bunker can be purchased PER TURN.<li>In territories with a Factory, place them USING THE FACTORY.<li>In territories without a Factory, place them using EDIT.<br><em>The EDIT function can be found in the upper TripleA menu. <br>Its use is rather straight-forward and intuitive.</em></ul></td>
+	<td style="font-size:100%;000000"bgcolor="FEECE2"colspan="7">**<b>BUNKER RULES</b><br> <ul><li>To Turn OFF special units, deselect "Use Triggers" in options.<li>For every territory, owned at the start of the turn, a maximum of <br>ONE Bunker can be purchased PER TURN.</ul></td>
 	</tr>
 
 </table>
@@ -4655,7 +4655,8 @@
 	<li>A move illegal using dice is illegal under LL too.<br><em>A move legal using dice is legal under LL too.</em></li>
 	<li>Neutrals can be attacked in NWO, no penalties apply.</li>
 	<li>Territories can only be strategically bombed up to their value.<br><em>(TTL = Territory Turn Limit)</em></li>
-	<li>A couple of extra units exist in NWO, and some basic units are slightly different. Their abilities are listed in the "Units" section above, as well as restrictions applying to Bunkers and Red Dot Units.</li>
+	<li>A couple of extra units exist in NWO, and some basic units are slightly different. Their abilities are listed in the "Units" section above, as well as restrictions applying to Bunkers and Red Dot Units.<br/><em>Bunkers and Red Dot Units can be turned off by deselecting "Use Triggers" in the game options.</em></li>
+	<li>Only 1 bunker may be placed per territory per turn. Bunkers do not use up factory slots. Territories may have unlimited total bunkers in them. To limit total bunkers to the value of a territory, deselect "Unlimited Constructions". The game options "More Constructions with/without Factory" can be turned off to limit total bunkers to 1 per territory total, in territories with/without Factories.</li>
 	</ul>
 <div style="text-align: center;">
 <br> <b>Default Rules for Disputable Situations</b>
@@ -4733,7 +4734,7 @@
 <br> # Blackknight for supplying axis and allied naval units facing opposing directions
 <br> # Dan Slayer and Hue for their units (armored cars, tanks, bomber, destroyers)
 <br> # Special thx to Kevin Moore for adapting the AI especially for NWO, and to Comrade Kev for his ongoing and detailed engine-wise NWO support, and Veqryn for all his valuable hints and input
-<br> # And of course, a big thx in general - all the engine improvements are far too numerous to be listed here - to SGB, ComradeKev and the other TripleA developers, Bung for hosting the lobby. Big thx to ComradeKev also for dealing with the TripleA legal issues
+<br> # And of course, a big thx in general - all the engine improvements are far too numerous to be listed here - to SGB, ComradeKev, Veqryn, SquidDaddy and the other TripleA developers, Bung for hosting the lobby. Big thx to ComradeKev also for dealing with the TripleA legal issues
 <br> # Almost last, surely not least, thx to Larry Harris for A&A
 <br> # And finally, thx to the pleasant community as a whole, and specifically to all the NWO fans who play and support this map
 <br>
@@ -4747,11 +4748,15 @@ All changes by EB unless otherwise specified<br>
 <div style="text-align: left;">
 General:
 	<ul>
-	<li>Renamed to remove special characters from folder and xml names. (veqryn)
-	<li>Included with TripleA download. (veqryn)
-	<li>Coded and Added "Low Luck for AntiAircraft" as an option, so that people make play with dice for normal units and LL for AA units only. (veqryn)
-	<li>Coded and added Bunker rules, included as an option. No longer need edit mode to place factories. Turn off unlimited bunkers to only allow a maximum number of bunkers equal to territory value. (code by crystalct and veqryn)
-	<li>Updated NWO to take advantage of triggered rule changes to have red dot units and bunkers not appear for purchasing during beginning turns, and the ability to turn them off completely by deselecting "Use Triggers". (added to nwo by Veqryn, code by Squid Daddy)
+	<li>Renamed to remove special characters from folder and xml names. (veqryn)</li>
+	<li>Included with TripleA download. (veqryn)</li>
+	<li>Coded and Added "Low Luck for AntiAircraft" as an option, so that people may play with dice for normal units and LL for AA units only. (veqryn)</li>
+	<li>Coded and added Bunker rules, included as an option. No longer need edit mode to place bunkers. (code by crystalct and veqryn)</li>
+	<li>Bunkers (Constructions) code updated to work differently.  Factories are now also isConstructions for the purposes of placement. New game properties listed below (all On by default). (veqryn)
+	<ul><li>"More Constructions with/without Factory" - If ON then you may have a total number of bunkers up to the PU value of a territory (minimum 1), in territories with/without factories. If OFF then you may have only 1 total bunker per territory.</li>
+		<li>"Unlimited Constructions" - If ON it over-rides above 2 game properties to allow infinite total bunkers per territory. If OFF then things are determined by the above 2 game properties.</li>
+		<li>No matter what, you can only place 1 bunker per territory per round. Bunkers do not take up a factory slot when being placed.</li></ul></li>
+	<li>Updated NWO to take advantage of triggered rule changes to have red dot units and bunkers not appear for purchasing during beginning turns, and the ability to turn them off completely by deselecting "Use Triggers". (added to nwo by Veqryn, code by Squid Daddy)</li>
 	</ul>
 
 <div style="text-align: center;">
