@@ -141,27 +141,20 @@ public class NCM_Task
     }
 
     private float m_maxVulnerability = 0.0F;
-    private int m_maxBattleVolleys = 0;
     public void CalculateTaskRequirements()
     {
-        m_maxVulnerability = .5F;
-        m_maxBattleVolleys = 100; //We usually don't care
+        if (m_taskType.equals(NCM_TaskType.Reinforce_Block))
+            return; //Only one unit needed for block
 
         if (m_taskType == NCM_TaskType.Reinforce_FrontLine)
-        {
-            m_maxVulnerability = .5F;
-        }
+            m_maxVulnerability = DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceFrontLine_EnemyAttackSurvivalChanceRequired);
         else if (m_taskType.equals(m_taskType.Reinforce_Stabilize))
-        {
-            m_maxVulnerability = .5F; //We want this ter to be stable, so recruit enough to get it safe
-        }
-        else
-            return; //Only one unit needed for enemy block
+            m_maxVulnerability = DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceStabalize_EnemyAttackSurvivalChanceRequired);
 
-        DUtils.Log(Level.FINER, "    NCM Task requirements calculated. Max Vulnerability: {0} Max Battle Volleys: {1}", m_maxVulnerability, m_maxBattleVolleys);
+        DUtils.Log(Level.FINER, "    NCM Task requirements calculated. Max Vulnerability: {0}", m_maxVulnerability);
     }
 
-    private float getMeetingOfVulnerabilityMaxScore(AggregateResults simulatedAttack, float maxVulnerability)
+    private float getMeetingOfMaxVulnerabilityScore(AggregateResults simulatedAttack, float maxVulnerability)
     {
         if(m_taskType.equals(NCM_TaskType.Reinforce_Block))
         {
@@ -195,7 +188,7 @@ public class NCM_Task
     private List<UnitGroup> m_recruitedUnits = new ArrayList<UnitGroup>();
     public void RecruitUnits()
     {
-        recruitEnoughUnitsToMeetXYZ(m_maxVulnerability, m_maxBattleVolleys);
+        recruitEnoughUnitsToMeetXYZ(m_maxVulnerability, 100);
         DUtils.Log(Level.FINEST, "    Wave 1 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
     }
 
@@ -226,6 +219,8 @@ public class NCM_Task
             return; //We only need one unit
 
         List<UnitGroup> sortedPossibles = getSortedPossibleRecruits();
+        if(sortedPossibles.isEmpty())
+            return;
 
         for (UnitGroup ug : sortedPossibles)
         {
@@ -237,22 +232,21 @@ public class NCM_Task
 
             AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, 1, false);
 
-            int howMuchMaxTCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore;
-            int howMuchMaxBVCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore;
-            int totalVals = howMuchMaxTCRMatters + howMuchMaxBVCRMatters;
-
-            float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedAttack, maxVulnerability);
-            float howCloseToMeetingMaxBattleVolleys = getMeetingOfMaxBattleVolleysScore(simulatedAttack, maxBattleVolleys);
-
-            float totalScore = (howCloseToMeetingVulnerabilityMax * howMuchMaxTCRMatters) + (howCloseToMeetingMaxBattleVolleys * howMuchMaxBVCRMatters);
-            float howCloseToTaskBeingWorthwhile = totalScore / totalVals; //Average closeness
-
-            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfNCMTaskRequirementsNeededToPerformTask / 100.0F) + .02F; //We do it a little higher for recruiting
-
-            if(howCloseToTaskBeingWorthwhile < percentOfRequirementNeeded) //If we haven't met our 'X% of requirements' goal set by user
+            float howCloseToMeetingVulnerabilityMax = getMeetingOfMaxVulnerabilityScore(simulatedAttack, maxVulnerability);
+            if (howCloseToMeetingVulnerabilityMax < DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask) + .02F)
+            {
                 m_recruitedUnits.add(ug);
-            else
-                 break;
+                continue;
+            }
+
+            float howCloseToMeetingBattleVolleyMax = getMeetingOfMaxBattleVolleysScore(simulatedAttack, maxBattleVolleys);
+            if (howCloseToMeetingBattleVolleyMax < .98F)
+            {
+                m_recruitedUnits.add(ug);
+                continue;
+            }
+
+            break; //We've met all requirements
         }
 
         for (UnitGroup ug : sortedPossibles)
@@ -265,22 +259,21 @@ public class NCM_Task
 
             AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, false);
 
-            int howMuchMaxTCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore;
-            int howMuchMaxBVCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore;
-            int totalVals = howMuchMaxTCRMatters + howMuchMaxBVCRMatters;
-
-            float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedAttack, maxVulnerability);
-            float howCloseToMeetingMaxBattleVolleys = getMeetingOfMaxBattleVolleysScore(simulatedAttack, maxBattleVolleys);
-
-            float totalScore = (howCloseToMeetingVulnerabilityMax * howMuchMaxTCRMatters) + (howCloseToMeetingMaxBattleVolleys * howMuchMaxBVCRMatters);
-            float howCloseToTaskBeingWorthwhile = totalScore / totalVals; //Average closeness
-
-            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfNCMTaskRequirementsNeededToPerformTask / 100.0F) + .02F; //We do it a little higher for recruiting
-
-            if(howCloseToTaskBeingWorthwhile < percentOfRequirementNeeded) //If we haven't met our 'X% of requirements' goal set by user
+            float howCloseToMeetingVulnerabilityMax = getMeetingOfMaxVulnerabilityScore(simulatedAttack, maxVulnerability);
+            if (howCloseToMeetingVulnerabilityMax < DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask) + .02F)
+            {
                 m_recruitedUnits.add(ug);
-            else
-                 break;
+                continue;
+            }
+
+            float howCloseToMeetingBattleVolleyMax = getMeetingOfMaxBattleVolleysScore(simulatedAttack, maxBattleVolleys);
+            if (howCloseToMeetingBattleVolleyMax < .98F)
+            {
+                m_recruitedUnits.add(ug);
+                continue;
+            }
+
+            break; //We've met all requirements
         }
     }
 
@@ -360,47 +353,23 @@ public class NCM_Task
         }
         else if (m_taskType.equals(NCM_TaskType.Reinforce_FrontLine))
         {
-            int howMuchMaxTCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore;
-            int howMuchMaxBVCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore;
-            int totalVals = howMuchMaxTCRMatters + howMuchMaxBVCRMatters;
-
-            float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedAttack, m_maxVulnerability);
-            float howCloseToMeetingMaxBattleVolleys = getMeetingOfMaxBattleVolleysScore(simulatedAttack, m_maxBattleVolleys);
-
-            float totalScore = (howCloseToMeetingVulnerabilityMax * howMuchMaxTCRMatters) + (howCloseToMeetingMaxBattleVolleys * howMuchMaxBVCRMatters);
-            float howCloseToTaskBeingWorthwhile = totalScore / totalVals; //Average closeness
-
-            DUtils.Log(Level.FINEST, "        Determining if ncm task is worthwhile. HowCloseToTask, BeingWorthWhile: {0} MeetingVulnerabilityMax: {1}, MeetingMaxBattleVolleys: {2}", howCloseToTaskBeingWorthwhile, howCloseToMeetingVulnerabilityMax, howCloseToMeetingMaxBattleVolleys);
-            DUtils.Log(Level.FINEST, "          Simulated attack, attackers size: {0}, attacker win percent: {1}", attackers.size(), simulatedAttack.getAttackerWinPercent());
-
-            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfNCMTaskRequirementsNeededToPerformTask / 100.0F);
-
-            if(howCloseToTaskBeingWorthwhile < percentOfRequirementNeeded) //If we haven't met our 'X% of requirements' goal set by user
+            float howCloseToMeetingVulnerabilityMax = getMeetingOfMaxVulnerabilityScore(simulatedAttack, m_maxVulnerability);
+            float percentOfRequirementNeeded_Vulnerablity = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask);
+            DUtils.Log(Level.FINEST, "      How close to meeting vulnerability max: {0} Needed: {1}", howCloseToMeetingVulnerabilityMax, percentOfRequirementNeeded_Vulnerablity);
+            if (howCloseToMeetingVulnerabilityMax < percentOfRequirementNeeded_Vulnerablity)
                 return false;
 
-            return true;
+            return true; //We've met all requirements
         }
         else
         {
-            int howMuchMaxTCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore;
-            int howMuchMaxBVCRMatters = DSettings.LoadSettings().AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore;
-            int totalVals = howMuchMaxTCRMatters + howMuchMaxBVCRMatters;
-
-            float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedAttack, m_maxVulnerability);
-            float howCloseToMeetingMaxBattleVolleys = getMeetingOfMaxBattleVolleysScore(simulatedAttack, m_maxBattleVolleys);
-
-            float totalScore = (howCloseToMeetingVulnerabilityMax * howMuchMaxTCRMatters) + (howCloseToMeetingMaxBattleVolleys * howMuchMaxBVCRMatters);
-            float howCloseToTaskBeingWorthwhile = totalScore / totalVals; //Average closeness
-
-            DUtils.Log(Level.FINEST, "        Determining if ncm task is worthwhile. HowCloseToTask, BeingWorthWhile: {0} MeetingVulnerabilityMax: {1}, MeetingMaxBattleVolleys: {2}", howCloseToTaskBeingWorthwhile, howCloseToMeetingVulnerabilityMax, howCloseToMeetingMaxBattleVolleys);
-            DUtils.Log(Level.FINEST, "          Simulated attack, attackers size: {0}, attacker win percent: {1}", attackers.size(), simulatedAttack.getAttackerWinPercent());
-
-            float percentOfRequirementNeeded = (DSettings.LoadSettings().AA_percentageOfNCMTaskRequirementsNeededToPerformTask / 100.0F);
-
-            if(howCloseToTaskBeingWorthwhile < percentOfRequirementNeeded) //If we haven't met our 'X% of requirements' goal set by user
+            float howCloseToMeetingVulnerabilityMax = getMeetingOfMaxVulnerabilityScore(simulatedAttack, m_maxVulnerability);
+            float percentOfRequirementNeeded_Vulnerablity = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask);
+            DUtils.Log(Level.FINEST, "      How close to meeting vulnerability max: {0} Needed: {1}", howCloseToMeetingVulnerabilityMax, percentOfRequirementNeeded_Vulnerablity);
+            if (howCloseToMeetingVulnerabilityMax < percentOfRequirementNeeded_Vulnerablity)
                 return false;
 
-            return true;
+            return true; //We've met all requirements
         }
     }
 
@@ -431,9 +400,9 @@ public class NCM_Task
         {
             Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
             List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, GlobalCenter.CurrentPlayer, ourClosestCap, m_target, GetRecruitedUnitsAsUnitList(), DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
-            if (capTakeoverChances.get(1) > .01F) //If takeover chance is 1% or more after move
+            if (capTakeoverChances.get(1) > .10F) //If takeover chance is 10% or more after move
             {
-                if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .005) //and takeover chance before and after move is at least half a percent different
+                if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .01) //and takeover chance before and after move is at 1% different
                     return false;
             }
         }

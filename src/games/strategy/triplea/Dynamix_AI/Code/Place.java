@@ -88,7 +88,7 @@ public class Place
             List<Unit> units = GetPlayerUnitsMatchingUnitsInList(pg.GetSampleUnits(), player);
             if (DSettings.LoadSettings().EnableUnitPlacementMultiplier && DSettings.LoadSettings().UnitPlacementMultiplyPercent != 100) //AI cheat for more interesting gameplay. Can be turned on with AI settings window.
             {
-                float multiplyAmount = (DSettings.LoadSettings().UnitPlacementMultiplyPercent / 100.0F);
+                float multiplyAmount = DUtils.ToFloat(DSettings.LoadSettings().UnitPlacementMultiplyPercent);
                 List<Unit> hackedUnits = new ArrayList<Unit>();
                 long time = new Date().getTime();
                 int count = 0;

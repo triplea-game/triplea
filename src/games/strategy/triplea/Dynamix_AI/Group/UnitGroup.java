@@ -315,8 +315,7 @@ public class UnitGroup
         if(s_isBufferring)
         {
             Route key = route;
-            List<Unit> units = unitsToMove;
-            DUtils.AddObjectsToHashSetValueForKeyInMap(s_bufferedMoves, key, units);
+            DUtils.AddObjToListValueForKeyInMap(s_bufferedMoves, key, this);
             return null;
         }
         else
@@ -384,8 +383,7 @@ public class UnitGroup
         if(s_isBufferring)
         {
             Route key = route;
-            List<Unit> units = unitsToMove;
-            DUtils.AddObjectsToHashSetValueForKeyInMap(s_bufferedMoves, key, units);
+            DUtils.AddObjToListValueForKeyInMap(s_bufferedMoves, key, this);
             return null;
         }
         else
@@ -457,8 +455,7 @@ public class UnitGroup
         if(s_isBufferring)
         {
             Route key = route;
-            List<Unit> units = unitsToMove;
-            DUtils.AddObjectsToHashSetValueForKeyInMap(s_bufferedMoves, key, units);
+            DUtils.AddObjToListValueForKeyInMap(s_bufferedMoves, key, this);
             return null;
         }
         else
@@ -468,9 +465,7 @@ public class UnitGroup
                 return "Error given by call mover.move(...): " + moveError;
         }
 
-        m_moveIndex = movesCount;
-        movesCount++;
-        m_movedTo = route.getEnd();
+        NotifySuccessfulMove(m_movedTo);
 
         if (route.getEnd().getUnits().containsAll(unitsToMove))
             DUtils.Log(Level.FINEST, "      Performed ncm move, as far along route: {0} Units: {1}", route, unitsToMove);
@@ -478,6 +473,13 @@ public class UnitGroup
             return DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Units: {0} Route: {1}", m_units, route);
 
         return null;
+    }
+
+    private void NotifySuccessfulMove(Territory movedTo)
+    {
+        m_moveIndex = movesCount;
+        movesCount++;
+        m_movedTo = movedTo;
     }
 
     public Territory GetMovedTo()
@@ -545,7 +547,7 @@ public class UnitGroup
     }
 
     private static boolean s_isBufferring = false;
-    private static HashMap<Route, HashSet<Unit>> s_bufferedMoves = new HashMap<Route, HashSet<Unit>>();
+    private static HashMap<Route, List<UnitGroup>> s_bufferedMoves = new HashMap<Route, List<UnitGroup>>();
     public static boolean IsBufferringMoves()
     {
         return s_isBufferring;
@@ -561,17 +563,22 @@ public class UnitGroup
         s_isBufferring = false;
         TacticalCenter.get(CachedInstanceCenter.CachedGameData, GlobalCenter.CurrentPlayer).PerformBufferedFreezes();
     }
-    private static String performBufferedMoves(HashMap<Route, HashSet<Unit>> moves, IMoveDelegate mover)
+    private static String performBufferedMoves(HashMap<Route, List<UnitGroup>> moves, IMoveDelegate mover)
     {
         StringBuilder errors = new StringBuilder();
         for (Route key : moves.keySet())
         {
             Route route = key;
-            HashSet<Unit> units = moves.get(key);
+            List<UnitGroup> ugs = moves.get(key);
+            List<Unit> units = new ArrayList<Unit>();
+            for(UnitGroup ug : ugs)
+                units.addAll(ug.GetUnits());
 
             String moveError = mover.move(units, route);
             if (moveError == null)
             {
+                for (UnitGroup ug : ugs)
+                    ug.NotifySuccessfulMove(route.getEnd());
                 if (route.getEnd().getUnits().containsAll(units))
                     DUtils.Log(Level.FINEST, "      Performed move, as far to: {0} Units: {1} Route: {2}", route.getEnd(), units, route);
                 else

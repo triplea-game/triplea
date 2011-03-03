@@ -44,7 +44,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jPanel7" alignment="1" max="32767" attributes="2"/>
-                  <Component id="jTabbedPane1" alignment="1" pref="714" max="32767" attributes="0"/>
+                  <Component id="v_tabPaneMain" alignment="1" pref="714" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -54,7 +54,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jTabbedPane1" pref="289" max="32767" attributes="0"/>
+              <Component id="v_tabPaneMain" pref="289" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel7" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -109,6 +109,9 @@
             <Property name="text" type="java.lang.String" value="Settings Details"/>
             <Property name="name" type="java.lang.String" value="v_settingsDetailsButton" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="v_settingsDetailsButtonActionPerformed"/>
+          </Events>
         </Component>
         <Container class="javax.swing.JPanel" name="jPanel14">
           <Properties>
@@ -171,9 +174,10 @@
         </Container>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JTabbedPane" name="jTabbedPane1">
+    <Container class="javax.swing.JTabbedPane" name="v_tabPaneMain">
       <Properties>
-        <Property name="name" type="java.lang.String" value="jTabbedPane1" noResource="true"/>
+        <Property name="tabLayoutPolicy" type="int" value="1"/>
+        <Property name="name" type="java.lang.String" value="v_tabPaneMain" noResource="true"/>
       </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
@@ -1428,6 +1432,475 @@
             </Container>
           </SubComponents>
         </Container>
+        <Container class="javax.swing.JPanel" name="jPanel15">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="jPanel15" noResource="true"/>
+          </Properties>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="Task Requirements">
+                <Property name="tabTitle" type="java.lang.String" value="Task Requirements"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+            <Property name="columns" type="int" value="0"/>
+            <Property name="rows" type="int" value="1"/>
+          </Layout>
+          <SubComponents>
+            <Container class="javax.swing.JScrollPane" name="v_aa_scrollPane1">
+              <Properties>
+                <Property name="horizontalScrollBarPolicy" type="int" value="31"/>
+                <Property name="name" type="java.lang.String" value="v_aa_scrollPane1" noResource="true"/>
+              </Properties>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Container class="javax.swing.JPanel" name="jPanel16">
+                  <Properties>
+                    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[5000, 1000]"/>
+                    </Property>
+                    <Property name="name" type="java.lang.String" value="jPanel16" noResource="true"/>
+                  </Properties>
+
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel56" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace pref="401" max="32767" attributes="0"/>
+                                      <Component id="v_tr_attackOffensive_TakeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel70" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel60" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace pref="365" max="32767" attributes="0"/>
+                                      <Component id="v_tr_attackOffensive_CounterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel71" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabel63" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabel62" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace pref="401" max="32767" attributes="0"/>
+                                      <Component id="v_tr_attackOffensive_Neutrals_TakeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel72" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel61" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace pref="365" max="32767" attributes="0"/>
+                                      <Component id="v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel73" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabel64" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabel74" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace pref="401" max="32767" attributes="0"/>
+                                      <Component id="v_tr_attackOffensive_Capitals_TakeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel77" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel75" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace pref="365" max="32767" attributes="0"/>
+                                      <Component id="v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel76" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabel82" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabel81" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace pref="401" max="32767" attributes="0"/>
+                                      <Component id="v_tr_attackStabalize_TakeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel79" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel78" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace pref="365" max="32767" attributes="0"/>
+                                      <Component id="v_tr_attackStabalize_CounterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel80" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabel85" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabel84" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace pref="372" max="32767" attributes="0"/>
+                                      <Component id="v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel86" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabel88" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabel87" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace pref="372" max="32767" attributes="0"/>
+                                      <Component id="v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel89" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="jLabel59" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jLabel59" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel56" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel70" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="v_tr_attackOffensive_TakeoverChanceRequired" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel60" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel71" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="v_tr_attackOffensive_CounterAttackSurvivalChanceRequired" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jLabel63" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel62" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel72" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="v_tr_attackOffensive_Neutrals_TakeoverChanceRequired" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel61" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel73" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jLabel64" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel74" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel77" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="v_tr_attackOffensive_Capitals_TakeoverChanceRequired" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel75" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel76" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jLabel82" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel81" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel79" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="v_tr_attackStabalize_TakeoverChanceRequired" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel78" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel80" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="v_tr_attackStabalize_CounterAttackSurvivalChanceRequired" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jLabel85" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel84" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel86" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jLabel88" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel87" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel89" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JSpinner" name="v_tr_attackOffensive_TakeoverChanceRequired">
+                      <Properties>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="70" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="v_tr_attackOffensive_TakeoverChanceRequired" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel70">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="%"/>
+                        <Property name="name" type="java.lang.String" value="jLabel70" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="v_tr_attackOffensive_Neutrals_TakeoverChanceRequired">
+                      <Properties>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="95" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="v_tr_attackOffensive_Neutrals_TakeoverChanceRequired" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel63">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Attack - Offensive (Neutrals)"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Regular attacks on neutral territories."/>
+                        <Property name="name" type="java.lang.String" value="jLabel63" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel62">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="        Attack Takeover Chance Required:"/>
+                        <Property name="toolTipText" type="java.lang.String" value="The percentage of times we win when we simulate the battle with the battle calc&apos;er must meet this percentage for the task to be performed."/>
+                        <Property name="name" type="java.lang.String" value="jLabel62" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired">
+                      <Properties>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="10" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel61">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="        Counter-Attack Survival Chance Required:"/>
+                        <Property name="toolTipText" type="java.lang.String" value="The percentage of times we survive when we simulate the counter-attack battle with the battle calc&apos;er must meet this percentage for the task to be performed."/>
+                        <Property name="name" type="java.lang.String" value="jLabel61" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel71">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="%"/>
+                        <Property name="name" type="java.lang.String" value="jLabel71" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel60">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="        Counter-Attack Survival Chance Required:"/>
+                        <Property name="toolTipText" type="java.lang.String" value="The percentage of times we survive when we simulate the counter-attack battle with the battle calc&apos;er must meet this percentage for the task to be performed."/>
+                        <Property name="name" type="java.lang.String" value="jLabel60" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel73">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="%"/>
+                        <Property name="name" type="java.lang.String" value="jLabel73" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="v_tr_attackOffensive_CounterAttackSurvivalChanceRequired">
+                      <Properties>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="50" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="v_tr_attackOffensive_CounterAttackSurvivalChanceRequired" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel56">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="        Attack Takeover Chance Required:"/>
+                        <Property name="toolTipText" type="java.lang.String" value="The percentage of times we win when we simulate the battle with the battle calc&apos;er must meet this percentage for the task to be performed."/>
+                        <Property name="name" type="java.lang.String" value="jLabel56" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel59">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Attack - Offensive"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Regular attacks on enemy territories."/>
+                        <Property name="name" type="java.lang.String" value="jLabel59" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel72">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="%"/>
+                        <Property name="name" type="java.lang.String" value="jLabel72" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="v_tr_attackOffensive_Capitals_TakeoverChanceRequired">
+                      <Properties>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="50" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="v_tr_attackOffensive_Capitals_TakeoverChanceRequired" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel64">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Attack - Offensive (Capitals)"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Regular attacks on enemy capitals."/>
+                        <Property name="name" type="java.lang.String" value="jLabel64" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel74">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="        Attack Takeover Chance Required:"/>
+                        <Property name="toolTipText" type="java.lang.String" value="The percentage of times we win when we simulate the battle with the battle calc&apos;er must meet this percentage for the task to be performed."/>
+                        <Property name="name" type="java.lang.String" value="jLabel74" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired">
+                      <Properties>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="50" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel75">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="        Counter-Attack Survival Chance Required:"/>
+                        <Property name="toolTipText" type="java.lang.String" value="The percentage of times we survive when we simulate the counter-attack battle with the battle calc&apos;er must meet this percentage for the task to be performed."/>
+                        <Property name="name" type="java.lang.String" value="jLabel75" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel76">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="%"/>
+                        <Property name="name" type="java.lang.String" value="jLabel76" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel77">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="%"/>
+                        <Property name="name" type="java.lang.String" value="jLabel77" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel78">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="        Counter-Attack Survival Chance Required:"/>
+                        <Property name="toolTipText" type="java.lang.String" value="The percentage of times we survive when we simulate the counter-attack battle with the battle calc&apos;er must meet this percentage for the task to be performed."/>
+                        <Property name="name" type="java.lang.String" value="jLabel78" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="v_tr_attackStabalize_CounterAttackSurvivalChanceRequired">
+                      <Properties>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="75" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="v_tr_attackStabalize_CounterAttackSurvivalChanceRequired" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel79">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="%"/>
+                        <Property name="name" type="java.lang.String" value="jLabel79" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel80">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="%"/>
+                        <Property name="name" type="java.lang.String" value="jLabel80" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="v_tr_attackStabalize_TakeoverChanceRequired">
+                      <Properties>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="55" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="v_tr_attackStabalize_TakeoverChanceRequired" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel81">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="        Attack Takeover Chance Required:"/>
+                        <Property name="toolTipText" type="java.lang.String" value="The percentage of times we win when we simulate the battle with the battle calc&apos;er must meet this percentage for the task to be performed."/>
+                        <Property name="name" type="java.lang.String" value="jLabel81" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel82">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Attack - Stabalize"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Stabalization attacks on our capital(to retake it), and if the game&apos;s a FFA, the territories around our capital."/>
+                        <Property name="name" type="java.lang.String" value="jLabel82" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired">
+                      <Properties>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="50" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel84">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="        Enemy-Attack Survival Chance Required:"/>
+                        <Property name="toolTipText" type="java.lang.String" value="The percentage of times we survive when we simulate the enemy-attack battle with the battle calc&apos;er must meet this percentage for the task to be performed."/>
+                        <Property name="name" type="java.lang.String" value="jLabel84" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel85">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Reinforce - Front Line"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Regular reinforcements on the front line."/>
+                        <Property name="name" type="java.lang.String" value="jLabel85" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel86">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="%"/>
+                        <Property name="name" type="java.lang.String" value="jLabel86" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel87">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="        Enemy-Attack Survival Chance Required:"/>
+                        <Property name="toolTipText" type="java.lang.String" value="The percentage of times we survive when we simulate the enemy-attack battle with the battle calc&apos;er must meet this percentage for the task to be performed."/>
+                        <Property name="name" type="java.lang.String" value="jLabel87" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel88">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Reinforce - Stabalize"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Stabalization reinforcements on our capital(to retake it), and sometimes the territories around our capital."/>
+                        <Property name="name" type="java.lang.String" value="jLabel88" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired">
+                      <Properties>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="50" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel89">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="%"/>
+                        <Property name="name" type="java.lang.String" value="jLabel89" noResource="true"/>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+              </SubComponents>
+            </Container>
+          </SubComponents>
+        </Container>
         <Container class="javax.swing.JPanel" name="jPanel8">
           <Properties>
             <Property name="name" type="java.lang.String" value="jPanel8" noResource="true"/>
@@ -1661,6 +2134,9 @@
               <SubComponents>
                 <Container class="javax.swing.JPanel" name="jPanel12">
                   <Properties>
+                    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[5000, 1000]"/>
+                    </Property>
                     <Property name="name" type="java.lang.String" value="jPanel12" noResource="true"/>
                   </Properties>
 
@@ -1670,7 +2146,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="jPanel10" alignment="0" max="32767" attributes="2"/>
+                                  <Component id="jPanel10" alignment="0" pref="670" max="32767" attributes="3"/>
                                   <Component id="jPanel3" alignment="0" max="32767" attributes="2"/>
                               </Group>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -1681,10 +2157,10 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jPanel10" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jPanel3" pref="360" max="32767" attributes="0"/>
+                              <Component id="jPanel10" min="-2" pref="100" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -1697,88 +2173,63 @@
                             <TitledBorder title="CM &amp; NCM Task Settings (Tasks are the main components of the combat and non combat move phases)"/>
                           </Border>
                         </Property>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[1000, 750]"/>
+                        </Property>
                         <Property name="name" type="java.lang.String" value="jPanel3" noResource="true"/>
                       </Properties>
 
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" attributes="0">
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Group type="102" alignment="0" attributes="0">
-                                                  <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                                                  <Group type="103" groupAlignment="0" attributes="0">
-                                                      <Component id="jLabel61" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                      <Component id="jLabel49" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                      <Component id="jLabel64" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                  </Group>
-                                              </Group>
-                                              <Group type="102" alignment="0" attributes="0">
-                                                  <EmptySpace max="-2" attributes="0"/>
-                                                  <Component id="jLabel66" min="-2" max="-2" attributes="0"/>
-                                              </Group>
-                                              <Group type="102" alignment="0" max="-2" attributes="0">
-                                                  <EmptySpace min="-2" max="-2" attributes="0"/>
-                                                  <Component id="jLabel58" min="-2" max="-2" attributes="0"/>
-                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                                  <Component id="v_aa_noThreatInvalidation" min="-2" pref="69" max="-2" attributes="0"/>
-                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                                  <Component id="v_aa_globalThreatInvalidation" min="-2" pref="131" max="-2" attributes="0"/>
-                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                                  <Component id="v_aa_hotspotInvalidation" pref="204" max="32767" attributes="0"/>
-                                              </Group>
-                                              <Group type="102" alignment="0" attributes="0">
-                                                  <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                                                  <Group type="103" groupAlignment="0" attributes="0">
-                                                      <Component id="jLabel68" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                      <Component id="jLabel69" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                  </Group>
-                                              </Group>
-                                              <Group type="102" alignment="0" attributes="0">
-                                                  <EmptySpace min="10" pref="10" max="10" attributes="0"/>
-                                                  <Component id="jLabel51" min="-2" max="-2" attributes="0"/>
-                                                  <EmptySpace pref="354" max="32767" attributes="0"/>
-                                              </Group>
-                                              <Group type="102" alignment="0" attributes="0">
-                                                  <EmptySpace min="10" pref="10" max="10" attributes="0"/>
-                                                  <Component id="jLabel50" min="-2" max="-2" attributes="0"/>
-                                                  <EmptySpace pref="182" max="32767" attributes="0"/>
-                                              </Group>
-                                          </Group>
-                                          <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
-                                      </Group>
                                       <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jLabel55" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                      </Group>
-                                  </Group>
-                                  <Group type="103" groupAlignment="1" attributes="0">
-                                      <Component id="v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore" alignment="1" min="-2" pref="73" max="-2" attributes="2"/>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Component id="v_aa_percentageOfNCMTaskRequirementsNeededToPerformTask" min="-2" pref="50" max="-2" attributes="2"/>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="jLabel71" min="-2" pref="11" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Component id="v_aa_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore" alignment="1" min="-2" pref="73" max="-2" attributes="2"/>
-                                      <Component id="v_aa_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore" alignment="1" min="-2" pref="73" max="-2" attributes="2"/>
-                                      <Component id="v_aa_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore" alignment="1" min="-2" pref="73" max="-2" attributes="2"/>
-                                      <Component id="v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore" alignment="1" min="-2" pref="73" max="-2" attributes="2"/>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Component id="v_aa_percentageOfCMTaskRequirementsNeededToPerformTask" min="-2" pref="50" max="-2" attributes="2"/>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="jLabel60" min="-2" pref="11" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Group type="103" groupAlignment="1" attributes="0">
-                                              <Component id="v_aa_radiusOfHotspotThreatInvalidation" alignment="1" min="-2" pref="50" max="-2" attributes="3"/>
-                                              <Component id="v_aa_percentageOfResistedThreatsThatTasksInvalidate" alignment="1" min="-2" pref="50" max="-2" attributes="3"/>
-                                              <Component id="v_aa_initialTaskConsiderationLoopCount" alignment="1" min="-2" pref="50" max="-2" attributes="3"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="jLabel50" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel66" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel52" alignment="0" min="-2" max="-2" attributes="0"/>
                                           </Group>
+                                          <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="jLabel55" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="jLabel58" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                                          <Component id="v_aa_noThreatInvalidation" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                                          <Component id="v_aa_globalThreatInvalidation" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                                          <Component id="v_aa_hotspotInvalidation" pref="195" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Component id="jLabel51" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Group type="102" alignment="1" attributes="0">
+                                              <Component id="v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask" min="-2" pref="56" max="-2" attributes="1"/>
+                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                              <Component id="jLabel68" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Group type="102" alignment="1" attributes="0">
+                                              <Component id="v_aa_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask" min="-2" pref="56" max="-2" attributes="1"/>
+                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                              <Component id="jLabel69" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask" min="-2" pref="56" max="-2" attributes="1"/>
+                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                              <Component id="jLabel67" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Component id="v_aa_initialTaskConsiderationLoopCount" alignment="0" min="-2" pref="56" max="-2" attributes="1"/>
+                                          <Component id="v_aa_radiusOfHotspotThreatInvalidation" alignment="0" min="-2" pref="56" max="-2" attributes="1"/>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <Component id="v_aa_percentageOfResistedThreatsThatTasksInvalidate" min="-2" pref="56" max="-2" attributes="1"/>
                                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="jLabel65" min="-2" pref="11" max="-2" attributes="0"/>
+                                          <Component id="jLabel65" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -1787,69 +2238,45 @@
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <EmptySpace min="-2" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
-                                          <Component id="jLabel50" min="-2" pref="19" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="103" groupAlignment="3" attributes="0">
-                                          <Component id="jLabel60" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          <Component id="v_aa_percentageOfCMTaskRequirementsNeededToPerformTask" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                  </Group>
-                                  <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="1" attributes="0">
-                                      <Component id="v_aa_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore" min="-2" pref="23" max="-2" attributes="0"/>
-                                      <Component id="jLabel49" min="-2" pref="19" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="1" attributes="0">
-                                      <Component id="v_aa_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore" min="-2" pref="23" max="-2" attributes="0"/>
-                                      <Component id="jLabel61" min="-2" pref="19" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="1" attributes="0">
-                                      <Component id="v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore" min="-2" pref="23" max="-2" attributes="0"/>
-                                      <Component id="jLabel64" min="-2" pref="19" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="jLabel71" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jLabel66" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="v_aa_percentageOfNCMTaskRequirementsNeededToPerformTask" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel50" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel69" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="v_aa_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="v_aa_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore" min="-2" pref="23" max="-2" attributes="0"/>
-                                      <Component id="jLabel68" min="-2" pref="16" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="jLabel66" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel68" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore" min="-2" pref="23" max="-2" attributes="0"/>
-                                      <Component id="jLabel69" alignment="0" min="-2" pref="17" max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="jLabel52" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel67" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jLabel51" min="-2" pref="22" max="-2" attributes="0"/>
-                                      <Component id="v_aa_initialTaskConsiderationLoopCount" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="jLabel51" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="v_aa_initialTaskConsiderationLoopCount" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="jLabel58" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="v_aa_radiusOfHotspotThreatInvalidation" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="v_aa_noThreatInvalidation" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="v_aa_globalThreatInvalidation" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="v_aa_hotspotInvalidation" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="v_aa_radiusOfHotspotThreatInvalidation" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="jLabel65" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel55" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="v_aa_percentageOfResistedThreatsThatTasksInvalidate" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jLabel55" alignment="3" min="-2" pref="24" max="-2" attributes="0"/>
+                                      <Component id="jLabel65" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -1891,27 +2318,15 @@
                             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                               <ComponentRef name="v_invalidationTypeButtonGroup"/>
                             </Property>
-                            <Property name="selected" type="boolean" value="true"/>
                             <Property name="text" type="java.lang.String" value="Hotspot Invalidation, Radius:"/>
                             <Property name="toolTipText" type="java.lang.String" value="When a task is successful and strongly held, X% of it&apos;s threats(user-set, below) become invalidated for all ters within the radius specified, for the rest of the phase. (So if one ter resists a stack of air, X% of that air stack will be ignored by all ters within the user-set radius)"/>
                             <Property name="name" type="java.lang.String" value="v_aa_hotspotInvalidation" noResource="true"/>
-                          </Properties>
-                          <Events>
-                            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="v_aa_hotspotInvalidationStateChanged"/>
-                          </Events>
-                        </Component>
-                        <Component class="javax.swing.JSpinner" name="v_aa_percentageOfCMTaskRequirementsNeededToPerformTask">
-                          <Properties>
-                            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                              <SpinnerModel initial="96" maximum="100" minimum="75" numberType="java.lang.Integer" stepSize="1" type="number"/>
-                            </Property>
-                            <Property name="name" type="java.lang.String" value="v_aa_percentageOfCMTaskRequirementsNeededToPerformTask" noResource="true"/>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JSpinner" name="v_aa_radiusOfHotspotThreatInvalidation">
                           <Properties>
                             <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                              <SpinnerModel initial="2" maximum="10" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                              <SpinnerModel initial="1" maximum="10" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
                             </Property>
                             <Property name="name" type="java.lang.String" value="v_aa_radiusOfHotspotThreatInvalidation" noResource="true"/>
                           </Properties>
@@ -1926,8 +2341,8 @@
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel50">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Percentage Of Task Requirements That Must Be Met To Perform CM Task:"/>
-                            <Property name="toolTipText" type="java.lang.String" value="Can be used to make the AI more aggresive/cautious with cm(combat move) tasks. (You should keep this above 90% to prevent crazy attacks)"/>
+                            <Property name="text" type="java.lang.String" value="Percent Of Meeting Of Attack-Takeover-Constant Needed To Perform CM Task:"/>
+                            <Property name="toolTipText" type="java.lang.String" value="If you lower this, a cm task will get performed, even if it doesn&apos;t completely meet the attack-takeover chance requirement constant. (You should keep this above 90% to prevent suicide)"/>
                             <Property name="name" type="java.lang.String" value="jLabel50" noResource="true"/>
                           </Properties>
                         </Component>
@@ -1948,33 +2363,6 @@
                             <Property name="name" type="java.lang.String" value="jLabel51" noResource="true"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JLabel" name="jLabel49">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="How Much The Meeting Of The &apos;Min Takeover Chance&apos; Requirement Affects The Total Score:"/>
-                            <Property name="toolTipText" type="java.lang.String" value="The higher this value, the more the AI cares about meeting min takeover chance requirements."/>
-                            <Property name="name" type="java.lang.String" value="jLabel49" noResource="true"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jLabel60">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="%"/>
-                            <Property name="name" type="java.lang.String" value="jLabel60" noResource="true"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jLabel61">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="How Much The Meeting Of The &apos;Min Counter-Attack Defend Chance&apos; Requirement Affects The Total Score:"/>
-                            <Property name="toolTipText" type="java.lang.String" value="The higher this value, the more the AI cares about meeting min counter-attack defend chance requirements."/>
-                            <Property name="name" type="java.lang.String" value="jLabel61" noResource="true"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jLabel64">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="How Much The Meeting Of The &apos;Max Battle Volley Count&apos; Requirement Affects The Total Score:"/>
-                            <Property name="toolTipText" type="java.lang.String" value="The higher this value, the more the AI cares about meeting the max battle volley count requirements."/>
-                            <Property name="name" type="java.lang.String" value="jLabel64" noResource="true"/>
-                          </Properties>
-                        </Component>
                         <Component class="javax.swing.JLabel" name="jLabel65">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="%"/>
@@ -1983,77 +2371,58 @@
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel66">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Percentage Of Task Requirements That Must Be Met To Perform NCM Task:"/>
-                            <Property name="toolTipText" type="java.lang.String" value="Can be used to make the AI more aggresive/cautious in ncm tasks. (You should keep this above 90% to prevent the AI making itself vulnerable)"/>
+                            <Property name="text" type="java.lang.String" value="Percent Of Meeting Of Counter-Attack-Survival-Constant Needed To Perform CM Task:"/>
+                            <Property name="toolTipText" type="java.lang.String" value="If you lower this, a cm task will get performed, even if it doesn&apos;t completely meet the counter-attack survival chance requirement constant. (You should keep this above 80% to prevent the AI from attacking a ter and not having enough leftover to keep itself safe from counter-attack)"/>
                             <Property name="name" type="java.lang.String" value="jLabel66" noResource="true"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jLabel52">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Percent Of Meeting Of Max-Enemy-Attack-Takeover-Constant Needed To Perform NCM Task:"/>
+                            <Property name="toolTipText" type="java.lang.String" value="If you lower this, an ncm task will get performed, even if it doesn&apos;t completely meet the max-enemy-attack-takeover chance requirement constant. (You should keep this above 80% to prevent the AI from moving units into vulnerable positions)"/>
+                            <Property name="name" type="java.lang.String" value="jLabel52" noResource="true"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask">
+                          <Properties>
+                            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                              <SpinnerModel initial="96" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                            </Property>
+                            <Property name="name" type="java.lang.String" value="v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask" noResource="true"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jLabel67">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="%"/>
+                            <Property name="name" type="java.lang.String" value="jLabel67" noResource="true"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask">
+                          <Properties>
+                            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                              <SpinnerModel initial="96" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                            </Property>
+                            <Property name="name" type="java.lang.String" value="v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask" noResource="true"/>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel68">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="How Much The Meeting Of The &apos;Max Takeover Chance&apos; Requirement Affects The Total Score:"/>
-                            <Property name="toolTipText" type="java.lang.String" value="The higher this value, the more the AI cares about meeting max takeover chance requirements."/>
+                            <Property name="text" type="java.lang.String" value="%"/>
                             <Property name="name" type="java.lang.String" value="jLabel68" noResource="true"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="v_aa_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask">
+                          <Properties>
+                            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                              <SpinnerModel initial="96" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                            </Property>
+                            <Property name="name" type="java.lang.String" value="v_aa_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask" noResource="true"/>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel69">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="How Much The Meeting Of The &apos;Max Battle Volley Count&apos; Requirement Affects The Total Score:"/>
-                            <Property name="toolTipText" type="java.lang.String" value="The higher this value, the more the AI cares about meeting max battle volley count requirements."/>
-                            <Property name="name" type="java.lang.String" value="jLabel69" noResource="true"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JSpinner" name="v_aa_percentageOfNCMTaskRequirementsNeededToPerformTask">
-                          <Properties>
-                            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                              <SpinnerModel initial="96" maximum="100" minimum="75" numberType="java.lang.Integer" stepSize="1" type="number"/>
-                            </Property>
-                            <Property name="name" type="java.lang.String" value="v_aa_percentageOfNCMTaskRequirementsNeededToPerformTask" noResource="true"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jLabel71">
-                          <Properties>
                             <Property name="text" type="java.lang.String" value="%"/>
-                            <Property name="name" type="java.lang.String" value="jLabel71" noResource="true"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JSlider" name="v_aa_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore">
-                          <Properties>
-                            <Property name="minorTickSpacing" type="int" value="10"/>
-                            <Property name="paintTicks" type="boolean" value="true"/>
-                            <Property name="snapToTicks" type="boolean" value="true"/>
-                            <Property name="name" type="java.lang.String" value="v_aa_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore" noResource="true"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JSlider" name="v_aa_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore">
-                          <Properties>
-                            <Property name="minorTickSpacing" type="int" value="10"/>
-                            <Property name="paintTicks" type="boolean" value="true"/>
-                            <Property name="snapToTicks" type="boolean" value="true"/>
-                            <Property name="name" type="java.lang.String" value="v_aa_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore" noResource="true"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JSlider" name="v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore">
-                          <Properties>
-                            <Property name="minorTickSpacing" type="int" value="10"/>
-                            <Property name="paintTicks" type="boolean" value="true"/>
-                            <Property name="snapToTicks" type="boolean" value="true"/>
-                            <Property name="name" type="java.lang.String" value="v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore" noResource="true"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JSlider" name="v_aa_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore">
-                          <Properties>
-                            <Property name="minorTickSpacing" type="int" value="10"/>
-                            <Property name="paintTicks" type="boolean" value="true"/>
-                            <Property name="snapToTicks" type="boolean" value="true"/>
-                            <Property name="name" type="java.lang.String" value="v_aa_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore" noResource="true"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JSlider" name="v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore">
-                          <Properties>
-                            <Property name="minorTickSpacing" type="int" value="10"/>
-                            <Property name="paintTicks" type="boolean" value="true"/>
-                            <Property name="snapToTicks" type="boolean" value="true"/>
-                            <Property name="name" type="java.lang.String" value="v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore" noResource="true"/>
+                            <Property name="name" type="java.lang.String" value="jLabel69" noResource="true"/>
                           </Properties>
                         </Component>
                       </SubComponents>
@@ -2065,7 +2434,13 @@
                             <TitledBorder title="Purchase Phase Settings"/>
                           </Border>
                         </Property>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[1000, 250]"/>
+                        </Property>
                         <Property name="name" type="java.lang.String" value="jPanel10" noResource="true"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[1000, 250]"/>
+                        </Property>
                       </Properties>
 
                       <Layout>
@@ -2077,15 +2452,13 @@
                                       <Component id="jLabel53" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel57" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace pref="182" max="32767" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="v_aa_maxUnitTypesForPurchaseMix" min="-2" pref="50" max="-2" attributes="0"/>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="v_aa_resourcePercentageThatMustExistForFactoryBuy" min="-2" pref="50" max="-2" attributes="0"/>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="jLabel54" min="-2" pref="11" max="-2" attributes="0"/>
-                                      </Group>
+                                  <EmptySpace pref="168" max="32767" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="v_aa_maxUnitTypesForPurchaseMix" min="-2" pref="56" max="-2" attributes="1"/>
+                                      <Component id="v_aa_resourcePercentageThatMustExistForFactoryBuy" alignment="0" min="-2" pref="56" max="-2" attributes="1"/>
                                   </Group>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="jLabel54" min="-2" pref="11" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -2093,23 +2466,18 @@
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="jLabel53" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="v_aa_resourcePercentageThatMustExistForFactoryBuy" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel54" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="jLabel57" min="-2" pref="14" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
-                                          <Component id="v_aa_maxUnitTypesForPurchaseMix" min="-2" max="-2" attributes="0"/>
-                                      </Group>
+                                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="jLabel53" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel54" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="v_aa_resourcePercentageThatMustExistForFactoryBuy" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace max="32767" attributes="0"/>
+                                  <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="jLabel57" alignment="3" min="-2" pref="14" max="-2" attributes="0"/>
+                                      <Component id="v_aa_maxUnitTypesForPurchaseMix" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>

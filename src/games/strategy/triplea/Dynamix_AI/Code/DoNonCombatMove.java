@@ -19,9 +19,9 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.TacticalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
 import games.strategy.triplea.Dynamix_AI.DMatches;
 import games.strategy.triplea.Dynamix_AI.DSettings;
@@ -38,6 +38,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.util.Match;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -47,6 +48,27 @@ import java.util.logging.Level;
  */
 public class DoNonCombatMove
 {
+    public static void doPreCombatMove(Dynamix_AI ai, GameData data, IMoveDelegate mover, PlayerID player)
+    {
+        DUtils.Log(Level.FINE, "  Beginning pre-combat move section");
+        Territory ourCap = TerritoryAttachment.getCapital(player, data);
+
+        if (DUtils.GetTerTakeoverChanceAtEndOfTurn(data, player, ourCap) > .1F) //If our cap is in danger
+        {
+            float priority = DUtils.GetReinforceStabalizePriority(data, player, ourCap);
+            NCM_Task task = new NCM_Task(data, ourCap, NCM_TaskType.Reinforce_Stabilize, priority);
+            task.CalculateTaskRequirements();
+            task.RecruitUnits();
+            if (task.IsPlannedMoveWorthwhile(Arrays.asList(task)))
+            {
+                DUtils.Log(Level.FINE, "    Pre-combat-move capital reinforcement task being performed.");
+                task.PerformTask(mover);
+            }
+
+            TacticalCenter.NotifyStartOfRound(); //Clear frozen units, etc.
+            ThreatInvalidationCenter.NotifyStartOfRound(); //Clear any units the cap-reinforcement invalidated
+        }
+    }
     public static void doNonCombatMove(Dynamix_AI ai, GameData data, IMoveDelegate mover, PlayerID player)
     {
         MovePackage pack = new MovePackage(ai, data, mover, player, null, null, null);
@@ -127,6 +149,7 @@ public class DoNonCombatMove
                 continue;
 
             List<Unit> terUnits = ter.getUnits().getMatches(DUtils.CompMatchAnd(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft, Matches.UnitIsNotAA, Matches.UnitIsNotAir));
+            terUnits.removeAll(TacticalCenter.get(data, player).GetFrozenUnits());
             if(terUnits.isEmpty())
                 continue;
 

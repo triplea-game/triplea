@@ -46,6 +46,8 @@ public class DoCombatMove
 {
     public static void doCombatMove(Dynamix_AI ai, GameData data, IMoveDelegate mover, PlayerID player)
     {
+        DoNonCombatMove.doPreCombatMove(ai, data, mover, player);
+
         MovePackage pack = new MovePackage(ai, data, mover, player, null, null, null);
         
         List<CM_Task> tasks = GenerateTasks(pack);

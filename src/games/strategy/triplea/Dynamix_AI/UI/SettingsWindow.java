@@ -19,8 +19,19 @@ import games.strategy.triplea.Dynamix_AI.DSettings;
 import games.strategy.triplea.Dynamix_AI.Others.BattleCalculationType;
 import games.strategy.triplea.Dynamix_AI.Others.ThreatInvalidationType;
 import games.strategy.triplea.ui.TripleAFrame;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.util.logging.Level;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -60,7 +71,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jPanel13 = new javax.swing.JPanel();
         v_cancelButton = new javax.swing.JButton();
         v_okButton = new javax.swing.JButton();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        v_tabPaneMain = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
         v_battleCalculator = new javax.swing.JRadioButton();
@@ -147,6 +158,45 @@ public class SettingsWindow extends javax.swing.JDialog
         v_caretreat_determinesIfAIShouldRetreat = new javax.swing.JSpinner();
         jLabel44 = new javax.swing.JLabel();
         jLabel45 = new javax.swing.JLabel();
+        jPanel15 = new javax.swing.JPanel();
+        v_aa_scrollPane1 = new javax.swing.JScrollPane();
+        jPanel16 = new javax.swing.JPanel();
+        v_tr_attackOffensive_TakeoverChanceRequired = new javax.swing.JSpinner();
+        jLabel70 = new javax.swing.JLabel();
+        v_tr_attackOffensive_Neutrals_TakeoverChanceRequired = new javax.swing.JSpinner();
+        jLabel63 = new javax.swing.JLabel();
+        jLabel62 = new javax.swing.JLabel();
+        v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired = new javax.swing.JSpinner();
+        jLabel61 = new javax.swing.JLabel();
+        jLabel71 = new javax.swing.JLabel();
+        jLabel60 = new javax.swing.JLabel();
+        jLabel73 = new javax.swing.JLabel();
+        v_tr_attackOffensive_CounterAttackSurvivalChanceRequired = new javax.swing.JSpinner();
+        jLabel56 = new javax.swing.JLabel();
+        jLabel59 = new javax.swing.JLabel();
+        jLabel72 = new javax.swing.JLabel();
+        v_tr_attackOffensive_Capitals_TakeoverChanceRequired = new javax.swing.JSpinner();
+        jLabel64 = new javax.swing.JLabel();
+        jLabel74 = new javax.swing.JLabel();
+        v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired = new javax.swing.JSpinner();
+        jLabel75 = new javax.swing.JLabel();
+        jLabel76 = new javax.swing.JLabel();
+        jLabel77 = new javax.swing.JLabel();
+        jLabel78 = new javax.swing.JLabel();
+        v_tr_attackStabalize_CounterAttackSurvivalChanceRequired = new javax.swing.JSpinner();
+        jLabel79 = new javax.swing.JLabel();
+        jLabel80 = new javax.swing.JLabel();
+        v_tr_attackStabalize_TakeoverChanceRequired = new javax.swing.JSpinner();
+        jLabel81 = new javax.swing.JLabel();
+        jLabel82 = new javax.swing.JLabel();
+        v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired = new javax.swing.JSpinner();
+        jLabel84 = new javax.swing.JLabel();
+        jLabel85 = new javax.swing.JLabel();
+        jLabel86 = new javax.swing.JLabel();
+        jLabel87 = new javax.swing.JLabel();
+        jLabel88 = new javax.swing.JLabel();
+        v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired = new javax.swing.JSpinner();
+        jLabel89 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         v_logHolderTabbedPane = new javax.swing.JTabbedPane();
         jPanel9 = new javax.swing.JPanel();
@@ -169,27 +219,20 @@ public class SettingsWindow extends javax.swing.JDialog
         v_aa_globalThreatInvalidation = new javax.swing.JRadioButton();
         jLabel55 = new javax.swing.JLabel();
         v_aa_hotspotInvalidation = new javax.swing.JRadioButton();
-        v_aa_percentageOfCMTaskRequirementsNeededToPerformTask = new javax.swing.JSpinner();
         v_aa_radiusOfHotspotThreatInvalidation = new javax.swing.JSpinner();
         v_aa_percentageOfResistedThreatsThatTasksInvalidate = new javax.swing.JSpinner();
         jLabel50 = new javax.swing.JLabel();
         v_aa_noThreatInvalidation = new javax.swing.JRadioButton();
         jLabel51 = new javax.swing.JLabel();
-        jLabel49 = new javax.swing.JLabel();
-        jLabel60 = new javax.swing.JLabel();
-        jLabel61 = new javax.swing.JLabel();
-        jLabel64 = new javax.swing.JLabel();
         jLabel65 = new javax.swing.JLabel();
         jLabel66 = new javax.swing.JLabel();
+        jLabel52 = new javax.swing.JLabel();
+        v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask = new javax.swing.JSpinner();
+        jLabel67 = new javax.swing.JLabel();
+        v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask = new javax.swing.JSpinner();
         jLabel68 = new javax.swing.JLabel();
+        v_aa_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask = new javax.swing.JSpinner();
         jLabel69 = new javax.swing.JLabel();
-        v_aa_percentageOfNCMTaskRequirementsNeededToPerformTask = new javax.swing.JSpinner();
-        jLabel71 = new javax.swing.JLabel();
-        v_aa_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore = new javax.swing.JSlider();
-        v_aa_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore = new javax.swing.JSlider();
-        v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore = new javax.swing.JSlider();
-        v_aa_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore = new javax.swing.JSlider();
-        v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore = new javax.swing.JSlider();
         jPanel10 = new javax.swing.JPanel();
         v_aa_resourcePercentageThatMustExistForFactoryBuy = new javax.swing.JSpinner();
         jLabel57 = new javax.swing.JLabel();
@@ -220,6 +263,11 @@ public class SettingsWindow extends javax.swing.JDialog
 
         v_settingsDetailsButton.setText("Settings Details");
         v_settingsDetailsButton.setName("v_settingsDetailsButton"); // NOI18N
+        v_settingsDetailsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                v_settingsDetailsButtonActionPerformed(evt);
+            }
+        });
 
         jPanel14.setName("jPanel14"); // NOI18N
         jPanel14.setLayout(new java.awt.GridBagLayout());
@@ -282,7 +330,8 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.setName("jTabbedPane1"); // NOI18N
+        v_tabPaneMain.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
+        v_tabPaneMain.setName("v_tabPaneMain"); // NOI18N
 
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -339,7 +388,7 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addContainerGap(231, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("General", jPanel1);
+        v_tabPaneMain.addTab("General", jPanel1);
 
         v_pausingPanel.setName("v_pausingPanel"); // NOI18N
 
@@ -599,7 +648,7 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addContainerGap(66, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("AI Pausing", v_pausingPanel);
+        v_tabPaneMain.addTab("AI Pausing", v_pausingPanel);
 
         jPanel5.setName("jPanel5"); // NOI18N
 
@@ -624,7 +673,7 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addContainerGap(231, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("AI Learning", jPanel5);
+        v_tabPaneMain.addTab("AI Learning", jPanel5);
 
         jPanel6.setName("jPanel6"); // NOI18N
 
@@ -695,7 +744,7 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addContainerGap(197, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("AI Cheating", jPanel6);
+        v_tabPaneMain.addTab("AI Cheating", jPanel6);
 
         jPanel4.setName("jPanel4"); // NOI18N
 
@@ -1035,7 +1084,294 @@ public class SettingsWindow extends javax.swing.JDialog
             .addComponent(v_calcRunCountAssignmentsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("Calc Run Counts", jPanel4);
+        v_tabPaneMain.addTab("Calc Run Counts", jPanel4);
+
+        jPanel15.setName("jPanel15"); // NOI18N
+        jPanel15.setLayout(new java.awt.GridLayout(1, 0));
+
+        v_aa_scrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        v_aa_scrollPane1.setName("v_aa_scrollPane1"); // NOI18N
+
+        jPanel16.setMaximumSize(new java.awt.Dimension(5000, 1000));
+        jPanel16.setName("jPanel16"); // NOI18N
+
+        v_tr_attackOffensive_TakeoverChanceRequired.setModel(new javax.swing.SpinnerNumberModel(70, 0, 100, 1));
+        v_tr_attackOffensive_TakeoverChanceRequired.setName("v_tr_attackOffensive_TakeoverChanceRequired"); // NOI18N
+
+        jLabel70.setText("%");
+        jLabel70.setName("jLabel70"); // NOI18N
+
+        v_tr_attackOffensive_Neutrals_TakeoverChanceRequired.setModel(new javax.swing.SpinnerNumberModel(95, 0, 100, 1));
+        v_tr_attackOffensive_Neutrals_TakeoverChanceRequired.setName("v_tr_attackOffensive_Neutrals_TakeoverChanceRequired"); // NOI18N
+
+        jLabel63.setText("Attack - Offensive (Neutrals)");
+        jLabel63.setToolTipText("Regular attacks on neutral territories.");
+        jLabel63.setName("jLabel63"); // NOI18N
+
+        jLabel62.setText("        Attack Takeover Chance Required:");
+        jLabel62.setToolTipText("The percentage of times we win when we simulate the battle with the battle calc'er must meet this percentage for the task to be performed.");
+        jLabel62.setName("jLabel62"); // NOI18N
+
+        v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired.setModel(new javax.swing.SpinnerNumberModel(10, 0, 100, 1));
+        v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired.setName("v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired"); // NOI18N
+
+        jLabel61.setText("        Counter-Attack Survival Chance Required:");
+        jLabel61.setToolTipText("The percentage of times we survive when we simulate the counter-attack battle with the battle calc'er must meet this percentage for the task to be performed.");
+        jLabel61.setName("jLabel61"); // NOI18N
+
+        jLabel71.setText("%");
+        jLabel71.setName("jLabel71"); // NOI18N
+
+        jLabel60.setText("        Counter-Attack Survival Chance Required:");
+        jLabel60.setToolTipText("The percentage of times we survive when we simulate the counter-attack battle with the battle calc'er must meet this percentage for the task to be performed.");
+        jLabel60.setName("jLabel60"); // NOI18N
+
+        jLabel73.setText("%");
+        jLabel73.setName("jLabel73"); // NOI18N
+
+        v_tr_attackOffensive_CounterAttackSurvivalChanceRequired.setModel(new javax.swing.SpinnerNumberModel(50, 0, 100, 1));
+        v_tr_attackOffensive_CounterAttackSurvivalChanceRequired.setName("v_tr_attackOffensive_CounterAttackSurvivalChanceRequired"); // NOI18N
+
+        jLabel56.setText("        Attack Takeover Chance Required:");
+        jLabel56.setToolTipText("The percentage of times we win when we simulate the battle with the battle calc'er must meet this percentage for the task to be performed.");
+        jLabel56.setName("jLabel56"); // NOI18N
+
+        jLabel59.setText("Attack - Offensive");
+        jLabel59.setToolTipText("Regular attacks on enemy territories.");
+        jLabel59.setName("jLabel59"); // NOI18N
+
+        jLabel72.setText("%");
+        jLabel72.setName("jLabel72"); // NOI18N
+
+        v_tr_attackOffensive_Capitals_TakeoverChanceRequired.setModel(new javax.swing.SpinnerNumberModel(50, 0, 100, 1));
+        v_tr_attackOffensive_Capitals_TakeoverChanceRequired.setName("v_tr_attackOffensive_Capitals_TakeoverChanceRequired"); // NOI18N
+
+        jLabel64.setText("Attack - Offensive (Capitals)");
+        jLabel64.setToolTipText("Regular attacks on enemy capitals.");
+        jLabel64.setName("jLabel64"); // NOI18N
+
+        jLabel74.setText("        Attack Takeover Chance Required:");
+        jLabel74.setToolTipText("The percentage of times we win when we simulate the battle with the battle calc'er must meet this percentage for the task to be performed.");
+        jLabel74.setName("jLabel74"); // NOI18N
+
+        v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired.setModel(new javax.swing.SpinnerNumberModel(50, 0, 100, 1));
+        v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired.setName("v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired"); // NOI18N
+
+        jLabel75.setText("        Counter-Attack Survival Chance Required:");
+        jLabel75.setToolTipText("The percentage of times we survive when we simulate the counter-attack battle with the battle calc'er must meet this percentage for the task to be performed.");
+        jLabel75.setName("jLabel75"); // NOI18N
+
+        jLabel76.setText("%");
+        jLabel76.setName("jLabel76"); // NOI18N
+
+        jLabel77.setText("%");
+        jLabel77.setName("jLabel77"); // NOI18N
+
+        jLabel78.setText("        Counter-Attack Survival Chance Required:");
+        jLabel78.setToolTipText("The percentage of times we survive when we simulate the counter-attack battle with the battle calc'er must meet this percentage for the task to be performed.");
+        jLabel78.setName("jLabel78"); // NOI18N
+
+        v_tr_attackStabalize_CounterAttackSurvivalChanceRequired.setModel(new javax.swing.SpinnerNumberModel(75, 0, 100, 1));
+        v_tr_attackStabalize_CounterAttackSurvivalChanceRequired.setName("v_tr_attackStabalize_CounterAttackSurvivalChanceRequired"); // NOI18N
+
+        jLabel79.setText("%");
+        jLabel79.setName("jLabel79"); // NOI18N
+
+        jLabel80.setText("%");
+        jLabel80.setName("jLabel80"); // NOI18N
+
+        v_tr_attackStabalize_TakeoverChanceRequired.setModel(new javax.swing.SpinnerNumberModel(55, 0, 100, 1));
+        v_tr_attackStabalize_TakeoverChanceRequired.setName("v_tr_attackStabalize_TakeoverChanceRequired"); // NOI18N
+
+        jLabel81.setText("        Attack Takeover Chance Required:");
+        jLabel81.setToolTipText("The percentage of times we win when we simulate the battle with the battle calc'er must meet this percentage for the task to be performed.");
+        jLabel81.setName("jLabel81"); // NOI18N
+
+        jLabel82.setText("Attack - Stabalize");
+        jLabel82.setToolTipText("Stabalization attacks on our capital(to retake it), and if the game's a FFA, the territories around our capital.");
+        jLabel82.setName("jLabel82"); // NOI18N
+
+        v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired.setModel(new javax.swing.SpinnerNumberModel(50, 0, 100, 1));
+        v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired.setName("v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired"); // NOI18N
+
+        jLabel84.setText("        Enemy-Attack Survival Chance Required:");
+        jLabel84.setToolTipText("The percentage of times we survive when we simulate the enemy-attack battle with the battle calc'er must meet this percentage for the task to be performed.");
+        jLabel84.setName("jLabel84"); // NOI18N
+
+        jLabel85.setText("Reinforce - Front Line");
+        jLabel85.setToolTipText("Regular reinforcements on the front line.");
+        jLabel85.setName("jLabel85"); // NOI18N
+
+        jLabel86.setText("%");
+        jLabel86.setName("jLabel86"); // NOI18N
+
+        jLabel87.setText("        Enemy-Attack Survival Chance Required:");
+        jLabel87.setToolTipText("The percentage of times we survive when we simulate the enemy-attack battle with the battle calc'er must meet this percentage for the task to be performed.");
+        jLabel87.setName("jLabel87"); // NOI18N
+
+        jLabel88.setText("Reinforce - Stabalize");
+        jLabel88.setToolTipText("Stabalization reinforcements on our capital(to retake it), and sometimes the territories around our capital.");
+        jLabel88.setName("jLabel88"); // NOI18N
+
+        v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired.setModel(new javax.swing.SpinnerNumberModel(50, 0, 100, 1));
+        v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired.setName("v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired"); // NOI18N
+
+        jLabel89.setText("%");
+        jLabel89.setName("jLabel89"); // NOI18N
+
+        javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
+        jPanel16.setLayout(jPanel16Layout);
+        jPanel16Layout.setHorizontalGroup(
+            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel16Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(jLabel56)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 401, Short.MAX_VALUE)
+                        .addComponent(v_tr_attackOffensive_TakeoverChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel70))
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(jLabel60)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 365, Short.MAX_VALUE)
+                        .addComponent(v_tr_attackOffensive_CounterAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel71))
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel63)
+                            .addComponent(jLabel62))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 401, Short.MAX_VALUE)
+                        .addComponent(v_tr_attackOffensive_Neutrals_TakeoverChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel72))
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(jLabel61)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 365, Short.MAX_VALUE)
+                        .addComponent(v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel73))
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel64)
+                            .addComponent(jLabel74))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 401, Short.MAX_VALUE)
+                        .addComponent(v_tr_attackOffensive_Capitals_TakeoverChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel77))
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(jLabel75)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 365, Short.MAX_VALUE)
+                        .addComponent(v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel76))
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel82)
+                            .addComponent(jLabel81))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 401, Short.MAX_VALUE)
+                        .addComponent(v_tr_attackStabalize_TakeoverChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel79))
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(jLabel78)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 365, Short.MAX_VALUE)
+                        .addComponent(v_tr_attackStabalize_CounterAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel80))
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel85)
+                            .addComponent(jLabel84))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 372, Short.MAX_VALUE)
+                        .addComponent(v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel86))
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel88)
+                            .addComponent(jLabel87))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 372, Short.MAX_VALUE)
+                        .addComponent(v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel89))
+                    .addComponent(jLabel59))
+                .addContainerGap())
+        );
+        jPanel16Layout.setVerticalGroup(
+            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel16Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel59)
+                .addGap(11, 11, 11)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel56)
+                    .addComponent(jLabel70)
+                    .addComponent(v_tr_attackOffensive_TakeoverChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel60)
+                    .addComponent(jLabel71)
+                    .addComponent(v_tr_attackOffensive_CounterAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel63)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel62)
+                    .addComponent(jLabel72)
+                    .addComponent(v_tr_attackOffensive_Neutrals_TakeoverChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel61)
+                    .addComponent(jLabel73)
+                    .addComponent(v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel64)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel74)
+                    .addComponent(jLabel77)
+                    .addComponent(v_tr_attackOffensive_Capitals_TakeoverChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel75)
+                    .addComponent(jLabel76)
+                    .addComponent(v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel82)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel81)
+                    .addComponent(jLabel79)
+                    .addComponent(v_tr_attackStabalize_TakeoverChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel78)
+                    .addComponent(jLabel80)
+                    .addComponent(v_tr_attackStabalize_CounterAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel85)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel84)
+                    .addComponent(jLabel86)
+                    .addComponent(v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel88)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel87)
+                    .addComponent(jLabel89)
+                    .addComponent(v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        v_aa_scrollPane1.setViewportView(jPanel16);
+
+        jPanel15.add(v_aa_scrollPane1);
+
+        v_tabPaneMain.addTab("Task Requirements", jPanel15);
 
         jPanel8.setName("jPanel8"); // NOI18N
 
@@ -1153,7 +1489,7 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Debugging", jPanel8);
+        v_tabPaneMain.addTab("Debugging", jPanel8);
 
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setLayout(new java.awt.GridLayout(1, 0));
@@ -1161,9 +1497,11 @@ public class SettingsWindow extends javax.swing.JDialog
         v_aa_scrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         v_aa_scrollPane.setName("v_aa_scrollPane"); // NOI18N
 
+        jPanel12.setMaximumSize(new java.awt.Dimension(5000, 1000));
         jPanel12.setName("jPanel12"); // NOI18N
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("CM & NCM Task Settings (Tasks are the main components of the combat and non combat move phases)"));
+        jPanel3.setMaximumSize(new java.awt.Dimension(1000, 750));
         jPanel3.setName("jPanel3"); // NOI18N
 
         jLabel58.setText("Threat Invalidation Type:");
@@ -1182,27 +1520,18 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel55.setName("jLabel55"); // NOI18N
 
         v_invalidationTypeButtonGroup.add(v_aa_hotspotInvalidation);
-        v_aa_hotspotInvalidation.setSelected(true);
         v_aa_hotspotInvalidation.setText("Hotspot Invalidation, Radius:");
         v_aa_hotspotInvalidation.setToolTipText("When a task is successful and strongly held, X% of it's threats(user-set, below) become invalidated for all ters within the radius specified, for the rest of the phase. (So if one ter resists a stack of air, X% of that air stack will be ignored by all ters within the user-set radius)");
         v_aa_hotspotInvalidation.setName("v_aa_hotspotInvalidation"); // NOI18N
-        v_aa_hotspotInvalidation.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                v_aa_hotspotInvalidationStateChanged(evt);
-            }
-        });
 
-        v_aa_percentageOfCMTaskRequirementsNeededToPerformTask.setModel(new javax.swing.SpinnerNumberModel(96, 75, 100, 1));
-        v_aa_percentageOfCMTaskRequirementsNeededToPerformTask.setName("v_aa_percentageOfCMTaskRequirementsNeededToPerformTask"); // NOI18N
-
-        v_aa_radiusOfHotspotThreatInvalidation.setModel(new javax.swing.SpinnerNumberModel(2, 1, 10, 1));
+        v_aa_radiusOfHotspotThreatInvalidation.setModel(new javax.swing.SpinnerNumberModel(1, 1, 10, 1));
         v_aa_radiusOfHotspotThreatInvalidation.setName("v_aa_radiusOfHotspotThreatInvalidation"); // NOI18N
 
         v_aa_percentageOfResistedThreatsThatTasksInvalidate.setModel(new javax.swing.SpinnerNumberModel(75, 0, 100, 1));
         v_aa_percentageOfResistedThreatsThatTasksInvalidate.setName("v_aa_percentageOfResistedThreatsThatTasksInvalidate"); // NOI18N
 
-        jLabel50.setText("Percentage Of Task Requirements That Must Be Met To Perform CM Task:");
-        jLabel50.setToolTipText("Can be used to make the AI more aggresive/cautious with cm(combat move) tasks. (You should keep this above 90% to prevent crazy attacks)");
+        jLabel50.setText("Percent Of Meeting Of Attack-Takeover-Constant Needed To Perform CM Task:");
+        jLabel50.setToolTipText("If you lower this, a cm task will get performed, even if it doesn't completely meet the attack-takeover chance requirement constant. (You should keep this above 90% to prevent suicide)");
         jLabel50.setName("jLabel50"); // NOI18N
 
         v_invalidationTypeButtonGroup.add(v_aa_noThreatInvalidation);
@@ -1214,191 +1543,122 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel51.setToolTipText("The higher this value, the better the AI will do when attacking or defending on battle fronts.");
         jLabel51.setName("jLabel51"); // NOI18N
 
-        jLabel49.setText("How Much The Meeting Of The 'Min Takeover Chance' Requirement Affects The Total Score:");
-        jLabel49.setToolTipText("The higher this value, the more the AI cares about meeting min takeover chance requirements.");
-        jLabel49.setName("jLabel49"); // NOI18N
-
-        jLabel60.setText("%");
-        jLabel60.setName("jLabel60"); // NOI18N
-
-        jLabel61.setText("How Much The Meeting Of The 'Min Counter-Attack Defend Chance' Requirement Affects The Total Score:");
-        jLabel61.setToolTipText("The higher this value, the more the AI cares about meeting min counter-attack defend chance requirements.");
-        jLabel61.setName("jLabel61"); // NOI18N
-
-        jLabel64.setText("How Much The Meeting Of The 'Max Battle Volley Count' Requirement Affects The Total Score:");
-        jLabel64.setToolTipText("The higher this value, the more the AI cares about meeting the max battle volley count requirements.");
-        jLabel64.setName("jLabel64"); // NOI18N
-
         jLabel65.setText("%");
         jLabel65.setName("jLabel65"); // NOI18N
 
-        jLabel66.setText("Percentage Of Task Requirements That Must Be Met To Perform NCM Task:");
-        jLabel66.setToolTipText("Can be used to make the AI more aggresive/cautious in ncm tasks. (You should keep this above 90% to prevent the AI making itself vulnerable)");
+        jLabel66.setText("Percent Of Meeting Of Counter-Attack-Survival-Constant Needed To Perform CM Task:");
+        jLabel66.setToolTipText("If you lower this, a cm task will get performed, even if it doesn't completely meet the counter-attack survival chance requirement constant. (You should keep this above 80% to prevent the AI from attacking a ter and not having enough leftover to keep itself safe from counter-attack)");
         jLabel66.setName("jLabel66"); // NOI18N
 
-        jLabel68.setText("How Much The Meeting Of The 'Max Takeover Chance' Requirement Affects The Total Score:");
-        jLabel68.setToolTipText("The higher this value, the more the AI cares about meeting max takeover chance requirements.");
+        jLabel52.setText("Percent Of Meeting Of Max-Enemy-Attack-Takeover-Constant Needed To Perform NCM Task:");
+        jLabel52.setToolTipText("If you lower this, an ncm task will get performed, even if it doesn't completely meet the max-enemy-attack-takeover chance requirement constant. (You should keep this above 80% to prevent the AI from moving units into vulnerable positions)");
+        jLabel52.setName("jLabel52"); // NOI18N
+
+        v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask.setModel(new javax.swing.SpinnerNumberModel(96, 0, 100, 1));
+        v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask.setName("v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask"); // NOI18N
+
+        jLabel67.setText("%");
+        jLabel67.setName("jLabel67"); // NOI18N
+
+        v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask.setModel(new javax.swing.SpinnerNumberModel(96, 0, 100, 1));
+        v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask.setName("v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask"); // NOI18N
+
+        jLabel68.setText("%");
         jLabel68.setName("jLabel68"); // NOI18N
 
-        jLabel69.setText("How Much The Meeting Of The 'Max Battle Volley Count' Requirement Affects The Total Score:");
-        jLabel69.setToolTipText("The higher this value, the more the AI cares about meeting max battle volley count requirements.");
+        v_aa_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask.setModel(new javax.swing.SpinnerNumberModel(96, 0, 100, 1));
+        v_aa_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask.setName("v_aa_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask"); // NOI18N
+
+        jLabel69.setText("%");
         jLabel69.setName("jLabel69"); // NOI18N
-
-        v_aa_percentageOfNCMTaskRequirementsNeededToPerformTask.setModel(new javax.swing.SpinnerNumberModel(96, 75, 100, 1));
-        v_aa_percentageOfNCMTaskRequirementsNeededToPerformTask.setName("v_aa_percentageOfNCMTaskRequirementsNeededToPerformTask"); // NOI18N
-
-        jLabel71.setText("%");
-        jLabel71.setName("jLabel71"); // NOI18N
-
-        v_aa_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore.setMinorTickSpacing(10);
-        v_aa_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore.setPaintTicks(true);
-        v_aa_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore.setSnapToTicks(true);
-        v_aa_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore.setName("v_aa_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore"); // NOI18N
-
-        v_aa_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore.setMinorTickSpacing(10);
-        v_aa_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore.setPaintTicks(true);
-        v_aa_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore.setSnapToTicks(true);
-        v_aa_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore.setName("v_aa_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore"); // NOI18N
-
-        v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore.setMinorTickSpacing(10);
-        v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore.setPaintTicks(true);
-        v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore.setSnapToTicks(true);
-        v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore.setName("v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore"); // NOI18N
-
-        v_aa_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore.setMinorTickSpacing(10);
-        v_aa_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore.setPaintTicks(true);
-        v_aa_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore.setSnapToTicks(true);
-        v_aa_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore.setName("v_aa_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore"); // NOI18N
-
-        v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore.setMinorTickSpacing(10);
-        v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore.setPaintTicks(true);
-        v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore.setSnapToTicks(true);
-        v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore.setName("v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore"); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(28, 28, 28)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel61)
-                                    .addComponent(jLabel49)
-                                    .addComponent(jLabel64)))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel66))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel58)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(v_aa_noThreatInvalidation, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(v_aa_globalThreatInvalidation, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(v_aa_hotspotInvalidation, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(28, 28, 28)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel68)
-                                    .addComponent(jLabel69)))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(jLabel51)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 354, Short.MAX_VALUE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(jLabel50)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 182, Short.MAX_VALUE)))
-                        .addGap(37, 37, 37))
+                            .addComponent(jLabel50)
+                            .addComponent(jLabel66)
+                            .addComponent(jLabel52))
+                        .addGap(32, 32, 32))
+                    .addComponent(jLabel55)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel55)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel58)
+                        .addGap(18, 18, 18)
+                        .addComponent(v_aa_noThreatInvalidation)
+                        .addGap(18, 18, 18)
+                        .addComponent(v_aa_globalThreatInvalidation)
+                        .addGap(18, 18, 18)
+                        .addComponent(v_aa_hotspotInvalidation, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE))
+                    .addComponent(jLabel51))
+                .addGap(26, 26, 26)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                            .addComponent(v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jLabel68))
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                            .addComponent(v_aa_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jLabel69))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                            .addComponent(v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jLabel67))
+                        .addComponent(v_aa_initialTaskConsiderationLoopCount, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(v_aa_radiusOfHotspotThreatInvalidation, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(v_aa_percentageOfNCMTaskRequirementsNeededToPerformTask, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(v_aa_percentageOfResistedThreatsThatTasksInvalidate, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel71, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(v_aa_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(v_aa_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(v_aa_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(v_aa_percentageOfCMTaskRequirementsNeededToPerformTask, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel60, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(v_aa_radiusOfHotspotThreatInvalidation, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(v_aa_percentageOfResistedThreatsThatTasksInvalidate, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(v_aa_initialTaskConsiderationLoopCount, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel65, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel65)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jLabel50, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel60)
-                        .addComponent(v_aa_percentageOfCMTaskRequirementsNeededToPerformTask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(11, 11, 11)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(v_aa_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel49, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(6, 6, 6)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(v_aa_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel61, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(6, 6, 6)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel64, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel50)
+                    .addComponent(jLabel69)
+                    .addComponent(v_aa_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel71)
                     .addComponent(jLabel66)
-                    .addComponent(v_aa_percentageOfNCMTaskRequirementsNeededToPerformTask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel68)
+                    .addComponent(v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(v_aa_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel68, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel69, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(11, 11, 11)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel51, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel52)
+                    .addComponent(jLabel67)
+                    .addComponent(v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel51)
                     .addComponent(v_aa_initialTaskConsiderationLoopCount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel58)
-                    .addComponent(v_aa_radiusOfHotspotThreatInvalidation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(v_aa_noThreatInvalidation)
                     .addComponent(v_aa_globalThreatInvalidation)
-                    .addComponent(v_aa_hotspotInvalidation))
+                    .addComponent(v_aa_hotspotInvalidation)
+                    .addComponent(v_aa_radiusOfHotspotThreatInvalidation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel65)
+                    .addComponent(jLabel55)
                     .addComponent(v_aa_percentageOfResistedThreatsThatTasksInvalidate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel55, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addComponent(jLabel65))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Purchase Phase Settings"));
+        jPanel10.setMaximumSize(new java.awt.Dimension(1000, 250));
         jPanel10.setName("jPanel10"); // NOI18N
+        jPanel10.setPreferredSize(new java.awt.Dimension(1000, 250));
 
         v_aa_resourcePercentageThatMustExistForFactoryBuy.setModel(new javax.swing.SpinnerNumberModel(50, 25, 75, 1));
         v_aa_resourcePercentageThatMustExistForFactoryBuy.setName("v_aa_resourcePercentageThatMustExistForFactoryBuy"); // NOI18N
@@ -1426,30 +1686,26 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel53)
                     .addComponent(jLabel57))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 182, Short.MAX_VALUE)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(v_aa_maxUnitTypesForPurchaseMix, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addComponent(v_aa_resourcePercentageThatMustExistForFactoryBuy, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel54, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(v_aa_maxUnitTypesForPurchaseMix, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(v_aa_resourcePercentageThatMustExistForFactoryBuy, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel54, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel53)
-                            .addComponent(v_aa_resourcePercentageThatMustExistForFactoryBuy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel54))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel57, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addComponent(v_aa_maxUnitTypesForPurchaseMix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel53)
+                    .addComponent(jLabel54)
+                    .addComponent(v_aa_resourcePercentageThatMustExistForFactoryBuy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel57, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(v_aa_maxUnitTypesForPurchaseMix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1460,7 +1716,7 @@ public class SettingsWindow extends javax.swing.JDialog
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 670, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -1468,17 +1724,17 @@ public class SettingsWindow extends javax.swing.JDialog
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         v_aa_scrollPane.setViewportView(jPanel12);
 
         jPanel2.add(v_aa_scrollPane);
 
-        jTabbedPane1.addTab("Advanced", jPanel2);
+        v_tabPaneMain.addTab("Advanced", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1488,14 +1744,14 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 714, Short.MAX_VALUE))
+                    .addComponent(v_tabPaneMain, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 714, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
+                .addComponent(v_tabPaneMain, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -1569,17 +1825,23 @@ public class SettingsWindow extends javax.swing.JDialog
         v_unitPlacementMultiplier.setSelected(settings.EnableUnitPlacementMultiplier);
         v_unitPlacementMultiplyAmount.setValue(settings.UnitPlacementMultiplyPercent);
 
+        v_tr_attackOffensive_TakeoverChanceRequired.setValue(settings.TR_attackOffensive_TakeoverChanceRequired);
+        v_tr_attackOffensive_CounterAttackSurvivalChanceRequired.setValue(settings.TR_attackOffensive_CounterAttackSurvivalChanceRequired);
+        v_tr_attackOffensive_Neutrals_TakeoverChanceRequired.setValue(settings.TR_attackOffensive_Neutrals_TakeoverChanceRequired);
+        v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired.setValue(settings.TR_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired);
+        v_tr_attackOffensive_Capitals_TakeoverChanceRequired.setValue(settings.TR_attackOffensive_Capitals_TakeoverChanceRequired);
+        v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired.setValue(settings.TR_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired);
+        v_tr_attackStabalize_TakeoverChanceRequired.setValue(settings.TR_attackStabalize_TakeoverChanceRequired);
+        v_tr_attackStabalize_CounterAttackSurvivalChanceRequired.setValue(settings.TR_attackStabalize_CounterAttackSurvivalChanceRequired);
+        v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired.setValue(settings.TR_reinforceFrontLine_EnemyAttackSurvivalChanceRequired);
+        v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired.setValue(settings.TR_reinforceStabalize_EnemyAttackSurvivalChanceRequired);
+
         v_aa_resourcePercentageThatMustExistForFactoryBuy.setValue(settings.AA_resourcePercentageThatMustExistForFactoryBuy);
         v_aa_maxUnitTypesForPurchaseMix.setValue(settings.AA_maxUnitTypesForPurchaseMix);
 
-        v_aa_percentageOfCMTaskRequirementsNeededToPerformTask.setValue(settings.AA_percentageOfCMTaskRequirementsNeededToPerformTask);
-        v_aa_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore.setValue(settings.AA_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore);
-        v_aa_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore.setValue(settings.AA_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore);
-        v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore.setValue(settings.AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore);
-        
-        v_aa_percentageOfNCMTaskRequirementsNeededToPerformTask.setValue(settings.AA_percentageOfNCMTaskRequirementsNeededToPerformTask);
-        v_aa_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore.setValue(settings.AA_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore);
-        v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore.setValue(settings.AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore);
+        v_aa_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask.setValue(settings.AA_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask);
+        v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask.setValue(settings.AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask);
+        v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask.setValue(settings.AA_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask);
         
         v_aa_initialTaskConsiderationLoopCount.setValue(settings.AA_initialTaskConsiderationLoopCount);
 
@@ -1647,18 +1909,24 @@ public class SettingsWindow extends javax.swing.JDialog
         settings.ResourceCollectionMultiplyPercent = Integer.parseInt(v_resourceCollectionMultiplyAmount.getValue().toString());
         settings.EnableUnitPlacementMultiplier = v_unitPlacementMultiplier.isSelected();
         settings.UnitPlacementMultiplyPercent = Integer.parseInt(v_unitPlacementMultiplyAmount.getValue().toString());
+        
+        settings.TR_attackOffensive_TakeoverChanceRequired = Integer.parseInt(v_tr_attackOffensive_TakeoverChanceRequired.getValue().toString());
+        settings.TR_attackOffensive_CounterAttackSurvivalChanceRequired = Integer.parseInt(v_tr_attackOffensive_CounterAttackSurvivalChanceRequired.getValue().toString());
+        settings.TR_attackOffensive_Neutrals_TakeoverChanceRequired = Integer.parseInt(v_tr_attackOffensive_Neutrals_TakeoverChanceRequired.getValue().toString());
+        settings.TR_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired = Integer.parseInt(v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired.getValue().toString());
+        settings.TR_attackOffensive_Capitals_TakeoverChanceRequired = Integer.parseInt(v_tr_attackOffensive_Capitals_TakeoverChanceRequired.getValue().toString());
+        settings.TR_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired = Integer.parseInt(v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired.getValue().toString());
+        settings.TR_attackStabalize_TakeoverChanceRequired = Integer.parseInt(v_tr_attackStabalize_TakeoverChanceRequired.getValue().toString());
+        settings.TR_attackStabalize_CounterAttackSurvivalChanceRequired = Integer.parseInt(v_tr_attackStabalize_CounterAttackSurvivalChanceRequired.getValue().toString());
+        settings.TR_reinforceFrontLine_EnemyAttackSurvivalChanceRequired = Integer.parseInt(v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired.getValue().toString());
+        settings.TR_reinforceStabalize_EnemyAttackSurvivalChanceRequired = Integer.parseInt(v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired.getValue().toString());
 
         settings.AA_resourcePercentageThatMustExistForFactoryBuy = Integer.parseInt(v_aa_resourcePercentageThatMustExistForFactoryBuy.getValue().toString());
         settings.AA_maxUnitTypesForPurchaseMix = Integer.parseInt(v_aa_maxUnitTypesForPurchaseMix.getValue().toString());
 
-        settings.AA_percentageOfCMTaskRequirementsNeededToPerformTask = Integer.parseInt(v_aa_percentageOfCMTaskRequirementsNeededToPerformTask.getValue().toString());
-        settings.AA_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore = v_aa_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore.getValue();
-        settings.AA_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore = v_aa_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore.getValue();
-        settings.AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore = v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore.getValue();
-
-        settings.AA_percentageOfNCMTaskRequirementsNeededToPerformTask = Integer.parseInt(v_aa_percentageOfNCMTaskRequirementsNeededToPerformTask.getValue().toString());
-        settings.AA_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore = v_aa_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore.getValue();
-        settings.AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore = v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore.getValue();
+        settings.AA_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask = Integer.parseInt(v_aa_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask.getValue().toString());
+        settings.AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask = Integer.parseInt(v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask.getValue().toString());
+        settings.AA_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask = Integer.parseInt(v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask.getValue().toString());
 
         settings.AA_initialTaskConsiderationLoopCount = Integer.parseInt(v_aa_initialTaskConsiderationLoopCount.getValue().toString());
 
@@ -1728,11 +1996,6 @@ public class SettingsWindow extends javax.swing.JDialog
         v_unitPlacementMultiplyAmount.setEnabled(v_unitPlacementMultiplier.isSelected());
     }//GEN-LAST:event_v_unitPlacementMultiplierStateChanged
 
-    private void v_aa_hotspotInvalidationStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_v_aa_hotspotInvalidationStateChanged
-    {//GEN-HEADEREND:event_v_aa_hotspotInvalidationStateChanged
-        v_aa_radiusOfHotspotThreatInvalidation.setEnabled(v_aa_hotspotInvalidation.isSelected());
-    }//GEN-LAST:event_v_aa_hotspotInvalidationStateChanged
-
     private void v_okButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_v_okButtonActionPerformed
     {//GEN-HEADEREND:event_v_okButtonActionPerformed
         DSettings settings = CreateSettings();
@@ -1746,6 +2009,177 @@ public class SettingsWindow extends javax.swing.JDialog
         LoadSettings(settings);
         this.setVisible(false);
 }//GEN-LAST:event_v_cancelButtonActionPerformed
+
+    private void v_settingsDetailsButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_v_settingsDetailsButtonActionPerformed
+    {//GEN-HEADEREND:event_v_settingsDetailsButtonActionPerformed
+        final JDialog dialog = new JDialog(this, "Dynamix AI - Settings Details");
+
+        String message = "";
+        if (v_tabPaneMain.getSelectedIndex() == 0) //General
+        {
+            message = "General\r\n"
+                    + "\r\n"
+                    + "Battle Calculation Method: This setting allows you to change how the AI determines if it will win a battle.\r\n"
+                    + "Currently, the only option available is 'Battle Calculator', which runs simulations of the actual battle, and averages the results, thereby determines it's chances of winning the battle.";
+        }
+        else if (v_tabPaneMain.getSelectedIndex() == 1) //AI Pausing
+        {
+            message = "AI Pausing\r\n"
+                    + "\r\n"
+                    + "Action Length vs Action Wait: Action length goals cause the AI to adjust itself so each action(an attack, reinforcement, etc) takes the amount of time specified by the user.\r\n"
+                    + "Action wait goals cause the AI to pause after each action is calculated and performed for the amount of time specified by the user.\r\n"
+                    + "Example 1: User sets the goal type to action length, sets all the specific time durations to 500 milliseconds. The AI now starts playing. It is calculating an attack.\r\n"
+                    + "It finished performing the move, and sees it only took 100 milliseconds. Because of this, it pauses itself for 400 milliseconds so that the total wait time for the action ends up at 500 milliseconds.\r\n"
+                    + "Example 2: User sets the goal type to action wait, sets all the specific time durations to 500 milliseconds. The AI now starts playing. It is calculating an attack.\r\n"
+                    + "It finishes performing the move, and sees it took 100 milliseconds. Because the goal type is action wait, the AI simply pauses itself for 500 milliseconds. In the end, the entire move took 600 milliseconds.\r\n"
+                    + "\r\n"
+                    + "When an action is taking longer than the time specified, reduce the calc'ing run count to X: This option lets the AI 'speed itself up' when it's taking longer than the time set earlier.\r\n"
+                    + "It does this by reducing the number of times it simulates battles. This reduces the time spent, but also reduces the accuracy of it's battle calculating.\r\n"
+                    + "Note that it only starts this reduction of battle-simulation-counts *after* the current action is taking longer to calculate than the user wanted.\r\n"
+                    + "Also, the reduction only lasts till the action has been performed, so the run count reduction does not get applied to the next action.";
+        }
+        else if (v_tabPaneMain.getSelectedIndex() == 2) //AI Learning
+        {
+            message = "AI Learning";
+        }
+        else if (v_tabPaneMain.getSelectedIndex() == 3) //AI Cheating
+        {
+            message = "AI Cheating\r\n"
+                    + "\r\n"
+                    + "Resource Collection Multiplier: This cheat multiplies the amount of resources collected at the end of the round by the percentage supplied.\r\n"
+                    + "Example 1: The user turns the resource collection modifier cheat on, and sets the percentage to 150%. The AI now starts playing.\r\n"
+                    + "It finishes its turn and collects its resources. Instead of getting 10 PUs, though, it collects 15, as the resource collection cheat is turned on.\r\n"
+                    + "Note that the actual resource multiplication is done at the start of the next turn.\r\n"
+                    + "\r\n"
+                    + "Unit Placement Multiplier: This cheat multiplies the number of units placed down on each factory by the percentage supplied.\r\n"
+                    + "Example 1: The user turns the unit placement modifier cheat on, and sets the percentage to 150%. The AI now starts playing.\r\n"
+                    + "It finishes its purchase, combat, and non combat phases, and is going to place its units. It has ten infantry, all going to be placed on the cap.\r\n"
+                    + "Instead of placing 10 infantry, though, it places 15, as the unit placement cheat is turned on.\r\n"
+                    + "Note that the AI decides which extra units to place based on how high each possible unit's randomly generated number compares with the multiply percentage.";
+        }
+        else if (v_tabPaneMain.getSelectedIndex() == 4) //Calc Run Counts
+        {
+            message = "Calc Run Count\r\n"
+                    + "\r\n"
+                    + "At the moment, there are no detailed descriptions of these settings, as they are meant to be self-explanatory.\r\n"
+                    + "For those of you who unaware of the meaning of battle calc run counts, read the following:\r\n"
+                    + "\r\n"
+                    + "As you probably already know, there is a tool in TripleA called the battle calculator.\r\n"
+                    + "Using this tool, you can have TripleA simulate a battle many times, then tell you the chances you have of winning the battle, losing the battle, or having a draw.\r\n"
+                    + "Additionally, this tool can be used to found out how many units will be left over, for the attacker and defender.\r\n"
+                    + "Now, the Dynamix AI you are currently running incorporates this battle calculator into it's playing.\r\n"
+                    + "It uses the battle calculator to determine which unit is best at attacking, whether it has enough troops to attack an enemy territory, etc.\r\n"
+                    + "\r\n"
+                    + "Now that you are aware of what the battle calculator is, you'll be able to determine how many times the AI runs battle calc's on different things.\r\n"
+                    + "Note that if you lower these batte calc run counts, the AI will run faster, but you could possibly reduce the accuracy of the AI's calculations, thereby reducing the AI's play quality\r\n"
+                    + "\r\n"
+                    + "Also, many of the AI settings are in need of tweaking, so if any of you'd like to figure out the best setting values, we'd be glad to incorporate them into the AI so everyone can benifit.\r\n";
+        }
+        else if (v_tabPaneMain.getSelectedIndex() == 5) //Task Requirements
+        {
+            message = "Task Requirements\r\n"
+                    + "\r\n"
+                    + "At the moment, there are no detailed descriptions of these settings, as they are meant to be self-explanatory.\r\n"
+                    + "For those of you who unaware of what 'tasks' are, they're basically just 'wrappers' for attacks on territories and territory reinforcements.\r\n"
+                    + "Because of this, these settings give you almost full control over the aggresiveness, defensiveness, etc. for all the AI's attacks and reinforcements.\r\n"
+                    + "As this AI is still in development, any feedback on what these values should default to would be appreciated.";
+        }
+        else if (v_tabPaneMain.getSelectedIndex() == 6) //Debugging
+        {
+            message = "AI Pausing\r\n"
+                    + "\r\n"
+                    + "AI Logging: When this is checked, the AI's will output their logs, as they come in, so you can see exactly what the AI is thinking.\r\n"
+                    + "Note that if you check this on, you still have to press OK then reopen the settings window for the logs to actually start displaying.\r\n"
+                    + "\r\n"
+                    + "Log Depth: This setting lets you choose how deep you want the AI logging to be. Fine only displays the high-level events, like the start of a phase, etc.\r\n"
+                    + "Finer displays medium-level events, such as attacks, reinforcements, etc.\r\n"
+                    + "Finest displays all the AI logging available. Can be used for detailed ananlysis, but is a lot harder to read through it.\r\n"
+                    + "\r\n"
+                    + "Pause AI's: This checkbox pauses all the Dynamix AI's while it's checked, so you can look at the logs without the AI's outputing floods of information.\r\n"
+                    + "\r\n"
+                    + "Limit Log History To X Rounds: If this is checked, the AI log information will be limited to X rounds of information.\r\n";
+        }
+        else if (v_tabPaneMain.getSelectedIndex() == 7) //Advanced
+        {
+            message = "Advanced\r\n"
+                    + "\r\n"
+                    + "Percentage Of Resources That Must Exist After Purchases For AI To Buy Factory: The percentage of the resources(PUs) that the AI had at the beginning of the purchase phase that must exist after all purchases for the AI to buy a factory.\r\n"
+                    + "\r\n"
+                    + "Max Unit Types To Calculate For Factory Purchase Mix: If you lower this, the AI will purchase faster, but there will also be less of a variety of units in each purchase mix.\r\n"
+                    + "\r\n"
+                    + "Percent Of Meeting Of Attack-Takeover-Constant Needed To Perform CM Task: If you lower this, a cm task will get performed, even if it doesn't completely meet the attack-takeover chance requirement constant.\r\n"
+                    + "(You should keep this above 90% to prevent suicide attacks)\r\n"
+                    + "\r\n"
+                    + "Percent Of Meeting Of Counter-Attack-Survival-Constant Needed To Perform CM Task: If you lower this, a cm task will get performed, even if it doesn't completely meet the counter-attack survival chance requirement constant.\r\n"
+                    + "(You should keep this above 80% to prevent the AI from attacking a ter and not having enough leftover to keep itself safe from counter-attack)\r\n"
+                    + "\r\n"
+                    + "Percent Of Meeting Of Max-Enemy-Attack-Takeover-Constant Needed To Perform NCM Task: If you lower this, an ncm task will get performed, even if it doesn't completely meet the max-enemy-attack-takeover chance requirement constant.\r\n"
+                    + "(You should keep this above 80% to prevent the AI from moving units into vulnerable positions)\r\n"
+                    + "\r\n"
+                    + "Initial Task Consideration Loop Count: The higher this value, the better the AI will do when attacking or defending on battle fronts.\r\n"
+                    + "\r\n"
+                    + "Threat Invalidation: Threat invalidation is a feature added to the AI that enables it to be more bold on a battle front when there are armies behind it or next to it, as a human would do.\r\n"
+                    + "Without this feature, the AI will attempt to defend itself at every territory on a battle front.\r\n"
+                    + "This feature partially fixes this issue by 'ignoring', or 'invalidating' threats on a battle front if a task is known to be able to defend against them.\r\n"
+                    + "Now to the setting details...\r\n"
+                    + "\r\n"
+                    + "Threat Invalidation Types: None causes the AI to use no threat invalidation, Global causes the AI to invalidate threats for every one of our territories, meaning they will all ignore any threats that have been invalidated,\r\n"
+                    + "and 'Hotspot, Radius X' causes the AI to invalidate threats only for the ters withing X ters of the ter that invalidated the threats.\r\n"
+                    + "This option is probably the best, because it keeps the AI from ignoring powerful, far-off airplane stacks. (Which humans could otherwise use to trick the AI into becoming vulnerable on a battle front)\r\n"
+                    + "Example 1: User sets the invalidation type to None. The AI now starts playing as Russia. It is calculating the attacks on the German-Russian battle front.\r\n"
+                    + "There is a large german airplane stack in Berlin, and a good number of German ground troops on the battle front.\r\n"
+                    + "The AI loops through the attackable locations, and only attacks in one location, because it didn't have enough troops to be safe enough from counter-attack with any of the other attacks.\r\n"
+                    + "(Each time the huge air stack was noticed, and the AI thought it'd get obliterated if it attacked any of the ters, so it pooled them all together so it could attack one ter 'safely')\r\n"
+                    + "Because of how little the AI attacked, Germany overran Russia in a matter of turns, and eventually took over the rest of the world.\r\n"
+                    + "Example 2: User sets the invalidation type to Global. The AI now starts playing as Russia. It is calculating the attacks on the German-Russian battle front.\r\n"
+                    + "There is a large german airplane stack in Berlin, and a good number of German ground troops on the battle front.\r\n"
+                    + "The AI loops through the attackable locations, and attacks about three-fourths of the enemy ters, leaving half its front vulnerable.\r\n"
+                    + "(After the first successful attack was performed(with many, many units, mind you), the AI invalidated all it's threats, *including* the entire german air stack)\r\n"
+                    + "Because of how bold the AI was, Germany was able to widdle down the Russian army(attacking the vulnerable ters) until it eventually took Russias capital\r\n"
+                    + "Example 3: User sets the invalidation type to Hotspot, Radius 1. The AI now starts playing as Russia. It is calculating the attacks on the German-Russian battle front.\r\n"
+                    + "There is a large german airplane stack in Berlin, and a good number of German ground troops on the battle front.\r\n"
+                    + "The AI loops through the attackable locations, and attacks about half of the enemy ters, leaving a couple ters vulnerable, though it does have enough troops by the vulnerable ters to take them back, if needed.\r\n"
+                    + "(After the first successful attack was performed(with many, many units, mind you), the AI invalidated it's threats, *including* the entire german air stack, but only for the area around it, 2 ters radius)\r\n"
+                    + "Because it was not over-cautious, or over-bold, the Russian army did a much better job attacking/defending on the battle front, -but- unfortunately was still taken over by Germay.\r\n"
+                    + "Because of Russia's glorious struggle, though, its allies were able to eventually stop the german advance, and free France and Russia, once and for all! (Though the soviet union became a problem later on...)\r\n"
+                    + "\r\n"
+                    + "Percentage Of Threats That Become Invalidated When A Task Is Resistant To Them: This setting allows the user to choose what percentage of the threats to invalidate when a task is successful.\r\n"
+                    + "For example, this setting would determine what percentage of that german air stack mentioned earlier would be 'ignored', or 'invalidated', when the first successful task was performed with enough units to be safe from it. (The airplane stack)\r\n"
+                    + "For more info on threat invalidation, read up on the threat invalidation types listed above.";
+        }
+
+        JTextArea label = new JTextArea(message);
+        label.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        label.setEditable(false);
+        label.setAutoscrolls(true);
+        label.setLineWrap(false);
+        label.setFocusable(false);
+        label.setWrapStyleWord(true);
+        label.setLocation(0, 0);
+        dialog.setBackground(label.getBackground());
+        dialog.setLayout(new BorderLayout());
+        JScrollPane pane = new JScrollPane();
+        pane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        pane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        pane.setViewportView(label);
+        dialog.add(pane, BorderLayout.CENTER);
+        JButton button = new JButton(new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                dialog.dispose();
+            }
+        });
+        button.setText("Close");
+        button.setMinimumSize(new Dimension(100, 30));
+        dialog.add(button, BorderLayout.SOUTH);
+        dialog.setMinimumSize(new Dimension(500, 300));
+        dialog.setSize(new Dimension(800, 600));
+        dialog.setResizable(true);
+        dialog.setLocationRelativeTo(this);
+        dialog.setDefaultCloseOperation(2);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_v_settingsDetailsButtonActionPerformed
 
     private void ChangeTotalLengthPanelsState(boolean enabled)
     {
@@ -1909,26 +2343,49 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JLabel jLabel46;
     private javax.swing.JLabel jLabel47;
     private javax.swing.JLabel jLabel48;
-    private javax.swing.JLabel jLabel49;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel50;
     private javax.swing.JLabel jLabel51;
+    private javax.swing.JLabel jLabel52;
     private javax.swing.JLabel jLabel53;
     private javax.swing.JLabel jLabel54;
     private javax.swing.JLabel jLabel55;
+    private javax.swing.JLabel jLabel56;
     private javax.swing.JLabel jLabel57;
     private javax.swing.JLabel jLabel58;
+    private javax.swing.JLabel jLabel59;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel60;
     private javax.swing.JLabel jLabel61;
+    private javax.swing.JLabel jLabel62;
+    private javax.swing.JLabel jLabel63;
     private javax.swing.JLabel jLabel64;
     private javax.swing.JLabel jLabel65;
     private javax.swing.JLabel jLabel66;
+    private javax.swing.JLabel jLabel67;
     private javax.swing.JLabel jLabel68;
     private javax.swing.JLabel jLabel69;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel70;
     private javax.swing.JLabel jLabel71;
+    private javax.swing.JLabel jLabel72;
+    private javax.swing.JLabel jLabel73;
+    private javax.swing.JLabel jLabel74;
+    private javax.swing.JLabel jLabel75;
+    private javax.swing.JLabel jLabel76;
+    private javax.swing.JLabel jLabel77;
+    private javax.swing.JLabel jLabel78;
+    private javax.swing.JLabel jLabel79;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel80;
+    private javax.swing.JLabel jLabel81;
+    private javax.swing.JLabel jLabel82;
+    private javax.swing.JLabel jLabel84;
+    private javax.swing.JLabel jLabel85;
+    private javax.swing.JLabel jLabel86;
+    private javax.swing.JLabel jLabel87;
+    private javax.swing.JLabel jLabel88;
+    private javax.swing.JLabel jLabel89;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
@@ -1936,6 +2393,8 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1944,23 +2403,19 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JRadioButton v_aa_globalThreatInvalidation;
     private javax.swing.JRadioButton v_aa_hotspotInvalidation;
-    private javax.swing.JSlider v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore;
-    private javax.swing.JSlider v_aa_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore;
-    private javax.swing.JSlider v_aa_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore;
-    private javax.swing.JSlider v_aa_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore;
-    private javax.swing.JSlider v_aa_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore;
     private javax.swing.JSpinner v_aa_initialTaskConsiderationLoopCount;
     private javax.swing.JSpinner v_aa_maxUnitTypesForPurchaseMix;
     private javax.swing.JRadioButton v_aa_noThreatInvalidation;
-    private javax.swing.JSpinner v_aa_percentageOfCMTaskRequirementsNeededToPerformTask;
-    private javax.swing.JSpinner v_aa_percentageOfNCMTaskRequirementsNeededToPerformTask;
+    private javax.swing.JSpinner v_aa_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask;
+    private javax.swing.JSpinner v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask;
+    private javax.swing.JSpinner v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask;
     private javax.swing.JSpinner v_aa_percentageOfResistedThreatsThatTasksInvalidate;
     private javax.swing.JSpinner v_aa_radiusOfHotspotThreatInvalidation;
     private javax.swing.JSpinner v_aa_resourcePercentageThatMustExistForFactoryBuy;
     private javax.swing.JScrollPane v_aa_scrollPane;
+    private javax.swing.JScrollPane v_aa_scrollPane1;
     private javax.swing.JRadioButton v_actionLengthGoalRB;
     private javax.swing.JRadioButton v_actionWaitGoalRB;
     private javax.swing.JPanel v_actionWaitGoalsPanel;
@@ -2007,7 +2462,18 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JSpinner v_resourceCollectionMultiplyAmount;
     private javax.swing.JButton v_restoreDefaultsButton;
     private javax.swing.JButton v_settingsDetailsButton;
+    private javax.swing.JTabbedPane v_tabPaneMain;
     private javax.swing.JPanel v_totalLengthGoalsPanel;
+    private javax.swing.JSpinner v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired;
+    private javax.swing.JSpinner v_tr_attackOffensive_Capitals_TakeoverChanceRequired;
+    private javax.swing.JSpinner v_tr_attackOffensive_CounterAttackSurvivalChanceRequired;
+    private javax.swing.JSpinner v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired;
+    private javax.swing.JSpinner v_tr_attackOffensive_Neutrals_TakeoverChanceRequired;
+    private javax.swing.JSpinner v_tr_attackOffensive_TakeoverChanceRequired;
+    private javax.swing.JSpinner v_tr_attackStabalize_CounterAttackSurvivalChanceRequired;
+    private javax.swing.JSpinner v_tr_attackStabalize_TakeoverChanceRequired;
+    private javax.swing.JSpinner v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired;
+    private javax.swing.JSpinner v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired;
     private javax.swing.JCheckBox v_unitPlacementMultiplier;
     private javax.swing.JSpinner v_unitPlacementMultiplyAmount;
     // End of variables declaration//GEN-END:variables

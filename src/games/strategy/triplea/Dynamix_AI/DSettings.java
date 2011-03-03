@@ -73,19 +73,25 @@ public class DSettings implements Serializable
     public int AA_resourcePercentageThatMustExistForFactoryBuy = 50;
     public int AA_maxUnitTypesForPurchaseMix = 5;
 
-    public int AA_percentageOfCMTaskRequirementsNeededToPerformTask = 96;
-    public int AA_howMuchTheMeetingOfMinTCRequirementsAffectsTotalCMScore = 50;
-    public int AA_howMuchTheMeetingOfMinRADCRequirementsAffectsTotalCMScore = 50;
-    public int AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalCMScore = 50;
+    public int AA_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask = 96;
+    public int AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask = 96;
+    public int AA_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask = 96;
 
-    public int AA_percentageOfNCMTaskRequirementsNeededToPerformTask = 96;
-    public int AA_howMuchTheMeetingOfMaxTCRequirementsAffectsTotalNCMScore = 50;
-    public int AA_howMuchTheMeetingOfMaxBVCRequirementsAffectsTotalNCMScore = 50;
+    public int TR_attackOffensive_TakeoverChanceRequired = 70;
+    public int TR_attackOffensive_CounterAttackSurvivalChanceRequired = 50;
+    public int TR_attackOffensive_Neutrals_TakeoverChanceRequired = 95;
+    public int TR_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired = 10;
+    public int TR_attackOffensive_Capitals_TakeoverChanceRequired = 50;
+    public int TR_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired = 50;
+    public int TR_attackStabalize_TakeoverChanceRequired = 55;
+    public int TR_attackStabalize_CounterAttackSurvivalChanceRequired = 75;
+    public int TR_reinforceFrontLine_EnemyAttackSurvivalChanceRequired = 50;
+    public int TR_reinforceStabalize_EnemyAttackSurvivalChanceRequired = 50;
 
     public int AA_initialTaskConsiderationLoopCount = 3;
 
     public ThreatInvalidationType AA_threatInvalidationType = ThreatInvalidationType.AroundHotspot;
-    public int AA_threatInvalidationAroundHotspotRadius = 2;
+    public int AA_threatInvalidationAroundHotspotRadius = 1;
     public int AA_percentageOfResistedThreatThatTasksInvalidate = 75;
 
     private static DSettings s_lastSettings = null;

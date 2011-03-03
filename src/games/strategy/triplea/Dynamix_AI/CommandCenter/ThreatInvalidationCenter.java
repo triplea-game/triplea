@@ -78,7 +78,7 @@ public class ThreatInvalidationCenter
         if (DSettings.LoadSettings().AA_percentageOfResistedThreatThatTasksInvalidate != 100)
         {
             DUtils.Log(Level.FINEST, "            Threats we would invalidate if we invalidated all: {0}", threats);
-            threats = DUtils.GetXPercentOfTheItemsInList(threats, (DSettings.LoadSettings().AA_percentageOfResistedThreatThatTasksInvalidate / 100.0F));
+            threats = DUtils.GetXPercentOfTheItemsInList(threats, DUtils.ToFloat(DSettings.LoadSettings().AA_percentageOfResistedThreatThatTasksInvalidate));
         }
 
         List<Territory> tersWereInvalidatingThreatsFor = new ArrayList<Territory>();

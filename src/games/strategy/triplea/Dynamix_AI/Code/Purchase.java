@@ -64,7 +64,7 @@ public class Purchase
                 GlobalCenter.PUsAtEndOfLastTurn = DUtils.GetTotalProductionOfTerritoriesInList(DUtils.ToList(data.getMap().getTerritoriesOwnedBy(player))); //This is a temp hack, should definately be changed
             int PUsCollectedLastTurn = player.getResources().getQuantity(GlobalCenter.GetPUResource()) - GlobalCenter.PUsAtEndOfLastTurn;
             //Since we already have the pu's we collected last turn, only add the extra
-            int PUChange = (int)((float)PUsCollectedLastTurn * (DSettings.LoadSettings().ResourceCollectionMultiplyPercent / 100.0F)) - PUsCollectedLastTurn;
+            int PUChange = (int)((float)PUsCollectedLastTurn * DUtils.ToFloat(DSettings.LoadSettings().ResourceCollectionMultiplyPercent)) - PUsCollectedLastTurn;
             if(PUChange <= 0)
                 return;
             final int newPUs = player.getResources().getQuantity(GlobalCenter.GetPUResource()) + PUChange;
@@ -159,7 +159,7 @@ public class Purchase
                     factoryPurchase = "aaGun owned by " + player.getName();
                 DUtils.Log(Level.FINER, "    Purchase for factory complete. Ter: {0} Purchases: {1}", factoryTer.getName(), factoryPurchase);
             }
-            float percentageOfInitialPUsNeededForFactoryPurchase = (DSettings.LoadSettings().AA_resourcePercentageThatMustExistForFactoryBuy / 100.0F);
+            float percentageOfInitialPUsNeededForFactoryPurchase = DUtils.ToFloat(DSettings.LoadSettings().AA_resourcePercentageThatMustExistForFactoryBuy);
             if (PUsToSpend > (int)(origR * percentageOfInitialPUsNeededForFactoryPurchase)) //If we used less than X% our money (user set)
             {
                 DUtils.Log(Level.FINER, "  We used less than x(user-set) percent our money in purchases, so attempting to purchase a new factory.");

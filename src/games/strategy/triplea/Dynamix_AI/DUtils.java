@@ -235,6 +235,10 @@ public class DUtils
         }
         return result;
     }
+    public static float ToFloat(int percentage)
+    {
+        return percentage / 100.0F;
+    }
     public static List ToList(Collection collection)
     {
         return new ArrayList(collection);
@@ -1372,7 +1376,7 @@ public class DUtils
         if (runCount != 1)
         {
             if (DSettings.LoadSettings().AllowCalcingDecrease && Dynamix_AI.GetTimeTillNextScheduledActionDisplay() == 0) //Hmmm... Let's try to speed things up to reach the user-specified action length
-                runCount = (int) DUtils.Limit(runCount * (DSettings.LoadSettings().CalcingDecreaseToPercentage / 100.0F), 1.0F, Integer.MAX_VALUE);
+                runCount = (int) DUtils.Limit(runCount * DUtils.ToFloat(DSettings.LoadSettings().CalcingDecreaseToPercentage), 1.0F, Integer.MAX_VALUE);
 
             float attackerUnitsStrength = DUtils.GetAttackScoreOfUnits(attacking);
             float defenderUnitsStrength = DUtils.GetDefenseScoreOfUnits(defending);
@@ -2402,7 +2406,7 @@ public class DUtils
     {
         //We have this code here to reduce calc count because it's so slow (calc count reduction here as well as in battle calc method, twice because of how slow this temp method is)
         if (DSettings.LoadSettings().AllowCalcingDecrease && Dynamix_AI.GetTimeTillNextScheduledActionDisplay() == 0) //Hmmm... Let's try to speed things up to reach the user-specified action length
-            calcRunsPerUnit = (int)DUtils.Limit(calcRunsPerUnit * (DSettings.LoadSettings().CalcingDecreaseToPercentage / 100.0F), 1.0F, Integer.MAX_VALUE);
+            calcRunsPerUnit = (int)DUtils.Limit(calcRunsPerUnit * DUtils.ToFloat(DSettings.LoadSettings().CalcingDecreaseToPercentage), 1.0F, Integer.MAX_VALUE);
 
         float bestTakeoverScore = Integer.MIN_VALUE;
         Unit bestUnit = null;
