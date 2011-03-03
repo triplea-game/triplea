@@ -193,5 +193,6 @@ public interface Constants
   public static final String UNLIMITED_CONSTRUCTIONS = "Unlimited Constructions";
   public static final String MORE_CONSTRUCTIONS_WITHOUT_FACTORY = "More Constructions without Factory";
   public static final String MORE_CONSTRUCTIONS_WITH_FACTORY = "More Constructions with Factory";
+  public static final String UNIT_PLACEMENT_RESTRICTIONS = "Unit Placement Restrictions";
   
 }

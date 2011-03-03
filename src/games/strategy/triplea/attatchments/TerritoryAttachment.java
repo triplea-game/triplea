@@ -21,6 +21,7 @@
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.DefaultAttachment;
+import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
@@ -145,6 +146,7 @@ public class TerritoryAttachment extends DefaultAttachment
     private boolean m_kamikazeZone = false;
     private int m_unitProduction = 0;  
     private boolean m_blockadeZone = false;
+    private String[] m_unitPlacementRestrictions;
     //private String m_unitProduction = "0";  
 
   /** Creates new TerritoryAttatchment */
@@ -311,5 +313,40 @@ public class TerritoryAttachment extends DefaultAttachment
     public boolean isBlockadeZone()
     {
     	return m_blockadeZone;
+    }
+    
+    public void setUnitPlacementRestrictions(String value)
+    {
+  	  m_unitPlacementRestrictions = value.split(":");
+    }
+
+    public String[] getUnitPlacementRestrictions()
+    {
+        return m_unitPlacementRestrictions;
+    }
+    
+    /**
+     * Called after the attatchment is created.
+     */
+    public void validate() throws GameParseException
+    {
+        if(m_unitPlacementRestrictions != null)
+      	  getListedUnits(m_unitPlacementRestrictions);
+    }
+    
+    //Validate that all listed units actually exist
+    public Collection<Unit> getListedUnits(String[] list)    
+    {
+        List<Unit> rVal = new ArrayList<Unit>();
+        
+        for(String name : list)
+        {
+      	  	//Validate all units exist
+            //Unit u = getData().getUnits().getUnits(name);
+            //if(u == null)
+                //throw new IllegalStateException("Territory Attachments: No unit called: " + name); 
+            //rVal.add(u);
+        }        
+        return rVal;
     }
 }

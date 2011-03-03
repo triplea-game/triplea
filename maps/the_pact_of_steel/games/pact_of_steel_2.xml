@@ -3840,6 +3840,11 @@
 						<boolean/>
 				</property>
 
+				<!-- Unit Placement Restrictions are territory based restrictions on the placement of units, so that for example you can not place aircraft in the balkans, or no new factories on islands -->
+				<property name="Unit Placement Restrictions" value="true" editable="true">
+						<boolean/>
+				</property>
+
 				<property name="SBR Affects Unit Production" value="true" editable="false">
 						<boolean/>
 				</property>
