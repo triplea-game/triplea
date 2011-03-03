@@ -31,7 +31,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.util.*;
 
 import java.util.*;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /*
@@ -9750,7 +9749,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		
 		List<Unit> rDamaged = new ArrayList<Unit>();
 		List<Unit> rKilled = new ArrayList<Unit>();
-		List<Unit> workUnits = new ArrayList<Unit>();
 		int xCount = count; // how many the game is saying we should have
 		for (Unit unitBB : selectFrom)
 		{
@@ -9774,6 +9772,25 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			return m4;
 		}
 		
+		boolean defending = !get_onOffense();
+		IntegerMap<UnitType> costs = BattleCalculator.getCosts(hit, data);
+		float canWinPercentage = 1.0F; // we need to run a battle calc or something to determine what the chance of us winning is
+		boolean bonus = (canWinPercentage > .8);
+		List<Unit> workUnits = new ArrayList<Unit>(BattleCalculator.sortUnitsForCasualtiesWithSupport(selectFrom, defending, hit, costs, data, bonus));
+		
+		// need to sort workUnits so that if we are going to win, we don't take loaded transports, 2 hit units, or air units casualty til the end
+		
+		for (int j = 0; j < xCount; j++)
+		{
+			rKilled.add(workUnits.get(j));
+		}
+		
+		CasualtyDetails m2 = new CasualtyDetails(rKilled, rDamaged, false);
+		
+		return m2;
+		
+		
+		/* this is the worst casualty picker known to man:
 		if (xCount > 0)
 		{
 			for (Unit unitx : selectFrom)
@@ -9847,6 +9864,15 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			remainder.removeAll(workUnits);
 			workUnits.addAll(remainder);
 		}
+
+		for (int j = 0; j < xCount; j++)
+		{
+			rKilled.add(workUnits.get(j));
+		}
+		
+		CasualtyDetails m2 = new CasualtyDetails(rKilled, rDamaged, false);
+		
+		return m2;*/
 		/* Order:
 			SEA:
 			0) 1st hit battleship
@@ -9860,15 +9886,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			8) Battleship
 			9) anything else
 		*/
-
-		for (int j = 0; j < xCount; j++)
-		{
-			rKilled.add(workUnits.get(j));
-		}
-		
-		CasualtyDetails m2 = new CasualtyDetails(rKilled, rDamaged, false);
-		
-		return m2;
 	}
 	
 	/*

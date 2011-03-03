@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Moore AI's casualty picking fixed to work with all maps, not just ww2vX maps. (veqryn)
+
 * Caching of game data to speed up dynamix ai and multiple battle calcing in one turn.  And another patch for Dynamix AI. (wisconsin)
 
 * Added new method for Moore AI to move unused transports back to factories. (wisconsin)

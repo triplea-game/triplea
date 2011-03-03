@@ -466,7 +466,7 @@ public class BattleCalculator
         }
 
         // Sort units by power and cost in ascending order
-        List<Unit> sorted = new ArrayList<Unit>(sortUnitsForCasualtiesWithSupport(targets, defending, player, costs, data));
+        List<Unit> sorted = new ArrayList<Unit>(sortUnitsForCasualtiesWithSupport(targets, defending, player, costs, data, false));
         
         // Select units
         Iterator<Unit> sortedIter = sorted.iterator();
@@ -496,7 +496,7 @@ public class BattleCalculator
      * If you just return all infantry followed by all artillery, or the other way around, you will be missing out on some important support provided.  
      * (Veqryn)
      */
-    public static Collection<Unit> sortUnitsForCasualtiesWithSupport(Collection<Unit> targets, boolean defending, PlayerID player, IntegerMap<UnitType> costs, GameData data)
+    public static Collection<Unit> sortUnitsForCasualtiesWithSupport(Collection<Unit> targets, boolean defending, PlayerID player, IntegerMap<UnitType> costs, GameData data, boolean bonus)
     {
         if (s_enableCasualtySortingCaching)
         {
@@ -512,7 +512,7 @@ public class BattleCalculator
         }
 
     	List<Unit> sortedUnitsList = new ArrayList<Unit>(targets);
-    	Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, player, costs, data));
+    	Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, player, costs, data, bonus));
     	List<Unit> perfectlySortedUnitsList = new ArrayList<Unit>();
 
         int artillerySupportAvailable = DiceRoll.getArtillerySupportAvailable(sortedUnitsList, defending, player);
@@ -610,8 +610,8 @@ public class BattleCalculator
 	        			unitsByPowerGives.get(i).clear();
 	        			unitsByPowerReceives.get(i).clear();
 	        			unitsByPowerBoth.get(i).clear();
-	        			Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs, data));
-	        			Collections.sort(tempList2, new UnitBattleComparator(defending, player, costs, data));
+	        			Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs, data, bonus));
+	        			Collections.sort(tempList2, new UnitBattleComparator(defending, player, costs, data, bonus));
 	        			perfectlySortedUnitsList.addAll(tempList1);
 	        			perfectlySortedUnitsList.addAll(tempList2);
 	        			continue;
@@ -633,8 +633,8 @@ public class BattleCalculator
 	        			unitsByPowerGives.get(i).clear();
 	        			unitsByPowerReceives.get(i).clear();
 	        			unitsByPowerBoth.get(i).clear();
-	        			Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs, data));
-	        			Collections.sort(tempList2, new UnitBattleComparator(defending, player, costs, data));
+	        			Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs, data, bonus));
+	        			Collections.sort(tempList2, new UnitBattleComparator(defending, player, costs, data, bonus));
 	        			perfectlySortedUnitsList.addAll(tempList1);
 	        			perfectlySortedUnitsList.addAll(tempList2);
 	        			continue;
@@ -652,7 +652,7 @@ public class BattleCalculator
 	        			tempList1.addAll(unitsByPowerBoth.get(i));
 	        			unitsByPowerNone.get(i).clear();
 	        			unitsByPowerBoth.get(i).clear();
-	        			Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs, data));
+	        			Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs, data, bonus));
 	        			perfectlySortedUnitsList.addAll(tempList1);
 	        			continue;
 	        		}
@@ -669,7 +669,7 @@ public class BattleCalculator
 	        			tempList1.addAll(unitsByPowerBoth.get(i));
 	        			unitsByPowerNone.get(i).clear();
 	        			unitsByPowerBoth.get(i).clear();
-	        			Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs, data));
+	        			Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs, data, bonus));
 	        			perfectlySortedUnitsList.addAll(tempList1);
 	        			continue;
 	        		}
@@ -683,7 +683,7 @@ public class BattleCalculator
 	        				tempList2.add(unitsByPowerGives.get(i).get(0));
 	        			if (!unitsByPowerReceives.get(i).isEmpty())
 	        				tempList2.add(unitsByPowerReceives.get(i).get(0));
-	        			Collections.sort(tempList2, new UnitBattleComparator(defending, player, costs, data));
+	        			Collections.sort(tempList2, new UnitBattleComparator(defending, player, costs, data, bonus));
 	        			Unit u = tempList2.get(0);
 	        			tempList1.add(u);
 	        			UnitAttachment ua = UnitAttachment.get(u.getType());
@@ -697,7 +697,7 @@ public class BattleCalculator
 	        				unitsByPowerReceives.get(i).remove(0);
 	        				iSupportable--;
 	        			}
-	        			Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs, data));
+	        			Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs, data, bonus));
 	        			perfectlySortedUnitsList.addAll(tempList1);
 	        			continue;
 	        		}
@@ -980,8 +980,8 @@ public class BattleCalculator
                 
             	if (defending)
                 {
-                	if (DiceRoll.isFirstTurnLimitedRoll(player))
-                		tempStrength = Math.min(1, tempStrength);
+                	//if (DiceRoll.isFirstTurnLimitedRoll(player))
+                		//tempStrength = Math.min(1, tempStrength);
                 }
                 else
                 {
@@ -1043,13 +1043,15 @@ class UnitBattleComparator implements Comparator<Unit>
     private PlayerID m_player;
     private IntegerMap<UnitType> m_costs;
     private GameData m_data;
+    private boolean m_bonus;
 
-    public UnitBattleComparator(boolean defending, PlayerID player, IntegerMap<UnitType> costs, GameData data)
+    public UnitBattleComparator(boolean defending, PlayerID player, IntegerMap<UnitType> costs, GameData data, boolean bonus)
     {
         m_defending = defending;
         m_player = player;
         m_costs = costs;
         m_data = data;
+        m_bonus = bonus;
     }
 
     public int compare(Unit u1, Unit u2)
@@ -1064,6 +1066,13 @@ class UnitBattleComparator implements Comparator<Unit>
         
         int power1 = BattleCalculator.getUnitPowerForSorting(u1, m_defending, m_player, m_data);
         int power2 = BattleCalculator.getUnitPowerForSorting(u2, m_defending, m_player, m_data);
+        if (m_bonus)
+        {
+        	if ((Matches.UnitIsTransport.match(u1) && Matches.transportIsTransporting().match(u1)) || (Matches.UnitIsAir.match(u1)) || Matches.UnitIsTwoHit.match(u1) || (Matches.UnitIsCarrier.match(u1)))
+            	power1++;
+        	if ((Matches.UnitIsTransport.match(u2) && Matches.transportIsTransporting().match(u2)) || (Matches.UnitIsAir.match(u2)) || Matches.UnitIsTwoHit.match(u2) || (Matches.UnitIsCarrier.match(u2)))
+            	power2++;
+        }
         if (power1 != power2)
         {
             return power1 - power2;
@@ -1078,10 +1087,22 @@ class UnitBattleComparator implements Comparator<Unit>
         
         int power1reverse = BattleCalculator.getUnitPowerForSorting(u1, !m_defending, m_player, m_data);
         int power2reverse = BattleCalculator.getUnitPowerForSorting(u2, !m_defending, m_player, m_data);
+        if (m_bonus)
+        {
+        	if ((Matches.UnitIsTransport.match(u1) && Matches.transportIsTransporting().match(u1)) || (Matches.UnitIsAir.match(u1)) || Matches.UnitIsTwoHit.match(u1) || (Matches.UnitIsCarrier.match(u1)))
+        		power1reverse++;
+        	if ((Matches.UnitIsTransport.match(u2) && Matches.transportIsTransporting().match(u2)) || (Matches.UnitIsAir.match(u2)) || Matches.UnitIsTwoHit.match(u2) || (Matches.UnitIsCarrier.match(u2)))
+        		power2reverse++;
+        }
         if (power1reverse != power2reverse)
         {
             return power1reverse - power2reverse;
         }
+        
+        if (Matches.UnitIsTransport.match(u1) && (Matches.UnitIsNotTransport.match(u2) || Matches.transportIsNotTransporting().match(u2)) && Matches.transportIsTransporting().match(u1))
+        	return 1;
+        if (Matches.UnitIsTransport.match(u2) && (Matches.UnitIsNotTransport.match(u1) || Matches.transportIsNotTransporting().match(u1)) && Matches.transportIsTransporting().match(u2))
+        	return -1;
 
         return 0;
     }
