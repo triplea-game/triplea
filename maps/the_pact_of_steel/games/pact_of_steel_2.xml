@@ -2058,6 +2058,10 @@
                 <attatchment name="unitAttatchment" attatchTo="factory" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 						 <!-- factories can have movement, but not much else -->
                          <option name="isFactory" value="true"/>
+						 <!-- unitPlacementRestrictions are a list of territories where this unit can not be built. list can contain any number of territories, including sea zones .
+								every unit may have a list, and the lists may be different for each unit. default is no list.  
+								the list may be turned on/off with "Unit Placement Restrictions" game property -->
+						 <option name="unitPlacementRestrictions" value="Midway:Greenland:Gibraltar:Solomon Islands:Wake Island:Caroline Islands"/>
                 </attatchment>
 
                 <attatchment name="unitAttatchment" attatchTo="factory_hit" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
@@ -3660,7 +3664,7 @@
 				<!-- specific rules -->
 				<!-- land related -->
 					<!-- if true you may have a number of constructions up to the value of the territory, in territories with factories -->
-				<property name="More Constructions with Factory" value="true" editable="true">
+				<property name="More Constructions with Factory" value="false" editable="true">
 						<boolean/>
 				</property>
 				
@@ -3841,7 +3845,7 @@
 				</property>
 
 				<!-- Unit Placement Restrictions are territory based restrictions on the placement of units, so that for example you can not place aircraft in the balkans, or no new factories on islands -->
-				<property name="Unit Placement Restrictions" value="true" editable="true">
+				<property name="Unit Placement Restrictions" value="true" editable="false">
 						<boolean/>
 				</property>
 

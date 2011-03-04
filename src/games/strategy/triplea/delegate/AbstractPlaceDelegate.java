@@ -280,6 +280,16 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         {
         	Unit currentUnit = (Unit) unitHeldIter.next();
         	UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+
+    		// account for any unit placement restrictions by territory
+        	if (isUnitPlacementRestrictions())
+        	{
+            	String[] terrs = ua.getUnitPlacementRestrictions();
+            	Collection<Territory> listedTerrs = getListedTerritories(terrs);
+            	if (listedTerrs.contains(to))
+            		continue;
+        	}
+        	
         	if (Matches.UnitIsFactory.match(currentUnit) && !ua.isConstruction())
         	{
         		unitMapHeld.add("factory", 1);
@@ -410,6 +420,20 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             if (!Match.allMatch(units, Matches.UnitIsNotSea))
                 return "Cant place sea units on land";
         }
+        if (!isUnitPlacementRestrictions())
+        	return null;
+
+    	// account for any unit placement restrictions by territory
+        Iterator<Unit> unitsPlaceableIter = units.iterator();
+        while (unitsPlaceableIter.hasNext())
+        {
+        	Unit currentUnit = (Unit) unitsPlaceableIter.next();
+        	UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+        	String[] terrs = ua.getUnitPlacementRestrictions();
+        	Collection<Territory> listedTerrs = getListedTerritories(terrs);
+        	if (listedTerrs.contains(to))
+        		return "Cannot place these units in " + to.getName() + " due to Unit Placement Restrictions";
+        }
 
         return null;
     }
@@ -454,7 +478,23 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
                 && to.getUnits().someMatch(Matches.enemyUnit(player, m_data)))
             return null;
 
-        return placeableUnits;
+        if (!isUnitPlacementRestrictions())
+        	return placeableUnits;
+        
+        Collection<Unit> placeableUnits2 = new ArrayList<Unit>();
+        Iterator<Unit> unitsPlaceableIter = placeableUnits.iterator();
+        while (unitsPlaceableIter.hasNext())
+        {
+        	Unit currentUnit = (Unit) unitsPlaceableIter.next();
+        	UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+        	// account for any unit placement restrictions by territory
+        	String[] terrs = ua.getUnitPlacementRestrictions();
+        	Collection<Territory> listedTerrs = getListedTerritories(terrs);
+        	if (!listedTerrs.contains(to))
+        		placeableUnits2.add(currentUnit);
+        }
+        
+        return placeableUnits2;
     }
 
     protected Collection<Unit> getUnitsToBePlacedLand(Territory to, Collection<Unit> units,
@@ -507,6 +547,24 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         	}
         }
         
+        if (!isUnitPlacementRestrictions())
+        	return placeableUnits;
+        
+        Collection<Unit> placeableUnits2 = new ArrayList<Unit>();
+        Iterator<Unit> unitsPlaceableIter = placeableUnits.iterator();
+        while (unitsPlaceableIter.hasNext())
+        {
+        	Unit currentUnit = (Unit) unitsPlaceableIter.next();
+        	UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+        	// account for any unit placement restrictions by territory
+        	String[] terrs = ua.getUnitPlacementRestrictions();
+        	Collection<Territory> listedTerrs = getListedTerritories(terrs);
+        	if (!listedTerrs.contains(to))
+        		placeableUnits2.add(currentUnit);
+        }
+        
+        return placeableUnits2;
+        
         /* This may no longer be needed as factories are taken care of by my new constructions code (veqryn)
         //Were any factories built
         if (Match.countMatches(units, Matches.UnitIsFactory) >= 1)
@@ -531,8 +589,6 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
                 placeableUnits.addAll(Match.getNMatches(units, Math.max(maxFactory - factoryCount, 0), Matches.UnitIsFactory));
             }
         }*/
-        
-        return placeableUnits;
     }
 
     // Returns -1 if can place unlimited units
@@ -776,6 +832,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     private boolean isUnitPlacementPerTerritoryRestricted()    
     {
         return games.strategy.triplea.Properties.getUnitPlacementPerTerritoryRestricted(m_data);
+    }
+    
+    private boolean isUnitPlacementRestrictions()    
+    {
+        return games.strategy.triplea.Properties.getUnitPlacementRestrictions(m_data);
     }
 
     private boolean isIncreasedFactoryProduction(PlayerID player)    
@@ -1124,6 +1185,23 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return m_data;
     }
     
+    private Collection<Territory> getListedTerritories(String[] list)    
+    {
+        List<Territory> rVal = new ArrayList<Territory>();
+        
+        if (list == null)
+        	return rVal;
+        
+        for(String name : list)
+        {
+      	  //Validate all territories exist
+            Territory territory = getData().getMap().getTerritory(name);
+            if(territory == null)
+                throw new IllegalStateException("Rules & Conditions: No territory called:" + name); 
+            rVal.add(territory);
+        }        
+        return rVal;
+    }
 }
 
 class UndoPlace implements Serializable

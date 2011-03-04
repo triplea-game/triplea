@@ -21,6 +21,9 @@
 package games.strategy.triplea.attatchments;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.properties.GameProperties;
@@ -69,6 +72,9 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_canBeDamaged = false;
   private boolean m_isCombatTransport = false;
   private boolean m_isConstruction = false;
+  
+  // a colon delimited list of territories where this unit may not be placed
+  private String[] m_unitPlacementRestrictions;
   
   // can be any String except for "none" if isConstruction is true
   private String m_constructionType = "none";
@@ -257,6 +263,16 @@ public class UnitAttachment extends DefaultAttachment
   public boolean isFactory()
   {
     return m_isFactory;
+  }
+  
+  public void setUnitPlacementRestrictions(String value)
+  {
+	  m_unitPlacementRestrictions = value.split(":");
+  }
+  
+  public String[] getUnitPlacementRestrictions()
+  {
+	  return m_unitPlacementRestrictions;
   }
   
   public boolean isConstruction()
@@ -731,6 +747,24 @@ public class UnitAttachment extends DefaultAttachment
     {
     	throw new GameParseException("Constructions must have constructionsPerTerrPerTypePerTurn Less than maxConstructionsPerTypePerTerr");
     }
+    
+    if(m_unitPlacementRestrictions != null)
+    	getListedTerritories(m_unitPlacementRestrictions);
+  }
+  
+  public Collection<Territory> getListedTerritories(String[] list)    
+  {
+      List<Territory> rVal = new ArrayList<Territory>();
+      
+      for(String name : list)
+      {
+    	  //Validate all territories exist
+          Territory territory = getData().getMap().getTerritory(name);
+          if(territory == null)
+              throw new IllegalStateException("Unit Attachments: No territory called:" + name); 
+          rVal.add(territory);
+      }        
+      return rVal;
   }
 
   private boolean isWW2V3TechModel(GameData data)
