@@ -375,6 +375,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
                 return;
         }
         
+        // NoPUPurchaseDelegate will run first, before this section. After running, the engine will wait for the player by coming here. Exit if we are a No PU delegate purchase
         if (this.m_bridge.getStepName().endsWith("NoPUPurchase"))
         	return;
         

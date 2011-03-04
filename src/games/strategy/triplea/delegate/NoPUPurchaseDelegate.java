@@ -106,7 +106,7 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
 	        Iterator<Territory> territoryIter = territories.iterator();
 	        for(int i = 0; (territoryIter.hasNext()); ++i)
 	        {
-	            Territory current = territoryIter.next();
+	            Territory current = (Territory) territoryIter.next();
 
 	            TerritoryAttachment ta = TerritoryAttachment.get(current);
 	            if(ta.getProduction() > 0)
