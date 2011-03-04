@@ -573,7 +573,10 @@ class ImprovedShipyardsAdvance extends TechAdvance
 
     public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
-        ProductionFrontier current = id.getProductionFrontier();
+        if (!games.strategy.triplea.Properties.getUse_Shipyards(data))
+        	return;
+    	
+    	ProductionFrontier current = id.getProductionFrontier();
         //they already have it
         if(current.getName().endsWith("Shipyards"))
             return;

@@ -374,6 +374,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
             if(!BidPurchaseDelegate.doesPlayerHaveBid(m_bridge.getGameData(), m_id))
                 return;
         }
+        
+        if (this.m_bridge.getStepName().endsWith("NoPUPurchase"))
+        	return;
+        
         //we have no production frontier
         else if(m_id.getProductionFrontier() == null || m_id.getProductionFrontier().getRules().isEmpty())
         {

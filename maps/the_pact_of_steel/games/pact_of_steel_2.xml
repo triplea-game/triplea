@@ -3592,11 +3592,11 @@
 						<boolean/>
 				</property>
 
-				<property name="Use Shipyards" value="true" editable="false">
+				<property name="Use Shipyards" value="false" editable="true">
 						<boolean/>
 				</property>
 
-				<property name="Scramble Rules In Effect" value="true" editable="true">
+				<property name="Scramble Rules In Effect" value="false" editable="true">
 						<boolean/>
 				</property>
 

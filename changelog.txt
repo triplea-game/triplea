@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Fixed bug where the NoPuPurchase delegate was calling the normal Purchase delegate if the player had PUs left over, Resulting in the player getting multiple purchase screens. (veqryn)
+
 * New game property, "Unit Placement Restrictions", and new Unit Attachment option, <option name="unitPlacementRestrictions" value="territory1:territory2"/>, prevent a unit or units from being placed in any given territory. (veqryn)
 
 * Beginning work on Unit Placement Restrictions. (veqryn)

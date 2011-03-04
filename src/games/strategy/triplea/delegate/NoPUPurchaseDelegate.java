@@ -24,15 +24,19 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.util.IntegerMap;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  *
@@ -49,7 +53,8 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
     private boolean isPacific;
     private boolean isWW2V3;
 
-    public void start(IDelegateBridge aBridge, GameData gameData)
+    @Override
+	public void start(IDelegateBridge aBridge, GameData gameData)
     {
         super.start(aBridge, gameData);
         m_data = gameData;
@@ -77,6 +82,18 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
             aBridge.addChange(productionChange);
         } 
     }
+    
+    /*@Override
+	public String purchase(IntegerMap<ProductionRule> productionRules)
+    {
+    	return null;
+    }
+    
+    @Override
+	public String purchaseRepair(Map<Territory, IntegerMap<RepairRule>> repairRules)
+    {
+    	return null;
+    }*/
 
     // this is based off of chinese rules in pacific, they may vary in other games?
     private int getProductionUnits(Collection<Territory> territories, PlayerID player)
@@ -89,7 +106,7 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
 	        Iterator<Territory> territoryIter = territories.iterator();
 	        for(int i = 0; (territoryIter.hasNext()); ++i)
 	        {
-	            Territory current = (Territory) territoryIter.next();
+	            Territory current = territoryIter.next();
 
 	            TerritoryAttachment ta = TerritoryAttachment.get(current);
 	            if(ta.getProduction() > 0)
