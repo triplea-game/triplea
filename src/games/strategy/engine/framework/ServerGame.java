@@ -413,6 +413,42 @@ public class ServerGame implements IGame
         }
     }
 
+    private void autoSaveRound() 
+    {
+        FileOutputStream out = null;
+        try
+        {
+            SaveGameFileChooser.ensureDefaultDirExists();
+            
+            File autosaveFile;
+            if (m_data.getSequence().getRound() % 2 == 0)
+            	autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.AUTOSAVE_EVEN_ROUND_FILE_NAME);
+            else
+            	autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.AUTOSAVE_ODD_ROUND_FILE_NAME);
+            
+            
+            out = new FileOutputStream(autosaveFile);
+            saveGame(out);
+            
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            try
+            {
+                if(out != null)
+                    out.close();
+            } catch (IOException e)
+            {
+              
+                e.printStackTrace();
+            }
+        }
+    }
+
     
     public void saveGame(File f)
     {
@@ -500,6 +536,7 @@ public class ServerGame implements IGame
         if(m_data.getSequence().next())
         {
             m_data.getHistory().getHistoryWriter().startNextRound(m_data.getSequence().getRound());
+            autoSaveRound();
         }
         
         //save after the step has advanced

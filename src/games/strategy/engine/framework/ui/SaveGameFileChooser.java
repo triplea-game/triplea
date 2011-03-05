@@ -31,6 +31,8 @@ public class SaveGameFileChooser extends JFileChooser
 
 	
 	public static final String AUTOSAVE_FILE_NAME = "autosave.tsvg";
+	public static final String AUTOSAVE_ODD_ROUND_FILE_NAME = "autosave_round_odd.tsvg";
+	public static final String AUTOSAVE_EVEN_ROUND_FILE_NAME = "autosave_round_even.tsvg";
 
 	public static final File DEFAULT_DIRECTORY = new File(GameRunner.getUserRootFolder(), "savedGames");
 	
