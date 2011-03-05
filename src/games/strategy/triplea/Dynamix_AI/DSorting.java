@@ -22,6 +22,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedCalculationCenter;
 import games.strategy.util.Match;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -36,42 +37,73 @@ public class DSorting
     //Think of the compare method like this: the integer returned tells java the position of the first object in relation to the second...
     //If -1 is return, java puts the first object before the second, 0 means they're equal(not sure which would come first), 1 tells java to put the second object before the first
 
-    ///////////////////////////////////////////////Territory Sorting///////////////////////////////////////////////
-    public static List<Territory> SortTerritoriesByX(List<Territory> ters, Comparator<Territory> comparator)
+    ///////////////////////////////////////////////List Sorting///////////////////////////////////////////////
+    public static List SortListByX(Collection list, Comparator comparator)
     {
-        List<Territory> result = new ArrayList<Territory>(ters);
+        List result = new ArrayList(list);
         Collections.sort(result, comparator);
         return result;
     }
-    public static List<Territory> SortTerritoriesByScores_A(List<Territory> ters, final HashMap<Territory, Integer> scores)
+    public static List SortListByScores_HashMap_A(Collection list, final HashMap scores)
     {
-        List<Territory> result = new ArrayList<Territory>(ters);
-        Collections.sort(result, new Comparator<Territory>()
+        List result = new ArrayList(list);
+        Collections.sort(result, new Comparator()
         {
-            public int compare(Territory t1, Territory t2)
+            public int compare(Object o1, Object o2)
             {
-                if (!scores.containsKey(t1) && !scores.containsKey(t2))
+                if (!scores.containsKey(o1) && !scores.containsKey(o2))
                     return 0; //We can't compare these, so say they're equal
-                if (!scores.containsKey(t1))
+                if (!scores.containsKey(o1))
                     return 1;
-                if (!scores.containsKey(t2))
+                if (!scores.containsKey(o2))
                     return -1;
 
-                int score1 = scores.get(t1);
-                int score2 = scores.get(t2);
+                int score1 = Integer.parseInt(scores.get(o1).toString());
+                int score2 = Integer.parseInt(scores.get(o2).toString());
 
                 return score1 - score2;
             }
         });
         return result;
     }
-    public static List<Territory> SortTerritoriesByScores_D(List<Territory> ters, final HashMap<Territory, Integer> scores)
+    public static List SortListByScores_HashMap_D(Collection list, final HashMap scores)
     {
-        return DUtils.InvertList(SortTerritoriesByScores_A(ters, scores));
+        return DUtils.InvertList(SortListByScores_HashMap_A(list, scores));
     }
+    public static List SortListByScores_List_A(Collection list, Collection scoreList)
+    {
+        final HashMap scores = DUtils.CreateHashMapFromTwoLists(list, scoreList);
+        return SortListByScores_HashMap_A(list, scores);
+    }
+    public static List SortListByScores_List_D(Collection list, Collection scoreList)
+    {
+        return DUtils.InvertList(SortListByScores_List_A(list, scoreList));
+    }
+    ///////////////////////////////////////////////End List Sorting///////////////////////////////////////////////
+
+    ///////////////////////////////////////////////HashMap Sorting///////////////////////////////////////////////
+    public static HashMap SortHashMapByValueScores_A(final HashMap map)
+    {
+        List sortedKeys = SortListByScores_List_A(map.keySet(), map.values());
+        HashMap result = new HashMap();
+        for(Object key : sortedKeys)
+            result.put(key, map.get(key));
+        return result;
+    }
+    public static HashMap SortHashMapByValueScores_D(final HashMap map)
+    {
+        List sortedKeys = SortListByScores_List_D(map.keySet(), map.values());
+        HashMap result = new HashMap();
+        for(Object key : sortedKeys)
+            result.put(key, map.get(key));
+        return result;
+    }
+    ///////////////////////////////////////////////End HashMap Sorting///////////////////////////////////////////////
+
+    ///////////////////////////////////////////////Territory Sorting///////////////////////////////////////////////
     public static List<Territory> SortTerritoriesByDistance_A(final List<Territory> ters, final GameData data, final Territory target, final Match<Territory> routeMatch)
     {
-        return SortTerritoriesByX(ters, new Comparator<Territory>()
+        return SortListByX(ters, new Comparator<Territory>()
         {
             public int compare(Territory t1, Territory t2)
             {
@@ -99,7 +131,7 @@ public class DSorting
     }
     public static List<Territory> SortTerritoriesByLandDistance_A(final List<Territory> ters, final GameData data, final Territory target)
     {
-        return SortTerritoriesByX(ters, new Comparator<Territory>()
+        return SortListByX(ters, new Comparator<Territory>()
         {
             public int compare(Territory t1, Territory t2)
             {
@@ -127,7 +159,7 @@ public class DSorting
     }
     public static List<Territory> SortTerritoriesBySeaDistance_A(final List<Territory> ters, final GameData data, final Territory target)
     {
-        return SortTerritoriesByX(ters, new Comparator<Territory>()
+        return SortListByX(ters, new Comparator<Territory>()
         {
             public int compare(Territory t1, Territory t2)
             {
@@ -155,7 +187,7 @@ public class DSorting
     }
     public static List<Territory> SortTerritoriesByNoCondDistance_A(final List<Territory> ters, final GameData data, final Territory target)
     {
-        return SortTerritoriesByX(ters, new Comparator<Territory>()
+        return SortListByX(ters, new Comparator<Territory>()
         {
             public int compare(Territory t1, Territory t2)
             {
@@ -183,7 +215,7 @@ public class DSorting
     }
     public static List<Territory> SortTerritoriesByLandThenNoCondDistance_A(final List<Territory> ters, final GameData data, final Territory target)
     {
-        return SortTerritoriesByX(ters, new Comparator<Territory>()
+        return SortListByX(ters, new Comparator<Territory>()
         {
             public int compare(Territory t1, Territory t2)
             {
@@ -221,15 +253,9 @@ public class DSorting
     ///////////////////////////////////////////////End Territory Sorting///////////////////////////////////////////////
 
     ///////////////////////////////////////////////Unit Sorting///////////////////////////////////////////////
-    public static List<Unit> SortUnitsByX(List<Unit> units, Comparator<Unit> comparator)
-    {
-        List<Unit> result = new ArrayList<Unit>(units);
-        Collections.sort(result, comparator);
-        return result;
-    }
     public static List<Unit> SortUnitsByCost_A(List<Unit> units, final Resource resource)
     {
-        return SortUnitsByX(units, new Comparator<Unit>()
+        return SortListByX(units, new Comparator<Unit>()
         {
             public int compare(Unit o1, Unit o2)
             {

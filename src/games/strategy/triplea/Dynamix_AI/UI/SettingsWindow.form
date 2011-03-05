@@ -681,7 +681,7 @@
             <Component class="javax.swing.JSpinner" name="v_calcDecreaseToPercentage">
               <Properties>
                 <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                  <SpinnerModel initial="50" maximum="100" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                  <SpinnerModel initial="75" maximum="100" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value=""/>
                 <Property name="name" type="java.lang.String" value="v_calcDecreaseToPercentage" noResource="true"/>
@@ -924,7 +924,7 @@
                                       <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="1" attributes="0">
-                                      <Component id="v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove" min="-2" pref="62" max="-2" attributes="0"/>
+                                      <Component id="v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove" min="-2" pref="62" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Component id="jLabel40" min="-2" max="-2" attributes="0"/>
                                   </Group>
@@ -943,25 +943,25 @@
                                           <Group type="102" alignment="0" attributes="0">
                                               <EmptySpace min="10" pref="10" max="10" attributes="0"/>
                                               <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace pref="280" max="32767" attributes="0"/>
+                                              <EmptySpace pref="279" max="32767" attributes="0"/>
                                           </Group>
-                                          <Component id="jLabel20" alignment="0" pref="525" max="32767" attributes="1"/>
-                                          <Component id="jLabel29" alignment="0" pref="525" max="32767" attributes="1"/>
-                                          <Component id="jLabel26" alignment="0" pref="525" max="32767" attributes="1"/>
-                                          <Component id="jLabel22" alignment="0" pref="525" max="32767" attributes="1"/>
+                                          <Component id="jLabel20" alignment="0" pref="524" max="32767" attributes="1"/>
+                                          <Component id="jLabel29" alignment="0" pref="524" max="32767" attributes="1"/>
+                                          <Component id="jLabel22" alignment="0" pref="524" max="32767" attributes="1"/>
                                           <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
                                               <Component id="jLabel32" alignment="1" max="32767" attributes="1"/>
                                               <Component id="jLabel35" alignment="1" max="32767" attributes="1"/>
                                               <Component id="jLabel44" alignment="0" max="32767" attributes="1"/>
                                               <Component id="jLabel41" alignment="0" max="32767" attributes="1"/>
-                                              <Component id="jLabel38" alignment="0" pref="525" max="32767" attributes="1"/>
+                                              <Component id="jLabel38" alignment="0" max="32767" attributes="1"/>
                                           </Group>
-                                          <Component id="jLabel16" alignment="0" pref="525" max="32767" attributes="1"/>
+                                          <Component id="jLabel16" alignment="0" pref="524" max="32767" attributes="1"/>
+                                          <Component id="jLabel26" alignment="0" pref="524" max="32767" attributes="1"/>
                                       </Group>
                                       <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Group type="102" alignment="1" attributes="0">
-                                              <Component id="v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers" min="-2" pref="62" max="-2" attributes="0"/>
+                                              <Component id="v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers" min="-2" pref="62" max="-2" attributes="0"/>
                                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                               <Component id="jLabel39" min="-2" max="-2" attributes="0"/>
                                           </Group>
@@ -1080,7 +1080,7 @@
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel38" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel39" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel37" min="-2" max="-2" attributes="0"/>
@@ -1088,7 +1088,7 @@
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel41" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel40" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel42" min="-2" max="-2" attributes="0"/>
@@ -1115,7 +1115,7 @@
                     <Component class="javax.swing.JSpinner" name="v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="125" maximum="5000" minimum="1" numberType="java.lang.Integer" stepSize="10" type="number"/>
+                          <SpinnerModel initial="50" maximum="5000" minimum="1" numberType="java.lang.Integer" stepSize="10" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost" noResource="true"/>
                       </Properties>
@@ -1339,12 +1339,12 @@
                         <Property name="name" type="java.lang.String" value="jLabel37" noResource="true"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JSpinner" name="v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers">
+                    <Component class="javax.swing.JSpinner" name="v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
                           <SpinnerModel initial="250" maximum="5000" minimum="1" numberType="java.lang.Integer" stepSize="10" type="number"/>
                         </Property>
-                        <Property name="name" type="java.lang.String" value="v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers" noResource="true"/>
+                        <Property name="name" type="java.lang.String" value="v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers" noResource="true"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel38">
@@ -1352,7 +1352,7 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Tahoma" size="10" style="0"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="CM &amp; NCM - Calculation That Determines Vulnerability After Task For Checking Whether To Invalidate Attackers:"/>
+                        <Property name="text" type="java.lang.String" value="CM &amp; NCM - Calc. Determining Survival Chance After Performing Task To Check If We Should Invalidate Attackers:"/>
                         <Property name="name" type="java.lang.String" value="jLabel38" noResource="true"/>
                       </Properties>
                     </Component>
@@ -1373,16 +1373,16 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Tahoma" size="10" style="0"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="NCM - Calculation That Determines Vulnerability Of From Ter After Move For Checking Whether To Cancel Move:"/>
+                        <Property name="text" type="java.lang.String" value="NCM - Calculation That Determines Vulnerability Of From Ter After Move To Check If We Should Cancel Move:"/>
                         <Property name="name" type="java.lang.String" value="jLabel41" noResource="true"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JSpinner" name="v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove">
+                    <Component class="javax.swing.JSpinner" name="v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
                           <SpinnerModel initial="100" maximum="5000" minimum="1" numberType="java.lang.Integer" stepSize="10" type="number"/>
                         </Property>
-                        <Property name="name" type="java.lang.String" value="v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove" noResource="true"/>
+                        <Property name="name" type="java.lang.String" value="v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove" noResource="true"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel42">
@@ -1660,7 +1660,7 @@
                     <Component class="javax.swing.JSpinner" name="v_tr_attackOffensive_Neutrals_TakeoverChanceRequired">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="95" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                          <SpinnerModel initial="90" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_tr_attackOffensive_Neutrals_TakeoverChanceRequired" noResource="true"/>
                       </Properties>
@@ -1682,7 +1682,7 @@
                     <Component class="javax.swing.JSpinner" name="v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="10" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                          <SpinnerModel initial="60" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired" noResource="true"/>
                       </Properties>
@@ -1703,7 +1703,7 @@
                     <Component class="javax.swing.JLabel" name="jLabel60">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="        Counter-Attack Survival Chance Required:"/>
-                        <Property name="toolTipText" type="java.lang.String" value="The percentage of times we survive when we simulate the counter-attack battle with the battle calc&apos;er must meet this percentage for the task to be performed."/>
+                        <Property name="toolTipText" type="java.lang.String" value="The percentage of times we survive when we simulate the counter-attack(by enemies) battle with the battle calc&apos;er must meet this percentage for the task to be performed."/>
                         <Property name="name" type="java.lang.String" value="jLabel60" noResource="true"/>
                       </Properties>
                     </Component>
@@ -1716,7 +1716,7 @@
                     <Component class="javax.swing.JSpinner" name="v_tr_attackOffensive_CounterAttackSurvivalChanceRequired">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="50" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                          <SpinnerModel initial="55" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_tr_attackOffensive_CounterAttackSurvivalChanceRequired" noResource="true"/>
                       </Properties>
@@ -1744,7 +1744,7 @@
                     <Component class="javax.swing.JSpinner" name="v_tr_attackOffensive_Capitals_TakeoverChanceRequired">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="50" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                          <SpinnerModel initial="55" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_tr_attackOffensive_Capitals_TakeoverChanceRequired" noResource="true"/>
                       </Properties>
@@ -1766,7 +1766,7 @@
                     <Component class="javax.swing.JSpinner" name="v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="50" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                          <SpinnerModel initial="0" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired" noResource="true"/>
                       </Properties>
@@ -1800,7 +1800,7 @@
                     <Component class="javax.swing.JSpinner" name="v_tr_attackStabalize_CounterAttackSurvivalChanceRequired">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="75" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                          <SpinnerModel initial="25" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_tr_attackStabalize_CounterAttackSurvivalChanceRequired" noResource="true"/>
                       </Properties>
@@ -2060,7 +2060,7 @@
             <Component class="javax.swing.JSpinner" name="v_limitLogHistoryToSpinner">
               <Properties>
                 <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                  <SpinnerModel initial="3" maximum="100" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                  <SpinnerModel initial="5" maximum="100" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="v_limitLogHistoryToSpinner" noResource="true"/>
               </Properties>
@@ -2219,7 +2219,7 @@
                                               <Component id="jLabel69" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <Group type="102" alignment="0" attributes="0">
-                                              <Component id="v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask" min="-2" pref="56" max="-2" attributes="1"/>
+                                              <Component id="v_aa_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask" min="-2" pref="56" max="-2" attributes="1"/>
                                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                               <Component id="jLabel67" min="-2" max="-2" attributes="0"/>
                                           </Group>
@@ -2255,7 +2255,7 @@
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="jLabel52" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel67" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="v_aa_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
@@ -2342,7 +2342,7 @@
                         <Component class="javax.swing.JLabel" name="jLabel50">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Percent Of Meeting Of Attack-Takeover-Constant Needed To Perform CM Task:"/>
-                            <Property name="toolTipText" type="java.lang.String" value="If you lower this, a cm task will get performed, even if it doesn&apos;t completely meet the attack-takeover chance requirement constant. (You should keep this above 90% to prevent suicide)"/>
+                            <Property name="toolTipText" type="java.lang.String" value="If you lower this, a cm task will get performed, even if it doesn&apos;t completely meet the attack-takeover chance requirement constant(user-set). (You should keep this above 90% to prevent suicide)"/>
                             <Property name="name" type="java.lang.String" value="jLabel50" noResource="true"/>
                           </Properties>
                         </Component>
@@ -2372,23 +2372,23 @@
                         <Component class="javax.swing.JLabel" name="jLabel66">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Percent Of Meeting Of Counter-Attack-Survival-Constant Needed To Perform CM Task:"/>
-                            <Property name="toolTipText" type="java.lang.String" value="If you lower this, a cm task will get performed, even if it doesn&apos;t completely meet the counter-attack survival chance requirement constant. (You should keep this above 80% to prevent the AI from attacking a ter and not having enough leftover to keep itself safe from counter-attack)"/>
+                            <Property name="toolTipText" type="java.lang.String" value="If you lower this, a cm task will get performed, even if it doesn&apos;t completely meet the counter-attack survival chance requirement constant(user-set). (You should keep this above 80% to prevent the AI from attacking a ter and not having enough leftover to keep itself safe from counter-attack)"/>
                             <Property name="name" type="java.lang.String" value="jLabel66" noResource="true"/>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel52">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Percent Of Meeting Of Max-Enemy-Attack-Takeover-Constant Needed To Perform NCM Task:"/>
-                            <Property name="toolTipText" type="java.lang.String" value="If you lower this, an ncm task will get performed, even if it doesn&apos;t completely meet the max-enemy-attack-takeover chance requirement constant. (You should keep this above 80% to prevent the AI from moving units into vulnerable positions)"/>
+                            <Property name="text" type="java.lang.String" value="Percent Of Meeting Of Enemy-Attack-Survival-Chance-Constant Needed To Perform NCM Task:"/>
+                            <Property name="toolTipText" type="java.lang.String" value="If you lower this, an ncm task will get performed, even if it doesn&apos;t completely meet the enemy-attack min survival chance requirement constant(user-set). (You should keep this above 80% to prevent the AI from moving units into vulnerable positions)"/>
                             <Property name="name" type="java.lang.String" value="jLabel52" noResource="true"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JSpinner" name="v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask">
+                        <Component class="javax.swing.JSpinner" name="v_aa_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask">
                           <Properties>
                             <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
                               <SpinnerModel initial="96" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                             </Property>
-                            <Property name="name" type="java.lang.String" value="v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask" noResource="true"/>
+                            <Property name="name" type="java.lang.String" value="v_aa_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask" noResource="true"/>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel67">

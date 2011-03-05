@@ -9776,13 +9776,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		IntegerMap<UnitType> costs = BattleCalculator.getCosts(hit, data);
 		float canWinPercentage = 1.0F; // we need to run a battle calc or something to determine what the chance of us winning is
 		boolean bonus = (canWinPercentage > .8);
-		List<Unit> workUnits = new ArrayList<Unit>(BattleCalculator.sortUnitsForCasualtiesWithSupport(selectFrom, defending, hit, costs, data, bonus));
-		
-		// need to sort workUnits so that if we are going to win, we don't take loaded transports, 2 hit units, or air units casualty til the end
+		List<Unit> workUnits1 = new ArrayList<Unit>(BattleCalculator.sortUnitsForCasualtiesWithSupport(selectFrom, defending, hit, costs, data, bonus));
+		List<Unit> workUnits2 = new ArrayList<Unit>(DUtils.InterlaceUnits_CarriersAndPlanes(workUnits1, 0));
 		
 		for (int j = 0; j < xCount; j++)
 		{
-			rKilled.add(workUnits.get(j));
+			rKilled.add(workUnits2.get(j));
 		}
 		
 		CasualtyDetails m2 = new CasualtyDetails(rKilled, rDamaged, false);

@@ -147,12 +147,12 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel36 = new javax.swing.JLabel();
         v_cacmncm_determinesIfTaskEndangersCap = new javax.swing.JSpinner();
         jLabel37 = new javax.swing.JLabel();
-        v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers = new javax.swing.JSpinner();
+        v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers = new javax.swing.JSpinner();
         jLabel38 = new javax.swing.JLabel();
         jLabel39 = new javax.swing.JLabel();
         jLabel40 = new javax.swing.JLabel();
         jLabel41 = new javax.swing.JLabel();
-        v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove = new javax.swing.JSpinner();
+        v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove = new javax.swing.JSpinner();
         jLabel42 = new javax.swing.JLabel();
         jLabel43 = new javax.swing.JLabel();
         v_caretreat_determinesIfAIShouldRetreat = new javax.swing.JSpinner();
@@ -227,7 +227,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel65 = new javax.swing.JLabel();
         jLabel66 = new javax.swing.JLabel();
         jLabel52 = new javax.swing.JLabel();
-        v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask = new javax.swing.JSpinner();
+        v_aa_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask = new javax.swing.JSpinner();
         jLabel67 = new javax.swing.JLabel();
         v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask = new javax.swing.JSpinner();
         jLabel68 = new javax.swing.JLabel();
@@ -581,7 +581,7 @@ public class SettingsWindow extends javax.swing.JDialog
             }
         });
 
-        v_calcDecreaseToPercentage.setModel(new javax.swing.SpinnerNumberModel(50, 1, 100, 1));
+        v_calcDecreaseToPercentage.setModel(new javax.swing.SpinnerNumberModel(75, 1, 100, 1));
         v_calcDecreaseToPercentage.setToolTipText("");
         v_calcDecreaseToPercentage.setName("v_calcDecreaseToPercentage"); // NOI18N
 
@@ -756,7 +756,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel17.setText("calculations");
         jLabel17.setName("jLabel17"); // NOI18N
 
-        v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost.setModel(new javax.swing.SpinnerNumberModel(125, 1, 5000, 10));
+        v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost.setModel(new javax.swing.SpinnerNumberModel(50, 1, 5000, 10));
         v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost.setName("v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost"); // NOI18N
 
         jLabel16.setFont(new java.awt.Font("Tahoma", 0, 10));
@@ -855,11 +855,11 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel37.setText("(Frequency: Very Low, Suggested Range: 50 - 1000)");
         jLabel37.setName("jLabel37"); // NOI18N
 
-        v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers.setModel(new javax.swing.SpinnerNumberModel(250, 1, 5000, 10));
-        v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers.setName("v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers"); // NOI18N
+        v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers.setModel(new javax.swing.SpinnerNumberModel(250, 1, 5000, 10));
+        v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers.setName("v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers"); // NOI18N
 
-        jLabel38.setFont(new java.awt.Font("Tahoma", 0, 10));
-        jLabel38.setText("CM & NCM - Calculation That Determines Vulnerability After Task For Checking Whether To Invalidate Attackers:");
+        jLabel38.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel38.setText("CM & NCM - Calc. Determining Survival Chance After Performing Task To Check If We Should Invalidate Attackers:");
         jLabel38.setName("jLabel38"); // NOI18N
 
         jLabel39.setText("calculations");
@@ -868,12 +868,12 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel40.setText("calculations");
         jLabel40.setName("jLabel40"); // NOI18N
 
-        jLabel41.setFont(new java.awt.Font("Tahoma", 0, 10));
-        jLabel41.setText("NCM - Calculation That Determines Vulnerability Of From Ter After Move For Checking Whether To Cancel Move:");
+        jLabel41.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel41.setText("NCM - Calculation That Determines Vulnerability Of From Ter After Move To Check If We Should Cancel Move:");
         jLabel41.setName("jLabel41"); // NOI18N
 
-        v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove.setModel(new javax.swing.SpinnerNumberModel(100, 1, 5000, 10));
-        v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove.setName("v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove"); // NOI18N
+        v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove.setModel(new javax.swing.SpinnerNumberModel(100, 1, 5000, 10));
+        v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove.setName("v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove"); // NOI18N
 
         jLabel42.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel42.setText("(Frequency: Average, Suggested Range: 25 - 1000)");
@@ -926,7 +926,7 @@ public class SettingsWindow extends javax.swing.JDialog
                         .addComponent(jLabel42)
                         .addGap(53, 53, 53))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
-                        .addComponent(v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel40))
                     .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
@@ -942,22 +942,22 @@ public class SettingsWindow extends javax.swing.JDialog
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
                                 .addGap(10, 10, 10)
                                 .addComponent(jLabel18)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 280, Short.MAX_VALUE))
-                            .addComponent(jLabel20, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
-                            .addComponent(jLabel29, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
-                            .addComponent(jLabel26, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
-                            .addComponent(jLabel22, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 279, Short.MAX_VALUE))
+                            .addComponent(jLabel20, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE)
+                            .addComponent(jLabel29, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE)
+                            .addComponent(jLabel22, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(jLabel32, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel35, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel44, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel41, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel38, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE))
-                            .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE))
+                                .addComponent(jLabel38, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE)
+                            .addComponent(jLabel26, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE))
                         .addGap(45, 45, 45)
                         .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
-                                .addComponent(v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel39))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, v_calcRunCountAssignmentsHolderPanelLayout.createSequentialGroup()
@@ -1051,14 +1051,14 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel38)
                     .addComponent(jLabel39)
-                    .addComponent(v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel37)
                 .addGap(18, 18, 18)
                 .addGroup(v_calcRunCountAssignmentsHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel41)
                     .addComponent(jLabel40)
-                    .addComponent(v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel42)
                 .addGap(18, 18, 18)
@@ -1101,7 +1101,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel70.setText("%");
         jLabel70.setName("jLabel70"); // NOI18N
 
-        v_tr_attackOffensive_Neutrals_TakeoverChanceRequired.setModel(new javax.swing.SpinnerNumberModel(95, 0, 100, 1));
+        v_tr_attackOffensive_Neutrals_TakeoverChanceRequired.setModel(new javax.swing.SpinnerNumberModel(90, 0, 100, 1));
         v_tr_attackOffensive_Neutrals_TakeoverChanceRequired.setName("v_tr_attackOffensive_Neutrals_TakeoverChanceRequired"); // NOI18N
 
         jLabel63.setText("Attack - Offensive (Neutrals)");
@@ -1112,7 +1112,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel62.setToolTipText("The percentage of times we win when we simulate the battle with the battle calc'er must meet this percentage for the task to be performed.");
         jLabel62.setName("jLabel62"); // NOI18N
 
-        v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired.setModel(new javax.swing.SpinnerNumberModel(10, 0, 100, 1));
+        v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired.setModel(new javax.swing.SpinnerNumberModel(60, 0, 100, 1));
         v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired.setName("v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired"); // NOI18N
 
         jLabel61.setText("        Counter-Attack Survival Chance Required:");
@@ -1123,13 +1123,13 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel71.setName("jLabel71"); // NOI18N
 
         jLabel60.setText("        Counter-Attack Survival Chance Required:");
-        jLabel60.setToolTipText("The percentage of times we survive when we simulate the counter-attack battle with the battle calc'er must meet this percentage for the task to be performed.");
+        jLabel60.setToolTipText("The percentage of times we survive when we simulate the counter-attack(by enemies) battle with the battle calc'er must meet this percentage for the task to be performed.");
         jLabel60.setName("jLabel60"); // NOI18N
 
         jLabel73.setText("%");
         jLabel73.setName("jLabel73"); // NOI18N
 
-        v_tr_attackOffensive_CounterAttackSurvivalChanceRequired.setModel(new javax.swing.SpinnerNumberModel(50, 0, 100, 1));
+        v_tr_attackOffensive_CounterAttackSurvivalChanceRequired.setModel(new javax.swing.SpinnerNumberModel(55, 0, 100, 1));
         v_tr_attackOffensive_CounterAttackSurvivalChanceRequired.setName("v_tr_attackOffensive_CounterAttackSurvivalChanceRequired"); // NOI18N
 
         jLabel56.setText("        Attack Takeover Chance Required:");
@@ -1143,7 +1143,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel72.setText("%");
         jLabel72.setName("jLabel72"); // NOI18N
 
-        v_tr_attackOffensive_Capitals_TakeoverChanceRequired.setModel(new javax.swing.SpinnerNumberModel(50, 0, 100, 1));
+        v_tr_attackOffensive_Capitals_TakeoverChanceRequired.setModel(new javax.swing.SpinnerNumberModel(55, 0, 100, 1));
         v_tr_attackOffensive_Capitals_TakeoverChanceRequired.setName("v_tr_attackOffensive_Capitals_TakeoverChanceRequired"); // NOI18N
 
         jLabel64.setText("Attack - Offensive (Capitals)");
@@ -1154,7 +1154,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel74.setToolTipText("The percentage of times we win when we simulate the battle with the battle calc'er must meet this percentage for the task to be performed.");
         jLabel74.setName("jLabel74"); // NOI18N
 
-        v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired.setModel(new javax.swing.SpinnerNumberModel(50, 0, 100, 1));
+        v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired.setModel(new javax.swing.SpinnerNumberModel(0, 0, 100, 1));
         v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired.setName("v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired"); // NOI18N
 
         jLabel75.setText("        Counter-Attack Survival Chance Required:");
@@ -1171,7 +1171,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel78.setToolTipText("The percentage of times we survive when we simulate the counter-attack battle with the battle calc'er must meet this percentage for the task to be performed.");
         jLabel78.setName("jLabel78"); // NOI18N
 
-        v_tr_attackStabalize_CounterAttackSurvivalChanceRequired.setModel(new javax.swing.SpinnerNumberModel(75, 0, 100, 1));
+        v_tr_attackStabalize_CounterAttackSurvivalChanceRequired.setModel(new javax.swing.SpinnerNumberModel(25, 0, 100, 1));
         v_tr_attackStabalize_CounterAttackSurvivalChanceRequired.setName("v_tr_attackStabalize_CounterAttackSurvivalChanceRequired"); // NOI18N
 
         jLabel79.setText("%");
@@ -1419,7 +1419,7 @@ public class SettingsWindow extends javax.swing.JDialog
         v_logDepth.setSelectedItem(v_logDepth.getItemAt(2));
         v_logDepth.setName("v_logDepth"); // NOI18N
 
-        v_limitLogHistoryToSpinner.setModel(new javax.swing.SpinnerNumberModel(3, 1, 100, 1));
+        v_limitLogHistoryToSpinner.setModel(new javax.swing.SpinnerNumberModel(5, 1, 100, 1));
         v_limitLogHistoryToSpinner.setName("v_limitLogHistoryToSpinner"); // NOI18N
 
         v_limitLogHistoryCB.setSelected(true);
@@ -1531,7 +1531,7 @@ public class SettingsWindow extends javax.swing.JDialog
         v_aa_percentageOfResistedThreatsThatTasksInvalidate.setName("v_aa_percentageOfResistedThreatsThatTasksInvalidate"); // NOI18N
 
         jLabel50.setText("Percent Of Meeting Of Attack-Takeover-Constant Needed To Perform CM Task:");
-        jLabel50.setToolTipText("If you lower this, a cm task will get performed, even if it doesn't completely meet the attack-takeover chance requirement constant. (You should keep this above 90% to prevent suicide)");
+        jLabel50.setToolTipText("If you lower this, a cm task will get performed, even if it doesn't completely meet the attack-takeover chance requirement constant(user-set). (You should keep this above 90% to prevent suicide)");
         jLabel50.setName("jLabel50"); // NOI18N
 
         v_invalidationTypeButtonGroup.add(v_aa_noThreatInvalidation);
@@ -1547,15 +1547,15 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel65.setName("jLabel65"); // NOI18N
 
         jLabel66.setText("Percent Of Meeting Of Counter-Attack-Survival-Constant Needed To Perform CM Task:");
-        jLabel66.setToolTipText("If you lower this, a cm task will get performed, even if it doesn't completely meet the counter-attack survival chance requirement constant. (You should keep this above 80% to prevent the AI from attacking a ter and not having enough leftover to keep itself safe from counter-attack)");
+        jLabel66.setToolTipText("If you lower this, a cm task will get performed, even if it doesn't completely meet the counter-attack survival chance requirement constant(user-set). (You should keep this above 80% to prevent the AI from attacking a ter and not having enough leftover to keep itself safe from counter-attack)");
         jLabel66.setName("jLabel66"); // NOI18N
 
-        jLabel52.setText("Percent Of Meeting Of Max-Enemy-Attack-Takeover-Constant Needed To Perform NCM Task:");
-        jLabel52.setToolTipText("If you lower this, an ncm task will get performed, even if it doesn't completely meet the max-enemy-attack-takeover chance requirement constant. (You should keep this above 80% to prevent the AI from moving units into vulnerable positions)");
+        jLabel52.setText("Percent Of Meeting Of Enemy-Attack-Survival-Chance-Constant Needed To Perform NCM Task:");
+        jLabel52.setToolTipText("If you lower this, an ncm task will get performed, even if it doesn't completely meet the enemy-attack min survival chance requirement constant(user-set). (You should keep this above 80% to prevent the AI from moving units into vulnerable positions)");
         jLabel52.setName("jLabel52"); // NOI18N
 
-        v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask.setModel(new javax.swing.SpinnerNumberModel(96, 0, 100, 1));
-        v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask.setName("v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask"); // NOI18N
+        v_aa_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask.setModel(new javax.swing.SpinnerNumberModel(96, 0, 100, 1));
+        v_aa_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask.setName("v_aa_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask"); // NOI18N
 
         jLabel67.setText("%");
         jLabel67.setName("jLabel67"); // NOI18N
@@ -1607,7 +1607,7 @@ public class SettingsWindow extends javax.swing.JDialog
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(jLabel69))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                            .addComponent(v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(v_aa_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(jLabel67))
                         .addComponent(v_aa_initialTaskConsiderationLoopCount, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1635,7 +1635,7 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel52)
                     .addComponent(jLabel67)
-                    .addComponent(v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(v_aa_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel51)
@@ -1804,8 +1804,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile.setValue(settings.CA_CM_determinesAttackResultsToSeeIfTaskWorthwhile);
         v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile.setValue(settings.CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile);
         v_cacmncm_determinesIfTaskEndangersCap.setValue(settings.CA_CMNCM_determinesIfTaskEndangersCap);
-        v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers.setValue(settings.CA_CMNCM_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers);
-        v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove.setValue(settings.CA_NCM_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove);
+        v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers.setValue(settings.CA_CMNCM_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers);
+        v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove.setValue(settings.CA_NCM_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove);
         v_caretreat_determinesIfAIShouldRetreat.setValue(settings.CA_Retreat_determinesIfAIShouldRetreat);
 
         v_limitLogHistoryCB.setSelected(settings.LimitLogHistory);
@@ -1841,7 +1841,7 @@ public class SettingsWindow extends javax.swing.JDialog
 
         v_aa_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask.setValue(settings.AA_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask);
         v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask.setValue(settings.AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask);
-        v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask.setValue(settings.AA_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask);
+        v_aa_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask.setValue(settings.AA_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask);
         
         v_aa_initialTaskConsiderationLoopCount.setValue(settings.AA_initialTaskConsiderationLoopCount);
 
@@ -1889,8 +1889,8 @@ public class SettingsWindow extends javax.swing.JDialog
         settings.CA_CM_determinesAttackResultsToSeeIfTaskWorthwhile = Integer.parseInt(v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile.getValue().toString());
         settings.CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile = Integer.parseInt(v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile.getValue().toString());
         settings.CA_CMNCM_determinesIfTaskEndangersCap = Integer.parseInt(v_cacmncm_determinesIfTaskEndangersCap.getValue().toString());
-        settings.CA_CMNCM_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers = Integer.parseInt(v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers.getValue().toString());
-        settings.CA_NCM_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove = Integer.parseInt(v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove.getValue().toString());
+        settings.CA_CMNCM_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers = Integer.parseInt(v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers.getValue().toString());
+        settings.CA_NCM_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove = Integer.parseInt(v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove.getValue().toString());
         settings.CA_Retreat_determinesIfAIShouldRetreat = Integer.parseInt(v_caretreat_determinesIfAIShouldRetreat.getValue().toString());
 
         settings.LimitLogHistory = v_limitLogHistoryCB.isSelected();
@@ -1926,7 +1926,7 @@ public class SettingsWindow extends javax.swing.JDialog
 
         settings.AA_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask = Integer.parseInt(v_aa_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask.getValue().toString());
         settings.AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask = Integer.parseInt(v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask.getValue().toString());
-        settings.AA_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask = Integer.parseInt(v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask.getValue().toString());
+        settings.AA_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask = Integer.parseInt(v_aa_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask.getValue().toString());
 
         settings.AA_initialTaskConsiderationLoopCount = Integer.parseInt(v_aa_initialTaskConsiderationLoopCount.getValue().toString());
 
@@ -2113,7 +2113,7 @@ public class SettingsWindow extends javax.swing.JDialog
                     + "Percent Of Meeting Of Counter-Attack-Survival-Constant Needed To Perform CM Task: If you lower this, a cm task will get performed, even if it doesn't completely meet the counter-attack survival chance requirement constant.\r\n"
                     + "(You should keep this above 80% to prevent the AI from attacking a ter and not having enough leftover to keep itself safe from counter-attack)\r\n"
                     + "\r\n"
-                    + "Percent Of Meeting Of Max-Enemy-Attack-Takeover-Constant Needed To Perform NCM Task: If you lower this, an ncm task will get performed, even if it doesn't completely meet the max-enemy-attack-takeover chance requirement constant.\r\n"
+                    + "Percent Of Meeting Of Enemy-Attack-Survival-Chance-Constant Needed To Perform NCM Task: If you lower this, an ncm task will get performed, even if it doesn't completely meet the enemy-attack min survival chance requirement constant(user-set).\r\n"
                     + "(You should keep this above 80% to prevent the AI from moving units into vulnerable positions)\r\n"
                     + "\r\n"
                     + "Initial Task Consideration Loop Count: The higher this value, the better the AI will do when attacking or defending on battle fronts.\r\n"
@@ -2410,7 +2410,7 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JRadioButton v_aa_noThreatInvalidation;
     private javax.swing.JSpinner v_aa_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask;
     private javax.swing.JSpinner v_aa_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask;
-    private javax.swing.JSpinner v_aa_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask;
+    private javax.swing.JSpinner v_aa_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask;
     private javax.swing.JSpinner v_aa_percentageOfResistedThreatsThatTasksInvalidate;
     private javax.swing.JSpinner v_aa_radiusOfHotspotThreatInvalidation;
     private javax.swing.JSpinner v_aa_resourcePercentageThatMustExistForFactoryBuy;
@@ -2431,13 +2431,13 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JSpinner v_cacmncm_determinesIfTaskEndangersCap;
     private javax.swing.JSpinner v_cacmncm_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop;
     private javax.swing.JSpinner v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile;
-    private javax.swing.JSpinner v_cacmncm_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers;
+    private javax.swing.JSpinner v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers;
     private javax.swing.JSpinner v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense;
     private javax.swing.JSpinner v_calcDecreaseToPercentage;
     private javax.swing.JPanel v_calcRunCountAssignmentsHolderPanel;
     private javax.swing.JScrollPane v_calcRunCountAssignmentsScrollPane;
     private javax.swing.JButton v_cancelButton;
-    private javax.swing.JSpinner v_cancm_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove;
+    private javax.swing.JSpinner v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove;
     private javax.swing.JSpinner v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost;
     private javax.swing.JSpinner v_caretreat_determinesIfAIShouldRetreat;
     private javax.swing.JSpinner v_combatMoveWait_AL;

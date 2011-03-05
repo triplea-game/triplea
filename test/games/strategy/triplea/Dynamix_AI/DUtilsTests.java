@@ -68,4 +68,53 @@ public class DUtilsTests extends TestCase
         assertEquals(0.0D, results.getAverageDefendingUnitsLeft());
         assertEquals(0.0D, results.getAverageBattleRoundsFought());
     }
+    public void testTemp()
+    {
+        if (true) //Return now, as the developer is not currently using this for anything... :)
+            return;
+
+        PlayerID superior = m_data.getPlayerList().getPlayerID("Superior");
+        PlayerID huron = m_data.getPlayerList().getPlayerID("Huron");
+
+        Territory lakeSuperior = m_data.getMap().getTerritory("Superior");
+        Territory cIsland = m_data.getMap().getTerritory("C");
+
+        UnitType infantry = m_data.getUnitTypeList().getUnitType("infantry");
+        UnitType artillery = m_data.getUnitTypeList().getUnitType("artillery");
+        UnitType submarine = m_data.getUnitTypeList().getUnitType("submarine");
+        UnitType destroyer = m_data.getUnitTypeList().getUnitType("destroyer");
+        UnitType carrier = m_data.getUnitTypeList().getUnitType("carrier");
+        UnitType cruiser = m_data.getUnitTypeList().getUnitType("cruiser");
+        UnitType battleship = m_data.getUnitTypeList().getUnitType("battleship");
+        UnitType fighter = m_data.getUnitTypeList().getUnitType("fighter");
+
+        //So for example, the list of units is:  1 sub, 1 destroyer, 3 carriers, 6 fighters, 1 battleship.
+        //It should return this list:            1 sub, 1 destroyer, 2 fighters, 1 carrier, 2 fighters, 1 carrier, 2 fighters, 1 carrier, 1 battleship
+
+        List<Unit> attacking = new ArrayList<Unit>();
+        List<Unit> defending = new ArrayList<Unit>();
+        for (int i = 0; i < 50; i++)
+        {
+            attacking.add(infantry.create(superior));
+            attacking.add(artillery.create(superior));
+            attacking.add(fighter.create(superior));
+        }
+        defending.add(submarine.create(huron));
+        defending.add(destroyer.create(huron));
+        defending.addAll(carrier.create(2, huron));
+        defending.add(cruiser.create(huron));
+        defending.addAll(fighter.create(4, huron));
+        defending.add(battleship.create(huron));
+
+        defending = DUtils.InterlaceUnits_CarriersAndPlanes(defending, 0);
+
+        DOddsCalculator.SetGameData(m_data);
+        AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 2500, true);
+
+        System.out.print("Time Taken To Calculate: " + results.getTime() + "\r\n");
+
+        assertEquals(1.0D, results.getAttackerWinPercent());
+        assertEquals(0.0D, results.getAverageDefendingUnitsLeft());
+        assertEquals(0.0D, results.getDefenderWinPercent());
+    }
 }

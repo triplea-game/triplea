@@ -189,6 +189,32 @@ public class DMatches
             return ua.getMovement(unit.getOwner()) > 0 && !ua.isAA();
         }
     };
+    public static Match<Unit> UnitCanAttack = new Match<Unit>()
+    {
+        @Override
+        public boolean match(Unit unit)
+        {
+            UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
+            if (ua.isAA())
+                return false;
+            if (ua.isFactory())
+                return false;
+            return true;
+        }
+    };
+    public static Match<Unit> UnitCanDefend = new Match<Unit>()
+    {
+        @Override
+        public boolean match(Unit unit)
+        {
+            UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
+            if (ua.isAA())
+                return false;
+            if (ua.isFactory())
+                return false;
+            return true;
+        }
+    };
     ///////////////////////////////////////////////End Unit Matches///////////////////////////////////////////////
 
 
@@ -226,6 +252,19 @@ public class DMatches
             public boolean match(Territory ter)
             {
                 if (DUtils.GetVulnerabilityOfArmy(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), runCount) >= minVulnerability)
+                    return true;
+                else
+                    return false;
+            }
+        };
+    }
+    public static Match<Territory> TerritoryHasSurvivalChanceEqualToOrMoreThan(final GameData data, final PlayerID player, final float minSurvivalChance, final int runCount)
+    {
+    	return new Match<Territory>()
+    	{
+            public boolean match(Territory ter)
+            {
+                if (DUtils.GetSurvivalChanceOfArmy(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), runCount) >= minSurvivalChance)
                     return true;
                 else
                     return false;
@@ -365,47 +404,24 @@ public class DMatches
             }
         };
     }
-    public static Match<Territory> territoryIsCapitalAndOwnedByEnemy(final GameData data, final PlayerID player)
+    public static Match<Territory> territoryIsCapital = new Match<Territory>()
     {
-        return new Match<Territory>()
+        @Override
+        public boolean match(Territory ter)
         {
-            @Override
-            public boolean match(Territory ter)
-            {
-                TerritoryAttachment ta = TerritoryAttachment.get(ter);
-                if(ta != null && ta.isCapital() && data.getAllianceTracker().isAtWar(ter.getOwner(), player))
-                    return true;
-                return false;
-            }
-        };
-    }
-    public static Match<Territory> territoryIsCapitalAndOwnedByAliveEnemy(final GameData data, final PlayerID player)
-    {
-        return new Match<Territory>()
-        {
-            @Override
-            public boolean match(Territory ter)
-            {
-                TerritoryAttachment ta = TerritoryAttachment.get(ter);
-                if(ta != null && ta.isCapital() && data.getAllianceTracker().isAtWar(ter.getOwner(), player) && TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data).size() > 0)
-                    return true;
-                return false;
-            }
-        };
-    }
+            TerritoryAttachment ta = TerritoryAttachment.get(ter);
+            if (ta != null && ta.isCapital())
+                return true;
+            return false;
+        }
+    };
     public static Match<Territory> territoryIsCapitalAndOwnedBy(final GameData data, final PlayerID player)
     {
-        return new Match<Territory>()
-        {
-            @Override
-            public boolean match(Territory ter)
-            {
-                TerritoryAttachment ta = TerritoryAttachment.get(ter);
-                if(ta != null && ta.isCapital() && ter.getOwner().equals(player))
-                    return true;
-                return false;
-            }
-        };
+        return DUtils.CompMatchAnd(territoryIsCapital, Matches.isTerritoryOwnedBy(player));
+    }
+    public static Match<Territory> territoryIsCapitalAndOwnedByEnemy(final GameData data, final PlayerID player)
+    {
+        return DUtils.CompMatchAnd(territoryIsCapital, Matches.isTerritoryEnemy(player, data));
     }
     public static Match<Territory> territoryCanHaveUnitsPlacedOnIt(final GameData data, final PlayerID player)
     {

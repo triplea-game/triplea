@@ -56,12 +56,12 @@ public class DSettings implements Serializable
     public int CA_CM_determinesAttackResultsToSeeIfTaskWorthwhile = 500;
     public int CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile = 500;
     public int CA_CMNCM_determinesIfTaskEndangersCap = 250;
-    public int CA_CMNCM_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers = 250;
-    public int CA_NCM_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove = 100;
+    public int CA_CMNCM_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers = 250;
+    public int CA_NCM_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove = 100;
     public int CA_Retreat_determinesIfAIShouldRetreat = 250;
 
     public boolean LimitLogHistory = true;
-    public int LimitLogHistoryTo = 3;
+    public int LimitLogHistoryTo = 5;
 
     public BattleCalculationType BattleCalculationMethod = BattleCalculationType.BattleCalculator;
 
@@ -75,16 +75,16 @@ public class DSettings implements Serializable
 
     public int AA_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask = 96;
     public int AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask = 96;
-    public int AA_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask = 96;
+    public int AA_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask = 96;
 
     public int TR_attackOffensive_TakeoverChanceRequired = 70;
-    public int TR_attackOffensive_CounterAttackSurvivalChanceRequired = 50;
-    public int TR_attackOffensive_Neutrals_TakeoverChanceRequired = 95;
-    public int TR_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired = 10;
-    public int TR_attackOffensive_Capitals_TakeoverChanceRequired = 50;
-    public int TR_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired = 50;
+    public int TR_attackOffensive_CounterAttackSurvivalChanceRequired = 55;
+    public int TR_attackOffensive_Neutrals_TakeoverChanceRequired = 90;
+    public int TR_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired = 60;
+    public int TR_attackOffensive_Capitals_TakeoverChanceRequired = 55;
+    public int TR_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired = 0;
     public int TR_attackStabalize_TakeoverChanceRequired = 55;
-    public int TR_attackStabalize_CounterAttackSurvivalChanceRequired = 75;
+    public int TR_attackStabalize_CounterAttackSurvivalChanceRequired = 25;
     public int TR_reinforceFrontLine_EnemyAttackSurvivalChanceRequired = 50;
     public int TR_reinforceStabalize_EnemyAttackSurvivalChanceRequired = 50;
 

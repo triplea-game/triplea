@@ -67,7 +67,7 @@ public class Purchase_UnitPlacementLocationSorter
             scores.put(ter, score);
         }
         
-        result = DSorting.SortTerritoriesByScores_D(result, scores);
+        result = DSorting.SortListByScores_HashMap_D(result, scores);
         if (purchaseForBid && result.size() > 0)
             return result.subList(0, 1); //Atm, put all bid units on best ter(almost always cap)...
 

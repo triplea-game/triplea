@@ -26,6 +26,7 @@ import games.strategy.triplea.Dynamix_AI.CommandCenter.TacticalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
 import games.strategy.triplea.Dynamix_AI.DMatches;
 import games.strategy.triplea.Dynamix_AI.DSettings;
+import games.strategy.triplea.Dynamix_AI.DSorting;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
@@ -94,7 +95,8 @@ public class NCM_Task
 
     private List<UnitGroup> getSortedPossibleRecruits()
     {
-        final HashMap<UnitGroup, Integer> possibles = new HashMap<UnitGroup, Integer>();
+        final HashMap<Unit, Territory> unitLocations = new HashMap<Unit, Territory>();
+        final HashMap<Unit, Integer> possibles = new HashMap<Unit, Integer>();
         for (final Territory ter : m_data.getMap().getTerritories())
         {
             if(DMatches.territoryContainsMultipleAlliances(m_data).match(ter)) //If we're battling here
@@ -105,11 +107,13 @@ public class NCM_Task
                 public boolean match(Unit unit)
                 {
                     UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-                    if(ua.isAA())
-                        return false;
                     if (!DUtils.CanUnitReachTer(m_data, ter, unit, m_target))
                         return false;
                     if (!Matches.unitIsOwnedBy(GlobalCenter.CurrentPlayer).match(unit))
+                        return false;
+                    if (Matches.UnitIsFactory.match(unit) && ua.getDefense(unit.getOwner()) <= 0)
+                        return false;
+                    if (Matches.UnitIsAA.match(unit))
                         return false;
 
                     return true;
@@ -124,37 +128,46 @@ public class NCM_Task
                 int suitability = DUtils.HowWellIsUnitSuitedToTask(m_data, this, ter, unit);
                 if(suitability == Integer.MIN_VALUE)
                     continue;
-                possibles.put(DUtils.CreateUnitGroupForUnits(Collections.singleton(unit), ter, m_data), suitability);
+                possibles.put(unit, suitability);
+                unitLocations.put(unit, ter);
             }
         }
 
-        List<UnitGroup> sortedPossibles = new ArrayList<UnitGroup>(possibles.keySet());
-        Collections.sort(sortedPossibles, new Comparator<UnitGroup>()
-        {
-            public int compare(UnitGroup ug1, UnitGroup ug2)
-            {
-                return (int) (possibles.get(ug2) - possibles.get(ug1));
-            }
-        });
+        List<Unit> sortedPossibles = DUtils.ToList(possibles.keySet());
+        //For now, shuffle,
+        Collections.shuffle(sortedPossibles);
+        //Then sort by score. In this way, equal scored attack units are shuffled
+        sortedPossibles = DSorting.SortListByScores_List_D(sortedPossibles, possibles.values());
 
-        return sortedPossibles;
+        //Now put the units into UnitGroups and return the list
+        List<UnitGroup> result = new ArrayList<UnitGroup>();
+        for(Unit unit : sortedPossibles)
+            result.add(DUtils.CreateUnitGroupForUnits(Collections.singletonList(unit), unitLocations.get(unit), m_data));
+        return result;
     }
 
-    private float m_maxVulnerability = 0.0F;
+    private float m_minSurvivalChance = 0.0F;
     public void CalculateTaskRequirements()
     {
         if (m_taskType.equals(NCM_TaskType.Reinforce_Block))
             return; //Only one unit needed for block
 
         if (m_taskType == NCM_TaskType.Reinforce_FrontLine)
-            m_maxVulnerability = DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceFrontLine_EnemyAttackSurvivalChanceRequired);
+            m_minSurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceFrontLine_EnemyAttackSurvivalChanceRequired);
         else if (m_taskType.equals(m_taskType.Reinforce_Stabilize))
-            m_maxVulnerability = DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceStabalize_EnemyAttackSurvivalChanceRequired);
+            m_minSurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceStabalize_EnemyAttackSurvivalChanceRequired);
 
-        DUtils.Log(Level.FINER, "    NCM Task requirements calculated. Max Vulnerability: {0}", m_maxVulnerability);
+        DUtils.Log(Level.FINER, "    NCM Task requirements calculated. Min Survival Chance: {0}", m_minSurvivalChance);
     }
 
-    private float getMeetingOfMaxVulnerabilityScore(AggregateResults simulatedAttack, float maxVulnerability)
+    public void SetTaskRequirements(float minSurvivalChance)
+    {
+        m_minSurvivalChance = minSurvivalChance;
+
+        DUtils.Log(Level.FINER, "    NCM Task requirements set. Min Survival Chance: {0}", m_minSurvivalChance);
+    }
+
+    private float getMeetingOfMinSurvivalChanceScore(AggregateResults simulatedAttack, float minSurvivalChance)
     {
         if(m_taskType.equals(NCM_TaskType.Reinforce_Block))
         {
@@ -165,9 +178,9 @@ public class NCM_Task
         }
 
         if(StatusCenter.get(m_data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(m_target).WasAttacked)
-            return 1.0F; //If this ter was attacked, we don't care if the vulnerability is high
+            return 1.0F; //If this ter was attacked, we don't care if we can't survive here (hmmm... not sure if we should keep this)
 
-        return DUtils.Divide_SL(maxVulnerability, (float)simulatedAttack.getAttackerWinPercent()); //We're this close to getting our vulnerability below max amount
+        return DUtils.Divide_SL((float)simulatedAttack.getDefenderWinPercent(), minSurvivalChance); //We're this close to meeting our min survival chance
     }
 
     private float getMeetingOfMaxBattleVolleysScore(AggregateResults simulatedAttack, int maxBattleVolleys)
@@ -188,32 +201,32 @@ public class NCM_Task
     private List<UnitGroup> m_recruitedUnits = new ArrayList<UnitGroup>();
     public void RecruitUnits()
     {
-        recruitEnoughUnitsToMeetXYZ(m_maxVulnerability, 100);
+        recruitEnoughUnitsToMeetXYZ(m_minSurvivalChance, 100);
         DUtils.Log(Level.FINEST, "    Wave 1 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
     }
 
     public void RecruitUnits2()
     {
-        float maxVulnerability = .10F;
-        int maxBattleVolleys = 3; //We want to defend off enemies in three volleys
+        float minSurvivalChance = .90F;
+        int maxBattleVolleys = 3; //We want to destroy attackers in three volleys
 
-        recruitEnoughUnitsToMeetXYZ(maxVulnerability, maxBattleVolleys);
+        recruitEnoughUnitsToMeetXYZ(minSurvivalChance, maxBattleVolleys);
         DUtils.Log(Level.FINEST, "    Wave 2 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
     }
 
     public void RecruitUnits3()
     {
-        float maxVulnerability = 0.0F;
-        int maxBattleVolleys = 1; //We want to take in one volley
+        float minSurvivalChance = 1.0F;
+        int maxBattleVolleys = 1; //We want to destroy attackers in one volley
 
         if(m_taskType.equals(NCM_TaskType.Reinforce_Block))
             return; //Only one unit needed for land grab
 
-        recruitEnoughUnitsToMeetXYZ(maxVulnerability, maxBattleVolleys);
+        recruitEnoughUnitsToMeetXYZ(minSurvivalChance, maxBattleVolleys);
         DUtils.Log(Level.FINEST, "    Wave 3 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
     }
 
-    private void recruitEnoughUnitsToMeetXYZ(float maxVulnerability, int maxBattleVolleys)
+    private void recruitEnoughUnitsToMeetXYZ(float minSurvivalChance, int maxBattleVolleys)
     {
         if(m_taskType.equals(NCM_TaskType.Reinforce_Block) && m_recruitedUnits.size() > 0)
             return; //We only need one unit
@@ -230,10 +243,10 @@ public class NCM_Task
             List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
             List<Unit> defenders = GetRecruitedUnitsAsUnitList();
 
-            AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, 1, false);
+            AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, 1, true);
 
-            float howCloseToMeetingVulnerabilityMax = getMeetingOfMaxVulnerabilityScore(simulatedAttack, maxVulnerability);
-            if (howCloseToMeetingVulnerabilityMax < DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask) + .02F)
+            float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, minSurvivalChance);
+            if (howCloseToMeetingMinSurvivalChance < DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask) + .02F)
             {
                 m_recruitedUnits.add(ug);
                 continue;
@@ -257,10 +270,10 @@ public class NCM_Task
             List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
             List<Unit> defenders = GetRecruitedUnitsAsUnitList();
 
-            AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, false);
+            AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, true);
 
-            float howCloseToMeetingVulnerabilityMax = getMeetingOfMaxVulnerabilityScore(simulatedAttack, maxVulnerability);
-            if (howCloseToMeetingVulnerabilityMax < DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask) + .02F)
+            float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, minSurvivalChance);
+            if (howCloseToMeetingMinSurvivalChance < DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask) + .02F)
             {
                 m_recruitedUnits.add(ug);
                 continue;
@@ -333,7 +346,7 @@ public class NCM_Task
         List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
         List<Unit> defenders = GetRecruitedUnitsAsUnitList();
 
-        AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile, false);
+        AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile, true);
 
         if (m_taskType.equals(m_taskType.Reinforce_Block))
         {
@@ -353,20 +366,20 @@ public class NCM_Task
         }
         else if (m_taskType.equals(NCM_TaskType.Reinforce_FrontLine))
         {
-            float howCloseToMeetingVulnerabilityMax = getMeetingOfMaxVulnerabilityScore(simulatedAttack, m_maxVulnerability);
-            float percentOfRequirementNeeded_Vulnerablity = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask);
-            DUtils.Log(Level.FINEST, "      How close to meeting vulnerability max: {0} Needed: {1}", howCloseToMeetingVulnerabilityMax, percentOfRequirementNeeded_Vulnerablity);
-            if (howCloseToMeetingVulnerabilityMax < percentOfRequirementNeeded_Vulnerablity)
+            float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, m_minSurvivalChance);
+            float percentOfRequirementNeeded_SurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask);
+            DUtils.Log(Level.FINEST, "      How close to meeting min survival chance: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, percentOfRequirementNeeded_SurvivalChance);
+            if (howCloseToMeetingMinSurvivalChance < percentOfRequirementNeeded_SurvivalChance)
                 return false;
 
             return true; //We've met all requirements
         }
         else
         {
-            float howCloseToMeetingVulnerabilityMax = getMeetingOfMaxVulnerabilityScore(simulatedAttack, m_maxVulnerability);
-            float percentOfRequirementNeeded_Vulnerablity = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfMaxEnemyAttackTakeoverConstantNeededToPerformNCMTask);
-            DUtils.Log(Level.FINEST, "      How close to meeting vulnerability max: {0} Needed: {1}", howCloseToMeetingVulnerabilityMax, percentOfRequirementNeeded_Vulnerablity);
-            if (howCloseToMeetingVulnerabilityMax < percentOfRequirementNeeded_Vulnerablity)
+            float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, m_minSurvivalChance);
+            float percentOfRequirementNeeded_SurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask);
+            DUtils.Log(Level.FINEST, "      How close to meeting min survival chance: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, percentOfRequirementNeeded_SurvivalChance);
+            if (howCloseToMeetingMinSurvivalChance < percentOfRequirementNeeded_SurvivalChance)
                 return false;
 
             return true; //We've met all requirements
@@ -458,7 +471,7 @@ public class NCM_Task
                         defenders.retainAll(TacticalCenter.get(m_data, player).GetFrozenUnits()); //Only count units that have been frozen here
                         defenders.removeAll(DUtils.ToUnitList(retreatUnits)); //(Don't double add)
                         defenders.addAll(DUtils.ToUnitList(retreatUnits)); //And the units we're retreating
-                        AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defenders, task.GetTarget(), m_data, 500, false);
+                        AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defenders, task.GetTarget(), m_data, 500, true);
 
                         float score = 0;
                         score -= results.getAttackerWinPercent();
@@ -493,7 +506,7 @@ public class NCM_Task
                         defenders.retainAll(TacticalCenter.get(m_data, player).GetFrozenUnits()); //Only count units that have been frozen here
                         defenders.removeAll(DUtils.ToUnitList(retreatUnits)); //(Don't double add)
                         defenders.addAll(DUtils.ToUnitList(retreatUnits)); //And the units we're retreating
-                        AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defenders, ter, m_data, 500, false);
+                        AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defenders, ter, m_data, 500, true);
 
                         float score = 0;
                         score -= results.getAttackerWinPercent() * 1000;
@@ -560,7 +573,7 @@ public class NCM_Task
                         defenders.retainAll(TacticalCenter.get(m_data, player).GetFrozenUnits()); //Only count units that have been frozen here
                         defenders.removeAll(DUtils.ToUnitList(retreatUnits)); //(Don't double add)
                         defenders.addAll(DUtils.ToUnitList(retreatUnits)); //And the units we're retreating
-                        AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defenders, ter, m_data, 500, false);
+                        AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defenders, ter, m_data, 500, true);
 
                         float score = 0;
                         score -= results.getAttackerWinPercent() * 1000;
@@ -612,7 +625,7 @@ public class NCM_Task
                 return;
             List<Unit> defenders = GetRecruitedUnitsAsUnitList();
 
-            AggregateResults simulatedAttack = DUtils.GetBattleResults(threats, defenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers, false);
+            AggregateResults simulatedAttack = DUtils.GetBattleResults(threats, defenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers, true);
 
             if (simulatedAttack.getDefenderWinPercent() > .4F)
             {
@@ -627,7 +640,7 @@ public class NCM_Task
                 return;
             List<Unit> defenders = GetRecruitedUnitsAsUnitList();
 
-            AggregateResults simulatedAttack = DUtils.GetBattleResults(threats, defenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers, false);
+            AggregateResults simulatedAttack = DUtils.GetBattleResults(threats, defenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers, true);
 
             if (simulatedAttack.getDefenderWinPercent() > .4F)
             {

@@ -27,6 +27,7 @@ import games.strategy.triplea.Dynamix_AI.CommandCenter.TacticalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
 import games.strategy.triplea.Dynamix_AI.DMatches;
 import games.strategy.triplea.Dynamix_AI.DSettings;
+import games.strategy.triplea.Dynamix_AI.DSorting;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
@@ -95,7 +96,8 @@ public class CM_Task
 
     private List<UnitGroup> getSortedPossibleRecruits()
     {
-        final HashMap<UnitGroup, Integer> possibles = new HashMap<UnitGroup, Integer>();
+        final HashMap<Unit, Territory> unitLocations = new HashMap<Unit, Territory>();
+        final HashMap<Unit, Integer> possibles = new HashMap<Unit, Integer>();
         for (final Territory ter : m_data.getMap().getTerritories())
         {
             if(DMatches.territoryContainsMultipleAlliances(m_data).match(ter)) //If we're battling here
@@ -110,7 +112,7 @@ public class CM_Task
                         return false;
                     if (!Matches.unitIsOwnedBy(GlobalCenter.CurrentPlayer).match(unit))
                         return false;
-                    if (Matches.UnitIsFactory.match(unit) && ua.getAttack(unit.getOwner()) == 0)
+                    if (Matches.UnitIsFactory.match(unit) && ua.getAttack(unit.getOwner()) <= 0)
                         return false;
 
                     return true;
@@ -125,31 +127,34 @@ public class CM_Task
                 int suitability = DUtils.HowWellIsUnitSuitedToTask(m_data, this, ter, unit);
                 if(suitability == Integer.MIN_VALUE)
                     continue;
-                possibles.put(DUtils.CreateUnitGroupForUnits(Collections.singleton(unit), ter, m_data), suitability);
+                possibles.put(unit, suitability);
+                unitLocations.put(unit, ter);
             }
         }
+        
+        List<Unit> sortedPossibles = DUtils.ToList(possibles.keySet());
+        //For now, shuffle,
+        Collections.shuffle(sortedPossibles);
+        if (m_taskType == CM_TaskType.Attack_Trade)
+        {
+            //Interlace units for a good air/land unit ratio (One air for every three land)
+            sortedPossibles = DUtils.InterlaceUnits_SoWhileSortingYPercentOfUnitsMatchX(sortedPossibles, Matches.UnitIsAir, .25F);
+        }
+        else
+        {
+            //Then sort by score. In this way, equal scored attack units are shuffled
+            sortedPossibles = DSorting.SortListByScores_List_D(sortedPossibles, possibles.values());
+        }
 
-        List<UnitGroup> sortedPossibles = new ArrayList<UnitGroup>(possibles.keySet());        
-        Collections.sort(sortedPossibles, new Comparator<UnitGroup>()
-        {
-            public int compare(UnitGroup ug1, UnitGroup ug2)
-            {
-                return (int) (possibles.get(ug2) - possibles.get(ug1));
-            }
-        });
-        sortedPossibles = DUtils.PairUpUnitGroupsInListForOptimalAttack(m_data, GlobalCenter.CurrentPlayer, sortedPossibles, m_target, DSettings.LoadSettings().CA_CMNCM_sortsPossibleTaskRecruitsForOptimalAttackDefense); //We want this list paired up, in case suitability is the same
-        Collections.sort(sortedPossibles, new Comparator<UnitGroup>()
-        {
-            public int compare(UnitGroup ug1, UnitGroup ug2)
-            {
-                return (int) (possibles.get(ug2) - possibles.get(ug1));
-            }
-        });
-        return sortedPossibles;
+        //Now put the units into UnitGroups and return the list
+        List<UnitGroup> result = new ArrayList<UnitGroup>();
+        for(Unit unit : sortedPossibles)
+            result.add(DUtils.CreateUnitGroupForUnits(Collections.singletonList(unit), unitLocations.get(unit), m_data));
+        return result;
     }
 
-    private float m_minChance = 0.0F;
-    private float m_maxVulnerability = 0.0F;
+    private float m_minTakeoverChance = 0.0F;
+    private float m_minSurvivalChance = 0.0F;
     public void CalculateTaskRequirements()
     {
         if(m_taskType.equals(CM_TaskType.LandGrab))
@@ -159,44 +164,53 @@ public class CM_Task
         {
             if (m_target.getOwner().isNull())
             {
-                m_minChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_Neutrals_TakeoverChanceRequired);
-                m_maxVulnerability = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired);
+                m_minTakeoverChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_Neutrals_TakeoverChanceRequired);
+                m_minSurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired);
             }
-            else if (DUtils.GetAliveEnemyCaps(m_data, GlobalCenter.CurrentPlayer).contains(m_target))
+            else if (DUtils.GetAllEnemyCaps_ThatAreOwnedByOriginalOwner(m_data, GlobalCenter.CurrentPlayer).contains(m_target))
             {
-                m_minChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_Capitals_TakeoverChanceRequired);
-                m_maxVulnerability = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired);
+                m_minTakeoverChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_Capitals_TakeoverChanceRequired);
+                m_minSurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired);
             }
             else
             {
-                m_minChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_TakeoverChanceRequired);
-                m_maxVulnerability = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_CounterAttackSurvivalChanceRequired);
+                m_minTakeoverChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_TakeoverChanceRequired);
+                m_minSurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_CounterAttackSurvivalChanceRequired);
             }
         }
         else if (m_taskType.equals(m_taskType.Attack_Stabilize))
         {
             if (m_target.getOwner().isNull())
             {
-                m_minChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_Neutrals_TakeoverChanceRequired);
-                m_maxVulnerability = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired);
+                m_minTakeoverChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_Neutrals_TakeoverChanceRequired);
+                m_minSurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired);
             }
-            else if (DUtils.GetAliveEnemyCaps(m_data, GlobalCenter.CurrentPlayer).contains(m_target))
+            else if (DUtils.GetAllEnemyCaps_ThatAreOwnedByOriginalOwner(m_data, GlobalCenter.CurrentPlayer).contains(m_target))
             {
-                m_minChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_Capitals_TakeoverChanceRequired);
-                m_maxVulnerability = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired);
+                m_minTakeoverChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_Capitals_TakeoverChanceRequired);
+                m_minSurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired);
             }
             else
             {
-                m_minChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackOffensive_TakeoverChanceRequired);
-                m_maxVulnerability = DUtils.ToFloat(DSettings.LoadSettings().TR_attackStabalize_CounterAttackSurvivalChanceRequired);
+                m_minTakeoverChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackStabalize_TakeoverChanceRequired);
+                m_minSurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().TR_attackStabalize_CounterAttackSurvivalChanceRequired);
             }
         }
 
-        TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).BattleRetreatChanceAssignments.put(m_target, m_minChance);
-        DUtils.Log(Level.FINER, "    CM Task requirements calculated. Min Chance: {0} Max Vulnerability: {1}", m_minChance, m_maxVulnerability);
+        TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).BattleRetreatChanceAssignments.put(m_target, m_minTakeoverChance);
+        DUtils.Log(Level.FINER, "    CM Task requirements set. Min Chance: {0} Min Survival Chance: {1}", m_minTakeoverChance, m_minSurvivalChance);
     }
 
-    private float getMeetingOfTakeoverChanceScore(AggregateResults simulatedAttack, float minChance)
+    public void SetTaskRequirements(float minTakeoverChance, float minSurvivalChance)
+    {
+        m_minTakeoverChance = minTakeoverChance;
+        m_minSurvivalChance = minSurvivalChance;
+
+        TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).BattleRetreatChanceAssignments.put(m_target, m_minTakeoverChance);
+        DUtils.Log(Level.FINER, "    CM Task requirements calculated. Min Chance: {0} Min Survival Chance: {1}", m_minTakeoverChance, m_minSurvivalChance);
+    }
+
+    private float getMeetingOfMinTakeoverChance(AggregateResults simulatedAttack, float minTakeoverChance)
     {
         if(m_taskType.equals(CM_TaskType.LandGrab))
         {
@@ -206,10 +220,10 @@ public class CM_Task
                 return 0.0F;
         }
 
-        return DUtils.Divide_SL((float)simulatedAttack.getAttackerWinPercent(), minChance); //We're this close to meeting the min takeover chance
+        return DUtils.Divide_SL((float)simulatedAttack.getAttackerWinPercent(), minTakeoverChance); //We're this close to meeting the min takeover chance
     }
 
-    private float getMeetingOfVulnerabilityMaxScore(AggregateResults simulatedResponse, float maxVulnerability)
+    private float getMeetingOfMinSurvivalChance(AggregateResults simulatedResponse, float minSurvivalChance)
     {
         if(m_taskType.equals(CM_TaskType.LandGrab))
         {
@@ -219,7 +233,7 @@ public class CM_Task
                 return 0.0F;
         }
 
-        return DUtils.Divide_SL(maxVulnerability, (float)simulatedResponse.getAttackerWinPercent()); //We're this close to getting our vulnerability below max amount
+        return DUtils.Divide_SL((float)simulatedResponse.getDefenderWinPercent(), minSurvivalChance); //We're this close to meeting the min survival chance
     }
 
     private float getMeetingOfMaxBattleVolleysScore(AggregateResults simulatedAttack, int maxBattleVolleys)
@@ -237,49 +251,95 @@ public class CM_Task
         return DUtils.Divide_SL(maxBattleVolleys, (float)simulatedAttack.getAverageBattleRoundsFought()); //We're this close to getting the average battle volley count below max amount
     }
 
+    private boolean getHasMetTradeRequirements(List<Unit> attackers, List<Unit> defenders, AggregateResults simulatedAttack, List<Unit> responseAttackers, List<Unit> responseDefenders, AggregateResults simulatedResponse)
+    {
+        List<Integer> tuvLosses = DUtils.GetTUVChangeOfAttackerAndDefender(attackers, defenders, simulatedAttack);
+        int tuvSwing = DUtils.GetTUVSwingForTUVChange(tuvLosses);
+        List<Integer> responseTUVLosses = DUtils.GetTUVChangeOfAttackerAndDefender(responseAttackers, responseDefenders, simulatedResponse);
+        int responseTUVSwing = DUtils.GetTUVSwingForTUVChange(responseTUVLosses);
+        int terProduction = TerritoryAttachment.get(m_target).getProduction();
+
+        if(terProduction + tuvSwing - responseTUVSwing > 0) //If total TUV swing is in our favor
+            return true;
+
+        return false;
+    }
+
     private List<UnitGroup> m_recruitedUnits = new ArrayList<UnitGroup>();
     public void RecruitUnits()
     {
-        recruitEnoughUnitsToMeetXYZ(m_minChance, m_maxVulnerability, 100);
+        if(m_taskType.equals(CM_TaskType.Attack_Trade))
+        {
+            recruitEnoughUnitsForTradeTask();
+            DUtils.Log(Level.FINEST, "    Wave 1 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
+        }
+
+        recruitEnoughUnitsToMeetXYZ(m_minTakeoverChance, m_minSurvivalChance, 100);
         DUtils.Log(Level.FINEST, "    Wave 1 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
     }
 
     public void RecruitUnits2()
     {
-        float minChance = 0.0F;
-        float maxVulnerability = .55F;
-        int maxBattleVolleys = 5; //We want to take it in five volleys
+        if(m_taskType.equals(CM_TaskType.Attack_Trade))
+            return;
+
+        float minTakeoverChance;
+        float minSurvivalChance;
+        int maxBattleVolleys = 0;
+
         if (m_taskType == CM_TaskType.Attack_Offensive)
-            minChance = .85F;
+        {
+            minTakeoverChance = .85F;
+            minSurvivalChance = .65F;
+        }
         else if (m_taskType.equals(m_taskType.Attack_Stabilize))
-            minChance = .90F;
+        {
+            minTakeoverChance = .85F;
+            minSurvivalChance = .65F;
+        }
         else
             return; //Only one unit needed for land grab
 
-        recruitEnoughUnitsToMeetXYZ(minChance, maxVulnerability, maxBattleVolleys);
+        recruitEnoughUnitsToMeetXYZ(minTakeoverChance, minSurvivalChance, maxBattleVolleys);
         DUtils.Log(Level.FINEST, "    Wave 2 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
     }
 
     public void RecruitUnits3()
     {
-        float minChance = .97F;
-        float maxVulnerability = .4F;
-        int maxBattleVolleys = 3; //We want to take it in three volleys
+        if(m_taskType.equals(CM_TaskType.Attack_Trade))
+            return;
 
-        if(m_taskType.equals(CM_TaskType.LandGrab))
+        float minTakeoverChance;
+        float minSurvivalChance;
+        int maxBattleVolleys = 0;
+
+        if (m_taskType == CM_TaskType.Attack_Offensive)
+        {
+            minTakeoverChance = .95F;
+            minSurvivalChance = .85F;
+        }
+        else if (m_taskType.equals(m_taskType.Attack_Stabilize))
+        {
+            minTakeoverChance = .95F;
+            minSurvivalChance = .85F;
+        }
+        else
             return; //Only one unit needed for land grab
 
-        recruitEnoughUnitsToMeetXYZ(minChance, maxVulnerability, maxBattleVolleys);
+        recruitEnoughUnitsToMeetXYZ(minTakeoverChance, minSurvivalChance, maxBattleVolleys);
         DUtils.Log(Level.FINEST, "    Wave 3 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
     }
 
     public void RecruitUnits4()
     {
-        recruitEnoughUnitsToMeetXYZ(1.0F, .0F, 1);
+        if(m_taskType.equals(CM_TaskType.Attack_Trade))
+            return;
+
+        recruitEnoughUnitsToMeetXYZ(1.0F, 1.0F, 1);
         DUtils.Log(Level.FINEST, "    Wave 4 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
     }
 
-    private void recruitEnoughUnitsToMeetXYZ(float minChance, float maxVulnerability, int maxBattleVolleys)
+    private void recruitEnoughUnitsToMeetXYZ(float minTakeoverChance, float minSurvivalChance, int maxBattleVolleys)
     {
         if(m_taskType.equals(CM_TaskType.LandGrab) && m_recruitedUnits.size() > 0)
             return; //We only need one unit
@@ -293,20 +353,20 @@ public class CM_Task
             if(m_recruitedUnits.contains(ug)) //If already recruited
                 continue;
 
-            AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 5, false);
+            AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 5, true);
             List<Unit> responseAttackers = DUtils.DetermineResponseAttackers(m_data, GlobalCenter.CurrentPlayer, m_target, simulatedAttack);
             List<Unit> responseDefenders = Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); //Air can't defend ter because they need to land
-            AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, 1, false);
+            AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, 1, true);
 
-            float howCloseToMeetingTakeoverChanceMin = getMeetingOfTakeoverChanceScore(simulatedAttack, minChance);
-            if(howCloseToMeetingTakeoverChanceMin < DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask) + .02)
+            float howCloseToMeetingMinTakeoverChance = getMeetingOfMinTakeoverChance(simulatedAttack, minTakeoverChance);
+            if(howCloseToMeetingMinTakeoverChance < DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask) + .02)
             {
                 m_recruitedUnits.add(ug);
                 continue;
             }
 
-            float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedResponse, maxVulnerability);
-            if (howCloseToMeetingVulnerabilityMax < DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask) + .02)
+            float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChance(simulatedResponse, minSurvivalChance);
+            if (howCloseToMeetingMinSurvivalChance < DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask) + .02)
             {
                 m_recruitedUnits.add(ug);
                 continue;
@@ -327,20 +387,20 @@ public class CM_Task
             if(m_recruitedUnits.contains(ug)) //If already recruited
                 continue;
 
-            AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 250, false);
+            AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, true);
             List<Unit> responseAttackers = DUtils.DetermineResponseAttackers(m_data, GlobalCenter.CurrentPlayer, m_target, simulatedAttack);
             List<Unit> responseDefenders = Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); //Air can't defend ter because they need to land
-            AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, false);
+            AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, true);
 
-            float howCloseToMeetingTakeoverChanceMin = getMeetingOfTakeoverChanceScore(simulatedAttack, minChance);
-            if(howCloseToMeetingTakeoverChanceMin < DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask) + .02)
+            float howCloseToMeetingMinTakeoverChance = getMeetingOfMinTakeoverChance(simulatedAttack, minTakeoverChance);
+            if(howCloseToMeetingMinTakeoverChance < DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask) + .02)
             {
                 m_recruitedUnits.add(ug);
                 continue;
             }
 
-            float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedResponse, maxVulnerability);
-            if (howCloseToMeetingVulnerabilityMax < DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask) + .02)
+            float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChance(simulatedResponse, minSurvivalChance);
+            if (howCloseToMeetingMinSurvivalChance < DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask) + .02)
             {
                 m_recruitedUnits.add(ug);
                 continue;
@@ -350,6 +410,75 @@ public class CM_Task
             if (howCloseToMeetingBattleVolleyMax < .98F)
             {
                 m_recruitedUnits.add(ug);
+                continue;
+            }
+
+            break; //We've met all requirements
+        }
+    }
+
+    private void recruitEnoughUnitsForTradeTask()
+    {
+        List<UnitGroup> sortedPossibles = getSortedPossibleRecruits();
+        if(sortedPossibles.isEmpty())
+            return;
+
+        int extraUnitsToAdd = -1;
+
+        for (UnitGroup ug : sortedPossibles)
+        {
+            if(m_recruitedUnits.contains(ug)) //If already recruited
+                continue;
+
+            AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 5, true);
+            List<Unit> responseAttackers = DUtils.DetermineResponseAttackers(m_data, GlobalCenter.CurrentPlayer, m_target, simulatedAttack);
+            List<Unit> responseDefenders = Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); //Air can't defend ter because they need to land
+            AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, 1, true);
+
+            List<Unit> attackers = GetRecruitedUnitsAsUnitList();
+            List<Unit> defenders = DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer)));
+
+            boolean hasMetTradeRequirements = getHasMetTradeRequirements(attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, simulatedResponse);
+
+            if (!hasMetTradeRequirements)
+            {
+                m_recruitedUnits.add(ug);
+                continue;
+            }
+
+            break; //We've met all requirements
+        }
+
+        for (UnitGroup ug : sortedPossibles)
+        {
+            if(m_recruitedUnits.contains(ug)) //If already recruited
+                continue;
+
+            if(extraUnitsToAdd > 0)
+            {
+                m_recruitedUnits.add(ug);
+                extraUnitsToAdd--;
+                continue;
+            }
+
+            AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, true);
+            List<Unit> responseAttackers = DUtils.DetermineResponseAttackers(m_data, GlobalCenter.CurrentPlayer, m_target, simulatedAttack);
+            List<Unit> responseDefenders = Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); //Air can't defend ter because they need to land
+            AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, true);
+
+            List<Unit> attackers = GetRecruitedUnitsAsUnitList();
+            List<Unit> defenders = DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer)));
+
+            boolean hasMetTradeRequirements = getHasMetTradeRequirements(attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, simulatedResponse);
+
+            if (!hasMetTradeRequirements)
+            {
+                m_recruitedUnits.add(ug);
+                continue;
+            }
+            else if(extraUnitsToAdd == -1)
+            {
+                extraUnitsToAdd = 2;
                 continue;
             }
 
@@ -427,7 +556,7 @@ public class CM_Task
             }
         }
 
-        if (areRecruitsFromCapOrNeighbor)
+        if (areRecruitsFromCapOrNeighbor && !m_taskType.equals(CM_TaskType.LandGrab)) //If this is a land grab, we don't care if the cap is in danger (We can move the unit back)
         {
             List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, GlobalCenter.CurrentPlayer, ourCap, m_target, GetRecruitedUnitsAsUnitList(), DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
             if (capTakeoverChances.get(1) > .1F) //If takeover chance is 10% or more after move
@@ -437,10 +566,10 @@ public class CM_Task
             }
         }
 
-        AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, DSettings.LoadSettings().CA_CM_determinesAttackResultsToSeeIfTaskWorthwhile, false);
+        AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, DSettings.LoadSettings().CA_CM_determinesAttackResultsToSeeIfTaskWorthwhile, true);
         List<Unit> responseAttackers = DUtils.DetermineResponseAttackers(m_data, GlobalCenter.CurrentPlayer, m_target, simulatedAttack);
         List<Unit> responseDefenders = Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); //Air can't defend ter because they need to land
-        AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile, false);
+        AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile, true);
 
         if (m_taskType == CM_TaskType.Attack_Offensive)
         {
@@ -448,36 +577,48 @@ public class CM_Task
             //    If you think it'll help, you can change these 'getMeetingOf...' methods so they return a value higher than 1.0F or lower than 0.0F.
             //    For example, you might want the 'meetTUVWants..' method to return even higher than 1.0 if the enemy, for example, loses more than twice as much TUV as us. (In attack and response)
             //    That might make an attack go through even if the other things aren't met, which may be good sometimes, like in the example situation where we'd make the enemy lose a lot more TUV.
-            //    If you do make these sort of changes, though, please do it carefully, sloppy changes could mess up the code.
-            float howCloseToMeetingTakeoverChanceMin = getMeetingOfTakeoverChanceScore(simulatedAttack, m_minChance);
+            //    If you do make these sort of changes, though, please do it carefully, sloppy changes could complicate the code.
+            float howCloseToMeetingTakeoverChanceMin = getMeetingOfMinTakeoverChance(simulatedAttack, m_minTakeoverChance);
             float percentOfRequirementNeeded_TakeoverChance = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask);
             DUtils.Log(Level.FINEST, "      How close to meeting takeover chance min: {0} Needed: {1}", howCloseToMeetingTakeoverChanceMin, percentOfRequirementNeeded_TakeoverChance);
             if(howCloseToMeetingTakeoverChanceMin < percentOfRequirementNeeded_TakeoverChance)
                 return false;
 
-            float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedResponse, m_maxVulnerability);
-            float percentOfRequirementNeeded_Vulnerability = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask);
-            DUtils.Log(Level.FINEST, "      How close to meeting vulnerability max: {0} Needed: {1}", howCloseToMeetingVulnerabilityMax, percentOfRequirementNeeded_Vulnerability);
-            if (howCloseToMeetingVulnerabilityMax < percentOfRequirementNeeded_Vulnerability)
+            float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChance(simulatedResponse, m_minSurvivalChance);
+            float percentOfRequirementNeeded_SurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask);
+            DUtils.Log(Level.FINEST, "      How close to meeting survival chance min: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, percentOfRequirementNeeded_SurvivalChance);
+            if (howCloseToMeetingMinSurvivalChance < percentOfRequirementNeeded_SurvivalChance)
                 return false;
 
             return true; //We've met all requirements
         }
         else if (m_taskType.equals(m_taskType.Attack_Stabilize))
         {
-            float howCloseToMeetingTakeoverChanceMin = getMeetingOfTakeoverChanceScore(simulatedAttack, m_minChance);
+            float howCloseToMeetingTakeoverChanceMin = getMeetingOfMinTakeoverChance(simulatedAttack, m_minTakeoverChance);
             float percentOfRequirementNeeded_TakeoverChance = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask);
             DUtils.Log(Level.FINEST, "      How close to meeting takeover chance min: {0} Needed: {1}", howCloseToMeetingTakeoverChanceMin, percentOfRequirementNeeded_TakeoverChance);
             if(howCloseToMeetingTakeoverChanceMin < percentOfRequirementNeeded_TakeoverChance)
                 return false;
 
-            float howCloseToMeetingVulnerabilityMax = getMeetingOfVulnerabilityMaxScore(simulatedResponse, m_maxVulnerability);
-            float percentOfRequirementNeeded_Vulnerability = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask);
-            DUtils.Log(Level.FINEST, "      How close to meeting vulnerability max: {0} Needed: {1}", howCloseToMeetingVulnerabilityMax, percentOfRequirementNeeded_Vulnerability);
-            if (howCloseToMeetingVulnerabilityMax < percentOfRequirementNeeded_Vulnerability)
+            float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChance(simulatedResponse, m_minSurvivalChance);
+            float percentOfRequirementNeeded_SurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask);
+            DUtils.Log(Level.FINEST, "      How close to meeting survival chance min: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, percentOfRequirementNeeded_SurvivalChance);
+            if (howCloseToMeetingMinSurvivalChance < percentOfRequirementNeeded_SurvivalChance)
                 return false;
 
             return true; //We've met all requirements
+        }
+        else if(m_taskType == CM_TaskType.Attack_Trade)
+        {
+            List<Unit> attackers = GetRecruitedUnitsAsUnitList();
+            List<Unit> defenders = DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer)));
+
+            boolean hasMetTradeRequirements = getHasMetTradeRequirements(attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, simulatedResponse);
+
+            if (hasMetTradeRequirements)
+                return true;
+            else
+                return false;
         }
         else
         {
@@ -524,7 +665,10 @@ public class CM_Task
 
         List<Territory> capsAndNeighbors = new ArrayList<Territory>();
         for(Territory cap : ourCaps)
-            capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, cap, 1));
+        {
+            if(cap.getOwner().equals(player)) //If we own this cap
+                capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, cap, 1));
+        }
         HashSet<Unit> capsAndNeighborsUnits = DUtils.ToHashSet(DUtils.GetUnitsInTerritories(capsAndNeighbors));
         boolean areRecruitsFromCapsOrNeighbors = false;
         for (Unit recruit : GetRecruitedUnitsAsUnitList())
@@ -538,11 +682,11 @@ public class CM_Task
 
         if (areRecruitsFromCapsOrNeighbors)
         {
-            Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
-            List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, GlobalCenter.CurrentPlayer, ourClosestCap, m_target, GetRecruitedUnitsAsUnitList(), DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
-            if (capTakeoverChances.get(1) > .01F) //If takeover chance is 1% or more after move
+            Territory closestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
+            List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, GlobalCenter.CurrentPlayer, closestCap, m_target, GetRecruitedUnitsAsUnitList(), DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
+            if (capTakeoverChances.get(1) > .1F) //If takeover chance is 10% or more after move
             {
-                if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .005) //and takeover chance before and after move is at least half a percent different
+                if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .01F) //and takeover chance before and after move is at least 1% different
                     return false;
             }
         }
@@ -573,12 +717,12 @@ public class CM_Task
         if (m_taskType == CM_TaskType.Attack_Offensive)
         {
             ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation(); //We want to invalidate threats only if this task REALLY DOES resist ALL ENEMIES, including INVALIDATED ones.
-            AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 250, false);
+            AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 250, true);
             List<Unit> threats = DUtils.DetermineResponseAttackers(m_data, GlobalCenter.CurrentPlayer, m_target, simulatedAttack);
             if(threats.isEmpty()) //No threats to invalidate
                 return;
             List<Unit> responseDefenders = Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); //Air can't defend ter because they need to land
-            AggregateResults simulatedResponse = DUtils.GetBattleResults(threats, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers, false);
+            AggregateResults simulatedResponse = DUtils.GetBattleResults(threats, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers, true);
 
             if (simulatedResponse.getDefenderWinPercent() > .4F)
             {
@@ -590,12 +734,12 @@ public class CM_Task
         else if (m_taskType == CM_TaskType.Attack_Stabilize)
         {
             ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation(); //We want to invalidate threats only if this task REALLY DOES resist ALL ENEMIES, including INVALIDATED ones.
-            AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 250, false);
+            AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 250, true);
             List<Unit> threats = DUtils.DetermineResponseAttackers(m_data, GlobalCenter.CurrentPlayer, m_target, simulatedAttack);
             if(threats.isEmpty()) //No threats to invalidate
                 return;
             List<Unit> responseDefenders = Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); //Air can't defend ter because they need to land
-            AggregateResults simulatedResponse = DUtils.GetBattleResults(threats, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesVulnerabilityAfterTaskToSeeIfToInvalidateAttackers, false);
+            AggregateResults simulatedResponse = DUtils.GetBattleResults(threats, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers, true);
 
             if (simulatedResponse.getDefenderWinPercent() > .4F)
             {

@@ -55,9 +55,9 @@ public class DoNonCombatMove
 
         if (DUtils.GetTerTakeoverChanceAtEndOfTurn(data, player, ourCap) > .1F) //If our cap is in danger
         {
-            float priority = DUtils.GetReinforceStabalizePriority(data, player, ourCap);
+            float priority = DUtils.GetNCMTaskPriority_Stabalize(data, player, ourCap);
             NCM_Task task = new NCM_Task(data, ourCap, NCM_TaskType.Reinforce_Stabilize, priority);
-            task.CalculateTaskRequirements();
+            task.SetTaskRequirements(.5F);
             task.RecruitUnits();
             if (task.IsPlannedMoveWorthwhile(Arrays.asList(task)))
             {
@@ -306,21 +306,21 @@ public class DoNonCombatMove
         {
             if(isReinforce_Block.match(ter))
             {
-                float priority = DUtils.GetReinforceBlockPriority(data, player, ter);
+                float priority = DUtils.GetNCMTaskPriority_Block(data, player, ter);
                 NCM_Task task = new NCM_Task(data, ter, NCM_TaskType.Reinforce_Block, priority);
                 result.add(task);
                 DUtils.Log(Level.FINER, "     Reinforce block task added. Ter: {0} Priority: {1}", ter.getName(), priority);
             }
             else if(isReinforce_Stabilize.match(ter))
             {
-                float priority = DUtils.GetReinforceStabalizePriority(data, player, ter);
+                float priority = DUtils.GetNCMTaskPriority_Stabalize(data, player, ter);
                 NCM_Task task = new NCM_Task(data, ter, NCM_TaskType.Reinforce_Stabilize, priority);
                 result.add(task);
                 DUtils.Log(Level.FINER, "     Reinforce stabalize task added. Ter: {0} Priority: {1}", ter.getName(), priority);
             }
             else if(isReinforce_FrontLine.match(ter))
             {
-                float priority = DUtils.GetReinforceFrontlinePriority(data, player, ter);
+                float priority = DUtils.GetNCMTaskPriority_Frontline(data, player, ter);
                 NCM_Task task = new NCM_Task(data, ter, NCM_TaskType.Reinforce_FrontLine, priority);
                 result.add(task);
                 DUtils.Log(Level.FINER, "     Reinforce frontline task added. Ter: {0} Priority: {1}", ter.getName(), priority);
@@ -410,7 +410,7 @@ public class DoNonCombatMove
 
         if (valueOfFrom >= valueOfHighestTo * 2) //If start from ter is more than twice as valuable as move-to
         {
-            List<Float> fromDangerBeforeAndAfter = DUtils.GetTerTakeoverChanceBeforeAndAfterMoves(data, player, ter, movedToTers, terUnits, DSettings.LoadSettings().CA_NCM_determinesVulnerabilityOfFromTerAfterMoveToSeeIfToCancelMove);
+            List<Float> fromDangerBeforeAndAfter = DUtils.GetTerTakeoverChanceBeforeAndAfterMoves(data, player, ter, movedToTers, terUnits, DSettings.LoadSettings().CA_NCM_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove);
             if (fromDangerBeforeAndAfter.get(1) > .5F && fromDangerBeforeAndAfter.get(0) < .5F) //If move-from-ter will be endangered after move, but wasn't before it
             {
                 DUtils.Log(Level.FINER, "    Regular ncm move-to-target from {0} to {1} canceled because of endangering of more valuable from ter. Units: {2}", ter, target, ugs);

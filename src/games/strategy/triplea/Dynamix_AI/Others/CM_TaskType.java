@@ -23,5 +23,6 @@ public enum CM_TaskType
      LandGrab,
      Attack_Stabilize,
      Attack_Offensive,
+     Attack_Trade,
      Empty
 }

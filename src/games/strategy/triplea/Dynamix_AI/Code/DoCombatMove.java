@@ -187,6 +187,21 @@ public class DoCombatMove
                 return true;
             }
         };
+        Match<Territory> isAttack_Trade = new Match<Territory>()
+        {
+            @Override
+            public boolean match(Territory ter)
+            {
+                if (ter.isWater())
+                    return false;
+                if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
+                    return false;
+                if (ter.getOwner() != null && data.getAllianceTracker().isAllied(ter.getOwner(), player))
+                    return false;
+
+                return true;
+            }
+        };
         List<Territory> tersWeCanAttack = DUtils.GetEnemyTersThatCanBeAttackedByUnitsOwnedBy(data, player);
         DUtils.Log(Level.FINE, "  Beginning task creation loop. tersWeCanAttack: {0}", tersWeCanAttack);
         for (Territory ter : tersWeCanAttack)
@@ -194,60 +209,63 @@ public class DoCombatMove
             //Hey, just a note to any developers reading this code:
             //    If you think it'll help, you can add in special 'combat move' tasks, that in reality just lock down units from attacking elsewhere.
             //    For example, you might want a cm task to 'lock-down' units to the cap and other important areas so the territory stays defendable.
-            //    If you do make these sort of changes, though, please do it carefully, sloppy changes could mess up the code.
+            //    If you do make these sort of changes, though, please do it carefully, sloppy changes could complicate the code.
+
+            //Attack_Trade tasks can exist along with other tasks on the same attack ter (if normal attack isn't worthwhile, check if trade attack is worthwhile)
+            if(isAttack_Trade.match(ter))
+            {
+                List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLand);
+                possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
+                List<Unit> terDefenders = DUtils.ToList(ter.getUnits().getUnits());
+                AggregateResults results = DUtils.GetBattleResults(possibleAttackers, terDefenders, ter, data, DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
+                if(results.getAttackerWinPercent() < .90F)
+                    continue;
+
+                List<Integer> tuvLosses = DUtils.GetTUVChangeOfAttackerAndDefender(possibleAttackers, terDefenders, results);
+                int tuvSwing = DUtils.GetTUVSwingForTUVChange(tuvLosses);
+                int terProduction = TerritoryAttachment.get(ter).getProduction();
+
+                int attackScore = 0;
+                attackScore += tuvSwing;
+                attackScore += terProduction;
+                if (attackScore > 5)
+                {
+                    float priority = DUtils.GetCMTaskPriority_Trade(data, player, ter);
+                    CM_Task task = new CM_Task(data, ter, CM_TaskType.Attack_Trade, priority);
+                    result.add(task);
+                    DUtils.Log(Level.FINER, "    Attack_Trade task added. Ter: {0} Priority: {1}", ter.getName(), priority);
+                }
+            }
+
             if(isLandGrab.match(ter))
             {
-                float priority = DUtils.GetLandGrabOnTerPriority(data, player, ter);
+                float priority = DUtils.GetCMTaskPriority_LandGrab(data, player, ter);
                 CM_Task task = new CM_Task(data, ter, CM_TaskType.LandGrab, priority);
                 result.add(task);
                 DUtils.Log(Level.FINER, "    Land grab task added. Ter: {0} Priority: {1}", ter.getName(), priority);
             }
             else if(isAttack_Stabilize.match(ter))
             {
-                if(ter.isWater())
-                {
-                    if(true) //For now, ignore water
-                        continue;
-                    List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
-                    possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.UnitIsAir));
-                    AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data, DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
-                    if(results.getAttackerWinPercent() < .25F)
-                        continue;
-                }
-                else
-                {
-                    List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLand);
-                    possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
-                    AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data, DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
-                    if(results.getAttackerWinPercent() < .25F)
-                        continue;
-                }                
-                float priority = DUtils.GetStabilizationAttackOnTerPriority(data, player, ter);
+                List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLand);
+                possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
+                AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data, DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
+                if (results.getAttackerWinPercent() < .25F)
+                    continue;
+               
+                float priority = DUtils.GetCMTaskPriority_Stabalization(data, player, ter);
                 CM_Task task = new CM_Task(data, ter, CM_TaskType.Attack_Stabilize, priority);
                 result.add(task);
                 DUtils.Log(Level.FINER, "    Attack_Stabilize task added. Ter: {0} Priority: {1}", ter.getName(), priority);
             }
             else if(isAttack_Offensive.match(ter))
             {
-                if(ter.isWater())
-                {
-                    if(true) //For now, ignore water
-                        continue;
-                    List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
-                    possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.UnitIsAir));
-                    AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data, DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
-                    if(results.getAttackerWinPercent() < .20F)
-                        continue;
-                }
-                else
-                {
-                    List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLand);
-                    possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
-                    AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data, DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
-                    if(results.getAttackerWinPercent() < .20F)
-                        continue;
-                }
-                float priority = DUtils.GetOffensiveAttackOnTerPriority(data, player, ter);
+                List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLand);
+                possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
+                AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data, DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
+                if (results.getAttackerWinPercent() < .20F)
+                    continue;
+
+                float priority = DUtils.GetCMTaskPriority_Offensive(data, player, ter);
                 CM_Task task = new CM_Task(data, ter, CM_TaskType.Attack_Offensive, priority);
                 result.add(task);
                 DUtils.Log(Level.FINER, "    Attack_Offensive task added. Ter: {0} Priority: {1}", ter.getName(), priority);

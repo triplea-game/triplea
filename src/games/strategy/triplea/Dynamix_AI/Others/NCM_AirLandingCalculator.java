@@ -68,7 +68,7 @@ public class NCM_AirLandingCalculator
             score += airUnitsAbleToMakeIt * 100000; //We really want all our planes to make it, but we can't sometimes...
             score -= vulnerability * 10000;
 
-            Territory closestEnemy = DUtils.GetClosestTerMatchingX(data, landingTer, DMatches.territoryIsOwnedByNNEnemy(data, player), Matches.TerritoryIsLand);
+            Territory closestEnemy = DUtils.GetClosestTerMatchingX(data, landingTer, DMatches.territoryIsOwnedByNNEnemy(data, player));
             int closestEnemyDist = data.getMap().getDistance(landingTer, closestEnemy);
             score -= closestEnemyDist + 100; //We like close-to-enemy safe landing ters
 

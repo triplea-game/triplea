@@ -373,7 +373,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         if(battleTerr == null || possibleTerritories.isEmpty())
             return null; //Don't submerge
         DUtils.Log(Level.FINER, "Territory of battle querying retreat: {0}", battleTerr.getName());
-        AggregateResults results = DUtils.GetBattleResults(battleTerr, getWhoAmI(), data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, false);
+        AggregateResults results = DUtils.GetBattleResults(battleTerr, getWhoAmI(), data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, true);
         float retreatChance = .6F;
         if(TacticalCenter.get(data, getID()).BattleRetreatChanceAssignments.containsKey(battleTerr))
         {
