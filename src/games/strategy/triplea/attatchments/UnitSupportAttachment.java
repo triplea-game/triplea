@@ -171,7 +171,7 @@ public class UnitSupportAttachment extends DefaultAttachment{
     	}       
     }
     
-    public void setPlayers(List<PlayerID> players)
+    public void setPlayers(ArrayList<PlayerID> players)
     {
     	m_players = players;
     }

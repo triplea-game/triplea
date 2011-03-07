@@ -1,4 +1,8 @@
 Changes for 1.2.7
+* Small bug fix for Support attachments (squiddaddy), and a bug fix for the new placement logic. (veqryn)
+
+* Dynamix AI patch, adding more features and improving some logic. (wisconsin)
+
 * New Repair options. New unit attachment: <option name="repairsUnits" value="battleship:bunker"/> will cause the attached unit to repair units in the list. New game properties: "Battleships repair at beginning of round" and "Two HitPoint Units Require Repair Facilities". (veqryn)
 
 * Created 2 new autosaves: autosave_round_even and autosave_round_odd, which will autosave at the beginning of each round. Provides only the last 2 rounds in order to keep file spam to a minimum. (veqryn)

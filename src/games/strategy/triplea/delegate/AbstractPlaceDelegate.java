@@ -650,17 +650,24 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         int territoryValue = getProduction(producer);
         int maxConstructions = howManyOfEachConstructionCanPlace(to, units, player).totalValues();
         
+        Collection<Unit> unitsInTO = producer.getUnits().getUnits();
+        Collection<Unit> unitsPlacedAlready = getAlreadyProduced(producer);
+        Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
+        unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
+        boolean wasFactoryThereAtStart = Match.someMatch(unitsAtStartOfTurnInTO, Matches.UnitIsFactory);
+        
+        //If there's NO factory, allow placement of the factory
+        if (!wasFactoryThereAtStart)
+        {
+        	if (ra != null && ra.getMaxPlacePerTerritory() > 0)
+        		return Math.max(0, Math.min(maxConstructions, ra.getMaxPlacePerTerritory() - unitCount));
+        	else
+            	return Math.max(0, maxConstructions);
+        }
+        
         if(limitSBRDamageToUnitProd)
         {
         	production = ta.getUnitProduction();
-            //If there's NO factory, allow placement of the factory
-            if(production <= 0 && producer.getUnits().getMatches(Matches.UnitIsFactory).size() == 0)
-            {
-            	if (ra != null && ra.getMaxPlacePerTerritory() == -1)
-            		return Math.max(0, Math.min(maxConstructions, ra.getMaxPlacePerTerritory() - unitCount));
-            	else
-                	return Math.max(0, maxConstructions);
-            }
             
             //Increase production if have industrial technology
             if(isIncreasedFactoryProduction(player) && territoryValue > 2)
@@ -677,7 +684,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         else
         {
         	production = territoryValue;
-        	
+
+            //Increase production if have industrial technology
+            if(isIncreasedFactoryProduction(player) && territoryValue > 2)
+                production += 2;
+            
             // increase the production by the number of constructions allowed
             if (maxConstructions > 0)
             	production += maxConstructions;
@@ -688,7 +699,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         
         production += Match.countMatches(getAlreadyProduced(producer), Matches.UnitIsFactoryOrConstruction);
         
-        if (ra != null && ra.getMaxPlacePerTerritory() != -1)
+        if (ra != null && ra.getMaxPlacePerTerritory() > 0)
         	return Math.max(0, Math.min(production - unitCount, ra.getMaxPlacePerTerritory() - unitCount));
         else
         	return Math.max(0, production - unitCount);
