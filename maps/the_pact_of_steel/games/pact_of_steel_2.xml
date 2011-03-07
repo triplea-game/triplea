@@ -779,7 +779,7 @@
                 </productionRule>
 
                 <productionRule name="buySuper_Carrier">
-                        <cost resource="PUs" quantity="23" />
+                        <cost resource="PUs" quantity="21" />
                         <result resourceOrUnit="super_carrier" quantity="1"/>
                 </productionRule>
 
@@ -881,7 +881,7 @@
                 </productionRule>
 
                 <productionRule name="buySuper_CarrierIndustrialTechnology">
-                        <cost resource="PUs" quantity="19" />
+                        <cost resource="PUs" quantity="17" />
                         <result resourceOrUnit="super_carrier" quantity="1"/>
                 </productionRule>
 
@@ -953,7 +953,7 @@
                 </productionRule>
 
                 <productionRule name="buySuper_CarrierShipyards">
-                        <cost resource="PUs" quantity="19" />
+                        <cost resource="PUs" quantity="17" />
                         <result resourceOrUnit="super_carrier" quantity="1"/>
                 </productionRule>
 
@@ -1721,7 +1721,7 @@
 		</technology>
 
         <attatchmentList>
-				<!-- the following is a list of all ww2v3 technology -->
+				<!-- the following is a list of all ww2v3 technology.  These are not required, they only determine if a country starts with a tech or not -->
         		<!-- Germans -->
                 <attatchment name="techAttatchment" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
 						<!-- techCost is optional, and defaults to 5 if missing.  techs default to false if missing -->
@@ -1987,10 +1987,11 @@
                          <option name="isSea" value="true"/>
                          <option name="attack" value="1"/>
                          <option name="defense" value="3"/>
-                         <option name="blockade" value="1"/>
+                         <option name="blockade" value="2"/>
 						 <option name="transportCapacity" value="5"/>
 						 <!-- isCombatTransport tells the engine that this sea unit can transport but can fight too. units will not be able to move through it like they would a transport, and it can be taken casualty during battle as normal -->
                          <option name="isCombatTransport" value="true"/>
+                         <!--<option name="isTwoHit" value="true"/>-->
                 </attatchment>
 
                 <!-- Submarine -->
@@ -2027,6 +2028,7 @@
 								if More Constructions without Factory = true, then the minimum will be either maxConstructionsPerTypePerTerr or the PU value of the territory (whichever number is greater) in territories without factories, while in territories with factories the limit is 10000.
 								if Unlimited Constructions = true, then this number becomes 10000 -->
 						 <option name="maxConstructionsPerTypePerTerr" value="1"/>
+						 <!--<option name="isTwoHit" value="true"/>-->
                 </attatchment>
 				
 				<!-- Airfield -->
@@ -2048,6 +2050,9 @@
 						 <option name="canBeDamaged" value="true"/>
 						 <option name="maxDamage" value="6"/>
 						 <option name="maxOperationalDamage" value="3"/>
+						 <!-- repairsUnits is a colon delimited list of all the units this unit can repair. units to be repaired must be in the same territory as this unit. 
+								unless the unit being repaired is sea, and the unit repairing it is land, in which case the sea unit must be adjacent to the land unit -->
+						 <option name="repairsUnits" value="battleship"/>
 						 <option name="isConstruction" value="true"/>
 						 <option name="constructionType" value="harbour"/>
 						 <option name="constructionsPerTerrPerTypePerTurn" value="1"/>
@@ -3555,6 +3560,15 @@
 						<boolean/>
 				</property>
 
+				<property name="Battleships repair at beginning of round" value="false" editable="true">
+						<boolean/>
+				</property>
+
+				<!-- in order to repair, a unit must in the presence of a unit with "repairsUnits" unit attachment -->
+				<property name="Two HitPoint Units Require Repair Facilities" value="false" editable="true">
+						<boolean/>
+				</property>
+
 				<!-- Display Options -->
 					<!-- Multiply PUs will multiply all PUs gained or lost during a turn. It will not yet multiply costs of units or any other costs, or starting PUs -->
 				<property name="Multiply PUs" value="1" editable="false">
@@ -3928,10 +3942,11 @@
 								They can not be captured during non-combat phase. If more than 1 route is linked to a single land territory, only 1 route needs to be controlled to get the income from land territory. Routes can have PU values just like convoy zones.
         				<br>3. Sea Zones 37, 47, 48, 49, 58, are Blockade Zones. Each enemy warship in these zones reduces the income of touching land territories by 1 per warship, 2 per submarine.
         				<br>4. Air_Transport is an air unit that specializes in dropping off units, costs 11 with 4 movement, and can carry into battle or drop off in a friendly territory: 1 infantry AND 1 other unit like a tank or artillery. Enabled when you get "paratroopers" tech.
-						<br>5. Super_Carrier is a beefed up carrier that can also transport 1 infantry and 1 other land unit like a tank or artillery.
-						<br>6. Airfield ...
-						<br>7. Harbour ...
-						<br>8. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att, +1 def to subs). Available to Germans after they get superSubs.
+						<br>5. Super_Carrier is a beefed up carrier that can also transport 1 infantry and 1 other land unit like a tank or artillery. It has only 1 hitpoint, just like normal carriers and cruisers.
+						<br>6. Airfield allow fighters to scramble to defend surrounding sea zones, if you turn on "Scramble Rules In Effect".
+						<br>7. Harbour are needed to repair Battleships, if you turn on "Two HitPoint Units Require Repair Facilities".
+						<br>8. Bunkers may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours), but there is a limit of 1 per territory.
+						<br>9. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att, +1 def to subs). Available to Germans after they get superSubs.
         				<br>
         				<br>
         				<br>

@@ -104,6 +104,17 @@ public class Matches
         }
     };
 
+    public static final Match<Unit> UnitCanRepairOthers = new Match<Unit>()
+    {
+        public boolean match(Unit unit)
+        {
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            if (ua.getRepairsUnits() == null)
+            	return false;
+            return ua.getRepairsUnits().length > 0;
+        }
+    };
+
     public static final Match<Unit> UnitIsDamaged = new Match<Unit>()
     {
         public boolean match(Unit unit)
@@ -1768,8 +1779,11 @@ public class Matches
         }
     };
 
+    /**
+     * Will match any unit that is 2 hit points
+     */
     public static final Match<UnitType> UnitTypeIsBB  = new Match<UnitType>()
-    { //Match for battleship (or any 2 hit ship)
+    {
         public boolean match(UnitType obj)
         {
             UnitType type = (UnitType) obj;
@@ -1859,6 +1873,59 @@ public class Matches
     	    	CompositeMatch<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsThatMatch(unitCond).invert(), Matches.TerritoryIsWater);
 
     			return routeCondition;
+    }
+
+    public static Match<Unit> UnitCanRepairThisUnit(final Unit damagedUnit)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unitCanRepair)
+            {
+                UnitType type = (UnitType) unitCanRepair.getUnitType();
+                UnitAttachment ua = UnitAttachment.get(type);
+                
+                if (ua.getRepairsUnits() != null && ua.getListedUnits(ua.getRepairsUnits()).contains(damagedUnit.getType()))
+                	return true;
+                else
+                	return false;
+            }
+        };
+    }
+
+    /**
+     * This will return true if the territory contains a unit that can repair this unit.  
+     * This will alse return true if this unit is Sea and an adjacent land territory has a land unit that can repair this unit.
+     */
+    public static Match<Unit> UnitCanBeRepairedByFacilitiesInItsTerritory(final Territory territory, final PlayerID player, final GameData data)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit damagedUnit)
+            {
+            	Match<Unit> damaged = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);
+            	if (!damaged.match(damagedUnit))
+            		return false;
+
+            	Match<Unit> repairUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), Matches.UnitCanRepairOthers, Matches.UnitCanRepairThisUnit(damagedUnit));
+            	
+            	if (Match.someMatch(territory.getUnits().getUnits(), repairUnit))
+            		return true;
+            	
+            	if (Matches.UnitIsSea.match(damagedUnit))
+            	{
+            		Match<Unit> repairUnitLand = new CompositeMatchAnd<Unit>(repairUnit, Matches.UnitIsLand);
+            		List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territory, Matches.TerritoryIsLand));
+            		Iterator iter = neighbors.iterator();
+            		while (iter.hasNext())
+            		{
+            			Territory current = (Territory) iter.next();
+            			if (Match.someMatch(current.getUnits().getUnits(), repairUnitLand))
+            				return true;
+            		}
+            	}
+                return false;
+            }
+        };
     }
     
     public static final Match<Unit> UnitIsAAOrFactory = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory);

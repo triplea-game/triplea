@@ -79,7 +79,7 @@ public abstract class AbstractEndTurnDelegate
         m_displayName = displayName;
     }
 
-    private boolean doBattleShipsRepair()
+    private boolean doBattleShipsRepairEndOfTurn()
     {
     	return games.strategy.triplea.Properties.getBattleships_Repair_At_End_Of_Round(m_data);
     }
@@ -143,7 +143,7 @@ public abstract class AbstractEndTurnDelegate
 
         checkForWinner(aBridge);
 
-        if(doBattleShipsRepair())
+        if(doBattleShipsRepairEndOfTurn())
         {
             repairBattleShips(aBridge);
         }
@@ -184,7 +184,10 @@ public abstract class AbstractEndTurnDelegate
        while(iter.hasNext())
        {
            Territory current = (Territory) iter.next();
-           damaged.addAll(current.getUnits().getMatches(damagedBattleship));
+           if (!games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(m_data))
+        	   damaged.addAll(current.getUnits().getMatches(damagedBattleship));
+           else
+        	   damaged.addAll(current.getUnits().getMatches(new CompositeMatchAnd<Unit>(damagedBattleship, Matches.unitIsOwnedBy(aBridge.getPlayerID()), Matches.UnitCanBeRepairedByFacilitiesInItsTerritory(current, aBridge.getPlayerID(), m_data))));
        }
 
        if(damaged.size() == 0)
@@ -199,7 +202,6 @@ public abstract class AbstractEndTurnDelegate
        }
        aBridge.addChange(ChangeFactory.unitsHit(hits));
        aBridge.getHistoryWriter().startEvent(damaged.size() + " " +  MyFormatter.pluralize("unit", damaged.size()) + " repaired.");
-
     }
 
 

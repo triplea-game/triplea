@@ -65,7 +65,7 @@ public interface Constants
   
   
   public static final String HEAVY_BOMBER_DICE_ROLLS = "Heavy Bomber Dice Rolls";
-  public static final String TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN = "Battleships repair at end of round";
+  public static final String TWO_HIT_BATTLESHIPS_REPAIR_END_OF_TURN = "Battleships repair at end of round";
   public static final String WW2V2 = "WW2V2";
   public static final String TOTAL_VICTORY = "Total Victory";
   public static final String HONORABLE_SURRENDER = "Honorable Surrender";
@@ -194,5 +194,7 @@ public interface Constants
   public static final String MORE_CONSTRUCTIONS_WITHOUT_FACTORY = "More Constructions without Factory";
   public static final String MORE_CONSTRUCTIONS_WITH_FACTORY = "More Constructions with Factory";
   public static final String UNIT_PLACEMENT_RESTRICTIONS = "Unit Placement Restrictions";
+  public static final String TWO_HIT_BATTLESHIPS_REPAIR_BEGINNING_OF_TURN = "Battleships repair at beginning of round";
+  public static final String TWO_HITPOINT_UNITS_REQUIRE_REPAIR_FACILITIES = "Two HitPoint Units Require Repair Facilities";
   
 }

@@ -76,6 +76,9 @@ public class UnitAttachment extends DefaultAttachment
   // a colon delimited list of territories where this unit may not be placed
   private String[] m_unitPlacementRestrictions;
   
+  // a colon delimited list of the units this unit can repair. (units must be in same territory, unless this unit is land and the repaired unit is sea)
+  private String[] m_repairsUnits;
+  
   // can be any String except for "none" if isConstruction is true
   private String m_constructionType = "none";
 
@@ -273,6 +276,16 @@ public class UnitAttachment extends DefaultAttachment
   public String[] getUnitPlacementRestrictions()
   {
 	  return m_unitPlacementRestrictions;
+  }
+  
+  public void setRepairsUnits(String value)
+  {
+	  m_repairsUnits = value.split(":");
+  }
+  
+  public String[] getRepairsUnits()
+  {
+	  return m_repairsUnits;
   }
   
   public boolean isConstruction()
@@ -750,6 +763,24 @@ public class UnitAttachment extends DefaultAttachment
     
     if(m_unitPlacementRestrictions != null)
     	getListedTerritories(m_unitPlacementRestrictions);
+    
+    if(m_repairsUnits != null)
+    	getListedUnits(m_repairsUnits);
+  }
+  
+  public Collection<UnitType> getListedUnits(String[] list)
+  {
+      List<UnitType> rVal = new ArrayList<UnitType>();
+      
+      for(String name : list)
+      {
+    	  //Validate all units exist
+    	  UnitType ut = getData().getUnitTypeList().getUnitType(name);
+          if(ut == null)
+              throw new IllegalStateException("Unit Attachments: No unit called:" + name);
+          rVal.add(ut);
+      }
+      return rVal;
   }
   
   public Collection<Territory> getListedTerritories(String[] list)    

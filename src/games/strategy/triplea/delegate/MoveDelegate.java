@@ -190,15 +190,49 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         if (m_firstRun)
             firstRun();
         
+        // repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at beginning of combat move)
+        if(!m_nonCombat && games.strategy.triplea.Properties.getBattleships_Repair_At_Beginning_Of_Round(m_data))
+        	repairBattleShips(m_bridge);
+        
         // placing triggered units at beginning of combat move.
         if(!m_nonCombat && games.strategy.triplea.Properties.getTriggers(m_data))
         	TriggerAttachment.triggerUnitPlacement(player,m_bridge,gameData);
+        
         if(m_tempMovePerformer != null)
         {
             m_tempMovePerformer.initialize(this, m_data, aBridge);
             m_tempMovePerformer.resume();
             m_tempMovePerformer = null;
         }
+    }
+    
+    private void repairBattleShips(IDelegateBridge aBridge)
+    {
+       Match<Unit> damagedBattleship = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged, Matches.unitIsOwnedBy(m_player));
+        
+       Collection<Unit> damaged = new ArrayList<Unit>();
+       Iterator iter = m_data.getMap().getTerritories().iterator();
+       while(iter.hasNext())
+       {
+           Territory current = (Territory) iter.next();
+           if (!games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(m_data))
+        	   damaged.addAll(current.getUnits().getMatches(damagedBattleship));
+           else
+        	   damaged.addAll(current.getUnits().getMatches(new CompositeMatchAnd<Unit>(damagedBattleship, Matches.UnitCanBeRepairedByFacilitiesInItsTerritory(current, m_player, m_data))));
+       }
+
+       if(damaged.size() == 0)
+           return;
+       
+       IntegerMap<Unit> hits = new IntegerMap<Unit>();
+       iter = damaged.iterator();
+       while(iter.hasNext())
+       {
+           Unit unit = (Unit) iter.next();
+           hits.put(unit,0);
+       }
+       aBridge.addChange(ChangeFactory.unitsHit(hits));
+       aBridge.getHistoryWriter().startEvent(damaged.size() + " " +  MyFormatter.pluralize("unit", damaged.size()) + " repaired.");
     }
 
     public String getName()

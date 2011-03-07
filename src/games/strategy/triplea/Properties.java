@@ -603,7 +603,20 @@ public class Properties implements Constants {
      */
     public static boolean getBattleships_Repair_At_End_Of_Round(GameData data) {
 
-        return data.getProperties().get(TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN, false);
+        return data.getProperties().get(TWO_HIT_BATTLESHIPS_REPAIR_END_OF_TURN, false);
+    }
+    
+    public static boolean getBattleships_Repair_At_Beginning_Of_Round(GameData data) {
+
+        return data.getProperties().get(TWO_HIT_BATTLESHIPS_REPAIR_BEGINNING_OF_TURN, false);
+    }
+
+    /*
+     * 
+     */
+    public static boolean getTwoHitPointUnitsRequireRepairFacilities(GameData data) {
+
+        return data.getProperties().get(TWO_HITPOINT_UNITS_REQUIRE_REPAIR_FACILITIES, false);
     }
 
     /*
