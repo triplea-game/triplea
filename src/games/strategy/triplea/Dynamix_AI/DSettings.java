@@ -53,12 +53,13 @@ public class DSettings implements Serializable
     public int CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance = 250;
     public int CA_CMNCM_sortsPossibleTaskRecruitsForOptimalAttackDefense = 25;
     public int CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop = 250;
-    public int CA_CM_determinesAttackResultsToSeeIfTaskWorthwhile = 500;
+    public int CA_CM_determinesIfTradeTasksRequirementsAreMetEnoughForRecruitingStop = 750;
+    public int CA_CM_determinesAttackResultsToSeeIfTaskWorthwhile = 500;    
     public int CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile = 500;
     public int CA_CMNCM_determinesIfTaskEndangersCap = 250;
     public int CA_CMNCM_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers = 250;
     public int CA_NCM_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove = 100;
-    public int CA_Retreat_determinesIfAIShouldRetreat = 250;
+    public int CA_Retreat_determinesIfAIShouldRetreat = 2000;
 
     public boolean LimitLogHistory = true;
     public int LimitLogHistoryTo = 5;
@@ -68,7 +69,28 @@ public class DSettings implements Serializable
     public boolean EnableResourceCollectionMultiplier = false;
     public int ResourceCollectionMultiplyPercent = 100;
     public boolean EnableUnitPlacementMultiplier = false;
-    public int UnitPlacementMultiplyPercent = 100;
+    public int UnitPlacementMultiplyPercent = 100;    
+
+    public boolean TR_enableAttackOffensive = true;
+    public int TR_attackOffensive_TakeoverChanceRequired = 70;
+    public int TR_attackOffensive_CounterAttackSurvivalChanceRequired = 55;
+    public int TR_attackOffensive_Neutrals_TakeoverChanceRequired = 90;
+    public int TR_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired = 60;
+    public int TR_attackOffensive_Capitals_TakeoverChanceRequired = 55;
+    public int TR_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired = 0;
+    public boolean TR_enableAttackStabalize = true;
+    public int TR_attackStabalize_TakeoverChanceRequired = 55;
+    public int TR_attackStabalize_CounterAttackSurvivalChanceRequired = 25;
+    public boolean TR_enableAttackTrade = true;
+    public int TR_attackTrade_TotalTradeScoreRequired = 5;
+    public int TR_attackTrade_LandUnitsAtEnd = 2;    
+    public boolean TR_enableAttackLandGrab = true;
+    public boolean TR_attackLandGrab_OnlyGrabLandIfWeCanBlitzIt = false;
+    public boolean TR_enableReinforceFrontLine = true;
+    public int TR_reinforceFrontLine_EnemyAttackSurvivalChanceRequired = 50;
+    public boolean TR_enableReinforceStabalize = true;
+    public int TR_reinforceStabalize_EnemyAttackSurvivalChanceRequired = 50;
+    public boolean TR_enableReinforceBlock = true;
 
     public int AA_resourcePercentageThatMustExistForFactoryBuy = 50;
     public int AA_maxUnitTypesForPurchaseMix = 5;
@@ -76,17 +98,6 @@ public class DSettings implements Serializable
     public int AA_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask = 96;
     public int AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask = 96;
     public int AA_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask = 96;
-
-    public int TR_attackOffensive_TakeoverChanceRequired = 70;
-    public int TR_attackOffensive_CounterAttackSurvivalChanceRequired = 55;
-    public int TR_attackOffensive_Neutrals_TakeoverChanceRequired = 90;
-    public int TR_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired = 60;
-    public int TR_attackOffensive_Capitals_TakeoverChanceRequired = 55;
-    public int TR_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired = 0;
-    public int TR_attackStabalize_TakeoverChanceRequired = 55;
-    public int TR_attackStabalize_CounterAttackSurvivalChanceRequired = 25;
-    public int TR_reinforceFrontLine_EnemyAttackSurvivalChanceRequired = 50;
-    public int TR_reinforceStabalize_EnemyAttackSurvivalChanceRequired = 50;
 
     public int AA_initialTaskConsiderationLoopCount = 3;
 

@@ -44,35 +44,39 @@ public class DSorting
         Collections.sort(result, comparator);
         return result;
     }
-    public static List SortListByScores_HashMap_A(Collection list, final HashMap scores)
+    public static List SortListByScores_HashMap_A(Collection list, final HashMap<?, ? extends Number> scores)
     {
-        List result = new ArrayList(list);
+        final List result = new ArrayList(list);
         Collections.sort(result, new Comparator()
         {
             public int compare(Object o1, Object o2)
             {
-                if (!scores.containsKey(o1) && !scores.containsKey(o2))
-                    return 0; //We can't compare these, so say they're equal
-                if (!scores.containsKey(o1))
-                    return 1;
-                if (!scores.containsKey(o2))
-                    return -1;
+                double v1 = safeGet(scores, o1);
+				double v2 = safeGet(scores, o2);
 
-                int score1 = Integer.parseInt(scores.get(o1).toString());
-                int score2 = Integer.parseInt(scores.get(o2).toString());
-
-                return score1 - score2;
+                if (v1 > v2)
+					return 1;
+				else if (v1 == v2)
+					return 0;
+				else
+					return -1;
             }
+            private double safeGet(final HashMap<?, ? extends Number> map, Object key)
+			{
+				if (!map.containsKey(key))
+					return DConstants.Integer_HalfMin; //Put ones without scores at the bottom of the list
+				return map.get(key).doubleValue();
+			}
         });
         return result;
     }
-    public static List SortListByScores_HashMap_D(Collection list, final HashMap scores)
+    public static List SortListByScores_HashMap_D(Collection list, final HashMap<?, ? extends Number> scores)
     {
         return DUtils.InvertList(SortListByScores_HashMap_A(list, scores));
     }
     public static List SortListByScores_List_A(Collection list, Collection scoreList)
     {
-        final HashMap scores = DUtils.CreateHashMapFromTwoLists(list, scoreList);
+        final HashMap scores = DUtils.ToHashMap(list, scoreList);
         return SortListByScores_HashMap_A(list, scores);
     }
     public static List SortListByScores_List_D(Collection list, Collection scoreList)
@@ -80,25 +84,6 @@ public class DSorting
         return DUtils.InvertList(SortListByScores_List_A(list, scoreList));
     }
     ///////////////////////////////////////////////End List Sorting///////////////////////////////////////////////
-
-    ///////////////////////////////////////////////HashMap Sorting///////////////////////////////////////////////
-    public static HashMap SortHashMapByValueScores_A(final HashMap map)
-    {
-        List sortedKeys = SortListByScores_List_A(map.keySet(), map.values());
-        HashMap result = new HashMap();
-        for(Object key : sortedKeys)
-            result.put(key, map.get(key));
-        return result;
-    }
-    public static HashMap SortHashMapByValueScores_D(final HashMap map)
-    {
-        List sortedKeys = SortListByScores_List_D(map.keySet(), map.values());
-        HashMap result = new HashMap();
-        for(Object key : sortedKeys)
-            result.put(key, map.get(key));
-        return result;
-    }
-    ///////////////////////////////////////////////End HashMap Sorting///////////////////////////////////////////////
 
     ///////////////////////////////////////////////Territory Sorting///////////////////////////////////////////////
     public static List<Territory> SortTerritoriesByDistance_A(final List<Territory> ters, final GameData data, final Territory target, final Match<Territory> routeMatch)
@@ -121,7 +106,12 @@ public class DSorting
                 else
                     distance2 = route1.getLength();
 
-                return distance1 - distance2;
+                if (distance1 > distance2)
+					return 1;
+				else if (distance1 == distance2)
+					return 0;
+				else
+					return -1;
             }
         });
     }
@@ -149,7 +139,7 @@ public class DSorting
                 else
                     distance2 = route1.getLength();
 
-                return distance1 - distance2;
+                return ((Integer)distance1).compareTo(distance2);
             }
         });
     }
@@ -177,7 +167,7 @@ public class DSorting
                 else
                     distance2 = route1.getLength();
 
-                return distance1 - distance2;
+                return ((Integer)distance1).compareTo(distance2);
             }
         });
     }
@@ -205,7 +195,7 @@ public class DSorting
                 else
                     distance2 = route1.getLength();
 
-                return distance1 - distance2;
+                return ((Integer)distance1).compareTo(distance2);
             }
         });
     }
@@ -242,7 +232,7 @@ public class DSorting
                 else
                     distance2 = route1.getLength();
 
-                return distance1 - distance2;
+                return ((Integer)distance1).compareTo(distance2);
             }
         });
     }
@@ -262,7 +252,7 @@ public class DSorting
                 int cost1 = DUtils.GetTUVOfUnits(Collections.singletonList(o1), o1.getOwner(), resource);
                 int cost2 = DUtils.GetTUVOfUnits(Collections.singletonList(o2), o2.getOwner(), resource);
 
-                return cost1 - cost2;
+                return ((Integer)cost1).compareTo(cost2);
             }
         });
     }

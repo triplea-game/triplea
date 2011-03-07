@@ -177,7 +177,7 @@ public class NCM_Task
                 return 0.0F;
         }
 
-        if(StatusCenter.get(m_data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(m_target).WasAttacked)
+        if(StatusCenter.get(m_data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(m_target).WasAttacked_Normal)
             return 1.0F; //If this ter was attacked, we don't care if we can't survive here (hmmm... not sure if we should keep this)
 
         return DUtils.Divide_SL((float)simulatedAttack.getDefenderWinPercent(), minSurvivalChance); //We're this close to meeting our min survival chance
@@ -262,6 +262,9 @@ public class NCM_Task
             break; //We've met all requirements
         }
 
+        m_recruitedUnits = m_recruitedUnits.subList(0, Math.max(0, m_recruitedUnits.size() - 7)); //Backtrack 7 units
+
+        //Now do it carefully
         for (UnitGroup ug : sortedPossibles)
         {
             if(m_recruitedUnits.contains(ug)) //If already recruited
@@ -304,7 +307,6 @@ public class NCM_Task
         }
         return result;
     }
-
     public boolean IsPlannedMoveWorthwhile(List<NCM_Task> allTasks)
     {
         DUtils.Log(Level.FINEST, "    Determining if ncm task is worthwhile. Target: {0} Recruits Size: {1}", m_target, m_recruitedUnits.size());
@@ -315,30 +317,29 @@ public class NCM_Task
         PlayerID player = GlobalCenter.CurrentPlayer;
 
         List<Territory> ourCaps = TerritoryAttachment.getAllCapitals(player, m_data);
-        if(ourCaps.contains(m_target))
-            return true; //Always try to reinforce our cap, even if we don't reach requirements
 
         List<Territory> capsAndNeighbors = new ArrayList<Territory>();
-        for(Territory cap : ourCaps)
+        for (Territory cap : ourCaps)
             capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, cap, 1));
         HashSet<Unit> capsAndNeighborsUnits = DUtils.ToHashSet(DUtils.GetUnitsInTerritories(capsAndNeighbors));
-        boolean areRecruitsFromCapOrNeighbor = false;
+        boolean areRecruitsFromCapsOrNeighbors = false;
         for (Unit recruit : GetRecruitedUnitsAsUnitList())
         {
             if (capsAndNeighborsUnits.contains(recruit))
             {
-                areRecruitsFromCapOrNeighbor = true;
+                areRecruitsFromCapsOrNeighbors = true;
                 break;
             }
         }
-
-        if (areRecruitsFromCapOrNeighbor)
+        if (areRecruitsFromCapsOrNeighbors)
         {
             Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
-            List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, GlobalCenter.CurrentPlayer, ourClosestCap, m_target, GetRecruitedUnitsAsUnitList(), DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
-            if (capTakeoverChances.get(1) > .01F) //If takeover chance is 1% or more after move
+            List<Unit> recruits = DUtils.CombineCollections(GetRecruitedUnitsAsUnitList(), DUtils.GetUnitsGoingToBePlacedAtX(m_data, player, m_target));
+            List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, player, ourClosestCap, m_target, recruits, DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
+            if (capTakeoverChances.get(1) > .1F) //If takeover chance is 10% or more after move
             {
-                if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .005) //and takeover chance before and after move is at least half a percent different
+                //And takeover chance before and after move is at least 1% different or there average attackers left before and after move is at least 1 different
+                if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .01F || capTakeoverChances.get(3) - capTakeoverChances.get(2) > 1)
                     return false;
             }
         }
@@ -369,6 +370,7 @@ public class NCM_Task
             float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, m_minSurvivalChance);
             float percentOfRequirementNeeded_SurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask);
             DUtils.Log(Level.FINEST, "      How close to meeting min survival chance: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, percentOfRequirementNeeded_SurvivalChance);
+
             if (howCloseToMeetingMinSurvivalChance < percentOfRequirementNeeded_SurvivalChance)
                 return false;
 
@@ -379,6 +381,7 @@ public class NCM_Task
             float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, m_minSurvivalChance);
             float percentOfRequirementNeeded_SurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask);
             DUtils.Log(Level.FINEST, "      How close to meeting min survival chance: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, percentOfRequirementNeeded_SurvivalChance);
+
             if (howCloseToMeetingMinSurvivalChance < percentOfRequirementNeeded_SurvivalChance)
                 return false;
 
@@ -396,26 +399,26 @@ public class NCM_Task
         List<Territory> ourCaps = TerritoryAttachment.getAllCapitals(player, m_data);
 
         List<Territory> capsAndNeighbors = new ArrayList<Territory>();
-        for(Territory cap : ourCaps)
+        for (Territory cap : ourCaps)
             capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, cap, 1));
         HashSet<Unit> capsAndNeighborsUnits = DUtils.ToHashSet(DUtils.GetUnitsInTerritories(capsAndNeighbors));
-        boolean areRecruitsFromCapOrNeighbor = false;
+        boolean areRecruitsFromCapsOrNeighbors = false;
         for (Unit recruit : GetRecruitedUnitsAsUnitList())
         {
             if (capsAndNeighborsUnits.contains(recruit))
             {
-                areRecruitsFromCapOrNeighbor = true;
+                areRecruitsFromCapsOrNeighbors = true;
                 break;
             }
         }
-
-        if (areRecruitsFromCapOrNeighbor)
+        if (areRecruitsFromCapsOrNeighbors)
         {
             Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
-            List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, GlobalCenter.CurrentPlayer, ourClosestCap, m_target, GetRecruitedUnitsAsUnitList(), DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
-            if (capTakeoverChances.get(1) > .10F) //If takeover chance is 10% or more after move
+            List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, player, ourClosestCap, m_target, GetRecruitedUnitsAsUnitList(), DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
+            if (capTakeoverChances.get(1) > .1F) //If takeover chance is 10% or more after move
             {
-                if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .01) //and takeover chance before and after move is at 1% different
+                //And takeover chance before and after move is at least 1% different or there average attackers left before and after move is at least 1 different
+                if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .01F || capTakeoverChances.get(3) - capTakeoverChances.get(2) > 1)
                     return false;
             }
         }
@@ -458,7 +461,7 @@ public class NCM_Task
             float bestRetreatTerScore = Integer.MIN_VALUE;
             for(NCM_Task task : (List<NCM_Task>)DUtils.ShuffleList(allTasks)) //Shuffle, so our retreat isn't predicatable
             {
-                if(task.IsCompleted() && task.GetTaskType().equals(NCM_TaskType.Reinforce_FrontLine))
+                if(task.IsCompleted() && (task.GetTaskType().equals(NCM_TaskType.Reinforce_FrontLine) || task.GetTaskType().equals(NCM_TaskType.Reinforce_Stabilize)))
                 {
                     Route ncmRoute = m_data.getMap().getLandRoute(m_target, task.GetTarget());
                     if (ncmRoute == null)

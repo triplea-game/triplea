@@ -34,6 +34,7 @@ import games.strategy.triplea.Dynamix_AI.CommandCenter.KnowledgeCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.TacticalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
+import games.strategy.triplea.Dynamix_AI.Others.Battle_RetreatTerCalculator;
 import games.strategy.triplea.Dynamix_AI.Others.PhaseType;
 import games.strategy.triplea.Dynamix_AI.UI.UI;
 import games.strategy.triplea.baseAI.AbstractAI;
@@ -367,6 +368,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
     {
         DUtils.Log(Level.FINER, "Retreat query starting. Possible retreat locations: {0}", possibleTerritories);
         final GameData data = getPlayerBridge().getGameData();
+        PlayerID player = GlobalCenter.CurrentPlayer;
         Territory battleTerr = getBattleTerritory();
         //BattleTer will be null if we're defending and TripleA calls this method to ask if we want to retreat(submerge) our subs when being attacked
         //PossibleTerritories will be empty if subs move in our sub ter, and our sub is 'attacking'
@@ -380,8 +382,23 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
             DUtils.Log(Level.FINER, "Found specific battle retreat chance assignment for territory '{0}'", battleTerr);
             retreatChance = TacticalCenter.get(data, getID()).BattleRetreatChanceAssignments.get(battleTerr);
         }
-        if(results.getAttackerWinPercent() < retreatChance)
-            return possibleTerritories.iterator().next();
+        else //Must be attack_trade type
+        {
+            List<Unit> attackers = battleTerr.getUnits().getMatches(Matches.unitIsOwnedBy(getID()));
+            List<Unit> defenders = battleTerr.getUnits().getMatches(Matches.unitIsEnemyOf(data, getID()));
+            List<Unit> responseAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, battleTerr, getID(), Matches.TerritoryIsLand);
+            List<Unit> responseDefenders = new ArrayList<Unit>(results.GetAverageAttackingUnitsRemaining());
+            AggregateResults responseResults = DUtils.GetBattleResults(responseAttackers, responseDefenders, battleTerr, data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, true);
+            boolean doesMeetTradeRequirements = DUtils.GetHasMetTradeRequirements(battleTerr, attackers, defenders, results, responseAttackers, responseDefenders, responseResults);
+            if(!doesMeetTradeRequirements)
+                retreatChance = 1.0F;
+        }
+        if(results.getAttackerWinPercent() <= retreatChance)
+        {
+            //Calculate best retreat ter and retreat to it
+            Territory retreatTer = Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player, new ArrayList<Territory>(possibleTerritories), battleTerr);
+            return retreatTer;
+        }
         return null;
     }
 

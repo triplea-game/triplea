@@ -42,7 +42,7 @@ public class NCM_AirLandingCalculator
                 continue;
             if(DMatches.territoryIsOwnedByEnemy(data, player).match(landingTer))
                 continue;
-            if(StatusCenter.get(data, player).GetStatusOfTerritory(landingTer).WasAttacked || StatusCenter.get(data, player).GetStatusOfTerritory(landingTer).WasBlitzed) //We can't land on ters taken this turn
+            if(DUtils.CompMatchOr(DMatches.TS_WasBlitzed, DMatches.TS_WasAttacked_Normal, DMatches.TS_WasAttacked_Trade).match(StatusCenter.get(data, player).GetStatusOfTerritory(landingTer))) //We can't land on ters taken this turn
                 continue;
 
             int airUnitsAbleToMakeIt = 0;
@@ -55,11 +55,11 @@ public class NCM_AirLandingCalculator
             if(airUnitsAbleToMakeIt == 0) //If there are no air units that can make it
                 continue;
 
-            List<Unit> afterDefenders = DUtils.GetTerUnitsAtEndOfTurn(data, player, ter);
+            List<Unit> afterDefenders = DUtils.GetTerUnitsAtEndOfTurn(data, player, landingTer);
             afterDefenders.removeAll(airUnits);
             afterDefenders.addAll(airUnits);
 
-            float vulnerability = DUtils.GetVulnerabilityOfArmy(data, player, ter, afterDefenders, 500);
+            float vulnerability = DUtils.GetVulnerabilityOfArmy(data, player, landingTer, afterDefenders, 500);
 
             if(vulnerability < .15F) //If this landing ter is really safe
                 vulnerability = .15F; //Then accept similar chances as equal

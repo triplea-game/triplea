@@ -21,6 +21,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.DMatches;
 import games.strategy.triplea.Dynamix_AI.DUtils;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ import java.util.List;
  */
 public class NCM_TargetCalculator
 {
-    public static Territory CalculateNCMTargetForTerritory(GameData data, PlayerID player, Territory ter, List<Unit> terUnits, List<NCM_Task> tasks)
+    public static Territory CalculateNCMTargetForTerritory(GameData data, PlayerID player, Territory ter, Collection<Unit> terUnits, List<NCM_Task> tasks)
     {
         int speed = DUtils.GetSlowestMovementUnitInList(terUnits);
 

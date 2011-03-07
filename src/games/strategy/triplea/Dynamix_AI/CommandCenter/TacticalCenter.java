@@ -65,8 +65,10 @@ public class TacticalCenter
     private HashSet<Unit> UnitsToFreezeSoon = new HashSet<Unit>();
     public void PerformBufferedFreezes()
     {
-        DUtils.Log(Level.FINEST, "          Freezing buffered units for the rest of this phase. Units: {0} New Total Size: {1}", UnitsToFreezeSoon, FrozenUnits.size());
+        if(UnitsToFreezeSoon.isEmpty())
+            return;
         FrozenUnits.addAll(UnitsToFreezeSoon);
+        DUtils.Log(Level.FINEST, "          Freezing buffered units for the rest of this phase. Units: {0} New Total Size: {1}", UnitsToFreezeSoon, FrozenUnits.size());        
         UnitsToFreezeSoon.clear();
     }
     private HashSet<Unit> FrozenUnits = new HashSet<Unit>();

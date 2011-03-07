@@ -251,7 +251,7 @@ public class Place
         {
             if(ter.getUnits().someMatch(Matches.UnitIsFactory))
                 continue;
-            if(StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasAttacked || StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasBlitzed)
+            if(StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasAttacked_Normal || StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasBlitzed)
                 continue;
 
             int score = 0;

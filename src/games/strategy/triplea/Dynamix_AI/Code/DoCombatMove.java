@@ -46,11 +46,26 @@ public class DoCombatMove
 {
     public static void doCombatMove(Dynamix_AI ai, GameData data, IMoveDelegate mover, PlayerID player)
     {
-        DoNonCombatMove.doPreCombatMove(ai, data, mover, player);
-
         MovePackage pack = new MovePackage(ai, data, mover, player, null, null, null);
-        
+
         List<CM_Task> tasks = GenerateTasks(pack);
+
+        final List<Territory> ourCaps = TerritoryAttachment.getAllCapitals(player, data);
+        final List<Territory> capsAndNeighbors = new ArrayList<Territory>();
+        for(Territory cap : ourCaps)
+            capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(data, cap, 1));
+        List<CM_Task> capsAndNeighborsAttackTasks = new ArrayList<CM_Task>();
+        for(CM_Task task : tasks)
+        {
+            if(capsAndNeighbors.contains(task.GetTarget()))
+                capsAndNeighborsAttackTasks.add(task);
+        }
+
+        while (considerAndPerformWorthwhileTasks(pack, capsAndNeighborsAttackTasks))
+        {
+        }
+
+        DoNonCombatMove.doPreCombatMove(ai, data, mover, player);
 
         //We loop this code so that if the AI is on a battle front, the AI will do better and attack more like a person because it'll be able to be more aggresive with attacks on ters next to an already successful attack.
         //This looping partially solves the problem where attacks are not done because of initial uncertainty about if the other attacks will be done.
@@ -128,6 +143,8 @@ public class DoCombatMove
             @Override
             public boolean match(Territory ter)
             {
+                if(!DSettings.LoadSettings().TR_enableAttackLandGrab)
+                    return false;
                 if (ter.isWater())
                     return false;
                 if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
@@ -152,6 +169,8 @@ public class DoCombatMove
             @Override
             public boolean match(Territory ter)
             {
+                if(!DSettings.LoadSettings().TR_enableAttackStabalize)
+                    return false;
                 if (ter.isWater())
                     return false;
                 if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
@@ -177,6 +196,8 @@ public class DoCombatMove
             @Override
             public boolean match(Territory ter)
             {
+                if(!DSettings.LoadSettings().TR_enableAttackOffensive)
+                    return false;
                 if (ter.isWater())
                     return false;
                 if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
@@ -192,12 +213,16 @@ public class DoCombatMove
             @Override
             public boolean match(Territory ter)
             {
+                if(!DSettings.LoadSettings().TR_enableAttackTrade)
+                    return false;
                 if (ter.isWater())
                     return false;
                 if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
                     return false;
                 if (ter.getOwner() != null && data.getAllianceTracker().isAllied(ter.getOwner(), player))
                     return false;
+                if (ter.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1), Matches.unitIsEnemyOf(data, player), Matches.UnitIsNotAA)).isEmpty())
+                    return false; //This is a land-grab
 
                 return true;
             }
@@ -216,19 +241,8 @@ public class DoCombatMove
             {
                 List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLand);
                 possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
-                List<Unit> terDefenders = DUtils.ToList(ter.getUnits().getUnits());
-                AggregateResults results = DUtils.GetBattleResults(possibleAttackers, terDefenders, ter, data, DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
-                if(results.getAttackerWinPercent() < .90F)
-                    continue;
-
-                List<Integer> tuvLosses = DUtils.GetTUVChangeOfAttackerAndDefender(possibleAttackers, terDefenders, results);
-                int tuvSwing = DUtils.GetTUVSwingForTUVChange(tuvLosses);
-                int terProduction = TerritoryAttachment.get(ter).getProduction();
-
-                int attackScore = 0;
-                attackScore += tuvSwing;
-                attackScore += terProduction;
-                if (attackScore > 5)
+                AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data, DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
+                if(results.getAttackerWinPercent() > .5F)
                 {
                     float priority = DUtils.GetCMTaskPriority_Trade(data, player, ter);
                     CM_Task task = new CM_Task(data, ter, CM_TaskType.Attack_Trade, priority);
@@ -307,8 +321,10 @@ public class DoCombatMove
                 highestPriorityTask.PerformTask(mover);
                 if(highestPriorityTask.GetTaskType() == CM_TaskType.LandGrab)
                     StatusCenter.get(data, player).GetStatusOfTerritory(highestPriorityTask.GetTarget()).WasBlitzed = true;
+                else if(highestPriorityTask.GetTaskType() != CM_TaskType.Attack_Trade)
+                    StatusCenter.get(data, player).GetStatusOfTerritory(highestPriorityTask.GetTarget()).WasAttacked_Normal = true;
                 else
-                    StatusCenter.get(data, player).GetStatusOfTerritory(highestPriorityTask.GetTarget()).WasAttacked = true;
+                    StatusCenter.get(data, player).GetStatusOfTerritory(highestPriorityTask.GetTarget()).WasAttacked_Trade = true;
                 highestPriorityTask.InvalidateThreatsThisTaskResists();
             }
             else

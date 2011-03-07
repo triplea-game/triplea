@@ -511,11 +511,21 @@ public class DMatches
                 return false;
         }
     };
-    public static final Match<TerritoryStatus> TS_WasAttacked = new Match<TerritoryStatus>()
+    public static final Match<TerritoryStatus> TS_WasAttacked_Normal = new Match<TerritoryStatus>()
     {
         public boolean match(TerritoryStatus ts)
         {
-            if(ts.WasAttacked)
+            if(ts.WasAttacked_Normal)
+                return true;
+            else
+                return false;
+        }
+    };
+    public static final Match<TerritoryStatus> TS_WasAttacked_Trade = new Match<TerritoryStatus>()
+    {
+        public boolean match(TerritoryStatus ts)
+        {
+            if(ts.WasAttacked_Trade)
                 return true;
             else
                 return false;

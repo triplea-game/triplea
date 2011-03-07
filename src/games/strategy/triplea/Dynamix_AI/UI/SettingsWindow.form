@@ -40,11 +40,11 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jPanel7" alignment="1" max="32767" attributes="2"/>
-                  <Component id="v_tabPaneMain" alignment="1" pref="714" max="32767" attributes="0"/>
+                  <Component id="jPanel7" alignment="0" max="32767" attributes="2"/>
+                  <Component id="v_tabPaneMain" alignment="0" pref="714" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -902,42 +902,6 @@
                                       <EmptySpace min="10" pref="10" max="10" attributes="0"/>
                                       <Component id="jLabel27" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="10" pref="10" max="10" attributes="0"/>
-                                      <Component id="jLabel30" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="10" pref="10" max="10" attributes="0"/>
-                                      <Component id="jLabel31" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="10" pref="10" max="10" attributes="0"/>
-                                      <Component id="jLabel36" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="10" pref="10" max="10" attributes="0"/>
-                                      <Component id="jLabel37" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="10" pref="10" max="10" attributes="0"/>
-                                      <Component id="jLabel42" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <Component id="v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove" min="-2" pref="62" max="-2" attributes="0"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jLabel40" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="10" pref="10" max="10" attributes="0"/>
-                                      <Component id="jLabel43" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <Component id="v_caretreat_determinesIfAIShouldRetreat" min="-2" pref="62" max="-2" attributes="0"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jLabel45" min="-2" max="-2" attributes="0"/>
-                                  </Group>
                                   <Group type="102" alignment="1" attributes="0">
                                       <Group type="103" groupAlignment="1" attributes="0">
                                           <Group type="102" alignment="0" attributes="0">
@@ -946,35 +910,12 @@
                                               <EmptySpace pref="279" max="32767" attributes="0"/>
                                           </Group>
                                           <Component id="jLabel20" alignment="0" pref="524" max="32767" attributes="1"/>
-                                          <Component id="jLabel29" alignment="0" pref="524" max="32767" attributes="1"/>
                                           <Component id="jLabel22" alignment="0" pref="524" max="32767" attributes="1"/>
-                                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                              <Component id="jLabel32" alignment="1" max="32767" attributes="1"/>
-                                              <Component id="jLabel35" alignment="1" max="32767" attributes="1"/>
-                                              <Component id="jLabel44" alignment="0" max="32767" attributes="1"/>
-                                              <Component id="jLabel41" alignment="0" max="32767" attributes="1"/>
-                                              <Component id="jLabel38" alignment="0" max="32767" attributes="1"/>
-                                          </Group>
                                           <Component id="jLabel16" alignment="0" pref="524" max="32767" attributes="1"/>
                                           <Component id="jLabel26" alignment="0" pref="524" max="32767" attributes="1"/>
                                       </Group>
                                       <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Group type="102" alignment="1" attributes="0">
-                                              <Component id="v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers" min="-2" pref="62" max="-2" attributes="0"/>
-                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                              <Component id="jLabel39" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <Group type="102" alignment="1" attributes="0">
-                                              <Component id="v_cacmncm_determinesIfTaskEndangersCap" min="-2" pref="62" max="-2" attributes="0"/>
-                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                              <Component id="jLabel34" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <Group type="102" alignment="1" attributes="0">
-                                              <Component id="v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile" min="-2" pref="62" max="-2" attributes="0"/>
-                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                              <Component id="jLabel33" min="-2" max="-2" attributes="0"/>
-                                          </Group>
                                           <Group type="103" alignment="1" groupAlignment="0" attributes="0">
                                               <Group type="102" alignment="0" attributes="0">
                                                   <Component id="v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense" min="-2" pref="62" max="-2" attributes="0"/>
@@ -987,11 +928,6 @@
                                                   <Component id="jLabel25" min="-2" max="-2" attributes="0"/>
                                               </Group>
                                           </Group>
-                                          <Group type="102" alignment="1" attributes="0">
-                                              <Component id="v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile" min="-2" pref="62" max="-2" attributes="0"/>
-                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                              <Component id="jLabel28" min="-2" max="-2" attributes="0"/>
-                                          </Group>
                                           <Group type="103" alignment="1" groupAlignment="0" attributes="0">
                                               <Group type="102" alignment="0" attributes="0">
                                                   <Component id="v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance" min="-2" pref="62" max="-2" attributes="0"/>
@@ -1002,6 +938,89 @@
                                                   <Component id="v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost" min="-2" pref="62" max="-2" attributes="0"/>
                                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                                   <Component id="jLabel17" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                          </Group>
+                                      </Group>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="10" pref="10" max="10" attributes="0"/>
+                                      <Component id="jLabel82" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="jLabel64" pref="524" max="32767" attributes="1"/>
+                                      <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
+                                      <Component id="v_cacm_determinesIfTradeTasksRequirementsAreMetEnoughForRecruitingStop" min="-2" pref="62" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel63" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="10" pref="10" max="10" attributes="0"/>
+                                      <Component id="jLabel30" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="jLabel29" pref="524" max="32767" attributes="1"/>
+                                      <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
+                                      <Component id="v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile" min="-2" pref="62" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel28" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="103" alignment="0" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace min="10" pref="10" max="10" attributes="0"/>
+                                          <Component id="jLabel31" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace min="10" pref="10" max="10" attributes="0"/>
+                                          <Component id="jLabel36" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace min="10" pref="10" max="10" attributes="0"/>
+                                          <Component id="jLabel37" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace min="10" pref="10" max="10" attributes="0"/>
+                                          <Component id="jLabel42" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="1" attributes="0">
+                                          <Component id="v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove" min="-2" pref="62" max="-2" attributes="0"/>
+                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                          <Component id="jLabel40" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace min="10" pref="10" max="10" attributes="0"/>
+                                          <Component id="jLabel43" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="1" attributes="0">
+                                          <Component id="v_caretreat_determinesIfAIShouldRetreat" min="-2" pref="62" max="-2" attributes="0"/>
+                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                          <Component id="jLabel45" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="1" attributes="0">
+                                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                              <Component id="jLabel32" alignment="1" max="32767" attributes="1"/>
+                                              <Component id="jLabel35" alignment="1" max="32767" attributes="1"/>
+                                              <Component id="jLabel44" alignment="0" max="32767" attributes="1"/>
+                                              <Component id="jLabel41" alignment="0" max="32767" attributes="1"/>
+                                              <Component id="jLabel38" alignment="0" min="-2" max="-2" attributes="1"/>
+                                          </Group>
+                                          <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Group type="102" alignment="1" attributes="0">
+                                                  <Component id="v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers" min="-2" pref="62" max="-2" attributes="0"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="jLabel39" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Group type="102" alignment="1" attributes="0">
+                                                  <Component id="v_cacmncm_determinesIfTaskEndangersCap" min="-2" pref="62" max="-2" attributes="0"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="jLabel34" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Group type="102" alignment="1" attributes="0">
+                                                  <Component id="v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile" min="-2" pref="62" max="-2" attributes="0"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="jLabel33" min="-2" max="-2" attributes="0"/>
                                               </Group>
                                           </Group>
                                       </Group>
@@ -1052,7 +1071,15 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel27" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel64" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel63" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="v_cacm_determinesIfTradeTasksRequirementsAreMetEnoughForRecruitingStop" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jLabel82" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel29" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel28" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -1060,7 +1087,7 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel30" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel32" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel33" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -1399,14 +1426,14 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Tahoma" size="10" style="0"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="(Frequency: Low, Suggested Range: 250 - 5000)"/>
+                        <Property name="text" type="java.lang.String" value="(Frequency: Low, Suggested Range: 1000 - 10000)"/>
                         <Property name="name" type="java.lang.String" value="jLabel43" noResource="true"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JSpinner" name="v_caretreat_determinesIfAIShouldRetreat">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="500" maximum="5000" minimum="1" numberType="java.lang.Integer" stepSize="10" type="number"/>
+                          <SpinnerModel initial="2000" maximum="5000" minimum="1" numberType="java.lang.Integer" stepSize="10" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_caretreat_determinesIfAIShouldRetreat" noResource="true"/>
                       </Properties>
@@ -1424,6 +1451,38 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="calculations"/>
                         <Property name="name" type="java.lang.String" value="jLabel45" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel63">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="calculations"/>
+                        <Property name="name" type="java.lang.String" value="jLabel63" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel64">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Tahoma" size="10" style="0"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="CM - Calculation That Determines If The Trade Task&apos;s Requirements Are Met Enough For Unit Reruiting To Stop:"/>
+                        <Property name="name" type="java.lang.String" value="jLabel64" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel82">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Tahoma" size="10" style="0"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="(Frequency: Average, Suggested Range: 500 - 2500)"/>
+                        <Property name="name" type="java.lang.String" value="jLabel82" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="v_cacm_determinesIfTradeTasksRequirementsAreMetEnoughForRecruitingStop">
+                      <Properties>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="1000" maximum="5000" minimum="1" numberType="java.lang.Integer" stepSize="10" type="number"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="v_cacm_determinesIfTradeTasksRequirementsAreMetEnoughForRecruitingStop" noResource="true"/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -1468,105 +1527,146 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel56" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace pref="401" max="32767" attributes="0"/>
-                                      <Component id="v_tr_attackOffensive_TakeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jLabel70" min="-2" max="-2" attributes="0"/>
+                                      <Component id="v_tr_enableReinforceBlock" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
                                   </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel60" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace pref="365" max="32767" attributes="0"/>
-                                      <Component id="v_tr_attackOffensive_CounterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jLabel71" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="jLabel63" alignment="0" min="-2" max="-2" attributes="0"/>
-                                          <Component id="jLabel62" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" alignment="0" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="v_tr_enableReinforceStabalize" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
                                       </Group>
-                                      <EmptySpace pref="401" max="32767" attributes="0"/>
-                                      <Component id="v_tr_attackOffensive_Neutrals_TakeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jLabel72" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel61" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace pref="365" max="32767" attributes="0"/>
-                                      <Component id="v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jLabel73" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="jLabel64" alignment="0" min="-2" max="-2" attributes="0"/>
-                                          <Component id="jLabel74" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="v_tr_enableAttackLandGrab" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
                                       </Group>
-                                      <EmptySpace pref="401" max="32767" attributes="0"/>
-                                      <Component id="v_tr_attackOffensive_Capitals_TakeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jLabel77" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel75" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace pref="365" max="32767" attributes="0"/>
-                                      <Component id="v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jLabel76" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="jLabel82" alignment="0" min="-2" max="-2" attributes="0"/>
-                                          <Component id="jLabel81" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Group type="102" attributes="0">
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="v_tr_enableAttackStabalize" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="v_tr_enableAttackOffensive" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Group type="102" alignment="0" attributes="0">
+                                                  <Component id="jLabel56" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace pref="401" max="32767" attributes="0"/>
+                                                  <Component id="v_tr_attackOffensive_TakeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="jLabel70" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Group type="102" alignment="0" attributes="0">
+                                                  <Component id="jLabel60" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace pref="365" max="32767" attributes="0"/>
+                                                  <Component id="v_tr_attackOffensive_CounterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="jLabel71" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Group type="102" alignment="0" attributes="0">
+                                                  <Component id="jLabel62" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace pref="401" max="32767" attributes="0"/>
+                                                  <Component id="v_tr_attackOffensive_Neutrals_TakeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="jLabel72" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Group type="102" alignment="0" attributes="0">
+                                                  <Component id="jLabel61" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace pref="365" max="32767" attributes="0"/>
+                                                  <Component id="v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="jLabel73" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Group type="102" alignment="0" attributes="0">
+                                                  <Component id="jLabel81" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace pref="401" max="32767" attributes="0"/>
+                                                  <Component id="v_tr_attackStabalize_TakeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="jLabel79" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Component id="v_tr_enableAttackTrade" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Group type="102" attributes="0">
+                                                  <Group type="103" groupAlignment="0" attributes="0">
+                                                      <Component id="jLabel74" min="-2" max="-2" attributes="0"/>
+                                                      <Component id="jLabel75" min="-2" max="-2" attributes="0"/>
+                                                  </Group>
+                                                  <EmptySpace pref="365" max="32767" attributes="0"/>
+                                                  <Group type="103" groupAlignment="0" attributes="0">
+                                                      <Group type="102" alignment="1" attributes="0">
+                                                          <Component id="v_tr_attackOffensive_Capitals_TakeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                          <Component id="jLabel77" min="-2" max="-2" attributes="0"/>
+                                                      </Group>
+                                                      <Group type="102" alignment="1" attributes="0">
+                                                          <Component id="v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                          <Component id="jLabel76" min="-2" max="-2" attributes="0"/>
+                                                      </Group>
+                                                  </Group>
+                                              </Group>
+                                              <Group type="102" alignment="1" attributes="0">
+                                                  <Group type="103" groupAlignment="1" attributes="0">
+                                                      <Group type="102" alignment="0" attributes="0">
+                                                          <Component id="jLabel91" min="-2" max="-2" attributes="0"/>
+                                                          <EmptySpace pref="434" max="32767" attributes="0"/>
+                                                          <Component id="v_tr_attackTrade_totalTradeScore" min="-2" pref="56" max="-2" attributes="1"/>
+                                                      </Group>
+                                                      <Group type="102" alignment="1" attributes="0">
+                                                          <Component id="jLabel78" min="-2" max="-2" attributes="0"/>
+                                                          <EmptySpace pref="365" max="32767" attributes="0"/>
+                                                          <Component id="v_tr_attackStabalize_CounterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                                      </Group>
+                                                      <Group type="102" alignment="0" attributes="0">
+                                                          <Component id="jLabel90" min="-2" max="-2" attributes="0"/>
+                                                          <EmptySpace pref="358" max="32767" attributes="0"/>
+                                                          <Component id="v_tr_attackTrade_LandUnitsAtEnd" min="-2" pref="56" max="-2" attributes="1"/>
+                                                      </Group>
+                                                      <Component id="v_tr_attackLandGrab_OnlyGrabLandIfWeCanBlitzIt" alignment="1" min="-2" max="-2" attributes="0"/>
+                                                      <Component id="v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired" alignment="1" min="-2" pref="56" max="-2" attributes="1"/>
+                                                      <Component id="v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired" alignment="1" min="-2" pref="56" max="-2" attributes="1"/>
+                                                  </Group>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Group type="103" groupAlignment="0" attributes="0">
+                                                      <Component id="jLabel89" min="-2" max="-2" attributes="0"/>
+                                                      <Component id="jLabel80" min="-2" max="-2" attributes="0"/>
+                                                      <Component id="jLabel86" alignment="0" min="-2" max="-2" attributes="0"/>
+                                                  </Group>
+                                              </Group>
+                                          </Group>
+                                          <EmptySpace max="-2" attributes="0"/>
                                       </Group>
-                                      <EmptySpace pref="401" max="32767" attributes="0"/>
-                                      <Component id="v_tr_attackStabalize_TakeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jLabel79" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel78" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace pref="365" max="32767" attributes="0"/>
-                                      <Component id="v_tr_attackStabalize_CounterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jLabel80" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="jLabel85" alignment="0" min="-2" max="-2" attributes="0"/>
-                                          <Component id="jLabel84" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="jLabel59" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace pref="534" max="32767" attributes="0"/>
                                       </Group>
-                                      <EmptySpace pref="372" max="32767" attributes="0"/>
-                                      <Component id="v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jLabel86" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="jLabel88" alignment="0" min="-2" max="-2" attributes="0"/>
-                                          <Component id="jLabel87" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="jLabel49" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace pref="532" max="32767" attributes="0"/>
                                       </Group>
-                                      <EmptySpace pref="372" max="32767" attributes="0"/>
-                                      <Component id="v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jLabel89" min="-2" max="-2" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="jLabel92" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace pref="493" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="v_tr_enableReinforceFrontline" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace pref="551" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="jLabel84" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace pref="459" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="jLabel87" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace pref="459" max="32767" attributes="0"/>
+                                      </Group>
                                   </Group>
-                                  <Component id="jLabel59" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
+                          <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jLabel59" min="-2" max="-2" attributes="0"/>
+                              <Component id="v_tr_enableAttackOffensive" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel56" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -1580,8 +1680,8 @@
                                   <Component id="v_tr_attackOffensive_CounterAttackSurvivalChanceRequired" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jLabel63" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jLabel49" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel62" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel72" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -1594,8 +1694,8 @@
                                   <Component id="v_tr_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jLabel64" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jLabel59" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel74" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel77" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -1608,8 +1708,8 @@
                                   <Component id="v_tr_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jLabel82" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="v_tr_enableAttackStabalize" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel81" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel79" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -1622,21 +1722,44 @@
                                   <Component id="v_tr_attackStabalize_CounterAttackSurvivalChanceRequired" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jLabel85" min="-2" max="-2" attributes="0"/>
+                              <Component id="v_tr_enableAttackTrade" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel91" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="v_tr_attackTrade_totalTradeScore" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel90" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="v_tr_attackTrade_LandUnitsAtEnd" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="v_tr_enableAttackLandGrab" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel92" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="v_tr_attackLandGrab_OnlyGrabLandIfWeCanBlitzIt" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="v_tr_enableReinforceFrontline" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel84" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel86" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel86" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jLabel88" min="-2" max="-2" attributes="0"/>
+                              <Component id="v_tr_enableReinforceStabalize" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel87" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel89" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel89" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="v_tr_enableReinforceBlock" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
@@ -1663,13 +1786,6 @@
                           <SpinnerModel initial="90" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_tr_attackOffensive_Neutrals_TakeoverChanceRequired" noResource="true"/>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JLabel" name="jLabel63">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Attack - Offensive (Neutrals)"/>
-                        <Property name="toolTipText" type="java.lang.String" value="Regular attacks on neutral territories."/>
-                        <Property name="name" type="java.lang.String" value="jLabel63" noResource="true"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel62">
@@ -1728,13 +1844,6 @@
                         <Property name="name" type="java.lang.String" value="jLabel56" noResource="true"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JLabel" name="jLabel59">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Attack - Offensive"/>
-                        <Property name="toolTipText" type="java.lang.String" value="Regular attacks on enemy territories."/>
-                        <Property name="name" type="java.lang.String" value="jLabel59" noResource="true"/>
-                      </Properties>
-                    </Component>
                     <Component class="javax.swing.JLabel" name="jLabel72">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="%"/>
@@ -1747,13 +1856,6 @@
                           <SpinnerModel initial="55" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_tr_attackOffensive_Capitals_TakeoverChanceRequired" noResource="true"/>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JLabel" name="jLabel64">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Attack - Offensive (Capitals)"/>
-                        <Property name="toolTipText" type="java.lang.String" value="Regular attacks on enemy capitals."/>
-                        <Property name="name" type="java.lang.String" value="jLabel64" noResource="true"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel74">
@@ -1832,17 +1934,10 @@
                         <Property name="name" type="java.lang.String" value="jLabel81" noResource="true"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JLabel" name="jLabel82">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Attack - Stabalize"/>
-                        <Property name="toolTipText" type="java.lang.String" value="Stabalization attacks on our capital(to retake it), and if the game&apos;s a FFA, the territories around our capital."/>
-                        <Property name="name" type="java.lang.String" value="jLabel82" noResource="true"/>
-                      </Properties>
-                    </Component>
                     <Component class="javax.swing.JSpinner" name="v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="50" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                          <SpinnerModel initial="55" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_tr_reinforceFrontLine_EnemyAttackSurvivalChanceRequired" noResource="true"/>
                       </Properties>
@@ -1852,13 +1947,6 @@
                         <Property name="text" type="java.lang.String" value="        Enemy-Attack Survival Chance Required:"/>
                         <Property name="toolTipText" type="java.lang.String" value="The percentage of times we survive when we simulate the enemy-attack battle with the battle calc&apos;er must meet this percentage for the task to be performed."/>
                         <Property name="name" type="java.lang.String" value="jLabel84" noResource="true"/>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JLabel" name="jLabel85">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Reinforce - Front Line"/>
-                        <Property name="toolTipText" type="java.lang.String" value="Regular reinforcements on the front line."/>
-                        <Property name="name" type="java.lang.String" value="jLabel85" noResource="true"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel86">
@@ -1874,17 +1962,10 @@
                         <Property name="name" type="java.lang.String" value="jLabel87" noResource="true"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JLabel" name="jLabel88">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Reinforce - Stabalize"/>
-                        <Property name="toolTipText" type="java.lang.String" value="Stabalization reinforcements on our capital(to retake it), and sometimes the territories around our capital."/>
-                        <Property name="name" type="java.lang.String" value="jLabel88" noResource="true"/>
-                      </Properties>
-                    </Component>
                     <Component class="javax.swing.JSpinner" name="v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="50" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                          <SpinnerModel initial="55" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_tr_reinforceStabalize_EnemyAttackSurvivalChanceRequired" noResource="true"/>
                       </Properties>
@@ -1893,6 +1974,139 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="%"/>
                         <Property name="name" type="java.lang.String" value="jLabel89" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="v_tr_attackTrade_LandUnitsAtEnd">
+                      <Properties>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="2" maximum="10" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="v_tr_attackTrade_LandUnitsAtEnd" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel90">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="        Land Unit Count At End Of Attack Required:"/>
+                        <Property name="toolTipText" type="java.lang.String" value="The number of land units that you want the AI to have leftover after a trade attack is completed."/>
+                        <Property name="name" type="java.lang.String" value="jLabel90" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="v_tr_attackLandGrab_OnlyGrabLandIfWeCanBlitzIt">
+                      <Properties>
+                        <Property name="name" type="java.lang.String" value="v_tr_attackLandGrab_OnlyGrabLandIfWeCanBlitzIt" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel92">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="        Only Grab Land If We Can Blitz It:"/>
+                        <Property name="toolTipText" type="java.lang.String" value="If checked, the AI will only grab empty territories if it can blitz back. In other words, if its checked, the AI will not perform &apos;walk-ins&apos; on empty territories, only blitz."/>
+                        <Property name="name" type="java.lang.String" value="jLabel92" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="v_tr_enableAttackOffensive">
+                      <Properties>
+                        <Property name="selected" type="boolean" value="true"/>
+                        <Property name="text" type="java.lang.String" value="Attack - Offensive"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Regular attacks on enemy territories."/>
+                        <Property name="name" type="java.lang.String" value="v_tr_enableAttackOffensive" noResource="true"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="v_tr_enableAttackOffensiveStateChanged"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="v_tr_enableAttackStabalize">
+                      <Properties>
+                        <Property name="selected" type="boolean" value="true"/>
+                        <Property name="text" type="java.lang.String" value="Attack - Stabalize"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Stabalization attacks on our capital(to retake it), and if the game&apos;s a FFA, the territories around our capital."/>
+                        <Property name="name" type="java.lang.String" value="v_tr_enableAttackStabalize" noResource="true"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="v_tr_enableAttackStabalizeStateChanged"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="v_tr_enableAttackTrade">
+                      <Properties>
+                        <Property name="selected" type="boolean" value="true"/>
+                        <Property name="text" type="java.lang.String" value="Attack - Trade"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Special attacks on territories, for TUV swing against non-neutral enemy, PU gain, or the pushing back or stalling of enemy forces."/>
+                        <Property name="name" type="java.lang.String" value="v_tr_enableAttackTrade" noResource="true"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="v_tr_enableAttackTradeStateChanged"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="v_tr_enableAttackLandGrab">
+                      <Properties>
+                        <Property name="selected" type="boolean" value="true"/>
+                        <Property name="text" type="java.lang.String" value="Attack - Land Grab"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Blitz or walk-in attacks on empty territories owned by enemies."/>
+                        <Property name="name" type="java.lang.String" value="v_tr_enableAttackLandGrab" noResource="true"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="v_tr_enableAttackLandGrabStateChanged"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="v_tr_enableReinforceFrontline">
+                      <Properties>
+                        <Property name="selected" type="boolean" value="true"/>
+                        <Property name="text" type="java.lang.String" value="Reinforce - Front Line"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Regular reinforcements on the front line."/>
+                        <Property name="name" type="java.lang.String" value="v_tr_enableReinforceFrontline" noResource="true"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="v_tr_enableReinforceFrontlineStateChanged"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="v_tr_enableReinforceStabalize">
+                      <Properties>
+                        <Property name="selected" type="boolean" value="true"/>
+                        <Property name="text" type="java.lang.String" value="Reinforce - Stabalize"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Stabalization reinforcements on our capital(to retake it), and sometimes the territories around our capital."/>
+                        <Property name="name" type="java.lang.String" value="v_tr_enableReinforceStabalize" noResource="true"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="v_tr_enableReinforceStabalizeStateChanged"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel49">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="   Attack - Offensive (Neutrals)"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Regular attacks on neutral territories."/>
+                        <Property name="name" type="java.lang.String" value="jLabel49" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel59">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="   Attack - Offensive (Capitals)"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Regular attacks on enemy capitals."/>
+                        <Property name="name" type="java.lang.String" value="jLabel59" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="v_tr_enableReinforceBlock">
+                      <Properties>
+                        <Property name="selected" type="boolean" value="true"/>
+                        <Property name="text" type="java.lang.String" value="Reinforce - Block"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Reinforcements on empty ters to block the enemy from blitzing our territory, and gaining PUs. Only one unit is used for this block."/>
+                        <Property name="name" type="java.lang.String" value="v_tr_enableReinforceBlock" noResource="true"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="v_tr_enableReinforceBlockStateChanged"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="v_tr_attackTrade_totalTradeScore">
+                      <Properties>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="5" maximum="50" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="v_tr_attackTrade_totalTradeScore" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel91">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="        Total Trade Score Required:"/>
+                        <Property name="toolTipText" type="java.lang.String" value="The trade score(total PU swing) required to perform a trade attack. (Simplified Trade Score: Ter production - our TUV loss + enemy TUV loss)"/>
+                        <Property name="name" type="java.lang.String" value="jLabel91" noResource="true"/>
                       </Properties>
                     </Component>
                   </SubComponents>

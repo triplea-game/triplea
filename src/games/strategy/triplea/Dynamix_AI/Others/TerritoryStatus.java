@@ -24,7 +24,8 @@ public class TerritoryStatus
     {
     }
     public boolean IsEndangered = false;
-    public boolean WasAttacked = false;
+    public boolean WasAttacked_Normal = false;
+    public boolean WasAttacked_Trade = false;
     public boolean WasBlitzed = false;
     public boolean WasAbandoned = false;
 }

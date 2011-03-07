@@ -46,6 +46,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import javax.swing.SwingUtilities;
@@ -321,7 +322,9 @@ public class Purchase
     {
         Territory ncmTarget = NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), new ArrayList<NCM_Task>());
         if(ncmTarget == null)
-            ncmTarget = TerritoryAttachment.getCapital(DUtils.GetEnemyPlayers(data, player).get(0), data);
+            ncmTarget = DUtils.GetClosestTerInList(data, DUtils.GetAllEnemyCaps_ThatAreOwnedByOriginalOwner(data, player), ter);
+        if(ncmTarget == null)
+            ncmTarget = DUtils.GetClosestTerInList(data, DUtils.GetAllEnemyCaps(data, player), ter);
 
         Integer productionSpaceLeft = DUtils.GetCheckedUnitProduction(ter);
         if(FactoryCenter.get(data, player).ChosenAAPlaceTerritories.contains(ter)) //If we're going to build an AA here
@@ -333,9 +336,9 @@ public class Purchase
         if(productionSpaceLeft <= 0)
             return null;
 
-        List<Unit> unitsOnTheWay = new ArrayList<Unit>();
+        HashSet<Unit> unitsOnTheWay = new HashSet<Unit>();
         Route route = null;
-        List<Route> routes = DUtils.GetXClosestSimiliarLengthLandRoutesBetweenTers(data, 1, ter, ncmTarget);
+        List<Route> routes = DUtils.GetXClosestSimiliarLengthLandRoutesBetweenTers(data, 2, ter, ncmTarget);
         if(routes.size() > 0)
             route = routes.get(0);
         if (route != null)

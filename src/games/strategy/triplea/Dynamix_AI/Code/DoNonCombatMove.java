@@ -57,7 +57,7 @@ public class DoNonCombatMove
         {
             float priority = DUtils.GetNCMTaskPriority_Stabalize(data, player, ourCap);
             NCM_Task task = new NCM_Task(data, ourCap, NCM_TaskType.Reinforce_Stabilize, priority);
-            task.SetTaskRequirements(.5F);
+            task.SetTaskRequirements(.1F); //Just get safe enough for task's to realize if they endanger cap
             task.RecruitUnits();
             if (task.IsPlannedMoveWorthwhile(Arrays.asList(task)))
             {
@@ -156,16 +156,18 @@ public class DoNonCombatMove
             doNonCombatMoveForTer(pack, ter, terUnits, tasks);
         }
 
-        //We suspend the threat invalidation center because the enemy will come after air even if landing ter is next to resistant ter
-        ThreatInvalidationCenter.get(data, player).SuspendThreatInvalidation();
+        //We get clear invalidated threats, because the enemy will come after air even if landing ter is next to resistant ter
+        ThreatInvalidationCenter.get(data, player).ClearInvalidatedThreats();
 
         //Now that we've completed all the normal ncm moves, perform the special tasks
         DUtils.Log(Level.FINE, "  Attempting to land aircraft on safe territories.");
         for(Territory ter : data.getMap().getTerritories())
         {
-            boolean onlyAir = Match.getMatches(ter.getUnits().getUnits(), DUtils.CompMatchAnd(Matches.UnitIsLand, Matches.UnitIsNotAA)).isEmpty();
+            if(ter.getUnits().getMatches(DUtils.CompMatchAnd(Matches.UnitIsAir, Matches.unitIsOwnedBy(player))).isEmpty())
+                continue;
+            boolean landUnitsHere = Match.getMatches(ter.getUnits().getUnits(), DUtils.CompMatchAnd(Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.unitIsOwnedBy(player))).size() > 0;
             //We're only landing air that can't currently land, are in an abondoned ter, or are alone in a ter (meaning we or an ally left)
-            if (ter.isWater() || StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasAttacked || StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasAbandoned || onlyAir)
+            if (ter.isWater() || DUtils.CompMatchOr(DMatches.TS_WasAbandoned, DMatches.TS_WasAttacked_Normal, DMatches.TS_WasAttacked_Trade).match(StatusCenter.get(data, player).GetStatusOfTerritory(ter)) || !landUnitsHere)
             {
                 List<Unit> airUnits = ter.getUnits().getMatches(DUtils.CompMatchAnd(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft, Matches.UnitIsAir));
                 if (airUnits.isEmpty())
@@ -189,8 +191,6 @@ public class DoNonCombatMove
                 UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
             }
         }
-
-        ThreatInvalidationCenter.get(data, player).ResumeThreatInvalidation();
     }
 
     private static List<NCM_Task> GenerateTasks(final MovePackage pack)
@@ -205,12 +205,14 @@ public class DoNonCombatMove
             @Override
             public boolean match(Territory ter)
             {
+                if(!DSettings.LoadSettings().TR_enableReinforceBlock)
+                    return false;
                 List<Unit> attackers = DUtils.GetNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
                 if(attackers.isEmpty())
                     return false;
                 if (!data.getAllianceTracker().isAllied(ter.getOwner(), player))
                     return false;
-                if(ter.getUnits().getMatches(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1)).size() > 0) //If this ter is already blocking enemies
+                if(Match.getMatches(DUtils.GetTerUnitsAtEndOfTurn(data, player, ter), Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1)).size() > 0) //If this ter is already blocking enemies
                     return false;
                 if (data.getMap().getNeighbors(ter, DMatches.territoryIsOwnedByNNEnemy(data, player)).isEmpty()) //If it's not next to enemy
                     return false;
@@ -231,6 +233,8 @@ public class DoNonCombatMove
             @Override
             public boolean match(Territory ter)
             {
+                if(!DSettings.LoadSettings().TR_enableReinforceStabalize)
+                    return false;
                 List<Unit> attackers = DUtils.GetNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
                 if(attackers.isEmpty())
                     return false;
@@ -255,6 +259,8 @@ public class DoNonCombatMove
             @Override
             public boolean match(Territory ter)
             {
+                if(!DSettings.LoadSettings().TR_enableReinforceFrontLine)
+                    return false;
                 //A territory is a frontline territory, if:
                 //    There are units that can attack the ter
                 //    The territory is owned by us or it was attacked this round
@@ -264,7 +270,7 @@ public class DoNonCombatMove
                 List<Unit> attackers = DUtils.GetNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
                 if(attackers.isEmpty())
                     return false;
-                if (!data.getAllianceTracker().isAllied(ter.getOwner(), player) && !StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasAttacked)
+                if (!data.getAllianceTracker().isAllied(ter.getOwner(), player) && !StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasAttacked_Normal)
                     return false;
                 if(data.getMap().getNeighbors(ter, DMatches.territoryIsOwnedByNNEnemy(data, player)).isEmpty()) //If this is not the front line
                     return false;
