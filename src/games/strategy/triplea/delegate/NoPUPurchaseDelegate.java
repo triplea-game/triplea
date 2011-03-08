@@ -28,12 +28,14 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.util.IntegerMap;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -47,7 +49,6 @@ import java.util.Map;
  */
 public class NoPUPurchaseDelegate extends PurchaseDelegate
 {
-    String unitTypeToProduce = Constants.INFANTRY_TYPE;
     private GameData m_data;
 
     private boolean isPacific;
@@ -64,17 +65,12 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
 
         PlayerID player = aBridge.getPlayerID();
         Collection<Territory> territories = gameData.getMap().getTerritoriesOwnedBy(player);
-
-        if(isPacific || isWW2V3)
-            unitTypeToProduce = Constants.INFANTRY_TYPE;
-        //unitTypeToProduce = Constants.CHINESE_INFANTRY_TYPE;
-
-        int nUnitsToProduce = getProductionUnits(territories, player);
-        Collection<Unit> units = gameData.getUnitTypeList().getUnitType(unitTypeToProduce).create(nUnitsToProduce, player);
+        
+        Collection<Unit> units = getProductionUnits(territories, player);
 
         Change productionChange = ChangeFactory.addUnits(player, units);
 
-        String transcriptText = player.getName() + " builds " + nUnitsToProduce + " " + unitTypeToProduce;
+        String transcriptText = player.getName() + " builds " + units.size() + " units.";
         aBridge.getHistoryWriter().startEvent(transcriptText);
 
         if(productionChange != null)
@@ -82,58 +78,55 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
             aBridge.addChange(productionChange);
         } 
     }
-    
-    /*@Override
-	public String purchase(IntegerMap<ProductionRule> productionRules)
-    {
-    	return null;
-    }
-    
-    @Override
-	public String purchaseRepair(Map<Territory, IntegerMap<RepairRule>> repairRules)
-    {
-    	return null;
-    }*/
 
-    // this is based off of chinese rules in pacific, they may vary in other games?
-    private int getProductionUnits(Collection<Territory> territories, PlayerID player)
+    private Collection<Unit> getProductionUnits(Collection<Territory> territories, PlayerID player)
     {
-        // All territories should be owned by the same player, our PlayerID
-        int unitCount = 0;
-
-        if (isProductionPerValuedTerritoryRestricted())
-        {
-	        Iterator<Territory> territoryIter = territories.iterator();
-	        for(int i = 0; (territoryIter.hasNext()); ++i)
-	        {
-	            Territory current = (Territory) territoryIter.next();
-
-	            TerritoryAttachment ta = TerritoryAttachment.get(current);
-	            if(ta.getProduction() > 0)
-	                ++unitCount;
-	        }
-	        
-	        if(isPacific)
+    	Collection<Unit> productionUnits = new ArrayList<Unit>();
+    	if (!(isProductionPerXTerritoriesRestricted() || isProductionPerValuedTerritoryRestricted()))
+    		return productionUnits;
+    				
+    	IntegerMap<UnitType> productionPerXTerritories = new IntegerMap<UnitType>();
+    	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+    	
+    	// if they have no rules attachments, but are calling NoPU purchase, and have the game property isProductionPerValuedTerritoryRestricted, then they want 1 infantry for each territory with PU value > 0
+		if (isProductionPerValuedTerritoryRestricted() && (ra == null || ra.getProductionPerXTerritories() == null || ra.getProductionPerXTerritories().size() == 0))
+    		productionPerXTerritories.put(getData().getUnitTypeList().getUnitType(Constants.INFANTRY_TYPE), 1);
+    	else if (isProductionPerXTerritoriesRestricted())
+    		productionPerXTerritories = ra.getProductionPerXTerritories();
+    	else
+    		return productionUnits;
+    	
+		Collection<UnitType> unitTypes = new ArrayList<UnitType>(productionPerXTerritories.keySet());
+		Iterator<UnitType> unitIter = unitTypes.iterator();
+		while (unitIter.hasNext())
+		{
+			UnitType ut = (UnitType) unitIter.next();
+			int unitCount = 0;
+			int terrCount = 0;
+			int prodPerXTerrs = productionPerXTerritories.getInt(ut);
+			
+			if(isPacific)
 	            unitCount += getBurmaRoad(player);
-        }
-        
-        if(isProductionPerXTerritoriesRestricted())
-        {
-        	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
-        	if(ra != null)
-        	{
-        		int prodPerXTerrs = ra.getProductionPerXTerritories();
-        		if (prodPerXTerrs > 0)
-        		{
-            		int terrCount = territories.size();
-            		unitCount = terrCount/prodPerXTerrs;    		        
-        		}
-        	}
-        }
-        
-        return unitCount;
+			
+			Iterator<Territory> territoryIter = territories.iterator();
+            while (territoryIter.hasNext())
+            {
+            	Territory current = (Territory) territoryIter.next();
+            	if (!isProductionPerValuedTerritoryRestricted())
+            		terrCount++;
+            	else
+            	{
+            		TerritoryAttachment ta = TerritoryAttachment.get(current);
+            		if(ta.getProduction() > 0)
+            			terrCount++;
+            	}
+            }
+            unitCount += terrCount/prodPerXTerrs;
+            productionUnits.addAll(getData().getUnitTypeList().getUnitType(ut.getName()).create(unitCount, player));
+		}
+        return productionUnits;
     }
-//TODO COMCO incorporate this into a National Objective
+
     private int getBurmaRoad(PlayerID player)
     {
         int burmaRoadCount = 0; // only for pacific - should equal 4 for extra inf

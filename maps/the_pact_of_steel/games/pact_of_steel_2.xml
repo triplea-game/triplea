@@ -3114,7 +3114,10 @@
 				<attatchment name="rulesAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="movementRestrictionTerritories" value="Sinkiang:Central China:China:Manchuria:Kwangtung:French Indochina"/>
                 	<option name="movementRestrictionType" value="allowed"/>
-                	<option name="productionPerXTerritories" value="2"/>
+					<!-- productionPerXTerritories gives units to a player as part of NoPuPurchase delegate.  You can have multiple instances of productionPerXTerritories.
+							value = the name of the unit, and count = the number of territories you need to get 1 of that unit.  if the name of the unit is missing, it defaults to "infantry" -->
+                	<option name="productionPerXTerritories" value="infantry" count="2"/>
+                	<!--<option name="productionPerXTerritories" value="fighter" count="6"/>-->
 					<!-- if you are using productionPerXTerritories, you can have only territories worth at least 1 pu count towards the X by setting the game property "Production Per Valued Territory Restricted". 
 							the amount produced will be increased by 1 infantry if you are using PacificTheater and you control territories called "India", "Burma", "Yunnan", "Szechwan" -->
                 	<option name="placementAnyTerritory" value="true"/>

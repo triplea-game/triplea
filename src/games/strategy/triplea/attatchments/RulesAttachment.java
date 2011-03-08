@@ -28,6 +28,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
@@ -35,6 +36,7 @@ import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.io.File;
@@ -102,12 +104,14 @@ public class RulesAttachment extends DefaultAttachment
     private int m_territoryCount = -1;
     private int m_objectiveValue = 0;
     private int m_perOwnedTerritories = -1;
-    private int m_productionPerTerritory = -1;
     private int m_placementPerTerritory = -1;
     private int m_maxPlacePerTerritory = -1;
     private int m_atWarCount = -1;
-    private int m_uses = -1; 
+    private int m_uses = -1;
     private int m_techCount = -1;
+    
+    // production per X territories
+    public IntegerMap<UnitType> m_productionPerXTerritories = new IntegerMap<UnitType>();
     
     private Set<PlayerID> m_atWarPlayers = null;
  // using map as tuple set, describes ranges from Integer-Integer
@@ -243,12 +247,31 @@ public class RulesAttachment extends DefaultAttachment
 
   public void setProductionPerXTerritories(String value)
   {
-	  m_productionPerTerritory = getInt(value);
+	  String[] s = value.split(":");
+	  if (s.length <= 0 || s.length > 2)
+		  throw new IllegalStateException("Rules Attachments: productionPerXTerritories can not be empty or have more than two fields");
+	  
+	  String unitTypeToProduce;
+	  if (s.length == 1)
+		  unitTypeToProduce = Constants.INFANTRY_TYPE;
+	  else
+		  unitTypeToProduce = s[1];
+	  
+	  // validate that this unit exists in the xml
+	  UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
+      if(ut == null)
+          throw new IllegalStateException("Rules Attachments: No unit called:" + unitTypeToProduce);
+      
+      int n = getInt(s[0]);
+      if(n <= 0)
+    	  throw new IllegalStateException("Rules Attachments: productionPerXTerritories must be a positive integer");
+      
+      m_productionPerXTerritories.put(ut, n);
   }
 
-  public int getProductionPerXTerritories()
+  public IntegerMap<UnitType> getProductionPerXTerritories()
   {
-      return m_productionPerTerritory;
+      return m_productionPerXTerritories;
   }
 
   public void setPlacementPerTerritory(String value)
