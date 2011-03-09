@@ -977,6 +977,33 @@ public class Matches
     		}
     	};
     }
+    
+    /**
+     * will return true if the route is land only
+     */
+    public static Match<Territory> territoryHasLandRouteToEnemyCapital(final GameData data, final PlayerID player)
+    {
+    	return new Match<Territory>()
+    	{
+    		public boolean match(Territory t)
+    		{
+    	        for(PlayerID ePlayer : data.getPlayerList().getPlayers())
+    	        {
+    	        	List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(ePlayer, data));
+    	        	Iterator iter = capitalsListOwned.iterator();
+    	            while(iter.hasNext())
+    	            {
+    	            	Territory current = (Territory) iter.next();
+    	            	if (data.getAllianceTracker().isAllied(player, current.getOwner()))
+    	            		continue;
+    	            	if(data.getMap().getDistance(t, current, Matches.TerritoryIsNotImpassableToLandUnits(player)) != -1)
+    	            		return true;
+    	            }
+    	        }
+    	        return false;
+    		}
+    	};
+    }
 
     public static Match<Territory> territoryHasEnemyFactoryNeighbor(final GameData data, final PlayerID player)
     {

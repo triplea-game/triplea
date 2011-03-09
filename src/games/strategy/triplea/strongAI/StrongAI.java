@@ -1949,6 +1949,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		// so since we don't want the next method to move them, we must manually set their movement to zero that way they will not be included in future methods
 		CompositeMatch<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater);
 		CompositeMatch<Territory> endCondition = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data), Matches.TerritoryIsLand);
+		CompositeMatch<Territory> endCondition2 = new CompositeMatchAnd<Territory>(Matches.territoryHasLandRouteToEnemyCapital(data, player), Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data), Matches.TerritoryIsLand);
 		//CompositeMatch<Unit> ourTransports = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsTransport);
 		CompositeMatch<Unit> ourWarships = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsSea, Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1), Matches.UnitIsNotSub, Matches.UnitIsNotTransport);
 		CompositeMatch<Unit> enemyWarships = new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, player), Matches.UnitIsSea, Matches.unitCanAttack(player));
@@ -1977,21 +1978,24 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		
 		Territory waterCap = waterCapNeighbors.iterator().next();
 		Route goRoute = SUtils.findNearest(waterCap, endCondition, routeCondition, data);
+		Route goRoute2 = SUtils.findNearest(waterCap, endCondition2, routeCondition, data);
 		if (goRoute == null)
 			return;
 		Territory startTerr = goRoute.getStart();
 		Territory endTerr = goRoute.getStart();
 		Territory firstEndTerr = goRoute.getStart();
 		if (goRoute.getLength() > 1)
-		{
 			endTerr = goRoute.at(goRoute.getLength()-2);
+		if (goRoute2 != null && goRoute2.getLength() > 1)
+			firstEndTerr = goRoute2.at(goRoute2.getLength()-2);
+		else if (goRoute.getLength() > 1)
 			firstEndTerr = goRoute.at(goRoute.getLength()-2);
-		}
+		
 		List<Territory> TransportDropOffLocales = new ArrayList<Territory>(getTransportDropOffLocales());
 		if (TransportDropOffLocales.isEmpty())
 		{
 			List<Territory> firstEndTerrs = new ArrayList<Territory>();
-			firstEndTerrs.add(endTerr);
+			firstEndTerrs.add(firstEndTerr);
 			setTransportDropOffLocales(firstEndTerrs);
 		}
 		else
@@ -2010,8 +2014,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		Set<Territory> startTerrNeighborsA = data.getMap().getNeighbors(startTerr, 3); // could be anywhere from 3 to 5, if you imagine the range of bombers
 		Set<Territory> endTerrNeighborsA = data.getMap().getNeighbors(endTerr, 3);
 		Set<Territory> firstEndTerrNeighborsA = data.getMap().getNeighbors(firstEndTerr, 3);
-		Set<Territory> startFar = data.getMap().getNeighbors(startTerr, 7);
-		Set<Territory> firstEndFar = data.getMap().getNeighbors(firstEndTerr, 7);
+		Set<Territory> startFar = data.getMap().getNeighbors(startTerr, 4); // these could be 4 or 5
+		Set<Territory> firstEndFar = data.getMap().getNeighbors(firstEndTerr, 4);
 		startTerrNeighborsW.retainAll(terrsWithEnemyWarships);
 		startTerrNeighborsA.retainAll(terrsWithEnemyAir);
 		endTerrNeighborsW.retainAll(terrsWithEnemyWarships);
