@@ -61,10 +61,12 @@ public class DoCombatMove
                 capsAndNeighborsAttackTasks.add(task);
         }
 
+        //First, we check if there are any attacks on cap-neighbors we want to do
         while (considerAndPerformWorthwhileTasks(pack, capsAndNeighborsAttackTasks))
         {
         }
 
+        //Then we run the NCM doPreCombatMove method which attempts to move units to the cap to keep it safe
         DoNonCombatMove.doPreCombatMove(ai, data, mover, player);
 
         //We loop this code so that if the AI is on a battle front, the AI will do better and attack more like a person because it'll be able to be more aggresive with attacks on ters next to an already successful attack.
@@ -317,7 +319,7 @@ public class DoCombatMove
             highestPriorityTask.RecruitUnits();
             if(highestPriorityTask.IsPlannedAttackWorthwhile(tasks))
             {
-                DUtils.Log(Level.FINER, "    Task worthwhile, performing planned task.");
+                DUtils.Log(Level.FINER, "      Task worthwhile, performing planned task.");
                 highestPriorityTask.PerformTask(mover);
                 if(highestPriorityTask.GetTaskType() == CM_TaskType.LandGrab)
                     StatusCenter.get(data, player).GetStatusOfTerritory(highestPriorityTask.GetTarget()).WasBlitzed = true;
@@ -329,7 +331,6 @@ public class DoCombatMove
             }
             else
             {
-                DUtils.Log(Level.FINER, "    CM Task not worthwhile, disqualifying.");
                 highestPriorityTask.Disqualify();
             }
         }

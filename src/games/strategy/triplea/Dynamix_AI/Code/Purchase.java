@@ -70,7 +70,7 @@ public class Purchase
                 return;
             final int newPUs = player.getResources().getQuantity(GlobalCenter.GetPUResource()) + PUChange;
 
-            DUtils.Log(Level.FINER, "  Using an RCM cheat, and increasing our PUs from {0} to {1}", player.getResources().getQuantity(GlobalCenter.GetPUResource()), newPUs);
+            DUtils.Log(Level.FINE, "  Using an RCM cheat, and increasing our PUs from {0} to {1}", player.getResources().getQuantity(GlobalCenter.GetPUResource()), newPUs);
             final Dynamix_AI fAI = ai;            
             Runnable runner = new Runnable()
             {
@@ -85,7 +85,7 @@ public class Purchase
             }
             catch (Exception ex)
             {
-                DUtils.Log_Fine(ex.toString());
+                DUtils.Log(Level.FINE, "Error performing RCM cheat: {0}", ex.toString());
             }
 
             Change change = ChangeFactory.changeResourcesChange(player, GlobalCenter.GetPUResource(), PUChange);
@@ -99,18 +99,18 @@ public class Purchase
         {
             if (DUtils.CanPlayerPlaceAnywhere(data, player) && PUsToSpend == 0)
             {
-                DUtils.Log_Finer("  On this map, 'Place-Anywhere' countries can't get bid's, so skipping phase.");
+                DUtils.Log(Level.FINE, "  On this map, 'Place-Anywhere' countries can't get bid's, so skipping phase.");
                 return;
             }
 
-            DUtils.Log(Level.FINER, "  Purchasing bid factory repairs.");
+            DUtils.Log(Level.FINE, "  Purchasing bid factory repairs.");
             PUsToSpend = PUsToSpend - purchaseFactoryRepairs(ai, purchaseForBid, PUsToSpend, purchaser, data, player);
 
             Territory ourCap = TerritoryAttachment.getCapital(player, data);
             if (DMatches.territoryIsNotIsolated(data).match(ourCap))
             {
                 FactoryCenter.get(data, player).ChosenFactoryTerritories.add(ourCap);
-                DUtils.Log(Level.FINER, "  Purchasing bid units and going to place them all on: {0}", ourCap);
+                DUtils.Log(Level.FINE, "  Purchasing bid units and going to place them all on: {0}", ourCap);
                 int cost = purchaseFactoryUnits(ourCap, ai, purchaseForBid, PUsToSpend, purchaser, data, player);
                 if (cost != 0)
                     PUsToSpend = PUsToSpend - cost;
@@ -121,7 +121,7 @@ public class Purchase
                 for(Territory ter : Match.getMatches(data.getMap().getTerritories(), DMatches.territoryIsNotIsolated(data)))
                 {
                     FactoryCenter.get(data, player).ChosenFactoryTerritories.add(ter);
-                    DUtils.Log(Level.FINER, "  Purchasing bid units and going to place them all on: {0}", ter);
+                    DUtils.Log(Level.FINE, "  Purchasing bid units and going to place them all on: {0}", ter);
                     int cost = purchaseFactoryUnits(ter, ai, purchaseForBid, PUsToSpend, purchaser, data, player);
                     if (cost != 0)
                         PUsToSpend = PUsToSpend - cost;
@@ -134,17 +134,17 @@ public class Purchase
         {
             if (DUtils.CanPlayerPlaceAnywhere(data, player) && PUsToSpend == 0)
             {
-                DUtils.Log_Finer("  On this map, 'Place-Anywhere' countries can't purchase their units(engine does it for them), so skipping phase.");
+                DUtils.Log(Level.FINE, "  On this map, 'Place-Anywhere' countries can't purchase their units(engine does it for them), so skipping phase.");
                 return;
             }
 
             int origR = player.getResources().getQuantity(data.getResourceList().getResource(Constants.PUS));
             calculateFactoriesToBuildOn(ai, purchaseForBid, data, player);
-            DUtils.Log(Level.FINER, "  Factories to build on calculated. Ters with the factories: {0}", FactoryCenter.get(data, player).ChosenFactoryTerritories);
+            DUtils.Log(Level.FINE, "  Factories to build on calculated. Ters with the factories: {0}", FactoryCenter.get(data, player).ChosenFactoryTerritories);
 
             PUsToSpend = PUsToSpend - purchaseFactoryRepairs(ai, purchaseForBid, PUsToSpend, purchaser, data, player);
             
-            DUtils.Log(Level.FINER, "  Beginning purchases for factories phase.");
+            DUtils.Log(Level.FINE, "  Beginning purchases for factories phase.");
             for (Territory factoryTer : FactoryCenter.get(data, player).ChosenFactoryTerritories)
             {
                 int cost = purchaseFactoryUnits(factoryTer, ai, purchaseForBid, PUsToSpend, purchaser, data, player);
@@ -153,17 +153,11 @@ public class Purchase
                 else
                     break;
                 Dynamix_AI.Pause();
-                Object factoryPurchase = null;
-                if(FactoryCenter.get(data, player).TurnTerritoryPurchaseGroups.containsKey(factoryTer))
-                    factoryPurchase = FactoryCenter.get(data, player).TurnTerritoryPurchaseGroups.get(factoryTer).GetSampleUnits();
-                else
-                    factoryPurchase = "aaGun owned by " + player.getName();
-                DUtils.Log(Level.FINER, "    Purchase for factory complete. Ter: {0} Purchases: {1}", factoryTer.getName(), factoryPurchase);
             }
             float percentageOfInitialPUsNeededForFactoryPurchase = DUtils.ToFloat(DSettings.LoadSettings().AA_resourcePercentageThatMustExistForFactoryBuy);
             if (PUsToSpend > (int)(origR * percentageOfInitialPUsNeededForFactoryPurchase)) //If we used less than X% our money (user set)
             {
-                DUtils.Log(Level.FINER, "  We used less than x(user-set) percent our money in purchases, so attempting to purchase a new factory.");
+                DUtils.Log(Level.FINE, "  We used less than x(user-set) percent our money in purchases, so attempting to purchase a new factory.");
                 Unit factory = null;
                 int factoryCost = 0;
                 for (ProductionRule rule : player.getProductionFrontier().getRules())
@@ -197,7 +191,7 @@ public class Purchase
                         factoryPG.Purchase();
                         FactoryCenter.get(data, player).FactoryPurchaseGroups.add(factoryPG);
                         Dynamix_AI.Pause();
-                        DUtils.Log(Level.FINER, "    Factory purchased, location not yet determined.");
+                        DUtils.Log(Level.FINE, "    Factory purchased, location not yet determined.");
                     }
                 }
             }
@@ -264,6 +258,7 @@ public class Purchase
 
     public static int purchaseFactoryUnits(Territory ter, Dynamix_AI ai, boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaser, GameData data, PlayerID player)
     {
+        DUtils.Log(Level.FINER, "    Purchasing units for territory. Ter: {0}", ter);
         int result = 0;
         if (!ter.isWater() && ter.getOwner().getName().equals(player.getName()) && ter.getUnits().someMatch(Matches.UnitIsFactory) && !ter.getUnits().someMatch(Matches.UnitIsAA) && TerritoryAttachment.get(ter) != null && DUtils.GetCheckedUnitProduction(ter) > 0)
         {
@@ -308,9 +303,8 @@ public class Purchase
         bestPurchaseGroup.ApplyMaxValues(maxPurchaseCost, maxPurchaseCount);
         int cost = bestPurchaseGroup.GetCost();
         if (PUsToSpend - cost >= 0) //If we have enough money to buy this purchase group
-        {
-            bestPurchaseGroup.Purchase();
-            DUtils.Log_Finest("    Purchase made. Territory: {0} Units: {1}", ter, bestPurchaseGroup.GetSampleUnits());
+        {           
+            bestPurchaseGroup.Purchase();            
             FactoryCenter.get(data, player).TurnTerritoryPurchaseGroups.put(ter, bestPurchaseGroup);
             result += cost;
         }
@@ -364,7 +358,7 @@ public class Purchase
         {
             Unit unit = DUtils.CalculateUnitThatWillHelpWinAttackOnXTheMostPerPU(ncmTarget, data, player, unitsOnTheWay, allUnits, Matches.UnitHasEnoughMovement(1), DSettings.LoadSettings().CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost);
             if(unit == null)
-                DUtils.Log(Level.FINEST, "        No units found to select for purchasing!");
+                DUtils.Log(Level.FINER, "        No units found to select for purchasing!");
             unit = unit.getType().create(player); //Don't add the actual unit we created before, otherwise if we purchase the same unit type twice, we will end up doing calc's with multiples of the same unit, which is bad
 
             int cost = DUtils.GetTUVOfUnit(unit, player, GlobalCenter.GetPUResource());            

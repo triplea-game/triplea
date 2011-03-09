@@ -82,7 +82,7 @@ public class DSettings implements Serializable
     public int TR_attackStabalize_TakeoverChanceRequired = 55;
     public int TR_attackStabalize_CounterAttackSurvivalChanceRequired = 25;
     public boolean TR_enableAttackTrade = true;
-    public int TR_attackTrade_TotalTradeScoreRequired = 5;
+    public int TR_attackTrade_TotalTradeScoreRequired = 15;
     public int TR_attackTrade_LandUnitsAtEnd = 2;    
     public boolean TR_enableAttackLandGrab = true;
     public boolean TR_attackLandGrab_OnlyGrabLandIfWeCanBlitzIt = false;

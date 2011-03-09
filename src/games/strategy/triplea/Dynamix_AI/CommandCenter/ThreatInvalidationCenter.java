@@ -77,7 +77,7 @@ public class ThreatInvalidationCenter
 
         if (DSettings.LoadSettings().AA_percentageOfResistedThreatThatTasksInvalidate != 100)
         {
-            DUtils.Log(Level.FINEST, "            Threats we would invalidate if we invalidated all: {0}", threats);
+            DUtils.Log(Level.FINER, "            Threats we would invalidate if we invalidated all: {0}", DUtils.UnitList_ToString(threats));
             threats = DUtils.GetXPercentOfTheItemsInList(threats, DUtils.ToFloat(DSettings.LoadSettings().AA_percentageOfResistedThreatThatTasksInvalidate));
         }
 
@@ -90,7 +90,7 @@ public class ThreatInvalidationCenter
         {
             DUtils.AddObjectsToListValueForKeyInMap(InvalidatedEnemyUnits, ter, threats);
         }
-        DUtils.Log(Level.FINEST, "          Invalidating threats. Units: {0} New Total Size: {1} Hotspot: {2} Ters: {3}", threats, InvalidatedEnemyUnits.get(hotspot).size(), hotspot.getName(), tersWereInvalidatingThreatsFor);
+        DUtils.Log(Level.FINER, "          Invalidating threats. Units: {0} New Total Size: {1} Hotspot: {2} Ters: {3}", DUtils.UnitList_ToString(threats), InvalidatedEnemyUnits.get(hotspot).size(), hotspot.getName(), tersWereInvalidatingThreatsFor);
     }
     public boolean IsUnitInvalidated(Unit unit, Territory ter)
     {
@@ -102,7 +102,7 @@ public class ThreatInvalidationCenter
     }
     public void ClearInvalidatedThreats()
     {
-        DUtils.Log(Level.FINEST, "          Clearing invalidated threats.");
+        DUtils.Log(Level.FINE, "          Clearing invalidated threats.");
         InvalidatedEnemyUnits.clear();
     }
 }

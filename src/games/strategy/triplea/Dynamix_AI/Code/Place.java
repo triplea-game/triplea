@@ -71,9 +71,7 @@ public class Place
                 List<Unit> matchingAA = GetPlayerUnitsMatchingUnitsInList(Collections.singletonList(aa), player);
                 if(matchingAA.isEmpty()) //This should not be happening, but it does for some reason
                 {
-                    DUtils.Log_Finer("  AA unit placement on pre-assigned territory " + aaBuildTer.getName() + " failed because the player's units matching Matches.UnitIsAA is null...\r\nUnits To Place Dump:\r\n");
-                    for(Unit unit : player.getUnits().getUnits())
-                        DUtils.Log_Finest("    " + unit.getUnitType().getName());
+                    DUtils.Log(Level.FINER, "  AA unit placement on pre-assigned territory " + aaBuildTer.getName() + " failed because the player's units matching Matches.UnitIsAA is null... Player's Units: {0}", player.getUnits().getUnits());
                     continue;
                 }
                 Unit nextAA = matchingAA.get(0);
@@ -142,7 +140,7 @@ public class Place
             Territory bestFactoryPlaceTer = CalculateBestFactoryBuildTerritory(data, player);
             if(bestFactoryPlaceTer == null) //This should not be happening!
             {
-                DUtils.Log_Finer("  No factory build ter found to place factory on!");
+                DUtils.Log(Level.FINER, "  No factory build ter found to place factory on!");
                 break;
             }
             List<Unit> units = GetPlayerUnitsMatchingUnitsInList(factory.GetSampleUnits(), player);
@@ -151,14 +149,14 @@ public class Place
         
         if (player.getUnits().someMatch(Matches.UnitIsFactory)) //If we have leftover factories to place
         {
-            DUtils.Log_Finer("  There are factories leftover from the purchase phase, so looping and placing extra factories.");
+            DUtils.Log(Level.FINE, "  There are factories leftover from the purchase phase, so looping and placing extra factories.");
             List<Unit> leftoverUnits = DUtils.ToList(player.getUnits().getUnits());
             while(Match.someMatch(leftoverUnits, Matches.UnitIsFactory))
             {
                 Territory bestFactoryPlaceTer = CalculateBestFactoryBuildTerritory(data, player);
                 if (bestFactoryPlaceTer == null) //This should not be happening!
                 {
-                    DUtils.Log_Finer("  No factory build ter found to place factory on!");
+                    DUtils.Log(Level.FINER, "  No factory build ter found to place factory on!");
                     break;
                 }
                 Unit nextFactoryToPlace = null;
@@ -179,7 +177,7 @@ public class Place
 
         if (player.getUnits().size() > 0)
         {
-            DUtils.Log_Finer("  There are units leftover from the purchase phase, so looping and placing extra units.");
+            DUtils.Log(Level.FINE, "  There are units leftover from the purchase phase, so looping and placing extra units.");
             //If the game is reloaded, this country can place anywhere, or there was some sort of issue between purchase and place phase, we need to place all the leftover units
             List<Territory> sortedPossiblePlaceLocations = Purchase_UnitPlacementLocationSorter.CalculateAndSortUnitPlacementLocations(ai, bid, data, player);
             for (Territory placeLoc : sortedPossiblePlaceLocations)
@@ -208,11 +206,11 @@ public class Place
 
     private static boolean doPlace(Dynamix_AI ai, Territory ter, Collection<Unit> units, IAbstractPlaceDelegate placer)
     {
-        DUtils.Log(Level.FINEST, "    Placing units. Territory: {0} Units: {1}", ter, units);
+        DUtils.Log(Level.FINER, "    Placing units. Territory: {0} Units: {1}", ter, DUtils.UnitList_ToString(units));
         String message = placer.placeUnits(new ArrayList<Unit>(units), ter);
         if (message != null)
         {
-            DUtils.Log_Finest("      Error occured: {0}", message);
+            DUtils.Log(Level.FINER, "      Error occured: {0}", message);
             return false;
         }
         else

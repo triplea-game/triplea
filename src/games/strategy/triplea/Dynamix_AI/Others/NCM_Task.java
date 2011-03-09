@@ -157,14 +157,14 @@ public class NCM_Task
         else if (m_taskType.equals(m_taskType.Reinforce_Stabilize))
             m_minSurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceStabalize_EnemyAttackSurvivalChanceRequired);
 
-        DUtils.Log(Level.FINER, "    NCM Task requirements calculated. Min Survival Chance: {0}", m_minSurvivalChance);
+        //DUtils.Log(Level.FINER, "    NCM Task requirements calculated. Min Survival Chance: {0}", m_minSurvivalChance);
     }
 
     public void SetTaskRequirements(float minSurvivalChance)
     {
         m_minSurvivalChance = minSurvivalChance;
 
-        DUtils.Log(Level.FINER, "    NCM Task requirements set. Min Survival Chance: {0}", m_minSurvivalChance);
+        //DUtils.Log(Level.FINER, "    NCM Task requirements set. Min Survival Chance: {0}", m_minSurvivalChance);
     }
 
     private float getMeetingOfMinSurvivalChanceScore(AggregateResults simulatedAttack, float minSurvivalChance)
@@ -202,7 +202,6 @@ public class NCM_Task
     public void RecruitUnits()
     {
         recruitEnoughUnitsToMeetXYZ(m_minSurvivalChance, 100);
-        DUtils.Log(Level.FINEST, "    Wave 1 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
     }
 
     public void RecruitUnits2()
@@ -211,7 +210,6 @@ public class NCM_Task
         int maxBattleVolleys = 3; //We want to destroy attackers in three volleys
 
         recruitEnoughUnitsToMeetXYZ(minSurvivalChance, maxBattleVolleys);
-        DUtils.Log(Level.FINEST, "    Wave 2 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
     }
 
     public void RecruitUnits3()
@@ -223,7 +221,6 @@ public class NCM_Task
             return; //Only one unit needed for land grab
 
         recruitEnoughUnitsToMeetXYZ(minSurvivalChance, maxBattleVolleys);
-        DUtils.Log(Level.FINEST, "    Wave 3 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
     }
 
     private void recruitEnoughUnitsToMeetXYZ(float minSurvivalChance, int maxBattleVolleys)
@@ -309,7 +306,7 @@ public class NCM_Task
     }
     public boolean IsPlannedMoveWorthwhile(List<NCM_Task> allTasks)
     {
-        DUtils.Log(Level.FINEST, "    Determining if ncm task is worthwhile. Target: {0} Recruits Size: {1}", m_target, m_recruitedUnits.size());
+        DUtils.Log(Level.FINEST, "      Determining if ncm task is worthwhile. Target: {0} Recruits Size: {1}", m_target, m_recruitedUnits.size());
 
         //if(m_recruitedUnits.isEmpty()) //Remove check, as a reinforce task can sometimes have requirements met without any units recruited (no threats to, for example, a cap neighbor)
         //    return false;
@@ -340,7 +337,10 @@ public class NCM_Task
             {
                 //And takeover chance before and after move is at least 1% different or there average attackers left before and after move is at least 1 different
                 if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .01F || capTakeoverChances.get(3) - capTakeoverChances.get(2) > 1)
+                {
+                    DUtils.Log(Level.FINEST, "      Perfoming task would endanger capital, so canceling.");
                     return false;
+                }
             }
         }
 
@@ -369,7 +369,7 @@ public class NCM_Task
         {
             float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, m_minSurvivalChance);
             float percentOfRequirementNeeded_SurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask);
-            DUtils.Log(Level.FINEST, "      How close to meeting min survival chance: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, percentOfRequirementNeeded_SurvivalChance);
+            DUtils.Log(Level.FINEST, "        How close to meeting min survival chance: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, percentOfRequirementNeeded_SurvivalChance);
 
             if (howCloseToMeetingMinSurvivalChance < percentOfRequirementNeeded_SurvivalChance)
                 return false;
@@ -380,7 +380,7 @@ public class NCM_Task
         {
             float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, m_minSurvivalChance);
             float percentOfRequirementNeeded_SurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask);
-            DUtils.Log(Level.FINEST, "      How close to meeting min survival chance: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, percentOfRequirementNeeded_SurvivalChance);
+            DUtils.Log(Level.FINEST, "        How close to meeting min survival chance: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, percentOfRequirementNeeded_SurvivalChance);
 
             if (howCloseToMeetingMinSurvivalChance < percentOfRequirementNeeded_SurvivalChance)
                 return false;
@@ -391,6 +391,8 @@ public class NCM_Task
 
     public boolean IsTaskWithAdditionalRecruitsWorthwhile()
     {
+        DUtils.Log(Level.FINEST, "      Determining if ncm task with additional recruits is worthwhile. Target: {0} Recruits Size: {1}", m_target, m_recruitedUnits.size());
+
         if (m_recruitedUnits.isEmpty()) //Can happen if all recruits are waiting for reinforcements to complete a better, nearby task
             return false;
 
@@ -419,7 +421,10 @@ public class NCM_Task
             {
                 //And takeover chance before and after move is at least 1% different or there average attackers left before and after move is at least 1 different
                 if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .01F || capTakeoverChances.get(3) - capTakeoverChances.get(2) > 1)
+                {
+                    DUtils.Log(Level.FINEST, "      Perfoming task with additional recruits would endanger capital, so canceling.");
                     return false;
+                }
             }
         }
 
@@ -439,7 +444,7 @@ public class NCM_Task
 
     public void PerformTargetRetreat(List<NCM_Task> allTasks, IMoveDelegate mover)
     {
-        DUtils.Log(Level.FINEST, "      Attemping to perform target retreat for task. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
+        DUtils.Log(Level.FINER, "      Attemping to perform target retreat for task. Target: {0} Recruits: {1}", m_target, DUtils.UnitGroupList_ToString(m_recruitedUnits));
 
         PlayerID player = GlobalCenter.CurrentPlayer;
         
@@ -450,7 +455,7 @@ public class NCM_Task
 
         if(retreatUnits.get(0).GetUnits().isEmpty())
         {
-            DUtils.Log(Level.FINEST, "        No units to retreat for task. Target: {0}", m_target);
+            DUtils.Log(Level.FINER, "        No units to retreat for task. Target: {0}", m_target);
             return; //We have nothing to do, because there are no retreat units
         }
 
@@ -527,7 +532,7 @@ public class NCM_Task
 
             if(bestRetreatTer != null)
             {                
-                DUtils.Log(Level.FINEST, "      Attempting to perform target retreat. Target: {0} Retreat To: {1} Retreat Units: {2}", m_target, bestRetreatTer, retreatUnits);
+                DUtils.Log(Level.FINER, "      Attempting to perform target retreat. Target: {0} Retreat To: {1} Retreat Units: {2}", m_target, bestRetreatTer, DUtils.UnitGroupList_ToString(retreatUnits));
                 Dynamix_AI.Pause();
                 UnitGroup.EnableMoveBuffering();
                 for (UnitGroup ug : retreatUnits)
@@ -536,12 +541,12 @@ public class NCM_Task
                     if(error == null)
                         TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).FreezeUnits(ug.GetUnitsAsList());                        
                     else
-                        DUtils.Log(Level.FINEST, "        NCM move failed, reason: {0}", error);
+                        DUtils.Log(Level.FINER, "        NCM move failed, reason: {0}", error);
                 }
                 UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
             }
             else
-                DUtils.Log(Level.FINEST, "      No retreat to ter found for for task. Target: {0} Recruits: {1} Retreat Units: {2}", m_target, m_recruitedUnits, retreatUnits);
+                DUtils.Log(Level.FINER, "      No retreat to ter found for for task. Target: {0} Recruits: {1} Retreat Units: {2}", m_target, m_recruitedUnits, DUtils.UnitGroupList_ToString(retreatUnits));
         }
         else if(m_taskType.equals(NCM_TaskType.Reinforce_Stabilize))
         {
@@ -594,7 +599,7 @@ public class NCM_Task
 
             if(bestRetreatTer != null)
             {                
-                DUtils.Log(Level.FINEST, "      Attempting to perform target retreat. Target: {0} Retreat To: {1} Retreat Units: {2}", m_target, bestRetreatTer, retreatUnits);
+                DUtils.Log(Level.FINER, "      Attempting to perform target retreat. Target: {0} Retreat To: {1} Retreat Units: {2}", m_target, bestRetreatTer, DUtils.UnitGroupList_ToString(retreatUnits));
                 Dynamix_AI.Pause();
                 UnitGroup.EnableMoveBuffering();
                 for (UnitGroup ug : retreatUnits)
@@ -608,7 +613,7 @@ public class NCM_Task
                 UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
             }
             else
-                DUtils.Log(Level.FINEST, "      No retreat to ter found for for task. Target: {0} Recruits: {1} Retreat Units: {2}", m_target, m_recruitedUnits, retreatUnits);
+                DUtils.Log(Level.FINER, "      No retreat to ter found for for task. Target: {0} Recruits: {1} Retreat Units: {2}", m_target, m_recruitedUnits, DUtils.UnitGroupList_ToString(retreatUnits));
         }
     }
 
@@ -633,7 +638,7 @@ public class NCM_Task
             if (simulatedAttack.getDefenderWinPercent() > .4F)
             {
                 ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats, m_target);
-                DUtils.Log(Level.FINER, "      Reinforce_Frontline task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
+                //DUtils.Log(Level.FINER, "      Reinforce_Frontline task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
             }
         }
         else if (m_taskType == NCM_TaskType.Reinforce_Stabilize)
@@ -648,14 +653,14 @@ public class NCM_Task
             if (simulatedAttack.getDefenderWinPercent() > .4F)
             {
                 ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats, m_target);
-                DUtils.Log(Level.FINER, "      Reinforce_Stabalize task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
+                //DUtils.Log(Level.FINER, "      Reinforce_Stabalize task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
             }
         }
     }
 
     public void Reset()
     {
-        DUtils.Log(Level.FINEST, "        Resetting task! Target: {0} Task Type: {1} Priority: {2}", m_target, m_taskType, m_priority);
+        DUtils.Log(Level.FINER, "        Resetting task. Target: {0} Task Type: {1} Priority: {2} Recruit Size: {3}", m_target, m_taskType, m_priority, m_recruitedUnits.size());
         m_completed = false;
         m_disqualified = false;
         m_recruitedUnits = new ArrayList<UnitGroup>();
@@ -671,7 +676,7 @@ public class NCM_Task
     {
         if(m_recruitedUnits.isEmpty())
         {
-            DUtils.Log(Level.FINEST, "      Task is called to perform, but there are no recruits! Target: {0} Task Type: {1} Priority: {2}", m_target, m_taskType, m_priority);
+            DUtils.Log(Level.FINER, "      Task is called to perform, but there are no recruits! Target: {0} Task Type: {1} Priority: {2}", m_target, m_taskType, m_priority);
             m_completed = true;
             return; //We don't want to pause for an 'empty' task
         }
@@ -684,7 +689,7 @@ public class NCM_Task
                 continue; //If this recruit has already moved
             String error = ug.MoveAsFarTo_NCM(m_target, mover);
             if (error != null)
-                DUtils.Log(Level.FINEST, "        NCM task perfoming move failed, reason: {0}", error);
+                DUtils.Log(Level.FINER, "        NCM task perfoming move failed, reason: {0}", error);
             else
                 TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).FreezeUnits(ug.GetUnitsAsList());
         }

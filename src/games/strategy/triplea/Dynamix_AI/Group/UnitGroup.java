@@ -310,7 +310,7 @@ public class UnitGroup
 
         unitsToMove.removeAll(frozenOnes);
         if (unitsToMove.isEmpty())
-            DUtils.Log(Level.FINEST, "      Move failed because there are no un-frozen units to move!");
+            DUtils.Log(Level.FINEST, "      Move 'done', though there were no un-frozen units to move!");
 
         if(s_isBufferring)
         {
@@ -330,9 +330,9 @@ public class UnitGroup
         m_movedTo = route.getEnd();
 
         if (route.getEnd().getUnits().containsAll(unitsToMove))
-            DUtils.Log(Level.FINEST, "      Performed cm move, as far to: {0} Units: {1} Route: {2}", target, unitsToMove, route);
+            DUtils.Log(Level.FINER, "      Performed cm move, as far to: {0} Units: {1} Route: {2}", target, DUtils.UnitList_ToString(unitsToMove), route);
         else
-            return DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Target: {0} Units: {1} Route: {2}", target, m_units, route);
+            return DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Target: {0} Units: {1} Route: {2}", target, DUtils.UnitList_ToString(m_units), route);
 
         return null;
     }
@@ -378,7 +378,7 @@ public class UnitGroup
 
         unitsToMove.removeAll(frozenOnes);
         if (unitsToMove.isEmpty())
-            DUtils.Log(Level.FINEST, "      Move failed because there are no un-frozen units to move!");
+            DUtils.Log(Level.FINEST, "      Move 'done', though there were no un-frozen units to move!");
 
         if(s_isBufferring)
         {
@@ -398,9 +398,9 @@ public class UnitGroup
         m_movedTo = route.getEnd();
 
         if (route.getEnd().getUnits().containsAll(unitsToMove))
-            DUtils.Log(Level.FINEST, "      Performed ncm move, as far to: {0} Units: {1} Route: {2}", target, unitsToMove, route);
+            DUtils.Log(Level.FINER, "      Performed ncm move, as far to: {0} Units: {1} Route: {2}", target, DUtils.UnitList_ToString(unitsToMove), route);
         else
-            return DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Target: {0} Units: {1} Route: {2}", target, m_units, route);
+            return DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Target: {0} Units: {1} Route: {2}", target, DUtils.UnitList_ToString(m_units), route);
 
         return null;
     }
@@ -450,7 +450,7 @@ public class UnitGroup
 
         unitsToMove.removeAll(frozenOnes);
         if (unitsToMove.isEmpty())
-            DUtils.Log(Level.FINEST, "      Move failed because there are no un-frozen units to move!");
+            DUtils.Log(Level.FINEST, "      Move 'done', though there were no un-frozen units to move!");
 
         if(s_isBufferring)
         {
@@ -468,9 +468,9 @@ public class UnitGroup
         NotifySuccessfulMove(m_movedTo);
 
         if (route.getEnd().getUnits().containsAll(unitsToMove))
-            DUtils.Log(Level.FINEST, "      Performed ncm move, as far along route: {0} Units: {1}", route, unitsToMove);
+            DUtils.Log(Level.FINER, "      Performed ncm move, as far along route: {0} Units: {1}", route, DUtils.UnitList_ToString(unitsToMove));
         else
-            return DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Units: {0} Route: {1}", m_units, route);
+            return DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Units: {0} Route: {1}", DUtils.UnitList_ToString(m_units), route);
 
         return null;
     }
@@ -529,7 +529,7 @@ public class UnitGroup
      */
     public static List<Territory> UndoAllMovesEndingInTer_RStartTersOfUGsUndone(GameData data, PlayerID player, Territory ter, IMoveDelegate mover)
     {
-        DUtils.Log(Level.FINER, "    Undoing all moves ending at {0}", ter.getName());
+        DUtils.Log(Level.FINE, "    Undoing all moves ending at {0}", ter.getName());
         List<Territory> result = new ArrayList<Territory>();
         for (UnitGroup ug : TacticalCenter.get(data, player).AllDelegateUnitGroups)
         {
@@ -580,9 +580,9 @@ public class UnitGroup
                 for (UnitGroup ug : ugs)
                     ug.NotifySuccessfulMove(route.getEnd());
                 if (route.getEnd().getUnits().containsAll(units))
-                    DUtils.Log(Level.FINEST, "      Performed move, as far to: {0} Units: {1} Route: {2}", route.getEnd(), units, route);
+                    DUtils.Log(Level.FINER, "      Performed move, as far to: {0} Units: {1} Route: {2}", route.getEnd(), DUtils.UnitList_ToString(units), route);
                 else
-                    errors.append(DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Target: {0} Units: {1} Route: {2}", route.getEnd(), units, route));
+                    errors.append(DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Target: {0} Units: {1} Route: {2}", route.getEnd(), DUtils.UnitList_ToString(units), route));
             }
             else
                 errors.append("Error given by call mover.move(...): ").append(moveError).append("\r\n");
@@ -593,33 +593,6 @@ public class UnitGroup
     @Override
     public String toString()
     {
-        if(m_units.size() == 1)
-            return GetFirstUnit().toString();
-
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        String commonOwnerName = null;
-        for(Unit unit : m_units)
-        {
-            if(commonOwnerName == null)
-                commonOwnerName = unit.getOwner().getName();
-            else
-            {
-                if(!unit.getOwner().getName().equals(commonOwnerName)) //Hmmm... Not all units are owned by the same player
-                    commonOwnerName = "-1";
-            }
-        }
-        String commonEndingString = " owned by " + commonOwnerName;
-        for(Unit unit : m_units)
-        {
-            if(commonOwnerName != null && !commonOwnerName.equals("-1"))
-                builder.append(unit.toString().replace(commonEndingString, "")).append(", ");
-            else
-                builder.append(unit.toString()).append(", ");
-        }
-        if(commonOwnerName != null && !commonOwnerName.equals("-1"))
-            builder.append(commonEndingString);
-        builder.append("]");
-        return builder.toString();
+        return DUtils.UnitGroupList_ToString(Collections.singletonList(this));
     }
 }

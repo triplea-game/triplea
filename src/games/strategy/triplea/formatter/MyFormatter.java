@@ -55,6 +55,7 @@ public class MyFormatter
         s_plural.put("armour", "armour");
         s_plural.put("infantry", "infantry");
         s_plural.put("Infantry", "Infantry");
+        s_plural.put("artillery", "artilleries");
         s_plural.put("factory", "factories");
     }
 
@@ -182,6 +183,8 @@ public class MyFormatter
     {
         if (s_plural.containsKey(in))
             return s_plural.get(in);
+        if (in.endsWith("man"))
+            return in.substring(0, in.lastIndexOf("man")) + "men";
 
         return in + "s";
     }

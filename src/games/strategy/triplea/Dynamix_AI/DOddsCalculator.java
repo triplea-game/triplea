@@ -58,6 +58,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
 
 /**
  *
@@ -337,7 +338,7 @@ class DummyPlayer extends AbstractAI
     @Override
     public void reportError(String error)
     {
-        DUtils.Log_Finer("Error message reported in DOddsCalculator class: {0}", error);
+        DUtils.Log(Level.FINER, "Error message reported in DOddsCalculator class: {0}", error);
         if (error.equals("Wrong number of casualties selected") || error.equals("Cannot remove enough units of those types"))
         {
             useDefaultSelectionThisTime = true;

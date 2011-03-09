@@ -366,7 +366,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 
     public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message)
     {
-        DUtils.Log(Level.FINER, "Retreat query starting. Possible retreat locations: {0}", possibleTerritories);
+        DUtils.Log(Level.FINE, "Retreat query starting. Battle Ter: {0} Possible retreat locations: {1}", getBattleTerritory(), possibleTerritories);
         final GameData data = getPlayerBridge().getGameData();
         PlayerID player = GlobalCenter.CurrentPlayer;
         Territory battleTerr = getBattleTerritory();
@@ -374,12 +374,11 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         //PossibleTerritories will be empty if subs move in our sub ter, and our sub is 'attacking'
         if(battleTerr == null || possibleTerritories.isEmpty())
             return null; //Don't submerge
-        DUtils.Log(Level.FINER, "Territory of battle querying retreat: {0}", battleTerr.getName());
         AggregateResults results = DUtils.GetBattleResults(battleTerr, getWhoAmI(), data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, true);
         float retreatChance = .6F;
         if(TacticalCenter.get(data, getID()).BattleRetreatChanceAssignments.containsKey(battleTerr))
         {
-            DUtils.Log(Level.FINER, "Found specific battle retreat chance assignment for territory '{0}'", battleTerr);
+            DUtils.Log(Level.FINER, "Found specific battle retreat chance assignment for territory '{0}'. Retreat Chance: {1}", battleTerr, TacticalCenter.get(data, player).BattleRetreatChanceAssignments.get(battleTerr));
             retreatChance = TacticalCenter.get(data, getID()).BattleRetreatChanceAssignments.get(battleTerr);
         }
         else //Must be attack_trade type
@@ -389,8 +388,9 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
             List<Unit> responseAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, battleTerr, getID(), Matches.TerritoryIsLand);
             List<Unit> responseDefenders = new ArrayList<Unit>(results.GetAverageAttackingUnitsRemaining());
             AggregateResults responseResults = DUtils.GetBattleResults(responseAttackers, responseDefenders, battleTerr, data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, true);
-            boolean doesMeetTradeRequirements = DUtils.GetHasMetTradeRequirements(battleTerr, attackers, defenders, results, responseAttackers, responseDefenders, responseResults);
-            if(!doesMeetTradeRequirements)
+            int tradeScore = DUtils.GetTaskTradeScore(battleTerr, attackers, defenders, results, responseAttackers, responseDefenders, responseResults);
+            DUtils.Log(Level.FINER, "Attack_Trade battle assumed. Score: {0} Required: {1}", tradeScore, DSettings.LoadSettings().TR_attackTrade_TotalTradeScoreRequired);
+            if(tradeScore < DSettings.LoadSettings().TR_attackTrade_TotalTradeScoreRequired)
                 retreatChance = 1.0F;
         }
         if(results.getAttackerWinPercent() <= retreatChance)
@@ -451,14 +451,14 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 
     public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
     {
-        DUtils.Log(Level.FINER, "Select casualties method called. Message from MustFightBattle class: {0}", message);
+        DUtils.Log(Level.FINE, "Select casualties method called. Message from MustFightBattle class: {0}", message);
         return SelectCasualties.selectCasualties(this, getGameData(), selectFrom, dependents, count, message, dice, hit, defaultCasualties, battleID);
     }
 
     @Override
     public void reportError(String error)
     {
-        DUtils.Log_Finer("Error message reported: {0}", error);
+        DUtils.Log(Level.FINE, "Error message reported: {0}", error);
         if (error.equals("Wrong number of casualties selected") || error.equals("Cannot remove enough units of those types"))
         {
             SelectCasualties.NotifyCasualtySelectionError(error);

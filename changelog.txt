@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Dynamix AI logging patch, should make logs easier to read. (wisconsin)
+
 * Completely re-wrote NoPuDelegate, and re-wrote the Rules Attachment for productionPerXTerritories. Now looks like: <option name="productionPerXTerritories" value="infantry" count="2"/>, and you can have multiple instances of this. (veqryn)
 
 * Small bug fix for Support attachments (squiddaddy), and a bug fix for the new placement logic. (veqryn)

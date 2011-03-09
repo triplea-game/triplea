@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  *
@@ -119,7 +120,7 @@ public class PurchaseGroup
     {
         Dynamix_AI.Pause();
         m_purchaser.purchase(m_generatedRules);
-        DUtils.Log_Finest("      Purchase made. Units: {0}", GetSampleUnits());
+        DUtils.Log(Level.FINER, "      Purchase made. Units: {0}", DUtils.UnitList_ToString(GetSampleUnits()));
         return m_totalPurchasePrice;
     }
     public List<Unit> GetSampleUnits()

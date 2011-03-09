@@ -43,7 +43,7 @@ public class SelectCasualties
     {
         if(error.equals("Wrong number of casualties selected"))
         {
-            DUtils.Log_Finer("  Wrong number of casualties selected for current battle, so attempting to use default casualties");
+            DUtils.Log(Level.FINER, "  Wrong number of casualties selected for current battle, so attempting to use default casualties");
             useDefaultSelectionThisTime = true;
         }
     }

@@ -186,7 +186,7 @@ public class CM_Task
         }
 
         TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).BattleRetreatChanceAssignments.put(m_target, m_minTakeoverChance);
-        DUtils.Log(Level.FINER, "    CM Task requirements calculated. Min Chance: {0} Min Survival Chance: {1}", m_minTakeoverChance, m_minSurvivalChance);
+        //DUtils.Log(Level.FINER, "    CM Task requirements calculated. Min Chance: {0} Min Survival Chance: {1}", m_minTakeoverChance, m_minSurvivalChance);
     }
 
     public void SetTaskRequirements(float minTakeoverChance, float minSurvivalChance)
@@ -195,7 +195,7 @@ public class CM_Task
         m_minSurvivalChance = minSurvivalChance;
 
         TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).BattleRetreatChanceAssignments.put(m_target, m_minTakeoverChance);
-        DUtils.Log(Level.FINER, "    CM Task requirements set. Min Chance: {0} Min Survival Chance: {1}", m_minTakeoverChance, m_minSurvivalChance);
+        //DUtils.Log(Level.FINER, "    CM Task requirements set. Min Chance: {0} Min Survival Chance: {1}", m_minTakeoverChance, m_minSurvivalChance);
     }
 
     private float getMeetingOfMinTakeoverChance(AggregateResults simulatedAttack, float minTakeoverChance)
@@ -222,12 +222,10 @@ public class CM_Task
         if(m_taskType.equals(CM_TaskType.Attack_Trade))
         {
             recruitEnoughUnitsForTradeTask();
-            DUtils.Log(Level.FINEST, "    Wave 1 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
             return;
         }
 
         recruitEnoughUnitsToMeetXYZ(m_minTakeoverChance, m_minSurvivalChance, 100);
-        DUtils.Log(Level.FINEST, "    Wave 1 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
     }
 
     public void RecruitUnits2()
@@ -251,7 +249,6 @@ public class CM_Task
         }
 
         recruitEnoughUnitsToMeetXYZ(minTakeoverChance, minSurvivalChance, maxBattleVolleys);
-        DUtils.Log(Level.FINEST, "    Wave 2 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
     }
 
     public void RecruitUnits3()
@@ -275,7 +272,6 @@ public class CM_Task
         }
 
         recruitEnoughUnitsToMeetXYZ(minTakeoverChance, minSurvivalChance, maxBattleVolleys);
-        DUtils.Log(Level.FINEST, "    Wave 3 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
     }
 
     public void RecruitUnits4()
@@ -284,7 +280,6 @@ public class CM_Task
             return;
 
         recruitEnoughUnitsToMeetXYZ(1.0F, 1.0F, 1);
-        DUtils.Log(Level.FINEST, "    Wave 4 recruits calculated. Target: {0} Recruits: {1}", m_target, m_recruitedUnits);
     }
 
     private void recruitEnoughUnitsToMeetXYZ(float minTakeoverChance, float minSurvivalChance, int maxBattleVolleys)
@@ -386,9 +381,9 @@ public class CM_Task
             List<Unit> attackers = GetRecruitedUnitsAsUnitList();
             List<Unit> defenders = DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer)));
 
-            boolean hasMetTradeRequirements = DUtils.GetHasMetTradeRequirements(m_target, attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, simulatedResponse);
+            int tradeScore = DUtils.GetTaskTradeScore(m_target, attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, simulatedResponse);
 
-            if (!hasMetTradeRequirements)
+            if (tradeScore < DSettings.LoadSettings().TR_attackTrade_TotalTradeScoreRequired)
             {
                 m_recruitedUnits.add(ug);
                 continue;
@@ -420,9 +415,9 @@ public class CM_Task
             List<Unit> attackers = GetRecruitedUnitsAsUnitList();
             List<Unit> defenders = DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer)));
 
-            boolean hasMetTradeRequirements = DUtils.GetHasMetTradeRequirements(m_target, attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, simulatedResponse);
+            int tradeScore = DUtils.GetTaskTradeScore(m_target, attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, simulatedResponse);
 
-            if (!hasMetTradeRequirements)
+            if (tradeScore < DSettings.LoadSettings().TR_attackTrade_TotalTradeScoreRequired)
             {
                 m_recruitedUnits.add(ug);
                 continue;
@@ -456,7 +451,7 @@ public class CM_Task
     {
         PlayerID player = GlobalCenter.CurrentPlayer;
 
-        DUtils.Log(Level.FINEST, "    Determining if cm task is worthwhile. Target: {0} Recruits Size: {1}", m_target, m_recruitedUnits.size());
+        DUtils.Log(Level.FINEST, "      Determining if cm task is worthwhile. Target: {0} Recruits Size: {1}", m_target, m_recruitedUnits.size());
 
         if (m_target.getOwner().isNull())
         {
@@ -520,7 +515,10 @@ public class CM_Task
                 {
                     //And takeover chance before and after move is at least 1% different or there average attackers left before and after move is at least 1 different
                     if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .01F || capTakeoverChances.get(3) - capTakeoverChances.get(2) > 1)
+                    {
+                        DUtils.Log(Level.FINEST, "      Perfoming task would endanger capital, so canceling.");
                         return false;
+                    }
                 }
             }
         }
@@ -539,13 +537,13 @@ public class CM_Task
             //    If you do make these sort of changes, though, please do it carefully, sloppy changes could complicate the code.
             float howCloseToMeetingTakeoverChanceMin = getMeetingOfMinTakeoverChance(simulatedAttack, m_minTakeoverChance);
             float percentOfRequirementNeeded_TakeoverChance = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask);
-            DUtils.Log(Level.FINEST, "      How close to meeting takeover chance min: {0} Needed: {1}", howCloseToMeetingTakeoverChanceMin, percentOfRequirementNeeded_TakeoverChance);
+            DUtils.Log(Level.FINEST, "        How close to meeting takeover chance min: {0} Needed: {1}", howCloseToMeetingTakeoverChanceMin, percentOfRequirementNeeded_TakeoverChance);
             if(howCloseToMeetingTakeoverChanceMin < percentOfRequirementNeeded_TakeoverChance)
                 return false;
 
             float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChance(simulatedResponse, m_minSurvivalChance);
             float percentOfRequirementNeeded_SurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask);
-            DUtils.Log(Level.FINEST, "      How close to meeting survival chance min: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, percentOfRequirementNeeded_SurvivalChance);
+            DUtils.Log(Level.FINEST, "        How close to meeting survival chance min: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, percentOfRequirementNeeded_SurvivalChance);
             if (howCloseToMeetingMinSurvivalChance < percentOfRequirementNeeded_SurvivalChance)
                 return false;
 
@@ -555,13 +553,13 @@ public class CM_Task
         {
             float howCloseToMeetingTakeoverChanceMin = getMeetingOfMinTakeoverChance(simulatedAttack, m_minTakeoverChance);
             float percentOfRequirementNeeded_TakeoverChance = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask);
-            DUtils.Log(Level.FINEST, "      How close to meeting takeover chance min: {0} Needed: {1}", howCloseToMeetingTakeoverChanceMin, percentOfRequirementNeeded_TakeoverChance);
+            DUtils.Log(Level.FINEST, "        How close to meeting takeover chance min: {0} Needed: {1}", howCloseToMeetingTakeoverChanceMin, percentOfRequirementNeeded_TakeoverChance);
             if(howCloseToMeetingTakeoverChanceMin < percentOfRequirementNeeded_TakeoverChance)
                 return false;
 
             float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChance(simulatedResponse, m_minSurvivalChance);
             float percentOfRequirementNeeded_SurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask);
-            DUtils.Log(Level.FINEST, "      How close to meeting survival chance min: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, percentOfRequirementNeeded_SurvivalChance);
+            DUtils.Log(Level.FINEST, "        How close to meeting survival chance min: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, percentOfRequirementNeeded_SurvivalChance);
             if (howCloseToMeetingMinSurvivalChance < percentOfRequirementNeeded_SurvivalChance)
                 return false;
 
@@ -575,9 +573,11 @@ public class CM_Task
             List<Unit> attackers = GetRecruitedUnitsAsUnitList();
             List<Unit> defenders = DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer)));
 
-            boolean hasMetTradeRequirements = DUtils.GetHasMetTradeRequirements(m_target, attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, simulatedResponse);
+            int tradeScore = DUtils.GetTaskTradeScore(m_target, attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, simulatedResponse);
 
-            if (hasMetTradeRequirements)
+            DUtils.Log(Level.FINEST, "        Task trade score: {0} Needed: {1}", tradeScore, DSettings.LoadSettings().TR_attackTrade_TotalTradeScoreRequired);
+
+            if (tradeScore >= DSettings.LoadSettings().TR_attackTrade_TotalTradeScoreRequired)
                 return true;
             else
                 return false;
@@ -618,6 +618,8 @@ public class CM_Task
 
     public boolean IsTaskWithAdditionalRecruitsWorthwhile()
     {
+        DUtils.Log(Level.FINEST, "      Determining if cm task with additional recruits is worthwhile. Target: {0} Recruits Size: {1}", m_target, m_recruitedUnits.size());
+
         if (m_recruitedUnits.isEmpty()) //Can happen if all recruits are waiting for reinforcements to complete a better, nearby task
             return false;
 
@@ -648,7 +650,10 @@ public class CM_Task
                 {
                     //And takeover chance before and after move is at least 1% different or there average attackers left before and after move is at least 1 different
                     if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .01F || capTakeoverChances.get(3) - capTakeoverChances.get(2) > 1)
+                    {
+                        DUtils.Log(Level.FINEST, "      Perfoming task with additional recruits would endanger capital, so canceling.");
                         return false;
+                    }
                 }
             }
         }
@@ -689,7 +694,7 @@ public class CM_Task
             if (simulatedResponse.getDefenderWinPercent() > .4F)
             {
                 ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats, m_target);
-                DUtils.Log(Level.FINER, "      Attack_Offensive task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
+                //DUtils.Log(Level.FINER, "      Attack_Offensive task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
             }
             ThreatInvalidationCenter.get(m_data, player).ResumeThreatInvalidation();
         }
@@ -706,7 +711,7 @@ public class CM_Task
             if (simulatedResponse.getDefenderWinPercent() > .4F)
             {
                 ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats, m_target);
-                DUtils.Log(Level.FINER, "      Attack_Stabalize task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
+                //DUtils.Log(Level.FINER, "      Attack_Stabalize task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
             }
             ThreatInvalidationCenter.get(m_data, player).ResumeThreatInvalidation();
         }
@@ -714,6 +719,7 @@ public class CM_Task
 
     public void Reset()
     {
+        DUtils.Log(Level.FINER, "        Resetting task. Target: {0} Task Type: {1} Priority: {2} Recruit Size: {3}", m_target, m_taskType, m_priority, m_recruitedUnits.size());
         m_completed = false;
         m_disqualified = false;
         m_recruitedUnits = new ArrayList<UnitGroup>();
@@ -727,8 +733,12 @@ public class CM_Task
 
     public void PerformTask(IMoveDelegate mover)
     {
-        if (m_recruitedUnits.isEmpty())
-            DUtils.Log(Level.FINEST, "      Task is called to perform, but there are no recruits! Target: {0} Task Type: {1} Priority: {2}", m_target, m_taskType, m_priority);
+        if(m_recruitedUnits.isEmpty())
+        {
+            DUtils.Log(Level.FINER, "      Task is called to perform, but there are no recruits! Target: {0} Task Type: {1} Priority: {2}", m_target, m_taskType, m_priority);
+            m_completed = true;
+            return; //We don't want to pause for an 'empty' task
+        }
         if(!m_completed) //Only pause if this is the initial attack group
             Dynamix_AI.Pause();
         UnitGroup.EnableMoveBuffering();
@@ -738,7 +748,7 @@ public class CM_Task
                 continue; //If this recruit has already moved
             String error = ug.MoveAsFarTo_CM(m_target, mover);
             if (error != null)
-                DUtils.Log(Level.FINEST, "        CM task perfoming move failed, reason: {0}", error);
+                DUtils.Log(Level.FINER, "        CM task perfoming move failed, reason: {0}", error);
         }
         UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
         m_completed = true;

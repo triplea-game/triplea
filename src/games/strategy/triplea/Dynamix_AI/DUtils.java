@@ -45,6 +45,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MustFightBattle;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.util.CompositeMatchAnd;
@@ -1162,9 +1163,9 @@ public class DUtils
     }
     public static List<Unit> InterlaceUnits_CarriersAndPlanes(List<Unit> units, int planesThatDontNeedToLand)
     {
-    	if (!(Match.someMatch(units, Matches.UnitIsCarrier) && Match.someMatch(units, Matches.UnitCanLandOnCarrier)))
-    		return units;
-    	
+        if (!(Match.someMatch(units, Matches.UnitIsCarrier) && Match.someMatch(units, Matches.UnitCanLandOnCarrier)))
+            return units;
+
         //Clone the current list
         ArrayList<Unit> result = new ArrayList<Unit>(units);
 
@@ -1506,7 +1507,7 @@ public class DUtils
         List<Unit> newAttackerUnits = Match.getMatches(results.GetAverageAttackingUnitsRemaining(), DMatches.UnitCanAttack);
         List<Unit> newDefenderUnits = Match.getMatches(results.GetAverageDefendingUnitsRemaining(), DMatches.UnitCanDefend);
 
-        float oldAttackerTUV = DUtils.GetTUVOfUnits( oldAttackerUnits, attacker, GlobalCenter.GetPUResource());
+        float oldAttackerTUV = DUtils.GetTUVOfUnits(oldAttackerUnits, attacker, GlobalCenter.GetPUResource());
         float oldDefenderTUV = DUtils.GetTUVOfUnits(oldDefenderUnits, defender, GlobalCenter.GetPUResource());
 
         float newAttackerTUV = DUtils.GetTUVOfUnits(newAttackerUnits, attacker, GlobalCenter.GetPUResource());
@@ -1740,16 +1741,12 @@ public class DUtils
         }
         return values;
     }
-    public static boolean GetHasMetTradeRequirements(Territory target, List<Unit> attackers, List<Unit> defenders, AggregateResults simulatedAttack, List<Unit> responseAttackers, List<Unit> responseDefenders, AggregateResults simulatedResponse)
-    {
-        return GetHasMetTradeRequirements(target, attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, simulatedResponse, DSettings.LoadSettings().TR_attackTrade_TotalTradeScoreRequired);
-    }
-    public static boolean GetHasMetTradeRequirements(Territory target, List<Unit> attackers, List<Unit> defenders, AggregateResults simulatedAttack, List<Unit> responseAttackers, List<Unit> responseDefenders, AggregateResults simulatedResponse, int minTotalScore)
+    public static int GetTaskTradeScore(Territory target, List<Unit> attackers, List<Unit> defenders, AggregateResults simulatedAttack, List<Unit> responseAttackers, List<Unit> responseDefenders, AggregateResults simulatedResponse)
     {
         if(simulatedAttack.getAttackerWinPercent() < .5F)
-            return false;
+            return DConstants.Integer_HalfMin;
 
-        List<Integer> tuvLosses = DUtils.GetTUVChangeOfAttackerAndDefender(attackers, defenders, simulatedAttack);
+        List<Integer> tuvLosses = DUtils.GetTUVChangeOfAttackerAndDefender(attackers, defenders, simulatedAttack);;
         int tuvSwing = DUtils.GetTUVSwingForTUVChange(tuvLosses);
         List<Integer> responseTUVLosses = DUtils.GetTUVChangeOfAttackerAndDefender(responseAttackers, responseDefenders, simulatedResponse);
         int responseTUVSwing = DUtils.GetTUVSwingForTUVChange(responseTUVLosses);
@@ -1758,11 +1755,7 @@ public class DUtils
             terProduction = 0; //Don't count in ter production
 
         int score = terProduction + tuvSwing - responseTUVSwing;
-        DUtils.Log(Level.FINEST, "      How close to meeting trade requirements: {0} Needed: {1}", score, DSettings.LoadSettings().TR_attackTrade_TotalTradeScoreRequired);
-        if(score >= minTotalScore) //If total TUV swing is in our favor by more than X PU
-            return true;
-
-        return false;
+        return score;
     }
     public static Route TrimRoute_AtFirstTerWithEnemyUnits(Route route, int newRouteJumpCount, PlayerID player, GameData data)
     {
@@ -2314,12 +2307,80 @@ public class DUtils
         }
         return result;
     }
-    public static List<Unit> ToUnitList(List<UnitGroup> ugs)
+    public static List<Unit> ToUnitList(Collection<UnitGroup> ugs)
     {
         List<Unit> result = new ArrayList<Unit>();
         for(UnitGroup ug : ugs)
             result.addAll(ug.GetUnits());
         return result;
+    }
+    /**
+     * Formats the units in a list of unit groups.
+     * Before: "infantry owned by Americans, infantry owned by Americans, infantry owned by Americans, armour owned by Americans, fighter owned by Americans"
+     * After:  "3 infantry, armour, and fighter owned by Americans"
+     */
+    public static String UnitGroupList_ToString(Collection<UnitGroup> ugs)
+    {
+        List<Unit> units = ToUnitList(ugs);
+
+        return UnitList_ToString(units);
+    }
+    /**
+     * Formats the list of units provided.
+     * Before: "infantry owned by Americans, infantry owned by Americans, infantry owned by Americans, armour owned by Americans, fighter owned by Americans"
+     * After:  "3 infantry, armour, and fighter owned by Americans"
+     */
+    public static String UnitList_ToString(Collection<Unit> units)
+    {
+        if (units.isEmpty())
+            return "(Empty)";
+        if(units.size() == 1)
+            return units.iterator().next().toString();
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        HashMap<String, List<Unit>> unitsByOwner = new HashMap<String, List<Unit>>();
+        for(Unit unit : units)
+            AddObjToListValueForKeyInMap(unitsByOwner, unit.getOwner().getName(), unit);
+
+        for(String owner : unitsByOwner.keySet())
+        {
+            int unitGroups = 0;
+            String lastUnitType = null;
+            int lastUnitTypeCount = 0;
+            for(Unit unit : unitsByOwner.get(owner))
+            {
+                if(lastUnitType == null) //First unit
+                {
+                    unitGroups = 1;
+                    lastUnitType = unit.getUnitType().getName();
+                    lastUnitTypeCount = 1;
+                }
+                else if(unit.getUnitType().getName().equals(lastUnitType)) //Part of a group
+                    lastUnitTypeCount++;
+                else //End of last group, start of next
+                {
+                    if(unitGroups != 1) //If this is not the end of the first group
+                        builder.append(", ");
+                    if(lastUnitTypeCount == 1) //If the last group was only one unit
+                        builder.append(lastUnitType);
+                    else
+                        builder.append(lastUnitTypeCount).append(" ").append(MyFormatter.pluralize(lastUnitType));
+
+                    lastUnitType = unit.getUnitType().getName();
+                    lastUnitTypeCount = 1;
+                    unitGroups++;
+                }
+            }
+            if (unitGroups > 1)
+                builder.append(", and ");
+            if (lastUnitTypeCount == 1)
+                builder.append(lastUnitType).append(" owned by ").append(owner);
+            else
+                builder.append(lastUnitTypeCount).append(" ").append(MyFormatter.pluralize(lastUnitType)).append(" owned by ").append(owner);
+        }
+        builder.append("]");
+        return builder.toString();
     }
     public static List<Unit> DetermineResponseAttackers(GameData data, PlayerID player, Territory battleTer, AggregateResults results)
     {
@@ -2809,67 +2870,34 @@ public class DUtils
      * For example, the base logs in the Dynamix_AI class have no indentation before them, but the base logs in the DoCombatMove class will have two spaces inserted at the start, and the level below that, four spaces.
      * In this way, when you're reading the log, you can skip over unimportant areas with speed because of the indentation.
      *
+     * Second, I generally want the Fine logs to be messages that run less than 10 times each round, including almost all messages in the Dynamix_AI class,
+     * Finest for messages showing details within a method that, for example, returns a value.
+     * (So, for example, the NCM_Task method IsTaskWorthwhile() would primarily use finest, as it just returns a boolean, and the logs within it are just for details)
+     * Finer for just about everything else. (There's also the SERVER, INFO, etc. levels)
+     *
      * Just keep these things in mind while adding new logging code.
      */
     public static void Log(Level level, String message, Object ... args)
     {
         //Used to pause AI's temporarily while the user is examining the AI logs
         if(GlobalCenter.IsPaused)
-            synchronized(GlobalCenter.IsPaused_Object){while(GlobalCenter.IsPaused)try{GlobalCenter.IsPaused_Object.wait();}catch(InterruptedException ex){}}
+            synchronized(GlobalCenter.IsPaused_Object){while(GlobalCenter.IsPaused)try{GlobalCenter.IsPaused_Object.wait();}catch(InterruptedException ex){}}        
 
-        Level logDepth = DSettings.LoadSettings().AILoggingDepth;
-        if(logDepth.equals(Level.FINE) && !level.equals(Level.FINE))
-            return;
-        if(logDepth.equals(Level.FINER) && !level.equals(Level.FINE) && !level.equals(Level.FINER))
-            return;
-
-        message = addIndentationCompensation(message, level);
         if(args.length > 0)
             message = Format(message, args); //Convert {0}, {1}, etc to the objects supplied for them
 
-        Dynamix_AI.GetStaticLogger().log(level, message);
+        //We always log to the AI logger, though it only shows up if the developer has the logger enabled in logging.properties
+        Dynamix_AI.GetStaticLogger().log(level, addIndentationCompensation(message, level));
+        
         if (!DSettings.LoadSettings().EnableAILogging)
+            return; //Skip displaying to settings window if settings window option is turned off
+        Level logDepth = DSettings.LoadSettings().AILoggingDepth;
+        if (logDepth.equals(Level.FINE) && (level.equals(Level.FINER) || level.equals(Level.FINEST)))
+            return; //If the settings window log depth is a higher level than this messages, skip
+        if (logDepth.equals(Level.FINER) && level.equals(Level.FINEST))
             return;
+
         UI.NotifyAILogMessage(level, message);
-    }
-    /**
-     * Some notes on using the Dynamix logger:
-     *
-     * First, to make the logs easily readable even when there are hundreds of lines, I want every considerable step down in the call stack to mean more log message indentation.
-     * For example, the base logs in the Dynamix_AI class have no indentation before them, but the base logs in the DoCombatMove class will have two spaces inserted at the start, and the level below that, four spaces.
-     * In this way, when you're reading the log, you can skip over unimportant areas with speed because of the indentation.
-     *
-     * Just keep these things in mind while adding new logging code.
-     */
-    public static void Log_Fine(String message, Object ... args)
-    {
-        Log(Level.FINE, message, args);
-    }
-    /**
-     * Some notes on using the Dynamix logger:
-     *
-     * First, to make the logs easily readable even when there are hundreds of lines, I want every considerable step down in the call stack to mean more log message indentation.
-     * For example, the base logs in the Dynamix_AI class have no indentation before them, but the base logs in the DoCombatMove class will have two spaces inserted at the start, and the level below that, four spaces.
-     * In this way, when you're reading the log, you can skip over unimportant areas with speed because of the indentation.
-     *
-     * Just keep these things in mind while adding new logging code.
-     */
-    public static void Log_Finer(String message, Object ... args)
-    {
-        Log(Level.FINER, message, args);
-    }
-    /**
-     * Some notes on using the Dynamix logger:
-     *
-     * First, to make the logs easily readable even when there are hundreds of lines, I want every considerable step down in the call stack to mean more log message indentation.
-     * For example, the base logs in the Dynamix_AI class have no indentation before them, but the base logs in the DoCombatMove class will have two spaces inserted at the start, and the level below that, four spaces.
-     * In this way, when you're reading the log, you can skip over unimportant areas with speed because of the indentation.
-     *
-     * Just keep these things in mind while adding new logging code.
-     */
-    public static void Log_Finest(String message, Object ... args)
-    {
-        Log(Level.FINEST, message, args);
     }
     /**
      * Only use this if you know that all the units have the same movement amount left, otherwise the units with more movement left will not go as far as they could

@@ -97,14 +97,14 @@ public class DoNonCombatMove
         DUtils.Log(Level.FINE, "  Performing target retreats on diqualified tasks.");
         for (NCM_Task task : tasks)
         {
-            DUtils.Log(Level.FINEST, "    Checking if task is disqualified. Task Target: {0}", task.GetTarget().getName());
+            DUtils.Log(Level.FINER, "    Checking if task is disqualified. Task Target: {0}", task.GetTarget().getName());
             if (task.IsDisqualified())
             {
                 task.PerformTargetRetreat(tasks, mover);
                 StatusCenter.get(data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(task.GetTarget()).WasAbandoned = true;
             }
             else
-                DUtils.Log(Level.FINEST, "      Not disqualified, so not retreating from target");
+                DUtils.Log(Level.FINER, "      Not disqualified, so not retreating from target");
         }
 
         //We now allow the worthwhile tasks to recruit additional units to make the task even more favorable.
@@ -176,7 +176,7 @@ public class DoNonCombatMove
                 Territory landingLoc = NCM_AirLandingCalculator.CalculateLandingLocationForAirUnits(data, player, ter, airUnits, tasks);
                 if (landingLoc == null)
                 {
-                    DUtils.Log(Level.FINER, "    Landing location not found. Ter: {0} Air Units: {1}", ter, airUnits);
+                    DUtils.Log(Level.FINER, "    Landing location not found. Ter: {0} Air Units: {1}", ter, DUtils.UnitList_ToString(airUnits));
                     continue;
                 }
                 List<UnitGroup> ugs = DUtils.CreateUnitGroupsForUnits(airUnits, ter, data);
@@ -364,13 +364,12 @@ public class DoNonCombatMove
             highestPriorityTask.RecruitUnits();
             if(highestPriorityTask.IsPlannedMoveWorthwhile(tasks))
             {
-                DUtils.Log(Level.FINER, "    Task worthwhile, performing planned task.");
+                DUtils.Log(Level.FINER, "      Task worthwhile, performing planned task.");
                 highestPriorityTask.PerformTask(mover);
                 highestPriorityTask.InvalidateThreatsThisTaskResists();
             }
             else
             {
-                DUtils.Log(Level.FINER, "    NCM Task not worthwhile, disqualifying.");
                 highestPriorityTask.Disqualify();                
             }
         }
@@ -419,18 +418,18 @@ public class DoNonCombatMove
             List<Float> fromDangerBeforeAndAfter = DUtils.GetTerTakeoverChanceBeforeAndAfterMoves(data, player, ter, movedToTers, terUnits, DSettings.LoadSettings().CA_NCM_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove);
             if (fromDangerBeforeAndAfter.get(1) > .5F && fromDangerBeforeAndAfter.get(0) < .5F) //If move-from-ter will be endangered after move, but wasn't before it
             {
-                DUtils.Log(Level.FINER, "    Regular ncm move-to-target from {0} to {1} canceled because of endangering of more valuable from ter. Units: {2}", ter, target, ugs);
+                DUtils.Log(Level.FINER, "    Regular ncm move-to-target from {0} to {1} canceled because of endangering of more valuable from ter. Units: {2}", ter, target, DUtils.UnitGroupList_ToString(ugs));
                 return; //Then skip this move. TODO: Get code to just leave enough for ter to be safe
             }
         }
         
-        DUtils.Log(Level.FINER, "    Performing regular ncm move-to-target move from {0} to {1}. Units: {2}", ter, target, ugs);
+        DUtils.Log(Level.FINER, "    Performing regular ncm move-to-target move from {0} to {1}. Units: {2}", ter, target, DUtils.UnitGroupList_ToString(ugs));
         UnitGroup.EnableMoveBuffering();
         for (UnitGroup ug : ugs)
         {
             String error = ug.MoveAsFarTo_NCM(target, mover, true);
             if (error != null)
-                DUtils.Log(Level.FINEST, "      NCM move-to-target move failed, reason: {0}", error);
+                DUtils.Log(Level.FINER, "      NCM move-to-target move failed, reason: {0}", error);
             else
                 Dynamix_AI.Pause();
         }
