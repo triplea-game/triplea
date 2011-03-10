@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 
@@ -45,11 +46,16 @@ public class TechResultsDisplay extends JPanel
     JPanel dice = new JPanel();
 
     dice.setLayout(new BoxLayout(dice,BoxLayout.X_AXIS));
+    int remainder = msg.getRemainder();
     for(int i = 0; i < msg.getRolls().length; i++)
     {
       //add 1 since dice are 0 based
       int roll = msg.getRolls()[i] + 1;
-      JLabel die = new JLabel(m_uiContext.getDiceImageFactory().getDieIcon(roll, roll ==6 ? Die.DieType.HIT : Die.DieType.MISS ));
+      JLabel die;
+      if (remainder > 0)
+    	  die = new JLabel(m_uiContext.getDiceImageFactory().getDieIcon(roll, roll <= remainder ? Die.DieType.HIT : Die.DieType.MISS ));
+      else
+    	  die = new JLabel(m_uiContext.getDiceImageFactory().getDieIcon(roll, roll == Constants.MAX_DICE ? Die.DieType.HIT : Die.DieType.MISS ));
       dice.add(die);
       dice.add(Box.createHorizontalStrut(2));
       dice.setMaximumSize(new Dimension(200, (int)dice.getMaximumSize().getHeight()));

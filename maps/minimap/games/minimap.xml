@@ -569,6 +569,15 @@
         </initialize>
 
         <propertyList>
+		
+				<!-- Bids -->
+                <property name="Russians bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+				
+				<property name="Italians bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
                 
                 <property name="Heavy Bomber Dice Rolls" value="2" editable="true">
                         <number min="2" max="10"/>
@@ -594,15 +603,6 @@
 				<property name="Low Luck for AntiAircraft" value="false" editable="true">
 						<boolean/>
 				</property>
-
-                <!-- Bids -->
-				<property name="Italians bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-                
-                <property name="Russians bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
                 
                 
 				<!-- Use WW2V2 Rules -->

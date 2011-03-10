@@ -196,5 +196,6 @@ public interface Constants
   public static final String UNIT_PLACEMENT_RESTRICTIONS = "Unit Placement Restrictions";
   public static final String TWO_HIT_BATTLESHIPS_REPAIR_BEGINNING_OF_TURN = "Battleships repair at beginning of round";
   public static final String TWO_HITPOINT_UNITS_REQUIRE_REPAIR_FACILITIES = "Two HitPoint Units Require Repair Facilities";
+  public static final String LL_TECH_ONLY = "Low Luck for Technology";
   
 }

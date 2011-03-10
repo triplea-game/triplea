@@ -2657,6 +2657,10 @@
                         <boolean/>
                 </property>
 
+				<property name="Battleships repair at beginning of round" value="false" editable="true">
+						<boolean/>
+				</property>
+
 				<property name="Two hit battleship" value="true" editable="true">
 						<boolean/>
 				</property>
@@ -2669,10 +2673,6 @@
                         <boolean/>
                 </property>
 
-				<property name="Display Units as Counters" value="0" editable="true">
-						<number min="0" max="10"/>
-				</property>
-
                 <property name="Submersible Subs" value="true" editable="false">
                         <boolean/>
                 </property>
@@ -2683,11 +2683,15 @@
 						<boolean/>
 				</property>
 
-				<property name="Neutrals Are Blitzable" value="false" editable="false">
+				<property name="Neutrals Are Blitzable" value="false" editable="true">
 						<boolean/>
 				</property>
 				
                 <property name="maxFactoriesPerTerritory" value="1"/>
+
+				<property name="Display Units as Counters" value="0" editable="true">
+						<number min="0" max="20"/>
+				</property>
 				
                 <property name="mapName" value="middle_earth" editable="false"/>
 				

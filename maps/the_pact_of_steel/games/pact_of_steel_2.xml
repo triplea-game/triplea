@@ -3463,6 +3463,35 @@
 		<propertyList>
 				<!-- PLEASE KEEP YOUR PROPERTIES IN THIS ORDER!!! -->
 				<!-- TYPICAL OPTIONAL PROPERTIES -->
+				<!-- Bidding -->
+				<property name="Italians bid" value="0" editable="true">
+						<number min="0" max="1000"/>
+				</property>
+
+				<property name="Russians bid" value="0" editable="true">
+						<number min="0" max="1000"/>
+				</property>
+
+				<property name="Germans bid" value="0" editable="true">
+						<number min="0" max="1000"/>
+				</property>
+
+				<property name="British bid" value="0" editable="true">
+						<number min="0" max="1000"/>
+				</property>
+
+				<property name="Japanese bid" value="0" editable="true">
+						<number min="0" max="1000"/>
+				</property>
+
+				<property name="Americans bid" value="0" editable="true">
+						<number min="0" max="1000"/>
+				</property>
+
+				<property name="Chinese bid" value="0" editable="true">
+						<number min="0" max="1000"/>
+				</property>
+				
 				<!-- victory options -->
 				<property name="Projection of Power" value="true" editable="true">
 						<boolean/>
@@ -3519,6 +3548,10 @@
 				</property>
 
 				<property name="Low Luck for AntiAircraft" value="true" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Low Luck for Technology" value="false" editable="true">
 						<boolean/>
 				</property>
 
@@ -3892,35 +3925,6 @@
 
 				<property name="Neutrals Are Blitzable" value="false" editable="false">
 						<boolean/>
-				</property>
-
-				<!-- Bidding -->
-				<property name="Italians bid" value="0" editable="true">
-						<number min="0" max="1000"/>
-				</property>
-
-				<property name="Russians bid" value="0" editable="true">
-						<number min="0" max="1000"/>
-				</property>
-
-				<property name="Germans bid" value="0" editable="true">
-						<number min="0" max="1000"/>
-				</property>
-
-				<property name="British bid" value="0" editable="true">
-						<number min="0" max="1000"/>
-				</property>
-
-				<property name="Japanese bid" value="0" editable="true">
-						<number min="0" max="1000"/>
-				</property>
-
-				<property name="Americans bid" value="0" editable="true">
-						<number min="0" max="1000"/>
-				</property>
-
-				<property name="Chinese bid" value="0" editable="true">
-						<number min="0" max="1000"/>
 				</property>
 
 				<!-- Map Name: also used for map utils when asked (MUST exactly match the folder or zip name of your map (do not include the .zip of course). May point to another map folder if you are making a mod of that map) -->

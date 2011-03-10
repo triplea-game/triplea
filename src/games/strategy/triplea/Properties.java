@@ -667,6 +667,11 @@ public class Properties implements Constants {
         return data.getProperties().get(LL_AA_ONLY, false);
     }
     
+    public static boolean getLL_TECH_ONLY(GameData data) {
+    	
+    	return data.getProperties().get(LL_TECH_ONLY, false);
+    }
+    
     /*
      * 
      */

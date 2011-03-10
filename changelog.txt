@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* New game property, "Low Luck for Technology", which will apply low luck rules to rolling for tech. (veqryn)
+
 * Dynamix AI logging patch, should make logs easier to read. (wisconsin)
 
 * Completely re-wrote NoPuDelegate, and re-wrote the Rules Attachment for productionPerXTerritories. Now looks like: <option name="productionPerXTerritories" value="infantry" count="2"/>, and you can have multiple instances of this. (veqryn)
@@ -41,7 +43,7 @@ Changes for 1.2.7
 
 * Created a map skin for Middle Earth based on the alterate relief tiles. (veqryn)
 
-* Added Middle Earth 12 player map, thanks to original creators: (flanagany and ajmdemen)
+* Added Middle Earth 12 player map, thanks to original creators: (flanagany & ajmdemen)
 
 * Balancing changes to Napoleonic Empires, removed a connection, added fortress to majorca, removed tower from catalonia, changed two fortresses in candia into chasseurs. (veqryn)
 
@@ -65,7 +67,7 @@ Changes for 1.2.7
 
 * Fix for serializing and techs java error. (squid daddy)
 
-* Added Napoleonic Empires, a beautiful map created by Veqryn and Lssah. Updated to use triggers and combat transports. (veqryn)
+* Added Napoleonic Empires, a beautiful map created by Veqryn and Lssah. Updated to use triggers and combat transports. (veqryn & lssah)
 
 * Fix for support/triggers/rules java error. (squid daddy)
 
@@ -110,9 +112,9 @@ Changes for 1.2.7
 * Created Pact of Steel 2, a mod of pos that runs on ww2v3 rules but with drastic changes. Designed to show off every single feature TripleA has to offer on customizing maps. 
   Includes detailed notes on each any every property, option, attachment that exists in triplea. Can be used as an example by future map makers on what everything should look like when it works. (veqryn)
 
-* Added Pact Of Steel to triplea, thanks to makers: TripleElk and others.  Also fixed baseTiles, updated to current engine. (veqryn)
+* Added Pact Of Steel map to triplea, thanks to makers: TripleElk and others.  Also fixed baseTiles, updated to current engine. (tripleelk, veqryn)
 
-* Added New World Order to triplea, thanks to makers: Sieg, ErnieBommel, and others. Also updated to remove special characters from name and files, and updated to take advantage of Triggers. (veqryn)
+* Added New World Order map to triplea, thanks to makers: Sieg, ErnieBommel, and others. Also updated to remove special characters from name and files, and updated to take advantage of Triggers. (sieg & erniebommel, veqryn)
 
 * Deleted unused uncoded game Properties. (veqryn)
 

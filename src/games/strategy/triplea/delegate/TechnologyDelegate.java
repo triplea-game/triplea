@@ -113,6 +113,11 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
     {
         return games.strategy.triplea.Properties.getSelectableTechRoll(m_data);
     }
+
+    private boolean isLL_TECH_ONLY()
+    {
+        return games.strategy.triplea.Properties.getLL_TECH_ONLY(m_data);
+    }
  
     public TechResults rollTech(int techRolls, TechnologyFrontier techToRollFor, int newTokens)
     {
@@ -150,14 +155,35 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         
         String annotation = m_player.getName() + " rolling for tech.";
         int[] random;
+        int techHits = 0;
+        int remainder = 0;
         if (EditDelegate.getEditMode(m_data))
         {
             ITripleaPlayer tripleaPlayer = (ITripleaPlayer) m_bridge.getRemote();
             random = tripleaPlayer.selectFixedDice(techRolls, Constants.MAX_DICE, true, annotation);
+            techHits = getTechHits(random);
+        }
+        else if (isLL_TECH_ONLY())
+        {
+        	techHits = techRolls / Constants.MAX_DICE;
+        	remainder = techRolls % Constants.MAX_DICE;
+        	if (remainder > 0)
+        	{
+        		random = m_bridge.getRandom(Constants.MAX_DICE, 1, annotation);
+        		if (random[0] + 1 <= remainder)
+            		techHits++;
+        	}
+        	else
+        	{
+        		random = m_bridge.getRandom(Constants.MAX_DICE, 1, annotation);
+        		remainder = Constants.MAX_DICE;
+        	}
         }
         else
-            random = m_bridge.getRandom(Constants.MAX_DICE, techRolls, annotation);
-        int techHits = getTechHits(random);
+        {
+        	random = m_bridge.getRandom(Constants.MAX_DICE, techRolls, annotation);
+        	techHits = getTechHits(random);
+        }
 
         boolean selectableTech = isSelectableTechRoll() || isWW2V2();
         String directedTechInfo = selectableTech ? " for "
@@ -182,8 +208,12 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
             m_bridge.addChange(removeTokens);            
         }
 
-        m_bridge.getHistoryWriter().setRenderingData(
-                new DiceRoll(random, techHits, 5, true));
+        if (isLL_TECH_ONLY())
+        	m_bridge.getHistoryWriter().setRenderingData(
+                        new DiceRoll(random, techHits, remainder, false));
+        else
+        	m_bridge.getHistoryWriter().setRenderingData(
+                new DiceRoll(random, techHits, Constants.MAX_DICE - 1, true));
 
         Collection<TechAdvance> advances;
         if (selectableTech)
@@ -225,7 +255,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         if (advances.size() > 0)
             m_bridge.getHistoryWriter().startEvent(transcriptText);
 
-        return new TechResults(random, techHits, advancesAsString,
+        return new TechResults(random, remainder, techHits, advancesAsString,
                 m_player);
 
     }
