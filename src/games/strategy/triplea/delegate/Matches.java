@@ -1273,7 +1273,7 @@ public class Matches
 		};
 	}
 	
-    public static Match<Unit> unitIsLandAndOwnedBy(final PlayerID player)
+    public static Match<Unit> unitIsLandOrAirAndOwnedBy(final PlayerID player)
     {
         return new Match<Unit>()
         {

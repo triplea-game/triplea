@@ -829,7 +829,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                             //number of units, to leave units free to move elsewhere
                             if(attackFrom.isWater())
                             {
-                                List<Unit> units = attackFrom.getUnits().getMatches(Matches.unitIsLandAndOwnedBy(player)); 
+                                List<Unit> units = attackFrom.getUnits().getMatches(Matches.unitIsLandOrAirAndOwnedBy(player)); 
                                 moveUnits.add( Util.difference(units, unitsAlreadyMoved) );
                                 unitsAlreadyMoved.addAll(units);
                             }

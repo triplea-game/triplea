@@ -563,7 +563,7 @@ public class DUtils
     }
     public static List<Territory> GetEnemyLandTersThatCanBeAttackedByLandUnitsOwnedBy(GameData data, PlayerID player)
     {
-        return GetTersMatchingXThatCanBeAttackedByUnitsMatchingYInTersMatchingZ(data, player, CompMatchAnd(Matches.TerritoryIsLand, DMatches.territoryIsOwnedByEnemy(data, player)), DMatches.territoryIsOwnedByEnemy(data, player).invert(), Matches.unitIsLandAndOwnedBy(player));
+        return GetTersMatchingXThatCanBeAttackedByUnitsMatchingYInTersMatchingZ(data, player, CompMatchAnd(Matches.TerritoryIsLand, DMatches.territoryIsOwnedByEnemy(data, player)), DMatches.territoryIsOwnedByEnemy(data, player).invert(), Matches.unitIsLandOrAirAndOwnedBy(player));
     }
     public static List<Territory> GetEnemySeaTersThatCanBeAttackedByUnitsOwnedBy(GameData data, PlayerID player)
     {
@@ -1697,7 +1697,7 @@ public class DUtils
         if(toTake) //If we're supposed to 'take' ter
         {
             //But the attackers averaged without a land unit left (or there are no attackers left after battle)
-            if(results == null || results.GetAverageAttackingUnitsRemaining() == null || Match.getNMatches(results.GetAverageAttackingUnitsRemaining(), 1, Matches.unitIsLandAndOwnedBy(attacker)).isEmpty())
+            if(results == null || results.GetAverageAttackingUnitsRemaining() == null || Match.getNMatches(results.GetAverageAttackingUnitsRemaining(), 1, Matches.unitIsLandOrAirAndOwnedBy(attacker)).isEmpty())
                 return CreateDefenderWinsAggregateResults(data, testingTer, defending); //Signal as defender wins
         }
         return results;
