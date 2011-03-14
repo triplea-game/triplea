@@ -2747,6 +2747,16 @@
 				
 <!-- Conditions -->
 	<!-- Conditions follow the same rules as national objectives. both conditions and objectives must be BEFORE any triggers in the XML -->
+	<!-- Victory Conditions -->
+                <attatchment name="conditionAttachmentAxisVictory1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="alliedOwnershipTerritories" value="United Kingdom:Russia:Germany:Japan" count="4"/>
+                </attatchment>
+				
+                <attatchment name="conditionAttachmentAlliesVictory1" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="alliedOwnershipTerritories" value="Germany:Japan:United Kingdom:Eastern United States" count="4"/>
+                </attatchment>
+	
+	
 	<!-- Germans Conditions -->
                 <attatchment name="conditionAttachmentGermans1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="turns" value="3:4"/>
@@ -2910,7 +2920,20 @@
 														Something to note is that <option name="artillery" value="true"/> AND <option name="artillerySupportable" value="true"/> AND <option name="unitSupportCount" value="1"/> are all converted into a support attachment when the game starts, 
 															so adding or removing them as unit properties will do nothing (the bonusType for them is "ArtyOld", and the supportAttachment name is "supportAttachmentArtyOld<nameofUnit>") unitProperty changes are done for ALL players who use that unitType, 
 															regardless of the player specified in the trigger. In order to have a unitType+unitProperty change only affect certain players and not others, you need to make a new unit type for those players (ie: rename the unit for those players only)
+			victory								values: the string message to be displayed if the condition is true.
 	-->
+	<!-- Victory Triggers -->
+						<!-- Victory Triggers can be attached to anyone. Only 1 is needed per victory condition -->
+                <attatchment name="triggerAttachmentAxisVictory1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentAxisVictory1"/>
+                	<option name="victory" value="The Axis achieve a Triggered Victory, by controlling the capitals of Europe!"/>
+                </attatchment>
+				
+                <attatchment name="triggerAttachmentAlliesVictory1" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentAlliesVictory1"/>
+                	<option name="victory" value="The Allies achieve a Triggered Victory, by controlling the capitals of Germany and Japan!"/>
+                </attatchment>
+	
 	<!-- Germans Triggers -->
                 <attatchment name="triggerAttachmentGermans1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentGermans1"/>
@@ -3541,6 +3564,11 @@
 				<property name="Allies Economic Victory" value="120" editable="false">
 						<number min="0" max="1000"/>
 				</property>
+
+						<!-- Triggered Victory is a victory condition set by a trigger, using a condition or national objective -->
+				<property name="Triggered Victory" value="true" editable="true">
+						<boolean/>
+				</property>
 				<!-- End of Victory Conditions, rest of typical changed properties below -->
 
 				<property name="Low Luck" value="false" editable="true">
@@ -4057,8 +4085,10 @@
         				<br>
         				<b>Victory Conditions</b><br>
         				Total Victory - 15 Victory Cities<br>
-        				Honorable Surrender - 12 Victory Cities<br>
         				Projection of Power - 11 Victory Cities<br>
+						Axis can achieve a Triggered Victory by controlling all 4 of Germany, Japan, United Kingdom, and Russia.<br>
+						Allies can achieve a Triggered Victory by controlling all 4 of United Kingdom, Eastern United States, Germany, and Japan.<br>
+						<br>
         				<br>
 						<br>
 						<br><b>Major Differences Between ww2v2 revised and ww2v3</b>

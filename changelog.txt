@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* New game property, "Triggered Victory", and new trigger option, "victory" value = victory message. Can be based on any condition. (veqryn)
+
 * Dynamix AI patch, various small improvements and logic fixes. (wisconsin)
 
 * New game property, "Low Luck for Technology", which will apply low luck rules to rolling for tech. (veqryn)

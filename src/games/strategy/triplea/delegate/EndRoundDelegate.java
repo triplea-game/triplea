@@ -24,11 +24,13 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Match;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 import javax.swing.JOptionPane;
@@ -37,7 +39,6 @@ import javax.swing.JOptionPane;
 /**
  *
  *  A delegate used to check for end of game conditions.
- *  Only checks for economic victory.
  *
  * @author  Sean Bridges
  */
@@ -129,6 +130,19 @@ public class EndRoundDelegate implements IDelegate
 				}
 			}
 		}
+        
+        // now check for generic trigger based victories
+        if (isTriggeredVictory())
+        {
+        	// it is end of round, so loop through all players
+        	Collection<PlayerID> playerList = m_data.getPlayerList().getPlayers();
+        	for (PlayerID p : playerList)
+        	{
+            	String vMessage = TriggerAttachment.triggerVictory(p, aBridge, m_data);
+            	if (vMessage != null)
+            		signalGameOver(vMessage,aBridge);
+        	}
+        }
 	}
 
 
@@ -226,6 +240,11 @@ public class EndRoundDelegate implements IDelegate
     {
         return games.strategy.triplea.Properties.getEconomicVictory(m_data);
     }   
+	
+    private boolean isTriggeredVictory()
+    {
+        return games.strategy.triplea.Properties.getTriggeredVictory(m_data);
+    }  
 	
 	public String getName()
 	{

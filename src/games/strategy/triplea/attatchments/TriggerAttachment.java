@@ -32,6 +32,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.DelegateFinder;
+import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
@@ -61,6 +62,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	private List<String> m_unitProperty = null;
 	private UnitType m_unitType = null;
 	private Map<String,Map<TechAdvance,Boolean>> m_availableTechs = null;
+	private String m_victory = null;
 
 	public TriggerAttachment() {
 	}
@@ -133,6 +135,14 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	public void setInvert(String s) {
 		m_invert = getBool(s);
+	}
+	
+	public String getVictory() {
+		return m_victory;
+	}
+	
+	public void setVictory(String s) {
+		m_victory = s;
 	}
 	
 	public List<TechAdvance> getTech() {
@@ -350,6 +360,25 @@ public class TriggerAttachment extends DefaultAttachment{
 		}
 		if( !change.isEmpty())
 			aBridge.addChange(change);
+	}
+	
+	public static String triggerVictory(PlayerID player, IDelegateBridge aBridge, GameData data) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,victoryMatch);
+		for(TriggerAttachment t:trigs) {
+			boolean met = false;
+			for(RulesAttachment c:t.getTrigger()) {
+				met = c.isSatisfied(data);
+				if(!met)
+					break;
+			}
+			if(met!=t.getInvert()) {
+				t.use(aBridge);
+				for( PlayerID aPlayer: t.getPlayers()){
+					return t.getVictory();
+				}
+			}
+		}
+		return null;
 	}
 	
 	public static void triggerTechChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
@@ -661,6 +690,15 @@ public class TriggerAttachment extends DefaultAttachment{
 			return t.getUnitType() != null && t.getUnitProperty() !=null && t.getUses()!=0;
 		}
 	};
+
+	private static Match<TriggerAttachment> victoryMatch = new Match<TriggerAttachment>()
+	{
+		public boolean match(TriggerAttachment t)
+		{
+			return t.getVictory() != null && !t.getVictory().isEmpty() && t.getUses()!=0;
+		}
+	};
+	
 	public void validate(GameData data) throws GameParseException
 	{
 		if( m_trigger==null)

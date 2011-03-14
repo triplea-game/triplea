@@ -137,6 +137,14 @@ public class Properties implements Constants {
     }
 
     /*
+     * Triggered Victory Condition
+     */
+    public static boolean getTriggeredVictory(GameData data) {
+
+        return data.getProperties().get(TRIGGERED_VICTORY, false);
+    }
+
+    /*
      * Restrict the number of units that can be placed at a factory.
      */
     public static boolean getPlacementRestrictedByFactory(GameData data) {
