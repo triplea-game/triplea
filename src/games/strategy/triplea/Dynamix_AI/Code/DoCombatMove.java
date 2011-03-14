@@ -19,12 +19,14 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.ReconsiderSignalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
 import games.strategy.triplea.Dynamix_AI.DSettings;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.Dynamix_AI.Group.MovePackage;
+import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
 import games.strategy.triplea.Dynamix_AI.Others.CM_Task;
 import games.strategy.triplea.Dynamix_AI.Others.CM_TaskType;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -61,6 +63,7 @@ public class DoCombatMove
                 capsAndNeighborsAttackTasks.add(task);
         }
 
+        DUtils.Log(Level.FINE, "  Beginning capital-protecting attacks on cap-neighboring enemies section");
         //First, we check if there are any attacks on cap-neighbors we want to do
         while (considerAndPerformWorthwhileTasks(pack, capsAndNeighborsAttackTasks))
         {
@@ -69,20 +72,46 @@ public class DoCombatMove
         //Then we run the NCM doPreCombatMove method which attempts to move units to the cap to keep it safe
         DoNonCombatMove.doPreCombatMove(ai, data, mover, player);
 
-        //We loop this code so that if the AI is on a battle front, the AI will do better and attack more like a person because it'll be able to be more aggresive with attacks on ters next to an already successful attack.
-        //This looping partially solves the problem where attacks are not done because of initial uncertainty about if the other attacks will be done.
-        DUtils.Log(Level.FINE, "  Beginning initial task consideration loop section");
-        for (int i = 0; i < DSettings.LoadSettings().AA_initialTaskConsiderationLoopCount; i++)
+        //We loop this part, because sometimes there are attacks that at first are too risky to perform, but after some nearby tasks are performed, the results are more favorable or predictable.
+        DUtils.Log(Level.FINE, "  Beginning task consideration loop section");
+        for (int i = 0; i < 5; i++)
         {
             DUtils.Log(Level.FINE, "  Task consideration loop {0} started", i + 1);
+            ReconsiderSignalCenter.get(data, player).ObjectsToReconsider.clear();
+
+            List<Territory> tersAttackedBeforeLoop = new ArrayList<Territory>();
             for(CM_Task task : tasks)
             {
-                if(task.IsDisqualified())
-                    task.Reset(); //We reset disqualified tasks for another attempt (now that we know of completed tasks)
+                if(task.IsCompleted())
+                    tersAttackedBeforeLoop.add(task.GetTarget());
             }
 
             while (considerAndPerformWorthwhileTasks(pack, tasks))
             {
+            }
+
+            if(ReconsiderSignalCenter.get(data, player).ObjectsToReconsider.isEmpty()) //If we performed no tasks, basically...
+                break;
+            else
+            {
+                List<Territory> tersToReconsider = DUtils.ToList(ReconsiderSignalCenter.get(data, player).ObjectsToReconsider);
+                for (CM_Task task : tasks)
+                {
+                    if (tersToReconsider.contains(task.GetTarget()))
+                    {                        
+                        if(task.IsCompleted())
+                        {
+                            /*if(!tersAttackedBeforeLoop.contains(task.GetTarget())) //If this ter was attacked this loop
+                                continue;
+                            task.Reset();
+                            for(UnitGroup ug : task.GetRecruitedUnits())
+                                ug.UndoMove(mover); //Undo moves, and calculate again, cause we might not need this many after all*/
+                            //This code block would currently interfere with threat invalidation
+                        }
+                        else
+                            task.Reset(); //We reset disqualified tasks for another attempt (now that we know of completed tasks)
+                    }
+                }
             }
         }
 

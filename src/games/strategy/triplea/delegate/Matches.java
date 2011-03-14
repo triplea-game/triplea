@@ -1273,14 +1273,14 @@ public class Matches
 		};
 	}
 	
-    public static Match<Unit> unitIsLandOrAirAndOwnedBy(final PlayerID player)
+    public static Match<Unit> unitIsLandAndOwnedBy(final PlayerID player)
     {
         return new Match<Unit>()
         {
             public boolean match(Unit unit)
             {
                 UnitAttachment ua = UnitAttachment.get(unit.getType());
-                return !ua.isSea() &&  unit.getOwner().equals(player);
+                return !ua.isSea() && !ua.isAir() &&  unit.getOwner().equals(player);
             }
         };
     }

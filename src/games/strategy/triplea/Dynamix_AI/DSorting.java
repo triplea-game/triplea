@@ -92,8 +92,8 @@ public class DSorting
         {
             public int compare(Territory t1, Territory t2)
             {
-                Route route1 = data.getMap().getRoute(t1, t2, routeMatch);
-                Route route2 = data.getMap().getRoute(t1, t2, routeMatch);
+                Route route1 = data.getMap().getRoute(t1, target, routeMatch);
+                Route route2 = data.getMap().getRoute(t2, target, routeMatch);
 
                 int distance1 = 0;
                 int distance2 = 0;
@@ -104,14 +104,9 @@ public class DSorting
                 if(route2 == null)
                     distance2 = DConstants.Integer_HalfMax;
                 else
-                    distance2 = route1.getLength();
+                    distance2 = route2.getLength();
 
-                if (distance1 > distance2)
-					return 1;
-				else if (distance1 == distance2)
-					return 0;
-				else
-					return -1;
+                return ((Integer)distance1).compareTo(distance2);
             }
         });
     }
@@ -125,8 +120,8 @@ public class DSorting
         {
             public int compare(Territory t1, Territory t2)
             {
-                Route route1 = CachedCalculationCenter.GetLandRoute(data, t1, t2);
-                Route route2 = CachedCalculationCenter.GetLandRoute(data, t1, t2);
+                Route route1 = CachedCalculationCenter.GetLandRoute(data, t1, target);
+                Route route2 = CachedCalculationCenter.GetLandRoute(data, t2, target);
 
                 int distance1 = 0;
                 int distance2 = 0;
@@ -137,7 +132,7 @@ public class DSorting
                 if(route2 == null)
                     distance2 = DConstants.Integer_HalfMax;
                 else
-                    distance2 = route1.getLength();
+                    distance2 = route2.getLength();
 
                 return ((Integer)distance1).compareTo(distance2);
             }
@@ -153,8 +148,8 @@ public class DSorting
         {
             public int compare(Territory t1, Territory t2)
             {
-                Route route1 = CachedCalculationCenter.GetSeaRoute(data, t1, t2);
-                Route route2 = CachedCalculationCenter.GetSeaRoute(data, t1, t2);
+                Route route1 = CachedCalculationCenter.GetSeaRoute(data, t1, target);
+                Route route2 = CachedCalculationCenter.GetSeaRoute(data, t2, target);
 
                 int distance1 = 0;
                 int distance2 = 0;
@@ -165,7 +160,7 @@ public class DSorting
                 if(route2 == null)
                     distance2 = DConstants.Integer_HalfMax;
                 else
-                    distance2 = route1.getLength();
+                    distance2 = route2.getLength();
 
                 return ((Integer)distance1).compareTo(distance2);
             }
@@ -181,8 +176,8 @@ public class DSorting
         {
             public int compare(Territory t1, Territory t2)
             {
-                Route route1 = CachedCalculationCenter.GetRoute(data, t1, t2);
-                Route route2 = CachedCalculationCenter.GetRoute(data, t1, t2);
+                Route route1 = CachedCalculationCenter.GetRoute(data, t1, target);
+                Route route2 = CachedCalculationCenter.GetRoute(data, t2, target);
 
                 int distance1 = 0;
                 int distance2 = 0;
@@ -193,7 +188,7 @@ public class DSorting
                 if(route2 == null)
                     distance2 = DConstants.Integer_HalfMax;
                 else
-                    distance2 = route1.getLength();
+                    distance2 = route2.getLength();
 
                 return ((Integer)distance1).compareTo(distance2);
             }
@@ -209,10 +204,10 @@ public class DSorting
         {
             public int compare(Territory t1, Territory t2)
             {
-                Route route1 = CachedCalculationCenter.GetLandRoute(data, t1, t2);
-                Route route2 = CachedCalculationCenter.GetLandRoute(data, t1, t2);
-                Route route1_nc = CachedCalculationCenter.GetRoute(data, t1, t2);
-                Route route2_nc = CachedCalculationCenter.GetRoute(data, t1, t2);
+                Route route1 = CachedCalculationCenter.GetLandRoute(data, t1, target);
+                Route route2 = CachedCalculationCenter.GetLandRoute(data, t2, target);
+                Route route1_nc = CachedCalculationCenter.GetRoute(data, t1, target);
+                Route route2_nc = CachedCalculationCenter.GetRoute(data, t2, target);
 
                 if(route1_nc == null && route2_nc == null)
                     return 0; //We can't compare these, so say they're equal
@@ -223,14 +218,10 @@ public class DSorting
 
                 int distance1 = route1_nc.getLength() * 100;
                 int distance2 = route2_nc.getLength() * 100;
-                if(route1 == null)
-                    distance1 = DConstants.Integer_HalfMax;
-                else
+                if(route1 != null)
                     distance1 = route1.getLength();
-                if(route2 == null)
-                    distance2 = DConstants.Integer_HalfMax;
-                else
-                    distance2 = route1.getLength();
+                if(route2 != null)
+                    distance2 = route2.getLength();
 
                 return ((Integer)distance1).compareTo(distance2);
             }

@@ -23,6 +23,8 @@ import games.strategy.triplea.Dynamix_AI.DMatches;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Group.MovePackage;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.Match;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,53 +33,60 @@ import java.util.List;
  */
 public class NCM_AirLandingCalculator
 {
-    public static Territory CalculateLandingLocationForAirUnits(GameData data, PlayerID player, Territory ter, List<Unit> airUnits, List<NCM_Task> tasks)
+    public static Territory CalculateLandingLocationForAirUnits(GameData data, PlayerID player, Territory territory, List<Unit> airUnits, List<NCM_Task> tasks)
     {
         float highestScore = Integer.MIN_VALUE;
         Territory highestScoringTer = null;
 
-        for(Territory landingTer : data.getMap().getTerritories())
+        List<Territory> ourCapitalsTargets = new ArrayList<Territory>();
+        for(Territory ourCap : DUtils.GetAllOurCaps_ThatWeOwn(data, player))
+            ourCapitalsTargets.add(NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ourCap, ourCap.getUnits().getUnits(), tasks));
+
+        for(Territory ter : data.getMap().getTerritories())
         {
-            if(landingTer.isWater())
+            if(ter.isWater())
                 continue;
-            if(DMatches.territoryIsOwnedByEnemy(data, player).match(landingTer))
+            if(DMatches.territoryIsOwnedByEnemy(data, player).match(ter))
                 continue;
-            if(DUtils.CompMatchOr(DMatches.TS_WasBlitzed, DMatches.TS_WasAttacked_Normal, DMatches.TS_WasAttacked_Trade).match(StatusCenter.get(data, player).GetStatusOfTerritory(landingTer))) //We can't land on ters taken this turn
+            if(DUtils.CompMatchOr(DMatches.TS_WasBlitzed, DMatches.TS_WasAttacked_Normal, DMatches.TS_WasAttacked_Trade).match(StatusCenter.get(data, player).GetStatusOfTerritory(ter))) //We can't land on ters taken this turn
                 continue;
 
             int airUnitsAbleToMakeIt = 0;
             for(Unit air : airUnits)
             {
-                if(DUtils.CanUnitReachTer(data, ter, air, landingTer))
+                if(DUtils.CanUnitReachTer(data, territory, air, ter))
                     airUnitsAbleToMakeIt++;
             }
 
             if(airUnitsAbleToMakeIt == 0) //If there are no air units that can make it
                 continue;
 
-            List<Unit> afterDefenders = DUtils.GetTerUnitsAtEndOfTurn(data, player, landingTer);
+            List<Unit> afterDefenders = DUtils.GetTerUnitsAtEndOfTurn(data, player, ter);
             afterDefenders.removeAll(airUnits);
             afterDefenders.addAll(airUnits);
 
-            float vulnerability = DUtils.GetVulnerabilityOfArmy(data, player, landingTer, afterDefenders, 500);
+            float survivalChance = DUtils.GetSurvivalChanceOfArmy(data, player, ter, afterDefenders, 500);
 
-            if(vulnerability < .15F) //If this landing ter is really safe
-                vulnerability = .15F; //Then accept similar chances as equal
+            if(survivalChance > .9F) //If this landing ter is really safe
+                survivalChance = .9F; //Then accept similar chances as equal
 
-            float score = 0;
-            score += airUnitsAbleToMakeIt * 100000; //We really want all our planes to make it, but we can't sometimes...
-            score -= vulnerability * 10000;
+            float score = 0;            
+            score += airUnitsAbleToMakeIt * 10000000; //We really want all our planes to make it, but we can't sometimes...
+            score += survivalChance * 1000000; //Survival chance is the next important
 
-            Territory closestEnemy = DUtils.GetClosestTerMatchingX(data, landingTer, DMatches.territoryIsOwnedByNNEnemy(data, player));
-            int closestEnemyDist = data.getMap().getDistance(landingTer, closestEnemy);
-            score -= closestEnemyDist + 100; //We like close-to-enemy safe landing ters
+            Territory closestCapTarget = DUtils.GetClosestTerInList(data, ourCapitalsTargets, territory);
+            score -= DUtils.GetDistance_ForLandThenNoCondComparison(data, ter, closestCapTarget) * 10; //We like close-to-cap-target, safe landing ters
 
-            score += DUtils.GetValueOfLandTer(landingTer, data, player);
+            Territory closestTerWithOurUnits = DUtils.GetClosestTerMatchingX(data, territory, Matches.territoryHasUnitsThatMatch(DUtils.CompMatchAnd(Matches.unitIsLandAndOwnedBy(player), DMatches.UnitCanAttack)));
+            score -= DUtils.GetDistance_ForLandThenNoCondComparison(data, ter, closestTerWithOurUnits) * 10; //We like close-to-our-land-forcesunits, safe landing ters
+
+            if(DMatches.territoryIsOwnedBy(player).match(ter))
+                score += 10; //Give a small boost to ters we own, as it's more likely we control its defense
 
             if (score > highestScore)
             {
                 highestScore = score;
-                highestScoringTer = landingTer;
+                highestScoringTer = ter;
             }
         }
 

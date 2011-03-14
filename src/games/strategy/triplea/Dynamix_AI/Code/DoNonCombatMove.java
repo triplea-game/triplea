@@ -19,7 +19,9 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.ReconsiderSignalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.TacticalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
@@ -29,6 +31,7 @@ import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.Dynamix_AI.Group.MovePackage;
 import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
+import games.strategy.triplea.Dynamix_AI.Others.CM_Task;
 import games.strategy.triplea.Dynamix_AI.Others.NCM_AirLandingCalculator;
 import games.strategy.triplea.Dynamix_AI.Others.NCM_TargetCalculator;
 import games.strategy.triplea.Dynamix_AI.Others.NCM_Task;
@@ -76,20 +79,46 @@ public class DoNonCombatMove
         //First, we generate a list of ncm 'tasks', such as reinforcements of territories, blocking of enemies, etc.
         List<NCM_Task> tasks = GenerateTasks(pack);
 
-        //Then we loop through them and recruit units, discarding any tasks that we can't supply with enough units to be worthwhile.
-        //This phase recruits just enough units for the task to be worthwhile.
-        DUtils.Log(Level.FINE, "  Beginning initial task consideration loop section");
-        for (int i = 0; i < DSettings.LoadSettings().AA_initialTaskConsiderationLoopCount; i++)
+        //We loop this part, because sometimes there are attacks that at first are too risky to perform, but after some nearby tasks are performed, the results are more favorable or predictable.
+        DUtils.Log(Level.FINE, "  Beginning task consideration loop section");
+        for (int i = 0; i < 5; i++)
         {
             DUtils.Log(Level.FINE, "  Task consideration loop {0} started", i + 1);
-            for (NCM_Task task : tasks)
+            ReconsiderSignalCenter.get(data, player).ObjectsToReconsider.clear();
+
+            List<Territory> tersAttackedBeforeLoop = new ArrayList<Territory>();
+            for(NCM_Task task : tasks)
             {
-                if (task.IsDisqualified())
-                    task.Reset(); //We reset disqualified tasks for another attempt (now that we know of completed tasks)
+                if(task.IsCompleted())
+                    tersAttackedBeforeLoop.add(task.GetTarget());
             }
 
             while (considerAndPerformWorthwhileTasks(pack, tasks))
             {
+            }
+
+            if(ReconsiderSignalCenter.get(data, player).ObjectsToReconsider.isEmpty()) //If we performed no tasks, basically...
+                break;
+            else
+            {
+                List<Territory> tersToReconsider = DUtils.ToList(ReconsiderSignalCenter.get(data, player).ObjectsToReconsider);
+                for (NCM_Task task : tasks)
+                {
+                    if (tersToReconsider.contains(task.GetTarget()))
+                    {
+                        if(task.IsCompleted())
+                        {
+                            /*if(!tersAttackedBeforeLoop.contains(task.GetTarget())) //If this ter was attacked this loop
+                                continue;
+                            task.Reset();
+                            for(UnitGroup ug : task.GetRecruitedUnits())
+                                ug.UndoMove(mover); //Undo moves, and calculate again, cause we might not need this many after all*/
+                            //This code block would currently interfere with threat invalidation
+                        }
+                        else
+                            task.Reset(); //We reset disqualified tasks for another attempt (now that we know of completed tasks)
+                    }
+                }
             }
         }
 
@@ -97,14 +126,16 @@ public class DoNonCombatMove
         DUtils.Log(Level.FINE, "  Performing target retreats on diqualified tasks.");
         for (NCM_Task task : tasks)
         {
-            DUtils.Log(Level.FINER, "    Checking if task is disqualified. Task Target: {0}", task.GetTarget().getName());
             if (task.IsDisqualified())
             {
                 task.PerformTargetRetreat(tasks, mover);
                 StatusCenter.get(data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(task.GetTarget()).WasAbandoned = true;
             }
-            else
-                DUtils.Log(Level.FINER, "      Not disqualified, so not retreating from target");
+            else if(task.IsCompleted() && task.GetTaskType() == NCM_TaskType.Reinforce_Block)
+            {
+                //Blocks are basically the same as abandonings (as in, we don't want units ncm'ing here)
+                StatusCenter.get(data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(task.GetTarget()).WasAbandoned = true;
+            }
         }
 
         //We now allow the worthwhile tasks to recruit additional units to make the task even more favorable.
@@ -163,33 +194,28 @@ public class DoNonCombatMove
         DUtils.Log(Level.FINE, "  Attempting to land aircraft on safe territories.");
         for(Territory ter : data.getMap().getTerritories())
         {
-            if(ter.getUnits().getMatches(DUtils.CompMatchAnd(Matches.UnitIsAir, Matches.unitIsOwnedBy(player))).isEmpty())
+            List<Unit> airUnits = ter.getUnits().getMatches(DUtils.CompMatchAnd(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft, Matches.UnitIsAir));
+            if (airUnits.isEmpty())
                 continue;
-            boolean landUnitsHere = Match.getMatches(ter.getUnits().getUnits(), DUtils.CompMatchAnd(Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.unitIsOwnedBy(player))).size() > 0;
-            //We're only landing air that can't currently land, are in an abondoned ter, or are alone in a ter (meaning we or an ally left)
-            if (ter.isWater() || DUtils.CompMatchOr(DMatches.TS_WasAbandoned, DMatches.TS_WasAttacked_Normal, DMatches.TS_WasAttacked_Trade).match(StatusCenter.get(data, player).GetStatusOfTerritory(ter)) || !landUnitsHere)
-            {
-                List<Unit> airUnits = ter.getUnits().getMatches(DUtils.CompMatchAnd(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft, Matches.UnitIsAir));
-                if (airUnits.isEmpty())
-                    continue;
 
-                Territory landingLoc = NCM_AirLandingCalculator.CalculateLandingLocationForAirUnits(data, player, ter, airUnits, tasks);
-                if (landingLoc == null)
-                {
-                    DUtils.Log(Level.FINER, "    Landing location not found. Ter: {0} Air Units: {1}", ter, DUtils.UnitList_ToString(airUnits));
-                    continue;
-                }
-                List<UnitGroup> ugs = DUtils.CreateUnitGroupsForUnits(airUnits, ter, data);
-                DUtils.Log(Level.FINER, "    Landing aircraft at {0}. From: {1}.", landingLoc, ter);
-                UnitGroup.EnableMoveBuffering();
-                for (UnitGroup ug : ugs)
-                {
-                    String error = ug.MoveAsFarTo_NCM(landingLoc, mover);
-                    if(error != null)
-                        DUtils.Log(Level.FINEST, "        Landing failed, reason: {0}", error);
-                }
-                UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
+            Territory landingLoc = NCM_AirLandingCalculator.CalculateLandingLocationForAirUnits(data, player, ter, airUnits, tasks);
+            if (landingLoc == null)
+            {
+                DUtils.Log(Level.FINER, "    Landing location not found. Ter: {0} Air Units: {1}", ter, DUtils.UnitList_ToString(airUnits));
+                continue;
             }
+            List<UnitGroup> ugs = DUtils.CreateUnitGroupsForUnits(airUnits, ter, data);
+            DUtils.Log(Level.FINER, "    Landing aircraft at {0}. From: {1}.", landingLoc, ter);
+            UnitGroup.EnableMoveBuffering();
+            for (UnitGroup ug : ugs)
+            {
+                String error = ug.MoveAsFarTo_NCM(landingLoc, mover);
+                if (error != null)
+                    DUtils.Log(Level.FINEST, "        Landing failed, reason: {0}", error);
+                else
+                    TacticalCenter.get(data, player).FreezeUnits(airUnits); //Freeze these aircraft, otherwise they might get moved somewhere unsafe
+            }
+            UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
         }
     }
 
@@ -207,10 +233,13 @@ public class DoNonCombatMove
             {
                 if(!DSettings.LoadSettings().TR_enableReinforceBlock)
                     return false;
+                if(ter.isWater())
+                    return false;
                 List<Unit> attackers = DUtils.GetNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
                 if(attackers.isEmpty())
                     return false;
-                if (!data.getAllianceTracker().isAllied(ter.getOwner(), player))
+                //If this ter was not conquered and it is not owned by us or our allies, this can't be a ter we reinforce
+                if(!DMatches.territoryIsOwnedByXOrAlly(data, player).match(ter) && !CachedInstanceCenter.CachedBattleTracker.wasConquered(ter))
                     return false;
                 if(Match.getMatches(DUtils.GetTerUnitsAtEndOfTurn(data, player, ter), Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1)).size() > 0) //If this ter is already blocking enemies
                     return false;
@@ -235,10 +264,13 @@ public class DoNonCombatMove
             {
                 if(!DSettings.LoadSettings().TR_enableReinforceStabalize)
                     return false;
+                if(ter.isWater())
+                    return false;
                 List<Unit> attackers = DUtils.GetNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
                 if(attackers.isEmpty())
                     return false;
-                if (!data.getAllianceTracker().isAllied(ter.getOwner(), player))
+                //If this ter was not conquered and it is not owned by us or our allies, this can't be a ter we reinforce
+                if(!DMatches.territoryIsOwnedByXOrAlly(data, player).match(ter) && !CachedInstanceCenter.CachedBattleTracker.wasConquered(ter))
                     return false;
                 if (GlobalCenter.IsFFAGame)
                 {
@@ -261,6 +293,8 @@ public class DoNonCombatMove
             {
                 if(!DSettings.LoadSettings().TR_enableReinforceFrontLine)
                     return false;
+                if(ter.isWater())
+                    return false;
                 //A territory is a frontline territory, if:
                 //    There are units that can attack the ter
                 //    The territory is owned by us or it was attacked this round
@@ -271,6 +305,9 @@ public class DoNonCombatMove
                 if(attackers.isEmpty())
                     return false;
                 if (!data.getAllianceTracker().isAllied(ter.getOwner(), player) && !StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasAttacked_Normal)
+                    return false;
+                //If this ter was not conquered and it is not owned by us or our allies, this can't be a ter we reinforce
+                if(!DMatches.territoryIsOwnedByXOrAlly(data, player).match(ter) && !CachedInstanceCenter.CachedBattleTracker.wasConquered(ter))
                     return false;
                 if(data.getMap().getNeighbors(ter, DMatches.territoryIsOwnedByNNEnemy(data, player)).isEmpty()) //If this is not the front line
                     return false;

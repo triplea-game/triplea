@@ -87,26 +87,7 @@ public class Place
             if (DSettings.LoadSettings().EnableUnitPlacementMultiplier && DSettings.LoadSettings().UnitPlacementMultiplyPercent != 100) //AI cheat for more interesting gameplay. Can be turned on with AI settings window.
             {
                 float multiplyAmount = DUtils.ToFloat(DSettings.LoadSettings().UnitPlacementMultiplyPercent);
-                List<Unit> hackedUnits = new ArrayList<Unit>();
-                long time = new Date().getTime();
-                int count = 0;
-                //If multiple amount is over 1.0(Always will), we loop and place all units until multiply amount left is less than 1.0
-                while (multiplyAmount > 1.0F)
-                {
-                    for (Unit unit : units)
-                        hackedUnits.add(unit.getUnitType().create(player));
-                    multiplyAmount -= 1.0F;
-                }
-                //Now we loop through the units and only place the ones whose random number is less than the multiply amount left
-                for (Unit unit : units)
-                {
-                    time = new Date().getTime();
-                    Random rand = new Random(time + count);
-                    int randNum = rand.nextInt(10);
-                    if(randNum < (multiplyAmount * 10.0F))
-                        hackedUnits.add(unit.getUnitType().create(player));
-                    count++;
-                }
+                List<Unit> hackedUnits = DUtils.GetXPercentOfTheUnitsInList_DuplicateForExtra(units, multiplyAmount);
                 final List<Unit> fHackedUnits = hackedUnits; final Territory fFactoryTer = factoryTer; final Dynamix_AI fAI = ai;
                 Runnable runner = new Runnable()
                 {
@@ -116,17 +97,8 @@ public class Place
                         CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().setRenderingData(fHackedUnits); //Let the user see the hacked units in the sidebar
                     }
                 };
-                try
-                {
-                    SwingUtilities.invokeAndWait(runner);
-                }
-                catch (Exception ex)
-                {
-                    System.out.println(ex.toString());
-                }
+                try{SwingUtilities.invokeAndWait(runner);}catch(Exception ex){System.out.println(ex.toString());}
                 Change change = ChangeFactory.addUnits(factoryTer, hackedUnits);
-                //data.getHistory().getHistoryWriter().addChange(change);
-                //new ChangePerformer(data).perform(change);
                 CachedInstanceCenter.CachedDelegateBridge.addChange(change);
                 Dynamix_AI.Pause();
             }
@@ -183,21 +155,45 @@ public class Place
             for (Territory placeLoc : sortedPossiblePlaceLocations)
             {
                 List<Unit> leftoverUnits = DUtils.ToList(player.getUnits().getUnits());
-                if(leftoverUnits.isEmpty()) //If we've placed all extra units
+                if (leftoverUnits.isEmpty()) //If we've placed all extra units
                     break;
                 PlaceableUnits pu = placeDelegate.getPlaceableUnits(leftoverUnits, placeLoc);
-                if(pu.getErrorMessage() != null)
+                if (pu.getErrorMessage() != null)
                     continue; //Can't place here
                 int maxUnitsWeCanPlaceHere = pu.getMaxUnits();
-                if(maxUnitsWeCanPlaceHere == -1) //-1 means we can place unlimited amounts here
+                if (maxUnitsWeCanPlaceHere == -1) //-1 means we can place unlimited amounts here
                     maxUnitsWeCanPlaceHere = Integer.MAX_VALUE;
 
                 List<Unit> unitsToPlace;
-                if(maxUnitsWeCanPlaceHere >= leftoverUnits.size())
+                if (maxUnitsWeCanPlaceHere >= leftoverUnits.size())
                     unitsToPlace = leftoverUnits;
                 else
                     unitsToPlace = leftoverUnits.subList(0, maxUnitsWeCanPlaceHere);
-                doPlace(ai, placeLoc, unitsToPlace, placeDelegate); //Place as much of the leftover as we can
+
+                if (DSettings.LoadSettings().EnableUnitPlacementMultiplier && DSettings.LoadSettings().UnitPlacementMultiplyPercent != 100) //AI cheat for more interesting gameplay. Can be turned on with AI settings window.
+                {
+                    float multiplyAmount = DUtils.ToFloat(DSettings.LoadSettings().UnitPlacementMultiplyPercent);
+                    List<Unit> hackedUnits = DUtils.GetXPercentOfTheUnitsInList_DuplicateForExtra(unitsToPlace, multiplyAmount);
+                    final List<Unit> fHackedUnits = hackedUnits;
+                    final Territory fPlaceLoc = placeLoc;
+                    final Dynamix_AI fAI = ai;
+                    Runnable runner = new Runnable()
+                    {
+                        public void run()
+                        {
+                            CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(fAI.getName() + " use a UPM cheat, and place " + fHackedUnits.size() + " units on " + fPlaceLoc.getName());
+                            CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().setRenderingData(fHackedUnits); //Let the user see the hacked units in the sidebar
+                        }
+                    };
+                    try{SwingUtilities.invokeAndWait(runner);}catch(Exception ex){System.out.println(ex.toString());}
+                    Change change = ChangeFactory.addUnits(placeLoc, hackedUnits);
+                    CachedInstanceCenter.CachedDelegateBridge.addChange(change);
+                    Dynamix_AI.Pause();
+                }
+                else
+                {
+                    doPlace(ai, placeLoc, unitsToPlace, placeDelegate); //Place as much of the leftover as we can
+                }
             }
         }
 

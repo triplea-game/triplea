@@ -19,7 +19,7 @@ import games.strategy.engine.delegate.DefaultDelegateBridge;
 import games.strategy.triplea.delegate.BattleTracker;
 
 /**
- *
+ * Note that this class will most likely be removed when the AI is completed...
  * @author Stephen
  */
 public class CachedInstanceCenter

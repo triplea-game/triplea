@@ -31,6 +31,7 @@ import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.FactoryCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.KnowledgeCenter;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.ReconsiderSignalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.TacticalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
@@ -119,7 +120,9 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         KnowledgeCenter.ClearStaticInstances();
         StatusCenter.ClearStaticInstances();
         ThreatInvalidationCenter.ClearStaticInstances();
+        ReconsiderSignalCenter.ClearStaticInstances();
         CachedInstanceCenter.CachedBattleTracker = DelegateFinder.battleDelegate(CachedInstanceCenter.CachedGameData).getBattleTracker();
+        UnitGroup.ClearBufferedMoves();
     }
 
     public static void ShowSettingsWindow()
@@ -215,7 +218,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
             FactoryCenter.NotifyStartOfRound();
             KnowledgeCenter.NotifyStartOfRound();
             StatusCenter.NotifyStartOfRound();
-            ThreatInvalidationCenter.NotifyStartOfRound();            
+            ThreatInvalidationCenter.NotifyStartOfRound();
+            ReconsiderSignalCenter.NotifyStartOfRound();
 
             GlobalCenter.CurrentPlayer = PlayerID.NULL_PLAYERID; //Reset current player to re-enable trigger in NotifyPlayer method
         }
@@ -388,9 +392,9 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
             List<Unit> responseAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, battleTerr, getID(), Matches.TerritoryIsLand);
             List<Unit> responseDefenders = new ArrayList<Unit>(results.GetAverageAttackingUnitsRemaining());
             AggregateResults responseResults = DUtils.GetBattleResults(responseAttackers, responseDefenders, battleTerr, data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, true);
-            int tradeScore = DUtils.GetTaskTradeScore(battleTerr, attackers, defenders, results, responseAttackers, responseDefenders, responseResults);
-            DUtils.Log(Level.FINER, "Attack_Trade battle assumed. Score: {0} Required: {1}", tradeScore, DSettings.LoadSettings().TR_attackTrade_TotalTradeScoreRequired);
-            if(tradeScore < DSettings.LoadSettings().TR_attackTrade_TotalTradeScoreRequired)
+            int tradeScore = DUtils.GetTaskTradeScore(data, battleTerr, attackers, defenders, results, responseAttackers, responseDefenders, responseResults);
+            DUtils.Log(Level.FINER, "Attack_Trade battle assumed. Score: {0} Required: {1}", tradeScore, DSettings.LoadSettings().TR_attackTrade_totalTradeScoreRequired);
+            if(tradeScore < DSettings.LoadSettings().TR_attackTrade_totalTradeScoreRequired)
                 retreatChance = 1.0F;
         }
         if(results.getAttackerWinPercent() <= retreatChance)

@@ -74,7 +74,15 @@ public class Purchase_UnitPlacementLocationSorter
             {
                 Route terToTargetRoute = CachedCalculationCenter.GetLandRoute(data, ter, target);
                 if (terToTargetRoute != null)
-                    score -= terToTargetRoute.getLength() * 5; //We like to place units at factories closer to the enemy
+                    score -= terToTargetRoute.getLength() * 5; //We like to place units at factories closer to our ncm target
+            }
+
+            Territory closestEnemy = DUtils.GetClosestTerMatchingXAndHavingRouteMatchingY(data, ter, DMatches.territoryIsOwnedByNNEnemy(data, player), Matches.TerritoryIsLand);
+            if (closestEnemy != null)
+            {
+                Route terToClosestEnemyRoute = CachedCalculationCenter.GetLandRoute(data, ter, closestEnemy);
+                if (terToClosestEnemyRoute != null)
+                    score -= terToClosestEnemyRoute.getLength() * 10; //We like to place units at factories closer to the enemy
             }
 
             //If this ter is in danger, but not to much
@@ -88,11 +96,10 @@ public class Purchase_UnitPlacementLocationSorter
             if(DMatches.territoryIsOnSmallIsland(data).match(ter))
                 score -= 10000; //Atm, never place on islands unless we have to
 
-            //We multiply the scores by a random number between 100%-150%, so slightly lower ranked ters get units placed on them sometimes
-            int randNum = 100 + new Random().nextInt(50);
+            //We multiply the scores by a random number between 100%-110%, so slightly lower ranked ters get units placed on them sometimes
+            int randNum = 100 + new Random().nextInt(10);
             double randomMultiplyAmount = (randNum / 100.0F);
             score = (int)(score * randomMultiplyAmount);
-
 
             result.add(ter);
             scores.put(ter, score);

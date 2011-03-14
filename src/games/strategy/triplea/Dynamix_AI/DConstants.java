@@ -25,4 +25,5 @@ public class DConstants
      */
     public static int Integer_HalfMax = Integer.MAX_VALUE / 2;
     public static int Integer_HalfMin = Integer.MIN_VALUE / 2;
+    public static int Integer_Invalid = Integer.MIN_VALUE + 3;
 }

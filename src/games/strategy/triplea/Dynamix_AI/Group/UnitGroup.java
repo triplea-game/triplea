@@ -306,11 +306,11 @@ public class UnitGroup
         List<Unit> frozenOnes = new ArrayList<Unit>(unitsToMove);
         frozenOnes.retainAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).GetFrozenUnits());
         if (frozenOnes.size() > 0)
-            DUtils.Log(Level.FINEST, "      Some units we're trying to move are frozen: {0}", frozenOnes);
+            DUtils.Log(Level.FINEST, "          Some units we're trying to move are frozen: {0}", frozenOnes);
 
         unitsToMove.removeAll(frozenOnes);
         if (unitsToMove.isEmpty())
-            DUtils.Log(Level.FINEST, "      Move 'done', though there were no un-frozen units to move!");
+            DUtils.Log(Level.FINEST, "          Move 'done', though there were no un-frozen units to move!");
 
         if(s_isBufferring)
         {
@@ -323,14 +323,12 @@ public class UnitGroup
             String moveError = mover.move(unitsToMove, route);
             if (moveError != null)
                 return "Error given by call mover.move(...): " + moveError;
+            else
+                NotifySuccessfulMove(m_movedTo);
         }
 
-        m_moveIndex = movesCount;
-        movesCount++;
-        m_movedTo = route.getEnd();
-
         if (route.getEnd().getUnits().containsAll(unitsToMove))
-            DUtils.Log(Level.FINER, "      Performed cm move, as far to: {0} Units: {1} Route: {2}", target, DUtils.UnitList_ToString(unitsToMove), route);
+            DUtils.Log(Level.FINER, "          Performed cm move, as far to: {0} Units: {1} Route: {2}", target, DUtils.UnitList_ToString(unitsToMove), route);
         else
             return DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Target: {0} Units: {1} Route: {2}", target, DUtils.UnitList_ToString(m_units), route);
 
@@ -374,11 +372,11 @@ public class UnitGroup
         List<Unit> frozenOnes = new ArrayList<Unit>(unitsToMove);
         frozenOnes.retainAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).GetFrozenUnits());
         if (frozenOnes.size() > 0)
-            DUtils.Log(Level.FINEST, "      Some units we're trying to move are frozen: {0}", frozenOnes);
+            DUtils.Log(Level.FINEST, "          Some units we're trying to move are frozen: {0}", frozenOnes);
 
         unitsToMove.removeAll(frozenOnes);
         if (unitsToMove.isEmpty())
-            DUtils.Log(Level.FINEST, "      Move 'done', though there were no un-frozen units to move!");
+            DUtils.Log(Level.FINEST, "          Move 'done', though there were no un-frozen units to move!");
 
         if(s_isBufferring)
         {
@@ -391,14 +389,12 @@ public class UnitGroup
             String moveError = mover.move(unitsToMove, route);
             if (moveError != null)
                 return "Error given by call mover.move(...): " + moveError;
-        }
-
-        m_moveIndex = movesCount;
-        movesCount++;
-        m_movedTo = route.getEnd();
+            else
+                NotifySuccessfulMove(m_movedTo);
+        }        
 
         if (route.getEnd().getUnits().containsAll(unitsToMove))
-            DUtils.Log(Level.FINER, "      Performed ncm move, as far to: {0} Units: {1} Route: {2}", target, DUtils.UnitList_ToString(unitsToMove), route);
+            DUtils.Log(Level.FINER, "          Performed ncm move, as far to: {0} Units: {1} Route: {2}", target, DUtils.UnitList_ToString(unitsToMove), route);
         else
             return DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Target: {0} Units: {1} Route: {2}", target, DUtils.UnitList_ToString(m_units), route);
 
@@ -446,11 +442,11 @@ public class UnitGroup
         List<Unit> frozenOnes = new ArrayList<Unit>(unitsToMove);
         frozenOnes.retainAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).GetFrozenUnits());
         if (frozenOnes.size() > 0)
-            DUtils.Log(Level.FINEST, "      Some units we're trying to move are frozen: {0}", frozenOnes);
+            DUtils.Log(Level.FINEST, "          Some units we're trying to move are frozen: {0}", frozenOnes);
 
         unitsToMove.removeAll(frozenOnes);
         if (unitsToMove.isEmpty())
-            DUtils.Log(Level.FINEST, "      Move 'done', though there were no un-frozen units to move!");
+            DUtils.Log(Level.FINEST, "          Move 'done', though there were no un-frozen units to move!");
 
         if(s_isBufferring)
         {
@@ -463,12 +459,12 @@ public class UnitGroup
             String moveError = mover.move(unitsToMove, route);
             if (moveError != null)
                 return "Error given by call mover.move(...): " + moveError;
+            else
+                NotifySuccessfulMove(m_movedTo);
         }
 
-        NotifySuccessfulMove(m_movedTo);
-
         if (route.getEnd().getUnits().containsAll(unitsToMove))
-            DUtils.Log(Level.FINER, "      Performed ncm move, as far along route: {0} Units: {1}", route, DUtils.UnitList_ToString(unitsToMove));
+            DUtils.Log(Level.FINER, "          Performed ncm move, as far along route: {0} Units: {1}", route, DUtils.UnitList_ToString(unitsToMove));
         else
             return DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Units: {0} Route: {1}", DUtils.UnitList_ToString(m_units), route);
 
@@ -493,8 +489,11 @@ public class UnitGroup
             return;
 
         mover.undoMove(m_moveIndex);
+        DUtils.Log(Level.FINER, "          Move undone. Initial Location: {0} Target: {1} Units: {2}", m_startTer, m_movedTo, m_units);
         m_movedTo = null;
         movesCount--;
+        for (UnitGroup ug2 : TacticalCenter.get(CachedInstanceCenter.CachedGameData, GlobalCenter.CurrentPlayer).AllDelegateUnitGroups)
+            ug2.NotifyMoveUndo(GetMoveIndex());
     }
 
     public int GetMoveIndex()
@@ -536,11 +535,7 @@ public class UnitGroup
             if (ug.GetMovedTo() != null && ug.GetMovedTo().equals(ter))
             {
                 ug.UndoMove(mover);
-                result.add(ug.GetStartTerritory());
-                for (UnitGroup ug2 : TacticalCenter.get(data, player).AllDelegateUnitGroups)
-                {
-                    ug2.NotifyMoveUndo(ug.GetMoveIndex());
-                }
+                result.add(ug.GetStartTerritory());                
             }
         }
         return result;
@@ -555,6 +550,10 @@ public class UnitGroup
     public static void EnableMoveBuffering()
     {
         s_isBufferring = true;
+    }
+    public static void ClearBufferedMoves()
+    {
+        s_bufferedMoves.clear();
     }
     public static void PerformBufferedMovesAndDisableMoveBufferring(IMoveDelegate mover)
     {
@@ -580,7 +579,7 @@ public class UnitGroup
                 for (UnitGroup ug : ugs)
                     ug.NotifySuccessfulMove(route.getEnd());
                 if (route.getEnd().getUnits().containsAll(units))
-                    DUtils.Log(Level.FINER, "      Performed move, as far to: {0} Units: {1} Route: {2}", route.getEnd(), DUtils.UnitList_ToString(units), route);
+                    DUtils.Log(Level.FINER, "          Performed move, as far to: {0} Units: {1} Route: {2}", route.getEnd(), DUtils.UnitList_ToString(units), route);
                 else
                     errors.append(DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Target: {0} Units: {1} Route: {2}", route.getEnd(), DUtils.UnitList_ToString(units), route));
             }

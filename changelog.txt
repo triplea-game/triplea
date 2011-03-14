@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Dynamix AI patch, various small improvements and logic fixes. (wisconsin)
+
 * New game property, "Low Luck for Technology", which will apply low luck rules to rolling for tech. (veqryn)
 
 * Dynamix AI logging patch, should make logs easier to read. (wisconsin)

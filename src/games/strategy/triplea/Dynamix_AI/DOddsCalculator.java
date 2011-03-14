@@ -384,9 +384,11 @@ class DummyPlayer extends AbstractAI
             {
                 List<Unit> notKilled = new ArrayList<Unit>(selectFrom);
                 notKilled.removeAll(destroyed);
-                //No land units left, but we
-                //have a non land unit to kill
-                //and land unit was killed
+                //The default casualties would destroy our last land unit,
+                //and the method that called this one wants at least one land unit remaining, so
+                //remove the last land unit from the list of units to kill,
+                //and replace it with a non-land unit. (The cheapest)
+
                 if (!Match.someMatch(notKilled, Matches.UnitIsLand) && Match.someMatch(notKilled, Matches.UnitIsNotLand) && Match.someMatch(destroyed, Matches.UnitIsLand))
                 {
                     List<Unit> notKilledAndNotLand = Match.getMatches(notKilled, Matches.UnitIsNotLand);

@@ -1797,9 +1797,7 @@ public class MoveValidator
             Map<Unit,Unit> unitsToTransports = MoveDelegate.mapTransports(route, land, transportsToLoad);
 
             Iterator<Unit> iter = land.iterator();
-            CompositeMatch<Unit> landUnitsAtSea = new CompositeMatchOr<Unit>();
-            landUnitsAtSea.add(Matches.unitIsLandOrAirAndOwnedBy(player));
-            landUnitsAtSea.add(Matches.UnitCanBeTransported);
+            CompositeMatch<Unit> landUnitsAtSea = new CompositeMatchOr<Unit>(Matches.unitIsLandAndOwnedBy(player), Matches.UnitCanBeTransported);
             
             while (!isEditMode && iter.hasNext())
             {

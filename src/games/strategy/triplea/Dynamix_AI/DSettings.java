@@ -72,34 +72,33 @@ public class DSettings implements Serializable
     public int UnitPlacementMultiplyPercent = 100;    
 
     public boolean TR_enableAttackOffensive = true;
-    public int TR_attackOffensive_TakeoverChanceRequired = 70;
-    public int TR_attackOffensive_CounterAttackSurvivalChanceRequired = 55;
-    public int TR_attackOffensive_Neutrals_TakeoverChanceRequired = 90;
-    public int TR_attackOffensive_Neutrals_CounterAttackSurvivalChanceRequired = 60;
-    public int TR_attackOffensive_Capitals_TakeoverChanceRequired = 55;
-    public int TR_attackOffensive_Capitals_CounterAttackSurvivalChanceRequired = 0;
+    public int TR_attackOffensive_takeoverChanceRequired = 70;
+    public int TR_attackOffensive_counterAttackSurvivalChanceRequired = 55;
+    public int TR_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement = 15;
+    public int TR_attackOffensive_Neutrals_takeoverChanceRequired = 90;
+    public int TR_attackOffensive_Neutrals_counterAttackSurvivalChanceRequired = 60;
+    public int TR_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement = 15;
+    public int TR_attackOffensive_Capitals_takeoverChanceRequired = 55;
+    public int TR_attackOffensive_Capitals_counterAttackSurvivalChanceRequired = 0;
+    public int TR_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement = 15;
     public boolean TR_enableAttackStabalize = true;
-    public int TR_attackStabalize_TakeoverChanceRequired = 55;
-    public int TR_attackStabalize_CounterAttackSurvivalChanceRequired = 25;
+    public int TR_attackStabalize_takeoverChanceRequired = 55;
+    public int TR_attackStabalize_counterAttackSurvivalChanceRequired = 25;
+    public int TR_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement = 15;
     public boolean TR_enableAttackTrade = true;
-    public int TR_attackTrade_TotalTradeScoreRequired = 15;
-    public int TR_attackTrade_LandUnitsAtEnd = 2;    
+    public int TR_attackTrade_totalTradeScoreRequired = 10;
+    public int TR_attackTrade_landUnitsAtEnd = 2;
     public boolean TR_enableAttackLandGrab = true;
-    public boolean TR_attackLandGrab_OnlyGrabLandIfWeCanBlitzIt = false;
+    public boolean TR_attackLandGrab_onlyGrabLandIfWeCanBlitzIt = false;
     public boolean TR_enableReinforceFrontLine = true;
-    public int TR_reinforceFrontLine_EnemyAttackSurvivalChanceRequired = 50;
+    public int TR_reinforceFrontLine_enemyAttackSurvivalChanceRequired = 50;
+    public int TR_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements = 15;
     public boolean TR_enableReinforceStabalize = true;
-    public int TR_reinforceStabalize_EnemyAttackSurvivalChanceRequired = 50;
+    public int TR_reinforceStabalize_enemyAttackSurvivalChanceRequired = 50;
     public boolean TR_enableReinforceBlock = true;
 
     public int AA_resourcePercentageThatMustExistForFactoryBuy = 50;
     public int AA_maxUnitTypesForPurchaseMix = 5;
-
-    public int AA_percentOfMeetingOfAttackTakeoverConstantNeededToPerformCMTask = 96;
-    public int AA_percentOfMeetingOfCounterAttackSurvivalConstantNeededToPerformCMTask = 96;
-    public int AA_percentOfMeetingOfEnemyAttackSurvivalConstantNeededToPerformNCMTask = 96;
-
-    public int AA_initialTaskConsiderationLoopCount = 3;
 
     public ThreatInvalidationType AA_threatInvalidationType = ThreatInvalidationType.AroundHotspot;
     public int AA_threatInvalidationAroundHotspotRadius = 1;

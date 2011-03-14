@@ -6907,7 +6907,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 							
 							if (attackFrom.isWater())
 							{
-								List<Unit> units2 = attackFrom.getUnits().getMatches(Matches.unitIsLandOrAirAndOwnedBy(player));
+								List<Unit> units2 = attackFrom.getUnits().getMatches(Matches.unitIsLandAndOwnedBy(player));
 								moveUnits.add(Util.difference(units2, unitsAlreadyMoved));
 								unitsAlreadyMoved.addAll(units2);
 							}

@@ -563,7 +563,7 @@ public class DUtils
     }
     public static List<Territory> GetEnemyLandTersThatCanBeAttackedByLandUnitsOwnedBy(GameData data, PlayerID player)
     {
-        return GetTersMatchingXThatCanBeAttackedByUnitsMatchingYInTersMatchingZ(data, player, CompMatchAnd(Matches.TerritoryIsLand, DMatches.territoryIsOwnedByEnemy(data, player)), DMatches.territoryIsOwnedByEnemy(data, player).invert(), Matches.unitIsLandOrAirAndOwnedBy(player));
+        return GetTersMatchingXThatCanBeAttackedByUnitsMatchingYInTersMatchingZ(data, player, CompMatchAnd(Matches.TerritoryIsLand, DMatches.territoryIsOwnedByEnemy(data, player)), DMatches.territoryIsOwnedByEnemy(data, player).invert(), Matches.unitIsLandAndOwnedBy(player));
     }
     public static List<Territory> GetEnemySeaTersThatCanBeAttackedByUnitsOwnedBy(GameData data, PlayerID player)
     {
@@ -1056,9 +1056,8 @@ public class DUtils
     }
     public static float GetCMTaskPriority_LandGrab(GameData data, PlayerID player, Territory ter)
     {
-        float priority = 10000F;
+        float priority = 1000000F;
         priority += DUtils.GetValueOfLandTer(ter, data, player);
-        priority = priority * GetEnemyPriority(data, ter.getOwner());
         return priority;
     }
     public static float GetCMTaskPriority_Stabalization(GameData data, PlayerID player, Territory ter)
@@ -1131,7 +1130,6 @@ public class DUtils
         int friendlyNeighbors = data.getMap().getNeighbors(ter, CompMatchAnd(Matches.TerritoryIsLand, DMatches.territoryIsOwnedByXOrAlly(data, player))).size();
         priority += friendlyNeighbors;
 
-        priority = priority * GetEnemyPriority(data, ter.getOwner());
         return priority;
     }
     public static float GetCMTaskPriority_Trade(GameData data, PlayerID player, Territory ter)
@@ -1160,6 +1158,20 @@ public class DUtils
         float priority = 750F; //TODO
         priority += GetValueOfLandTer(ter, data, player);
         return priority;
+    }
+    public static int GetDistance_ForLandThenNoCondComparison(GameData data, Territory ter1, Territory ter2)
+    {
+        Route route1 = CachedCalculationCenter.GetLandRoute(data, ter1, ter2);
+        Route route1_nc = CachedCalculationCenter.GetRoute(data, ter1, ter2);
+
+        if (route1_nc == null)
+            return DConstants.Integer_HalfMax; //If there's no route, we want ones with a route to come first
+
+        int distance1 = route1_nc.getLength() * 100;
+        if (route1 != null)
+            distance1 = route1.getLength();
+
+        return distance1;
     }
     public static List<Unit> InterlaceUnits_CarriersAndPlanes(List<Unit> units, int planesThatDontNeedToLand)
     {
@@ -1345,7 +1357,7 @@ public class DUtils
             if(ua.isAir())
                 return Integer.MIN_VALUE;
             int movementAfterBlitz = TripleAUnit.get(unit).getMovementLeft() - dist;
-            if(DSettings.LoadSettings().TR_attackLandGrab_OnlyGrabLandIfWeCanBlitzIt)
+            if(DSettings.LoadSettings().TR_attackLandGrab_onlyGrabLandIfWeCanBlitzIt)
             {
                 if(!ua.getCanBlitz() || movementAfterBlitz < dist) //If this unit can't blitz, or it can't take ter and get back
                     return Integer.MIN_VALUE;
@@ -1594,13 +1606,13 @@ public class DUtils
         processed.add(start);
 
         List<Territory> result = new ArrayList<Territory>();        
-        List<Territory> nextSet = new ArrayList<Territory>(data.getMap().getNeighbors(start));        
+        HashSet<Territory> nextSet = new HashSet<Territory>(data.getMap().getNeighbors(start));
         if(match.match(start))
             result.add(start);
         int dist = 1;
         while(nextSet.size() > 0 && dist <= maxDistance)
         {
-            List<Territory> newSet = new ArrayList<Territory>();
+            HashSet<Territory> newSet = new HashSet<Territory>();
             for(Territory ter : nextSet)
             {
                 processed.add(ter);
@@ -1697,7 +1709,7 @@ public class DUtils
         if(toTake) //If we're supposed to 'take' ter
         {
             //But the attackers averaged without a land unit left (or there are no attackers left after battle)
-            if(results == null || results.GetAverageAttackingUnitsRemaining() == null || Match.getNMatches(results.GetAverageAttackingUnitsRemaining(), 1, Matches.unitIsLandOrAirAndOwnedBy(attacker)).isEmpty())
+            if(results == null || results.GetAverageAttackingUnitsRemaining() == null || Match.getNMatches(results.GetAverageAttackingUnitsRemaining(), 1, Matches.unitIsLandAndOwnedBy(attacker)).isEmpty())
                 return CreateDefenderWinsAggregateResults(data, testingTer, defending); //Signal as defender wins
         }
         return results;
@@ -1741,20 +1753,38 @@ public class DUtils
         }
         return values;
     }
-    public static int GetTaskTradeScore(Territory target, List<Unit> attackers, List<Unit> defenders, AggregateResults simulatedAttack, List<Unit> responseAttackers, List<Unit> responseDefenders, AggregateResults simulatedResponse)
+    public static int GetTaskTradeScore(GameData data, Territory target, List<Unit> attackers, List<Unit> defenders, AggregateResults simulatedAttack, List<Unit> responseAttackers, List<Unit> responseDefenders, AggregateResults simulatedResponse)
     {
         if(simulatedAttack.getAttackerWinPercent() < .5F)
             return DConstants.Integer_HalfMin;
 
-        List<Integer> tuvLosses = DUtils.GetTUVChangeOfAttackerAndDefender(attackers, defenders, simulatedAttack);;
+        List<Integer> tuvLosses = DUtils.GetTUVChangeOfAttackerAndDefender(attackers, defenders, simulatedAttack);
         int tuvSwing = DUtils.GetTUVSwingForTUVChange(tuvLosses);
-        List<Integer> responseTUVLosses = DUtils.GetTUVChangeOfAttackerAndDefender(responseAttackers, responseDefenders, simulatedResponse);
-        int responseTUVSwing = DUtils.GetTUVSwingForTUVChange(responseTUVLosses);
+        int responseTUVSwing = 0;
+        if (simulatedResponse != null) //Will be null if the caller didn't want this method to care about counter-attacks
+        {
+            List<Integer> responseTUVLosses = DUtils.GetTUVChangeOfAttackerAndDefender(responseAttackers, responseDefenders, simulatedResponse);
+            responseTUVSwing = DUtils.GetTUVSwingForTUVChange(responseTUVLosses);
+        }
         int terProduction = TerritoryAttachment.get(target).getProduction();
+        if(DMatches.territoryIsCapitalAndOwnedByEnemy(data, GlobalCenter.CurrentPlayer).match(target))
+        {
+            int puGainIfWeConquer = 0;
+            for(PlayerID enemy : data.getPlayerList().getPlayers())
+            {
+                List<Territory> enemyCapList = DUtils.GetAllOurCaps_ThatWeOwn(data, enemy);
+                if(enemyCapList.size() == 1 && enemyCapList.get(0).equals(target)) //If the enemy only has one cap left, and it's the ter we're checking
+                    puGainIfWeConquer = enemy.getResources().getQuantity(GlobalCenter.GetPUResource());
+            }
+            terProduction += puGainIfWeConquer;
+        }
         if(Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsLand).isEmpty()) //If no land units survive, on average
             terProduction = 0; //Don't count in ter production
 
-        int score = terProduction + tuvSwing - responseTUVSwing;
+        int score = terProduction + tuvSwing;
+        if(responseTUVSwing > 0) //If it makes sense for the enemy to counter-attack us
+            score = score - responseTUVSwing; //Then count our loss in this counter attack against us
+
         return score;
     }
     public static Route TrimRoute_AtFirstTerWithEnemyUnits(Route route, int newRouteJumpCount, PlayerID player, GameData data)
@@ -2220,10 +2250,34 @@ public class DUtils
                 continue;
             if (route.getLength() > GlobalCenter.FastestUnitMovement) //If the fastest moving unit in the game can't reach from ter to territory
                 continue;
+
+            List<Territory> possibleAttackTers = null;
+
             for (Unit u : ter.getUnits().getMatches(DMatches.unitIsNNEnemyOf(data, playerToCheckFor)))
             {
                 if(CanUnitReachTer(data, ter, u, territory))
                 {
+                    UnitAttachment ua = UnitAttachment.get(u.getUnitType());
+                    int movement = ua.getMovement(u.getOwner());
+                    if(movement > 1 && ua.isAir())
+                    {
+                        if(possibleAttackTers == null)
+                            possibleAttackTers = DUtils.GetTerritoriesWithinXDistanceOfYMatchingZ(data, ter, GlobalCenter.FastestUnitMovement, DMatches.territoryIsOwnedByNNEnemy(data, ter.getOwner()));
+                        int attackToTers = 0;
+                        for (Territory to : possibleAttackTers)
+                        {
+                            if(CanUnitReachTer(data, ter, u, to))
+                                attackToTers++;
+                        }
+                        //The idea is, the farther a plane is from a ter it's attacking, the less it matters
+                        //What this code does is it finds all the ters this plane can attack, and squares it
+                        //Then it randomly generates a number and sees if it's over [1 / squaredAttackToCount]
+                        //If it is over, it skips this unit
+                        double cubeRouteOfAttackToCount = Math.sqrt(Math.sqrt(attackToTers));
+                        double random = Math.random();
+                        if(random > (1 / cubeRouteOfAttackToCount))
+                            continue;
+                    }
                     AddObjToListValueForKeyInMap(enemies, ter, u);
                 }
             }
@@ -2304,6 +2358,26 @@ public class DUtils
         {
             if(Math.random() < percentageToKeep)
                 result.add(obj);
+        }
+        return result;
+    }
+    public static List<Unit> GetXPercentOfTheUnitsInList_DuplicateForExtra(Collection<Unit> units, float percentageToResultIn)
+    {
+        if(percentageToResultIn == 1.0F)
+            return new ArrayList<Unit>(units);
+        if(percentageToResultIn == 0.0F)
+            return new ArrayList<Unit>();
+        ArrayList<Unit> result = new ArrayList<Unit>();
+        while (percentageToResultIn > 1.0F)
+        {
+            for (Unit unit : units)
+                result.add(unit);
+            percentageToResultIn -= 1.0F;
+        }
+        for (Unit unit : units)
+        {
+            if(Math.random() < percentageToResultIn)
+                result.add(unit);
         }
         return result;
     }
@@ -2781,7 +2855,7 @@ public class DUtils
                 continue;
             if(ua.isAir())
             {
-                if(Math.random() <= .9F) //Because of how badly we handle planes, at the moment, don't even consider buying air units 90% of the time
+                if(Math.random() <= .5F) //Only consider planes half the time, as we can't use them well yet
                     continue; //Don't consider purchasing this air unit
             }
             if(!match.match(testUnit))
