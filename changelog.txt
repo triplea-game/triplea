@@ -17,7 +17,7 @@ Changes for 1.2.7
 
 * Created 2 new autosaves: autosave_round_even and autosave_round_odd, which will autosave at the beginning of each round. Provides only the last 2 rounds in order to keep file spam to a minimum. (veqryn)
 
-* New Carrier-Fighter interweaver for AI casualty selection.  Another patch for Dynamix AI. (wisconsin)
+* New Carrier-Fighter interleaver for AI casualty selection.  Another patch for Dynamix AI. (wisconsin)
 
 * Fixed bug where the NoPuPurchase delegate was calling the normal Purchase delegate if the player had PUs left over, Resulting in the player getting multiple purchase screens. (veqryn)
 
