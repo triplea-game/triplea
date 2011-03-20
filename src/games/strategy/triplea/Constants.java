@@ -198,5 +198,6 @@ public interface Constants
   public static final String TWO_HITPOINT_UNITS_REQUIRE_REPAIR_FACILITIES = "Two HitPoint Units Require Repair Facilities";
   public static final String LL_TECH_ONLY = "Low Luck for Technology";
   public static final String TRIGGERED_VICTORY = "Triggered Victory";
+  public static final String GIVE_UNITS_BY_TERRITORY = "Give Units By Territory";
   
 }

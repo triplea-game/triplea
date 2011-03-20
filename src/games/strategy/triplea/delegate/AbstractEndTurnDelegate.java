@@ -84,6 +84,11 @@ public abstract class AbstractEndTurnDelegate
     	return games.strategy.triplea.Properties.getBattleships_Repair_At_End_Of_Round(m_data);
     }
 
+    private boolean isGiveUnitsByTerritory()
+    {
+    	return games.strategy.triplea.Properties.getGiveUnitsByTerritory(m_data);
+    }
+
 
     /**
      * Called before the delegate will run.
@@ -149,7 +154,7 @@ public abstract class AbstractEndTurnDelegate
         }
         m_needToInitialize = false;
 
-        if(pa != null && pa.getGiveUnitControl())
+        if(isGiveUnitsByTerritory() && pa != null && pa.getGiveUnitControl() != null && !pa.getGiveUnitControl().isEmpty())
         {
         	changeUnitOwnership(aBridge, gameData);
         }
@@ -208,23 +213,8 @@ public abstract class AbstractEndTurnDelegate
 	private void changeUnitOwnership(IDelegateBridge aBridge, GameData gameData)
 	{
 		PlayerID Player = aBridge.getPlayerID();
-		PlayerID newOwner = null;
-		
-		//get the list of players
-		Collection<PlayerID> players = gameData.getPlayerList().getPlayers();
-		Iterator<PlayerID> playerIter = players.iterator();
-		
-		//Find the player who will take control of the units
-		while (playerIter.hasNext())
-		{
-			PlayerID currPlayer = (PlayerID) playerIter.next();
-			 PlayerAttachment pa = PlayerAttachment.get(currPlayer);
-			if (pa != null && pa.getTakeUnitControl())
-			{
-				newOwner = currPlayer;
-				break;
-			}
-		}
+		PlayerAttachment pa = PlayerAttachment.get(Player);
+		Collection<PlayerID> PossibleNewOwners = pa.getGiveUnitControl();
 		
 		Collection<Territory> territories = gameData.getMap().getTerritories();
 		Iterator<Territory> terrIter = territories.iterator();
@@ -233,13 +223,20 @@ public abstract class AbstractEndTurnDelegate
 			Territory currTerritory = (Territory) terrIter.next();
             TerritoryAttachment ta = (TerritoryAttachment) currTerritory.getAttachment(Constants.TERRITORY_ATTATCHMENT_NAME);
             //if ownership should change in this territory
-            if(ta != null && ta.getChangeUnitOwners())
+            if(ta != null && ta.getChangeUnitOwners() != null && !ta.getChangeUnitOwners().isEmpty())
             {
-            	//PlayerOwnerChange
-            	Collection<Unit> units = currTerritory.getUnits().getMatches(Matches.unitOwnedBy(Player));
-            	Change changeOwner = ChangeFactory.changeOwner(units, newOwner, currTerritory);
-            	aBridge.getHistoryWriter().addChildToEvent(changeOwner.toString());
-            	aBridge.addChange(changeOwner);
+            	Collection<PlayerID> terrNewOwners = ta.getChangeUnitOwners();
+            	for (PlayerID terrNewOwner : terrNewOwners)
+            	{
+            		if (PossibleNewOwners.contains(terrNewOwner))
+            		{
+            			//PlayerOwnerChange
+                    	Collection<Unit> units = currTerritory.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitOwnedBy(Player), Matches.UnitCanBeGivenByTerritory));
+                    	Change changeOwner = ChangeFactory.changeOwner(units, terrNewOwner, currTerritory);
+                    	aBridge.getHistoryWriter().addChildToEvent(changeOwner.toString());
+                    	aBridge.addChange(changeOwner);
+            		}
+            	}
             }
 		}
 	}

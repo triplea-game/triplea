@@ -1839,9 +1839,11 @@
                          <option name="artillerySupportable" value="true"/>
 						 <!-- allows the unit to be transported by an "isAirTransport" unit, IF you have paratroopers technology -->
                          <option name="isAirTransportable" value="true"/>
+						 <!-- canBeGivenByTerritory will allow a unit to be given from one player to another player, if it is in a territory with changeUnitOwners -->
+						 <option name="canBeGivenByTerritory" value="true"/>
 						 <!-- isParatroop and isMechanized currently do NOTHING, and are only kept for backwards compatibility
-						 <option name="isParatroop" value="true"/>
-						 <option name="isMechanized" value="true"/> -->
+						 <option name="isParatroop" value="false"/>
+						 <option name="isMechanized" value="false"/> -->
                 </attatchment>
 				
 				
@@ -1855,6 +1857,7 @@
                          <option name="artillery" value="true"/>
 						 <!-- number of units that will be supported by the artillery, defaults to 1 if missing -->
                          <option name="unitSupportCount" value="1"/>
+						 <option name="canBeGivenByTerritory" value="true"/>
                 </attatchment>
 
                 <!-- Armour -->
@@ -1867,6 +1870,7 @@
                          <option name="defense" value="3"/>
 						 <!-- allows the unit to transport "isInfantry" on a one-to-one basis, if you have the mechanizedInfantry technology -->
                          <option name="isLandTransport" value="true"/>
+						 <option name="canBeGivenByTerritory" value="true"/>
                 </attatchment>
 
                 <!-- Fighter -->
@@ -2207,8 +2211,9 @@
 
                 <attatchment name="territoryAttatchment" attatchTo="Archangel" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<!-- changeUnitOwners allows some players to have their units change to a single player's control, if they are located in territories with this attachment -->
-						<option name="changeUnitOwners" value="true"/>
+						<!-- changeUnitOwners allows some players to have their units change to another player's control, if they are located in territories with this attachment 
+								it must be a list of the player's names in a ":" delimited list.  For example: value="Russians:Germans" -->
+						<option name="changeUnitOwners" value="Russians"/>
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Novisibirsk" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -3165,10 +3170,8 @@
 					<option name="captureVps" value="0"/>
 				</attatchment> -->
 				
-				<!-- giveUnitControl and takeUnitControl allow multiple players to give units to a single player, if those units are in a designated territory -->   
 				<attatchment name="playerAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
-					<option name="takeUnitControl" value="true"/>
-					<!-- destroysPUs means that when this player loses their capital, their PUs are destroyed instead of captured (defaults to false=capture) -->
+					<!-- destroysPUs means that when this player loses their capital, their PUs are destroyed instead of captured (defaults to false = capture any capital) -->
 					<option name="destroysPUs" value="true"/>
 					<!-- retainCapitalNumber means that we do not lose our money if we still control at least this many of our capitals (defaults to 1). 
 						If a player has no playerAttachment, then it defaults to X, where X = total number of capitals (ie: you lose your money if a single capital is captured) -->
@@ -3179,7 +3182,9 @@
 				</attatchment>
 				
 				<attatchment name="playerAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
-					<option name="giveUnitControl" value="true"/>
+					<!-- giveUnitControl allow multiple players to give units to multiple other players, if those units are in a designated territory 
+							must be a list of the player's names, in a ":" delimited list.  Example: value="Russians:Chinese"-->
+					<option name="giveUnitControl" value="Russians"/>
 				</attatchment>   
 
         </attatchmentList>
@@ -3739,6 +3744,11 @@
 						<boolean/>
 				</property>
 
+						<!-- allows a player to give units to another player if true. units must have canBeGivenByTerritory and territories must have changeUnitOwners and the players must have the player attachment giveUnitControl -->
+				<property name="Give Units By Territory" value ="true" editable="false">
+						<boolean/>
+				</property>
+
 				<!-- specific rules -->
 				<!-- land related -->
 					<!-- if true you may have a number of constructions up to the value of the territory, in territories with factories -->
@@ -4041,8 +4051,7 @@
         				* Soviet's artillery gain the ability to support 2 infantry on attack If at the end of their 3rd or 4th turn, the Soviets control
 							Karelia S.S.R. and Caucus (this effect can be doubled to 4 infantry supported if Russia gets Improved Artillery technology)<br>
 						* Soviets gain, only once, an additional 3 infantry in Yakut S.S.R. if at the beginning of their turn, Japan controls any original Russian territory<br>
-						* Soviets gain control of any American land units that are in Archangel at the end of America's turn 
-							(if USA lands an aircraft there, it will get converted to Russian control, please use edit to convert it back to USA's control til this bug is fixed).<br>
+						* Soviets gain control of any American land units that are in Archangel at the end of America's turn<br>
 						* Soviets have double chance of getting Improved Artillery when rolling for tech<br>
 						* Soviets destroy their industrial production (PUs) instead of letting it be captured, when they lose their capital<br>
 						<br>

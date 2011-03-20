@@ -1,4 +1,7 @@
 Changes for 1.2.7
+* Completely redid giveUnitControl to be flexible. giveUnitControl and changeUnitOwners are now lists of players to give to, and a new unit attachment, canBeGivenByTerritory, and a new global property, "Give Units By Territory".  
+  takeUnitControl is deleted since no longer needed. This will break compatibility with 2 maps, but I have already updated them, so users just have to update their maps after the next version comes out. (veqryn, with some inspiration from rolflarsson)
+
 * New game property, "Triggered Victory", and new trigger option, "victory" value = victory message. Can be based on any condition. (veqryn)
 
 * Dynamix AI patch, various small improvements and logic fixes. (wisconsin)

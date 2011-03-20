@@ -65,6 +65,7 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isMarine = false;
   private boolean m_isInfantry = false;
   private boolean m_isLandTransport = false;
+  private boolean m_canBeGivenByTerritory = false;
   private boolean m_canScramble = false;
   private boolean m_isAirBase = false;
   private boolean m_isInfrastructure = false;
@@ -144,6 +145,16 @@ public class UnitAttachment extends DefaultAttachment
   public boolean isAirTransportable()
   {
     return m_isAirTransportable;
+  }
+
+  public void setCanBeGivenByTerritory(String s)
+  {
+	  m_canBeGivenByTerritory = getBool(s);
+  }
+
+  public boolean getCanBeGivenByTerritory()
+  {
+    return m_canBeGivenByTerritory;
   }
 
   public void setCanBlitz(String s)
@@ -823,6 +834,7 @@ public class UnitAttachment extends DefaultAttachment
     " marine:" + m_isMarine +
     " infantry:" + m_isInfantry +
     " landTransport:" + m_isLandTransport +
+    " canBeGivenByTerritory:" + m_canBeGivenByTerritory + 
     " canScramble:" + m_canScramble +
     " airBase:" + m_isAirBase +
     " infrastructure:" + m_isInfrastructure +

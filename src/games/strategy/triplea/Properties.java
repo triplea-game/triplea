@@ -764,6 +764,10 @@ public class Properties implements Constants {
     	return data.getProperties().get(UNIT_PLACEMENT_RESTRICTIONS, false);
     }
     
+    public static boolean getGiveUnitsByTerritory(GameData data) {
+    	return data.getProperties().get(GIVE_UNITS_BY_TERRITORY, false);
+    }
+    
     private Properties() {
     }
 }

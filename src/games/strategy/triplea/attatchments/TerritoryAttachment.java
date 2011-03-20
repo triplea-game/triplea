@@ -138,7 +138,7 @@ public class TerritoryAttachment extends DefaultAttachment
     private PlayerID m_originalOwner = null;
     private PlayerID m_occupiedTerrOf = null;    
     private boolean m_isConvoyRoute = false;
-    private boolean m_changeUnitOwners = false;
+    private Collection<PlayerID> m_changeUnitOwners = new ArrayList<PlayerID>();
     private String m_convoyAttached = null;
     private boolean m_navalBase = false;
     private boolean m_airBase = false;
@@ -255,10 +255,18 @@ public class TerritoryAttachment extends DefaultAttachment
     
     public void setChangeUnitOwners(String value)
     {
-        m_changeUnitOwners = getBool(value);
+    	String[] temp = value.split(":");
+    	for (String name : temp)
+    	{
+    		PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+    		if (tempPlayer != null)
+    			m_changeUnitOwners.add(tempPlayer);
+    		else
+    			throw new IllegalStateException("Territory Attachments: No player named: " + name);
+    	}
     }
     
-    public boolean getChangeUnitOwners()
+    public Collection<PlayerID> getChangeUnitOwners()
     {
         return m_changeUnitOwners;
     }
