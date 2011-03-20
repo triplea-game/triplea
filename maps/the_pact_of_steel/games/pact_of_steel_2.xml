@@ -2745,6 +2745,16 @@
                 	<option name="alliedOwnershipTerritories" value="East Indies:Borneo:New Guinea:Solomon Islands:Caroline Islands:Australia:New Zealand:Okinawa:Wake Island:Philipine Islands:Alaska:Hawaiian Islands:Midway" count="6"/>
                 </attatchment>
 
+                <attatchment name="objectiveAttachmentAmericans3" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="2"/>
+                	<option name="turns" value="2-+"/>
+                </attatchment>
+
+                <attatchment name="objectiveAttachmentAmericans4" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="2"/>
+                	<option name="turns" value="4-+"/>
+                </attatchment>
+
 	<!-- Chinese Objectives -->
                 <attatchment name="objectiveAttachmentChinese1" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="4"/>
@@ -2852,12 +2862,12 @@
                 </attatchment>
 				
                 <attatchment name="conditionAttachmentAmericans3a" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="turns" value="1-7"/>
+                	<option name="turns" value="1-8"/>
                 	<option name="alliedOwnershipTerritories" value="Western Europe" count="1"/>
                 </attatchment>
 				
                 <attatchment name="conditionAttachmentAmericans3b" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="turns" value="1:2:3-6:7"/>
+                	<option name="turns" value="1:2:3-7:8"/>
                 	<option name="alliedOwnershipTerritories" value="Alaska:Wake Island:Hawaiian Islands:Midway" count="4"/>
                 </attatchment>
 				
@@ -2966,6 +2976,13 @@
                 	<option name="uses" value="1"/>
                 </attatchment>
 
+                <attatchment name="triggerAttachmentGermans5" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentAmericans3a:conditionAttachmentAmericans3b"/>
+                	<option name="tech" value="warBonds"/>
+                	<option name="players" value="Americans"/>
+                	<option name="uses" value="1"/>
+                </attatchment>
+
                 <attatchment name="triggerAttachmentGermansParatroopers" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentGermansParatroopers"/>
 					<option name="frontier" value="GermansParatroopers_production"/>
@@ -3052,12 +3069,6 @@
                 <attatchment name="triggerAttachmentAmericans2" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentAmericans2"/>
                 	<option name="tech" value="shipyards"/>
-                	<option name="uses" value="1"/>
-                </attatchment>
-
-                <attatchment name="triggerAttachmentAmericans3" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentAmericans3a:conditionAttachmentAmericans3b"/>
-                	<option name="tech" value="warBonds"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
@@ -4026,6 +4037,7 @@
 							Algeria, Libya, Anglo Egypt, Trans-Jordan<br>
         				<br>
         				<i>United States: The Arsenal of Democracy-</i><br>
+						+2 PUs on turn 2 and beyond, an additional +2 (so +4 total) on turn 4 and beyond as America's war-time economy ramps up<br>
         				+4 PUs if Allies control 4 out 7 of Western Europe, Sardinia, Sicily, Greece, West Balkans, Algeria, Libya
 							AND no enemy surface ships in sea zones 1, 2, 7, 8, 9, 10, 11, 12, 13, and 14<br>
         				+4 PUs if Allies controls 6 out of 13 of Alaska, East Indies, Borneo, Philipine Islands, New Guinea, Solomon Islands, Caroline Islands,
@@ -4033,7 +4045,7 @@
 						* USA gains Paratroopers if at the end of Germany's 3rd or 4th turn, the Allies control Western Europe<br>
 						* USA gains Improved Shipyards if at the end of their 3rd, 4th or 5th turns, USA controls 4 out of 4 of
 							Alaska, Wake Island, Hawaiian Islands, Midway<br>
-						* USA gains War Bonds if at any time before the end of the 7th turn, both of the above two conditions are met<br>
+						* USA gains War Bonds if at any time before the end of the 8th turn, the above 2 conditions are met at the end of Germany's turn<br>
 						* USA's fighter's gain the ability to support infantry, stackable with artillery, IF at any time the USA has 2 out of 2 of War Bonds and Jet Power technologies<br>
 						* USA can give land units to Russia by landing them in Archangel<br>
         				<br>

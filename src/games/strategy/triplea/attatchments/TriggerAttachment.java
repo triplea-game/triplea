@@ -394,8 +394,8 @@ public class TriggerAttachment extends DefaultAttachment{
 				t.use(aBridge);
 				for( PlayerID aPlayer: t.getPlayers()){
 					for( TechAdvance ta:t.getTech()) {
-						if(ta.hasTech(TechAttachment.get(player))
-								|| !TechAdvance.getTechAdvances(data, player).contains(ta))
+						if(ta.hasTech(TechAttachment.get(aPlayer))
+								|| !TechAdvance.getTechAdvances(data, aPlayer).contains(ta))
 							continue;
 						aBridge.getHistoryWriter().startEvent(aPlayer.getName() + " activating " + ta);
 						TechTracker.addAdvance(aPlayer, data, aBridge, ta);
