@@ -65,7 +65,6 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isMarine = false;
   private boolean m_isInfantry = false;
   private boolean m_isLandTransport = false;
-  private boolean m_canBeGivenByTerritory = false;
   private boolean m_canScramble = false;
   private boolean m_isAirBase = false;
   private boolean m_isInfrastructure = false;
@@ -114,6 +113,8 @@ public class UnitAttachment extends DefaultAttachment
   private int m_movement = 0;
   private int m_attack = 0;
   private int m_defense = 0;
+  
+  private Collection<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<PlayerID>();
 
 
   /** Creates new UnitAttatchment */
@@ -146,15 +147,23 @@ public class UnitAttachment extends DefaultAttachment
   {
     return m_isAirTransportable;
   }
-
-  public void setCanBeGivenByTerritory(String s)
+  
+  public void setCanBeGivenByTerritoryTo(String value)
   {
-	  m_canBeGivenByTerritory = getBool(s);
+  	String[] temp = value.split(":");
+  	for (String name : temp)
+  	{
+  		PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+  		if (tempPlayer != null)
+  			m_canBeGivenByTerritoryTo.add(tempPlayer);
+  		else
+  			throw new IllegalStateException("Unit Attachments: No player named: " + name);
+  	}
   }
 
-  public boolean getCanBeGivenByTerritory()
+  public Collection<PlayerID> getCanBeGivenByTerritoryTo()
   {
-    return m_canBeGivenByTerritory;
+      return m_canBeGivenByTerritoryTo;
   }
 
   public void setCanBlitz(String s)
@@ -834,7 +843,6 @@ public class UnitAttachment extends DefaultAttachment
     " marine:" + m_isMarine +
     " infantry:" + m_isInfantry +
     " landTransport:" + m_isLandTransport +
-    " canBeGivenByTerritory:" + m_canBeGivenByTerritory + 
     " canScramble:" + m_canScramble +
     " airBase:" + m_isAirBase +
     " infrastructure:" + m_isInfrastructure +

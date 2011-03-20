@@ -423,14 +423,18 @@ public class Matches
         };
     }
 
-    public static final Match<Unit> UnitCanBeGivenByTerritory = new Match<Unit>()
+    public static Match<Unit> UnitCanBeGivenByTerritoryTo(final PlayerID player)
     {
-        public boolean match(Unit unit)
+        return new Match<Unit>()
         {
-            UnitAttachment ua = UnitAttachment.get(unit.getType());
-            return ua.getCanBeGivenByTerritory();
-        }
-    };
+            public boolean match(Unit o)
+            {
+                Unit unit = (Unit) o;
+                UnitAttachment ua = UnitAttachment.get(unit.getType());
+                return ua.getCanBeGivenByTerritoryTo().contains(player);
+            }
+        };
+    }
 
     public static final Match<Unit> UnitIsAirBase = new Match<Unit>()
     {
@@ -1496,7 +1500,6 @@ public class Matches
                 return unit.getOwner().equals(player);
             }
         };
-
     }
     
     public static Match<Unit> unitOwnedBy(final List<PlayerID> players)

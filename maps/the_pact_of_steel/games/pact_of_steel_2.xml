@@ -1839,8 +1839,9 @@
                          <option name="artillerySupportable" value="true"/>
 						 <!-- allows the unit to be transported by an "isAirTransport" unit, IF you have paratroopers technology -->
                          <option name="isAirTransportable" value="true"/>
-						 <!-- canBeGivenByTerritory will allow a unit to be given from one player to another player, if it is in a territory with changeUnitOwners -->
-						 <option name="canBeGivenByTerritory" value="true"/>
+						 <!-- canBeGivenByTerritoryTo will allow a unit to be given from one player to another player, if it is in a territory with changeUnitOwners 
+								must be a list of Players who this unit can be given to.  example: value="Russians:Chinese" -->
+						 <option name="canBeGivenByTerritoryTo" value="Russians"/>
 						 <!-- isParatroop and isMechanized currently do NOTHING, and are only kept for backwards compatibility
 						 <option name="isParatroop" value="false"/>
 						 <option name="isMechanized" value="false"/> -->
@@ -1857,7 +1858,7 @@
                          <option name="artillery" value="true"/>
 						 <!-- number of units that will be supported by the artillery, defaults to 1 if missing -->
                          <option name="unitSupportCount" value="1"/>
-						 <option name="canBeGivenByTerritory" value="true"/>
+						 <option name="canBeGivenByTerritoryTo" value="Russians"/>
                 </attatchment>
 
                 <!-- Armour -->
@@ -1870,7 +1871,7 @@
                          <option name="defense" value="3"/>
 						 <!-- allows the unit to transport "isInfantry" on a one-to-one basis, if you have the mechanizedInfantry technology -->
                          <option name="isLandTransport" value="true"/>
-						 <option name="canBeGivenByTerritory" value="true"/>
+						 <option name="canBeGivenByTerritoryTo" value="Russians"/>
                 </attatchment>
 
                 <!-- Fighter -->
@@ -3171,7 +3172,7 @@
 				</attatchment> -->
 				
 				<attatchment name="playerAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
-					<!-- destroysPUs means that when this player loses their capital, their PUs are destroyed instead of captured (defaults to false = capture any capital) -->
+					<!-- destroysPUs means that when this player loses their capital, their PUs are destroyed instead of captured (defaults to false = capture the PUs) -->
 					<option name="destroysPUs" value="true"/>
 					<!-- retainCapitalNumber means that we do not lose our money if we still control at least this many of our capitals (defaults to 1). 
 						If a player has no playerAttachment, then it defaults to X, where X = total number of capitals (ie: you lose your money if a single capital is captured) -->

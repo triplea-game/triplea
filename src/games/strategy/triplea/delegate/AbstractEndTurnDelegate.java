@@ -231,7 +231,7 @@ public abstract class AbstractEndTurnDelegate
             		if (PossibleNewOwners.contains(terrNewOwner))
             		{
             			//PlayerOwnerChange
-                    	Collection<Unit> units = currTerritory.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitOwnedBy(Player), Matches.UnitCanBeGivenByTerritory));
+                    	Collection<Unit> units = currTerritory.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitOwnedBy(Player), Matches.UnitCanBeGivenByTerritoryTo(terrNewOwner)));
                     	Change changeOwner = ChangeFactory.changeOwner(units, terrNewOwner, currTerritory);
                     	aBridge.getHistoryWriter().addChildToEvent(changeOwner.toString());
                     	aBridge.addChange(changeOwner);

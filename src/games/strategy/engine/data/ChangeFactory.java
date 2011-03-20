@@ -466,6 +466,11 @@ class PlayerOwnerChange extends Change
         }
         data.getMap().getTerritory(m_location).notifyChanged();
     }
+    
+    public String toString()
+    {
+        return "Some units change owners in territory " + m_location;
+    }
 }
 
 /**
