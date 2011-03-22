@@ -361,7 +361,7 @@ public class Purchase
                 DUtils.Log(Level.FINER, "        No units found to select for purchasing!");
             unit = unit.getType().create(player); //Don't add the actual unit we created before, otherwise if we purchase the same unit type twice, we will end up doing calc's with multiples of the same unit, which is bad
 
-            int cost = DUtils.GetTUVOfUnit(unit, player, GlobalCenter.GetPUResource());            
+            int cost = DUtils.GetTUVOfUnit(unit, GlobalCenter.GetPUResource());            
             if (PUsLeftToSpend - cost < 0) //If buying this unit will put us under
                 break;
 

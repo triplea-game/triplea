@@ -1,15 +1,8 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.MustFightBattle;
 import java.io.Serializable;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class BattleResults implements Serializable
 {

@@ -17,9 +17,8 @@ package games.strategy.triplea.Dynamix_AI.CommandCenter;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.Dynamix_AI.DMatches;
 import games.strategy.triplea.Dynamix_AI.DUtils;
-import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CompositeMatchAnd;
 import java.util.HashMap;
 import java.util.List;
 
@@ -65,7 +64,7 @@ public class CachedCalculationCenter
     {
         List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));
         if(!CachedPassableLandRoutes.containsKey(key))
-            CachedPassableLandRoutes.put(key, data.getMap().getRoute(ter1, ter2, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable)));
+            CachedPassableLandRoutes.put(key, data.getMap().getRoute(ter1, ter2, DMatches.TerritoryIsLandAndPassable));
 
         return CachedPassableLandRoutes.get(key);
     }

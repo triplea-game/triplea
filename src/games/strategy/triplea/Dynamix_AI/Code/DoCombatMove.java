@@ -26,7 +26,6 @@ import games.strategy.triplea.Dynamix_AI.DSettings;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.Dynamix_AI.Group.MovePackage;
-import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
 import games.strategy.triplea.Dynamix_AI.Others.CM_Task;
 import games.strategy.triplea.Dynamix_AI.Others.CM_TaskType;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -326,6 +325,7 @@ public class DoCombatMove
         PlayerID player = pack.Player;
         IMoveDelegate mover = pack.Mover;
 
+        //We could also just sort the tasks by priority, then go through the list
         CM_Task highestPriorityTask = null;
         float highestTaskPriority = Integer.MIN_VALUE;
         for (CM_Task task : tasks)

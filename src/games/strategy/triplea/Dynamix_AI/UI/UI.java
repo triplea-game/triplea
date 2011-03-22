@@ -38,7 +38,7 @@ public class UI
     public static void ShowSettingsWindow()
     {
         if (s_settingsWindow == null) //Shouldn't happen
-            return;        
+            return;
         s_settingsWindow.setVisible(true);
         s_settingsWindow.setLocationRelativeTo(s_frame);
     }

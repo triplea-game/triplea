@@ -41,13 +41,16 @@ public class NCM_TargetCalculator
         {
             if(enemyTer.isWater())
                 continue;
-            if(!DMatches.territoryIsOwnedByNNEnemy(data, player).match(enemyTer))
+            if(!DMatches.territoryIsOwnedByEnemy(data, player).match(enemyTer))
                 continue;
             if(!DUtils.CanWeGetFromXToY_ByPassableLand(data, ter, enemyTer))
                 continue;
 
             float score = DUtils.GetValueOfLandTer(enemyTer, data, player);
             score -= (DUtils.GetJumpsFromXToY_PassableLand(data, ter, enemyTer) * 3) * GlobalCenter.MapTerCountScale;
+
+            if(enemyTer.getOwner().isNull())
+                score -= 1000000; //We hate moving towards neutrals! (For now, anyhow)
 
             if (score > highestScore)
             {

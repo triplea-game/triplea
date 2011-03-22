@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -45,10 +44,8 @@ import java.util.logging.Level;
 public class UnitGroup
 {
     private Collection<Unit> m_units = new ArrayList<Unit>();
-    private Territory m_startTer = null;
+    private Territory m_fromTer = null;
     private Territory m_movedTo = null;
-    private float m_attack = 0F;
-    private float m_defense = 0F;
     private Match<Territory> m_cmRouteMatch = null;
     private HashMap<Match<Territory>, Integer> m_ncmCRouteMatches = null;
     private GameData m_data = null;
@@ -57,23 +54,16 @@ public class UnitGroup
 
     public UnitGroup(Unit unit, Territory startTer, GameData data)
     {
-        TacticalCenter.get(data, GlobalCenter.CurrentPlayer).AllDelegateUnitGroups.add(this);
-        m_units = Collections.singleton(unit);
-        m_startTer = startTer;
-        m_attack = DUtils.GetAttackScoreOfUnits(m_units);
-        m_defense = DUtils.GetDefenseScoreOfUnits(m_units);
-        m_data = data;
-        GenerateRouteMatches();
-        GenerateNeighbors();
+        this(Collections.singleton(unit), startTer, data);
     }
 
     public UnitGroup(Collection<Unit> units, Territory startTer, GameData data)
     {        
         TacticalCenter.get(data, GlobalCenter.CurrentPlayer).AllDelegateUnitGroups.add(this);
+        for(Unit unit : units)
+            TacticalCenter.get(data, GlobalCenter.CurrentPlayer).SetUnitStartLocation_IfNotAlreadySet(unit, startTer);
         m_units = units;
-        m_startTer = startTer;
-        m_attack = DUtils.GetAttackScoreOfUnits(m_units);
-        m_defense = DUtils.GetDefenseScoreOfUnits(m_units);
+        m_fromTer = startTer;
         m_data = data;
         GenerateRouteMatches();
         GenerateNeighbors();
@@ -82,7 +72,7 @@ public class UnitGroup
     @Override
     public int hashCode()
     {
-        String hashString = m_units.hashCode() + "" + m_startTer.getName();
+        String hashString = m_units.hashCode() + "" + m_fromTer.getName();
         return hashString.hashCode();
     }
 
@@ -102,7 +92,7 @@ public class UnitGroup
         {
             return false;
         }
-        if (this.m_startTer != other.m_startTer && (this.m_startTer == null || !this.m_startTer.equals(other.m_startTer)))
+        if (this.m_fromTer != other.m_fromTer && (this.m_fromTer == null || !this.m_fromTer.equals(other.m_fromTer)))
         {
             return false;
         }
@@ -111,7 +101,7 @@ public class UnitGroup
 
     private void GenerateNeighbors()
     {
-        m_neighbors = new ArrayList<Territory>(m_data.getMap().getNeighbors(m_startTer));
+        m_neighbors = new ArrayList<Territory>(m_data.getMap().getNeighbors(m_fromTer));
     }
 
     private void GenerateRouteMatches()
@@ -182,19 +172,9 @@ public class UnitGroup
         return new ArrayList<Unit>(m_units);
     }
 
-    public Territory GetStartTerritory()
+    public Territory GetFromTerritory()
     {
-        return m_startTer;
-    }
-
-    public float GetAttack()
-    {
-        return m_attack;
-    }
-
-    public float GetDefense()
-    {
-        return m_defense;
+        return m_fromTer;
     }
 
     public Unit GetFirstUnit()
@@ -209,7 +189,7 @@ public class UnitGroup
      */
     public Route GetCMRoute(Territory target)
     {
-        Route route = m_data.getMap().getRoute_IgnoreEnd(m_startTer, target, m_cmRouteMatch);
+        Route route = m_data.getMap().getRoute_IgnoreEnd(m_fromTer, target, m_cmRouteMatch);
         if (route == null || route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName()))
             return null;
         int slowest = DUtils.GetSlowestMovementUnitInList(new ArrayList<Unit>(m_units));
@@ -252,7 +232,7 @@ public class UnitGroup
      */
     public Route GetNCMRoute(Territory target, boolean extraChecks)
     {
-        Route route = m_data.getMap().getCompositeRoute(m_startTer, target, m_ncmCRouteMatches);
+        Route route = m_data.getMap().getCompositeRoute(m_fromTer, target, m_ncmCRouteMatches);
         if (route == null || route.getTerritories() == null || route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName()))
             return null;
 
@@ -291,26 +271,14 @@ public class UnitGroup
     {
         Route route = null;
 
-        if (GetStartTerritory().equals(target))
+        if (GetFromTerritory().equals(target))
             return null; //We signal that the move succeeded, since the units 'made it' to the target
         if (m_movedTo != null)
-            return "This unit group has already moved";
+            return "Cannot move unit group that has already moved somewhere";
 
         route = GetCMRoute(target);
-
         if (route == null)
-            return "Calculated CM route is null";
-
-        List<Unit> unitsToMove = new ArrayList<Unit>(m_units);
-
-        List<Unit> frozenOnes = new ArrayList<Unit>(unitsToMove);
-        frozenOnes.retainAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).GetFrozenUnits());
-        if (frozenOnes.size() > 0)
-            DUtils.Log(Level.FINEST, "          Some units we're trying to move are frozen: {0}", frozenOnes);
-
-        unitsToMove.removeAll(frozenOnes);
-        if (unitsToMove.isEmpty())
-            DUtils.Log(Level.FINEST, "          Move 'done', though there were no un-frozen units to move!");
+            return "Error calculating CM route...";
 
         if(s_isBufferring)
         {
@@ -320,17 +288,12 @@ public class UnitGroup
         }
         else
         {
-            String moveError = mover.move(unitsToMove, route);
+            String moveError = MoveUnitsInternal(mover, route, new ArrayList<Unit>(m_units));
             if (moveError != null)
-                return "Error given by call mover.move(...): " + moveError;
+                return moveError;
             else
                 NotifySuccessfulMove(m_movedTo);
         }
-
-        if (route.getEnd().getUnits().containsAll(unitsToMove))
-            DUtils.Log(Level.FINER, "          Performed cm move, as far to: {0} Units: {1} Route: {2}", target, DUtils.UnitList_ToString(unitsToMove), route);
-        else
-            return DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Target: {0} Units: {1} Route: {2}", target, DUtils.UnitList_ToString(m_units), route);
 
         return null;
     }
@@ -357,26 +320,14 @@ public class UnitGroup
     {
         Route route = null;
 
-        if (GetStartTerritory().equals(target))
+        if (GetFromTerritory().equals(target))
             return null; //We signal that the move succeeded, since the units 'made it' to the target
         if (m_movedTo != null)
-            return "This unit group has already moved";
+            return "Cannot move unit group that has already moved somewhere";
 
         route = GetNCMRoute(target, extraChecks);
-
         if (route == null)
-            return "Calculated NCM route is null";
-
-        List<Unit> unitsToMove = new ArrayList<Unit>(m_units);
-
-        List<Unit> frozenOnes = new ArrayList<Unit>(unitsToMove);
-        frozenOnes.retainAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).GetFrozenUnits());
-        if (frozenOnes.size() > 0)
-            DUtils.Log(Level.FINEST, "          Some units we're trying to move are frozen: {0}", frozenOnes);
-
-        unitsToMove.removeAll(frozenOnes);
-        if (unitsToMove.isEmpty())
-            DUtils.Log(Level.FINEST, "          Move 'done', though there were no un-frozen units to move!");
+            return "Error calculating NCM route...";
 
         if(s_isBufferring)
         {
@@ -386,17 +337,12 @@ public class UnitGroup
         }
         else
         {
-            String moveError = mover.move(unitsToMove, route);
+            String moveError = MoveUnitsInternal(mover, route, new ArrayList<Unit>(m_units));
             if (moveError != null)
-                return "Error given by call mover.move(...): " + moveError;
+                return moveError;
             else
                 NotifySuccessfulMove(m_movedTo);
-        }        
-
-        if (route.getEnd().getUnits().containsAll(unitsToMove))
-            DUtils.Log(Level.FINER, "          Performed ncm move, as far to: {0} Units: {1} Route: {2}", target, DUtils.UnitList_ToString(unitsToMove), route);
-        else
-            return DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Target: {0} Units: {1} Route: {2}", target, DUtils.UnitList_ToString(m_units), route);
+        }
 
         return null;
     }
@@ -411,10 +357,10 @@ public class UnitGroup
     {
         Route route = fullRoute;
 
-        if (GetStartTerritory().equals(fullRoute.getEnd()))
+        if (fullRoute != null && GetFromTerritory().equals(fullRoute.getEnd()))
             return null; //We signal that the move succeeded, since the units 'made it' to the target
         if (m_movedTo != null)
-            return "This unit group has already moved";
+            return "Cannot move unit group that has already moved somewhere";
 
         int slowest = DUtils.GetSlowestMovementUnitInList(new ArrayList<Unit>(m_units));
         if (route == null || route.getTerritories().size() < 2)
@@ -437,17 +383,6 @@ public class UnitGroup
         if (route == null || route.getTerritories().size() < 2)
             return "After secondary trimming, the route given is either null or too short(no actual route)";
 
-        List<Unit> unitsToMove = new ArrayList<Unit>(m_units);
-
-        List<Unit> frozenOnes = new ArrayList<Unit>(unitsToMove);
-        frozenOnes.retainAll(TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).GetFrozenUnits());
-        if (frozenOnes.size() > 0)
-            DUtils.Log(Level.FINEST, "          Some units we're trying to move are frozen: {0}", frozenOnes);
-
-        unitsToMove.removeAll(frozenOnes);
-        if (unitsToMove.isEmpty())
-            DUtils.Log(Level.FINEST, "          Move 'done', though there were no un-frozen units to move!");
-
         if(s_isBufferring)
         {
             Route key = route;
@@ -456,17 +391,42 @@ public class UnitGroup
         }
         else
         {
-            String moveError = mover.move(unitsToMove, route);
+            String moveError = MoveUnitsInternal(mover, route, new ArrayList<Unit>(m_units));
             if (moveError != null)
-                return "Error given by call mover.move(...): " + moveError;
+                return moveError;
             else
                 NotifySuccessfulMove(m_movedTo);
         }
 
+        return null;
+    }
+
+    /**
+     * Attempts to move the units given on the route given.
+     * @param mover - The move delegate that performs the move
+     * @param route - The route that the units in this unit group will follow
+     * @param units - The units to move
+     * @return an error message if move failed. If successful, returns null.
+     */
+    private static String MoveUnitsInternal(IMoveDelegate mover, Route route, Collection<Unit> units)
+    {
+        List<Unit> unitsToMove = new ArrayList<Unit>(units);
+
+        List<Unit> frozenOnes = new ArrayList<Unit>(unitsToMove);
+        frozenOnes.retainAll(TacticalCenter.get(CachedInstanceCenter.CachedGameData, GlobalCenter.CurrentPlayer).GetFrozenUnits());
+        unitsToMove.removeAll(frozenOnes);
+
+        if (unitsToMove.isEmpty())
+            return "Move prepared, though there are no un-frozen units to move!";
+
+        String moveError = mover.move(unitsToMove, route);
+        if (moveError != null)
+            return moveError;
+
         if (route.getEnd().getUnits().containsAll(unitsToMove))
-            DUtils.Log(Level.FINER, "          Performed ncm move, as far along route: {0} Units: {1}", route, DUtils.UnitList_ToString(unitsToMove));
+            DUtils.Log(Level.FINER, "          Performed move on route: {0} Units: {1}", route, DUtils.UnitList_ToString(unitsToMove));
         else
-            return DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Units: {0} Route: {1}", DUtils.UnitList_ToString(m_units), route);
+            return DUtils.Format("Move failed(units are not at destination), though no errors occurred. Route: {0} Units: {1}", route, DUtils.UnitList_ToString(units));
 
         return null;
     }
@@ -489,7 +449,7 @@ public class UnitGroup
             return;
 
         mover.undoMove(m_moveIndex);
-        DUtils.Log(Level.FINER, "          Move undone. Initial Location: {0} Target: {1} Units: {2}", m_startTer, m_movedTo, m_units);
+        DUtils.Log(Level.FINER, "          Move undone. Initial Location: {0} Target: {1} Units: {2}", m_fromTer, m_movedTo, m_units);
         m_movedTo = null;
         movesCount--;
         for (UnitGroup ug2 : TacticalCenter.get(CachedInstanceCenter.CachedGameData, GlobalCenter.CurrentPlayer).AllDelegateUnitGroups)
@@ -535,7 +495,7 @@ public class UnitGroup
             if (ug.GetMovedTo() != null && ug.GetMovedTo().equals(ter))
             {
                 ug.UndoMove(mover);
-                result.add(ug.GetStartTerritory());                
+                result.add(ug.GetFromTerritory());
             }
         }
         return result;
@@ -555,12 +515,17 @@ public class UnitGroup
     {
         s_bufferedMoves.clear();
     }
-    public static void PerformBufferedMovesAndDisableMoveBufferring(IMoveDelegate mover)
+    /**
+     * @param mover
+     * @return a list of errors that occurred, if any. If there were not errors, null is returned.
+     */
+    public static String PerformBufferedMovesAndDisableMoveBufferring(IMoveDelegate mover)
     {
-        performBufferedMoves(s_bufferedMoves, mover);
+        String errors = performBufferedMoves(s_bufferedMoves, mover);
         s_bufferedMoves.clear();
         s_isBufferring = false;
         TacticalCenter.get(CachedInstanceCenter.CachedGameData, GlobalCenter.CurrentPlayer).PerformBufferedFreezes();
+        return errors;
     }
     private static String performBufferedMoves(HashMap<Route, List<UnitGroup>> moves, IMoveDelegate mover)
     {
@@ -573,20 +538,19 @@ public class UnitGroup
             for(UnitGroup ug : ugs)
                 units.addAll(ug.GetUnits());
 
-            String moveError = mover.move(units, route);
-            if (moveError == null)
+            String moveError = MoveUnitsInternal(mover, route, units);
+            if (moveError != null)
+                errors.append(moveError).append("\r\n");
+            else
             {
                 for (UnitGroup ug : ugs)
                     ug.NotifySuccessfulMove(route.getEnd());
-                if (route.getEnd().getUnits().containsAll(units))
-                    DUtils.Log(Level.FINER, "          Performed move, as far to: {0} Units: {1} Route: {2}", route.getEnd(), DUtils.UnitList_ToString(units), route);
-                else
-                    errors.append(DUtils.Format("Move not completely successfull, though the UnitGroup route calculator didn't notice any problems. Target: {0} Units: {1} Route: {2}", route.getEnd(), DUtils.UnitList_ToString(units), route));
             }
-            else
-                errors.append("Error given by call mover.move(...): ").append(moveError).append("\r\n");
         }
-        return errors.toString();
+        if(errors.length() == 0)
+            return null;
+        else
+            return errors.toString().substring(0, errors.length() - 2);
     }
 
     @Override

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI;
 
 import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
@@ -30,9 +29,9 @@ import games.strategy.triplea.Dynamix_AI.Code.Tech;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.FactoryCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
-import games.strategy.triplea.Dynamix_AI.CommandCenter.KnowledgeCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ReconsiderSignalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.StrategyCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.TacticalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
 import games.strategy.triplea.Dynamix_AI.Others.Battle_RetreatTerCalculator;
@@ -117,16 +116,20 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         GlobalCenter.Initialize(CachedInstanceCenter.CachedGameData);
         FactoryCenter.ClearStaticInstances();
         TacticalCenter.ClearStaticInstances();
-        KnowledgeCenter.ClearStaticInstances();
         StatusCenter.ClearStaticInstances();
         ThreatInvalidationCenter.ClearStaticInstances();
         ReconsiderSignalCenter.ClearStaticInstances();
+        StrategyCenter.ClearStaticInstances();
         CachedInstanceCenter.CachedBattleTracker = DelegateFinder.battleDelegate(CachedInstanceCenter.CachedGameData).getBattleTracker();
         UnitGroup.ClearBufferedMoves();
     }
 
     public static void ShowSettingsWindow()
     {
+        //With this turned on, pressing "Show Dynamix AI Settings" again in the menu will freeze TripleA.
+        //(Thread will sleep till un-paused, which can't happen if the UI is frozen... Should probably have a thread check in DUtils.Log)
+        //EDIT: Added check
+
         DUtils.Log(Level.FINE, "Showing Dynamix_AI settings window.");
         UI.ShowSettingsWindow();
     }
@@ -216,10 +219,10 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
             DUtils.Log(Level.FINE, "-----Start of game round notification sent out. Round {0}-----", GlobalCenter.GameRound);
             TacticalCenter.NotifyStartOfRound();
             FactoryCenter.NotifyStartOfRound();
-            KnowledgeCenter.NotifyStartOfRound();
             StatusCenter.NotifyStartOfRound();
             ThreatInvalidationCenter.NotifyStartOfRound();
             ReconsiderSignalCenter.NotifyStartOfRound();
+            StrategyCenter.NotifyStartOfRound();
 
             GlobalCenter.CurrentPlayer = PlayerID.NULL_PLAYERID; //Reset current player to re-enable trigger in NotifyPlayer method
         }
@@ -275,6 +278,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
             DoCombatMove.doCombatMove(this, data, moveDel, player);
             TacticalCenter.get(data, player).AllDelegateUnitGroups.clear();
             TacticalCenter.get(data, player).ClearFrozenUnits();
+            TacticalCenter.get(data, player).ClearStartOfTurnUnitLocations();
             pause();
         }
         else
@@ -286,6 +290,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
             DoNonCombatMove.doNonCombatMove(this, data, moveDel, player);
             TacticalCenter.get(data, player).AllDelegateUnitGroups.clear();
             TacticalCenter.get(data, player).ClearFrozenUnits();
+            TacticalCenter.get(data, player).ClearStartOfTurnUnitLocations();
             pause();
         }
 
@@ -294,10 +299,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         else if(m_moveLastType == 0)
             m_moveLastType = 1;
         else //Put finalize code here that should run after combat and non-combat move have both completed
-        {
             m_moveLastType = 0;
-            TacticalCenter.get(data, player).ClearEnemyListSortedByPriority();
-        }
     }
 
     protected void tech(ITechDelegate techDelegate, GameData data, PlayerID player)

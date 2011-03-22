@@ -72,7 +72,7 @@ public class Purchase_UnitPlacementLocationSorter
             Territory target = NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ter, ter.getUnits().getUnits(), new ArrayList<NCM_Task>());
             if (target != null)
             {
-                Route terToTargetRoute = CachedCalculationCenter.GetLandRoute(data, ter, target);
+                Route terToTargetRoute = CachedCalculationCenter.GetPassableLandRoute(data, ter, target);
                 if (terToTargetRoute != null)
                     score -= terToTargetRoute.getLength() * 5; //We like to place units at factories closer to our ncm target
             }
@@ -80,7 +80,7 @@ public class Purchase_UnitPlacementLocationSorter
             Territory closestEnemy = DUtils.GetClosestTerMatchingXAndHavingRouteMatchingY(data, ter, DMatches.territoryIsOwnedByNNEnemy(data, player), Matches.TerritoryIsLand);
             if (closestEnemy != null)
             {
-                Route terToClosestEnemyRoute = CachedCalculationCenter.GetLandRoute(data, ter, closestEnemy);
+                Route terToClosestEnemyRoute = CachedCalculationCenter.GetPassableLandRoute(data, ter, closestEnemy);
                 if (terToClosestEnemyRoute != null)
                     score -= terToClosestEnemyRoute.getLength() * 10; //We like to place units at factories closer to the enemy
             }

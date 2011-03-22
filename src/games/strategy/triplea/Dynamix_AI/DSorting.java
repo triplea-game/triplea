@@ -240,8 +240,8 @@ public class DSorting
         {
             public int compare(Unit o1, Unit o2)
             {
-                int cost1 = DUtils.GetTUVOfUnits(Collections.singletonList(o1), o1.getOwner(), resource);
-                int cost2 = DUtils.GetTUVOfUnits(Collections.singletonList(o2), o2.getOwner(), resource);
+                int cost1 = DUtils.GetTUVOfUnits(Collections.singletonList(o1), resource);
+                int cost2 = DUtils.GetTUVOfUnits(Collections.singletonList(o2), resource);
 
                 return ((Integer)cost1).compareTo(cost2);
             }

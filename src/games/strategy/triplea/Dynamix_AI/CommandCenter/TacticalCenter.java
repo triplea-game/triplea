@@ -58,8 +58,7 @@ public class TacticalCenter
         m_data = data;
         m_player = player;
     }
-
-    private List<PlayerID> EnemyPlayersSortedByPriority = new ArrayList<PlayerID>();
+    
     public List<UnitGroup> AllDelegateUnitGroups = new ArrayList<UnitGroup>();
 
     private HashSet<Unit> UnitsToFreezeSoon = new HashSet<Unit>();
@@ -92,18 +91,25 @@ public class TacticalCenter
         FrozenUnits.clear();
     }
 
-    public List<PlayerID> GetEnemyListSortedByPriority()
-    {
-        if(EnemyPlayersSortedByPriority == null || EnemyPlayersSortedByPriority.isEmpty())
-            EnemyPlayersSortedByPriority = DUtils.GenerateEnemyListSortedByPriority(m_data, m_player);
-
-        return EnemyPlayersSortedByPriority;
-    }
-
-    public void ClearEnemyListSortedByPriority()
-    {
-        EnemyPlayersSortedByPriority.clear();
-    }
-
     public HashMap<Territory, Float> BattleRetreatChanceAssignments = new HashMap<Territory, Float>();
+
+    private HashMap<Unit, Territory> UnitLocationsAtStartOfTurn = new HashMap<Unit, Territory>();
+    public void SetUnitStartLocation_IfNotAlreadySet(Unit unit, Territory startTer)
+    {
+        if(UnitLocationsAtStartOfTurn.containsKey(unit))
+            return;
+
+        UnitLocationsAtStartOfTurn.put(unit, startTer);
+    }
+    public Territory GetUnitLocationAtStartOfTurn(Unit unit)
+    {
+        if(!UnitLocationsAtStartOfTurn.containsKey(unit))
+            UnitLocationsAtStartOfTurn.put(unit, DUtils.GetUnitLocation(m_data, unit)); //If it's not set, we must not have moved it yet
+
+        return UnitLocationsAtStartOfTurn.get(unit);
+    }
+    public void ClearStartOfTurnUnitLocations()
+    {
+        UnitLocationsAtStartOfTurn.clear();
+    }
 }

@@ -97,7 +97,7 @@ public class SelectCasualties
 
                     float score = 0;
 
-                    score -= DUtils.GetTUVOfUnit(unit, unit.getOwner(), GlobalCenter.GetPUResource());
+                    score -= DUtils.GetTUVOfUnit(unit, GlobalCenter.GetPUResource());
 
                     score -= DUtils.GetValueOfUnits(Collections.singleton(unit)); //Valuable units should get killed later
 

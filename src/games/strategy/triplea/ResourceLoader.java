@@ -59,16 +59,16 @@ public class ResourceLoader
        
         if(existing.size() > 1)
         {
-            throw new IllegalStateException("Found too many files for:" + mapName + " found:" + existing);
+            throw new IllegalStateException("Found too many files for: " + mapName + " found: " + existing);
         }
-        //at least one must exist
+        //At least one must exist
         if(existing.isEmpty())
         {
-            throw new IllegalStateException("Could not find file for map:" + mapName);
+            throw new IllegalStateException("Could not find file for map: " + mapName + "\r\n"
+                    + "Make sure the mapName property within the xml game file exactly matches the map zip or folder name.");
         }
         
-        File match = existing.iterator().next();
-        
+        File match = existing.iterator().next();        
         
     	String fileName = match.getName();
     	if(fileName.indexOf('.') > 0) { 
@@ -76,7 +76,8 @@ public class ResourceLoader
     	}
     		
         if(!fileName.equals(mapName)) {
-            throw new IllegalStateException("Map case is incorrect, xml:" + mapName + " file:" + match.getName());
+            throw new IllegalStateException("Map case is incorrect, xml: " + mapName + " file: " + match.getName() + "\r\n"
+                    + "Make sure the mapName property within the xml game file exactly matches the map zip or folder name.");
         }
      
         

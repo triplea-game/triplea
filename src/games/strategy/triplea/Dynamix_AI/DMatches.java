@@ -19,14 +19,13 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedCalculationCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
 import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
 import games.strategy.triplea.Dynamix_AI.Others.TerritoryStatus;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 import java.util.List;
 
@@ -345,6 +344,7 @@ public class DMatches
             }
         };
     }
+    public static Match<Territory> TerritoryIsLandAndPassable = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
     public static Match<Territory> territoryIsLandAndOwnedBy(final PlayerID player)
     {
         return new Match<Territory>()
@@ -484,6 +484,22 @@ public class DMatches
 
                  if(nearbyTersOnContinent.isEmpty())
                      return false; //We're touching all nearby ters on continent, so we're on a small island
+
+                 return true;
+             }
+         };
+    }
+    public static Match<Territory> territoryHasRouteMatchingXToTerritoryMatchingY(final GameData data, final Match<Territory> routeMatch, final Match<Territory> targetMatch)
+    {
+         return new Match<Territory>()
+         {
+             @Override
+             public boolean match(Territory ter)
+             {
+                 List<Territory> tersMatchingYWithRouteMatchingX = DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, ter, Integer.MAX_VALUE, targetMatch, routeMatch);
+
+                 if(tersMatchingYWithRouteMatchingX.isEmpty())
+                     return false;
 
                  return true;
              }

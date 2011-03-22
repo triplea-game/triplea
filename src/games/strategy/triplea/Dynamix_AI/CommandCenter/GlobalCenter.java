@@ -55,15 +55,26 @@ public class GlobalCenter
         PUResource = data.getResourceList().getResource(Constants.PUS);
         HasInitialized = true;
         MapTerCount = data.getMap().getTerritories().size();
+        //75 is considered the 'base' map ter count (For comparison, Great Lakes War has 90)
         MapTerCountScale = ((float)data.getMap().getTerritories().size() / 75.0F);
-        if(data.getAllianceTracker().getAlliances().size() == data.getPlayerList().size())
-            IsFFAGame = true;
+
+        IsFFAGame = true;
+        for(String alliance : data.getAllianceTracker().getAlliances())
+        {
+            List<PlayerID> playersInAlliance = DUtils.ToList(data.getAllianceTracker().getPlayersInAlliance(alliance));
+            if(playersInAlliance.size() > 1)
+            {
+                IsFFAGame = false;
+                break;
+            }
+        }
         HighestTerProduction = DUtils.GetHighestTerProduction(data);
 
         GenerateMergedAndAveragedProductionFrontier(data);
     }
     public static PlayerID CurrentPlayer = null;
     public static int MapTerCount = 0;
+    /**Please use this for all hard-coded values. (Multiply the hard-coded value by this float, and the hard-coded value will scale up or down with the maps*/
     public static float MapTerCountScale = 1.0F;
     public static PhaseType CurrentPhaseType = null;
     public static boolean IsFFAGame = false;

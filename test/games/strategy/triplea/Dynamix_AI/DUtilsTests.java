@@ -106,7 +106,7 @@ public class DUtilsTests extends TestCase
         defending.addAll(fighter.create(4, huron));
         defending.add(battleship.create(huron));
 
-        defending = DUtils.InterlaceUnits_CarriersAndPlanes(defending, 0);
+        defending = DUtils.InterleaveUnits_CarriersAndPlanes(defending, 0);
 
         DOddsCalculator.SetGameData(m_data);
         AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 2500, true);

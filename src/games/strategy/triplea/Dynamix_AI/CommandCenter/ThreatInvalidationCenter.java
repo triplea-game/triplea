@@ -102,7 +102,7 @@ public class ThreatInvalidationCenter
     }
     public void ClearInvalidatedThreats()
     {
-        DUtils.Log(Level.FINE, "          Clearing invalidated threats.");
+        DUtils.Log(Level.FINE, "    Clearing invalidated threats.");
         InvalidatedEnemyUnits.clear();
     }
 }

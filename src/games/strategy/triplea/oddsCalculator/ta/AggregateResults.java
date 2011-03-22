@@ -118,7 +118,9 @@ public class AggregateResults implements Serializable
             count += result.getBattleRoundsFought();
         }
 
-        return  count / m_results.size() ;
+        if(m_results.isEmpty() || count == 0)
+            return 1.0F; //If this is a 'fake' aggregate result, return 1.0
+        return count / m_results.size();
     }
 
     public double getDrawPercent()

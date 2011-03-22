@@ -102,8 +102,6 @@ public class SettingsWindow extends javax.swing.JDialog
         v_allowCalcingDecrease = new javax.swing.JCheckBox();
         v_calcDecreaseToPercentage = new javax.swing.JSpinner();
         jLabel13 = new javax.swing.JLabel();
-        jPanel5 = new javax.swing.JPanel();
-        v_allowLearning_Purchases = new javax.swing.JCheckBox();
         jPanel6 = new javax.swing.JPanel();
         v_resourceCollectionMultiplier = new javax.swing.JCheckBox();
         v_resourceCollectionMultiplyAmount = new javax.swing.JSpinner();
@@ -216,6 +214,10 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel94 = new javax.swing.JLabel();
         v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement = new javax.swing.JSpinner();
         jLabel95 = new javax.swing.JLabel();
+        jPanel17 = new javax.swing.JPanel();
+        v_cr_enableCallForLandGrab = new javax.swing.JCheckBox();
+        v_cr_enableCallForDefensiveFront = new javax.swing.JCheckBox();
+        v_cr_enableCallForCapitalDefense = new javax.swing.JCheckBox();
         jPanel8 = new javax.swing.JPanel();
         v_logHolderTabbedPane = new javax.swing.JTabbedPane();
         jPanel9 = new javax.swing.JPanel();
@@ -657,31 +659,6 @@ public class SettingsWindow extends javax.swing.JDialog
         );
 
         v_tabPaneMain.addTab("AI Pausing", v_pausingPanel);
-
-        jPanel5.setName("jPanel5"); // NOI18N
-
-        v_allowLearning_Purchases.setText("Allow AI Learning - Purchases");
-        v_allowLearning_Purchases.setEnabled(false);
-        v_allowLearning_Purchases.setName("v_allowLearning_Purchases"); // NOI18N
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(v_allowLearning_Purchases)
-                .addContainerGap(561, Short.MAX_VALUE))
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(v_allowLearning_Purchases)
-                .addContainerGap(231, Short.MAX_VALUE))
-        );
-
-        v_tabPaneMain.addTab("AI Learning", jPanel5);
 
         jPanel6.setName("jPanel6"); // NOI18N
 
@@ -1620,6 +1597,64 @@ public class SettingsWindow extends javax.swing.JDialog
 
         v_tabPaneMain.addTab("Task Requirements", jPanel15);
 
+        jPanel17.setName("jPanel17"); // NOI18N
+
+        v_cr_enableCallForLandGrab.setSelected(true);
+        v_cr_enableCallForLandGrab.setText("Call - For Land Grab");
+        v_cr_enableCallForLandGrab.setToolTipText("Calls for a unit to come grab a territory for production gain.");
+        v_cr_enableCallForLandGrab.setName("v_cr_enableCallForLandGrab"); // NOI18N
+        v_cr_enableCallForLandGrab.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                v_cr_enableCallForLandGrabStateChanged(evt);
+            }
+        });
+
+        v_cr_enableCallForDefensiveFront.setSelected(true);
+        v_cr_enableCallForDefensiveFront.setText("Call - For Defensive Front");
+        v_cr_enableCallForDefensiveFront.setToolTipText("Calls for units to come to a defensive front, usually just to hold the enemy at bay.");
+        v_cr_enableCallForDefensiveFront.setName("v_cr_enableCallForDefensiveFront"); // NOI18N
+        v_cr_enableCallForDefensiveFront.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                v_cr_enableCallForDefensiveFrontStateChanged(evt);
+            }
+        });
+
+        v_cr_enableCallForCapitalDefense.setSelected(true);
+        v_cr_enableCallForCapitalDefense.setText("Call - For Capital Defense");
+        v_cr_enableCallForCapitalDefense.setToolTipText("Calls for units to come to the capital, or at least nearby, to ensure it's protection.");
+        v_cr_enableCallForCapitalDefense.setName("v_cr_enableCallForCapitalDefense"); // NOI18N
+        v_cr_enableCallForCapitalDefense.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                v_cr_enableCallForCapitalDefenseStateChanged(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel17Layout = new javax.swing.GroupLayout(jPanel17);
+        jPanel17.setLayout(jPanel17Layout);
+        jPanel17Layout.setHorizontalGroup(
+            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel17Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(v_cr_enableCallForLandGrab, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(v_cr_enableCallForDefensiveFront, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(v_cr_enableCallForCapitalDefense, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(278, Short.MAX_VALUE))
+        );
+        jPanel17Layout.setVerticalGroup(
+            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel17Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(v_cr_enableCallForLandGrab)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(v_cr_enableCallForDefensiveFront)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(v_cr_enableCallForCapitalDefense)
+                .addContainerGap(179, Short.MAX_VALUE))
+        );
+
+        v_tabPaneMain.addTab("Call Requirements", jPanel17);
+
         jPanel8.setName("jPanel8"); // NOI18N
 
         v_logHolderTabbedPane.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -2024,6 +2059,10 @@ public class SettingsWindow extends javax.swing.JDialog
         v_tr_reinforceStabalize_enemyAttackSurvivalChanceRequired.setValue(settings.TR_reinforceStabalize_enemyAttackSurvivalChanceRequired);
         v_tr_enableReinforceBlock.setSelected(settings.TR_enableReinforceBlock);
 
+        v_cr_enableCallForLandGrab.setSelected(settings.CR_enableCallForLandGrab);
+        v_cr_enableCallForDefensiveFront.setSelected(settings.CR_enableCallForDefensiveFront);
+        v_cr_enableCallForCapitalDefense.setSelected(settings.CR_enableCallForCapitalDefense);
+
         v_aa_resourcePercentageThatMustExistForFactoryBuy.setValue(settings.AA_resourcePercentageThatMustExistForFactoryBuy);
         v_aa_maxUnitTypesForPurchaseMix.setValue(settings.AA_maxUnitTypesForPurchaseMix);
 
@@ -2118,6 +2157,10 @@ public class SettingsWindow extends javax.swing.JDialog
         settings.TR_enableReinforceStabalize = v_tr_enableReinforceStabalize.isSelected();
         settings.TR_reinforceStabalize_enemyAttackSurvivalChanceRequired = Integer.parseInt(v_tr_reinforceStabalize_enemyAttackSurvivalChanceRequired.getValue().toString());
         settings.TR_enableReinforceBlock = v_tr_enableReinforceBlock.isSelected();
+
+        settings.CR_enableCallForLandGrab = v_cr_enableCallForLandGrab.isSelected();
+        settings.CR_enableCallForDefensiveFront = v_cr_enableCallForDefensiveFront.isSelected();
+        settings.CR_enableCallForCapitalDefense = v_cr_enableCallForCapitalDefense.isSelected();
 
         settings.AA_resourcePercentageThatMustExistForFactoryBuy = Integer.parseInt(v_aa_resourcePercentageThatMustExistForFactoryBuy.getValue().toString());
         settings.AA_maxUnitTypesForPurchaseMix = Integer.parseInt(v_aa_maxUnitTypesForPurchaseMix.getValue().toString());
@@ -2241,11 +2284,7 @@ public class SettingsWindow extends javax.swing.JDialog
                     + "Note that it only starts this reduction of battle-simulation-counts *after* the current action is taking longer to calculate than the user wanted.\r\n"
                     + "Also, the reduction only lasts till the action has been performed, so the run count reduction does not get applied to the next action.";
         }
-        else if (v_tabPaneMain.getSelectedIndex() == 2) //AI Learning
-        {
-            message = "AI Learning";
-        }
-        else if (v_tabPaneMain.getSelectedIndex() == 3) //AI Cheating
+        else if (v_tabPaneMain.getSelectedIndex() == 2) //AI Cheating
         {
             message = "AI Cheating\r\n"
                     + "\r\n"
@@ -2262,7 +2301,7 @@ public class SettingsWindow extends javax.swing.JDialog
                     + "\r\n"
                     + "Note: AI cheating is currently only used by Dynamix AI's. They have no effect on Moore N Able or EZ Fodder AI's.";
         }
-        else if (v_tabPaneMain.getSelectedIndex() == 4) //Calc Run Counts
+        else if (v_tabPaneMain.getSelectedIndex() == 3) //Calc Run Counts
         {
             message = "Calc Run Count\r\n"
                     + "\r\n"
@@ -2280,7 +2319,7 @@ public class SettingsWindow extends javax.swing.JDialog
                     + "\r\n"
                     + "Also, many of the AI settings are in need of tweaking, so if any of you'd like to figure out the best setting values, we'd be glad to incorporate them into the AI so everyone can benifit.\r\n";
         }
-        else if (v_tabPaneMain.getSelectedIndex() == 5) //Task Requirements
+        else if (v_tabPaneMain.getSelectedIndex() == 4) //Task Requirements
         {
             message = "Task Requirements\r\n"
                     + "\r\n"
@@ -2290,6 +2329,17 @@ public class SettingsWindow extends javax.swing.JDialog
                     + "As this AI is still in development, any feedback on what these values should default to would be appreciated.\r\n"
                     + "\r\n"
                     + "By the way, the checkbox's allow you to turn on or off the different task types.";
+        }
+        else if (v_tabPaneMain.getSelectedIndex() == 5) //Call Requirements
+        {
+            message = "Call Requirements\r\n"
+                    + "\r\n"
+                    + "At the moment, there are no detailed descriptions of these settings, as they are meant to be self-explanatory.\r\n"
+                    + "For those of you who unaware of what 'calls' are, they're basically just 'wrappers' for moving units to weak defensive fronts, endangered capitals, etc.\r\n"
+                    + "Because of this, these settings give you a lot of control over the AI's long-range movements and reinforcements.\r\n"
+                    + "As this AI is still in development, any feedback on what these values should default to would be appreciated.\r\n"
+                    + "\r\n"
+                    + "By the way, the checkbox's allow you to turn on or off the different call types.";
         }
         else if (v_tabPaneMain.getSelectedIndex() == 6) //Debugging
         {
@@ -2422,6 +2472,21 @@ public class SettingsWindow extends javax.swing.JDialog
     private void v_tr_enableReinforceBlockStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_v_tr_enableReinforceBlockStateChanged
     {//GEN-HEADEREND:event_v_tr_enableReinforceBlockStateChanged
     }//GEN-LAST:event_v_tr_enableReinforceBlockStateChanged
+
+    private void v_cr_enableCallForLandGrabStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_v_cr_enableCallForLandGrabStateChanged
+    {//GEN-HEADEREND:event_v_cr_enableCallForLandGrabStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_v_cr_enableCallForLandGrabStateChanged
+
+    private void v_cr_enableCallForDefensiveFrontStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_v_cr_enableCallForDefensiveFrontStateChanged
+    {//GEN-HEADEREND:event_v_cr_enableCallForDefensiveFrontStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_v_cr_enableCallForDefensiveFrontStateChanged
+
+    private void v_cr_enableCallForCapitalDefenseStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_v_cr_enableCallForCapitalDefenseStateChanged
+    {//GEN-HEADEREND:event_v_cr_enableCallForCapitalDefenseStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_v_cr_enableCallForCapitalDefenseStateChanged
 
     private void ChangeTotalLengthPanelsState(boolean enabled)
     {
@@ -2636,10 +2701,10 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
+    private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
@@ -2659,7 +2724,6 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JTextArea v_aiOutputLogArea;
     private javax.swing.JScrollPane v_aiOutputLogAreaScrollPane;
     private javax.swing.JCheckBox v_allowCalcingDecrease;
-    private javax.swing.JCheckBox v_allowLearning_Purchases;
     private javax.swing.JRadioButton v_basicScoreEval;
     private javax.swing.JRadioButton v_basicStrengthEval;
     private javax.swing.JRadioButton v_battleCalculator;
@@ -2680,6 +2744,9 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JSpinner v_caretreat_determinesIfAIShouldRetreat;
     private javax.swing.JSpinner v_combatMoveWait_AL;
     private javax.swing.JSpinner v_combatMoveWait_AW;
+    private javax.swing.JCheckBox v_cr_enableCallForCapitalDefense;
+    private javax.swing.JCheckBox v_cr_enableCallForDefensiveFront;
+    private javax.swing.JCheckBox v_cr_enableCallForLandGrab;
     private javax.swing.JCheckBox v_enableAILogging;
     private javax.swing.ButtonGroup v_invalidationTypeButtonGroup;
     private javax.swing.JCheckBox v_limitLogHistoryCB;

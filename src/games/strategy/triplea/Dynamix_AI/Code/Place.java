@@ -41,9 +41,7 @@ import games.strategy.util.Match;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Level;
 import javax.swing.SwingUtilities;
 
@@ -87,7 +85,7 @@ public class Place
             if (DSettings.LoadSettings().EnableUnitPlacementMultiplier && DSettings.LoadSettings().UnitPlacementMultiplyPercent != 100) //AI cheat for more interesting gameplay. Can be turned on with AI settings window.
             {
                 float multiplyAmount = DUtils.ToFloat(DSettings.LoadSettings().UnitPlacementMultiplyPercent);
-                List<Unit> hackedUnits = DUtils.GetXPercentOfTheUnitsInList_DuplicateForExtra(units, multiplyAmount);
+                List<Unit> hackedUnits = DUtils.GetXPercentOfTheUnitsInList_CreateMoreIfNeeded(units, multiplyAmount);
                 final List<Unit> fHackedUnits = hackedUnits; final Territory fFactoryTer = factoryTer; final Dynamix_AI fAI = ai;
                 Runnable runner = new Runnable()
                 {
@@ -100,6 +98,8 @@ public class Place
                 try{SwingUtilities.invokeAndWait(runner);}catch(Exception ex){System.out.println(ex.toString());}
                 Change change = ChangeFactory.addUnits(factoryTer, hackedUnits);
                 CachedInstanceCenter.CachedDelegateBridge.addChange(change);
+                Change change2 = ChangeFactory.removeUnits(player, units); //Now remove the left-to-place units
+                CachedInstanceCenter.CachedDelegateBridge.addChange(change2);
                 Dynamix_AI.Pause();
             }
             else
@@ -173,7 +173,7 @@ public class Place
                 if (DSettings.LoadSettings().EnableUnitPlacementMultiplier && DSettings.LoadSettings().UnitPlacementMultiplyPercent != 100) //AI cheat for more interesting gameplay. Can be turned on with AI settings window.
                 {
                     float multiplyAmount = DUtils.ToFloat(DSettings.LoadSettings().UnitPlacementMultiplyPercent);
-                    List<Unit> hackedUnits = DUtils.GetXPercentOfTheUnitsInList_DuplicateForExtra(unitsToPlace, multiplyAmount);
+                    List<Unit> hackedUnits = DUtils.GetXPercentOfTheUnitsInList_CreateMoreIfNeeded(unitsToPlace, multiplyAmount);
                     final List<Unit> fHackedUnits = hackedUnits;
                     final Territory fPlaceLoc = placeLoc;
                     final Dynamix_AI fAI = ai;
@@ -188,6 +188,8 @@ public class Place
                     try{SwingUtilities.invokeAndWait(runner);}catch(Exception ex){System.out.println(ex.toString());}
                     Change change = ChangeFactory.addUnits(placeLoc, hackedUnits);
                     CachedInstanceCenter.CachedDelegateBridge.addChange(change);
+                    Change change2 = ChangeFactory.removeUnits(player, unitsToPlace); //Now remove the left-to-place units
+                    CachedInstanceCenter.CachedDelegateBridge.addChange(change2);
                     Dynamix_AI.Pause();
                 }
                 else

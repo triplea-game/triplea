@@ -9781,7 +9781,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		float canWinPercentage = 1.0F; // we need to run a battle calc or something to determine what the chance of us winning is
 		boolean bonus = (canWinPercentage > .8);
 		List<Unit> workUnits1 = new ArrayList<Unit>(BattleCalculator.sortUnitsForCasualtiesWithSupport(selectFrom, defending, hit, costs, data, bonus));
-		List<Unit> workUnits2 = new ArrayList<Unit>(DUtils.InterlaceUnits_CarriersAndPlanes(workUnits1, 0));
+		List<Unit> workUnits2 = new ArrayList<Unit>(DUtils.InterleaveUnits_CarriersAndPlanes(workUnits1, 0));
 		
 		for (int j = 0; j < xCount; j++)
 		{

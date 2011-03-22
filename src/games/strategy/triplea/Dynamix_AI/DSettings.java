@@ -97,6 +97,10 @@ public class DSettings implements Serializable
     public int TR_reinforceStabalize_enemyAttackSurvivalChanceRequired = 50;
     public boolean TR_enableReinforceBlock = true;
 
+    public boolean CR_enableCallForLandGrab = true;
+    public boolean CR_enableCallForDefensiveFront = true;
+    public boolean CR_enableCallForCapitalDefense = true;
+
     public int AA_resourcePercentageThatMustExistForFactoryBuy = 50;
     public int AA_maxUnitTypesForPurchaseMix = 5;
 
