@@ -70,7 +70,7 @@ public class NCM_AirLandingCalculator
             if(survivalChance > .9F) //If this landing ter is really safe
                 survivalChance = .9F; //Then accept similar chances as equal
 
-            float score = 0;            
+            float score = 0;
             score += airUnitsAbleToMakeIt * 10000000; //We really want all our planes to make it, but we can't sometimes...
             score += survivalChance * 1000000; //Survival chance is the next important
 

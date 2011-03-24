@@ -1471,180 +1471,182 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
+                          <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="v_tr_enableReinforceBlock" min="-2" pref="450" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                   </Group>
-                                  <Group type="103" alignment="0" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="v_tr_enableReinforceStabalize" min="-2" pref="450" max="-2" attributes="1"/>
-                                          <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="v_tr_enableReinforceStabalize" min="-2" pref="450" max="-2" attributes="1"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="v_tr_enableReinforceFrontline" min="-2" pref="450" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="v_tr_enableAttackLandGrab" min="-2" pref="450" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="v_tr_enableAttackTrade" min="-2" pref="450" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="v_tr_enableAttackStabalize" min="-2" pref="450" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel49" min="-2" pref="450" max="-2" attributes="0"/>
+                                      <EmptySpace pref="255" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel62" min="-2" pref="450" max="-2" attributes="0"/>
+                                      <EmptySpace pref="168" max="32767" attributes="0"/>
+                                      <Component id="v_tr_attackOffensive_Neutrals_takeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                                      <Component id="jLabel72" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel59" min="-2" pref="450" max="-2" attributes="0"/>
+                                      <EmptySpace pref="255" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel74" min="-2" pref="450" max="-2" attributes="0"/>
+                                      <EmptySpace pref="168" max="32767" attributes="0"/>
+                                      <Component id="v_tr_attackOffensive_Capitals_takeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel77" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel81" min="-2" pref="450" max="-2" attributes="0"/>
+                                      <EmptySpace pref="168" max="32767" attributes="0"/>
+                                      <Component id="v_tr_attackStabalize_takeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel79" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Component id="jLabel56" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
+                                          <Component id="v_tr_enableAttackOffensive" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
+                                          <Component id="jLabel78" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
                                       </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="v_tr_enableReinforceFrontline" min="-2" pref="450" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="v_tr_enableAttackLandGrab" min="-2" pref="450" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="v_tr_enableAttackTrade" min="-2" pref="450" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="v_tr_enableAttackStabalize" min="-2" pref="450" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="jLabel49" min="-2" pref="450" max="-2" attributes="0"/>
-                                          <EmptySpace pref="255" max="32767" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="jLabel62" min="-2" pref="450" max="-2" attributes="0"/>
-                                          <EmptySpace pref="168" max="32767" attributes="0"/>
-                                          <Component id="v_tr_attackOffensive_Neutrals_takeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                          <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                                          <Component id="jLabel72" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="jLabel59" min="-2" pref="450" max="-2" attributes="0"/>
-                                          <EmptySpace pref="255" max="32767" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="jLabel74" min="-2" pref="450" max="-2" attributes="0"/>
-                                          <EmptySpace pref="168" max="32767" attributes="0"/>
-                                          <Component id="v_tr_attackOffensive_Capitals_takeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="jLabel77" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="jLabel81" min="-2" pref="450" max="-2" attributes="0"/>
-                                          <EmptySpace pref="168" max="32767" attributes="0"/>
-                                          <Component id="v_tr_attackStabalize_takeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="jLabel79" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Group type="103" groupAlignment="1" attributes="0">
-                                              <Component id="jLabel56" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
-                                              <Component id="v_tr_enableAttackOffensive" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
-                                              <Component id="jLabel78" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
+                                      <EmptySpace pref="168" max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Group type="102" alignment="1" attributes="0">
+                                              <Component id="v_tr_attackOffensive_takeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                                              <Component id="jLabel70" min="-2" max="-2" attributes="0"/>
                                           </Group>
-                                          <EmptySpace pref="168" max="32767" attributes="0"/>
-                                          <Group type="103" groupAlignment="1" attributes="0">
-                                              <Group type="102" alignment="1" attributes="0">
-                                                  <Component id="v_tr_attackOffensive_takeoverChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                                  <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                                                  <Component id="jLabel70" min="-2" max="-2" attributes="0"/>
+                                          <Group type="102" alignment="1" attributes="0">
+                                              <Group type="103" groupAlignment="1" attributes="0">
+                                                  <Component id="v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement" alignment="1" min="-2" pref="56" max="-2" attributes="1"/>
+                                                  <Component id="v_tr_attackStabalize_counterAttackSurvivalChanceRequired" alignment="1" min="-2" pref="56" max="-2" attributes="1"/>
+                                                  <Component id="v_tr_attackTrade_totalTradeScore" alignment="1" min="-2" pref="56" max="-2" attributes="1"/>
                                               </Group>
-                                              <Group type="102" alignment="1" attributes="0">
-                                                  <Group type="103" groupAlignment="1" attributes="0">
-                                                      <Component id="v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement" alignment="1" min="-2" pref="56" max="-2" attributes="1"/>
-                                                      <Component id="v_tr_attackStabalize_counterAttackSurvivalChanceRequired" alignment="1" min="-2" pref="56" max="-2" attributes="1"/>
-                                                      <Component id="v_tr_attackTrade_totalTradeScore" alignment="1" min="-2" pref="56" max="-2" attributes="1"/>
-                                                      <Component id="v_tr_attackTrade_landUnitsAtEnd" alignment="1" min="-2" pref="56" max="-2" attributes="1"/>
-                                                  </Group>
-                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                                  <Component id="jLabel80" min="-2" max="-2" attributes="0"/>
-                                              </Group>
+                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                              <Component id="jLabel80" min="-2" max="-2" attributes="0"/>
                                           </Group>
-                                          <EmptySpace max="-2" attributes="0"/>
                                       </Group>
-                                      <Component id="jLabel95" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
-                                      <Component id="jLabel91" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="jLabel90" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
-                                              <Component id="jLabel92" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="jLabel95" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
+                                  <Component id="jLabel91" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="jLabel92" min="-2" pref="450" max="-2" attributes="0"/>
+                                      <EmptySpace pref="203" max="32767" attributes="0"/>
+                                      <Component id="v_tr_attackLandGrab_onlyGrabLandIfWeCanBlitzIt" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="jLabel85" min="-2" pref="450" max="-2" attributes="1"/>
+                                              <EmptySpace pref="168" max="32767" attributes="0"/>
+                                              <Component id="v_tr_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements" min="-2" pref="56" max="-2" attributes="1"/>
                                           </Group>
-                                          <EmptySpace pref="203" max="32767" attributes="0"/>
-                                          <Component id="v_tr_attackLandGrab_onlyGrabLandIfWeCanBlitzIt" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
+                                          <Group type="102" alignment="1" attributes="0">
+                                              <Component id="jLabel84" min="-2" pref="450" max="-2" attributes="1"/>
+                                              <EmptySpace pref="168" max="32767" attributes="0"/>
+                                              <Component id="v_tr_reinforceFrontLine_enemyAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                          </Group>
                                       </Group>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Group type="103" groupAlignment="1" attributes="0">
-                                              <Group type="102" alignment="0" attributes="0">
-                                                  <Component id="jLabel85" min="-2" pref="450" max="-2" attributes="1"/>
-                                                  <EmptySpace pref="168" max="32767" attributes="0"/>
-                                                  <Component id="v_tr_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements" min="-2" pref="56" max="-2" attributes="1"/>
-                                              </Group>
-                                              <Group type="102" alignment="1" attributes="0">
-                                                  <Component id="jLabel84" min="-2" pref="450" max="-2" attributes="1"/>
-                                                  <EmptySpace pref="168" max="32767" attributes="0"/>
-                                                  <Component id="v_tr_reinforceFrontLine_enemyAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                              </Group>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel86" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel87" min="-2" pref="450" max="-2" attributes="1"/>
+                                      <EmptySpace pref="168" max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Group type="102" alignment="1" attributes="0">
+                                              <Component id="v_tr_reinforceStabalize_enemyAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                              <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                                           </Group>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="jLabel86" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="jLabel89" alignment="1" min="-2" max="-2" attributes="0"/>
                                       </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="jLabel87" min="-2" pref="450" max="-2" attributes="1"/>
-                                          <EmptySpace pref="168" max="32767" attributes="0"/>
-                                          <Group type="103" groupAlignment="1" attributes="0">
-                                              <Group type="102" alignment="1" attributes="0">
-                                                  <Component id="v_tr_reinforceStabalize_enemyAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                                  <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
-                                              </Group>
-                                              <Component id="jLabel89" alignment="1" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="jLabel88" min="-2" pref="450" max="-2" attributes="0"/>
+                                              <EmptySpace pref="168" max="32767" attributes="0"/>
+                                              <Component id="v_tr_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement" min="-2" pref="56" max="-2" attributes="1"/>
                                           </Group>
-                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="102" alignment="1" attributes="0">
+                                              <Component id="jLabel60" min="-2" pref="450" max="-2" attributes="0"/>
+                                              <EmptySpace pref="168" max="32767" attributes="0"/>
+                                              <Component id="v_tr_attackOffensive_counterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                          </Group>
                                       </Group>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Group type="103" groupAlignment="1" attributes="0">
-                                              <Group type="102" alignment="0" attributes="0">
-                                                  <Component id="jLabel88" min="-2" pref="450" max="-2" attributes="0"/>
-                                                  <EmptySpace pref="168" max="32767" attributes="0"/>
-                                                  <Component id="v_tr_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement" min="-2" pref="56" max="-2" attributes="1"/>
-                                              </Group>
-                                              <Group type="102" alignment="1" attributes="0">
-                                                  <Component id="jLabel60" min="-2" pref="450" max="-2" attributes="0"/>
-                                                  <EmptySpace pref="168" max="32767" attributes="0"/>
-                                                  <Component id="v_tr_attackOffensive_counterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                              </Group>
+                                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                                      <Component id="jLabel71" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="jLabel93" min="-2" pref="450" max="-2" attributes="0"/>
+                                              <EmptySpace pref="168" max="32767" attributes="0"/>
+                                              <Component id="v_tr_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement" min="-2" pref="56" max="-2" attributes="1"/>
                                           </Group>
-                                          <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                                          <Component id="jLabel71" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="102" alignment="1" attributes="0">
+                                              <Component id="jLabel61" min="-2" pref="450" max="-2" attributes="0"/>
+                                              <EmptySpace pref="168" max="32767" attributes="0"/>
+                                              <Component id="v_tr_attackOffensive_Neutrals_counterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                          </Group>
                                       </Group>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Group type="103" groupAlignment="1" attributes="0">
-                                              <Group type="102" alignment="0" attributes="0">
-                                                  <Component id="jLabel93" min="-2" pref="450" max="-2" attributes="0"/>
-                                                  <EmptySpace pref="168" max="32767" attributes="0"/>
-                                                  <Component id="v_tr_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement" min="-2" pref="56" max="-2" attributes="1"/>
-                                              </Group>
-                                              <Group type="102" alignment="1" attributes="0">
-                                                  <Component id="jLabel61" min="-2" pref="450" max="-2" attributes="0"/>
-                                                  <EmptySpace pref="168" max="32767" attributes="0"/>
-                                                  <Component id="v_tr_attackOffensive_Neutrals_counterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                              </Group>
-                                          </Group>
-                                          <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                                          <Component id="jLabel73" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                                      <Component id="jLabel73" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabel75" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
+                                          <Component id="jLabel94" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
                                       </Group>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="jLabel75" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
-                                              <Component id="jLabel94" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace pref="168" max="32767" attributes="0"/>
-                                          <Group type="103" groupAlignment="1" attributes="0">
-                                              <Component id="v_tr_attackOffensive_Capitals_counterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
-                                              <Component id="v_tr_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement" min="-2" pref="56" max="-2" attributes="1"/>
-                                          </Group>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="jLabel76" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
+                                      <EmptySpace pref="168" max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Component id="v_tr_attackOffensive_Capitals_counterAttackSurvivalChanceRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                          <Component id="v_tr_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement" min="-2" pref="56" max="-2" attributes="1"/>
                                       </Group>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel76" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel90" min="-2" pref="450" max="-2" attributes="0"/>
+                                      <EmptySpace pref="168" max="32767" attributes="0"/>
+                                      <Component id="v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired" min="-2" pref="56" max="-2" attributes="1"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel83" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -1745,9 +1747,10 @@
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel90" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="v_tr_attackTrade_landUnitsAtEnd" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel83" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Component id="v_tr_enableAttackLandGrab" min="-2" max="-2" attributes="0"/>
@@ -1995,21 +1998,6 @@
                         <Property name="name" type="java.lang.String" value="jLabel89" noResource="true"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JSpinner" name="v_tr_attackTrade_landUnitsAtEnd">
-                      <Properties>
-                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="2" maximum="10" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
-                        </Property>
-                        <Property name="name" type="java.lang.String" value="v_tr_attackTrade_landUnitsAtEnd" noResource="true"/>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JLabel" name="jLabel90">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="        Land Unit Count At End Of Attack Required:"/>
-                        <Property name="toolTipText" type="java.lang.String" value="The number of land units that you want the AI to have leftover after a trade attack is completed."/>
-                        <Property name="name" type="java.lang.String" value="jLabel90" noResource="true"/>
-                      </Properties>
-                    </Component>
                     <Component class="javax.swing.JCheckBox" name="v_tr_attackLandGrab_onlyGrabLandIfWeCanBlitzIt">
                       <Properties>
                         <Property name="name" type="java.lang.String" value="v_tr_attackLandGrab_onlyGrabLandIfWeCanBlitzIt" noResource="true"/>
@@ -2123,7 +2111,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel91">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="        Total Trade Score Required:"/>
+                        <Property name="text" type="java.lang.String" value="        Total Trade Score Required: "/>
                         <Property name="toolTipText" type="java.lang.String" value="The trade score(total PU swing) required to perform a trade attack. (Simplified Trade Score: Ter production - our TUV loss + enemy TUV loss)"/>
                         <Property name="name" type="java.lang.String" value="jLabel91" noResource="true"/>
                       </Properties>
@@ -2201,6 +2189,27 @@
                         <Property name="text" type="java.lang.String" value="        Counter-Attack Trade Score Required For Survival-Chance Requirement Bypass:"/>
                         <Property name="toolTipText" type="java.lang.String" value="The min trade score(total PU swing, if we get attacked) we need to bypass the survival chance requirement. (Simplified Trade Score: Ter production - our TUV loss + enemy TUV loss)"/>
                         <Property name="name" type="java.lang.String" value="jLabel95" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired">
+                      <Properties>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="75" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel83">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="%"/>
+                        <Property name="name" type="java.lang.String" value="jLabel83" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel90">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="        Certainty Of Reaching Desired Number Of Leftover Land Units Required:"/>
+                        <Property name="toolTipText" type="java.lang.String" value="The percentage of times we end up with X land units(ai-determined) when we simulate the counter-attack battle with the battle calc&apos;er must meet this percentage for the task to be performed."/>
+                        <Property name="name" type="java.lang.String" value="jLabel90" noResource="true"/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -2528,12 +2537,13 @@
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="jPanel5" alignment="0" max="32767" attributes="2"/>
                                   <Component id="jPanel3" alignment="0" max="32767" attributes="2"/>
-                                  <Component id="jPanel10" alignment="0" pref="712" max="32767" attributes="3"/>
+                                  <Component id="jPanel10" alignment="0" pref="695" max="32767" attributes="3"/>
                               </Group>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -2544,7 +2554,9 @@
                               <Component id="jPanel10" min="-2" pref="100" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="42" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -2571,7 +2583,7 @@
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" alignment="0" attributes="0">
                                           <Component id="jLabel55" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace pref="197" max="32767" attributes="0"/>
+                                          <EmptySpace pref="180" max="32767" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <Component id="jLabel58" min="-2" max="-2" attributes="0"/>
@@ -2580,7 +2592,7 @@
                                           <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                                           <Component id="v_aa_globalThreatInvalidation" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
-                                          <Component id="v_aa_hotspotInvalidation" pref="258" max="32767" attributes="0"/>
+                                          <Component id="v_aa_hotspotInvalidation" pref="241" max="32767" attributes="0"/>
                                           <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
@@ -2711,7 +2723,7 @@
                                       <Component id="jLabel53" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel57" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace pref="210" max="32767" attributes="0"/>
+                                  <EmptySpace pref="193" max="32767" attributes="0"/>
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                       <Component id="v_aa_maxUnitTypesForPurchaseMix" min="-2" pref="56" max="-2" attributes="1"/>
                                       <Component id="v_aa_resourcePercentageThatMustExistForFactoryBuy" alignment="0" min="-2" pref="56" max="-2" attributes="1"/>
@@ -2776,6 +2788,71 @@
                               <SpinnerModel initial="5" maximum="25" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
                             </Property>
                             <Property name="name" type="java.lang.String" value="v_aa_maxUnitTypesForPurchaseMix" noResource="true"/>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
+                    <Container class="javax.swing.JPanel" name="jPanel5">
+                      <Properties>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                            <TitledBorder title="Others"/>
+                          </Border>
+                        </Property>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[1000, 750]"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="jPanel5" noResource="true"/>
+                      </Properties>
+
+                      <Layout>
+                        <DimensionLayout dim="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jLabel67" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace pref="155" max="32767" attributes="0"/>
+                                  <Component id="v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit" min="-2" pref="56" max="-2" attributes="1"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="jLabel68" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                        </DimensionLayout>
+                        <DimensionLayout dim="1">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="jLabel67" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel68" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
+                        </DimensionLayout>
+                      </Layout>
+                      <SubComponents>
+                        <Component class="javax.swing.JLabel" name="jLabel67">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Survival Chance That One Of The Landing Ters Must Match For Air Unit To Be Recruitable:"/>
+                            <Property name="toolTipText" type="java.lang.String" value="For an air unit to be considered &apos;recruitable&apos;, it must be able to reach a landing territory that has at least an X percent chance of survival."/>
+                            <Property name="name" type="java.lang.String" value="jLabel67" noResource="true"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit">
+                          <Properties>
+                            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                              <SpinnerModel initial="75" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                            </Property>
+                            <Property name="name" type="java.lang.String" value="v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit" noResource="true"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jLabel68">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="%"/>
+                            <Property name="name" type="java.lang.String" value="jLabel68" noResource="true"/>
                           </Properties>
                         </Component>
                       </SubComponents>

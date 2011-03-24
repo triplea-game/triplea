@@ -87,7 +87,7 @@ public class DSettings implements Serializable
     public int TR_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement = 15;
     public boolean TR_enableAttackTrade = true;
     public int TR_attackTrade_totalTradeScoreRequired = 10;
-    public int TR_attackTrade_landUnitsAtEnd = 2;
+    public int TR_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired = 75;
     public boolean TR_enableAttackLandGrab = true;
     public boolean TR_attackLandGrab_onlyGrabLandIfWeCanBlitzIt = false;
     public boolean TR_enableReinforceFrontLine = true;
@@ -107,6 +107,8 @@ public class DSettings implements Serializable
     public ThreatInvalidationType AA_threatInvalidationType = ThreatInvalidationType.AroundHotspot;
     public int AA_threatInvalidationAroundHotspotRadius = 1;
     public int AA_percentageOfResistedThreatThatTasksInvalidate = 75;
+
+    public int AA_survivalChanceOfLandingTerRequiredForPlaneRecruit = 75;
 
     private static DSettings s_lastSettings = null;
     private static String PROGRAM_SETTINGS = "Program Settings";

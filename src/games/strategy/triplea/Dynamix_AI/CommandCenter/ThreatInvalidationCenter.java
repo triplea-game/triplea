@@ -86,13 +86,16 @@ public class ThreatInvalidationCenter
             tersWereInvalidatingThreatsFor = DUtils.ToList(m_data.getMap().getTerritories());
         else //We're invalidating threats around the territory, the extent of the ring of ters we invalidate the threats for is user-set
             tersWereInvalidatingThreatsFor = DUtils.GetTerritoriesWithinXDistanceOfY(m_data, hotspot, DSettings.LoadSettings().AA_threatInvalidationAroundHotspotRadius);
+
+        //Don't invalidate threats for the hotspot itself
+        tersWereInvalidatingThreatsFor.remove(hotspot);
+
         for (Territory ter : tersWereInvalidatingThreatsFor)
-        {
             DUtils.AddObjectsToListValueForKeyInMap(InvalidatedEnemyUnits, ter, threats);
-        }
-        DUtils.Log(Level.FINER, "          Invalidating threats. Units: {0} New Total Size: {1} Hotspot: {2} Ters: {3}", DUtils.UnitList_ToString(threats), InvalidatedEnemyUnits.get(hotspot).size(), hotspot.getName(), tersWereInvalidatingThreatsFor);
+
+        DUtils.Log(Level.FINER, "          Invalidating threats. Units: {0} Hotspot: {1} Ters: {2}", DUtils.UnitList_ToString(threats), hotspot.getName(), tersWereInvalidatingThreatsFor);
     }
-    public boolean IsUnitInvalidated(Unit unit, Territory ter)
+    public boolean IsUnitInvalidatedForTer(Unit unit, Territory ter)
     {
         if(ThreatInvalidationSuspended)
             return false;

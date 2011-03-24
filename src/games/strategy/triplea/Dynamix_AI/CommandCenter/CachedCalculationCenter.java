@@ -19,6 +19,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Dynamix_AI.DMatches;
 import games.strategy.triplea.Dynamix_AI.DUtils;
+import games.strategy.triplea.delegate.Matches;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,6 +30,7 @@ import java.util.List;
 public class CachedCalculationCenter
 {
     public static HashMap<List<Territory>, Route> CachedRoutes = new HashMap<List<Territory>, Route>();
+    public static HashMap<List<Territory>, Route> CachedAirPassableRoutes = new HashMap<List<Territory>, Route>();
     public static HashMap<List<Territory>, Route> CachedLandRoutes = new HashMap<List<Territory>, Route>();
     public static HashMap<List<Territory>, Route> CachedPassableLandRoutes = new HashMap<List<Territory>, Route>();
     public static HashMap<List<Territory>, Route> CachedSeaRoutes = new HashMap<List<Territory>, Route>();
@@ -43,6 +45,18 @@ public class CachedCalculationCenter
             CachedRoutes.put(key, data.getMap().getRoute(ter1, ter2));
 
         return CachedRoutes.get(key);
+    }
+
+    /**
+     * The same as data.getMap().getRoute(ter1, ter2, Matches.TerritoryIsNotImpassable), except that this method caches the resulting Route for quick retrieval later on.
+     */
+    public static Route GetAirPassableRoute(GameData data, Territory ter1, Territory ter2)
+    {
+        List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));
+        if(!CachedAirPassableRoutes.containsKey(key))
+            CachedAirPassableRoutes.put(key, data.getMap().getRoute(ter1, ter2, Matches.TerritoryIsNotImpassable));
+
+        return CachedAirPassableRoutes.get(key);
     }
 
     /**

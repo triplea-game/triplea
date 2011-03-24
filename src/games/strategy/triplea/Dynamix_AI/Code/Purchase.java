@@ -45,6 +45,7 @@ import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -315,10 +316,8 @@ public class Purchase
     private static PurchaseGroup CalculateBestPurchaseGroup(Territory ter, GameData data, PlayerID player, IPurchaseDelegate purchaser, float PUsLeftToSpend, boolean purchaseForBid)
     {
         Territory ncmTarget = NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), new ArrayList<NCM_Task>());
-        if(ncmTarget == null)
-            ncmTarget = DUtils.GetClosestTerInList(data, DUtils.GetAllEnemyCaps_ThatAreOwnedByOriginalOwner(data, player), ter);
-        if(ncmTarget == null)
-            ncmTarget = DUtils.GetClosestTerInList(data, DUtils.GetAllEnemyCaps(data, player), ter);
+        if(ncmTarget == null) //No ncm target, so buy random units
+            return new PurchaseGroup(Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player, Match.ALWAYS_MATCH)), purchaser, data, player);
 
         Integer productionSpaceLeft = DUtils.GetCheckedUnitProduction(ter);
         if(FactoryCenter.get(data, player).ChosenAAPlaceTerritories.contains(ter)) //If we're going to build an AA here

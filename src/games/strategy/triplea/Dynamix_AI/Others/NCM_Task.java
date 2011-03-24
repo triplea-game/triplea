@@ -202,7 +202,7 @@ public class NCM_Task
             return; //We only need one unit
 
         float minSurvivalChance = .8F;
-        int maxBattleVolleys = 7;
+        int maxBattleVolleys = 5;
 
         recruitEnoughUnitsToMeetXYZ(minSurvivalChance, maxBattleVolleys);
     }
@@ -213,7 +213,7 @@ public class NCM_Task
             return; //We only need one unit
 
         float minSurvivalChance = .9F;
-        int maxBattleVolleys = 5;
+        int maxBattleVolleys = 3;
 
         recruitEnoughUnitsToMeetXYZ(minSurvivalChance, maxBattleVolleys);
     }
@@ -224,7 +224,7 @@ public class NCM_Task
             return; //We only need one unit
 
         float minSurvivalChance = 1.0F;
-        int maxBattleVolleys = 3;//(One seems to cause problems)
+        int maxBattleVolleys = 1;
 
         recruitEnoughUnitsToMeetXYZ(minSurvivalChance, maxBattleVolleys);
     }
@@ -261,7 +261,7 @@ public class NCM_Task
             break; //We've met all requirements
         }
 
-        m_recruitedUnits = m_recruitedUnits.subList(0, Math.max(0, m_recruitedUnits.size() - 7)); //Backtrack 7 units
+        //m_recruitedUnits = m_recruitedUnits.subList(0, Math.max(0, m_recruitedUnits.size() - 7)); //Backtrack 7 units
 
         //Now do it carefully
         for (UnitGroup ug : sortedPossibles)
@@ -373,12 +373,7 @@ public class NCM_Task
 
             if (howCloseToMeetingMinSurvivalChance < .98F)
             {
-                List<Unit> responseAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
-                List<Unit> responseDefenders = simulatedAttack.GetAverageAttackingUnitsRemaining();
-                //Btw, we need to do this(have toTake at false) so the TUV loss for attacker, if they can't take with land, doesn't get messed up
-                AggregateResults simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, false);
-
-                int tradeScoreIfAttacked = -DUtils.GetTaskTradeScore(m_data, m_target, attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, simulatedResponse);
+                int tradeScoreIfAttacked = -DUtils.GetTaskTradeScore(m_data, m_target, attackers, defenders, simulatedAttack, new ArrayList<Unit>(), new ArrayList<Unit>(), null);
                 DUtils.Log(Level.FINEST, "        Trade score if attacked: {0} Required for bypass: {1}", tradeScoreIfAttacked, DSettings.LoadSettings().TR_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements);
                 if (tradeScoreIfAttacked >= DSettings.LoadSettings().TR_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements)
                     return true; //Attacking this ter would actually hurt the enemy, so we know we're safe
@@ -521,7 +516,7 @@ public class NCM_Task
                         continue;
                     if (Match.allMatch(retreatUnits, DMatches.UnitGroupHasEnoughMovement_All(ncmRoute.getLength()))) //If this is a valid, reachable reinforce ter
                     {
-                        List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach_CountXAsPassthrough(m_data, ter, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand, m_target);
+                        List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach_CountXAsPassthroughs(m_data, ter, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand, Collections.singletonList(m_target));
                         possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
                         List<Unit> defenders = DUtils.GetTerUnitsAtEndOfTurn(m_data, player, ter);
                         defenders.retainAll(TacticalCenter.get(m_data, player).GetFrozenUnits()); //Only count units that have been frozen here
@@ -589,7 +584,7 @@ public class NCM_Task
                         continue;
                     if (Match.allMatch(retreatUnits, DMatches.UnitGroupHasEnoughMovement_All(ncmRoute.getLength()))) //If this is a valid, reachable reinforce ter
                     {
-                        List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach_CountXAsPassthrough(m_data, ter, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand, m_target);
+                        List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach_CountXAsPassthroughs(m_data, ter, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand, Collections.singletonList(m_target));
                         possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
                         //Note that since this ter was not a reinforce_task ter(well, at least not a successful one), it is most likely within our territory
                         List<Unit> defenders = DUtils.GetTerUnitsAtEndOfTurn(m_data, player, ter);

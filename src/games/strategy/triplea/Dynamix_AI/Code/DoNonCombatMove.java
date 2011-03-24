@@ -115,10 +115,10 @@ public class DoNonCombatMove
                         {
                             /*if(!tersAttackedBeforeLoop.contains(task.GetTarget())) //If this ter was attacked this loop
                                 continue;
-                            task.Reset();
+
                             for(UnitGroup ug : task.GetRecruitedUnits())
-                                ug.UndoMove(mover); //Undo moves, and calculate again, cause we might not need this many after all*/
-                            //This code block would currently interfere with threat invalidation
+                                UnitGroup.UndoMove_NotifyAllUGs(mover, ug.GetMoveIndex()); //Undo moves, and calculate again, cause we might not need this many after all
+                            task.Reset();*/
                         }
                         else
                             task.Reset(); //We reset disqualified tasks for another attempt (now that we know of completed tasks)
@@ -331,8 +331,6 @@ public class DoNonCombatMove
                 //    The territory has at least one non-null-enemy owned neighbor
                 //    The territory is either a link between two friendly neighbors, or has at least one unique enemy neighbor
                 //        (though we don't let empty, friendly neighbors cause one of our enemy neighbors to be removed from the 'unique' list)
-                if(ter.getUnits().getMatches(Matches.unitIsOwnedBy(player)).isEmpty())
-                    return false; //We might want to remove this check later... We'll see
                 if (!data.getAllianceTracker().isAllied(ter.getOwner(), player) && !StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasAttacked_Normal)
                     return false;
                 //If this ter was not conquered and it is not owned by us or our allies, this can't be a ter we reinforce
@@ -377,7 +375,7 @@ public class DoNonCombatMove
                 return true;
             }
         };
-        List<Territory> tersWeCanMoveTo = DUtils.ToList(data.getMap().getTerritories());
+        List<Territory> tersWeCanMoveTo = DUtils.GetLandTersThatCanBeReinforcedByUnitsOwnedBy(data, player);
         DUtils.Log(Level.FINE, "  Beginning task creation loop.");
         for (Territory ter : tersWeCanMoveTo)
         {

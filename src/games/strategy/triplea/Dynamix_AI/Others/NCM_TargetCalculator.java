@@ -19,6 +19,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.StrategyCenter;
 import games.strategy.triplea.Dynamix_AI.DMatches;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import java.util.Collection;
@@ -48,6 +49,9 @@ public class NCM_TargetCalculator
 
             float score = DUtils.GetValueOfLandTer(enemyTer, data, player);
             score -= (DUtils.GetJumpsFromXToY_PassableLand(data, ter, enemyTer) * 3) * GlobalCenter.MapTerCountScale;
+
+            if(StrategyCenter.get(data, player).GetCalculatedStrategyAssignments().get(enemyTer.getOwner()) == StrategyType.Enemy_Offensive)
+                score += 10000000;
 
             if(enemyTer.getOwner().isNull())
                 score -= 1000000; //We hate moving towards neutrals! (For now, anyhow)

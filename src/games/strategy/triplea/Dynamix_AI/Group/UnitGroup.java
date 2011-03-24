@@ -50,7 +50,7 @@ public class UnitGroup
     private HashMap<Match<Territory>, Integer> m_ncmCRouteMatches = null;
     private GameData m_data = null;
     private List<Territory> m_neighbors = new ArrayList<Territory>();
-    private int m_moveIndex = 0;
+    private int m_moveIndex = -1;
 
     public UnitGroup(Unit unit, Territory startTer, GameData data)
     {
@@ -437,23 +437,58 @@ public class UnitGroup
         movesCount++;
         m_movedTo = movedTo;
     }
+    
+    private void NotifySuccessfulBufferedMove(Territory movedTo, int moveIndex)
+    {
+        m_moveIndex = moveIndex;
+        m_movedTo = movedTo;
+    }
 
     public Territory GetMovedTo()
     {
         return m_movedTo;
     }
 
-    public void UndoMove(IMoveDelegate mover)
+    public void ClearMovedTo()
     {
-        if(m_movedTo == null)
-            return;
-
-        mover.undoMove(m_moveIndex);
-        DUtils.Log(Level.FINER, "          Move undone. Initial Location: {0} Target: {1} Units: {2}", m_fromTer, m_movedTo, m_units);
         m_movedTo = null;
+    }
+
+    public static int movesCount = 0;
+    public static void UndoMove_NotifyAllUGs(IMoveDelegate mover, int moveIndex)
+    {
+        if(moveIndex == -1)
+            return; //Apparently, the caller is trying to undo the move of a UG that hasn't been moved
+
+        List<UnitGroup> ugsMovedByThisMove = new ArrayList<UnitGroup>();
+        for (UnitGroup ug : TacticalCenter.get(CachedInstanceCenter.CachedGameData, GlobalCenter.CurrentPlayer).AllDelegateUnitGroups)
+        {
+            if(ug.GetMovedTo() != null && ug.GetMoveIndex() == moveIndex)
+                ugsMovedByThisMove.add(ug);
+        }
+
+        if(ugsMovedByThisMove.isEmpty())
+            return; //Shouldn't happen
+
+        mover.undoMove(moveIndex);
         movesCount--;
-        for (UnitGroup ug2 : TacticalCenter.get(CachedInstanceCenter.CachedGameData, GlobalCenter.CurrentPlayer).AllDelegateUnitGroups)
-            ug2.NotifyMoveUndo(GetMoveIndex());
+
+        Territory target = null;
+        List<Unit> unitsMoved = new ArrayList<Unit>();
+        List<Territory> fromTers = new ArrayList<Territory>();
+        for(UnitGroup ug : ugsMovedByThisMove)
+        {
+            target = ug.GetMovedTo();
+            unitsMoved.addAll(ug.GetUnits());
+            if(!fromTers.contains(ug.GetFromTerritory()))
+                fromTers.add(ug.GetFromTerritory());
+        }
+
+        //Notify all UG's, so they can update move index, or if they're in this buffered move, clear movedTo and reset moveIndex
+        for (UnitGroup ug : TacticalCenter.get(CachedInstanceCenter.CachedGameData, GlobalCenter.CurrentPlayer).AllDelegateUnitGroups)
+            ug.NotifyMoveUndo(moveIndex);
+
+        DUtils.Log(Level.FINER, "          Move undone. Initial Locations: {0} Target: {1} Units: {2}", fromTers, target, unitsMoved);
     }
 
     public int GetMoveIndex()
@@ -461,11 +496,21 @@ public class UnitGroup
         return m_moveIndex;
     }
 
-    public static int movesCount = 0;
-    public void NotifyMoveUndo(int removedMoveIndex)
+    public void SetMoveIndex(int moveIndex)
     {
-        if(m_moveIndex > removedMoveIndex)
+        m_moveIndex = moveIndex;
+    }
+
+    public void NotifyMoveUndo(int undoneMoveIndex)
+    {
+        if (GetMoveIndex() > undoneMoveIndex)
             m_moveIndex--;
+        //If a UG was undone, and this ug is part of the buffered move the other UG was part of
+        else if(m_movedTo != null && m_moveIndex == undoneMoveIndex)
+        {
+            m_movedTo = null;
+            m_moveIndex = -1;
+        }
     }
 
     public List<Territory> GetNeighbors()
@@ -476,29 +521,6 @@ public class UnitGroup
     public Match<Territory> GetRouteMatch()
     {
         return m_cmRouteMatch;
-    }
-
-    /**
-     * (UndoAllMovesEndingInTer_ReturnStartTersOfUnitGroupsUndone)
-     * @param data - Game data
-     * @param player - Current player
-     * @param ter - All unit groups that have moved here will get undone by this method
-     * @param mover - The move delegate this is used to undo the moves
-     * @return the list of ters that the undone unit groups originated from
-     */
-    public static List<Territory> UndoAllMovesEndingInTer_RStartTersOfUGsUndone(GameData data, PlayerID player, Territory ter, IMoveDelegate mover)
-    {
-        DUtils.Log(Level.FINE, "    Undoing all moves ending at {0}", ter.getName());
-        List<Territory> result = new ArrayList<Territory>();
-        for (UnitGroup ug : TacticalCenter.get(data, player).AllDelegateUnitGroups)
-        {
-            if (ug.GetMovedTo() != null && ug.GetMovedTo().equals(ter))
-            {
-                ug.UndoMove(mover);
-                result.add(ug.GetFromTerritory());
-            }
-        }
-        return result;
     }
 
     private static boolean s_isBufferring = false;
@@ -544,7 +566,8 @@ public class UnitGroup
             else
             {
                 for (UnitGroup ug : ugs)
-                    ug.NotifySuccessfulMove(route.getEnd());
+                    ug.NotifySuccessfulBufferedMove(route.getEnd(), movesCount);
+                movesCount++;
             }
         }
         if(errors.length() == 0)

@@ -410,7 +410,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 
     public boolean confirmMoveInFaceOfAA(Collection aaFiringTerritories)
     {
-        return false;
+        //Hmmm... Atm, true and false are equally bad. With true, the AI may destroy aircraft unnecesarily, with false, the AI may attack a ter thinking it has air support, which never comes.
+        return true;
     }
 
     public Territory selectTerritoryForAirToLand(Collection candidates)

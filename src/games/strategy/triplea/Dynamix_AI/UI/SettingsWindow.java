@@ -189,8 +189,6 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel87 = new javax.swing.JLabel();
         v_tr_reinforceStabalize_enemyAttackSurvivalChanceRequired = new javax.swing.JSpinner();
         jLabel89 = new javax.swing.JLabel();
-        v_tr_attackTrade_landUnitsAtEnd = new javax.swing.JSpinner();
-        jLabel90 = new javax.swing.JLabel();
         v_tr_attackLandGrab_onlyGrabLandIfWeCanBlitzIt = new javax.swing.JCheckBox();
         jLabel92 = new javax.swing.JLabel();
         v_tr_enableAttackOffensive = new javax.swing.JCheckBox();
@@ -214,6 +212,9 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel94 = new javax.swing.JLabel();
         v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement = new javax.swing.JSpinner();
         jLabel95 = new javax.swing.JLabel();
+        v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired = new javax.swing.JSpinner();
+        jLabel83 = new javax.swing.JLabel();
+        jLabel90 = new javax.swing.JLabel();
         jPanel17 = new javax.swing.JPanel();
         v_cr_enableCallForLandGrab = new javax.swing.JCheckBox();
         v_cr_enableCallForDefensiveFront = new javax.swing.JCheckBox();
@@ -249,6 +250,10 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel53 = new javax.swing.JLabel();
         jLabel54 = new javax.swing.JLabel();
         v_aa_maxUnitTypesForPurchaseMix = new javax.swing.JSpinner();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel67 = new javax.swing.JLabel();
+        v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit = new javax.swing.JSpinner();
+        jLabel68 = new javax.swing.JLabel();
 
         setTitle("Dynamix AI Settings");
         setMinimumSize(new java.awt.Dimension(775, 400));
@@ -1206,13 +1211,6 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel89.setText("%");
         jLabel89.setName("jLabel89"); // NOI18N
 
-        v_tr_attackTrade_landUnitsAtEnd.setModel(new javax.swing.SpinnerNumberModel(2, 1, 10, 1));
-        v_tr_attackTrade_landUnitsAtEnd.setName("v_tr_attackTrade_landUnitsAtEnd"); // NOI18N
-
-        jLabel90.setText("        Land Unit Count At End Of Attack Required:");
-        jLabel90.setToolTipText("The number of land units that you want the AI to have leftover after a trade attack is completed.");
-        jLabel90.setName("jLabel90"); // NOI18N
-
         v_tr_attackLandGrab_onlyGrabLandIfWeCanBlitzIt.setName("v_tr_attackLandGrab_onlyGrabLandIfWeCanBlitzIt"); // NOI18N
 
         jLabel92.setText("        Only Grab Land If We Can Blitz It:");
@@ -1300,7 +1298,7 @@ public class SettingsWindow extends javax.swing.JDialog
         v_tr_attackTrade_totalTradeScore.setModel(new javax.swing.SpinnerNumberModel(10, 0, 100, 1));
         v_tr_attackTrade_totalTradeScore.setName("v_tr_attackTrade_totalTradeScore"); // NOI18N
 
-        jLabel91.setText("        Total Trade Score Required:");
+        jLabel91.setText("        Total Trade Score Required: ");
         jLabel91.setToolTipText("The trade score(total PU swing) required to perform a trade attack. (Simplified Trade Score: Ter production - our TUV loss + enemy TUV loss)");
         jLabel91.setName("jLabel91"); // NOI18N
 
@@ -1339,6 +1337,16 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel95.setToolTipText("The min trade score(total PU swing, if we get attacked) we need to bypass the survival chance requirement. (Simplified Trade Score: Ter production - our TUV loss + enemy TUV loss)");
         jLabel95.setName("jLabel95"); // NOI18N
 
+        v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired.setModel(new javax.swing.SpinnerNumberModel(75, 0, 100, 1));
+        v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired.setName("v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired"); // NOI18N
+
+        jLabel83.setText("%");
+        jLabel83.setName("jLabel83"); // NOI18N
+
+        jLabel90.setText("        Certainty Of Reaching Desired Number Of Leftover Land Units Required:");
+        jLabel90.setToolTipText("The percentage of times we end up with X land units(ai-determined) when we simulate the counter-attack battle with the battle calc'er must meet this percentage for the task to be performed.");
+        jLabel90.setName("jLabel90"); // NOI18N
+
         javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
         jPanel16.setLayout(jPanel16Layout);
         jPanel16Layout.setHorizontalGroup(
@@ -1349,137 +1357,140 @@ public class SettingsWindow extends javax.swing.JDialog
                     .addGroup(jPanel16Layout.createSequentialGroup()
                         .addComponent(v_tr_enableReinforceBlock, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
-                    .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel16Layout.createSequentialGroup()
-                            .addComponent(v_tr_enableReinforceStabalize, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap())
-                        .addGroup(jPanel16Layout.createSequentialGroup()
-                            .addComponent(v_tr_enableReinforceFrontline, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap())
-                        .addGroup(jPanel16Layout.createSequentialGroup()
-                            .addComponent(v_tr_enableAttackLandGrab, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap())
-                        .addGroup(jPanel16Layout.createSequentialGroup()
-                            .addComponent(v_tr_enableAttackTrade, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap())
-                        .addGroup(jPanel16Layout.createSequentialGroup()
-                            .addComponent(v_tr_enableAttackStabalize, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap())
-                        .addGroup(jPanel16Layout.createSequentialGroup()
-                            .addComponent(jLabel49, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(255, Short.MAX_VALUE))
-                        .addGroup(jPanel16Layout.createSequentialGroup()
-                            .addComponent(jLabel62, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
-                            .addComponent(v_tr_attackOffensive_Neutrals_takeoverChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(10, 10, 10)
-                            .addComponent(jLabel72)
-                            .addContainerGap())
-                        .addGroup(jPanel16Layout.createSequentialGroup()
-                            .addComponent(jLabel59, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(255, Short.MAX_VALUE))
-                        .addGroup(jPanel16Layout.createSequentialGroup()
-                            .addComponent(jLabel74, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
-                            .addComponent(v_tr_attackOffensive_Capitals_takeoverChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jLabel77)
-                            .addContainerGap())
-                        .addGroup(jPanel16Layout.createSequentialGroup()
-                            .addComponent(jLabel81, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
-                            .addComponent(v_tr_attackStabalize_takeoverChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jLabel79)
-                            .addContainerGap())
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
-                            .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel56, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(v_tr_enableAttackOffensive, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel78, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
-                            .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(jPanel16Layout.createSequentialGroup()
-                                    .addComponent(v_tr_attackOffensive_takeoverChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(10, 10, 10)
-                                    .addComponent(jLabel70))
-                                .addGroup(jPanel16Layout.createSequentialGroup()
-                                    .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(v_tr_attackStabalize_counterAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(v_tr_attackTrade_totalTradeScore, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(v_tr_attackTrade_landUnitsAtEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jLabel80)))
-                            .addContainerGap())
-                        .addComponent(jLabel95, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel91, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
-                            .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel90, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel92, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 203, Short.MAX_VALUE)
-                            .addComponent(v_tr_attackLandGrab_onlyGrabLandIfWeCanBlitzIt)
-                            .addGap(31, 31, 31))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
-                            .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel16Layout.createSequentialGroup()
-                                    .addComponent(jLabel85, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
-                                    .addComponent(v_tr_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel16Layout.createSequentialGroup()
-                                    .addComponent(jLabel84, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
-                                    .addComponent(v_tr_reinforceFrontLine_enemyAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jLabel86)
-                            .addContainerGap())
-                        .addGroup(jPanel16Layout.createSequentialGroup()
-                            .addComponent(jLabel87, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
-                            .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(jPanel16Layout.createSequentialGroup()
-                                    .addComponent(v_tr_reinforceStabalize_enemyAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(21, 21, 21))
-                                .addComponent(jLabel89))
-                            .addContainerGap())
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
-                            .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel16Layout.createSequentialGroup()
-                                    .addComponent(jLabel88, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
-                                    .addComponent(v_tr_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel16Layout.createSequentialGroup()
-                                    .addComponent(jLabel60, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
-                                    .addComponent(v_tr_attackOffensive_counterAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(10, 10, 10)
-                            .addComponent(jLabel71)
-                            .addContainerGap())
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
-                            .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel16Layout.createSequentialGroup()
-                                    .addComponent(jLabel93, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
-                                    .addComponent(v_tr_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel16Layout.createSequentialGroup()
-                                    .addComponent(jLabel61, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
-                                    .addComponent(v_tr_attackOffensive_Neutrals_counterAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(10, 10, 10)
-                            .addComponent(jLabel73)
-                            .addContainerGap())
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
-                            .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel75, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel94, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
-                            .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(v_tr_attackOffensive_Capitals_counterAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(v_tr_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jLabel76)
-                            .addContainerGap()))))
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(v_tr_enableReinforceStabalize, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(v_tr_enableReinforceFrontline, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(v_tr_enableAttackLandGrab, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(v_tr_enableAttackTrade, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(v_tr_enableAttackStabalize, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(jLabel49, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(255, Short.MAX_VALUE))
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(jLabel62, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                        .addComponent(v_tr_attackOffensive_Neutrals_takeoverChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel72)
+                        .addContainerGap())
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(jLabel59, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(255, Short.MAX_VALUE))
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(jLabel74, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                        .addComponent(v_tr_attackOffensive_Capitals_takeoverChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel77)
+                        .addContainerGap())
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(jLabel81, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                        .addComponent(v_tr_attackStabalize_takeoverChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel79)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel56, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(v_tr_enableAttackOffensive, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel78, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel16Layout.createSequentialGroup()
+                                .addComponent(v_tr_attackOffensive_takeoverChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10)
+                                .addComponent(jLabel70))
+                            .addGroup(jPanel16Layout.createSequentialGroup()
+                                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(v_tr_attackStabalize_counterAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(v_tr_attackTrade_totalTradeScore, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel80)))
+                        .addContainerGap())
+                    .addComponent(jLabel95, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel91, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
+                        .addComponent(jLabel92, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 203, Short.MAX_VALUE)
+                        .addComponent(v_tr_attackLandGrab_onlyGrabLandIfWeCanBlitzIt)
+                        .addGap(31, 31, 31))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel16Layout.createSequentialGroup()
+                                .addComponent(jLabel85, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                                .addComponent(v_tr_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel16Layout.createSequentialGroup()
+                                .addComponent(jLabel84, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                                .addComponent(v_tr_reinforceFrontLine_enemyAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel86)
+                        .addContainerGap())
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(jLabel87, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel16Layout.createSequentialGroup()
+                                .addComponent(v_tr_reinforceStabalize_enemyAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(21, 21, 21))
+                            .addComponent(jLabel89))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel16Layout.createSequentialGroup()
+                                .addComponent(jLabel88, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                                .addComponent(v_tr_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel16Layout.createSequentialGroup()
+                                .addComponent(jLabel60, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                                .addComponent(v_tr_attackOffensive_counterAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel71)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel16Layout.createSequentialGroup()
+                                .addComponent(jLabel93, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                                .addComponent(v_tr_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel16Layout.createSequentialGroup()
+                                .addComponent(jLabel61, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                                .addComponent(v_tr_attackOffensive_Neutrals_counterAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel73)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel75, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel94, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(v_tr_attackOffensive_Capitals_counterAttackSurvivalChanceRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(v_tr_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel76)
+                        .addContainerGap())
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(jLabel90, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                        .addComponent(v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel83)
+                        .addContainerGap())))
         );
         jPanel16Layout.setVerticalGroup(
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1560,8 +1571,9 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel90)
-                    .addComponent(v_tr_attackTrade_landUnitsAtEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jLabel83)
+                    .addComponent(v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(7, 7, 7)
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel16Layout.createSequentialGroup()
                         .addComponent(v_tr_enableAttackLandGrab)
@@ -1826,7 +1838,7 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel55)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 197, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 180, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel58)
                         .addGap(18, 18, 18)
@@ -1834,7 +1846,7 @@ public class SettingsWindow extends javax.swing.JDialog
                         .addGap(18, 18, 18)
                         .addComponent(v_aa_globalThreatInvalidation)
                         .addGap(18, 18, 18)
-                        .addComponent(v_aa_hotspotInvalidation, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
+                        .addComponent(v_aa_hotspotInvalidation, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
                         .addGap(5, 5, 5)))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(v_aa_radiusOfHotspotThreatInvalidation, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1893,7 +1905,7 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel53)
                     .addComponent(jLabel57))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 210, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 193, Short.MAX_VALUE)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(v_aa_maxUnitTypesForPurchaseMix, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(v_aa_resourcePercentageThatMustExistForFactoryBuy, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1916,6 +1928,44 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Others"));
+        jPanel5.setMaximumSize(new java.awt.Dimension(1000, 750));
+        jPanel5.setName("jPanel5"); // NOI18N
+
+        jLabel67.setText("Survival Chance That One Of The Landing Ters Must Match For Air Unit To Be Recruitable:");
+        jLabel67.setToolTipText("For an air unit to be considered 'recruitable', it must be able to reach a landing territory that has at least an X percent chance of survival.");
+        jLabel67.setName("jLabel67"); // NOI18N
+
+        v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit.setModel(new javax.swing.SpinnerNumberModel(75, 0, 100, 1));
+        v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit.setName("v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit"); // NOI18N
+
+        jLabel68.setText("%");
+        jLabel68.setName("jLabel68"); // NOI18N
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel67)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 155, Short.MAX_VALUE)
+                .addComponent(v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel68)
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel67)
+                    .addComponent(v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel68))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
         jPanel12.setLayout(jPanel12Layout);
         jPanel12Layout.setHorizontalGroup(
@@ -1923,8 +1973,9 @@ public class SettingsWindow extends javax.swing.JDialog
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE))
+                    .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 695, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel12Layout.setVerticalGroup(
@@ -1934,7 +1985,9 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         v_aa_scrollPane.setViewportView(jPanel12);
@@ -2049,7 +2102,7 @@ public class SettingsWindow extends javax.swing.JDialog
         v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setValue(settings.TR_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement);
         v_tr_enableAttackTrade.setSelected(settings.TR_enableAttackTrade);        
         v_tr_attackTrade_totalTradeScore.setValue(settings.TR_attackTrade_totalTradeScoreRequired);
-        v_tr_attackTrade_landUnitsAtEnd.setValue(settings.TR_attackTrade_landUnitsAtEnd);
+        v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired.setValue(settings.TR_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired);
         v_tr_enableAttackLandGrab.setSelected(settings.TR_enableAttackLandGrab);
         v_tr_attackLandGrab_onlyGrabLandIfWeCanBlitzIt.setSelected(settings.TR_attackLandGrab_onlyGrabLandIfWeCanBlitzIt);
         v_tr_enableReinforceFrontline.setSelected(settings.TR_enableReinforceFrontLine);
@@ -2075,6 +2128,8 @@ public class SettingsWindow extends javax.swing.JDialog
         
         v_aa_radiusOfHotspotThreatInvalidation.setValue(settings.AA_threatInvalidationAroundHotspotRadius);
         v_aa_percentageOfResistedThreatsThatTasksInvalidate.setValue(settings.AA_percentageOfResistedThreatThatTasksInvalidate);
+
+        v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit.setValue(settings.AA_survivalChanceOfLandingTerRequiredForPlaneRecruit);
     }
 
     public DSettings CreateSettings()
@@ -2148,7 +2203,7 @@ public class SettingsWindow extends javax.swing.JDialog
         settings.TR_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement = Integer.parseInt(v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.getValue().toString());
         settings.TR_enableAttackTrade = v_tr_enableAttackTrade.isSelected();        
         settings.TR_attackTrade_totalTradeScoreRequired = Integer.parseInt(v_tr_attackTrade_totalTradeScore.getValue().toString());
-        settings.TR_attackTrade_landUnitsAtEnd = Integer.parseInt(v_tr_attackTrade_landUnitsAtEnd.getValue().toString());
+        settings.TR_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired = Integer.parseInt(v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired.getValue().toString());
         settings.TR_enableAttackLandGrab = v_tr_enableAttackLandGrab.isSelected();
         settings.TR_attackLandGrab_onlyGrabLandIfWeCanBlitzIt = v_tr_attackLandGrab_onlyGrabLandIfWeCanBlitzIt.isSelected();
         settings.TR_enableReinforceFrontLine = v_tr_enableReinforceFrontline.isSelected();
@@ -2172,8 +2227,10 @@ public class SettingsWindow extends javax.swing.JDialog
         else if (v_aa_hotspotInvalidation.isSelected())
             settings.AA_threatInvalidationType = ThreatInvalidationType.AroundHotspot;
 
-        v_aa_radiusOfHotspotThreatInvalidation.setValue(settings.AA_threatInvalidationAroundHotspotRadius);
-        v_aa_percentageOfResistedThreatsThatTasksInvalidate.setValue(settings.AA_percentageOfResistedThreatThatTasksInvalidate);
+        settings.AA_threatInvalidationAroundHotspotRadius = Integer.parseInt(v_aa_radiusOfHotspotThreatInvalidation.getValue().toString());
+        settings.AA_percentageOfResistedThreatThatTasksInvalidate = Integer.parseInt(v_aa_percentageOfResistedThreatsThatTasksInvalidate.getValue().toString());
+
+        settings.AA_survivalChanceOfLandingTerRequiredForPlaneRecruit = Integer.parseInt(v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit.getValue().toString());
 
         return settings;
     }
@@ -2328,7 +2385,8 @@ public class SettingsWindow extends javax.swing.JDialog
                     + "Because of this, these settings give you almost full control over the aggresiveness, defensiveness, etc. for all the AI's attacks and reinforcements.\r\n"
                     + "As this AI is still in development, any feedback on what these values should default to would be appreciated.\r\n"
                     + "\r\n"
-                    + "By the way, the checkbox's allow you to turn on or off the different task types.";
+                    + "By the way, the checkbox's allow you to turn on or off the different task types.\r\n"
+                    + "Also note that most of these settings are used by the AI as 'base' values, meaning special situations will add or remove some from the setting you provide.";
         }
         else if (v_tabPaneMain.getSelectedIndex() == 5) //Call Requirements
         {
@@ -2339,7 +2397,8 @@ public class SettingsWindow extends javax.swing.JDialog
                     + "Because of this, these settings give you a lot of control over the AI's long-range movements and reinforcements.\r\n"
                     + "As this AI is still in development, any feedback on what these values should default to would be appreciated.\r\n"
                     + "\r\n"
-                    + "By the way, the checkbox's allow you to turn on or off the different call types.";
+                    + "By the way, the checkbox's allow you to turn on or off the different call types.\r\n"
+                    + "Also note that most of these settings are used by the AI as 'base' values, meaning special situations will add or remove some from the setting you provide.";
         }
         else if (v_tabPaneMain.getSelectedIndex() == 6) //Debugging
         {
@@ -2391,7 +2450,9 @@ public class SettingsWindow extends javax.swing.JDialog
                     + "\r\n"
                     + "Percentage Of Threats That Become Invalidated When A Task Is Resistant To Them: This setting allows the user to choose what percentage of the threats to invalidate when a task is successful.\r\n"
                     + "For example, this setting would determine what percentage of that german air stack mentioned earlier would be 'ignored', or 'invalidated', when the first successful task was performed with enough units to be safe from it. (The airplane stack)\r\n"
-                    + "For more info on threat invalidation, read up on the threat invalidation types listed above.";
+                    + "For more info on threat invalidation, read up on the threat invalidation types listed above.\r\n"
+                    + "\r\n"
+                    + "Survival Chance That One Of The Landing Ters Must Match For Air Unit To Be Recruitable: For an air unit to be considered 'recruitable', it must be able to reach a landing territory that has at least an X percent chance of survival.";
         }
 
         JTextArea label = new JTextArea(message);
@@ -2450,7 +2511,7 @@ public class SettingsWindow extends javax.swing.JDialog
     private void v_tr_enableAttackTradeStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_v_tr_enableAttackTradeStateChanged
     {//GEN-HEADEREND:event_v_tr_enableAttackTradeStateChanged
         v_tr_attackTrade_totalTradeScore.setEnabled(v_tr_enableAttackTrade.isSelected());
-        v_tr_attackTrade_landUnitsAtEnd.setEnabled(v_tr_enableAttackTrade.isSelected());
+        v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired.setEnabled(v_tr_enableAttackTrade.isSelected());
     }//GEN-LAST:event_v_tr_enableAttackTradeStateChanged
 
     private void v_tr_enableAttackLandGrabStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_v_tr_enableAttackLandGrabStateChanged
@@ -2665,6 +2726,8 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JLabel jLabel63;
     private javax.swing.JLabel jLabel64;
     private javax.swing.JLabel jLabel65;
+    private javax.swing.JLabel jLabel67;
+    private javax.swing.JLabel jLabel68;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel70;
     private javax.swing.JLabel jLabel71;
@@ -2680,6 +2743,7 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JLabel jLabel80;
     private javax.swing.JLabel jLabel81;
     private javax.swing.JLabel jLabel82;
+    private javax.swing.JLabel jLabel83;
     private javax.swing.JLabel jLabel84;
     private javax.swing.JLabel jLabel85;
     private javax.swing.JLabel jLabel86;
@@ -2705,6 +2769,7 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
@@ -2718,6 +2783,7 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JSpinner v_aa_resourcePercentageThatMustExistForFactoryBuy;
     private javax.swing.JScrollPane v_aa_scrollPane;
     private javax.swing.JScrollPane v_aa_scrollPane1;
+    private javax.swing.JSpinner v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit;
     private javax.swing.JRadioButton v_actionLengthGoalRB;
     private javax.swing.JRadioButton v_actionWaitGoalRB;
     private javax.swing.JPanel v_actionWaitGoalsPanel;
@@ -2782,7 +2848,7 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JSpinner v_tr_attackStabalize_counterAttackSurvivalChanceRequired;
     private javax.swing.JSpinner v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement;
     private javax.swing.JSpinner v_tr_attackStabalize_takeoverChanceRequired;
-    private javax.swing.JSpinner v_tr_attackTrade_landUnitsAtEnd;
+    private javax.swing.JSpinner v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired;
     private javax.swing.JSpinner v_tr_attackTrade_totalTradeScore;
     private javax.swing.JCheckBox v_tr_enableAttackLandGrab;
     private javax.swing.JCheckBox v_tr_enableAttackOffensive;

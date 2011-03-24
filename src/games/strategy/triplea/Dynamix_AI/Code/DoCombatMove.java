@@ -26,6 +26,7 @@ import games.strategy.triplea.Dynamix_AI.DSettings;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.Dynamix_AI.Group.MovePackage;
+import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
 import games.strategy.triplea.Dynamix_AI.Others.CM_Task;
 import games.strategy.triplea.Dynamix_AI.Others.CM_TaskType;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -102,10 +103,10 @@ public class DoCombatMove
                         {
                             /*if(!tersAttackedBeforeLoop.contains(task.GetTarget())) //If this ter was attacked this loop
                                 continue;
-                            task.Reset();
+
                             for(UnitGroup ug : task.GetRecruitedUnits())
-                                ug.UndoMove(mover); //Undo moves, and calculate again, cause we might not need this many after all*/
-                            //This code block would currently interfere with threat invalidation
+                                UnitGroup.UndoMove_NotifyAllUGs(mover, ug.GetMoveIndex()); //Undo moves, and calculate again, cause we might not need this many after all
+                            task.Reset();*/
                         }
                         else
                             task.Reset(); //We reset disqualified tasks for another attempt (now that we know of completed tasks)

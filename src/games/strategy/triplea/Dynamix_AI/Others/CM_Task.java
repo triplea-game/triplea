@@ -40,10 +40,10 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
+import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.util.Match;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -149,9 +149,14 @@ public class CM_Task
         return result;
     }
 
+    //Task requirements variables
     private float m_minTakeoverChance = 0.0F;
     private float m_minSurvivalChance = 0.0F;
     private float m_minCounterAttackTradeScoreForBypass = 0.0F;
+
+    private float m_attackTrade_tradeScoreRequired = 0.0F;
+    private int m_attackTrade_leftoverLandUnits = 0;
+    private float m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired = 0.0F;
     public void CalculateTaskRequirements()
     {
         if(m_taskType.equals(CM_TaskType.LandGrab))
@@ -178,7 +183,7 @@ public class CM_Task
                 m_minCounterAttackTradeScoreForBypass = DSettings.LoadSettings().TR_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement;
             }
         }
-        else if (m_taskType.equals(m_taskType.Attack_Stabilize))
+        else if (m_taskType == CM_TaskType.Attack_Stabilize)
         {
             if (m_target.getOwner().isNull()){}
             else if (DUtils.GetAllEnemyCaps_ThatAreOwnedByOriginalOwner(m_data, GlobalCenter.CurrentPlayer).contains(m_target)){}
@@ -189,18 +194,30 @@ public class CM_Task
                 m_minCounterAttackTradeScoreForBypass = DSettings.LoadSettings().TR_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement;
             }
         }
+        else if (m_taskType == CM_TaskType.Attack_Trade)
+        {
+            if (m_target.getOwner().isNull())
+            {
+                m_attackTrade_tradeScoreRequired = DSettings.LoadSettings().TR_attackTrade_totalTradeScoreRequired;
+                m_attackTrade_leftoverLandUnits = 2;
+                m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired = DUtils.ToFloat(DSettings.LoadSettings().TR_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired);
+            }
+            else if (DUtils.GetAllEnemyCaps_ThatAreOwnedByOriginalOwner(m_data, GlobalCenter.CurrentPlayer).contains(m_target))
+            {
+                m_attackTrade_tradeScoreRequired = DSettings.LoadSettings().TR_attackTrade_totalTradeScoreRequired;
+                m_attackTrade_leftoverLandUnits = 3;
+                m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired = DUtils.ToFloat(DSettings.LoadSettings().TR_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired);
+            }
+            else
+            {
+                m_attackTrade_tradeScoreRequired = DSettings.LoadSettings().TR_attackTrade_totalTradeScoreRequired;
+                m_attackTrade_leftoverLandUnits = 2;
+                m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired = DUtils.ToFloat(DSettings.LoadSettings().TR_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired);
+            }
+        }
 
         TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).BattleRetreatChanceAssignments.put(m_target, m_minTakeoverChance);
         //DUtils.Log(Level.FINER, "    CM Task requirements calculated. Min Chance: {0} Min Survival Chance: {1}", m_minTakeoverChance, m_minSurvivalChance);
-    }
-
-    public void SetTaskRequirements(float minTakeoverChance, float minSurvivalChance)
-    {
-        m_minTakeoverChance = minTakeoverChance;
-        m_minSurvivalChance = minSurvivalChance;
-
-        TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).BattleRetreatChanceAssignments.put(m_target, m_minTakeoverChance);
-        //DUtils.Log(Level.FINER, "    CM Task requirements set. Min Chance: {0} Min Survival Chance: {1}", m_minTakeoverChance, m_minSurvivalChance);
     }
 
     private float getMeetingOfMinTakeoverChance(AggregateResults simulatedAttack, float minTakeoverChance)
@@ -247,7 +264,7 @@ public class CM_Task
     {
         if(m_taskType.equals(CM_TaskType.Attack_Trade))
         {
-            recruitEnoughUnitsForTradeTask(false);
+            recruitEnoughUnitsForTradeTask(m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired);
             return;
         }
 
@@ -259,11 +276,14 @@ public class CM_Task
         if(m_taskType.equals(CM_TaskType.LandGrab) && m_recruitedUnits.size() > 0)
             return; //We only need one unit
         if(m_taskType.equals(CM_TaskType.Attack_Trade))
+        {
+            recruitEnoughUnitsForTradeTask(.8F);
             return;
+        }
 
         float minTakeoverChance;
         float minSurvivalChance;
-        int maxBattleVolleys = 7;
+        int maxBattleVolleys = 5;
 
         if (m_taskType == CM_TaskType.Attack_Offensive)
         {
@@ -284,11 +304,14 @@ public class CM_Task
         if(m_taskType.equals(CM_TaskType.LandGrab) && m_recruitedUnits.size() > 0)
             return; //We only need one unit
         if(m_taskType.equals(CM_TaskType.Attack_Trade))
+        {
+            recruitEnoughUnitsForTradeTask(.9F);
             return;
+        }
 
         float minTakeoverChance;
         float minSurvivalChance;
-        int maxBattleVolleys = 5;
+        int maxBattleVolleys = 3;
 
         if (m_taskType == CM_TaskType.Attack_Offensive)
         {
@@ -308,13 +331,13 @@ public class CM_Task
     {
         if(m_taskType.equals(CM_TaskType.LandGrab) && m_recruitedUnits.size() > 0)
             return; //We only need one unit
-        if (m_taskType.equals(CM_TaskType.Attack_Trade))
+        if(m_taskType.equals(CM_TaskType.Attack_Trade))
         {
-            recruitEnoughUnitsForTradeTask(true);
+            recruitEnoughUnitsForTradeTask(1.0F);
             return;
         }
 
-        recruitEnoughUnitsToMeetXYZ(1.0F, .85F, 3); //We want to destroy enemies in 3 volleys(One seems to cause problems)
+        recruitEnoughUnitsToMeetXYZ(1.0F, .85F, 1);
     }
 
     private void recruitEnoughUnitsToMeetXYZ(float minTakeoverChance, float minSurvivalChance, int maxBattleVolleys)
@@ -357,7 +380,7 @@ public class CM_Task
             break; //We've met all requirements
         }
 
-        m_recruitedUnits = m_recruitedUnits.subList(0, Math.max(0, m_recruitedUnits.size() - 7)); //Backtrack 7 units
+        //m_recruitedUnits = m_recruitedUnits.subList(0, Math.max(0, m_recruitedUnits.size() - 7)); //Backtrack 7 units
 
         //Now do it carefully
         for (UnitGroup ug : sortedPossibles)
@@ -395,15 +418,12 @@ public class CM_Task
         }
     }
 
-    private void recruitEnoughUnitsForTradeTask(boolean addTillDoesntHelp)
+    private void recruitEnoughUnitsForTradeTask(float certaintyOfReachingLeftoverLUnitsGoalRequired)
     {
         List<UnitGroup> sortedPossibles = getSortedPossibleRecruits();
         if(sortedPossibles.isEmpty())
             return;
 
-        int extraUnitsToAdd = -1;
-
-        int lastTradeScore = Integer.MIN_VALUE;
         for (UnitGroup ug : sortedPossibles)
         {
             if(m_recruitedUnits.contains(ug)) //If already recruited
@@ -418,14 +438,22 @@ public class CM_Task
             List<Unit> defenders = DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer)));
 
             int tradeScore = DUtils.GetTaskTradeScore(m_data, m_target, attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, simulatedResponse);
-            lastTradeScore = tradeScore;
 
-            if (tradeScore < DSettings.LoadSettings().TR_attackTrade_totalTradeScoreRequired)
+            if (tradeScore < m_attackTrade_tradeScoreRequired)
             {
                 m_recruitedUnits.add(ug);
                 continue;
             }
-            else if(addTillDoesntHelp && tradeScore > lastTradeScore)
+
+            int timesWeReachLeftoverLUnitsGoal = 0;
+            for(BattleResults result : simulatedAttack.m_results)
+            {
+                if(Match.getMatches(result.GetBattle().getAttackingUnits(), Matches.UnitIsLand).size() >= m_attackTrade_leftoverLandUnits)
+                    timesWeReachLeftoverLUnitsGoal++;
+            }
+
+            float certaintyOfReachingLUnitsCount = (float)timesWeReachLeftoverLUnitsGoal / (float)simulatedAttack.m_results.size();
+            if (certaintyOfReachingLUnitsCount < certaintyOfReachingLeftoverLUnitsGoalRequired)
             {
                 m_recruitedUnits.add(ug);
                 continue;
@@ -434,20 +462,13 @@ public class CM_Task
             break; //We've met all requirements
         }
 
-        m_recruitedUnits = m_recruitedUnits.subList(0, Math.max(0, m_recruitedUnits.size() - 5)); //Backtrack 5 units
+        //m_recruitedUnits = m_recruitedUnits.subList(0, Math.max(0, m_recruitedUnits.size() - 5)); //Backtrack 5 units
 
         //Now do it carefully
         for (UnitGroup ug : sortedPossibles)
         {
             if(m_recruitedUnits.contains(ug)) //If already recruited
                 continue;
-
-            if(extraUnitsToAdd > 0)
-            {
-                m_recruitedUnits.add(ug);
-                extraUnitsToAdd--;
-                continue;
-            }
 
             AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, DSettings.LoadSettings().CA_CM_determinesIfTradeTasksRequirementsAreMetEnoughForRecruitingStop, true);
             List<Unit> responseAttackers = DUtils.DetermineResponseAttackers(m_data, GlobalCenter.CurrentPlayer, m_target, simulatedAttack);
@@ -458,19 +479,22 @@ public class CM_Task
             List<Unit> defenders = DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer)));
 
             int tradeScore = DUtils.GetTaskTradeScore(m_data, m_target, attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, simulatedResponse);
-            lastTradeScore = tradeScore;
 
-            if (tradeScore < DSettings.LoadSettings().TR_attackTrade_totalTradeScoreRequired)
+            if (tradeScore < m_attackTrade_tradeScoreRequired)
             {
                 m_recruitedUnits.add(ug);
                 continue;
             }
-            else if(extraUnitsToAdd == -1)
+
+            int timesWeReachLeftoverLUnitsGoal = 0;
+            for(BattleResults result : simulatedAttack.m_results)
             {
-                extraUnitsToAdd = DSettings.LoadSettings().TR_attackTrade_landUnitsAtEnd - 1;
-                continue;
+                if(Match.getMatches(result.GetBattle().getAttackingUnits(), Matches.UnitIsLand).size() >= m_attackTrade_leftoverLandUnits)
+                    timesWeReachLeftoverLUnitsGoal++;
             }
-            else if(addTillDoesntHelp && tradeScore > lastTradeScore)
+
+            float certaintyOfReachingLUnitsCount = (float)timesWeReachLeftoverLUnitsGoal / (float)simulatedAttack.m_results.size();
+            if (certaintyOfReachingLUnitsCount < certaintyOfReachingLeftoverLUnitsGoalRequired)
             {
                 m_recruitedUnits.add(ug);
                 continue;
@@ -686,12 +710,26 @@ public class CM_Task
 
             int tradeScore = DUtils.GetTaskTradeScore(m_data, m_target, attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, simulatedResponse);
 
-            DUtils.Log(Level.FINEST, "        Task trade score: {0} Needed: {1}", tradeScore, DSettings.LoadSettings().TR_attackTrade_totalTradeScoreRequired);
+            DUtils.Log(Level.FINEST, "        Task trade score: {0} Needed: {1}", tradeScore, m_attackTrade_tradeScoreRequired);
 
-            if (tradeScore >= DSettings.LoadSettings().TR_attackTrade_totalTradeScoreRequired)
-                return true;
-            else
+            if (tradeScore < m_attackTrade_tradeScoreRequired)
                 return false;
+
+            int timesWeReachLeftoverLUnitsGoal = 0;
+            for(BattleResults result : simulatedAttack.m_results)
+            {
+                if(Match.getMatches(result.GetBattle().getAttackingUnits(), Matches.UnitIsLand).size() >= m_attackTrade_leftoverLandUnits)
+                    timesWeReachLeftoverLUnitsGoal++;
+            }
+
+            float certaintyOfReachingLUnitsCount = (float)timesWeReachLeftoverLUnitsGoal / (float)simulatedAttack.m_results.size();
+
+            DUtils.Log(Level.FINEST, "        Certainty of reaching leftover land units goal({0}): {1} Needed: {2}", m_attackTrade_leftoverLandUnits, certaintyOfReachingLUnitsCount, m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired);
+
+            if (certaintyOfReachingLUnitsCount < m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired)
+                return false;
+
+            return true;
         }
         else
         {
@@ -720,8 +758,14 @@ public class CM_Task
             TerritoryAttachment ta = TerritoryAttachment.get(m_target);
 
             List<Unit> landAttackers = DUtils.GetNNEnemyLUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
+            int cheapestLAttacker = DUtils.GetTUVOfUnit(DUtils.GetCheapestUnitInList(landAttackers), GlobalCenter.GetPUResource());
+            float chanceOfHittingCheapestLAttacker = (float)UnitAttachment.get(GetRecruitedUnitsAsUnitList().get(0).getUnitType()).getDefense(player) / 6.0F;
 
-            if (unitCost - 1 <= ta.getProduction() || landAttackers.isEmpty())
+            float averageTuvLossInflictedIfAttacked = chanceOfHittingCheapestLAttacker * cheapestLAttacker;
+            float tuvSwing = averageTuvLossInflictedIfAttacked - unitCost;
+
+            //If the tuv swing + ter production is in our favor, or there are no land attackers
+            if (tuvSwing + ta.getProduction() >= 0 || landAttackers.isEmpty())
                 return true;
 
             return false;
@@ -878,7 +922,7 @@ public class CM_Task
             DUtils.Log(Level.FINER, "      Some errors occurred while performing moves: {0}", errors);
             m_disqualified = true;
             return;
-        }        
+        }
         ReconsiderSignalCenter.get(m_data, GlobalCenter.CurrentPlayer).ObjectsToReconsider.addAll(CachedInstanceCenter.CachedGameData.getMap().getNeighbors(m_target));
         m_completed = true;
     }

@@ -396,36 +396,6 @@ public class DUtils
         }
         return result;
     }
-    public static PlayerID GetPrimaryEnemy(GameData data, PlayerID us, List<PlayerID> enemies)
-    {
-        int highestEnemyScore = Integer.MIN_VALUE;
-        PlayerID highestEnemy = null;
-        for (PlayerID enemy : enemies)
-        {
-            int score = DUtils.GetEnemyPriorityScore(data, enemy, us);
-            if (score > highestEnemyScore)
-            {
-                highestEnemyScore = score;
-                highestEnemy = enemy;
-            }
-        }
-        return highestEnemy;
-    }
-    public static List<PlayerID> SortEnemiesByEnemyPriority_D(final GameData data, final PlayerID us, List<PlayerID> enemies)
-    {
-        List<PlayerID> result = new ArrayList<PlayerID>(enemies);
-        Collections.sort(result, new Comparator<PlayerID>()
-        {
-            public int compare(PlayerID p1, PlayerID p2)
-            {
-                int score1 = DUtils.GetEnemyPriorityScore(data, p1, us);
-                int score2 = DUtils.GetEnemyPriorityScore(data, p2, us);
-
-                return score2 - score1;
-            }
-        });
-        return result;
-    }
     /**
      * Used to find the x closest routes between two territories that are of similar length.
      * This can be used to find the friendly/enemy units in the general area between two countries to determine how many units to send in one direction.
@@ -524,37 +494,6 @@ public class DUtils
         }
         return result;
     }
-    public static int GetEnemyPriorityScore(GameData data, PlayerID enemy, PlayerID us)
-    {
-        int result = 0;
-
-        List<Territory> ourCaps = GetAllOurCaps_ThatWeOwn(data, us);
-        List<Territory> enemyCaps = GetAllOurCaps_ThatWeOwn(data, enemy);
-
-        for (Territory ourCap : ourCaps)
-        {
-            for (Territory enemyCap : enemyCaps)
-            {
-                //Basically, compare their distance from you on land
-                boolean hasLandRouteBetweenCaps = DUtils.CanWeGetFromXToY_ByPassableLand(data, ourCap, enemyCap);
-
-                if (hasLandRouteBetweenCaps)
-                {
-                    int lDistance = DUtils.GetJumpsFromXToY_PassableLand(data, ourCap, enemyCap);
-                    result -= lDistance;
-                }
-                //Their distance from you on water (just use no cond route)
-                int sDistance = DUtils.GetJumpsFromXToY_NoCond(data, ourCap, enemyCap);
-                result -= (sDistance * 3);
-                //Their TUV, and your TUV
-                //[todo]
-                //Check to see if you have allies that are closer to them than you are.
-                //[todo]
-            }
-        }
-
-        return result;
-    }
     public static Match CompMatchAnd(Match ... matches)
     {
         return new CompositeMatchAnd(matches);
@@ -613,6 +552,48 @@ public class DUtils
                 continue;
 
             result.add(ter);
+        }
+        return result;
+    }
+    public static List<Territory> GetLandTersThatCanBeReinforcedByUnitsOwnedBy(GameData data, PlayerID player)
+    {
+        return GetTersMatchingXThatCanBeReinforcedByUnitsMatchingYInTersMatchingZ(data, player, DMatches.territoryIsOwnedByXOrAlly(data, player), DMatches.territoryIsOwnedByXOrAlly(data, player), Matches.unitIsOwnedBy(player));
+    }
+    public static List<Territory> GetLandTersThatCanBeReinforcedByLandUnitsOwnedBy(GameData data, PlayerID player)
+    {
+        return GetTersMatchingXThatCanBeReinforcedByUnitsMatchingYInTersMatchingZ(data, player, DMatches.territoryIsOwnedByXOrAlly(data, player), DMatches.territoryIsOwnedByXOrAlly(data, player), Matches.unitIsLandAndOwnedBy(player));
+    }
+    public static List<Territory> GetTersMatchingXThatCanBeReinforcedByUnitsMatchingYInTersMatchingZ(GameData data, PlayerID player, Match<Territory> terMatch, Match<Territory> moveFromTerMatch, Match<Unit> unitMatch)
+    {
+        List<Territory> result = new ArrayList<Territory>();
+        for (Territory ter : data.getMap().getTerritories())
+        {
+            if (!terMatch.match(ter))
+                continue;
+
+            List<Unit> possibleAttackers = DUtils.GetUnitsMatchingXThatCanReach(data, ter, moveFromTerMatch, unitMatch);
+
+            if (possibleAttackers.size() > 0)
+                result.add(ter);
+        }
+        return result;
+    }
+    public static int GetProduction_PlusExtra(Territory ter)
+    {
+        if (ter == null)
+            return 0;
+        GameData data = ter.getData();
+        int result = TerritoryAttachment.get(ter).getProduction();
+        if (DMatches.territoryIsCapitalAndOwnedByEnemy(data, GlobalCenter.CurrentPlayer).match(ter))
+        {
+            int puGainIfWeConquer = 0;
+            for (PlayerID enemy : data.getPlayerList().getPlayers())
+            {
+                List<Territory> enemyCapList = DUtils.GetAllOurCaps_ThatWeOwn(data, enemy);
+                if (enemyCapList.size() == 1 && enemyCapList.get(0).equals(ter)) //If the enemy only has one cap left, and it's the ter we're checking
+                    puGainIfWeConquer += enemy.getResources().getQuantity(GlobalCenter.GetPUResource());
+            }
+            result += puGainIfWeConquer;
         }
         return result;
     }
@@ -877,38 +858,42 @@ public class DUtils
 
         return result;
     }
-    public static List<Unit> GetUnitsThatCanReachTer(GameData data, Territory ter, List<Unit> units, Territory target)
-    {
-        if(units.isEmpty())
-            return new ArrayList<Unit>();
-        return GetUnitsThatCanReachTer(data, units.get(0).getOwner(), ter, units, target);
-    }
-    public static List<Unit> GetUnitsThatCanReachTer(GameData data, PlayerID player, Territory ter, List<Unit> units, Territory target)
-    {
-        List<Unit> result = new ArrayList<Unit>();
-        for (Unit u : units)
-        {
-            if(CanUnitReachTer(data, ter, u, target))
-                result.add(u);
-        }
-        return result;
-    }
     public static boolean CanUnitReachTer(GameData data, Territory ter, Unit unit, Territory target)
+    {
+        return CanUnitReachTer(data, ter, unit, target, new ArrayList<Territory>());
+    }
+    public static boolean CanUnitReachTer(GameData data, Territory ter, Unit unit, Territory target, List<Territory> passthroughTers)
     {
         PlayerID player = unit.getOwner();
 
-        if(TacticalCenter.get(data, GlobalCenter.CurrentPlayer).GetFrozenUnits().contains(unit) && ter != target)
-            return false;
-        if(ThreatInvalidationCenter.get(data, GlobalCenter.CurrentPlayer).IsUnitInvalidated(unit, ter))
-            return false;
-        if(DMatches.territoryContainsMultipleAlliances(data).match(ter) && GlobalCenter.CurrentPhaseType == PhaseType.Combat_Move)
-            return false; //We don't consider units in a battle ter to be able to reach anything
+        if(GlobalCenter.CurrentPhaseType == PhaseType.Combat_Move)
+        {
+            if (ter == target)
+                return true;
+
+            if (DMatches.territoryContainsMultipleAlliances(data).match(ter))
+                return false; //We don't consider units in a battle ter to be able to reach anything
+            if(TacticalCenter.get(data, GlobalCenter.CurrentPlayer).GetFrozenUnits().contains(unit))
+                return false;
+            if (ThreatInvalidationCenter.get(data, GlobalCenter.CurrentPlayer).IsUnitInvalidatedForTer(unit, target))
+                return false;
+        }
+        else
+        {
+            if (ter == target)
+                return true;
+
+            if(TacticalCenter.get(data, GlobalCenter.CurrentPlayer).GetFrozenUnits().contains(unit))
+                return false;
+            if (ThreatInvalidationCenter.get(data, GlobalCenter.CurrentPlayer).IsUnitInvalidatedForTer(unit, target))
+                return false;
+        }
 
         UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
         TripleAUnit ta = TripleAUnit.get(unit);
 
         Route noCondRoute = CachedCalculationCenter.GetRoute(data, ter, target);
-        if(noCondRoute == null)
+        if (noCondRoute == null)
             return false; //Yikes, must be a map with entirely disconnected ters... :(
         if (noCondRoute.getLength() > ta.getMovementLeft()) //If the unit can't even get from ter to territory on a condition-less route, we know it can't make it
             return false;
@@ -926,10 +911,8 @@ public class DUtils
             }
             else
             {
-                if (CanAirUnitLandIfAttackingFromXToY(data, ter, target, unit))
-                {
+                if (CanAirUnitLandWithXSurvivalChanceIfAttackingFromXToY(data, ter, target, unit, DUtils.ToFloat(DSettings.LoadSettings().AA_survivalChanceOfLandingTerRequiredForPlaneRecruit)))
                     return true;
-                }
             }
         }
         else if (ua.isSea())
@@ -938,9 +921,7 @@ public class DUtils
             {
                 Route route = DUtils.GetAttackRouteFromXToY_BySea(data, player, ter, target);
                 if (route != null && ta.getMovementLeft() >= route.getLength())
-                {
                     return true;
-                }
             }
             else
             {
@@ -955,11 +936,9 @@ public class DUtils
             {
                 if(ua.isAA() && GlobalCenter.CurrentPhaseType != GlobalCenter.CurrentPhaseType.Non_Combat_Move)
                     return false; //AA's can't move unless in ncm phase
-                Route route = DUtils.GetAttackRouteFromXToY_ByLand(data, player, ter, target);
+                Route route = DUtils.GetAttackRouteFromXToY_ByLand_CountZAsPassthroughs(data, player, ter, target, passthroughTers);
                 if (route != null && ta.getMovementLeft() >= route.getLength())
-                {
                     return true;
-                }
             }
         }
         return false;
@@ -968,22 +947,29 @@ public class DUtils
     {
         return Match.getMatches(units, match);
     }
-    public static List<Territory> GetEnemyTerritoriesWithinXLandDistanceThatHaveEnemyUnitsThatCanAttack(Territory territory, GameData data, PlayerID player, int maxJumpDist)
+    public static List<Territory> GetEnemyTerritoriesWithinXLandDistanceThatHaveEnemyUnitsThatCanAttack(Territory target, GameData data, PlayerID player, int maxJumpDist)
     {
         List<Territory> result = new ArrayList<Territory>();
         for (Territory ter : data.getMap().getTerritories())
         {
-            if (ter.getName().equals(territory.getName()))
+            if (ter == target)
                 continue;
-            if(data.getAllianceTracker().isAllied(player, ter.getOwner()))
+            if (data.getAllianceTracker().isAllied(player, ter.getOwner()))
                 continue;
             List<Unit> enemyUnits = ter.getUnits().getMatches(Matches.unitIsEnemyOf(data, player));
-            int dist = DUtils.GetJumpsFromXToY_PassableLand(data, ter, territory);
+            int dist = DUtils.GetJumpsFromXToY_PassableLand(data, ter, target);
             if(dist < 1 || dist > maxJumpDist)
                 continue;
+
+            Route noCondRoute = CachedCalculationCenter.GetRoute(data, ter, target);
+            if (noCondRoute == null)
+                continue; //Yikes, must be a map with entirely disconnected ters... :(
+            if (noCondRoute.getLength() > GlobalCenter.FastestUnitMovement) //If the unit can't even get from ter to territory on a condition-less route, we know it can't make it
+                continue;
+
             for (Unit u : enemyUnits)
             {
-                if(CanUnitReachTer(data, ter, u, territory))
+                if(CanUnitReachTer(data, ter, u, target))
                 {
                     result.add(ter);
                     break;
@@ -991,11 +977,6 @@ public class DUtils
             }
         }
         return result;
-    }
-    public static List<PlayerID> GenerateEnemyListSortedByPriority(GameData data, PlayerID player)
-    {
-        List<PlayerID> enemyPlayers = DUtils.GetAliveEnemyPlayers(data, player);
-        return DUtils.SortEnemiesByEnemyPriority_D(data, player, enemyPlayers);
     }
     public static int GetHighestTerProduction(GameData data)
     {
@@ -1084,6 +1065,8 @@ public class DUtils
             
             for (PlayerID otherPlayer : data.getPlayerList())
             {
+                if(otherPlayer == player)
+                    continue;
                 if (data.getAllianceTracker().isAtWar(player, otherPlayer))
                 {
                     if(result.containsKey(otherPlayer)) //If this player already has an assignment
@@ -1097,16 +1080,58 @@ public class DUtils
         }
         else
         {
+            List<Territory> ourTersConnectedToCap = new ArrayList<Territory>();
+            List<Territory> ourCaps = DUtils.GetAllOurCaps(data, player);
+            for (Territory cap : ourCaps)
+                ourTersConnectedToCap.addAll(DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, cap, Integer.MAX_VALUE, DMatches.territoryIsOwnedBy(player), DMatches.territoryIsOwnedBy(player)));
+
+            HashSet<PlayerID> enemiesTouchingOurCapConnectedTers = new HashSet<PlayerID>(); //Btw, I use HashSet because it doesn't allow duplicates in a list
+
+            for(Territory enemyTer : data.getMap().getTerritories())
+            {
+                if(!DMatches.territoryIsOwnedByNNEnemy(data, player).match(enemyTer))
+                    continue; //If this ter is not an enemy
+                if(Match.getMatches(data.getMap().getNeighbors(enemyTer), DMatches.territoryIsInList(ourTersConnectedToCap)).isEmpty())
+                    continue; //If none of this ters neighbors are part of our 'ters connected to cap' list, don't count it
+                if(!DMatches.territoryHasRouteMatchingXToTerritoryMatchingY(data, DMatches.territoryIsOwnedBy(enemyTer.getOwner()), CompMatchAnd(DMatches.territoryIsOwnedBy(enemyTer.getOwner()), DMatches.territoryIsInList(DUtils.GetAllOurCaps(data, enemyTer.getOwner())))).match(enemyTer))
+                    continue; //If this enemy ter does not have a route to it's capital
+
+                //We passed all the checks, so we count this enemy as a 'neighbor'
+                enemiesTouchingOurCapConnectedTers.add(enemyTer.getOwner());
+            }
+
+            PlayerID weakestEnemyNeighbor = null;
+            int weakestEnemyTUV = Integer.MAX_VALUE;
+            for(PlayerID enemy : enemiesTouchingOurCapConnectedTers)
+            {
+                int tuv = GetTUVOfUnits(GetUnitsMatchingXInTerritoriesMatchingY(data, Matches.unitIsOwnedBy(enemy), Matches.TerritoryIsLandOrWater), GlobalCenter.GetPUResource());
+                if(tuv < weakestEnemyTUV)
+                {
+                    weakestEnemyNeighbor = enemy;
+                    weakestEnemyTUV = tuv;
+                }
+            }
+
+            if(weakestEnemyNeighbor != null)
+                result.put(weakestEnemyNeighbor, StrategyType.Enemy_Offensive); //For now, only go on the offensive on our weakest neighbor
+
             for (PlayerID otherPlayer : data.getPlayerList())
             {
+                if(otherPlayer == player)
+                    continue;
                 if (data.getAllianceTracker().isAtWar(player, otherPlayer))
-                    result.put(otherPlayer, StrategyType.Enemy_Offensive);
-                else
+                {
+                    if(result.containsKey(otherPlayer)) //If this player already has an assignment
+                        continue;
+
+                    result.put(otherPlayer, StrategyType.Enemy_Defensive);
+                }
+                else //Shouldn't ever happen in FFA's...
                     result.put(otherPlayer, StrategyType.Ally_OffensiveAssist);
             }
         }
 
-        DUtils.Log(Level.FINE, "    Calculated strategy assignments: ", result);
+        DUtils.Log(Level.FINE, "    Calculated strategy assignments: {0}", result);
         return result;
     }
     public static float GetCMTaskPriority_LandGrab(GameData data, PlayerID player, Territory ter)
@@ -1913,18 +1938,7 @@ public class DUtils
             List<Integer> responseTUVLosses = DUtils.GetTUVChangeOfAttackerAndDefender(responseAttackers, responseDefenders, simulatedResponse);
             responseTUVSwing = DUtils.GetTUVSwingForTUVChange(responseTUVLosses);
         }
-        int terProduction = TerritoryAttachment.get(target).getProduction();
-        if(DMatches.territoryIsCapitalAndOwnedByEnemy(data, GlobalCenter.CurrentPlayer).match(target))
-        {
-            int puGainIfWeConquer = 0;
-            for(PlayerID enemy : data.getPlayerList().getPlayers())
-            {
-                List<Territory> enemyCapList = DUtils.GetAllOurCaps_ThatWeOwn(data, enemy);
-                if(enemyCapList.size() == 1 && enemyCapList.get(0).equals(target)) //If the enemy only has one cap left, and it's the ter we're checking
-                    puGainIfWeConquer = enemy.getResources().getQuantity(GlobalCenter.GetPUResource());
-            }
-            terProduction += puGainIfWeConquer;
-        }
+        int terProduction = GetProduction_PlusExtra(target);
         if(Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsLand).isEmpty()) //If no land units survive, on average
             terProduction = 0; //Don't count in ter production
 
@@ -1996,6 +2010,13 @@ public class DUtils
     public static int GetJumpsFromXToY_NoCond(GameData data, Territory ter1, Territory ter2)
     {
         Route route = CachedCalculationCenter.GetRoute(data, ter1, ter2);
+        if(route == null)
+            return Integer.MAX_VALUE;
+        return route.getLength();
+    }
+    public static int GetJumpsFromXToY_AirPassable(GameData data, Territory ter1, Territory ter2)
+    {
+        Route route = CachedCalculationCenter.GetAirPassableRoute(data, ter1, ter2);
         if(route == null)
             return Integer.MAX_VALUE;
         return route.getLength();
@@ -2072,9 +2093,7 @@ public class DUtils
         List<Match> matches = new ArrayList<Match>();
         matches.add(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable, new InverseMatch<Territory>(Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, player), Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1))))));
         for(Territory ter : passthroughTers)
-        {
             matches.add(Matches.territoryIs(ter));
-        }
         return data.getMap().getRoute_IgnoreEnd(ter1, ter2, CompMatchOr(matches));
     }
     public static Route GetAttackRouteFromXToY_BySea(GameData data, PlayerID player, Territory ter1, Territory ter2)
@@ -2111,7 +2130,115 @@ public class DUtils
         return result;
     }
 
+
+
+
+
     /**
+     * Returns all the units matching X that can reach target.
+     */
+    public static List<Unit> GetUnitsMatchingXThatCanReach(final GameData data, Territory target, Match<Territory> terMatch, Match<Unit> unitMatch)
+    {
+        return GetUnitsMatchingXThatCanReach_CountYAsPassthroughs(data, target, terMatch, unitMatch, new ArrayList<Territory>());
+    }
+    /**
+     * Returns all the units matching X that can reach target, or could reach target if passthroughTers were empty.
+     */
+    public static List<Unit> GetUnitsMatchingXThatCanReach_CountYAsPassthroughs(final GameData data, Territory target, Match<Territory> terMatch, Match<Unit> unitMatch, List<Territory> passthroughTers)
+    {
+        List<Unit> result = new ArrayList<Unit>();
+        for (Territory ter : data.getMap().getTerritories())
+        {
+            if(!terMatch.match(ter))
+                continue;
+
+            List<Unit> matchingUnits = Match.getMatches(ToList(ter.getUnits().getUnits()), unitMatch);
+            for(Unit unit : matchingUnits)
+            {
+                if(CanUnitReachTer(data, ter, unit, target, passthroughTers))
+                    result.add(unit);
+            }
+        }
+        return result;
+    }
+    /**
+     * Returns all the units matching X that can reach target.
+     */
+    public static HashMap<Territory, List<Unit>> GetUnitsMatchingXThatCanReach_Mapped(final GameData data, Territory target, Match<Territory> terMatch, Match<Unit> unitMatch)
+    {
+        return GetUnitsMatchingXThatCanReach_Mapped_CountYAsPassthroughs(data, target, terMatch, unitMatch, new ArrayList<Territory>());
+    }
+    /**
+     * Returns all the units matching X that can reach target.
+     */
+    public static HashMap<Territory, List<Unit>> GetUnitsMatchingXThatCanReach_Mapped_CountYAsPassthroughs(final GameData data, Territory target, Match<Territory> terMatch, Match<Unit> unitMatch, List<Territory> passthroughTers)
+    {
+        HashMap<Territory, List<Unit>> result = new HashMap<Territory, List<Unit>>();
+        for (Territory ter : data.getMap().getTerritories())
+        {
+            if(!terMatch.match(ter))
+                continue;
+
+            List<Unit> matchingUnits = Match.getMatches(ToList(ter.getUnits().getUnits()), unitMatch);
+            for(Unit unit : matchingUnits)
+            {
+                if(CanUnitReachTer(data, ter, unit, target, passthroughTers))
+                    AddObjToListValueForKeyInMap(result, ter, unit);
+            }
+        }
+        return result;
+    }
+    /**
+     * Returns all the units owned by player that can reach target.
+     */
+    public static List<Unit> GetUnitsOwnedByPlayerThatCanReach(final GameData data, Territory target, final PlayerID playerToCheckFor, Match<Territory> terMatch)
+    {
+        return GetUnitsMatchingXThatCanReach(data, target, terMatch, Matches.unitIsOwnedBy(playerToCheckFor));
+    }
+    /**
+     * (GetStrongestPlayerNonNullEnemyUnitsThatCanReach_Mapped)
+     * First, determines all the enemy units that can reach territory.
+     * Then, it estimates the attack score of the units owned by each player.
+     * Then, it returns all the units owned by that player that can reach territory, in a ter mapped hashmap.
+     */
+    public static HashMap<Territory, List<Unit>> GetSPNNEnemyUnitsThatCanReach_Mapped(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terSearchMatch)
+    {
+        HashMap<Territory, List<Unit>> result = GetNNEnemyUnitsThatCanReach_Mapped(data, territory, playerToCheckFor, terSearchMatch);
+        return GetTheUnitsOfTheStrongestPlayerContainedInMap_Mapped(result);
+    }    
+    /**
+     * (GetNonNullEnemyUnitsThatCanReach)
+     * Returns all the non-null-enemy units that can reach territory.
+     */
+    public static List<Unit> GetNNEnemyUnitsThatCanReach(final GameData data, Territory target, final PlayerID player, Match<Territory> terMatch)
+    {
+        return GetNNEnemyUnitsThatCanReach_CountXAsPassthroughs(data, target, player, terMatch, new ArrayList<Territory>());
+    }
+    /**
+     * (GetNonNullEnemyUnitsThatCanReach_Mapped)
+     * Returns a hashmap that lists the enemy units that can reach <code>territory</code>, where key is the ter with attackers, and value is the list of attackers in that ter.
+     */
+    public static HashMap<Territory, List<Unit>> GetNNEnemyUnitsThatCanReach_Mapped(final GameData data, Territory target, final PlayerID player, Match<Territory> terMatch)
+    {
+        return GetUnitsMatchingXThatCanReach_Mapped(data, target, terMatch, DMatches.unitIsNNEnemyOf(data, player));
+    }
+    /**
+     * (GetNonNullEnemyUnitsThatCanReach_CountXAsPassthroughs)
+     * Returns all the enemy units that can reach territory, or could reach territory if passthrough ters were empty of enemies.
+     */
+    public static List<Unit> GetNNEnemyUnitsThatCanReach_CountXAsPassthroughs(final GameData data, Territory target, final PlayerID player, Match<Territory> terMatch, List<Territory> passthroughTers)
+    {
+        return GetUnitsMatchingXThatCanReach_CountYAsPassthroughs(data, target, terMatch, DMatches.unitIsNNEnemyOf(data, player), passthroughTers);
+    }
+    /**
+     * (GetNonNullEnemyLandUnitsThatCanReach)
+     * Returns all the non-null-enemy land units that can reach territory.
+     */
+    public static List<Unit> GetNNEnemyLUnitsThatCanReach(final GameData data, Territory target, final PlayerID player, Match<Territory> terMatch)
+    {
+        return GetUnitsMatchingXThatCanReach(data, target, terMatch, CompMatchAnd(Matches.UnitIsLand, DMatches.unitIsNNEnemyOf(data, player)));
+    }
+        /**
      * (GetStrongestPlayerUnitsMatchingXThatCanReach)
      * First, determines all the units matching X that can reach territory.
      * Then, it estimates the attack score of the units owned by each player.
@@ -2129,21 +2256,10 @@ public class DUtils
      * Then, it estimates the attack score of the units owned by each player.
      * Then, it returns all the units that can reach territory that are also owned by the player whose units had the highest total score.
      */
-    public static List<Unit> GetSPNNEnemyUnitsThatCanReach(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terSearchMatch)
+    public static List<Unit> GetSPNNEnemyUnitsThatCanReach(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terMatch)
     {
-        List<Unit> result = GetNNEnemyUnitsThatCanReach(data, territory, playerToCheckFor, terSearchMatch);
+        List<Unit> result = GetNNEnemyUnitsThatCanReach(data, territory, playerToCheckFor, terMatch);
         return GetSPUnitsInList(result);
-    }
-
-    /**
-     * (GetStrongestPlayerNonNullEnemyUnitsThatCanReach_CountXAsPassthrough)
-     * First, determines all the enemy units that can reach territory, or could reach territory if passthrough ter were empty of enemies.
-     * Then, it estimates the attack score of the units owned by each player.
-     * Then, it returns all the units that can reach territory that are also owned by the player whose units had the highest total score.
-     */
-    public static List<Unit> GetSPNNEnemyUnitsThatCanReach_CountXAsPassthrough(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terSearchMatch, Territory passthroughTer)
-    {
-        return GetSPNNEnemyUnitsThatCanReach_CountXAsPassthroughs(data, territory, playerToCheckFor, terSearchMatch, Collections.singletonList(passthroughTer));
     }
 
     /**
@@ -2152,9 +2268,9 @@ public class DUtils
      * Then, it estimates the attack score of the units owned by each player.
      * Then, it returns all the units that can reach territory that are also owned by the player whose units had the highest total score.
      */
-    public static List<Unit> GetSPNNEnemyUnitsThatCanReach_CountXAsPassthroughs(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terSearchMatch, List<Territory> passthroughTers)
+    public static List<Unit> GetSPNNEnemyUnitsThatCanReach_CountXAsPassthroughs(final GameData data, Territory target, final PlayerID player, Match<Territory> terMatch, List<Territory> passthroughTers)
     {
-        List<Unit> result = GetNNEnemyUnitsThatCanReach_CountXAsPassthroughs(data, territory, playerToCheckFor, terSearchMatch, passthroughTers);
+        List<Unit> result = GetNNEnemyUnitsThatCanReach_CountXAsPassthroughs(data, target, player, terMatch, passthroughTers);
         return GetSPUnitsInList(result);
     }
 
@@ -2164,9 +2280,9 @@ public class DUtils
      * Then, it estimates the attack score of the units owned by each player. (And owns land units in the list)
      * Then, it returns all the units that can reach territory that are also owned by the player whose units had the highest total score.
      */
-    public static List<Unit> GetSPNNEnemyWithLUnitsThatCanReach(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terSearchMatch)
+    public static List<Unit> GetSPNNEnemyWithLUnitsThatCanReach(final GameData data, Territory target, final PlayerID playerToCheckFor, Match<Territory> terMatch)
     {
-        List<Unit> result = GetNNEnemyUnitsThatCanReach(data, territory, playerToCheckFor, terSearchMatch);
+        List<Unit> result = GetNNEnemyUnitsThatCanReach(data, target, playerToCheckFor, terMatch);
         return GetTheUnitsOfTheStrongestPlayerWithLUContainedInList(result);
     }
 
@@ -2176,9 +2292,9 @@ public class DUtils
      * Then, it estimates the attack score of the units owned by each player. (And owns land units in the list)
      * Then, it returns all the units that can reach territory that are also owned by the player whose units had the highest total score.
      */
-    public static List<Unit> GetSPNNEnemyWithLUnitsThatCanReach_CountXAsPassthrough(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terSearchMatch, Territory passthroughTer)
+    public static List<Unit> GetSPNNEnemyWithLUnitsThatCanReach_CountXAsPassthrough(final GameData data, Territory target, final PlayerID player, Match<Territory> terMatch, Territory passthroughTer)
     {
-        return GetSPNNEnemyWithLUnitsThatCanReach_CountXAsPassthroughs(data, territory, playerToCheckFor, terSearchMatch, Collections.singletonList(passthroughTer));
+        return GetSPNNEnemyWithLUnitsThatCanReach_CountXAsPassthroughs(data, target, player, terMatch, Collections.singletonList(passthroughTer));
     }
 
     /**
@@ -2204,6 +2320,9 @@ public class DUtils
         List<Unit> result = GetNNEnemyLUnitsThatCanReach(data, territory, playerToCheckFor, terSearchMatch);
         return GetTheUnitsOfTheStrongestPlayerWithLUContainedInList(result);
     }
+
+
+
 
     /** (GetStrongestPlayerUnitsInList)
      * First, groups the units in the list by their owners.
@@ -2241,63 +2360,6 @@ public class DUtils
             }
         }
         return highestAttackerUnits;
-    }
-    public static HashSet ToHashSet(Collection collection)
-    {
-        HashSet result = new HashSet();
-        for(Object obj : collection)
-            result.add(obj);
-        return result;
-    }
-    /**
-     * (GetStrongestPlayerNonNullEnemyUnitsThatCanReach_Mapped)
-     * First, determines all the enemy units that can reach territory.
-     * Then, it estimates the attack score of the units owned by each player.
-     * Then, it returns all the units owned by that player that can reach territory, in a ter mapped hashmap.
-     */
-    public static HashMap<Territory, List<Unit>> GetSPNNEnemyUnitsThatCanReach_Mapped(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terSearchMatch)
-    {
-        HashMap<Territory, List<Unit>> result = GetNNEnemyUnitsThatCanReach_Mapped(data, territory, playerToCheckFor, terSearchMatch);
-        return GetTheUnitsOfTheStrongestPlayerContainedInMap_Mapped(result);
-    }
-    /**
-     * First, determines which player owns most of the units.
-     * Then, it returns all the units owned by that player.
-     */
-    public static HashMap<Territory, List<Unit>> GetTheUnitsOfTheStrongestPlayerContainedInMap_Mapped(HashMap<Territory, List<Unit>> unitsToSearch)
-    {
-        HashMap<String, List<Unit>> attackersUnits = new HashMap<String, List<Unit>>();
-        for (Territory ter : unitsToSearch.keySet())
-        {
-            for (Unit unit : unitsToSearch.get(ter))
-            {
-                AddObjToListValueForKeyInMap(attackersUnits, unit.getOwner().getName(), unit);
-            }
-        }
-
-        HashSet<Unit> highestAttackerUnits = new HashSet<Unit>();
-        float highestAttackerUStrength = Integer.MIN_VALUE;
-        for (String key : attackersUnits.keySet())
-        {
-            List<Unit> units = attackersUnits.get(key);
-            float strength = DUtils.GetAttackScoreOfUnits(units);
-            if (strength > highestAttackerUStrength)
-            {
-                highestAttackerUStrength = strength;
-                highestAttackerUnits = ToHashSet(units);
-            }
-        }
-
-        HashMap<Territory, List<Unit>> highestAttackerUnits_Mapped = new HashMap<Territory, List<Unit>>();
-        for(Territory ter : unitsToSearch.keySet())
-        {
-            for(Unit terUnit : unitsToSearch.get(ter))
-            {
-                if(highestAttackerUnits.contains(terUnit))
-                    AddObjToListValueForKeyInMap(highestAttackerUnits_Mapped, ter, terUnit);
-            }
-        }
-        return highestAttackerUnits_Mapped;
     }
     /**
      * First, determines which player owns most of the units. (And owns land units that are in the list)
@@ -2338,6 +2400,79 @@ public class DUtils
         }
         return highestAttackerUnits;
     }
+    /**
+     * First, determines which player owns most of the units.
+     * Then, it returns all the units owned by that player.
+     */
+    public static HashMap<Territory, List<Unit>> GetTheUnitsOfTheStrongestPlayerContainedInMap_Mapped(HashMap<Territory, List<Unit>> unitsToSearch)
+    {
+        HashMap<String, List<Unit>> attackersUnits = new HashMap<String, List<Unit>>();
+        for (Territory ter : unitsToSearch.keySet())
+        {
+            for (Unit unit : unitsToSearch.get(ter))
+            {
+                AddObjToListValueForKeyInMap(attackersUnits, unit.getOwner().getName(), unit);
+            }
+        }
+
+        HashSet<Unit> highestAttackerUnits = new HashSet<Unit>();
+        float highestAttackerUStrength = Integer.MIN_VALUE;
+        for (String key : attackersUnits.keySet())
+        {
+            List<Unit> units = attackersUnits.get(key);
+            float strength = DUtils.GetAttackScoreOfUnits(units);
+            if (strength > highestAttackerUStrength)
+            {
+                highestAttackerUStrength = strength;
+                highestAttackerUnits = ToHashSet(units);
+            }
+        }
+
+        HashMap<Territory, List<Unit>> highestAttackerUnits_Mapped = new HashMap<Territory, List<Unit>>();
+        for(Territory ter : unitsToSearch.keySet())
+        {
+            for(Unit terUnit : unitsToSearch.get(ter))
+            {
+                if(highestAttackerUnits.contains(terUnit))
+                    AddObjToListValueForKeyInMap(highestAttackerUnits_Mapped, ter, terUnit);
+            }
+        }
+        return highestAttackerUnits_Mapped;
+    }
+    public static boolean CanAirUnitLandWithXSurvivalChanceIfAttackingFromXToY(GameData data, final Territory from, Territory to, Unit airUnit, float survivalChance)
+    {
+        TripleAUnit ta = TripleAUnit.get(airUnit);
+        int jumpDist = DUtils.GetJumpsFromXToY_AirPassable(data, from, to);
+        int movementAfterAttack = ta.getMovementLeft() - jumpDist;
+        for (Territory ter : data.getMap().getTerritories())
+        {
+            if (!data.getAllianceTracker().isAllied(ter.getOwner(), airUnit.getOwner()))
+                continue;
+            int dist = DUtils.GetJumpsFromXToY_AirPassable(data, ter, to);
+            if(dist > movementAfterAttack)
+                continue;
+
+            if (survivalChance != 0.0F)
+            {
+                //TODO: If we find all attackers, we cause airplane determining endless loop. Current hack: Only figure in land units that can attack
+                List<Unit> attackers = GetSPNNEnemyBasedOnLUnitsOnlyThatCanReach(data, ter, airUnit.getOwner(), Matches.TerritoryIsLand);
+                List<Unit> defenders = ToList(ter.getUnits().getUnits());
+                if(data.getAllianceTracker().isAtWar(airUnit.getOwner(), GlobalCenter.CurrentPlayer)) //If we're checking if an enemy plane can land
+                {
+                    List<Territory> neighbors = DUtils.GetTerritoriesWithinXDistanceOfY(data, ter, 1);
+                    defenders = DUtils.GetUnitsMatchingXInTerritories(neighbors, Matches.unitIsLandAndOwnedBy(airUnit.getOwner()));
+                }
+                defenders.remove(airUnit);
+                defenders.add(airUnit);
+                AggregateResults results = DUtils.GetBattleResults(attackers, defenders, ter, data, 1, false); //False, so we don't leave air in our land but going to get killed by enemy air
+                if(results.getDefenderWinPercent() >= survivalChance)
+                    return true; //We found a place to land
+            }
+            else
+                return true; //We found a place to land
+        }
+        return false;
+    }
     public static int CountLandUnits(List<Unit> units)
     {
         int result = 0;
@@ -2351,128 +2486,12 @@ public class DUtils
         }
         return result;
     }
-    public static boolean CanAirUnitLandIfAttackingFromXToY(GameData data, final Territory from, Territory to, Unit airUnit)
+    public static HashSet ToHashSet(Collection collection)
     {
-        TripleAUnit ta = TripleAUnit.get(airUnit);
-        int jumpDist = DUtils.GetJumpsFromXToY_NoCond(data, from, to);
-        int movementAfterAttack = ta.getMovementLeft() - jumpDist;
-        for (Territory ter : data.getMap().getTerritories())
-        {
-            if (!data.getAllianceTracker().isAllied(ter.getOwner(), airUnit.getOwner()))
-                continue;
-            int dist = DUtils.GetJumpsFromXToY_NoCond(data, ter, to);
-            if(dist > movementAfterAttack)
-                continue;
-
-            return true; //We found a place to land
-        }
-        return false;
-    }
-    /**
-     * (GetNonNullEnemyUnitsThatCanReach)
-     * Returns all the non-null-enemy units that can reach territory.
-     */
-    public static List<Unit> GetNNEnemyUnitsThatCanReach(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terSearchMatch)
-    {
-        return CombineListsInCollections(GetNNEnemyUnitsThatCanReach_Mapped(data, territory, playerToCheckFor, terSearchMatch).values());
-    }
-    /**
-     * (GetNonNullEnemyUnitsThatCanReach_Mapped)
-     * Returns a hashmap that lists the enemy units that can reach <code>territory</code>, where key is the ter with attackers, and value is the list of attackers in that ter.
-     */
-    public static HashMap<Territory, List<Unit>> GetNNEnemyUnitsThatCanReach_Mapped(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terSearchMatch)
-    {
-        HashMap<Territory, List<Unit>> enemies = new HashMap<Territory, List<Unit>>();
-        for (Territory ter : GetTerritoriesWithinXDistanceOfYMatchingZ(data, territory, GlobalCenter.FastestUnitMovement, terSearchMatch))
-        {
-            if (!terSearchMatch.match(ter))
-                continue;
-            if(DMatches.territoryContainsMultipleAlliances(data).match(ter)) //Don't include ters that are being battled in
-                continue;
-            if (ter.getName().equals(territory.getName()))
-                continue;
-            if (ter.getOwner().isNull())
-                continue;
-
-            List<Territory> possibleAttackTers = null;
-
-            for (Unit u : ter.getUnits().getMatches(DMatches.unitIsNNEnemyOf(data, playerToCheckFor)))
-            {
-                if(CanUnitReachTer(data, ter, u, territory))
-                {
-                    UnitAttachment ua = UnitAttachment.get(u.getUnitType());
-                    int movement = ua.getMovement(u.getOwner());
-                    if(movement > 1 && ua.isAir())
-                    {
-                        if(possibleAttackTers == null)
-                            possibleAttackTers = DUtils.GetTerritoriesWithinXDistanceOfYMatchingZ(data, ter, GlobalCenter.FastestUnitMovement, DMatches.territoryIsOwnedByNNEnemy(data, ter.getOwner()));
-                        int attackToTers = 0;
-                        for (Territory to : possibleAttackTers)
-                        {
-                            if(CanUnitReachTer(data, ter, u, to))
-                                attackToTers++;
-                        }
-                        //The idea is, the farther a plane is from a ter it's attacking, the less it matters
-                        //What this code does is it finds all the ters this plane can attack, and squares it
-                        //Then it randomly generates a number and sees if it's over [1 / squaredAttackToCount]
-                        //If it is over, it skips this unit
-                        double cubeRouteOfAttackToCount = Math.sqrt(Math.sqrt(attackToTers));
-                        double random = Math.random();
-                        if(random > (1 / cubeRouteOfAttackToCount))
-                            continue;
-                    }
-                    AddObjToListValueForKeyInMap(enemies, ter, u);
-                }
-            }
-        }
-
-        return enemies;
-    }
-    /**
-     * (GetNonNullEnemyUnitsThatCanReach_CountXAsPassthroughs)
-     * Returns all the enemy units that can reach territory, or could reach territory if passthrough ters were empty of enemies.
-     */
-    public static List<Unit> GetNNEnemyUnitsThatCanReach_CountXAsPassthroughs(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terSearchMatch, List<Territory> passthroughTers)
-    {
-        List<Match> matches = new ArrayList<Match>();
-        matches.add(terSearchMatch);
-        for(Territory ter : passthroughTers)
-        {
-            matches.add(Matches.territoryIs(ter));
-        }
-        return GetNNEnemyUnitsThatCanReach(data, territory, playerToCheckFor, CompMatchOr(matches));
-    }
-    /**
-     * (GetNonNullEnemyLandUnitsThatCanReach)
-     * Returns all the non-null-enemy land units that can reach territory.
-     */
-    public static List<Unit> GetNNEnemyLUnitsThatCanReach(final GameData data, Territory territory, final PlayerID playerToCheckFor, Match<Territory> terSearchMatch)
-    {
-        List<Unit> enemies = new ArrayList<Unit>();
-        for (Territory ter : GetTerritoriesWithinXDistanceOfYMatchingZ(data, territory, GlobalCenter.FastestUnitMovement, terSearchMatch))
-        {
-            if (!terSearchMatch.match(ter))
-                continue;
-            if(DMatches.territoryContainsMultipleAlliances(data).match(ter)) //Don't include ters that are being battled in
-                continue;
-            if (ter.getName().equals(territory.getName()))
-                continue;
-            if (ter.getOwner().isNull())
-                continue;
-
-            for (Unit u : ter.getUnits().getMatches(DMatches.unitIsNNEnemyOf(data, playerToCheckFor)))
-            {
-                UnitAttachment ua = UnitAttachment.get(u.getUnitType());
-                if(ua.isAir() || ua.isSea())
-                    continue;
-                if(CanUnitReachTer(data, ter, u, territory))
-                {
-                    enemies.add(u);
-                }
-            }
-        }
-
-        return enemies;
+        HashSet result = new HashSet();
+        for(Object obj : collection)
+            result.add(obj);
+        return result;
     }
     public static List InvertList(Collection list)
     {
@@ -2618,32 +2637,10 @@ public class DUtils
     public static List<Unit> DetermineResponseAttackers(GameData data, PlayerID player, Territory battleTer, AggregateResults results)
     {
         List<Unit> responseAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, battleTer, player, Matches.TerritoryIsLand);
+        responseAttackers.removeAll(battleTer.getUnits().getUnits());
         return responseAttackers;
-    }
+    }    
     /**
-     * Returns all the units matching X that can reach target.
-     */
-    public static List<Unit> GetUnitsMatchingXThatCanReach(final GameData data, Territory target, Match<Territory> terMatch, Match<Unit> unitMatch)
-    {
-        List<Unit> result = new ArrayList<Unit>();
-        for (Territory ter : data.getMap().getTerritories())
-        {
-            if(!terMatch.match(ter))
-                continue;
-
-            List<Unit> matchingUnits = Match.getMatches(ToList(ter.getUnits().getUnits()), unitMatch);
-            result.addAll(GetUnitsThatCanReachTer(data, ter, matchingUnits, target));
-        }
-        return result;
-    }
-    /**
-     * Returns all the units owned by player that can reach target.
-     */
-    public static List<Unit> GetUnitsOwnedByPlayerThatCanReach(final GameData data, Territory target, final PlayerID playerToCheckFor, Match<Territory> terMatch)
-    {
-        return GetUnitsMatchingXThatCanReach(data, target, terMatch, Matches.unitIsOwnedBy(playerToCheckFor));
-    }
-        /**
      * Returns the units that will be on ter after factory units are placed at end of turn.
      */
     public static List<Unit> GetUnitsGoingToBePlacedAtX(GameData data, PlayerID player, Territory ter)
@@ -2754,8 +2751,8 @@ public class DUtils
         List<Unit> newTerAttackers = DUtils.GetSPNNEnemyWithLUnitsThatCanReach_CountXAsPassthroughs(data, terToCheck, player, CompMatchAnd(Matches.TerritoryIsLand, Matches.territoryIsNotInList(movedToTers)), movedFromTersThatBecomeEmpty); //Ter attackers after move
         
         //Now look through the old attack-from enemy territories, and remove the units from the list of new attackers if the attack route will be blocked after the move
-        List<Territory> attackLocs = DUtils.GetEnemyTerritoriesWithinXLandDistanceThatHaveEnemyUnitsThatCanAttack(terToCheck, data, player, GlobalCenter.FastestUnitMovement);
-        for (Territory from : attackLocs)
+        List<Territory> attackFromLocs = DUtils.GetEnemyTerritoriesWithinXLandDistanceThatHaveEnemyUnitsThatCanAttack(terToCheck, data, player, GlobalCenter.FastestUnitMovement);
+        for (Territory from : attackFromLocs)
         {
             Route route = DUtils.GetAttackRouteFromXToY_ByLand(data, from.getOwner(), from, terToCheck);
             if(route != null)
@@ -2907,9 +2904,7 @@ public class DUtils
             for (Unit u : units)
             {
                 if(CanUnitReachTer(data, ter, u, territory))
-                {
                     result.add(ter);
-                }
             }
         }
 
@@ -2937,30 +2932,6 @@ public class DUtils
 
         return reachableMatches;
     }
-
-    /**
-     * Determines which unit group in the list will increase the chance of battle winning the most, if chances before were already 1.0F, bases it off of how many attacking units are saved by adding this unit.
-     * (More powerful units should destroy enemy units faster, thereby reducing attacker's casualties more)     
-     */
-    public static UnitGroup CalculateUnitGroupThatWillHelpWinAttackOnXTheMostPerPU(Territory enemyTer, GameData data, PlayerID player, List<Unit> unitsAlreadyAttacking, List<UnitGroup> unitGroupsToChooseFrom, Match<Unit> match, int calcRunsPerUnit)
-    {
-        List<Unit> allUnits = new ArrayList<Unit>();
-        for(UnitGroup ug : unitGroupsToChooseFrom)
-        {
-            allUnits.addAll(ug.GetUnits());
-        }
-
-        Unit bestUnit = CalculateUnitThatWillHelpWinAttackOnXTheMostPerPU(enemyTer, data, player, unitsAlreadyAttacking, allUnits, match, calcRunsPerUnit);
-
-        //Now that we know the best unit, determine which unit group it's contained in
-        for(UnitGroup ug : unitGroupsToChooseFrom)
-        {
-            if(ug.GetUnits().contains(bestUnit))
-                return ug;
-        }
-
-        return null;
-    }
     /**
      * Determines which unit in the list will increase the chance of battle winning the most, if chances before were already 1.0F, bases it off of how many attacking units are saved by adding this unit.
      * (More powerful units should destroy enemy units faster, thereby reducing attacker's casualties more)
@@ -2986,11 +2957,6 @@ public class DUtils
             UnitAttachment ua = UnitAttachment.get(ut);
             if (ua.isSea() || ua.isAA() || ua.isFactory())
                 continue;
-            if(ua.isAir())
-            {
-                if(Math.random() <= .5F) //Only consider planes half the time, as we can't use them well yet
-                    continue; //Don't consider purchasing this air unit
-            }
             if(!match.match(testUnit))
                 continue;
 

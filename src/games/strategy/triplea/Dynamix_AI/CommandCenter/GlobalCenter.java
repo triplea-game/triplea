@@ -79,6 +79,7 @@ public class GlobalCenter
     public static PhaseType CurrentPhaseType = null;
     public static boolean IsFFAGame = false;
     public static int FastestUnitMovement = 0;
+    public static int FastestLandUnitMovement = 0;
     public static int HighestTerProduction = -1;
     public static int PUsAtEndOfLastTurn = 0;
 
@@ -100,14 +101,15 @@ public class GlobalCenter
             for(ProductionRule rule : player.getProductionFrontier())
             {
                 UnitType ut = (UnitType)rule.getResults().keySet().iterator().next();
+                UnitAttachment ua = UnitAttachment.get(ut);
                 DUtils.AddObjToListValueForKeyInMap(differentCosts, ut, rule.getCosts().getInt(PUResource));
                 purchaseCountsForUnit.put(ut, rule.getResults().keySet().size());
 
-                int movement = UnitAttachment.get(ut).getMovement(player);
+                int movement = ua.getMovement(player);
                 if(movement > FastestUnitMovement)
-                {
                     FastestUnitMovement = movement;
-                }
+                if(movement > FastestLandUnitMovement && !ua.isSea() && !ua.isAir())
+                    FastestLandUnitMovement = movement;
             }
         }
 
