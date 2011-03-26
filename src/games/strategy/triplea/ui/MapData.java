@@ -313,14 +313,14 @@ public class MapData
         {
             List<String> contained = new ArrayList<String>();
             String seaTerritory = seaIter.next();
-            if (!seaTerritory.endsWith("Sea Zone"))
+            if (!(seaTerritory.endsWith("Sea Zone") || seaTerritory.startsWith("Sea Zone")))
                 continue;
 
             Iterator<String> landIter = getTerritories().iterator();
             while (landIter.hasNext())
             {
                 String landTerritory = landIter.next();
-                if (landTerritory.endsWith("Sea Zone"))
+                if (landTerritory.endsWith("Sea Zone") || landTerritory.startsWith("Sea Zone"))
                     continue;
 
                 Polygon landPoly = (Polygon) getPolygons(landTerritory).iterator().next();
@@ -577,7 +577,7 @@ public class MapData
                 Polygon poly = (Polygon) polyIter.next();
                 if (poly.contains(x, y))
                 {
-                    if (name.endsWith("Sea Zone"))
+                    if (name.endsWith("Sea Zone") || name.startsWith("Sea Zone"))
                     {
                         seaName = name;
                     } else

@@ -1,4 +1,8 @@
 Changes for 1.2.7
+* Updated ui and utilities to allow islands to be selectable if they are inside a sea zone that ends or begins with "Sea Zone". Previously only allowed water territories to end with, not begin with "Sea Zone". (veqryn)
+
+* Updated giveUnits and takeUnits to not throw Java errors for older maps. Not backwards compatible, just ignore it if true or false. (veqryn)
+
 * Dice change: now allows max dice sides to be set in the xml, <diceSides value="6"/>. Defaults to 6 if not present. Can be any number between 1 and 200. This will allow many new types of games to be made. (veqryn and gansito)
 
 * Bug fix in Trigger Attachments Tech change, was disqualifying techs based on attached player instead of aPlayer. (veqryn)

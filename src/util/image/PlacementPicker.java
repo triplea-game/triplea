@@ -398,7 +398,7 @@ public class PlacementPicker extends JFrame
 		
                 if(poly.contains(p))
                 {
-                    if(name.endsWith("Sea Zone"))
+                    if(name.endsWith("Sea Zone") || name.startsWith("Sea Zone"))
                     {
                         seaName = name;
                     }

@@ -156,6 +156,8 @@ public class UnitAttachment extends DefaultAttachment
   		PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
   		if (tempPlayer != null)
   			m_canBeGivenByTerritoryTo.add(tempPlayer);
+		else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false"))
+			m_canBeGivenByTerritoryTo.clear();
   		else
   			throw new IllegalStateException("Unit Attachments: No player named: " + name);
   	}

@@ -113,7 +113,7 @@ public class ReliefImageBreaker
         while (unitIter.hasNext())
         {
             String territoryName = (String) unitIter.next();
-            boolean seaZone = territoryName.endsWith("Sea Zone");
+            boolean seaZone = territoryName.endsWith("Sea Zone") || territoryName.startsWith("Sea Zone");
 
             if (!seaZone && m_seaZoneOnly)
             {

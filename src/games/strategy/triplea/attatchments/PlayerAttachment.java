@@ -46,7 +46,7 @@ public class PlayerAttachment extends DefaultAttachment
     private int m_captureVps = 0; // need to store some data during a turn
     private int m_retainCapitalNumber = 1; // number of capitals needed before we lose all our money
     private int m_retainCapitalProduceNumber = 1; // number of capitals needed before we lose ability to gain money and produce units
-    //private boolean m_takeUnitControl = false; no longer needed now that m_giveUnitControl is a list of players instead of a boolean
+    private boolean m_takeUnitControl = false; //no longer needed now that m_giveUnitControl is a list of players instead of a boolean
     private Collection<PlayerID> m_giveUnitControl = new ArrayList<PlayerID>();
     private boolean m_destroysPUs = false; // do we lose our money and have it disappear or is that money captured?
     
@@ -95,7 +95,8 @@ public class PlayerAttachment extends DefaultAttachment
         return m_retainCapitalProduceNumber;
     }
     
-    /*public void setTakeUnitControl(String value)
+    // setTakeUnitControl and getTakeUnitControl DO NOTHING.  They are kept for backwards compatibility only, otherwise users get Java errors.
+    public void setTakeUnitControl(String value)
     {
         m_takeUnitControl = getBool(value);
     }
@@ -103,7 +104,7 @@ public class PlayerAttachment extends DefaultAttachment
     public boolean getTakeUnitControl()
     {
         return m_takeUnitControl;
-    }*/
+    }
     
     public void setGiveUnitControl(String value)
     {
@@ -111,10 +112,12 @@ public class PlayerAttachment extends DefaultAttachment
     	for (String name : temp)
     	{
     		PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
-    		if (tempPlayer != null)
-    			m_giveUnitControl.add(tempPlayer);
-    		else
-    			throw new IllegalStateException("Player Attachments: No player named: " + name);
+        		if (tempPlayer != null)
+        			m_giveUnitControl.add(tempPlayer);
+        		else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false"))
+        			m_giveUnitControl.clear();
+        		else
+        			throw new IllegalStateException("Player Attachments: No player named: " + name);
     	}
     }
 

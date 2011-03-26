@@ -261,6 +261,8 @@ public class TerritoryAttachment extends DefaultAttachment
     		PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
     		if (tempPlayer != null)
     			m_changeUnitOwners.add(tempPlayer);
+    		else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false"))
+    			m_changeUnitOwners.clear();
     		else
     			throw new IllegalStateException("Territory Attachments: No player named: " + name);
     	}
