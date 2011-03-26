@@ -489,13 +489,13 @@ public class StrategicBombingRaidBattle implements Battle
                 String annotation = m_attacker.getName() + " fixing dice to allocate cost of strategic bombing raid against " + m_defender.getName() + " in "
                         + m_battleSite.getName();
                 ITripleaPlayer attacker = (ITripleaPlayer) bridge.getRemote(m_attacker);
-                m_dice = attacker.selectFixedDice(rollCount, 0, true, annotation);
+                m_dice = attacker.selectFixedDice(rollCount, 0, true, annotation, m_data.getDiceSides());
             }
             else
             {
                 String annotation = m_attacker.getName() + " rolling to allocate cost of strategic bombing raid against " + m_defender.getName() + " in "
                         + m_battleSite.getName();
-                m_dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
+                m_dice = bridge.getRandom(m_data.getDiceSides(), rollCount, annotation);
             }
 
         }

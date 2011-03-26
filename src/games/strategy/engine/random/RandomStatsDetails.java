@@ -37,6 +37,7 @@ public class RandomStatsDetails implements Serializable
             int sumTotal = 0;
             int total = 0;
 
+            //TODO: does this need to be updated to take data.getDiceSides() ?
             for (int i = 1; i <= 6; i++)
             {
                 sumTotal += i * m_data.getInt(Integer.valueOf(i));
@@ -66,6 +67,7 @@ public class RandomStatsDetails implements Serializable
              */
             double variance = 0;
 
+            //TODO: does this need to be updated to take data.getDiceSides() ?
             for (int i = 1; i <= 6; i++)
             {
                 variance += (m_data.getInt(new Integer(i)) - (total / 6)) * (m_data.getInt(new Integer(i)) - (total / 6));
@@ -123,6 +125,7 @@ public class RandomStatsDetails implements Serializable
         int sum = 0;
         int i = 1;
 
+        //TODO: does this need to be updated to take data.getDiceSides() ?
         for (i = 1; i <= 6; i++)
         {
             sum += m_data.getInt(new Integer(i));

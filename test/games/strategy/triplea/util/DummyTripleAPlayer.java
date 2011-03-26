@@ -117,7 +117,7 @@ public class DummyTripleAPlayer implements ITripleaPlayer {
         return new CasualtyDetails(defaultCasualties, new ArrayList<Unit>(), true);
     }
 
-    public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title) {
+    public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title, int diceSides) {
         
         return null;
     }

@@ -57,9 +57,10 @@ public interface ITripleaPlayer extends IRemote
      * @param hitAt - the lowest roll that constitutes a hit (0 for none)
      * @param hitOnlyIfEquals - whether to count rolls greater than hitAt as hits
      * @param title - the title for the DiceChooser
+     * @param diceSides - the number of sides on the die, found by data.getDiceSides()
      * @return the resulting dice array
      */
-    public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title);
+    public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title, int diceSides);
     
     /**
      * Select the territory to bombard with the bombarding capable unit (eg battleship)

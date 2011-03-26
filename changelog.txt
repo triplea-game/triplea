@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Dice change: now allows max dice sides to be set in the xml, <diceSides value="6"/>. Defaults to 6 if not present. Can be any number between 1 and 200. This will allow many new types of games to be made. (veqryn and gansito)
+
 * Bug fix in Trigger Attachments Tech change, was disqualifying techs based on attached player instead of aPlayer. (veqryn)
 
 * Redid canBeGivenByTerritoryTo unit attachment to be a colon delimited list of players, who are the players this unit can be given to. Also added a missing toString. (veqryn)

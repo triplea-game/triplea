@@ -151,12 +151,12 @@ public class BattleCalculator
 	 *  the second list is all the air units that do not fit in the first list 
 	 *  
 	 */
-	public static Tuple<List<Unit>, List<Unit>> categorizeLowLuckAirUnits(Collection<Unit> units, Territory location) {
+	public static Tuple<List<Unit>, List<Unit>> categorizeLowLuckAirUnits(Collection<Unit> units, Territory location, int diceSides) {
 		
 		List<Unit> airUnits = Match.getMatches(units, Matches.UnitIsAir);
 		Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(airUnits, null, false, true);
 		
-		int groupSize = location.getUnits().someMatch(Matches.UnitIsRadarAA) ? 3 : 6;
+		int groupSize = location.getUnits().someMatch(Matches.UnitIsRadarAA) ? diceSides/2 : diceSides;
 		
 		List<Unit> groupsOfSize = new ArrayList<Unit>();
 		List<Unit> toRoll = new ArrayList<Unit>();
@@ -175,11 +175,12 @@ public class BattleCalculator
     
     private static Collection<Unit> getLowLuckAACasualties(Collection<Unit> planes, DiceRoll dice, boolean useRadar, Territory location, IDelegateBridge bridge) {
     	
-    	Tuple<List<Unit>, List<Unit>> airSplit = categorizeLowLuckAirUnits(planes, location);
-    	int hitsLeft = dice.getHits();    	
+    	int diceSize = bridge.getPlayerID().getData().getDiceSides();
+    	Tuple<List<Unit>, List<Unit>> airSplit = categorizeLowLuckAirUnits(planes, location, diceSize);
+    	int hitsLeft = dice.getHits();
     	
     	Collection<Unit> hitUnits = new ArrayList<Unit>();
-    	int groupSize = location.getUnits().someMatch(Matches.UnitIsRadarAA) ? 3 : 6;
+    	int groupSize = location.getUnits().someMatch(Matches.UnitIsRadarAA) ? diceSize/2 : diceSize;
     	
         //the non rolling air units
     	for(int i = 0; i < airSplit.getFirst().size(); i+=groupSize) {
@@ -530,7 +531,7 @@ public class BattleCalculator
         List<List<Unit>> unitsByPowerNone = new ArrayList<List<Unit>>();
         
         //Decide what is the biggest size for the lists that we will support
-        int maxDiceTimesRolls = 1 + 2*Constants.MAX_DICE;
+        int maxDiceTimesRolls = 1 + 2*data.getDiceSides();
         //Find what the biggest unit we have is. If they are bigger than maxDiceTimesRolls, set to maxDiceTimesRolls.
         int maxPower = Math.max(0, Math.min(getUnitPowerForSorting(sortedUnitsList.get(sortedUnitsList.size()-1), defending, player, data), maxDiceTimesRolls));
         //Fill the lists with the six dice numbers (plus Zero, and any above if we have units with multiple rolls), or unit powers, which we will populate with the units
@@ -964,7 +965,7 @@ public class BattleCalculator
             	strengthWithoutSupport = ua.getAttack(current.getOwner());
 
             // just add one like LL if we are LHTR bombers
-            strengthWithoutSupport = Math.min(Math.max(strengthWithoutSupport+1, 0), Constants.MAX_DICE);
+            strengthWithoutSupport = Math.min(Math.max(strengthWithoutSupport+1, 0), data.getDiceSides());
             //strength += DiceRoll.getSupport(current.getType(), supportRules, supportLeft);
             //strength = Math.min(Math.max(strength+1, 0), Constants.MAX_DICE);
         }
@@ -993,7 +994,7 @@ public class BattleCalculator
                             ++tempStrength;
                     } */
                 }
-            	strengthWithoutSupport += Math.min(Math.max(tempStrength, 0), Constants.MAX_DICE);
+            	strengthWithoutSupport += Math.min(Math.max(tempStrength, 0), data.getDiceSides());
             	//tempStrength += DiceRoll.getSupport(current.getType(), supportRules, supportLeft);
                 //strength += Math.min(Math.max(tempStrength, 0), Constants.MAX_DICE);
             }

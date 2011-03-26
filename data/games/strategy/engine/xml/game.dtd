@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!ELEMENT game (info, loader, map, resourceList?, playerList, unitList?, gamePlay, production?, technology?, attatchmentList? , initialize?, propertyList?)>
+<!ELEMENT game (info, loader, diceSides?, map, resourceList?, playerList, unitList?, gamePlay, production?, technology?, attatchmentList? , initialize?, propertyList?)>
 
 <!-- version must be in the form xx.xx or xx.xx.xx where xx is a positive integer -->
 <!ELEMENT info EMPTY>
@@ -13,6 +13,12 @@
 <!ELEMENT loader EMPTY>
 <!ATTLIST loader 
 	javaClass CDATA #REQUIRED
+>
+
+<!-- Number of sides on dice -->
+<!ELEMENT diceSides EMPTY>
+<!ATTLIST diceSides
+	value CDATA #REQUIRED
 >
 
 <!ELEMENT map ((grid | territory)+ , connection*, remove-connection*)>

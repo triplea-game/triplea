@@ -49,7 +49,7 @@ public interface Constants
   public static final String PUS = "PUs";
   public static final String TECH_TOKENS = "techTokens";
   public static final String VPS = "VPs";
-  public static final int    MAX_DICE = 6;
+  //public static final int    MAX_DICE = 6; now please use data.getDiceSides()
   public static final String NEUTRAL_CHARGE_PROPERTY = "neutralCharge";
   public static final String FACTORIES_PER_COUNTRY_PROPERTY ="maxFactoriesPerTerritory";
   public static final String TWO_HIT_BATTLESHIP_PROPERTY = "Two hit battleship";

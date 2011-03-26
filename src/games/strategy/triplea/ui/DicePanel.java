@@ -16,6 +16,7 @@ package games.strategy.triplea.ui;
 
 
 import games.strategy.triplea.delegate.*;
+import games.strategy.engine.data.GameData;
 
 import java.awt.Dimension;
 import java.util.*;
@@ -26,11 +27,13 @@ import javax.swing.*;
 public class DicePanel extends JPanel
 {
     
-  private final UIContext m_uiContext;  
+  private final UIContext m_uiContext;
+  private final GameData m_data;
     
-  public DicePanel(UIContext uiContext)
+  public DicePanel(UIContext uiContext, GameData data)
   {
     m_uiContext = uiContext;
+    m_data = data;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
   }
 
@@ -78,7 +81,7 @@ public class DicePanel extends JPanel
       
       
     removeAll();
-    for(int i = 1; i <= 6; i++)
+    for(int i = 1; i <= m_data.getDiceSides(); i++)
     {
 
       List<Die> dice = diceRoll.getRolls(i);

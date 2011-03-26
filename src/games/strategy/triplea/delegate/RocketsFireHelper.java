@@ -220,7 +220,7 @@ public class RocketsFireHelper
         Resource PUs = data.getResourceList().getResource(Constants.PUS);
         //int cost = bridge.getRandom(Constants.MAX_DICE);
 
-        int cost = bridge.getRandom(Constants.MAX_DICE, "Rocket fired by " + player.getName() + " at " + attacked.getName());
+        int cost = bridge.getRandom(data.getDiceSides(), "Rocket fired by " + player.getName() + " at " + attacked.getName());
 
         //account for 0 base
         cost++;

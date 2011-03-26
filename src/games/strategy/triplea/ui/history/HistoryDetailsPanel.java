@@ -70,7 +70,7 @@ public class HistoryDetailsPanel extends JPanel
             Object details = ((Renderable) node).getRenderingData();
             if (details instanceof DiceRoll)
             {
-                DicePanel dicePanel = new DicePanel(m_mapPanel.getUIContext());
+                DicePanel dicePanel = new DicePanel(m_mapPanel.getUIContext(), m_data);
                 dicePanel.setDiceRoll((DiceRoll) details);
                 add(dicePanel, mainConstraints);
             } else if (details instanceof MoveDescription)

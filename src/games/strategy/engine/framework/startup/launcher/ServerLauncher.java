@@ -272,7 +272,7 @@ public class ServerLauncher implements ILauncher
             {
                 try
                 {
-                    m_serverGame.getRandomSource().getRandom(Constants.MAX_DICE, 2, "Warming up crpyto random source");
+                    m_serverGame.getRandomSource().getRandom(m_gameData.getDiceSides(), 2, "Warming up crpyto random source");
                 } catch(RuntimeException re) {
                     re.printStackTrace(System.out);
                 }

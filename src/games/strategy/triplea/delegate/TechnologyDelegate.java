@@ -160,28 +160,28 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         if (EditDelegate.getEditMode(m_data))
         {
             ITripleaPlayer tripleaPlayer = (ITripleaPlayer) m_bridge.getRemote();
-            random = tripleaPlayer.selectFixedDice(techRolls, Constants.MAX_DICE, true, annotation);
+            random = tripleaPlayer.selectFixedDice(techRolls, m_data.getDiceSides(), true, annotation, m_data.getDiceSides());
             techHits = getTechHits(random);
         }
         else if (isLL_TECH_ONLY())
         {
-        	techHits = techRolls / Constants.MAX_DICE;
-        	remainder = techRolls % Constants.MAX_DICE;
+        	techHits = techRolls / m_data.getDiceSides();
+        	remainder = techRolls % m_data.getDiceSides();
         	if (remainder > 0)
         	{
-        		random = m_bridge.getRandom(Constants.MAX_DICE, 1, annotation);
+        		random = m_bridge.getRandom(m_data.getDiceSides(), 1, annotation);
         		if (random[0] + 1 <= remainder)
             		techHits++;
         	}
         	else
         	{
-        		random = m_bridge.getRandom(Constants.MAX_DICE, 1, annotation);
-        		remainder = Constants.MAX_DICE;
+        		random = m_bridge.getRandom(m_data.getDiceSides(), 1, annotation);
+        		remainder = m_data.getDiceSides();
         	}
         }
         else
         {
-        	random = m_bridge.getRandom(Constants.MAX_DICE, techRolls, annotation);
+        	random = m_bridge.getRandom(m_data.getDiceSides(), techRolls, annotation);
         	techHits = getTechHits(random);
         }
 
@@ -213,7 +213,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
                         new DiceRoll(random, techHits, remainder, false));
         else
         	m_bridge.getHistoryWriter().setRenderingData(
-                new DiceRoll(random, techHits, Constants.MAX_DICE - 1, true));
+                new DiceRoll(random, techHits, m_data.getDiceSides() - 1, true));
 
         Collection<TechAdvance> advances;
         if (selectableTech)
@@ -312,7 +312,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         int count = 0;
         for (int i = 0; i < random.length; i++)
         {
-            if (random[i] == Constants.MAX_DICE - 1)
+            if (random[i] == m_data.getDiceSides() - 1)
                 count++;
         }
         return count;
@@ -344,7 +344,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         if (EditDelegate.getEditMode(m_data))
         {
             ITripleaPlayer tripleaPlayer = (ITripleaPlayer) m_bridge.getRemote();
-            random = tripleaPlayer.selectFixedDice(hits, 0, true, annotation);
+            random = tripleaPlayer.selectFixedDice(hits, 0, true, annotation, m_data.getDiceSides());
 
         }
         else {

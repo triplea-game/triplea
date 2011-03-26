@@ -15,6 +15,7 @@
 package games.strategy.triplea.ui;
 
 
+import games.strategy.engine.data.GameData;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Die.DieType;
 
@@ -48,14 +49,16 @@ public class DiceChooser extends JPanel
   private Collection<JButton> m_buttons; 
   private JButton m_undoButton;
   private JLabel m_diceCountLabel;
+  private final GameData m_data;
     
-  public DiceChooser(UIContext uiContext, int numRolls, int hitAt, boolean hitOnlyIfEquals)
+  public DiceChooser(UIContext uiContext, int numRolls, int hitAt, boolean hitOnlyIfEquals, GameData data)
   {
     m_uiContext = uiContext;
     m_numRolls = numRolls;
     m_hitAt = hitAt; 
     m_hitOnlyIfEquals = hitOnlyIfEquals;
-    m_buttons = new ArrayList<JButton>(Constants.MAX_DICE);
+    m_data = data;
+    m_buttons = new ArrayList<JButton>(data.getDiceSides());
     m_random = new int[numRolls];
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     createComponents();
@@ -124,7 +127,7 @@ public class DiceChooser extends JPanel
     JPanel diceButtonPanel = new JPanel();
     diceButtonPanel.setLayout(new BoxLayout(diceButtonPanel, BoxLayout.X_AXIS));
     diceButtonPanel.add(Box.createHorizontalStrut(40));
-    for(int roll = 1; roll <= Constants.MAX_DICE; roll++)
+    for(int roll = 1; roll <= m_data.getDiceSides(); roll++)
     {
       boolean hit = (roll == m_hitAt || (!m_hitOnlyIfEquals && (m_hitAt > 0) && roll > m_hitAt));
 

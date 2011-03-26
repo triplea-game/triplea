@@ -111,14 +111,14 @@ public class HistoryLog extends JFrame
                     break;
             }
 
-            printRemainingTurn(turnStartNode, verbose);
+            printRemainingTurn(turnStartNode, verbose, curPlayer.getData().getDiceSides());
         }
         else
             System.err.println("No Step node found!");
     }
 
     @SuppressWarnings("unchecked")
-    public void printRemainingTurn(HistoryNode printNode, boolean verbose)
+    public void printRemainingTurn(HistoryNode printNode, boolean verbose, int diceSides)
     {
         PrintWriter logWriter = m_printWriter;
 
@@ -204,7 +204,7 @@ public class HistoryLog extends JFrame
                             DiceRoll diceRoll = (DiceRoll)details;
                             int hits = diceRoll.getHits();
                             int rolls = 0;
-                            for (int i=1; i<=Constants.MAX_DICE; i++)
+                            for (int i=1; i<= diceSides; i++)
                                 rolls += diceRoll.getRolls(i).size();
 
                             logWriter.println("  "+hits+"/"+rolls+" hits");

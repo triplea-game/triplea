@@ -95,7 +95,7 @@ public class DiceRoll implements Externalizable
 						airUnits.size());
             } else 
             {
-            	Tuple<List<Unit>, List<Unit>> airSplit = BattleCalculator.categorizeLowLuckAirUnits(airUnits, location);
+            	Tuple<List<Unit>, List<Unit>> airSplit = BattleCalculator.categorizeLowLuckAirUnits(airUnits, location, data.getDiceSides());
             	            
             	//this will not roll any dice, since the first group is 
             	//a multiple of 3 or 6
@@ -112,7 +112,7 @@ public class DiceRoll implements Externalizable
         {            
             String annotation = "Roll AA guns in " + location.getName();
            
-            int[] dice = bridge.getRandom(Constants.MAX_DICE, Match.countMatches(attackingUnits, Matches.UnitIsAir), annotation);
+            int[] dice = bridge.getRandom(data.getDiceSides(), Match.countMatches(attackingUnits, Matches.UnitIsAir), annotation);
             
             for (int i = 0; i < dice.length; i++)
             {
@@ -133,12 +133,12 @@ public class DiceRoll implements Externalizable
 			List<Die> sortedDice, int power, String annotation,
 			int numberOfAirUnits) {
 		
-		int hits = (numberOfAirUnits * power) / Constants.MAX_DICE;
-		int hitsFractional = (numberOfAirUnits * power) % Constants.MAX_DICE;
+		int hits = (numberOfAirUnits * power) / bridge.getPlayerID().getData().getDiceSides();
+		int hitsFractional = (numberOfAirUnits * power) % bridge.getPlayerID().getData().getDiceSides();
 
 		if (hitsFractional > 0)
 		{			
-			int[] dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
+			int[] dice = bridge.getRandom(bridge.getPlayerID().getData().getDiceSides(), 1, annotation);
 		    boolean hit = hitsFractional > dice[0];
 		    if(hit) {
 		    	hits++;
@@ -227,7 +227,7 @@ public class DiceRoll implements Externalizable
             {
             	if(i > 1 && lhtrBombers && ua.isStrategicBomber() )
             	{
-            		if( totalStr < Constants.MAX_DICE) {
+            		if( totalStr < data.getDiceSides()) {
             			power+=1;
             			totalStr+=1;
             		}
@@ -259,21 +259,21 @@ public class DiceRoll implements Externalizable
                     strength += getSupport(current.getType(), supportRules, supportLeft);
                 }
                 totalStr += strength;
-                power += Math.min(Math.max(strength, 0), Constants.MAX_DICE);;
+                power += Math.min(Math.max(strength, 0), data.getDiceSides());;
             }
         }
 
         // Get number of hits
-        hitCount = power / Constants.MAX_DICE;
+        hitCount = power / data.getDiceSides();
 
         int[] random = new int[0];
 
         List<Die> dice = new ArrayList<Die>();
         // We need to roll dice for the fractional part of the dice.
-        power = power % Constants.MAX_DICE;
+        power = power % data.getDiceSides();
         if (power != 0)
         {
-        	random = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
+        	random = bridge.getRandom(data.getDiceSides(), 1, annotation);
             boolean hit = power > random[0]; 
             if (hit)
             {
@@ -463,7 +463,7 @@ public class DiceRoll implements Externalizable
         }
         int[] random;
        
-        random = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
+        random = bridge.getRandom(data.getDiceSides(), rollCount, annotation);
 
         List<Die> dice = new ArrayList<Die>();
         
@@ -487,10 +487,10 @@ public class DiceRoll implements Externalizable
                     strength = ua.getAttack(current.getOwner());
                 
                 strength += getSupport(current.getType(), supportRules, supportLeft);
-                strength = Math.min(Math.max(strength, 0), Constants.MAX_DICE);
+                strength = Math.min(Math.max(strength, 0), data.getDiceSides());
                 
                 int minIndex = 0;
-                int min = Constants.MAX_DICE;
+                int min = data.getDiceSides();
                 for( int i = 0; i < rolls; i++){
                 	if(random[diceIndex+i] < min) {
                 		min = random[diceIndex+i];
@@ -537,7 +537,7 @@ public class DiceRoll implements Externalizable
                         	strength = ua.getBombard(current.getOwner());  
                         strength += getSupport(current.getType(), supportRules, supportLeft);
                     }
-                    strength = Math.min(Math.max(strength, 0), Constants.MAX_DICE);
+                    strength = Math.min(Math.max(strength, 0), data.getDiceSides());
                     boolean hit = strength > random[diceIndex];
                     dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
     

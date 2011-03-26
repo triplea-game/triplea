@@ -104,6 +104,13 @@ public class GameParser
         //mandatory fields
         parseInfo(getSingleChild("info", root));
         parseGameLoader(getSingleChild("loader", root));
+        
+        Node diceSides = getSingleChild("diceSides", root, true);
+        if (diceSides != null)
+        	parseDiceSides(diceSides);
+        else
+        	data.setDiceSides(6);
+        
         parseMap(getSingleChild("map", root));
 
         Node resourceList = getSingleChild("resourceList", root, true);
@@ -141,6 +148,11 @@ public class GameParser
         validate();
         
         return data;
+    }
+    
+    private void parseDiceSides(Node diceSides)
+    {
+    	data.setDiceSides(Integer.parseInt(((Element) diceSides).getAttribute("value")));
     }
 
 	private void validate() throws GameParseException {

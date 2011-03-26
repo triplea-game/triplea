@@ -83,6 +83,8 @@ public class GameData implements java.io.Serializable
     
     private String m_gameName;
 	private Version m_gameVersion;
+	
+	private int m_diceSides;
 
 	private transient ListenerList<TerritoryListener> m_territoryListeners = new ListenerList<TerritoryListener>();
 	private transient ListenerList<GameDataChangeListener> m_dataChangeListeners = new ListenerList<GameDataChangeListener>();
@@ -361,6 +363,20 @@ public class GameData implements java.io.Serializable
 	{
 		return m_gameName;
 	}
+	
+	void setDiceSides(int diceSides)
+	{
+		if (diceSides > 0 && diceSides <= 200)
+			m_diceSides = diceSides;
+		else
+			m_diceSides = 6;
+	}
+	
+	public int getDiceSides()
+	{
+		return m_diceSides;
+	}
+	
     public History getHistory()
     {
         //don't ensure the lock is held when getting the history

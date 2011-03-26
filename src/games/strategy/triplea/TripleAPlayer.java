@@ -546,9 +546,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, int, boolean, java.lang.String)
      */
-    public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title)
+    public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title, int diceSides)
     {
-        return m_ui.selectFixedDice(numDice, hitAt, hitOnlyIfEquals, title);
+        return m_ui.selectFixedDice(numDice, hitAt, hitOnlyIfEquals, title, diceSides);
     }
 
     /* 

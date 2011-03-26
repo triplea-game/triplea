@@ -164,7 +164,7 @@ public abstract class AbstractEndTurnDelegate
     {
     	PlayerID player = aBridge.getPlayerID();
     	int count = 1;
-    	int sides = Constants.MAX_DICE;
+    	int sides = aBridge.getPlayerID().getData().getDiceSides();
     	String annotation = player.getName() + " roll to resolve War Bonds: ";
 
     	DiceRoll dice;

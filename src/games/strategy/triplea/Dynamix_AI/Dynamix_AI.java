@@ -446,12 +446,12 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         return (Unit) Match.getNMatches(units, 1, Matches.UnitIsFactory);
     }
 
-    public int[] selectFixedDice(int numRolls, int hitAt, boolean hitOnlyIfEquals, String message)
+    public int[] selectFixedDice(int numRolls, int hitAt, boolean hitOnlyIfEquals, String message, int diceSides)
     {
         int[] dice = new int[numRolls];
         for (int i = 0; i < numRolls; i++)
         {
-            dice[i] = (int)Math.ceil(Math.random() * 6);
+            dice[i] = (int)Math.ceil(Math.random() * diceSides);
         }
         return dice;
     }

@@ -13,6 +13,10 @@
 					please go to the forum and make a post: http://triplea.sourceforge.net/mywiki/Forum
 			-->
 
+		<!-- diceSides defaults to 6 if not in the xml.  Can be set to any number between 1 and 200.
+				WARNING: setting diceSides to a number other than 6 is not fully supported and can result in unexpected behavior or even Java errors.  Especially true for odd-sided dice (like 5, or 7, etc.) -->
+		<diceSides value="6"/>
+		
         <map>
                 <!-- Territory Definitions -->
                 <territory name="Eastern Canada"/>

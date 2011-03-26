@@ -520,7 +520,7 @@ public class BattlePanel extends ActionPanel
 		        else
 		            chooser.setMax(count);
 
-		        DicePanel dicePanel = new DicePanel(getMap().getUIContext());
+		        DicePanel dicePanel = new DicePanel(getMap().getUIContext(), getData());
 		        if (!isEditMode)
 		            dicePanel.setDiceRoll(dice);
 

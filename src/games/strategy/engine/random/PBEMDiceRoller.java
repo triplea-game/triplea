@@ -77,6 +77,7 @@ public class PBEMDiceRoller implements IRandomSource
      */
     public void test()
     {
+    	//TODO: do a test based on data.getDiceSides()
         HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", m_player1Email, m_player2Email, m_gameID, m_remoteDiceServer, "test-roll");
         dialog.setTest();
 

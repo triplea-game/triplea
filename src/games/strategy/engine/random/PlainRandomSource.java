@@ -82,6 +82,7 @@ public class PlainRandomSource implements IRandomSource
   {
      IntegerMap<Integer> results = new IntegerMap<Integer>();
      
+     //TODO: does this need to be updated to take data.getDiceSides() ?
      int[] random =  new PlainRandomSource().getRandom(6, 100000, "Test");
      for(int i = 0; i < random.length; i++)
      {

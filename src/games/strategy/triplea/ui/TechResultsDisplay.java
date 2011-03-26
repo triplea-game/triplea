@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
@@ -24,7 +25,7 @@ public class TechResultsDisplay extends JPanel
 
     private final UIContext m_uiContext;
     
-  public TechResultsDisplay(TechResults msg, UIContext context)
+  public TechResultsDisplay(TechResults msg, UIContext context, GameData data)
   {
     m_uiContext = context;  
     setLayout(new GridBagLayout());
@@ -55,7 +56,7 @@ public class TechResultsDisplay extends JPanel
       if (remainder > 0)
     	  die = new JLabel(m_uiContext.getDiceImageFactory().getDieIcon(roll, roll <= remainder ? Die.DieType.HIT : Die.DieType.MISS ));
       else
-    	  die = new JLabel(m_uiContext.getDiceImageFactory().getDieIcon(roll, roll == Constants.MAX_DICE ? Die.DieType.HIT : Die.DieType.MISS ));
+    	  die = new JLabel(m_uiContext.getDiceImageFactory().getDieIcon(roll, roll == data.getDiceSides() ? Die.DieType.HIT : Die.DieType.MISS ));
       dice.add(die);
       dice.add(Box.createHorizontalStrut(2));
       dice.setMaximumSize(new Dimension(200, (int)dice.getMaximumSize().getHeight()));

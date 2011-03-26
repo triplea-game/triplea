@@ -375,7 +375,7 @@ public class BattleDisplay extends JPanel
 
     }
 
-    public void notifyRetreat(Collection retreating)
+    public void notifyRetreat(Collection<Unit> retreating)
     {
         m_defenderModel.notifyRetreat(retreating);
         m_attackerModel.notifyRetreat(retreating);
@@ -956,7 +956,7 @@ public class BattleDisplay extends JPanel
         
         m_mapPanel.getUIContext().addActive(m_steps);
         m_steps.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-        m_dicePanel = new DicePanel(m_mapPanel.getUIContext());
+        m_dicePanel = new DicePanel(m_mapPanel.getUIContext(), m_data);
 
         m_actionPanel = new JPanel();
         m_actionPanel.setLayout(m_actionLayout);
@@ -1142,10 +1142,10 @@ class BattleModel extends DefaultTableModel
     private boolean m_attack;
     private Collection<Unit> m_units;
 
-    private static String[] VarDiceArray()
+    private static String[] VarDiceArray(GameData data)
     {
     	//TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
-    	String[] diceColumns = new String[Constants.MAX_DICE+1];{
+    	String[] diceColumns = new String[data.getDiceSides() + 1];{
     		for (Integer i = 0; i < diceColumns.length ; i++)
     		{
     			if(i==0)
@@ -1159,7 +1159,7 @@ class BattleModel extends DefaultTableModel
     
     BattleModel(GameData data, Collection<Unit> units, boolean attack, UIContext uiContext)
     {
-    	super(new Object[0][0],  VarDiceArray());
+    	super(new Object[0][0],  VarDiceArray(data));
                                             
         m_uiContext = uiContext;
         m_data = data;
@@ -1194,7 +1194,7 @@ class BattleModel extends DefaultTableModel
     {
     	//TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
     	//Soft code the # of columns
-        List[] columns = new List[Constants.MAX_DICE +1];
+        List[] columns = new List[m_data.getDiceSides() + 1];
         for (int i = 0; i < columns.length; i++)
         {
             columns[i] = new ArrayList();
@@ -1218,7 +1218,7 @@ class BattleModel extends DefaultTableModel
 
             int strength;
             UnitAttachment attachment = UnitAttachment.get(category.getType());
-            int[] shift = new int[Constants.MAX_DICE+1];
+            int[] shift = new int[m_data.getDiceSides() +1];
             
             for(int i = category.getUnits().size(); i > 0; i--){
             	if (m_attack)
@@ -1244,11 +1244,11 @@ class BattleModel extends DefaultTableModel
             			m_data.releaseReadLock();
             		}
             	}
-            	strength = Math.min(Math.max(strength, 0), Constants.MAX_DICE);
+            	strength = Math.min(Math.max(strength, 0), m_data.getDiceSides());
             	shift[strength]++;
             }
 
-            for( int i = 0; i < Constants.MAX_DICE;i++){
+            for( int i = 0; i < m_data.getDiceSides();i++){
             	if(shift[i]>0)
             	columns[i].add(new TableData(category.getOwner(), shift[i], category.getType(), m_data, category.getDamaged(), category.getDisabled(), m_uiContext));
             }
@@ -1394,7 +1394,7 @@ class CasualtyNotificationPanel extends JPanel
 
         m_data = data;
         m_uiContext = uiContext;
-        m_dice = new DicePanel(uiContext);
+        m_dice = new DicePanel(uiContext, data);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(m_dice);
         add(m_killed);

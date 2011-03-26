@@ -750,7 +750,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
             SwingUtilities.invokeAndWait(new Runnable() {
             
                 public void run() {
-                    TechResultsDisplay display = new TechResultsDisplay(msg, m_uiContext);
+                    TechResultsDisplay display = new TechResultsDisplay(msg, m_uiContext, m_data);
                     displayRef.set(display);
                 }
             });
@@ -809,12 +809,12 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         return selected.get();
     }
 
-    public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals,final String title)
+    public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals,final String title, int diceSides)
     {
         DiceChooser chooser = Util.runInSwingEventThread(new Util.Task<DiceChooser>()
             {
                 public DiceChooser run() {
-                    return new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals);
+                    return new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals, m_data);
                 }            
         }); 
             
@@ -1232,7 +1232,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
             public void actionPerformed(ActionEvent ae)
             {
                 HistoryLog historyLog = new HistoryLog();
-                historyLog.printRemainingTurn(m_historyTree.getCurrentPopupNode(), false);
+                historyLog.printRemainingTurn(m_historyTree.getCurrentPopupNode(), false, m_data.getDiceSides());
                 historyLog.printTerritorySummary(clonedGameData);
                 historyLog.printProductionSummary(clonedGameData);
                 m_historyTree.clearCurrentPopupNode();
@@ -1244,7 +1244,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
             public void actionPerformed(ActionEvent ae)
             {
                 HistoryLog historyLog = new HistoryLog();
-                historyLog.printRemainingTurn(m_historyTree.getCurrentPopupNode(), true);
+                historyLog.printRemainingTurn(m_historyTree.getCurrentPopupNode(), true, m_data.getDiceSides());
                 historyLog.printTerritorySummary(clonedGameData);
                 historyLog.printProductionSummary(clonedGameData);
                 m_historyTree.clearCurrentPopupNode();

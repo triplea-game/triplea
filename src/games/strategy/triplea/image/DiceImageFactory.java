@@ -103,7 +103,40 @@ public class DiceImageFactory
     if(i <= 0)
       throw new IllegalArgumentException("die must be greater than 0, not:" + i);
     if(i > 6)
-      throw new IllegalArgumentException("die must be less than 6, not:" + i);
+    {
+    	Image canvas = Util.createImage(DIE_WIDTH, DIE_HEIGHT, true);
+    	
+    	Graphics graphics = canvas.getGraphics();
+    	graphics.setFont(new Font("Arial", Font.BOLD, 16));
+    	
+    	switch (type)
+    	{
+    	case HIT:
+    		graphics.setColor(Color.RED);
+    		break;
+    	case MISS:
+    		graphics.setColor(Color.BLACK);
+    		break;
+    	case IGNORED:
+    		graphics.setColor(new Color(100, 100, 100, 200));
+    		break;
+    	default:
+    		throw new IllegalStateException("??");
+    	}
+    	
+    	graphics.drawRoundRect(1, 1, DIE_WIDTH - 3, DIE_HEIGHT - 3, 5, 5);
+    	((Graphics2D) graphics).setRenderingHint(
+    			RenderingHints.KEY_ANTIALIASING,
+    			RenderingHints.VALUE_ANTIALIAS_ON);
+    	String number = Integer.toString(i);
+    	int widthOffset = graphics.getFontMetrics().charsWidth(
+    			number.toCharArray(), 0, number.length());
+    	int heightOffset = graphics.getFontMetrics().getHeight();
+    	graphics.drawString(number, (DIE_WIDTH - widthOffset) / 2,
+    			(DIE_HEIGHT + heightOffset) / 2-2);
+    	
+    	return canvas;
+    }
     
     switch(type)
     {
