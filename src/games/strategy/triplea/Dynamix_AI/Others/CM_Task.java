@@ -758,14 +758,18 @@ public class CM_Task
             TerritoryAttachment ta = TerritoryAttachment.get(m_target);
 
             List<Unit> landAttackers = DUtils.GetNNEnemyLUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
-            int cheapestLAttacker = DUtils.GetTUVOfUnit(DUtils.GetCheapestUnitInList(landAttackers), GlobalCenter.GetPUResource());
+            int cheapestLAttacker = 0;
+            if(landAttackers.size() > 0)
+                cheapestLAttacker = DUtils.GetTUVOfUnit(DUtils.GetCheapestUnitInList(landAttackers), GlobalCenter.GetPUResource());
             float chanceOfHittingCheapestLAttacker = (float)UnitAttachment.get(GetRecruitedUnitsAsUnitList().get(0).getUnitType()).getDefense(player) / 6.0F;
 
-            float averageTuvLossInflictedIfAttacked = chanceOfHittingCheapestLAttacker * cheapestLAttacker;
-            float tuvSwing = averageTuvLossInflictedIfAttacked - unitCost;
+            float averageTuvLossOfAttackerIfAttacked = chanceOfHittingCheapestLAttacker * cheapestLAttacker;
+            float tuvSwing = averageTuvLossOfAttackerIfAttacked - unitCost;
+            if(landAttackers.isEmpty())
+                tuvSwing = 0; //If no one's going to attack, there is no TUV swing
 
             //If the tuv swing + ter production is in our favor, or there are no land attackers
-            if (tuvSwing + ta.getProduction() >= 0 || landAttackers.isEmpty())
+            if (tuvSwing + ta.getProduction() > 0)
                 return true;
 
             return false;
