@@ -436,12 +436,38 @@ public class Matches
         };
     }
 
+    public static Match<Unit> UnitDestroyedWhenCapturedBy(final PlayerID player)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit o)
+            {
+                Unit unit = (Unit) o;
+                UnitAttachment ua = UnitAttachment.get(unit.getType());
+                return ua.getDestroyedWhenCapturedBy().contains(player);
+            }
+        };
+    }
+
     public static final Match<Unit> UnitIsAirBase = new Match<Unit>()
     {
         public boolean match(Unit unit)
         {
             UnitAttachment ua = UnitAttachment.get(unit.getType());
             return ua.getIsAirBase();
+        }
+    };
+
+    /**
+     * Factories are bombable/rocketable already.
+     * Use a CompositeMatchOr to find factories + canBeDamaged
+     */
+    public static final Match<Unit> UnitCanBeDamagedButIsNotFactory = new Match<Unit>()
+    {
+        public boolean match(Unit unit)
+        {
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            return ua.getCanBeDamaged() && !ua.isFactory();
         }
     };
 

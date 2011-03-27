@@ -768,6 +768,10 @@ public class Properties implements Constants {
     	return data.getProperties().get(GIVE_UNITS_BY_TERRITORY, false);
     }
     
+    public static boolean getUnitsCanBeDestroyedInsteadOfCaptured(GameData data) {
+    	return data.getProperties().get(UNITS_CAN_BE_DESTROYED_INSTEAD_OF_CAPTURED, false);
+    }
+    
     private Properties() {
     }
 }

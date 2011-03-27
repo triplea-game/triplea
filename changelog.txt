@@ -1,4 +1,10 @@
 Changes for 1.2.7
+* Changed "isInfrastructure" to NOT be bombable. Made it so that "canBeDamaged" is now the switch to make something bombable. (veqryn)
+
+* Changed "isInfrastructure" to be captured when taken.  isInfrastructure will now be used in place of the planned 'isNonCombat'. (veqryn)
+
+* Added new unit attachment, destroyedWhenCapturedBy, which is a list of players who would destroy a unit rather than capture it. New global property to activate it, "Units Can Be Destroyed Instead Of Captured". (veqryn)
+
 * Added new unit attachment, maxBuiltPerPlayer, which limits the number of a unittype that can be built for each player. (veqryn)
 
 * Added history entries for many triggers. (veqryn)

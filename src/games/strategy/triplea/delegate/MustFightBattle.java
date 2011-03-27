@@ -2810,11 +2810,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         //remove infrastructure units that can't take part in combat (air/naval bases, etc...)
         //But units like bridges or bunkers could be left to be taken as casualties
-        CompositeMatchAnd<Unit> combatInfrastructure = new CompositeMatchAnd<Unit>();
-        combatInfrastructure.add(Matches.UnitIsInfrastructure);
-        combatInfrastructure.add(new InverseMatch<Unit>(Matches.UnitIsCombatInfrastructure));
+        CompositeMatchAnd<Unit> noncombatInfrastructure = new CompositeMatchAnd<Unit>();
+        noncombatInfrastructure.add(Matches.UnitIsInfrastructure);
+        noncombatInfrastructure.add(new InverseMatch<Unit>(Matches.UnitIsCombatInfrastructure));
 
-        unitList.removeAll(Match.getMatches(unitList, combatInfrastructure));
+        unitList.removeAll(Match.getMatches(unitList, noncombatInfrastructure));
 
         return unitList;
     }

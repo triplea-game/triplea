@@ -118,6 +118,7 @@ public class UnitAttachment extends DefaultAttachment
   private int m_defense = 0;
   
   private Collection<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<PlayerID>();
+  private Collection<PlayerID> m_destroyedWhenCapturedBy = new ArrayList<PlayerID>();
 
 
   /** Creates new UnitAttatchment */
@@ -169,6 +170,24 @@ public class UnitAttachment extends DefaultAttachment
   public Collection<PlayerID> getCanBeGivenByTerritoryTo()
   {
       return m_canBeGivenByTerritoryTo;
+  }
+  
+  public void setDestroyedWhenCapturedBy(String value)
+  {
+  	String[] temp = value.split(":");
+  	for (String name : temp)
+  	{
+  		PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+  		if (tempPlayer != null)
+  			m_destroyedWhenCapturedBy.add(tempPlayer);
+  		else
+  			throw new IllegalStateException("Unit Attachments: No player named: " + name);
+  	}
+  }
+
+  public Collection<PlayerID> getDestroyedWhenCapturedBy()
+  {
+      return m_destroyedWhenCapturedBy;
   }
 
   public void setCanBlitz(String s)
