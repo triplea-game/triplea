@@ -14,7 +14,7 @@
 			-->
 
 		<!-- diceSides defaults to 6 if not in the xml.  Can be set to any number between 1 and 200.
-				WARNING: setting diceSides to a number other than 6 is not fully supported and can result in unexpected behavior or even Java errors.  Especially true for odd-sided dice (like 5, or 7, etc.) -->
+				WARNING: Setting diceSides to a number other than 6 can result in unexpected behavior.  Especially true for odd-sided dice (like 5, or 7, etc.) -->
 		<diceSides value="6"/>
 		
         <map>
@@ -783,7 +783,7 @@
                 </productionRule>
 
                 <productionRule name="buySuper_Carrier">
-                        <cost resource="PUs" quantity="21" />
+                        <cost resource="PUs" quantity="20" />
                         <result resourceOrUnit="super_carrier" quantity="1"/>
                 </productionRule>
 
@@ -2076,6 +2076,8 @@
 								every unit may have a list, and the lists may be different for each unit. default is no list.  
 								the list may be turned on/off with "Unit Placement Restrictions" game property -->
 						 <option name="unitPlacementRestrictions" value="Midway:Greenland:Gibraltar:Solomon Islands:Wake Island:Caroline Islands"/>
+						 <!-- maxBuiltPerPlayer is the number of this unit that can be BUILT by a player.  If they have fewer than this number they can build more, if they have more than this number they can not build more [this does not cause excess ones to disappear] -->
+						 <option name="maxBuiltPerPlayer" value="3"/>
                 </attatchment>
 
                 <attatchment name="unitAttatchment" attatchTo="factory_hit" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
@@ -4008,6 +4010,7 @@
 						<br>7. Harbour are needed to repair Battleships, if you turn on "Two HitPoint Units Require Repair Facilities".
 						<br>8. Bunkers may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours), but there is a limit of 1 per territory.
 						<br>9. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att, +1 def to subs). Available to Germans after they get superSubs.
+						<br>10. Each nation may only build factories up to 3 total, if a nation controls more than 3 they can not build new factories.
         				<br>
         				<br>
         				<br>

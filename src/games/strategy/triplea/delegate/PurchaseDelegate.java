@@ -39,11 +39,14 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitTypeComparator;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.util.CompositeMatch;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -133,6 +136,35 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
         if(!(canAfford(costs, m_player)))
             return "Not enough resources";
 
+        // check to see if player has too many of any building with a building limit
+        Iterator<NamedAttachable> iter2 = results.keySet().iterator();
+        while(iter2.hasNext() )
+        {
+        	Object next = iter2.next();
+        	if (!(next instanceof Resource))
+        	{
+                UnitType type = (UnitType) next;
+                int quantity = results.getInt(type);
+                UnitAttachment ua = UnitAttachment.get(type);
+                int maxBuilt = ua.getMaxBuiltPerPlayer();
+                if (maxBuilt == 0)
+                	return "May not build any of this unit right now: " + type.getName();
+                else if (maxBuilt > 0)
+                {
+                	// check to see how many are currently fielded by this player
+                	int currentlyBuilt = 0;
+                	CompositeMatch<Unit> unitTypeOwnedBy = new CompositeMatchAnd<Unit>(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(m_player));
+                	Collection<Territory> allTerrs = m_data.getMap().getTerritories();
+                	for (Territory t : allTerrs)
+            		{
+                		currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);
+            		}
+                	int allowedBuild = maxBuilt - currentlyBuilt;
+                	if (allowedBuild - quantity < 0)
+                		return "May only build " + allowedBuild + " of " + type.getName() + " this turn, may only build " + maxBuilt + " total";
+                }
+        	}
+        }
         // remove first, since add logs PUs remaining
 
         Iterator<NamedAttachable> iter = results.keySet().iterator();

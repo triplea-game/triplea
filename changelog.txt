@@ -1,4 +1,8 @@
 Changes for 1.2.7
+* Added new unit attachment, maxBuiltPerPlayer, which limits the number of a unittype that can be built for each player. (veqryn)
+
+* Added history entries for many triggers. (veqryn)
+
 * Updated ui and utilities to allow islands to be selectable if they are inside a sea zone that ends or begins with "Sea Zone". Previously only allowed water territories to end with, not begin with "Sea Zone". (veqryn)
 
 * Updated giveUnits and takeUnits to not throw Java errors for older maps. Not backwards compatible, just ignore it if true or false. (veqryn)

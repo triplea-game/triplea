@@ -104,6 +104,9 @@ public class UnitAttachment extends DefaultAttachment
   private int m_carrierCapacity = -1;
   //-1 if cant land on a carrier
   private int m_carrierCost = -1;
+  
+  //-1 if infinite (infinite is default)
+  private int m_maxBuiltPerPlayer = -1;
 
   private int m_bombard = -1;
   private int m_unitSupportCount = -1;
@@ -416,6 +419,16 @@ public class UnitAttachment extends DefaultAttachment
   public int getTransportCost()
   {
     return m_transportCost;
+  }
+
+  public void setMaxBuiltPerPlayer(String s)
+  {
+	  m_maxBuiltPerPlayer = getInt(s);
+  }
+
+  public int getMaxBuiltPerPlayer()
+  {
+    return m_maxBuiltPerPlayer;
   }
 
   public void setCarrierCapacity(String s)
@@ -758,6 +771,11 @@ public class UnitAttachment extends DefaultAttachment
       throw new GameParseException("Invalid Unit Attatchment" + this);
     }
 
+    if(m_maxBuiltPerPlayer < -1)
+    {
+      throw new GameParseException("Invalid Unit Attatchment" + this);
+    }
+
     if(m_isCombatTransport && m_transportCapacity < 1)
     {
       throw new GameParseException("Invalid Unit Attatchment" + this);
@@ -865,6 +883,7 @@ public class UnitAttachment extends DefaultAttachment
     " transportCost:" + m_transportCost +
     " carrierCapacity:" + m_carrierCapacity +
     " carrierCost:" + m_carrierCost +
+    " maxBuiltPerPlayer:" + m_maxBuiltPerPlayer + 
     " bombard:" + m_bombard +
     " unitSupportCount:" + m_unitSupportCount +
     " blockade:" + m_blockade +

@@ -355,6 +355,7 @@ public class TriggerAttachment extends DefaultAttachment{
 				t.use(aBridge);
 				for( PlayerID aPlayer: t.getPlayers()){
 					change.add(ChangeFactory.changeProductionFrontier(aPlayer, t.getFrontier()));
+					aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " has their production frontier changed to: " + t.getFrontier().toString());
 				}
 			}
 		}
@@ -373,6 +374,7 @@ public class TriggerAttachment extends DefaultAttachment{
 			}
 			if(met!=t.getInvert()) {
 				t.use(aBridge);
+				// no need for history writing as the method calling this has its own history writer
 				for( PlayerID aPlayer: t.getPlayers()){
 					return t.getVictory();
 				}
@@ -397,7 +399,7 @@ public class TriggerAttachment extends DefaultAttachment{
 						if(ta.hasTech(TechAttachment.get(aPlayer))
 								|| !TechAdvance.getTechAdvances(data, aPlayer).contains(ta))
 							continue;
-						aBridge.getHistoryWriter().startEvent(aPlayer.getName() + " activating " + ta);
+						aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " activates " + ta);
 						TechTracker.addAdvance(aPlayer, data, aBridge, ta);
 					}
 				}
@@ -423,12 +425,12 @@ public class TriggerAttachment extends DefaultAttachment{
 							throw new IllegalStateException("Triggers: tech category doesn't exist:"+cat+" for player:"+aPlayer);
 						for(TechAdvance ta: t.getAvailableTech().get(cat).keySet()){
 							if(t.getAvailableTech().get(cat).get(ta)) {
-								aBridge.getHistoryWriter().startEvent(aPlayer.getName() + " gains access to " + ta);
+								aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " gains access to " + ta);
 								Change change = ChangeFactory.addAvailableTech(tf, ta,aPlayer);
 								aBridge.addChange(change);
 							}
 							else {
-								aBridge.getHistoryWriter().startEvent(aPlayer.getName() + " loses access to " + ta);
+								aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " loses access to " + ta);
 								Change change = ChangeFactory.removeAvailableTech(tf, ta,aPlayer);
 								aBridge.addChange(change);
 							}
@@ -452,6 +454,7 @@ public class TriggerAttachment extends DefaultAttachment{
 				t.use(aBridge);
 				for( PlayerID aPlayer: t.getPlayers()){
 					for(Territory ter: t.getPlacement().keySet()) {
+						//aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " places " + t.getPlacement().get(ter).toString() + " in territory " + ter.getName());
 						placeUnits(ter,t.getPlacement().get(ter),aPlayer,data,aBridge);
 					}
 				}
@@ -476,8 +479,7 @@ public class TriggerAttachment extends DefaultAttachment{
 						units.addAll(u.create(t.getPurchase().getInt(u), aPlayer));
 					}
 					if(!units.isEmpty()) {
-						String transcriptText = MyFormatter.unitsToTextNoOwner(units)
-						+ " gained by " + aPlayer;
+						String transcriptText = "Triggers: " + MyFormatter.unitsToTextNoOwner(units) + " gained by " + aPlayer;
 						aBridge.getHistoryWriter().startEvent(transcriptText);
 						aBridge.getHistoryWriter().setRenderingData(units);
 						Change place = ChangeFactory.addUnits(aPlayer, units);
@@ -510,7 +512,7 @@ public class TriggerAttachment extends DefaultAttachment{
 						total = 0;
 					}
 					change.add(ChangeFactory.changeResourcesChange(aPlayer, data.getResourceList().getResource(t.getResource()), toAdd));
-					String PUMessage = aPlayer.getName() + " met a national objective for an additional " + t.getResourceCount() + " " + t.getResource()+
+					String PUMessage = "Triggers: " + aPlayer.getName() + " met a national objective for an additional " + t.getResourceCount() + " " + t.getResource()+
 					"; end with " + total + " " +t.getResource();
 					aBridge.getHistoryWriter().startEvent(PUMessage);
 				}
@@ -541,12 +543,14 @@ public class TriggerAttachment extends DefaultAttachment{
 						if(!t.getSupport().get(usa)) {
 							p.remove(aPlayer);
 							change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
+							aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " is removed from " + usa.toString());
 						}
 					}
 					else {
 						if(t.getSupport().get(usa)) {
 							p.add(aPlayer);
 							change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
+							aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " is added to " + usa.toString());
 						}	
 					}
 					}
@@ -574,7 +578,7 @@ public class TriggerAttachment extends DefaultAttachment{
 					if(UnitAttachment.get(t.getUnitType()).getRawProperty(s[0]).equals(s[1]))
 						continue;
 					change.add(ChangeFactory.attachmentPropertyChange(UnitAttachment.get(t.getUnitType()), property, "rawProperty"));
-					aBridge.getHistoryWriter().startEvent("Setting " + s[0]+ " to " + s[1] + " for " + t.getUnitType().getName());
+					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + s[0]+ " to " + s[1] + " for " + t.getUnitType().getName());
 				}
 			}	
 		}
@@ -599,8 +603,7 @@ public class TriggerAttachment extends DefaultAttachment{
         change.add(DelegateFinder.battleDelegate(data).getOriginalOwnerTracker()
                 .addOriginalOwnerChange(factoryAndAA, player));
        
-        String transcriptText = MyFormatter.unitsToTextNoOwner(units)
-                + " placed in " + terr.getName();
+        String transcriptText = "Triggers: " + player.getName() + " has " + MyFormatter.unitsToTextNoOwner(units) + " placed in " + terr.getName();
         aBridge.getHistoryWriter().startEvent(transcriptText);
         aBridge.getHistoryWriter().setRenderingData(units);
 
@@ -611,8 +614,9 @@ public class TriggerAttachment extends DefaultAttachment{
         {
         	TerritoryAttachment ta = TerritoryAttachment.get(terr);
         	int prod = 0;
-        	if( ta != null)
+        	if(ta != null)
         		prod = ta.getProduction();
+        	//TODO: this could cause bugs if the territory already has a factory.  when going backwards in history you will do damage to the territory (as if you strat bombed)
             Change unitProd = ChangeFactory.changeUnitProduction(terr, prod);
             change.add(unitProd);
         }
