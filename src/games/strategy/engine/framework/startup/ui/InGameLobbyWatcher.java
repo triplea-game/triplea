@@ -276,6 +276,7 @@ public class InGameLobbyWatcher
                          {
                              String message = "Your computer is not reachable from the internet.\n" +
                                               "Please check your firewall or router configuration.\n" +
+                                              "See 'How To Host...' in the help menu, at the top of the lobby screen.\n" + 
                                               "The server tried to connect to " + addressUsed;
                              
                             JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent),  message, "Could Not Host", JOptionPane.ERROR_MESSAGE);

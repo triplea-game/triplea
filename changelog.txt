@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Beginning work on unit attachment "isSuicide", which will allow a unit to die at the beginning of combat. (veqryn)
+
 * Changed "isInfrastructure" to NOT be bombable. Made it so that "canBeDamaged" is now the switch to make something bombable. (veqryn)
 
 * Changed "isInfrastructure" to be captured when taken.  isInfrastructure will now be used in place of the planned 'isNonCombat'. (veqryn)

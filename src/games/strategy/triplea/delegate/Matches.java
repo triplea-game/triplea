@@ -546,7 +546,17 @@ public class Matches
         {
             Unit unit = (Unit) obj;
             UnitAttachment ua = UnitAttachment.get(unit.getType());
-            return !ua.isFactory() && !ua.isAA();
+            return !ua.isFactory() && !ua.isAA() && !ua.getIsInfrastructure();
+        }
+    };
+
+    public static final Match<Unit> UnitIsSuicide = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            Unit unit = (Unit) obj;
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            return ua.getIsSuicide();
         }
     };
 
@@ -1140,6 +1150,7 @@ public class Matches
                 CompositeMatch<Unit> nonCom = new CompositeMatchOr<Unit>();
                 nonCom.add(UnitIsAAOrFactory);
                 nonCom.add(alliedUnit(player, data));
+                nonCom.add(UnitIsInfrastructure);
                 return t.getUnits().allMatch(nonCom);
             }
         };
@@ -1342,7 +1353,7 @@ public class Matches
     		public boolean match(Unit unit)
     		{
     			UnitAttachment ua = UnitAttachment.get(unit.getType());
-    			if(ua.isAA() || ua.isFactory()) // will need to add naval/air bases, etc.
+    			if(ua.isAA() || ua.isFactory() || ua.getIsInfrastructure())
     				return false;
     			return ua.getDefense(unit.getOwner()) >= minDefense;
     		}
@@ -1927,7 +1938,7 @@ public class Matches
     
     public static Match<Territory> territoryIsBlockedSea(final PlayerID player, final GameData data)
     {	
-    			CompositeMatch<Unit> ignore = new CompositeMatchAnd<Unit>(Matches.UnitIsAAOrFactory.invert(), Matches.alliedUnit(player, data).invert());
+    			CompositeMatch<Unit> ignore = new CompositeMatchAnd<Unit>(Matches.UnitIsAAOrFactory.invert(), Matches.alliedUnit(player, data).invert(), Matches.UnitIsInfrastructure.invert());
     	    	CompositeMatch<Unit> sub = new CompositeMatchAnd<Unit>(Matches.UnitIsSub.invert());
     	    	CompositeMatch<Unit> transport = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport.invert(), Matches.UnitIsLand.invert() );
     	    	CompositeMatch<Unit> unitCond = ignore;

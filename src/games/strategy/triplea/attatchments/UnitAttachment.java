@@ -70,6 +70,7 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isInfrastructure = false;
   private boolean m_isCombatInfrastructure = false;
   private boolean m_canBeDamaged = false;
+  private boolean m_isSuicide = false;
   private boolean m_isCombatTransport = false;
   private boolean m_isConstruction = false;
   
@@ -706,6 +707,16 @@ public class UnitAttachment extends DefaultAttachment
     return m_canBeDamaged;
   }
   
+  public void setIsSuicide(String s)
+  {
+	  m_isSuicide = getBool(s);
+  }
+
+  public boolean getIsSuicide()
+  {
+    return m_isSuicide;
+  }
+  
   public void setBlockade(String s)
   {
 	  m_blockade = getInt(s);
@@ -887,6 +898,7 @@ public class UnitAttachment extends DefaultAttachment
     " infrastructure:" + m_isInfrastructure +
     " combatInfrastructure:" + m_isCombatInfrastructure +
     " canBeDamaged:" + m_canBeDamaged +
+    " isSuicide:" + m_isSuicide + 
     " combatTransport:" + m_isCombatTransport +
     " construction:" + m_isConstruction +
     

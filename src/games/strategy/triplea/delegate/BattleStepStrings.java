@@ -58,4 +58,7 @@ public interface BattleStepStrings
   final static String ATTACKER_WITHDRAW = " withdraw?";
 
   final static String SCRAMBLE_UNITS = " scramble units?";
+  
+  final static String SUICIDE_ATTACK = "Suicide and Munition units Attack";
+  final static String SUICIDE_DEFEND = "Suicide and Munition units Defend";
 }

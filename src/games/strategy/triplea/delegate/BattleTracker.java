@@ -621,8 +621,7 @@ public class BattleTracker implements java.io.Serializable
             if (!destroyed.isEmpty())
             {
                 Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
-                bridge.getHistoryWriter().addChildToEvent(id.getName() + " destroys some non-combat units");
-                bridge.getHistoryWriter().setRenderingData(destroyUnits);
+                bridge.getHistoryWriter().addChildToEvent(id.getName() + " destroys some non-combat units", destroyed);
                 bridge.addChange(destroyUnits);
                 if (changeTracker != null)
                     changeTracker.addChange(destroyUnits);

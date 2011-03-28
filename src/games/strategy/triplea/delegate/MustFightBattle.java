@@ -853,6 +853,18 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 steps.add(SELECT_NAVAL_BOMBARDMENT_CASUALTIES);
             }
             
+            if (Match.someMatch(m_attackingUnits, Matches.UnitIsSuicide))
+            {
+            	steps.add(SUICIDE_ATTACK);
+            	steps.add(m_defender.getName() + SELECT_CASUALTIES);
+            }
+            
+            if (Match.someMatch(m_defendingUnits, Matches.UnitIsSuicide))
+            {
+            	steps.add(SUICIDE_DEFEND);
+            	steps.add(m_attacker.getName() + SELECT_CASUALTIES);
+            }
+            
             if(!m_battleSite.isWater() && isParatroopers(m_attacker))
             {
             	Collection<Unit> bombers = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsStrategicBomber);
@@ -1093,6 +1105,26 @@ public class MustFightBattle implements Battle, BattleStepStrings
             
         };        
         
+        IExecutable fireSuicideUnitsAttack = new IExecutable()
+        {
+
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+                fireSuicideUnitsAttack(bridge);
+            }
+            
+        };       
+        
+        IExecutable fireSuicideUnitsDefend = new IExecutable()
+        {
+
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+                fireSuicideUnitsDefend(bridge);
+            }
+            
+        };
+        
         IExecutable removeNonCombatants = new IExecutable()
         {
 
@@ -1136,6 +1168,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         m_stack.push(scrambleUnits);
         m_stack.push(landParatroops);
         m_stack.push(removeNonCombatants);
+        m_stack.push(fireSuicideUnitsDefend);
+        m_stack.push(fireSuicideUnitsAttack);
         m_stack.push(fireNavalBombardment);
         m_stack.push(fireAAGuns);
     }
@@ -1198,6 +1232,17 @@ public class MustFightBattle implements Battle, BattleStepStrings
                clearWaitingToDie(bridge);
             }            
         });        
+        
+        
+        steps.add(new IExecutable(){
+            // not compatible with 0.9.0.2 saved games.  this is new for 1.2.6.0
+            private static final long serialVersionUID = 6387198382888361848L;
+
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+            	checkSuicideUnits(bridge);
+            }            
+        });
 
         
         steps.add(new IExecutable(){
@@ -1377,6 +1422,17 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 }
             });  
         }
+        
+        
+        /**Remove Suicide Units*/
+        steps.add(new IExecutable(){
+    		private static final long serialVersionUID = 99988L;
+            
+    		 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+             {
+    			 checkSuicideUnits(bridge);
+             }
+    	});
         
        
 
@@ -2208,6 +2264,20 @@ public class MustFightBattle implements Battle, BattleStepStrings
     }
     
     /**
+     * Check for suicide units and kill them immediately (they get to shoot back, which is the point)
+     * @param bridge
+     * @param player
+     * @param defender
+     */
+    private void checkSuicideUnits(IDelegateBridge bridge)
+    {
+		remove(Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsSuicide), bridge, m_battleSite, false);
+    	//and remove them from the battle display
+    	m_defendingUnits.removeAll(Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide));
+    	m_attackingUnits.removeAll(Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide));
+    }
+    
+    /**
      * Check for unescorted TRNS and kill them immediately
      * @param bridge
      * @param player
@@ -2546,6 +2616,36 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, false,
                     canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge, "Bombard");
+        }
+    }
+
+    private void fireSuicideUnitsAttack(IDelegateBridge bridge)
+    {
+    	//TODO: add a global toggle for returning fire (Veqryn)
+    	CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructible, Matches.UnitIsSuicide.invert());
+    	Collection<Unit> suicideAttackers = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
+    	Collection<Unit> suicideDefenders = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
+    	Collection<Unit> attackedAttackers = Match.getMatches(m_defendingUnits, attackableUnits);
+    	Collection<Unit> attackedDefenders = Match.getMatches(m_defendingUnits, attackableUnits);
+
+    	if (suicideAttackers.size() > 0)
+        {
+        	fire(SELECT_CASUALTIES, suicideAttackers, attackedDefenders, false, ReturnFire.ALL, bridge, SUICIDE_ATTACK);
+        }
+    }
+
+    private void fireSuicideUnitsDefend(IDelegateBridge bridge)
+    {
+    	//TODO: add a global toggle for returning fire (Veqryn)
+    	CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructible, Matches.UnitIsSuicide.invert());
+    	Collection<Unit> suicideAttackers = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
+    	Collection<Unit> suicideDefenders = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
+    	Collection<Unit> attackedAttackers = Match.getMatches(m_attackingUnits, attackableUnits);
+    	Collection<Unit> attackedDefenders = Match.getMatches(m_defendingUnits, attackableUnits);
+
+        if (suicideDefenders.size() > 0)
+        {
+        	fire(SELECT_CASUALTIES, suicideDefenders, attackedAttackers, true, ReturnFire.ALL, bridge, SUICIDE_DEFEND);
         }
     }
     

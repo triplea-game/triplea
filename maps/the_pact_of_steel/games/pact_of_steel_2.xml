@@ -1888,6 +1888,8 @@
 						 <!-- properties for scrambling. allows the aircraft to enter a surrounding sea zone if the enemy is doing an attack on or from the surrounding sea zone -->
                          <option name="canScramble" value="true"/>
                          <option name="maxScrambleDistance" value="1"/>
+						 <!-- isSuicide makes a unit die before combat begins, however they do get to roll -->
+						 <!--<option name="isSuicide" value="true"/>-->
                 </attatchment>
 
                 <!-- Bomber -->
