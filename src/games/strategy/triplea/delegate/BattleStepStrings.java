@@ -61,4 +61,5 @@ public interface BattleStepStrings
   
   final static String SUICIDE_ATTACK = "Suicide and Munition units Attack";
   final static String SUICIDE_DEFEND = "Suicide and Munition units Defend";
+  final static String SELECT_CASUALTIES_SUICIDE = " select suicide casualties";
 }

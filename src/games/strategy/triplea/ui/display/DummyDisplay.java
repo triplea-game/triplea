@@ -36,6 +36,12 @@ public class DummyDisplay implements ITripleaDisplay
 
     }
 
+    public void deadUnitNotification(GUID battleID, PlayerID player, Collection<Unit> killed, Map<Unit, Collection<Unit>> dependents)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
     public void bombingResults(GUID battleID, int[] dice, int cost)
     {
         // TODO Auto-generated method stub

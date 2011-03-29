@@ -1150,7 +1150,7 @@ public class Matches
                 CompositeMatch<Unit> nonCom = new CompositeMatchOr<Unit>();
                 nonCom.add(UnitIsAAOrFactory);
                 nonCom.add(alliedUnit(player, data));
-                nonCom.add(UnitIsInfrastructure);
+                nonCom.add(UnitIsInfrastructure); //UnitIsAAOrIsFactoryOrIsInfrastructure
                 return t.getUnits().allMatch(nonCom);
             }
         };
@@ -1938,6 +1938,7 @@ public class Matches
     
     public static Match<Territory> territoryIsBlockedSea(final PlayerID player, final GameData data)
     {	
+    			//UnitIsAAOrIsFactoryOrIsInfrastructure
     			CompositeMatch<Unit> ignore = new CompositeMatchAnd<Unit>(Matches.UnitIsAAOrFactory.invert(), Matches.alliedUnit(player, data).invert(), Matches.UnitIsInfrastructure.invert());
     	    	CompositeMatch<Unit> sub = new CompositeMatchAnd<Unit>(Matches.UnitIsSub.invert());
     	    	CompositeMatch<Unit> transport = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport.invert(), Matches.UnitIsLand.invert() );
@@ -2005,6 +2006,8 @@ public class Matches
     }
     
     public static final Match<Unit> UnitIsAAOrFactory = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory);
+    
+    public static final Match<Unit> UnitIsAAOrIsFactoryOrIsInfrastructure = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory, UnitIsInfrastructure);
 
     public static Match<Territory> territoryIsBlockadeZone = new Match<Territory>()
         {

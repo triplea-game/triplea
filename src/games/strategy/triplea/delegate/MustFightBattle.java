@@ -856,13 +856,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
             if (Match.someMatch(m_attackingUnits, Matches.UnitIsSuicide))
             {
             	steps.add(SUICIDE_ATTACK);
-            	steps.add(m_defender.getName() + SELECT_CASUALTIES);
+            	steps.add(m_defender.getName() + SELECT_CASUALTIES_SUICIDE);
             }
             
             if (Match.someMatch(m_defendingUnits, Matches.UnitIsSuicide))
             {
             	steps.add(SUICIDE_DEFEND);
-            	steps.add(m_attacker.getName() + SELECT_CASUALTIES);
+            	steps.add(m_attacker.getName() + SELECT_CASUALTIES_SUICIDE);
             }
             
             if(!m_battleSite.isWater() && isParatroopers(m_attacker))
@@ -2273,6 +2273,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
 		remove(Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsSuicide), bridge, m_battleSite, false);
     	//and remove them from the battle display
+    	getDisplay(bridge).deadUnitNotification(m_battleID, m_attacker, Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide), m_dependentUnits);
+    	getDisplay(bridge).deadUnitNotification(m_battleID, m_defender, Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide), m_dependentUnits);
+    	//and remove them from the map display
     	m_defendingUnits.removeAll(Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide));
     	m_attackingUnits.removeAll(Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide));
     }
@@ -2624,13 +2627,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	//TODO: add a global toggle for returning fire (Veqryn)
     	CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructible, Matches.UnitIsSuicide.invert());
     	Collection<Unit> suicideAttackers = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
-    	Collection<Unit> suicideDefenders = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
-    	Collection<Unit> attackedAttackers = Match.getMatches(m_defendingUnits, attackableUnits);
     	Collection<Unit> attackedDefenders = Match.getMatches(m_defendingUnits, attackableUnits);
+    	boolean canReturnFire = (!isSuicideAndMunitionCasualtiesRestricted());
 
     	if (suicideAttackers.size() > 0)
         {
-        	fire(SELECT_CASUALTIES, suicideAttackers, attackedDefenders, false, ReturnFire.ALL, bridge, SUICIDE_ATTACK);
+        	fire(m_defender.getName() + SELECT_CASUALTIES_SUICIDE, suicideAttackers, attackedDefenders, false, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge, SUICIDE_ATTACK);
         }
     }
 
@@ -2638,14 +2640,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
     	//TODO: add a global toggle for returning fire (Veqryn)
     	CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructible, Matches.UnitIsSuicide.invert());
-    	Collection<Unit> suicideAttackers = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
     	Collection<Unit> suicideDefenders = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
     	Collection<Unit> attackedAttackers = Match.getMatches(m_attackingUnits, attackableUnits);
-    	Collection<Unit> attackedDefenders = Match.getMatches(m_defendingUnits, attackableUnits);
+    	boolean canReturnFire = (!isSuicideAndMunitionCasualtiesRestricted());
 
         if (suicideDefenders.size() > 0)
         {
-        	fire(SELECT_CASUALTIES, suicideDefenders, attackedAttackers, true, ReturnFire.ALL, bridge, SUICIDE_DEFEND);
+        	fire(m_attacker.getName() + SELECT_CASUALTIES_SUICIDE, suicideDefenders, attackedAttackers, true, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge, SUICIDE_DEFEND);
         }
     }
     
@@ -2706,6 +2707,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private boolean isNavalBombardCasualtiesReturnFire()
     {
     	return games.strategy.triplea.Properties.getNavalBombardCasualtiesReturnFireRestricted(m_data);
+    }
+
+    /**
+     * @return
+     */
+    private boolean isSuicideAndMunitionCasualtiesRestricted()
+    {
+    	return games.strategy.triplea.Properties.getSuicideAndMunitionCasualtiesRestricted(m_data);
     }
 
     /**

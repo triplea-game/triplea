@@ -394,11 +394,8 @@ public class BattleTracker implements java.io.Serializable
         //a naval battle must precede there
         //Also check if there are only factory/AA units left in the neutral territory.
         Collection<Unit> endUnits = route.getEnd().getUnits().getUnits();
-        CompositeMatch<Unit> enemyNonCom = new CompositeMatchOr<Unit>();
-        enemyNonCom.add(Matches.UnitIsFactory);
-        enemyNonCom.add(Matches.UnitIsAA);
         if (Matches.TerritoryIsNeutral.match(route.getEnd()) && (Matches.TerritoryIsEmpty.match(route.getEnd()) || 
-        		Match.allMatch(endUnits, enemyNonCom)))
+        		Match.allMatch(endUnits, Matches.UnitIsAAOrIsFactoryOrIsInfrastructure)))
         {
             Battle precede = getDependentAmphibiousAssault(route);
             if (precede == null)
@@ -629,7 +626,7 @@ public class BattleTracker implements java.io.Serializable
         }
         
         //take over non combatants
-        CompositeMatch<Unit> enemyCapturable = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsInfrastructure);
+        CompositeMatch<Unit> enemyCapturable = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsInfrastructure); // UnitIsAAOrIsFactoryOrIsInfrastructure
         CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>(Matches.enemyUnit(id, data), enemyCapturable);
         Collection<Unit> nonCom = territory.getUnits().getMatches(enemyNonCom);
         Change noMovementChange = DelegateFinder.moveDelegate(data).markNoMovementChange(nonCom);
@@ -684,6 +681,7 @@ public class BattleTracker implements java.io.Serializable
                 bridge.getHistoryWriter().addChildToEvent(takeOverFriendlyTerritories.toString());
                 if (changeTracker != null)
                     changeTracker.addChange(takeOverFriendlyTerritories);
+                // TODO: do we need to add in infrastructure here?
                 Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.UnitIsFactory);
                 if (!units.isEmpty())
                 {
@@ -715,7 +713,7 @@ public class BattleTracker implements java.io.Serializable
 
         //if just an enemy factory &/or AA then no battle
         Collection<Unit> enemyUnits = Match.getMatches(site.getUnits().getUnits(), Matches.enemyUnit(id, data));
-        if (route.getEnd() != null && Match.allMatch(enemyUnits, Matches.UnitIsAAOrFactory))
+        if (route.getEnd() != null && Match.allMatch(enemyUnits, Matches.UnitIsAAOrIsFactoryOrIsInfrastructure))
             return ChangeFactory.EMPTY_CHANGE;
 
         Battle battle = getPendingBattle(site, false);

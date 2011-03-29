@@ -223,7 +223,7 @@ public class MoveValidator
      */
     public static boolean onlyAlliedUnitsOnPath(Route route, PlayerID player, GameData data)
     {
-        CompositeMatch<Unit> alliedOrNonCombat = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.alliedUnit(player, data));
+        CompositeMatch<Unit> alliedOrNonCombat = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure, Matches.alliedUnit(player, data));
 
         // Submerged units do not interfere with movement
         // only relevant for WW2V2
@@ -244,9 +244,9 @@ public class MoveValidator
      */
     public static boolean onlyIgnoredUnitsOnPath(Route route, PlayerID player, GameData data, boolean ignoreRouteEnd)
     {
-    	CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsSub, Matches.alliedUnit(player, data));
-    	CompositeMatch<Unit> transportOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsLand, Matches.alliedUnit(player, data));
-    	CompositeMatch<Unit> transportOrSubOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsLand, Matches.UnitIsSub, Matches.alliedUnit(player, data));
+    	CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure, Matches.UnitIsSub, Matches.alliedUnit(player, data));
+    	CompositeMatch<Unit> transportOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsLand, Matches.alliedUnit(player, data));
+    	CompositeMatch<Unit> transportOrSubOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsLand, Matches.UnitIsSub, Matches.alliedUnit(player, data));
     	boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
     	boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
     	int routeLength = route.getLength();
@@ -334,7 +334,7 @@ public class MoveValidator
         //WW2V1 you can 
         if(!isWW2V2(data) && !IsBlitzThroughFactoriesAndAARestricted(data))
         {
-            blitzableUnits.add(Matches.UnitIsAAOrFactory);
+            blitzableUnits.add(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
         }
         
         if(!current.getUnits().allMatch(blitzableUnits))

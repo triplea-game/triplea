@@ -248,6 +248,7 @@ public class InitializationDelegate implements IDelegate
         {
             if(!current.getOwner().isNull())
             {
+            	// TODO: veqryn, maybe need to have infrastructure also initialized? Depends on if they should go back to their original owner or not.  UnitIsAAOrIsFactoryOrIsInfrastructure
                 changes.add(origOwnerTracker.addOriginalOwnerChange(current, current.getOwner()));
                 Collection<Unit> aaAndFactory = current.getUnits().getMatches(Matches.UnitIsAAOrFactory);
                 changes.add(origOwnerTracker.addOriginalOwnerChange(aaAndFactory, current.getOwner()));

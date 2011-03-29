@@ -466,6 +466,18 @@ public class BattlePanel extends ActionPanel
         });
     }
     
+    public void deadUnitNotification(final PlayerID player, final Collection<Unit> killed, final Map<Unit, Collection<Unit>> dependents)
+    {
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                if(m_battleDisplay != null)
+                    m_battleDisplay.deadUnitNotification(player, killed, dependents);
+            }
+        });
+    }
+    
     public void scrambleNotification(final String step, final PlayerID player, final Collection<Unit> scrambled,
             final Map<Unit, Collection<Unit>> dependents)
     {

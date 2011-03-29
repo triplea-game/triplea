@@ -1,4 +1,9 @@
 Changes for 1.2.7
+* Fixed various matches and places in the code to do with non-combat units, so that they will now also include isInfrastructure. (veqryn)
+
+* Finished work on isSuicide, and also created new game property, "Suicide and Munition Casualties Restricted", which stops casualties from returning fire if true. 
+  Please be aware that the the code in MustFightBattle for these two new features needs to be double checked, especially for multiplayer games. (veqryn)
+
 * Beginning work on unit attachment "isSuicide", which will allow a unit to die at the beginning of combat. (veqryn)
 
 * Changed "isInfrastructure" to NOT be bombable. Made it so that "canBeDamaged" is now the switch to make something bombable. (veqryn)

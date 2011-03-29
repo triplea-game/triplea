@@ -259,6 +259,7 @@ public class StrategicBombingRaidBattle implements Battle
 
     private List<Unit> getDefendingUnits()
     {
+    	//TODO: may need to also include infrastructure here, not just unitIsFactory and unitIsAA
     	if(m_targets.isEmpty())
     		return Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAOrFactory);
     	else

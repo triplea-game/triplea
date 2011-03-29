@@ -208,7 +208,7 @@ public class EditDelegate implements IDelegate, IEditDelegate
         else
         {
             CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>();
-            enemyNonCom.add(Matches.UnitIsAAOrFactory);
+            enemyNonCom.add(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
             enemyNonCom.add(Matches.enemyUnit(player, m_data));
             Collection<Unit> units = territory.getUnits().getMatches(enemyNonCom);
             // mark no movement for enemy units

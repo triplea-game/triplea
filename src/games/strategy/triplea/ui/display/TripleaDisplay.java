@@ -78,6 +78,19 @@ public class TripleaDisplay implements ITripleaDisplay
         m_ui.getBattlePanel().casualtyNotification(step,dice, player, killed, damaged, dependents);
         
     }
+    
+    /* 
+     * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
+     */
+    public void deadUnitNotification(GUID battleID,
+            PlayerID player,
+            Collection<Unit> killed,
+            Map<Unit,Collection<Unit>> dependents)
+    {
+        m_ui.getBattlePanel().deadUnitNotification(player, killed, dependents);
+        
+    }
+    
     /* 
      * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
      */

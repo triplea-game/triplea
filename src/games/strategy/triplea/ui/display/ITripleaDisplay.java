@@ -68,6 +68,14 @@ public interface ITripleaDisplay extends IDisplay
             Collection<Unit> killed,
             Collection<Unit> damaged,
             Map<Unit,Collection<Unit>> dependents);
+    
+    /**
+     * Notify that the casualties occurred, and only the casualty
+     */
+    public void deadUnitNotification(GUID battleID,
+            PlayerID player,
+            Collection<Unit> dead,
+            Map<Unit,Collection<Unit>> dependents);
 
     /**
      * Notify that the casualties occurred

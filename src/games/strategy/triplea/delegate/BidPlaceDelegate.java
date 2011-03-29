@@ -96,6 +96,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 
         CompositeMatch<Unit> groundUnits = new CompositeMatchAnd<Unit>();
         groundUnits.add(Matches.UnitIsLand);
+        // TODO: do we need to check for infrastructure here?
         groundUnits.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
         placeableUnits.addAll(Match.getMatches(units, groundUnits));
         placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAir));

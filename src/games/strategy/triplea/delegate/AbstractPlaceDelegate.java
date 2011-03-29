@@ -521,6 +521,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
 
             CompositeMatch<Unit> groundUnits = new CompositeMatchAnd<Unit>();
             groundUnits.add(Matches.UnitIsLand);
+            // should we add infrastructure here?
             groundUnits.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
             groundUnits.addInverse(Matches.UnitIsConstruction);  // remove all possible Construction 
             
@@ -968,6 +969,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         
         CompositeChange change = new CompositeChange();
         
+        //TODO: veqryn, again, do we need to initialize infrastructure or not?
         Collection<Unit> factoryAndAA = Match.getMatches(units,
                 Matches.UnitIsAAOrFactory);
         change.add(DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker()

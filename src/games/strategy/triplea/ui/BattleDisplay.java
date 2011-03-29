@@ -291,6 +291,21 @@ public class BattleDisplay extends JPanel
         }
     }
 
+    public void deadUnitNotification(PlayerID player, Collection<Unit> killed, Map<Unit, Collection<Unit>> dependents)
+    {
+        m_casualties.setNoticationShort(player, killed, dependents);
+        m_actionLayout.show(m_actionPanel, CASUALTIES_KEY);
+
+        killed.addAll(updateKilledUnits(killed, player));
+        if (player.equals(m_defender))
+        {
+            m_defenderModel.removeCasualties(killed);
+        } else
+        {
+            m_attackerModel.removeCasualties(killed);
+        }
+    }
+
     public void scrambleNotification(String step, PlayerID player, Collection<Unit> scrambled, Map<Unit, Collection<Unit>> dependents)
     {
         setStep(step);
@@ -1428,6 +1443,22 @@ class CasualtyNotificationPanel extends JPanel
         boolean disabled = false;
         Iterator damagedIter = UnitSeperator.categorize(damaged, dependents, false, false).iterator();
         categorizeUnits(damagedIter, true, disabled);
+
+        invalidate();
+        validate();
+    }
+
+    public void setNoticationShort(PlayerID player, Collection<Unit> killed, Map<Unit, Collection<Unit>> dependents)
+    {
+    	m_killed.removeAll();
+
+        if (!killed.isEmpty())
+        {
+            m_killed.add(new JLabel("Killed"));
+        }
+        
+        Iterator killedIter = UnitSeperator.categorize(killed, dependents, false, false).iterator();
+        categorizeUnits(killedIter, false, false);
 
         invalidate();
         validate();
