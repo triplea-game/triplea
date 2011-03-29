@@ -859,7 +859,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             	steps.add(m_defender.getName() + SELECT_CASUALTIES_SUICIDE);
             }
             
-            if (Match.someMatch(m_defendingUnits, Matches.UnitIsSuicide))
+            if (Match.someMatch(m_defendingUnits, Matches.UnitIsSuicide) && !isDefendingSuicideAndMunitionUnitsDoNotFire())
             {
             	steps.add(SUICIDE_DEFEND);
             	steps.add(m_attacker.getName() + SELECT_CASUALTIES_SUICIDE);
@@ -2271,13 +2271,22 @@ public class MustFightBattle implements Battle, BattleStepStrings
      */
     private void checkSuicideUnits(IDelegateBridge bridge)
     {
-		remove(Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsSuicide), bridge, m_battleSite, false);
-    	//and remove them from the battle display
-    	getDisplay(bridge).deadUnitNotification(m_battleID, m_attacker, Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide), m_dependentUnits);
-    	getDisplay(bridge).deadUnitNotification(m_battleID, m_defender, Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide), m_dependentUnits);
-    	//and remove them from the map display
-    	m_defendingUnits.removeAll(Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide));
-    	m_attackingUnits.removeAll(Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide));
+    	if (isDefendingSuicideAndMunitionUnitsDoNotFire())
+    	{
+    		remove(Match.getMatches(m_battleSite.getUnits().getUnits(), new CompositeMatchAnd<Unit>(Matches.UnitIsSuicide, Matches.unitIsOwnedBy(m_attacker))), bridge, m_battleSite, false);
+        	getDisplay(bridge).deadUnitNotification(m_battleID, m_attacker, Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide), m_dependentUnits);
+        	m_attackingUnits.removeAll(Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide));
+    	}
+    	else
+    	{
+    		remove(Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsSuicide), bridge, m_battleSite, false);
+        	//and remove them from the battle display
+        	getDisplay(bridge).deadUnitNotification(m_battleID, m_attacker, Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide), m_dependentUnits);
+        	getDisplay(bridge).deadUnitNotification(m_battleID, m_defender, Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide), m_dependentUnits);
+        	//and remove them from the map display
+        	m_defendingUnits.removeAll(Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide));
+        	m_attackingUnits.removeAll(Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide));
+    	}
     }
     
     /**
@@ -2638,6 +2647,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private void fireSuicideUnitsDefend(IDelegateBridge bridge)
     {
+    	if (isDefendingSuicideAndMunitionUnitsDoNotFire())
+    		return;
+    	
     	//TODO: add a global toggle for returning fire (Veqryn)
     	CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructible, Matches.UnitIsSuicide.invert());
     	Collection<Unit> suicideDefenders = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
@@ -2715,6 +2727,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private boolean isSuicideAndMunitionCasualtiesRestricted()
     {
     	return games.strategy.triplea.Properties.getSuicideAndMunitionCasualtiesRestricted(m_data);
+    }
+
+    /**
+     * @return
+     */
+    private boolean isDefendingSuicideAndMunitionUnitsDoNotFire()
+    {
+    	return games.strategy.triplea.Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(m_data);
     }
 
     /**

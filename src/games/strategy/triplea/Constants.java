@@ -201,5 +201,6 @@ public interface Constants
   public static final String GIVE_UNITS_BY_TERRITORY = "Give Units By Territory";
   public static final String UNITS_CAN_BE_DESTROYED_INSTEAD_OF_CAPTURED = "Units Can Be Destroyed Instead Of Captured";
   public static final String SUICIDE_AND_MUNITION_CASUALTIES_RESTRICTED = "Suicide and Munition Casualties Restricted";
+  public static final String DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE = "Defending Suicide and Munition Units Do Not Fire";
   
 }

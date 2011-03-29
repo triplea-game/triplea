@@ -3660,13 +3660,13 @@
 						<boolean/>
 				</property>
 
-				<!-- in order to repair, a unit must in the presence of a unit with "repairsUnits" unit attachment -->
+						<!-- in order to repair, a unit must in the presence of a unit with "repairsUnits" unit attachment -->
 				<property name="Two HitPoint Units Require Repair Facilities" value="false" editable="true">
 						<boolean/>
 				</property>
 
 				<!-- Display Options -->
-					<!-- Multiply PUs will multiply all PUs gained or lost during a turn. It will not yet multiply costs of units or any other costs, or starting PUs -->
+						<!-- Multiply PUs will multiply all PUs gained or lost during a turn. It will not yet multiply costs of units or any other costs, or starting PUs -->
 				<property name="Multiply PUs" value="1" editable="false">
 						<number min="1" max="10"/>
 				</property>
@@ -3778,17 +3778,17 @@
 
 				<!-- specific rules -->
 				<!-- land related -->
-					<!-- if true, units with destroyedWhenCapturedBy will be destroyed instead of captured. only applies to non-combat units, since combat units die in combat -->
+						<!-- if true, units with destroyedWhenCapturedBy will be destroyed instead of captured. only applies to non-combat units, since combat units die in combat -->
 				<property name="Units Can Be Destroyed Instead Of Captured" value ="true" editable="false">
 						<boolean/>
 				</property>
 				
-					<!-- if true you may have a number of constructions up to the value of the territory, in territories with factories -->
+						<!-- if true you may have a number of constructions up to the value of the territory, in territories with factories -->
 				<property name="More Constructions with Factory" value="false" editable="true">
 						<boolean/>
 				</property>
 				
-					<!-- if true you may have a number of constructions up to the value of the territory, in territories without factories -->
+						<!-- if true you may have a number of constructions up to the value of the territory, in territories without factories -->
 				<property name="More Constructions without Factory" value="false" editable="true">
 						<boolean/>
 				</property>
@@ -3826,6 +3826,11 @@
 
 						<!-- if false, (all property default to false), then units killed by suicide units can return fire.  if true, they can not return fire -->
 				<property name="Suicide and Munition Casualties Restricted" value="false" editable="false">
+						<boolean/>
+				</property>
+
+						<!-- if suicide units act like normal units on defense, except that they can not die to attacks by other suicide units -->
+				<property name="Defending Suicide and Munition Units Do Not Fire" value="false" editable="false">
 						<boolean/>
 				</property>
 

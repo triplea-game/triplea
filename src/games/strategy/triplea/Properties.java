@@ -776,6 +776,10 @@ public class Properties implements Constants {
     	return data.getProperties().get(SUICIDE_AND_MUNITION_CASUALTIES_RESTRICTED, false);
     }
     
+    public static boolean getDefendingSuicideAndMunitionUnitsDoNotFire(GameData data) {
+    	return data.getProperties().get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false);
+    }
+    
     private Properties() {
     }
 }

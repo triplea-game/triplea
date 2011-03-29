@@ -1,4 +1,7 @@
 Changes for 1.2.7
+* Created new global property, "Defending Suicide and Munition Units Do Not Fire", which when true will stop defending suicide units from acting like suicide units: dying first round, shooting before everyone else. 
+  So if true, defending suicide units act like normal units, however they still can not be taken casualty to attacks by other suicide units. (veqryn)
+
 * Fixed various matches and places in the code to do with non-combat units, so that they will now also include isInfrastructure. (veqryn)
 
 * Finished work on isSuicide, and also created new game property, "Suicide and Munition Casualties Restricted", which stops casualties from returning fire if true. 
