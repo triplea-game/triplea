@@ -1553,7 +1553,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         final ReturnFire returnFireAgainstAttackingSubs;
         if(!attackingSubsSneakAttack) {
             returnFireAgainstAttackingSubs = ReturnFire.ALL;
-        } else if(defendingSubsSneakAttack) {
+        } else if(defendingSubsSneakAttack || isWW2V2()) {
             returnFireAgainstAttackingSubs = ReturnFire.SUBS;
         } else {
             returnFireAgainstAttackingSubs = ReturnFire.NONE;
@@ -1574,7 +1574,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         final ReturnFire returnFireAgainstDefendingSubs;
         if(!defendingSubsSneakAttack) {
             returnFireAgainstDefendingSubs = ReturnFire.ALL;
-        } else if(attackingSubsSneakAttack) {
+        } else if(attackingSubsSneakAttack || isWW2V2()) {
             returnFireAgainstDefendingSubs = ReturnFire.SUBS;
         } else {
             returnFireAgainstDefendingSubs = ReturnFire.NONE;
@@ -2634,15 +2634,20 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private void fireSuicideUnitsAttack(IDelegateBridge bridge)
     {
     	//TODO: add a global toggle for returning fire (Veqryn)
-    	CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructible, Matches.UnitIsSuicide.invert());
+		CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructible, Matches.UnitIsSuicide.invert());
     	Collection<Unit> suicideAttackers = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
     	Collection<Unit> attackedDefenders = Match.getMatches(m_defendingUnits, attackableUnits);
+    	
+    	//comparatively simple rules for isSuicide units.  if AirAttackSubRestricted and you have no destroyers, you can't attack subs with anything.
+    	if (isAirAttackSubRestricted() && !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer) && Match.someMatch(attackedDefenders, Matches.UnitIsSub))
+    		attackedDefenders.removeAll(Match.getMatches(attackedDefenders, Matches.UnitIsSub));
+    	
+    	if (suicideAttackers.size() == 0 || attackedDefenders.size() == 0)
+    		return;
+    	
     	boolean canReturnFire = (!isSuicideAndMunitionCasualtiesRestricted());
-
-    	if (suicideAttackers.size() > 0)
-        {
-        	fire(m_defender.getName() + SELECT_CASUALTIES_SUICIDE, suicideAttackers, attackedDefenders, false, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge, SUICIDE_ATTACK);
-        }
+    	
+    	fire(m_defender.getName() + SELECT_CASUALTIES_SUICIDE, suicideAttackers, attackedDefenders, false, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge, SUICIDE_ATTACK);
     }
 
     private void fireSuicideUnitsDefend(IDelegateBridge bridge)
@@ -2654,12 +2659,17 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructible, Matches.UnitIsSuicide.invert());
     	Collection<Unit> suicideDefenders = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
     	Collection<Unit> attackedAttackers = Match.getMatches(m_attackingUnits, attackableUnits);
+
+    	//comparatively simple rules for isSuicide units.  if AirAttackSubRestricted and you have no destroyers, you can't attack subs with anything.
+    	if (isAirAttackSubRestricted() && !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer) && Match.someMatch(attackedAttackers, Matches.UnitIsSub))
+    		attackedAttackers.removeAll(Match.getMatches(attackedAttackers, Matches.UnitIsSub));
+    	
+    	if (suicideDefenders.size() == 0 || attackedAttackers.size() == 0)
+    		return;
+    	
     	boolean canReturnFire = (!isSuicideAndMunitionCasualtiesRestricted());
 
-        if (suicideDefenders.size() > 0)
-        {
-        	fire(m_attacker.getName() + SELECT_CASUALTIES_SUICIDE, suicideDefenders, attackedAttackers, true, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge, SUICIDE_DEFEND);
-        }
+    	fire(m_attacker.getName() + SELECT_CASUALTIES_SUICIDE, suicideDefenders, attackedAttackers, true, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge, SUICIDE_DEFEND);
     }
     
    

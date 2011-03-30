@@ -1,4 +1,8 @@
 Changes for 1.2.7
+* Fix for bug 3052260, Ww2v2 revised subs should now roll dice correctly, instead of dying prematurely in cases where the enemy has a destroyer. (veqryn)
+
+* Fixed suicide units combat to take into account subs and destroyers. Follows relatively simple rules compared with normal combat. (veqryn)
+
 * Created new global property, "Defending Suicide and Munition Units Do Not Fire", which when true will stop defending suicide units from acting like suicide units: dying first round, shooting before everyone else. 
   So if true, defending suicide units act like normal units, however they still can not be taken casualty to attacks by other suicide units. (veqryn)
 
