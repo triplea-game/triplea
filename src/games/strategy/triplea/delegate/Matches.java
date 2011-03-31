@@ -560,6 +560,16 @@ public class Matches
         }
     };
 
+    public static final Match<Unit> UnitIsKamikaze = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            Unit unit = (Unit) obj;
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            return ua.getIsKamikaze();
+        }
+    };
+
 
     public static final Match<UnitType> UnitTypeIsAir = new Match<UnitType>()
     {

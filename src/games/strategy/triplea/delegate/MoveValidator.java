@@ -1343,7 +1343,7 @@ public class MoveValidator
             {
                 if(i == -1 || (i==0 && !routeEnd.isWater()) || (i==1 && !anyNeighborsWater))
                 {
-                    if (!allowKamikaze)
+                    if (!allowKamikaze && !Matches.UnitIsKamikaze.match(unit))
                         result.addDisallowedUnit(NOT_ALL_AIR_UNITS_CAN_LAND, unit);
                     break;
                 }
@@ -1364,7 +1364,7 @@ public class MoveValidator
                     carrierCapacity.put(potentialWithNonComMove,carrierCapacity.getInt(potentialWithNonComMove) - carrierCost);
                     break;
                 }
-                if (i==0 && !allowKamikaze)
+                if (i==0 && !allowKamikaze && !Matches.UnitIsKamikaze.match(unit))
                 	result.addDisallowedUnit(NOT_ALL_AIR_UNITS_CAN_LAND, unit);
             }
             
@@ -1479,7 +1479,7 @@ public class MoveValidator
                 //not everything can land on a carrier (i.e. bombers)
                 if(Match.allMatch(Collections.singleton(unit), cantLandMatch))
                 {
-                	if (!allowKamikaze)
+                	if (!allowKamikaze && !Matches.UnitIsKamikaze.match(unit))
                         result.addDisallowedUnit(NOT_ALL_AIR_UNITS_CAN_LAND, unit);
                 }
                 //TODO see if we need an else condition here to do the add to airThatMustLandOnCarriers

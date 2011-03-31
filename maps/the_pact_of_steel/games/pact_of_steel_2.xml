@@ -579,11 +579,13 @@
                 <unit name="artillery"/>
                 <unit name="armour"/>
                 <unit name="fighter"/>
+                <unit name="jp_fighter"/>
                 <unit name="bomber"/>
                 <unit name="air_transport"/>
                 <unit name="transport"/>
                 <unit name="jp_transport"/>
                 <unit name="submarine"/>
+                <unit name="midget_submarine"/>
                 <unit name="destroyer"/>
                 <unit name="jp_destroyer"/>
 				<unit name="cruiser"/>
@@ -737,6 +739,11 @@
                         <result resourceOrUnit="fighter" quantity="1"/>
                 </productionRule>
 
+                <productionRule name="buyJP_Fighter">
+                        <cost resource="PUs" quantity="10" />
+                        <result resourceOrUnit="jp_fighter" quantity="1"/>
+                </productionRule>
+
                 <productionRule name="buyBomber">
                         <cost resource="PUs" quantity="12" />
                         <result resourceOrUnit="bomber" quantity="1"/>
@@ -792,6 +799,11 @@
                         <result resourceOrUnit="submarine" quantity="1"/>
                 </productionRule>
 
+                <productionRule name="BuyMidget_Submarine">
+                        <cost resource="PUs" quantity="4" />
+                        <result resourceOrUnit="midget_submarine" quantity="1"/>
+                </productionRule>
+
                 <productionRule name="buyBunker">
                         <cost resource="PUs" quantity="4" />
                         <result resourceOrUnit="bunker" quantity="1"/>
@@ -837,6 +849,11 @@
                 <productionRule name="buyFighterIndustrialTechnology">
                         <cost resource="PUs" quantity="9" />
                         <result resourceOrUnit="fighter" quantity="1"/>
+                </productionRule>
+
+                <productionRule name="buyJP_FighterIndustrialTechnology">
+                        <cost resource="PUs" quantity="9" />
+                        <result resourceOrUnit="jp_fighter" quantity="1"/>
                 </productionRule>
 
                 <productionRule name="buyBomberIndustrialTechnology">
@@ -892,6 +909,11 @@
                 <productionRule name="buySubmarineIndustrialTechnology">
                         <cost resource="PUs" quantity="5" />
                         <result resourceOrUnit="submarine" quantity="1"/>
+                </productionRule>
+
+                <productionRule name="buyMidget_SubmarineIndustrialTechnology">
+                        <cost resource="PUs" quantity="3" />
+                        <result resourceOrUnit="midget_submarine" quantity="1"/>
                 </productionRule>
 
                 <productionRule name="buyBunkerIndustrialTechnology">
@@ -964,6 +986,11 @@
                 <productionRule name="buySubmarineShipyards">
                         <cost resource="PUs" quantity="5" />
                         <result resourceOrUnit="submarine" quantity="1"/>
+                </productionRule>
+
+                <productionRule name="buyMidget_SubmarineShipyards">
+                        <cost resource="PUs" quantity="3" />
+                        <result resourceOrUnit="midget_submarine" quantity="1"/>
                 </productionRule>
 
                <!-- Repair rules -->
@@ -1186,7 +1213,7 @@
                         <frontierRules name="buyInfantry"/>
                         <frontierRules name="buyArtillery"/>
                         <frontierRules name="buyArmour"/>
-                        <frontierRules name="buyFighter"/>
+                        <frontierRules name="buyJP_Fighter"/>
                         <frontierRules name="buyBomber"/>
                         <frontierRules name="buyJP_Transport"/>
                         <frontierRules name="buySubmarine"/>
@@ -1206,7 +1233,7 @@
                         <frontierRules name="buyInfantry"/>
                         <frontierRules name="buyArtillery"/>
                         <frontierRules name="buyArmour"/>
-                        <frontierRules name="buyFighter"/>
+                        <frontierRules name="buyJP_Fighter"/>
                         <frontierRules name="buyBomber"/>
                         <frontierRules name="buyAir_Transport"/>
                         <frontierRules name="buyJP_Transport"/>
@@ -1227,7 +1254,7 @@
                         <frontierRules name="buyInfantryIndustrialTechnology"/>
                         <frontierRules name="buyArtilleryIndustrialTechnology"/>
                         <frontierRules name="buyArmourIndustrialTechnology"/>
-                        <frontierRules name="buyFighterIndustrialTechnology"/>
+                        <frontierRules name="buyJP_FighterIndustrialTechnology"/>
                         <frontierRules name="buyBomberIndustrialTechnology"/>
                         <frontierRules name="buyJP_TransportIndustrialTechnology"/>
                         <frontierRules name="buySubmarineIndustrialTechnology"/>
@@ -1890,6 +1917,18 @@
                          <option name="maxScrambleDistance" value="1"/>
 						 <!-- isSuicide makes a unit die before combat begins, however they do get to roll -->
 						 <!--<option name="isSuicide" value="true"/>-->
+						 <!-- isKamikaze allows an air unit to use up all of its movement to go to a battle -->
+						 <!--<option name="isKamikaze" value="true"/>-->
+                </attatchment>
+				
+                <attatchment name="unitAttatchment" attatchTo="jp_fighter" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                         <option name="movement" value="4"/>
+                         <option name="carrierCost" value="1"/>
+                         <option name="isAir" value="true"/>
+                         <option name="attack" value="3"/>
+                         <option name="defense" value="4"/>
+						 <option name="canScramble" value="true"/>
+                         <option name="maxScrambleDistance" value="1"/>
                 </attatchment>
 
                 <!-- Bomber -->
@@ -2014,6 +2053,18 @@
                          <option name="attack" value="2"/>
                          <option name="defense" value="1"/>
                          <option name="blockade" value="2"/>
+                </attatchment>
+				
+				<!-- Midget Submarine -->
+                <attatchment name="unitAttatchment" attatchTo="midget_submarine" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+						 <option name="isSub" value="true"/>
+                         <option name="movement" value="2"/>
+                         <option name="isSea" value="true"/>
+                         <option name="attack" value="3"/>
+                         <option name="defense" value="2"/>
+                         <option name="blockade" value="1"/>
+						 <!-- isSuicide makes a unit die before combat begins, however they do get to roll -->
+						 <option name="isSuicide" value="true"/>
                 </attatchment>
 				
                 <!-- Bunker -->
@@ -3047,8 +3098,8 @@
 
                 <attatchment name="triggerAttachmentJapanese3" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentJapanese3"/>
-                	<option name="placement" value="61 Sea Zone:submarine"/>
-                	<option name="uses" value="1"/>
+                	<option name="placement" value="61 Sea Zone:midget_submarine"/>
+                	<option name="uses" value="2"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentJapaneseParatroopers" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -3436,10 +3487,10 @@
                         <unitPlacement unitType="destroyer" territory="40 Sea Zone" quantity="1" owner="British"/>
 
                         <!-- Japanese Unit Placements -->
-                        <unitPlacement unitType="fighter" territory="Manchuria" quantity="1" owner="Japanese"/>
+                        <unitPlacement unitType="jp_fighter" territory="Manchuria" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="infantry" territory="Manchuria" quantity="2" owner="Japanese"/>
                         <unitPlacement unitType="infantry" territory="Kwangtung" quantity="3" owner="Japanese"/>
-                        <unitPlacement unitType="fighter" territory="French Indochina" quantity="1" owner="Japanese"/>
+                        <unitPlacement unitType="jp_fighter" territory="French Indochina" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="infantry" territory="French Indochina" quantity="2" owner="Japanese"/>
                         <unitPlacement unitType="infantry" territory="Solomon Islands" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="infantry" territory="New Guinea" quantity="1" owner="Japanese"/>
@@ -3454,16 +3505,16 @@
                         <unitPlacement unitType="infantry" territory="Japan" quantity="4" owner="Japanese"/>
                         <unitPlacement unitType="artillery" territory="Japan" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="armour" territory="Japan" quantity="1" owner="Japanese"/>
-                        <unitPlacement unitType="fighter" territory="Japan" quantity="1" owner="Japanese"/>
+                        <unitPlacement unitType="jp_fighter" territory="Japan" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="bomber" territory="Japan" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="battleship" territory="37 Sea Zone" quantity="1" owner="Japanese"/>
-                        <unitPlacement unitType="fighter" territory="37 Sea Zone" quantity="2" owner="Japanese"/>
+                        <unitPlacement unitType="jp_fighter" territory="37 Sea Zone" quantity="2" owner="Japanese"/>
                         <unitPlacement unitType="carrier" territory="37 Sea Zone" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="jp_transport" territory="50 Sea Zone" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="jp_transport" territory="60 Sea Zone" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="battleship" territory="60 Sea Zone" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="submarine" territory="61 Sea Zone" quantity="1" owner="Japanese"/>
-                        <unitPlacement unitType="fighter" territory="50 Sea Zone" quantity="1" owner="Japanese"/>
+                        <unitPlacement unitType="jp_fighter" territory="50 Sea Zone" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="cruiser" territory="50 Sea Zone" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="carrier" territory="50 Sea Zone" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="submarine" territory="45 Sea Zone" quantity="1" owner="Japanese"/>
@@ -3648,6 +3699,7 @@
 						<boolean/>
 				</property>
 
+						<!-- Kamikaze will allow all air units on the map to use all their movement to get to a battle -->
 				<property name="Kamikaze Airplanes" value="false" editable="true">
 						<boolean/>
 				</property>
@@ -4027,14 +4079,15 @@
 						<br>1. 4 and 5 Sea Zones are Russian Convoy Zones. If Russia controls it, they get the income from it. If someone else controls it, that player gets no income from it, but they deny the income to Russia. It can not be captured during non-combat phase.
         				<br>2. Sea Zones 5 and 6, are Convoy Routes. They are linked to the land territory of Norway. At least one Convoy Zone must be controlled by the same power that controls the land territory for that power to gain the income from the land territory. 
 								They can not be captured during non-combat phase. If more than 1 route is linked to a single land territory, only 1 route needs to be controlled to get the income from land territory. Routes can have PU values just like convoy zones.
-        				<br>3. Sea Zones 37, 47, 48, 49, 58, are Blockade Zones. Each enemy warship in these zones reduces the income of touching land territories by 1 per warship, 2 per submarine.
+        				<br>3. Sea Zones 37, 47, 48, 49, 58, are Blockade Zones. Each enemy warship in these zones reduces the income of touching land territories by 1 per warship, 2 per normal submarine.
         				<br>4. Air_Transport is an air unit that specializes in dropping off units, costs 11 with 4 movement, and can carry into battle or drop off in a friendly territory: 1 infantry AND 1 other unit like a tank or artillery. Enabled when you get "paratroopers" tech.
 						<br>5. Super_Carrier is a beefed up carrier that can also transport 1 infantry and 1 other land unit like a tank or artillery. It has only 1 hitpoint, just like normal carriers and cruisers.
-						<br>6. Airfield allow fighters to scramble to defend surrounding sea zones, if you turn on "Scramble Rules In Effect".
-						<br>7. Harbour are needed to repair Battleships, if you turn on "Two HitPoint Units Require Repair Facilities".
-						<br>8. Bunkers may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours), but there is a limit of 1 per territory.
-						<br>9. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att, +1 def to subs). Available to Germans after they get superSubs.
-						<br>10. Each nation may only build factories up to 3 total, if a nation controls more than 3 they can not build new factories (they can keep capturing new ones though).
+						<br>6. Midget_Submarine is a Japanese only unit with 3 attack, 2 defence, and 2 movement. If it attacks or defends it will die after shooting (it is a suicide unit). Japan can purchase them after ....
+						<br>7. Airfield allow fighters to scramble to defend surrounding sea zones, if you turn on "Scramble Rules In Effect".
+						<br>8. Harbour are needed to repair Battleships, if you turn on "Two HitPoint Units Require Repair Facilities".
+						<br>9. Bunkers may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours), but there is a limit of 1 per territory.
+						<br>10. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att, +1 def to subs). Available to Germans after they get superSubs.
+						<br>11. Each nation may only build factories up to 3 total, if a nation controls more than 3 they can not build new factories (they can keep capturing new ones though).
         				<br>
         				<br>
         				<br>
@@ -4058,7 +4111,7 @@
 							Sinkiang, Central China, India, Burytia S.S.R.<br>
 						* Japan's transports gain an additional capacity of 1 (allowing 3 infantry or 2 tanks per transport) If at the end of their 3rd, 4th, or 5th turns,
 							Japan controls 3 out of 3 of Australia, India, Sinkiang<br>
-						* Japan gains, only once, an additional submarine in sz61 If it loses control over any of its original territories, or any of its Islands with convoy symbols get blockaded<br>
+						* Japan gains, only twice total (once per round), a single additional midget_submarine in sz61 If it loses control over any of its original territories, or any of its Islands with convoy symbols get blockaded<br>
         				<br>
         				<i>Italy: Mare Nostrum-</i><br>
         				+4 PUs if Axis control 8 out of 11 of

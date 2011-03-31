@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Added new unit attachment, isKamikaze, which will allow an air unit to use up all of its movement to go to a battle, if it wants to. (veqryn)
+
 * Fix for bug 3052260, Ww2v2 revised subs should now roll dice correctly, instead of dying prematurely in cases where the enemy has a destroyer. (veqryn)
 
 * Fixed suicide units combat to take into account subs and destroyers. Follows relatively simple rules compared with normal combat. (veqryn)

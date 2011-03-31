@@ -71,6 +71,7 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isCombatInfrastructure = false;
   private boolean m_canBeDamaged = false;
   private boolean m_isSuicide = false;
+  private boolean m_isKamikaze = false;
   private boolean m_isCombatTransport = false;
   private boolean m_isConstruction = false;
   
@@ -717,6 +718,16 @@ public class UnitAttachment extends DefaultAttachment
     return m_isSuicide;
   }
   
+  public void setIsKamikaze(String s)
+  {
+	  m_isKamikaze = getBool(s);
+  }
+
+  public boolean getIsKamikaze()
+  {
+    return m_isKamikaze;
+  }
+  
   public void setBlockade(String s)
   {
 	  m_blockade = getInt(s);
@@ -773,7 +784,8 @@ public class UnitAttachment extends DefaultAttachment
         m_isInfantry ||
         m_isLandTransport ||
         m_isAirTransportable ||
-        m_isAirTransport
+        m_isAirTransport || 
+        m_isKamikaze
         )
         throw new GameParseException("Invalid Unit Attatchment" + this);
     }
@@ -786,7 +798,8 @@ public class UnitAttachment extends DefaultAttachment
         m_bombard != -1 ||
         m_transportCapacity != -1 ||
         m_isAirTransport || 
-        m_isCombatTransport
+        m_isCombatTransport || 
+        m_isKamikaze
         )
         throw new GameParseException("Invalid Unit Attatchment" + this);
     }
@@ -899,6 +912,7 @@ public class UnitAttachment extends DefaultAttachment
     " combatInfrastructure:" + m_isCombatInfrastructure +
     " canBeDamaged:" + m_canBeDamaged +
     " isSuicide:" + m_isSuicide + 
+    " isKamikaze:" + m_isKamikaze + 
     " combatTransport:" + m_isCombatTransport +
     " construction:" + m_isConstruction +
     

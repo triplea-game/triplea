@@ -319,12 +319,13 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             return errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString();
 
         boolean isKamikaze = false;
+        Collection<Unit> kamikazeUnits = new ArrayList<Unit>();
         //boolean isHariKari = false;
         // confirm kamikaze moves, and remove them from unresolved units
         //if(m_data.getProperties().get(Constants.KAMIKAZE, false))
-        if(games.strategy.triplea.Properties.getKamikaze_Airplanes(m_data))
+        if(games.strategy.triplea.Properties.getKamikaze_Airplanes(m_data) || Match.someMatch(units, Matches.UnitIsKamikaze))
         {
-            Collection<Unit> kamikazeUnits = result.getUnresolvedUnits(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
+            kamikazeUnits = result.getUnresolvedUnits(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
             if (kamikazeUnits.size() > 0 && getRemotePlayer().confirmMoveKamikaze())
             {
                 for (Unit unit : kamikazeUnits) 
@@ -370,7 +371,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         m_bridge.getHistoryWriter().startEvent(transcriptText);
         if(isKamikaze)
         {
-            m_bridge.getHistoryWriter().addChildToEvent("This was a kamikaze move");
+        	m_bridge.getHistoryWriter().addChildToEvent("This was a kamikaze move, for at least some of the units", kamikazeUnits);
         }
         /*if(isHariKari)
         {
