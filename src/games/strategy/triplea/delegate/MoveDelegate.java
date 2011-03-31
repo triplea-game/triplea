@@ -319,19 +319,23 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             return errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString();
 
         boolean isKamikaze = false;
+        boolean getKamikazeAir = games.strategy.triplea.Properties.getKamikaze_Airplanes(m_data);
         Collection<Unit> kamikazeUnits = new ArrayList<Unit>();
         //boolean isHariKari = false;
         // confirm kamikaze moves, and remove them from unresolved units
         //if(m_data.getProperties().get(Constants.KAMIKAZE, false))
-        if(games.strategy.triplea.Properties.getKamikaze_Airplanes(m_data) || Match.someMatch(units, Matches.UnitIsKamikaze))
+        if(getKamikazeAir || Match.someMatch(units, Matches.UnitIsKamikaze))
         {
             kamikazeUnits = result.getUnresolvedUnits(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
             if (kamikazeUnits.size() > 0 && getRemotePlayer().confirmMoveKamikaze())
             {
                 for (Unit unit : kamikazeUnits) 
                 {
-                    result.removeUnresolvedUnit(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND, unit);
-                    isKamikaze = true;
+                	if (getKamikazeAir || Matches.UnitIsKamikaze.match(unit))
+                	{
+                		result.removeUnresolvedUnit(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND, unit);
+                        isKamikaze = true;
+                	}
                 }
             }
         }

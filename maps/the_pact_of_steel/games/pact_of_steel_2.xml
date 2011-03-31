@@ -744,6 +744,11 @@
                         <result resourceOrUnit="jp_fighter" quantity="1"/>
                 </productionRule>
 
+                <productionRule name="buyJP_FighterKamikaze">
+                        <cost resource="PUs" quantity="8" />
+                        <result resourceOrUnit="jp_fighter" quantity="1"/>
+                </productionRule>
+
                 <productionRule name="buyBomber">
                         <cost resource="PUs" quantity="12" />
                         <result resourceOrUnit="bomber" quantity="1"/>
@@ -799,7 +804,7 @@
                         <result resourceOrUnit="submarine" quantity="1"/>
                 </productionRule>
 
-                <productionRule name="BuyMidget_Submarine">
+                <productionRule name="buyMidget_Submarine">
                         <cost resource="PUs" quantity="4" />
                         <result resourceOrUnit="midget_submarine" quantity="1"/>
                 </productionRule>
@@ -1229,6 +1234,48 @@
                         <frontierRules name="buyHarbour"/>
                 </productionFrontier>
 
+                <productionFrontier name="JapaneseMidgetSub_production">
+                        <frontierRules name="buyInfantry"/>
+                        <frontierRules name="buyArtillery"/>
+                        <frontierRules name="buyArmour"/>
+                        <frontierRules name="buyJP_Fighter"/>
+                        <frontierRules name="buyBomber"/>
+                        <frontierRules name="buyJP_Transport"/>
+                        <frontierRules name="buyMidget_Submarine"/>
+                        <frontierRules name="buySubmarine"/>
+                        <frontierRules name="buyJP_Destroyer"/>
+						<frontierRules name="buyCruiser"/>
+                        <frontierRules name="buyCarrier"/>
+                        <frontierRules name="buyBattleship"/>
+                        <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
+                        <frontierRules name="buyAAGun"/>
+                        <frontierRules name="buyFactory"/>
+                        <frontierRules name="buyAirfield"/>
+                        <frontierRules name="buyHarbour"/>
+                </productionFrontier>
+
+                <productionFrontier name="JapaneseKamikaze_production">
+                        <frontierRules name="buyInfantry"/>
+                        <frontierRules name="buyArtillery"/>
+                        <frontierRules name="buyArmour"/>
+                        <frontierRules name="buyJP_FighterKamikaze"/>
+                        <frontierRules name="buyBomber"/>
+                        <frontierRules name="buyJP_Transport"/>
+                        <frontierRules name="buyMidget_Submarine"/>
+                        <frontierRules name="buySubmarine"/>
+                        <frontierRules name="buyJP_Destroyer"/>
+						<frontierRules name="buyCruiser"/>
+                        <frontierRules name="buyCarrier"/>
+                        <frontierRules name="buyBattleship"/>
+                        <frontierRules name="buySuper_Carrier"/>
+                        <frontierRules name="buyBunker"/>
+                        <frontierRules name="buyAAGun"/>
+                        <frontierRules name="buyFactory"/>
+                        <frontierRules name="buyAirfield"/>
+                        <frontierRules name="buyHarbour"/>
+                </productionFrontier>
+
                 <productionFrontier name="JapaneseParatroopers_production">
                         <frontierRules name="buyInfantry"/>
                         <frontierRules name="buyArtillery"/>
@@ -1581,7 +1628,7 @@
 				<playerProduction player="Japanese" frontier="Japanese_production"/>
 				<playerProduction player="British" frontier="British_production"/>
                 <playerProduction player="Italians" frontier="Italians_production"/>
-				<playerProduction player="Chinese" frontier="ChineseAlt1_production"/>
+				<playerProduction player="Chinese" frontier="ChineseAlt2_production"/>
                 <playerProduction player="Americans" frontier="Americans_production"/>
 
                 <playerRepair player="Germans" frontier="repair"/>
@@ -2906,6 +2953,21 @@
                 	<option name="techs" value="paratroopers" count="1"/>
                 </attatchment>
 				
+                <attatchment name="conditionAttachmentJapaneseMidget1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="alliedOwnershipTerritories" value="Okinawa:Philipine Islands" count="2"/>
+                	<option name="invert" value="true"/>
+                </attatchment>
+				
+                <attatchment name="conditionAttachmentJapaneseMidget2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="alliedOwnershipTerritories" value="East Indies:Borneo:New Guinea:Solomon Islands:Caroline Islands:Wake Island" count="6"/>
+                	<option name="invert" value="true"/>
+                </attatchment>
+				
+                <attatchment name="conditionAttachmentJapaneseKamikaze" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="alliedOwnershipTerritories" value="Okinawa:Philipine Islands" count="1"/>
+                	<option name="invert" value="true"/>
+                </attatchment>
+				
 	<!-- Italians Conditions -->
                 <attatchment name="conditionAttachmentItalians1" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="turns" value="3:4"/>
@@ -3099,12 +3161,36 @@
                 <attatchment name="triggerAttachmentJapanese3" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentJapanese3"/>
                 	<option name="placement" value="61 Sea Zone:midget_submarine"/>
-                	<option name="uses" value="2"/>
+                	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentJapaneseParatroopers" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentJapaneseParatroopers"/>
 					<option name="frontier" value="JapaneseParatroopers_production"/>
+                	<option name="uses" value="1"/>
+                </attatchment>
+
+                <attatchment name="triggerAttachmentJapaneseMidgetSub" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentJapaneseMidget1:conditionAttachmentJapaneseMidget2"/>
+					<option name="frontier" value="JapaneseMidgetSub_production"/>
+                	<option name="uses" value="1"/>
+                </attatchment>
+
+                <attatchment name="triggerAttachmentJapaneseKamikaze1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentJapaneseKamikaze"/>
+					<option name="frontier" value="JapaneseKamikaze_production"/>
+                	<option name="uses" value="1"/>
+                </attatchment>
+
+                <attatchment name="triggerAttachmentJapaneseKamikaze2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentJapaneseKamikaze"/>
+			    	<option name="unitType" value="jp_fighter"/>
+					<option name="unitProperty" value="attack" count="5"/>
+					<option name="unitProperty" value="defense" count="3"/>
+					<option name="unitProperty" value="movement" count="3"/>
+					<option name="unitProperty" value="isSuicide" count="true"/>
+					<option name="unitProperty" value="isKamikaze" count="true"/>
+                	<option name="uses" value="1"/>
                 </attatchment>
 				
 	<!-- Italians Triggers -->
@@ -3340,11 +3426,11 @@
                         <territoryOwner territory="Okinawa" owner="Japanese"/>
                         <territoryOwner territory="Wake Island" owner="Japanese"/>
 					
-                        <territoryOwner territory="37 Sea Zone" owner="Japanese"/>
+                        <!--<territoryOwner territory="37 Sea Zone" owner="Japanese"/>
                         <territoryOwner territory="47 Sea Zone" owner="Japanese"/>
                         <territoryOwner territory="48 Sea Zone" owner="Japanese"/>
                         <territoryOwner territory="49 Sea Zone" owner="Japanese"/>
-                        <territoryOwner territory="58 Sea Zone" owner="Japanese"/>
+                        <territoryOwner territory="58 Sea Zone" owner="Japanese"/>-->
 
                         <!-- American Owned Territories -->
                         <territoryOwner territory="Western United States" owner="Americans"/>
@@ -4082,12 +4168,13 @@
         				<br>3. Sea Zones 37, 47, 48, 49, 58, are Blockade Zones. Each enemy warship in these zones reduces the income of touching land territories by 1 per warship, 2 per normal submarine.
         				<br>4. Air_Transport is an air unit that specializes in dropping off units, costs 11 with 4 movement, and can carry into battle or drop off in a friendly territory: 1 infantry AND 1 other unit like a tank or artillery. Enabled when you get "paratroopers" tech.
 						<br>5. Super_Carrier is a beefed up carrier that can also transport 1 infantry and 1 other land unit like a tank or artillery. It has only 1 hitpoint, just like normal carriers and cruisers.
-						<br>6. Midget_Submarine is a Japanese only unit with 3 attack, 2 defence, and 2 movement. If it attacks or defends it will die after shooting (it is a suicide unit). Japan can purchase them after ....
-						<br>7. Airfield allow fighters to scramble to defend surrounding sea zones, if you turn on "Scramble Rules In Effect".
-						<br>8. Harbour are needed to repair Battleships, if you turn on "Two HitPoint Units Require Repair Facilities".
-						<br>9. Bunkers may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours), but there is a limit of 1 per territory.
-						<br>10. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att, +1 def to subs). Available to Germans after they get superSubs.
-						<br>11. Each nation may only build factories up to 3 total, if a nation controls more than 3 they can not build new factories (they can keep capturing new ones though).
+						<br>6. Midget_Submarine is a Japanese only unit with 3 attack, 2 defence, and 2 movement (costs 4). If it attacks or defends it will die after shooting (it is a suicide unit). Japan can purchase them after certain conditions are met.
+						<br>7. Kamikaze Fighters are what Japanese fighters turn into if certain conditions are met.  They have 5 attack, 3 defense, and 3 movement (cost 8), and they are allowed to use up all their movement to go to a battle, and they will die after rolling their dice.
+						<br>8. Airfield allow fighters to scramble to defend surrounding sea zones, if you turn on "Scramble Rules In Effect".
+						<br>9. Harbour are needed to repair Battleships, if you turn on "Two HitPoint Units Require Repair Facilities".
+						<br>10. Bunkers may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours), but there is a limit of 1 per territory.
+						<br>11. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att, +1 def to subs). Available to Germans after they get superSubs.
+						<br>12. Each nation may only build factories up to 3 total, if a nation controls more than 3 they can not build new factories (they can keep capturing new ones though).
         				<br>
         				<br>
         				<br>
@@ -4111,7 +4198,11 @@
 							Sinkiang, Central China, India, Burytia S.S.R.<br>
 						* Japan's transports gain an additional capacity of 1 (allowing 3 infantry or 2 tanks per transport) If at the end of their 3rd, 4th, or 5th turns,
 							Japan controls 3 out of 3 of Australia, India, Sinkiang<br>
-						* Japan gains, only twice total (once per round), a single additional midget_submarine in sz61 If it loses control over any of its original territories, or any of its Islands with convoy symbols get blockaded<br>
+						* Japan gains, only once, a single additional midget_submarine in sz61 If it loses control over any of its original territories<br>
+						* Japan gains the ability to produce midget_submarines If it loses control over 1 of Okinawa, Philipine Islands, 
+							AND also loses control over 1 of East Indies, Borneo, New Guinea, Solomon Islands, Caroline Islands, Wake Island<br>
+						* Japan gains the ability to produce kamikaze fighters, and all their current fighters turn into kamikaze fighters 
+							If it loses control over 2 out of 2 of Okinawa, Philipine Islands<br>
         				<br>
         				<i>Italy: Mare Nostrum-</i><br>
         				+4 PUs if Axis control 8 out of 11 of

@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Updates to Pact of Steel 2, so that Japanese make use of isKamikaze and isSuicide. (veqryn)
+
 * Added new unit attachment, isKamikaze, which will allow an air unit to use up all of its movement to go to a battle, if it wants to. (veqryn)
 
 * Fix for bug 3052260, Ww2v2 revised subs should now roll dice correctly, instead of dying prematurely in cases where the enemy has a destroyer. (veqryn)
