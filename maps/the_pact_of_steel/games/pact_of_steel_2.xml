@@ -820,12 +820,12 @@
                 </productionRule>
 
                 <productionRule name="buyAirfield">
-                        <cost resource="PUs" quantity="15" />
+                        <cost resource="PUs" quantity="12" />
                         <result resourceOrUnit="airfield" quantity="1"/>
                 </productionRule>
 
                 <productionRule name="buyHarbour">
-                        <cost resource="PUs" quantity="15" />
+                        <cost resource="PUs" quantity="12" />
                         <result resourceOrUnit="harbour" quantity="1"/>
                 </productionRule>
 
@@ -932,12 +932,12 @@
                 </productionRule>
 
                 <productionRule name="buyAirfieldIndustrialTechnology">
-                        <cost resource="PUs" quantity="13" />
+                        <cost resource="PUs" quantity="10" />
                         <result resourceOrUnit="airfield" quantity="1"/>
                 </productionRule>
 
                 <productionRule name="buyHarbourIndustrialTechnology">
-                        <cost resource="PUs" quantity="13" />
+                        <cost resource="PUs" quantity="10" />
                         <result resourceOrUnit="harbour" quantity="1"/>
                 </productionRule>
 
@@ -2154,6 +2154,11 @@
 						 <!-- destroyedWhenCapturedBy is a list of the players who destroy this non-combat unit instead of capturing it.  all non-combat units are normally captured by default 
 								is a colon delimited list. example: value="Chinese:Russians" -->
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
+						 <!-- givesMovement allows a unit to give movement to other units.  must be an integer, followed by a colon ":", followed by the name of the unit -->
+						 <option name="givesMovement" value="1:fighter"/>
+						 <option name="givesMovement" value="1:jp_fighter"/>
+						 <option name="givesMovement" value="1:bomber"/>
+						 <option name="givesMovement" value="1:air_transport"/>
                 </attatchment>
 				
 				<!-- Harbour -->
@@ -2170,6 +2175,16 @@
 						 <option name="constructionsPerTerrPerTypePerTurn" value="1"/>
 						 <option name="maxConstructionsPerTypePerTerr" value="1"/>
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
+						 <option name="givesMovement" value="1:transport"/>
+						 <option name="givesMovement" value="1:jp_transport"/>
+						 <option name="givesMovement" value="1:submarine"/>
+						 <!--<option name="givesMovement" value="1:midget_submarine"/>-->
+						 <option name="givesMovement" value="1:destroyer"/>
+						 <option name="givesMovement" value="1:jp_destroyer"/>
+						 <option name="givesMovement" value="1:cruiser"/>
+						 <option name="givesMovement" value="1:carrier"/>
+						 <option name="givesMovement" value="1:battleship"/>
+						 <option name="givesMovement" value="1:super_carrier"/>
                 </attatchment>
 				
                 <!-- Factory -->
@@ -3874,7 +3889,7 @@
 				</property>
 
 						<!-- Pacific Theater does 4 things: allows nations to gain VictoryPoints by capturing PUs, allows Strategic Bombing to destroy VPs,
-				allows NoPU purchases (ww2v3 does also), and allows an additional purchase in NOPU purchases if you control the Burma Road
+								allows NoPU purchases (ww2v3 does also), and allows an additional purchase in NOPU purchases if you control the Burma Road
 				<property name="Pacific Theater" value="false" editable="false">
 						<boolean/>
 				</property>-->
@@ -3972,6 +3987,11 @@
 						<boolean/>
 				</property>
 
+						<!-- Units May Give Bonus Movement allows units with givesMovement to give other units bonus movement-->
+				<property name="Units May Give Bonus Movement" value="true" editable="true">
+						<boolean/>
+				</property>
+				
 				<!-- sea related -->
 				<property name="Partial Amphibious Retreat" value="true" editable="false">
 						<boolean/>
@@ -4173,10 +4193,10 @@
         				<br>3. Sea Zones 37, 47, 48, 49, 58, are Blockade Zones. Each enemy warship in these zones reduces the income of touching land territories by 1 per warship, 2 per normal submarine.
         				<br>4. Air_Transport is an air unit that specializes in dropping off units, costs 11 with 4 movement, and can carry into battle or drop off in a friendly territory: 1 infantry AND 1 other unit like a tank or artillery. Enabled when you get "paratroopers" tech.
 						<br>5. Super_Carrier is a beefed up carrier that can also transport 1 infantry and 1 other land unit like a tank or artillery. It has only 1 hitpoint, just like normal carriers and cruisers.
-						<br>6. Midget_Submarine is a Japanese only unit with 3 attack, 2 defence, and 2 movement (costs 4). If it attacks or defends it will die after shooting (it is a suicide unit). Japan can purchase them after certain conditions are met.
+						<br>6. Midget_Submarine is a Japanese only unit with 3 attack, 2 defence, and 2 movement (costs 4). If it attacks or defends it will die after shooting (it is a suicide unit). Japan can purchase them after certain conditions are met. They do not receive any movement bonus from Harbours.
 						<br>7. Kamikaze Fighters are what Japanese fighters turn into if certain conditions are met.  They have 5 attack, 3 defense, and 3 movement (cost 8), and they are allowed to use up all their movement to go to a battle, and they will die after rolling their dice.
-						<br>8. Airfield allow fighters to scramble to defend surrounding sea zones, if you turn on "Scramble Rules In Effect".
-						<br>9. Harbour are needed to repair Battleships, if you turn on "Two HitPoint Units Require Repair Facilities".
+						<br>8. Airfield gives +1 movement to air units, and allows fighters to scramble to defend surrounding sea zones, if you turn on "Scramble Rules In Effect".
+						<br>9. Harbour gives +1 movement to naval units, and are needed to repair Battleships, if you turn on "Two HitPoint Units Require Repair Facilities".
 						<br>10. Bunkers may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours), but there is a limit of 1 per territory.
 						<br>11. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att, +1 def to subs). Available to Germans after they get superSubs.
 						<br>12. Each nation may only build factories up to 3 total, if a nation controls more than 3 they can not build new factories (they can keep capturing new ones though).
@@ -4333,7 +4353,8 @@
 						<br>Credits for original POS:
 						<br>Triplelk, DMA02, Iron Cross, Aibrahim, SGB, KC1189, Zero Pilot, Tactics, Underdog
 						<br>A mod by Veqryn
-						<br>And a personal thank you to Squid Daddy and ComradeKev for coding many of the new features that this map shows off
+						<br>Many of the new properties and options were coded by Veqryn.
+						<br>A personal thank you to Squid Daddy and ComradeKev for coding some of the new features that this map shows off
 						<br>Relief Tiles by Conarymor.
 						<br>Only actual unit changes: some destroyers turned into cruisers, and a German destroyer added to sz5.
 						<br>The AIs are meant to be bad at this map, please don't tell me the AIs are bad at this map.

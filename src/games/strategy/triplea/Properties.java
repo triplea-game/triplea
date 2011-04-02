@@ -784,6 +784,10 @@ public class Properties implements Constants {
     	return data.getProperties().get(NAVAL_UNITS_MAY_NOT_NONCOMBAT_MOVE_INTO_CONTROLLED_SEA_ZONES, false);
     }
     
+    public static boolean getUnitsMayGiveBonusMovement(GameData data) {
+    	return data.getProperties().get(UNITS_MAY_GIVE_BONUS_MOVEMENT, false);
+    }
+    
     private Properties() {
     }
 }

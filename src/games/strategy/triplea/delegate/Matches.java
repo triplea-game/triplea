@@ -1970,6 +1970,7 @@ public class Matches
             {
                 UnitType type = (UnitType) unitCanRepair.getUnitType();
                 UnitAttachment ua = UnitAttachment.get(type);
+                //TODO: make sure the unit is operational
                 
                 if (ua.getRepairsUnits() != null && ua.getListedUnits(ua.getRepairsUnits()).contains(damagedUnit.getType()))
                 	return true;
@@ -1981,7 +1982,7 @@ public class Matches
 
     /**
      * This will return true if the territory contains a unit that can repair this unit.  
-     * This will alse return true if this unit is Sea and an adjacent land territory has a land unit that can repair this unit.
+     * This will also return true if this unit is Sea and an adjacent land territory has a land unit that can repair this unit.
      */
     public static Match<Unit> UnitCanBeRepairedByFacilitiesInItsTerritory(final Territory territory, final PlayerID player, final GameData data)
     {
@@ -2007,6 +2008,68 @@ public class Matches
             		{
             			Territory current = (Territory) iter.next();
             			if (Match.someMatch(current.getUnits().getUnits(), repairUnitLand))
+            				return true;
+            		}
+            	}
+                return false;
+            }
+        };
+    }
+
+    public static final Match<Unit> UnitCanGiveBonusMovement = new Match<Unit>()
+    {
+    	public boolean match(Unit obj)
+    	{
+    		Unit unit = (Unit) obj;
+    		UnitAttachment ua = UnitAttachment.get(unit.getType());
+    		if(ua == null)
+    			return false;
+    		return ua.getGivesMovement().size() > 0;
+    	}
+    };
+
+    public static Match<Unit> UnitCanGiveBonusMovementToThisUnit(final Unit unitWhichWillGetBonus)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unitCanGiveBonusMovement)
+            {
+                UnitType type = (UnitType) unitCanGiveBonusMovement.getUnitType();
+                UnitAttachment ua = UnitAttachment.get(type);
+                //TODO: make sure the unit is operational
+                
+                if (UnitCanGiveBonusMovement.match(unitCanGiveBonusMovement) && ua.getGivesMovement().getInt(unitWhichWillGetBonus.getType()) != 0)
+                	return true;
+                else
+                	return false;
+            }
+        };
+    }
+
+    /**
+     * This will return true if the territory contains a unit that can give bonus movement to this unit.  
+     * This will also return true if this unit is Sea and an adjacent land territory has a land unit that can give bonus movement to this unit.
+     */
+    public static Match<Unit> UnitCanBeGivenBonusMovementByFacilitiesInItsTerritory(final Territory territory, final PlayerID player, final GameData data)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unitWhichWillGetBonus)
+            {
+            	Match<Unit> givesBonusUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), UnitCanGiveBonusMovementToThisUnit(unitWhichWillGetBonus));
+            	
+            	if (Match.someMatch(territory.getUnits().getUnits(), givesBonusUnit))
+            		return true;
+            	
+            	if (Matches.UnitIsSea.match(unitWhichWillGetBonus))
+            	{
+            		Match<Unit> givesBonusUnitLand = new CompositeMatchAnd<Unit>(givesBonusUnit, Matches.UnitIsLand);
+            		List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territory, Matches.TerritoryIsLand));
+            		Iterator iter = neighbors.iterator();
+            		while (iter.hasNext())
+            		{
+            			Territory current = (Territory) iter.next();
+            			if (Match.someMatch(current.getUnits().getUnits(), givesBonusUnitLand))
             				return true;
             		}
             	}

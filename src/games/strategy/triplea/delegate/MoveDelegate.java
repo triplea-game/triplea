@@ -192,7 +192,11 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         
         // repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at beginning of combat move)
         if(!m_nonCombat && games.strategy.triplea.Properties.getBattleships_Repair_At_Beginning_Of_Round(m_data))
-        	repairBattleShips(m_bridge);
+        	repairBattleShips(m_bridge, m_data, m_player);
+        
+        // give movement to units which begin the turn in the same territory as units with giveMovement (like air and naval bases)
+        if (!m_nonCombat && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(m_data))
+        	giveBonusMovement(m_bridge, m_data, m_player);
         
         // placing triggered units at beginning of combat move.
         if(!m_nonCombat && games.strategy.triplea.Properties.getTriggers(m_data))
@@ -206,19 +210,72 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         }
     }
     
-    private void repairBattleShips(IDelegateBridge aBridge)
+    private void giveBonusMovement(IDelegateBridge aBridge, GameData data, PlayerID player)
     {
-       Match<Unit> damagedBattleship = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged, Matches.unitIsOwnedBy(m_player));
+    	CompositeChange change = new CompositeChange();
+    	for(Territory t : data.getMap().getTerritories())
+    	{
+    		for(Unit u : t.getUnits().getUnits())
+    		{
+    			if (Matches.UnitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).match(u))
+    			{
+    				if (!Matches.isUnitAllied(player, data).match(u))
+    					continue;
+    				
+    				int bonusMovement = Integer.MIN_VALUE;
+    				Collection<Unit> givesBonusUnits = new ArrayList<Unit>();
+    				Match<Unit> givesBonusUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), Matches.UnitCanGiveBonusMovementToThisUnit(u));
+                	
+                	givesBonusUnits.addAll(Match.getMatches(t.getUnits().getUnits(), givesBonusUnit));
+                	
+                	if (Matches.UnitIsSea.match(u))
+                	{
+                		Match<Unit> givesBonusUnitLand = new CompositeMatchAnd<Unit>(givesBonusUnit, Matches.UnitIsLand);
+                		List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(t, Matches.TerritoryIsLand));
+                		Iterator iter = neighbors.iterator();
+                		while (iter.hasNext())
+                		{
+                			Territory current = (Territory) iter.next();
+                			givesBonusUnits.addAll(Match.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
+                		}
+                	}
+                	
+                	for (Unit bonusGiver : givesBonusUnits)
+                	{
+                		int tempBonus = UnitAttachment.get(bonusGiver.getType()).getGivesMovement().getInt(u.getType());
+                		if (tempBonus > bonusMovement)
+                			bonusMovement = tempBonus;
+                	}
+                	
+                	if (bonusMovement != Integer.MIN_VALUE)
+                	{
+                		bonusMovement = bonusMovement * -1;
+                		bonusMovement = Math.min(bonusMovement, UnitAttachment.get(u.getType()).getMovement(player));
+                		change.add(ChangeFactory.unitPropertyChange(u,bonusMovement, TripleAUnit.ALREADY_MOVED));
+                	}
+    			}
+    		}
+    	}
+    	if (!change.isEmpty())
+    	{
+    		aBridge.getHistoryWriter().startEvent("Giving bonus movement to units");
+            aBridge.addChange(change);
+    	}
+    }
+    
+    private void repairBattleShips(IDelegateBridge aBridge, GameData data, PlayerID player)
+    {
+       Match<Unit> damagedBattleship = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged, Matches.unitIsOwnedBy(player));
         
        Collection<Unit> damaged = new ArrayList<Unit>();
-       Iterator iter = m_data.getMap().getTerritories().iterator();
+       Iterator iter = data.getMap().getTerritories().iterator();
        while(iter.hasNext())
        {
            Territory current = (Territory) iter.next();
-           if (!games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(m_data))
+           if (!games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(data))
         	   damaged.addAll(current.getUnits().getMatches(damagedBattleship));
            else
-        	   damaged.addAll(current.getUnits().getMatches(new CompositeMatchAnd<Unit>(damagedBattleship, Matches.UnitCanBeRepairedByFacilitiesInItsTerritory(current, m_player, m_data))));
+        	   damaged.addAll(current.getUnits().getMatches(new CompositeMatchAnd<Unit>(damagedBattleship, Matches.UnitCanBeRepairedByFacilitiesInItsTerritory(current, player, data))));
        }
 
        if(damaged.size() == 0)

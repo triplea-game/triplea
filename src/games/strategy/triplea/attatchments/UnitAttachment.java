@@ -30,6 +30,7 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.util.IntegerMap;
 
 
 /**
@@ -121,6 +122,8 @@ public class UnitAttachment extends DefaultAttachment
   
   private Collection<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<PlayerID>();
   private Collection<PlayerID> m_destroyedWhenCapturedBy = new ArrayList<PlayerID>();
+  
+  private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
 
 
   /** Creates new UnitAttatchment */
@@ -737,6 +740,35 @@ public class UnitAttachment extends DefaultAttachment
   {
     return m_blockade;
   }
+
+  public void setGivesMovement(String value)
+  {
+	  String[] s = value.split(":");
+	  if (s.length <= 0 || s.length > 2)
+		  throw new IllegalStateException("Unit Attachments: givesMovement can not be empty or have more than two fields");
+	  
+	  String unitTypeToProduce;
+	  unitTypeToProduce = s[1];
+	  
+	  // validate that this unit exists in the xml
+	  UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
+      if(ut == null)
+          throw new IllegalStateException("Unit Attachments: No unit called:" + unitTypeToProduce);
+      
+      int n = getInt(s[0]);
+      //if(n <= 0)
+      //	throw new IllegalStateException("Unit Attachments: givesMovement must be a positive integer");
+      
+      m_givesMovement.put(ut, n);
+  }
+
+  public IntegerMap<UnitType> getGivesMovement()
+  {
+      return m_givesMovement;
+  }
+  
+  
+  
   
   public String getRawProperty(String property) {
 	  String s = "";
@@ -936,5 +968,4 @@ public class UnitAttachment extends DefaultAttachment
     " attack:" + m_attack +
     " defense:" + m_defense;
   }
-
 }

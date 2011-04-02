@@ -111,7 +111,7 @@ public class RulesAttachment extends DefaultAttachment
     private int m_techCount = -1;
     
     // production per X territories
-    public IntegerMap<UnitType> m_productionPerXTerritories = new IntegerMap<UnitType>();
+    private IntegerMap<UnitType> m_productionPerXTerritories = new IntegerMap<UnitType>();
     
     private Set<PlayerID> m_atWarPlayers = null;
  // using map as tuple set, describes ranges from Integer-Integer

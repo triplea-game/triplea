@@ -1,4 +1,8 @@
 Changes for 1.2.7
+* Added new unit attachment, <option name="givesMovement" value="1:fighter"/>, and global property, "Units May Give Bonus Movement", which allow units to give movement to other units. (veqryn)
+
+* Fixed edit mode to allow changing ownership of sea territories, so long as it is not un-owned. (veqryn)
+
 * Fixed convoy zone movement validation, and created new global property to manage it: "Naval Units May Not NonCombat Move Into Controlled Sea Zones". Previously was disallowing moves into convoy zones during non-combat, and was marking transported land units as having been in battle. (veqryn)
 
 * Updates to Pact of Steel 2, so that Japanese make use of isKamikaze and isSuicide. (veqryn)

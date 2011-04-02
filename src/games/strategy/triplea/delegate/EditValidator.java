@@ -68,7 +68,7 @@ public class EditValidator
     {
         String result = null;
 
-        if (Matches.TerritoryIsWater.match(territory))
+        if (Matches.TerritoryIsWater.match(territory) && territory.getOwner().equals(PlayerID.NULL_PLAYERID))
             return "Territory is water";
 
         if ((result = validateTerritoryBasic(data, territory, player)) != null)
