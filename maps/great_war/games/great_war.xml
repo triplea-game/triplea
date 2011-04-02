@@ -4234,6 +4234,10 @@
                 <property name="Two hit battleship" value="true" editable="true">
                         <boolean/>
                 </property>
+				
+				<property name="Naval Units May Not NonCombat Move Into Controlled Sea Zones" value="true" editable="false">
+						<boolean/>
+				</property>
 
                 <property name="Produce fighters on carriers" value="true" editable="false">
                         <boolean/>

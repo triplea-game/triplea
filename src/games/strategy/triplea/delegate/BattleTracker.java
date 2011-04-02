@@ -694,6 +694,10 @@ public class BattleTracker implements java.io.Serializable
         }
 
         //say they were in combat
+        //if the territory being taken over is water, then do not say any land units were in combat (they may want to unload from the transport and attack)
+        if (Matches.TerritoryIsWater.match(territory))
+        	arrivingUnits.removeAll(Match.getMatches(arrivingUnits, Matches.UnitIsLand));
+        
         markWasInCombat(arrivingUnits, bridge, changeTracker);
     }
 

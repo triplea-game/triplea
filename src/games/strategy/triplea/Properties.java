@@ -780,6 +780,10 @@ public class Properties implements Constants {
     	return data.getProperties().get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false);
     }
     
+    public static boolean getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(GameData data) {
+    	return data.getProperties().get(NAVAL_UNITS_MAY_NOT_NONCOMBAT_MOVE_INTO_CONTROLLED_SEA_ZONES, false);
+    }
+    
     private Properties() {
     }
 }

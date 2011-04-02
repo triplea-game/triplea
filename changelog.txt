@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Fixed convoy zone movement validation, and created new global property to manage it: "Naval Units May Not NonCombat Move Into Controlled Sea Zones". Previously was disallowing moves into convoy zones during non-combat, and was marking transported land units as having been in battle. (veqryn)
+
 * Updates to Pact of Steel 2, so that Japanese make use of isKamikaze and isSuicide. (veqryn)
 
 * Added new unit attachment, isKamikaze, which will allow an air unit to use up all of its movement to go to a battle, if it wants to. (veqryn)

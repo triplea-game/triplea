@@ -71,6 +71,7 @@ public class MoveValidator
     public static final String TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO = "Transport has already unloaded units to ";
     public static final String CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND = "Cannot load and unload an allied transport in the same round";
     public static final String CANT_MOVE_THROUGH_IMPASSIBLE = "Can't move through impassible territories";
+    public static final String CANT_MOVE_THROUGH_RESTRICTED = "Can't move through restricted territories";
     public static final String TOO_POOR_TO_VIOLATE_NEUTRALITY = "Not enough money to pay for violating neutrality";
     public static final String CANNOT_VIOLATE_NEUTRALITY = "Cannot violate neutrality";
     public static final String NOT_ALL_AIR_UNITS_CAN_LAND = "Not all air units can land";
@@ -916,8 +917,8 @@ public class MoveValidator
         //make sure no conquered territories on route
         if (MoveValidator.hasConqueredNonBlitzedOnRoute(route, data))
         {
-        	//unless we are all air or we are in non combat
-        	if (!Match.allMatch(units, Matches.UnitIsAir))
+        	//unless we are all air or we are in non combat OR the route is water (was a bug in convoy zone movement)
+        	if (!Match.allMatch(units, Matches.UnitIsAir) && !(route.allMatch(Matches.TerritoryIsWater)))
         		return result.setErrorReturnResult("Cannot move through newly captured territories");
         }
 
@@ -941,6 +942,9 @@ public class MoveValidator
 
         if (route.someMatch(Matches.TerritoryIsImpassable))
             return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSIBLE);
+        
+        if (!route.someMatch(Matches.TerritoryIsPassableAndNotRestricted(player)))
+        	return result.setErrorReturnResult(CANT_MOVE_THROUGH_RESTRICTED);
 
         CompositeMatch<Territory> battle = new CompositeMatchOr<Territory>();
         battle.add(Matches.TerritoryIsNeutral);
@@ -948,14 +952,19 @@ public class MoveValidator
         CompositeMatch<Unit> transportsCanNotControl = new CompositeMatchAnd<Unit>();
         transportsCanNotControl.add(Matches.UnitIsTransportAndNotDestroyer);
         transportsCanNotControl.add(Matches.UnitIsTransportButNotCombatTransport);
-//TODO need to account for subs AND transports that are ignored, not just OR
+        
+        boolean navalMayNotNonComIntoControlled = isWW2V2(data) || games.strategy.triplea.Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
+        
+        //TODO need to account for subs AND transports that are ignored, not just OR
         if (battle.match(route.getEnd()))
         {
         	//If subs and transports can't control sea zones, it's OK to move there
-        	if(isSubControlSeaZoneRestricted(data) && Match.allMatch(units, Matches.UnitIsSub))
+        	if(!navalMayNotNonComIntoControlled && isSubControlSeaZoneRestricted(data) && Match.allMatch(units, Matches.UnitIsSub))
         		return result;
-        	else if(!isTransportControlSeaZone(data) && Match.allMatch(units, transportsCanNotControl))
+        	else if(!navalMayNotNonComIntoControlled && !isTransportControlSeaZone(data) && Match.allMatch(units, transportsCanNotControl))
         		return result;
+        	else if(!navalMayNotNonComIntoControlled && route.allMatch(Matches.TerritoryIsWater) && MoveValidator.onlyAlliedUnitsOnPath(route, player, data) && !Matches.territoryHasEnemyUnits(player, data).match(route.getEnd()))
+        		return result; // fixes a bug in convoy zone movement
         	else
         		return result.setErrorReturnResult("Cannot advance units to battle in non combat");
         }
@@ -992,7 +1001,10 @@ public class MoveValidator
         {
             CompositeMatch<Territory> neutralOrEnemy = new CompositeMatchOr<Territory>(Matches.TerritoryIsNeutral, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
             if (route.someMatch(neutralOrEnemy))
-                return result.setErrorReturnResult("Cannot move units to neutral or enemy territories in non combat");
+            {
+            	if (!(!navalMayNotNonComIntoControlled && route.allMatch(Matches.TerritoryIsWater) && MoveValidator.onlyAlliedUnitsOnPath(route, player, data) && !Matches.territoryHasEnemyUnits(player, data).match(route.getEnd())))
+            		return result.setErrorReturnResult("Cannot move units to neutral or enemy territories in non combat");
+            }
         }
         return result;
     }

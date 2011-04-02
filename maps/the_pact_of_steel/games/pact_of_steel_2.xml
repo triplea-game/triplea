@@ -4050,6 +4050,11 @@
 				<property name="Sub Control Sea Zone Restricted" value="false" editable="false">
 						<boolean/>
 				</property>
+				
+						<!-- if true, naval units may not move into convoy zones or controlled sea zones during non-combat moves -->
+				<property name="Naval Units May Not NonCombat Move Into Controlled Sea Zones" value="false" editable="false">
+						<boolean/>
+				</property>
 
 						<!-- allows sea zones containing mixed allied+enemy units to attack each other without having to move out then back in again -->
 				<property name="Previous Units Fight" value="true" editable="false">
