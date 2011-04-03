@@ -115,6 +115,9 @@ public class UnitAttachment extends DefaultAttachment
   private int m_unitSupportCount = -1;
   private int m_blockade = 0;
   
+  private int m_bombingMaxDieSides = -1;
+  private int m_bombingBonus = -1;
+  
 
   private int m_movement = 0;
   private int m_attack = 0;
@@ -767,6 +770,25 @@ public class UnitAttachment extends DefaultAttachment
       return m_givesMovement;
   }
   
+  public void setBombingBonus(String s)
+  {
+	  m_bombingBonus = getInt(s);
+  }
+
+  public int getBombingBonus()
+  {
+    return m_bombingBonus;
+  }
+  
+  public void setBombingMaxDieSides(String s)
+  {
+	  m_bombingMaxDieSides = getInt(s);
+  }
+
+  public int getBombingMaxDieSides()
+  {
+    return m_bombingMaxDieSides;
+  }
   
   
   
@@ -846,6 +868,13 @@ public class UnitAttachment extends DefaultAttachment
       throw new GameParseException("Invalid Unit Attatchment" + this);
     }
 
+    if(((m_bombingBonus >= 0 || m_bombingMaxDieSides >= 0) && !(m_isStrategicBomber || m_isAA))
+    		|| (m_bombingBonus < -1 || m_bombingMaxDieSides < -1)
+    		|| (m_bombingBonus > 10000 || m_bombingMaxDieSides > 200))
+    {
+      throw new GameParseException("Invalid Unit Attatchment" + this);
+    }
+
     if(m_maxBuiltPerPlayer < -1)
     {
       throw new GameParseException("Invalid Unit Attatchment" + this);
@@ -921,51 +950,53 @@ public class UnitAttachment extends DefaultAttachment
   public String toString()
   {
     return
-    " air:" + m_isAir +
-    " sea:" + m_isSea +
-    " aa:" + m_isAA +
-    " factory:" + m_isFactory +
-    " blitz:" + m_canBlitz +
-    " airTransport:" + m_isAirTransport +
-    " airTransportable:" + m_isAirTransportable +
-    " sub:" + m_isSub +
-    " canBombard:" + m_canBombard +
-    " strategicBomber:" + m_isStrategicBomber +
-    " twoHit:" + m_isTwoHit +
-    " destroyer:" + m_isDestroyer +
-    " artillery:" + m_isArtillery +
-    " artillerySupportable:" + m_isArtillerySupportable +
-    " marine:" + m_isMarine +
-    " infantry:" + m_isInfantry +
-    " landTransport:" + m_isLandTransport +
-    " canScramble:" + m_canScramble +
-    " airBase:" + m_isAirBase +
-    " infrastructure:" + m_isInfrastructure +
-    " combatInfrastructure:" + m_isCombatInfrastructure +
-    " canBeDamaged:" + m_canBeDamaged +
-    " isSuicide:" + m_isSuicide + 
-    " isKamikaze:" + m_isKamikaze + 
-    " combatTransport:" + m_isCombatTransport +
-    " construction:" + m_isConstruction +
+    "  air:" + m_isAir +
+    "  sea:" + m_isSea +
+    "  aa:" + m_isAA +
+    "  factory:" + m_isFactory +
+    "  blitz:" + m_canBlitz +
+    "  airTransport:" + m_isAirTransport +
+    "  airTransportable:" + m_isAirTransportable +
+    "  sub:" + m_isSub +
+    "  canBombard:" + m_canBombard +
+    "  strategicBomber:" + m_isStrategicBomber +
+    "  twoHit:" + m_isTwoHit +
+    "  destroyer:" + m_isDestroyer +
+    "  artillery:" + m_isArtillery +
+    "  artillerySupportable:" + m_isArtillerySupportable +
+    "  marine:" + m_isMarine +
+    "  infantry:" + m_isInfantry +
+    "  landTransport:" + m_isLandTransport +
+    "  canScramble:" + m_canScramble +
+    "  airBase:" + m_isAirBase +
+    "  infrastructure:" + m_isInfrastructure +
+    "  combatInfrastructure:" + m_isCombatInfrastructure +
+    "  canBeDamaged:" + m_canBeDamaged +
+    "  isSuicide:" + m_isSuicide + 
+    "  isKamikaze:" + m_isKamikaze + 
+    "  combatTransport:" + m_isCombatTransport +
+    "  construction:" + m_isConstruction +
     
-    " constructionType:" + m_constructionType +
+    "  constructionType:" + m_constructionType +
     
-    " constructionsPerTerrPerType:" + m_constructionsPerTerrPerTypePerTurn +
-    " maxConstructionsPerType:" + m_maxConstructionsPerTypePerTerr +
-    " maxScrambleDistance:" + m_maxScrambleDistance +
-    " maxOperationalDamage:" + m_maxOperationalDamage +
-    " maxDamage:" + m_maxDamage +
-    " unitDamage:" + m_unitDamage +
-    " transportCapacity:" + m_transportCapacity +
-    " transportCost:" + m_transportCost +
-    " carrierCapacity:" + m_carrierCapacity +
-    " carrierCost:" + m_carrierCost +
-    " maxBuiltPerPlayer:" + m_maxBuiltPerPlayer + 
-    " bombard:" + m_bombard +
-    " unitSupportCount:" + m_unitSupportCount +
-    " blockade:" + m_blockade +
-    " movement:" + m_movement +
-    " attack:" + m_attack +
-    " defense:" + m_defense;
+    "  constructionsPerTerrPerType:" + m_constructionsPerTerrPerTypePerTurn +
+    "  maxConstructionsPerType:" + m_maxConstructionsPerTypePerTerr +
+    "  maxScrambleDistance:" + m_maxScrambleDistance +
+    "  maxOperationalDamage:" + m_maxOperationalDamage +
+    "  maxDamage:" + m_maxDamage +
+    "  unitDamage:" + m_unitDamage +
+    "  transportCapacity:" + m_transportCapacity +
+    "  transportCost:" + m_transportCost +
+    "  carrierCapacity:" + m_carrierCapacity +
+    "  carrierCost:" + m_carrierCost +
+    "  maxBuiltPerPlayer:" + m_maxBuiltPerPlayer + 
+    "  bombard:" + m_bombard +
+    "  unitSupportCount:" + m_unitSupportCount +
+    "  blockade:" + m_blockade +
+    "  m_bombingMaxDieSides:" + m_bombingMaxDieSides + 
+    "  m_bombingBonus:" + m_bombingBonus + 
+    "  movement:" + m_movement +
+    "  attack:" + m_attack +
+    "  defense:" + m_defense;
   }
 }

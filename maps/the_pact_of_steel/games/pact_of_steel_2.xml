@@ -1989,6 +1989,11 @@
 						 <!-- transportCapacity + isAirTransport can be used for transporting units IF you have the paratroopers technology -->
                          <option name="transportCapacity" value="2"/>
                          <option name="isAirTransport" value="true"/>
+						 <!-- bombingMaxDieSides is the max dice sides for a strategic bombing or rocket attack.  if you want to lower the luck involved, use bombing bonus and lower the max dice sides.
+								example: if you want to have either a 3 or 4 rolled, then set maxDieSides to 2, and the Bonus to 2.  this means you will roll a 2 sided die (results are either "1" or "2") and add "2" to the result (so you get "3" or "4") -->
+                         <option name="bombingMaxDieSides" value="2"/>
+						 <!-- bombingBonus is a number added to the die rolled, to give the total cost [displayed as a new die rolled], for strategic bombing and rockets only -->
+                         <option name="bombingBonus" value="2"/>
                 </attatchment>
 
                 <!-- Air_Transport -->
@@ -2211,6 +2216,8 @@
                          <option name="transportCost" value="3"/>
                          <option name="movement" value="1"/>
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
+						 <option name="bombingMaxDieSides" value="2"/>
+						 <option name="bombingBonus" value="2"/>
                 </attatchment>
 				
 				
@@ -3764,6 +3771,10 @@
 				</property>
 
 				<property name="Low Luck for Technology" value="false" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Low Luck for Bombing and Territory Damage" value="false" editable="true">
 						<boolean/>
 				</property>
 

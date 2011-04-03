@@ -24,12 +24,14 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -220,7 +222,42 @@ public class RocketsFireHelper
         Resource PUs = data.getResourceList().getResource(Constants.PUS);
         //int cost = bridge.getRandom(Constants.MAX_DICE);
 
-        int cost = bridge.getRandom(data.getDiceSides(), "Rocket fired by " + player.getName() + " at " + attacked.getName());
+        int cost = 0;
+        if (!games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(data))
+        	cost = bridge.getRandom(data.getDiceSides(), "Rocket fired by " + player.getName() + " at " + attacked.getName());
+        else
+        {
+            CompositeMatch<Unit> ownedAA = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAA);
+            Collection<Unit> rockets = new ArrayList<Unit>(Match.getMatches(attackFrom.getUnits().getUnits(), ownedAA));
+            int highestMaxDice = 0;
+            int highestBonus = 0;
+    		int diceSides = data.getDiceSides();
+            for (Unit u : rockets)
+            {
+        		UnitAttachment ua = UnitAttachment.get(u.getType());
+        		int maxDice = ua.getBombingMaxDieSides();
+        		int bonus = ua.getBombingBonus();
+        		if (maxDice < 0 && bonus < 0)
+        		{
+        			maxDice = (diceSides+1)/3;
+        			bonus = (diceSides+1)/3;
+        		}
+        		else if (bonus < 0)
+        			bonus = 0;
+        		else if (maxDice < 0)
+        			maxDice = diceSides;
+        		
+        		if ((bonus + (maxDice+1)/2) > (highestBonus + (highestMaxDice+1)/2))
+        		{
+        			highestMaxDice = maxDice;
+        			highestBonus = bonus;
+        		}
+            }
+    		if (highestMaxDice > 0)
+    			cost = bridge.getRandom(highestMaxDice, "Rocket fired by " + player.getName() + " at " + attacked.getName()) + highestBonus;
+    		else
+    			cost = highestBonus;
+        }
 
         //account for 0 base
         cost++;

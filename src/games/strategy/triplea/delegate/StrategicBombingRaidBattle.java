@@ -483,6 +483,7 @@ public class StrategicBombingRaidBattle implements Battle
                 m_dice = null;
                 return;
             }
+            m_dice = new int[rollCount];
     
             boolean isEditMode = EditDelegate.getEditMode(m_data);
             if (isEditMode)
@@ -490,15 +491,40 @@ public class StrategicBombingRaidBattle implements Battle
                 String annotation = m_attacker.getName() + " fixing dice to allocate cost of strategic bombing raid against " + m_defender.getName() + " in "
                         + m_battleSite.getName();
                 ITripleaPlayer attacker = (ITripleaPlayer) bridge.getRemote(m_attacker);
-                m_dice = attacker.selectFixedDice(rollCount, 0, true, annotation, m_data.getDiceSides());
+                m_dice = attacker.selectFixedDice(rollCount, 0, true, annotation, m_data.getDiceSides()); // does not take into account bombers with dice sides higher than getDiceSides
             }
             else
             {
                 String annotation = m_attacker.getName() + " rolling to allocate cost of strategic bombing raid against " + m_defender.getName() + " in "
                         + m_battleSite.getName();
-                m_dice = bridge.getRandom(m_data.getDiceSides(), rollCount, annotation);
+                if (!games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(m_data))
+                	m_dice = bridge.getRandom(m_data.getDiceSides(), rollCount, annotation);
+                else
+                {
+                	int i = 0;
+            		int diceSides = m_data.getDiceSides();
+                	for (Unit u : m_units)
+                	{
+                		UnitAttachment ua = UnitAttachment.get(u.getType());
+                		int maxDice = ua.getBombingMaxDieSides();
+                		int bonus = ua.getBombingBonus();
+                		if (maxDice < 0 && bonus < 0)
+                		{
+                			maxDice = (diceSides+1)/3;
+                			bonus = (diceSides+1)/3;
+                		}
+                		else if (bonus < 0)
+                			bonus = 0;
+                		else if (maxDice < 0)
+                			maxDice = diceSides;
+                		if (maxDice > 0)
+                    		m_dice[i] = bridge.getRandom(maxDice, annotation) + bonus;
+                		else
+                			m_dice[i] = bonus;
+                		i++;
+                	}
+                }
             }
-
         }
         
         private void findCost(IDelegateBridge bridge)
