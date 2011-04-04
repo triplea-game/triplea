@@ -114,7 +114,7 @@ public class BattleCalculator
     			return chooseAACasualties(planes, dice, bridge, attacker, data,
 						battleID, terr);
     		}
-    		return getLowLuckAACasualties(planes, dice, terr.getUnits().someMatch(Matches.UnitIsRadarAA), terr, bridge);
+    		return getLowLuckAACasualties(planes, dice, terr, bridge);
     	} else {
     		//isRollAAIndividually() is the default behavior
         	Boolean rollAAIndividually = isRollAAIndividually(data);
@@ -130,7 +130,7 @@ public class BattleCalculator
 						battleID, terr);
         	}
         	    
-        	return(IndividuallyFiredAACasualties(planes, dice, bridge, defender));
+        	return(IndividuallyFiredAACasualties(planes, dice, terr, bridge));
         }
     }
 
@@ -151,12 +151,10 @@ public class BattleCalculator
 	 *  the second list is all the air units that do not fit in the first list 
 	 *  
 	 */
-	public static Tuple<List<Unit>, List<Unit>> categorizeLowLuckAirUnits(Collection<Unit> units, Territory location, int diceSides) {
+	public static Tuple<List<Unit>, List<Unit>> categorizeLowLuckAirUnits(Collection<Unit> units, Territory location, int diceSides, int groupSize) {
 		
 		List<Unit> airUnits = Match.getMatches(units, Matches.UnitIsAir);
 		Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(airUnits, null, false, true);
-		
-		int groupSize = location.getUnits().someMatch(Matches.UnitIsRadarAA) ? diceSides/2 : diceSides;
 		
 		List<Unit> groupsOfSize = new ArrayList<Unit>();
 		List<Unit> toRoll = new ArrayList<Unit>();
@@ -173,14 +171,18 @@ public class BattleCalculator
 	
     	
     
-    private static Collection<Unit> getLowLuckAACasualties(Collection<Unit> planes, DiceRoll dice, boolean useRadar, Territory location, IDelegateBridge bridge) {
+    private static Collection<Unit> getLowLuckAACasualties(Collection<Unit> planes, DiceRoll dice, Territory location, IDelegateBridge bridge) {
     	
-    	int diceSize = bridge.getPlayerID().getData().getDiceSides();
-    	Tuple<List<Unit>, List<Unit>> airSplit = categorizeLowLuckAirUnits(planes, location, diceSize);
+    	int attackThenDiceSides[] = DiceRoll.getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), bridge.getPlayerID().getData());
+        int highestAttack = attackThenDiceSides[0];
+        int chosenDiceSize = attackThenDiceSides[1];
+        
+    	int groupSize = chosenDiceSize / highestAttack;
+    	
+    	Tuple<List<Unit>, List<Unit>> airSplit = categorizeLowLuckAirUnits(planes, location, chosenDiceSize, groupSize);
     	int hitsLeft = dice.getHits();
     	
     	Collection<Unit> hitUnits = new ArrayList<Unit>();
-    	int groupSize = location.getUnits().someMatch(Matches.UnitIsRadarAA) ? diceSize/2 : diceSize;
     	
         //the non rolling air units
     	for(int i = 0; i < airSplit.getFirst().size(); i+=groupSize) {
@@ -241,20 +243,20 @@ public class BattleCalculator
     /**
      * Choose plane casualties based on individual AA shots at each aircraft.
      */
-    public static Collection<Unit> IndividuallyFiredAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge, PlayerID player)
+    public static Collection<Unit> IndividuallyFiredAACasualties(Collection<Unit> planes, DiceRoll dice, Territory location, IDelegateBridge bridge)
     {
-        Collection<Unit> casualties = new ArrayList<Unit>();
+    	int attackThenDiceSides[] = DiceRoll.getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), bridge.getPlayerID().getData());
+        int highestAttack = attackThenDiceSides[0];
+        int chosenDiceSize = attackThenDiceSides[1];
+        
+    	Collection<Unit> casualties = new ArrayList<Unit>();
         int hits = dice.getHits();
         List<Unit> planesList = new ArrayList<Unit>(planes);
 
         // We need to choose which planes die based on their position in the list and the individual AA rolls
         if (hits < planesList.size())
         {
-        	int rollAt = 1;
-        	if(isAARadar(player))
-        		rollAt = 2;
-        	
-            List<Die> rolls = dice.getRolls(rollAt);
+            List<Die> rolls = dice.getRolls(highestAttack);
 
             for (int i = 0; i < rolls.size(); i++)
             {

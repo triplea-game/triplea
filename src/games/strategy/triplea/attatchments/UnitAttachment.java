@@ -117,6 +117,8 @@ public class UnitAttachment extends DefaultAttachment
   
   private int m_bombingMaxDieSides = -1;
   private int m_bombingBonus = -1;
+  private int m_attackAA = 1;
+  private int m_attackAAmaxDieSides = 1;
   
 
   private int m_movement = 0;
@@ -790,6 +792,26 @@ public class UnitAttachment extends DefaultAttachment
     return m_bombingMaxDieSides;
   }
   
+  public void setAttackAA(String s)
+  {
+	  m_attackAA = getInt(s);
+  }
+
+  public int getAttackAA()
+  {
+    return m_attackAA;
+  }
+  
+  public void setAttackAAmaxDieSides(String s)
+  {
+	  m_attackAAmaxDieSides = getInt(s);
+  }
+
+  public int getAttackAAmaxDieSides()
+  {
+    return m_attackAAmaxDieSides;
+  }
+  
   
   
   public String getRawProperty(String property) {
@@ -856,6 +878,11 @@ public class UnitAttachment extends DefaultAttachment
         m_isKamikaze
         )
         throw new GameParseException("Invalid Unit Attatchment" + this);
+    }
+
+    if(m_attackAA < 0 || m_attackAAmaxDieSides < -1 || m_attackAAmaxDieSides > 200)
+    {
+      throw new GameParseException("Invalid Unit Attatchment" + this);
     }
 
     if(m_carrierCapacity != -1 && m_carrierCost != -1)
@@ -993,8 +1020,10 @@ public class UnitAttachment extends DefaultAttachment
     "  bombard:" + m_bombard +
     "  unitSupportCount:" + m_unitSupportCount +
     "  blockade:" + m_blockade +
-    "  m_bombingMaxDieSides:" + m_bombingMaxDieSides + 
-    "  m_bombingBonus:" + m_bombingBonus + 
+    "  bombingMaxDieSides:" + m_bombingMaxDieSides + 
+    "  bombingBonus:" + m_bombingBonus + 
+    "  attackAA:" + m_attackAA + 
+    "  attackAAmaxDieSides:" + m_attackAAmaxDieSides + 
     "  movement:" + m_movement +
     "  attack:" + m_attack +
     "  defense:" + m_defense;

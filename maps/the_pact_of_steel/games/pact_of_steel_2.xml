@@ -1989,10 +1989,10 @@
 						 <!-- transportCapacity + isAirTransport can be used for transporting units IF you have the paratroopers technology -->
                          <option name="transportCapacity" value="2"/>
                          <option name="isAirTransport" value="true"/>
-						 <!-- bombingMaxDieSides is the max dice sides for a strategic bombing or rocket attack.  if you want to lower the luck involved, use bombing bonus and lower the max dice sides.
+						 <!-- bombingMaxDieSides is the max dice sides for a strategic bombing or rocket attack.  if you want to lower the luck involved, use bombing bonus and lower the max dice sides.  This property is optional, and only turns on when you have LL for bombing turned on.
 								example: if you want to have either a 3 or 4 rolled, then set maxDieSides to 2, and the Bonus to 2.  this means you will roll a 2 sided die (results are either "1" or "2") and add "2" to the result (so you get "3" or "4") -->
                          <option name="bombingMaxDieSides" value="2"/>
-						 <!-- bombingBonus is a number added to the die rolled, to give the total cost [displayed as a new die rolled], for strategic bombing and rockets only -->
+						 <!-- bombingBonus is a number added to the die rolled, to give the total cost [displayed as a new die rolled], for strategic bombing and rockets only.  This property is optional, and only turns on when you have LL for bombing turned on. -->
                          <option name="bombingBonus" value="2"/>
                 </attatchment>
 
@@ -2218,6 +2218,11 @@
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
 						 <option name="bombingMaxDieSides" value="2"/>
 						 <option name="bombingBonus" value="2"/>
+						 <!-- attackAA sets the value the AA will attack at (radar adds 1 if this is not 0). Defaults to 1.  Can not be more than half the diceSides (even with radar)-->
+						 <option name="attackAA" value="1"/>
+						 <!-- attackAAmaxDieSides sets the dice sides for aa guns.  defaults to whatever you chose above in diceSides (or 6 if you didn't choose).  
+								Be Warned that having different AA guns in the same territory, with different maxDiceSides for each, will result in errors.  Also be warned that all attack values (including with Radar and without Radar), but divide into attackAAmaxDieSides without remainders, or else there WILL be errors in LowLuck! -->
+						 <option name="attackAAmaxDieSides" value="6"/>
                 </attatchment>
 				
 				

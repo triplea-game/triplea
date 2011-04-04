@@ -31,6 +31,7 @@ import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -65,28 +66,64 @@ public class DiceRoll implements Externalizable
     //this does not need to match the Die with isHit true
     //since for low luck we get many hits with few dice
     private int m_hits;
+    
+    /**
+     * Returns an int[] with 2 values, the first is the max attack, the second is the max dice sides for the AA unit with that attack value
+     */
+    public static int[] getAAattackAndMaxDiceSides(Territory location, PlayerID player, GameData data)
+    {
+    	int[] attackThenDiceSides = new int[2];
+    	
+    	Collection<Unit> eAA = new ArrayList<Unit>(Match.getMatches(location.getUnits().getUnits(), Matches.unitIsEnemyAA(player, data)));
+        int highestAttack = 0;
+		int diceSize = data.getDiceSides();
+		int chosenDiceSize = diceSize;
+        for (Unit u : eAA)
+        {
+    		UnitAttachment ua = UnitAttachment.get(u.getType());
+    		int uaDiceSides = ua.getAttackAAmaxDieSides();
+    		if (uaDiceSides < 1)
+    			uaDiceSides = diceSize;
+    		
+    		int attack = ua.getAttackAA();
+    		if (attack > 0 && Matches.UnitIsRadarAA.match(u))
+    			attack++; // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6
+    		
+    		if (attack > uaDiceSides)
+    			attack = uaDiceSides;
+    		
+    		if (((float) attack) / ((float) uaDiceSides) > ((float) highestAttack) / ((float) chosenDiceSize))
+    		{
+    			highestAttack = attack;
+    			chosenDiceSize = uaDiceSides;
+    		}
+        }
+        if (highestAttack > chosenDiceSize / 2)
+        	highestAttack = chosenDiceSize / 2; // sadly the whole low luck section falls apart if AA are hitting at greater than half the value of dice, and I don't feel like rewriting it
+        
+        attackThenDiceSides[0] = highestAttack;
+        attackThenDiceSides[1] = chosenDiceSize;
+        return attackThenDiceSides;
+    }
 
     public static DiceRoll rollAA(Collection<Unit> attackingUnits, IDelegateBridge bridge, Territory location, GameData data)
     {
         int hits = 0;
         
         List<Die> sortedDice = new ArrayList<Die>();
-               
-        int hitAt = 0;
         
-        boolean useRadar = location.getUnits().someMatch(Matches.UnitIsRadarAA);
-               
-        if(useRadar)
-            hitAt = 1;
+        int attackThenDiceSides[] = getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), data);
+        int highestAttack = attackThenDiceSides[0];
+        int chosenDiceSize = attackThenDiceSides[1];
+        
+        int hitAt = highestAttack - 1; // zero based
+        int power = highestAttack; // not zero based
         
         //LOW LUCK
-        if (games.strategy.triplea.Properties.getLow_Luck(data) || games.strategy.triplea.Properties.getLL_AA_ONLY(data))
+        if (highestAttack > 0 && games.strategy.triplea.Properties.getLow_Luck(data) || games.strategy.triplea.Properties.getLL_AA_ONLY(data))
         {
-        	int power = useRadar ? 2 : 1;
-        	
-            String annotation = "Roll AA guns in " + location.getName();
-            //If RADAR advancement, hit at a 2
-
+        	String annotation = "Roll AA guns in " + location.getName();
+        	int groupSize = chosenDiceSize / power;
             
             List<Unit> airUnits = Match.getMatches(attackingUnits, Matches.UnitIsAir);
             if(Properties.getChoose_AA_Casualties(data)) 
@@ -95,7 +132,7 @@ public class DiceRoll implements Externalizable
 						airUnits.size());
             } else 
             {
-            	Tuple<List<Unit>, List<Unit>> airSplit = BattleCalculator.categorizeLowLuckAirUnits(airUnits, location, data.getDiceSides());
+            	Tuple<List<Unit>, List<Unit>> airSplit = BattleCalculator.categorizeLowLuckAirUnits(airUnits, location, chosenDiceSize, groupSize);
             	            
             	//this will not roll any dice, since the first group is 
             	//a multiple of 3 or 6
@@ -108,11 +145,11 @@ public class DiceRoll implements Externalizable
 	
             }
         } 
-        else // Normal rolling
+        else if (highestAttack > 0) // Normal rolling
         {            
             String annotation = "Roll AA guns in " + location.getName();
            
-            int[] dice = bridge.getRandom(data.getDiceSides(), Match.countMatches(attackingUnits, Matches.UnitIsAir), annotation);
+            int[] dice = bridge.getRandom(chosenDiceSize, Match.countMatches(attackingUnits, Matches.UnitIsAir), annotation);
             
             for (int i = 0; i < dice.length; i++)
             {

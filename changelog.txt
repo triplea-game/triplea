@@ -1,4 +1,7 @@
 Changes for 1.2.7
+* Added new unit attachments, <option name="attackAAmaxDieSides" value="6"/> and <option name="attackAA" value="1"/>, which allow you to independently set the attack values and max dice sides for AA units. Radar Tech changed to add "1" to the attack values. 
+  Attack values, including radar, may never go above half of the max dice sides. All attack values (with and without radar) should divide into diceSides without any remainder, otherwise the players will get errors during LowLuck. (veqryn)
+
 * Fixed a bug where a player with both Mechanized Infantry and Paratroopers technology could no longer do any mechanized infantry movement because the validator was checking for paratroopers first. (veqryn)
 
 * Created Low Luck for Strategic Bombing and Rockets. New global property, "Low Luck for Bombing and Territory Damage", and new Unit Attachments, bombingMaxDieSides and bombingBonus. Can be used to set different values for strategic bombing and rocket attacks, separate from the rest of the game. (veqryn)
