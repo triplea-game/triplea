@@ -1168,7 +1168,27 @@ public class MoveValidator
                 if (!MoveValidator.hasEnoughMovement(unit, route))
                 {
                 	boolean unitOK = false;
-                    if(Matches.UnitIsAirTransportable.match(unit) && TripleAUnit.get(unit).getAlreadyMoved() == 0)
+                	if ((Matches.UnitIsAirTransportable.match(unit) && TripleAUnit.get(unit).getAlreadyMoved() == 0) && (mechanizedSupportAvailable > 0 && TripleAUnit.get(unit).getAlreadyMoved() == 0 && Matches.UnitIsInfantry.match(unit)))
+                	{
+                		// we have paratroopers and mechanized infantry, so we must check for both
+                		// simple: if it movement group contains an air-transport, then assume we are doing paratroopers.  else, assume we are doing mechanized
+                		if (Match.someMatch(units, Matches.UnitIsAirTransport))
+                		{
+                			for(Unit airTransport:dependencies.keySet())
+                        	{
+                        		if(dependencies.get(airTransport) == null || dependencies.get(airTransport).contains(unit))
+                        		{
+                        			unitOK = true;
+                        			break;
+                        		}
+                        	}
+                        	if(!unitOK)
+                        		result.addDisallowedUnit("Not all units have enough movement",unit);
+                		}
+                		else
+                			mechanizedSupportAvailable --;
+                	}
+                	else if(Matches.UnitIsAirTransportable.match(unit) && TripleAUnit.get(unit).getAlreadyMoved() == 0)
                     {	
                     	for(Unit airTransport:dependencies.keySet())
                     	{

@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Fixed a bug where a player with both Mechanized Infantry and Paratroopers technology could no longer do any mechanized infantry movement because the validator was checking for paratroopers first. (veqryn)
+
 * Created Low Luck for Strategic Bombing and Rockets. New global property, "Low Luck for Bombing and Territory Damage", and new Unit Attachments, bombingMaxDieSides and bombingBonus. Can be used to set different values for strategic bombing and rocket attacks, separate from the rest of the game. (veqryn)
 
 * Added new unit attachment, <option name="givesMovement" value="1:fighter"/>, and global property, "Units May Give Bonus Movement", which allow units to give movement to other units. (veqryn)
