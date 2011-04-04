@@ -2860,7 +2860,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         private void rollDice(IDelegateBridge bridge)
         {            
-            m_dice = DiceRoll.rollAA(m_attackingUnits,bridge,m_battleSite, m_data);
+            m_dice = DiceRoll.rollAA(m_attackingUnits,bridge,m_battleSite, m_data, Matches.UnitIsAAforCombat);
             
         }
 
@@ -2872,7 +2872,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
            
             Collection<Unit> attackable = Match.getMatches(m_attackingUnits, Matches.UnitIsAir);
             
-            m_casualties = BattleCalculator.getAACasualties(attackable, m_dice, bridge, m_defender, m_attacker, m_data, m_battleID, m_battleSite);
+            m_casualties = BattleCalculator.getAACasualties(attackable, m_dice, bridge, m_defender, m_attacker, m_data, m_battleID, m_battleSite, Matches.UnitIsAAforCombat);
         }
 
 
@@ -2925,7 +2925,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private boolean canFireAA()
     {
 
-        return Match.someMatch(m_defendingUnits, Matches.UnitIsAA)
+        return Match.someMatch(m_defendingUnits, Matches.UnitIsAAforCombat)
                 && Match.someMatch(m_attackingUnits, Matches.UnitIsAir)
                 && !m_battleSite.isWater();
     }

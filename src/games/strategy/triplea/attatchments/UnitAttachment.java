@@ -52,6 +52,8 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isAir = false;
   private boolean m_isSea = false;
   private boolean m_isAA = false;
+  private boolean m_isAAforCombatOnly = false;
+  private boolean m_isAAforBombingThisUnitOnly = false;
   private boolean m_isFactory = false;
   private boolean m_canBlitz = false;
   private boolean m_isAirTransport = false;
@@ -118,7 +120,7 @@ public class UnitAttachment extends DefaultAttachment
   private int m_bombingMaxDieSides = -1;
   private int m_bombingBonus = -1;
   private int m_attackAA = 1;
-  private int m_attackAAmaxDieSides = 1;
+  private int m_attackAAmaxDieSides = -1;
   
 
   private int m_movement = 0;
@@ -812,6 +814,26 @@ public class UnitAttachment extends DefaultAttachment
     return m_attackAAmaxDieSides;
   }
   
+  public void setIsAAforCombatOnly(String s)
+  {
+	  m_isAAforCombatOnly = getBool(s);
+  }
+
+  public boolean getIsAAforCombatOnly()
+  {
+    return m_isAAforCombatOnly;
+  }
+  
+  public void setIsAAforBombingThisUnitOnly(String s)
+  {
+	  m_isAAforBombingThisUnitOnly = getBool(s);
+  }
+
+  public boolean getIsAAforBombingThisUnitOnly()
+  {
+    return m_isAAforBombingThisUnitOnly;
+  }
+  
   
   
   public String getRawProperty(String property) {
@@ -833,6 +855,8 @@ public class UnitAttachment extends DefaultAttachment
         m_isFactory ||
         m_isSub ||
         m_isAA ||
+        m_isAAforCombatOnly ||
+        m_isAAforBombingThisUnitOnly ||
         m_transportCost != -1 ||
         //m_transportCapacity != -1 ||
         m_carrierCapacity != -1 ||
@@ -851,6 +875,8 @@ public class UnitAttachment extends DefaultAttachment
     {
       if(	m_canBlitz ||
         m_isAA ||
+        m_isAAforCombatOnly ||
+        m_isAAforBombingThisUnitOnly ||
         m_isAir ||
         m_isFactory ||
         m_isStrategicBomber ||
@@ -980,6 +1006,8 @@ public class UnitAttachment extends DefaultAttachment
     "  air:" + m_isAir +
     "  sea:" + m_isSea +
     "  aa:" + m_isAA +
+    "  isAAforCombatOnly:" + m_isAAforCombatOnly +
+    "  isAAforBombingThisUnitOnly:" + m_isAAforBombingThisUnitOnly +
     "  factory:" + m_isFactory +
     "  blitz:" + m_canBlitz +
     "  airTransport:" + m_isAirTransport +

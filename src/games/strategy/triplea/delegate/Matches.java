@@ -234,7 +234,7 @@ public class Matches
 
 		@Override
 		public boolean match(Unit unit) {
-			if(!UnitIsAA.match(unit)) {
+			if(!(UnitIsAA.match(unit) || UnitIsAAforCombatOnly.match(unit) || UnitIsAAforBombingThisUnitOnly.match(unit))) {
 				return false;
 			}
 			
@@ -778,6 +778,56 @@ public class Matches
             UnitType type = ((Unit) obj).getUnitType();
             UnitAttachment ua = UnitAttachment.get(type);
             return ua.isAA();
+        }
+    };
+
+    public static final Match<Unit> UnitIsAAforCombatOnly = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            UnitType type = ((Unit) obj).getUnitType();
+            UnitAttachment ua = UnitAttachment.get(type);
+            return ua.getIsAAforCombatOnly();
+        }
+    };
+
+    public static final Match<Unit> UnitIsAAforCombat = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            UnitType type = ((Unit) obj).getUnitType();
+            UnitAttachment ua = UnitAttachment.get(type);
+            return ua.getIsAAforCombatOnly() || ua.isAA();
+        }
+    };
+
+    public static final Match<Unit> UnitIsAAforBombingThisUnitOnly = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            UnitType type = ((Unit) obj).getUnitType();
+            UnitAttachment ua = UnitAttachment.get(type);
+            return ua.getIsAAforBombingThisUnitOnly();
+        }
+    };
+
+    public static final Match<Unit> UnitIsAAforBombing = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            UnitType type = ((Unit) obj).getUnitType();
+            UnitAttachment ua = UnitAttachment.get(type);
+            return ua.getIsAAforBombingThisUnitOnly() || ua.isAA();
+        }
+    };
+
+    public static final Match<Unit> UnitIsAAforAnything = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            UnitType type = ((Unit) obj).getUnitType();
+            UnitAttachment ua = UnitAttachment.get(type);
+            return ua.getIsAAforCombatOnly() || ua.getIsAAforBombingThisUnitOnly() || ua.isAA();
         }
     };
 
@@ -1443,6 +1493,22 @@ public class Matches
     return comp;
   }
 
+  public static Match<Unit> unitIsEnemyAAforCombat(final PlayerID player, final GameData data)
+  {
+    CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
+    comp.add(new CompositeMatchOr<Unit>(UnitIsAA, UnitIsAAforCombatOnly));
+    comp.add(enemyUnit(player, data));
+    return comp;
+  }
+
+  public static Match<Unit> unitIsEnemyAAforBombing(final PlayerID player, final GameData data)
+  {
+    CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
+    comp.add(new CompositeMatchOr<Unit>(UnitIsAA, UnitIsAAforBombingThisUnitOnly));
+    comp.add(enemyUnit(player, data));
+    return comp;
+  }
+
   public static Match<Unit> unitIsInTerritory(final Territory territory)
   {
       return new Match<Unit>()
@@ -1639,8 +1705,6 @@ public class Matches
   
   public static Match<Territory> territoryHasEnemyAA(final PlayerID player, final GameData data)
   {
-
-
     return new Match<Territory>()
     {
       Match<Unit> unitIsEnemyAA = unitIsEnemyAA(player, data);
@@ -1650,7 +1714,28 @@ public class Matches
         return t.getUnits().someMatch( unitIsEnemyAA );
       }
     };
-
+  }
+  
+  public static Match<Territory> territoryHasEnemyAAforCombatOnly(final PlayerID player, final GameData data)
+  {
+    return new Match<Territory>()
+    {
+      public boolean match(Territory t)
+      {
+        return t.getUnits().someMatch(Matches.unitIsEnemyAAforCombat(player, data));
+      }
+    };
+  }
+  
+  public static Match<Territory> territoryHasEnemyAAforBombing(final PlayerID player, final GameData data)
+  {
+    return new Match<Territory>()
+    {
+      public boolean match(Territory t)
+      {
+        return t.getUnits().someMatch(Matches.unitIsEnemyAAforBombing(player, data));
+      }
+    };
   }
 
 

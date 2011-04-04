@@ -161,15 +161,9 @@ public class StrategicBombingRaidBattle implements Battle
         bridge.getHistoryWriter().setRenderingData(m_battleSite);
         BattleCalculator.sortPreBattle(m_units, m_data);
 
-
-        CompositeMatch<Unit> hasAAMatch = new CompositeMatchAnd<Unit>();
-        hasAAMatch.add(Matches.UnitIsAA);
-        hasAAMatch.add(Matches.enemyUnit(m_attacker, m_data));
-
-        boolean hasAA = m_battleSite.getUnits().someMatch(hasAAMatch);
+        // TODO: determine if the target has the property, not just any unit with the property isAAforBombingThisUnitOnly
+        boolean hasAA = m_battleSite.getUnits().someMatch(Matches.unitIsEnemyAAforBombing(m_attacker, m_data));
         
-        //TODO integrated AA
-
         m_steps = new ArrayList<String>();
         if (hasAA)
             m_steps.add(FIRE_AA);
@@ -261,10 +255,10 @@ public class StrategicBombingRaidBattle implements Battle
     {
     	//TODO: may need to also include infrastructure here, not just unitIsFactory and unitIsAA
     	if(m_targets.isEmpty())
-    		return Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAOrFactory);
+    		return Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
     	else
     	{
-    		List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAA);
+    		List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAforBombing);
     		targets.addAll(m_targets);
     		return targets;
     	}	
@@ -283,7 +277,7 @@ public class StrategicBombingRaidBattle implements Battle
             {
                 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
-                	m_dice = DiceRoll.rollAA(m_units, bridge, m_battleSite, m_data);
+                	m_dice = DiceRoll.rollAA(m_units, bridge, m_battleSite, m_data, Matches.UnitIsAAforBombing);
                 }
             };
 
@@ -390,7 +384,7 @@ public class StrategicBombingRaidBattle implements Battle
         }
         else
         {
-        	casualties = BattleCalculator.getAACasualties(m_units, dice, bridge, m_defender, m_attacker, m_data, m_battleID, m_battleSite);
+        	casualties = BattleCalculator.getAACasualties(m_units, dice, bridge, m_defender, m_attacker, m_data, m_battleID, m_battleSite, Matches.UnitIsAAforBombing);
         }
     	
         if (casualties.size() != dice.getHits())

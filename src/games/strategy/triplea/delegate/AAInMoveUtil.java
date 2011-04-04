@@ -142,7 +142,7 @@ class AAInMoveUtil implements Serializable
         //that will be a battle
         //and handled else where in this tangled mess
         CompositeMatch<Unit> hasAA = new CompositeMatchAnd<Unit>();
-        hasAA.add(Matches.UnitIsAA);
+        hasAA.add(Matches.UnitIsAAforCombat);
         hasAA.add(Matches.enemyUnit(ally, m_data));
 
         List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
@@ -202,7 +202,7 @@ class AAInMoveUtil implements Serializable
             public void execute(ExecutionStack stack, IDelegateBridge bridge,
                     GameData data)
             {
-            	dice[0] = DiceRoll.rollAA(units, m_bridge, territory, m_data);
+            	dice[0] = DiceRoll.rollAA(units, m_bridge, territory, m_data, Matches.UnitIsAAforCombat);
             }
         };
         
@@ -238,7 +238,7 @@ class AAInMoveUtil implements Serializable
     {
         Collection<Unit> casualties = null;
         
-        casualties = BattleCalculator.getAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, m_data, battleID, territory);
+        casualties = BattleCalculator.getAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, m_data, battleID, territory, Matches.UnitIsAAforCombat);
        
         getRemotePlayer().reportMessage(casualties.size() + " AA hits in " + territory.getName());
         

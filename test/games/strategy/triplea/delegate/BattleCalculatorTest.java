@@ -43,7 +43,7 @@ public class BattleCalculatorTest extends TestCase
 		Collection<Unit> planes = bomber(m_data).create(5, british(m_data));
 		ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] {0, ScriptedRandomSource.ERROR});
 		m_bridge.setRandomSource(randomSource);
-		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null, territory("Germany",m_data));
+		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null, territory("Germany",m_data), Matches.UnitIsAAforAnything);
 		assertEquals(casualties.size(), 1);		
 		assertEquals(1, randomSource.getTotalRolled());
 	}
@@ -59,7 +59,7 @@ public class BattleCalculatorTest extends TestCase
 		ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] {0, ScriptedRandomSource.ERROR});
 		m_bridge.setRandomSource(randomSource);
 		TripleAUnit.get(planes.get(0)).setAlreadyMoved(1);
-		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null, territory("Germany",m_data));
+		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null, territory("Germany",m_data), Matches.UnitIsAAforAnything);
 		assertEquals(casualties.size(), 1);
 	}
 	
@@ -75,9 +75,9 @@ public class BattleCalculatorTest extends TestCase
 		//don't allow rolling, 6 of each is deterministic
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
 		
-		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data);
+		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data, Matches.UnitIsAAforAnything);
 		
-		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null,  territory("Germany",m_data));
+		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null,  territory("Germany",m_data), Matches.UnitIsAAforAnything);
 		assertEquals(casualties.size(), 2);
 		
 		//should be 1 fighter and 1 bomber
@@ -98,10 +98,10 @@ public class BattleCalculatorTest extends TestCase
 		ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] {0, 1, 1, ScriptedRandomSource.ERROR});
 		m_bridge.setRandomSource(randomSource);
 		
-		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data);
+		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data, Matches.UnitIsAAforAnything);
 		assertEquals(1, randomSource.getTotalRolled());
 		
-		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null,  territory("Germany",m_data));
+		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null,  territory("Germany",m_data), Matches.UnitIsAAforAnything);
 		assertEquals(casualties.size(), 2);
 		//two extra rolls to pick which units are hit
 		assertEquals(3, randomSource.getTotalRolled());
@@ -141,9 +141,9 @@ public class BattleCalculatorTest extends TestCase
 		//don't allow rolling, 6 of each is deterministic
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
 		
-		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data);		
+		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data, Matches.UnitIsAAforAnything);		
 		
-		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, germans(m_data), british(m_data), m_data, null,  territory("Germany",m_data));
+		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, germans(m_data), british(m_data), m_data, null,  territory("Germany",m_data), Matches.UnitIsAAforAnything);
 		assertEquals(casualties.size(), 2);
 		
 		//we selected all bombers
@@ -178,9 +178,9 @@ public class BattleCalculatorTest extends TestCase
 		//only 1 roll, a hit
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, ScriptedRandomSource.ERROR}));
 		
-		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data);		
+		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data, Matches.UnitIsAAforAnything);		
 		
-		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, germans(m_data), british(m_data), m_data, null,  territory("Germany",m_data));
+		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, germans(m_data), british(m_data), m_data, null,  territory("Germany",m_data), Matches.UnitIsAAforAnything);
 		assertEquals(casualties.size(), 3);
 		
 		//we selected all bombers
@@ -202,12 +202,12 @@ public class BattleCalculatorTest extends TestCase
 		ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] {0});
 		m_bridge.setRandomSource(randomSource);
 		
-		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data);
+		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data, Matches.UnitIsAAforAnything);
 		
 		//make sure we rolled once
 		assertEquals(1, randomSource.getTotalRolled());
 		
-		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null,  territory("Germany",m_data));
+		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null,  territory("Germany",m_data), Matches.UnitIsAAforAnything);
 		assertEquals(casualties.size(), 3);
 		//a second roll for choosing which unit
 		assertEquals(2, randomSource.getTotalRolled());
@@ -231,12 +231,12 @@ public class BattleCalculatorTest extends TestCase
 		ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] {2});
 		m_bridge.setRandomSource(randomSource);
 		
-		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data);
+		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data, Matches.UnitIsAAforAnything);
 		
 		//make sure we rolled once
 		assertEquals(1, randomSource.getTotalRolled());
 		
-		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null,  territory("Germany",m_data));
+		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null,  territory("Germany",m_data), Matches.UnitIsAAforAnything);
 		assertEquals(casualties.size(), 2);
 		
 		assertEquals(1, randomSource.getTotalRolled());
@@ -261,12 +261,12 @@ public class BattleCalculatorTest extends TestCase
 		ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] {0,ScriptedRandomSource.ERROR});
 		m_bridge.setRandomSource(randomSource);
 		
-		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data);
+		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data, Matches.UnitIsAAforAnything);
 		
 		//make sure we rolled once
 		assertEquals(1, randomSource.getTotalRolled());
 		
-		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null,  territory("Germany",m_data));
+		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null,  territory("Germany",m_data), Matches.UnitIsAAforAnything);
 		assertEquals(casualties.size(), 3);
 		
 		//should be 2 fighters and 1 bombers
@@ -287,9 +287,9 @@ public class BattleCalculatorTest extends TestCase
 		//don't allow rolling, 6 of each is deterministic
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
 		
-		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data);
+		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data, Matches.UnitIsAAforAnything);
 		
-		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null,  territory("Germany",m_data));
+		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null,  territory("Germany",m_data), Matches.UnitIsAAforAnything);
 		assertEquals(casualties.size(), 2);
 		
 		//should be 1 fighter and 1 bomber
@@ -312,12 +312,12 @@ public class BattleCalculatorTest extends TestCase
 		ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] {0, 1});
 		m_bridge.setRandomSource(randomSource);
 		
-		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data);
+		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data, Matches.UnitIsAAforAnything);
 		
 		//make sure we rolled once
 		assertEquals(1, randomSource.getTotalRolled());
 		
-		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null,  territory("Germany",m_data));
+		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null,  territory("Germany",m_data), Matches.UnitIsAAforAnything);
 		assertEquals(casualties.size(), 3);
 		
 		//should be 1 fighter and 2 bombers
@@ -340,13 +340,13 @@ public class BattleCalculatorTest extends TestCase
 		ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] {5, ScriptedRandomSource.ERROR});
 		m_bridge.setRandomSource(randomSource);
 		
-		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data);
+		DiceRoll roll = DiceRoll.rollAA(planes, m_bridge, territory("Germany", m_data), m_data, Matches.UnitIsAAforAnything);
 		assertEquals(roll.getHits(), 2);
 		
 		//make sure we rolled once
 		assertEquals(1, randomSource.getTotalRolled());
 		
-		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null,  territory("Germany",m_data));
+		Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, roll, m_bridge, null, null, m_data, null,  territory("Germany",m_data), Matches.UnitIsAAforAnything);
 		assertEquals(casualties.size(), 2);
 		
 		//should be 1 fighter and 2 bombers

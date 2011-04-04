@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Added new unit attachments, <option name="isAAforCombatOnly" value="true"/> and <option name="isAAforBombingThisUnitOnly" value="true"/>, allow units to be AA guns for only certain attack types. (veqryn)
+
 * Added new unit attachments, <option name="attackAAmaxDieSides" value="6"/> and <option name="attackAA" value="1"/>, which allow you to independently set the attack values and max dice sides for AA units. Radar Tech changed to add "1" to the attack values. 
   Attack values, including radar, may never go above half of the max dice sides. All attack values (with and without radar) should divide into diceSides without any remainder, otherwise the players will get errors during LowLuck. (veqryn)
 

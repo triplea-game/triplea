@@ -70,11 +70,12 @@ public class DiceRoll implements Externalizable
     /**
      * Returns an int[] with 2 values, the first is the max attack, the second is the max dice sides for the AA unit with that attack value
      */
-    public static int[] getAAattackAndMaxDiceSides(Territory location, PlayerID player, GameData data)
+    public static int[] getAAattackAndMaxDiceSides(Territory location, PlayerID player, GameData data, Match<Unit> typeOfAA)
     {
     	int[] attackThenDiceSides = new int[2];
+    	CompositeMatch<Unit> enemyAA = new CompositeMatchAnd<Unit>(typeOfAA, Matches.unitIsEnemyOf(data, player));
     	
-    	Collection<Unit> eAA = new ArrayList<Unit>(Match.getMatches(location.getUnits().getUnits(), Matches.unitIsEnemyAA(player, data)));
+    	Collection<Unit> eAA = new ArrayList<Unit>(Match.getMatches(location.getUnits().getUnits(), enemyAA));
         int highestAttack = 0;
 		int diceSize = data.getDiceSides();
 		int chosenDiceSize = diceSize;
@@ -98,7 +99,7 @@ public class DiceRoll implements Externalizable
     			chosenDiceSize = uaDiceSides;
     		}
         }
-        if (highestAttack > chosenDiceSize / 2)
+        if (highestAttack > chosenDiceSize / 2 && chosenDiceSize > 1)
         	highestAttack = chosenDiceSize / 2; // sadly the whole low luck section falls apart if AA are hitting at greater than half the value of dice, and I don't feel like rewriting it
         
         attackThenDiceSides[0] = highestAttack;
@@ -106,13 +107,13 @@ public class DiceRoll implements Externalizable
         return attackThenDiceSides;
     }
 
-    public static DiceRoll rollAA(Collection<Unit> attackingUnits, IDelegateBridge bridge, Territory location, GameData data)
+    public static DiceRoll rollAA(Collection<Unit> attackingUnits, IDelegateBridge bridge, Territory location, GameData data, Match<Unit> typeOfAA)
     {
         int hits = 0;
         
         List<Die> sortedDice = new ArrayList<Die>();
         
-        int attackThenDiceSides[] = getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), data);
+        int attackThenDiceSides[] = getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), data, typeOfAA);
         int highestAttack = attackThenDiceSides[0];
         int chosenDiceSize = attackThenDiceSides[1];
         

@@ -106,7 +106,7 @@ public class BattleCalculator
     /**
      * Choose plane casualties according to specified rules 
      */
-    public static  Collection<Unit> getAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge, PlayerID defender, PlayerID attacker, GameData data, GUID battleID, Territory terr)
+    public static  Collection<Unit> getAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge, PlayerID defender, PlayerID attacker, GameData data, GUID battleID, Territory terr, Match<Unit> typeOfAA)
     {
     	
     	if(Properties.getLow_Luck(data) || Properties.getLL_AA_ONLY(data)) {
@@ -114,7 +114,7 @@ public class BattleCalculator
     			return chooseAACasualties(planes, dice, bridge, attacker, data,
 						battleID, terr);
     		}
-    		return getLowLuckAACasualties(planes, dice, terr, bridge);
+    		return getLowLuckAACasualties(planes, dice, terr, bridge, typeOfAA);
     	} else {
     		//isRollAAIndividually() is the default behavior
         	Boolean rollAAIndividually = isRollAAIndividually(data);
@@ -130,7 +130,7 @@ public class BattleCalculator
 						battleID, terr);
         	}
         	    
-        	return(IndividuallyFiredAACasualties(planes, dice, terr, bridge));
+        	return(IndividuallyFiredAACasualties(planes, dice, terr, bridge, typeOfAA));
         }
     }
 
@@ -171,9 +171,9 @@ public class BattleCalculator
 	
     	
     
-    private static Collection<Unit> getLowLuckAACasualties(Collection<Unit> planes, DiceRoll dice, Territory location, IDelegateBridge bridge) {
+    private static Collection<Unit> getLowLuckAACasualties(Collection<Unit> planes, DiceRoll dice, Territory location, IDelegateBridge bridge, Match<Unit> typeOfAA) {
     	
-    	int attackThenDiceSides[] = DiceRoll.getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), bridge.getPlayerID().getData());
+    	int attackThenDiceSides[] = DiceRoll.getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), bridge.getPlayerID().getData(), typeOfAA);
         int highestAttack = attackThenDiceSides[0];
         int chosenDiceSize = attackThenDiceSides[1];
         
@@ -243,9 +243,9 @@ public class BattleCalculator
     /**
      * Choose plane casualties based on individual AA shots at each aircraft.
      */
-    public static Collection<Unit> IndividuallyFiredAACasualties(Collection<Unit> planes, DiceRoll dice, Territory location, IDelegateBridge bridge)
+    public static Collection<Unit> IndividuallyFiredAACasualties(Collection<Unit> planes, DiceRoll dice, Territory location, IDelegateBridge bridge, Match<Unit> typeOfAA)
     {
-    	int attackThenDiceSides[] = DiceRoll.getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), bridge.getPlayerID().getData());
+    	int attackThenDiceSides[] = DiceRoll.getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), bridge.getPlayerID().getData(), typeOfAA);
         int highestAttack = attackThenDiceSides[0];
         int chosenDiceSize = attackThenDiceSides[1];
         
@@ -884,17 +884,6 @@ public class BattleCalculator
     {
     	return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
     }
-    
-    /**
-     * @return Can transports be used as cannon fodder
-     */
-	 private static boolean isAARadar(PlayerID player)
-	    {
-	        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
-	        if(ta == null)
-	        	return false;
-	        return ta.hasAARadar();     
-	    }
 /**
  * @return Random AA Casualties - casualties randomly assigned
  */

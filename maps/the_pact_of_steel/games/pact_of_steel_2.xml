@@ -2164,6 +2164,7 @@
 						 <option name="givesMovement" value="1:jp_fighter"/>
 						 <option name="givesMovement" value="1:bomber"/>
 						 <option name="givesMovement" value="1:air_transport"/>
+						 <!--<option name="isAAforBombingThisUnitOnly" value="true"/>-->
                 </attatchment>
 				
 				<!-- Harbour -->
@@ -2190,6 +2191,7 @@
 						 <option name="givesMovement" value="1:carrier"/>
 						 <option name="givesMovement" value="1:battleship"/>
 						 <option name="givesMovement" value="1:super_carrier"/>
+						 <!--<option name="isAAforBombingThisUnitOnly" value="true"/>-->
                 </attatchment>
 				
                 <!-- Factory -->
@@ -2223,6 +2225,10 @@
 						 <!-- attackAAmaxDieSides sets the dice sides for aa guns.  defaults to whatever you chose above in diceSides (or 6 if you didn't choose).  
 								Be Warned that having different AA guns in the same territory, with different maxDiceSides for each, will result in errors.  Also be warned that all attack values (including with Radar and without Radar), but divide into attackAAmaxDieSides without remainders, or else there WILL be errors in LowLuck! -->
 						 <option name="attackAAmaxDieSides" value="6"/>
+						 <!-- isAAforCombatOnly allows this unit to be an AA gun for normal combat only.  it will not defend against strategic bombing raids 
+						 <option name="isAAforCombatOnly" value="true"/>-->
+						 <!-- isAAforBombingThisUnitOnly allows this unit to be an AA gun only when this unit is directly attacked by a strategic bombing raid.  it will not defend against a normal attack 
+						 <option name="isAAforBombingThisUnitOnly" value="true"/>-->
                 </attatchment>
 				
 				
