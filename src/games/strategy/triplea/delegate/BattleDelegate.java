@@ -419,8 +419,9 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
             
            
             //Reach stalemate if all attacking and defending units are transports
-            if (ignoreTransports && battle != null && Match.allMatch(attackingUnits, seaTransports) 
-            		&& Match.allMatch(enemyUnits, seaTransports))
+            if ((ignoreTransports && battle != null && Match.allMatch(attackingUnits, seaTransports) 
+            		&& Match.allMatch(enemyUnits, seaTransports)) 
+            		|| ((Match.allMatch(attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())) && Match.allMatch(enemyUnits, Matches.unitHasDefendValueOfAtLeast(1).invert())))
             {
             	m_battleTracker.removeBattle(battle);
             	continue;

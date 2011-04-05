@@ -332,6 +332,28 @@ public class Matches
     		}
     	};
     }
+    public static Match<Unit> unitHasAttackValueOfAtLeast(final int attackValue)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unit)
+            {
+                UnitAttachment ua = UnitAttachment.get(unit.getType());
+                return ua.getAttack(unit.getOwner()) >= attackValue;
+            }
+        };
+    }
+    public static Match<Unit> unitHasDefendValueOfAtLeast(final int defendValue)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unit)
+            {
+                UnitAttachment ua = UnitAttachment.get(unit.getType());
+                return ua.getDefense(unit.getOwner()) >= defendValue;
+            }
+        };
+    }
     
     public static Match<Unit> unitIsEnemyOf(final GameData data, final PlayerID player)
     {

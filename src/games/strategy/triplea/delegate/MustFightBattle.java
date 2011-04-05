@@ -1294,16 +1294,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 	
                 		endBattle(bridge);
                 		attackerWins(bridge);
-                } else if (Match.allMatch(m_attackingUnits, Matches.UnitIsTransport) && Match.allMatch(m_defendingUnits, Matches.UnitIsTransport))
+                } else if ((Match.allMatch(m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())) && Match.allMatch(m_defendingUnits, Matches.unitHasDefendValueOfAtLeast(1).invert()))
                 {
-                    Match<Unit> attackerMatch = Matches.unitCanAttack(m_attacker);
-                    Match<Unit> defenderMatch = Matches.unitCanAttack(m_defender);
-                    
-                    if(Match.noneMatch(m_attackingUnits, attackerMatch) && Match.noneMatch(m_defendingUnits, defenderMatch))
-                    {
-                        endBattle(bridge);
-                        nobodyWins(bridge);
-                    }
+                    endBattle(bridge);
+                    nobodyWins(bridge);
                 }
                 
             }
