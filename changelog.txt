@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Added new menu option during a game, "Roll Dice...", in the "Game" drop down menu. It allows a player to roll as many dice, with any dice sides, that they want, independant from playing the game. (veqryn)
+
 * Added new unit attachments, <option name="isAAforCombatOnly" value="true"/> and <option name="isAAforBombingThisUnitOnly" value="true"/>, allow units to be AA guns for only certain attack types. (veqryn)
 
 * Added new unit attachments, <option name="attackAAmaxDieSides" value="6"/> and <option name="attackAA" value="1"/>, which allow you to independently set the attack values and max dice sides for AA units. Radar Tech changed to add "1" to the attack values. 
