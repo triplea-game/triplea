@@ -507,9 +507,9 @@ public class StrategicBombingRaidBattle implements Battle
                 			maxDice = (diceSides+1)/3;
                 			bonus = (diceSides+1)/3;
                 		}
-                		else if (bonus < 0)
+                		if (bonus < 0)
                 			bonus = 0;
-                		else if (maxDice < 0)
+                		if (maxDice < 0)
                 			maxDice = diceSides;
                 		if (maxDice > 0)
                     		m_dice[i] = bridge.getRandom(maxDice, annotation) + bonus;

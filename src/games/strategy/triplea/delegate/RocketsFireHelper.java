@@ -242,9 +242,9 @@ public class RocketsFireHelper
         			maxDice = (diceSides+1)/3;
         			bonus = (diceSides+1)/3;
         		}
-        		else if (bonus < 0)
+        		if (bonus < 0)
         			bonus = 0;
-        		else if (maxDice < 0)
+        		if (maxDice < 0)
         			maxDice = diceSides;
         		
         		if ((bonus + (maxDice+1)/2) > (highestBonus + (highestMaxDice+1)/2))
