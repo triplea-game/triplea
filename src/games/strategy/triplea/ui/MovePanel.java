@@ -638,7 +638,7 @@ public class MovePanel extends ActionPanel
         	movable.add(Matches.UnitCanMove);
         
         if(!m_nonCombat)
-            movable.add(new InverseMatch<Unit>( Matches.UnitIsAA));
+            movable.add(new InverseMatch<Unit>(Matches.UnitIsAAorIsAAmovement));
         if(route != null)
         {
             Match<Unit> enoughMovement = new Match<Unit>()
@@ -1564,7 +1564,7 @@ public class MovePanel extends ActionPanel
               unloadable.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
               unloadable.add(Matches.UnitIsLand);
               if(m_nonCombat)
-                  unloadable.add(new InverseMatch<Unit>(Matches.UnitIsAA));
+                  unloadable.add(new InverseMatch<Unit>(Matches.UnitIsAAorIsAAmovement));
             return unloadable;
         }
         

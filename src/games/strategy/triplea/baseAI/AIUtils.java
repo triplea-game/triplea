@@ -114,7 +114,7 @@ public class AIUtils
         for(Unit u : units)
         {
             UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
-            if(unitAttatchment.isAA() || unitAttatchment.isFactory())
+            if(unitAttatchment.isAA() || unitAttatchment.isFactory() || unitAttatchment.getIsInfrastructure())
             {
                 //nothing
             }

@@ -9163,7 +9163,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					continue;
 				
 				UnitType intResults = (UnitType) quickProd.getResults().keySet().iterator().next();
-				if (Matches.UnitTypeIsSeaOrAir.match(intResults) || Matches.UnitTypeIsAAOrFactory.match(intResults))
+				if (Matches.UnitTypeIsSeaOrAir.match(intResults) || Matches.UnitTypeIsAAOrIsFactoryOrIsInfrastructure.match(intResults))
 					continue;
 				
 				if (quickCost <= leftToSpend && unitCount < totProd)

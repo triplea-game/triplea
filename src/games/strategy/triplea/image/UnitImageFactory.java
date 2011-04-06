@@ -229,6 +229,14 @@ public class UnitImageFactory
     	if(TechTracker.hasAARadar(id))
     		name.append("_r");
     }
+    else if (UnitAttachment.get(type).getIsRocket() || UnitAttachment.get(type).isAA())
+    {
+    	if(TechTracker.hasRocket(id))
+    		name.append("_rockets");
+    	
+    	if(TechTracker.hasAARadar(id))
+    		name.append("_r");
+    }
     
     if (UnitAttachment.get(type).isAir() && !UnitAttachment.get(type).isStrategicBomber())
     {

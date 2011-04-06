@@ -85,19 +85,19 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
         //make sure only 1 AA in territory for classic
         if (isWW2V2())
         {
-            placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAA));
+            placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAAorIsAAmovement));
         } else
         {
             //allow 1 AA to be placed if none already exists
-            if (!to.getUnits().someMatch(Matches.UnitIsAA))
+            if (!to.getUnits().someMatch(Matches.UnitIsAAorIsAAmovement))
                 placeableUnits.addAll(Match.getNMatches(units, 1,
-                        Matches.UnitIsAA));
+                        Matches.UnitIsAAorIsAAmovement));
         }
 
         CompositeMatch<Unit> groundUnits = new CompositeMatchAnd<Unit>();
         groundUnits.add(Matches.UnitIsLand);
         // TODO: do we need to check for infrastructure here?
-        groundUnits.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
+        groundUnits.add(new InverseMatch<Unit>(Matches.UnitIsAAOrIsAAmovementOrIsFactory));
         placeableUnits.addAll(Match.getMatches(units, groundUnits));
         placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAir));
 

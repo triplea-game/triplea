@@ -740,6 +740,28 @@ public class Matches
             return ua.isFactory();
         }
     };
+
+
+    public static final Match<UnitType> UnitTypeIsFactoryOrIsInfrastructure = new Match<UnitType>()
+    {
+        public boolean match(UnitType obj)
+        {
+            UnitType type = (UnitType) obj;
+            UnitAttachment ua = UnitAttachment.get(type);
+            return ua.isFactory() || ua.getIsInfrastructure();
+        }
+    };
+
+
+    public static final Match<UnitType> UnitTypeIsFactoryOrIsInfrastructureButNotAAofAnyKind = new Match<UnitType>()
+    {
+        public boolean match(UnitType obj)
+        {
+            UnitType type = (UnitType) obj;
+            UnitAttachment ua = UnitAttachment.get(type);
+            return (ua.isFactory() || ua.getIsInfrastructure()) && !(ua.isAA() || ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly());
+        }
+    };
     
     public static final Match<UnitType> UnitTypeIsInfantry = new Match<UnitType>()
     {
@@ -781,6 +803,14 @@ public class Matches
             return ua.isAA();
         }
     };
+    public static final Match<UnitType> UnitTypeIsAAofAnyKind = new Match<UnitType>()
+    {
+        public boolean match(UnitType obj)
+        {
+            UnitAttachment ua = UnitAttachment.get((UnitType) obj);
+            return ua.isAA() || ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly();
+        }
+    };
 
     public static final Match<UnitType> UnitTypeIsAAOrFactory = new Match<UnitType>()
     {
@@ -792,6 +822,37 @@ public class Matches
 			return false;
 		}
 	};
+
+    public static final Match<UnitType> UnitTypeIsAAOrIsFactoryOrIsInfrastructure = new Match<UnitType>()
+    {
+		public boolean match(UnitType obj)
+		{
+			UnitAttachment ua = UnitAttachment.get((UnitType) obj);
+			if (ua.isAA() || ua.isFactory() || ua.getIsInfrastructure())
+			   return true;
+			return false;
+		}
+	};
+
+    public static final Match<Unit> UnitIsAAorIsRocket = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            UnitType type = ((Unit) obj).getUnitType();
+            UnitAttachment ua = UnitAttachment.get(type);
+            return ua.isAA() || ua.getIsRocket();
+        }
+    };
+
+    public static final Match<Unit> UnitIsAAorIsAAmovement = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            UnitType type = ((Unit) obj).getUnitType();
+            UnitAttachment ua = UnitAttachment.get(type);
+            return ua.isAA() || ua.getIsAAmovement();
+        }
+    };
 
     public static final Match<Unit> UnitIsAA = new Match<Unit>()
     {
@@ -2186,6 +2247,8 @@ public class Matches
     }
     
     public static final Match<Unit> UnitIsAAOrFactory = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory);
+    
+    public static final Match<Unit> UnitIsAAOrIsAAmovementOrIsFactory = new CompositeMatchOr<Unit>(UnitIsAAorIsAAmovement, UnitIsFactory);
     
     public static final Match<Unit> UnitIsAAOrIsFactoryOrIsInfrastructure = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory, UnitIsInfrastructure);
 

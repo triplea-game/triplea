@@ -828,9 +828,9 @@ public class MoveValidator
             return result;
 
         // Don't allow aa guns to move in combat unless they are in a transport
-        if (Match.someMatch(units, Matches.UnitIsAA) && (!route.getStart().isWater() || !route.getEnd().isWater()))
+        if (Match.someMatch(units, Matches.UnitIsAAorIsAAmovement) && (!route.getStart().isWater() || !route.getEnd().isWater()))
         {
-            for (Unit unit : Match.getMatches(units, Matches.UnitIsAA))
+            for (Unit unit : Match.getMatches(units, Matches.UnitIsAAorIsAAmovement))
             	result.addDisallowedUnit("Cannot move AA guns in combat movement phase", unit);
             
             return result;
@@ -1242,7 +1242,7 @@ public class MoveValidator
         }
 
         //make sure that we dont send aa guns to attack
-        if (Match.someMatch(units, Matches.UnitIsAA))
+        if (Match.someMatch(units, Matches.UnitIsAAorIsAAmovement))
         {
             //TODO dont move if some were conquered
 
@@ -1251,7 +1251,7 @@ public class MoveValidator
                 Territory current = route.at(i);
                 if (!(current.isWater() || current.getOwner().equals(player) || data.getAllianceTracker().isAllied(player, current.getOwner())))
                 {
-                    for (Unit unit : Match.getMatches(units, Matches.UnitIsAA))
+                    for (Unit unit : Match.getMatches(units, Matches.UnitIsAAorIsAAmovement))
                         result.addDisallowedUnit("AA units cannot advance to battle", unit);
 
                     break;
@@ -1260,18 +1260,18 @@ public class MoveValidator
         }
 
         //only allow one aa into a land territory unless WW2V2 or WW2V3 or isMultipleAAPerTerritory.
-        //if ((!isWW2V3(data) && !isWW2V2(data)) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd() != null && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
-        if ((!isMultipleAAPerTerritory(data) && !isWW2V3(data) && !isWW2V2(data)) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd() != null && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
+        //if ((!isWW2V3(data) && !isWW2V2(data)) && Match.someMatch(units, Matches.UnitIsAAorIsAAmovement) && route.getEnd() != null && route.getEnd().getUnits().someMatch(Matches.UnitIsAAorIsAAmovement)
+        if ((!isMultipleAAPerTerritory(data) && !isWW2V3(data) && !isWW2V2(data)) && Match.someMatch(units, Matches.UnitIsAAorIsAAmovement) && route.getEnd() != null && route.getEnd().getUnits().someMatch(Matches.UnitIsAAorIsAAmovement)
                 && !route.getEnd().isWater())
         {
-            for (Unit unit : Match.getMatches(units, Matches.UnitIsAA))
+            for (Unit unit : Match.getMatches(units, Matches.UnitIsAAorIsAAmovement))
                 result.addDisallowedUnit("Only one AA gun allowed in a territory",unit);
         }
 
         //only allow 1 aa to unload unless WW2V2 or WW2V3.
-        if (route.getStart().isWater() && !route.getEnd().isWater() && Match.countMatches(units, Matches.UnitIsAA) > 1 && (!isWW2V3(data) && !isWW2V2(data)))
+        if (route.getStart().isWater() && !route.getEnd().isWater() && Match.countMatches(units, Matches.UnitIsAAorIsAAmovement) > 1 && (!isWW2V3(data) && !isWW2V2(data)))
         {
-            Collection<Unit> aaGuns = Match.getMatches(units, Matches.UnitIsAA);
+            Collection<Unit> aaGuns = Match.getMatches(units, Matches.UnitIsAAorIsAAmovement);
             Iterator<Unit> aaIter = aaGuns.iterator();
             aaIter.next(); // skip first unit
             for (; aaIter.hasNext(); )

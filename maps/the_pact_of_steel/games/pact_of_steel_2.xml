@@ -2229,6 +2229,10 @@
 						 <option name="isAAforCombatOnly" value="true"/>-->
 						 <!-- isAAforBombingThisUnitOnly allows this unit to be an AA gun only when this unit is directly attacked by a strategic bombing raid.  it will not defend against a normal attack 
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>-->
+						 <!-- isRocket allows this unit to become a rocket if the player has the rocket technology.  If the unit is named exactly "aaGun" then it will require an image called "rockets".  If the unit is named anything else, then it will require an image with "_rockets" appended to its original name.
+						 <option name="isRocket" value="true"/>-->
+						 <!-- isAAmovement forces this unit to follow the rules for movement of an AA gun, and for placement of AA guns (like max of 1 aa gun per territory, no moving aa guns during combat phase, etc. 
+						 <option name="isAAmovement" value="true"/>-->
                 </attatchment>
 				
 				

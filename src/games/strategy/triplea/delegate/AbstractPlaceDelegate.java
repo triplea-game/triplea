@@ -511,18 +511,18 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             //make sure only 1 AA in territory for classic
             if (isWW2V2() || isWW2V3() || isMultipleAAPerTerritory())
             {
-                placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAA));
+                placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAAorIsAAmovement));
             } else
             {
                 //allow 1 AA to be placed if none already exists
-                if (!to.getUnits().someMatch(Matches.UnitIsAA))
-                    placeableUnits.addAll(Match.getNMatches(units, 1, Matches.UnitIsAA));
+                if (!to.getUnits().someMatch(Matches.UnitIsAAorIsAAmovement))
+                    placeableUnits.addAll(Match.getNMatches(units, 1, Matches.UnitIsAAorIsAAmovement));
             }
 
             CompositeMatch<Unit> groundUnits = new CompositeMatchAnd<Unit>();
             groundUnits.add(Matches.UnitIsLand);
             // should we add infrastructure here?
-            groundUnits.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
+            groundUnits.add(new InverseMatch<Unit>(Matches.UnitIsAAOrIsAAmovementOrIsFactory));
             groundUnits.addInverse(Matches.UnitIsConstruction);  // remove all possible Construction 
             
             placeableUnits.addAll(Match.getMatches(units, groundUnits));
@@ -971,7 +971,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         
         //TODO: veqryn, again, do we need to initialize infrastructure or not?
         Collection<Unit> factoryAndAA = Match.getMatches(units,
-                Matches.UnitIsAAOrFactory);
+                Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
         change.add(DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker()
                 .addOriginalOwnerChange(factoryAndAA, m_player));
        

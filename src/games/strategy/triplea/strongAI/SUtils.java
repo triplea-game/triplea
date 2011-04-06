@@ -2374,7 +2374,7 @@ public class SUtils
 		Unit u = units;
 		
 		UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
-		if (unitAttatchment.isAA() || unitAttatchment.isFactory())
+		if (unitAttatchment.isAA() || unitAttatchment.isFactory() || unitAttatchment.getIsInfrastructure())
 		{
 			// nothing
 		}
@@ -2425,7 +2425,7 @@ public class SUtils
 		for (Unit u : units)
 		{
 			UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
-			if (unitAttatchment.isAA() || unitAttatchment.isFactory())
+			if (unitAttatchment.isAA() || unitAttatchment.isFactory() || unitAttatchment.getIsInfrastructure())
 				continue;
 			else if (unitAttatchment.isSea() == sea)
 			{
@@ -4794,7 +4794,7 @@ public class SUtils
 			return null;
 		}
 		
-		CompositeMatch<Unit> ignore = new CompositeMatchAnd<Unit>(Matches.UnitIsAAOrFactory.invert(), Matches.alliedUnit(player, data).invert());
+		CompositeMatch<Unit> ignore = new CompositeMatchAnd<Unit>(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure.invert(), Matches.alliedUnit(player, data).invert());
 		CompositeMatch<Unit> sub = new CompositeMatchAnd<Unit>(Matches.UnitIsSub.invert());
 		CompositeMatch<Unit> transport = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport.invert(), Matches.UnitIsLand.invert());
 		CompositeMatch<Unit> unitCond = ignore;

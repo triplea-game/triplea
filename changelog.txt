@@ -1,4 +1,9 @@
 Changes for 1.2.7
+* Added new unit attachment, isRocket, which will turn the unit into a rocket when the player has the rocket technology, without the unit being an AA gun.  
+  If the unit is named exactly "aaGun" then it will require an image called "rockets".  If the unit is named anything else, then it will require an image with "_rockets" appended to its original name. (veqryn)
+
+* Added new unit attachment, isAAmovement, which when true the unit will follow the rules specified for movement of an AA gun, even if it is not an AA gun, or is a special kind of AA gun. (veqryn)
+
 * Fixed issue where battle calc calls with AA units was generating divide by zero. (veqryn)
 
 * Fixed bug where battles never ended between units with zero attack/defense power. (veqryn)

@@ -54,6 +54,8 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isAA = false;
   private boolean m_isAAforCombatOnly = false;
   private boolean m_isAAforBombingThisUnitOnly = false;
+  private boolean m_isAAmovement = false;
+  private boolean m_isRocket = false;
   private boolean m_isFactory = false;
   private boolean m_canBlitz = false;
   private boolean m_isAirTransport = false;
@@ -834,6 +836,26 @@ public class UnitAttachment extends DefaultAttachment
     return m_isAAforBombingThisUnitOnly;
   }
   
+  public void setIsAAmovement(String s)
+  {
+	  m_isAAmovement = getBool(s);
+  }
+
+  public boolean getIsAAmovement()
+  {
+    return m_isAAmovement;
+  }
+  
+  public void setIsRocket(String s)
+  {
+	  m_isRocket = getBool(s);
+  }
+
+  public boolean getIsRocket()
+  {
+    return m_isRocket;
+  }
+  
   
   
   public String getRawProperty(String property) {
@@ -1008,6 +1030,8 @@ public class UnitAttachment extends DefaultAttachment
     "  aa:" + m_isAA +
     "  isAAforCombatOnly:" + m_isAAforCombatOnly +
     "  isAAforBombingThisUnitOnly:" + m_isAAforBombingThisUnitOnly +
+    "  isRocket:" + m_isRocket + 
+    "  isAAmovement:" + m_isAAmovement + 
     "  factory:" + m_isFactory +
     "  blitz:" + m_canBlitz +
     "  airTransport:" + m_isAirTransport +

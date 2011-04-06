@@ -219,7 +219,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         if(capitol == null ||!capitol.getOwner().equals(player))
             return;
         
-        List<Unit> unitsToLoad = capitol.getUnits().getMatches( Matches.UnitIsAAOrFactory.invert());
+        List<Unit> unitsToLoad = capitol.getUnits().getMatches( Matches.UnitIsAAOrIsFactoryOrIsInfrastructure.invert());
         unitsToLoad = Match.getMatches(unitsToLoad, Matches.unitIsOwnedBy(getWhoAmI()));
         
         for(Territory neighbor : data.getMap().getNeighbors(capitol))
@@ -1003,7 +1003,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                     }
                     
                     UnitType results = (UnitType) rule.getResults().keySet().iterator().next();
-                    if(Matches.UnitTypeIsSea.match(results) || Matches.UnitTypeIsAir.match(results) ||  Matches.UnitTypeIsAA.match(results) || Matches.UnitTypeIsFactory.match(results))
+                    if(Matches.UnitTypeIsSea.match(results) || Matches.UnitTypeIsAir.match(results) ||  Matches.UnitTypeIsAAOrIsFactoryOrIsInfrastructure.match(results))
                     {
                         continue;
                     }
@@ -1163,7 +1163,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 }
                 
                 UnitType results = (UnitType) rule.getResults().keySet().iterator().next();
-                if(Matches.UnitTypeIsAir.match(results) ||  Matches.UnitTypeIsAA.match(results) || Matches.UnitTypeIsFactory.match(results))
+                if(Matches.UnitTypeIsAir.match(results) ||  Matches.UnitTypeIsAAOrIsFactoryOrIsInfrastructure.match(results))
                 {
                     continue;
                 }

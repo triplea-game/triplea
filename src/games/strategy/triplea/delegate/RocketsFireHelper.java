@@ -157,7 +157,7 @@ public class RocketsFireHelper
         Set<Territory> territories = new HashSet<Territory>();
 
         CompositeMatch<Unit> ownedAA = new CompositeMatchAnd<Unit>();
-        ownedAA.add(Matches.UnitIsAA);
+        ownedAA.add(Matches.UnitIsAAorIsRocket);
         ownedAA.add(Matches.unitIsOwnedBy(player));
 
         BattleTracker tracker = MoveDelegate.getBattleTracker(data);
@@ -227,7 +227,7 @@ public class RocketsFireHelper
         	cost = bridge.getRandom(data.getDiceSides(), "Rocket fired by " + player.getName() + " at " + attacked.getName());
         else
         {
-            CompositeMatch<Unit> ownedAA = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAA);
+            CompositeMatch<Unit> ownedAA = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAAorIsRocket);
             Collection<Unit> rockets = new ArrayList<Unit>(Match.getMatches(attackFrom.getUnits().getUnits(), ownedAA));
             int highestMaxDice = 0;
             int highestBonus = 0;
@@ -342,7 +342,7 @@ public class RocketsFireHelper
         //this is null in WW2V1
         if(attackFrom != null)
         {
-            List<Unit> units = attackFrom.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsAA, Matches.unitIsOwnedBy(player) ));
+            List<Unit> units = attackFrom.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsAAorIsRocket, Matches.unitIsOwnedBy(player) ));
             
             if(units.size() > 0)
             {
