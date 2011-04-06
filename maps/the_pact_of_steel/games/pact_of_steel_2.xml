@@ -1885,6 +1885,19 @@
                         <option name="warBonds" value="false"/>
                         <option name="mechanizedInfantry" value="false"/>
                 </attatchment>
+				
+				<!-- Certain units require extra graphical icons present, for when technology is researched or damage is done.  Here is a list, in order of what is needed:
+						Anything I list as "_something" means that you must have the units exact name in front of it, example: fighter_jp
+						if the unit is called "aaGun" then you need units called "rockets", "rockets_r", and "aaGun_r"
+						if the unit has "isAA", but is not exactly named "aaGun", then you need units called "_rockets" and "_r" and "_rockets_r"
+						if the unit has "isRocket", you need "_rockets"
+						if the unit has "isAAforCombatOnly" and/or "isAAforBombingThisUnitOnly", then you need "_r"
+						if the unit has "isAir", but not "isStrategicBomber", then you need "_lr", and "_jp"
+						if the unit has "isAir", and is "isStrategicBomber", then you need "_lr", and "_hb"
+						if the unit has "isSub", then you need "_ss"
+						if the unit has "isFactory", or is called "factory", then you need "_it"
+						if a unit can be damaged (by being a factory, or by having "canBeDamaged", then you will need "_hit" and "_disabled"
+						-->
 
                 <!-- Americans -->
                 <attatchment name="techAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -1981,7 +1994,7 @@
                 <!-- Bomber -->
                 <attatchment name="unitAttatchment" attatchTo="bomber" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="6"/>
-                         <option name="isAir" value="true"/>
+                         <option name=isAir value="true"/>
                          <option name="attack" value="4"/>
                          <option name="defense" value="1"/>
 						 <!-- used for bombing factories -->

@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Updating UnitImageFactory to not rely on hardcoded unit names. Now any unit with isAA unit attachment will require _r and _rockets and _rockets_r IF you have those technologies.  Same applied for new aa gun rules and factories. (veqryn)
+
 * Added new unit attachment, isRocket, which will turn the unit into a rocket when the player has the rocket technology, without the unit being an AA gun.  
   If the unit is named exactly "aaGun" then it will require an image called "rockets".  If the unit is named anything else, then it will require an image with "_rockets" appended to its original name. (veqryn)
 

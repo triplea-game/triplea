@@ -229,11 +229,21 @@ public class UnitImageFactory
     	if(TechTracker.hasAARadar(id))
     		name.append("_r");
     }
-    else if (UnitAttachment.get(type).getIsRocket() || UnitAttachment.get(type).isAA())
+    else if (UnitAttachment.get(type).isAA() || (UnitAttachment.get(type).getIsRocket() && (UnitAttachment.get(type).getIsAAforBombingThisUnitOnly() || UnitAttachment.get(type).getIsAAforCombatOnly())))
     {
     	if(TechTracker.hasRocket(id))
     		name.append("_rockets");
     	
+    	if(TechTracker.hasAARadar(id))
+    		name.append("_r");
+    }
+    else if (UnitAttachment.get(type).getIsRocket())
+    {
+    	if(TechTracker.hasRocket(id))
+    		name.append("_rockets");
+    }
+    else if (UnitAttachment.get(type).getIsAAforBombingThisUnitOnly() || UnitAttachment.get(type).getIsAAforCombatOnly())
+    {
     	if(TechTracker.hasAARadar(id))
     		name.append("_r");
     }
@@ -273,7 +283,7 @@ public class UnitImageFactory
       {}
     }
 
-    if (type.getName().equals(Constants.FACTORY_TYPE))
+    if (type.getName().equals(Constants.FACTORY_TYPE) || UnitAttachment.get(type).isFactory())
     {
       if (TechTracker.hasIndustrialTechnology(id) || TechTracker.hasIncreasedFactoryProduction(id))
       {
