@@ -1994,7 +1994,7 @@
                 <!-- Bomber -->
                 <attatchment name="unitAttatchment" attatchTo="bomber" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="6"/>
-                         <option name=isAir value="true"/>
+                         <option name="isAir" value="true"/>
                          <option name="attack" value="4"/>
                          <option name="defense" value="1"/>
 						 <!-- used for bombing factories -->
