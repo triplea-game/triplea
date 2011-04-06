@@ -177,12 +177,15 @@ public class BattleCalculator
         int highestAttack = attackThenDiceSides[0];
         int chosenDiceSize = attackThenDiceSides[1];
         
-    	int groupSize = chosenDiceSize / highestAttack;
+        Collection<Unit> hitUnits = new ArrayList<Unit>();
+    	
+        if (highestAttack < 1)
+        	return hitUnits;
+        
+        int groupSize = chosenDiceSize / highestAttack;
     	
     	Tuple<List<Unit>, List<Unit>> airSplit = categorizeLowLuckAirUnits(planes, location, chosenDiceSize, groupSize);
     	int hitsLeft = dice.getHits();
-    	
-    	Collection<Unit> hitUnits = new ArrayList<Unit>();
     	
         //the non rolling air units
     	for(int i = 0; i < airSplit.getFirst().size(); i+=groupSize) {

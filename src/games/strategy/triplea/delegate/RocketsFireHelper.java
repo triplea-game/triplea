@@ -237,7 +237,7 @@ public class RocketsFireHelper
         		UnitAttachment ua = UnitAttachment.get(u.getType());
         		int maxDice = ua.getBombingMaxDieSides();
         		int bonus = ua.getBombingBonus();
-        		if (maxDice < 0 && bonus < 0)
+        		if (maxDice < 0 && bonus < 0 && diceSides >= 5)
         		{
         			maxDice = (diceSides+1)/3;
         			bonus = (diceSides+1)/3;
