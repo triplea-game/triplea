@@ -102,6 +102,9 @@ public class DiceRoll implements Externalizable
         if (highestAttack > chosenDiceSize / 2 && chosenDiceSize > 1)
         	highestAttack = chosenDiceSize / 2; // sadly the whole low luck section falls apart if AA are hitting at greater than half the value of dice, and I don't feel like rewriting it
         
+        if (highestAttack < 1) // this should never happen, because it means location is empty. however it seems to be happening from calls from dynamix ai, so keeping this in for now
+        	highestAttack = (location.getUnits().someMatch(Matches.UnitIsRadarAA)) ? 2 : 1;
+        
         attackThenDiceSides[0] = highestAttack;
         attackThenDiceSides[1] = chosenDiceSize;
         return attackThenDiceSides;

@@ -4000,7 +4000,7 @@
 				</property>
 
 						<!-- if false, (all property default to false), then units killed by suicide units can return fire.  if true, they can not return fire -->
-				<property name="Suicide and Munition Casualties Restricted" value="false" editable="false">
+				<property name="Suicide and Munition Casualties Restricted" value="false" editable="true">
 						<boolean/>
 				</property>
 
