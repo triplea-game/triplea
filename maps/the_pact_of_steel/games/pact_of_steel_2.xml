@@ -2147,7 +2147,8 @@
 						 <option name="isConstruction" value="true"/>
 						 <!-- constructionType is just a unique string which identifies what kind of construction this. 
 								if two or more constructions have the exact same constructionType (and the same PerType rules), then will follow the same rules for placement.
-								example: if you have little_bunker and big_bunker both as type "bunker", with constructionsPerTerrPerTypePerTurn=2, then you could place 2 littles, or 2 bigs, or 1 little and 1 big in a territory -->
+								example: if you have little_bunker and big_bunker both as type "bunker", with constructionsPerTerrPerTypePerTurn=2, then you could place 2 littles, or 2 bigs, or 1 little and 1 big in a territory 
+								if you do not want this unit to be effected by the global properties "More Constructions with/without Factory", then make sure the type ends in "structure". example: "harbour_structure" -->
 						 <option name="constructionType" value="bunker"/>
 						 <!-- constructionsPerTerrPerTypePerTurn is how many of this type you can place in a territory every turn -->
 						 <option name="constructionsPerTerrPerTypePerTurn" value="1"/>
@@ -2166,7 +2167,7 @@
 						 <option name="maxOperationalDamage" value="3"/>
 						 <option name="isAirBase" value="true"/>
 						 <option name="isConstruction" value="true"/>
-						 <option name="constructionType" value="airfield"/>
+						 <option name="constructionType" value="airfield_structure"/>
 						 <option name="constructionsPerTerrPerTypePerTurn" value="1"/>
 						 <option name="maxConstructionsPerTypePerTerr" value="1"/>
 						 <!-- destroyedWhenCapturedBy is a list of the players who destroy this non-combat unit instead of capturing it.  all non-combat units are normally captured by default 
@@ -2190,7 +2191,7 @@
 								unless the unit being repaired is sea, and the unit repairing it is land, in which case the sea unit must be adjacent to the land unit -->
 						 <option name="repairsUnits" value="battleship"/>
 						 <option name="isConstruction" value="true"/>
-						 <option name="constructionType" value="harbour"/>
+						 <option name="constructionType" value="harbour_structure"/>
 						 <option name="constructionsPerTerrPerTypePerTurn" value="1"/>
 						 <option name="maxConstructionsPerTypePerTerr" value="1"/>
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>

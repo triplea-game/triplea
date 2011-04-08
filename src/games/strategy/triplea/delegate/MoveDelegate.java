@@ -210,6 +210,13 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         }
     }
     
+    /**
+     * This entire method relies on the fact that "TripleAUnit.ALREADY_MOVED" can be a negative value.
+     * Normally TripleAUnit.ALREADY_MOVED is positive, and so it is increased each time the unit moves.  
+     * But since we make it a negative value here, a unit is temporarily gaining movement for this turn.  
+     * Thankfully the movement validator takes this into account.
+     * (veqryn)
+     */
     private void giveBonusMovement(IDelegateBridge aBridge, GameData data, PlayerID player)
     {
     	CompositeChange change = new CompositeChange();

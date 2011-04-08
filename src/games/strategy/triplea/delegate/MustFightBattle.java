@@ -2636,6 +2636,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	if (isAirAttackSubRestricted() && !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer) && Match.someMatch(attackedDefenders, Matches.UnitIsSub))
     		attackedDefenders.removeAll(Match.getMatches(attackedDefenders, Matches.UnitIsSub));
     	
+    	if (Match.allMatch(suicideAttackers, Matches.UnitIsSub))
+    		attackedDefenders.removeAll(Match.getMatches(attackedDefenders, Matches.UnitIsAir));
+    	
     	if (suicideAttackers.size() == 0 || attackedDefenders.size() == 0)
     		return;
     	
@@ -2657,6 +2660,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	//comparatively simple rules for isSuicide units.  if AirAttackSubRestricted and you have no destroyers, you can't attack subs with anything.
     	if (isAirAttackSubRestricted() && !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer) && Match.someMatch(attackedAttackers, Matches.UnitIsSub))
     		attackedAttackers.removeAll(Match.getMatches(attackedAttackers, Matches.UnitIsSub));
+    	
+    	if (Match.allMatch(suicideDefenders, Matches.UnitIsSub))
+    		suicideDefenders.removeAll(Match.getMatches(suicideDefenders, Matches.UnitIsAir));
     	
     	if (suicideDefenders.size() == 0 || attackedAttackers.size() == 0)
     		return;

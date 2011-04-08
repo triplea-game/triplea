@@ -378,10 +378,7 @@ public class UnitAttachment extends DefaultAttachment
 
   public void setMaxConstructionsPerTypePerTerr(String s)
   {
-	  if (games.strategy.triplea.Properties.getUnlimitedConstructions(getData()))
-		  m_maxConstructionsPerTypePerTerr = 10000;
-	  else
-		  m_maxConstructionsPerTypePerTerr = getInt(s);
+	  m_maxConstructionsPerTypePerTerr = getInt(s);
   }
 
   public int getMaxConstructionsPerTypePerTerr()
@@ -764,9 +761,8 @@ public class UnitAttachment extends DefaultAttachment
       if(ut == null)
           throw new IllegalStateException("Unit Attachments: No unit called:" + unitTypeToProduce);
       
+      // we should allow positive and negative numbers, since you can give bonuses to units or take away a unit's movement
       int n = getInt(s[0]);
-      //if(n <= 0)
-      //	throw new IllegalStateException("Unit Attachments: givesMovement must be a positive integer");
       
       m_givesMovement.put(ut, n);
   }

@@ -306,6 +306,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
 
         boolean moreWithoutFactory = games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(m_data);
         boolean moreWithFactory = games.strategy.triplea.Properties.getMoreConstructionsWithFactory(m_data);
+        boolean unlimitedConstructions = games.strategy.triplea.Properties.getUnlimitedConstructions(m_data);
         TerritoryAttachment ta = TerritoryAttachment.get(to);
         Collection<Unit> unitsInTO = to.getUnits().getUnits();
         Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
@@ -335,10 +336,10 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             	String constructionType = mapString.next();
         		int unitMax = unitMapMaxType.getInt(constructionType);
         		// unlimited constructions game property gets set when the unit is initialized in UnitAttachment.java, so we don't bother with it here
-        		if (moreWithFactory && wasFactoryThereAtStart && constructionType != "factory")
-        			unitMax = Math.max(unitMax, ta.getProduction());
-        		if (moreWithoutFactory && !wasFactoryThereAtStart && constructionType != "factory")
-        			unitMax = Math.max(unitMax, ta.getProduction());
+        		if (wasFactoryThereAtStart && constructionType != "factory" && !constructionType.endsWith("structure"))
+        			unitMax = Math.max(Math.max(unitMax, (moreWithFactory ? ta.getProduction() : 0)), (unlimitedConstructions ? 10000 : 0));
+        		if (!wasFactoryThereAtStart && constructionType != "factory" && !constructionType.endsWith("structure"))
+        			unitMax = Math.max(Math.max(unitMax, (moreWithoutFactory ? ta.getProduction() : 0)), (unlimitedConstructions ? 10000 : 0));
         		unitMapHeld.put(constructionType, Math.max(0, Math.min(unitMax - unitMapTO.getInt(constructionType), unitMapHeld.getInt(constructionType))));
             }
         }
