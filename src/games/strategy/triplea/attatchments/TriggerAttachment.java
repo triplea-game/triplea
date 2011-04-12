@@ -32,7 +32,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.DelegateFinder;
-import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
@@ -63,6 +62,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	private UnitType m_unitType = null;
 	private Map<String,Map<TechAdvance,Boolean>> m_availableTechs = null;
 	private String m_victory = null;
+	private String m_conditionType = "AND";
 
 	public TriggerAttachment() {
 	}
@@ -143,6 +143,16 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	public void setVictory(String s) {
 		m_victory = s;
+	}
+	
+	public String getConditionType() {
+		return m_conditionType;
+	}
+	
+	public void setConditionType(String s) throws GameParseException{
+		if (!(s.equals("and") || s.equals("AND") || s.equals("or") || s.equals("OR") || s.equals("XOR") || s.equals("xor")))
+			throw new GameParseException("Triggers: conditionType must be equal to AND or OR or XOR");
+		m_conditionType = s;
 	}
 	
 	public List<TechAdvance> getTech() {
@@ -340,17 +350,55 @@ public class TriggerAttachment extends DefaultAttachment{
 	public IntegerMap<UnitType> getPurchase() {
 		return m_purchase;
 	}
+	
+	/**
+	 * This will account for Invert and conditionType
+	 */
+	private static boolean isMet(TriggerAttachment t, GameData data) {
+		boolean met = false;
+		String conditionType = t.getConditionType();
+		if (conditionType.equals("AND") || conditionType.equals("and"))
+		{
+			for (RulesAttachment c:t.getTrigger()) {
+				met = c.isSatisfied(data) != t.getInvert();
+				if (!met)
+					break;
+			}
+		}
+		else if (conditionType.equals("OR") || conditionType.equals("or"))
+		{
+			for (RulesAttachment c:t.getTrigger()) {
+				met = c.isSatisfied(data) != t.getInvert();
+				if (met)
+					break;
+			}
+		}
+		else if (conditionType.equals("XOR") || conditionType.equals("xor"))
+		{
+			// XOR is confusing with more than 2 conditions, so we will just say that one has to be true, while all others must be false
+			boolean isOneTrue = false;
+			for (RulesAttachment c:t.getTrigger()) {
+				met = c.isSatisfied(data) != t.getInvert();
+				if (isOneTrue && met)
+				{
+					isOneTrue = false;
+					break;
+				}
+				else if (met)
+					isOneTrue = true;
+			}
+			met = isOneTrue;
+		}
+		
+		return met;
+	}
+	
 	public static void triggerProductionChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
 		Set<TriggerAttachment> trigs = getTriggers(player,data,prodMatch);
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t:trigs) {
-			boolean met = false;
-			for(RulesAttachment c:t.getTrigger()) {
-				met = c.isSatisfied(data);
-				if(!met)
-					break;
-			}
-			if(met!=t.getInvert())
+			boolean met = isMet(t, data);
+			if(met)
 			{
 				t.use(aBridge);
 				for( PlayerID aPlayer: t.getPlayers()){
@@ -366,13 +414,8 @@ public class TriggerAttachment extends DefaultAttachment{
 	public static String triggerVictory(PlayerID player, IDelegateBridge aBridge, GameData data) {
 		Set<TriggerAttachment> trigs = getTriggers(player,data,victoryMatch);
 		for(TriggerAttachment t:trigs) {
-			boolean met = false;
-			for(RulesAttachment c:t.getTrigger()) {
-				met = c.isSatisfied(data);
-				if(!met)
-					break;
-			}
-			if(met!=t.getInvert()) {
+			boolean met = isMet(t, data);
+			if(met) {
 				t.use(aBridge);
 				// no need for history writing as the method calling this has its own history writer
 				for( PlayerID aPlayer: t.getPlayers()){
@@ -386,13 +429,8 @@ public class TriggerAttachment extends DefaultAttachment{
 	public static void triggerTechChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
 		Set<TriggerAttachment> trigs = getTriggers(player,data,techMatch);
 		for(TriggerAttachment t:trigs) {
-			boolean met = false;
-			for(RulesAttachment c:t.getTrigger()) {
-				met = c.isSatisfied(data);
-				if(!met)
-					break;
-			}
-			if(met!=t.getInvert()) {
+			boolean met = isMet(t, data);
+			if(met) {
 				t.use(aBridge);
 				for( PlayerID aPlayer: t.getPlayers()){
 					for( TechAdvance ta:t.getTech()) {
@@ -410,13 +448,8 @@ public class TriggerAttachment extends DefaultAttachment{
 	public static void triggerAvailableTechChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
 		Set<TriggerAttachment> trigs = getTriggers(player,data,techAMatch);
 		for(TriggerAttachment t:trigs) {
-			boolean met = false;
-			for(RulesAttachment c:t.getTrigger()) {
-				met = c.isSatisfied(data);
-				if(!met)
-					break;
-			}
-			if(met!=t.getInvert()) {
+			boolean met = isMet(t, data);
+			if(met) {
 				t.use(aBridge);
 				for( PlayerID aPlayer: t.getPlayers()){
 					for(String cat:t.getAvailableTech().keySet()){
@@ -444,13 +477,8 @@ public class TriggerAttachment extends DefaultAttachment{
 	public static void triggerUnitPlacement(PlayerID player, IDelegateBridge aBridge, GameData data) {
 		Set<TriggerAttachment> trigs = getTriggers(player,data,placeMatch);
 		for(TriggerAttachment t:trigs) {
-			boolean met = false;
-			for(RulesAttachment c:t.getTrigger()) {
-				met = c.isSatisfied(data);
-				if(!met)
-					break;
-			}
-			if(met!=t.getInvert()) {
+			boolean met = isMet(t, data);
+			if(met) {
 				t.use(aBridge);
 				for( PlayerID aPlayer: t.getPlayers()){
 					for(Territory ter: t.getPlacement().keySet()) {
@@ -465,13 +493,8 @@ public class TriggerAttachment extends DefaultAttachment{
 	public static void triggerPurchase(PlayerID player, IDelegateBridge aBridge, GameData data) {
 		Set<TriggerAttachment> trigs = getTriggers(player,data,purchaseMatch);
 		for(TriggerAttachment t:trigs) {
-			boolean met = false;
-			for(RulesAttachment c:t.getTrigger()) {
-				met = c.isSatisfied(data);
-				if(!met)
-					break;
-			}
-			if(met!=t.getInvert()) {
+			boolean met = isMet(t, data);
+			if(met) {
 				t.use(aBridge);
 				for( PlayerID aPlayer: t.getPlayers()){
 					List<Unit> units = new ArrayList<Unit>();
@@ -494,13 +517,8 @@ public class TriggerAttachment extends DefaultAttachment{
 		Set<TriggerAttachment> trigs = getTriggers(player,data,resourceMatch);
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t:trigs) {
-			boolean met = false;
-			for(RulesAttachment c:t.getTrigger()) {
-				met = c.isSatisfied(data);
-				if(!met)
-					break;
-			}
-			if(met!=t.getInvert()){
+			boolean met = isMet(t, data);
+			if(met) {
 				t.use(aBridge);
 				for( PlayerID aPlayer: t.getPlayers()){
 					int toAdd = t.getResourceCount();
@@ -528,13 +546,8 @@ public class TriggerAttachment extends DefaultAttachment{
 		Set<TriggerAttachment> trigs = getTriggers(player,data,supportMatch);
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t:trigs) {
-			boolean met = false;
-			for(RulesAttachment c:t.getTrigger()) {
-				met = c.isSatisfied(data);
-				if(!met)
-					break;
-			}
-			if(met!=t.getInvert()){
+			boolean met = isMet(t, data);
+			if(met) {
 				t.use(aBridge);
 				for( PlayerID aPlayer: t.getPlayers()){
 					for(UnitSupportAttachment usa:t.getSupport().keySet()){
@@ -565,13 +578,8 @@ public class TriggerAttachment extends DefaultAttachment{
 		Set<TriggerAttachment> trigs = getTriggers(player,data,unitPropertyMatch);
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t:trigs) {
-			boolean met = false;
-			for(RulesAttachment c:t.getTrigger()) {
-				met = c.isSatisfied(data);
-				if(!met)
-					break;
-			}
-			if(met!=t.getInvert()){
+			boolean met = isMet(t, data);
+			if(met) {
 				t.use(aBridge);
 				for(String property:t.getUnitProperty()) {
 					String[] s = property.split(":");

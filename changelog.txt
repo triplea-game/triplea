@@ -1,4 +1,21 @@
 Changes for 1.2.7
+* Rewrote entire RulesAttachment.java so that territory conditions could use "count" with options like "original", "controlled", etc. (veqryn)
+
+* Added new rule property option, "map", for use with Presence and Exclusion conditions. If used, it will return the entire map's territories. (veqryn)
+
+* Made it so that jet power technology and super subs technology no longer affect units with zero attack and zero defense. (veqryn)
+
+* Completely re-wrote checkUnitExclusions and Made unitPresence work with directExcludedTerritories, alliedExclusionTerritories, enemyExclusionTerritories, enemySurfaceExclusionTerritories. (veqryn)
+
+* Added new rule property and condition/objective, "directExcludedTerritories", which applies to the attached player. (veqryn)
+
+* Added new rule property and condition/objective, "unitPresence", as well as "directPresenceTerritories", "alliedPresenceTerritories", and "enemyPresenceTerritories". 
+  unitPresence is a unit and count for that unit, which must be used with a presence territories to determine if there are those units in those territories or not. (veqryn)
+
+* Added new trigger option, "conditionType", which can be set to AND, OR, XOR. This option defines the relationship conditions in a trigger must have, when there is more than 1 condition in the trigger. (veqryn)
+
+* Fixed bug in triggers where an inverted trigger would activate when it should not, when one condition was false but another true. (veqryn)
+
 * Added the ability for any construction of type ending in "structure" not to be changed by setting global values for unlimited/more constructions. Also fixed issue with submarine suicide units able to attack aircraft. (veqryn)
 
 * Updating UnitImageFactory to not rely on hardcoded unit names. Now any unit with isAA unit attachment will require _r and _rockets and _rockets_r IF you have those technologies.  Same applied for new aa gun rules and factories. (veqryn)

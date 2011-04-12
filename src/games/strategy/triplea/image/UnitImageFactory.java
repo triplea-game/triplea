@@ -254,7 +254,7 @@ public class UnitImageFactory
       {
         name.append("_lr");
       }
-      if (TechTracker.hasJetFighter(id))
+      if (TechTracker.hasJetFighter(id) && (UnitAttachment.get(type).getAttack(id) > 0 || UnitAttachment.get(type).getDefense(id) > 0))
       {
 	    name.append("_jp");
       }
@@ -273,7 +273,7 @@ public class UnitImageFactory
       }
     }
 
-    if (UnitAttachment.get(type).isSub())
+    if (UnitAttachment.get(type).isSub() && (UnitAttachment.get(type).getAttack(id) > 0 || UnitAttachment.get(type).getDefense(id) > 0))
     {
       if (TechTracker.hasSuperSubs(id))
       {

@@ -335,7 +335,6 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             {
             	String constructionType = mapString.next();
         		int unitMax = unitMapMaxType.getInt(constructionType);
-        		// unlimited constructions game property gets set when the unit is initialized in UnitAttachment.java, so we don't bother with it here
         		if (wasFactoryThereAtStart && constructionType != "factory" && !constructionType.endsWith("structure"))
         			unitMax = Math.max(Math.max(unitMax, (moreWithFactory ? ta.getProduction() : 0)), (unlimitedConstructions ? 10000 : 0));
         		if (!wasFactoryThereAtStart && constructionType != "factory" && !constructionType.endsWith("structure"))

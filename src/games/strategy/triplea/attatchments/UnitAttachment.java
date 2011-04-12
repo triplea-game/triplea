@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.List;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.TechTracker;
@@ -542,19 +541,22 @@ public class UnitAttachment extends DefaultAttachment
   
   public int getAttack(PlayerID player)
   {
-    if(m_isSub)
-    {      
+	int attackValue = m_attack;
+	int maxDiceSides = getData().getDiceSides();
+	
+    if(attackValue > 0 && m_isSub)
+    {
       if(TechTracker.hasSuperSubs(player))
-        return m_attack + 1;
+    	  attackValue++;
     }
     
-    if(m_isAir && !m_isStrategicBomber)
-    {      
+    if(attackValue > 0 && m_isAir && !m_isStrategicBomber)
+    {
       if(TechTracker.hasJetFighter(player) && isWW2V3TechModel(player.getData()))
-          return m_attack + 1;
+    	  attackValue++;
     }
 
-    return m_attack;
+    return Math.min(attackValue, maxDiceSides);
   }
 
 
@@ -580,21 +582,23 @@ public class UnitAttachment extends DefaultAttachment
 
   public int getDefense(PlayerID player)
   {
-    if(m_isAir && !m_isStrategicBomber)
+	int defenseValue = m_defense;
+	int maxDiceSides = getData().getDiceSides();
+	
+    if(defenseValue > 0 && m_isAir && !m_isStrategicBomber)
     {      
         if(TechTracker.hasJetFighter(player) && !isWW2V3TechModel(player.getData()))
-            return m_defense + 1;
+        	defenseValue++;
     }
-    if(m_isSub && TechTracker.hasSuperSubs(player))
+    if(defenseValue > 0 && m_isSub && TechTracker.hasSuperSubs(player))
     {
-
     	int bonus = games.strategy.triplea.Properties.getSuper_Sub_Defense_Bonus(player.getData());
 
     	if(bonus > 0)
-            return m_defense + bonus;
+    		defenseValue += bonus;
     }
     
-    return m_defense;
+    return Math.min(defenseValue, maxDiceSides);
   }
 
 

@@ -1664,8 +1664,7 @@
 						<techname name="increasedFactoryProduction"/>
 						<techname name="warBonds"/>
 						<techname name="mechanizedInfantry"/>
-						<!-- destroyerBombard requires all isDestroyer units to have a "s_" image variant (this may not be needed, have to look at code) -->
-						<!-- this is also an example of renaming a technology. the first part is the new name, the second is the old name (the hardcoded tech's name) -->
+						<!-- this is an example of renaming a technology. the first part is the new name, the second is the old name (the hardcoded tech's name) -->
 						<techname name="destroyersCanBombard" tech="destroyerBombard"/>
 						<!-- industrial technology replaces a users production frontier with one called productionIndustrialTechnology (and i don't use it in this map)
 						<techname name="industrialTechnology"/> -->
@@ -1725,6 +1724,7 @@
 								<tech name="mechanizedInfantry"/>
 						</category>
 						<category name="Submarine Technology">
+								<!-- as you can see, this is empty but there.  that is because we will add techs to thsi category later by triggers -->
 						</category>
 				</playerTech>
 				<playerTech player="British">
@@ -2830,11 +2830,19 @@
 			invert								values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
 			count								values: the number required to satisfy a rule. if missing, it defaults to ALL. the below options use count:
 			atWarPlayers						values: player names, in a : delimited list (example: value="Germans:Italians:Japanese" count="2" means that you must be at war with 2 of the 3 listed players) [this option currently does NOTHING]
-			alliedOwnershipTerritories			values: "original", "enemy", or a : delimited list of territories
 			directOwnershipTerritories			values: "original", "enemy", or a : delimited list of territories
-			alliedExclusionTerritories			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), or a : delimited list of territories
-			enemyExclusionTerritories			values: "original", or a : delimited list of territories
-			enemySurfaceExclusionTerritories	values: "original", or a : delimited list of territories
+			alliedOwnershipTerritories			values: "original", "enemy", or a : delimited list of territories
+			directExcludedTerritories 			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
+			alliedExclusionTerritories			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
+			enemyExclusionTerritories			values: "original", "map" (map = all territories on map), or a : delimited list of territories
+			enemySurfaceExclusionTerritories	values: "original", "map" (map = all territories on map), or a : delimited list of territories
+			directPresenceTerritories 			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
+			alliedPresenceTerritories 			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
+			enemyPresenceTerritories 			values: "original", "map" (map = all territories on map), or a : delimited list of territories
+			unitPresence 						values: "ANY" or the exact name of the unit, and the number of that unit.  (example: value="infantry" count="2", or: value="ANY" count="3")
+														unitPresence can be put in multiple times. Its purpose is to specify the units for presence and excluded territories. If missing, then presence needs only 1 of any unit, and excluded needs to be completely devoid of units
+														It can be used in conjunction with directPresenceTerritories, alliedPresenceTerritories, enemyPresenceTerritories, directExcludedTerritories, alliedExclusionTerritories, enemyExclusionTerritories, enemySurfaceExclusionTerritories
+														If used with an exclusion, then the number of units of that type must be less than or equal the count.  (Use count="0" if you want no units of that type in the territories).
 			techs								values: any list of technologies, : delimited (if count = zero, then must have exactly zero technologies [if count is missing, defaults to zero])
 	-->
 	<!-- German Objectives -->
@@ -3019,6 +3027,16 @@
                 	<option name="invert" value="true"/>
                 </attatchment>
 				
+                <attatchment name="conditionAttachmentJapaneseBattleships" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directPresenceTerritories" value="map" count="1"/>
+					<option name="unitPresence" value="battleship" count="1"/>
+                </attatchment>
+				
+                <attatchment name="conditionAttachmentJapaneseCarriers" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directPresenceTerritories" value="map" count="1"/>
+					<option name="unitPresence" value="carrier" count="1"/>
+                </attatchment>
+				
 	<!-- Italians Conditions -->
                 <attatchment name="conditionAttachmentItalians1" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="turns" value="3:4"/>
@@ -3097,8 +3115,10 @@
 	<!-- the following options are allowed for "triggerAttachmentXXX"
 			trigger								values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
 															can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
-			uses 								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
+			conditionType 						values: AND, OR, XOR.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition in the trigger. 
+														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false.
 			invert 								values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
+			uses 								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
 			players								values: the names of the players to give these things to. if missing, defaults to attached player. (example: value="Germans:Italians")
 			tech		 						values: the names of any technology to be given to the active or specified player. given at end of tech activation phase. (example: value="rocket:longRangeAir")
 			availableTech						values: the name of the category to be added to, followed by the names of the technologies to add to it. (example: value="airCategory:longRangeAir:jetPower:superHeavyBomber")
@@ -3144,6 +3164,7 @@
 
                 <attatchment name="triggerAttachmentGermans3" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentGermans3a:conditionAttachmentGermans3b"/>
+                	<option name="conditionType" value="AND"/>
                 	<option name="tech" value="rocket"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
@@ -3279,6 +3300,14 @@
                 	<option name="trigger" value="conditionAttachmentAmericans4"/>
                 	<option name="support" value="supportAttachmentFighter"/>
                 	<option name="uses" value="1"/>
+                </attatchment>
+
+                <attatchment name="triggerAttachmentAmericans5" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentJapaneseCarriers:conditionAttachmentJapaneseBattleships"/>
+					<option name="conditionType" value="OR"/>
+					<option name="invert" value="true"/>
+					<option name="resource" value="PUs"/>
+					<option name="resourceCount" value="4"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentAmericansParatroopers" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -4282,6 +4311,7 @@
 							AND no enemy surface ships in sea zones 1, 2, 7, 8, 9, 10, 11, 12, 13, and 14<br>
         				+4 PUs if Allies controls 6 out of 13 of Alaska, East Indies, Borneo, Philipine Islands, New Guinea, Solomon Islands, Caroline Islands,
 							Australia, New Zealand, Okinawa, Wake Island, Hawaiian Islands, Midway<br>
+						+4 PUs if Japan has no Battleships or Carriers at the end of USA's turn<br>
 						* USA gains Paratroopers if at the end of Germany's 3rd or 4th turn, the Allies control Western Europe<br>
 						* USA gains Improved Shipyards if at the end of their 3rd, 4th or 5th turns, USA controls 4 out of 4 of
 							Alaska, Wake Island, Hawaiian Islands, Midway<br>
@@ -4342,8 +4372,9 @@
 						WOLF PACK TACTICS- submarines get +1 attack and +1 defense (only shows up in battles)<br>
 						<br>
 						<br>Each nation has at least one technology that they can not research. This is shown by a "-" in the research tab. 
-							The Germans can't research War Bonds, Japanese can't get shipyards, Russians can't get paratroopers, 
+							The Germans can't research War Bonds, Japanese can't get Shipyards, Russians can't get Paratroopers, 
 							British can't get Mechanized Inf, Americans can't get Rockets, and Italians can't get about half of the techs.
+							Also, UK, Russia, and Italy both get Destroyers Bombard instead of Super Subs.
         				<br>
         				<br>
         				<b>Victory Conditions</b><br>
