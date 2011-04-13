@@ -221,75 +221,78 @@ public class UnitImageFactory
     StringBuilder name = new StringBuilder(32);
     name.append(type.getName());
 
-    if(type.getName().equals(Constants.AAGUN_TYPE)) 
+    if (!type.getName().endsWith("_hit") && !type.getName().endsWith("_disabled"))
     {
-    	if(TechTracker.hasRocket(id))
-    		name = new StringBuilder("rockets");
-    	
-    	if(TechTracker.hasAARadar(id))
-    		name.append("_r");
-    }
-    else if (UnitAttachment.get(type).isAA() || (UnitAttachment.get(type).getIsRocket() && (UnitAttachment.get(type).getIsAAforBombingThisUnitOnly() || UnitAttachment.get(type).getIsAAforCombatOnly())))
-    {
-    	if(TechTracker.hasRocket(id))
-    		name.append("_rockets");
-    	
-    	if(TechTracker.hasAARadar(id))
-    		name.append("_r");
-    }
-    else if (UnitAttachment.get(type).getIsRocket())
-    {
-    	if(TechTracker.hasRocket(id))
-    		name.append("_rockets");
-    }
-    else if (UnitAttachment.get(type).getIsAAforBombingThisUnitOnly() || UnitAttachment.get(type).getIsAAforCombatOnly())
-    {
-    	if(TechTracker.hasAARadar(id))
-    		name.append("_r");
+	    if(type.getName().equals(Constants.AAGUN_TYPE)) 
+	    {
+	    	if(TechTracker.hasRocket(id))
+	    		name = new StringBuilder("rockets");
+	    	
+	    	if(TechTracker.hasAARadar(id))
+	    		name.append("_r");
+	    }
+	    else if (UnitAttachment.get(type).isAA() || (UnitAttachment.get(type).getIsRocket() && (UnitAttachment.get(type).getIsAAforBombingThisUnitOnly() || UnitAttachment.get(type).getIsAAforCombatOnly())))
+	    {
+	    	if(TechTracker.hasRocket(id))
+	    		name.append("_rockets");
+	    	
+	    	if(TechTracker.hasAARadar(id))
+	    		name.append("_r");
+	    }
+	    else if (UnitAttachment.get(type).getIsRocket())
+	    {
+	    	if(TechTracker.hasRocket(id))
+	    		name.append("_rockets");
+	    }
+	    else if (UnitAttachment.get(type).getIsAAforBombingThisUnitOnly() || UnitAttachment.get(type).getIsAAforCombatOnly())
+	    {
+	    	if(TechTracker.hasAARadar(id))
+	    		name.append("_r");
+	    }
+	    
+	    if (UnitAttachment.get(type).isAir() && !UnitAttachment.get(type).isStrategicBomber())
+	    {
+	      if (TechTracker.hasLongRangeAir(id))
+	      {
+	        name.append("_lr");
+	      }
+	      if (TechTracker.hasJetFighter(id) && (UnitAttachment.get(type).getAttack(id) > 0 || UnitAttachment.get(type).getDefense(id) > 0))
+	      {
+		    name.append("_jp");
+	      }
+	    }
+	
+	    if (UnitAttachment.get(type).isAir() && UnitAttachment.get(type).isStrategicBomber())
+	    {
+	      if (TechTracker.hasLongRangeAir(id))
+	      {
+	        name.append("_lr");
+	      }
+	
+	      if (TechTracker.hasHeavyBomber(id))
+	      {
+	        name.append("_hb");
+	      }
+	    }
+	
+	    if (UnitAttachment.get(type).isSub() && (UnitAttachment.get(type).getAttack(id) > 0 || UnitAttachment.get(type).getDefense(id) > 0))
+	    {
+	      if (TechTracker.hasSuperSubs(id))
+	      {
+	        name.append("_ss");
+	      }
+	      if (TechTracker.hasRocket(id))
+	      {}
+	    }
+	    if (type.getName().equals(Constants.FACTORY_TYPE) || UnitAttachment.get(type).isFactory())
+	    {
+	      if (TechTracker.hasIndustrialTechnology(id) || TechTracker.hasIncreasedFactoryProduction(id))
+	      {
+	          name.append("_it");
+	      }      
+	    }
     }
     
-    if (UnitAttachment.get(type).isAir() && !UnitAttachment.get(type).isStrategicBomber())
-    {
-      if (TechTracker.hasLongRangeAir(id))
-      {
-        name.append("_lr");
-      }
-      if (TechTracker.hasJetFighter(id) && (UnitAttachment.get(type).getAttack(id) > 0 || UnitAttachment.get(type).getDefense(id) > 0))
-      {
-	    name.append("_jp");
-      }
-    }
-
-    if (UnitAttachment.get(type).isAir() && UnitAttachment.get(type).isStrategicBomber())
-    {
-      if (TechTracker.hasLongRangeAir(id))
-      {
-        name.append("_lr");
-      }
-
-      if (TechTracker.hasHeavyBomber(id))
-      {
-        name.append("_hb");
-      }
-    }
-
-    if (UnitAttachment.get(type).isSub() && (UnitAttachment.get(type).getAttack(id) > 0 || UnitAttachment.get(type).getDefense(id) > 0))
-    {
-      if (TechTracker.hasSuperSubs(id))
-      {
-        name.append("_ss");
-      }
-      if (TechTracker.hasRocket(id))
-      {}
-    }
-
-    if (type.getName().equals(Constants.FACTORY_TYPE) || UnitAttachment.get(type).isFactory())
-    {
-      if (TechTracker.hasIndustrialTechnology(id) || TechTracker.hasIncreasedFactoryProduction(id))
-      {
-          name.append("_it");
-      }      
-    }
     if(disabled)
         name.append("_disabled");
     else if(damaged)

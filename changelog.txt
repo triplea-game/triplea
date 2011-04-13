@@ -1,4 +1,8 @@
 Changes for 1.2.7
+* Fixed error unit display of unit graphics, where things that were _hit needed _it on the end instead of front, sometimes resulting in needing _it_hit_it, etc. (veqryn)
+
+* Fixed null pointer in game data getNeighbors match. (veqryn)
+
 * Updating default maps to use latest properties. (veqryn)
 
 * Rewrote entire RulesAttachment.java so that territory conditions could use "count" with options like "original", "controlled", etc. (veqryn)
