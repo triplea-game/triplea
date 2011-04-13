@@ -4116,6 +4116,14 @@
 				<boolean/>
 		</property>
 
+		<property name="Low Luck for Technology" value="false" editable="false">
+				<boolean/>
+		</property>
+
+		<property name="Low Luck for Bombing and Territory Damage" value="false" editable="true">
+				<boolean/>
+		</property>
+
 		<property name="National Objectives" value="false" editable="false">
 				<boolean/>
 		</property>
@@ -4176,6 +4184,10 @@
                 <property name="Produce new fighters on old carriers" value="false" editable="false">
         		<boolean/> 
     		</property> 
+
+				<property name="Land existing fighters on new carriers" value="false" editable="false">
+						<boolean/>
+				</property>
                 
 		<property name="LHTR Carrier production rules" value="false" editable="true">
 			<boolean/> 
@@ -4189,7 +4201,7 @@
 						<boolean/>
 				</property>
 
-		<property name="Two hit battleship" value="true" editable="false">
+		<property name="Two hit battleship" value="true" editable="true">
                         <boolean/>
                 </property>
 

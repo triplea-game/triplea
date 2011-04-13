@@ -578,6 +578,23 @@
 				<property name="Italians bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
+
+				<!-- Low Luck -->
+                <property name="Low Luck" value="false" editable="true">
+                        <boolean/>
+                </property>
+
+				<property name="Low Luck for AntiAircraft" value="false" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Low Luck for Technology" value="false" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Low Luck for Bombing and Territory Damage" value="false" editable="true">
+						<boolean/>
+				</property>
                 
                 <property name="Heavy Bomber Dice Rolls" value="2" editable="true">
                         <number min="2" max="10"/>
@@ -594,15 +611,6 @@
                 <property name="Tech Development" value="true" editable="true">
                         <boolean/>
                 </property>
-
-		<!-- Low Luck -->
-                <property name="Low Luck" value="false" editable="true">
-                        <boolean/>
-                </property>
-
-				<property name="Low Luck for AntiAircraft" value="false" editable="true">
-						<boolean/>
-				</property>
                 
                 
 				<!-- Use WW2V2 Rules -->
@@ -624,7 +632,7 @@
                 <property name="notes">
 	        	<value><![CDATA[   
 		        	   	
-		        	A quick two player game.
+		        	A simple two player game.
 	        	]]></value>        	       
         		</property>                
         </propertyList>

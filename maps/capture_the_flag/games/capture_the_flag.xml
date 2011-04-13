@@ -595,6 +595,22 @@
 		<property name="Chinese bid" value="0" editable="true">
 			<number min="0" max="1000"/>
 		</property>
+
+		<property name="Low Luck" value="false" editable="true">
+				<boolean/>
+		</property>
+
+		<property name="Low Luck for AntiAircraft" value="false" editable="true">
+				<boolean/>
+		</property>
+
+		<property name="Low Luck for Technology" value="false" editable="false">
+				<boolean/>
+		</property>
+
+		<property name="Low Luck for Bombing and Territory Damage" value="false" editable="false">
+				<boolean/>
+		</property>
 	
 	    <!-- Use WW2V2 Rules -->
         <property name="WW2V2" value="true" editable="false">
@@ -621,14 +637,6 @@
 		<property name="neutralCharge" value="0"/>
 
 		<property name="maxFactoriesPerTerritory" value="1"/>
-
-		<property name="Low Luck" value="false" editable="true">
-			<boolean/>
-		</property>     
-
-		<property name="Low Luck for AntiAircraft" value="false" editable="true">
-				<boolean/>
-		</property>
                 
 		<property name="Allied Air Dependents" value="true" editable="false">
         	<boolean/>
@@ -643,7 +651,7 @@
 		
 		When a player loses his base, he is out for good unless he can reliberate it himself &lt;br&gt; &lt;br&gt;
 		
-		Each player starts with 12 PUs of production &lt;br&gt; &lt;br&gt;
+		First player starts with 12 PUs of production, and each player after this gets 3 more than the last player. &lt;br&gt; &lt;br&gt;
 
 		Last man, or Team standing wins (if playing a team, territory can not be shared) &lt;br&gt; &lt;br&gt;
 				

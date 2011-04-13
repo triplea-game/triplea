@@ -578,7 +578,7 @@ public class RulesAttachment extends DefaultAttachment
 	}
 	
 	/**
-	 * takes a string like "original", "controlled", "controlledNoWater", "all", "map", and turns it into an actual list of territories in the form of strings
+	 * takes a string like "original", "enemy", "controlled", "controlledNoWater", "all", "map", and turns it into an actual list of territories in the form of strings
 	 * (veqryn)
 	 */
 	private String getTerritoriesBasedOnStringName(String name, PlayerID player, GameData data)

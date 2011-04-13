@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Updating default maps to use latest properties. (veqryn)
+
 * Rewrote entire RulesAttachment.java so that territory conditions could use "count" with options like "original", "controlled", etc. (veqryn)
 
 * Added new rule property option, "map", for use with Presence and Exclusion conditions. If used, it will return the entire map's territories. (veqryn)

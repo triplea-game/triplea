@@ -4192,6 +4192,10 @@
 				<property name="Low Luck for AntiAircraft" value="false" editable="true">
 						<boolean/>
 				</property>
+
+				<property name="Low Luck for Bombing and Territory Damage" value="false" editable="true">
+						<boolean/>
+				</property>
                 
 				<property name="Tech Development" value="false" editable="false">
                         <boolean/>
