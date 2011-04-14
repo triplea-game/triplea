@@ -130,6 +130,7 @@ public class UnitAttachment extends DefaultAttachment
   
   private Collection<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<PlayerID>();
   private Collection<PlayerID> m_destroyedWhenCapturedBy = new ArrayList<PlayerID>();
+  private Collection<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<PlayerID>();
   
   private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
 
@@ -183,6 +184,24 @@ public class UnitAttachment extends DefaultAttachment
   public Collection<PlayerID> getCanBeGivenByTerritoryTo()
   {
       return m_canBeGivenByTerritoryTo;
+  }
+  
+  public void setCanBeCapturedOnEnteringBy(String value)
+  {
+  	String[] temp = value.split(":");
+  	for (String name : temp)
+  	{
+  		PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+  		if (tempPlayer != null)
+  			m_canBeCapturedOnEnteringBy.add(tempPlayer);
+  		else
+  			throw new IllegalStateException("Unit Attachments: No player named: " + name);
+  	}
+  }
+
+  public Collection<PlayerID> getCanBeCapturedOnEnteringBy()
+  {
+      return m_canBeCapturedOnEnteringBy;
   }
   
   public void setDestroyedWhenCapturedBy(String value)

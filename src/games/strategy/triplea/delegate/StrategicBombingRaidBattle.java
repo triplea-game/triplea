@@ -210,6 +210,18 @@ public class StrategicBombingRaidBattle implements Battle
                         } 
                     } 
                 }
+                
+                // kill any suicide attackers (veqryn)
+                if (Match.someMatch(m_units, Matches.UnitIsSuicide))
+                {
+                	List<Unit> suicideUnits = Match.getMatches(m_units, Matches.UnitIsSuicide);
+
+                    m_units.removeAll(suicideUnits);
+                    Change removeSuicide = ChangeFactory.removeUnits(m_battleSite, suicideUnits);
+                    String transcriptText = MyFormatter.unitsToText(suicideUnits) + " lost in " + m_battleSite.getName();
+                    bridge.getHistoryWriter().addChildToEvent(transcriptText, suicideUnits);
+                    bridge.addChange(removeSuicide);
+                }
         
             }
         

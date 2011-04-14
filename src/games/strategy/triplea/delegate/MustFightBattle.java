@@ -2601,7 +2601,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //TODO - check within the method for the bombarding limitations
         Collection<Unit> bombard = getBombardingUnits();
         Collection<Unit> attacked = Match.getMatches(m_defendingUnits,
-                Matches.UnitIsDestructible);
+                Matches.UnitIsDestructible(m_attacker, m_battleSite, m_data));
 
         //bombarding units cant move after bombarding
         if(!m_headless) 
@@ -2628,7 +2628,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private void fireSuicideUnitsAttack(IDelegateBridge bridge)
     {
     	//TODO: add a global toggle for returning fire (Veqryn)
-		CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructible, Matches.UnitIsSuicide.invert());
+		CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructible(m_attacker, m_battleSite, m_data), Matches.UnitIsSuicide.invert());
     	Collection<Unit> suicideAttackers = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
     	Collection<Unit> attackedDefenders = Match.getMatches(m_defendingUnits, attackableUnits);
     	
@@ -2653,7 +2653,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     		return;
     	
     	//TODO: add a global toggle for returning fire (Veqryn)
-    	CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructible, Matches.UnitIsSuicide.invert());
+    	CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructibleShort, Matches.UnitIsSuicide.invert());
     	Collection<Unit> suicideDefenders = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
     	Collection<Unit> attackedAttackers = Match.getMatches(m_attackingUnits, attackableUnits);
 
@@ -2954,6 +2954,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         noncombatInfrastructure.add(new InverseMatch<Unit>(Matches.UnitIsCombatInfrastructure));
 
         unitList.removeAll(Match.getMatches(unitList, noncombatInfrastructure));
+        
+        //remove capturableOnEntering units (veqryn)
+        unitList.removeAll(Match.getMatches(unitList, Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(m_attacker, m_battleSite, m_data)));
 
         return unitList;
     }

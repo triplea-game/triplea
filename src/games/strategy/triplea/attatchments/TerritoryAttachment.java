@@ -139,6 +139,7 @@ public class TerritoryAttachment extends DefaultAttachment
     private PlayerID m_occupiedTerrOf = null;    
     private boolean m_isConvoyRoute = false;
     private Collection<PlayerID> m_changeUnitOwners = new ArrayList<PlayerID>();
+    private Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
     private String m_convoyAttached = null;
     private boolean m_navalBase = false;
     private boolean m_airBase = false;
@@ -271,6 +272,24 @@ public class TerritoryAttachment extends DefaultAttachment
     public Collection<PlayerID> getChangeUnitOwners()
     {
         return m_changeUnitOwners;
+    }
+    
+    public void setCaptureUnitOnEnteringBy(String value)
+    {
+    	String[] temp = value.split(":");
+    	for (String name : temp)
+    	{
+    		PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+    		if (tempPlayer != null)
+    			m_captureUnitOnEnteringBy.add(tempPlayer);
+    		else
+    			throw new IllegalStateException("Territory Attachments: No player named: " + name);
+    	}
+    }
+    
+    public Collection<PlayerID> getCaptureUnitOnEnteringBy()
+    {
+        return m_captureUnitOnEnteringBy;
     }
     
     public void setConvoyAttached(String value)

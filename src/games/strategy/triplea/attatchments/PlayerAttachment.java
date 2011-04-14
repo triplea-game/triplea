@@ -46,8 +46,9 @@ public class PlayerAttachment extends DefaultAttachment
     private int m_captureVps = 0; // need to store some data during a turn
     private int m_retainCapitalNumber = 1; // number of capitals needed before we lose all our money
     private int m_retainCapitalProduceNumber = 1; // number of capitals needed before we lose ability to gain money and produce units
-    private boolean m_takeUnitControl = false; //no longer needed now that m_giveUnitControl is a list of players instead of a boolean
+    private boolean m_takeUnitControl = false; //no longer needed now that m_giveUnitControl is a list of players instead of a boolean (kept to ensure no java errors in older maps)
     private Collection<PlayerID> m_giveUnitControl = new ArrayList<PlayerID>();
+    private Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
     private boolean m_destroysPUs = false; // do we lose our money and have it disappear or is that money captured?
     
     /** Creates new PlayerAttachment */
@@ -124,6 +125,24 @@ public class PlayerAttachment extends DefaultAttachment
     public Collection<PlayerID> getGiveUnitControl()
     {
         return m_giveUnitControl;
+    }
+    
+    public void setCaptureUnitOnEnteringBy(String value)
+    {
+    	String[] temp = value.split(":");
+    	for (String name : temp)
+    	{
+    		PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+        		if (tempPlayer != null)
+        			m_captureUnitOnEnteringBy.add(tempPlayer);
+        		else
+        			throw new IllegalStateException("Player Attachments: No player named: " + name);
+    	}
+    }
+
+    public Collection<PlayerID> getCaptureUnitOnEnteringBy()
+    {
+        return m_captureUnitOnEnteringBy;
     }
     
     public void setDestroysPUs(String value)

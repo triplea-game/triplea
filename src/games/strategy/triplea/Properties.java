@@ -792,6 +792,10 @@ public class Properties implements Constants {
     	return data.getProperties().get(UNITS_MAY_GIVE_BONUS_MOVEMENT, false);
     }
     
+    public static boolean getCaptureUnitsOnEnteringTerritory(GameData data) {
+    	return data.getProperties().get(CAPTURE_UNITS_ON_ENTERING_TERRITORY, false);
+    }
+    
     private Properties() {
     }
 }

@@ -628,7 +628,9 @@ public class BattleTracker implements java.io.Serializable
         //take over non combatants
         CompositeMatch<Unit> enemyCapturable = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsInfrastructure); // UnitIsAAOrIsFactoryOrIsInfrastructure
         CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>(Matches.enemyUnit(id, data), enemyCapturable);
-        Collection<Unit> nonCom = territory.getUnits().getMatches(enemyNonCom);
+        CompositeMatch<Unit> willBeCaptured = new CompositeMatchOr<Unit>(enemyNonCom, Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
+        
+        Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);
         Change noMovementChange = DelegateFinder.moveDelegate(data).markNoMovementChange(nonCom);
         bridge.addChange(noMovementChange);
         if(changeTracker != null)

@@ -31,6 +31,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.CanalAttachment;
+import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -458,6 +459,35 @@ public class Matches
         };
     }
 
+    public static Match<Unit> UnitCanBeCapturedOnEnteringToInThisTerritory(final PlayerID player, final Territory terr, final GameData data)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit o)
+            {
+            	if (!games.strategy.triplea.Properties.getCaptureUnitsOnEnteringTerritory(data))
+            		return false;
+                Unit unit = (Unit) o;
+                PlayerID unitOwner = unit.getOwner();
+                UnitAttachment ua = UnitAttachment.get(unit.getType());
+                boolean unitCanBeCapturedByPlayer = ua.getCanBeCapturedOnEnteringBy().contains(player);
+                TerritoryAttachment ta = TerritoryAttachment.get(terr);
+                if (ta == null)
+                	return false;
+                if (ta.getCaptureUnitOnEnteringBy() == null)
+                	return false;
+                boolean territoryCanHaveUnitsThatCanBeCapturedByPlayer = ta.getCaptureUnitOnEnteringBy().contains(player);
+                PlayerAttachment pa = PlayerAttachment.get(unitOwner);
+                if (pa == null)
+                	return false;
+                if (pa.getCaptureUnitOnEnteringBy() == null)
+                	return false;
+                boolean unitOwnerCanLetUnitsBeCapturedByPlayer = pa.getCaptureUnitOnEnteringBy().contains(player);
+                return (unitCanBeCapturedByPlayer && territoryCanHaveUnitsThatCanBeCapturedByPlayer && unitOwnerCanLetUnitsBeCapturedByPlayer);
+            }
+        };
+    }
+
     public static Match<Unit> UnitDestroyedWhenCapturedBy(final PlayerID player)
     {
         return new Match<Unit>()
@@ -562,7 +592,20 @@ public class Matches
         }
     };
 
-    public static final Match<Unit> UnitIsDestructible = new Match<Unit>()
+    public static final Match<Unit> UnitIsDestructible (final PlayerID player, final Territory terr, final GameData data)
+    {
+        return new Match<Unit>()
+        {
+	        public boolean match(Unit obj)
+	        {
+	            Unit unit = (Unit) obj;
+	            UnitAttachment ua = UnitAttachment.get(unit.getType());
+	            return !ua.isFactory() && !ua.isAA() && !ua.getIsInfrastructure() && !UnitCanBeCapturedOnEnteringToInThisTerritory(player, terr, data).match(unit);
+	        }
+        };
+    }
+
+    public static final Match<Unit> UnitIsDestructibleShort = new Match<Unit>()
     {
         public boolean match(Unit obj)
         {
@@ -1294,6 +1337,7 @@ public class Matches
                 nonCom.add(UnitIsAAOrFactory);
                 nonCom.add(alliedUnit(player, data));
                 nonCom.add(UnitIsInfrastructure); //UnitIsAAOrIsFactoryOrIsInfrastructure
+                //nonCom.add(UnitCanBeCapturedOnEnteringToInThisTerritory(player, t, data)); //this is causing issues where the newly captured units fight against themselves
                 return t.getUnits().allMatch(nonCom);
             }
         };

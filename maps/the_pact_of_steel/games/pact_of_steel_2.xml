@@ -1799,6 +1799,19 @@
 		</technology>
 
         <attatchmentList>
+				<!-- Certain units require extra graphical icons present, for when technology is researched or damage is done.  Here is a list, in order of what is needed:
+						Anything I list as "_something" means that you must have the units exact name in front of it, example: fighter_jp
+						if the unit is called "aaGun" then you need units called "rockets", "rockets_r", and "aaGun_r"
+						if the unit has "isAA", but is not exactly named "aaGun", then you need units called "_rockets" and "_r" and "_rockets_r"
+						if the unit has "isRocket", you need "_rockets"
+						if the unit has "isAAforCombatOnly" and/or "isAAforBombingThisUnitOnly", then you need "_r"
+						if the unit has "isAir", but not "isStrategicBomber", then you need "_lr", and "_jp"
+						if the unit has "isAir", and is "isStrategicBomber", then you need "_lr", and "_hb"
+						if the unit has "isSub", then you need "_ss"
+						if the unit has "isFactory", or is called "factory", then you need "_it"
+						if a unit can be damaged (by being a factory, or by having "canBeDamaged", then you will need "_hit" and "_disabled"
+						-->
+						
 				<!-- the following is a list of all ww2v3 technology.  These are not required, they only determine if a country starts with a tech or not -->
         		<!-- Germans -->
                 <attatchment name="techAttatchment" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -1885,19 +1898,6 @@
                         <option name="warBonds" value="false"/>
                         <option name="mechanizedInfantry" value="false"/>
                 </attatchment>
-				
-				<!-- Certain units require extra graphical icons present, for when technology is researched or damage is done.  Here is a list, in order of what is needed:
-						Anything I list as "_something" means that you must have the units exact name in front of it, example: fighter_jp
-						if the unit is called "aaGun" then you need units called "rockets", "rockets_r", and "aaGun_r"
-						if the unit has "isAA", but is not exactly named "aaGun", then you need units called "_rockets" and "_r" and "_rockets_r"
-						if the unit has "isRocket", you need "_rockets"
-						if the unit has "isAAforCombatOnly" and/or "isAAforBombingThisUnitOnly", then you need "_r"
-						if the unit has "isAir", but not "isStrategicBomber", then you need "_lr", and "_jp"
-						if the unit has "isAir", and is "isStrategicBomber", then you need "_lr", and "_hb"
-						if the unit has "isSub", then you need "_ss"
-						if the unit has "isFactory", or is called "factory", then you need "_it"
-						if a unit can be damaged (by being a factory, or by having "canBeDamaged", then you will need "_hit" and "_disabled"
-						-->
 
                 <!-- Americans -->
                 <attatchment name="techAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -1933,6 +1933,9 @@
 						 <!-- canBeGivenByTerritoryTo will allow a unit to be given from one player to another player, if it is in a territory with changeUnitOwners 
 								must be a list of Players who this unit can be given to.  example: value="Russians:Chinese" -->
 						 <option name="canBeGivenByTerritoryTo" value="Russians"/>
+						 <!-- canBeCapturedOnEnteringBy will allow a unit to be captured from one player to another, if the specified player enters a territory with captureUnitOnEnteringBy
+								must be a list of Players who this unit can be given to.  example: value="Russians:Chinese" 
+						 <option name="canBeCapturedOnEnteringBy" value="Americans:British"/>-->
 						 <!-- isParatroop and isMechanized currently do NOTHING, and are only kept for backwards compatibility
 						 <option name="isParatroop" value="false"/>
 						 <option name="isMechanized" value="false"/> -->
@@ -1956,7 +1959,7 @@
                 <attatchment name="unitAttatchment" attatchTo="armour" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="2"/>
                          <option name="transportCost" value="3"/>
-						 <!-- allows the unit to move through enemy territory -->
+						 <!-- allows the unit to move through multiple empty enemy territories in one turn -->
                          <option name="canBlitz" value="true"/>
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
@@ -2048,7 +2051,7 @@
                          <option name="canBombard" value="true"/>
 						 <!-- bombard defaults to the attack value of the unit if missing -->
                          <option name="bombard" value="4"/>
-						 <!-- blockade allows the unit the do damage up to the value of land territories surrounding a blockade zone, to the enemy's income -->
+						 <!-- blockade allows the unit to do damage up to the value of land territories surrounding a blockade zone, to the enemy's income -->
                          <option name="blockade" value="1"/>
                  </attatchment>
 				
@@ -2141,14 +2144,14 @@
 						 <option name="canBeDamaged" value="true"/>
 						 <option name="maxDamage" value="3"/>
 						 <option name="maxOperationalDamage" value="0"/>
-						 <!-- isConstruction allows the unit to be placed in territories that don't contain factories. only "constructionsPerTerrPerTypePerTurn" contruction per territory per turn. 
-								may have only "maxConstructionsPerTypePerTerr" construction per territory without factory unless you enable "More Constructions without Factory", 
+						 <!-- isConstruction allows the unit to be placed in territories that don't contain factories. only "constructionsPerTerrPerTypePerTurn" contructions per territory per turn. 
+								may have only "maxConstructionsPerTypePerTerr" constructions total per territory without factory unless you enable "More Constructions without Factory", 
 								and may only have a number of constructions up to the value of the territory unless you enable "Unlimited Constructions" -->
 						 <option name="isConstruction" value="true"/>
 						 <!-- constructionType is just a unique string which identifies what kind of construction this. 
 								if two or more constructions have the exact same constructionType (and the same PerType rules), then will follow the same rules for placement.
 								example: if you have little_bunker and big_bunker both as type "bunker", with constructionsPerTerrPerTypePerTurn=2, then you could place 2 littles, or 2 bigs, or 1 little and 1 big in a territory 
-								if you do not want this unit to be effected by the global properties "More Constructions with/without Factory", then make sure the type ends in "structure". example: "harbour_structure" -->
+								if you do not want this unit to be effected by the global properties "More Constructions with/without Factory" and "Unlimited Constructions", then make sure the type ends in "structure". example: "harbour_structure" -->
 						 <option name="constructionType" value="bunker"/>
 						 <!-- constructionsPerTerrPerTypePerTurn is how many of this type you can place in a territory every turn -->
 						 <option name="constructionsPerTerrPerTypePerTurn" value="1"/>
@@ -2237,7 +2240,8 @@
 						 <!-- attackAA sets the value the AA will attack at (radar adds 1 if this is not 0). Defaults to 1.  Can not be more than half the diceSides (even with radar)-->
 						 <option name="attackAA" value="1"/>
 						 <!-- attackAAmaxDieSides sets the dice sides for aa guns.  defaults to whatever you chose above in diceSides (or 6 if you didn't choose).  
-								Be Warned that having different AA guns in the same territory, with different maxDiceSides for each, will result in errors.  Also be warned that all attack values (including with Radar and without Radar), but divide into attackAAmaxDieSides without remainders, or else there WILL be errors in LowLuck! -->
+								Be Warned that having different AA guns in the same territory, with different maxDiceSides for each, could result in unexpected behavior.  
+								Also be warned that all aa attack values (including with Radar and without Radar), MUST divide into attackAAmaxDieSides without remainders, or else there WILL be errors in LowLuck! -->
 						 <option name="attackAAmaxDieSides" value="6"/>
 						 <!-- isAAforCombatOnly allows this unit to be an AA gun for normal combat only.  it will not defend against strategic bombing raids 
 						 <option name="isAAforCombatOnly" value="true"/>-->
@@ -2245,7 +2249,7 @@
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>-->
 						 <!-- isRocket allows this unit to become a rocket if the player has the rocket technology.  If the unit is named exactly "aaGun" then it will require an image called "rockets".  If the unit is named anything else, then it will require an image with "_rockets" appended to its original name.
 						 <option name="isRocket" value="true"/>-->
-						 <!-- isAAmovement forces this unit to follow the rules for movement of an AA gun, and for placement of AA guns (like max of 1 aa gun per territory, no moving aa guns during combat phase, etc. 
+						 <!-- isAAmovement forces this unit to follow the rules for movement of an AA gun, and for placement of AA guns (like no moving during combat phase, max of 1 of each unit per territory, etc.)
 						 <option name="isAAmovement" value="true"/>-->
                 </attatchment>
 				
@@ -2256,6 +2260,9 @@
 
                 <attatchment name="territoryAttatchment" attatchTo="Greece" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
+						<!-- captureUnitOnEnteringBy allows some players to have their units change to another player's control, if they are located in territories with this attachment, and the specified player captures this territory
+								it must be a list of the player's names in a ":" delimited list.  For example: value="Russians:Germans" 
+						<option name="captureUnitOnEnteringBy" value="Americans:British"/>-->
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Sicily" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -3429,7 +3436,13 @@
 					<!-- giveUnitControl allow multiple players to give units to multiple other players, if those units are in a designated territory 
 							must be a list of the player's names, in a ":" delimited list.  Example: value="Russians:Chinese"-->
 					<option name="giveUnitControl" value="Russians"/>
-				</attatchment>   
+				</attatchment>
+				
+				<!--<attatchment name="playerAttatchment" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
+					   <- captureUnitOnEnteringBy allows multiple players to let their units be captured by multiple other players, if those units are in a designated territory and a designated player captures that territory
+							must be a list of the player's names, in a ":" delimited list.  Example: value="Russians:Chinese"
+					<option name="captureUnitOnEnteringBy" value="Americans:British"/>
+				</attatchment>-->
 
         </attatchmentList>
 
@@ -3998,6 +4011,11 @@
 						<boolean/>
 				</property>
 
+						<!-- allows a player to let its units be captured by another player if true, when the territory is captured. units must have canBeCapturedOnEnteringBy and territories must have captureUnitOnEnteringBy and the players must have the player attachment captureUnitOnEnteringBy -->
+				<property name="Capture Units On Entering Territory" value ="false" editable="false">
+						<boolean/>
+				</property>
+
 				<!-- specific rules -->
 				<!-- land related -->
 						<!-- if true, units with destroyedWhenCapturedBy will be destroyed instead of captured. only applies to non-combat units, since combat units die in combat -->
@@ -4260,7 +4278,7 @@
         				<br>2. Sea Zones 5 and 6, are Convoy Routes. They are linked to the land territory of Norway. At least one Convoy Zone must be controlled by the same power that controls the land territory for that power to gain the income from the land territory. 
 								They can not be captured during non-combat phase. If more than 1 route is linked to a single land territory, only 1 route needs to be controlled to get the income from land territory. Routes can have PU values just like convoy zones.
         				<br>3. Sea Zones 37, 47, 48, 49, 58, are Blockade Zones. Each enemy warship in these zones reduces the income of touching land territories by 1 per warship, 2 per normal submarine.
-        				<br>4. Air_Transport is an air unit that specializes in dropping off units, costs 11 with 4 movement, and can carry into battle or drop off in a friendly territory: 1 infantry AND 1 other unit like a tank or artillery. Enabled when you get "paratroopers" tech.
+        				<br>4. Air_Transport is an air unit that specializes in dropping off units, has 4 movement, and can carry into battle or drop off in a friendly territory: 1 infantry AND 1 other unit like a tank or artillery. Enabled when you get "paratroopers" tech.
 						<br>5. Super_Carrier is a beefed up carrier that can also transport 1 infantry and 1 other land unit like a tank or artillery. It has only 1 hitpoint, just like normal carriers and cruisers.
 						<br>6. Midget_Submarine is a Japanese only unit with 3 attack, 2 defence, and 2 movement (costs 4). If it attacks or defends it will die after shooting (it is a suicide unit). Japan can purchase them after certain conditions are met. They do not receive any movement bonus from Harbours.
 						<br>7. Kamikaze Fighters are what Japanese fighters turn into if certain conditions are met.  They have 5 attack, 3 defense, and 3 movement (cost 8), and they are allowed to use up all their movement to go to a battle, and they will die after rolling their dice.
@@ -4268,7 +4286,7 @@
 						<br>9. Harbour gives +1 movement to naval units, and are needed to repair Battleships, if you turn on "Two HitPoint Units Require Repair Facilities".
 						<br>10. Bunkers may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours), but there is a limit of 1 per territory.
 						<br>11. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att, +1 def to subs). Available to Germans after they get superSubs.
-						<br>12. Each nation may only build factories up to 3 total, if a nation controls more than 3 they can not build new factories (they can keep capturing new ones though).
+						<br>12. Each nation may only purchase factories up to 3 total, if a nation controls more than 3 they can not purchase new factories (they can keep capturing new ones though).
         				<br>
         				<br>
         				<br>

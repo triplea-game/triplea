@@ -1,4 +1,14 @@
 Changes for 1.2.7
+* Added a global property, "Capture Units On Entering Territory", which if true allows units to be captured instead of fighting. (veqryn)
+
+* Added new player attachment, captureUnitOnEnteringBy, which will allow this player to let some of the units be captured when a territory is taken over. (veqryn)
+
+* Added new territory attachment, captureUnitOnEnteringBy, which will allow units in the territory to be taken when the territory is captured. (veqryn)
+
+* Added new unit attachment, canBeCapturedOnEnteringBy, which will allow a unit to be taken when the territory is captured. (veqryn)
+
+* Changed Strategic Bombing to account for isSuicide units. Now isSuicide units will also die if they strategic bomb something. (veqryn)
+
 * Fixed error unit display of unit graphics, where things that were _hit needed _it on the end instead of front, sometimes resulting in needing _it_hit_it, etc. (veqryn)
 
 * Fixed null pointer in game data getNeighbors match. (veqryn)
