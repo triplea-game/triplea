@@ -1,4 +1,6 @@
 Changes for 1.2.7
+* Fixed bug in StrongAI/MooreAI where it would never attack a player if it lost too much TUV, and the TUV calc thought the enemy had zero TUV. Also fixed bug where it calced for the offensive value of walk in territories, instead of defensive value. (veqryn)
+
 * Added a global property, "Capture Units On Entering Territory", which if true allows units to be captured instead of fighting. (veqryn)
 
 * Added new player attachment, captureUnitOnEnteringBy, which will allow this player to let some of the units be captured when a territory is taken over. (veqryn)

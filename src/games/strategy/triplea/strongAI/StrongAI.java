@@ -3318,7 +3318,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					IntegerMap<UnitType> attackTypes = SUtils.convertListToMap(allUnits);
 					IntegerMap<UnitType> badTypes = SUtils.convertListToMap(enemyUnits);
 					HashMap<PlayerID, IntegerMap<UnitType>> costMap = SUtils.getPlayerCostMap(data);
-					boolean weWinTUV = SUtils.calculateTUVDifference(badGuys, allUnits, enemyUnits, costMap, player, data, false, Properties.getAirAttackSubRestricted(data));
+					boolean weWinTUV = SUtils.calculateTUVDifference(badGuys, allUnits, enemyUnits, costMap, player, data, false, Properties.getAirAttackSubRestricted(data), tFirst);
 					if (myTotalStrength > needStrength && weWinTUV)
 					{
 						int actualAttackers = 0;
@@ -6459,7 +6459,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		CompositeMatch<Unit> alliedAirLandUnitNotOwned = new CompositeMatchOr<Unit>(alliedAirUnit, alliedLandUnit);
 		CompositeMatch<Unit> blitzUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBlitz);
 		CompositeMatch<Unit> enemyLandAirUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsNotSea, Matches.UnitIsNotAA, Matches.UnitIsNotFactory);
-		CompositeMatch<Territory> emptyEnemyTerr = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data), Matches.TerritoryIsNotImpassableToLandUnits(player));
+		CompositeMatch<Territory> enemyTerr = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data), Matches.TerritoryIsNotImpassableToLandUnits(player));
 		
 		if (!ownMyCapital) // We lost our capital
 		{
@@ -6793,7 +6793,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			Collection<Unit> invasionUnits = ourCUnits;
 			for (Collection<Unit> invaders : xMoveUnits)
 				invasionUnits.addAll(invaders);
-			boolean weWin = SUtils.calculateTUVDifference(badCapitol, invasionUnits, badCapUnits, costMap, player, data, aggressive, Properties.getAirAttackSubRestricted(data));
+			boolean weWin = SUtils.calculateTUVDifference(badCapitol, invasionUnits, badCapUnits, costMap, player, data, aggressive, Properties.getAirAttackSubRestricted(data), tFirst);
 			if (weWin || (alliedCapStrength > (badCapStrength * 1.10F + 3.0F) && (ourXStrength > (0.82F * badCapStrength + 3.0F))))
 			{
 				// s_logger.fine("Player: "+player.getName() + "; Bad Cap: "+badCapitol.getName() + "; Our Attack Units: "+ ourCUnits);
@@ -6829,12 +6829,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			xMoveRoutes.clear();
 			xAlreadyMoved.clear();
 			xAlreadyMoved.addAll(unitsAlreadyMoved);
-			float eStrength = SUtils.strength(enemy.getUnits().getUnits(), true, false, tFirst);
+			float eStrength = SUtils.strength(enemy.getUnits().getUnits(), false, false, tFirst);
 			if (eStrength < 0.50F)
 			{
 				// only take it with 1 unit
 				boolean taken = false;
-				Set<Territory> nextTerrs = data.getMap().getNeighbors(enemy, emptyEnemyTerr);
+				Set<Territory> nextTerrs = data.getMap().getNeighbors(enemy, enemyTerr);
 				Iterator<Territory> nTIter = nextTerrs.iterator();
 				while (nTIter.hasNext())
 				{
@@ -6972,7 +6972,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				List<Unit> allMyUnits = new ArrayList<Unit>(capSaverUnits);
 				for (Collection<Unit> xUnits : xMoveUnits)
 					allMyUnits.addAll(xUnits);
-				boolean weWin = SUtils.calculateTUVDifference(badTerr, allMyUnits, enemyUnits, costMap, player, data, aggressive, Properties.getAirAttackSubRestricted(data));
+				boolean weWin = SUtils.calculateTUVDifference(badTerr, allMyUnits, enemyUnits, costMap, player, data, aggressive, Properties.getAirAttackSubRestricted(data), tFirst);
 				if (weWin)
 				{
 					if (bigProblem2.size() > 1)
@@ -7114,7 +7114,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						weWin = true;
 				}
 				else
-					weWin = SUtils.calculateTUVDifference(enemy, allMyUnits, eUnits, costMap, player, data, aggressive, Properties.getAirAttackSubRestricted(data));
+					weWin = SUtils.calculateTUVDifference(enemy, allMyUnits, eUnits, costMap, player, data, aggressive, Properties.getAirAttackSubRestricted(data), tFirst);
 				if (!weWin)
 				{
 					alreadyAttacked.remove(enemy);

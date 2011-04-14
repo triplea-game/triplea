@@ -674,7 +674,7 @@ public class SUtils
 	}
 	
 	public static boolean calculateTUVDifference(Territory eTerr, Collection<Unit> invasionUnits, Collection<Unit> defenderUnits, HashMap<PlayerID, IntegerMap<UnitType>> costMap, PlayerID player, GameData data, boolean aggressive,
-				boolean subRestricted)
+				boolean subRestricted, boolean tFirst)
 	{
 		int evaluationFactor = -5;
 		if (aggressive)
@@ -702,6 +702,11 @@ public class SUtils
 		int eTUVLost = eTUV - eNewTUV;
 		s_logger.fine("Territory: " + eTerr.getName() + "; myTUV: " + myNewTUV + "; EnemyTUV: " + eNewTUV + "; My TUV Lost: " + myTUVLost + "; Enemy TUV Lost: " + eTUVLost);
 		s_logger.fine("Aggressive: " + aggressive + "; Evaluation Factor: " + evaluationFactor);
+		
+		// failsafe, just freaking attack already damnit!
+		if (weWin && (eTUV == 0 || (((SUtils.strength(defenderUnits, false, eTerr.isWater(), tFirst) * 5F) + 10F) < SUtils.strength(invasionUnits, true, eTerr.isWater(), tFirst))))
+			return true; // essentially, when a player can't build a unit, it has ZERO TUV, so this means the AIs will never attack it if they consider TUV value. this is because the TUV is not listed in the cost map
+		
 		if (weWin && (myTUVLost <= (eTUVLost + (7 + evaluationFactor))))
 			return true;
 		else if (myTUVLost < (eTUVLost + evaluationFactor))
@@ -2421,6 +2426,14 @@ public class SUtils
 	public static float strength(Collection<Unit> units, boolean attacking, boolean sea, boolean transportsFirst)
 	{
 		float strength = 0.0F;
+		
+		if (units.isEmpty())
+			return strength;
+		
+		if (attacking && Match.noneMatch(units, Matches.unitHasAttackValueOfAtLeast(1)))
+			return strength;
+		else if (!attacking && Match.noneMatch(units, Matches.unitHasDefendValueOfAtLeast(1)))
+			return strength;
 		
 		for (Unit u : units)
 		{
