@@ -185,7 +185,7 @@ public class UnitImageFactory
       Graphics2D g = newImage.createGraphics();
       g.drawImage(base, 0,0, null);
       
-      //we want a highlight only over the are 
+      //we want a highlight only over the area 
       //that is not clear
       g.setComposite(AlphaComposite.SrcIn);
       g.setColor(new Color(200,200,200, 80) );
@@ -293,6 +293,10 @@ public class UnitImageFactory
 	    }
     }
     
+    if(type.getName().equals(Constants.AIR_BASE_TYPE))
+    {
+    	String Kevin = "here";
+    }
     if(disabled)
         name.append("_disabled");
     else if(damaged)

@@ -165,6 +165,7 @@ public interface Constants
   public static final String AAGUN_TYPE = "aaGun";
   public static final String ARTILLERY = "artillery";
   public static final String DESTROYER = "destroyer";
+  public static final String AIR_BASE_TYPE = "air_base";
 
   public static final String LARGE_MAP_FILENAME = "largeMap.gif";
   public static final String SMALL_MAP_FILENAME = "smallMap.jpeg";
@@ -173,7 +174,7 @@ public interface Constants
   
   public static final String SHOW_ENEMY_CASUALTIES_USER_PREF = "ShowEnemyCasualties";
   
-  //Kev new property names
+  //new scramble property names
   public static final String SCRAMBLE_RULES_IN_EFFECT = "Scramble Rules In Effect";
   public static final String SCRAMBLED_UNITS_RETURN_TO_BASE = "Scrambled Units Return To Base";
   public static final String SCRAMBLE_TO_SEA_ONLY = "Scramble To Sea Only";

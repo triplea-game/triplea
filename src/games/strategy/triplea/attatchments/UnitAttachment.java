@@ -647,8 +647,6 @@ public class UnitAttachment extends DefaultAttachment
     return 1;
   }
   
-
-  //Kev new properties
   public void setCanScramble(String s)
   {
 	  m_canScramble = getBool(s);

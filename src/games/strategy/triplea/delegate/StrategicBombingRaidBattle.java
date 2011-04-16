@@ -188,14 +188,14 @@ public class StrategicBombingRaidBattle implements Battle
                 getDisplay(bridge).gotoBattleStep(m_battleID, RAID);
                 
                 m_tracker.removeBattle(StrategicBombingRaidBattle.this);
-
+//TODO Kev add unitDamage setting here
                 if(!m_targets.isEmpty())
                 	bridge.getHistoryWriter().addChildToEvent("Bombing raid in " + m_battleSite.getName() + " causes " + m_bombingRaidCost + " " + " damage to " + m_targets.iterator().next());
                 else if (isSBRAffectsUnitProduction())
                 	bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + " production in " + m_battleSite.getName());
                 else
                 	bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + MyFormatter.pluralize("PU", m_bombingRaidCost));
-                //TODO Kev remove the reference to the constant.japanese- replace with a rule
+                //TODO  remove the reference to the constant.japanese- replace with a rule
                 if(isPacificTheater() || isSBRVictoryPoints())
                 {
                     if(m_defender.getName().equals(Constants.JAPANESE)) 
@@ -609,12 +609,13 @@ public class StrategicBombingRaidBattle implements Battle
             	{
             		hits.put(unit,1);
                     change.add(ChangeFactory.unitPropertyChange(unit, cost, TripleAUnit.UNIT_DAMAGE));
+                    TripleAUnit taUnit = (TripleAUnit) unit;
+                    taUnit.setUnitDamage(cost);
             	}
             	bridge.addChange(ChangeFactory.unitsHit(hits));
             	bridge.addChange(change);
             	
                 bridge.getHistoryWriter().startEvent("Bombing raid in " + m_battleSite.getName() + " causes: " + cost + " damage.");
-
             	getRemote(bridge).reportMessage("Bombing raid in " + m_battleSite.getName() + " causes: " + cost + " damage.");
             }
             else if(isSBRAffectsUnitProduction())

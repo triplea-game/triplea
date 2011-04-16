@@ -253,8 +253,7 @@ public class ProductionPanel extends JPanel
  
 
         Rule(ProductionRule rule, PlayerID id, UIContext uiContext)
-        {
-            
+        {            
             setLayout(new GridBagLayout());
             m_rule = rule;
             m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.PUS));

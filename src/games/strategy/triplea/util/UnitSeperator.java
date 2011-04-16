@@ -17,6 +17,7 @@ package games.strategy.triplea.util;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -103,7 +104,12 @@ public class UnitSeperator
                 currentDependents = dependent.get(current);
             }
             boolean damaged = current.getHits() == 1;
+            if(damaged || current.getType().getName().equals(Constants.AIR_BASE_TYPE))
+            {
+            	String kev = "here";
+            }
             //if unitDamage > maxOperationalDamage it's disabled
+            //TODO Kev this isn't working
             boolean disabled = UnitAttachment.get(((Unit) current).getUnitType()).getUnitDamage() > 0 && UnitAttachment.get(((Unit) current).getUnitType()).getUnitDamage() > UnitAttachment.get(((Unit) current).getUnitType()).getMaxOperationalDamage();
             
             Territory originatingTerr = null;

@@ -1019,7 +1019,15 @@ public class MoveValidator
     		Collection<Territory> end = Collections.singleton(route.getEnd());
     		for (Unit unit : units)
     		{
+    			if(player == data.getSequence().getStep().getPlayerID())
+    				continue;
+    			
     			TripleAUnit tAUnit = (TripleAUnit) unit;
+    			if(!tAUnit.getWasScrambled())
+    			{
+    					result.addDisallowedUnit("Only scrambled units may be moved",unit);
+    					continue;
+    			}
     			//if end doesn't equal beginning and territory is still in friendly hands
     			if(route.getEnd() != tAUnit.getOriginatedFrom() && !Match.allMatch(end, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data)))
     				result.addDisallowedUnit("Scrambled units must return to base",unit);

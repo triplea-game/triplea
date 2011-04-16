@@ -2,6 +2,7 @@ package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.*;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -12,6 +13,7 @@ import games.strategy.util.*;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.util.Collection;
 import java.util.List;
 
 public class UnitsDrawer implements IDrawable
@@ -63,8 +65,27 @@ public class UnitsDrawer implements IDrawable
         if (type == null)
             throw new IllegalStateException("Type not found:" + m_unitType);
         PlayerID owner = data.getPlayerList().getPlayerID(m_playerName);
+
         
         Image img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
+        
+        //figure the unitDamage here
+        if(UnitAttachment.get(type).getIsInfrastructure())
+        {
+        	Collection<Unit> units = Match.getMatches(data.getMap().getTerritory(m_territoryName).getUnits().getUnits(),Matches.unitIsOfType(type));
+        	
+        	for (Unit current : units)
+        	{
+        		 UnitAttachment ua = UnitAttachment.get(type);
+        		 
+        		 TripleAUnit taUnit = (TripleAUnit) current;
+        		 
+        		 if(taUnit.getUnitDamage() > 0 && taUnit.getUnitDamage() > ua.getMaxOperationalDamage())
+        		 {
+        			 img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, true);
+        		 }
+        	}
+        }
 
         if(!m_damaged && UnitAttachment.get(type).isFactory() && isSBRAffectsUnitProduction(data) )
         {
@@ -77,18 +98,9 @@ public class UnitsDrawer implements IDrawable
         		{
         			img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, true, m_disabled);
         		}
-        	}
-        	/*else
-        	{
-        		img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
-        	}*/
-        	
+        	}        	
         }
-        /*else
-        {
-            img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
-        }*/
-        
+       
         graphics.drawImage(img, m_placementPoint.x - bounds.x, m_placementPoint.y - bounds.y, null);
         
         // more then 1 unit of this category

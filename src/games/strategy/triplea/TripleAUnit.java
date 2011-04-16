@@ -58,6 +58,7 @@ public class TripleAUnit extends Unit
     public static final String WAS_SCRAMBLED = "wasScrambled";
     public static final String UNIT_DAMAGE = "unitDamage";
     public static final String MAX_OPERATIONAL_DAMAGE = "maxOperationalDamage";
+    public static final String DISABLED = "disabled";
     
     //the transport that is currently transporting us
     private TripleAUnit m_transportedBy = null;
@@ -88,6 +89,7 @@ public class TripleAUnit extends Unit
     //the territory this unit started in
     private Territory m_originatedFrom = null;
     private boolean m_wasScrambled = false;
+    private boolean m_disabled = false;
     
     public static TripleAUnit get(Unit u) 
     {
@@ -329,6 +331,19 @@ public class TripleAUnit extends Unit
     public void setWasAmphibious(Boolean value)
     {
         m_wasAmphibious = Boolean.valueOf(value.booleanValue());
+    }
+    
+    public boolean getDisabled()
+    {
+        return m_disabled;
+    }
+
+    /**
+     * private since this should only be called by UnitPropertyChange
+     */
+    public void setDisabled(Boolean value)
+    {
+        m_disabled = Boolean.valueOf(value.booleanValue());
     }
     
 }
