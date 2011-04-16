@@ -488,18 +488,29 @@ public class BattleTracker implements java.io.Serializable
             }
         }
         
-        //if neutral & not fought over
-        if (territory.getOwner().isNull() && !territory.isWater() && !MoveDelegate.getBattleTracker(data).wasConquered(territory))
+        //if neutral, we may charge money to enter
+        if (territory.getOwner().isNull() && !territory.isWater() && games.strategy.triplea.Properties.getNeutralCharge(data) != 0)
         {
         	Resource PUs = data.getResourceList().getResource(Constants.PUS);
-        	int PUCharge = -games.strategy.triplea.Properties.getNeutralCharge(data);
-        	Change neutralFee = ChangeFactory.changeResourcesChange(id, PUs, PUCharge);
+        	int PUChargeIdeal = -games.strategy.triplea.Properties.getNeutralCharge(data);
+        	int PUChargeReal = Math.min(0, Math.max(PUChargeIdeal, -id.getResources().getQuantity(PUs)));
+        	Change neutralFee = ChangeFactory.changeResourcesChange(id, PUs, PUChargeReal);
         	bridge.addChange(neutralFee);
         	if (changeTracker != null)
         		changeTracker.addChange(neutralFee);
-        	bridge.getHistoryWriter().addChildToEvent(id.getName() + " loses " + -PUCharge + " "
-        			 + MyFormatter.pluralize("PU", -PUCharge) + " for violating " + territory.getName()
-        			+ "s neutrality");
+        	if (PUChargeIdeal == PUChargeReal)
+        	{	
+        		bridge.getHistoryWriter().addChildToEvent(id.getName() + " loses " + -PUChargeReal + " "
+           			 + MyFormatter.pluralize("PU", -PUChargeReal) + " for violating " + territory.getName()
+           			+ "s neutrality.");
+        	}
+        	else
+        	{
+        		bridge.getHistoryWriter().addChildToEvent(id.getName() + " loses " + -PUChargeReal + " "
+           			 + MyFormatter.pluralize("PU", -PUChargeReal) + " for violating " + territory.getName()
+           			+ "s neutrality.  Correct amount to charge is: " + -PUChargeIdeal 
+           			+ ".  Player should not have been able to make this attack!");
+        	}
         }
 
         //if its a capital we take the money

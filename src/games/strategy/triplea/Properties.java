@@ -31,7 +31,7 @@ public class Properties implements Constants {
         try {
             return Integer.parseInt((String) data.getProperties().get(NEUTRAL_CHARGE_PROPERTY));
         } catch (NumberFormatException e) {
-            return 3;
+            return 0;
         }
 
     }
@@ -602,7 +602,7 @@ public class Properties implements Constants {
     	try {
             return Integer.parseInt((String) data.getProperties().get(HEAVY_BOMBER_DICE_ROLLS));
         } catch (NumberFormatException e) {
-            return 3;
+            return 2;
         }
     }
 

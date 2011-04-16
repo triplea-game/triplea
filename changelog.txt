@@ -1,4 +1,10 @@
 Changes for 1.2.7
+* Added airfield_disabled.png and harbour_disabled.png for all nations (veqryn)
+
+* Flipped all unit graphics. All axis sea and air point left, while allies point right (except russian air points left).  All ground units for a country point same direction, left for japan and russia, right for everyone else. Non-combat units and aaGuns do not point any direction, or are same for all nations. (veqryn)
+
+* Fixed Neutrals charge to work properly, without java errors, if the neutral is attacked and there is a battle. Will now display a message in history panel if there is not enough PUs to remove. (veqryn)
+
 * Determine if units are 'disabled' and display a unique icon for them (ComradeKev)
 
 * Initial work on Scrambling aircraft (ComradeKev)
