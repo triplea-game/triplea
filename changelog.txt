@@ -1,4 +1,8 @@
-Changes for 1.2.7
+Changes for 1.3.0.0
+* Added the new username banning system, which will help a lot on the lobby. Like to ban offensive usernames without necessarily banning the player. (wisconsin)
+
+* Another patch for Dynamix AI (wisconsin)
+
 * Added airfield_disabled.png and harbour_disabled.png for all nations (veqryn)
 
 * Flipped all unit graphics. All axis sea and air point left, while allies point right (except russian air points left).  All ground units for a country point same direction, left for japan and russia, right for everyone else. Non-combat units and aaGuns do not point any direction, or are same for all nations. (veqryn)
