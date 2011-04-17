@@ -23,9 +23,9 @@ package games.strategy.net;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.IChatChannel;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
-import games.strategy.engine.lobby.server.userDB.BannedIpController;
 import games.strategy.engine.lobby.server.userDB.MutedIpController;
 import games.strategy.engine.lobby.server.userDB.MutedMacController;
+import games.strategy.engine.lobby.server.userDB.MutedUsernameController;
 import games.strategy.engine.message.HubInvoke;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.engine.message.RemoteName;
@@ -34,8 +34,6 @@ import games.strategy.net.nio.NIOSocket;
 import games.strategy.net.nio.NIOSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
 import games.strategy.net.nio.ServerQuarantineConversation;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -246,6 +244,25 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
         }
     }
     //We need to cache whether players are muted, because otherwise the database would have to be accessed each time a message was sent, which can be very slow
+    private List<String> m_liveMutedUsernames = new ArrayList<String>();
+    public boolean IsUsernameMuted(String username)
+    {
+        synchronized (m_cachedListLock)
+        {
+            return m_liveMutedUsernames.contains(username);
+        }
+    }
+    public void NotifyUsernameMutingOfPlayer(String username, long expireDate)
+    {
+        synchronized (m_cachedListLock)
+        {
+            if (!m_liveMutedUsernames.contains(username))
+                m_liveMutedUsernames.add(username);
+
+            if(isLobby())
+                ScheduleUsernameUnmuteAt(username, expireDate);
+        }
+    }
     private List<String> m_liveMutedIpAddresses = new ArrayList<String>();
     public boolean IsIpMuted(String ip)
     {
@@ -284,6 +301,11 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
                 ScheduleMacUnmuteAt(mac, expireDate);
         }
     }
+    private void ScheduleUsernameUnmuteAt(String username, long checkTime)
+    {
+        Timer unmuteUsernameTimer = new Timer("Username unmute timer");
+        unmuteUsernameTimer.schedule(GetUsernameUnmuteTask(username), new Date(checkTime));
+    }
     private void ScheduleIpUnmuteAt(String ip, long checkTime)
     {
         Timer unmuteIpTimer = new Timer("IP unmute timer");
@@ -302,6 +324,16 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 
             if (isLobby())
             {
+                String realName = uniquePlayerName.split(" ")[0];
+                if (!m_liveMutedUsernames.contains(realName))
+                {
+                    long muteTill = new MutedUsernameController().getUsernameUnmuteTime(realName);
+                    if (muteTill != -1 && muteTill <= System.currentTimeMillis())
+                    {
+                        m_liveMutedUsernames.add(realName); //Signal the player as muted
+                        ScheduleUsernameUnmuteAt(realName, muteTill);
+                    }
+                }
                 if (!m_liveMutedIpAddresses.contains(ip))
                 {
                     long muteTill = new MutedIpController().getIpUnmuteTime(ip);
@@ -343,7 +375,13 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
         {
             if (isLobby() && ((HubInvoke)msg.getMessage()).call.getRemoteName().equals("_ChatCtrl_LOBBY_CHAT"))
             {
-                if (IsIpMuted(msg.getFrom().getAddress().getHostAddress()))
+                String realName = msg.getFrom().getName().split(" ")[0];
+                if (IsUsernameMuted(realName))
+                {
+                    bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
+                    return;
+                }
+                else if(IsIpMuted(msg.getFrom().getAddress().getHostAddress()))
                 {
                     bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
                     return;
@@ -356,7 +394,13 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
             }
             else if(isGame() && ((HubInvoke)msg.getMessage()).call.getRemoteName().equals("_ChatCtrlgames.strategy.engine.framework.ui.ServerStartup.CHAT_NAME"))
             {
-                if (IsIpMuted(msg.getFrom().getAddress().getHostAddress()))
+                String realName = msg.getFrom().getName().split(" ")[0];
+                if (IsUsernameMuted(realName))
+                {
+                    bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());
+                    return;
+                }
+                else if(IsIpMuted(msg.getFrom().getAddress().getHostAddress()))
                 {
                     bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());
                     return;
@@ -400,6 +444,22 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
     }
 
     //The following code is used in hosted lobby games by the host for player mini-banning and mini-muting
+    private List<String> m_miniBannedUsernames = new ArrayList<String>();
+    public boolean IsUsernameMiniBanned(String username)
+    {
+        synchronized (m_cachedListLock)
+        {
+            return m_miniBannedUsernames.contains(username);
+        }
+    }
+    public void NotifyUsernameMiniBanningOfPlayer(String username)
+    {
+        synchronized (m_cachedListLock)
+        {
+            if (!m_miniBannedUsernames.contains(username))
+                m_miniBannedUsernames.add(username);
+        }
+    }
     private List<String> m_miniBannedIpAddresses = new ArrayList<String>();
     public boolean IsIpMiniBanned(String ip)
     {
@@ -663,6 +723,23 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
         }
     }
 
+    private TimerTask GetUsernameUnmuteTask(final String username)
+    {
+        return new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                if (new MutedUsernameController().getUsernameUnmuteTime(username) == -1) //If the mute has expired
+                {
+                    synchronized (m_cachedListLock)
+                    {
+                        m_liveMutedUsernames.remove(username); //Remove the username from the list of live username's muted
+                    }
+                }
+            }
+        };
+    }
     private TimerTask GetIpUnmuteTask(final String ip)
     {
         return new TimerTask()

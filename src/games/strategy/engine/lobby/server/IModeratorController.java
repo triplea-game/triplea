@@ -29,6 +29,11 @@ public interface IModeratorController extends IRemote
      * 
      */
     public void boot(INode node);
+
+    /**
+     * Ban the username of the given INode.
+     */
+    public void banUsername(INode node, Date banExpires);
     
     /**
      * Ban the ip of the given INode.
@@ -39,6 +44,11 @@ public interface IModeratorController extends IRemote
      * Ban the mac of the given INode.
      */
     public void banMac(INode node, Date banExpires);
+
+    /**
+     * Mute the username of the given INode.
+     */
+    public void muteUsername(INode node, Date muteExpires);
 
      /**
      * Mute the ip of the given INode.

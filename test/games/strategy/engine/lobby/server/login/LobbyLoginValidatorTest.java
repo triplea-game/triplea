@@ -30,7 +30,7 @@ public class LobbyLoginValidatorTest extends TestCase
         properties.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt("123", "foo"));
         properties.put(LobbyLoginValidator.EMAIL_KEY, "none@none.none");        
         properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-        
+
         assertNull(
                 new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
@@ -58,7 +58,7 @@ public class LobbyLoginValidatorTest extends TestCase
         properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
         
         properties.put(LobbyLoginValidator.LOBBY_VERSION, "0.1");
-        
+
         assertNotNull(
                 new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
@@ -81,7 +81,7 @@ public class LobbyLoginValidatorTest extends TestCase
         Map<String,String> properties = new HashMap<String,String>();
         properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
         properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-        
+
         assertNull(
                 new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
@@ -90,8 +90,7 @@ public class LobbyLoginValidatorTest extends TestCase
 
         
         //create a user, verify we can't login with a username that already exists
-        new DBUserController().createUser(name, "none@none.none", MD5Crypt.crypt("foo"), false);
-        
+        new DBUserController().createUser(name, "none@none.none", MD5Crypt.crypt("foo"), false);        
         
         //we should not be able to login now
         assertNotNull(new LobbyLoginValidator().verifyConnection(
@@ -114,9 +113,6 @@ public class LobbyLoginValidatorTest extends TestCase
         properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
         properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
         
-        
-        
- 
         assertEquals(LobbyLoginValidator.THATS_NOT_A_NICE_NAME, new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
                 properties, name, mac, address
@@ -187,13 +183,10 @@ public class LobbyLoginValidatorTest extends TestCase
         Map<String,String> properties = new HashMap<String,String>();
         properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
         properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-        
- 
+
         assertEquals(LobbyLoginValidator.YOU_HAVE_BEEN_BANNED, new LobbyLoginValidator().verifyConnection(
                 validator.getChallengeProperties(name, address),
                 properties, name, mac, address
                 ));
-
-    }
-    
+    }    
 }

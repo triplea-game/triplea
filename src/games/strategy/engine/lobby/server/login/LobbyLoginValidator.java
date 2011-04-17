@@ -5,6 +5,7 @@ import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.userDB.BadWordController;
 import games.strategy.engine.lobby.server.userDB.BannedIpController;
 import games.strategy.engine.lobby.server.userDB.BannedMacController;
+import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.net.ILoginValidator;
 import games.strategy.util.MD5Crypt;
@@ -87,7 +88,11 @@ public class LobbyLoginValidator implements ILoginValidator
                 return THATS_NOT_A_NICE_NAME;
             }
         }
-        
+
+        if(new BannedUsernameController().isUsernameBanned(clientName))
+        {
+            return YOU_HAVE_BEEN_BANNED;
+        }
         String remoteIp = ((InetSocketAddress) remoteAddress).getAddress().getHostAddress();
         if(new BannedIpController().isIpBanned(remoteIp))
         {

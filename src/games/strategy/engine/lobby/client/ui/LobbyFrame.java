@@ -168,6 +168,63 @@ public class LobbyFrame extends JFrame
 
         });
 
+        rVal.add(new AbstractAction("Ban Username")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                List<String> timeUnits = new ArrayList<String>();
+                timeUnits.add("Minute");
+                timeUnits.add("Hour");
+                timeUnits.add("Day");
+                timeUnits.add("Week");
+                timeUnits.add("Month");
+                timeUnits.add("Year");
+                timeUnits.add("Forever");
+
+                int result = JOptionPane.showOptionDialog(LobbyFrame.this, "Please select the timespan unit of measurement: ", "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, timeUnits.toArray(), timeUnits.toArray()[3]);
+
+                if(result < 0)
+                    return;
+
+                String selectedTimeUnit = (String)timeUnits.toArray()[result];
+
+                if(selectedTimeUnit.equals("Forever"))
+                {
+                    controller.banUsername(clickedOn, null);
+                    return;
+                }
+
+                String stringr = JOptionPane.showInputDialog(LobbyFrame.this, "Please enter the amount of time to ban the player: (In " + selectedTimeUnit + "s)", 1);
+
+                if(stringr == null)
+                    return;
+
+                long result2 = Long.parseLong(stringr);
+                if(result2 < 0)
+                    return;
+
+                long ticks = 0;
+
+                if(selectedTimeUnit.equals("Minute"))
+                    ticks = result2 * 1000 * 60;
+                else if(selectedTimeUnit.equals("Hour"))
+                    ticks = result2 * 1000 * 60 * 60;
+                else if(selectedTimeUnit.equals("Day"))
+                    ticks = result2 * 1000 * 60 * 60 * 24;
+                else if(selectedTimeUnit.equals("Week"))
+                    ticks = result2 * 1000 * 60 * 60 * 24 * 7;
+                else if(selectedTimeUnit.equals("Month"))
+                    ticks = result2 * 1000 * 60 * 60 * 24 * 30;
+                else if(selectedTimeUnit.equals("Year"))
+                    ticks = result2 * 1000 * 60 * 60 * 24 * 365;
+
+                long expire = System.currentTimeMillis() +
+                              ticks;
+
+                controller.banUsername(clickedOn, new Date(expire));
+            }
+        });
+
         rVal.add(new AbstractAction("Ban IP address")
         {
             public void actionPerformed(ActionEvent e)
@@ -282,7 +339,7 @@ public class LobbyFrame extends JFrame
             }
         });
 
-        rVal.add(new AbstractAction("Ban IP and Mac addresses")
+        rVal.add(new AbstractAction("Ban Username IP and Mac")
         {
             public void actionPerformed(ActionEvent e)
             {
@@ -295,7 +352,7 @@ public class LobbyFrame extends JFrame
                 timeUnits.add("Year");
                 timeUnits.add("Forever");
 
-                int result = JOptionPane.showOptionDialog(LobbyFrame.this,"Please select the timespan unit of measurement: ", "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,null, timeUnits.toArray(),timeUnits.toArray()[3]);
+                int result = JOptionPane.showOptionDialog(LobbyFrame.this, "Please select the timespan unit of measurement: ", "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,null, timeUnits.toArray(),timeUnits.toArray()[3]);
 
                 if(result < 0)
                     return;
@@ -304,6 +361,7 @@ public class LobbyFrame extends JFrame
 
                 if(selectedTimeUnit.equals("Forever"))
                 {
+                    controller.banUsername(clickedOn, null);
                     controller.banIp(clickedOn, null);
                     controller.banMac(clickedOn, null);
                     return;
@@ -336,12 +394,13 @@ public class LobbyFrame extends JFrame
                 long expire = System.currentTimeMillis() +
                               ticks;
 
+                controller.banUsername(clickedOn, new Date(expire));
                 controller.banIp(clickedOn, new Date(expire));
                 controller.banMac(clickedOn, new Date(expire));
             }
         });
 
-        rVal.add(new AbstractAction("Mute IP and Mac addresses")
+        rVal.add(new AbstractAction("Mute Username IP and Mac")
         {
             public void actionPerformed(ActionEvent e)
             {
@@ -369,6 +428,7 @@ public class LobbyFrame extends JFrame
                     long expire = System.currentTimeMillis()
                             + ticks;
 
+                    controller.muteUsername(clickedOn, new Date(expire));
                     controller.muteIp(clickedOn, new Date(expire));
                     controller.muteMac(clickedOn, new Date(expire));
                 }

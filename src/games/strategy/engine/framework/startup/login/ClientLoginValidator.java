@@ -92,6 +92,11 @@ public class ClientLoginValidator implements ILoginValidator
             return error;
         }
 
+        String realName = clientName.split(" ")[0];
+        if(ServerMessenger.getInstance().IsUsernameMiniBanned(realName))
+        {
+            return YOU_HAVE_BEEN_BANNED;
+        }
         String remoteIp = ((InetSocketAddress) remoteAddress).getAddress().getHostAddress();
         if(ServerMessenger.getInstance().IsIpMiniBanned(remoteIp))
         {

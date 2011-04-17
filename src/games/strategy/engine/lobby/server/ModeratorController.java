@@ -14,27 +14,32 @@
 
 package games.strategy.engine.lobby.server;
 
-import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.engine.lobby.server.userDB.BannedIpController;
 import games.strategy.engine.lobby.server.userDB.BannedMacController;
+import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.engine.lobby.server.userDB.MutedIpController;
 import games.strategy.engine.lobby.server.userDB.MutedMacController;
+import games.strategy.engine.lobby.server.userDB.MutedUsernameController;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.ServerMessenger;
+import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.util.MD5Crypt;
 
 import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ModeratorController implements IModeratorController
 {
+    private final static Logger s_logger = Logger.getLogger(ModeratorController.class.getName());
 
     private final IServerMessenger m_messenger;
     
@@ -52,14 +57,36 @@ public class ModeratorController implements IModeratorController
     {
         m_messenger = messenger;
     }
+    public void banUsername(INode node, Date banExpires)
+    {
+        assertUserIsAdmin();
+        if(isPlayerAdmin(node))
+            throw new IllegalStateException("Can't ban an admin");
+
+        INode modNode = MessageContext.getSender();
+        String mac = getNodeMacAddress(node);
+        new BannedUsernameController().addBannedUsername(getRealName(node), banExpires);
+        boot(node);
+
+        //Can someone figure out why these logs don't show up? (Wisconsin)
+        s_logger.log(Level.FINE, DUtils.Format("User was banned from the lobby(Username ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}"
+                , node.getName(), node.getAddress().getHostAddress(), mac
+                , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
+    }
     public void banIp(INode node, Date banExpires)
     {
         assertUserIsAdmin();
         if(isPlayerAdmin(node))
             throw new IllegalStateException("Can't ban an admin");
 
+        INode modNode = MessageContext.getSender();
+        String mac = getNodeMacAddress(node);
         new BannedIpController().addBannedIp(node.getAddress().getHostAddress(), banExpires);
         boot(node);
+        
+        s_logger.log(Level.FINE, DUtils.Format("User was banned from the lobby(Mac ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}"
+                , node.getName(), node.getAddress().getHostAddress(), mac
+                , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     }
     public void banMac(INode node, Date banExpires)
     {
@@ -67,9 +94,23 @@ public class ModeratorController implements IModeratorController
         if(isPlayerAdmin(node))
             throw new IllegalStateException("Can't ban an admin");
 
+        INode modNode = MessageContext.getSender();
         String mac = getNodeMacAddress(node);
         new BannedMacController().addBannedMac(mac, banExpires);
         boot(node);
+        
+        s_logger.log(Level.FINE, DUtils.Format("User was banned from the lobby(Mac ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}"
+                , node.getName(), node.getAddress().getHostAddress(), mac
+                , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
+    }
+    public void muteUsername(INode node, Date muteExpires)
+    {
+        assertUserIsAdmin();
+        if(isPlayerAdmin(node))
+            throw new IllegalStateException("Can't mute an admin");
+
+        new MutedUsernameController().addMutedUsername(getRealName(node), muteExpires);
+        ServerMessenger.getInstance().NotifyIPMutingOfPlayer(node.getAddress().getHostAddress(), muteExpires.getTime());
     }
     public void muteIp(INode node, Date muteExpires)
     {
@@ -134,7 +175,7 @@ public class ModeratorController implements IModeratorController
 
     private String getRealName(INode node)
     {
-        //remove any (n) that is added to distinguish duplicate names
+        //Remove any (n) that is added to distinguish duplicate names
         String name = node.getName().split(" ")[0];
         return name;
     }

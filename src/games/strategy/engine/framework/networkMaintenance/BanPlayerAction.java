@@ -50,6 +50,8 @@ public class BanPlayerAction extends AbstractAction
         {
             if (node.getName().equals(name))
             {
+                String realName = node.getName().split(" ")[0];
+                ServerMessenger.getInstance().NotifyUsernameMiniBanningOfPlayer(realName);
                 ServerMessenger.getInstance().NotifyIPMiniBanningOfPlayer(node.getAddress().getHostAddress());
                 ServerMessenger.getInstance().NotifyMacMiniBanningOfPlayer(ServerMessenger.getInstance().GetPlayerMac(node.getName()));
                 m_messenger.removeConnection(node);

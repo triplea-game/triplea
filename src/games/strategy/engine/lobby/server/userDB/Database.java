@@ -158,6 +158,18 @@ public class Database
                             );
                     s.close();
                 }
+
+                if(!existing.contains("BANNED_USERNAMES"))
+                {
+                    Statement s = conn.createStatement();
+                    s.execute("create table banned_usernames" +
+                            "(" +
+                            "username varchar(40) NOT NULL PRIMARY KEY, " +
+                            "ban_till timestamp  " +
+                            ")"
+                        );
+                    s.close();
+                }
                 
                 if(!existing.contains("BANNED_IPS")) 
                 {
@@ -178,6 +190,18 @@ public class Database
                             "(" +
                             "mac varchar(40) NOT NULL PRIMARY KEY, " +
                             "ban_till timestamp  " +
+                            ")"
+                        );
+                    s.close();
+                }
+
+                if(!existing.contains("MUTED_USERNAMES"))
+                {
+                    Statement s = conn.createStatement();
+                    s.execute("create table muted_usernames" +
+                            "(" +
+                            "username varchar(40) NOT NULL PRIMARY KEY, " +
+                            "mute_till timestamp  " +
                             ")"
                         );
                     s.close();
