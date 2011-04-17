@@ -780,6 +780,7 @@ public class SettingsWindow extends javax.swing.JDialog
         v_calcRunCountAssignmentsScrollPane.setName("v_calcRunCountAssignmentsScrollPane"); // NOI18N
 
         v_calcRunCountAssignmentsHolderPanel.setName("v_calcRunCountAssignmentsHolderPanel"); // NOI18N
+        v_calcRunCountAssignmentsHolderPanel.setPreferredSize(new java.awt.Dimension(250, 603));
 
         jLabel17.setText("calculations");
         jLabel17.setName("jLabel17"); // NOI18N
@@ -1835,6 +1836,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("CM & NCM Task Settings (Tasks are the main components of the combat and non combat move phases)"));
         jPanel3.setMaximumSize(new java.awt.Dimension(1000, 750));
         jPanel3.setName("jPanel3"); // NOI18N
+        jPanel3.setPreferredSize(new java.awt.Dimension(100, 100));
 
         jLabel58.setText("Threat Invalidation Type:");
         jLabel58.setName("jLabel58"); // NOI18N
@@ -1915,7 +1917,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Purchase Phase Settings"));
         jPanel10.setMaximumSize(new java.awt.Dimension(1000, 250));
         jPanel10.setName("jPanel10"); // NOI18N
-        jPanel10.setPreferredSize(new java.awt.Dimension(1000, 250));
+        jPanel10.setPreferredSize(new java.awt.Dimension(100, 250));
 
         v_aa_resourcePercentageThatMustExistForFactoryBuy.setModel(new javax.swing.SpinnerNumberModel(50, 25, 75, 1));
         v_aa_resourcePercentageThatMustExistForFactoryBuy.setName("v_aa_resourcePercentageThatMustExistForFactoryBuy"); // NOI18N
@@ -1943,7 +1945,7 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel53)
                     .addComponent(jLabel57))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 193, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 192, Short.MAX_VALUE)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(v_aa_maxUnitTypesForPurchaseMix, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(v_aa_resourcePercentageThatMustExistForFactoryBuy, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1963,12 +1965,13 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel57, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(v_aa_maxUnitTypesForPurchaseMix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 23, Short.MAX_VALUE))
         );
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Others"));
         jPanel5.setMaximumSize(new java.awt.Dimension(1000, 750));
         jPanel5.setName("jPanel5"); // NOI18N
+        jPanel5.setPreferredSize(new java.awt.Dimension(100, 100));
 
         jLabel67.setText("Survival Chance That One Of The Landing Ters Must Match For Air Unit To Be Recruitable:");
         jLabel67.setToolTipText("For an air unit to be considered 'recruitable', it must be able to reach a landing territory that has at least an X percent chance of survival.");
@@ -2017,30 +2020,32 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel69)
                     .addComponent(v_aa_ignoreAlliedUnitsAsDefenses))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
         jPanel12.setLayout(jPanel12Layout);
         jPanel12Layout.setHorizontalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
+            .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 695, Short.MAX_VALUE))
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel12Layout.createSequentialGroup()
+                        .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, 694, Short.MAX_VALUE)
+                        .addGap(1, 1, 1))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 695, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 695, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 

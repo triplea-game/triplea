@@ -63,6 +63,10 @@ public class Place
             try{SwingUtilities.invokeAndWait(runner);}
             catch (InterruptedException ex){}
             catch (InvocationTargetException ex){}
+
+            Change change = ChangeFactory.changeResourcesChange(player, GlobalCenter.GetPUResource(), -player.getResources().getQuantity(GlobalCenter.GetPUResource()));
+            CachedInstanceCenter.CachedDelegateBridge.addChange(change);
+
             Dynamix_AI.Pause();
             return;
         }
