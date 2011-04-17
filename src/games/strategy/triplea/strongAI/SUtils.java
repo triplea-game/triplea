@@ -5150,6 +5150,8 @@ public class SUtils
 				{
 					for (Territory neighbor : data.getMap().getNeighbors(terr1, alliedLandTerr))
 					{
+                        if(!landRankMap.containsKey(neighbor)) //Match when adding ters to rank map is more strict than this match (alliedLandTer)
+                            continue;
 						float thisRank = landRankMap.get(neighbor);
 						landRank = Math.max(landRank, thisRank);
 					}
