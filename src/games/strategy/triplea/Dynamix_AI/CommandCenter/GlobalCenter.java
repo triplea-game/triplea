@@ -26,6 +26,7 @@ import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Others.PhaseType;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.IntegerMap;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -84,9 +85,10 @@ public class GlobalCenter
     public static int PUsAtEndOfLastTurn = 0;
 
     private static ProductionFrontier MergedAndAveragedProductionFronter = null;
+    public static List<UnitType> AllMapUnitTypes = new ArrayList<UnitType>();
     /**
      * Generates a merged and averaged production frontier that can be used to determine TUV of units even when player is neutral or unknown.
-     * This method also determines the global FastestUnitMovement value.
+     * This method also sets the global FastestUnitMovement value and the AllMapUnitTypes list.
      */
     private static void GenerateMergedAndAveragedProductionFrontier(GameData data)
     {
@@ -110,6 +112,8 @@ public class GlobalCenter
                     FastestUnitMovement = movement;
                 if(movement > FastestLandUnitMovement && !ua.isSea() && !ua.isAir())
                     FastestLandUnitMovement = movement;
+
+                AllMapUnitTypes.add(ut);
             }
         }
 

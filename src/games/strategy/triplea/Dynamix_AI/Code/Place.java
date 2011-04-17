@@ -38,6 +38,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.util.Match;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -53,6 +54,19 @@ public class Place
 {
     public static void place(Dynamix_AI ai, boolean bid, IAbstractPlaceDelegate placeDelegate, GameData data, PlayerID player)
     {
+        if(DSettings.LoadSettings().AIC_disableAllUnitPurchasesAndPlacements)
+        {
+            final String message = ai.getName() + " is skipping it's placement phase and destroying its " + player.getResources().getQuantity(GlobalCenter.GetPUResource()) + " PU's, as instructed.";
+            DUtils.Log(Level.FINE, message);
+            Runnable runner = new Runnable()
+            {public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
+            try{SwingUtilities.invokeAndWait(runner);}
+            catch (InterruptedException ex){}
+            catch (InvocationTargetException ex){}
+            Dynamix_AI.Pause();
+            return;
+        }
+
         Unit aa = null;
         for (ProductionRule rule : player.getProductionFrontier().getRules())
         {
@@ -86,16 +100,22 @@ public class Place
             {
                 float multiplyAmount = DUtils.ToFloat(DSettings.LoadSettings().UnitPlacementMultiplyPercent);
                 List<Unit> hackedUnits = DUtils.GetXPercentOfTheUnitsInList_CreateMoreIfNeeded(units, multiplyAmount);
-                final List<Unit> fHackedUnits = hackedUnits; final Territory fFactoryTer = factoryTer; final Dynamix_AI fAI = ai;
+
+                final String message = ai.getName() + " use a UPM cheat, and place " + hackedUnits.size() + " units on " + factoryTer.getName();
+                final List<Unit> fHackedUnits = hackedUnits;
+                DUtils.Log(Level.FINE, message);
                 Runnable runner = new Runnable()
                 {
                     public void run()
                     {
-                        CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(fAI.getName() + " use a UPM cheat, and place " + fHackedUnits.size() + " units on " + fFactoryTer.getName());
+                        CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);
                         CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().setRenderingData(fHackedUnits); //Let the user see the hacked units in the sidebar
                     }
                 };
-                try{SwingUtilities.invokeAndWait(runner);}catch(Exception ex){System.out.println(ex.toString());}
+                try{SwingUtilities.invokeAndWait(runner);}
+                catch (InterruptedException ex){}
+                catch (InvocationTargetException ex){}
+
                 Change change = ChangeFactory.addUnits(factoryTer, hackedUnits);
                 CachedInstanceCenter.CachedDelegateBridge.addChange(change);
                 Change change2 = ChangeFactory.removeUnits(player, units); //Now remove the left-to-place units
@@ -247,7 +267,7 @@ public class Place
         {
             if(ter.getUnits().someMatch(Matches.UnitIsFactory))
                 continue;
-            if(StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasAttacked_Normal || StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasBlitzed)
+            if(StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasAttacked())
                 continue;
 
             int score = 0;

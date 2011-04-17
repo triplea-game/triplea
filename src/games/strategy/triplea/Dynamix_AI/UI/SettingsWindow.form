@@ -695,6 +695,60 @@
             </Component>
           </SubComponents>
         </Container>
+        <Container class="javax.swing.JPanel" name="jPanel18">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="jPanel18" noResource="true"/>
+          </Properties>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="AI Control">
+                <Property name="tabTitle" type="java.lang.String" value="AI Control"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="v_aic_disableAllUnitMovement" min="-2" pref="450" max="-2" attributes="0"/>
+                          <Component id="v_aic_disableAllUnitPurchasesAndPlacements" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="278" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="v_aic_disableAllUnitPurchasesAndPlacements" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="v_aic_disableAllUnitMovement" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="205" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JCheckBox" name="v_aic_disableAllUnitPurchasesAndPlacements">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Disable All Unit Purchases/Placements"/>
+                <Property name="toolTipText" type="java.lang.String" value="Causes all Dynamix AI&apos;s to skip their purchase and placement phases, as well as destroy their own PU&apos;s at the end of each round."/>
+                <Property name="name" type="java.lang.String" value="v_aic_disableAllUnitPurchasesAndPlacements" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="v_aic_disableAllUnitMovement">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Disable All Unit Movement"/>
+                <Property name="toolTipText" type="java.lang.String" value="Causes all Dynamix AI&apos;s to skip their cm and ncm movement phases."/>
+                <Property name="name" type="java.lang.String" value="v_aic_disableAllUnitMovement" noResource="true"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
         <Container class="javax.swing.JPanel" name="jPanel6">
           <Properties>
             <Property name="name" type="java.lang.String" value="jPanel6" noResource="true"/>
@@ -2126,7 +2180,7 @@
                     <Component class="javax.swing.JSpinner" name="v_tr_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="15" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                          <SpinnerModel initial="20" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_tr_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements" noResource="true"/>
                       </Properties>
@@ -2134,7 +2188,7 @@
                     <Component class="javax.swing.JSpinner" name="v_tr_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="15" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                          <SpinnerModel initial="20" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_tr_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement" noResource="true"/>
                       </Properties>
@@ -2149,7 +2203,7 @@
                     <Component class="javax.swing.JSpinner" name="v_tr_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="15" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                          <SpinnerModel initial="20" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_tr_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement" noResource="true"/>
                       </Properties>
@@ -2164,7 +2218,7 @@
                     <Component class="javax.swing.JSpinner" name="v_tr_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="15" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                          <SpinnerModel initial="20" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_tr_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement" noResource="true"/>
                       </Properties>
@@ -2179,7 +2233,7 @@
                     <Component class="javax.swing.JSpinner" name="v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="15" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                          <SpinnerModel initial="20" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement" noResource="true"/>
                       </Properties>
@@ -2194,7 +2248,7 @@
                     <Component class="javax.swing.JSpinner" name="v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="75" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                          <SpinnerModel initial="50" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired" noResource="true"/>
                       </Properties>
@@ -2808,11 +2862,20 @@
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
+                              <Group type="102" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jLabel67" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="155" max="32767" attributes="0"/>
-                                  <Component id="v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit" min="-2" pref="56" max="-2" attributes="1"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="jLabel67" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace pref="155" max="32767" attributes="0"/>
+                                          <Component id="v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit" min="-2" pref="56" max="-2" attributes="1"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="jLabel69" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace pref="350" max="32767" attributes="0"/>
+                                          <Component id="v_aa_ignoreAlliedUnitsAsDefenses" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="jLabel68" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -2827,6 +2890,11 @@
                                       <Component id="jLabel67" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel68" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="jLabel69" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="v_aa_ignoreAlliedUnitsAsDefenses" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="32767" attributes="0"/>
                               </Group>
@@ -2853,6 +2921,18 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="%"/>
                             <Property name="name" type="java.lang.String" value="jLabel68" noResource="true"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jLabel69">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Ignore Allied Units When Trying To Reinforce Territories:"/>
+                            <Property name="toolTipText" type="java.lang.String" value="If this is enabled, the AI will completely ignore any allied units when checking for territory defenses."/>
+                            <Property name="name" type="java.lang.String" value="jLabel69" noResource="true"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JCheckBox" name="v_aa_ignoreAlliedUnitsAsDefenses">
+                          <Properties>
+                            <Property name="name" type="java.lang.String" value="v_aa_ignoreAlliedUnitsAsDefenses" noResource="true"/>
                           </Properties>
                         </Component>
                       </SubComponents>

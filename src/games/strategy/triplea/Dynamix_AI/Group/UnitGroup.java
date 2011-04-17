@@ -28,6 +28,7 @@ import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
+import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 import java.util.ArrayList;
@@ -127,7 +128,7 @@ public class UnitGroup
 
         if(air)
         {
-            m_cmRouteMatch = Matches.TerritoryIsNotImpassable;
+            m_cmRouteMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player));
         }
         else if(sea)
         {
@@ -135,7 +136,7 @@ public class UnitGroup
         }
         else
         {
-             m_cmRouteMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.territoryHasNoEnemyUnits(player, m_data));
+            m_cmRouteMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.territoryHasNoEnemyUnits(player, m_data));
         }
 
         if(air)
@@ -155,10 +156,10 @@ public class UnitGroup
         else
         {
             m_ncmCRouteMatches = new HashMap<Match<Territory>, Integer>();
-            m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, DMatches.territoryIsOwnedBy(player)), 10);
-            m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, DMatches.territoryIsOwnedByXOrAlly(m_data, player)), 11);
-            m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable, Matches.TerritoryIsNotNeutral), 15);
-            m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand), 1000); //We really don't want to go through impassibles, actually never, cause we can't... 8|
+            m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, DMatches.territoryIsOwnedBy(player)), 10); //We like ters we own
+            m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, DMatches.territoryIsOwnedByXOrAlly(m_data, player)), 11); //Next best is allied ters
+            m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsPassableAndNotRestricted(player)), 15); //If we must, we take the route with enemy ters we can actually takeover and then walk though
+            m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand), 1000); //Finally, we add the any-land match, which we unfortunately can't get through...
         }
     }
 
@@ -203,10 +204,7 @@ public class UnitGroup
             route = DUtils.TrimRoute_AtFirstTerWithEnemyUnits(route, slowest, GetFirstUnit().getOwner(), m_data);
 
         if (route == null || route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName()))
-            return null;
-
-        if (StatusCenter.get(m_data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(route.getEnd()).WasAbandoned)
-            route = DUtils.TrimRoute_BeforeFirstTerMatching(route, slowest, GlobalCenter.CurrentPlayer, m_data, DMatches.territoryMatchesDMatch(m_data, GlobalCenter.CurrentPlayer, DMatches.TS_WasAbandoned));
+            return null;        
 
         if (route == null || route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName()))
             return null;
@@ -251,8 +249,8 @@ public class UnitGroup
 
         if (extraChecks)
         {
-            if(StatusCenter.get(m_data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(route.getEnd()).WasAbandoned)
-                route = DUtils.TrimRoute_BeforeFirstTerMatching(route, slowest, GlobalCenter.CurrentPlayer, m_data, DMatches.territoryMatchesDMatch(m_data, GlobalCenter.CurrentPlayer, DMatches.TS_WasAbandoned));
+            if (DMatches.territoryIsConsideredSafeToNCMInto(GlobalCenter.CurrentPlayer, m_data).invert().match(route.getEnd()))
+                route = DUtils.TrimRoute_BeforeFirstTerMatching(route, slowest, GlobalCenter.CurrentPlayer, m_data, DMatches.territoryIsConsideredSafeToNCMInto(GlobalCenter.CurrentPlayer, m_data).invert());
         }
 
         if (route == null || route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName()))
@@ -355,6 +353,18 @@ public class UnitGroup
      */
     public String MoveAsFarAlongRoute_NCM(IMoveDelegate mover, Route fullRoute)
     {
+        return MoveAsFarAlongRoute_NCM(mover, fullRoute, false);
+    }
+
+    /**
+     * Attempts to move the units given during initialization as far as possible along the route given.
+     * @param fullRoute - The route that the units in this unit group will follow
+     * @param mover - The move delegate that performs the move
+     * @param extraChecks - If enabled, extra checks will be used in this move, like route trimming so the units don't end up in an abandoned territory.
+     * @return an error message if move failed. If successful, returns null.
+     */
+    public String MoveAsFarAlongRoute_NCM(IMoveDelegate mover, Route fullRoute, boolean extraChecks)
+    {
         Route route = fullRoute;
 
         if (fullRoute != null && GetFromTerritory().equals(fullRoute.getEnd()))
@@ -377,8 +387,11 @@ public class UnitGroup
         if (route == null || route.getTerritories().size() < 2)
             return "After trimming, the route given is either null or too short(no actual route)";
 
-        if (StatusCenter.get(m_data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(route.getEnd()).WasAbandoned)
-            route = DUtils.TrimRoute_BeforeFirstTerMatching(route, slowest, GlobalCenter.CurrentPlayer, m_data, DMatches.territoryMatchesDMatch(m_data, GlobalCenter.CurrentPlayer, DMatches.TS_WasAbandoned));
+        if (extraChecks)
+        {
+            if (DMatches.territoryIsConsideredSafeToNCMInto(GlobalCenter.CurrentPlayer, m_data).invert().match(route.getEnd()))
+                route = DUtils.TrimRoute_BeforeFirstTerMatching(route, slowest, GlobalCenter.CurrentPlayer, m_data, DMatches.territoryIsConsideredSafeToNCMInto(GlobalCenter.CurrentPlayer, m_data).invert());
+        }
 
         if (route == null || route.getTerritories().size() < 2)
             return "After secondary trimming, the route given is either null or too short(no actual route)";

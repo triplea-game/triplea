@@ -82,6 +82,8 @@ public class NCM_Call
     {
         final HashMap<Unit, Territory> unitLocations = new HashMap<Unit, Territory>();
         final HashMap<Unit, Integer> possibles = new HashMap<Unit, Integer>();
+
+        boolean addedAA = false;
         for (final Territory ter : m_data.getMap().getTerritories())
         {
             if(DMatches.territoryContainsMultipleAlliances(m_data).match(ter)) //If we're battling here
@@ -97,8 +99,6 @@ public class NCM_Call
                         return false;
                     if (Matches.UnitIsFactory.match(unit) && ua.getDefense(unit.getOwner()) <= 0)
                         return false;
-                    if (Matches.UnitIsAA.match(unit))
-                        return false;
                     if(recruitsAsHashSet.contains(unit)) //If we've already recruited this unit
                         return false;
                     if (!DUtils.CanUnitReachTer(m_data, ter, unit, m_target))
@@ -111,8 +111,17 @@ public class NCM_Call
             if (units.isEmpty())
                 continue;
 
+
             for (Unit unit : units)
             {
+                if (Matches.UnitIsAA.match(unit))
+                {
+                    //If this is an AA and we've already added an AA as a recruit or (the from ter has a factory and this is the only AA), skip AA
+                    if (addedAA || (ter.getUnits().getMatches(Matches.UnitIsFactory).size() > 0 && ter.getUnits().getMatches(Matches.UnitIsAA).size() <= 1))
+                        continue;
+                    else
+                        addedAA = true;
+                }
                 int suitability = DUtils.HowWellIsUnitSuitedToCall(m_data, this, ter, unit);
                 if(suitability == Integer.MIN_VALUE)
                     continue;
@@ -221,6 +230,12 @@ public class NCM_Call
 
             List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
             List<Unit> defenders = GetRecruitedUnitsAsUnitList();
+            defenders.addAll(DUtils.GetUnitsGoingToBePlacedAtX(m_data, GlobalCenter.CurrentPlayer, m_target));
+            if(!DSettings.LoadSettings().AA_ignoreAlliedUnitsAsDefenses)
+            {
+                defenders.removeAll(m_target.getUnits().getUnits());
+                defenders.addAll(m_target.getUnits().getUnits());
+            }
             AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, 1, true);
 
             float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, minSurvivalChance);
@@ -240,7 +255,7 @@ public class NCM_Call
             break; //We've met all requirements
         }
 
-        m_recruitedUnits = m_recruitedUnits.subList(0, Math.max(0, m_recruitedUnits.size() - 7)); //Backtrack 7 units
+        m_recruitedUnits = DUtils.TrimRecruits_NonMovedOnes(m_recruitedUnits, 7); //Backtrack 7 units
 
         //Now do it carefully
         for (UnitGroup ug : sortedPossibles)
@@ -250,6 +265,12 @@ public class NCM_Call
 
             List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
             List<Unit> defenders = GetRecruitedUnitsAsUnitList();
+            defenders.addAll(DUtils.GetUnitsGoingToBePlacedAtX(m_data, GlobalCenter.CurrentPlayer, m_target));
+            if(!DSettings.LoadSettings().AA_ignoreAlliedUnitsAsDefenses)
+            {
+                defenders.removeAll(m_target.getUnits().getUnits());
+                defenders.addAll(m_target.getUnits().getUnits());
+            }
             AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, true);
 
             float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, minSurvivalChance);
@@ -329,6 +350,12 @@ public class NCM_Call
 
         List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
         List<Unit> defenders = GetRecruitedUnitsAsUnitList();
+        defenders.addAll(DUtils.GetUnitsGoingToBePlacedAtX(m_data, GlobalCenter.CurrentPlayer, m_target));
+        if (!DSettings.LoadSettings().AA_ignoreAlliedUnitsAsDefenses)
+        {
+            defenders.removeAll(m_target.getUnits().getUnits());
+            defenders.addAll(m_target.getUnits().getUnits());
+        }
         AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile, true);
         DUtils.Log(Level.FINEST, "        Enemy attack simulated. Attackers Size: {0} Defenders Size: {1} Takeover Chance: {2}", attackers.size(), defenders.size(), simulatedAttack.getAttackerWinPercent());
 

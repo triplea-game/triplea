@@ -5043,6 +5043,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			List<Unit> sendBombers = new ArrayList<Unit>();
 			
 			Route route2 = SUtils.findNearestNotEmpty(t, canLand, routeCondition, data);
+            if(route2 == null)
+                continue;
 			Territory endTerr = route2.getTerritories().get(route2.getLength());
 			int sendNum = 0;
 			for (Unit f : airUnits)

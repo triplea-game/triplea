@@ -45,10 +45,12 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -79,6 +81,19 @@ public class DoNonCombatMove
     }
     public static void doNonCombatMove(Dynamix_AI ai, GameData data, IMoveDelegate mover, PlayerID player)
     {
+        if(DSettings.LoadSettings().AIC_disableAllUnitMovements)
+        {
+            final String message = ai.getName() + " is skipping it's ncm phase, as instructed.";
+            DUtils.Log(Level.FINE, message);
+            Runnable runner = new Runnable()
+            {public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
+            try{SwingUtilities.invokeAndWait(runner);}
+            catch (InterruptedException ex){}
+            catch (InvocationTargetException ex){}
+            Dynamix_AI.Pause();
+            return;
+        }
+
         MovePackage pack = new MovePackage(ai, data, mover, player, null, null, null);
 
         //First, we generate a list of ncm 'tasks', such as reinforcements of territories, blocking of enemies, etc.
@@ -134,12 +149,7 @@ public class DoNonCombatMove
             if (task.IsDisqualified())
             {
                 task.PerformTargetRetreat(tasks, mover);
-                StatusCenter.get(data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(task.GetTarget()).WasAbandoned = true;
-            }
-            else if(task.IsCompleted() && task.GetTaskType() == NCM_TaskType.Reinforce_Block)
-            {
-                //Blocks are basically the same as abandonings (as in, we don't want units ncm'ing here)
-                StatusCenter.get(data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(task.GetTarget()).WasAbandoned = true;
+                StatusCenter.get(data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(task.GetTarget()).WasRetreatedFrom = true;
             }
         }
 
@@ -158,7 +168,7 @@ public class DoNonCombatMove
             }
         }
 
-                //We now allow the worthwhile tasks to recruit even more additional units to make the task even more favorable.
+        //We now allow the worthwhile tasks to recruit even more additional units to make the task even more favorable.
         DUtils.Log(Level.FINE, "  Calculating and adding additional task recruits. (Wave 3)");
         for(NCM_Task task : tasks)
         {
@@ -202,12 +212,19 @@ public class DoNonCombatMove
 
         //Now that we've completed all the ncm tasks we could, we do the ordinary ncm move-to-target process.
         DUtils.Log(Level.FINE, "  Calculating and performing regular ncm move-to-target moves.");
-        for(Territory ter : data.getMap().getTerritories())
+        for(Territory ter : (List<Territory>)DUtils.ShuffleList(data.getMap().getTerritories()))
         {
             if(DMatches.territoryIsOwnedByEnemy(data, player).match(ter))
                 continue;
 
-            List<Unit> terUnits = ter.getUnits().getMatches(DUtils.CompMatchAnd(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft, Matches.UnitIsNotAA, Matches.UnitIsNotAir));
+            List<Unit> terUnits = ter.getUnits().getMatches(DUtils.CompMatchAnd(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft, Matches.UnitIsNotAir));
+            //If this ter has a factory
+            if(ter.getUnits().getMatches(Matches.UnitIsFactory).size() > 0)
+            {
+                Unit firstAA = DUtils.GetFirstUnitMatching(terUnits, Matches.UnitIsAA, 0);
+                if(firstAA != null)
+                    terUnits.remove(firstAA); //Make sure we keep at least one AA here
+            }
             terUnits.removeAll(TacticalCenter.get(data, player).GetFrozenUnits());
             if(terUnits.isEmpty())
                 continue;
@@ -265,9 +282,8 @@ public class DoNonCombatMove
                     return false;
                 if(ter.isWater())
                     return false;
-                List<Unit> attackers = DUtils.GetNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
-                if(attackers.isEmpty())
-                    return false;
+                if(DUtils.GetNNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand, 1).isEmpty())
+                    return false; //If there are no attackers
                 //If this ter was not conquered and it is not owned by us or our allies, this can't be a ter we reinforce
                 if(!DMatches.territoryIsOwnedByXOrAlly(data, player).match(ter) && !CachedInstanceCenter.CachedBattleTracker.wasConquered(ter))
                     return false;
@@ -296,11 +312,10 @@ public class DoNonCombatMove
                     return false;
                 if(ter.isWater())
                     return false;
-                List<Unit> attackers = DUtils.GetNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
-                if(attackers.isEmpty())
-                    return false;
-                //If this ter was not conquered and it is not owned by us or our allies, this can't be a ter we reinforce
-                if(!DMatches.territoryIsOwnedByXOrAlly(data, player).match(ter) && !CachedInstanceCenter.CachedBattleTracker.wasConquered(ter))
+                if(DUtils.GetNNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand, 1).isEmpty())
+                    return false; //If there are no attackers
+                //If this ter is not owned by us or our allies, this can't be a ter we reinforce
+                if(!DMatches.territoryIsOwnedByXOrAlly(data, player).match(ter))
                     return false;
                 if (GlobalCenter.IsFFAGame)
                 {
@@ -327,18 +342,16 @@ public class DoNonCombatMove
                     return false;
                 //A territory is a frontline territory, if: (Might be outdated, btw)
                 //    There are units that can attack the ter
-                //    The territory is owned by us or an ally, or it was attacked this round
+                //    The territory is owned by us or an ally
                 //    The territory has at least one non-null-enemy owned neighbor
                 //    The territory is either a link between two friendly neighbors, or has at least one unique enemy neighbor
                 //        (though we don't let empty, friendly neighbors cause one of our enemy neighbors to be removed from the 'unique' list)
-                if (!data.getAllianceTracker().isAllied(ter.getOwner(), player) && !StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasAttacked_Normal)
-                    return false;
-                //If this ter was not conquered and it is not owned by us or our allies, this can't be a ter we reinforce
-                if(!DMatches.territoryIsOwnedByXOrAlly(data, player).match(ter) && !CachedInstanceCenter.CachedBattleTracker.wasConquered(ter))
+                //If this ter is not owned by us or our allies, this can't be a ter we reinforce
+                if(!DMatches.territoryIsOwnedByXOrAlly(data, player).match(ter))
                     return false;
                 if(data.getMap().getNeighbors(ter, DMatches.territoryIsOwnedByNNEnemy(data, player)).isEmpty()) //If this is not the front line
                     return false;
-                
+
                 List<Territory> friendlyNeighbors = DUtils.ToList(data.getMap().getNeighbors(ter, DMatches.territoryIsOwnedByXOrAlly(data, player)));
                 List<Territory> uniqueEnemyNeighbors = DUtils.ToList(data.getMap().getNeighbors(ter, DMatches.territoryIsOwnedByNNEnemy(data, player)));
 
@@ -368,8 +381,7 @@ public class DoNonCombatMove
                 if(uniqueEnemyNeighbors.isEmpty() && !isTerLinkBetweenFriendlies) //If this ter does not have unique enemy neighbors, and is not a link between two friendlies, we must not be a front
                     return false;
 
-                List<Unit> attackers = DUtils.GetNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
-                if(attackers.isEmpty())
+                if(DUtils.GetNNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand, 1).isEmpty())
                     return false; //If there are no attackers
 
                 return true;
@@ -617,8 +629,17 @@ public class DoNonCombatMove
         Territory target = NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ter, terUnits, tasks);
         if (target == null)
         {
-            DUtils.Log(Level.FINER, "    NCM target not found for ter: {0}", ter);
-            return;
+            List<Territory> reachableEmptyLand = DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, ter, Integer.MAX_VALUE, DUtils.CompMatchAnd(DMatches.TerritoryIsLandAndPassable, Matches.territoryHasUnitsOwnedBy(player).invert()), DMatches.TerritoryIsLandAndPassable);
+            if(reachableEmptyLand.size() > 0)
+                target = reachableEmptyLand.get(0);
+            if (target == null)
+            {
+                List<Territory> reachableLand = DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, ter, Integer.MAX_VALUE, DMatches.TerritoryIsLandAndPassable, DMatches.TerritoryIsLandAndPassable);
+                target = DUtils.GetRandomTerritoryMatchingXInList(reachableLand, DMatches.TerritoryIsLandAndPassable);
+            }
+            DUtils.Log(Level.FINER, "    NCM target not found, so using random reachable ter. Ter: {0} Target: {1}", ter, target);
+            if(target == null)
+                return;
         }
         float valueOfFrom = DUtils.GetValueOfLandTer(ter, data, player);          
         float valueOfHighestTo = Integer.MIN_VALUE;

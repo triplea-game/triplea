@@ -19,6 +19,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
 import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
 import games.strategy.triplea.Dynamix_AI.Others.TerritoryStatus;
@@ -345,6 +346,16 @@ public class DMatches
         };
     }
     public static Match<Territory> TerritoryIsLandAndPassable = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
+    public static Match<Territory> territoryIsLandAndPassableTo(final PlayerID player)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory ter)
+            {
+                return !ter.isWater() && player.equals(ter.getOwner());
+            }
+        };
+    }
     public static Match<Territory> territoryIsLandAndOwnedBy(final PlayerID player)
     {
         return new Match<Territory>()
@@ -384,7 +395,6 @@ public class DMatches
                 return t.getUnits().someMatch(DUtils.CompMatchAnd(DMatches.unitIsNNEnemyOf(data, player), Matches.UnitIsLand));
             }
         };
-
     }
     public static Match<Territory> territoryContainsMultipleAlliances(final GameData data)
     {
@@ -505,6 +515,45 @@ public class DMatches
              }
          };
     }
+    public static Match<Territory> territoryHasUnitsMatchingXThatCanReach(final PlayerID player, final GameData data, final Match<Territory> terMatch, final Match<Unit> unitMatch)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                return DUtils.GetNUnitsMatchingXThatCanReach(data, t, terMatch, unitMatch, 1).size() >= 1;
+            }
+        };
+    }
+    public static Match<Territory> territoryHasNNEnemyUnitsThatCanReach(final PlayerID player, final GameData data, final Match<Territory> terMatch)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                return DUtils.GetNNNEnemyUnitsThatCanReach(data, t, player, terMatch, 1).size() >= 1;
+            }
+        };
+    }
+    public static Match<Territory> territoryIsConsideredSafeToNCMInto(final PlayerID player, final GameData data)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory ter)
+            {
+                if(ter.isWater())
+                    return false;
+                if(StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasRetreatedFrom)
+                    return false;
+                boolean hasAttackers = DUtils.GetNNNEnemyLUnitsThatCanReach(data, ter, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand, 1).size() >= 1;
+                //If there are land attackers and we haven't reinforced this ter, we dont want to move here (since it wasn't retreated from, this must be a ter that has been made vulnerable by an ncm move this turn)
+                if(hasAttackers && !DUtils.CompMatchOr(DMatches.TS_WasReinforced_Frontline, DMatches.TS_WasReinforced_Stabalize).match(StatusCenter.get(data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(ter)))
+                    return false;
+
+                return true;
+            }
+        };
+    }
     ///////////////////////////////////////////////End Territory Matches///////////////////////////////////////////////
 
 
@@ -517,54 +566,74 @@ public class DMatches
 
 
     ///////////////////////////////////////////////Territory Status Matches///////////////////////////////////////////////
-    public static final Match<TerritoryStatus> TS_IsEndangered = new Match<TerritoryStatus>()
+    public static final Match<TerritoryStatus> TS_WasAttacked = new Match<TerritoryStatus>()
     {
         public boolean match(TerritoryStatus ts)
         {
-            if(ts.IsEndangered)
-                return true;
-            else
-                return false;
+            return ts.WasAttacked();
         }
     };
-    public static final Match<TerritoryStatus> TS_WasAttacked_Normal = new Match<TerritoryStatus>()
+    public static final Match<TerritoryStatus> TS_WasAttacked_LandGrab = new Match<TerritoryStatus>()
     {
         public boolean match(TerritoryStatus ts)
         {
-            if(ts.WasAttacked_Normal)
-                return true;
-            else
-                return false;
+            return ts.WasAttacked_LandGrab;
+        }
+    };
+    public static final Match<TerritoryStatus> TS_WasAttacked_Stabalize = new Match<TerritoryStatus>()
+    {
+        public boolean match(TerritoryStatus ts)
+        {
+            return ts.WasAttacked_Stabalize;
+        }
+    };
+    public static final Match<TerritoryStatus> TS_WasAttacked_Offensive = new Match<TerritoryStatus>()
+    {
+        public boolean match(TerritoryStatus ts)
+        {
+            return ts.WasAttacked_Offensive;
         }
     };
     public static final Match<TerritoryStatus> TS_WasAttacked_Trade = new Match<TerritoryStatus>()
     {
         public boolean match(TerritoryStatus ts)
         {
-            if(ts.WasAttacked_Trade)
-                return true;
-            else
-                return false;
+            return ts.WasAttacked_Trade;
         }
     };
-    public static final Match<TerritoryStatus> TS_WasBlitzed = new Match<TerritoryStatus>()
+    public static final Match<TerritoryStatus> TS_WasReinforced = new Match<TerritoryStatus>()
     {
         public boolean match(TerritoryStatus ts)
         {
-            if(ts.WasBlitzed)
-                return true;
-            else
-                return false;
+            return ts.WasReinforced();
         }
     };
-    public static final Match<TerritoryStatus> TS_WasAbandoned = new Match<TerritoryStatus>()
+    public static final Match<TerritoryStatus> TS_WasReinforced_Block = new Match<TerritoryStatus>()
     {
         public boolean match(TerritoryStatus ts)
         {
-            if(ts.WasAbandoned)
-                return true;
-            else
-                return false;
+            return ts.WasReinforced_Block;
+        }
+    };
+    public static final Match<TerritoryStatus> TS_WasReinforced_Stabalize = new Match<TerritoryStatus>()
+    {
+        public boolean match(TerritoryStatus ts)
+        {
+            return ts.WasReinforced_Stabalize;
+        }
+    };
+    public static final Match<TerritoryStatus> TS_WasReinforced_Frontline = new Match<TerritoryStatus>()
+    {
+        public boolean match(TerritoryStatus ts)
+        {
+            return ts.WasReinforced_Frontline;
+        }
+    };
+    public static final Match<TerritoryStatus> TS_WasRetreatedFrom = new Match<TerritoryStatus>()
+    {
+        public boolean match(TerritoryStatus ts)
+        {
+            return ts.WasRetreatedFrom;
         }
     };
     ///////////////////////////////////////////////End Territory Status Matches///////////////////////////////////////////////

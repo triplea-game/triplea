@@ -14,6 +14,11 @@
 
 package games.strategy.triplea.Dynamix_AI.Others;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
+
 /**
  *
  * @author Stephen
@@ -23,9 +28,44 @@ public class TerritoryStatus
     public TerritoryStatus()
     {
     }
-    public boolean IsEndangered = false;
-    public boolean WasAttacked_Normal = false;
+    public boolean WasAttacked_LandGrab = false;
+    public boolean WasAttacked_Stabalize = false;
+    public boolean WasAttacked_Offensive = false;
     public boolean WasAttacked_Trade = false;
-    public boolean WasBlitzed = false;
-    public boolean WasAbandoned = false;
+    public boolean WasReinforced_Block = false;
+    public boolean WasReinforced_Stabalize = false;
+    public boolean WasReinforced_Frontline = false;
+    public boolean WasRetreatedFrom = false;
+
+    public boolean WasAttacked()
+    {
+        return WasAttacked_LandGrab || WasAttacked_Offensive || WasAttacked_Stabalize || WasAttacked_Trade;
+    }
+
+    public boolean WasReinforced()
+    {
+        return WasReinforced_Block || WasReinforced_Frontline || WasReinforced_Stabalize;
+    }
+
+    public void NotifyTaskPerform(CM_Task task)
+    {
+        if (task.GetTaskType() == task.GetTaskType().LandGrab)
+            WasAttacked_LandGrab = true;
+        else if (task.GetTaskType() == task.GetTaskType().Attack_Stabilize)
+            WasAttacked_Stabalize = true;
+        else if (task.GetTaskType() == task.GetTaskType().Attack_Offensive)
+            WasAttacked_Offensive = true;
+        else if (task.GetTaskType() == task.GetTaskType().Attack_Trade)
+            WasAttacked_Trade = true;
+    }
+
+    public void NotifyTaskPerform(NCM_Task task)
+    {
+        if (task.GetTaskType() == task.GetTaskType().Reinforce_Block)
+            WasReinforced_Block = true;
+        else if (task.GetTaskType() == task.GetTaskType().Reinforce_FrontLine)
+            WasReinforced_Frontline = true;
+        else if (task.GetTaskType() == task.GetTaskType().Reinforce_Stabilize)
+            WasReinforced_Stabalize = true;
+    }
 }

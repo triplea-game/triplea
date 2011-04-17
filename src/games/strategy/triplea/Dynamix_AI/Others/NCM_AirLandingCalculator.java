@@ -18,14 +18,16 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
 import games.strategy.triplea.Dynamix_AI.DMatches;
+import games.strategy.triplea.Dynamix_AI.DSettings;
 import games.strategy.triplea.Dynamix_AI.DUtils;
-import games.strategy.triplea.Dynamix_AI.Group.MovePackage;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.Match;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  *
@@ -38,8 +40,9 @@ public class NCM_AirLandingCalculator
         float highestScore = Integer.MIN_VALUE;
         Territory highestScoringTer = null;
 
+        List<Territory> ourCaps = DUtils.GetAllOurCaps_ThatWeOwn(data, player);
         List<Territory> ourCapitalsTargets = new ArrayList<Territory>();
-        for(Territory ourCap : DUtils.GetAllOurCaps_ThatWeOwn(data, player))
+        for(Territory ourCap : ourCaps)
             ourCapitalsTargets.add(NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ourCap, ourCap.getUnits().getUnits(), tasks));
 
         for(Territory ter : data.getMap().getTerritories())
@@ -48,7 +51,7 @@ public class NCM_AirLandingCalculator
                 continue;
             if(DMatches.territoryIsOwnedByEnemy(data, player).match(ter))
                 continue;
-            if(DUtils.CompMatchOr(DMatches.TS_WasBlitzed, DMatches.TS_WasAttacked_Normal, DMatches.TS_WasAttacked_Trade).match(StatusCenter.get(data, player).GetStatusOfTerritory(ter))) //We can't land on ters taken this turn
+            if(CachedInstanceCenter.CachedBattleTracker.wasConquered(ter))
                 continue;
 
             int airUnitsAbleToMakeIt = 0;
@@ -61,27 +64,66 @@ public class NCM_AirLandingCalculator
             if(airUnitsAbleToMakeIt == 0) //If there are no air units that can make it
                 continue;
 
+            float oldSurvivalChance = DUtils.GetSurvivalChanceOfArmy(data, player, ter, DUtils.GetTerUnitsAtEndOfTurn(data, player, ter), DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
+
             List<Unit> afterDefenders = DUtils.GetTerUnitsAtEndOfTurn(data, player, ter);
             afterDefenders.removeAll(airUnits);
             afterDefenders.addAll(airUnits);
 
-            float survivalChance = DUtils.GetSurvivalChanceOfArmy(data, player, ter, afterDefenders, 500);
+            float newSurvivalChance = DUtils.GetSurvivalChanceOfArmy(data, player, ter, afterDefenders, 500);
 
-            if(survivalChance > .9F) //If this landing ter is really safe
-                survivalChance = .9F; //Then accept similar chances as equal
+            if(newSurvivalChance > .9F) //If this landing ter is really safe
+                newSurvivalChance = .9F; //Then accept similar chances as equal
 
             float score = 0;
-            score += airUnitsAbleToMakeIt * 10000000; //We really want all our planes to make it, but we can't sometimes...
-            score += survivalChance * 1000000; //Survival chance is the next important
+
+            score += airUnitsAbleToMakeIt * 100000000; //We really want all our planes to make it, but we can't sometimes...
+            score += newSurvivalChance * 10000000; //Survival chance is the next important
+
+            boolean isImportant = ourCaps.contains(ter);
+            float importantTerChanceRequired = DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceStabalize_enemyAttackSurvivalChanceRequired);
+            //If this ter is important, and landing planes here will make the ter safe, boost score a lot
+            if(isImportant && oldSurvivalChance < importantTerChanceRequired && newSurvivalChance >= importantTerChanceRequired)
+                score += 100000;
 
             Territory closestCapTarget = DUtils.GetClosestTerInList(data, ourCapitalsTargets, territory);
-            score -= DUtils.GetDistance_ForLandThenNoCondComparison(data, ter, closestCapTarget) * 10; //We like close-to-cap-target, safe landing ters
+            score -= DUtils.GetDistance_ForLandThenNoCondComparison(data, ter, closestCapTarget) * 100; //We like close-to-cap-target, safe landing ters
 
             Territory closestTerWithOurUnits = DUtils.GetClosestTerMatchingX(data, territory, Matches.territoryHasUnitsThatMatch(DUtils.CompMatchAnd(Matches.unitIsLandAndOwnedBy(player), DMatches.UnitCanAttack)));
-            score -= DUtils.GetDistance_ForLandThenNoCondComparison(data, ter, closestTerWithOurUnits) * 10; //We like close-to-our-land-forcesunits, safe landing ters
+            score -= DUtils.GetDistance_ForLandThenNoCondComparison(data, ter, closestTerWithOurUnits) * 100; //We like close-to-our-land-forces, safe landing ters
 
             if(DMatches.territoryIsOwnedBy(player).match(ter))
-                score += 10; //Give a small boost to ters we own, as it's more likely we control its defense
+                score += 50; //Give a small boost to ters we own, as it's more likely we control its defense
+
+            List<Territory> capsAndNeighbors = new ArrayList<Territory>();
+            for (Territory cap : ourCaps)
+                capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(data, cap, 1));
+            HashSet<Unit> capsAndNeighborsUnits = DUtils.ToHashSet(DUtils.GetUnitsInTerritories(capsAndNeighbors));
+            boolean arePlanesFromCapsOrNeighbors = false;
+            for (Unit recruit : airUnits)
+            {
+                if (capsAndNeighborsUnits.contains(recruit))
+                {
+                    arePlanesFromCapsOrNeighbors = true;
+                    break;
+                }
+            }
+            if (arePlanesFromCapsOrNeighbors)
+            {
+                Territory ourClosestCap = DUtils.GetOurClosestCap(data, player, ter);
+                ThreatInvalidationCenter.get(data, player).SuspendThreatInvalidation();
+                List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(data, player, ourClosestCap, ter, airUnits, DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
+                ThreatInvalidationCenter.get(data, player).ResumeThreatInvalidation();
+                if (capTakeoverChances.get(1) > .1F) //If takeover chance is 10% or more after move
+                {
+                    //And takeover chance before and after move is at least 1% different or there average attackers left before and after move is at least 1 different
+                    if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .01F || capTakeoverChances.get(3) - capTakeoverChances.get(2) > 1)
+                    {
+                        DUtils.Log(Level.FINEST, "      Landing air units at {0} would endanger capital, so finding another landing ter.", ter);
+                        continue;
+                    }
+                }
+            }
 
             if (score > highestScore)
             {

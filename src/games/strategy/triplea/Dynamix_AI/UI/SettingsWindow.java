@@ -102,6 +102,9 @@ public class SettingsWindow extends javax.swing.JDialog
         v_allowCalcingDecrease = new javax.swing.JCheckBox();
         v_calcDecreaseToPercentage = new javax.swing.JSpinner();
         jLabel13 = new javax.swing.JLabel();
+        jPanel18 = new javax.swing.JPanel();
+        v_aic_disableAllUnitPurchasesAndPlacements = new javax.swing.JCheckBox();
+        v_aic_disableAllUnitMovement = new javax.swing.JCheckBox();
         jPanel6 = new javax.swing.JPanel();
         v_resourceCollectionMultiplier = new javax.swing.JCheckBox();
         v_resourceCollectionMultiplyAmount = new javax.swing.JSpinner();
@@ -254,6 +257,8 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel67 = new javax.swing.JLabel();
         v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit = new javax.swing.JSpinner();
         jLabel68 = new javax.swing.JLabel();
+        jLabel69 = new javax.swing.JLabel();
+        v_aa_ignoreAlliedUnitsAsDefenses = new javax.swing.JCheckBox();
 
         setTitle("Dynamix AI Settings");
         setMinimumSize(new java.awt.Dimension(775, 400));
@@ -664,6 +669,39 @@ public class SettingsWindow extends javax.swing.JDialog
         );
 
         v_tabPaneMain.addTab("AI Pausing", v_pausingPanel);
+
+        jPanel18.setName("jPanel18"); // NOI18N
+
+        v_aic_disableAllUnitPurchasesAndPlacements.setText("Disable All Unit Purchases/Placements");
+        v_aic_disableAllUnitPurchasesAndPlacements.setToolTipText("Causes all Dynamix AI's to skip their purchase and placement phases, as well as destroy their own PU's at the end of each round.");
+        v_aic_disableAllUnitPurchasesAndPlacements.setName("v_aic_disableAllUnitPurchasesAndPlacements"); // NOI18N
+
+        v_aic_disableAllUnitMovement.setText("Disable All Unit Movement");
+        v_aic_disableAllUnitMovement.setToolTipText("Causes all Dynamix AI's to skip their cm and ncm movement phases.");
+        v_aic_disableAllUnitMovement.setName("v_aic_disableAllUnitMovement"); // NOI18N
+
+        javax.swing.GroupLayout jPanel18Layout = new javax.swing.GroupLayout(jPanel18);
+        jPanel18.setLayout(jPanel18Layout);
+        jPanel18Layout.setHorizontalGroup(
+            jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel18Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(v_aic_disableAllUnitMovement, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(v_aic_disableAllUnitPurchasesAndPlacements, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(278, Short.MAX_VALUE))
+        );
+        jPanel18Layout.setVerticalGroup(
+            jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel18Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(v_aic_disableAllUnitPurchasesAndPlacements)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(v_aic_disableAllUnitMovement)
+                .addContainerGap(205, Short.MAX_VALUE))
+        );
+
+        v_tabPaneMain.addTab("AI Control", jPanel18);
 
         jPanel6.setName("jPanel6"); // NOI18N
 
@@ -1306,38 +1344,38 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel85.setToolTipText("The min trade score(total PU swing, if we get attacked) we need to bypass the survival chance requirement. (Simplified Trade Score: Ter production - our TUV loss + enemy TUV loss)");
         jLabel85.setName("jLabel85"); // NOI18N
 
-        v_tr_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements.setModel(new javax.swing.SpinnerNumberModel(15, 0, 100, 1));
+        v_tr_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements.setModel(new javax.swing.SpinnerNumberModel(20, 0, 100, 1));
         v_tr_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements.setName("v_tr_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements"); // NOI18N
 
-        v_tr_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setModel(new javax.swing.SpinnerNumberModel(15, 0, 100, 1));
+        v_tr_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setModel(new javax.swing.SpinnerNumberModel(20, 0, 100, 1));
         v_tr_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setName("v_tr_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement"); // NOI18N
 
         jLabel88.setText("        Counter-Attack Trade Score Required For Survival-Chance Requirement Bypass:");
         jLabel88.setToolTipText("The min trade score(total PU swing, if we get attacked) we need to bypass the survival chance requirement. (Simplified Trade Score: Ter production - our TUV loss + enemy TUV loss)");
         jLabel88.setName("jLabel88"); // NOI18N
 
-        v_tr_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setModel(new javax.swing.SpinnerNumberModel(15, 0, 100, 1));
+        v_tr_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setModel(new javax.swing.SpinnerNumberModel(20, 0, 100, 1));
         v_tr_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setName("v_tr_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement"); // NOI18N
 
         jLabel93.setText("        Counter-Attack Trade Score Required For Survival-Chance Requirement Bypass:");
         jLabel93.setToolTipText("The min trade score(total PU swing, if we get attacked) we need to bypass the survival chance requirement. (Simplified Trade Score: Ter production - our TUV loss + enemy TUV loss)");
         jLabel93.setName("jLabel93"); // NOI18N
 
-        v_tr_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setModel(new javax.swing.SpinnerNumberModel(15, 0, 100, 1));
+        v_tr_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setModel(new javax.swing.SpinnerNumberModel(20, 0, 100, 1));
         v_tr_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setName("v_tr_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement"); // NOI18N
 
         jLabel94.setText("        Counter-Attack Trade Score Required For Survival-Chance Requirement Bypass:");
         jLabel94.setToolTipText("The min trade score(total PU swing, if we get attacked) we need to bypass the survival chance requirement. (Simplified Trade Score: Ter production - our TUV loss + enemy TUV loss)");
         jLabel94.setName("jLabel94"); // NOI18N
 
-        v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setModel(new javax.swing.SpinnerNumberModel(15, 0, 100, 1));
+        v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setModel(new javax.swing.SpinnerNumberModel(20, 0, 100, 1));
         v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setName("v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement"); // NOI18N
 
         jLabel95.setText("        Counter-Attack Trade Score Required For Survival-Chance Requirement Bypass:");
         jLabel95.setToolTipText("The min trade score(total PU swing, if we get attacked) we need to bypass the survival chance requirement. (Simplified Trade Score: Ter production - our TUV loss + enemy TUV loss)");
         jLabel95.setName("jLabel95"); // NOI18N
 
-        v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired.setModel(new javax.swing.SpinnerNumberModel(75, 0, 100, 1));
+        v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired.setModel(new javax.swing.SpinnerNumberModel(50, 0, 100, 1));
         v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired.setName("v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired"); // NOI18N
 
         jLabel83.setText("%");
@@ -1942,15 +1980,27 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel68.setText("%");
         jLabel68.setName("jLabel68"); // NOI18N
 
+        jLabel69.setText("Ignore Allied Units When Trying To Reinforce Territories:");
+        jLabel69.setToolTipText("If this is enabled, the AI will completely ignore any allied units when checking for territory defenses.");
+        jLabel69.setName("jLabel69"); // NOI18N
+
+        v_aa_ignoreAlliedUnitsAsDefenses.setName("v_aa_ignoreAlliedUnitsAsDefenses"); // NOI18N
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel67)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 155, Short.MAX_VALUE)
-                .addComponent(v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel67)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 155, Short.MAX_VALUE)
+                        .addComponent(v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel69)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 350, Short.MAX_VALUE)
+                        .addComponent(v_aa_ignoreAlliedUnitsAsDefenses)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel68)
                 .addContainerGap())
@@ -1963,6 +2013,10 @@ public class SettingsWindow extends javax.swing.JDialog
                     .addComponent(jLabel67)
                     .addComponent(v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel68))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel69)
+                    .addComponent(v_aa_ignoreAlliedUnitsAsDefenses))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -2049,13 +2103,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_allowCalcingDecrease.setSelected(settings.AllowCalcingDecrease);
         v_calcDecreaseToPercentage.setValue(settings.CalcingDecreaseToPercentage);
 
-        v_enableAILogging.setSelected(settings.EnableAILogging);
-        if (settings.AILoggingDepth.equals(Level.FINE))
-            v_logDepth.setSelectedIndex(0);
-        else if(settings.AILoggingDepth.equals(Level.FINER))
-            v_logDepth.setSelectedIndex(1);
-        else if(settings.AILoggingDepth.equals(Level.FINEST))
-            v_logDepth.setSelectedIndex(2);
+        v_aic_disableAllUnitPurchasesAndPlacements.setSelected(settings.AIC_disableAllUnitPurchasesAndPlacements);
+        v_aic_disableAllUnitMovement.setSelected(settings.AIC_disableAllUnitMovements);
 
         v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost.setValue(settings.CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost);
         v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance.setValue(settings.CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance);
@@ -2068,9 +2117,6 @@ public class SettingsWindow extends javax.swing.JDialog
         v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers.setValue(settings.CA_CMNCM_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers);
         v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove.setValue(settings.CA_NCM_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove);
         v_caretreat_determinesIfAIShouldRetreat.setValue(settings.CA_Retreat_determinesIfAIShouldRetreat);
-
-        v_limitLogHistoryCB.setSelected(settings.LimitLogHistory);
-        v_limitLogHistoryToSpinner.setValue(settings.LimitLogHistoryTo);
 
         if (settings.BattleCalculationMethod.equals(BattleCalculationType.BasicStrengthEval))
             v_basicStrengthEval.setSelected(true);
@@ -2114,7 +2160,18 @@ public class SettingsWindow extends javax.swing.JDialog
 
         v_cr_enableCallForLandGrab.setSelected(settings.CR_enableCallForLandGrab);
         v_cr_enableCallForDefensiveFront.setSelected(settings.CR_enableCallForDefensiveFront);
-        v_cr_enableCallForCapitalDefense.setSelected(settings.CR_enableCallForCapitalDefense);
+        v_cr_enableCallForCapitalDefense.setSelected(settings.CR_enableCallForCapitalDefense);        
+        
+        v_enableAILogging.setSelected(settings.EnableAILogging);
+        if (settings.AILoggingDepth.equals(Level.FINE))
+            v_logDepth.setSelectedIndex(0);
+        else if(settings.AILoggingDepth.equals(Level.FINER))
+            v_logDepth.setSelectedIndex(1);
+        else if(settings.AILoggingDepth.equals(Level.FINEST))
+            v_logDepth.setSelectedIndex(2);
+        
+        v_limitLogHistoryCB.setSelected(settings.LimitLogHistory);
+        v_limitLogHistoryToSpinner.setValue(settings.LimitLogHistoryTo);
 
         v_aa_resourcePercentageThatMustExistForFactoryBuy.setValue(settings.AA_resourcePercentageThatMustExistForFactoryBuy);
         v_aa_maxUnitTypesForPurchaseMix.setValue(settings.AA_maxUnitTypesForPurchaseMix);
@@ -2130,6 +2187,7 @@ public class SettingsWindow extends javax.swing.JDialog
         v_aa_percentageOfResistedThreatsThatTasksInvalidate.setValue(settings.AA_percentageOfResistedThreatThatTasksInvalidate);
 
         v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit.setValue(settings.AA_survivalChanceOfLandingTerRequiredForPlaneRecruit);
+        v_aa_ignoreAlliedUnitsAsDefenses.setSelected(settings.AA_ignoreAlliedUnitsAsDefenses);
     }
 
     public DSettings CreateSettings()
@@ -2150,13 +2208,8 @@ public class SettingsWindow extends javax.swing.JDialog
         settings.AllowCalcingDecrease = v_allowCalcingDecrease.isSelected();
         settings.CalcingDecreaseToPercentage = Integer.parseInt(v_calcDecreaseToPercentage.getValue().toString());
 
-        settings.EnableAILogging = v_enableAILogging.isSelected();
-        if (v_logDepth.getSelectedIndex() == 0)
-            settings.AILoggingDepth = Level.FINE;
-        else if (v_logDepth.getSelectedIndex() == 1)
-            settings.AILoggingDepth = Level.FINER;
-        else if (v_logDepth.getSelectedIndex() == 2)
-            settings.AILoggingDepth = Level.FINEST;
+        settings.AIC_disableAllUnitPurchasesAndPlacements = v_aic_disableAllUnitPurchasesAndPlacements.isSelected();
+        settings.AIC_disableAllUnitMovements = v_aic_disableAllUnitMovement.isSelected();
 
         settings.CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost = Integer.parseInt(v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost.getValue().toString());
         settings.CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance = Integer.parseInt(v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance.getValue().toString());
@@ -2169,9 +2222,6 @@ public class SettingsWindow extends javax.swing.JDialog
         settings.CA_CMNCM_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers = Integer.parseInt(v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers.getValue().toString());
         settings.CA_NCM_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove = Integer.parseInt(v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove.getValue().toString());
         settings.CA_Retreat_determinesIfAIShouldRetreat = Integer.parseInt(v_caretreat_determinesIfAIShouldRetreat.getValue().toString());
-
-        settings.LimitLogHistory = v_limitLogHistoryCB.isSelected();
-        settings.LimitLogHistoryTo = Integer.parseInt(v_limitLogHistoryToSpinner.getValue().toString());
 
         if(v_basicStrengthEval.isSelected())
             settings.BattleCalculationMethod = BattleCalculationType.BasicStrengthEval;
@@ -2217,6 +2267,17 @@ public class SettingsWindow extends javax.swing.JDialog
         settings.CR_enableCallForDefensiveFront = v_cr_enableCallForDefensiveFront.isSelected();
         settings.CR_enableCallForCapitalDefense = v_cr_enableCallForCapitalDefense.isSelected();
 
+        settings.EnableAILogging = v_enableAILogging.isSelected();
+        if (v_logDepth.getSelectedIndex() == 0)
+            settings.AILoggingDepth = Level.FINE;
+        else if (v_logDepth.getSelectedIndex() == 1)
+            settings.AILoggingDepth = Level.FINER;
+        else if (v_logDepth.getSelectedIndex() == 2)
+            settings.AILoggingDepth = Level.FINEST;
+
+        settings.LimitLogHistory = v_limitLogHistoryCB.isSelected();
+        settings.LimitLogHistoryTo = Integer.parseInt(v_limitLogHistoryToSpinner.getValue().toString());
+
         settings.AA_resourcePercentageThatMustExistForFactoryBuy = Integer.parseInt(v_aa_resourcePercentageThatMustExistForFactoryBuy.getValue().toString());
         settings.AA_maxUnitTypesForPurchaseMix = Integer.parseInt(v_aa_maxUnitTypesForPurchaseMix.getValue().toString());
 
@@ -2231,6 +2292,7 @@ public class SettingsWindow extends javax.swing.JDialog
         settings.AA_percentageOfResistedThreatThatTasksInvalidate = Integer.parseInt(v_aa_percentageOfResistedThreatsThatTasksInvalidate.getValue().toString());
 
         settings.AA_survivalChanceOfLandingTerRequiredForPlaneRecruit = Integer.parseInt(v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit.getValue().toString());
+        settings.AA_ignoreAlliedUnitsAsDefenses = v_aa_ignoreAlliedUnitsAsDefenses.isSelected();
 
         return settings;
     }
@@ -2341,7 +2403,17 @@ public class SettingsWindow extends javax.swing.JDialog
                     + "Note that it only starts this reduction of battle-simulation-counts *after* the current action is taking longer to calculate than the user wanted.\r\n"
                     + "Also, the reduction only lasts till the action has been performed, so the run count reduction does not get applied to the next action.";
         }
-        else if (v_tabPaneMain.getSelectedIndex() == 2) //AI Cheating
+        else if (v_tabPaneMain.getSelectedIndex() == 2) //AI Control
+        {
+            message = "AI Control\r\n"
+                    + "\r\n"
+                    + "Disable All Unit Purchases/Placements: Causes all Dynamix AI's to skip their purchase and placement phases, as well as destroy their own PU's at the end of each round.\r\n"
+                    + "\r\n"
+                    + "Disable All Unit Movements: Causes all Dynamix AI's to skip their cm and ncm movement phases.\r\n"
+                    + "\r\n"
+                    + "Note: These settings only affect Dynamix AI's. They have no effect on Moore N Able or EZ Fodder AI's.";
+        }
+        else if (v_tabPaneMain.getSelectedIndex() == 3) //AI Cheating
         {
             message = "AI Cheating\r\n"
                     + "\r\n"
@@ -2358,7 +2430,7 @@ public class SettingsWindow extends javax.swing.JDialog
                     + "\r\n"
                     + "Note: AI cheating is currently only used by Dynamix AI's. They have no effect on Moore N Able or EZ Fodder AI's.";
         }
-        else if (v_tabPaneMain.getSelectedIndex() == 3) //Calc Run Counts
+        else if (v_tabPaneMain.getSelectedIndex() == 4) //Calc Run Counts
         {
             message = "Calc Run Count\r\n"
                     + "\r\n"
@@ -2376,7 +2448,7 @@ public class SettingsWindow extends javax.swing.JDialog
                     + "\r\n"
                     + "Also, many of the AI settings are in need of tweaking, so if any of you'd like to figure out the best setting values, we'd be glad to incorporate them into the AI so everyone can benifit.\r\n";
         }
-        else if (v_tabPaneMain.getSelectedIndex() == 4) //Task Requirements
+        else if (v_tabPaneMain.getSelectedIndex() == 5) //Task Requirements
         {
             message = "Task Requirements\r\n"
                     + "\r\n"
@@ -2388,7 +2460,7 @@ public class SettingsWindow extends javax.swing.JDialog
                     + "By the way, the checkbox's allow you to turn on or off the different task types.\r\n"
                     + "Also note that most of these settings are used by the AI as 'base' values, meaning special situations will add or remove some from the setting you provide.";
         }
-        else if (v_tabPaneMain.getSelectedIndex() == 5) //Call Requirements
+        else if (v_tabPaneMain.getSelectedIndex() == 6) //Call Requirements
         {
             message = "Call Requirements\r\n"
                     + "\r\n"
@@ -2400,7 +2472,7 @@ public class SettingsWindow extends javax.swing.JDialog
                     + "By the way, the checkbox's allow you to turn on or off the different call types.\r\n"
                     + "Also note that most of these settings are used by the AI as 'base' values, meaning special situations will add or remove some from the setting you provide.";
         }
-        else if (v_tabPaneMain.getSelectedIndex() == 6) //Debugging
+        else if (v_tabPaneMain.getSelectedIndex() == 7) //Debugging
         {
             message = "AI Pausing\r\n"
                     + "\r\n"
@@ -2415,7 +2487,7 @@ public class SettingsWindow extends javax.swing.JDialog
                     + "\r\n"
                     + "Limit Log History To X Rounds: If this is checked, the AI log information will be limited to X rounds of information.\r\n";
         }
-        else if (v_tabPaneMain.getSelectedIndex() == 7) //Advanced
+        else if (v_tabPaneMain.getSelectedIndex() == 8) //Advanced
         {
             message = "Advanced\r\n"
                     + "\r\n"
@@ -2452,7 +2524,9 @@ public class SettingsWindow extends javax.swing.JDialog
                     + "For example, this setting would determine what percentage of that german air stack mentioned earlier would be 'ignored', or 'invalidated', when the first successful task was performed with enough units to be safe from it. (The airplane stack)\r\n"
                     + "For more info on threat invalidation, read up on the threat invalidation types listed above.\r\n"
                     + "\r\n"
-                    + "Survival Chance That One Of The Landing Ters Must Match For Air Unit To Be Recruitable: For an air unit to be considered 'recruitable', it must be able to reach a landing territory that has at least an X percent chance of survival.";
+                    + "Survival Chance That One Of The Landing Ters Must Match For Air Unit To Be Recruitable: For an air unit to be considered 'recruitable', it must be able to reach a landing territory that has at least an X percent chance of survival.\r\n"
+                    + "\r\n"
+                    + "Ignore Allied Units When Trying To Reinforce Territories: If this is enabled, the AI will completely ignore any allied units when checking for territory defenses.";
         }
 
         JTextArea label = new JTextArea(message);
@@ -2728,6 +2802,7 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JLabel jLabel65;
     private javax.swing.JLabel jLabel67;
     private javax.swing.JLabel jLabel68;
+    private javax.swing.JLabel jLabel69;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel70;
     private javax.swing.JLabel jLabel71;
@@ -2766,6 +2841,7 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
+    private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -2776,6 +2852,7 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JPanel jPanel9;
     private javax.swing.JRadioButton v_aa_globalThreatInvalidation;
     private javax.swing.JRadioButton v_aa_hotspotInvalidation;
+    private javax.swing.JCheckBox v_aa_ignoreAlliedUnitsAsDefenses;
     private javax.swing.JSpinner v_aa_maxUnitTypesForPurchaseMix;
     private javax.swing.JRadioButton v_aa_noThreatInvalidation;
     private javax.swing.JSpinner v_aa_percentageOfResistedThreatsThatTasksInvalidate;
@@ -2789,6 +2866,8 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JPanel v_actionWaitGoalsPanel;
     private javax.swing.JTextArea v_aiOutputLogArea;
     private javax.swing.JScrollPane v_aiOutputLogAreaScrollPane;
+    private javax.swing.JCheckBox v_aic_disableAllUnitMovement;
+    private javax.swing.JCheckBox v_aic_disableAllUnitPurchasesAndPlacements;
     private javax.swing.JCheckBox v_allowCalcingDecrease;
     private javax.swing.JRadioButton v_basicScoreEval;
     private javax.swing.JRadioButton v_basicStrengthEval;

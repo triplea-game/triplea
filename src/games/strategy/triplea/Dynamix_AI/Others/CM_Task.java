@@ -19,6 +19,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedCalculationCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
@@ -37,10 +38,12 @@ import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -108,7 +111,7 @@ public class CM_Task
                         return false;
                     if (Matches.UnitIsAA.match(unit))
                         return false;
-                    if(recruitsAsHashSet.contains(unit)) //If we've already recruited this unit
+                    if (recruitsAsHashSet.contains(unit)) //If we've already recruited this unit
                         return false;
                     if (!DUtils.CanUnitReachTer(m_data, ter, unit, m_target))
                         return false;
@@ -134,9 +137,11 @@ public class CM_Task
             return new ArrayList<UnitGroup>();
         
         List<Unit> sortedPossibles = DUtils.ToList(possibles.keySet());
-        //For now, shuffle,
+        //For now, shuffle
         Collections.shuffle(sortedPossibles);
-        //Then sort by score. In this way, equal scored attack units are shuffled
+        //Then interleave infantry and artillery (or any unit with support/support receiving)
+        //sortedPossibles = DUtils.ToList(BattleCalculator.sortUnitsForCasualtiesWithSupport(sortedPossibles, false, GlobalCenter.CurrentPlayer, BattleCalculator.getCosts(GlobalCenter.CurrentPlayer, m_data), m_data, false));
+        //Then sort by score. In this way, equal scored attack units are shuffled (Though atm the hashmap sorting method seems to shuffle them up even if they're equally scored, so we comment out the other line)
         sortedPossibles = DSorting.SortListByScores_HashMap_D(sortedPossibles, possibles);
 
         if(m_taskType.equals(CM_TaskType.LandGrab) && sortedPossibles.size() > 0) //Only one unit needed for land grab
@@ -215,8 +220,7 @@ public class CM_Task
                 m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired = DUtils.ToFloat(DSettings.LoadSettings().TR_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired);
             }
         }
-
-        TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).BattleRetreatChanceAssignments.put(m_target, m_minTakeoverChance);
+        
         //DUtils.Log(Level.FINER, "    CM Task requirements calculated. Min Chance: {0} Min Survival Chance: {1}", m_minTakeoverChance, m_minSurvivalChance);
     }
 
@@ -264,7 +268,7 @@ public class CM_Task
     {
         if(m_taskType.equals(CM_TaskType.Attack_Trade))
         {
-            recruitEnoughUnitsForTradeTask(m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired);
+            recruitEnoughUnitsForTradeTask(m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired, false);
             return;
         }
 
@@ -277,7 +281,7 @@ public class CM_Task
             return; //We only need one unit
         if(m_taskType.equals(CM_TaskType.Attack_Trade))
         {
-            recruitEnoughUnitsForTradeTask(.8F);
+            //recruitEnoughUnitsForTradeTask(m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired, false);
             return;
         }
 
@@ -305,7 +309,7 @@ public class CM_Task
             return; //We only need one unit
         if(m_taskType.equals(CM_TaskType.Attack_Trade))
         {
-            recruitEnoughUnitsForTradeTask(.9F);
+            //recruitEnoughUnitsForTradeTask(m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired, false);
             return;
         }
 
@@ -333,7 +337,7 @@ public class CM_Task
             return; //We only need one unit
         if(m_taskType.equals(CM_TaskType.Attack_Trade))
         {
-            recruitEnoughUnitsForTradeTask(1.0F);
+            recruitEnoughUnitsForTradeTask(m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired, true);
             return;
         }
 
@@ -380,7 +384,7 @@ public class CM_Task
             break; //We've met all requirements
         }
 
-        //m_recruitedUnits = m_recruitedUnits.subList(0, Math.max(0, m_recruitedUnits.size() - 7)); //Backtrack 7 units
+        m_recruitedUnits = DUtils.TrimRecruits_NonMovedOnes(m_recruitedUnits, 7); //Backtrack 7 units
 
         //Now do it carefully
         for (UnitGroup ug : sortedPossibles)
@@ -418,11 +422,14 @@ public class CM_Task
         }
     }
 
-    private void recruitEnoughUnitsForTradeTask(float certaintyOfReachingLeftoverLUnitsGoalRequired)
+    private void recruitEnoughUnitsForTradeTask(float certaintyOfReachingLeftoverLUnitsGoalRequired, boolean recruitTillTUVStartsDropping)
     {
         List<UnitGroup> sortedPossibles = getSortedPossibleRecruits();
         if(sortedPossibles.isEmpty())
             return;
+
+        int highestTUVSwing = Integer.MIN_VALUE;
+        int successiveNonIncreases = 0;
 
         for (UnitGroup ug : sortedPossibles)
         {
@@ -459,10 +466,32 @@ public class CM_Task
                 continue;
             }
 
+            //Okay, we've met requirements, now add more if enabled
+            if (recruitTillTUVStartsDropping)
+            {
+                highestTUVSwing = Math.max(tradeScore, highestTUVSwing);
+
+                if (highestTUVSwing > tradeScore)
+                    successiveNonIncreases++;
+                else
+                    successiveNonIncreases = 0;
+
+                if (successiveNonIncreases == 0) //If we're still going up
+                {
+                    m_recruitedUnits.add(ug);
+                    continue;
+                }
+                else if (successiveNonIncreases >= 2) //If this is the second time adding a recruit dropped TUV score
+                    m_recruitedUnits = DUtils.TrimRecruits_NonMovedOnes(sortedPossibles, 2); //Go back to when TUV score was highest and let loop break
+            }
+
             break; //We've met all requirements
         }
 
-        //m_recruitedUnits = m_recruitedUnits.subList(0, Math.max(0, m_recruitedUnits.size() - 5)); //Backtrack 5 units
+        m_recruitedUnits = DUtils.TrimRecruits_NonMovedOnes(m_recruitedUnits, 5); //Backtrack 5 units
+
+        highestTUVSwing = Integer.MIN_VALUE;
+        successiveNonIncreases = 0;
 
         //Now do it carefully
         for (UnitGroup ug : sortedPossibles)
@@ -498,6 +527,25 @@ public class CM_Task
             {
                 m_recruitedUnits.add(ug);
                 continue;
+            }
+
+            //Okay, we've met requirements, now add more if enabled
+            if (recruitTillTUVStartsDropping)
+            {
+                highestTUVSwing = Math.max(tradeScore, highestTUVSwing);
+
+                if (highestTUVSwing > tradeScore)
+                    successiveNonIncreases++;
+                else
+                    successiveNonIncreases = 0;
+
+                if (successiveNonIncreases == 0) //If we're still going up
+                {
+                    m_recruitedUnits.add(ug);
+                    continue;
+                }
+                else if (successiveNonIncreases >= 2) //If this is the second time adding a recruit dropped TUV score
+                    m_recruitedUnits = DUtils.TrimRecruits_NonMovedOnes(sortedPossibles, 2); //Go back to when TUV score was highest and let loop break
             }
 
             break; //We've met all requirements
@@ -702,8 +750,8 @@ public class CM_Task
         }
         else if(m_taskType == CM_TaskType.Attack_Trade)
         {
-            if(StatusCenter.get(m_data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(m_target).WasAttacked_Normal || StatusCenter.get(m_data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(m_target).WasBlitzed) //If this ter was already attacked
-                return false; //This trade task is unnecessary
+            if(StatusCenter.get(m_data, player).GetStatusOfTerritory(m_target).WasAttacked())
+                return false;
 
             //Recreate response results with 'toTake' turned off, otherwise enemy counter-attack results show huge loss of TUV for them, if they have no land attacking, which could cause us to attack a ter even if we only have air!
             simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile, false);
@@ -735,10 +783,12 @@ public class CM_Task
         {
             if(CachedInstanceCenter.CachedBattleTracker.wasConquered(m_target)) //If the blitz target was already taken
             {
-                StatusCenter.get(m_data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(m_target).WasBlitzed = true;
                 m_completed = true;
                 m_recruitedUnits = new ArrayList<UnitGroup>(); //No need to send unit
                 DUtils.Log(Level.FINEST, "        Territory to-grab was already grabbed, so not doing moving, but marking task as completed.");
+
+                StatusCenter.get(m_data, player).GetStatusOfTerritory(m_target).NotifyTaskPerform(this);
+
                 return true; //Already taken care of by another task
             }
             Territory startTer = TacticalCenter.get(m_data, player).GetUnitLocationAtStartOfTurn(m_recruitedUnits.get(0).GetFirstUnit()); //Land grabs are done with only one unit
@@ -769,7 +819,7 @@ public class CM_Task
                 tuvSwing = 0; //If no one's going to attack, there is no TUV swing
 
             //If the tuv swing + ter production is in our favor, or there are no land attackers
-            if (tuvSwing + ta.getProduction() > 0)
+            if (tuvSwing + (float)ta.getProduction() > 0.0F)
                 return true;
 
             return false;
@@ -929,5 +979,10 @@ public class CM_Task
         }
         ReconsiderSignalCenter.get(m_data, GlobalCenter.CurrentPlayer).ObjectsToReconsider.addAll(CachedInstanceCenter.CachedGameData.getMap().getNeighbors(m_target));
         m_completed = true;
+
+        if(m_taskType.equals(CM_TaskType.Attack_Offensive) || m_taskType.equals(CM_TaskType.Attack_Stabilize))
+            TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).BattleRetreatChanceAssignments.put(m_target, m_minTakeoverChance);
+
+        StatusCenter.get(m_data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(m_target).NotifyTaskPerform(this);
     }
 }

@@ -44,6 +44,7 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -58,8 +59,21 @@ import javax.swing.SwingUtilities;
  */
 public class Purchase
 {
-    public static void purchase(Dynamix_AI ai, boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaser, GameData data, final PlayerID player)
+    public static void purchase(Dynamix_AI ai, boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaser, GameData data, PlayerID player)
     {
+        if(DSettings.LoadSettings().AIC_disableAllUnitPurchasesAndPlacements)
+        {
+            final String message = ai.getName() + " is skipping it's purchase phase, as instructed.";
+            DUtils.Log(Level.FINE, message);
+            Runnable runner = new Runnable()
+            {public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
+            try{SwingUtilities.invokeAndWait(runner);}
+            catch (InterruptedException ex){}
+            catch (InvocationTargetException ex){}
+            Dynamix_AI.Pause();
+            return;
+        }
+
         if(!purchaseForBid && DSettings.LoadSettings().EnableResourceCollectionMultiplier && DSettings.LoadSettings().ResourceCollectionMultiplyPercent != 100)
         {
             if(GlobalCenter.PUsAtEndOfLastTurn == 0) //This will happen when the game was saved and reloaded since the end of this country's last turn
@@ -67,34 +81,25 @@ public class Purchase
             int PUsCollectedLastTurn = player.getResources().getQuantity(GlobalCenter.GetPUResource()) - GlobalCenter.PUsAtEndOfLastTurn;
             //Since we already have the pu's we collected last turn, only add the extra
             int PUChange = (int)((float)PUsCollectedLastTurn * DUtils.ToFloat(DSettings.LoadSettings().ResourceCollectionMultiplyPercent)) - PUsCollectedLastTurn;
-            if(PUChange <= 0)
-                return;
-            final int newPUs = player.getResources().getQuantity(GlobalCenter.GetPUResource()) + PUChange;
+            if (PUChange > 0)
+            {
+                final int newPUs = player.getResources().getQuantity(GlobalCenter.GetPUResource()) + PUChange;
 
-            DUtils.Log(Level.FINE, "  Using an RCM cheat, and increasing our PUs from {0} to {1}", player.getResources().getQuantity(GlobalCenter.GetPUResource()), newPUs);
-            final Dynamix_AI fAI = ai;            
-            Runnable runner = new Runnable()
-            {
-                public void run()
-                {
-                    CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(fAI.getName() + " use an RCM cheat, and increase their PUs from " + player.getResources().getQuantity(GlobalCenter.GetPUResource()) + " to " + newPUs);
-                }
-            };
-            try
-            {
-                SwingUtilities.invokeAndWait(runner);
-            }
-            catch (Exception ex)
-            {
-                DUtils.Log(Level.FINE, "Error performing RCM cheat: {0}", ex.toString());
-            }
+                final String message = ai.getName() + " use an RCM cheat, and increase their PUs from " + player.getResources().getQuantity(GlobalCenter.GetPUResource()) + " to " + newPUs;
+                DUtils.Log(Level.FINE, message);
+                Runnable runner = new Runnable()
+                {public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
+                try{SwingUtilities.invokeAndWait(runner);}
+                catch (InterruptedException ex){}
+                catch (InvocationTargetException ex){}
 
-            Change change = ChangeFactory.changeResourcesChange(player, GlobalCenter.GetPUResource(), PUChange);
-            //data.getHistory().getHistoryWriter().addChange(change);
-            //new ChangePerformer(data).perform(change);
-            CachedInstanceCenter.CachedDelegateBridge.addChange(change);
-            PUsToSpend = newPUs;
-            Dynamix_AI.Pause();
+                Change change = ChangeFactory.changeResourcesChange(player, GlobalCenter.GetPUResource(), PUChange);
+                //data.getHistory().getHistoryWriter().addChange(change);
+                //new ChangePerformer(data).perform(change);
+                CachedInstanceCenter.CachedDelegateBridge.addChange(change);
+                PUsToSpend = newPUs;
+                Dynamix_AI.Pause();
+            }
         }
         if(purchaseForBid)
         {
@@ -158,7 +163,7 @@ public class Purchase
             float percentageOfInitialPUsNeededForFactoryPurchase = DUtils.ToFloat(DSettings.LoadSettings().AA_resourcePercentageThatMustExistForFactoryBuy);
             if (PUsToSpend > (int)(origR * percentageOfInitialPUsNeededForFactoryPurchase)) //If we used less than X% our money (user set)
             {
-                DUtils.Log(Level.FINE, "  We used less than x(user-set) percent our money in purchases, so attempting to purchase a new factory.");
+                DUtils.Log(Level.FINE, "  We used less than " + DSettings.LoadSettings().AA_resourcePercentageThatMustExistForFactoryBuy + "% our money in purchases, so attempting to purchase a new factory.");
                 Unit factory = null;
                 int factoryCost = 0;
                 for (ProductionRule rule : player.getProductionFrontier().getRules())
@@ -317,7 +322,7 @@ public class Purchase
     {
         Territory ncmTarget = NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), new ArrayList<NCM_Task>());
         if(ncmTarget == null) //No ncm target, so buy random units
-            return new PurchaseGroup(Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player, Match.ALWAYS_MATCH)), purchaser, data, player);
+            return new PurchaseGroup(Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player, DUtils.CompMatchAnd(Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotFactory))), purchaser, data, player);
 
         Integer productionSpaceLeft = DUtils.GetCheckedUnitProduction(ter);
         if(FactoryCenter.get(data, player).ChosenAAPlaceTerritories.contains(ter)) //If we're going to build an AA here
@@ -352,10 +357,12 @@ public class Purchase
             allUnits.add(unit);
         }
 
+        List<Unit> defendUnits = new ArrayList<Unit>(ncmTarget.getUnits().getUnits());
+
         List<Unit> unitsToBuy = new ArrayList<Unit>();
         for (int i = 0; i < Math.min(productionSpaceLeft, DSettings.LoadSettings().AA_maxUnitTypesForPurchaseMix); i++) //Do X(user-set) different unit types at most because we dont want this to take too long
         {
-            Unit unit = DUtils.CalculateUnitThatWillHelpWinAttackOnXTheMostPerPU(ncmTarget, data, player, unitsOnTheWay, allUnits, Matches.UnitHasEnoughMovement(1), DSettings.LoadSettings().CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost);
+            Unit unit = DUtils.CalculateUnitThatWillHelpWinAttackOnArmyTheMostPerPU(ncmTarget, data, player, unitsOnTheWay, allUnits, defendUnits, Matches.UnitHasEnoughMovement(1), DSettings.LoadSettings().CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost);
             if(unit == null)
                 DUtils.Log(Level.FINER, "        No units found to select for purchasing!");
             unit = unit.getType().create(player); //Don't add the actual unit we created before, otherwise if we purchase the same unit type twice, we will end up doing calc's with multiples of the same unit, which is bad

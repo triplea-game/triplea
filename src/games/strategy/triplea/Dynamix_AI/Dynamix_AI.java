@@ -49,6 +49,7 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
+import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.CompositeMatchAnd;
@@ -126,10 +127,6 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 
     public static void ShowSettingsWindow()
     {
-        //With this turned on, pressing "Show Dynamix AI Settings" again in the menu will freeze TripleA.
-        //(Thread will sleep till un-paused, which can't happen if the UI is frozen... Should probably have a thread check in DUtils.Log)
-        //EDIT: Added check
-
         DUtils.Log(Level.FINE, "Showing Dynamix_AI settings window.");
         UI.ShowSettingsWindow();
     }
@@ -380,37 +377,58 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         //PossibleTerritories will be empty if subs move in our sub ter, and our sub is 'attacking'
         if(battleTerr == null || possibleTerritories.isEmpty())
             return null; //Don't submerge
-        AggregateResults results = DUtils.GetBattleResults(battleTerr, getWhoAmI(), data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, true);
-        float retreatChance = .6F;
+        AggregateResults simulatedAttack = DUtils.GetBattleResults(battleTerr, getWhoAmI(), data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, true);
+        float chanceNeededToContinue = .6F;
         if(TacticalCenter.get(data, getID()).BattleRetreatChanceAssignments.containsKey(battleTerr))
         {
             DUtils.Log(Level.FINER, "Found specific battle retreat chance assignment for territory '{0}'. Retreat Chance: {1}", battleTerr, TacticalCenter.get(data, player).BattleRetreatChanceAssignments.get(battleTerr));
-            retreatChance = TacticalCenter.get(data, getID()).BattleRetreatChanceAssignments.get(battleTerr);
+            chanceNeededToContinue = TacticalCenter.get(data, getID()).BattleRetreatChanceAssignments.get(battleTerr);
+
+            if (simulatedAttack.getAttackerWinPercent() < chanceNeededToContinue)
+            {
+                //Calculate best retreat ter and retreat to it
+                Territory retreatTer = Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player, new ArrayList<Territory>(possibleTerritories), battleTerr);
+                return retreatTer;
+            }
         }
         else //Must be attack_trade type
         {
             List<Unit> attackers = battleTerr.getUnits().getMatches(Matches.unitIsOwnedBy(getID()));
             List<Unit> defenders = battleTerr.getUnits().getMatches(Matches.unitIsEnemyOf(data, getID()));
             List<Unit> responseAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, battleTerr, getID(), Matches.TerritoryIsLand);
-            List<Unit> responseDefenders = new ArrayList<Unit>(results.GetAverageAttackingUnitsRemaining());
+            List<Unit> responseDefenders = new ArrayList<Unit>(simulatedAttack.GetAverageAttackingUnitsRemaining());
             AggregateResults responseResults = DUtils.GetBattleResults(responseAttackers, responseDefenders, battleTerr, data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, true);
-            int tradeScore = DUtils.GetTaskTradeScore(data, battleTerr, attackers, defenders, results, responseAttackers, responseDefenders, responseResults);
+            int tradeScore = DUtils.GetTaskTradeScore(data, battleTerr, attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, responseResults);
             DUtils.Log(Level.FINER, "Attack_Trade battle assumed. Score: {0} Required: {1}", tradeScore, DSettings.LoadSettings().TR_attackTrade_totalTradeScoreRequired);
             if(tradeScore < DSettings.LoadSettings().TR_attackTrade_totalTradeScoreRequired)
-                retreatChance = 1.0F;
-        }
-        if(results.getAttackerWinPercent() <= retreatChance)
-        {
-            //Calculate best retreat ter and retreat to it
-            Territory retreatTer = Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player, new ArrayList<Territory>(possibleTerritories), battleTerr);
-            return retreatTer;
+            {
+                //Calculate best retreat ter and retreat to it
+                Territory retreatTer = Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player, new ArrayList<Territory>(possibleTerritories), battleTerr);
+                return retreatTer;
+            }
+
+            int leftoverLandUnitsWanted = 2; //TODO: Figure out the number determined in CM_Task
+            int timesWeReachLeftoverLUnitsGoal = 0;
+            for(BattleResults result : simulatedAttack.m_results)
+            {
+                if(Match.getMatches(result.GetBattle().getAttackingUnits(), Matches.UnitIsLand).size() >= leftoverLandUnitsWanted)
+                    timesWeReachLeftoverLUnitsGoal++;
+            }
+
+            float certaintyOfReachingLUnitsCount = (float)timesWeReachLeftoverLUnitsGoal / (float)simulatedAttack.m_results.size();
+            if (certaintyOfReachingLUnitsCount < DUtils.ToFloat(DSettings.LoadSettings().TR_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired))
+            {
+                //Calculate best retreat ter and retreat to it
+                Territory retreatTer = Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player, new ArrayList<Territory>(possibleTerritories), battleTerr);
+                return retreatTer;
+            }
         }
         return null;
     }
 
     public boolean confirmMoveInFaceOfAA(Collection aaFiringTerritories)
     {
-        //Hmmm... Atm, true and false are equally bad. With true, the AI may destroy aircraft unnecesarily, with false, the AI may attack a ter thinking it has air support, which never comes.
+        //Hmmm... Atm, true and false are both bad. With true, the AI may destroy aircraft unnecesarily, with false, the AI may attack a ter thinking it has air support, which never comes.
         return true;
     }
 
@@ -443,7 +461,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         List<Unit> factoryUnits = Match.getMatches(units, Matches.UnitIsFactory);
     	if(factoryUnits.isEmpty())
             return null;
-        return (Unit) Match.getNMatches(units, 1, Matches.UnitIsFactory);
+        return factoryUnits.get(0);
     }
 
     public int[] selectFixedDice(int numRolls, int hitAt, boolean hitOnlyIfEquals, String message, int diceSides)
@@ -458,7 +476,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 
     public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
     {
-        DUtils.Log(Level.FINE, "Select casualties method called. Message from MustFightBattle class: {0}", message);
+        DUtils.Log(Level.FINE, "Select casualties method called. Message: {0}", message);
         return SelectCasualties.selectCasualties(this, getGameData(), selectFrom, dependents, count, message, dice, hit, defaultCasualties, battleID);
     }
 

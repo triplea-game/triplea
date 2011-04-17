@@ -46,8 +46,8 @@ public class DSettings implements Serializable
     public boolean AllowCalcingDecrease = true;
     public int CalcingDecreaseToPercentage = 75;
 
-    public boolean EnableAILogging = false;
-    public Level AILoggingDepth = Level.FINEST;
+    public boolean AIC_disableAllUnitPurchasesAndPlacements = false;
+    public boolean AIC_disableAllUnitMovements = false;
 
     public int CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost = 50;
     public int CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance = 250;
@@ -74,25 +74,25 @@ public class DSettings implements Serializable
     public boolean TR_enableAttackOffensive = true;
     public int TR_attackOffensive_takeoverChanceRequired = 70;
     public int TR_attackOffensive_counterAttackSurvivalChanceRequired = 55;
-    public int TR_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement = 15;
+    public int TR_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement = 20;
     public int TR_attackOffensive_Neutrals_takeoverChanceRequired = 90;
     public int TR_attackOffensive_Neutrals_counterAttackSurvivalChanceRequired = 60;
-    public int TR_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement = 15;
+    public int TR_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement = 20;
     public int TR_attackOffensive_Capitals_takeoverChanceRequired = 55;
     public int TR_attackOffensive_Capitals_counterAttackSurvivalChanceRequired = 0;
-    public int TR_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement = 15;
+    public int TR_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement = 20;
     public boolean TR_enableAttackStabalize = true;
     public int TR_attackStabalize_takeoverChanceRequired = 55;
     public int TR_attackStabalize_counterAttackSurvivalChanceRequired = 25;
-    public int TR_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement = 15;
+    public int TR_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement = 20;
     public boolean TR_enableAttackTrade = true;
     public int TR_attackTrade_totalTradeScoreRequired = 10;
-    public int TR_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired = 75;
+    public int TR_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired = 50;
     public boolean TR_enableAttackLandGrab = true;
     public boolean TR_attackLandGrab_onlyGrabLandIfWeCanBlitzIt = false;
     public boolean TR_enableReinforceFrontLine = true;
     public int TR_reinforceFrontLine_enemyAttackSurvivalChanceRequired = 50;
-    public int TR_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements = 15;
+    public int TR_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements = 20;
     public boolean TR_enableReinforceStabalize = true;
     public int TR_reinforceStabalize_enemyAttackSurvivalChanceRequired = 50;
     public boolean TR_enableReinforceBlock = true;
@@ -101,12 +101,16 @@ public class DSettings implements Serializable
     public boolean CR_enableCallForDefensiveFront = true;
     public boolean CR_enableCallForCapitalDefense = true;
 
+    public boolean EnableAILogging = false;
+    public Level AILoggingDepth = Level.FINEST;
+
     public int AA_resourcePercentageThatMustExistForFactoryBuy = 50;
     public int AA_maxUnitTypesForPurchaseMix = 5;
 
     public ThreatInvalidationType AA_threatInvalidationType = ThreatInvalidationType.AroundHotspot;
     public int AA_threatInvalidationAroundHotspotRadius = 1;
     public int AA_percentageOfResistedThreatThatTasksInvalidate = 75;
+    public boolean AA_ignoreAlliedUnitsAsDefenses = false;
 
     public int AA_survivalChanceOfLandingTerRequiredForPlaneRecruit = 75;
 

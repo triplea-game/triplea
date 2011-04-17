@@ -18,6 +18,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ReconsiderSignalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
@@ -26,7 +27,6 @@ import games.strategy.triplea.Dynamix_AI.DSettings;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.Dynamix_AI.Group.MovePackage;
-import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
 import games.strategy.triplea.Dynamix_AI.Others.CM_Task;
 import games.strategy.triplea.Dynamix_AI.Others.CM_TaskType;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -36,9 +36,11 @@ import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -48,6 +50,19 @@ public class DoCombatMove
 {
     public static void doCombatMove(Dynamix_AI ai, GameData data, IMoveDelegate mover, PlayerID player)
     {
+        if(DSettings.LoadSettings().AIC_disableAllUnitMovements)
+        {
+            final String message = ai.getName() + " is skipping it's cm phase, as instructed.";
+            DUtils.Log(Level.FINE, message);
+            Runnable runner = new Runnable()
+            {public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
+            try{SwingUtilities.invokeAndWait(runner);}
+            catch (InterruptedException ex){}
+            catch (InvocationTargetException ex){}
+            Dynamix_AI.Pause();
+            return;
+        }
+
         MovePackage pack = new MovePackage(ai, data, mover, player, null, null, null);
 
         List<CM_Task> tasks = GenerateTasks(pack);
@@ -351,12 +366,6 @@ public class DoCombatMove
             {
                 DUtils.Log(Level.FINER, "      Task worthwhile, performing planned task.");
                 highestPriorityTask.PerformTask(mover);
-                if(highestPriorityTask.GetTaskType() == CM_TaskType.LandGrab)
-                    StatusCenter.get(data, player).GetStatusOfTerritory(highestPriorityTask.GetTarget()).WasBlitzed = true;
-                else if(highestPriorityTask.GetTaskType() != CM_TaskType.Attack_Trade)
-                    StatusCenter.get(data, player).GetStatusOfTerritory(highestPriorityTask.GetTarget()).WasAttacked_Normal = true;
-                else
-                    StatusCenter.get(data, player).GetStatusOfTerritory(highestPriorityTask.GetTarget()).WasAttacked_Trade = true;
                 highestPriorityTask.InvalidateThreatsThisTaskResists();
             }
             else
