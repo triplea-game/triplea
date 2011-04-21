@@ -207,5 +207,6 @@ public interface Constants
   public static final String UNITS_MAY_GIVE_BONUS_MOVEMENT = "Units May Give Bonus Movement";
   public static final String LL_DAMAGE_ONLY = "Low Luck for Bombing and Territory Damage";
   public static final String CAPTURE_UNITS_ON_ENTERING_TERRITORY = "Capture Units On Entering Territory";
+  public static final String DESTROY_UNITS_ON_ENTERING_TERRITORY = "On Entering Units Destroyed Instead Of Captured";
   
 }

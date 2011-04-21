@@ -4016,6 +4016,11 @@
 						<boolean/>
 				</property>
 
+						<!-- if "Capture Units On Entering Territory" is true, then the units can either be captured (default) or destroyed (only if this property below is true: "On Entering Units Destroyed Instead Of Captured") -->
+				<property name="On Entering Units Destroyed Instead Of Captured" value ="false" editable="false">
+						<boolean/>
+				</property>
+
 				<!-- specific rules -->
 				<!-- land related -->
 						<!-- if true, units with destroyedWhenCapturedBy will be destroyed instead of captured. only applies to non-combat units, since combat units die in combat -->

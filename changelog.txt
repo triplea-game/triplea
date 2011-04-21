@@ -1,3 +1,7 @@
+Changes for 1.3.0.1
+* Added new global property, "On Entering Units Destroyed Instead Of Captured", which if true allows units normally captured on entering to be destroyed.  Does not affect non-combat units, only affects combat units with the canBeCapturedOnEnteringBy attachment. (veqryn)
+
+
 Changes for 1.3.0.0
 * Added the new username banning system, which will help a lot on the lobby. Like to ban offensive usernames without necessarily banning the player. (wisconsin)
 

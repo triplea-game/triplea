@@ -796,6 +796,10 @@ public class Properties implements Constants {
     	return data.getProperties().get(CAPTURE_UNITS_ON_ENTERING_TERRITORY, false);
     }
     
+    public static boolean getOnEnteringUnitsDestroyedInsteadOfCaptured(GameData data) {
+    	return data.getProperties().get(DESTROY_UNITS_ON_ENTERING_TERRITORY, false);
+    }
+    
     private Properties() {
     }
 }
