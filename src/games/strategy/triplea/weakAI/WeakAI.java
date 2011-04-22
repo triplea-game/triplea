@@ -787,9 +787,9 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 //randomness is a better guide than any other metric
                 //sort the remaining randomly
                 if(!randomInts.containsKey(o1))
-                    randomInts.put(o1,(int) Math.random() * 1000);
+                    randomInts.put(o1,(int) (Math.random() * 1000));
                 if(!randomInts.containsKey(o2))
-                    randomInts.put(o2,(int) Math.random() * 1000);
+                    randomInts.put(o2,(int) (Math.random() * 1000));
 
                 return randomInts.get(o1) - randomInts.get(o2);
             }
