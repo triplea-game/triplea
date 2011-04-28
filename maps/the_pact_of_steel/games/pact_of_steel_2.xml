@@ -2222,6 +2222,8 @@
 						 <!-- maxBuiltPerPlayer is the number of this unit that can be BUILT by a player.  If they have fewer than this number they can build more, if they have more than this number they can not build more [this does not cause excess ones to disappear] -->
 						 <option name="maxBuiltPerPlayer" value="3"/>
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
+						 <!-- unitPlacementOnlyAllowedIn is the direct inverse of unitPlacementRestrictions
+						 <!--<option name="unitPlacementOnlyAllowedIn" value="Germany:East Balkans"/>-->
                 </attatchment>
 
                 <attatchment name="unitAttatchment" attatchTo="factory_hit" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">

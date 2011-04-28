@@ -407,6 +407,7 @@ public class MovePerformer implements Serializable
             Collection<Unit> units = new ArrayList<Unit>();
             units.addAll(transporting.values());
             units.addAll(transporting.keySet());
+            // if there are multiple units on a single transport, the transport will be in units list multiple times
             
             if(transporting.isEmpty())
             {

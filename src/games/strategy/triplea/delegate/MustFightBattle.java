@@ -3394,6 +3394,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             m_tracker.takeOver(m_battleSite, m_attacker, bridge, m_data,
                     null, m_attackingUnits);
         }
+        
         //Clear the transported_by for successfully offloaded units
         Collection<Unit> transports = Match.getMatches(m_attackingUnits, Matches.UnitIsTransport);
         if(!transports.isEmpty())
@@ -3405,7 +3406,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         		for(Unit unit:dependents)
         		{
         			//clear the loaded by ONLY for Combat unloads.  NonCombat unloads are handled elsewhere.
-        			change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY ) );        		
+        			if (Matches.UnitWasUnloadedThisTurn.match(unit))
+        				change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY ) );        		
         		}
 
         		bridge.addChange(change);

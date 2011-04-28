@@ -726,7 +726,7 @@ public class Matches
         public boolean match(Unit obj)
         {
             TripleAUnit taUnit = (TripleAUnit) obj;
-            return taUnit.getWasLoadedThisTurn();
+            return taUnit.getUnloadedTo() != null;
         }
     };
 

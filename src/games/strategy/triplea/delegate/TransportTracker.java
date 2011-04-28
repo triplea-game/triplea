@@ -132,7 +132,7 @@ public class TransportTracker
     
     public Change unloadTransportChange(TripleAUnit unit, Territory territory, PlayerID id, boolean dependentBattle)
     {
-        CompositeChange change = new CompositeChange();
+    	CompositeChange change = new CompositeChange();
         TripleAUnit transport = (TripleAUnit) transportedBy(unit);
         if(transport == null)
         	return change;

@@ -354,6 +354,31 @@ public class UnitAttachment extends DefaultAttachment
 	  return m_unitPlacementRestrictions;
   }
   
+  // no m_ variable for this, since it is the inverse of m_unitPlacementRestrictions we might as well just use m_unitPlacementRestrictions
+  public void setUnitPlacementOnlyAllowedIn(String value)
+  {
+	  String valueRestricted = new String();
+	  String valueAllowed[] = value.split(":");
+	  if(valueAllowed != null)
+	  {
+		  getListedTerritories(valueAllowed);
+		  Collection<Territory> allTerrs = getData().getMap().getTerritories();
+		  for (Territory item : allTerrs)
+		  {
+			  boolean match = false;
+			  for (String allowed : valueAllowed)
+			  {
+				  if (allowed.matches(item.getName()))
+					  match = true;
+			  }
+			  if (!match)
+				  valueRestricted = valueRestricted + ":" + item.getName();
+		  }
+		  valueRestricted = valueRestricted.replaceFirst(":", "");
+		  m_unitPlacementRestrictions = valueRestricted.split(":");
+	  }
+  }
+  
   public void setRepairsUnits(String value)
   {
 	  m_repairsUnits = value.split(":");
