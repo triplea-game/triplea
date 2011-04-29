@@ -104,7 +104,7 @@ public class UnitSeperator
                 currentDependents = dependent.get(current);
             }
             boolean damaged = current.getHits() == 1;
-            if(damaged || current.getType().getName().equals(Constants.AIR_BASE_TYPE))
+            if(damaged)
             {
             	String kev = "here";
             }

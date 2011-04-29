@@ -165,7 +165,6 @@ public interface Constants
   public static final String AAGUN_TYPE = "aaGun";
   public static final String ARTILLERY = "artillery";
   public static final String DESTROYER = "destroyer";
-  public static final String AIR_BASE_TYPE = "air_base";
 
   public static final String LARGE_MAP_FILENAME = "largeMap.gif";
   public static final String SMALL_MAP_FILENAME = "smallMap.jpeg";

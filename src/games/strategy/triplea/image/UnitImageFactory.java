@@ -293,10 +293,6 @@ public class UnitImageFactory
 	    }
     }
     
-    if(type.getName().equals(Constants.AIR_BASE_TYPE))
-    {
-    	String Kevin = "here";
-    }
     if(disabled)
         name.append("_disabled");
     else if(damaged)

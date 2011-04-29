@@ -1071,6 +1071,30 @@ public class UnitAttachment extends DefaultAttachment
 	  	return false;
 	  return ta.hasAARadar(); 
   }
+
+  private boolean playerHasRockets(PlayerID player)
+  {
+	  TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+	  if(ta == null)
+	  	return false;
+	  return ta.hasRocket(); 
+  }
+
+  private boolean playerHasMechInf(PlayerID player)
+  {
+	  TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+	  if(ta == null)
+	  	return false;
+	  return ta.hasMechanizedInfantry(); 
+  }
+
+  private boolean playerHasParatroopers(PlayerID player)
+  {
+	  TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+	  if(ta == null)
+	  	return false;
+	  return ta.hasParatroopers(); 
+  }
   
 
   public String toString()
@@ -1169,7 +1193,7 @@ public class UnitAttachment extends DefaultAttachment
 	  else if (m_isAAforBombingThisUnitOnly)
 		  stats.append("Anti-Air for Raids, ");
 	  
-	  if (m_isAA || m_isRocket )
+	  if ((m_isAA || m_isRocket) && playerHasRockets(player))
 		  stats.append("Can Rocket Attack, ");
 	  
 	  if (m_isInfrastructure || m_isAA || m_isFactory)
@@ -1192,10 +1216,10 @@ public class UnitAttachment extends DefaultAttachment
 	  if (m_isTwoHit)
 		  stats.append("Two Hitpoints, ");
 	  
-	  if (m_isAirBase)
+	  if (m_isAirBase && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData()))
 		  stats.append("Can Allow Scrambling, ");
 	  
-	  if (m_canScramble && m_maxScrambleDistance > 0)
+	  if (m_canScramble && m_maxScrambleDistance > 0 && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData()))
 		  stats.append(m_maxScrambleDistance + " Scramble Distance, ");
 	  
 	  if (m_canBlitz)
@@ -1204,25 +1228,15 @@ public class UnitAttachment extends DefaultAttachment
 	  if (m_isArtillery)
 		  stats.append("Can Give Support, ");
 	  
+	  //TODO: Need to account for support attachments here somehow.
+	  
 	  if (m_isArtillerySupportable)
 		  stats.append("Can Be Supported, ");
 	  
-	  //TODO: Need to account for support attachments here somehow.
-	  
-	  if (m_isInfantry)
-		  stats.append("Can Be Transported By Land, ");
-	  
-	  if (m_isLandTransport)
-		  stats.append("Is A Land Transport, ");
-	  
 	  if (m_isMarine)
-		  stats.append("Amphibious Assault Bonus, ");
+		  stats.append("1" + " Amphibious Attack Bonus, ");
 	  
-	  if (m_isAirTransportable)
-		  stats.append("Can Be Transported By Air, ");
-	  
-	  if (m_isAirTransport)
-		  stats.append("Is An Air Transport, ");
+	  //TODO: Need to account for dice rolls, once we can customize dice rolls allowed per unit
 	  
 	  if (m_isStrategicBomber)
 	  {
@@ -1248,18 +1262,34 @@ public class UnitAttachment extends DefaultAttachment
 	  if (m_isSuicide)
 		  stats.append("Suicide/Munition Unit, ");
 	  
-	  if (m_isKamikaze)
+	  if (m_isAir && (m_isKamikaze || games.strategy.triplea.Properties.getKamikaze_Airplanes(getData())))
 		  stats.append("Can Use All Movement To Attack Target, ");
+	  
+	  if (m_isInfantry && playerHasMechInf(player))
+		  stats.append("Can Be Transported By Land, ");
+	  
+	  if (m_isLandTransport && playerHasMechInf(player))
+		  stats.append("Is A Land Transport, ");
+	  
+	  if (m_isAirTransportable && playerHasParatroopers(player))
+		  stats.append("Can Be Transported By Air, ");
+	  
+	  if (m_isAirTransport && playerHasParatroopers(player))
+		  stats.append("Is An Air Transport, ");
 	  
 	  if (m_isCombatTransport && m_transportCapacity > 0)
 		  stats.append("Is Combat Transport, ");
-	  else if (m_transportCapacity > -1)
-		  stats.append("Is Transport, ");
+	  else if (m_transportCapacity > -1 && m_isSea)
+		  stats.append("Is A Transport, ");
 	  
 	  if (m_transportCost > -1)
 		  stats.append(m_transportCost + " Transporting Cost, ");
 	  
-	  if (m_transportCapacity > 0)
+	  if (m_transportCapacity > 0 && m_isSea)
+		  stats.append(m_transportCapacity + " Transporting Capacity, ");
+	  else if (m_transportCapacity > 0 && m_isAir && playerHasParatroopers(player))
+		  stats.append(m_transportCapacity + " Transporting Capacity, ");
+	  else if (m_transportCapacity > 0 && playerHasMechInf(player) && !m_isSea && !m_isAir)
 		  stats.append(m_transportCapacity + " Transporting Capacity, ");
 	  
 	  if (m_carrierCost > -1)
@@ -1271,15 +1301,15 @@ public class UnitAttachment extends DefaultAttachment
 	  if (m_maxBuiltPerPlayer > -1)
 		  stats.append(m_maxBuiltPerPlayer + " Max Built Allowed, ");
 	  
-	  if (m_repairsUnits != null)
+	  if (m_repairsUnits != null && games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(getData()) && (games.strategy.triplea.Properties.getBattleships_Repair_At_Beginning_Of_Round(getData()) || games.strategy.triplea.Properties.getBattleships_Repair_At_End_Of_Round(getData())))
 		  stats.append("Can Repair Some Units, ");
 	  
-	  if (m_givesMovement != null && m_givesMovement.totalValues() > 0)
+	  if (m_givesMovement != null && m_givesMovement.totalValues() > 0 && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(getData()))
 		  stats.append("Can Give Bonus Movement, ");
-	  else if (m_givesMovement != null && m_givesMovement.totalValues() < 0)
+	  else if (m_givesMovement != null && m_givesMovement.totalValues() < 0 && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(getData()))
 		  stats.append("Can Take Away Movement, ");
 	  
-	  if (m_unitPlacementRestrictions != null)
+	  if (m_unitPlacementRestrictions != null && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
 		  stats.append("Has Placement Restrictions, ");
 	  
 	  
