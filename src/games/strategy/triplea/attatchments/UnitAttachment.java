@@ -1064,6 +1064,15 @@ public class UnitAttachment extends DefaultAttachment
       return games.strategy.triplea.Properties.getWW2V3TechModel(data);
   }
 
+  private boolean playerHasAARadar(PlayerID player)
+  {
+	  TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+	  if(ta == null)
+	  	return false;
+	  return ta.hasAARadar(); 
+  }
+  
+
   public String toString()
   {
     return
@@ -1121,5 +1130,162 @@ public class UnitAttachment extends DefaultAttachment
     "  movement:" + m_movement +
     "  attack:" + m_attack +
     "  defense:" + m_defense;
+  }
+
+  public String toStringShortAndOnlyImportantDifferences(PlayerID player)
+  {
+	  // displays everything in a very short form, in English rather than as xml stuff
+	  // shows all except for: m_isCombatInfrastructure, m_constructionType, m_constructionsPerTerrPerTypePerTurn, m_maxConstructionsPerTypePerTerr, m_unitDamage, m_canBeGivenByTerritoryTo, m_destroyedWhenCapturedBy, m_canBeCapturedOnEnteringBy
+	  StringBuilder stats = new StringBuilder();
+	  
+	  //if (this != null && this.getName() != null)
+		//  stats.append(this.getName() + ": ");
+	  
+	  if (m_isAir)
+		  stats.append("Air Unit, ");
+	  else if (m_isSea)
+		  stats.append("Sea Unit, ");
+	  else
+		  stats.append("Land Unit, ");
+	  
+	  if (getAttack(player) > 0)
+		  stats.append(getAttack(player) + " Attack, ");
+	  
+	  if (getDefense(player) > 0)
+		  stats.append(getDefense(player) + " Defense, ");
+	  
+	  if (getMovement(player) > 0)
+		  stats.append(getMovement(player) + " Movement, ");
+	  
+	  if (m_isFactory)
+		  stats.append("Can Produce Units, ");
+	  
+	  if ((m_attackAA != 1 || m_attackAAmaxDieSides != -1) && (m_isAA || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly))
+		  stats.append((playerHasAARadar(player) ? m_attackAA + 1 : m_attackAA) + "/" + (m_attackAAmaxDieSides == -1 ? m_attackAAmaxDieSides : getData().getDiceSides()) + " ");
+	  if (m_isAA || (m_isAAforCombatOnly && m_isAAforBombingThisUnitOnly))
+		  stats.append("Anti-Air, ");
+	  else if (m_isAAforCombatOnly)
+		  stats.append("Anti-Air for Combat, ");
+	  else if (m_isAAforBombingThisUnitOnly)
+		  stats.append("Anti-Air for Raids, ");
+	  
+	  if (m_isAA || m_isRocket )
+		  stats.append("Can Rocket Attack, ");
+	  
+	  if (m_isInfrastructure || m_isAA || m_isFactory)
+		  stats.append("Can Be Captured, ");
+	  
+	  if (m_isConstruction || m_isFactory)
+		  stats.append("Can Be Placed Without Factory, ");
+	  
+	  if (m_canBeDamaged || (m_isFactory && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData())))
+	  {
+		  stats.append("Can Be Damaged By Raids, ");
+		  if (m_maxOperationalDamage > -1)
+			  stats.append(m_maxOperationalDamage + " Max Operational Damage, ");
+		  if (m_maxDamage > -1)
+			  stats.append(m_maxDamage + " Max Damage Total, ");
+	  }
+	  else if (m_isFactory)
+		  stats.append("Can Be Attacked By Raids, ");
+	  
+	  if (m_isTwoHit)
+		  stats.append("Two Hitpoints, ");
+	  
+	  if (m_isAirBase)
+		  stats.append("Can Allow Scrambling, ");
+	  
+	  if (m_canScramble && m_maxScrambleDistance > 0)
+		  stats.append(m_maxScrambleDistance + " Scramble Distance, ");
+	  
+	  if (m_canBlitz)
+		  stats.append("Can Blitz, ");
+	  
+	  if (m_isArtillery)
+		  stats.append("Can Give Support, ");
+	  
+	  if (m_isArtillerySupportable)
+		  stats.append("Can Be Supported, ");
+	  
+	  //TODO: Need to account for support attachments here somehow.
+	  
+	  if (m_isInfantry)
+		  stats.append("Can Be Transported By Land, ");
+	  
+	  if (m_isLandTransport)
+		  stats.append("Is A Land Transport, ");
+	  
+	  if (m_isMarine)
+		  stats.append("Amphibious Assault Bonus, ");
+	  
+	  if (m_isAirTransportable)
+		  stats.append("Can Be Transported By Air, ");
+	  
+	  if (m_isAirTransport)
+		  stats.append("Is An Air Transport, ");
+	  
+	  if (m_isStrategicBomber)
+	  {
+		  stats.append("Can Perform Raids, ");
+		  if ((m_bombingMaxDieSides != -1 || m_bombingBonus != -1) && games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(getData()))
+			  stats.append((m_bombingBonus != -1 ? m_bombingBonus + 1 : 1) + "-" + (m_bombingMaxDieSides != -1 ? m_bombingMaxDieSides + (m_bombingBonus != -1 ? m_bombingBonus : 0) : getData().getDiceSides() + (m_bombingBonus != -1 ? m_bombingBonus : 0)) + " Raid Damage, ");
+		  else
+			  stats.append("1-" + getData().getDiceSides() + " Raid Damage, ");
+	  }
+	  
+	  if (m_isSub)
+		  stats.append("Is Submarine-Type, ");
+	  
+	  if (m_isDestroyer)
+		  stats.append("Is Destroyer-Type, ");
+	  
+	  if (getCanBombard(player) && getBombard(player) > 0)
+		  stats.append(getBombard(player) + " Bombard, ");
+	  
+	  if (m_blockade > 0)
+		  stats.append(m_blockade + " Blockade Loss, ");
+	  
+	  if (m_isSuicide)
+		  stats.append("Suicide/Munition Unit, ");
+	  
+	  if (m_isKamikaze)
+		  stats.append("Can Use All Movement To Attack Target, ");
+	  
+	  if (m_isCombatTransport && m_transportCapacity > 0)
+		  stats.append("Is Combat Transport, ");
+	  else if (m_transportCapacity > -1)
+		  stats.append("Is Transport, ");
+	  
+	  if (m_transportCost > -1)
+		  stats.append(m_transportCost + " Transporting Cost, ");
+	  
+	  if (m_transportCapacity > 0)
+		  stats.append(m_transportCapacity + " Transporting Capacity, ");
+	  
+	  if (m_carrierCost > -1)
+		  stats.append(m_carrierCost + " Carrier Cost, ");
+	  
+	  if (m_carrierCapacity > 0)
+		  stats.append(m_carrierCapacity + " Carrier Capacity, ");
+	  
+	  if (m_maxBuiltPerPlayer > -1)
+		  stats.append(m_maxBuiltPerPlayer + " Max Built Allowed, ");
+	  
+	  if (m_repairsUnits != null)
+		  stats.append("Can Repair Some Units, ");
+	  
+	  if (m_givesMovement != null && m_givesMovement.totalValues() > 0)
+		  stats.append("Can Give Bonus Movement, ");
+	  else if (m_givesMovement != null && m_givesMovement.totalValues() < 0)
+		  stats.append("Can Take Away Movement, ");
+	  
+	  if (m_unitPlacementRestrictions != null)
+		  stats.append("Has Placement Restrictions, ");
+	  
+	  
+	  if (stats.indexOf(", ") > -1)
+		  stats.delete(stats.lastIndexOf(", "), stats.length()-1);
+	  
+	  return stats.toString();
   }
 }

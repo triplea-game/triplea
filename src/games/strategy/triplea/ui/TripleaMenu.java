@@ -380,6 +380,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                 buttons.add(fitWidth);
                 JButton fitHeight = new JButton("Fit Height");
                 buttons.add(fitHeight);
+                JButton reset = new JButton("Reset");
+                buttons.add(reset);
 
                 panel.add(buttons, BorderLayout.SOUTH);
 
@@ -412,6 +414,14 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 
                     }
 
+                });
+
+                reset.addActionListener(new ActionListener()
+                {
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        model.setValue((int) 100);
+                    }
                 });
 
 

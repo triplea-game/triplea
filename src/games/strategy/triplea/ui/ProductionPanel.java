@@ -266,7 +266,10 @@ public class ProductionPanel extends JPanel
             String text = " x " + (m_cost < 10 ? " " : "") + m_cost;
             JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
             JLabel info=new JLabel(attack+"/"+defense+"/"+movement);
-            info.setToolTipText(" attack:" + attack + " defense :" + defense +" movement:" +movement);
+            //info.setToolTipText(" attack:" + attack + " defense :" + defense +" movement:" +movement);
+            String toolTipText = type.getName() + ": " + attach.toStringShortAndOnlyImportantDifferences(id);
+            info.setToolTipText(toolTipText);
+            label.setToolTipText(toolTipText);
 
             int space = 8;
             this.add(new JLabel(type.getName()), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,

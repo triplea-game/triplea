@@ -15,6 +15,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.util.*;
 import games.strategy.ui.OverlayIcon;
@@ -144,6 +145,9 @@ public class TerritoryDetailPanel extends JPanel
                     flaggedUnitIcon,
                     SwingConstants.LEFT
                     );
+            
+            String toolTipText = item.getType().getName() + ": " + UnitAttachment.get(item.getType()).toStringShortAndOnlyImportantDifferences(item.getOwner());
+            label.setToolTipText(toolTipText);
 
             add(label);
 

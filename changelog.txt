@@ -1,4 +1,12 @@
 Changes for 1.3.0.1
+* Added "Reset" button to Map Zoom. (veqryn)
+
+* Allowed for more information about units to be displayed as a tool tip on the territory panel. (veqryn)
+
+* Created new toString in unit attachment to only display important information that is different from a default unit. (veqryn)
+
+* Allowed for more information about units to be displayed as a tool tip during production screen.  Allowed tool tip to be displayed when hovering over unit icon, in addition to small info stats. (veqryn)
+
 * Fixes for various null pointer errors. (veqryn)
 
 * New unit attachment setter, "unitPlacementOnlyAllowedIn", which is the direct inverse of "unitPlacementRestrictions". (veqryn)
