@@ -307,7 +307,7 @@ public class ActionButtons extends JPanel
     {
         return m_battlePanel;
     }
-    public MovePanel getMovePanel()
+    public AbstractMovePanel getMovePanel()
     {
         return m_movePanel;
     }

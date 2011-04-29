@@ -29,14 +29,14 @@ public class UndoableMovesPanel extends JPanel
 {
     private List<UndoableMove> m_moves;
     private final GameData m_data;
-    private final MovePanel m_movePanel;
+    private final AbstractMovePanel m_movePanel;
     
     // Place scroll pane in class global scope so the inner undo class can record
     // the position so we can go back to that place.
     JScrollPane scroll;
     Integer scrollBarPreviousValue = null;
 
-    public UndoableMovesPanel(GameData data, MovePanel movePanel)
+    public UndoableMovesPanel(GameData data, AbstractMovePanel movePanel)
     {
         m_data = data;
         m_movePanel = movePanel;

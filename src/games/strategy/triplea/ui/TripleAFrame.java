@@ -1870,7 +1870,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         return m_actionButtons.getBattlePanel();
     }
 
-    public MovePanel getMovePanel()
+    public AbstractMovePanel getMovePanel()
     {
         return m_actionButtons.getMovePanel();
     }
