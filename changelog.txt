@@ -1,4 +1,6 @@
 Changes for 1.3.0.1
+* Fixes for various null pointer errors. (veqryn)
+
 * New unit attachment setter, "unitPlacementOnlyAllowedIn", which is the direct inverse of "unitPlacementRestrictions". (veqryn)
 
 * Fixed issue [bug 3294118] where transports drop their ground units in the ocean when they engage in combat. (veqryn)

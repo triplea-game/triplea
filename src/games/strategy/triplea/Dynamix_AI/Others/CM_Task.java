@@ -624,7 +624,7 @@ public class CM_Task
                 for (Territory recruitFromLoc : DUtils.GetUnitLocations(data, GetRecruitedUnitsAsUnitList()))
                 {
                     Route routeToEnemyCap = CachedCalculationCenter.GetPassableLandRoute(data, recruitFromLoc, closestToTargetEnemyCap);
-                    if (routeToEnemyCap != null && routeToEnemyCap.getLength() <= targetToEnemyCapRoute.getLength())
+                    if (routeToEnemyCap != null && targetToEnemyCapRoute != null && routeToEnemyCap.getLength() <= targetToEnemyCapRoute.getLength())
                     {
                         targetIsCloserToCapThanFromLocations = false;
                         break;

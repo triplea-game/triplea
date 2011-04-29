@@ -72,6 +72,9 @@ public class MyFormatter
         while (iter.hasNext())
         {
             Unit unit = (Unit) iter.next();
+            if (unit == null || unit.getUnitType() == null)
+            	throw new IllegalStateException("Trying to format a unit that does not exist.");
+            
             if(owner == null || owner.equals(unit.getOwner()))
                 map.add(unit.getUnitType(), 1);
         }

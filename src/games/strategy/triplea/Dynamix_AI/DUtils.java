@@ -554,6 +554,10 @@ public class DUtils
         }
         return result;
     }
+    
+    /**
+     * this can return null, if either ters is empty or none of the territories match
+     */
     public static Territory GetRandomTerritoryMatchingXInList(Collection<Territory> ters, Match<Territory> match)
     {
         List<Territory> list = new ArrayList<Territory>();
@@ -564,6 +568,9 @@ public class DUtils
 
             list.add(ter);
         }
+        if (list.isEmpty())
+        	return null;
+        
         return list.get(new Random().nextInt(list.size()));
     }
     public static Match CompMatchAnd(Match ... matches)

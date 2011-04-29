@@ -78,9 +78,11 @@ public class MacFinder
         }
 
         //Next, try to get the mac address by calling the 'getmac' app that exists in Windows, Mac, and possibly others.
-        /*Physical Address    Transport Name
+        /*
+        Physical Address    Transport Name
         =================== ==========================================================
-        00-1F-C6-F9-EC-E8   \Device\Tcpip_{99F55DF7-8C43-464C-A8A9-FA3F847467CB}*/
+        00-1F-C6-F9-EC-E8   \Device\Tcpip_{99F55DF7-8C43-464C-A8A9-FA3F847467CB}
+        */
         try
         {
             String results = executeCommandAndGetResults("getmac");
@@ -223,6 +225,9 @@ public class MacFinder
     }
     private static String convertMacBytesToString(byte[] mac)
     {
+    	if (mac == null)
+    		return null;
+    	
         StringBuilder macStringBuilder = new StringBuilder();
         //Extract each array of mac address and convert it to the following format 00.1E.F3.C8.FC.E6
         for (int i = 0; i < mac.length; i++)

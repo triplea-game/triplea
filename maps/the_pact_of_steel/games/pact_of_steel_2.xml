@@ -2223,7 +2223,7 @@
 						 <option name="maxBuiltPerPlayer" value="3"/>
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
 						 <!-- unitPlacementOnlyAllowedIn is the direct inverse of unitPlacementRestrictions
-						 <!--<option name="unitPlacementOnlyAllowedIn" value="Germany:East Balkans"/>-->
+						 <option name="unitPlacementOnlyAllowedIn" value="Germany:East Balkans"/>-->
                 </attatchment>
 
                 <attatchment name="unitAttatchment" attatchTo="factory_hit" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">

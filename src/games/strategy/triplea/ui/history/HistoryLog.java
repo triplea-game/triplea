@@ -407,7 +407,12 @@ public class HistoryLog extends JFrame
             List<Unit> ownedUnits = t.getUnits().getMatches(Matches.unitIsOwnedBy(player));
             // see if there's a flag
             TerritoryAttachment ta = TerritoryAttachment.get(t);
-            boolean hasFlag = t.getOwner().equals(player) && !ta.getOriginalOwner().equals(player);
+            boolean hasFlag = false;
+            if (t == null || ta == null)
+            	hasFlag = false;
+            else
+            	hasFlag = t.getOwner().equals(player) && !ta.getOriginalOwner().equals(player);
+            
             if (hasFlag || !ownedUnits.isEmpty())
             {
                 logWriter.print("    " + t.getName() + " : ");
