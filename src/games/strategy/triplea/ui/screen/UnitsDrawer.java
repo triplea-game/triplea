@@ -69,26 +69,37 @@ public class UnitsDrawer implements IDrawable
         
         Image img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
         
-        //figure the unitDamage here
-        if(UnitAttachment.get(type).getIsInfrastructure())
+        //figure the unitDamage here, for disabled or not
+        if(UnitAttachment.get(type).getCanBeDamaged())
         {
-        	Collection<Unit> units = Match.getMatches(data.getMap().getTerritory(m_territoryName).getUnits().getUnits(),Matches.unitIsOfType(type));
-        	
-        	for (Unit current : units)
+        	// checks to see if this is being carried with a mouse over, or is in a territory.
+        	if(m_territoryName.length() != 0)
         	{
-        		 UnitAttachment ua = UnitAttachment.get(type);
-        		 
-        		 TripleAUnit taUnit = (TripleAUnit) current;
-        		 
-        		 if(taUnit.getUnitDamage() > 0 && taUnit.getUnitDamage() > ua.getMaxOperationalDamage())
-        		 {
-        			 img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, true);
-        		 }
+        		// kev, why are we doing a for loop here?  each unit that needs to be drawn individually will be drawn if sorted properly, at least that was my understanding
+	        	Collection<Unit> units = Match.getMatches(data.getMap().getTerritory(m_territoryName).getUnits().getUnits(),Matches.unitIsOfType(type));
+	        	
+	        	for (Unit current : units)
+	        	{
+	        		 UnitAttachment ua = UnitAttachment.get(type);
+	        		 
+	        		 TripleAUnit taUnit = (TripleAUnit) current;
+	        		 
+	        		 if(taUnit.getUnitDamage() > 0 && taUnit.getUnitDamage() > ua.getMaxOperationalDamage())
+	        		 {
+	        			 img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, true);
+	        		 }
+	        	}
+        	}
+        	else
+        	{
+        		//needed, don't delete please.  if it is a mouse over, we need to carry the unit on our mouse
+        		img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
         	}
         }
 
         if(!m_damaged && UnitAttachment.get(type).isFactory() && isSBRAffectsUnitProduction(data) )
         {
+        	// checks to see if this is being carried with a mouse over, or is in a territory.
         	if(m_territoryName.length() != 0)
         	{
         		TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));
@@ -98,7 +109,17 @@ public class UnitsDrawer implements IDrawable
         		{
         			img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, true, m_disabled);
         		}
-        	}        	
+        	}
+        	else
+        	{
+        		//needed, don't delete please.  if it is a mouse over, we need to carry the unit on our mouse
+        		img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
+        	}
+        }
+        else
+        {
+        	//needed, don't delete please.  if it is a mouse over, we need to carry the unit on our mouse
+        	img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
         }
        
         graphics.drawImage(img, m_placementPoint.x - bounds.x, m_placementPoint.y - bounds.y, null);
