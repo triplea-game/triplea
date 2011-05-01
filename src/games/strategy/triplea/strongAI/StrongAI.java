@@ -7043,7 +7043,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			float enemyStrength = SUtils.strength(eUnits, false, false, tFirst);
 			TerritoryAttachment ta = TerritoryAttachment.get(enemy);
 			float pValue = ta.getProduction();
-			if (Matches.TerritoryIsNeutral.match(enemy) && enemyStrength > pValue * 9) // why bother...focus on enemies
+			if (Matches.TerritoryIsNeutral.match(enemy) && enemyStrength > pValue * 9 && Math.random() < 0.9) // why bother...focus on enemies
 				continue; // TODO: Strengthen this determination
 			if (enemyStrength > 0.0F)
 			{

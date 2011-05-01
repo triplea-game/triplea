@@ -1,4 +1,6 @@
-Changes for 1.3.0.1
+Changes for 1.3.1.0
+* Fix for Moore AI, it was choosing to never ever attack neutrals in some situations, even if they blocked the path towards the enemy. (veqryn)
+
 * Abstracting MovePanel class. (frigoref)
 
 * Removing constants that refer to specific units, as we should be using unit attachments instead.  Also minor updates to unit attachment's new toString. (veqryn)
