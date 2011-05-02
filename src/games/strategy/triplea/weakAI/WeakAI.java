@@ -1003,7 +1003,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                     }
                     
                     UnitType results = (UnitType) rule.getResults().keySet().iterator().next();
-                    if(Matches.UnitTypeIsSea.match(results) || Matches.UnitTypeIsAir.match(results) ||  Matches.UnitTypeIsAAOrIsFactoryOrIsInfrastructure.match(results))
+                    if(Matches.UnitTypeIsSea.match(results) || Matches.UnitTypeIsAir.match(results) ||  Matches.UnitTypeIsAAOrIsFactoryOrIsInfrastructure.match(results) || Matches.UnitTypeHasMaxBuildRestrictions.match(results))
                     {
                         continue;
                     }
@@ -1163,7 +1163,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 }
                 
                 UnitType results = (UnitType) rule.getResults().keySet().iterator().next();
-                if(Matches.UnitTypeIsAir.match(results) ||  Matches.UnitTypeIsAAOrIsFactoryOrIsInfrastructure.match(results))
+                if(Matches.UnitTypeIsAir.match(results) ||  Matches.UnitTypeIsAAOrIsFactoryOrIsInfrastructure.match(results) || Matches.UnitTypeHasMaxBuildRestrictions.match(results))
                 {
                     continue;
                 }

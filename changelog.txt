@@ -1,4 +1,8 @@
 Changes for 1.3.1.0
+* Stopped both Moore AI and Easy AI from buying any units that have maxBuildRestrictions. (veqryn)
+
+* Added lobby rules web page to list of web pages available from the new help menu in the lobby screen. (veqryn)
+
 * Fixed null pointer in unit drawer. (veqryn)
 
 * Fix for Moore AI, it was choosing to never ever attack neutrals in some situations, even if they blocked the path towards the enemy. (veqryn)

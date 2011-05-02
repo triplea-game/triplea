@@ -825,6 +825,16 @@ public class Matches
     		return ua.isArtillery();
     	}
     };
+    
+    public static final Match<UnitType> UnitTypeHasMaxBuildRestrictions = new Match<UnitType>()
+    {
+    	public boolean match(UnitType obj)
+    	{
+    		UnitType type = (UnitType) obj;
+    		UnitAttachment ua = UnitAttachment.get(type);
+    		return ua.getMaxBuiltPerPlayer() >= 0;
+    	}
+    };
 
     public static final Match<Unit> UnitIsFactory = new Match<Unit>()
     {

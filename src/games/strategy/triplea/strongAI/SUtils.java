@@ -1724,6 +1724,17 @@ public class SUtils
 		return result;
 	}
 	
+	public static int findNumberOfUnitsMatching(GameData data, PlayerID player, Match<Unit> unitCondition)
+	{
+		int total = 0;
+		Collection<Territory> allTers = data.getMap().getTerritories();
+		for (Territory ter : allTers)
+		{
+			total += Match.countMatches(ter.getUnits().getUnits(), unitCondition);
+		}
+		return total;
+	}
+	
 	/**
 	 * Return Territories containing any unit depending on unitCondition
 	 * Differs from findCertainShips because it doesn't require the units be owned

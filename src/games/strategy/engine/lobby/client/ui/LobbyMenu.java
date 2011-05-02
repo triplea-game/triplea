@@ -70,6 +70,7 @@ public class LobbyMenu extends JMenuBar
     	JMenuItem hostingLink = new JMenuItem("How to Host...");
     	JMenuItem mapLink = new JMenuItem("Install Maps...");
     	JMenuItem bugReport = new JMenuItem("Bug Report...");
+    	JMenuItem lobbyRules = new JMenuItem("Lobby Rules...");
 
     	hostingLink.addActionListener(new ActionListener()
         {
@@ -110,10 +111,24 @@ public class LobbyMenu extends JMenuBar
             }
         });    	
     	
+    	lobbyRules.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+            	try {
+            		BareBonesBrowserLaunch.openURL("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1");
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} 
+            }
+        });    
+    	
     	
         parentMenu.add(hostingLink);
         parentMenu.add(mapLink);
         parentMenu.add(bugReport);
+        parentMenu.add(lobbyRules);
 
     }
     
