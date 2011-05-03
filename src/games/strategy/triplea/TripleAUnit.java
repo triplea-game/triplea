@@ -19,7 +19,9 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -57,7 +59,6 @@ public class TripleAUnit extends Unit
     public static final String ORIGINATED_FROM = "originatedFrom";
     public static final String WAS_SCRAMBLED = "wasScrambled";
     public static final String UNIT_DAMAGE = "unitDamage";
-    public static final String MAX_OPERATIONAL_DAMAGE = "maxOperationalDamage";
     public static final String DISABLED = "disabled";
     
     //the transport that is currently transporting us
@@ -76,8 +77,6 @@ public class TripleAUnit extends Unit
     private int m_alreadyMoved = 0;
     //amount of damage unit has sustained
     private int m_unitDamage = 0;
-    //max damage a unit can take and still be operable
-    private int m_maxOperationalDamage = Integer.MAX_VALUE;
     //is this submarine submerged
     private boolean m_submerged = false;
     //original owner of this unit
@@ -238,16 +237,6 @@ public class TripleAUnit extends Unit
         m_unitDamage = unitDamage;
     }
 
-    public int getMaxOperationalDamage()
-    {
-        return m_maxOperationalDamage;
-    }
-
-    public void setMaxOperationalDamage(Integer maxMaxOperationalDamage)
-    {
-        m_maxOperationalDamage = maxMaxOperationalDamage;
-    }
-
     public boolean getSubmerged()
     {
         return m_submerged;
@@ -346,4 +335,75 @@ public class TripleAUnit extends Unit
         m_disabled = Boolean.valueOf(value.booleanValue());
     }
     
+    /** 
+     * How much more damage can this unit take?
+     * Will return 0 if the unit can not be damaged, or is at max damage
+     */
+    public int getHowMuchMoreDamageCanThisUnitTake(final Unit u, final Territory t)
+    {
+    	if (!Matches.UnitIsFactoryOrCanBeDamaged.match(u))
+    		return 0;
+    	
+        TripleAUnit taUnit = (TripleAUnit) u;
+        
+        if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(u.getOwner().getData()))
+        {
+        	TerritoryAttachment ta = TerritoryAttachment.get(t);
+        	int currentDamage = ta.getProduction() - ta.getUnitProduction();
+        	return (2*ta.getProduction()) - currentDamage;
+        }
+        else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(u.getOwner().getData()))
+        {
+        	return Math.max(0, getHowMuchDamageCanThisUnitTakeTotal(u, t) - taUnit.getUnitDamage());
+        }
+        else
+        	return Integer.MAX_VALUE;
+    }
+    
+    /** 
+     * How much damage is the max this unit can take, accounting for territory, etc.
+     * Will return -1 if the unit is of the type that can not be damaged
+     */
+    public int getHowMuchDamageCanThisUnitTakeTotal(final Unit u, final Territory t)
+    {
+    	if (!Matches.UnitIsFactoryOrCanBeDamaged.match(u))
+    		return -1;
+    	
+        UnitAttachment ua = UnitAttachment.get(u.getType());
+        TripleAUnit taUnit = (TripleAUnit) u;
+        
+        if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(u.getOwner().getData()))
+        	return TerritoryAttachment.get(t).getProduction()*2;
+        else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(u.getOwner().getData()))
+        {
+        	if (ua.getMaxDamage() <= 0)
+            {
+        		// factories may or may not have max damage set, so we must still determine here
+            	// assume that if maxDamage <= 0, then the max damage must be based on the territory value 
+            	TerritoryAttachment ta = TerritoryAttachment.get(t);
+            	return ta.getProduction() * 2;
+            }
+            else
+            {
+            	if (Matches.UnitIsFactory.match(u))
+            	{
+            		if (ua.getCanProduceXUnits() < 0)
+            		{
+                		TerritoryAttachment ta = TerritoryAttachment.get(t);
+                    	return ta.getProduction() * ua.getMaxDamage();
+            		}
+            		else
+            		{
+            			return ua.getMaxDamage();
+            		}
+            	}
+            	else
+            	{
+            		return ua.getMaxDamage();
+            	}
+            }
+        }
+        else
+        	return Integer.MAX_VALUE;
+    }
 }

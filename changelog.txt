@@ -1,4 +1,15 @@
 Changes for 1.3.1.0
+* Made disabled units actually work. (veqryn)
+
+* Fixed bugs introduced into Strategic Bombing. (veqryn)
+
+* Created new global property, "Damage From Bombing Done To Units Instead Of Territories", which when ON will have damage be done to units rather than territories, as territory damage was the old way of doing things. 
+  In order for this to work, you must have "SBR Affects Unit Production" turned OFF, as that is the trigger for per territory damage. (veqryn)
+
+* Created "canProduceXUnits" unit attachment. Set to "-1" if you want to produce the value of the territory the unit is in. Still working on the code for this. (veqryn)
+
+* Removed "isCombatInfrastructure" and "unitDamage" from unit attachments, and also removed m_maxOperationalDamage from TripleAUnits. Unit damage is per unit, not per unit type, so it should never be a unit attachment. (veqryn)
+
 * Stopped both Moore AI and Easy AI from buying any units that have maxBuildRestrictions. (veqryn)
 
 * Added lobby rules web page to list of web pages available from the new help menu in the lobby screen. (veqryn)

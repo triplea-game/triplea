@@ -84,7 +84,7 @@ public class UnitsDrawer implements IDrawable
 	        		 
 	        		 TripleAUnit taUnit = (TripleAUnit) current;
 	        		 
-	        		 if(taUnit.getUnitDamage() > 0 && taUnit.getUnitDamage() > ua.getMaxOperationalDamage())
+	        		 if(taUnit.getUnitDamage() > 0 && taUnit.getUnitDamage() > ua.getMaxOperationalDamage() && ua.getMaxOperationalDamage() != -1)
 	        		 {
 	        			 img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, true);
 	        		 }

@@ -2140,7 +2140,6 @@
                          <option name="movement" value="0"/>
                          <option name="attack" value="0"/>
                          <option name="defense" value="4"/>
-						 <option name="isCombatInfrastructure" value="true"/>
 						 <option name="canBeDamaged" value="true"/>
 						 <option name="maxDamage" value="3"/>
 						 <option name="maxOperationalDamage" value="0"/>

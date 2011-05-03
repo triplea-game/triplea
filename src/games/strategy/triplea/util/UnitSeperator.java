@@ -108,9 +108,8 @@ public class UnitSeperator
             {
             	String kev = "here";
             }
-            //if unitDamage > maxOperationalDamage it's disabled
-            //TODO Kev this isn't working
-            boolean disabled = UnitAttachment.get(((Unit) current).getUnitType()).getUnitDamage() > 0 && UnitAttachment.get(((Unit) current).getUnitType()).getUnitDamage() > UnitAttachment.get(((Unit) current).getUnitType()).getMaxOperationalDamage();
+            
+            boolean disabled = Matches.UnitIsDisabledShort().match(current);
             
             Territory originatingTerr = null;
             if(categorizeTerritories)

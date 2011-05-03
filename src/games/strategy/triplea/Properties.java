@@ -800,6 +800,10 @@ public class Properties implements Constants {
     	return data.getProperties().get(DESTROY_UNITS_ON_ENTERING_TERRITORY, false);
     }
     
+    public static boolean getDamageFromBombingDoneToUnitsInsteadOfTerritories(GameData data) {
+    	return data.getProperties().get(DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES, false);
+    }
+    
     private Properties() {
     }
 }

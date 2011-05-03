@@ -196,40 +196,27 @@ public class MovePerformer implements Serializable
                     boolean allCanBomb = Match.allMatch(arrived, Matches.UnitIsStrategicBomber);
 
                     Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, m_data));
+                    Collection<Unit> enemyTargets = Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert());
                     
-                    CompositeMatch<Unit> factory = new CompositeMatchAnd<Unit>();
-                    factory.add(Matches.UnitIsFactory);
-                    Collection<Unit> enemyFactories = route.getEnd().getUnits().getMatches(factory);
-                    
-                    CompositeMatch<Unit> unitCanBeDamaged = new CompositeMatchAnd<Unit>();
-                    unitCanBeDamaged.add(Matches.UnitCanBeDamagedButIsNotFactory);
-                    Collection<Unit> otherEnemyTargets = new ArrayList<Unit>();
-                    
-                    //get only those targets that aren't maxed out
-                    for(Unit target:route.getEnd().getUnits().getMatches(unitCanBeDamaged))
-                    {
-                    	UnitAttachment ua = UnitAttachment.get(target.getType());
-                    	if(ua.getUnitDamage() < ua.getMaxDamage())
-                    	{
-                    		otherEnemyTargets.add(target);
-                    	}                    		
-                    }
-                    
-                    boolean targetToBomb = !otherEnemyTargets.isEmpty();
                     boolean targetedAttack = false;
                     //if it's all bombers and there's something to bomb
-                    if (allCanBomb && (!enemyFactories.isEmpty() || !otherEnemyTargets.isEmpty()))
+                    if (allCanBomb && !enemyTargets.isEmpty())
                     {
                         bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
                         //if bombing and there's something to target- ask what to bomb
-                        if(bombing && targetToBomb)
+                        if(bombing)
                         {
-                        	CompositeMatchOr<Unit> unitsToBeBombed = new CompositeMatchOr<Unit>(Matches.UnitIsFactory, Matches.UnitCanBeDamagedButIsNotFactory);
+                        	//CompositeMatchOr<Unit> unitsToBeBombed = new CompositeMatchOr<Unit>(Matches.UnitIsFactory, Matches.UnitCanBeDamagedButIsNotFactory);
                         	//determine which unit to bomb
-                        	Unit target = getRemotePlayer().whatShouldBomberBomb(route.getEnd(), Match.getMatches(enemyUnits, unitsToBeBombed));
+                        	Unit target;
+                        	if (enemyTargets.size() == 1)
+                        		target = enemyTargets.iterator().next();
+                        	else 
+                        		target = getRemotePlayer().whatShouldBomberBomb(route.getEnd(), enemyTargets);
                         	if(target == null)
                         	{
                         		bombing = false;
+                        		targetedAttack = false;
                         	}
                         	else
                         	{

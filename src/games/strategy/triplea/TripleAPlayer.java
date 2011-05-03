@@ -436,7 +436,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         	{
         		TerritoryAttachment ta = TerritoryAttachment.get(t);
         		//changed this to > from !=
-        		if(ta.getProduction() > ta.getUnitProduction())
+        		if(ta.getProduction() > ta.getUnitProduction()) //TODO: veq fix
         		{
         			bombedTerrs.add(t);
         		}

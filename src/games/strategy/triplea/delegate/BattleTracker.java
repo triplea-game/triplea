@@ -709,7 +709,7 @@ public class BattleTracker implements java.io.Serializable
                 if (changeTracker != null)
                     changeTracker.addChange(takeOverFriendlyTerritories);
                 // TODO: do we need to add in infrastructure here?
-                Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.UnitIsFactory);
+                Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
                 if (!units.isEmpty())
                 {
                     Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner, territory);

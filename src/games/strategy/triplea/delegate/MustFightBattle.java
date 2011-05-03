@@ -224,6 +224,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 List<ProductionRule> rules = p.getProductionFrontier().getRules();
 
             	//Get the unit types that can scramble
+                //TODO: kev, why on earth are you looking at production rules here.  what if the player has a unit that can scramble, but they can't build it?  then it would not be in their production rules!
                 for(ProductionRule rule : rules)
                 {                    
                     UnitType ut = (UnitType) rule.getResults().keySet().iterator().next();
@@ -257,7 +258,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         		{
         			//TODO we can add other types of bases here as well (naval base, fire base, etc...)
         			//if it's an airbase and operational
-        			if(UnitAttachment.get(u.getUnitType()).getIsAirBase() && UnitAttachment.get(u.getUnitType()).getMaxOperationalDamage() >= UnitAttachment.get(u.getUnitType()).getUnitDamage())
+        			if(Matches.UnitIsAirBase.match(u) && Matches.UnitIsDisabled(t).invert().match(u))
         			{
         				neighborsWithActiveAirbases.add(t);
         				break;
@@ -2601,7 +2602,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //TODO - check within the method for the bombarding limitations
         Collection<Unit> bombard = getBombardingUnits();
         Collection<Unit> attacked = Match.getMatches(m_defendingUnits,
-                Matches.UnitIsDestructible(m_attacker, m_battleSite, m_data));
+                Matches.UnitIsDestructibleInCombat(m_attacker, m_battleSite, m_data));
 
         //bombarding units cant move after bombarding
         if(!m_headless) 
@@ -2628,7 +2629,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private void fireSuicideUnitsAttack(IDelegateBridge bridge)
     {
     	//TODO: add a global toggle for returning fire (Veqryn)
-		CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructible(m_attacker, m_battleSite, m_data), Matches.UnitIsSuicide.invert());
+		CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructibleInCombat(m_attacker, m_battleSite, m_data), Matches.UnitIsSuicide.invert());
     	Collection<Unit> suicideAttackers = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
     	Collection<Unit> attackedDefenders = Match.getMatches(m_defendingUnits, attackableUnits);
     	
@@ -2653,7 +2654,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     		return;
     	
     	//TODO: add a global toggle for returning fire (Veqryn)
-    	CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructibleShort, Matches.UnitIsSuicide.invert());
+    	CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructibleInCombatShort, Matches.UnitIsSuicide.invert());
     	Collection<Unit> suicideDefenders = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
     	Collection<Unit> attackedAttackers = Match.getMatches(m_attackingUnits, attackableUnits);
 
@@ -2948,12 +2949,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         List<Unit> unitList = Match.getMatches(units, combat);
         
         //remove infrastructure units that can't take part in combat (air/naval bases, etc...)
-        //But units like bridges or bunkers could be left to be taken as casualties
-        CompositeMatchAnd<Unit> noncombatInfrastructure = new CompositeMatchAnd<Unit>();
-        noncombatInfrastructure.add(Matches.UnitIsInfrastructure);
-        noncombatInfrastructure.add(new InverseMatch<Unit>(Matches.UnitIsCombatInfrastructure));
-
-        unitList.removeAll(Match.getMatches(unitList, noncombatInfrastructure));
+        unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsInfrastructure));
         
         //remove capturableOnEntering units (veqryn)
         unitList.removeAll(Match.getMatches(unitList, Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(m_attacker, m_battleSite, m_data)));

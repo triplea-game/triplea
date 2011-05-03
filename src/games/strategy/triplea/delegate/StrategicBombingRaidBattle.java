@@ -118,11 +118,6 @@ public class StrategicBombingRaidBattle implements Battle
         return m_units.isEmpty();
     }
 
-    public boolean isTargetsEmpty()
-    {
-        return m_targets.isEmpty();
-    }
-
     public void removeAttack(Route route, Collection<Unit> units)
     {
         m_units.removeAll(units);
@@ -189,10 +184,10 @@ public class StrategicBombingRaidBattle implements Battle
                 
                 m_tracker.removeBattle(StrategicBombingRaidBattle.this);
 //TODO Kev add unitDamage setting here
-                if(!m_targets.isEmpty())
-                	bridge.getHistoryWriter().addChildToEvent("Bombing raid in " + m_battleSite.getName() + " causes " + m_bombingRaidCost + " " + " damage to " + m_targets.iterator().next());
-                else if (isSBRAffectsUnitProduction())
+                if (isSBRAffectsUnitProduction())
                 	bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + " production in " + m_battleSite.getName());
+                else if(isDamageFromBombingDoneToUnitsInsteadOfTerritories())
+                	bridge.getHistoryWriter().addChildToEvent("Bombing raid in " + m_battleSite.getName() + " causes " + m_bombingRaidCost + " " + " damage to " + m_targets.iterator().next());
                 else
                 	bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + MyFormatter.pluralize("PU", m_bombingRaidCost));
                 //TODO  remove the reference to the constant.japanese- replace with a rule
@@ -234,10 +229,10 @@ public class StrategicBombingRaidBattle implements Battle
             public void execute(ExecutionStack stack, IDelegateBridge bridge,
                     GameData data)
             { 
-                if(!m_targets.isEmpty())
-                	getDisplay(bridge).battleEnd(m_battleID, "Bombing raid causes " + m_bombingRaidCost + " damage.");
-                else if(isSBRAffectsUnitProduction())
+                if(isSBRAffectsUnitProduction())
                     getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidCost + " production.");
+                else if(isDamageFromBombingDoneToUnitsInsteadOfTerritories())
+                	getDisplay(bridge).battleEnd(m_battleID, "Bombing raid causes " + m_bombingRaidCost + " damage.");
                 else
                     getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidCost + " " +  MyFormatter.pluralize("PU", m_bombingRaidCost));
                 m_isOver = true;        
@@ -265,9 +260,9 @@ public class StrategicBombingRaidBattle implements Battle
 
     private List<Unit> getDefendingUnits()
     {
-    	//TODO: may need to also include infrastructure here, not just unitIsFactory and unitIsAA
+    	Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAA, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert());
     	if(m_targets.isEmpty())
-    		return Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
+    		return Match.getMatches(m_battleSite.getUnits().getUnits(), defenders);
     	else
     	{
     		List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAforBombing);
@@ -344,6 +339,11 @@ public class StrategicBombingRaidBattle implements Battle
 	{
     	return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data);
 	}	
+	
+    private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories()
+	{
+    	return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data);
+	}
     
     /**
      * @return
@@ -550,7 +550,7 @@ public class StrategicBombingRaidBattle implements Battle
             
             Iterator<Unit> iter = m_units.iterator();
             int index = 0;
-            Boolean limitDamage = isWW2V2() || isLimitSBRDamageToProduction() || !m_targets.isEmpty();
+            Boolean limitDamage = isWW2V2() || isLimitSBRDamageToProduction();
             
             // limit to maxDamage
             while (iter.hasNext())
@@ -589,17 +589,32 @@ public class StrategicBombingRaidBattle implements Battle
                 else
                     cost += costThisUnit;
             }
+            
+            // Limit PUs lost if we would like to cap PUs lost at territory value
+        	if (isPUCap(m_data) || isLimitSBRDamagePerTurn(m_data))
+        	{
+        		int alreadyLost = DelegateFinder.moveDelegate(m_data).PUsAlreadyLost(m_battleSite);
+        		int limit = Math.max(0, damageLimit - alreadyLost);
+        		cost = Math.min(cost, limit);
+        	}
 
-            //If something other than factories were targeted
-            if(!m_targets.isEmpty() && !Match.allMatch(m_targets, Matches.UnitIsFactory))
+            //If we damage units instead of territories
+            if(isDamageFromBombingDoneToUnitsInsteadOfTerritories() && !isSBRAffectsUnitProduction())
             {
             	//determine the max allowed damage
-                UnitAttachment ua = UnitAttachment.get(m_targets.iterator().next().getType());
-            	damageLimit = ua.getMaxDamage() - ua.getUnitDamage();
+            	Unit current = m_targets.iterator().next();
+                UnitAttachment ua = UnitAttachment.get(current.getType());
+                TripleAUnit taUnit = (TripleAUnit) current;
+                
+            	damageLimit = taUnit.getHowMuchMoreDamageCanThisUnitTake(current, m_battleSite);
             	cost = Math.min(cost, damageLimit);
+            	int totalDamage = taUnit.getUnitDamage() + cost;
 
             	//display the results
         		getDisplay(bridge).bombingResults(m_battleID, m_dice, cost);
+
+            	// Record production lost
+            	DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, cost);
         		
         		//apply the hits to the targets
         		IntegerMap<Unit> hits = new IntegerMap<Unit>();
@@ -608,9 +623,8 @@ public class StrategicBombingRaidBattle implements Battle
         		for(Unit unit:m_targets)
             	{
             		hits.put(unit,1);
-                    change.add(ChangeFactory.unitPropertyChange(unit, cost, TripleAUnit.UNIT_DAMAGE));
-                    TripleAUnit taUnit = (TripleAUnit) unit;
-                    taUnit.setUnitDamage(cost);
+                    change.add(ChangeFactory.unitPropertyChange(unit, totalDamage, TripleAUnit.UNIT_DAMAGE));
+                    //taUnit.setUnitDamage(totalDamage);
             	}
             	bridge.addChange(ChangeFactory.unitsHit(hits));
             	bridge.addChange(change);
@@ -620,6 +634,7 @@ public class StrategicBombingRaidBattle implements Battle
             }
             else if(isSBRAffectsUnitProduction())
             {
+            	// the old way of doing it, based on doing damage to the territory rather than the unit
             	//get current production
                 int unitProduction = ta.getUnitProduction();
             	//Determine the max that can be taken as losses
@@ -654,13 +669,6 @@ public class StrategicBombingRaidBattle implements Battle
             }
             else
             {
-            	// Limit PUs lost if we would like to cap PUs lost at territory value
-            	if (isPUCap(m_data) || isLimitSBRDamagePerTurn(m_data))
-            	{
-            		int alreadyLost = DelegateFinder.moveDelegate(m_data).PUsAlreadyLost(m_battleSite);
-            		int limit = Math.max(0, damageLimit - alreadyLost);
-            		cost = Math.min(cost, limit);
-            	}
             	// Record PUs lost
             	DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, cost);
             	

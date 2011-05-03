@@ -146,7 +146,6 @@ public class TerritoryAttachment extends DefaultAttachment
     private boolean m_kamikazeZone = false;
     private int m_unitProduction = 0;  
     private boolean m_blockadeZone = false;
-    //private String m_unitProduction = "0";  
 
   /** Creates new TerritoryAttatchment */
   public TerritoryAttachment()

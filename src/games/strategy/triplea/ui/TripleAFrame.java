@@ -779,6 +779,11 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
     public Unit getStrategicBombingRaidTarget(Territory territory, final Collection<Unit> units)
     {
+    	if (units == null || units.size() == 0)
+    		return null;
+    	if (units.size() == 1)
+    		return units.iterator().next();
+    	
     	final AtomicReference<Unit> selected = new AtomicReference<Unit>();
         String message = "Select bombing target in " + territory.getName();
 

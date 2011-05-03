@@ -120,7 +120,7 @@ public class Matches
     {
         public boolean match(Unit unit)
         {
-            return unit.getHits() == 1;
+            return unit.getHits() > 0;
         }
     };
 
@@ -522,6 +522,93 @@ public class Matches
             return ua.getCanBeDamaged() && !ua.isFactory();
         }
     };
+    
+    public static Match<Unit> UnitIsAtMaxDamageOrNotCanBeDamaged(final Territory t)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unit)
+            {
+                UnitAttachment ua = UnitAttachment.get(unit.getType());
+                if (!ua.getCanBeDamaged() && !ua.isFactory())
+                	return true;
+                
+                if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(unit.getOwner().getData()))
+                {
+                	TerritoryAttachment ta = TerritoryAttachment.get(t);
+                	int currentDamage = ta.getProduction() - ta.getUnitProduction();
+                	return currentDamage >= 2*ta.getProduction();
+                }
+                else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getOwner().getData()))
+                {
+                	TripleAUnit taUnit = (TripleAUnit) unit;
+                    return taUnit.getUnitDamage() >= taUnit.getHowMuchDamageCanThisUnitTakeTotal(unit, t);
+                }
+                else
+                	return false;
+            }
+        };
+    }
+    
+    public static Match<Unit> UnitIsDisabled(final Territory t)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unit)
+            {
+            	if (!UnitIsFactoryOrCanBeDamaged.match(unit))
+            		return false;
+            	
+            	if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getOwner().getData())
+            			|| games.strategy.triplea.Properties.getSBRAffectsUnitProduction(unit.getOwner().getData()))
+            		return false;
+            	
+                UnitAttachment ua = UnitAttachment.get(unit.getType());
+                TripleAUnit taUnit = (TripleAUnit) unit;
+                
+                if (ua.getMaxOperationalDamage() < 0)
+                {
+                	// factories may or may not have max operational damage set, so we must still determine here
+                	// assume that if maxOperationalDamage < 0, then the max damage must be based on the territory value (if the damage >= production of territory, then we are disabled)
+                	//TerritoryAttachment ta = TerritoryAttachment.get(t);
+                	//return taUnit.getUnitDamage() >= ta.getProduction();
+                	return false;
+                }
+                else
+                {
+                	return taUnit.getUnitDamage() > ua.getMaxOperationalDamage(); // only greater than.  if == then we can still operate
+                }
+            }
+        };
+    }
+    
+    public static Match<Unit> UnitIsDisabledShort()
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unit)
+            {
+            	if (!UnitIsFactoryOrCanBeDamaged.match(unit))
+            		return false;
+            	
+            	if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getOwner().getData())
+            			|| games.strategy.triplea.Properties.getSBRAffectsUnitProduction(unit.getOwner().getData()))
+            		return false;
+            	
+                UnitAttachment ua = UnitAttachment.get(unit.getType());
+                TripleAUnit taUnit = (TripleAUnit) unit;
+                
+                if (ua.getMaxOperationalDamage() < 0)
+                {
+                	return false;
+                }
+                else
+                {
+                	return taUnit.getUnitDamage() > ua.getMaxOperationalDamage(); // only greater than.  if == then we can still operate
+                }
+            }
+        };
+    }
 
     public static final Match<Unit> UnitIsInfrastructure = new Match<Unit>()
     {
@@ -529,15 +616,6 @@ public class Matches
         {
             UnitAttachment ua = UnitAttachment.get(unit.getType());
             return ua.getIsInfrastructure();
-        }
-    };
-
-    public static final Match<Unit> UnitIsCombatInfrastructure = new Match<Unit>()
-    {
-        public boolean match(Unit unit)
-        {
-            UnitAttachment ua = UnitAttachment.get(unit.getType());
-            return ua.getIsCombatInfrastructure();
         }
     };
     
@@ -592,7 +670,7 @@ public class Matches
         }
     };
 
-    public static final Match<Unit> UnitIsDestructible (final PlayerID player, final Territory terr, final GameData data)
+    public static final Match<Unit> UnitIsDestructibleInCombat (final PlayerID player, final Territory terr, final GameData data)
     {
         return new Match<Unit>()
         {
@@ -605,7 +683,7 @@ public class Matches
         };
     }
 
-    public static final Match<Unit> UnitIsDestructibleShort = new Match<Unit>()
+    public static final Match<Unit> UnitIsDestructibleInCombatShort = new Match<Unit>()
     {
         public boolean match(Unit obj)
         {
@@ -2335,6 +2413,8 @@ public class Matches
     public static final Match<Unit> UnitIsFactoryOrConstruction = new CompositeMatchOr<Unit>(UnitIsConstruction, UnitIsFactory);
     
     public static final Match<Unit> UnitIsNotFactoryOrConstruction = new InverseMatch<Unit>(UnitIsFactoryOrConstruction);
+    
+    public static final Match<Unit> UnitIsFactoryOrCanBeDamaged = new CompositeMatchOr<Unit>(UnitCanBeDamagedButIsNotFactory, UnitIsFactory);
     
     /** Creates new Matches */
     private Matches()

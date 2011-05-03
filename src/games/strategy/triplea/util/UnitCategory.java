@@ -21,6 +21,7 @@ import java.util.*;
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.triplea.attatchments.*;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.TripleAUnit;
 
 public class UnitCategory implements Comparable
@@ -47,7 +48,7 @@ public class UnitCategory implements Comparable
         m_transportCost = categorizeTransportcost ? UnitAttachment.get(((Unit) unit).getUnitType()).getTransportCost() : -1;
         m_originatingTerr = categorizeTerritory ? taUnit.getOriginatedFrom() : null;
         m_damaged = (taUnit.getHits() > 0);
-        m_disabled = (taUnit.getUnitDamage() > taUnit.getMaxOperationalDamage());
+        m_disabled = Matches.UnitIsDisabledShort().match(unit);
         if (categorizeDependents)
             createDependents(taUnit.getDependents());
         else

@@ -72,7 +72,6 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_canScramble = false;
   private boolean m_isAirBase = false;
   private boolean m_isInfrastructure = false;
-  private boolean m_isCombatInfrastructure = false;
   private boolean m_canBeDamaged = false;
   private boolean m_isSuicide = false;
   private boolean m_isKamikaze = false;
@@ -95,12 +94,12 @@ public class UnitAttachment extends DefaultAttachment
   
   //-1 if can't scramble
   private int m_maxScrambleDistance = -1;
-  //-1 if can't be damaged
+  
+  //-1 if can't be disabled
   private int m_maxOperationalDamage = -1;
   //-1 if can't be damaged
   private int m_maxDamage = -1;
-  //-1 if can't be damaged
-  private int m_unitDamage = 0;
+
   //-1 if cant transport
   private int m_transportCapacity = -1;
   //-1 if cant be transported
@@ -122,6 +121,9 @@ public class UnitAttachment extends DefaultAttachment
   private int m_bombingBonus = -1;
   private int m_attackAA = 1;
   private int m_attackAAmaxDieSides = -1;
+  
+  // -1 means either it can't produce any, or it produces at the value of the territory it is located in
+  private int m_canProduceXUnits = -1;
   
 
   private int m_movement = 0;
@@ -342,6 +344,16 @@ public class UnitAttachment extends DefaultAttachment
   public boolean isFactory()
   {
     return m_isFactory;
+  }
+
+  public void setCanProduceXUnits(String s)
+  {
+	  m_canProduceXUnits = getInt(s);
+  }
+
+  public int getCanProduceXUnits()
+  {
+    return m_canProduceXUnits;
   }
   
   public void setUnitPlacementRestrictions(String value)
@@ -712,16 +724,6 @@ public class UnitAttachment extends DefaultAttachment
     return m_maxDamage;
   }
   
-  public void setUnitDamage(String s)
-  {
-	  m_unitDamage = getInt(s);
-  }
-
-  public int getUnitDamage()
-  {
-    return m_unitDamage;
-  }
-  
   public void setIsAirBase(String s)
   {
 	  m_isAirBase = getBool(s);
@@ -740,16 +742,6 @@ public class UnitAttachment extends DefaultAttachment
   public boolean getIsInfrastructure()
   {
     return m_isInfrastructure;
-  }
-  
-  public void setIsCombatInfrastructure(String s)
-  {
-	  m_isCombatInfrastructure = getBool(s);
-  }
-
-  public boolean getIsCombatInfrastructure()
-  {
-    return m_isCombatInfrastructure;
   }
   
   
@@ -1027,6 +1019,12 @@ public class UnitAttachment extends DefaultAttachment
     
     if(m_repairsUnits != null)
     	getListedUnits(m_repairsUnits);
+    
+    if((m_canBeDamaged && (m_maxDamage < 1)) || (!m_canBeDamaged && (m_maxDamage >= 0)))
+    {
+    	throw new GameParseException("Invalid Unit Attatchment" + this);
+    }
+    
   }
   
   public Collection<UnitType> getListedUnits(String[] list)
@@ -1124,7 +1122,6 @@ public class UnitAttachment extends DefaultAttachment
     "  canScramble:" + m_canScramble +
     "  airBase:" + m_isAirBase +
     "  infrastructure:" + m_isInfrastructure +
-    "  combatInfrastructure:" + m_isCombatInfrastructure +
     "  canBeDamaged:" + m_canBeDamaged +
     "  isSuicide:" + m_isSuicide + 
     "  isKamikaze:" + m_isKamikaze + 
@@ -1138,7 +1135,6 @@ public class UnitAttachment extends DefaultAttachment
     "  maxScrambleDistance:" + m_maxScrambleDistance +
     "  maxOperationalDamage:" + m_maxOperationalDamage +
     "  maxDamage:" + m_maxDamage +
-    "  unitDamage:" + m_unitDamage +
     "  transportCapacity:" + m_transportCapacity +
     "  transportCost:" + m_transportCost +
     "  carrierCapacity:" + m_carrierCapacity +
@@ -1151,6 +1147,7 @@ public class UnitAttachment extends DefaultAttachment
     "  bombingBonus:" + m_bombingBonus + 
     "  attackAA:" + m_attackAA + 
     "  attackAAmaxDieSides:" + m_attackAAmaxDieSides + 
+    "  canProduceXUnits:" + m_canProduceXUnits +
     "  movement:" + m_movement +
     "  attack:" + m_attack +
     "  defense:" + m_defense;
@@ -1159,7 +1156,7 @@ public class UnitAttachment extends DefaultAttachment
   public String toStringShortAndOnlyImportantDifferences(PlayerID player)
   {
 	  // displays everything in a very short form, in English rather than as xml stuff
-	  // shows all except for: m_isCombatInfrastructure, m_constructionType, m_constructionsPerTerrPerTypePerTurn, m_maxConstructionsPerTypePerTerr, m_unitDamage, m_canBeGivenByTerritoryTo, m_destroyedWhenCapturedBy, m_canBeCapturedOnEnteringBy
+	  // shows all except for: m_isCombatInfrastructure, m_constructionType, m_constructionsPerTerrPerTypePerTurn, m_maxConstructionsPerTypePerTerr, m_canBeGivenByTerritoryTo, m_destroyedWhenCapturedBy, m_canBeCapturedOnEnteringBy
 	  StringBuilder stats = new StringBuilder();
 	  
 	  //if (this != null && this.getName() != null)
@@ -1181,8 +1178,10 @@ public class UnitAttachment extends DefaultAttachment
 	  if (getMovement(player) > 0)
 		  stats.append(getMovement(player) + " Movement, ");
 	  
-	  if (m_isFactory)
-		  stats.append("Can Produce Units, ");
+	  if (m_isFactory && m_canProduceXUnits < 0)
+		  stats.append("Can Produce Units Up To Territory Value, ");
+	  else if (m_isFactory && m_canProduceXUnits > 0)
+		  stats.append("Can Produce " + m_canProduceXUnits + " Units, ");
 	  
 	  if ((m_attackAA != 1 || m_attackAAmaxDieSides != -1) && (m_isAA || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly))
 		  stats.append((playerHasAARadar(player) ? m_attackAA + 1 : m_attackAA) + "/" + (m_attackAAmaxDieSides == -1 ? m_attackAAmaxDieSides : getData().getDiceSides()) + " ");
@@ -1202,7 +1201,7 @@ public class UnitAttachment extends DefaultAttachment
 	  if (m_isConstruction || m_isFactory)
 		  stats.append("Can Be Placed Without Factory, ");
 	  
-	  if (m_canBeDamaged || (m_isFactory && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData())))
+	  if ((m_canBeDamaged || m_isFactory) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
 	  {
 		  stats.append("Can Be Damaged By Raids, ");
 		  if (m_maxOperationalDamage > -1)
