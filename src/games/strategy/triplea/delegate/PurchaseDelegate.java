@@ -265,6 +265,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
                     
                     TerritoryAttachment ta = TerritoryAttachment.get(terr);
                     int currentDamage = ta.getUnitProduction();
+                    // veq separate for unit damage vs territory damage
 
                     IntegerMap<Unit> hits = new IntegerMap<Unit>();
                     Collection<Unit> factories = Match.getMatches(terr.getUnits().getUnits(), Matches.UnitIsFactory);
@@ -274,7 +275,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
                     {                    
                     	int newDamageTotal = ta.getProduction() - (currentDamage + repairCount);
                     	if(newDamageTotal < 0) {
-                    		return "You cannpt repair more than a territory has been hit";
+                    		return "You cannot repair more than a territory has been hit";
                     	}
                         hits.put(factories.iterator().next(), newDamageTotal);
                         changes.add(ChangeFactory.unitsHit(hits));

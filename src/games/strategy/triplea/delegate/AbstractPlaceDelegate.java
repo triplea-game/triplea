@@ -604,7 +604,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         TerritoryAttachment ta = TerritoryAttachment.get(producer);
         Collection<Unit> factoryUnits = producer.getUnits().getMatches(
                 Matches.UnitIsFactory);
-        boolean limitSBRDamageToUnitProd = isSBRAffectsUnitProduction();
+        boolean limitSBRDamageToUnitProd = isSBRAffectsUnitProduction() || isDamageFromBombingDoneToUnitsInsteadOfTerritories();
         boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
         boolean unitPlacementPerTerritoryRestricted = isUnitPlacementPerTerritoryRestricted();
         boolean originalFactory = ta.isOriginalFactory();
@@ -668,6 +668,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         
         if(limitSBRDamageToUnitProd)
         {
+        	//TODO: veq separate for unit damage vs terr damage
         	production = ta.getUnitProduction();
             
             //Increase production if have industrial technology
@@ -836,6 +837,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data);
     }
 
+    private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories()    
+    {
+        return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data);
+    }
+
     private boolean isPlacementRestrictedByFactory()    
     {
         return games.strategy.triplea.Properties.getPlacementRestrictedByFactory(m_data);
@@ -986,7 +992,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         change.add(remove);
         change.add(place);
         
-        if(Match.someMatch(units, Matches.UnitIsFactory) && Match.countMatches(unitsAlreadyThere, Matches.UnitIsFactory) == 0)
+        if(Match.someMatch(units, Matches.UnitIsFactory) && Match.countMatches(unitsAlreadyThere, Matches.UnitIsFactory) == 0 && isSBRAffectsUnitProduction())
         {
             Change unitProd = ChangeFactory.changeUnitProduction(at, getProduction(at));
             change.add(unitProd);

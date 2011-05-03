@@ -1204,10 +1204,14 @@ public class UnitAttachment extends DefaultAttachment
 	  if ((m_canBeDamaged || m_isFactory) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
 	  {
 		  stats.append("Can Be Damaged By Raids, ");
+	  }
+	  else if ((m_canBeDamaged || m_isFactory) && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
+	  {
+		  stats.append("Can Be Damaged By Raids, ");
 		  if (m_maxOperationalDamage > -1)
 			  stats.append(m_maxOperationalDamage + " Max Operational Damage, ");
 		  if (m_maxDamage > -1)
-			  stats.append(m_maxDamage + " Max Damage Total, ");
+			  stats.append(m_maxDamage + " Max Total Damage, ");
 	  }
 	  else if (m_isFactory)
 		  stats.append("Can Be Attacked By Raids, ");

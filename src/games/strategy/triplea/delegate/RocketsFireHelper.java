@@ -14,6 +14,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
@@ -23,6 +24,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -66,7 +68,12 @@ public class RocketsFireHelper
     private boolean isSBRAffectsUnitProduction(GameData data)
     {
         return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data);
-    }   
+    }
+    
+    private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(GameData data)
+    {
+        return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
+    }
     
 	private boolean isOneRocketAttackPerFactory(GameData data)
     {
@@ -183,14 +190,10 @@ public class RocketsFireHelper
 
         Collection possible = data.getMap().getNeighbors(territory, 3);
 
-        CompositeMatch<Unit> enemyFactory = new CompositeMatchAnd<Unit>();
-        enemyFactory.add(Matches.UnitIsFactory);
-        enemyFactory.add(Matches.enemyUnit(player, data));
-
         Set<Territory> hasFactory = new HashSet<Territory>();
         
         boolean rocketsOverImpassables = isRocketsCanFlyOverImpassables(data);
-        Match impassable = Matches.TerritoryIsNotImpassable;
+        Match<Territory> impassable = Matches.TerritoryIsNotImpassable;
 
         Iterator iter = possible.iterator();
         while (iter.hasNext())
@@ -200,7 +203,7 @@ public class RocketsFireHelper
             Route route = data.getMap().getRoute(territory, current, impassable);
             if(route != null && route.getLength() <= 3)
             {
-                if (current.getUnits().someMatch(enemyFactory)) 
+                if (current.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(current).invert()))) 
                     hasFactory.add(current);
             }
         }
@@ -221,6 +224,28 @@ public class RocketsFireHelper
         PlayerID attacked = attackedTerritory.getOwner();
         Resource PUs = data.getResourceList().getResource(Constants.PUS);
         //int cost = bridge.getRandom(Constants.MAX_DICE);
+        
+        boolean SBRAffectsUnitProd = isSBRAffectsUnitProduction(data);
+        boolean DamageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
+        
+        // unit damage vs territory damage
+        Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(Matches.enemyUnit(player, data));
+        Collection<Unit> enemyTargets = Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).invert());
+        Collection<Unit> targets = new ArrayList<Unit>();
+        if (!SBRAffectsUnitProd && DamageFromBombingDoneToUnits)
+        {
+        	Unit target;
+        	if (enemyTargets.size() == 1)
+        		target = enemyTargets.iterator().next();
+        	else
+        	{
+        		ITripleaPlayer iplayer = (ITripleaPlayer) bridge.getRemote(player);
+        		target = iplayer.whatShouldBomberBomb(attackedTerritory, enemyTargets);
+        	}
+        	if (target == null)
+        		new IllegalStateException("No Targets in " + attackedTerritory.getName());
+        	targets.add(target);
+        }
 
         int cost = 0;
         if (!games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(data))
@@ -265,7 +290,6 @@ public class RocketsFireHelper
         TerritoryAttachment ta = TerritoryAttachment.get(attackedTerritory);
         int territoryProduction = ta.getProduction();
         int unitProduction = 0;
-        boolean SBRAffectsUnitProd = isSBRAffectsUnitProduction(data);
         
         if(SBRAffectsUnitProd)
         {
@@ -279,7 +303,7 @@ public class RocketsFireHelper
             cost = Math.min(cost, limit);
 
             // Record production lost
-            DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
+            //DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
         	Collection<Unit> damagedFactory = Match.getMatches(attackedTerritory.getUnits().getUnits(), Matches.UnitIsFactory);
 
     		IntegerMap<Unit> hits = new IntegerMap<Unit>();
@@ -293,6 +317,31 @@ public class RocketsFireHelper
            /* Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
             bridge.addChange(change);
             bridge.getHistoryWriter().addChildToEvent("Rocket attack costs " + cost + " production.");*/
+        }
+        else if (DamageFromBombingDoneToUnits)
+        {
+        	// we are doing damage to 'target', not to the territory
+        	Unit target = targets.iterator().next();
+            UnitAttachment ua = UnitAttachment.get(target.getType());
+            TripleAUnit taUnit = (TripleAUnit) target;
+            
+            int damageLimit = taUnit.getHowMuchMoreDamageCanThisUnitTake(target, attackedTerritory);
+        	cost = Math.max(0, Math.min(cost, damageLimit));
+        	int totalDamage = taUnit.getUnitDamage() + cost;
+        	
+        	// Record production lost
+            //DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
+            
+        	//apply the hits to the targets
+    		IntegerMap<Unit> hits = new IntegerMap<Unit>();
+    		CompositeChange change = new CompositeChange();
+    		
+    		hits.put(target,1);
+            change.add(ChangeFactory.unitPropertyChange(target, totalDamage, TripleAUnit.UNIT_DAMAGE));
+            //taUnit.setUnitDamage(totalDamage);
+            
+        	bridge.addChange(ChangeFactory.unitsHit(hits));
+        	bridge.addChange(change);
         }
         //in WW2V2, limit rocket attack cost to production value of factory.
         else if (isWW2V2(data) || isLimitRocketDamageToProduction(data))
@@ -322,7 +371,12 @@ public class RocketsFireHelper
             
             Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
             bridge.addChange(change);
-            
+        }
+        else if (DamageFromBombingDoneToUnits)
+        {
+            getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to " + targets.iterator().next());
+        
+            bridge.getHistoryWriter().startEvent("Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to " + targets.iterator().next());
         }
         else
         {

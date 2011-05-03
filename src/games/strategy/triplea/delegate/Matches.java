@@ -550,6 +550,18 @@ public class Matches
         };
     }
     
+    public static Match<Unit> UnitHasSomeUnitDamage()
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unit)
+            {
+                TripleAUnit taUnit = (TripleAUnit) unit;
+                return taUnit.getUnitDamage() > 0;
+            }
+        };
+    }
+    
     public static Match<Unit> UnitIsDisabled(final Territory t)
     {
         return new Match<Unit>()

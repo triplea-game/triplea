@@ -2223,6 +2223,8 @@
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
 						 <!-- unitPlacementOnlyAllowedIn is the direct inverse of unitPlacementRestrictions
 						 <option name="unitPlacementOnlyAllowedIn" value="Germany:East Balkans"/>-->
+						 <!-- canProduceXUnits allows a factory-type unit to produce a set amount of units no matter where it is located.  if -1 then it will produce at the value of the territory where it is.  if greater than -1, you must have "maxDamage" set to some number -->
+						 <option name="canProduceXUnits" value="-1"/>
                 </attatchment>
 
                 <attatchment name="unitAttatchment" attatchTo="factory_hit" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
@@ -4230,12 +4232,18 @@
 						<boolean/>
 				</property>
 
-				<!-- Unit Placement Restrictions are territory based restrictions on the placement of units, so that for example you can not place aircraft in the balkans, or no new factories on islands -->
+						<!-- Unit Placement Restrictions are territory based restrictions on the placement of units, so that for example you can not place aircraft in the balkans, or no new factories on islands -->
 				<property name="Unit Placement Restrictions" value="true" editable="false">
 						<boolean/>
 				</property>
 
-				<property name="SBR Affects Unit Production" value="true" editable="false">
+						<!-- SBR Affects Unit Production has Strategic Bombing and Rockets do damage to a territory rather than directly to the player's PUs (the bank) -->
+				<property name="SBR Affects Unit Production" value="false" editable="false">
+						<boolean/>
+				</property>
+
+						<!-- Damage From Bombing Done To Units Instead Of Territories has Strategic Bombing and Rockets do damage to a specific unit rather than directly to the player's PUs or to a territory.  You must have "SBR Affects Unit Production" false for this to work -->
+				<property name="Damage From Bombing Done To Units Instead Of Territories" value="true" editable="false">
 						<boolean/>
 				</property>
 

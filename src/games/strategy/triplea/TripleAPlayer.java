@@ -436,7 +436,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         	{
         		TerritoryAttachment ta = TerritoryAttachment.get(t);
         		//changed this to > from !=
-        		if(ta.getProduction() > ta.getUnitProduction()) //TODO: veq fix
+        		if(ta.getProduction() > ta.getUnitProduction())
         		{
         			bombedTerrs.add(t);
         		}
@@ -459,6 +459,29 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         		}
         	}
     	}
+        else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(m_bridge.getGameData()))
+        {
+        	GameData data = m_bridge.getGameData();
+        	Collection<Territory> bombedTerrs = new ArrayList<Territory>();
+        	Match<Unit> myDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitHasSomeUnitDamage());
+        	bombedTerrs.addAll(Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamaged)));
+        	
+        	if(bombedTerrs.size() > 0)
+        	{
+        	    HashMap<Territory, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
+        		if (repair != null)
+        		{
+        			purchaseDel = (IPurchaseDelegate) m_bridge.getRemote(); //TODO: veq fix
+        			error = purchaseDel.purchaseRepair(repair);
+        			if (error != null)
+        			{
+        				m_ui.notifyError(error);
+        				//dont give up, keep going
+        				purchase(bid);
+        			}
+        		}
+        	}
+        }
         
         IntegerMap<ProductionRule> prod = m_ui.getProduction(m_id, bid);
         if (prod == null)
@@ -689,6 +712,11 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     public final boolean isSBRAffectsUnitProduction(GameData data)
     {
         return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data);
+    }
+
+    public final boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(GameData data)
+    {
+        return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
     }
 
     private static boolean isTechDevelopment(GameData data)
