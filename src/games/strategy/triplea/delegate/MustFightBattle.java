@@ -2951,6 +2951,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //remove infrastructure units that can't take part in combat (air/naval bases, etc...)
         unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsInfrastructure));
         
+        //remove any disabled units from combat
+        unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsDisabledShort()));
+        
         //remove capturableOnEntering units (veqryn)
         unitList.removeAll(Match.getMatches(unitList, Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(m_attacker, m_battleSite, m_data)));
 

@@ -62,6 +62,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.text.TabableView;
+
 /**
  * 
  * Logic for placing units.
@@ -277,6 +279,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         IntegerMap<String> unitMapTypePerTurn = new IntegerMap<String>();
         int maxFactory = games.strategy.triplea.Properties.getFactoriesPerCountry(m_data);
         Iterator<Unit> unitHeldIter = Match.getMatches(units, Matches.UnitIsFactoryOrConstruction).iterator();
+        TerritoryAttachment ta = TerritoryAttachment.get(to);
         while(unitHeldIter.hasNext())
         {
         	Unit currentUnit = (Unit) unitHeldIter.next();
@@ -288,6 +291,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             	String[] terrs = ua.getUnitPlacementRestrictions();
             	Collection<Territory> listedTerrs = getListedTerritories(terrs);
             	if (listedTerrs.contains(to))
+            		continue;
+            	if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > ta.getProduction())
             		continue;
         	}
         	
@@ -308,7 +313,6 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         boolean moreWithoutFactory = games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(m_data);
         boolean moreWithFactory = games.strategy.triplea.Properties.getMoreConstructionsWithFactory(m_data);
         boolean unlimitedConstructions = games.strategy.triplea.Properties.getUnlimitedConstructions(m_data);
-        TerritoryAttachment ta = TerritoryAttachment.get(to);
         Collection<Unit> unitsInTO = to.getUnits().getUnits();
         Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
         Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
@@ -430,6 +434,9 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         {
         	Unit currentUnit = (Unit) unitsPlaceableIter.next();
         	UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+        	TerritoryAttachment ta = TerritoryAttachment.get(to);
+        	if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > ta.getProduction())
+        		return "Cannot place these units in " + to.getName() + " due to Unit Placement Restrictions on Territory Value";
         	String[] terrs = ua.getUnitPlacementRestrictions();
         	Collection<Territory> listedTerrs = getListedTerritories(terrs);
         	if (listedTerrs.contains(to))
@@ -488,6 +495,9 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         {
         	Unit currentUnit = (Unit) unitsPlaceableIter.next();
         	UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+        	TerritoryAttachment ta = TerritoryAttachment.get(to);
+        	if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > ta.getProduction())
+        		continue;
         	// account for any unit placement restrictions by territory
         	String[] terrs = ua.getUnitPlacementRestrictions();
         	Collection<Territory> listedTerrs = getListedTerritories(terrs);
@@ -558,6 +568,9 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         {
         	Unit currentUnit = (Unit) unitsPlaceableIter.next();
         	UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+        	TerritoryAttachment ta = TerritoryAttachment.get(to);
+        	if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > ta.getProduction())
+        		continue;
         	// account for any unit placement restrictions by territory
         	String[] terrs = ua.getUnitPlacementRestrictions();
         	Collection<Territory> listedTerrs = getListedTerritories(terrs);

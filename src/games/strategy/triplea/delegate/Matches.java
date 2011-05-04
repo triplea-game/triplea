@@ -105,17 +105,6 @@ public class Matches
         }
     };
 
-    public static final Match<Unit> UnitCanRepairOthers = new Match<Unit>()
-    {
-        public boolean match(Unit unit)
-        {
-            UnitAttachment ua = UnitAttachment.get(unit.getType());
-            if (ua.getRepairsUnits() == null)
-            	return false;
-            return ua.getRepairsUnits().length > 0;
-        }
-    };
-
     public static final Match<Unit> UnitIsDamaged = new Match<Unit>()
     {
         public boolean match(Unit unit)
@@ -2285,6 +2274,20 @@ public class Matches
     			return routeCondition;
     }
 
+    public static final Match<Unit> UnitCanRepairOthers = new Match<Unit>()
+    {
+        public boolean match(Unit unit)
+        {
+        	if (UnitIsDisabledShort().match(unit))
+        		return false;
+        	
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            if (ua.getRepairsUnits() == null)
+            	return false;
+            return ua.getRepairsUnits().length > 0;
+        }
+    };
+
     public static Match<Unit> UnitCanRepairThisUnit(final Unit damagedUnit)
     {
         return new Match<Unit>()
@@ -2357,6 +2360,9 @@ public class Matches
         {
             public boolean match(Unit unitCanGiveBonusMovement)
             {
+            	if (UnitIsDisabledShort().match(unitCanGiveBonusMovement))
+            		return false;
+            	
                 UnitType type = (UnitType) unitCanGiveBonusMovement.getUnitType();
                 UnitAttachment ua = UnitAttachment.get(type);
                 //TODO: make sure the unit is operational

@@ -2142,7 +2142,7 @@
                          <option name="defense" value="4"/>
 						 <option name="canBeDamaged" value="true"/>
 						 <!-- maxDamage is the total damage the unit can take.  If a factory, and canProduceXUnits = -1 or is missing then maxDamage will be a multiple of the territory value (maxDamage defaults to 2 if canProduceXUnits = -1), otherwise it will be a set number -->
-						 <option name="maxDamage" value="3"/>
+						 <option name="maxDamage" value="4"/>
 						 <!-- maxOperationalDamage is used with certain features like isAirBase, repairsUnits, and givesMovement to determine if those features work or not based on the current damage of this unit. Does not work with factories. -->
 						 <option name="maxOperationalDamage" value="0"/>
 						 <!-- isConstruction allows the unit to be placed in territories that don't contain factories. only "constructionsPerTerrPerTypePerTurn" contructions per territory per turn. 
@@ -2222,6 +2222,8 @@
 								every unit may have a list, and the lists may be different for each unit. default is no list.  
 								the list may be turned on/off with "Unit Placement Restrictions" game property -->
 						 <option name="unitPlacementRestrictions" value="Midway:Greenland:Gibraltar:Solomon Islands:Wake Island:Caroline Islands"/>
+						 <!-- canOnlyBePlacedInTerritoryValuedAtX means the minimum territory value to place the unit there. defaults to "-1" which means anywhere -->
+						 <option name="canOnlyBePlacedInTerritoryValuedAtX" value="2"/>
 						 <!-- maxBuiltPerPlayer is the number of this unit that can be BUILT by a player.  If they have fewer than this number they can build more, if they have more than this number they can not build more [this does not cause excess ones to disappear] -->
 						 <option name="maxBuiltPerPlayer" value="3"/>
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
@@ -4302,7 +4304,7 @@
 						<br>7. Kamikaze Fighters are what Japanese fighters turn into if certain conditions are met.  They have 5 attack, 3 defense, and 3 movement (cost 8), and they are allowed to use up all their movement to go to a battle, and they will die after rolling their dice.
 						<br>8. Airfield gives +1 movement to air units, and allows fighters to scramble to defend surrounding sea zones, if you turn on "Scramble Rules In Effect".
 						<br>9. Harbour gives +1 movement to naval units, and are needed to repair Battleships, if you turn on "Two HitPoint Units Require Repair Facilities".
-						<br>10. Bunkers are defensive units that can also be bombed/rocketted, and will die if they reach 3 damage.  They may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours), but there is a limit of 1 per territory.
+						<br>10. Bunkers are defensive units that can also be bombed/rocketted, will not participate in battle if damaged, and will die if they reach 4 damage.  They may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours), but there is a limit of 1 per territory.
 						<br>11. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att, +1 def to subs). Available to Germans after they get superSubs.
 						<br>12. Each nation may only purchase factories up to 3 total, if a nation controls more than 3 they can not purchase new factories (they can keep capturing new ones though).
         				<br>

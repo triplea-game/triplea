@@ -126,6 +126,9 @@ public class UnitAttachment extends DefaultAttachment
   // -1 means either it can't produce any, or it produces at the value of the territory it is located in
   private int m_canProduceXUnits = -1;
   
+  // -1 means anywhere
+  private int m_canOnlyBePlacedInTerritoryValuedAtX = -1;
+  
 
   private int m_movement = 0;
   private int m_attack = 0;
@@ -355,6 +358,16 @@ public class UnitAttachment extends DefaultAttachment
   public int getCanProduceXUnits()
   {
     return m_canProduceXUnits;
+  }
+
+  public void setCanOnlyBePlacedInTerritoryValuedAtX(String s)
+  {
+	  m_canOnlyBePlacedInTerritoryValuedAtX = getInt(s);
+  }
+
+  public int getCanOnlyBePlacedInTerritoryValuedAtX()
+  {
+    return m_canOnlyBePlacedInTerritoryValuedAtX;
   }
   
   public void setUnitPlacementRestrictions(String value)
@@ -1160,6 +1173,7 @@ public class UnitAttachment extends DefaultAttachment
     "  attackAA:" + m_attackAA + 
     "  attackAAmaxDieSides:" + m_attackAAmaxDieSides + 
     "  canProduceXUnits:" + m_canProduceXUnits +
+    "  canOnlyBePlacedInTerritoryValuedAtX:" + m_canOnlyBePlacedInTerritoryValuedAtX +
     "  movement:" + m_movement +
     "  attack:" + m_attack +
     "  defense:" + m_defense;
@@ -1330,6 +1344,9 @@ public class UnitAttachment extends DefaultAttachment
 	  
 	  if (m_unitPlacementRestrictions != null && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
 		  stats.append("Has Placement Restrictions, ");
+	  
+	  if (m_canOnlyBePlacedInTerritoryValuedAtX > 0)
+		  stats.append("Must Be Placed In Territory Valued " + m_canOnlyBePlacedInTerritoryValuedAtX + " Or Greater, ");
 	  
 	  
 	  if (stats.indexOf(", ") > -1)

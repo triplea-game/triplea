@@ -1,4 +1,8 @@
 Changes for 1.3.1.0
+* Created new unit attachment, canOnlyBePlacedInTerritoryValuedAtX, which defaults to -1 meaning can be placed anywhere. (veqryn)
+
+* Expanded 'disabled' logic to include airbases, repairsUnits, givesMovement, and combat units. Disabled units will not provide their abilities, like scrambling, movement, or repairing, to other units.  Disabled combat units will not participate in combat, and will be destroyed if captured. (veqryn)
+
 * Created the placement logic for canProduceXUnits, which now works properly. (veqryn)
 
 * Fixed display error where units with unit damage were not having their damage amount displayed. Still some bugs though for groups of units. (veqryn)
