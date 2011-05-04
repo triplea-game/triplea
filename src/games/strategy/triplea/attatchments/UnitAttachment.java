@@ -73,6 +73,7 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isAirBase = false;
   private boolean m_isInfrastructure = false;
   private boolean m_canBeDamaged = false;
+  private boolean m_canDieFromReachingMaxDamage = false;
   private boolean m_isSuicide = false;
   private boolean m_isKamikaze = false;
   private boolean m_isCombatTransport = false;
@@ -755,6 +756,16 @@ public class UnitAttachment extends DefaultAttachment
     return m_canBeDamaged;
   }
   
+  public void setCanDieFromReachingMaxDamage(String s)
+  {
+	  m_canDieFromReachingMaxDamage = getBool(s);
+  }
+
+  public boolean getCanDieFromReachingMaxDamage()
+  {
+    return m_canDieFromReachingMaxDamage;
+  }
+  
   public void setIsSuicide(String s)
   {
 	  m_isSuicide = getBool(s);
@@ -1020,7 +1031,7 @@ public class UnitAttachment extends DefaultAttachment
     if(m_repairsUnits != null)
     	getListedUnits(m_repairsUnits);
     
-    if((m_canBeDamaged && (m_maxDamage < 1)) || (!m_canBeDamaged && (m_maxDamage >= 0)))
+    if((m_canBeDamaged && (m_maxDamage < 1)) || (!m_canBeDamaged && (m_maxDamage >= 0)) || (m_canDieFromReachingMaxDamage && !(m_maxDamage >= 0 || m_isFactory)) || (m_canBeDamaged && m_isFactory))
     {
     	throw new GameParseException("Invalid Unit Attatchment" + this);
     }
@@ -1123,6 +1134,7 @@ public class UnitAttachment extends DefaultAttachment
     "  airBase:" + m_isAirBase +
     "  infrastructure:" + m_isInfrastructure +
     "  canBeDamaged:" + m_canBeDamaged +
+    "  canDieFromReachingMaxDamage:" + m_canDieFromReachingMaxDamage + 
     "  isSuicide:" + m_isSuicide + 
     "  isKamikaze:" + m_isKamikaze + 
     "  combatTransport:" + m_isCombatTransport +
@@ -1204,6 +1216,8 @@ public class UnitAttachment extends DefaultAttachment
 	  if ((m_canBeDamaged || m_isFactory) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
 	  {
 		  stats.append("Can Be Damaged By Raids, ");
+		  if (m_canDieFromReachingMaxDamage)
+			  stats.append("Will Die If Max Damage Reached, ");
 	  }
 	  else if ((m_canBeDamaged || m_isFactory) && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
 	  {
@@ -1212,6 +1226,8 @@ public class UnitAttachment extends DefaultAttachment
 			  stats.append(m_maxOperationalDamage + " Max Operational Damage, ");
 		  if (m_maxDamage > -1)
 			  stats.append(m_maxDamage + " Max Total Damage, ");
+		  if (m_canDieFromReachingMaxDamage)
+			  stats.append("Will Die If Max Damage Reached, ");
 	  }
 	  else if (m_isFactory)
 		  stats.append("Can Be Attacked By Raids, ");

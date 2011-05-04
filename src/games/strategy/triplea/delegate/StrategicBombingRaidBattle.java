@@ -217,9 +217,22 @@ public class StrategicBombingRaidBattle implements Battle
                     bridge.getHistoryWriter().addChildToEvent(transcriptText, suicideUnits);
                     bridge.addChange(removeSuicide);
                 }
-        
+                
+                // kill any units that can die if they have reached max damage (veqryn)
+                if (Match.someMatch(m_targets, Matches.UnitCanDieFromReachingMaxDamage))
+                {
+                	List<Unit> unitsCanDie = Match.getMatches(m_targets, Matches.UnitCanDieFromReachingMaxDamage);
+                	unitsCanDie.retainAll(Match.getMatches(unitsCanDie, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite)));
+                	if (!unitsCanDie.isEmpty())
+                	{
+                		//m_targets.removeAll(unitsCanDie);
+                        Change removeDead = ChangeFactory.removeUnits(m_battleSite, unitsCanDie);
+                        String transcriptText = MyFormatter.unitsToText(unitsCanDie) + " lost in " + m_battleSite.getName();
+                        bridge.getHistoryWriter().addChildToEvent(transcriptText, unitsCanDie);
+                        bridge.addChange(removeDead);
+                	}
+                }
             }
-        
         });
        
         

@@ -1,4 +1,12 @@
 Changes for 1.3.1.0
+* Created the placement logic for canProduceXUnits, which now works properly. (veqryn)
+
+* Fixed display error where units with unit damage were not having their damage amount displayed. Still some bugs though for groups of units. (veqryn)
+
+* Created new unit attachment, canDieFromReachingMaxDamage, which will cause a unit to die if they reach max damage through strat bombing or rockets. (veqryn)
+
+* Fixed bug in triggers that caused unit production damage to be done to a territory if a factory was placed via triggers. (veqryn)
+
 * Allowed rockets to also damage a unit, rather than a territory.  Further work on getting unit damage to work and display properly. (veqryn)
 
 * Made disabled units actually work. (veqryn)

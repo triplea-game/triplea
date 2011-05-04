@@ -27,6 +27,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
@@ -318,7 +319,7 @@ public class RocketsFireHelper
             bridge.addChange(change);
             bridge.getHistoryWriter().addChildToEvent("Rocket attack costs " + cost + " production.");*/
         }
-        else if (DamageFromBombingDoneToUnits)
+        else if (DamageFromBombingDoneToUnits && !targets.isEmpty())
         {
         	// we are doing damage to 'target', not to the territory
         	Unit target = targets.iterator().next();
@@ -372,7 +373,7 @@ public class RocketsFireHelper
             Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
             bridge.addChange(change);
         }
-        else if (DamageFromBombingDoneToUnits)
+        else if (DamageFromBombingDoneToUnits && !targets.isEmpty())
         {
             getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to " + targets.iterator().next());
         
@@ -410,7 +411,20 @@ public class RocketsFireHelper
             }
         }
         
-
+        // kill any units that can die if they have reached max damage (veqryn)
+        if (Match.someMatch(targets, Matches.UnitCanDieFromReachingMaxDamage))
+        {
+        	List<Unit> unitsCanDie = Match.getMatches(targets, Matches.UnitCanDieFromReachingMaxDamage);
+        	unitsCanDie.retainAll(Match.getMatches(unitsCanDie, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory)));
+        	if (!unitsCanDie.isEmpty())
+        	{
+        		//targets.removeAll(unitsCanDie);
+                Change removeDead = ChangeFactory.removeUnits(attackedTerritory, unitsCanDie);
+                String transcriptText = MyFormatter.unitsToText(unitsCanDie) + " lost in " + attackedTerritory.getName();
+                bridge.getHistoryWriter().addChildToEvent(transcriptText, unitsCanDie);
+                bridge.addChange(removeDead);
+        	}
+        }
     }
 
     

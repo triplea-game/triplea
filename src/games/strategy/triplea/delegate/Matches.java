@@ -622,6 +622,17 @@ public class Matches
         };
     }
 
+    public static final Match<Unit> UnitCanDieFromReachingMaxDamage = new Match<Unit>()
+    {
+        public boolean match(Unit unit)
+        {
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            if (!ua.getCanBeDamaged() && !ua.isFactory())
+            	return false;
+            return ua.getCanDieFromReachingMaxDamage();
+        }
+    };
+
     public static final Match<Unit> UnitIsInfrastructure = new Match<Unit>()
     {
         public boolean match(Unit unit)

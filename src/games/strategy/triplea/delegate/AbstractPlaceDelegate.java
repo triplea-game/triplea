@@ -39,6 +39,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -604,7 +605,6 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         TerritoryAttachment ta = TerritoryAttachment.get(producer);
         Collection<Unit> factoryUnits = producer.getUnits().getMatches(
                 Matches.UnitIsFactory);
-        boolean limitSBRDamageToUnitProd = isSBRAffectsUnitProduction() || isDamageFromBombingDoneToUnitsInsteadOfTerritories();
         boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
         boolean unitPlacementPerTerritoryRestricted = isUnitPlacementPerTerritoryRestricted();
         boolean originalFactory = ta.isOriginalFactory();
@@ -612,7 +612,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
                 .equals(getOriginalFactoryOwner(producer)) : false;
 
         RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
-        int unitCount = getAlreadyProduced(producer).size();
+        int unitCountAlreadyProduced = getAlreadyProduced(producer).size();
         
         if (originalFactory && playerIsOriginalOwner && !placementRestrictedByFactory && !unitPlacementPerTerritoryRestricted)
         {
@@ -621,7 +621,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         		if (ra.getMaxPlacePerTerritory() == -1)
         			return -1;
         		else 
-        			return Math.max(0, ra.getMaxPlacePerTerritory() - unitCount);
+        			return Math.max(0, ra.getMaxPlacePerTerritory() - unitCountAlreadyProduced);
         	}
         	else
         		return -1;
@@ -641,12 +641,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         		if (ra.getMaxPlacePerTerritory() == -1)
         			return -1;
         		else
-        			return Math.max(0, ra.getMaxPlacePerTerritory() - unitCount);
+        			return Math.max(0, ra.getMaxPlacePerTerritory() - unitCountAlreadyProduced);
         	}
         }
 
-        //a factory can produce the same number of units as the number of PUs
-        // the territroy generates each turn
+        //a factory can produce the same number of units as the number of PUs the territory generates each turn (or not, if it has canProduceXUnits)
         int production = 0;
         int territoryValue = getProduction(producer);
         int maxConstructions = howManyOfEachConstructionCanPlace(to, units, player).totalValues();
@@ -661,50 +660,92 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         if (!wasFactoryThereAtStart)
         {
         	if (ra != null && ra.getMaxPlacePerTerritory() > 0)
-        		return Math.max(0, Math.min(maxConstructions, ra.getMaxPlacePerTerritory() - unitCount));
+        		return Math.max(0, Math.min(maxConstructions, ra.getMaxPlacePerTerritory() - unitCountAlreadyProduced));
         	else
             	return Math.max(0, maxConstructions);
         }
         
-        if(limitSBRDamageToUnitProd)
-        {
-        	//TODO: veq separate for unit damage vs terr damage
-        	production = ta.getUnitProduction();
-            
-            //Increase production if have industrial technology
-            if(isIncreasedFactoryProduction(player) && territoryValue > 2)
-                production += 2;
-            
-            // increase the production by the number of constructions allowed
-            if (maxConstructions > 0)
-            	production += maxConstructions;
-            
-            //return 0 if less than 0
-            if(production < 0)
-                return 0;
-        }
-        else
-        {
-        	production = territoryValue;
-
-            //Increase production if have industrial technology
-            if(isIncreasedFactoryProduction(player) && territoryValue > 2)
-                production += 2;
-            
-            // increase the production by the number of constructions allowed
-            if (maxConstructions > 0)
-            	production += maxConstructions;
+        // getHowMuchCanUnitProduce accounts for IncreasedFactoryProduction, but does not account for maxConstructions
+    	production = getHowMuchCanUnitProduce(getBiggestProducer(producer.getUnits().getUnits(), producer, player), producer, player);
         
-        	if (production == 0)
-        		production = 1; //if it has a factory then it can produce at least one (TODO: what rules set is this? this might be wrong under some rules sets)
-        }
+        // increase the production by the number of constructions allowed
+        if (maxConstructions > 0)
+        	production += maxConstructions;
+        
+        //return 0 if less than 0
+        if(production < 0)
+            return 0;
         
         production += Match.countMatches(getAlreadyProduced(producer), Matches.UnitIsFactoryOrConstruction);
         
         if (ra != null && ra.getMaxPlacePerTerritory() > 0)
-        	return Math.max(0, Math.min(production - unitCount, ra.getMaxPlacePerTerritory() - unitCount));
+        	return Math.max(0, Math.min(production - unitCountAlreadyProduced, ra.getMaxPlacePerTerritory() - unitCountAlreadyProduced));
         else
-        	return Math.max(0, production - unitCount);
+        	return Math.max(0, production - unitCountAlreadyProduced);
+    }
+    
+    protected Unit getBiggestProducer(Collection<Unit> units, Territory producer, PlayerID player)
+    {
+    	CompositeMatchAnd<Unit> myfactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsFactory);
+    	Collection<Unit> factories = Match.getMatches(units, myfactories);
+    	if (factories.isEmpty())
+    		return null;
+    	IntegerMap<Unit> productionPotential = new IntegerMap<Unit>();
+    	Unit highestUnit = factories.iterator().next();
+    	int highestCapacity = Integer.MIN_VALUE;
+    	for (Unit u : factories)
+    	{
+    		int capacity = getHowMuchCanUnitProduce(u, producer, player);
+    		productionPotential.put(u, capacity);
+    		if (capacity > highestCapacity)
+    		{
+    			highestCapacity = capacity;
+    			highestUnit = u;
+    		}
+    	}
+    	return highestUnit;
+    }
+    
+    protected int getHowMuchCanUnitProduce(Unit u, Territory producer, PlayerID player)
+    {
+    	int productionCapacity = 0;
+    	
+    	if (u == null)
+    		return 0;
+    	
+    	UnitAttachment ua = UnitAttachment.get(u.getType());
+		TripleAUnit taUnit = (TripleAUnit) u;
+		TerritoryAttachment ta = TerritoryAttachment.get(producer);
+		int territoryProduction = 0;
+		if (ta != null)
+			territoryProduction = ta.getProduction();
+		
+		if (isSBRAffectsUnitProduction())
+		{
+			if (ua.getCanProduceXUnits() < 0)
+				productionCapacity = ta.getUnitProduction();
+			else
+				productionCapacity = ua.getCanProduceXUnits() - (territoryProduction - ta.getUnitProduction());
+		}
+		else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories())
+		{
+			if (ua.getCanProduceXUnits() < 0)
+				productionCapacity = territoryProduction - taUnit.getUnitDamage();
+			else
+				productionCapacity = ua.getCanProduceXUnits() - taUnit.getUnitDamage();
+		}
+		else
+		{
+			productionCapacity = territoryProduction;
+			if (productionCapacity < 1)
+				productionCapacity = 1;
+		}
+		
+		//Increase production if have industrial technology
+        if(isIncreasedFactoryProduction(player) && territoryProduction > 2)
+        	productionCapacity += 2;
+        
+        return productionCapacity;
     }
 
     /**

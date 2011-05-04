@@ -160,7 +160,7 @@ public class UnitsDrawer implements IDrawable
         }
         
         //Display Factory Damage
-        if(isSBRAffectsUnitProduction(data) && UnitAttachment.get(type).isFactory())        	
+        if((isSBRAffectsUnitProduction(data) || isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) && (UnitAttachment.get(type).isFactory() || UnitAttachment.get(type).getCanBeDamaged()))        	
         {
         	displayFactoryDamage(bounds, data, graphics, type);
         }

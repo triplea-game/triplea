@@ -618,13 +618,13 @@ public class TriggerAttachment extends DefaultAttachment{
         Change place = ChangeFactory.addUnits(terr, units);
         change.add(place);
         
-        if(Match.someMatch(units, Matches.UnitIsFactory))
+        if(Match.someMatch(units, Matches.UnitIsFactory) && !Match.someMatch(terr.getUnits().getUnits(), Matches.UnitIsFactory) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
         {
         	TerritoryAttachment ta = TerritoryAttachment.get(terr);
         	int prod = 0;
         	if(ta != null)
         		prod = ta.getProduction();
-        	//TODO: this could cause bugs if the territory already has a factory.  when going backwards in history you will do damage to the territory (as if you strat bombed)
+        	
             Change unitProd = ChangeFactory.changeUnitProduction(terr, prod);
             change.add(unitProd);
         }
