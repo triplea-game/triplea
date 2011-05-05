@@ -763,11 +763,14 @@ class UnitPanel extends JPanel
         m_textField.setShowMaxAndMin(false);
         
         Image img = m_context.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data, m_category.getDamaged(),m_category.getDisabled());
+        String toolTipText = m_category.getType().getName() + ": " + UnitAttachment.get(m_category.getType()).toStringShortAndOnlyImportantDifferences(m_category.getOwner());
         
         setCount(m_category.getUnits().size());
         
         setLayout(new GridBagLayout());
-        add(new JLabel(new ImageIcon(img)), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 10), 0, 0));
+        JLabel label = new JLabel(new ImageIcon(img));
+        label.setToolTipText(toolTipText);
+        add(label, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 10), 0, 0));
         add(m_textField, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         
     }

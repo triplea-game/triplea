@@ -1,4 +1,6 @@
 Changes for 1.3.1.0
+* Added tool tips for units to battle calculator. (veqryn)
+
 * Fixed null pointer caused by using .getOwner().getData()  and a word to anyone else who ever thinks about using this: don't, it causes null pointers if there are any neutrals, since neutral is a null player. (veqryn)
 
 * Created new unit attachment, requiresUnits, which allows units to be placed only when certain units are in the territory. (veqryn)
