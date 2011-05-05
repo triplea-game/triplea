@@ -85,6 +85,9 @@ public class UnitAttachment extends DefaultAttachment
   // a colon delimited list of the units this unit can repair. (units must be in same territory, unless this unit is land and the repaired unit is sea)
   private String[] m_repairsUnits;
   
+  // multiple colon delimited lists of the unit combos required for this unit to be built somewhere. (units must be in same territory, owned by player, not be disabled)
+  private ArrayList<String[]> m_requiresUnits = new ArrayList<String[]>();
+  
   // can be any String except for "none" if isConstruction is true
   private String m_constructionType = "none";
 
@@ -414,6 +417,16 @@ public class UnitAttachment extends DefaultAttachment
   public String[] getRepairsUnits()
   {
 	  return m_repairsUnits;
+  }
+  
+  public void setRequiresUnits(String value)
+  {
+	  m_requiresUnits.add(value.split(":"));
+  }
+  
+  public ArrayList<String[]> getRequiresUnits()
+  {
+	  return m_requiresUnits;
   }
   
   public boolean isConstruction()
@@ -1071,6 +1084,12 @@ public class UnitAttachment extends DefaultAttachment
     if(m_repairsUnits != null)
     	getListedUnits(m_repairsUnits);
     
+    if(m_requiresUnits != null)
+    {
+    	for (String[] combo : m_requiresUnits)
+    		getListedUnits(combo);
+    }
+    
     if((m_canBeDamaged && (m_maxDamage < 1)) || (!m_canBeDamaged && (m_maxDamage >= 0)) || (m_canDieFromReachingMaxDamage && !(m_maxDamage >= 0 || m_isFactory)) || (m_canBeDamaged && m_isFactory))
     {
     	throw new GameParseException("Invalid Unit Attatchment" + this);
@@ -1370,14 +1389,19 @@ public class UnitAttachment extends DefaultAttachment
 		  stats.append("Can Take Away Movement, ");
 
 	  if (m_consumesUnits != null && m_consumesUnits.totalValues() == 1)
-		  stats.append("Unit Is An Upgrade Of Another Unit, ");
+		  stats.append("Unit Is An Upgrade Of " + m_consumesUnits.keySet().iterator().next().getName() + ", ");
 	  else if (m_consumesUnits != null && m_consumesUnits.totalValues() > 1)
 		  stats.append("Unit Consumes Other Units On Placement, ");
+	  
+	  if (m_requiresUnits != null && m_requiresUnits.size() == 1 && m_requiresUnits.iterator().next().length == 1 && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
+		  stats.append("Unit Can Only Be Placed Where There Is A " + m_requiresUnits.iterator().next()[0] + ", ");
+	  else if (m_requiresUnits != null && m_requiresUnits.size() > 0 && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
+		  stats.append("Unit Requires Other Units Present To Be Placed, ");
 	  
 	  if (m_unitPlacementRestrictions != null && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
 		  stats.append("Has Placement Restrictions, ");
 	  
-	  if (m_canOnlyBePlacedInTerritoryValuedAtX > 0)
+	  if (m_canOnlyBePlacedInTerritoryValuedAtX > 0 && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
 		  stats.append("Must Be Placed In Territory Valued " + m_canOnlyBePlacedInTerritoryValuedAtX + " Or Greater, ");
 	  
 	  

@@ -300,6 +300,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             		continue;
             	if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > ta.getProduction())
             		continue;
+            	if (UnitWhichRequiresUnitsHasRequiredUnits(to).invert().match(currentUnit))
+            		continue;
         	}
         	// remove any units that require other units to be consumed on creation (veqryn)
         	if (Matches.UnitConsumesUnitsOnCreation.match(currentUnit) && Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO, to).invert().match(currentUnit))
@@ -387,11 +389,60 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     	
     	return constructionsMap.getInt(ua.getConstructionType());
     }
+    
+    /**
+     * This will return true if the territory contains one of the required combos of units
+     * This will also return true if this unit is Sea and an adjacent land territory has one of the required combos of units
+     */
+    public Match<Unit> UnitWhichRequiresUnitsHasRequiredUnits(final Territory to)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unitWhichRequiresUnits)
+            {
+            	if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits))
+            		return true;
+            	
+                Collection<Unit> unitsInTO = to.getUnits().getUnits();
+                Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
+                Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
+                unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
+            	
+            	if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInTO).match(unitWhichRequiresUnits))
+            		return true;
+            	
+            	if (Matches.UnitIsSea.match(unitWhichRequiresUnits))
+            	{
+            		List<Territory> neighbors = new ArrayList<Territory>(unitWhichRequiresUnits.getOwner().getData().getMap().getNeighbors(to, Matches.TerritoryIsLand));
+            		Iterator<Territory> iter = neighbors.iterator();
+            		while (iter.hasNext())
+            		{
+            			Territory current = (Territory) iter.next();
+
+                        Collection<Unit> unitsInCurrent = current.getUnits().getUnits();
+                        Collection<Unit> unitsPlacedAlreadyInCurrent = getAlreadyProduced(current);
+                        Collection<Unit> unitsAtStartOfTurnInCurrent = new ArrayList<Unit>(unitsInCurrent);
+                        unitsAtStartOfTurnInCurrent.removeAll(unitsPlacedAlreadyInCurrent);
+                        unitsAtStartOfTurnInCurrent.retainAll(Match.getMatches(unitsAtStartOfTurnInCurrent, Matches.UnitIsLand));
+
+                    	if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent).match(unitWhichRequiresUnits))
+                    		return true;
+            		}
+            	}
+                return false;
+            }
+        };
+    }
 
     public String canUnitsBePlaced(Territory to, Collection<Unit> units,
             PlayerID player)
     {
         Collection<Unit> allowedUnits = getUnitsToBePlaced(to, units, player);
+
+        Collection<Unit> unitsInTO = to.getUnits().getUnits();
+        Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
+        Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
+        unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
         
         if (allowedUnits == null || !allowedUnits.containsAll(units))
         {
@@ -451,6 +502,9 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         	Collection<Territory> listedTerrs = getListedTerritories(terrs);
         	if (listedTerrs.contains(to))
         		return "Cannot place these units in " + to.getName() + " due to Unit Placement Restrictions";
+        	
+        	if (UnitWhichRequiresUnitsHasRequiredUnits(to).invert().match(currentUnit))
+        		return "Cannot place these units in " + to.getName() + " as territory does not contain required units at start of turn";
         }
 
         return null;
@@ -523,6 +577,10 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         	TerritoryAttachment ta = TerritoryAttachment.get(to);
         	if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > ta.getProduction())
         		continue;
+        	
+        	if (UnitWhichRequiresUnitsHasRequiredUnits(to).invert().match(currentUnit))
+        		continue;
+        	
         	// account for any unit placement restrictions by territory
         	String[] terrs = ua.getUnitPlacementRestrictions();
         	Collection<Territory> listedTerrs = getListedTerritories(terrs);
@@ -608,6 +666,10 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         	TerritoryAttachment ta = TerritoryAttachment.get(to);
         	if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > ta.getProduction())
         		continue;
+        	
+        	if (UnitWhichRequiresUnitsHasRequiredUnits(to).invert().match(currentUnit))
+        		continue;
+        	
         	// account for any unit placement restrictions by territory
         	String[] terrs = ua.getUnitPlacementRestrictions();
         	Collection<Territory> listedTerrs = getListedTerritories(terrs);

@@ -1966,7 +1966,7 @@
 						 <!-- allows the unit to transport "isInfantry" on a one-to-one basis, if you have the mechanizedInfantry technology -->
                          <option name="isLandTransport" value="true"/>
 						 <option name="canBeGivenByTerritoryTo" value="Russians"/>
-						 <!-- consumesUnits requires that a unit be present in a territory, then when this unit is placed the other units are destroyed / upgraded into this unit.  Can have multiple instances of this.
+						 <!-- consumesUnits requires that a unit be present in a territory, then when this unit is placed the other units are destroyed / upgraded into this unit.  Can have multiple instances of this, which means it consumes multiple types of units.
 						 <option name="consumesUnits" value="2:infantry"/>
 						 <option name="consumesUnits" value="1:artillery"/>-->
                 </attatchment>
@@ -2013,6 +2013,10 @@
                          <option name="bombingMaxDieSides" value="2"/>
 						 <!-- bombingBonus is a number added to the die rolled, to give the total cost [displayed as a new die rolled], for strategic bombing and rockets only.  This property is optional, and only turns on when you have LL for bombing turned on. -->
                          <option name="bombingBonus" value="2"/>
+						 <!-- requiresUnits is a list of units required to be present in the territory in order for you to build this unit there.  Can have multiple instances. Only one instance needs to be true in order to build. -->
+						 <option name="requiresUnits" value="airfield:factory"/>
+						 <option name="requiresUnits" value="infantry:fighter"/>
+						 <option name="requiresUnits" value="factory"/>
                 </attatchment>
 
                 <!-- Air_Transport -->
@@ -2166,6 +2170,14 @@
 						 <!--<option name="isTwoHit" value="true"/>-->
 						 <!-- canDieFromReachingMaxDamage means that if this unit reaches its maxDamage, then it will die.  maxDamage must be larger than zero -->
 						 <option name="canDieFromReachingMaxDamage" value="true"/>
+						 <option name="requiresUnits" value="factory"/>
+						 <option name="requiresUnits" value="factory_hit"/>
+						 <option name="requiresUnits" value="airfield"/>
+						 <option name="requiresUnits" value="harbour"/>
+						 <option name="requiresUnits" value="infantry"/>
+						 <option name="requiresUnits" value="artillery"/>
+						 <option name="requiresUnits" value="armour"/>
+						 <option name="requiresUnits" value="aaGun"/>
                 </attatchment>
 				
 				<!-- Airfield -->
@@ -4307,7 +4319,7 @@
 						<br>7. Kamikaze Fighters are what Japanese fighters turn into if certain conditions are met.  They have 5 attack, 3 defense, and 3 movement (cost 8), and they are allowed to use up all their movement to go to a battle, and they will die after rolling their dice.
 						<br>8. Airfield gives +1 movement to air units, and allows fighters to scramble to defend surrounding sea zones, if you turn on "Scramble Rules In Effect".
 						<br>9. Harbour gives +1 movement to naval units, and are needed to repair Battleships, if you turn on "Two HitPoint Units Require Repair Facilities".
-						<br>10. Bunkers are defensive units that can also be bombed/rocketted, will not participate in battle if damaged, and will die if they reach 4 damage.  They may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours), but there is a limit of 1 per territory.
+						<br>10. Bunkers are defensive units that can also be bombed/rocketted, will not participate in battle if damaged, and will die if they reach 4 damage.  They may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours) where you also have a land unit, but there is a limit of 1 per territory.
 						<br>11. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att, +1 def to subs). Available to Germans after they get superSubs.
 						<br>12. Each nation may only purchase factories up to 3 total, if a nation controls more than 3 they can not purchase new factories (they can keep capturing new ones though).
         				<br>

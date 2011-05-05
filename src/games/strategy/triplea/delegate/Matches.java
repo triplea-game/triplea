@@ -1292,7 +1292,7 @@ public class Matches
     	        for(PlayerID ePlayer : data.getPlayerList().getPlayers())
     	        {
     	        	List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(ePlayer, data));
-    	        	Iterator iter = capitalsListOwned.iterator();
+    	        	Iterator<Territory> iter = capitalsListOwned.iterator();
     	            while(iter.hasNext())
     	            {
     	            	Territory current = (Territory) iter.next();
@@ -1319,7 +1319,7 @@ public class Matches
     	        for(PlayerID ePlayer : data.getPlayerList().getPlayers())
     	        {
     	        	List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(ePlayer, data));
-    	        	Iterator iter = capitalsListOwned.iterator();
+    	        	Iterator<Territory> iter = capitalsListOwned.iterator();
     	            while(iter.hasNext())
     	            {
     	            	Territory current = (Territory) iter.next();
@@ -1910,7 +1910,7 @@ public class Matches
 
   }
 
-  public static Match<Territory> territoryHasUnitsThatMatch(final Match cond)
+  public static Match<Territory> territoryHasUnitsThatMatch(final Match<Unit> cond)
   {
 
       return new Match<Territory>()
@@ -2323,7 +2323,7 @@ public class Matches
             	{
             		Match<Unit> repairUnitLand = new CompositeMatchAnd<Unit>(repairUnit, Matches.UnitIsLand);
             		List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territory, Matches.TerritoryIsLand));
-            		Iterator iter = neighbors.iterator();
+            		Iterator<Territory> iter = neighbors.iterator();
             		while (iter.hasNext())
             		{
             			Territory current = (Territory) iter.next();
@@ -2388,7 +2388,7 @@ public class Matches
             	{
             		Match<Unit> givesBonusUnitLand = new CompositeMatchAnd<Unit>(givesBonusUnit, Matches.UnitIsLand);
             		List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territory, Matches.TerritoryIsLand));
-            		Iterator iter = neighbors.iterator();
+            		Iterator<Territory> iter = neighbors.iterator();
             		while (iter.hasNext())
             		{
             			Territory current = (Territory) iter.next();
@@ -2409,7 +2409,7 @@ public class Matches
     		UnitAttachment ua = UnitAttachment.get(unit.getType());
     		if(ua == null)
     			return false;
-    		return ua.getConsumesUnits().size() > 0;
+    		return (ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0);
     	}
     };
     
@@ -2435,6 +2435,57 @@ public class Matches
             		if (numberInTerritory < requiredNumber)
             			canBuild = false;
             		if (!canBuild)
+            			break;
+            	}
+            	return canBuild;
+            }
+        };
+    }
+
+    public static final Match<Unit> UnitRequiresUnitsOnCreation = new Match<Unit>()
+    {
+    	public boolean match(Unit obj)
+    	{
+    		Unit unit = (Unit) obj;
+    		UnitAttachment ua = UnitAttachment.get(unit.getType());
+    		if(ua == null)
+    			return false;
+    		return (ua.getRequiresUnits() != null && ua.getRequiresUnits().size() > 0);
+    	}
+    };
+    
+    public static Match<Unit> UnitWhichRequiresUnitsHasRequiredUnitsInList(final Collection<Unit> unitsInTerritoryAtStartOfTurn)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unitWhichRequiresUnits)
+            {
+            	if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits))
+            		return true;
+            	
+            	Match<Unit> unitIsOwnedByAndNotDisabled = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unitWhichRequiresUnits.getOwner()), Matches.UnitIsDisabled().invert());
+            	unitsInTerritoryAtStartOfTurn.retainAll(Match.getMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndNotDisabled));
+            	
+            	boolean canBuild = false;
+            	UnitAttachment ua = UnitAttachment.get(unitWhichRequiresUnits.getType());
+            	ArrayList<String[]> unitComboPossibilities = ua.getRequiresUnits();
+            	for (String[] combo : unitComboPossibilities)
+            	{
+            		if (combo != null)
+            		{
+            			boolean haveAll = true;
+            			Collection<UnitType> requiredUnits = ua.getListedUnits(combo);
+            			for (UnitType ut : requiredUnits)
+            			{
+            				if (Match.countMatches(unitsInTerritoryAtStartOfTurn, Matches.unitIsOfType(ut)) < 1)
+            					haveAll = false;
+            				if (!haveAll)
+            					break;
+            			}
+            			if (haveAll)
+            				canBuild = true;
+            		}
+            		if (canBuild)
             			break;
             	}
             	return canBuild;
