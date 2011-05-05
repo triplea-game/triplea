@@ -2013,10 +2013,6 @@
                          <option name="bombingMaxDieSides" value="2"/>
 						 <!-- bombingBonus is a number added to the die rolled, to give the total cost [displayed as a new die rolled], for strategic bombing and rockets only.  This property is optional, and only turns on when you have LL for bombing turned on. -->
                          <option name="bombingBonus" value="2"/>
-						 <!-- requiresUnits is a list of units required to be present in the territory in order for you to build this unit there.  Can have multiple instances. Only one instance needs to be true in order to build. -->
-						 <option name="requiresUnits" value="airfield:factory"/>
-						 <option name="requiresUnits" value="infantry:fighter"/>
-						 <option name="requiresUnits" value="factory"/>
                 </attatchment>
 
                 <!-- Air_Transport -->
@@ -2170,6 +2166,8 @@
 						 <!--<option name="isTwoHit" value="true"/>-->
 						 <!-- canDieFromReachingMaxDamage means that if this unit reaches its maxDamage, then it will die.  maxDamage must be larger than zero -->
 						 <option name="canDieFromReachingMaxDamage" value="true"/>
+						 <!-- requiresUnits is a list of units required to be present in the territory in order for you to build this unit there.  Can have multiple instances. Only one instance needs to be true in order to build. -->
+						 <option name="requiresUnits" value="fighter:bomber:air_transport"/>
 						 <option name="requiresUnits" value="factory"/>
 						 <option name="requiresUnits" value="factory_hit"/>
 						 <option name="requiresUnits" value="airfield"/>

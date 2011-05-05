@@ -423,7 +423,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
                         Collection<Unit> unitsPlacedAlreadyInCurrent = getAlreadyProduced(current);
                         Collection<Unit> unitsAtStartOfTurnInCurrent = new ArrayList<Unit>(unitsInCurrent);
                         unitsAtStartOfTurnInCurrent.removeAll(unitsPlacedAlreadyInCurrent);
-                        unitsAtStartOfTurnInCurrent.retainAll(Match.getMatches(unitsAtStartOfTurnInCurrent, Matches.UnitIsLand));
+                        //unitsAtStartOfTurnInCurrent.retainAll(Match.getMatches(unitsAtStartOfTurnInCurrent, Matches.UnitIsLand)); //this is debatable, depends what map makers want
 
                     	if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent).match(unitWhichRequiresUnits))
                     		return true;
