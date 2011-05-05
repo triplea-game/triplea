@@ -346,13 +346,13 @@ public class TripleAUnit extends Unit
     	
         TripleAUnit taUnit = (TripleAUnit) u;
         
-        if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(u.getOwner().getData()))
+        if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(u.getData()))
         {
         	TerritoryAttachment ta = TerritoryAttachment.get(t);
         	int currentDamage = ta.getProduction() - ta.getUnitProduction();
         	return (2*ta.getProduction()) - currentDamage;
         }
-        else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(u.getOwner().getData()))
+        else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(u.getData()))
         {
         	return Math.max(0, getHowMuchDamageCanThisUnitTakeTotal(u, t) - taUnit.getUnitDamage());
         }
@@ -372,9 +372,9 @@ public class TripleAUnit extends Unit
         UnitAttachment ua = UnitAttachment.get(u.getType());
         TripleAUnit taUnit = (TripleAUnit) u;
         
-        if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(u.getOwner().getData()))
+        if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(u.getData()))
         	return TerritoryAttachment.get(t).getProduction()*2;
-        else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(u.getOwner().getData()))
+        else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(u.getData()))
         {
         	if (ua.getMaxDamage() <= 0)
             {

@@ -413,7 +413,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             	
             	if (Matches.UnitIsSea.match(unitWhichRequiresUnits))
             	{
-            		List<Territory> neighbors = new ArrayList<Territory>(unitWhichRequiresUnits.getOwner().getData().getMap().getNeighbors(to, Matches.TerritoryIsLand));
+            		List<Territory> neighbors = new ArrayList<Territory>(to.getData().getMap().getNeighbors(to, Matches.TerritoryIsLand));
             		Iterator<Territory> iter = neighbors.iterator();
             		while (iter.hasNext())
             		{

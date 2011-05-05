@@ -1235,11 +1235,11 @@ public class UnitAttachment extends DefaultAttachment
 		//  stats.append(this.getName() + ": ");
 	  
 	  if (m_isAir)
-		  stats.append("Air Unit, ");
+		  stats.append("Air unit, ");
 	  else if (m_isSea)
-		  stats.append("Sea Unit, ");
+		  stats.append("Sea unit, ");
 	  else
-		  stats.append("Land Unit, ");
+		  stats.append("Land unit, ");
 	  
 	  if (getAttack(player) > 0)
 		  stats.append(getAttack(player) + " Attack, ");
@@ -1251,9 +1251,9 @@ public class UnitAttachment extends DefaultAttachment
 		  stats.append(getMovement(player) + " Movement, ");
 	  
 	  if (m_isFactory && m_canProduceXUnits < 0)
-		  stats.append("Can Produce Units Up To Territory Value, ");
+		  stats.append("can Produce Units Up To Territory Value, ");
 	  else if (m_isFactory && m_canProduceXUnits > 0)
-		  stats.append("Can Produce " + m_canProduceXUnits + " Units, ");
+		  stats.append("can Produce " + m_canProduceXUnits + " Units, ");
 	  
 	  if ((m_attackAA != 1 || m_attackAAmaxDieSides != -1) && (m_isAA || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly))
 		  stats.append((playerHasAARadar(player) ? m_attackAA + 1 : m_attackAA) + "/" + (m_attackAAmaxDieSides == -1 ? m_attackAAmaxDieSides : getData().getDiceSides()) + " ");
@@ -1265,52 +1265,52 @@ public class UnitAttachment extends DefaultAttachment
 		  stats.append("Anti-Air for Raids, ");
 	  
 	  if ((m_isAA || m_isRocket) && playerHasRockets(player))
-		  stats.append("Can Rocket Attack, ");
+		  stats.append("can Rocket Attack, ");
 	  
 	  if (m_isInfrastructure || m_isAA || m_isFactory)
-		  stats.append("Can Be Captured, ");
+		  stats.append("can be Captured, ");
 	  
 	  if (m_isConstruction || m_isFactory)
-		  stats.append("Can Be Placed Without Factory, ");
+		  stats.append("can be Placed Without Factory, ");
 	  
 	  if ((m_canBeDamaged || m_isFactory) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
 	  {
-		  stats.append("Can Be Damaged By Raids, ");
+		  stats.append("can be Damaged By Raids, ");
 		  if (m_canDieFromReachingMaxDamage)
-			  stats.append("Will Die If Max Damage Reached, ");
+			  stats.append("will Die If Max Damage Reached, ");
 	  }
 	  else if ((m_canBeDamaged || m_isFactory) && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
 	  {
-		  stats.append("Can Be Damaged By Raids, ");
+		  stats.append("can be Damaged By Raids, ");
 		  if (m_maxOperationalDamage > -1)
 			  stats.append(m_maxOperationalDamage + " Max Operational Damage, ");
 		  if (m_maxDamage > -1)
 			  stats.append(m_maxDamage + " Max Total Damage, ");
 		  if (m_canDieFromReachingMaxDamage)
-			  stats.append("Will Die If Max Damage Reached, ");
+			  stats.append("will Die If Max Damage Reached, ");
 	  }
 	  else if (m_isFactory)
-		  stats.append("Can Be Attacked By Raids, ");
+		  stats.append("can be Attacked By Raids, ");
 	  
 	  if (m_isTwoHit)
 		  stats.append("Two Hitpoints, ");
 	  
 	  if (m_isAirBase && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData()))
-		  stats.append("Can Allow Scrambling, ");
+		  stats.append("can Allow Scrambling, ");
 	  
 	  if (m_canScramble && m_maxScrambleDistance > 0 && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData()))
 		  stats.append(m_maxScrambleDistance + " Scramble Distance, ");
 	  
 	  if (m_canBlitz)
-		  stats.append("Can Blitz, ");
+		  stats.append("can Blitz, ");
 	  
 	  if (m_isArtillery)
-		  stats.append("Can Give Support, ");
+		  stats.append("can Give Attack Bonus, ");
 	  
 	  //TODO: Need to account for support attachments here somehow.
 	  
 	  if (m_isArtillerySupportable)
-		  stats.append("Can Be Supported, ");
+		  stats.append("can Get Attack Bonus, ");
 	  
 	  if (m_isMarine)
 		  stats.append("1" + " Amphibious Attack Bonus, ");
@@ -1319,7 +1319,7 @@ public class UnitAttachment extends DefaultAttachment
 	  
 	  if (m_isStrategicBomber)
 	  {
-		  stats.append("Can Perform Raids, ");
+		  stats.append("can Perform Raids, ");
 		  if ((m_bombingMaxDieSides != -1 || m_bombingBonus != -1) && games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(getData()))
 			  stats.append((m_bombingBonus != -1 ? m_bombingBonus + 1 : 1) + "-" + (m_bombingMaxDieSides != -1 ? m_bombingMaxDieSides + (m_bombingBonus != -1 ? m_bombingBonus : 0) : getData().getDiceSides() + (m_bombingBonus != -1 ? m_bombingBonus : 0)) + " Raid Damage, ");
 		  else
@@ -1327,10 +1327,10 @@ public class UnitAttachment extends DefaultAttachment
 	  }
 	  
 	  if (m_isSub)
-		  stats.append("Is Submarine-Type, ");
+		  stats.append("is Stealth, ");
 	  
 	  if (m_isDestroyer)
-		  stats.append("Is Destroyer-Type, ");
+		  stats.append("is Anti-Stealth, ");
 	  
 	  if (getCanBombard(player) && getBombard(player) > 0)
 		  stats.append(getBombard(player) + " Bombard, ");
@@ -1342,24 +1342,24 @@ public class UnitAttachment extends DefaultAttachment
 		  stats.append("Suicide/Munition Unit, ");
 	  
 	  if (m_isAir && (m_isKamikaze || games.strategy.triplea.Properties.getKamikaze_Airplanes(getData())))
-		  stats.append("Can Use All Movement To Attack Target, ");
+		  stats.append("can use All Movement To Attack Target, ");
 	  
 	  if (m_isInfantry && playerHasMechInf(player))
-		  stats.append("Can Be Transported By Land, ");
+		  stats.append("can be Transported By Land, ");
 	  
 	  if (m_isLandTransport && playerHasMechInf(player))
-		  stats.append("Is A Land Transport, ");
+		  stats.append("is a Land Transport, ");
 	  
 	  if (m_isAirTransportable && playerHasParatroopers(player))
-		  stats.append("Can Be Transported By Air, ");
+		  stats.append("can be Transported By Air, ");
 	  
 	  if (m_isAirTransport && playerHasParatroopers(player))
-		  stats.append("Is An Air Transport, ");
+		  stats.append("is an Air Transport, ");
 	  
 	  if (m_isCombatTransport && m_transportCapacity > 0)
-		  stats.append("Is Combat Transport, ");
-	  else if (m_transportCapacity > -1 && m_isSea)
-		  stats.append("Is A Transport, ");
+		  stats.append("is a Combat Transport, ");
+	  else if (m_transportCapacity > 0 && m_isSea)
+		  stats.append("is a Sea Transport, ");
 	  
 	  if (m_transportCost > -1)
 		  stats.append(m_transportCost + " Transporting Cost, ");
@@ -1381,28 +1381,28 @@ public class UnitAttachment extends DefaultAttachment
 		  stats.append(m_maxBuiltPerPlayer + " Max Built Allowed, ");
 	  
 	  if (m_repairsUnits != null && games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(getData()) && (games.strategy.triplea.Properties.getBattleships_Repair_At_Beginning_Of_Round(getData()) || games.strategy.triplea.Properties.getBattleships_Repair_At_End_Of_Round(getData())))
-		  stats.append("Can Repair Some Units, ");
+		  stats.append("can Repair Some Units, ");
 	  
 	  if (m_givesMovement != null && m_givesMovement.totalValues() > 0 && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(getData()))
-		  stats.append("Can Give Bonus Movement, ");
+		  stats.append("can Give Bonus Movement, ");
 	  else if (m_givesMovement != null && m_givesMovement.totalValues() < 0 && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(getData()))
-		  stats.append("Can Take Away Movement, ");
+		  stats.append("can Take Away Movement, ");
 
 	  if (m_consumesUnits != null && m_consumesUnits.totalValues() == 1)
-		  stats.append("Unit Is An Upgrade Of " + m_consumesUnits.keySet().iterator().next().getName() + ", ");
+		  stats.append("unit is an Upgrade Of " + m_consumesUnits.keySet().iterator().next().getName() + ", ");
 	  else if (m_consumesUnits != null && m_consumesUnits.totalValues() > 1)
-		  stats.append("Unit Consumes Other Units On Placement, ");
+		  stats.append("unit Consumes Other Units On Placement, ");
 	  
 	  if (m_requiresUnits != null && m_requiresUnits.size() == 1 && m_requiresUnits.iterator().next().length == 1 && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
-		  stats.append("Unit Can Only Be Placed Where There Is A " + m_requiresUnits.iterator().next()[0] + ", ");
+		  stats.append("unit can only be Placed Where There Is A " + m_requiresUnits.iterator().next()[0] + ", ");
 	  else if (m_requiresUnits != null && m_requiresUnits.size() > 0 && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
-		  stats.append("Unit Requires Other Units Present To Be Placed, ");
+		  stats.append("unit Requires Other Units Present To Be Placed, ");
 	  
 	  if (m_unitPlacementRestrictions != null && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
-		  stats.append("Has Placement Restrictions, ");
+		  stats.append("has Placement Restrictions, ");
 	  
 	  if (m_canOnlyBePlacedInTerritoryValuedAtX > 0 && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
-		  stats.append("Must Be Placed In Territory Valued " + m_canOnlyBePlacedInTerritoryValuedAtX + " Or Greater, ");
+		  stats.append("must be Placed In Territory Valued " + m_canOnlyBePlacedInTerritoryValuedAtX + " Or Greater, ");
 	  
 	  
 	  if (stats.indexOf(", ") > -1)

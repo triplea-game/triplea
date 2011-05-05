@@ -522,13 +522,13 @@ public class Matches
                 if (!ua.getCanBeDamaged() && !ua.isFactory())
                 	return true;
                 
-                if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(unit.getOwner().getData()))
+                if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(unit.getData()))
                 {
                 	TerritoryAttachment ta = TerritoryAttachment.get(t);
                 	int currentDamage = ta.getProduction() - ta.getUnitProduction();
                 	return currentDamage >= 2*ta.getProduction();
                 }
-                else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getOwner().getData()))
+                else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData()))
                 {
                 	TripleAUnit taUnit = (TripleAUnit) unit;
                     return taUnit.getUnitDamage() >= taUnit.getHowMuchDamageCanThisUnitTakeTotal(unit, t);
@@ -560,8 +560,8 @@ public class Matches
             	if (!UnitIsFactoryOrCanBeDamaged.match(unit))
             		return false;
             	
-            	if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getOwner().getData())
-            			|| games.strategy.triplea.Properties.getSBRAffectsUnitProduction(unit.getOwner().getData()))
+            	if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData())
+            			|| games.strategy.triplea.Properties.getSBRAffectsUnitProduction(unit.getData()))
             		return false;
             	
                 UnitAttachment ua = UnitAttachment.get(unit.getType());
