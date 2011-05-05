@@ -80,7 +80,7 @@ public class UnitsDrawer implements IDrawable
 	        	
 	        	for (Unit current : units)
 	        	{
-	        		 if(Matches.UnitIsDisabledShort().match(current))
+	        		 if(Matches.UnitIsDisabled().match(current))
 	        		 {
 	        			 img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, true);
 	        		 }

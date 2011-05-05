@@ -1966,6 +1966,9 @@
 						 <!-- allows the unit to transport "isInfantry" on a one-to-one basis, if you have the mechanizedInfantry technology -->
                          <option name="isLandTransport" value="true"/>
 						 <option name="canBeGivenByTerritoryTo" value="Russians"/>
+						 <!-- consumesUnits requires that a unit be present in a territory, then when this unit is placed the other units are destroyed / upgraded into this unit.  Can have multiple instances of this.
+						 <option name="consumesUnits" value="2:infantry"/>
+						 <option name="consumesUnits" value="1:artillery"/>-->
                 </attatchment>
 
                 <!-- Fighter -->

@@ -109,7 +109,7 @@ public class UnitSeperator
             	String kev = "here";
             }
             
-            boolean disabled = Matches.UnitIsDisabledShort().match(current);
+            boolean disabled = Matches.UnitIsDisabled().match(current);
             
             Territory originatingTerr = null;
             if(categorizeTerritories)

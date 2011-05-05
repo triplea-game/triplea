@@ -34,6 +34,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
@@ -272,6 +273,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     {
         if (!Match.someMatch(units, Matches.UnitIsFactoryOrConstruction))
         	return new IntegerMap<String>();
+
+        Collection<Unit> unitsInTO = to.getUnits().getUnits();
+        Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
+        Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
+        unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
         
     	// build an integer map of each unit we have in our list of held units, as well as integer maps for maximum units and units per turn
     	IntegerMap<String> unitMapHeld = new IntegerMap<String>();
@@ -295,6 +301,9 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             	if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > ta.getProduction())
             		continue;
         	}
+        	// remove any units that require other units to be consumed on creation (veqryn)
+        	if (Matches.UnitConsumesUnitsOnCreation.match(currentUnit) && Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO, to).invert().match(currentUnit))
+        		continue;
         	
         	if (Matches.UnitIsFactory.match(currentUnit) && !ua.isConstruction())
         	{
@@ -313,10 +322,6 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         boolean moreWithoutFactory = games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(m_data);
         boolean moreWithFactory = games.strategy.triplea.Properties.getMoreConstructionsWithFactory(m_data);
         boolean unlimitedConstructions = games.strategy.triplea.Properties.getUnlimitedConstructions(m_data);
-        Collection<Unit> unitsInTO = to.getUnits().getUnits();
-        Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
-        Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
-        unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
         boolean wasFactoryThereAtStart = Match.someMatch(unitsAtStartOfTurnInTO, Matches.UnitIsFactory);
         
         // build an integer map of each construction unit in the territory
@@ -425,6 +430,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             if (!Match.allMatch(units, Matches.UnitIsNotSea))
                 return "Cant place sea units on land";
         }
+        
+        // make sure we can place consuming units
+        if (!canWeConsumeUnits(units, to, false, null))
+        	return "Not Enough Units To Upgrade or Be Consumed";
+        
         if (!isUnitPlacementRestrictions())
         	return null;
 
@@ -464,6 +474,10 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     {
 
         Collection<Unit> placeableUnits = new ArrayList<Unit>();
+        Collection<Unit> unitsInTO = to.getUnits().getUnits();
+        Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
+        Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
+        unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
 
         //Land units wont do
         placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsSea));
@@ -485,6 +499,17 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         if ((!isWW2V2() && !isUnitPlacementInEnemySeas())
                 && to.getUnits().someMatch(Matches.enemyUnit(player, m_data)))
             return null;
+        
+        // remove any units that require other units to be consumed on creation (veqryn)
+        if (Match.someMatch(placeableUnits, Matches.UnitConsumesUnitsOnCreation))
+        {
+        	Collection<Unit> unitsWhichConsume = Match.getMatches(placeableUnits, Matches.UnitConsumesUnitsOnCreation);
+        	for (Unit unit : unitsWhichConsume)
+        	{
+        		if (Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO, to).invert().match(unit))
+        			placeableUnits.remove(unit);
+        	}
+        }
 
         if (!isUnitPlacementRestrictions())
         	return placeableUnits;
@@ -559,6 +584,18 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         	}
         }
         
+        // remove any units that require other units to be consumed on creation (veqryn)
+        if (Match.someMatch(placeableUnits, Matches.UnitConsumesUnitsOnCreation))
+        {
+        	Collection<Unit> unitsWhichConsume = Match.getMatches(placeableUnits, Matches.UnitConsumesUnitsOnCreation);
+        	for (Unit unit : unitsWhichConsume)
+        	{
+        		if (Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO, to).invert().match(unit))
+        			placeableUnits.remove(unit);
+        	}
+        }
+        
+        
         if (!isUnitPlacementRestrictions())
         	return placeableUnits;
         
@@ -579,31 +616,53 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         }
         
         return placeableUnits2;
-        
-        /* This may no longer be needed as factories are taken care of by my new constructions code (veqryn)
-        //Were any factories built
-        if (Match.countMatches(units, Matches.UnitIsFactory) >= 1)
-        {
-            //if its an original factory then unlimited production
-            TerritoryAttachment ta = TerritoryAttachment.get(to);
-
-            //TODO COMCO extract into individual rule
-            //You cant place factories in territories with no
-            // production
-            if (!(isWW2V2() && ta.getProduction() == 0))
-            {
-                //this is how many factories exist now
-                int factoryCount = to.getUnits().getMatches(
-                        Matches.UnitIsFactory).size();
-
-                //max factories allowed
-                int maxFactory = games.strategy.triplea.Properties
-                        .getFactoriesPerCountry(m_data);
-
-                // If i bought 100 of each kind of factory, and there were multiple kinds, this formula would all apart as getNMatches picked whichever factories were first on the list
-                placeableUnits.addAll(Match.getNMatches(units, Math.max(maxFactory - factoryCount, 0), Matches.UnitIsFactory));
-            }
-        }*/
+    }
+    
+    protected boolean canWeConsumeUnits(Collection<Unit> units, Territory to, boolean actuallyDoIt, CompositeChange change)
+    {
+    	boolean weCanConsume = true;
+        Collection<Unit> unitsInTO = to.getUnits().getUnits();
+        Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
+        Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
+        unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
+    	Collection<Unit> removedUnits = new ArrayList<Unit>();
+    	
+        Collection<Unit> unitsWhichConsume = Match.getMatches(units, Matches.UnitConsumesUnitsOnCreation);
+    	for (Unit unit : unitsWhichConsume)
+    	{
+    		if (Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO, to).invert().match(unit))
+    			weCanConsume = false;
+    		if (!weCanConsume)
+    			break;
+    		
+    		// remove units which are now consumed, then test the rest of the consuming units on the diminishing pile of units which were in the territory at start of turn
+    		UnitAttachment ua = UnitAttachment.get(unit.getType());
+        	IntegerMap<UnitType> requiredUnitsMap = ua.getConsumesUnits();
+        	Collection<UnitType> requiredUnits = requiredUnitsMap.keySet();
+        	
+        	for (UnitType ut : requiredUnits)
+        	{
+        		int requiredNumber = requiredUnitsMap.getInt(ut);
+        		Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unit.getOwner()), Matches.unitIsOfType(ut), Matches.UnitHasSomeUnitDamage().invert(), Matches.UnitIsNotDamaged, Matches.UnitIsDisabled().invert(), Matches.unitIsInTerritoryThatHasTerritoryDamage(to).invert());
+        		Collection<Unit> unitsBeingRemoved = Match.getNMatches(unitsAtStartOfTurnInTO, requiredNumber, unitIsOwnedByAndOfTypeAndNotDamaged);
+        		unitsAtStartOfTurnInTO.removeAll(unitsBeingRemoved);
+        		// if we should actually do it, not just test, then add to bridge
+        		if (actuallyDoIt && change != null)
+        		{
+        			Change remove = ChangeFactory.removeUnits(to, unitsBeingRemoved);
+        			change.add(remove);
+        			removedUnits.addAll(unitsBeingRemoved);
+        		}
+        	}
+    	}
+    	if (weCanConsume && actuallyDoIt && change != null && !change.isEmpty())
+    	{
+    		//m_bridge.addChange(change);
+	        m_bridge.getHistoryWriter().startEvent("Units in " + to.getName() + " being upgraded or consumed: " + MyFormatter.unitsToTextNoOwner(removedUnits));
+	        m_bridge.getHistoryWriter().setRenderingData(removedUnits);
+    	}
+    	
+    	return weCanConsume;
     }
 
     // Returns -1 if can place unlimited units
@@ -1028,6 +1087,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         Collection<Unit> unitsAlreadyThere = new ArrayList<Unit>(at.getUnits().getUnits());
         
         CompositeChange change = new CompositeChange();
+
+        // make sure we can place consuming units
+        boolean didIt = canWeConsumeUnits(units, at, true, change);
+        if (!didIt)
+        	throw new IllegalStateException("Something wrong with consuming/upgrading units");
         
         //TODO: veqryn, again, do we need to initialize infrastructure or not?
         Collection<Unit> factoryAndAA = Match.getMatches(units,

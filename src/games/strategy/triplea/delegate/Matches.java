@@ -551,7 +551,7 @@ public class Matches
         };
     }
     
-    public static Match<Unit> UnitIsDisabled(final Territory t)
+    public static Match<Unit> UnitIsDisabled()
     {
         return new Match<Unit>()
         {
@@ -573,34 +573,6 @@ public class Matches
                 	// assume that if maxOperationalDamage < 0, then the max damage must be based on the territory value (if the damage >= production of territory, then we are disabled)
                 	//TerritoryAttachment ta = TerritoryAttachment.get(t);
                 	//return taUnit.getUnitDamage() >= ta.getProduction();
-                	return false;
-                }
-                else
-                {
-                	return taUnit.getUnitDamage() > ua.getMaxOperationalDamage(); // only greater than.  if == then we can still operate
-                }
-            }
-        };
-    }
-    
-    public static Match<Unit> UnitIsDisabledShort()
-    {
-        return new Match<Unit>()
-        {
-            public boolean match(Unit unit)
-            {
-            	if (!UnitIsFactoryOrCanBeDamaged.match(unit))
-            		return false;
-            	
-            	if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getOwner().getData())
-            			|| games.strategy.triplea.Properties.getSBRAffectsUnitProduction(unit.getOwner().getData()))
-            		return false;
-            	
-                UnitAttachment ua = UnitAttachment.get(unit.getType());
-                TripleAUnit taUnit = (TripleAUnit) unit;
-                
-                if (ua.getMaxOperationalDamage() < 0)
-                {
                 	return false;
                 }
                 else
@@ -1164,6 +1136,28 @@ public class Matches
             return ta.isVictoryCity();
         }
     };
+
+    public static final Match<Territory> TerritoryHasSomeDamage = new Match<Territory>()
+    {
+        public boolean match(Territory t)
+        {
+            TerritoryAttachment ta = TerritoryAttachment.get(t);
+            if(ta == null)
+                return false;
+            return ta.getUnitProduction() < ta.getProduction();
+        }
+    };
+    
+    public static Match<Unit> unitIsInTerritoryThatHasTerritoryDamage(final Territory t)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit u)
+            {
+                return TerritoryHasSomeDamage.match(t);
+            }
+        };
+    }
 
 
     public static final Match<Territory> TerritoryIsLand = new InverseMatch<Territory>(TerritoryIsWater);
@@ -2278,7 +2272,7 @@ public class Matches
     {
         public boolean match(Unit unit)
         {
-        	if (UnitIsDisabledShort().match(unit))
+        	if (UnitIsDisabled().match(unit))
         		return false;
         	
             UnitAttachment ua = UnitAttachment.get(unit.getType());
@@ -2360,7 +2354,7 @@ public class Matches
         {
             public boolean match(Unit unitCanGiveBonusMovement)
             {
-            	if (UnitIsDisabledShort().match(unitCanGiveBonusMovement))
+            	if (UnitIsDisabled().match(unitCanGiveBonusMovement))
             		return false;
             	
                 UnitType type = (UnitType) unitCanGiveBonusMovement.getUnitType();
@@ -2403,6 +2397,47 @@ public class Matches
             		}
             	}
                 return false;
+            }
+        };
+    }
+
+    public static final Match<Unit> UnitConsumesUnitsOnCreation = new Match<Unit>()
+    {
+    	public boolean match(Unit obj)
+    	{
+    		Unit unit = (Unit) obj;
+    		UnitAttachment ua = UnitAttachment.get(unit.getType());
+    		if(ua == null)
+    			return false;
+    		return ua.getConsumesUnits().size() > 0;
+    	}
+    };
+    
+    public static Match<Unit> UnitWhichConsumesUnitsHasRequiredUnits(final Collection<Unit> unitsInTerritoryAtStartOfTurn, final Territory territory)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unitWhichRequiresUnits)
+            {
+            	if (!Matches.UnitConsumesUnitsOnCreation.match(unitWhichRequiresUnits))
+            		return true;
+            	
+            	UnitAttachment ua = UnitAttachment.get(unitWhichRequiresUnits.getType());
+            	IntegerMap<UnitType> requiredUnitsMap = ua.getConsumesUnits();
+            	Collection<UnitType> requiredUnits = requiredUnitsMap.keySet();
+            	
+            	boolean canBuild = true;
+            	for (UnitType ut : requiredUnits)
+            	{
+            		Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unitWhichRequiresUnits.getOwner()), Matches.unitIsOfType(ut), Matches.UnitHasSomeUnitDamage().invert(), Matches.UnitIsNotDamaged, Matches.UnitIsDisabled().invert(), Matches.unitIsInTerritoryThatHasTerritoryDamage(territory).invert());
+            		int requiredNumber = requiredUnitsMap.getInt(ut);
+            		int numberInTerritory = Match.countMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndOfTypeAndNotDamaged);
+            		if (numberInTerritory < requiredNumber)
+            			canBuild = false;
+            		if (!canBuild)
+            			break;
+            	}
+            	return canBuild;
             }
         };
     }

@@ -48,7 +48,7 @@ public class UnitCategory implements Comparable
         m_transportCost = categorizeTransportcost ? UnitAttachment.get(((Unit) unit).getUnitType()).getTransportCost() : -1;
         m_originatingTerr = categorizeTerritory ? taUnit.getOriginatedFrom() : null;
         m_damaged = (taUnit.getHits() > 0);
-        m_disabled = Matches.UnitIsDisabledShort().match(unit);
+        m_disabled = Matches.UnitIsDisabled().match(unit);
         if (categorizeDependents)
             createDependents(taUnit.getDependents());
         else

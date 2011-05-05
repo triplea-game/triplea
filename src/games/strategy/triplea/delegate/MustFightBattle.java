@@ -258,7 +258,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         		{
         			//TODO we can add other types of bases here as well (naval base, fire base, etc...)
         			//if it's an airbase and operational
-        			if(Matches.UnitIsAirBase.match(u) && Matches.UnitIsDisabled(t).invert().match(u))
+        			if(Matches.UnitIsAirBase.match(u) && Matches.UnitIsDisabled().invert().match(u))
         			{
         				neighborsWithActiveAirbases.add(t);
         				break;
@@ -2952,7 +2952,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsInfrastructure));
         
         //remove any disabled units from combat
-        unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsDisabledShort()));
+        unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsDisabled()));
         
         //remove capturableOnEntering units (veqryn)
         unitList.removeAll(Match.getMatches(unitList, Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(m_attacker, m_battleSite, m_data)));

@@ -139,6 +139,7 @@ public class UnitAttachment extends DefaultAttachment
   private Collection<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<PlayerID>();
   
   private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
+  private IntegerMap<UnitType> m_consumesUnits = new IntegerMap<UnitType>();
 
 
   /** Creates new UnitAttatchment */
@@ -833,6 +834,32 @@ public class UnitAttachment extends DefaultAttachment
   {
       return m_givesMovement;
   }
+
+  public void setConsumesUnits(String value)
+  {
+	  String[] s = value.split(":");
+	  if (s.length <= 0 || s.length > 2)
+		  throw new IllegalStateException("Unit Attachments: consumesUnits can not be empty or have more than two fields");
+	  
+	  String unitTypeToProduce;
+	  unitTypeToProduce = s[1];
+	  
+	  // validate that this unit exists in the xml
+	  UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
+      if(ut == null)
+          throw new IllegalStateException("Unit Attachments: No unit called:" + unitTypeToProduce);
+      
+      int n = getInt(s[0]);
+      if (n < 1)
+    	  throw new IllegalStateException("Unit Attachments: consumesUnits must have positive values");
+      
+      m_consumesUnits.put(ut, n);
+  }
+
+  public IntegerMap<UnitType> getConsumesUnits()
+  {
+      return m_consumesUnits;
+  }
   
   public void setBombingBonus(String s)
   {
@@ -1341,6 +1368,11 @@ public class UnitAttachment extends DefaultAttachment
 		  stats.append("Can Give Bonus Movement, ");
 	  else if (m_givesMovement != null && m_givesMovement.totalValues() < 0 && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(getData()))
 		  stats.append("Can Take Away Movement, ");
+
+	  if (m_consumesUnits != null && m_consumesUnits.totalValues() == 1)
+		  stats.append("Unit Is An Upgrade Of Another Unit, ");
+	  else if (m_consumesUnits != null && m_consumesUnits.totalValues() > 1)
+		  stats.append("Unit Consumes Other Units On Placement, ");
 	  
 	  if (m_unitPlacementRestrictions != null && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
 		  stats.append("Has Placement Restrictions, ");

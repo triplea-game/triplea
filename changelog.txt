@@ -1,4 +1,8 @@
 Changes for 1.3.1.0
+* Changed it so that Territory production defaults to Zero instead of 2, and that unitProduction gets set to a territory's production, though you can still set unitProduction manually if you set it AFTER you set production. (veqryn)
+
+* Created new unit attachment, consumesUnits, which allows units to be upgraded or placed on top of other units. (veqryn)
+
 * Created new unit attachment, canOnlyBePlacedInTerritoryValuedAtX, which defaults to -1 meaning can be placed anywhere. (veqryn)
 
 * Expanded 'disabled' logic to include airbases, repairsUnits, givesMovement, and combat units. Disabled units will not provide their abilities, like scrambling, movement, or repairing, to other units.  Disabled combat units will not participate in combat, and will be destroyed if captured. (veqryn)

@@ -132,7 +132,7 @@ public class TerritoryAttachment extends DefaultAttachment
 
     private String m_capital = null;
     private boolean m_originalFactory = false;
-    private int m_production = 2;  
+    private int m_production = 0;  
     private boolean m_isVictoryCity = false;
     private boolean m_isImpassible = false;
     private PlayerID m_originalOwner = null;
@@ -200,6 +200,7 @@ public class TerritoryAttachment extends DefaultAttachment
     public void setProduction(String value)
     {
         m_production = getInt(value);
+        m_unitProduction = m_production;
     }
 
     public int getProduction()
