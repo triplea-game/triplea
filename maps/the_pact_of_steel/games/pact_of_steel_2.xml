@@ -2244,6 +2244,8 @@
 						 <option name="unitPlacementOnlyAllowedIn" value="Germany:East Balkans"/>-->
 						 <!-- canProduceXUnits allows a factory-type unit to produce a set amount of units no matter where it is located.  if -1 then it will produce at the value of the territory where it is.  if greater than -1, you must have "maxDamage" set to some number.  defaults to -1 if missing -->
 						 <option name="canProduceXUnits" value="-1"/>
+						 <!-- canProduceUnits allows a unit to be a factory, without all the other things that come with being a factory (like capturable, land, non-combat, etc).  So if you want flying factories, go ahead. Just don't complain if you get errors. -->
+						 <option name="canProduceUnits" value="true"/>
                 </attatchment>
 
                 <attatchment name="unitAttatchment" attatchTo="factory_hit" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
