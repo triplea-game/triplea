@@ -4257,12 +4257,12 @@
 				</property>
 
 						<!-- SBR Affects Unit Production has Strategic Bombing and Rockets do damage to a territory rather than directly to the player's PUs (the bank) -->
-				<property name="SBR Affects Unit Production" value="false" editable="false">
+				<property name="SBR Affects Unit Production" value="true" editable="true">
 						<boolean/>
 				</property>
 
 						<!-- Damage From Bombing Done To Units Instead Of Territories has Strategic Bombing and Rockets do damage to a specific unit rather than directly to the player's PUs or to a territory.  You must have "SBR Affects Unit Production" false for this to work -->
-				<property name="Damage From Bombing Done To Units Instead Of Territories" value="true" editable="false">
+				<property name="Damage From Bombing Done To Units Instead Of Territories" value="false" editable="true">
 						<boolean/>
 				</property>
 

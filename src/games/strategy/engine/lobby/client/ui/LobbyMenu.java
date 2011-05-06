@@ -71,6 +71,8 @@ public class LobbyMenu extends JMenuBar
     	JMenuItem mapLink = new JMenuItem("Install Maps...");
     	JMenuItem bugReport = new JMenuItem("Bug Report...");
     	JMenuItem lobbyRules = new JMenuItem("Lobby Rules...");
+    	JMenuItem warClub = new JMenuItem("War Club & Ladder...");
+    	JMenuItem devForum = new JMenuItem("Developer Forum...");
 
     	hostingLink.addActionListener(new ActionListener()
         {
@@ -122,13 +124,41 @@ public class LobbyMenu extends JMenuBar
 					e1.printStackTrace();
 				} 
             }
-        });    
+        });
+    	
+    	warClub.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+            	try {
+            		BareBonesBrowserLaunch.openURL("http://www.tripleawarclub.org/");
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} 
+            }
+        });
+    	
+    	devForum.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+            	try {
+            		BareBonesBrowserLaunch.openURL("http://triplea.sourceforge.net/mywiki/Forum");
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} 
+            }
+        });
     	
     	
         parentMenu.add(hostingLink);
         parentMenu.add(mapLink);
         parentMenu.add(bugReport);
         parentMenu.add(lobbyRules);
+        parentMenu.add(warClub);
+        parentMenu.add(devForum);
 
     }
     
