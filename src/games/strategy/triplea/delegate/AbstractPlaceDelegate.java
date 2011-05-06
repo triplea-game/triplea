@@ -1134,7 +1134,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         Iterator<Unit> iter = factoryUnits.iterator();
         while (iter.hasNext())
         {
-        	Unit factory2 = (Unit) factoryUnits.iterator().next();
+        	Unit factory2 = (Unit) iter.next();
         	if(m_player.equals(DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(factory2)))
         		return DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(factory2);
         }
