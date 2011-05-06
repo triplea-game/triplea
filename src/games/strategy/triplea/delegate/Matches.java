@@ -1379,6 +1379,19 @@ public class Matches
     		}
     	};
     }
+    
+    public static Match<Territory> territoryHasOwnedIsFactoryOrCanProduceUnitsNeighbor(final GameData data, final PlayerID player)
+    {
+    	return new Match<Territory>()
+    	{
+    		public boolean match(Territory t)
+    		{
+    			if (data.getMap().getNeighbors(t, Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(data, player)).size() > 0)
+    				return true;
+    			return false;
+    		}
+    	};
+    }
 
     public static Match<Territory> territoryHasWaterNeighbor(final GameData data)
     {
@@ -1417,6 +1430,21 @@ public class Matches
                 if(!t.getOwner().equals(player))
                     return false;
                 if(!t.getUnits().someMatch(Matches.UnitIsFactory))
+                    return false;
+                return true;
+            }
+        };
+    }
+
+    public static Match<Territory> territoryHasOwnedIsFactoryOrCanProduceUnits(final GameData data, final PlayerID player)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                if(!t.getOwner().equals(player))
+                    return false;
+                if(!t.getUnits().someMatch(Matches.UnitIsFactoryOrCanProduceUnits))
                     return false;
                 return true;
             }

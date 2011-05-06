@@ -255,7 +255,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
 
         if(!repairMap.isEmpty())
         {
-            Collection<Territory> factoryTerrs = Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasOwnedFactory(m_data, m_player));
+            Collection<Territory> factoryTerrs = Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(m_data, m_player));
 
             for(Territory terr : factoryTerrs)
             {

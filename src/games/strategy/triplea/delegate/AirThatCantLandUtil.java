@@ -85,7 +85,7 @@ public class AirThatCantLandUtil
             ownedAir.add(Matches.alliedUnit(player, m_data));
             Collection<Unit> air = current.getUnits().getMatches(ownedAir);
 
-            boolean hasNeighboringFriendlyFactory =  m_data.getMap().getNeighbors(current, Matches.territoryHasOwnedFactory(m_data, player)).size() > 0;
+            boolean hasNeighboringFriendlyFactory =  m_data.getMap().getNeighbors(current, Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(m_data, player)).size() > 0;
             boolean skip = spareAirInSeaZonesBesideFactories && current.isWater() && hasNeighboringFriendlyFactory;
 
             if(!skip)

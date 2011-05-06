@@ -220,7 +220,7 @@ public class PurchasePanel extends ActionPanel
             	    if(isIncreasedFactoryProduction(player))
             	        addedProd = 2;
             	    
-            		for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedFactory(getData(), getCurrentPlayer()))) 
+            		for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getData(), getCurrentPlayer()))) 
                     {
             		    TerritoryAttachment ta = TerritoryAttachment.get(t);
                         int terrProd = ta.getUnitProduction();
@@ -232,7 +232,7 @@ public class PurchasePanel extends ActionPanel
             	}
             	else
             	{            		
-	                for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedFactory(getData(), getCurrentPlayer()))) 
+	                for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getData(), getCurrentPlayer()))) 
 	                {
 	                    totalProd += TerritoryAttachment.get(t).getProduction();
 	                }

@@ -431,7 +431,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         {
         	GameData data = m_bridge.getGameData();
         	Collection<Territory> bombedTerrs = new ArrayList<Territory>();
-        	for(Territory t : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedFactory(data, m_id))) 
+        	for(Territory t : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(data, m_id))) 
         	{
         		TerritoryAttachment ta = TerritoryAttachment.get(t);
         		//changed this to > from !=

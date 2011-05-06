@@ -142,7 +142,7 @@ public class ProductionRepairPanel extends JPanel
         try
         {
             m_id = player;
-            Collection<Territory> factoryTerrs = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedFactory(data, player));
+            Collection<Territory> factoryTerrs = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(data, player));
             
             for(RepairRule repairRule : player.getRepairFrontier())
             {

@@ -607,7 +607,7 @@ public class TriggerAttachment extends DefaultAttachment{
 		}
 		// place units
         Collection<Unit> factoryAndAA = Match.getMatches(units,
-                Matches.UnitIsAAOrFactory);
+                Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
         change.add(DelegateFinder.battleDelegate(data).getOriginalOwnerTracker()
                 .addOriginalOwnerChange(factoryAndAA, player));
        
