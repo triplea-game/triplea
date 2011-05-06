@@ -794,7 +794,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         int territoryValue = getProduction(producer);
         int maxConstructions = howManyOfEachConstructionCanPlace(to, units, player).totalValues();
         
-        boolean wasFactoryThereAtStart = wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
+        boolean wasFactoryThereAtStart = wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(producer, player);
         
         //If there's NO factory, allow placement of the factory
         if (!wasFactoryThereAtStart)
@@ -938,7 +938,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
                       return "No Factory in " + producer.getName();   
         }
 
-        //check we havent just put a factory there
+        //check we havent just put a factory there (should we be checking producer?)
         if (Match.someMatch(getAlreadyProduced(to), Matches.UnitIsFactoryOrCanProduceUnits))
             if (Match.someMatch(units, Matches.UnitIsConstruction) && howManyOfEachConstructionCanPlace(to, units, player).totalValues() > 0) //you can still place a Construction
             	return null; 
