@@ -284,7 +284,7 @@ public class UnitImageFactory
 	      if (TechTracker.hasRocket(id))
 	      {}
 	    }
-	    if (type.getName().equals(Constants.FACTORY_TYPE) || UnitAttachment.get(type).isFactory())
+	    if (type.getName().equals(Constants.FACTORY_TYPE) || UnitAttachment.get(type).isFactory() || UnitAttachment.get(type).getCanProduceUnits())
 	    {
 	      if (TechTracker.hasIndustrialTechnology(id) || TechTracker.hasIncreasedFactoryProduction(id))
 	      {

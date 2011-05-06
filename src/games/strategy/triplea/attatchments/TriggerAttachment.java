@@ -618,8 +618,9 @@ public class TriggerAttachment extends DefaultAttachment{
         Change place = ChangeFactory.addUnits(terr, units);
         change.add(place);
         
-        if(Match.someMatch(units, Matches.UnitIsFactory) && !Match.someMatch(terr.getUnits().getUnits(), Matches.UnitIsFactory) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
+        if(Match.someMatch(units, Matches.UnitIsFactoryOrCanProduceUnits) && !Match.someMatch(terr.getUnits().getUnits(), Matches.UnitIsFactoryOrCanProduceUnits) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
         {
+        	// if no factories are there, make sure the territory has no damage (that unitProduction = production)
         	TerritoryAttachment ta = TerritoryAttachment.get(terr);
         	int prod = 0;
         	if(ta != null)

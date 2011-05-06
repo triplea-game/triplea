@@ -305,7 +305,7 @@ public class RocketsFireHelper
 
             // Record production lost
             //DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
-        	Collection<Unit> damagedFactory = Match.getMatches(attackedTerritory.getUnits().getUnits(), Matches.UnitIsFactory);
+        	Collection<Unit> damagedFactory = Match.getMatches(attackedTerritory.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged);
 
     		IntegerMap<Unit> hits = new IntegerMap<Unit>();
         	for(Unit factory:damagedFactory)

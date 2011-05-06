@@ -56,6 +56,7 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isAAmovement = false;
   private boolean m_isRocket = false;
   private boolean m_isFactory = false;
+  private boolean m_canProduceUnits = false;
   private boolean m_canBlitz = false;
   private boolean m_isAirTransport = false;
   private boolean m_isAirTransportable = false;
@@ -352,6 +353,16 @@ public class UnitAttachment extends DefaultAttachment
   public boolean isFactory()
   {
     return m_isFactory;
+  }
+
+  public void setCanProduceUnits(String s)
+  {
+	  m_canProduceUnits = getBool(s);
+  }
+
+  public boolean getCanProduceUnits()
+  {
+    return m_canProduceUnits;
   }
 
   public void setCanProduceXUnits(String s)
@@ -1176,6 +1187,7 @@ public class UnitAttachment extends DefaultAttachment
     "  isRocket:" + m_isRocket + 
     "  isAAmovement:" + m_isAAmovement + 
     "  factory:" + m_isFactory +
+    "  canProduceUnits:" + m_canProduceUnits + 
     "  blitz:" + m_canBlitz +
     "  airTransport:" + m_isAirTransport +
     "  airTransportable:" + m_isAirTransportable +
@@ -1250,9 +1262,9 @@ public class UnitAttachment extends DefaultAttachment
 	  if (getMovement(player) > 0)
 		  stats.append(getMovement(player) + " Movement, ");
 	  
-	  if (m_isFactory && m_canProduceXUnits < 0)
+	  if ((m_isFactory || m_canProduceUnits) && m_canProduceXUnits < 0)
 		  stats.append("can Produce Units Up To Territory Value, ");
-	  else if (m_isFactory && m_canProduceXUnits > 0)
+	  else if ((m_isFactory || m_canProduceUnits) && m_canProduceXUnits > 0)
 		  stats.append("can Produce " + m_canProduceXUnits + " Units, ");
 	  
 	  if ((m_attackAA != 1 || m_attackAAmaxDieSides != -1) && (m_isAA || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly))

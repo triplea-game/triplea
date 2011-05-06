@@ -339,11 +339,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     {
         CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>();
         moveableUnitOwnedByMe.add(Matches.unitIsOwnedBy(m_id));
-        //non com, can move aa units
-        if(nonCom)
-            moveableUnitOwnedByMe.add(new InverseMatch<Unit>(Matches.UnitIsFactory));
-        else //combat move, cant move aa units
-            moveableUnitOwnedByMe.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
+        moveableUnitOwnedByMe.add(Matches.UnitIsNotStatic(m_id));
+        //if not non combat, can not move aa units
+        if(!nonCom)
+            moveableUnitOwnedByMe.add(new InverseMatch<Unit>(Matches.UnitIsAAorIsAAmovement));
 
         m_bridge.getGameData().acquireReadLock();
         try

@@ -268,7 +268,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
                     // veq separate for unit damage vs territory damage
 
                     IntegerMap<Unit> hits = new IntegerMap<Unit>();
-                    Collection<Unit> factories = Match.getMatches(terr.getUnits().getUnits(), Matches.UnitIsFactory);
+                    Collection<Unit> factories = Match.getMatches(terr.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged);
 
                     //Display appropriate damaged/repaired factory and factory damage totals
                     if(repairCount>0)

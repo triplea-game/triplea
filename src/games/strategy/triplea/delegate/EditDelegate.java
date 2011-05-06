@@ -159,7 +159,7 @@ public class EditDelegate implements IDelegate, IEditDelegate
         if (null != (result = EditValidator.validateAddUnits(m_data, territory, units)))
             return result;
 
-        if(Match.someMatch(units, Matches.UnitIsFactory) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data))
+        if(Match.someMatch(units, Matches.UnitIsFactoryOrCanProduceUnits) && !Match.someMatch(territory.getUnits().getUnits(), Matches.UnitIsFactoryOrCanProduceUnits)&& games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data))
         {
             TerritoryAttachment ta = TerritoryAttachment.get(territory);
 

@@ -1,4 +1,6 @@
 Changes for 1.3.1.0
+* Added new unit attachment, canProduceUnits, which allows a unit to produce other units, without being a factory. Therefor we can now have combat factories, flying factories, or aa gun factories, or w/e. (veqryn)
+
 * Added the developer forum and the war club to the lobby help menu. (veqryn)
 
 * Added tool tips for units to battle calculator. (veqryn)

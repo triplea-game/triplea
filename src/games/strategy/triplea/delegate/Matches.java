@@ -846,6 +846,16 @@ public class Matches
         }
     };
 
+    public static final Match<UnitType> UnitTypeCanProduceUnits = new Match<UnitType>()
+    {
+        public boolean match(UnitType obj)
+        {
+            UnitType type = (UnitType) obj;
+            UnitAttachment ua = UnitAttachment.get(type);
+            return ua.getCanProduceUnits();
+        }
+    };
+
 
     public static final Match<UnitType> UnitTypeIsFactoryOrIsInfrastructure = new Match<UnitType>()
     {
@@ -909,6 +919,16 @@ public class Matches
     };
 
     public static final Match<Unit> UnitIsNotFactory = new InverseMatch<Unit>(UnitIsFactory);
+
+    public static final Match<Unit> UnitCanProduceUnits = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            UnitType type = ((Unit) obj).getUnitType();
+            UnitAttachment ua = UnitAttachment.get(type);
+            return ua.getCanProduceUnits();
+        }
+    };
 
     public static final Match<UnitType> UnitTypeIsAA = new Match<UnitType>()
     {
@@ -2525,11 +2545,24 @@ public class Matches
     
     public static final Match<Unit> UnitIsNotConstruction = new InverseMatch<Unit>(UnitIsConstruction);
     
-    public static final Match<Unit> UnitIsFactoryOrConstruction = new CompositeMatchOr<Unit>(UnitIsConstruction, UnitIsFactory);
+    public static final Match<Unit> UnitIsFactoryOrConstruction = new CompositeMatchOr<Unit>(UnitIsFactory, UnitIsConstruction);
     
     public static final Match<Unit> UnitIsNotFactoryOrConstruction = new InverseMatch<Unit>(UnitIsFactoryOrConstruction);
     
-    public static final Match<Unit> UnitIsFactoryOrCanBeDamaged = new CompositeMatchOr<Unit>(UnitCanBeDamagedButIsNotFactory, UnitIsFactory);
+    public static final Match<Unit> UnitIsFactoryOrCanBeDamaged = new CompositeMatchOr<Unit>(UnitIsFactory, UnitCanBeDamagedButIsNotFactory);
+    
+    public static final Match<Unit> UnitIsFactoryOrCanProduceUnits = new CompositeMatchOr<Unit>(UnitIsFactory, UnitCanProduceUnits);
+    
+    public static final Match<Unit> UnitIsOwnedAndIsFactoryOrCanProduceUnits(final PlayerID player)
+    {
+    	return new Match<Unit>()
+    	{
+    		public boolean match(Unit u)
+    		{
+    			return (UnitIsFactoryOrCanProduceUnits.match(u) && unitIsOwnedBy(player).match(u));
+    		}
+    	};
+    }
     
     /** Creates new Matches */
     private Matches()

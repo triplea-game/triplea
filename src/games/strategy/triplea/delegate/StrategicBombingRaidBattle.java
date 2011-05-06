@@ -661,7 +661,7 @@ public class StrategicBombingRaidBattle implements Battle
             	// Record production lost
             	DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, cost);
             	
-            	Collection<Unit> damagedFactory = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsFactory);
+            	Collection<Unit> damagedFactory = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged);
 
         		IntegerMap<Unit> hits = new IntegerMap<Unit>();
             	for(Unit factory:damagedFactory)

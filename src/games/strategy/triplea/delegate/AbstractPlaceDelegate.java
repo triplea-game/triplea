@@ -264,6 +264,29 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
 
         return null;
     }
+    
+    /**
+     * yes or no, was there an owned unit capable of producing, in this territory at the start of this phase/step
+     */
+    public boolean wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(Territory to, PlayerID player)
+    {
+    	Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
+    	return Match.countMatches(unitsAtStartOfTurnInTO, Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player)) > 0;
+    }
+    
+    /**
+     * returns collection of units that were there at start of turn
+     */
+    public Collection<Unit> unitsAtStartOfStepInTerritory(Territory to)
+    {
+    	if (to == null)
+    		return new ArrayList<Unit>();
+    	Collection<Unit> unitsInTO = to.getUnits().getUnits();
+        Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
+        Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
+        unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
+        return unitsAtStartOfTurnInTO;
+    }
 
     /**
      * will return an empty IntegerMap if you can't produce any constructions, will never return null
@@ -324,7 +347,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         boolean moreWithoutFactory = games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(m_data);
         boolean moreWithFactory = games.strategy.triplea.Properties.getMoreConstructionsWithFactory(m_data);
         boolean unlimitedConstructions = games.strategy.triplea.Properties.getUnlimitedConstructions(m_data);
-        boolean wasFactoryThereAtStart = Match.someMatch(unitsAtStartOfTurnInTO, Matches.UnitIsFactory);
+        boolean wasFactoryThereAtStart = wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
         
         // build an integer map of each construction unit in the territory
         IntegerMap<String> unitMapTO = new IntegerMap<String>();
@@ -403,10 +426,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             	if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits))
             		return true;
             	
-                Collection<Unit> unitsInTO = to.getUnits().getUnits();
-                Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
-                Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
-                unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
+                Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
             	
             	if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInTO).match(unitWhichRequiresUnits))
             		return true;
@@ -438,11 +458,6 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             PlayerID player)
     {
         Collection<Unit> allowedUnits = getUnitsToBePlaced(to, units, player);
-
-        Collection<Unit> unitsInTO = to.getUnits().getUnits();
-        Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
-        Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
-        unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
         
         if (allowedUnits == null || !allowedUnits.containsAll(units))
         {
@@ -528,10 +543,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     {
 
         Collection<Unit> placeableUnits = new ArrayList<Unit>();
-        Collection<Unit> unitsInTO = to.getUnits().getUnits();
-        Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
-        Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
-        unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
+        Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
 
         //Land units wont do
         placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsSea));
@@ -595,12 +607,10 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             PlayerID player)
     {    	
         Collection<Unit> placeableUnits = new ArrayList<Unit>();
-        Collection<Unit> unitsInTO = to.getUnits().getUnits();
-        Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
-        Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
-        unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
+        Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
+        boolean wasFactoryThereAtStart = wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
 
-        if (Match.someMatch(unitsAtStartOfTurnInTO, Matches.UnitIsFactory) || isPlayerAllowedToPlaceAnywhere(player))
+        if (wasFactoryThereAtStart || isPlayerAllowedToPlaceAnywhere(player))
         {
             //make sure only 1 AA in territory for classic
             if (isWW2V2() || isWW2V3() || isMultipleAAPerTerritory())
@@ -738,7 +748,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         //if its an original factory then unlimited production
         TerritoryAttachment ta = TerritoryAttachment.get(producer);
         Collection<Unit> factoryUnits = producer.getUnits().getMatches(
-                Matches.UnitIsFactory);
+                Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player));
         boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
         boolean unitPlacementPerTerritoryRestricted = isUnitPlacementPerTerritoryRestricted();
         boolean originalFactory = ta.isOriginalFactory();
@@ -748,7 +758,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
         int unitCountAlreadyProduced = getAlreadyProduced(producer).size();
         
-        if (originalFactory && playerIsOriginalOwner && !placementRestrictedByFactory && !unitPlacementPerTerritoryRestricted)
+        if (originalFactory && playerIsOriginalOwner) // && !placementRestrictedByFactory && !unitPlacementPerTerritoryRestricted
         {
         	if (ra != null)
         	{
@@ -784,11 +794,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         int territoryValue = getProduction(producer);
         int maxConstructions = howManyOfEachConstructionCanPlace(to, units, player).totalValues();
         
-        Collection<Unit> unitsInTO = producer.getUnits().getUnits();
-        Collection<Unit> unitsPlacedAlready = getAlreadyProduced(producer);
-        Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
-        unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
-        boolean wasFactoryThereAtStart = Match.someMatch(unitsAtStartOfTurnInTO, Matches.UnitIsFactory);
+        boolean wasFactoryThereAtStart = wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
         
         //If there's NO factory, allow placement of the factory
         if (!wasFactoryThereAtStart)
@@ -800,7 +806,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         }
         
         // getHowMuchCanUnitProduce accounts for IncreasedFactoryProduction, but does not account for maxConstructions
-    	production = getHowMuchCanUnitProduce(getBiggestProducer(producer.getUnits().getUnits(), producer, player), producer, player);
+    	production = getHowMuchCanUnitProduce(getBiggestProducer(unitsAtStartOfStepInTerritory(producer), producer, player), producer, player);
         
         // increase the production by the number of constructions allowed
         if (maxConstructions > 0)
@@ -820,8 +826,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     
     protected Unit getBiggestProducer(Collection<Unit> units, Territory producer, PlayerID player)
     {
-    	CompositeMatchAnd<Unit> myfactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsFactory);
-    	Collection<Unit> factories = Match.getMatches(units, myfactories);
+    	Collection<Unit> factories = Match.getMatches(units, Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player));
     	if (factories.isEmpty())
     		return null;
     	IntegerMap<Unit> productionPotential = new IntegerMap<Unit>();
@@ -918,7 +923,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         	return null;
 
         //make sure there is a factory
-        if (!hasFactory(producer))
+        if (!producer.getUnits().someMatch(Matches.UnitIsFactoryOrCanProduceUnits))
         {
             //check to see if we are producing a factory
             if (Match.someMatch(units, Matches.UnitIsFactory))
@@ -934,7 +939,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         }
 
         //check we havent just put a factory there
-        if (Match.someMatch(getAlreadyProduced(to), Matches.UnitIsFactory))
+        if (Match.someMatch(getAlreadyProduced(to), Matches.UnitIsFactoryOrCanProduceUnits))
             if (Match.someMatch(units, Matches.UnitIsConstruction) && howManyOfEachConstructionCanPlace(to, units, player).totalValues() > 0) //you can still place a Construction
             	return null; 
             else
@@ -1084,12 +1089,6 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return tracker.getOriginalOwner(t).equals(id);
     }
 
-    private boolean hasFactory(Territory to)
-    {
-
-        return to.getUnits().someMatch(Matches.UnitIsFactory);
-    }
-
     private boolean hasConstruction(Territory to)
     {
         return to.getUnits().someMatch(Matches.UnitIsConstruction);
@@ -1112,13 +1111,9 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         while (iter.hasNext())
         {
             Territory current = (Territory) iter.next();
-            if (hasFactory(current)
-                    && !Match.someMatch(getAlreadyProduced(current),
-                            Matches.UnitIsFactory)
-                    && current.getOwner().equals(m_player))
+            if (current.getUnits().someMatch(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player)) && !Match.someMatch(getAlreadyProduced(current), Matches.UnitIsFactoryOrCanProduceUnits) && current.getOwner().equals(m_player))
             {
-                neighborFactory = getBetterProducer(current, neighborFactory,
-                        player);
+                neighborFactory = getBetterProducer(current, neighborFactory, player);
             }
         }
         return neighborFactory;
@@ -1130,13 +1125,19 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
      */
     private PlayerID getOriginalFactoryOwner(Territory territory)
     {
-
         Collection<Unit> factoryUnits = territory.getUnits().getMatches(
-                Matches.UnitIsFactory);
+                Matches.UnitIsFactoryOrCanProduceUnits);
         if (factoryUnits.size() == 0)
             throw new IllegalStateException("No factory in territory:"
                     + territory);
-
+        
+        Iterator<Unit> iter = factoryUnits.iterator();
+        while (iter.hasNext())
+        {
+        	Unit factory2 = (Unit) factoryUnits.iterator().next();
+        	if(m_player.equals(DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(factory2)))
+        		return DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(factory2);
+        }
         Unit factory = (Unit) factoryUnits.iterator().next();
         return DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker()
                 .getOriginalOwner(factory);
@@ -1172,7 +1173,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         change.add(remove);
         change.add(place);
         
-        if(Match.someMatch(units, Matches.UnitIsFactory) && Match.countMatches(unitsAlreadyThere, Matches.UnitIsFactory) == 0 && isSBRAffectsUnitProduction())
+        if(Match.someMatch(units, Matches.UnitIsFactoryOrCanProduceUnits) && Match.countMatches(unitsAlreadyThere, Matches.UnitIsFactoryOrCanProduceUnits) < 1 && isSBRAffectsUnitProduction())
         {
             Change unitProd = ChangeFactory.changeUnitProduction(at, getProduction(at));
             change.add(unitProd);
@@ -1221,8 +1222,6 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
 
         Collection<Territory> neighbors = m_data.getMap().getNeighbors(territory, 1);
         Iterator<Territory> iter = neighbors.iterator();
-        CompositeMatch<Unit> ownedFactories = new CompositeMatchAnd<Unit>(
-                Matches.UnitIsFactory, Matches.unitIsOwnedBy(player));
         CompositeMatch<Unit> ownedFighters = new CompositeMatchAnd<Unit>(
                 Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player));
 
@@ -1234,7 +1233,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             //check to see if we have a factory, only fighters from territories
             // that could
             //have produced the carrier can move there
-            if (!neighbor.getUnits().someMatch(ownedFactories))
+            if (!neighbor.getUnits().someMatch(Matches.UnitIsFactoryOrCanProduceUnits))
                 continue;
             //are there some fighers there that can be moved?
             if (!neighbor.getUnits().someMatch(ownedFighters))
@@ -1242,7 +1241,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             if (wasConquered(neighbor))
                 continue;
             if (Match.someMatch(getAlreadyProduced(neighbor),
-                    Matches.UnitIsFactory))
+                    Matches.UnitIsFactoryOrCanProduceUnits))
                 continue;
 
             List<Unit> fighters = neighbor.getUnits().getMatches(ownedFighters);

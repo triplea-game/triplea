@@ -691,7 +691,7 @@ public class BattleTracker implements java.io.Serializable
         }
 
         //Remove any bombing raids against captured territory
-        if(Match.someMatch(nonCom, Matches.UnitIsFactory))
+        if(Match.someMatch(nonCom, Matches.UnitIsFactoryOrCanBeDamaged))
         {
             Battle bombingBattle = getPendingBattle(territory, true);
             if(bombingBattle != null)
