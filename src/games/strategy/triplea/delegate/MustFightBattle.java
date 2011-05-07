@@ -1159,7 +1159,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
             	if(getScramble_Rules_In_Effect())
-            		MustFightBattle.getDisplay(bridge).scrambleNotification(m_battleID, SCRAMBLE_UNITS_FOR_DEFENSE, m_battleSite.getOwner(), new ArrayList<Unit>(m_scrambled), m_dependentUnits);                
+            		MustFightBattle.getDisplay(bridge).scrambleNotification(m_battleID, SCRAMBLE_UNITS_FOR_DEFENSE, findDefender(m_battleSite), new ArrayList<Unit>(m_scrambled), m_dependentUnits);                
             }
         };    
         
@@ -1827,8 +1827,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private void queryScrambleUnits(String actionType, IDelegateBridge bridge, Collection<Territory> availableTerritories)
     {
             //TODO kev break out each Scrambled Unit's owner for the query            
-            PlayerID scramblingPlayer = m_battleSite.getOwner();
-            String text = scramblingPlayer + SCRAMBLE_UNITS;
+            PlayerID scramblingPlayer = findDefender(m_battleSite);
+            String text = scramblingPlayer.getName() + SCRAMBLE_UNITS;
             
             String step = SCRAMBLE_UNITS_FOR_DEFENSE;
 
