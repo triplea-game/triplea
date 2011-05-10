@@ -2950,13 +2950,53 @@
 
                 <attatchment name="objectiveAttachmentAmericans3" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="2"/>
-                	<option name="turns" value="2-+"/>
+                	<option name="turns" value="2-3"/>
                 </attatchment>
 
                 <attatchment name="objectiveAttachmentAmericans4" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="objectiveValue" value="2"/>
-                	<option name="turns" value="4-+"/>
+                	<option name="objectiveValue" value="4"/>
+                	<option name="turns" value="4-5"/>
                 </attatchment>
+
+                <attatchment name="objectiveAttachmentAmericans5" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="6"/>
+                	<option name="turns" value="6-7"/>
+                </attatchment>
+
+                <attatchment name="objectiveAttachmentAmericans6" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="8"/>
+                	<option name="turns" value="8-9"/>
+                </attatchment>
+
+                <attatchment name="objectiveAttachmentAmericans7" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="10"/>
+                	<option name="turns" value="10-+"/>
+                </attatchment>
+
+                <!--<attatchment name="objectiveAttachmentAmericans8" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="12"/>
+                	<option name="turns" value="12-13"/>
+                </attatchment>
+
+                <attatchment name="objectiveAttachmentAmericans9" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="14"/>
+                	<option name="turns" value="14-15"/>
+                </attatchment>
+
+                <attatchment name="objectiveAttachmentAmericans10" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="16"/>
+                	<option name="turns" value="16-17"/>
+                </attatchment>
+
+                <attatchment name="objectiveAttachmentAmericans11" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="18"/>
+                	<option name="turns" value="18-19"/>
+                </attatchment>
+
+                <attatchment name="objectiveAttachmentAmericans12" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="20"/>
+                	<option name="turns" value="20-+"/>
+                </attatchment>-->
 
 	<!-- Chinese Objectives -->
                 <attatchment name="objectiveAttachmentChinese1" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -4359,8 +4399,8 @@
 							Algeria, Libya, Anglo Egypt, Trans-Jordan<br>
         				<br>
         				<i>United States: The Arsenal of Democracy-</i><br>
-						+2 PUs on turn 2 and beyond, an additional +2 (so +4 total) on turn 4 and beyond as America's war-time economy ramps up<br>
-        				+4 PUs if Allies control 4 out 7 of Western Europe, Sardinia, Sicily, Greece, West Balkans, Algeria, Libya
+						+2-10 PUs, starting on turn 2 America will begin making +2 income as America's war-time economy ramps up. This will increase by +2 more every 2 turns, so that turn 4 will begin making +4, turn 6 will make +6, and so on until +10 is reached<br>
+        				+4 PUs if Allies control 4 out of 7 of Western Europe, Sardinia, Sicily, Greece, West Balkans, Algeria, Libya
 							AND no enemy surface ships in sea zones 1, 2, 7, 8, 9, 10, 11, 12, 13, and 14<br>
         				+4 PUs if Allies controls 6 out of 13 of Alaska, East Indies, Borneo, Philipine Islands, New Guinea, Solomon Islands, Caroline Islands,
 							Australia, New Zealand, Okinawa, Wake Island, Hawaiian Islands, Midway<br>

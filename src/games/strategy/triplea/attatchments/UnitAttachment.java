@@ -1240,7 +1240,7 @@ public class UnitAttachment extends DefaultAttachment
   public String toStringShortAndOnlyImportantDifferences(PlayerID player)
   {
 	  // displays everything in a very short form, in English rather than as xml stuff
-	  // shows all except for: m_isCombatInfrastructure, m_constructionType, m_constructionsPerTerrPerTypePerTurn, m_maxConstructionsPerTypePerTerr, m_canBeGivenByTerritoryTo, m_destroyedWhenCapturedBy, m_canBeCapturedOnEnteringBy
+	  // shows all except for: m_constructionType, m_constructionsPerTerrPerTypePerTurn, m_maxConstructionsPerTypePerTerr, m_canBeGivenByTerritoryTo, m_destroyedWhenCapturedBy, m_canBeCapturedOnEnteringBy
 	  StringBuilder stats = new StringBuilder();
 	  
 	  //if (this != null && this.getName() != null)
@@ -1267,17 +1267,25 @@ public class UnitAttachment extends DefaultAttachment
 	  else if ((m_isFactory || m_canProduceUnits) && m_canProduceXUnits > 0)
 		  stats.append("can Produce " + m_canProduceXUnits + " Units, ");
 	  
-	  if ((m_attackAA != 1 || m_attackAAmaxDieSides != -1) && (m_isAA || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly))
-		  stats.append((playerHasAARadar(player) ? m_attackAA + 1 : m_attackAA) + "/" + (m_attackAAmaxDieSides == -1 ? m_attackAAmaxDieSides : getData().getDiceSides()) + " ");
-	  if (m_isAA || (m_isAAforCombatOnly && m_isAAforBombingThisUnitOnly))
-		  stats.append("Anti-Air, ");
-	  else if (m_isAAforCombatOnly)
-		  stats.append("Anti-Air for Combat, ");
-	  else if (m_isAAforBombingThisUnitOnly)
-		  stats.append("Anti-Air for Raids, ");
+	  if (m_isAA || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly)
+	  {
+		  stats.append((playerHasAARadar(player) ? (m_attackAA != 1 ? m_attackAA : 1) + 1 : (m_attackAA != 1 ? m_attackAA : 1)) + "/" + (m_attackAAmaxDieSides != -1 ? m_attackAAmaxDieSides : getData().getDiceSides()) + " ");
+		  if (m_isAA || (m_isAAforCombatOnly && m_isAAforBombingThisUnitOnly))
+			  stats.append("Anti-Air, ");
+		  else if (m_isAAforCombatOnly)
+			  stats.append("Anti-Air for Combat, ");
+		  else if (m_isAAforBombingThisUnitOnly)
+			  stats.append("Anti-Air for Raids, ");
+	  }
 	  
 	  if ((m_isAA || m_isRocket) && playerHasRockets(player))
+	  {
 		  stats.append("can Rocket Attack, ");
+		  if ((m_bombingMaxDieSides != -1 || m_bombingBonus != -1) && games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(getData()))
+			  stats.append((m_bombingBonus != -1 ? m_bombingBonus + 1 : 1) + "-" + (m_bombingMaxDieSides != -1 ? m_bombingMaxDieSides + (m_bombingBonus != -1 ? m_bombingBonus : 0) : getData().getDiceSides() + (m_bombingBonus != -1 ? m_bombingBonus : 0)) + " Rocket Damage, ");
+		  else
+			  stats.append("1-" + getData().getDiceSides() + " Rocket Damage, ");
+	  }
 	  
 	  if (m_isInfrastructure || m_isAA || m_isFactory)
 		  stats.append("can be Captured, ");
@@ -1310,8 +1318,8 @@ public class UnitAttachment extends DefaultAttachment
 	  if (m_isAirBase && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData()))
 		  stats.append("can Allow Scrambling, ");
 	  
-	  if (m_canScramble && m_maxScrambleDistance > 0 && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData()))
-		  stats.append(m_maxScrambleDistance + " Scramble Distance, ");
+	  if (m_canScramble && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData()))
+		  stats.append("can Scramble " + (m_maxScrambleDistance > 0 ? m_maxScrambleDistance : 1) + " Distance, ");
 	  
 	  if (m_canBlitz)
 		  stats.append("can Blitz, ");

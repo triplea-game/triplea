@@ -2449,6 +2449,18 @@ public class Matches
         };
     }
 
+    public static final Match<UnitType> UnitTypeConsumesUnitsOnCreation = new Match<UnitType>()
+    {
+    	public boolean match(UnitType obj)
+    	{
+    		UnitType unit = (UnitType) obj;
+    		UnitAttachment ua = UnitAttachment.get(unit);
+    		if(ua == null)
+    			return false;
+    		return (ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0);
+    	}
+    };
+
     public static final Match<Unit> UnitConsumesUnitsOnCreation = new Match<Unit>()
     {
     	public boolean match(Unit obj)

@@ -7557,7 +7557,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					continue;
 			}
 			// Remove from consideration any unit which has maxBuiltPerPlayer
-			if (UnitAttachment.get(x).getMaxBuiltPerPlayer() >= 0)
+			if (Matches.UnitTypeHasMaxBuildRestrictions.match(x))
+				continue;
+			// Remove from consideration any unit which has consumesUnits
+			if (Matches.UnitTypeConsumesUnitsOnCreation.match(x))
 				continue;
 			
 			if (Matches.UnitTypeIsAir.match(x))

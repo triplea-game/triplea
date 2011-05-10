@@ -1,4 +1,6 @@
 Changes for 1.3.1.0
+* Fixed moore AI and easy AI to not purchase any unit which has consumesUnits. (veqryn)
+
 * Fixed bug in scrambling code where user was not being asked if they want to scramble. (veqryn)
 
 * Fixed infinite loop introduced into original factory owner check. (veqryn)
@@ -58,7 +60,7 @@ Changes for 1.3.1.0
 
 * Allowed for more information about units to be displayed as a tool tip on the territory panel. (veqryn)
 
-* Created new toString in unit attachment to only display important information that is different from a default unit. (veqryn)
+* Created new toString in unit attachment to only display important information that is different from a default unit with no attachments. (veqryn)
 
 * Allowed for more information about units to be displayed as a tool tip during production screen.  Allowed tool tip to be displayed when hovering over unit icon, in addition to small info stats. (veqryn)
 
