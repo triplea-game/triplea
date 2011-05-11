@@ -7667,7 +7667,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 			else if (Math.random() < 0.35)
 			{
-				if (Math.random() > 0.55)
+				if (Math.random() > 0.55 && carrierRule != null)
 				{// force a carrier purchase if enough available $$ for it and at least 1 fighter
 					int cost = carrierRule.getCosts().getInt(pus);
 					int fighterCost = fighterRule.getCosts().getInt(pus);
