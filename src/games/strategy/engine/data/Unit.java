@@ -23,6 +23,8 @@ package games.strategy.engine.data;
 import games.strategy.net.GUID;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 /**
@@ -69,6 +71,30 @@ public class Unit extends GameDataComponent implements Serializable
   public PlayerID getOwner()
   {
     return m_owner;
+  }
+
+  /**
+   * This can return null if the unit is not in any territories.  
+   * A unit just created, or held by a player after purchasing may not be in a territory.
+   * A unit can be in exactly 2 territories, if the unit is in the process of moving from one territory to another. This method will just return the first territory found.
+   * A unit should never be in more than 2 territories, and if so an error will be thrown.  
+   */
+  public Territory getTerritoryUnitIsIn()
+  {
+	Collection<Territory> terrs = new ArrayList<Territory>();
+    for (Territory t : this.getData().getMap().getTerritories())
+    {
+    	if (t.getUnits().getUnits().contains(this))
+    		terrs.add(t);
+    }
+    if (terrs.size() > 2)
+    	throw new IllegalStateException("Unit, " + this.toString() + ", may not be in multiple territories at the same time.");
+    else if (terrs.size() == 2)
+    	return terrs.iterator().next(); // this actually does occur while in the middle of moving a unit from one territory to another, before the unit gets deleted from the first.
+    else if (terrs.size() == 1)
+    	return terrs.iterator().next();
+    else
+    	return null;
   }
 
   public int getHits()

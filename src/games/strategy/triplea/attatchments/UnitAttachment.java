@@ -1269,7 +1269,7 @@ public class UnitAttachment extends DefaultAttachment
 	  
 	  if (m_isAA || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly)
 	  {
-		  stats.append((playerHasAARadar(player) ? (m_attackAA != 1 ? m_attackAA : 1) + 1 : (m_attackAA != 1 ? m_attackAA : 1)) + "/" + (m_attackAAmaxDieSides != -1 ? m_attackAAmaxDieSides : getData().getDiceSides()) + " ");
+		  stats.append((playerHasAARadar(player) ? m_attackAA + 1 : m_attackAA) + "/" + (m_attackAAmaxDieSides != -1 ? m_attackAAmaxDieSides : getData().getDiceSides()) + " ");
 		  if (m_isAA || (m_isAAforCombatOnly && m_isAAforBombingThisUnitOnly))
 			  stats.append("Anti-Air, ");
 		  else if (m_isAAforCombatOnly)
