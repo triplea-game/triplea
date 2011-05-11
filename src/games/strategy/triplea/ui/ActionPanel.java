@@ -76,6 +76,11 @@ public abstract class ActionPanel extends JPanel
         return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data);
     }
     
+    public final boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories()
+    {
+        return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data);
+    }
+    
     public final boolean isSelectableTechRoll()
     {
         return games.strategy.triplea.Properties.getSelectableTechRoll(m_data);

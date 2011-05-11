@@ -637,7 +637,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         return m_actionButtons.waitForPurchase(bid);
     }
 
-    public HashMap<Territory, IntegerMap<RepairRule>> getRepair(final PlayerID player, boolean bid)
+    public HashMap<Unit, IntegerMap<RepairRule>> getRepair(final PlayerID player, boolean bid)
     {
         m_actionButtons.changeToRepair(player);
         return m_actionButtons.waitForRepair(bid);

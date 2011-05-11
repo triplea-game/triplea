@@ -17,6 +17,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
 import games.strategy.triplea.attatchments.UnitTypeComparator;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.util.IntegerMap;
 
@@ -71,16 +72,16 @@ public class SimpleUnitPanel extends JPanel
   * @param units a HashMap in the form RepairRule -> number of units
   * assumes that each repair rule has 1 result, which is simply the number of units
   */
-  public void setUnitsFromRepairRuleMap(HashMap<Territory, IntegerMap<RepairRule>> units, PlayerID player, GameData data)
+  public void setUnitsFromRepairRuleMap(HashMap<Unit, IntegerMap<RepairRule>> units, PlayerID player, GameData data)
   {
     removeAll();
     
-    Set entries = units.keySet();
-    Iterator iter = entries.iterator();
+    Set<Unit> entries = units.keySet();
+    Iterator<Unit> iter = entries.iterator();
     while (iter.hasNext())
     {
-        Territory terr = (Territory) iter.next();
-        IntegerMap<RepairRule> rules = units.get(terr);
+    	Unit unit = (Unit) iter.next();
+        IntegerMap<RepairRule> rules = units.get(unit);
 
         TreeSet<RepairRule> repairRules = new TreeSet<RepairRule>(repairRuleComparator);
         repairRules.addAll(rules.keySet());
@@ -89,14 +90,17 @@ public class SimpleUnitPanel extends JPanel
         {
             RepairRule repairRule = ruleIter.next();
             int quantity = rules.getInt(repairRule);
-
-            UnitType unit = (UnitType) repairRule.getResults().keySet().
-            iterator().next();
-            boolean damaged = false;
-            boolean disabled = false;
-//TODO Kev determine if we need to identify if the unit is hit/disabled
-            addUnits(player, data, quantity, unit, damaged, disabled);
-        }        
+            if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
+            {
+            	addUnits(player, data, quantity, unit.getType(), true, false);
+            }
+            else //if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
+            {
+            	//check to see if the repair rule matches the damaged unit
+            	if (unit.getType().equals(((UnitType) repairRule.getResults().keySet().iterator().next())))
+            		addUnits(player, data, quantity, unit.getType(), Matches.UnitHasSomeUnitDamage().match(unit), Matches.UnitIsDisabled().match(unit));
+            }
+        }
     }
   }
   /**

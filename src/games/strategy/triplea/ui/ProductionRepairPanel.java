@@ -22,8 +22,10 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.ui.*;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 
 import games.strategy.triplea.attatchments.TechAttachment;
@@ -58,9 +60,9 @@ public class ProductionRepairPanel extends JPanel
     private PlayerID m_id;
     private boolean m_bid;
     private GameData m_data;
-    private static HashMap<Territory, Integer> m_repairCount = new HashMap<Territory, Integer>();
+    private static HashMap<Unit, Integer> m_repairCount = new HashMap<Unit, Integer>();
     
-    public static HashMap<Territory, IntegerMap<RepairRule>> getProduction(PlayerID id, JFrame parent, GameData data, boolean bid, HashMap<Territory, IntegerMap<RepairRule>> initialPurchase, UIContext context)
+    public static HashMap<Unit, IntegerMap<RepairRule>> getProduction(PlayerID id, JFrame parent, GameData data, boolean bid, HashMap<Unit, IntegerMap<RepairRule>> initialPurchase, UIContext context)
     {
         return new ProductionRepairPanel(context).show(id, parent, data, bid, initialPurchase);
     }
@@ -68,7 +70,7 @@ public class ProductionRepairPanel extends JPanel
     /**
      * Shows the production panel, and returns a map of selected rules.
      */
-    public HashMap<Territory, IntegerMap<RepairRule>> show(PlayerID id, JFrame parent, GameData data, boolean bid, HashMap<Territory, IntegerMap<RepairRule>> initialPurchase)
+    public HashMap<Unit, IntegerMap<RepairRule>> show(PlayerID id, JFrame parent, GameData data, boolean bid, HashMap<Unit, IntegerMap<RepairRule>> initialPurchase)
     {
         if (!(parent == m_owner))
             m_dialog = null;
@@ -99,7 +101,7 @@ public class ProductionRepairPanel extends JPanel
         return this.m_rules;
     };
     
-    public static HashMap<Territory, Integer> getTerritoryRepairs()
+    public static HashMap<Unit, Integer> getUnitRepairs()
     {
         return m_repairCount;
     }
@@ -136,35 +138,65 @@ public class ProductionRepairPanel extends JPanel
     }
 
 
-    private void initRules(PlayerID player, GameData data, HashMap<Territory, IntegerMap<RepairRule>> initialPurchase)
+    private void initRules(PlayerID player, GameData data, HashMap<Unit, IntegerMap<RepairRule>> initialPurchase)
     {
         m_data.acquireReadLock();
         try
         {
             m_id = player;
-            Collection<Territory> factoryTerrs = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(data, player));
+            CompositeMatchAnd<Unit> myPotentiallyDamagedUnits = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsFactoryOrCanBeDamaged);
+            CompositeMatchAnd<Unit> myDamagedUnits = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitHasSomeUnitDamage());
+            Collection<Territory> terrsWithPotentiallyDamagedUnits = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myPotentiallyDamagedUnits));
             
             for(RepairRule repairRule : player.getRepairFrontier())
             {
-            	for(Territory terr : factoryTerrs)
+            	for(Territory terr : terrsWithPotentiallyDamagedUnits)
             	{
-                    TerritoryAttachment ta = TerritoryAttachment.get(terr);
-                    int unitProduction = ta.getUnitProduction();
-                    int PUProduction = ta.getProduction();
-
-                    if(unitProduction < PUProduction)
+                    if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
                     {
-                    	Rule rule = new Rule(repairRule, player, m_uiContext, terr);
-                        //int initialQuantity = initialPurchase.getInt(repairRule);
-                    	int initialQuantity = 0;
-                    	if (initialPurchase.get(terr) != null)
-                    	    initialQuantity = initialPurchase.get(terr).getInt(repairRule);
-                    	    //initialQuantity = initialPurchase.get(repairRule).getInt(repairRule);
-                    	rule.setQuantity(initialQuantity);
-                    	rule.setMax(PUProduction - unitProduction);
-                    	rule.setTerr(terr.getName().toString());
-                    	rule.setName(terr.getName().toString());
-                    	m_rules.add(rule);
+                    	TerritoryAttachment ta = TerritoryAttachment.get(terr);
+                        int unitProduction = ta.getUnitProduction();
+                        int PUProduction = ta.getProduction();
+
+                        if(unitProduction < PUProduction)
+                        {
+                        	for (Unit u : Match.getMatches(terr.getUnits().getUnits(), myPotentiallyDamagedUnits))
+                        	{
+                        		if (!repairRule.getResults().keySet().iterator().next().equals(u.getType()))
+                        			continue;
+                        		Rule rule = new Rule(repairRule, player, m_uiContext, u);
+                                //int initialQuantity = initialPurchase.getInt(repairRule);
+                            	int initialQuantity = 0;
+                            	if (initialPurchase.get(u) != null)
+                            	    initialQuantity = initialPurchase.get(u).getInt(repairRule);
+                            	    //initialQuantity = initialPurchase.get(repairRule).getInt(repairRule);
+                            	rule.setQuantity(initialQuantity);
+                            	rule.setMax(PUProduction - unitProduction);
+                            	rule.setUnit(u);
+                            	rule.setName(u.toString());
+                            	m_rules.add(rule);
+                        	}
+                        }
+                    }
+                    else //if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
+                    {
+                    	for (Unit u : Match.getMatches(terr.getUnits().getUnits(), myDamagedUnits))
+                    	{
+                    		if (!repairRule.getResults().keySet().iterator().next().equals(u.getType()))
+                    			continue;
+                    		TripleAUnit taUnit = (TripleAUnit) u;
+                    		Rule rule = new Rule(repairRule, player, m_uiContext, u);
+                            //int initialQuantity = initialPurchase.getInt(repairRule);
+                        	int initialQuantity = 0;
+                        	if (initialPurchase.get(u) != null)
+                        	    initialQuantity = initialPurchase.get(u).getInt(repairRule);
+                        	    //initialQuantity = initialPurchase.get(repairRule).getInt(repairRule);
+                        	rule.setQuantity(initialQuantity);
+                        	rule.setMax(taUnit.getHowMuchCanThisUnitBeRepaired(u, terr));
+                        	rule.setUnit(u);
+                        	rule.setName(u.toString());
+                        	m_rules.add(rule);
+                    	}
                     }
             	}
             }
@@ -225,9 +257,9 @@ public class ProductionRepairPanel extends JPanel
         }
     };
 
-    private HashMap<Territory, IntegerMap<RepairRule>> getProduction()
+    private HashMap<Unit, IntegerMap<RepairRule>> getProduction()
     {
-        HashMap<Territory,IntegerMap<RepairRule>> prod = new HashMap<Territory,IntegerMap<RepairRule>>();
+        HashMap<Unit,IntegerMap<RepairRule>> prod = new HashMap<Unit,IntegerMap<RepairRule>>();
         //IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
         Iterator<Rule> iter = m_rules.iterator();
         while (iter.hasNext())
@@ -237,10 +269,9 @@ public class ProductionRepairPanel extends JPanel
             if (quantity != 0)
             {
                 IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
-                Territory terr = m_data.getMap().getTerritory(rule.m_terr);
-                //m_repairCount.put(terr, quantity);
+                Unit unit = rule.getUnit();
                 repairRule.put(rule.getProductionRule(), quantity);
-                prod.put(terr, repairRule);
+                prod.put(unit, repairRule);
             }
         }
         return prod;
@@ -256,9 +287,9 @@ public class ProductionRepairPanel extends JPanel
         {
             Rule current = iter.next();
             spent += current.getQuantity() * current.getCost();
-            Territory terr = m_data.getMap().getTerritory(current.getTerr());
-            TerritoryAttachment ta = TerritoryAttachment.get(terr);
-            int maxProd = ta.getProduction() - ta.getUnitProduction();
+            Unit unit = current.getUnit();
+            TripleAUnit taUnit = (TripleAUnit) unit;
+            int maxProd = taUnit.getHowMuchCanThisUnitBeRepaired(unit, unit.getTerritoryUnitIsIn());
             current.setMax(maxProd);
         }
         int leftToSpend = (int) (PUs - spent);
@@ -280,9 +311,9 @@ public class ProductionRepairPanel extends JPanel
         private ScrollableTextField m_text = new ScrollableTextField(0, Integer.MAX_VALUE);
         private float m_cost;         
         private RepairRule m_rule;
-        private String m_terr;
+        private Unit m_unit;
 
-        Rule(RepairRule rule, PlayerID id, UIContext uiContext, Territory repairLocation)
+        Rule(RepairRule rule, PlayerID id, UIContext uiContext, Unit repairUnit)
         {            
             setLayout(new GridBagLayout());
             m_rule = rule;
@@ -292,16 +323,36 @@ public class ProductionRepairPanel extends JPanel
                 m_cost /= 2;
             
             UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
+            
+            /*if (!type.equals(repairUnit.getType()) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data))
+            {
+            	// older maps use _hit versions in the results tab.  so, change to non _hit version
+            	String newType = type.getName();
+            	if (newType.endsWith("_hit"))
+            	{
+            		newType = newType.substring(0, (newType.lastIndexOf("_hit") != -1 ? newType.lastIndexOf("_hit") : newType.length()-1));
+            		if (m_data.getUnitTypeList().getUnitType(newType) != null)
+            			type = m_data.getUnitTypeList().getUnitType(newType);
+            	}
+            }*/
+            
+            if (!type.equals(repairUnit.getType()))
+            	throw new IllegalStateException("Rule unit type " + type.getName() + " does not match " + repairUnit.toString() + ".  Please make sure your maps are up to date!");
+            
             UnitAttachment attach= UnitAttachment.get(type);
-            //TODO Kev determine if we need to identify if the unit is hit/disabled
-            Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, false, false);
+            TripleAUnit taUnit = (TripleAUnit) repairUnit;
+            
+            Icon icon;
+            if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data))
+            	icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, true, false);
+            else //if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data))
+            	icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, Matches.UnitHasSomeUnitDamage().match(repairUnit), Matches.UnitIsDisabled().match(repairUnit));
+            
             String text = " x " + (m_cost < 10 ? " " : "") + m_cost;
             JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
-            JLabel info=new JLabel(repairLocation.getName().toString());
+            JLabel info=new JLabel(repairUnit.getTerritoryUnitIsIn().getName());
             
-            int prod = TerritoryAttachment.get(repairLocation).getProduction();
-            int unitProd = TerritoryAttachment.get(repairLocation).getUnitProduction();
-            int toRepair = prod - unitProd;
+            int toRepair = taUnit.getHowMuchCanThisUnitBeRepaired(repairUnit, repairUnit.getTerritoryUnitIsIn());
 
             JLabel remaining=new JLabel("Production left to repair: " + toRepair);
             int space = 8;
@@ -346,14 +397,14 @@ public class ProductionRepairPanel extends JPanel
             m_text.setMax(max);
         }
 
-        public String getTerr()
+        public Unit getUnit()
         {
-            return m_terr;
+            return m_unit;
         }
         
-        void setTerr(String terr)
+        void setUnit(Unit unit)
         {
-            m_terr = terr;
+            m_unit = unit;
         }
         
     }

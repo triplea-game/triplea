@@ -441,9 +441,17 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         		}
         	}
         	
-        	if(bombedTerrs.size() > 0)
+        	Collection<Unit> damagedUnits = new ArrayList<Unit>();
+        	Match<Unit> myFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitIsFactoryOrCanBeDamaged);
+        	
+        	for (Territory t : bombedTerrs)
         	{
-        	    HashMap<Territory, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
+        		damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myFactories));
+        	}
+        	
+        	if(bombedTerrs.size() > 0 && damagedUnits.size() > 0)
+        	{
+        	    HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
         		if (repair != null)
         		{
         			purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
@@ -461,13 +469,16 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(m_bridge.getGameData()))
         {
         	GameData data = m_bridge.getGameData();
-        	Collection<Territory> bombedTerrs = new ArrayList<Territory>();
         	Match<Unit> myDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitHasSomeUnitDamage());
-        	bombedTerrs.addAll(Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamaged)));
-        	
-        	if(bombedTerrs.size() > 0)
+        	Collection<Unit> damagedUnits = new ArrayList<Unit>();
+        	for (Territory t : data.getMap().getTerritories())
         	{
-        	    HashMap<Territory, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
+        		damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myDamaged));
+        	}
+        	
+        	if(damagedUnits.size() > 0)
+        	{
+        	    HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
         		if (repair != null)
         		{
         			purchaseDel = (IPurchaseDelegate) m_bridge.getRemote(); //TODO: veq fix

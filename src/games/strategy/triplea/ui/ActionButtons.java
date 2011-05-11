@@ -243,7 +243,7 @@ public class ActionButtons extends JPanel
      * 
      * @return null if no move was made.
      */
-    public HashMap<Territory, IntegerMap<RepairRule>> waitForRepair(boolean bid)
+    public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(boolean bid)
     {
         return m_repairPanel.waitForRepair(bid);
     }

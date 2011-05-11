@@ -49,7 +49,7 @@ public class RepairPanel extends ActionPanel
 {
 
   private JLabel actionLabel = new JLabel();
-  private HashMap<Territory, IntegerMap<RepairRule>> m_repair;
+  private HashMap<Unit, IntegerMap<RepairRule>> m_repair;
   
   private boolean m_bid;
   private SimpleUnitPanel m_unitsPanel;
@@ -73,7 +73,7 @@ public class RepairPanel extends ActionPanel
   {
     super.display(id);
     
-    m_repair = new HashMap<Territory, IntegerMap<RepairRule>>();
+    m_repair = new HashMap<Unit, IntegerMap<RepairRule>>();
     
     SwingUtilities.invokeLater(new Runnable()
     {
@@ -92,7 +92,7 @@ public class RepairPanel extends ActionPanel
             add(m_repairdSoFar);
             add(Box.createVerticalStrut(4));
             
-            m_unitsPanel.setUnitsFromRepairRuleMap(new HashMap<Territory, IntegerMap<RepairRule>>(), id, getData());
+            m_unitsPanel.setUnitsFromRepairRuleMap(new HashMap<Unit, IntegerMap<RepairRule>>(), id, getData());
             add(m_unitsPanel);
             add(Box.createVerticalGlue());
             SwingUtilities.invokeLater(REFRESH);
@@ -116,7 +116,7 @@ public class RepairPanel extends ActionPanel
     
   }
   
-  public HashMap<Territory, IntegerMap<RepairRule>> waitForRepair(boolean bid)
+  public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(boolean bid)
   {
     m_bid = bid;
     refreshActionLabelText();
@@ -163,16 +163,16 @@ public class RepairPanel extends ActionPanel
   };
   
 //Spin through the territories to get this.
-  private int getTotalValues(HashMap<Territory, IntegerMap<RepairRule>> m_repair)
+  private int getTotalValues(HashMap<Unit, IntegerMap<RepairRule>> m_repair)
   {
-      Collection<Territory> terrs = m_repair.keySet();
-      Iterator<Territory> iter = terrs.iterator();
+      Collection<Unit> units = m_repair.keySet();
+      Iterator<Unit> iter = units.iterator();
       int totalValues = 0;
       
       while(iter.hasNext())
       {
-          Territory terr = iter.next();
-          totalValues += m_repair.get(terr).totalValues();
+          Unit unit = iter.next();
+          totalValues += m_repair.get(unit).totalValues();
       }
       return totalValues;
   }
@@ -192,9 +192,9 @@ public class RepairPanel extends ActionPanel
             }
         }
         
-        //give a warning if the 
-        //player tries to produce too much
-        if(isWW2V2() || isRestrictedPurchase() || isSBRAffectsUnitProduction()) 
+        //give a warning if the player tries to produce too much
+        // does this piece of code even do anything? why is it here?
+        /*if(isWW2V2() || isRestrictedPurchase() || isSBRAffectsUnitProduction() || isDamageFromBombingDoneToUnitsInsteadOfTerritories()) 
         {
             int totalProd = 0;
             getData().acquireReadLock();
@@ -217,6 +217,10 @@ public class RepairPanel extends ActionPanel
             		        totalProd += Math.max(0, terrProd);
                     }
             	}
+            	else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories())
+            	{
+            		// check to make sure we did not over repair the individual unit?
+            	}
             	else
             	{
 	                for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getData(), getCurrentPlayer()))) 
@@ -228,7 +232,7 @@ public class RepairPanel extends ActionPanel
             {
                 getData().releaseReadLock();
             }
-        }
+        }*/
                   
         release();
      

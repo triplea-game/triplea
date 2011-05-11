@@ -36,6 +36,7 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
@@ -202,7 +203,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
         // add changes for spent resources
         String remaining = removeFromPlayer(m_player, costs, changes, totalUnits);
 
-        addHistoryEvent(totalUnits,  remaining);  
+        addHistoryEvent(totalUnits, remaining, false);  
 
         // commit changes
         m_bridge.addChange(changes);
@@ -214,7 +215,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     /**
      * Returns an error code, or null if all is good.
      */
-    public String purchaseRepair(Map<Territory, IntegerMap<RepairRule>> repairRules)
+    public String purchaseRepair(Map<Unit, IntegerMap<RepairRule>> repairRules)
     {	  
         IntegerMap<Resource> costs = getRepairCosts(repairRules);
 
@@ -251,39 +252,55 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
         }
         
         //Get the map of the factories that were repaired and how much for each
-        Map<Territory, Integer> repairMap = getTerritoryRepairs(repairRules);
+        Map<Unit, Integer> repairMap = getTerritoryRepairs(repairRules);
 
         if(!repairMap.isEmpty())
         {
-            Collection<Territory> factoryTerrs = Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(m_data, m_player));
-
-            for(Territory terr : factoryTerrs)
-            {
-                if (repairMap.containsKey(terr))
-                {
-                    int repairCount = repairMap.get(terr);
+        	Collection<Unit> repairUnits = repairMap.keySet();
+        	
+        	for (Unit u : repairUnits)
+        	{
+        		if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data))
+        		{
+        			int repairCount = repairMap.get(u);
                     
-                    TerritoryAttachment ta = TerritoryAttachment.get(terr);
-                    int currentDamage = ta.getUnitProduction();
-                    // veq separate for unit damage vs territory damage
-
-                    IntegerMap<Unit> hits = new IntegerMap<Unit>();
-                    Collection<Unit> factories = Match.getMatches(terr.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged);
-
                     //Display appropriate damaged/repaired factory and factory damage totals
                     if(repairCount>0)
-                    {                    
-                    	int newDamageTotal = ta.getProduction() - (currentDamage + repairCount);
+                    {
+                    	Territory terr = u.getTerritoryUnitIsIn();
+            			TerritoryAttachment ta = TerritoryAttachment.get(terr);
+                        int currentDamage = ta.getUnitProduction();
+                        IntegerMap<Unit> hits = new IntegerMap<Unit>();
+                        
+                        int newDamageTotal = ta.getProduction() - (currentDamage + repairCount);
                     	if(newDamageTotal < 0) {
                     		return "You cannot repair more than a territory has been hit";
                     	}
-                        hits.put(factories.iterator().next(), newDamageTotal);
+                        hits.put(u, newDamageTotal);
                         changes.add(ChangeFactory.unitsHit(hits));
-                    }            	
-
-                    changes.add(ChangeFactory.attachmentPropertyChange(ta, (new Integer(currentDamage + repairCount)).toString(), "unitProduction"));                    
-                }
-            }
+                        changes.add(ChangeFactory.attachmentPropertyChange(ta, (new Integer(currentDamage + repairCount)).toString(), "unitProduction"));
+                    }
+        		}
+        		else //if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data))
+        		{
+        			int repairCount = repairMap.get(u);
+        			
+                    //Display appropriate damaged/repaired factory and factory damage totals
+                    if(repairCount>0)
+                    {
+                    	IntegerMap<Unit> hits = new IntegerMap<Unit>();
+                        TripleAUnit taUnit = (TripleAUnit) u;
+                        
+                        int newDamageTotal = taUnit.getUnitDamage() - repairCount;
+                    	if(newDamageTotal < 0) {
+                    		return "You cannot repair more than a unit has been hit";
+                    	}
+                        hits.put(u, newDamageTotal);
+                        changes.add(ChangeFactory.unitsHit(hits));
+                        changes.add(ChangeFactory.unitPropertyChange(u, newDamageTotal, TripleAUnit.UNIT_DAMAGE));
+                    }
+        		}
+        	}
         }
         else
         {
@@ -294,24 +311,22 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
         // add changes for spent resources
         String remaining = removeFromPlayer(m_player, costs, changes, totalUnits);
 
-        addHistoryEvent(totalUnits,  remaining);  
+        addHistoryEvent(totalUnits, remaining, true);  
 
         // commit changes
         m_bridge.addChange(changes);
 
-
-
         return null;
     }
 
-    private HashMap<Territory, Integer> getTerritoryRepairs(Map<Territory, IntegerMap<RepairRule>> repairRules)
+    private HashMap<Unit, Integer> getTerritoryRepairs(Map<Unit, IntegerMap<RepairRule>> repairRules)
     {
-        HashMap<Territory, Integer> repairMap = new HashMap<Territory, Integer>();
+        HashMap<Unit, Integer> repairMap = new HashMap<Unit, Integer>();
         
-        for (Territory terr : repairRules.keySet())
+        for (Unit u : repairRules.keySet())
         {
             
-            IntegerMap<RepairRule> rules = repairRules.get(terr);
+            IntegerMap<RepairRule> rules = repairRules.get(u);
 
             TreeSet<RepairRule> repRules = new TreeSet<RepairRule>(repairRuleComparator);
             repRules.addAll(rules.keySet());
@@ -321,7 +336,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
                 RepairRule repairRule = ruleIter.next();
                 int quantity = rules.getInt(repairRule);
 
-                repairMap.put(terr, quantity);
+                repairMap.put(u, quantity);
             }        
         }
         
@@ -340,14 +355,24 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
         }
     };
     
-    private void addHistoryEvent(Collection<Unit> totalUnits, String remainingText)
+    private void addHistoryEvent(Collection<Unit> totalUnits, String remainingText, boolean repair)
     {
         // add history event
         String transcriptText;
-        if(!totalUnits.isEmpty())
-            transcriptText = m_player.getName() + " buy " + MyFormatter.unitsToTextNoOwner(totalUnits)+"; "+ remainingText;
+        if (!repair)
+        {
+        	if(!totalUnits.isEmpty())
+                transcriptText = m_player.getName() + " buy " + MyFormatter.unitsToTextNoOwner(totalUnits)+"; "+ remainingText;
+            else
+                transcriptText = m_player.getName() + " buy nothing; "+ remainingText;
+        }
         else
-            transcriptText = m_player.getName() + " buy nothing; "+ remainingText;
+        {
+        	if(!totalUnits.isEmpty())
+                transcriptText = m_player.getName() + " repair " + totalUnits.size() + " damage on " + MyFormatter.unitsToTextNoOwner(totalUnits) + "; "+ remainingText;
+            else
+                transcriptText = m_player.getName() + " buy nothing; "+ remainingText;
+        }
         m_bridge.getHistoryWriter().startEvent(transcriptText);
         m_bridge.getHistoryWriter().setRenderingData(totalUnits);
     }
@@ -366,22 +391,22 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     }
 
 
-    private IntegerMap<Resource> getRepairCosts(Map<Territory, IntegerMap<RepairRule>> repairRules)
+    private IntegerMap<Resource> getRepairCosts(Map<Unit, IntegerMap<RepairRule>> repairRules)
     {        
-        Collection<Territory> terrs = repairRules.keySet();
-        Iterator<Territory> iter = terrs.iterator();    
+        Collection<Unit> units = repairRules.keySet();
+        Iterator<Unit> iter = units.iterator();    
         IntegerMap<Resource> costs = new IntegerMap<Resource>();        
 
         while(iter.hasNext())
         {
-            Territory terr = iter.next();
+            Unit u = iter.next();
 
-            Iterator<RepairRule> rules = repairRules.get(terr).keySet().iterator();
+            Iterator<RepairRule> rules = repairRules.get(u).keySet().iterator();
 
-            while(rules.hasNext() )
+            while(rules.hasNext())
             {
                 RepairRule rule = rules.next();
-                costs.addMultiple(rule.getCosts(), repairRules.get(terr).getInt(rule));
+                costs.addMultiple(rule.getCosts(), repairRules.get(u).getInt(rule));
             }
         }
        
@@ -401,22 +426,22 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
         return costs;
     }
 
-    private IntegerMap<NamedAttachable> getRepairResults(Map<Territory, IntegerMap<RepairRule>> repairRules)
+    private IntegerMap<NamedAttachable> getRepairResults(Map<Unit, IntegerMap<RepairRule>> repairRules)
     {
-        Collection<Territory> terrs = repairRules.keySet();
-        Iterator<Territory> iter = terrs.iterator();    
+        Collection<Unit> units = repairRules.keySet();
+        Iterator<Unit> iter = units.iterator();    
         IntegerMap<NamedAttachable> costs = new IntegerMap<NamedAttachable>();        
 
         while(iter.hasNext())
         {
-            Territory terr = iter.next();
+            Unit u = iter.next();
 
-            Iterator<RepairRule> rules = repairRules.get(terr).keySet().iterator();
+            Iterator<RepairRule> rules = repairRules.get(u).keySet().iterator();
 
             while(rules.hasNext() )
             {
                 RepairRule rule = rules.next();
-                costs.addMultiple(rule.getResults(), repairRules.get(terr).getInt(rule));
+                costs.addMultiple(rule.getResults(), repairRules.get(u).getInt(rule));
             }
         }
         /*IntegerMap<NamedAttachable> costs = new IntegerMap<NamedAttachable>();
@@ -483,8 +508,8 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
                 if (categorized.size() == 1)
                 {
                     UnitCategory unitCategory =  categorized.iterator().next();
-                    if(unitCategory.getType().getName().endsWith("_hit"))
-                        cost = (int) (Math.round(quantity/2));
+                    //if(unitCategory.getType().getName().endsWith("_hit"))
+                    cost = (int) (Math.round(quantity/2));
                 }
             }
 

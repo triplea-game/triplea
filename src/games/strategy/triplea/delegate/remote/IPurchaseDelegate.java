@@ -17,6 +17,7 @@ package games.strategy.triplea.delegate.remote;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.message.IRemote;
 import games.strategy.util.IntegerMap;
 
@@ -34,5 +35,5 @@ public interface IPurchaseDelegate extends IRemote
      */
     public String purchase(IntegerMap<ProductionRule> productionRules);
     
-    public String purchaseRepair(Map<Territory, IntegerMap<RepairRule>> productionRules);
+    public String purchaseRepair(Map<Unit, IntegerMap<RepairRule>> productionRules);
 }

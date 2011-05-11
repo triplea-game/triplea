@@ -501,7 +501,7 @@ public class Matches
 
     /**
      * Factories are bombable/rocketable already.
-     * Use a CompositeMatchOr to find factories + canBeDamaged
+     * Use a CompositeMatchOr to find factories + canBeDamaged (Matches.UnitIsFactoryOrCanBeDamaged)
      */
     public static final Match<Unit> UnitCanBeDamagedButIsNotFactory = new Match<Unit>()
     {

@@ -135,6 +135,11 @@ public class Unit extends GameDataComponent implements Serializable
   {
     return m_type.getName() + " owned by " + m_owner.getName();
   }
+  
+  public String toStringNoOwner()
+  {
+    return m_type.getName();
+  }
 
 
 

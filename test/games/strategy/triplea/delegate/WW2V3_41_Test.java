@@ -1824,7 +1824,7 @@ public class WW2V3_41_Test extends TestCase {
         	RepairRule repair = germans(m_data).getRepairFrontier().getRules().get(0);
         	IntegerMap<RepairRule> repairs = new IntegerMap<RepairRule>();
         	repairs.put(repair, 1);
-        	String error = del.purchaseRepair(Collections.singletonMap(germany, repairs));
+        	String error = del.purchaseRepair(Collections.singletonMap(Match.getMatches(germany.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged).iterator().next(), repairs));
         	assertValid(error);
         	
         	assertEquals(factory.getHits(), 0);
@@ -1851,7 +1851,7 @@ public class WW2V3_41_Test extends TestCase {
         	repair = germans(m_data).getRepairFrontier().getRules().get(0);
         	repairs = new IntegerMap<RepairRule>();
         	repairs.put(repair, 2);
-        	error = del.purchaseRepair(Collections.singletonMap(germany, repairs));
+        	error = del.purchaseRepair(Collections.singletonMap(Match.getMatches(germany.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged).iterator().next(), repairs));
         	assertValid(error);
         	
         	assertEquals(factory.getHits(), 0);
@@ -1881,7 +1881,7 @@ public class WW2V3_41_Test extends TestCase {
         	IntegerMap<RepairRule> repairs = new IntegerMap<RepairRule>();
         	//we have 1 damaged marker, but trying to repair 2
         	repairs.put(repair, 2);
-        	String error = del.purchaseRepair(Collections.singletonMap(germany, repairs));
+        	String error = del.purchaseRepair(Collections.singletonMap(Match.getMatches(germany.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged).iterator().next(), repairs));
         	assertError(error);        	
         }
         

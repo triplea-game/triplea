@@ -595,7 +595,6 @@
                 <unit name="bunker"/>
                 <unit name="aaGun"/>
                 <unit name="factory"/>
-                <unit name="factory_hit"/>
                 <unit name="airfield"/>
                 <unit name="harbour"/>
         </unitList>
@@ -1002,20 +1001,50 @@
 			   <!-- if you use ww2v3 style factory damage, you need repair rules -->
                 <repairRule name="repairFactory">
                         <cost resource="PUs" quantity="1" />
-                        <result resourceOrUnit="factory_hit" quantity="1"/>
+                        <result resourceOrUnit="factory" quantity="1"/>
+                </repairRule>
+                <repairRule name="repairBunker">
+                        <cost resource="PUs" quantity="1" />
+                        <result resourceOrUnit="bunker" quantity="1"/>
+                </repairRule>
+                <repairRule name="repairAirfield">
+                        <cost resource="PUs" quantity="1" />
+                        <result resourceOrUnit="airfield" quantity="1"/>
+                </repairRule>
+                <repairRule name="repairHarbour">
+                        <cost resource="PUs" quantity="1" />
+                        <result resourceOrUnit="harbour" quantity="1"/>
                 </repairRule>
 
                 <repairRule name="repairFactoryIndustrialTechnology">
                         <cost resource="PUs" quantity="1" />
-                        <result resourceOrUnit="factory_hit" quantity="2"/>
+                        <result resourceOrUnit="factory" quantity="2"/>
+                </repairRule>
+                <repairRule name="repairBunkerIndustrialTechnology">
+                        <cost resource="PUs" quantity="1" />
+                        <result resourceOrUnit="bunker" quantity="2"/>
+                </repairRule>
+                <repairRule name="repairAirfieldIndustrialTechnology">
+                        <cost resource="PUs" quantity="1" />
+                        <result resourceOrUnit="airfield" quantity="2"/>
+                </repairRule>
+                <repairRule name="repairHarbourIndustrialTechnology">
+                        <cost resource="PUs" quantity="1" />
+                        <result resourceOrUnit="harbour" quantity="2"/>
                 </repairRule>
 
                 <repairFrontier name="repair">
                 	<repairRules name="repairFactory"/>
+                	<repairRules name="repairBunker"/>
+                	<repairRules name="repairAirfield"/>
+                	<repairRules name="repairHarbour"/>
                 </repairFrontier>
 
                 <repairFrontier name="repairIndustrialTechnology">
                 	<repairRules name="repairFactoryIndustrialTechnology"/>
+                	<repairRules name="repairBunkerIndustrialTechnology"/>
+                	<repairRules name="repairAirfieldIndustrialTechnology"/>
+                	<repairRules name="repairHarbourIndustrialTechnology"/>
                 </repairFrontier>
 
 				<!-- only "production" is needed for most maps. if you use ww2v2 tech then you need IndustrialTechnology production, and if you use ww2v3 tech you need Shipyards -->
@@ -2169,7 +2198,6 @@
 						 <!-- requiresUnits is a list of units required to be present in the territory in order for you to build this unit there.  Can have multiple instances. Only one instance needs to be true in order to build. -->
 						 <option name="requiresUnits" value="fighter:bomber:air_transport"/>
 						 <option name="requiresUnits" value="factory"/>
-						 <option name="requiresUnits" value="factory_hit"/>
 						 <option name="requiresUnits" value="airfield"/>
 						 <option name="requiresUnits" value="harbour"/>
 						 <option name="requiresUnits" value="infantry"/>
@@ -2248,11 +2276,6 @@
 						 <option name="canProduceUnits" value="true"/>-->
                 </attatchment>
 
-                <attatchment name="unitAttatchment" attatchTo="factory_hit" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
-                         <option name="isFactory" value="true"/>
-						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
-                </attatchment>
-
                 <!-- AA Gun -->
                 <attatchment name="unitAttatchment" attatchTo="aaGun" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="isAA" value="true"/>
@@ -2310,8 +2333,9 @@
                         <option name="capital" value="Germans"/>
 						<!-- victoryCity uses an image located in the "misc" folder of a map called "vc.png", and the location is determined in a file called "vc.txt" in the map's root directory -->
 						<option name="victoryCity" value="true"/>
-						<!-- unitProduction is used only with ww2v3 factory damage rules. only put in territories that start with a factory. should be equal to the production of the territory -->
-                        <option name="unitProduction" value="14"/>
+						<!-- unitProduction is used only with ww2v3 factory damage rules. only put in territories that start with a factory. should be equal to the production of the territory, but can be less if you want the factories to start damaged.  
+								Only needed if you are using "SBR Affects Unit Production", and not needed if you are using "Damage From Bombing Done To Units Instead Of Territories" 
+                        <option name="unitProduction" value="14"/>-->
 						<!--- originalFactory means that the original controller of the territory may produce infinite units there, however if it is captured the opponent may only produce as normal, not infinite units 
 						<option name="originalFactory" value="true"/> -->
 						<!-- navalBase territory attachment works according to original pacific rules: it increases the non-combat movement of naval units by +1 IF they go from friendly naval base TO friendly naval base
@@ -2383,7 +2407,7 @@
                         <option name="production" value="8"/>
                         <option name="capital" value="Italians"/>
 						<option name="victoryCity" value="true"/>
-                        <option name="unitProduction" value="8"/>
+                        <!--<option name="unitProduction" value="8"/>-->
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Mexico" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2437,7 +2461,7 @@
                 <attatchment name="territoryAttatchment" attatchTo="Western United States" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="10"/>
 						<option name="victoryCity" value="true"/>
-                        <option name="unitProduction" value="10"/>
+                        <!--<option name="unitProduction" value="10"/>-->
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Karelia S.S.R." javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2518,7 +2542,7 @@
                         <option name="production" value="8"/>
                         <option name="capital" value="British"/>
 						<option name="victoryCity" value="true"/>
-                        <option name="unitProduction" value="8"/>
+                        <!--<option name="unitProduction" value="8"/>-->
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Western Europe" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2560,7 +2584,7 @@
                 <attatchment name="territoryAttatchment" attatchTo="Caucus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="4"/>
 						<option name="victoryCity" value="true"/>
-                        <option name="unitProduction" value="4"/>
+                        <!--<option name="unitProduction" value="4"/>-->
 						<!-- you can have multiple capitals per country, and can modify if they capture or destroy their PUs, and how many capitals are needed for that to happen -->
                         <!--<option name="capital" value="Russians"/>-->
                 </attatchment>
@@ -2575,7 +2599,7 @@
 
                 <attatchment name="territoryAttatchment" attatchTo="East Balkans" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-                        <option name="unitProduction" value="3"/>
+                        <!--<option name="unitProduction" value="3"/>-->
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Wake Island" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2625,7 +2649,7 @@
                         <option name="production" value="12"/>
                         <option name="capital" value="Americans"/>
 						<option name="victoryCity" value="true"/>
-                        <option name="unitProduction" value="12"/>
+                        <!--<option name="unitProduction" value="12"/>-->
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Belorussia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2641,7 +2665,7 @@
                         <option name="production" value="8"/>
                         <option name="capital" value="Russians"/>
 						<option name="victoryCity" value="true"/>
-                        <option name="unitProduction" value="8"/>
+                        <!--<option name="unitProduction" value="8"/>-->
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Anglo Egypt" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2686,7 +2710,7 @@
                         <option name="production" value="8"/>
                         <option name="capital" value="Japanese"/>
 						<option name="victoryCity" value="true"/>
-                        <option name="unitProduction" value="8"/>
+                        <!--<option name="unitProduction" value="8"/>-->
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Caroline Islands" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -4299,12 +4323,12 @@
 				</property>
 
 						<!-- SBR Affects Unit Production has Strategic Bombing and Rockets do damage to a territory rather than directly to the player's PUs (the bank) -->
-				<property name="SBR Affects Unit Production" value="true" editable="true">
+				<property name="SBR Affects Unit Production" value="false" editable="false">
 						<boolean/>
 				</property>
 
 						<!-- Damage From Bombing Done To Units Instead Of Territories has Strategic Bombing and Rockets do damage to a specific unit rather than directly to the player's PUs or to a territory.  You must have "SBR Affects Unit Production" false for this to work -->
-				<property name="Damage From Bombing Done To Units Instead Of Territories" value="false" editable="true">
+				<property name="Damage From Bombing Done To Units Instead Of Territories" value="true" editable="false">
 						<boolean/>
 				</property>
 

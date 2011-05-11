@@ -1049,7 +1049,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         {
             rrules = player.getRepairFrontier().getRules();
             IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
-            HashMap<Territory, IntegerMap<RepairRule>> repair = new HashMap<Territory, IntegerMap<RepairRule>>();
+            HashMap<Unit, IntegerMap<RepairRule>> repair = new HashMap<Unit, IntegerMap<RepairRule>>();
             final int minimumUnitPrice = 3;
             int diff = 0;
             int totalDamage = 0;
@@ -1094,7 +1094,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                         else
                             currentProduction += diff + ta.getUnitProduction();
                     	repairMap.add(rrule, diff);
-                        repair.put(capitol, repairMap);
+                        repair.put(Match.getMatches(capitol.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged).iterator().next(), repairMap);
                         leftToSpend -= diff;
                         purchaseDelegate.purchaseRepair(repair);
                         repair.clear();
@@ -1132,7 +1132,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                             else
                                 currentProduction += diff + ta.getUnitProduction();
                             repairMap.add(rrule, diff);
-                            repair.put(fixTerr, repairMap);
+                            repair.put(Match.getMatches(fixTerr.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged).iterator().next(), repairMap);
                             leftToSpend -= diff;
                             purchaseDelegate.purchaseRepair(repair);
                             repair.clear();

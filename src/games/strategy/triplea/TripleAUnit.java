@@ -406,4 +406,9 @@ public class TripleAUnit extends Unit
         else
         	return Integer.MAX_VALUE;
     }
+    
+    public int getHowMuchCanThisUnitBeRepaired(final Unit u, final Territory t)
+    {
+    	return Math.max(0, (this.getHowMuchDamageCanThisUnitTakeTotal(u, t) - this.getHowMuchMoreDamageCanThisUnitTake(u, t)));
+    }
 }

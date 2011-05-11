@@ -1,4 +1,9 @@
 Changes for 1.3.1.0
+* Finished making repair rules work for both damage done to units and damage done to territories. 
+  A note to map makers: repair rules should mention the actual unit, not a _hit version of the unit.  This means all repair rules that mention "factory_hit" will need to be changed to mention "factory". (veqryn)
+
+* Initial work on making repair rules work for damage done to units. (veqryn)
+
 * Fixed null pointer in moore ai for games which don't have carriers. (veqryn)
 
 * Added method to unit class to find territory unit is in. (veqryn)

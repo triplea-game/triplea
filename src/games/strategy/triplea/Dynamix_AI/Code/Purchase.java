@@ -215,7 +215,7 @@ public class Purchase
             ourTers = DSorting.SortTerritoriesByLandThenNoCondDistance_A(ourTers, data, ourCap); //We want to repair the factories close to our capital first
 
             List<RepairRule> rrules = player.getRepairFrontier().getRules();
-            HashMap<Territory, IntegerMap<RepairRule>> factoryRepairs = new HashMap<Territory, IntegerMap<RepairRule>>();
+            HashMap<Unit, IntegerMap<RepairRule>> factoryRepairs = new HashMap<Unit, IntegerMap<RepairRule>>();
             int totalRepairCosts = 0;
 
             boolean madeRepairs = false;
@@ -239,7 +239,7 @@ public class Purchase
                     {
                         IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
                         repairMap.add(rrule, repairAmount);
-                        factoryRepairs.put(fixTerr, repairMap);
+                        factoryRepairs.put(Match.getMatches(fixTerr.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged).iterator().next(), repairMap);
                         madeRepairs = true;
                         PUsToSpend -= repairAmount;
                         totalRepairCosts += repairAmount;
