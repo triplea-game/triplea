@@ -468,6 +468,7 @@ public class DoNonCombatMove
 
         final GameData data = pack.Data;
         final PlayerID player = pack.Player;
+        final List<Territory> ourCaps = TerritoryAttachment.getAllCapitals(player, data);
         Match<Territory> isLandGrabCall = new Match<Territory>()
         {
             @Override
@@ -536,11 +537,18 @@ public class DoNonCombatMove
             @Override
             public boolean match(Territory ter)
             {
-                //TODO
-                if(true)
+                if(!DSettings.LoadSettings().CR_enableCallForDefensiveFront)
                     return false;
-
-                return true;
+                if (ter.isWater())
+                    return false;
+                if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
+                    return false;
+                if (!data.getAllianceTracker().isAllied(ter.getOwner(), player))
+                    return false;
+                if(!ourCaps.contains(ter))
+                    return false;
+                
+                return true; //Always call enough units to keep cap safe
             }
         };
         List<Territory> tersWeCanCallTo = DUtils.ToList(data.getMap().getTerritories());

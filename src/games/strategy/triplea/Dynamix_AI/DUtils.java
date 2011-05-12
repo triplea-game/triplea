@@ -1079,13 +1079,13 @@ public class DUtils
         Territory ourCap = GetOurClosestCap(data, player, target);
         int jumps = DUtils.GetJumpsFromXToY_PassableLand(data, target, ourCap);
 
-        //3) If this ter is 1 jump away from our cap, add 18, if 2 jumps away, add 8, if three jumps away, add 2
+        //3) If this ter is 1 jump away from our cap, add 90, if 2 jumps away, add 40, if three jumps away, add 10
         if(jumps == 1)
-            result += 180;
+            result += 90;
         else if(jumps == 2)
-            result += 80;
+            result += 40;
         else if(jumps == 3)
-            result += 20;
+            result += 10;
 
         List<Territory> enemyCaps = DUtils.GetAllEnemyCaps(data, player);
         if(enemyCaps.contains(target))
@@ -1099,6 +1099,7 @@ public class DUtils
 
         result += TerritoryAttachment.get(target).getProduction() * 10;
         result += data.getMap().getNeighbors(target, Matches.TerritoryIsLand).size() * 2;
+        result += data.getMap().getNeighbors(target, DMatches.territoryIsOwnedByNNEnemy(data, player)).size();
 
         return result;
     }
@@ -1302,7 +1303,7 @@ public class DUtils
     }
     public static float GetCMTaskPriority_Trade(GameData data, PlayerID player, Territory ter)
     {
-        float priority = -1000F;
+        float priority = 1000F;
         priority += DUtils.GetValueOfLandTer(ter, data, player);
 
         StrategyType strategyType = StrategyCenter.get(data, player).GetCalculatedStrategyAssignments().get(ter.getOwner());
@@ -1339,7 +1340,7 @@ public class DUtils
     }
     public static float GetNCMCallPriority_ForDefensiveFront(GameData data, PlayerID player, Territory ter)
     {
-        float priority = 0F; //TODO
+        float priority = 1000000F;
         priority += GetValueOfLandTer(ter, data, player);
         return priority;
     }    
@@ -3213,6 +3214,8 @@ public class DUtils
                 continue;
             if(!match.match(testUnit))
                 continue;
+            //if(ua.isAir() && Math.random() <= .50F)
+            //    continue; //50% of the time, ignore air units (so we don't want to buy them)
 
             units.add(testUnit);
             AggregateResults results = DUtils.GetBattleResults(units, fakeDefenseUnits, testTer, data, calcRunsPerUnit, true);

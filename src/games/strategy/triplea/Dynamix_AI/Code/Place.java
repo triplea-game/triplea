@@ -223,6 +223,26 @@ public class Place
             }
         }
 
+        if (DSettings.LoadSettings().EnableResourceCollectionIncreaser && DSettings.LoadSettings().ResourceCollectionIncreaseAmount != 0) //AI cheat for more interesting gameplay. Can be turned on with AI settings window.
+        {
+            int PUChange = DSettings.LoadSettings().ResourceCollectionIncreaseAmount;
+            if (PUChange > 0)
+            {
+                final int newPUs = player.getResources().getQuantity(GlobalCenter.GetPUResource()) + PUChange;
+
+                final String message = ai.getName() + " use an RCI cheat, and increase their PUs from " + player.getResources().getQuantity(GlobalCenter.GetPUResource()) + " to " + newPUs;
+                DUtils.Log(Level.FINE, message);
+                Runnable runner = new Runnable()
+                {public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
+                try{SwingUtilities.invokeAndWait(runner);}
+                catch (InterruptedException ex){}
+                catch (InvocationTargetException ex){}
+
+                Change change = ChangeFactory.changeResourcesChange(player, GlobalCenter.GetPUResource(), PUChange);
+                CachedInstanceCenter.CachedDelegateBridge.addChange(change);
+                Dynamix_AI.Pause();
+            }
+        }
         GlobalCenter.PUsAtEndOfLastTurn = player.getResources().getQuantity(GlobalCenter.GetPUResource());
     }
 

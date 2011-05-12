@@ -347,7 +347,7 @@ public class NCM_Task
                 break;
             }
         }
-        if (areRecruitsFromCapsOrNeighbors)
+        if (areRecruitsFromCapsOrNeighbors && !ourCaps.contains(m_target))
         {
             Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
             ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation();
@@ -451,7 +451,7 @@ public class NCM_Task
                 break;
             }
         }
-        if (areRecruitsFromCapsOrNeighbors)
+        if (areRecruitsFromCapsOrNeighbors && !ourCaps.contains(m_target))
         {
             Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
             ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation();

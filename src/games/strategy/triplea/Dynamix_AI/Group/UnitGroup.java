@@ -50,7 +50,6 @@ public class UnitGroup
     private Match<Territory> m_cmRouteMatch = null;
     private HashMap<Match<Territory>, Integer> m_ncmCRouteMatches = null;
     private GameData m_data = null;
-    private List<Territory> m_neighbors = new ArrayList<Territory>();
     private int m_moveIndex = -1;
 
     public UnitGroup(Unit unit, Territory startTer, GameData data)
@@ -67,7 +66,6 @@ public class UnitGroup
         m_fromTer = startTer;
         m_data = data;
         GenerateRouteMatches();
-        GenerateNeighbors();
     }
 
     @Override
@@ -98,11 +96,6 @@ public class UnitGroup
             return false;
         }
         return true;
-    }
-
-    private void GenerateNeighbors()
-    {
-        m_neighbors = new ArrayList<Territory>(m_data.getMap().getNeighbors(m_fromTer));
     }
 
     private void GenerateRouteMatches()
@@ -525,12 +518,7 @@ public class UnitGroup
             m_moveIndex = -1;
         }
     }
-
-    public List<Territory> GetNeighbors()
-    {
-        return m_neighbors;
-    }
-
+    
     public Match<Territory> GetRouteMatch()
     {
         return m_cmRouteMatch;

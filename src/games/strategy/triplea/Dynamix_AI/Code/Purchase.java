@@ -335,11 +335,8 @@ public class Purchase
             return null;
 
         HashSet<Unit> unitsOnTheWay = new HashSet<Unit>();
-        Route route = null;
-        List<Route> routes = DUtils.GetXClosestSimiliarLengthLandRoutesBetweenTers(data, 2, ter, ncmTarget);
-        if(routes.size() > 0)
-            route = routes.get(0);
-        if (route != null)
+        List<Route> routes = DUtils.GetXClosestSimiliarLengthLandRoutesBetweenTers(data, 5, ter, ncmTarget);
+        for(Route route : routes)
         {
             for (Territory rTer : route.getTerritories())
             {
@@ -364,7 +361,10 @@ public class Purchase
         {
             Unit unit = DUtils.CalculateUnitThatWillHelpWinAttackOnArmyTheMostPerPU(ncmTarget, data, player, unitsOnTheWay, allUnits, defendUnits, Matches.UnitHasEnoughMovement(1), DSettings.LoadSettings().CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost);
             if(unit == null)
+            {
                 DUtils.Log(Level.FINER, "        No units found to select for purchasing!");
+                return null;
+            }
             unit = unit.getType().create(player); //Don't add the actual unit we created before, otherwise if we purchase the same unit type twice, we will end up doing calc's with multiples of the same unit, which is bad
 
             int cost = DUtils.GetTUVOfUnit(unit, GlobalCenter.GetPUResource());            

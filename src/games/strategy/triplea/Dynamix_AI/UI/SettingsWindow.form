@@ -766,24 +766,26 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="v_resourceCollectionMultiplier" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="v_resourceCollectionMultiplyAmount" min="-2" pref="67" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="1">
-                              <Component id="v_unitPlacementMultiplier" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="v_unitPlacementMultiplyAmount" min="-2" pref="67" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel48" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel47" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="v_resourceCollectionIncreaser" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="v_unitPlacementMultiplier" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="v_resourceCollectionMultiplier" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="459" max="32767" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="v_resourceCollectionMultiplyPercent" min="-2" pref="67" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jLabel47" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="v_resourceCollectionIncreaseAmount" alignment="0" min="-2" pref="67" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="v_unitPlacementMultiplyAmount" min="-2" pref="67" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jLabel48" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <EmptySpace pref="455" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -793,8 +795,13 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="v_resourceCollectionMultiplier" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="v_resourceCollectionMultiplyAmount" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="v_resourceCollectionMultiplyPercent" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel47" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="v_resourceCollectionIncreaser" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="v_resourceCollectionIncreaseAmount" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -802,7 +809,7 @@
                           <Component id="v_unitPlacementMultiplyAmount" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel48" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="197" max="32767" attributes="0"/>
+                      <EmptySpace pref="166" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -811,24 +818,26 @@
             <Component class="javax.swing.JCheckBox" name="v_resourceCollectionMultiplier">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Resource Collection Multiplier:"/>
+                <Property name="toolTipText" type="java.lang.String" value="This cheat multiplies the number of resources collected at the end of the round by the percentage supplied."/>
                 <Property name="name" type="java.lang.String" value="v_resourceCollectionMultiplier" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="v_resourceCollectionMultiplierStateChanged"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JSpinner" name="v_resourceCollectionMultiplyAmount">
+            <Component class="javax.swing.JSpinner" name="v_resourceCollectionMultiplyPercent">
               <Properties>
                 <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
                   <SpinnerModel initial="100" maximum="200" minimum="100" numberType="java.lang.Integer" stepSize="10" type="number"/>
                 </Property>
                 <Property name="enabled" type="boolean" value="false"/>
-                <Property name="name" type="java.lang.String" value="v_resourceCollectionMultiplyAmount" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="v_resourceCollectionMultiplyPercent" noResource="true"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JCheckBox" name="v_unitPlacementMultiplier">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Unit Placement Multiplier:"/>
+                <Property name="toolTipText" type="java.lang.String" value="This cheat multiplies the number of units placed down on each factory by the percentage supplied."/>
                 <Property name="name" type="java.lang.String" value="v_unitPlacementMultiplier" noResource="true"/>
               </Properties>
               <Events>
@@ -854,6 +863,25 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="%"/>
                 <Property name="name" type="java.lang.String" value="jLabel48" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="v_resourceCollectionIncreaser">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Resource Collection Increaser:"/>
+                <Property name="toolTipText" type="java.lang.String" value="This cheat increases the number of resources collected at the end of the round by the amount supplied."/>
+                <Property name="name" type="java.lang.String" value="v_resourceCollectionIncreaser" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="v_resourceCollectionIncreaserStateChanged"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JSpinner" name="v_resourceCollectionIncreaseAmount">
+              <Properties>
+                <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                  <SpinnerModel initial="0" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="10" type="number"/>
+                </Property>
+                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="name" type="java.lang.String" value="v_resourceCollectionIncreaseAmount" noResource="true"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -2611,11 +2639,11 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jPanel10" pref="112" max="32767" attributes="0"/>
+                              <Component id="jPanel10" min="-2" pref="112" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jPanel3" max="32767" attributes="0"/>
+                              <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jPanel5" max="32767" attributes="0"/>
+                              <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
@@ -2738,7 +2766,7 @@
                         <Component class="javax.swing.JSpinner" name="v_aa_percentageOfResistedThreatsThatTasksInvalidate">
                           <Properties>
                             <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                              <SpinnerModel initial="75" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                              <SpinnerModel initial="50" maximum="100" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
                             </Property>
                             <Property name="name" type="java.lang.String" value="v_aa_percentageOfResistedThreatsThatTasksInvalidate" noResource="true"/>
                           </Properties>

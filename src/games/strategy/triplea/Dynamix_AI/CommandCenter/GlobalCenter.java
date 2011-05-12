@@ -39,22 +39,36 @@ public class GlobalCenter
     public static boolean IsPaused = false;
     public static final Object IsPaused_Object = new Object();
 
-    public static PhaseType FirstDynamixPhase = PhaseType.Unknown;
-    public static PlayerID FirstDynamixPlayer = null;
-    public static int GameRound = 0;
-    private static boolean HasInitialized = false;
-    private static Resource PUResource = null;
+    public static PhaseType FirstDynamixPhase;
+    public static PlayerID FirstDynamixPlayer;
+    public static int GameRound;
+    private static Resource PUResource;
     public static Resource GetPUResource()
     {
         return PUResource;
     }
     public static void Initialize(GameData data)
     {
-        if(HasInitialized)
-            return;
-
+        //This part just resets all the static variables to their default value so that other code will be able to fill in the real info
+        //(For example, the Dynamix_AI class sets the FirstDynamixPhase variable)
+        FirstDynamixPhase = PhaseType.Unknown;
+        FirstDynamixPlayer = null;
+        GameRound = 0;
+        PUResource = null;
+        CurrentPlayer = null;
+        MapTerCount = 0;
+        MapTerCountScale = 1.0F;
+        CurrentPhaseType = null;
+        IsFFAGame = false;
+        FastestUnitMovement = 0;
+        FastestLandUnitMovement = 0;
+        HighestTerProduction = -1;
+        PUsAtEndOfLastTurn = 0;
+        MergedAndAveragedProductionFronter = null;
+        AllMapUnitTypes = null;
+        
+        //Now we 'initialize' by filling in some of the values (the rest are filled in somewhere else)
         PUResource = data.getResourceList().getResource(Constants.PUS);
-        HasInitialized = true;
         MapTerCount = data.getMap().getTerritories().size();
         //75 is considered the 'base' map ter count (For comparison, Great Lakes War has 90)
         MapTerCountScale = ((float)data.getMap().getTerritories().size() / 75.0F);
@@ -73,26 +87,27 @@ public class GlobalCenter
 
         GenerateMergedAndAveragedProductionFrontier(data);
     }
-    public static PlayerID CurrentPlayer = null;
-    public static int MapTerCount = 0;
+    public static PlayerID CurrentPlayer;
+    public static int MapTerCount;
     /**Please use this for all hard-coded values. (Multiply the hard-coded value by this float, and the hard-coded value will scale up or down with the maps*/
-    public static float MapTerCountScale = 1.0F;
-    public static PhaseType CurrentPhaseType = null;
-    public static boolean IsFFAGame = false;
-    public static int FastestUnitMovement = 0;
-    public static int FastestLandUnitMovement = 0;
-    public static int HighestTerProduction = -1;
-    public static int PUsAtEndOfLastTurn = 0;
+    public static float MapTerCountScale;
+    public static PhaseType CurrentPhaseType;
+    public static boolean IsFFAGame;
+    public static int FastestUnitMovement;
+    public static int FastestLandUnitMovement;
+    public static int HighestTerProduction;
+    public static int PUsAtEndOfLastTurn;
 
-    private static ProductionFrontier MergedAndAveragedProductionFronter = null;
-    public static List<UnitType> AllMapUnitTypes = new ArrayList<UnitType>();
+    private static ProductionFrontier MergedAndAveragedProductionFronter;
+    public static List<UnitType> AllMapUnitTypes;
     /**
      * Generates a merged and averaged production frontier that can be used to determine TUV of units even when player is neutral or unknown.
      * This method also sets the global FastestUnitMovement value and the AllMapUnitTypes list.
      */
     private static void GenerateMergedAndAveragedProductionFrontier(GameData data)
     {
-        ProductionFrontier result = new ProductionFrontier("Merged and averaged global production frontier", data);
+        MergedAndAveragedProductionFronter = new ProductionFrontier("Merged and averaged global production frontier", data);
+        AllMapUnitTypes = new ArrayList<UnitType>();
 
         HashMap<UnitType, Integer> purchaseCountsForUnit = new HashMap<UnitType, Integer>();
         HashMap<UnitType, List<Integer>> differentCosts = new HashMap<UnitType, List<Integer>>();
@@ -132,10 +147,8 @@ public class GlobalCenter
             IntegerMap<Resource> cost = new IntegerMap<Resource>();
             cost.put(PUResource, averagedCost);
             ProductionRule rule = new ProductionRule("Averaged production rule for unit " + unitType.getName(), data, results, cost);
-            result.addRule(rule);
+            MergedAndAveragedProductionFronter.addRule(rule);
         }
-
-        MergedAndAveragedProductionFronter = result;
     }
     public static ProductionFrontier GetMergedAndAveragedProductionFrontier()
     {

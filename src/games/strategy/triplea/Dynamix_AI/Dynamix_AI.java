@@ -372,38 +372,38 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         DUtils.Log(Level.FINE, "Retreat query starting. Battle Ter: {0} Possible retreat locations: {1}", getBattleTerritory(), possibleTerritories);
         final GameData data = getPlayerBridge().getGameData();
         PlayerID player = GlobalCenter.CurrentPlayer;
-        Territory battleTerr = getBattleTerritory();
+        Territory battleTer = getBattleTerritory();
         //BattleTer will be null if we're defending and TripleA calls this method to ask if we want to retreat(submerge) our subs when being attacked
         //PossibleTerritories will be empty if subs move in our sub ter, and our sub is 'attacking'
-        if(battleTerr == null || possibleTerritories.isEmpty())
+        if(battleTer == null || possibleTerritories.isEmpty())
             return null; //Don't submerge
-        AggregateResults simulatedAttack = DUtils.GetBattleResults(battleTerr, getWhoAmI(), data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, true);
+        List<Unit> attackers = battleTer.getUnits().getMatches(Matches.unitIsOwnedBy(getID()));
+        List<Unit> defenders = battleTer.getUnits().getMatches(Matches.unitIsEnemyOf(data, getID()));
+        AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, battleTer, data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, true);
         float chanceNeededToContinue = .6F;
-        if(TacticalCenter.get(data, getID()).BattleRetreatChanceAssignments.containsKey(battleTerr))
+        if(TacticalCenter.get(data, getID()).BattleRetreatChanceAssignments.containsKey(battleTer))
         {
-            DUtils.Log(Level.FINER, "Found specific battle retreat chance assignment for territory '{0}'. Retreat Chance: {1}", battleTerr, TacticalCenter.get(data, player).BattleRetreatChanceAssignments.get(battleTerr));
-            chanceNeededToContinue = TacticalCenter.get(data, getID()).BattleRetreatChanceAssignments.get(battleTerr);
+            DUtils.Log(Level.FINER, "Found specific battle retreat chance assignment for territory '{0}'. Retreat Chance: {1}", battleTer, TacticalCenter.get(data, player).BattleRetreatChanceAssignments.get(battleTer));
+            chanceNeededToContinue = TacticalCenter.get(data, getID()).BattleRetreatChanceAssignments.get(battleTer);
 
             if (simulatedAttack.getAttackerWinPercent() < chanceNeededToContinue)
             {
                 //Calculate best retreat ter and retreat to it
-                Territory retreatTer = Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player, new ArrayList<Territory>(possibleTerritories), battleTerr);
+                Territory retreatTer = Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player, new ArrayList<Territory>(possibleTerritories), battleTer);
                 return retreatTer;
             }
         }
         else //Must be attack_trade type
         {
-            List<Unit> attackers = battleTerr.getUnits().getMatches(Matches.unitIsOwnedBy(getID()));
-            List<Unit> defenders = battleTerr.getUnits().getMatches(Matches.unitIsEnemyOf(data, getID()));
-            List<Unit> responseAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, battleTerr, getID(), Matches.TerritoryIsLand);
-            List<Unit> responseDefenders = new ArrayList<Unit>(simulatedAttack.GetAverageAttackingUnitsRemaining());
-            AggregateResults responseResults = DUtils.GetBattleResults(responseAttackers, responseDefenders, battleTerr, data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, true);
-            int tradeScore = DUtils.GetTaskTradeScore(data, battleTerr, attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, responseResults);
+            List<Unit> responseAttackers = DUtils.DetermineResponseAttackers(data, GlobalCenter.CurrentPlayer, battleTer, simulatedAttack);
+            List<Unit> responseDefenders = Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); //Air can't defend ter because they need to land
+            AggregateResults responseResults = DUtils.GetBattleResults(responseAttackers, responseDefenders, battleTer, data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, true);
+            int tradeScore = DUtils.GetTaskTradeScore(data, battleTer, attackers, defenders, simulatedAttack, responseAttackers, responseDefenders, responseResults);
             DUtils.Log(Level.FINER, "Attack_Trade battle assumed. Score: {0} Required: {1}", tradeScore, DSettings.LoadSettings().TR_attackTrade_totalTradeScoreRequired);
             if(tradeScore < DSettings.LoadSettings().TR_attackTrade_totalTradeScoreRequired)
             {
                 //Calculate best retreat ter and retreat to it
-                Territory retreatTer = Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player, new ArrayList<Territory>(possibleTerritories), battleTerr);
+                Territory retreatTer = Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player, new ArrayList<Territory>(possibleTerritories), battleTer);
                 return retreatTer;
             }
 
@@ -419,7 +419,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
             if (certaintyOfReachingLUnitsCount < DUtils.ToFloat(DSettings.LoadSettings().TR_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired))
             {
                 //Calculate best retreat ter and retreat to it
-                Territory retreatTer = Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player, new ArrayList<Territory>(possibleTerritories), battleTerr);
+                Territory retreatTer = Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player, new ArrayList<Territory>(possibleTerritories), battleTer);
                 return retreatTer;
             }
         }
@@ -458,10 +458,16 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 
     public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units)
     {
-        List<Unit> factoryUnits = Match.getMatches(units, Matches.UnitIsFactory);
-    	if(factoryUnits.isEmpty())
-            return null;
-        return factoryUnits.get(0);
+        List<Unit> nonBomberAttackingUnits = Match.getMatches(territory.getUnits().getUnits(), new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getWhoAmI()), Matches.UnitIsNotStrategicBomber));
+        if (nonBomberAttackingUnits.isEmpty())
+        {
+            List<Unit> factoryUnits = Match.getMatches(units, Matches.UnitIsFactory);
+            if (factoryUnits.isEmpty())
+                return null;
+            return factoryUnits.get(0);
+        }
+        else
+            return null; //Don't bomb here
     }
 
     public int[] selectFixedDice(int numRolls, int hitAt, boolean hitOnlyIfEquals, String message, int diceSides)

@@ -14,6 +14,7 @@
 
 package games.strategy.triplea.Dynamix_AI.UI;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.DSettings;
 import games.strategy.triplea.Dynamix_AI.Others.BattleCalculationType;
@@ -24,6 +25,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.util.logging.Level;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -107,11 +109,13 @@ public class SettingsWindow extends javax.swing.JDialog
         v_aic_disableAllUnitMovement = new javax.swing.JCheckBox();
         jPanel6 = new javax.swing.JPanel();
         v_resourceCollectionMultiplier = new javax.swing.JCheckBox();
-        v_resourceCollectionMultiplyAmount = new javax.swing.JSpinner();
+        v_resourceCollectionMultiplyPercent = new javax.swing.JSpinner();
         v_unitPlacementMultiplier = new javax.swing.JCheckBox();
         v_unitPlacementMultiplyAmount = new javax.swing.JSpinner();
         jLabel47 = new javax.swing.JLabel();
         jLabel48 = new javax.swing.JLabel();
+        v_resourceCollectionIncreaser = new javax.swing.JCheckBox();
+        v_resourceCollectionIncreaseAmount = new javax.swing.JSpinner();
         jPanel4 = new javax.swing.JPanel();
         v_calcRunCountAssignmentsScrollPane = new javax.swing.JScrollPane();
         v_calcRunCountAssignmentsHolderPanel = new javax.swing.JPanel();
@@ -706,6 +710,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jPanel6.setName("jPanel6"); // NOI18N
 
         v_resourceCollectionMultiplier.setText("Resource Collection Multiplier:");
+        v_resourceCollectionMultiplier.setToolTipText("This cheat multiplies the number of resources collected at the end of the round by the percentage supplied.");
         v_resourceCollectionMultiplier.setName("v_resourceCollectionMultiplier"); // NOI18N
         v_resourceCollectionMultiplier.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -713,11 +718,12 @@ public class SettingsWindow extends javax.swing.JDialog
             }
         });
 
-        v_resourceCollectionMultiplyAmount.setModel(new javax.swing.SpinnerNumberModel(100, 100, 200, 10));
-        v_resourceCollectionMultiplyAmount.setEnabled(false);
-        v_resourceCollectionMultiplyAmount.setName("v_resourceCollectionMultiplyAmount"); // NOI18N
+        v_resourceCollectionMultiplyPercent.setModel(new javax.swing.SpinnerNumberModel(100, 100, 200, 10));
+        v_resourceCollectionMultiplyPercent.setEnabled(false);
+        v_resourceCollectionMultiplyPercent.setName("v_resourceCollectionMultiplyPercent"); // NOI18N
 
         v_unitPlacementMultiplier.setText("Unit Placement Multiplier:");
+        v_unitPlacementMultiplier.setToolTipText("This cheat multiplies the number of units placed down on each factory by the percentage supplied.");
         v_unitPlacementMultiplier.setName("v_unitPlacementMultiplier"); // NOI18N
         v_unitPlacementMultiplier.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -735,26 +741,41 @@ public class SettingsWindow extends javax.swing.JDialog
         jLabel48.setText("%");
         jLabel48.setName("jLabel48"); // NOI18N
 
+        v_resourceCollectionIncreaser.setText("Resource Collection Increaser:");
+        v_resourceCollectionIncreaser.setToolTipText("This cheat increases the number of resources collected at the end of the round by the amount supplied.");
+        v_resourceCollectionIncreaser.setName("v_resourceCollectionIncreaser"); // NOI18N
+        v_resourceCollectionIncreaser.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                v_resourceCollectionIncreaserStateChanged(evt);
+            }
+        });
+
+        v_resourceCollectionIncreaseAmount.setModel(new javax.swing.SpinnerNumberModel(0, 0, 100, 10));
+        v_resourceCollectionIncreaseAmount.setEnabled(false);
+        v_resourceCollectionIncreaseAmount.setName("v_resourceCollectionIncreaseAmount"); // NOI18N
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(v_resourceCollectionMultiplier)
-                        .addGap(18, 18, 18)
-                        .addComponent(v_resourceCollectionMultiplyAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(v_unitPlacementMultiplier)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(v_unitPlacementMultiplyAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel48)
-                    .addComponent(jLabel47))
-                .addContainerGap(459, Short.MAX_VALUE))
+                    .addComponent(v_resourceCollectionIncreaser)
+                    .addComponent(v_unitPlacementMultiplier)
+                    .addComponent(v_resourceCollectionMultiplier))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(v_resourceCollectionMultiplyPercent, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel47))
+                    .addComponent(v_resourceCollectionIncreaseAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(v_unitPlacementMultiplyAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel48)))
+                .addContainerGap(455, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -762,14 +783,18 @@ public class SettingsWindow extends javax.swing.JDialog
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(v_resourceCollectionMultiplier)
-                    .addComponent(v_resourceCollectionMultiplyAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(v_resourceCollectionMultiplyPercent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel47))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(v_resourceCollectionIncreaser)
+                    .addComponent(v_resourceCollectionIncreaseAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(v_unitPlacementMultiplier)
                     .addComponent(v_unitPlacementMultiplyAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel48))
-                .addContainerGap(197, Short.MAX_VALUE))
+                .addContainerGap(166, Short.MAX_VALUE))
         );
 
         v_tabPaneMain.addTab("AI Cheating", jPanel6);
@@ -1858,7 +1883,7 @@ public class SettingsWindow extends javax.swing.JDialog
         v_aa_radiusOfHotspotThreatInvalidation.setModel(new javax.swing.SpinnerNumberModel(1, 1, 10, 1));
         v_aa_radiusOfHotspotThreatInvalidation.setName("v_aa_radiusOfHotspotThreatInvalidation"); // NOI18N
 
-        v_aa_percentageOfResistedThreatsThatTasksInvalidate.setModel(new javax.swing.SpinnerNumberModel(75, 0, 100, 1));
+        v_aa_percentageOfResistedThreatsThatTasksInvalidate.setModel(new javax.swing.SpinnerNumberModel(50, 0, 100, 1));
         v_aa_percentageOfResistedThreatsThatTasksInvalidate.setName("v_aa_percentageOfResistedThreatsThatTasksInvalidate"); // NOI18N
 
         v_invalidationTypeButtonGroup.add(v_aa_noThreatInvalidation);
@@ -2041,11 +2066,11 @@ public class SettingsWindow extends javax.swing.JDialog
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -2133,7 +2158,9 @@ public class SettingsWindow extends javax.swing.JDialog
             v_battleCalculator.setSelected(true);
 
         v_resourceCollectionMultiplier.setSelected(settings.EnableResourceCollectionMultiplier);
-        v_resourceCollectionMultiplyAmount.setValue(settings.ResourceCollectionMultiplyPercent);
+        v_resourceCollectionMultiplyPercent.setValue(settings.ResourceCollectionMultiplyPercent);
+        v_resourceCollectionIncreaser.setSelected(settings.EnableResourceCollectionIncreaser);
+        v_resourceCollectionIncreaseAmount.setValue(settings.ResourceCollectionIncreaseAmount);
         v_unitPlacementMultiplier.setSelected(settings.EnableUnitPlacementMultiplier);
         v_unitPlacementMultiplyAmount.setValue(settings.UnitPlacementMultiplyPercent);
 
@@ -2238,7 +2265,9 @@ public class SettingsWindow extends javax.swing.JDialog
             settings.BattleCalculationMethod = BattleCalculationType.BattleCalculator;
 
         settings.EnableResourceCollectionMultiplier = v_resourceCollectionMultiplier.isSelected();
-        settings.ResourceCollectionMultiplyPercent = Integer.parseInt(v_resourceCollectionMultiplyAmount.getValue().toString());
+        settings.ResourceCollectionMultiplyPercent = Integer.parseInt(v_resourceCollectionMultiplyPercent.getValue().toString());
+        settings.EnableResourceCollectionIncreaser = v_resourceCollectionIncreaser.isSelected();
+        settings.ResourceCollectionIncreaseAmount = Integer.parseInt(v_resourceCollectionIncreaseAmount.getValue().toString());
         settings.EnableUnitPlacementMultiplier = v_unitPlacementMultiplier.isSelected();
         settings.UnitPlacementMultiplyPercent = Integer.parseInt(v_unitPlacementMultiplyAmount.getValue().toString());
 
@@ -2356,7 +2385,7 @@ public class SettingsWindow extends javax.swing.JDialog
 
     private void v_resourceCollectionMultiplierStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_v_resourceCollectionMultiplierStateChanged
     {//GEN-HEADEREND:event_v_resourceCollectionMultiplierStateChanged
-        v_resourceCollectionMultiplyAmount.setEnabled(v_resourceCollectionMultiplier.isSelected());
+        v_resourceCollectionMultiplyPercent.setEnabled(v_resourceCollectionMultiplier.isSelected());
     }//GEN-LAST:event_v_resourceCollectionMultiplierStateChanged
 
     private void v_unitPlacementMultiplierStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_v_unitPlacementMultiplierStateChanged
@@ -2422,10 +2451,14 @@ public class SettingsWindow extends javax.swing.JDialog
         {
             message = "AI Cheating\r\n"
                     + "\r\n"
-                    + "Resource Collection Multiplier: This cheat multiplies the amount of resources collected at the end of the round by the percentage supplied.\r\n"
-                    + "Example 1: The user turns the resource collection modifier cheat on, and sets the percentage to 150%. The AI now starts playing.\r\n"
-                    + "It finishes its turn and collects its resources. Instead of getting 10 PUs, though, it collects 15, as the resource collection cheat is turned on.\r\n"
-                    + "Note that the actual resource multiplication is done at the start of the next turn.\r\n"
+                    + "Resource Collection Multiplier: This cheat multiplies the number of resources collected at the end of the round by the percentage supplied.\r\n"
+                    + "Example 1: The user turns the resource collection multipler cheat on, and sets the percentage to 150%. The AI now starts playing.\r\n"
+                    + "It finishes its turn and collects its resources. Instead of collecting 10 PUs, though, it collects 15, as the resource collection cheat is turned on.\r\n"
+                    + "Note that the actual resource multiplication is done at the start of the next turn. (Meaning it can get messed up by reloading or having complex game triggers)\r\n"
+                    + "\r\n"
+                    + "Resource Collection Increaser: This cheat increases the number of resources collected at the end of the round by the amount supplied.\r\n"
+                    + "Example 1: The user turns the resource collection increaser cheat on, and sets the amount to 10. The AI now starts playing.\r\n"
+                    + "It finishes its turn and collects its resources. Instead of collecting 10 PUs, though, it collects 20, as the resource collection cheat is turned on.\r\n"
                     + "\r\n"
                     + "Unit Placement Multiplier: This cheat multiplies the number of units placed down on each factory by the percentage supplied.\r\n"
                     + "Example 1: The user turns the unit placement modifier cheat on, and sets the percentage to 150%. The AI now starts playing.\r\n"
@@ -2508,22 +2541,21 @@ public class SettingsWindow extends javax.swing.JDialog
                     + "Threat Invalidation Types: None causes the AI to use no threat invalidation, Global causes the AI to invalidate threats for every one of our territories, meaning they will all ignore any threats that have been invalidated,\r\n"
                     + "and 'Hotspot, Radius X' causes the AI to invalidate threats only for the ters withing X ters of the ter that invalidated the threats.\r\n"
                     + "This option is probably the best, because it keeps the AI from ignoring powerful, far-off airplane stacks. (Which humans could otherwise use to trick the AI into becoming vulnerable on a battle front)\r\n"
-                    + "Example 1: User sets the invalidation type to None. The AI now starts playing as Russia. It is calculating the attacks on the German-Russian battle front.\r\n"
+                    + "    Example 1: User sets the invalidation type to None. The AI now starts playing as Russia. It is calculating the attacks on the German-Russian battle front.\r\n"
                     + "There is a large german airplane stack in Berlin, and a good number of German ground troops on the battle front.\r\n"
                     + "The AI loops through the attackable locations, and only attacks in one location, because it didn't have enough troops to be safe enough from counter-attack with any of the other attacks.\r\n"
                     + "(Each time the huge air stack was noticed, and the AI thought it'd get obliterated if it attacked any of the ters, so it pooled them all together so it could attack one ter 'safely')\r\n"
                     + "Because of how little the AI attacked, Germany overran Russia in a matter of turns, and eventually took over the rest of the world.\r\n"
-                    + "Example 2: User sets the invalidation type to Global. The AI now starts playing as Russia. It is calculating the attacks on the German-Russian battle front.\r\n"
+                    + "    Example 2: User sets the invalidation type to Global. The AI now starts playing as Russia. It is calculating the attacks on the German-Russian battle front.\r\n"
                     + "There is a large german airplane stack in Berlin, and a good number of German ground troops on the battle front.\r\n"
                     + "The AI loops through the attackable locations, and attacks about three-fourths of the enemy ters, leaving half its front vulnerable.\r\n"
                     + "(After the first successful attack was performed(with many, many units, mind you), the AI invalidated all it's threats, *including* the entire german air stack)\r\n"
-                    + "Because of how bold the AI was, Germany was able to widdle down the Russian army(attacking the vulnerable ters) until it eventually took Russias capital\r\n"
-                    + "Example 3: User sets the invalidation type to Hotspot, Radius 1. The AI now starts playing as Russia. It is calculating the attacks on the German-Russian battle front.\r\n"
+                    + "Because of how bold the AI was, Germany was able to widdle down the Russian army(attacking the vulnerable ters) until it eventually took Russia's capital\r\n"
+                    + "    Example 3: User sets the invalidation type to Hotspot, Radius 1. The AI now starts playing as Russia. It is calculating the attacks on the German-Russian battle front.\r\n"
                     + "There is a large german airplane stack in Berlin, and a good number of German ground troops on the battle front.\r\n"
                     + "The AI loops through the attackable locations, and attacks about half of the enemy ters, leaving a couple ters vulnerable, though it does have enough troops by the vulnerable ters to take them back, if needed.\r\n"
                     + "(After the first successful attack was performed(with many, many units, mind you), the AI invalidated it's threats, *including* the entire german air stack, but only for the area around it, 2 ters radius)\r\n"
                     + "Because it was not over-cautious, or over-bold, the Russian army did a much better job attacking/defending on the battle front, -but- unfortunately was still taken over by Germany.\r\n"
-                    + "Because of Russia's glorious struggle, though, its allies were able to eventually stop the german advance, and free France and Russia, once and for all! (Though the soviet union became a problem later on...)\r\n"
                     + "\r\n"
                     + "Percentage Of Threats That Become Invalidated When A Task Is Resistant To Them: This setting allows the user to choose what percentage of the threats to invalidate when a task is successful.\r\n"
                     + "For example, this setting would determine what percentage of that german air stack mentioned earlier would be 'ignored', or 'invalidated', when the first successful task was performed with enough units to be safe from it. (The airplane stack)\r\n"
@@ -2627,6 +2659,11 @@ public class SettingsWindow extends javax.swing.JDialog
     {//GEN-HEADEREND:event_v_cr_enableCallForCapitalDefenseStateChanged
         // TODO add your handling code here:
     }//GEN-LAST:event_v_cr_enableCallForCapitalDefenseStateChanged
+
+    private void v_resourceCollectionIncreaserStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_v_resourceCollectionIncreaserStateChanged
+    {//GEN-HEADEREND:event_v_resourceCollectionIncreaserStateChanged
+        v_resourceCollectionIncreaseAmount.setEnabled(v_resourceCollectionIncreaser.isSelected());
+    }//GEN-LAST:event_v_resourceCollectionIncreaserStateChanged
 
     private void ChangeTotalLengthPanelsState(boolean enabled)
     {
@@ -2913,8 +2950,10 @@ public class SettingsWindow extends javax.swing.JDialog
     private javax.swing.JSpinner v_purchaseWait_AL;
     private javax.swing.JSpinner v_purchaseWait_AW;
     private javax.swing.JRadioButton v_quickBattleCalculator;
+    private javax.swing.JSpinner v_resourceCollectionIncreaseAmount;
+    private javax.swing.JCheckBox v_resourceCollectionIncreaser;
     private javax.swing.JCheckBox v_resourceCollectionMultiplier;
-    private javax.swing.JSpinner v_resourceCollectionMultiplyAmount;
+    private javax.swing.JSpinner v_resourceCollectionMultiplyPercent;
     private javax.swing.JButton v_restoreDefaultsButton;
     private javax.swing.JButton v_settingsDetailsButton;
     private javax.swing.JTabbedPane v_tabPaneMain;

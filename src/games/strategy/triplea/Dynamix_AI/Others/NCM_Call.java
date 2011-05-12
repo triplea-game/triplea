@@ -330,7 +330,7 @@ public class NCM_Call
                 break;
             }
         }
-        if (areRecruitsFromCapsOrNeighbors)
+        if (areRecruitsFromCapsOrNeighbors && !ourCaps.contains(m_target))
         {
             Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
             ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation();
@@ -375,7 +375,7 @@ public class NCM_Call
             DUtils.Log(Level.FINEST, "        How close to meeting min survival chance: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, .98F);
 
             if (howCloseToMeetingMinSurvivalChance < .98F)
-                return false;
+                DUtils.Log(Level.FINEST, "        Since this is a call for capital defense, we'll perform this call even if the requirements aren't met...");//return false;
 
             return true; //We've met all requirements
         }
@@ -424,7 +424,7 @@ public class NCM_Call
                 break;
             }
         }
-        if (areRecruitsFromCapsOrNeighbors)
+        if (areRecruitsFromCapsOrNeighbors && !ourCaps.contains(m_target))
         {
             Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
             ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation();

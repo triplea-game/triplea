@@ -68,6 +68,8 @@ public class DSettings implements Serializable
 
     public boolean EnableResourceCollectionMultiplier = false;
     public int ResourceCollectionMultiplyPercent = 100;
+    public boolean EnableResourceCollectionIncreaser = false;
+    public int ResourceCollectionIncreaseAmount = 0;
     public boolean EnableUnitPlacementMultiplier = false;
     public int UnitPlacementMultiplyPercent = 100;    
 
@@ -109,7 +111,7 @@ public class DSettings implements Serializable
 
     public ThreatInvalidationType AA_threatInvalidationType = ThreatInvalidationType.AroundHotspot;
     public int AA_threatInvalidationAroundHotspotRadius = 1;
-    public int AA_percentageOfResistedThreatThatTasksInvalidate = 75;
+    public int AA_percentageOfResistedThreatThatTasksInvalidate = 50;
     public boolean AA_ignoreAlliedUnitsAsDefenses = false;
 
     public int AA_survivalChanceOfLandingTerRequiredForPlaneRecruit = 75;

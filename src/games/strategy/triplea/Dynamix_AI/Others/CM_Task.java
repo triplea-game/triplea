@@ -476,13 +476,8 @@ public class CM_Task
                 else
                     successiveNonIncreases = 0;
 
-                if (successiveNonIncreases == 0) //If we're still going up
-                {
-                    m_recruitedUnits.add(ug);
-                    continue;
-                }
-                else if (successiveNonIncreases >= 2) //If this is the second time adding a recruit dropped TUV score
-                    m_recruitedUnits = DUtils.TrimRecruits_NonMovedOnes(sortedPossibles, 2); //Go back to when TUV score was highest and let loop break
+                m_recruitedUnits.add(ug);
+                continue;
             }
 
             break; //We've met all requirements
@@ -539,17 +534,14 @@ public class CM_Task
                 else
                     successiveNonIncreases = 0;
 
-                if (successiveNonIncreases == 0) //If we're still going up
-                {
-                    m_recruitedUnits.add(ug);
-                    continue;
-                }
-                else if (successiveNonIncreases >= 2) //If this is the second time adding a recruit dropped TUV score
-                    m_recruitedUnits = DUtils.TrimRecruits_NonMovedOnes(sortedPossibles, 2); //Go back to when TUV score was highest and let loop break
+                m_recruitedUnits.add(ug);
+                continue;
             }
 
             break; //We've met all requirements
         }
+
+        m_recruitedUnits = DUtils.TrimRecruits_NonMovedOnes(m_recruitedUnits, successiveNonIncreases); //Go back to when TUV score was highest
     }
 
     public List<UnitGroup> GetRecruitedUnits()
@@ -658,17 +650,17 @@ public class CM_Task
             for (Territory cap : ourCaps)
                 capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, cap, 1));
             HashSet<Unit> capsAndNeighborsUnits = DUtils.ToHashSet(DUtils.GetUnitsInTerritories(capsAndNeighbors));
-            boolean areRecruitsFromCapOrNeighbor = false;
+            boolean areRecruitsFromCapsOrNeighbors = false;
             for (Unit recruit : GetRecruitedUnitsAsUnitList())
             {
                 if (capsAndNeighborsUnits.contains(recruit))
                 {
-                    areRecruitsFromCapOrNeighbor = true;
+                    areRecruitsFromCapsOrNeighbors = true;
                     break;
                 }
             }
 
-            if (areRecruitsFromCapOrNeighbor)
+            if (areRecruitsFromCapsOrNeighbors && !ourCaps.contains(m_target))
             {
                 Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
                 ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation();
@@ -687,6 +679,10 @@ public class CM_Task
         }
 
         List<Unit> attackers = GetRecruitedUnitsAsUnitList();
+        //For when two tasks both get performed on the same territory
+        attackers.removeAll(m_target.getUnits().getUnits());
+        attackers.addAll(m_target.getUnits().getMatches(Matches.unitIsOwnedBy(GlobalCenter.CurrentPlayer)));
+
         List<Unit> defenders = DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer)));
         AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, DSettings.LoadSettings().CA_CM_determinesAttackResultsToSeeIfTaskWorthwhile, true);
         List<Unit> responseAttackers = DUtils.DetermineResponseAttackers(m_data, GlobalCenter.CurrentPlayer, m_target, simulatedAttack);
@@ -697,6 +693,10 @@ public class CM_Task
 
         if (m_taskType == CM_TaskType.Attack_Offensive)
         {
+            //Commented this out so after trade task is performed, a regular attack can be performed 'on top'
+            //if(StatusCenter.get(m_data, player).GetStatusOfTerritory(m_target).WasAttacked())
+            //    return false; //Another attack (of another type) was already done on this ter
+
             //Hey, just a note to any developers reading this code:
             //    If you think it'll help, you can change these 'getMeetingOf...' methods so they return a value higher than 1.0F or lower than 0.0F.
             //    For example, you might want the 'meetTUVWants..' method to return even higher than 1.0 if the enemy, for example, loses more than twice as much TUV as us. (In attack and response)
@@ -751,7 +751,7 @@ public class CM_Task
         else if(m_taskType == CM_TaskType.Attack_Trade)
         {
             if(StatusCenter.get(m_data, player).GetStatusOfTerritory(m_target).WasAttacked())
-                return false;
+                return false; //Another attack (of another type) was already done on this ter
 
             //Recreate response results with 'toTake' turned off, otherwise enemy counter-attack results show huge loss of TUV for them, if they have no land attacking, which could cause us to attack a ter even if we only have air!
             simulatedResponse = DUtils.GetBattleResults(responseAttackers, responseDefenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile, false);
@@ -842,17 +842,17 @@ public class CM_Task
             for (Territory cap : ourCaps)
                 capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, cap, 1));
             HashSet<Unit> capsAndNeighborsUnits = DUtils.ToHashSet(DUtils.GetUnitsInTerritories(capsAndNeighbors));
-            boolean areRecruitsFromCapOrNeighbor = false;
+            boolean areRecruitsFromCapsOrNeighbors = false;
             for (Unit recruit : GetRecruitedUnitsAsUnitList())
             {
                 if (capsAndNeighborsUnits.contains(recruit))
                 {
-                    areRecruitsFromCapOrNeighbor = true;
+                    areRecruitsFromCapsOrNeighbors = true;
                     break;
                 }
             }
 
-            if (areRecruitsFromCapOrNeighbor)
+            if (areRecruitsFromCapsOrNeighbors && !ourCaps.contains(m_target))
             {
                 Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
                 ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation();
