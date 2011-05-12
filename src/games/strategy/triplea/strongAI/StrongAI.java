@@ -8074,7 +8074,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		Territory capitol = TerritoryAttachment.getCapital(player, data);
 		List<Territory> rfactories = SUtils.findUnitTerr(data, player, ourFactories);
 		List<RepairRule> rrules = Collections.emptyList();
-		if (player.getRepairFrontier() != null) // figure out if anything needs to be repaired
+		
+		if (player.getRepairFrontier() != null && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data)) // figure out if anything needs to be repaired
 		{
 			rrules = player.getRepairFrontier().getRules();
 			IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
@@ -8171,6 +8172,132 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					}
 				}
 				rfactories.add(capitol);
+				i++;
+			}
+		}
+		else if (player.getRepairFrontier() != null && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) // figure out if anything needs to be repaired
+		{
+			rrules = player.getRepairFrontier().getRules();
+			IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
+			HashMap<Unit, IntegerMap<RepairRule>> repair = new HashMap<Unit, IntegerMap<RepairRule>>();
+			Collection<Unit> unitsThatCanProduceNeedingRepair = new ArrayList<Unit>();
+			Collection<Unit> unitsThatAreDisabledNeedingRepair = new ArrayList<Unit>();
+			CompositeMatchAnd<Unit> ourDisabled = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsDisabled());
+			final int minimumUnitPrice = 3;
+			int diff = 0;
+			int totalDamage = 0;
+			int capDamage = 0;
+			int capProduction = 0;
+			Unit capUnit = null;
+			int maxUnits = (totPU - 1) / minimumUnitPrice;
+			int currentProduction = 0;
+			int maxProduction = 0;
+			Collections.shuffle(rfactories); // we should sort this
+			for (Territory fixTerr : rfactories)
+			{
+				if (!Matches.territoryHasOwnedFactory(data, player).match(fixTerr))
+					continue;
+				
+				Unit possibleFactoryNeedingRepair = TripleAUnit.getBiggestProducer(Match.getMatches(fixTerr.getUnits().getUnits(), ourFactories), fixTerr, player, data, false);
+				if (Matches.UnitHasSomeUnitDamage().match(possibleFactoryNeedingRepair))
+					unitsThatCanProduceNeedingRepair.add(possibleFactoryNeedingRepair);
+				
+				unitsThatAreDisabledNeedingRepair.addAll(Match.getMatches(fixTerr.getUnits().getUnits(), ourDisabled));
+				
+				TripleAUnit taUnit = (TripleAUnit) possibleFactoryNeedingRepair;
+				maxProduction += TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, false);
+				diff = taUnit.getUnitDamage();
+				totalDamage += diff;
+				if (fixTerr == capitol)
+				{
+					capDamage += diff;
+					capProduction = Math.max(0, TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true));
+					capUnit = possibleFactoryNeedingRepair;
+				}
+				currentProduction += Math.max(0, TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true));
+			}
+			rfactories.remove(capitol);
+			unitsThatCanProduceNeedingRepair.remove(capUnit);
+			// assume minimum unit price is 3, and that we are buying only that... if we over repair, oh well, that is better than under-repairing
+			// goal is to be able to produce all our units, and at least half of that production in the capitol
+			if ((capProduction <= maxUnits / 2 || rfactories.isEmpty()) && capUnit != null) // if capitol is super safe, we don't have to do this. and if capitol is under siege, we should repair enough to place all our units here
+			{
+				for (RepairRule rrule : rrules)
+				{
+					if (capUnit == null || !capUnit.getUnitType().equals((UnitType) rrule.getResults().keySet().iterator().next()))
+						continue;
+					if (!Matches.territoryHasOwnedFactory(data, player).match(capitol))
+						continue;
+					TripleAUnit taUnit = (TripleAUnit) capUnit;
+					diff = taUnit.getUnitDamage();
+					int unitProductionAllowNegative = TripleAUnit.getHowMuchCanUnitProduce(capUnit, capUnit.getTerritoryUnitIsIn(), player, data, false) - diff;
+					if (!rfactories.isEmpty())
+						diff = Math.min(diff, (maxUnits / 2 - unitProductionAllowNegative) + 1);
+					else
+						diff = Math.min(diff, (maxUnits - unitProductionAllowNegative));
+					diff = Math.min(diff, leftToSpend - minimumUnitPrice);
+					if (diff > 0)
+					{
+						if (unitProductionAllowNegative >= 0)
+							currentProduction += diff;
+						else
+							currentProduction += diff + unitProductionAllowNegative;
+						repairMap.add(rrule, diff);
+						repair.put(capUnit, repairMap);
+						leftToSpend -= diff;
+						purchaseDelegate.purchaseRepair(repair);
+						repair.clear();
+						repairMap.clear();
+						maxUnits = (leftToSpend - 1) / minimumUnitPrice; // ideally we would adjust this after each single PU spent, then re-evaluate everything.
+					}
+				}
+			}
+			int i = 0;
+			while (currentProduction < maxUnits && i < 2)
+			{
+				for (RepairRule rrule : rrules)
+				{
+					for (Unit fixUnit : unitsThatCanProduceNeedingRepair)
+					{
+						if (fixUnit == null || !fixUnit.getType().equals((UnitType) rrule.getResults().keySet().iterator().next()))
+							continue;
+						if (!Matches.territoryHasOwnedFactory(data, player).match(fixUnit.getTerritoryUnitIsIn()))
+							continue;
+						// we will repair the first territories in the list as much as we can, until we fulfill the condition, then skip all other territories
+						if (currentProduction >= maxUnits)
+							continue;
+
+						TripleAUnit taUnit = (TripleAUnit) fixUnit;
+						diff = taUnit.getUnitDamage();
+						int unitProductionAllowNegative = TripleAUnit.getHowMuchCanUnitProduce(fixUnit, fixUnit.getTerritoryUnitIsIn(), player, data, false) - diff;
+						
+						if (i == 0)
+						{
+							if (unitProductionAllowNegative < 0)
+								diff = Math.min(diff, (maxUnits - currentProduction) - unitProductionAllowNegative);
+							else
+								diff = Math.min(diff, (maxUnits - currentProduction));
+						}
+						diff = Math.min(diff, leftToSpend - minimumUnitPrice);
+						if (diff > 0)
+						{
+							if (unitProductionAllowNegative >= 0)
+								currentProduction += diff;
+							else
+								currentProduction += diff + unitProductionAllowNegative;
+							repairMap.add(rrule, diff);
+							repair.put(fixUnit, repairMap);
+							leftToSpend -= diff;
+							purchaseDelegate.purchaseRepair(repair);
+							repair.clear();
+							repairMap.clear();
+							maxUnits = (leftToSpend - 1) / minimumUnitPrice; // ideally we would adjust this after each single PU spent, then re-evaluate everything.
+						}
+					}
+				}
+				rfactories.add(capitol);
+				if (capUnit != null)
+					unitsThatCanProduceNeedingRepair.add(capUnit);
 				i++;
 			}
 		}

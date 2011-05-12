@@ -1045,6 +1045,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         List<RepairRule> rrules = Collections.emptyList();
         CompositeMatch<Unit> ourFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsFactory);
 		List<Territory> rfactories = Utils.findUnitTerr(data, player, ourFactories);
+		
         if(player.getRepairFrontier() != null) // figure out if anything needs to be repaired
         {
             rrules = player.getRepairFrontier().getRules();

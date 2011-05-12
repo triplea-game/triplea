@@ -2172,10 +2172,11 @@
                          <option name="movement" value="0"/>
                          <option name="attack" value="0"/>
                          <option name="defense" value="4"/>
+						 <!-- canBeDamaged sets if a unit can be attacked by strategic bombing raids or by rockets.  isFactory also allows these things -->
 						 <option name="canBeDamaged" value="true"/>
 						 <!-- maxDamage is the total damage the unit can take.  If a factory, and canProduceXUnits = -1 or is missing then maxDamage will be a multiple of the territory value (maxDamage defaults to 2 if canProduceXUnits = -1), otherwise it will be a set number -->
 						 <option name="maxDamage" value="4"/>
-						 <!-- maxOperationalDamage is used with certain features like isAirBase, repairsUnits, and givesMovement to determine if those features work or not based on the current damage of this unit. Does not work with factories. -->
+						 <!-- maxOperationalDamage is used with certain features like isAirBase, repairsUnits, and givesMovement to determine if those features work or not based on the current damage of this unit. Does Not work with isFactory or canProduceUnits. -->
 						 <option name="maxOperationalDamage" value="0"/>
 						 <!-- isConstruction allows the unit to be placed in territories that don't contain factories. only "constructionsPerTerrPerTypePerTurn" contructions per territory per turn. 
 								may have only "maxConstructionsPerTypePerTerr" constructions total per territory without factory unless you enable "More Constructions without Factory", 
@@ -2208,10 +2209,12 @@
 				
 				<!-- Airfield -->
                 <attatchment name="unitAttatchment" attatchTo="airfield" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+						 <!-- isInfrastructure means a unit does not participate in combat, and they will be captured if the attacker is successful -->
                          <option name="isInfrastructure" value="true"/>
 						 <option name="canBeDamaged" value="true"/>
 						 <option name="maxDamage" value="6"/>
 						 <option name="maxOperationalDamage" value="3"/>
+						 <!-- isAirBase allows units with canScramble to scramble from a territory with this unit -->
 						 <option name="isAirBase" value="true"/>
 						 <option name="isConstruction" value="true"/>
 						 <option name="constructionType" value="airfield_structure"/>

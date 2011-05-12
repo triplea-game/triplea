@@ -19,12 +19,15 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -410,5 +413,107 @@ public class TripleAUnit extends Unit
     public int getHowMuchCanThisUnitBeRepaired(final Unit u, final Territory t)
     {
     	return Math.max(0, (this.getHowMuchDamageCanThisUnitTakeTotal(u, t) - this.getHowMuchMoreDamageCanThisUnitTake(u, t)));
+    }
+    
+    public int getHowMuchShouldUnitBeRepairedToNotBeDisabled(final Unit u, final Territory t)
+    {
+    	UnitAttachment ua = UnitAttachment.get(u.getType());
+    	int maxOperationalDamage = ua.getMaxOperationalDamage();
+    	if (maxOperationalDamage < 0)
+    		return 0;
+    	
+    	TripleAUnit taUnit = (TripleAUnit) u;
+    	int currentDamage = taUnit.getUnitDamage();
+    	
+    	return Math.max(0, currentDamage - maxOperationalDamage);
+    }
+    
+    public static int getProductionPotentialOfTerritory(Collection<Unit> unitsAtStartOfStepInTerritory, Territory producer, PlayerID player, GameData data, boolean accountForDamage)
+    {
+    	return getHowMuchCanUnitProduce(getBiggestProducer(unitsAtStartOfStepInTerritory, producer, player, data, accountForDamage), producer, player, data, accountForDamage);
+    }
+    
+    public static Unit getBiggestProducer(Collection<Unit> units, Territory producer, PlayerID player, GameData data, boolean accountForDamage)
+    {
+    	Collection<Unit> factories = Match.getMatches(units, Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player));
+    	if (factories.isEmpty())
+    		return null;
+    	IntegerMap<Unit> productionPotential = new IntegerMap<Unit>();
+    	Unit highestUnit = factories.iterator().next();
+    	int highestCapacity = Integer.MIN_VALUE;
+    	for (Unit u : factories)
+    	{
+    		int capacity = getHowMuchCanUnitProduce(u, producer, player, data, accountForDamage);
+    		productionPotential.put(u, capacity);
+    		if (capacity > highestCapacity)
+    		{
+    			highestCapacity = capacity;
+    			highestUnit = u;
+    		}
+    	}
+    	return highestUnit;
+    }
+    
+    public static int getHowMuchCanUnitProduce(Unit u, Territory producer, PlayerID player, GameData data, boolean accountForDamage)
+    {
+    	if (u == null)
+    		return 0;
+    	
+    	if (!Matches.UnitIsFactoryOrCanProduceUnits.match(u))
+    		return 0;
+    	
+    	int productionCapacity = 0;
+    	
+    	UnitAttachment ua = UnitAttachment.get(u.getType());
+		TripleAUnit taUnit = (TripleAUnit) u;
+		TerritoryAttachment ta = TerritoryAttachment.get(producer);
+		int territoryProduction = 0;
+		if (ta != null)
+			territoryProduction = ta.getProduction();
+		
+		if (accountForDamage)
+		{
+			if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
+			{
+				if (ua.getCanProduceXUnits() < 0)
+					productionCapacity = ta.getUnitProduction();
+				else
+					productionCapacity = ua.getCanProduceXUnits() - (territoryProduction - ta.getUnitProduction());
+			}
+			else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
+			{
+				if (ua.getCanProduceXUnits() < 0)
+					productionCapacity = territoryProduction - taUnit.getUnitDamage();
+				else
+					productionCapacity = ua.getCanProduceXUnits() - taUnit.getUnitDamage();
+			}
+			else
+			{
+				productionCapacity = territoryProduction;
+				if (productionCapacity < 1)
+					productionCapacity = 1;
+			}
+		}
+		else
+		{
+			if (ua.getCanProduceXUnits() < 0)
+				productionCapacity = territoryProduction;
+			else
+				productionCapacity = ua.getCanProduceXUnits();
+			
+			if (productionCapacity < 1)
+				productionCapacity = 1;
+		}
+		
+		//Increase production if have industrial technology
+		boolean isIncreasedFactoryProduction = false;
+		TechAttachment techa = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        if(techa != null && techa.hasIncreasedFactoryProduction())
+        	isIncreasedFactoryProduction = true;
+		
+        if(isIncreasedFactoryProduction && territoryProduction > 2)
+        	productionCapacity += 2;
+        
+        return productionCapacity;
     }
 }

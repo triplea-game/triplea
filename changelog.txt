@@ -1,4 +1,8 @@
 Changes for 1.3.1.0
+* Fixed moore AI and easy AI to use new repairing method when trying to repair unit damage instead of territory damage. (veqryn)
+
+* Some updates for Dynamix AI, and fixed AI bug caused by more than one map was opened per TripleA instance, and Added a Resource Collection Increaser cheat. (wisconsin)
+
 * Finished making repair rules work for both damage done to units and damage done to territories. 
   A note to map makers: repair rules should mention the actual unit, not a _hit version of the unit.  This means all repair rules that mention "factory_hit" will need to be changed to mention "factory". (veqryn)
 
