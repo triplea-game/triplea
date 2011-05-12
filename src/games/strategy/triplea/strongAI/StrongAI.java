@@ -10046,11 +10046,18 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		return !thisIsAnAttack;
 	}
-	
-	public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units)
-	{
-		return (Unit) Match.getNMatches(units, 1, Matches.UnitIsFactory);
-	}
+
+    public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units) 
+    {
+    	if (units == null || units.isEmpty())
+    		return null;
+    	if (!Match.someMatch(units, Matches.UnitIsFactoryOrCanProduceUnits))
+    		return units.iterator().next();
+    	if (Match.someMatch(units, Matches.UnitIsFactory))
+    		return Match.getMatches(units, Matches.UnitIsFactory).iterator().next();
+    	else
+    		return Match.getMatches(units, Matches.UnitCanProduceUnits).iterator().next();
+    }
 	
 	public boolean selectAttackSubs(Territory unitTerritory)
 	{

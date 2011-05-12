@@ -309,6 +309,18 @@ public class Matches
         };
     }
     
+    public static Match<UnitType> unitTypeIsStatic(final PlayerID id)
+    {
+    	return new Match<UnitType>()
+    	{
+    		public boolean match(UnitType uT)
+    		{
+    			UnitAttachment ua = UnitAttachment.get(uT);
+                return ua.getMovement(id) <= 0;
+    		}
+    	};
+    }
+    
     public static Match<UnitType> unitTypeCanAttack(final PlayerID id)
     {
     	return new Match<UnitType>()
