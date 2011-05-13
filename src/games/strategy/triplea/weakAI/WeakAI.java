@@ -975,9 +975,9 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         return sum;
     }
 
-    protected void purchase(boolean purcahseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
+    protected void purchase(boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
     {
-        if (purcahseForBid)
+        if (purchaseForBid)
         {
         	// bid will only buy land units, due to weak ai placement for bid not being able to handle sea units
             Resource PUs = data.getResourceList().getResource(Constants.PUS);
