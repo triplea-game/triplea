@@ -222,6 +222,7 @@ public class Purchase
 
             boolean madeRepairs = false;
             int maxPUsWeWantToSpendOnRepairs = origPUs / 2;
+            boolean bombingDoneOnTerritories = Properties.getSBRAffectsUnitProduction(data);
             boolean bombingDoneOnUnitsDirectly = Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
 
             for (RepairRule rrule : rrules)
@@ -232,28 +233,7 @@ public class Purchase
                         continue;
 
                     TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
-                    if (bombingDoneOnUnitsDirectly) //If bombing in this map is done to units instead of territories, we figure repair amount based on [max - current] unit production capacity
-                    {
-                        for (Unit unitToFix : Match.getMatches(fixTerr.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged))
-                        {
-                            int repairAmount = TripleAUnit.getHowMuchCanUnitProduce(unitToFix, fixTerr, player, data, false) - TripleAUnit.getHowMuchCanUnitProduce(unitToFix, fixTerr, player, data, true);
-                            repairAmount = Math.min(repairAmount, origPUs / 4); //Never spend more than one-fourth of all the player's money on a factory repair
-                            repairAmount = Math.min(repairAmount, maxPUsWeWantToSpendOnRepairs - totalRepairCosts); //Don't let the total repair costs equal more than the 'total max spend' amount that was set earlier to half of total PUs
-                            repairAmount = Math.min(repairAmount, PUsToSpend); //Don't spend more PUs than we have!
-
-                            if (repairAmount > 0)
-                            {
-                                DUtils.Log(Level.FINER, "    Purchasing repairs for a unit. Territory: {0} Unit: {1} Repair Amount: {2}", fixTerr.getName(), unitToFix, repairAmount);
-                                IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
-                                repairMap.add(rrule, repairAmount);
-                                factoryRepairs.put(Match.getMatches(fixTerr.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged).iterator().next(), repairMap);
-                                madeRepairs = true;
-                                PUsToSpend -= repairAmount;
-                                totalRepairCosts += repairAmount;
-                            }
-                        }
-                    }
-                    else //Normal bombing system
+                    if (bombingDoneOnTerritories)
                     {
                         int repairAmount = ta.getProduction() - ta.getUnitProduction(); //Don't repair more of the factory than was damaged!
                         repairAmount = Math.min(repairAmount, origPUs / 4); //Never spend more than one-fourth of all the player's money on a factory repair
@@ -269,6 +249,29 @@ public class Purchase
                             madeRepairs = true;
                             PUsToSpend -= repairAmount;
                             totalRepairCosts += repairAmount;
+                        }
+                    }
+                    else if (bombingDoneOnUnitsDirectly) //If bombing in this map is done to units instead of territories, we figure repair amount based on [max - current] unit production capacity
+                    {
+                        for (Unit unitToFix : Match.getMatches(fixTerr.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged))
+                        {
+                        	if (unitToFix == null || !unitToFix.getType().equals((UnitType) rrule.getResults().keySet().iterator().next()))
+    							continue;
+                            int repairAmount = TripleAUnit.getHowMuchCanUnitProduce(unitToFix, fixTerr, player, data, false) - TripleAUnit.getHowMuchCanUnitProduce(unitToFix, fixTerr, player, data, true);
+                            repairAmount = Math.min(repairAmount, origPUs / 4); //Never spend more than one-fourth of all the player's money on a factory repair
+                            repairAmount = Math.min(repairAmount, maxPUsWeWantToSpendOnRepairs - totalRepairCosts); //Don't let the total repair costs equal more than the 'total max spend' amount that was set earlier to half of total PUs
+                            repairAmount = Math.min(repairAmount, PUsToSpend); //Don't spend more PUs than we have!
+
+                            if (repairAmount > 0)
+                            {
+                                DUtils.Log(Level.FINER, "    Purchasing repairs for a unit. Territory: {0} Unit: {1} Repair Amount: {2}", fixTerr.getName(), unitToFix, repairAmount);
+                                IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
+                                repairMap.add(rrule, repairAmount);
+                                factoryRepairs.put(unitToFix, repairMap);
+                                madeRepairs = true;
+                                PUsToSpend -= repairAmount;
+                                totalRepairCosts += repairAmount;
+                            }
                         }
                     }
                 }
