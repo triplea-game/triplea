@@ -39,6 +39,7 @@
 	<target name="clean" depends="init" description="Remove all release, class and saved game files">
 		<delete dir="release" />
 		<delete dir="classes" />
+		<delete dir="bin" />
 		<delete dir="testclasses" />		
 		<delete dir="savedGames" />
 	</target>
