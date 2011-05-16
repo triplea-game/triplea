@@ -1101,7 +1101,7 @@ public class UnitAttachment extends DefaultAttachment
     		getListedUnits(combo);
     }
     
-    if((m_canBeDamaged && (m_maxDamage < 1)) || (!m_canBeDamaged && (m_maxDamage >= 0)) || (m_canDieFromReachingMaxDamage && !(m_maxDamage >= 0 || m_isFactory)) || (m_canBeDamaged && m_isFactory))
+    if((m_canBeDamaged && (m_maxDamage < 1)) || (!m_canBeDamaged && !m_isFactory && (m_maxDamage >= 0)) || (m_canDieFromReachingMaxDamage && !(m_maxDamage >= 0 || m_isFactory)) || (m_canBeDamaged && m_isFactory))
     {
     	throw new GameParseException("Invalid Unit Attatchment" + this);
     }
