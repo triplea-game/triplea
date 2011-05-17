@@ -2277,6 +2277,9 @@
 						 <option name="canProduceXUnits" value="-1"/>
 						 <!-- canProduceUnits allows a unit to be a factory, without all the other things that come with being a factory (like capturable, land, non-combat, etc).  So if you want flying factories, go ahead. Just don't complain if you get errors. 
 						 <option name="canProduceUnits" value="true"/>-->
+						 <!-- createsUnitsList is a list of units that this unit will create every turn at the end of the turn. can have multiple instances
+						 <option name="createsUnitsList" value="2:infantry"/>
+						 <option name="createsUnitsList" value="1:artillery"/>-->
                 </attatchment>
 
                 <!-- AA Gun -->

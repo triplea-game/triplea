@@ -20,6 +20,7 @@
 
 package games.strategy.triplea.delegate;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,6 +42,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
@@ -50,9 +52,11 @@ import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 /**
@@ -177,10 +181,62 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     	for (Territory t : data.getMap().getTerritories())
     	{
     		Collection<Unit> myCreators = Match.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
+    		Collection<Unit> toAdd = new ArrayList<Unit>();
+    		Collection<Unit> toAddSea = new ArrayList<Unit>();
+    		Collection<Unit> toAddLand = new ArrayList<Unit>();
     		if (myCreators != null && !myCreators.isEmpty())
     		{
-    			
-        		bridge.getHistoryWriter().startEvent("blah");
+    			for (Unit u : myCreators)
+    			{
+    				UnitAttachment ua = UnitAttachment.get(u.getType());
+    	        	IntegerMap<UnitType> createsUnitsMap = ua.getCreatesUnitsList();
+    	        	Collection<UnitType> willBeCreated = createsUnitsMap.keySet();
+    				for (UnitType ut : willBeCreated)
+    				{
+    					if (UnitAttachment.get(ut).isSea() && Matches.TerritoryIsLand.match(t))
+    						toAddSea.addAll(ut.create(createsUnitsMap.getInt(ut), player));
+    					else if (!UnitAttachment.get(ut).isSea() && !UnitAttachment.get(ut).isAir() && Matches.TerritoryIsWater.match(t))
+    						toAddLand.addAll(ut.create(createsUnitsMap.getInt(ut), player));
+    					else
+    						toAdd.addAll(ut.create(createsUnitsMap.getInt(ut), player));
+    				}
+    			}
+    			if (toAdd != null && !toAdd.isEmpty())
+    			{
+    		        String transcriptText = player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAdd) + " in " + t.getName();
+    		        bridge.getHistoryWriter().startEvent(transcriptText);
+    		        bridge.getHistoryWriter().setRenderingData(toAdd);
+    		        Change place = ChangeFactory.addUnits(t, toAdd);
+    		        change.add(place);
+    			}
+    			if (toAddSea != null && !toAddSea.isEmpty())
+    			{
+    				Match<Territory> myTerrs = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater);
+    				Collection<Territory> waterNeighbors = data.getMap().getNeighbors(t, myTerrs);
+    				if (waterNeighbors != null && !waterNeighbors.isEmpty())
+    				{
+    					Territory tw = waterNeighbors.iterator().next();
+        		        String transcriptText = player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAddSea) + " in " + tw.getName();
+        		        bridge.getHistoryWriter().startEvent(transcriptText);
+        		        bridge.getHistoryWriter().setRenderingData(toAddSea);
+        		        Change place = ChangeFactory.addUnits(tw, toAddSea);
+        		        change.add(place);
+    				}
+    			}
+    			if (toAddLand != null && !toAddLand.isEmpty())
+    			{
+    				Match<Territory> myTerrs = new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(player), Matches.TerritoryIsLand);
+    				Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, myTerrs);
+    				if (landNeighbors != null && !landNeighbors.isEmpty())
+    				{
+    					Territory tl = landNeighbors.iterator().next();
+        		        String transcriptText = player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAddLand) + " in " + tl.getName();
+        		        bridge.getHistoryWriter().startEvent(transcriptText);
+        		        bridge.getHistoryWriter().setRenderingData(toAddLand);
+        		        Change place = ChangeFactory.addUnits(tl, toAddLand);
+        		        change.add(place);
+    				}
+    			}
     		}
     	}
     	if (change != null && !change.isEmpty())
