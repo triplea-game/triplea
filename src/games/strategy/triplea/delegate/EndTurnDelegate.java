@@ -34,6 +34,7 @@ import org.w3c.dom.Node;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
@@ -100,6 +101,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
         			determineNationalObjectives(m_data, bridge);
         		}
         		
+        createUnits(m_data, bridge);
+        		
         if(isWW2V2())
             return;
 
@@ -161,6 +164,27 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 //            if(rVal != JOptionPane.OK_OPTION)
 //                a_bridge.stopGameSequence();
         }
+    }
+    
+    /**
+     * 
+     */
+    private void createUnits(GameData data, IDelegateBridge bridge)
+    {
+    	PlayerID player = data.getSequence().getStep().getPlayerID();
+    	Match<Unit> myCreatorsMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCreatesUnits);
+    	CompositeChange change = new CompositeChange();
+    	for (Territory t : data.getMap().getTerritories())
+    	{
+    		Collection<Unit> myCreators = Match.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
+    		if (myCreators != null && !myCreators.isEmpty())
+    		{
+    			
+        		bridge.getHistoryWriter().startEvent("blah");
+    		}
+    	}
+    	if (change != null && !change.isEmpty())
+    		bridge.addChange(change);
     }
     
 /**

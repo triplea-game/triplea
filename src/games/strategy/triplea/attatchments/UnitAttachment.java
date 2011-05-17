@@ -144,6 +144,7 @@ public class UnitAttachment extends DefaultAttachment
   
   private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
   private IntegerMap<UnitType> m_consumesUnits = new IntegerMap<UnitType>();
+  private IntegerMap<UnitType> m_createsUnitsList = new IntegerMap<UnitType>();
 
 
   /** Creates new UnitAttatchment */
@@ -884,6 +885,32 @@ public class UnitAttachment extends DefaultAttachment
   {
       return m_consumesUnits;
   }
+
+  public void setCreatesUnitsList(String value)
+  {
+	  String[] s = value.split(":");
+	  if (s.length <= 0 || s.length > 2)
+		  throw new IllegalStateException("Unit Attachments: createsUnitsList can not be empty or have more than two fields");
+	  
+	  String unitTypeToProduce;
+	  unitTypeToProduce = s[1];
+	  
+	  // validate that this unit exists in the xml
+	  UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
+      if(ut == null)
+          throw new IllegalStateException("Unit Attachments: No unit called:" + unitTypeToProduce);
+      
+      int n = getInt(s[0]);
+      if (n < 1)
+    	  throw new IllegalStateException("Unit Attachments: createsUnitsList must have positive values");
+      
+      m_createsUnitsList.put(ut, n);
+  }
+
+  public IntegerMap<UnitType> getCreatesUnitsList()
+  {
+      return m_createsUnitsList;
+  }
   
   public void setBombingBonus(String s)
   {
@@ -1266,6 +1293,11 @@ public class UnitAttachment extends DefaultAttachment
 		  stats.append("can Produce Units Up To Territory Value, ");
 	  else if ((m_isFactory || m_canProduceUnits) && m_canProduceXUnits > 0)
 		  stats.append("can Produce " + m_canProduceXUnits + " Units, ");
+
+	  if (m_createsUnitsList != null && m_createsUnitsList.size() == 1)
+		  stats.append("Produces " + m_createsUnitsList.totalValues() + " " + m_createsUnitsList.keySet().iterator().next().getName() + " Each Turn, ");
+	  else if (m_createsUnitsList != null && m_createsUnitsList.size() > 1)
+		  stats.append("Produces " + m_createsUnitsList.totalValues() + " Different Units Each Turn, ");
 	  
 	  if (m_isAA || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly)
 	  {

@@ -1,4 +1,6 @@
 Changes for 1.3.1.1
+* Initial work on automatic creation of units by other units at end of turn. (veqryn)
+
 * Fixed unitAttachment validation to allow factories to have maxDamage. (veqryn)
 
 * Fixed build.xml to work for macRelease. (veqryn)
