@@ -35,6 +35,8 @@ public class MacFinder
 	public static String GetHashedMacAddress()
     {
         String mac = GetMacAddress();
+        if (mac == null)
+        	throw new IllegalArgumentException("You have an invalid MAC address!");
         return MD5Crypt.crypt(mac, "MH");
     }
     private static String GetMacAddress()
@@ -88,8 +90,8 @@ public class MacFinder
             String results = executeCommandAndGetResults("getmac");
             if (results != null && results.trim().length() > 0)
             {
-                int macStartIndex = results.indexOf("-") - 2;
-                String rawMac = results.substring(macStartIndex, 17);
+                int macStartIndex = Math.max(0, results.indexOf("-") - 2);
+                String rawMac = results.substring(macStartIndex, Math.min(17 + macStartIndex, results.length()));
                 if (rawMac != null)
                 {
                     String mac = rawMac.replace("-", ".");
@@ -112,8 +114,8 @@ public class MacFinder
             String results = executeCommandAndGetResults("ipconfig /all");
             if (results != null && results.trim().length() > 0)
             {
-                int macStartIndex = results.indexOf("Physical Address. . . . . . . . . : ") + 36;
-                String rawMac = results.substring(macStartIndex, 17);
+                int macStartIndex = Math.max(0, Math.min(results.length()-1, results.indexOf("Physical Address. . . . . . . . . : ") + 36));
+                String rawMac = results.substring(macStartIndex, Math.min(17 + macStartIndex, results.length()));
                 if (rawMac != null)
                 {
                     String mac = rawMac.replace("-", ".");
@@ -136,8 +138,8 @@ public class MacFinder
             String results = executeCommandAndGetResults("ifconfig -a");
             if (results != null && results.trim().length() > 0)
             {
-                int macStartIndex = results.indexOf("Ethernet HWaddr ") + 16;
-                String rawMac = results.substring(macStartIndex, 17);
+                int macStartIndex = Math.max(0, Math.min(results.length()-1, results.indexOf("Ethernet HWaddr ") + 16));
+                String rawMac = results.substring(macStartIndex, Math.min(17 + macStartIndex, results.length()));
                 if (rawMac != null)
                 {
                     String mac = rawMac.replace(":", ".");
@@ -160,8 +162,8 @@ public class MacFinder
             String results = executeCommandAndGetResults("/sbin/ifconfig -a");
             if (results != null && results.trim().length() > 0)
             {
-                int macStartIndex = results.indexOf("Ethernet HWaddr ") + 16;
-                String rawMac = results.substring(macStartIndex, 17);
+                int macStartIndex = Math.max(0, Math.min(results.length()-1, results.indexOf("Ethernet HWaddr ") + 16));
+                String rawMac = results.substring(macStartIndex, Math.min(17 + macStartIndex, results.length()));
                 if (rawMac != null)
                 {
                     String mac = rawMac.replace(":", ".");

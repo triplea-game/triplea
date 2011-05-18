@@ -108,7 +108,8 @@ public class MD5Crypt
      */
     static public final String crypt( String password, String salt, String magic ) 
     {
-        
+        if (password == null)
+        	throw new IllegalArgumentException("Null password!");
         if(salt == null)
             throw new IllegalArgumentException("Null salt!");
         if(magic == null)
