@@ -361,9 +361,9 @@ public class LobbyFrame extends JFrame
 
                 if(selectedTimeUnit.equals("Forever"))
                 {
+                    controller.banMac(clickedOn, null); //Must do this first, otherwise the mac is 'forgotten' by the server before banning of it can take place
                     controller.banUsername(clickedOn, null);
                     controller.banIp(clickedOn, null);
-                    controller.banMac(clickedOn, null);
                     return;
                 }
 
@@ -394,9 +394,9 @@ public class LobbyFrame extends JFrame
                 long expire = System.currentTimeMillis() +
                               ticks;
 
+                controller.banMac(clickedOn, new Date(expire)); //Must do this first, otherwise the mac is 'forgotten' by the server before banning of it can take place
                 controller.banUsername(clickedOn, new Date(expire));
-                controller.banIp(clickedOn, new Date(expire));
-                controller.banMac(clickedOn, new Date(expire));
+                controller.banIp(clickedOn, new Date(expire));                
             }
         });
 
