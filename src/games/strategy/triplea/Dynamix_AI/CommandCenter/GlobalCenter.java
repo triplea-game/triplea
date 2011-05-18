@@ -58,7 +58,7 @@ public class GlobalCenter
         CurrentPlayer = null;
         MapTerCount = 0;
         MapTerCountScale = 1.0F;
-        CurrentPhaseType = null;
+        CurrentPhaseType = PhaseType.Unknown;
         IsFFAGame = false;
         FastestUnitMovement = 0;
         FastestLandUnitMovement = 0;
