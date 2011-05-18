@@ -72,7 +72,7 @@ public class MacFinder
                     return mac;
             }
         }
-        catch (Exception ex)
+        catch (Throwable ex) //Older java's don't have the getHardwareAddress method, so we catch not only Throwable->Exception's but all Throwable's, including Throwable->Error. (NoSuchMethodError is otherwise thrown)
         {
             ex.printStackTrace();
         }
