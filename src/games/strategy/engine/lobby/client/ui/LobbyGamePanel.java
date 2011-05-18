@@ -18,7 +18,11 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.lobby.server.GameDescription;
+import games.strategy.engine.lobby.server.IModeratorController;
+import games.strategy.engine.lobby.server.ModeratorController;
+import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.net.Node;
 import games.strategy.ui.TableSorter;
 
 import java.awt.*;
@@ -36,6 +40,7 @@ public class LobbyGamePanel extends JPanel
 {
     private JButton m_hostGame;
     private JButton m_joinGame;
+    private JButton m_bootGame;
     private LobbyGameTableModel m_gameTableModel;
     private Messengers m_messengers;
     private JTable m_gameTable;
@@ -54,6 +59,7 @@ public class LobbyGamePanel extends JPanel
     {
         m_hostGame = new JButton("Host Game");
         m_joinGame = new JButton("Join Game");
+        m_bootGame = new JButton("Boot Game");
         m_gameTableModel = new LobbyGameTableModel(m_messengers.getMessenger(), m_messengers.getChannelMessenger(), m_messengers.getRemoteMessenger());
         
         
@@ -103,9 +109,16 @@ public class LobbyGamePanel extends JPanel
         
         toolBar.add(m_hostGame);
         toolBar.add(m_joinGame);
+        if(isAdmin())
+            toolBar.add(m_bootGame);
         toolBar.setFloatable(false);
         
         add(toolBar, BorderLayout.SOUTH);
+    }
+    
+    public boolean isAdmin() 
+    {
+        return ((IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName())).isAdmin();
     }
 
     private void setupListeners()
@@ -127,6 +140,14 @@ public class LobbyGamePanel extends JPanel
             }
         
         });
+        
+        m_bootGame.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                bootGame();
+            }
+        });  
         
         m_gameTable.getSelectionModel().addListSelectionListener(new ListSelectionListener()
         {
@@ -199,8 +220,28 @@ public class LobbyGamePanel extends JPanel
         String javaClass = "games.strategy.engine.framework.GameRunner";
         commands.add(javaClass);
         
-        exec(commands);
-                
+        exec(commands);                
+    }
+    
+    private void bootGame()
+    {
+        int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to disconnect the selected game?","Remove Game From Lobby",JOptionPane.OK_CANCEL_OPTION);
+
+        if(result != JOptionPane.OK_OPTION)
+            return;
+
+        int selectedIndex = m_gameTable.getSelectedRow();
+        if(selectedIndex == -1)
+            return;
+
+        //we sort the table, so get the correct index
+        int modelIndex = m_tableSorter.modelIndex(selectedIndex);
+        GameDescription description = m_gameTableModel.get(modelIndex);
+
+        INode lobbyWatcherNode = new Node(description.getHostedBy().getName() + "_lobby_watcher", description.getHostedBy().getAddress(), description.getHostedBy().getPort());
+        final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+        controller.boot(lobbyWatcherNode);
+        JOptionPane.showMessageDialog(null, "The game you selected has been disconnected from the lobby.");
     }
     
     
