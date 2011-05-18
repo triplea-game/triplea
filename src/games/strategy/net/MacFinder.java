@@ -58,7 +58,6 @@ public class MacFinder
         }
         catch (Throwable ex) //Older java's don't have the getHardwareAddress method, so we catch not only Throwable->Exception's but all Throwable's, including Throwable->Error. (NoSuchMethodError is otherwise thrown)
         {
-            ex.printStackTrace();
         }
 
         //Next, try to get the mac address of the first network interfaces that has an accessible mac address
@@ -76,7 +75,6 @@ public class MacFinder
         }
         catch (Throwable ex) //Older java's don't have the getHardwareAddress method, so we catch not only Throwable->Exception's but all Throwable's, including Throwable->Error. (NoSuchMethodError is otherwise thrown)
         {
-            ex.printStackTrace();
         }
 
         //Next, try to get the mac address by calling the 'getmac' app that exists in Windows, Mac, and possibly others.
@@ -102,7 +100,6 @@ public class MacFinder
         }
         catch (Throwable ex)
         {
-            ex.printStackTrace();
         }
 
         //Next, try to get the mac address by calling the 'ipconfig /all' app that exists in Windows and possibly others.
@@ -126,7 +123,6 @@ public class MacFinder
         }
         catch (Throwable ex)
         {
-            ex.printStackTrace();
         }
 
         //Next, try to get the mac address by calling the 'ifconfig /a' app that exists in Linux and possibly others.
@@ -150,7 +146,6 @@ public class MacFinder
         }
         catch (Throwable ex)
         {
-            ex.printStackTrace();
         }
 
         //Next, try to get the mac address by calling the '/sbin/ifconfig /a' app that exists in Linux and possibly others.
@@ -174,7 +169,6 @@ public class MacFinder
         }
         catch (Throwable ex)
         {
-            ex.printStackTrace();
         }
 
         return null;
