@@ -181,11 +181,11 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     	for (Territory t : data.getMap().getTerritories())
     	{
     		Collection<Unit> myCreators = Match.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
-    		Collection<Unit> toAdd = new ArrayList<Unit>();
-    		Collection<Unit> toAddSea = new ArrayList<Unit>();
-    		Collection<Unit> toAddLand = new ArrayList<Unit>();
     		if (myCreators != null && !myCreators.isEmpty())
     		{
+        		Collection<Unit> toAdd = new ArrayList<Unit>();
+        		Collection<Unit> toAddSea = new ArrayList<Unit>();
+        		Collection<Unit> toAddLand = new ArrayList<Unit>();
     			for (Unit u : myCreators)
     			{
     				UnitAttachment ua = UnitAttachment.get(u.getType());

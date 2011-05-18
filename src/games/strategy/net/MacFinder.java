@@ -98,7 +98,7 @@ public class MacFinder
                 }
             }
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {
             ex.printStackTrace();
         }
@@ -122,7 +122,7 @@ public class MacFinder
                 }
             }
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {
             ex.printStackTrace();
         }
@@ -146,7 +146,7 @@ public class MacFinder
                 }
             }
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {
             ex.printStackTrace();
         }
@@ -170,7 +170,7 @@ public class MacFinder
                 }
             }
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {
             ex.printStackTrace();
         }
