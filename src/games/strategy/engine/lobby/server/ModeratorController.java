@@ -83,7 +83,7 @@ public class ModeratorController implements IModeratorController
         new BannedIpController().addBannedIp(node.getAddress().getHostAddress(), banExpires);
         boot(node);
         
-        s_logger.info(DUtils.Format("User was banned from the lobby(Mac ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}"
+        s_logger.info(DUtils.Format("User was banned from the lobby(IP ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}"
                 , node.getName(), node.getAddress().getHostAddress(), mac
                 , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     }
