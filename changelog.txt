@@ -1,4 +1,6 @@
 Changes for 1.3.1.1
+* Got lobby actions to correctly be logged, and fixed bug in banning system. (wisconsin)
+
 * Fixed all issues surrounding macFinder. (veqryn)
 
 * Updated packaged java JRE to java 6 update 25. (veqryn)

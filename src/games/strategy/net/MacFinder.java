@@ -36,7 +36,7 @@ public class MacFinder
     {
         String mac = GetMacAddress();
         if (mac == null)
-        	throw new IllegalArgumentException("You have an invalid MAC address!");
+        	throw new IllegalArgumentException("You have an invalid MAC address! (Or your Java is out of date, Or TripleA simply can't find your mac address)");
         return MD5Crypt.crypt(mac, "MH");
     }
     private static String GetMacAddress()
@@ -58,6 +58,7 @@ public class MacFinder
         }
         catch (Throwable ex) //Older java's don't have the getHardwareAddress method, so we catch not only Throwable->Exception's but all Throwable's, including Throwable->Error. (NoSuchMethodError is otherwise thrown)
         {
+        	System.out.println("Your Java is out of date!");
         }
 
         //Next, try to get the mac address of the first network interfaces that has an accessible mac address
@@ -75,6 +76,7 @@ public class MacFinder
         }
         catch (Throwable ex) //Older java's don't have the getHardwareAddress method, so we catch not only Throwable->Exception's but all Throwable's, including Throwable->Error. (NoSuchMethodError is otherwise thrown)
         {
+        	System.out.println("Your Java is out of date!");
         }
 
         //Next, try to get the mac address by calling the 'getmac' app that exists in Windows, Mac, and possibly others.
@@ -100,6 +102,7 @@ public class MacFinder
         }
         catch (Throwable ex)
         {
+        	ex.printStackTrace();
         }
 
         //Next, try to get the mac address by calling the 'ipconfig /all' app that exists in Windows and possibly others.
@@ -123,6 +126,7 @@ public class MacFinder
         }
         catch (Throwable ex)
         {
+        	ex.printStackTrace();
         }
 
         //Next, try to get the mac address by calling the 'ifconfig /a' app that exists in Linux and possibly others.
@@ -146,6 +150,7 @@ public class MacFinder
         }
         catch (Throwable ex)
         {
+        	ex.printStackTrace();
         }
 
         //Next, try to get the mac address by calling the '/sbin/ifconfig /a' app that exists in Linux and possibly others.
@@ -169,6 +174,7 @@ public class MacFinder
         }
         catch (Throwable ex)
         {
+        	ex.printStackTrace();
         }
 
         return null;
