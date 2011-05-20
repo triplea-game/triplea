@@ -1031,13 +1031,21 @@ public class MovePanel extends AbstractMovePanel
                     unitsToLoadMatch.add(Matches.unitIsOwnedBy(player));
                     unitsToLoadMatch.add(Matches.unitHasNotMoved);
                     Collection<Unit> unitsToLoad = Match.getMatches(route.getStart().getUnits().getUnits(), unitsToLoadMatch);
+                    unitsToLoad.removeAll(m_selectedUnits);
+                    for (Unit u : s_dependentUnits.keySet())
+                    {
+                    	unitsToLoad.removeAll(s_dependentUnits.get(u));
+                    }
                     
                     // Get the potential air transports to load
                     CompositeMatch<Unit> candidateAirTransportsMatch = new CompositeMatchAnd<Unit>();
                     candidateAirTransportsMatch.add(Matches.UnitIsAirTransport);
                     candidateAirTransportsMatch.add(Matches.unitIsOwnedBy(player));
                     candidateAirTransportsMatch.add(Matches.unitHasNotMoved);
+                    candidateAirTransportsMatch.add(Matches.transportIsNotTransporting());
                     Collection<Unit> candidateAirTransports = Match.getMatches(t.getUnits().getMatches(unitsToMoveMatch), candidateAirTransportsMatch);
+                    //candidateAirTransports.removeAll(m_selectedUnits);
+                    candidateAirTransports.removeAll(s_dependentUnits.keySet());
                     
                     if (unitsToLoad.size() > 0 && candidateAirTransports.size() > 0)
                     {
@@ -1194,6 +1202,20 @@ public class MovePanel extends AbstractMovePanel
                 if (me.isControlDown())
                 {
                     m_selectedUnits.clear();
+                    
+                    // Clear the stored dependents for AirTransports
+                    if (!s_dependentUnits.isEmpty())
+                    {
+                        s_dependentUnits.clear();
+                    	/*for (Unit airTransport : unitsWithoutDependents)
+                        {
+                            if (s_dependentUnits.containsKey(airTransport))
+                            {
+                                unitsToRemove.addAll(s_dependentUnits.get(airTransport));
+                                s_dependentUnits.remove(airTransport);
+                            }
+                        }*/
+                    }
                 }
                 else if (!unitsWithoutDependents.isEmpty())
                 {
@@ -1226,6 +1248,19 @@ public class MovePanel extends AbstractMovePanel
                 if (me.isControlDown())
                 {
                     unitsToRemove.addAll(units);
+                    
+                    // Clear the stored dependents for AirTransports
+                    if (!s_dependentUnits.isEmpty())
+                    {
+                        for (Unit airTransport : unitsWithoutDependents)
+                        {
+                            if (s_dependentUnits.containsKey(airTransport))
+                            {
+                                unitsToRemove.addAll(s_dependentUnits.get(airTransport));
+                                s_dependentUnits.remove(airTransport);
+                            }
+                        }
+                    }
                 }
                 // remove one
                 else

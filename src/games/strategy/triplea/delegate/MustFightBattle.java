@@ -2319,9 +2319,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         	//Get all the ENEMY sea and air units (that can attack) in the territory
             CompositeMatch<Unit> enemyUnitsMatch = new CompositeMatchAnd<Unit>();
             enemyUnitsMatch.add(Matches.UnitIsNotLand);
-            enemyUnitsMatch.add(Matches.UnitIsNotTransportButCouldBeCombatTransport);
+            //enemyUnitsMatch.add(Matches.UnitIsNotTransportButCouldBeCombatTransport);
             enemyUnitsMatch.add(Matches.unitIsNotSubmerged(m_data));
-            enemyUnitsMatch.add(Matches.unitCanAttack(player));            
+            enemyUnitsMatch.add(Matches.unitCanAttack(player));
             Collection<Unit> enemyUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), enemyUnitsMatch);
             
     		//If there are attackers set their movement to 0 and kill the transports  
