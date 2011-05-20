@@ -88,7 +88,7 @@ public class MacFinder
         try
         {
             String results = executeCommandAndGetResults("getmac");
-            if (results != null && results.trim().length() > 0)
+            while (results != null && results.trim().length() > 0)
             {
                 int macStartIndex = Math.max(0, results.indexOf("-") - 2);
                 String rawMac = results.substring(macStartIndex, Math.min(17 + macStartIndex, results.length()));
@@ -98,6 +98,7 @@ public class MacFinder
                     if(isMacValid(mac))
                         return mac;
                 }
+                results = results.substring(Math.min(17 + macStartIndex, results.length()));
             }
         }
         catch (Throwable ex)
@@ -112,7 +113,7 @@ public class MacFinder
         try
         {
             String results = executeCommandAndGetResults("ipconfig /all");
-            if (results != null && results.trim().length() > 0)
+            while (results != null && results.trim().length() > 0)
             {
                 int macStartIndex = Math.max(0, Math.min(results.length()-1, results.indexOf("Physical Address. . . . . . . . . : ") + 36));
                 String rawMac = results.substring(macStartIndex, Math.min(17 + macStartIndex, results.length()));
@@ -122,6 +123,7 @@ public class MacFinder
                     if(isMacValid(mac))
                         return mac;
                 }
+                results = results.substring(Math.min(17 + macStartIndex, results.length()));
             }
         }
         catch (Throwable ex)
@@ -129,16 +131,16 @@ public class MacFinder
         	ex.printStackTrace();
         }
 
-        //Next, try to get the mac address by calling the 'ifconfig /a' app that exists in Linux and possibly others.
+        //Next, try to get the mac address by calling the 'ifconfig /a' app that exists in Linux and possibly others. May have 1 or 2 spaces between Ethernet and HWaddr, and may be wireless instead of ethernet.
         /*...
         eth0      Link encap:Ethernet HWaddr 00:08:C7:1B:8C:02
         ...*/
         try
         {
             String results = executeCommandAndGetResults("ifconfig -a");
-            if (results != null && results.trim().length() > 0)
+            while (results != null && results.trim().length() > 0)
             {
-                int macStartIndex = Math.max(0, Math.min(results.length()-1, results.indexOf("Ethernet HWaddr ") + 16));
+                int macStartIndex = Math.max(0, Math.min(results.length()-1, results.indexOf("HWaddr ") + 7));
                 String rawMac = results.substring(macStartIndex, Math.min(17 + macStartIndex, results.length()));
                 if (rawMac != null)
                 {
@@ -146,6 +148,7 @@ public class MacFinder
                     if(isMacValid(mac))
                         return mac;
                 }
+                results = results.substring(Math.min(17 + macStartIndex, results.length()));
             }
         }
         catch (Throwable ex)
@@ -153,16 +156,16 @@ public class MacFinder
         	ex.printStackTrace();
         }
 
-        //Next, try to get the mac address by calling the '/sbin/ifconfig /a' app that exists in Linux and possibly others.
+        //Next, try to get the mac address by calling the '/sbin/ifconfig /a' app that exists in Linux and possibly others. May have 1 or 2 spaces between Ethernet and HWaddr, and may be wireless instead of ethernet.
         /*...
         eth0      Link encap:Ethernet HWaddr 00:08:C7:1B:8C:02
         ...*/
         try
         {
             String results = executeCommandAndGetResults("/sbin/ifconfig -a");
-            if (results != null && results.trim().length() > 0)
+            while (results != null && results.trim().length() > 0)
             {
-                int macStartIndex = Math.max(0, Math.min(results.length()-1, results.indexOf("Ethernet HWaddr ") + 16));
+                int macStartIndex = Math.max(0, Math.min(results.length()-1, results.indexOf("HWaddr ") + 7));
                 String rawMac = results.substring(macStartIndex, Math.min(17 + macStartIndex, results.length()));
                 if (rawMac != null)
                 {
@@ -170,6 +173,82 @@ public class MacFinder
                     if(isMacValid(mac))
                         return mac;
                 }
+                results = results.substring(Math.min(17 + macStartIndex, results.length()));
+            }
+        }
+        catch (Throwable ex)
+        {
+        	ex.printStackTrace();
+        }
+        
+        //Next try to get the mac address on Mac OS X, Solaris, and SunOS. 
+        //MacOSX, Solaris, SunOS all use "ifconfig -a", while FreeBSD uses "dmesg", while HPUX uses "lanscan".  http://www.opentutorial.com/Find_your_mac_address
+        //Fun stuff: Solaris, SunOS may or may not strip off any leading zeros in the address, while RedHat and Fedora require root to do ifconfig
+        /*
+        MacOSX:
+        # ifconfig
+        inet 127.0.0.1 netmask 0xff000000
+		inet6 ::1 prefixlen 128
+		inet6 fe80::1%lo0 prefixlen 64 scopeid 0x1
+		inet 10.25.10.51 netmask 0xfffffc00 broadcast 10.25.11.255
+		ether 00:0d:93:70:ed:44
+		
+        Solaris & SunOS:
+        # ifconfig -a
+		le0: flags=863<UP,BROADCAST,NOTRAILERS,RUNNING,MULTICAST> mtu 1500
+		       inet 131.225.80.209 netmask fffff800 broadcast 131.225.87.255
+		       ether 8:0:20:10:d2:ae 
+         */
+        try
+        {
+            String results = executeCommandAndGetResults("ifconfig -a");
+            while (results != null && results.trim().length() > 0)
+            {
+                int macStartIndex = Math.max(0, Math.min(results.length()-1, results.indexOf("ether ") + 6));
+                String rawMac = results.substring(macStartIndex, Math.min(17 + macStartIndex, results.length()));
+                if (rawMac != null)
+                {
+                    String mac = rawMac.replace(":", ".");
+                    if(isMacValid(mac))
+                        return mac;
+                }
+                if (rawMac != null)
+                {
+                    rawMac = "0" + rawMac; //there could be other zeros mid-mac....
+                    rawMac = rawMac.substring(0, Math.min(17, rawMac.length()));
+                    String mac = rawMac.replace(":", ".");
+                    if(isMacValid(mac))
+                        return mac;
+                }
+                results = results.substring(Math.min(17 + macStartIndex, results.length()));
+            }
+        }
+        catch (Throwable ex)
+        {
+        	ex.printStackTrace();
+        }
+        try
+        {
+            String results = executeCommandAndGetResults("/sbin/ifconfig -a");
+            while (results != null && results.trim().length() > 0)
+            {
+                int macStartIndex = Math.max(0, Math.min(results.length()-1, results.indexOf("ether ") + 6));
+                String rawMac = results.substring(macStartIndex, Math.min(17 + macStartIndex, results.length()));
+                if (rawMac != null)
+                {
+                    String mac = rawMac.replace(":", ".");
+                    if(isMacValid(mac))
+                        return mac;
+                }
+                if (rawMac != null)
+                {
+                    rawMac = "0" + rawMac; //there could be other zeros mid-mac....
+                    rawMac = rawMac.substring(0, Math.min(17, rawMac.length()));
+                    String mac = rawMac.replace(":", ".");
+                    if(isMacValid(mac))
+                        return mac;
+                }
+                results = results.substring(Math.min(17 + macStartIndex, results.length()));
             }
         }
         catch (Throwable ex)
@@ -254,12 +333,16 @@ public class MacFinder
         char[] chars = mac.toCharArray();
         int periodCount = 0;
         int nonZeroNumberCount = 0;
+        int i = 1;
         for(char ch : chars)
         {
+        	if(ch == '.' && (i%3 != 0))
+        		return false;
             if(ch == '.')
                 periodCount++;
             if(ch != '.' && ch != '0')
                 nonZeroNumberCount++;
+            i++;
         }
         if(periodCount != 5)
             return false;
