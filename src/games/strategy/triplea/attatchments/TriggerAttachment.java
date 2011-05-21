@@ -708,7 +708,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	{
 		public boolean match(TriggerAttachment t)
 		{
-			return t.getVictory() != null && !t.getVictory().isEmpty() && t.getUses()!=0;
+			return t.getVictory() != null && t.getVictory().length() > 0 && t.getUses()!=0;
 		}
 	};
 	

@@ -677,7 +677,7 @@ public class RulesAttachment extends DefaultAttachment
 		}
 		
 		// Remove the leading colon
-		if (!value.isEmpty() && value.startsWith(":"))
+		if (value.length() > 0 && value.startsWith(":"))
 			value = value.replaceFirst(":", "");
 		
 		return value;

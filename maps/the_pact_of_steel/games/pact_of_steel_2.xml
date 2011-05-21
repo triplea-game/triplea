@@ -3088,7 +3088,7 @@
 				
 	<!-- Japanese Conditions -->
                 <attatchment name="conditionAttachmentJapanese1a" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="alliedOwnershipTerritories" value="Sinkiang:Central China:India:Burytia S.S.R." count="4"/>
+                	<option name="alliedOwnershipTerritories" value="Sinkiang:India:Burytia S.S.R." count="1"/>
                 	<option name="invert" value="true"/>
                 </attatchment>
 				
@@ -4413,8 +4413,8 @@
         				+4 PUs if Axis control 7 out of 7 of India, French Indochina, Kwangtung, Manchuria, China, Central China, Sinkiang<br>
         				+4 PUs if Axis control 10 out of 13 of Alaska, East Indies, Borneo, Philipine Islands, New Guinea, Solomon Islands,
 							Caroline Islands, Australia, New Zealand, Okinawa, Wake Island, Hawaiian Islands, Midway<br>
-						* Japan's destroyers gain the ability to transport a single infantry If on the 3rd or 4th turn, the Axis do NOT control 4 out of 4 of
-							Sinkiang, Central China, India, Burytia S.S.R.<br>
+						* Japan's destroyers gain the ability to transport a single infantry If on the 3rd or 4th turn, the Axis do NOT control ANY of
+							Sinkiang, India, Burytia S.S.R.<br>
 						* Japan's transports gain an additional capacity of 1 (allowing 3 infantry or 2 tanks per transport) If at the end of their 3rd, 4th, or 5th turns,
 							Japan controls 3 out of 3 of Australia, India, Sinkiang<br>
 						* Japan gains, only once, a single additional midget_submarine in sz61 If it loses control over any of its original territories<br>
