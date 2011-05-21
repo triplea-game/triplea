@@ -47,6 +47,7 @@ public class MacFinder
         	throw new IllegalArgumentException("You have an invalid MAC address! (Or your Java is out of date, or TripleA simply can't find your mac address)");
         return MD5Crypt.crypt(mac, "MH");
     }
+    
     private static String GetMacAddress()
     {
         //We must try different methods of obtaining the mac address because not all the methods work on each system, and if we can't obtain the mac, we can't login to the lobby
@@ -105,13 +106,13 @@ public class MacFinder
         	ex.printStackTrace();
         }
 
-        //Next, try to get the mac address by calling the 'ipconfig /all' app that exists in Windows and possibly others.
+        //Next, try to get the mac address by calling the 'ipconfig -all' app that exists in Windows and possibly others.
         /*...
         Physical Address. . . . . . . . . : 00-1C-D3-F8-DC-E8
         ...*/
         try
         {
-            String results = executeCommandAndGetResults("ipconfig /all");
+            String results = executeCommandAndGetResults("ipconfig -all");
             String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":"), false);
             if (isMacValid(mac))
                 return mac;
@@ -121,14 +122,14 @@ public class MacFinder
         	ex.printStackTrace();
         }
 
-        //Next, try to get the mac address by calling the 'ifconfig /a' app that exists in Linux and possibly others. May have 1 or 2 spaces between Ethernet and HWaddr, and may be wireless instead of ethernet.
+        //Next, try to get the mac address by calling the 'ifconfig -a' app that exists in Linux and possibly others. May have 1 or 2 spaces between Ethernet and HWaddr, and may be wireless instead of ethernet.
         /*...
         eth0      Link encap:Ethernet HWaddr 00:08:C7:1B:8C:02
         ...*/
         try
         {
             String results = executeCommandAndGetResults("ifconfig -a");
-            String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":"), true); //Allow the parser to try adding a zero to the beginning
+            String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-"), true); //Allow the parser to try adding a zero to the beginning
             if (isMacValid(mac))
                 return mac;
         }
@@ -137,14 +138,14 @@ public class MacFinder
         	ex.printStackTrace();
         }
 
-        //Next, try to get the mac address by calling the '/sbin/ifconfig /a' app that exists in Linux and possibly others. May have 1 or 2 spaces between Ethernet and HWaddr, and may be wireless instead of ethernet.
+        //Next, try to get the mac address by calling the '/sbin/ifconfig -a' app that exists in Linux and possibly others. May have 1 or 2 spaces between Ethernet and HWaddr, and may be wireless instead of ethernet.
         /*...
         eth0      Link encap:Ethernet HWaddr 00:08:C7:1B:8C:02
         ...*/
         try
         {
             String results = executeCommandAndGetResults("/sbin/ifconfig -a");
-            String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":"), true); //Allow the parser to try adding a zero to the beginning
+            String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-"), true); //Allow the parser to try adding a zero to the beginning
             if (isMacValid(mac))
                 return mac;
         }
@@ -161,7 +162,7 @@ public class MacFinder
         try
         {
             String results = executeCommandAndGetResults("dmesg");
-            String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":"), false);
+            String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-"), false);
             if (isMacValid(mac))
                 return mac;
         }
@@ -250,7 +251,7 @@ public class MacFinder
         int i = 1;
         for(char ch : chars)
         {
-        	if(ch == '.' && (i%3 != 0)) //If a period is on a non-divisible-by-three char, we know the .'s are misaligned
+        	if(ch == '.' && (i%3 != 0)) //If a period has a non-divisible-by-three index(+1), we know the .'s are misaligned
         		return false;
             if(ch == '.')
                 periodCount++;
