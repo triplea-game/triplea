@@ -1,4 +1,6 @@
 Changes for 1.3.1.1
+* Updated then Added "Big World : v3 Rules" game, a mod of the original Big World mostly by Prussia, to triplea. (veqryn)
+
 * Removed String .isEmpty calls, as they are not supported under Java 1.5, also called java 5. (veqryn)
 
 * Fixed fighters and air disappearing even if you bought a carrier, if there is another turn like china, between yours and the placement of the carrier. (veqryn) 
