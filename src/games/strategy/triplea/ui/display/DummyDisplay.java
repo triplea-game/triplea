@@ -91,6 +91,7 @@ public class DummyDisplay implements ITripleaDisplay
 
     }
 
+	@Override
 	public void scrambleNotification(GUID battleID, String step,
 			PlayerID player, Collection<Unit> scrambled,
 			Map<Unit, Collection<Unit>> dependents) {
