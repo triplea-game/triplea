@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 
 /**
  *
@@ -28,6 +30,12 @@ import java.util.Enumeration;
  */
 public class MacFinder
 {
+    //For quick testing
+    public static void main(String[] args)
+    {
+        System.out.println(GetHashedMacAddress());
+    }
+    
     /**
      * Should result in something like this: $1$MH$345ntXD4G3AKpAeHZdaGe3
      * @return
@@ -36,7 +44,7 @@ public class MacFinder
     {
         String mac = GetMacAddress();
         if (mac == null)
-        	throw new IllegalArgumentException("You have an invalid MAC address! (Or your Java is out of date, Or TripleA simply can't find your mac address)");
+        	throw new IllegalArgumentException("You have an invalid MAC address! (Or your Java is out of date, or TripleA simply can't find your mac address)");
         return MD5Crypt.crypt(mac, "MH");
     }
     private static String GetMacAddress()
@@ -88,18 +96,9 @@ public class MacFinder
         try
         {
             String results = executeCommandAndGetResults("getmac");
-            while (results != null && results.trim().length() > 0)
-            {
-                int macStartIndex = Math.max(0, results.indexOf("-") - 2);
-                String rawMac = results.substring(macStartIndex, Math.min(17 + macStartIndex, results.length()));
-                if (rawMac != null)
-                {
-                    String mac = rawMac.replace("-", ".");
-                    if(isMacValid(mac))
-                        return mac;
-                }
-                results = results.substring(Math.min(17 + macStartIndex, results.length()));
-            }
+            String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":"), false);
+            if (isMacValid(mac))
+                return mac;
         }
         catch (Throwable ex)
         {
@@ -113,18 +112,9 @@ public class MacFinder
         try
         {
             String results = executeCommandAndGetResults("ipconfig /all");
-            while (results != null && results.trim().length() > 0)
-            {
-                int macStartIndex = Math.max(0, Math.min(results.length()-1, results.indexOf("Physical Address. . . . . . . . . : ") + 36));
-                String rawMac = results.substring(macStartIndex, Math.min(17 + macStartIndex, results.length()));
-                if (rawMac != null)
-                {
-                    String mac = rawMac.replace("-", ".");
-                    if(isMacValid(mac))
-                        return mac;
-                }
-                results = results.substring(Math.min(17 + macStartIndex, results.length()));
-            }
+            String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":"), false);
+            if (isMacValid(mac))
+                return mac;
         }
         catch (Throwable ex)
         {
@@ -138,18 +128,9 @@ public class MacFinder
         try
         {
             String results = executeCommandAndGetResults("ifconfig -a");
-            while (results != null && results.trim().length() > 0)
-            {
-                int macStartIndex = Math.max(0, Math.min(results.length()-1, results.indexOf("HWaddr ") + 7));
-                String rawMac = results.substring(macStartIndex, Math.min(17 + macStartIndex, results.length()));
-                if (rawMac != null)
-                {
-                    String mac = rawMac.replace(":", ".");
-                    if(isMacValid(mac))
-                        return mac;
-                }
-                results = results.substring(Math.min(17 + macStartIndex, results.length()));
-            }
+            String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":"), true); //Allow the parser to try adding a zero to the beginning
+            if (isMacValid(mac))
+                return mac;
         }
         catch (Throwable ex)
         {
@@ -163,99 +144,32 @@ public class MacFinder
         try
         {
             String results = executeCommandAndGetResults("/sbin/ifconfig -a");
-            while (results != null && results.trim().length() > 0)
-            {
-                int macStartIndex = Math.max(0, Math.min(results.length()-1, results.indexOf("HWaddr ") + 7));
-                String rawMac = results.substring(macStartIndex, Math.min(17 + macStartIndex, results.length()));
-                if (rawMac != null)
-                {
-                    String mac = rawMac.replace(":", ".");
-                    if(isMacValid(mac))
-                        return mac;
-                }
-                results = results.substring(Math.min(17 + macStartIndex, results.length()));
-            }
+            String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":"), true); //Allow the parser to try adding a zero to the beginning
+            if (isMacValid(mac))
+                return mac;
         }
         catch (Throwable ex)
         {
         	ex.printStackTrace();
         }
         
-        //Next try to get the mac address on Mac OS X, Solaris, and SunOS. 
-        //MacOSX, Solaris, SunOS all use "ifconfig -a", while FreeBSD uses "dmesg", while HPUX uses "lanscan".  http://www.opentutorial.com/Find_your_mac_address
-        //Fun stuff: Solaris, SunOS may or may not strip off any leading zeros in the address, while RedHat and Fedora require root to do ifconfig
-        /*
-        MacOSX:
-        # ifconfig
-        inet 127.0.0.1 netmask 0xff000000
-		inet6 ::1 prefixlen 128
-		inet6 fe80::1%lo0 prefixlen 64 scopeid 0x1
-		inet 10.25.10.51 netmask 0xfffffc00 broadcast 10.25.11.255
-		ether 00:0d:93:70:ed:44
-		
-        Solaris & SunOS:
-        # ifconfig -a
-		le0: flags=863<UP,BROADCAST,NOTRAILERS,RUNNING,MULTICAST> mtu 1500
-		       inet 131.225.80.209 netmask fffff800 broadcast 131.225.87.255
-		       ether 8:0:20:10:d2:ae 
-         */
+        //Next, try to get the mac address by calling the 'dmesg' app that exists in FreeBSD and possibly others.
+        /*...
+        [  405.681688] wlan0_rename: associate with AP 00:16:f8:40:3e:bd
+        [  405.683255] wlan0_rename: RX ReassocResp from 00:16:f8:40:3e:bd (capab=0x411 status=0 aid=4)
+        ...*/
         try
         {
-            String results = executeCommandAndGetResults("ifconfig -a");
-            while (results != null && results.trim().length() > 0)
-            {
-                int macStartIndex = Math.max(0, Math.min(results.length()-1, results.indexOf("ether ") + 6));
-                String rawMac = results.substring(macStartIndex, Math.min(17 + macStartIndex, results.length()));
-                if (rawMac != null)
-                {
-                    String mac = rawMac.replace(":", ".");
-                    if(isMacValid(mac))
-                        return mac;
-                }
-                if (rawMac != null)
-                {
-                    rawMac = "0" + rawMac; //there could be other zeros mid-mac....
-                    rawMac = rawMac.substring(0, Math.min(17, rawMac.length()));
-                    String mac = rawMac.replace(":", ".");
-                    if(isMacValid(mac))
-                        return mac;
-                }
-                results = results.substring(Math.min(17 + macStartIndex, results.length()));
-            }
+            String results = executeCommandAndGetResults("dmesg");
+            String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":"), false);
+            if (isMacValid(mac))
+                return mac;
         }
         catch (Throwable ex)
         {
         	ex.printStackTrace();
-        }
-        try
-        {
-            String results = executeCommandAndGetResults("/sbin/ifconfig -a");
-            while (results != null && results.trim().length() > 0)
-            {
-                int macStartIndex = Math.max(0, Math.min(results.length()-1, results.indexOf("ether ") + 6));
-                String rawMac = results.substring(macStartIndex, Math.min(17 + macStartIndex, results.length()));
-                if (rawMac != null)
-                {
-                    String mac = rawMac.replace(":", ".");
-                    if(isMacValid(mac))
-                        return mac;
-                }
-                if (rawMac != null)
-                {
-                    rawMac = "0" + rawMac; //there could be other zeros mid-mac....
-                    rawMac = rawMac.substring(0, Math.min(17, rawMac.length()));
-                    String mac = rawMac.replace(":", ".");
-                    if(isMacValid(mac))
-                        return mac;
-                }
-                results = results.substring(Math.min(17 + macStartIndex, results.length()));
-            }
-        }
-        catch (Throwable ex)
-        {
-        	ex.printStackTrace();
-        }
-
+        }        
+        
         return null;
     }
     private static String executeCommandAndGetResults(String command)
@@ -336,7 +250,7 @@ public class MacFinder
         int i = 1;
         for(char ch : chars)
         {
-        	if(ch == '.' && (i%3 != 0))
+        	if(ch == '.' && (i%3 != 0)) //If a period is on a non-divisible-by-three char, we know the .'s are misaligned
         		return false;
             if(ch == '.')
                 periodCount++;
@@ -349,5 +263,37 @@ public class MacFinder
         if(nonZeroNumberCount == 0)
             return false;
         return true;
+    }
+    
+    private static String tryToParseMACFromOutput(String output, List<String> possibleSeparators, boolean allowAppendedZeroCheck)
+    {
+        for (String separator : possibleSeparators)
+        {
+            String leftToSearch = output;
+            while (leftToSearch != null && leftToSearch.length() > 0 && leftToSearch.contains(separator))
+            {
+                int macStartIndex = Math.max(0, leftToSearch.indexOf(separator) - 2);
+                String rawMac = leftToSearch.substring(macStartIndex, Math.min(macStartIndex + 17, leftToSearch.length()));
+                if (rawMac != null)
+                {
+                    String mac = rawMac.replace(separator, ".");
+                    if (isMacValid(mac))
+                        return mac;
+                    else if (allowAppendedZeroCheck && rawMac.substring(2, 3).equals(separator)) //If mac is invalid, see if it works after adding a zero to the front
+                    {
+                        macStartIndex = Math.max(0, leftToSearch.indexOf(separator) - 1);
+                        rawMac = "0" + leftToSearch.substring(macStartIndex, Math.min(macStartIndex + 16, leftToSearch.length()));
+
+                        mac = rawMac.replace(separator, ".");
+                        if (isMacValid(mac))
+                            return mac;
+                    }
+                }
+                
+                //We only invalidate the one separator char and what's before it, so that '-ether 89-94-19...' would not fail, then cause the - after 89 to get ignored (Not sure if this situation really occurs)
+                leftToSearch = leftToSearch.substring(Math.min(macStartIndex + 1, leftToSearch.length()));
+            }
+        }
+        return null;
     }
 }

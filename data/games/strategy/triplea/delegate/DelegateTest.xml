@@ -1225,7 +1225,7 @@
 
 <!-- Chinese Rules -->
 				<attatchment name="rulesAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="movementRestrictionTerritories" value="Chinghai:Ningxia:Sikang:Yunnan:Hupeh:Fukien:Suiyuan:Manchuria:Kiangsu:Kwangtung"/>
+                	<option name="movementRestrictionTerritories" value="Yunnan:Manchuria:Kwangtung"/>
                 	<option name="movementRestrictionType" value="allowed"/>
                 	<option name="productionPerXTerritories" value="2"/>
                 	<option name="placementAnyTerritory" value="true"/>
