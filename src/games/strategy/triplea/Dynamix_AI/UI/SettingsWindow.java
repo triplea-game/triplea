@@ -429,7 +429,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jPanel1.add(v_quickBattleCalculator, gridBagConstraints);
 
         jPanel26.setName("jPanel26"); // NOI18N
-        jPanel26.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel26.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 1;
@@ -666,7 +666,7 @@ public class SettingsWindow extends javax.swing.JDialog
         v_pausingPanel.add(jLabel4, gridBagConstraints);
 
         jPanel21.setName("jPanel21"); // NOI18N
-        jPanel21.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel21.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 7;
@@ -708,7 +708,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jPanel23.add(jLabel13, gridBagConstraints);
 
         jPanel24.setName("jPanel24"); // NOI18N
-        jPanel24.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel24.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 1;
@@ -725,7 +725,7 @@ public class SettingsWindow extends javax.swing.JDialog
         v_pausingPanel.add(jPanel23, gridBagConstraints);
 
         jPanel25.setName("jPanel25"); // NOI18N
-        jPanel25.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel25.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 6;
@@ -858,7 +858,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jPanel6.add(v_resourceCollectionIncreaseAmount, gridBagConstraints);
 
         jPanel20.setName("jPanel20"); // NOI18N
-        jPanel20.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel20.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -1936,7 +1936,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jPanel17.add(v_cr_enableCallForCapitalDefense, gridBagConstraints);
 
         jPanel27.setName("jPanel27"); // NOI18N
-        jPanel27.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel27.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -2233,7 +2233,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jPanel10.add(v_aa_maxUnitTypesForPurchaseMix, gridBagConstraints);
 
         jPanel28.setName("jPanel28"); // NOI18N
-        jPanel28.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel28.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 2;
@@ -2312,7 +2312,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jPanel12.add(jPanel5, gridBagConstraints);
 
         jPanel22.setName("jPanel22"); // NOI18N
-        jPanel22.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel22.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
