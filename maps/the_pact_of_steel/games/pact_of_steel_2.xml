@@ -3086,6 +3086,10 @@
                 	<option name="techs" value="wolfPackTactics" count="1"/>
                 </attatchment>
 				
+                <attatchment name="conditionAttachmentGermansShipyards" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="techs" value="shipyards" count="1"/>
+                </attatchment>
+				
 	<!-- Japanese Conditions -->
                 <attatchment name="conditionAttachmentJapanese1a" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="alliedOwnershipTerritories" value="Sinkiang:India:Burytia S.S.R." count="1"/>
@@ -3140,6 +3144,10 @@
 					<option name="unitPresence" value="carrier" count="1"/>
                 </attatchment>
 				
+                <attatchment name="conditionAttachmentJapaneseShipyards" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="techs" value="shipyards" count="1"/>
+                </attatchment>
+				
 	<!-- Italians Conditions -->
                 <attatchment name="conditionAttachmentItalians1" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="turns" value="3:4"/>
@@ -3148,6 +3156,10 @@
 				
                 <attatchment name="conditionAttachmentItaliansParatroopers" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="techs" value="paratroopers" count="1"/>
+                </attatchment>
+				
+                <attatchment name="conditionAttachmentItaliansShipyards" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="techs" value="shipyards" count="1"/>
                 </attatchment>
 				
 	<!-- Americans Conditions -->
@@ -3179,6 +3191,10 @@
                 	<option name="techs" value="paratroopers" count="1"/>
                 </attatchment>
 				
+                <attatchment name="conditionAttachmentAmericansShipyards" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="techs" value="shipyards" count="1"/>
+                </attatchment>
+				
 	<!-- British Conditions -->
                 <attatchment name="conditionAttachmentBritish2" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="turns" value="3:4"/>
@@ -3187,6 +3203,10 @@
 				
                 <attatchment name="conditionAttachmentBritishParatroopers" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="techs" value="paratroopers" count="1"/>
+                </attatchment>
+				
+                <attatchment name="conditionAttachmentBritishShipyards" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="techs" value="shipyards" count="1"/>
                 </attatchment>
 				
 	<!-- Russians Conditions -->
@@ -3204,14 +3224,22 @@
                 	<option name="techs" value="paratroopers" count="1"/>
                 </attatchment>
 				
+                <attatchment name="conditionAttachmentRussiansShipyards" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="techs" value="shipyards" count="1"/>
+                </attatchment>
+				
 	<!-- Chinese Conditions -->
                 <attatchment name="conditionAttachmentChinese3" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="enemyExclusionTerritories" value="Sinkiang:Central China:China:Manchuria:Kwangtung:French Indochina" count="3"/>
                 </attatchment>
 				
-                <attatchment name="conditionAttachmentChineseParatroopers" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                <!--<attatchment name="conditionAttachmentChineseParatroopers" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="techs" value="paratroopers" count="1"/>
                 </attatchment>
+				
+                <attatchment name="conditionAttachmentChineseShipyards" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="techs" value="shipyards" count="1"/>
+                </attatchment>-->
 				
 				
 <!-- Triggers -->
@@ -3316,6 +3344,12 @@
                 	<!--<option name="support" value="supportAttachmentSubmarineWolfPackTacticsDefence"/>-->
                 	<option name="uses" value="1"/>
                 </attatchment>
+
+                <attatchment name="triggerAttachmentGermansShipyards" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentGermansShipyards"/>
+					<option name="purchase" value="destroyer:transport" count="1"/>
+					<option name="uses" value="1"/>
+                </attatchment>
 				
 	<!-- Japanese Triggers -->
                 <attatchment name="triggerAttachmentJapanese1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -3367,6 +3401,12 @@
 					<option name="unitProperty" value="isKamikaze" count="true"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
+
+                <attatchment name="triggerAttachmentJapaneseShipyards" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentJapaneseShipyards"/>
+					<option name="purchase" value="destroyer:transport" count="1"/>
+					<option name="uses" value="1"/>
+                </attatchment>
 				
 	<!-- Italians Triggers -->
                 <attatchment name="triggerAttachmentItalians1" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -3384,6 +3424,12 @@
                 	<option name="trigger" value="conditionAttachmentGermansReinforcedHulls"/>
                 	<option name="support" value="supportAttachmentSubmarineReinforcedHulls"/>
                 	<option name="uses" value="1"/>
+                </attatchment>
+
+                <attatchment name="triggerAttachmentItaliansShipyards" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentItaliansShipyards"/>
+					<option name="purchase" value="destroyer:transport" count="1"/>
+					<option name="uses" value="1"/>
                 </attatchment>
 				
 	<!-- Americans Triggers -->
@@ -3417,6 +3463,12 @@
                 	<option name="trigger" value="conditionAttachmentAmericansParatroopers"/>
 					<option name="frontier" value="AmericansParatroopers_production"/>
                 </attatchment>
+
+                <attatchment name="triggerAttachmentAmericansShipyards" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentAmericansShipyards"/>
+					<option name="purchase" value="destroyer:transport" count="1"/>
+					<option name="uses" value="1"/>
+                </attatchment>
 				
 	<!-- British Triggers -->
                 <attatchment name="triggerAttachmentBritish2" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -3428,6 +3480,12 @@
                 <attatchment name="triggerAttachmentBritishParatroopers" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentBritishParatroopers"/>
 					<option name="frontier" value="BritishParatroopers_production"/>
+                </attatchment>
+
+                <attatchment name="triggerAttachmentBritishShipyards" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentBritishShipyards"/>
+					<option name="purchase" value="destroyer:transport" count="1"/>
+					<option name="uses" value="1"/>
                 </attatchment>
 				
 	<!-- Russians Triggers and Conditions -->
@@ -3461,6 +3519,12 @@
                 	<option name="trigger" value="conditionAttachmentRussiansParatroopers"/>
 					<option name="frontier" value="RussiansParatroopers_production"/>
                 </attatchment>
+
+                <attatchment name="triggerAttachmentRussiansShipyards" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentRussiansShipyards"/>
+					<option name="purchase" value="destroyer:transport" count="1"/>
+					<option name="uses" value="1"/>
+                </attatchment>
 				
 	<!-- Chinese Triggers and Conditions -->
                 <attatchment name="triggerAttachmentChinese1" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -3482,6 +3546,12 @@
                 <!--<attatchment name="triggerAttachmentChineseParatroopers" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentChineseParatroopers"/>
 					<option name="frontier" value="ChineseParatroopers_production"/>
+                </attatchment>
+
+                <attatchment name="triggerAttachmentChineseShipyards" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentChineseShipyards"/>
+					<option name="purchase" value="destroyer:transport" count="1"/>
+					<option name="uses" value="1"/>
                 </attatchment>-->
 				
 <!--  Rules Restrictions (must have the exact name of "rulesAttatchment"-->
@@ -4479,7 +4549,7 @@
          				*** Air/Naval Tech ***<br>
         				SUPER SUBS- submarine units get +1 attack<br>
         				JET POWER- fighters and air transports get +1 attack<br>
-        				IMPROVED SHIPYARDS- naval units are cheaper<br>
+        				IMPROVED SHIPYARDS- naval units are cheaper (currently not working. until it works, you will just get a destroyer and transport for free)<br>
         				AA RADAR- AA hit on 2 or less<br>
         				LONG RANGE AIRCRAFT- aircraft range increased by 2<br>
         				HEAVY BOMBER- roll 2 dice for each bomber attack (if LHTR enabled: rolls 2 dice and selects the best one, StratBombing adds one to result)<br>

@@ -285,7 +285,6 @@ public class DiceRoll implements Externalizable
                 else
                 {
                     strength = ua.getAttack(current.getOwner());
-                    strength += getSupport(current.getType(), supportRules, supportLeft);
                     if (ua.getIsMarine() && battle.isAmphibious())
                     {
                         Collection<Unit> landUnits = battle.getAmphibiousLandAttackers();
