@@ -97,7 +97,7 @@ public class MacFinder
         try
         {
             String results = executeCommandAndGetResults("getmac");
-            String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":"), false);
+            String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":", "."), false);
             if (isMacValid(mac))
                 return mac;
         }
@@ -113,7 +113,18 @@ public class MacFinder
         try
         {
             String results = executeCommandAndGetResults("ipconfig -all");
-            String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":"), false);
+            String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":", "."), false);
+            if (isMacValid(mac))
+                return mac;
+        }
+        catch (Throwable ex)
+        {
+        	ex.printStackTrace();
+        }
+        try
+        {
+            String results = executeCommandAndGetResults("ipconfig /all"); //ipconfig -all does not work on my computer, while ipconfig /all does not work on others computers
+            String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":", "."), false);
             if (isMacValid(mac))
                 return mac;
         }
@@ -129,7 +140,7 @@ public class MacFinder
         try
         {
             String results = executeCommandAndGetResults("ifconfig -a");
-            String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-"), true); //Allow the parser to try adding a zero to the beginning
+            String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), true); //Allow the parser to try adding a zero to the beginning
             if (isMacValid(mac))
                 return mac;
         }
@@ -145,7 +156,7 @@ public class MacFinder
         try
         {
             String results = executeCommandAndGetResults("/sbin/ifconfig -a");
-            String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-"), true); //Allow the parser to try adding a zero to the beginning
+            String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), true); //Allow the parser to try adding a zero to the beginning
             if (isMacValid(mac))
                 return mac;
         }
@@ -162,7 +173,7 @@ public class MacFinder
         try
         {
             String results = executeCommandAndGetResults("dmesg");
-            String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-"), false);
+            String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), false);
             if (isMacValid(mac))
                 return mac;
         }
@@ -261,13 +272,15 @@ public class MacFinder
         }
         if(periodCount != 5)
             return false;
-        if(nonZeroNumberCount == 0)
+        if(nonZeroNumberCount < 3) //tunnel adapters have an address of 00-00-00-00-00-00-00-E0, which after being parsed could become either 00-00-00-00-00-00, or 00-00-00-00-00-E0
             return false;
-        return true;
+        return false;
     }
     
     private static String tryToParseMACFromOutput(String output, List<String> possibleSeparators, boolean allowAppendedZeroCheck)
     {
+    	if (output == null || output.trim().length() < 6)
+    		return null;
         for (String separator : possibleSeparators)
         {
             String leftToSearch = output;
@@ -275,7 +288,7 @@ public class MacFinder
             {
                 int macStartIndex = Math.max(0, leftToSearch.indexOf(separator) - 2);
                 String rawMac = leftToSearch.substring(macStartIndex, Math.min(macStartIndex + 17, leftToSearch.length()));
-                if (rawMac != null)
+                if (rawMac != null && rawMac.length() > 0)
                 {
                     String mac = rawMac.replace(separator, ".");
                     if (isMacValid(mac))
