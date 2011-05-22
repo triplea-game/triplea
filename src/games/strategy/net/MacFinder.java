@@ -274,7 +274,7 @@ public class MacFinder
             return false;
         if(nonZeroNumberCount < 3) //tunnel adapters have an address of 00-00-00-00-00-00-00-E0, which after being parsed could become either 00-00-00-00-00-00, or 00-00-00-00-00-E0
             return false;
-        return false;
+        return true;
     }
     
     private static String tryToParseMACFromOutput(String output, List<String> possibleSeparators, boolean allowAppendedZeroCheck)
