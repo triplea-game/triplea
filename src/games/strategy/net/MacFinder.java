@@ -67,7 +67,7 @@ public class MacFinder
         }
         catch (Throwable ex) //Older java's don't have the getHardwareAddress method, so we catch not only Throwable->Exception's but all Throwable's, including Throwable->Error. (NoSuchMethodError is otherwise thrown)
         {
-        	System.out.println("Your Java is out of date!");
+        	System.out.println("Attempting to join the lobby. Lobby detects that your Java is out of date (older than Java 6)! Ignore this message if you join the lobby successfully.");
         }
 
         //Next, try to get the mac address of the first network interfaces that has an accessible mac address
@@ -85,7 +85,7 @@ public class MacFinder
         }
         catch (Throwable ex) //Older java's don't have the getHardwareAddress method, so we catch not only Throwable->Exception's but all Throwable's, including Throwable->Error. (NoSuchMethodError is otherwise thrown)
         {
-        	System.out.println("Your Java is out of date!");
+        	//System.out.println("Attempting to join the lobby. Lobby detects that your Java is out of date (older than Java 6)! Ignore this message if you join the lobby successfully.");
         }
 
         //Next, try to get the mac address by calling the 'getmac' app that exists in Windows, Mac, and possibly others.

@@ -4103,7 +4103,8 @@
 						<boolean/>
 				</property>
 
-				<property name="Use Shipyards" value="false" editable="true">
+						<!-- Use Shipyards turns on the shipyards tech's old way of doing things, which requires that all nations use the same production frontiers. A new way of doing shipywards will require triggers and is currently being coded -->
+				<property name="Use Shipyards" value="false" editable="false">
 						<boolean/>
 				</property>
 
