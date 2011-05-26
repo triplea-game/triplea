@@ -824,7 +824,7 @@
                 </productionRule>
 
                 <productionRule name="buyHarbour">
-                        <cost resource="PUs" quantity="12" />
+                        <cost resource="PUs" quantity="15" />
                         <result resourceOrUnit="harbour" quantity="1"/>
                 </productionRule>
 
@@ -936,7 +936,7 @@
                 </productionRule>
 
                 <productionRule name="buyHarbourIndustrialTechnology">
-                        <cost resource="PUs" quantity="10" />
+                        <cost resource="PUs" quantity="12" />
                         <result resourceOrUnit="harbour" quantity="1"/>
                 </productionRule>
 

@@ -36,6 +36,8 @@ public class MacFinder
         System.out.println(GetHashedMacAddress());
         System.out.println(tryToParseMACFromOutput("ether 12:34:56:78:89:01 ", Arrays.asList("-", ":", "."), false));
         System.out.println(tryToParseMACFromOutput("ether 0:00:00:00:01:34 ", Arrays.asList("-", ":", "."), true));
+        System.out.println(isMacValid("00.00.00.00.00.E0") ? "valid" : "not valid");
+        System.out.println(isMacValid("00.00.00.00.00.D0") ? "valid" : "not valid");
     }
     
     /**
@@ -274,8 +276,10 @@ public class MacFinder
         }
         if(periodCount != 5)
             return false;
-        if(nonZeroNumberCount < 3) //tunnel adapters have an address of 00-00-00-00-00-00-00-E0, which after being parsed could become either 00-00-00-00-00-00, or 00-00-00-00-00-E0
+        if(nonZeroNumberCount == 0)
             return false;
+        if(mac.equals("00.00.00.00.00.E0")) //tunnel adapters have an address of 00-00-00-00-00-00-00-E0, which after being parsed could become either 00-00-00-00-00-00, or 00-00-00-00-00-E0
+        	return false;
         return true;
     }
     
