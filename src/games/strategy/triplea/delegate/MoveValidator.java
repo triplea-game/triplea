@@ -2137,6 +2137,10 @@ public class MoveValidator
 				heldUnits.addAll(newMapping.get(key));
 				mapping.put(key, heldUnits);
 			}
+			else
+			{
+				mapping.put(key, newMapping.get(key));
+			}
 		}
 	}
 
@@ -2263,7 +2267,8 @@ public class MoveValidator
             int cost = planeAttatchment.getCarrierCost();
             if (available >= cost) 
             {
-        		if(tACarrier.getAlreadyMoved() == tAPlane.getAlreadyMoved())
+            	//this is to test if they started in the same sea zone or not, however a unit could have their alreadyMoved modified by naval or air bases, so until we unify all the different movement/carrying/transporting methods into a single framework, we will just hack this
+        		if(tACarrier.getAlreadyMoved() == tAPlane.getAlreadyMoved() || (Matches.unitHasNotMoved.match(plane) && Matches.unitHasNotMoved.match(carrier)))
         		{
         			available -= cost;
         			canCarry.add(plane);

@@ -215,6 +215,9 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
      * Normally TripleAUnit.ALREADY_MOVED is positive, and so it is increased each time the unit moves.  
      * But since we make it a negative value here, a unit is temporarily gaining movement for this turn.  
      * Thankfully the movement validator takes this into account.
+     * 
+     * changing ALREADY_MOVED means that a unit will not be able to match certain things like 'has not moved' and 'has moved' correctly... we should change to a separate bonus somehow
+     * 
      * (veqryn)
      */
     private void giveBonusMovement(IDelegateBridge aBridge, GameData data, PlayerID player)
@@ -256,6 +259,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                 	
                 	if (bonusMovement != Integer.MIN_VALUE)
                 	{
+                		// changing ALREADY_MOVED means that a unit will not be able to match certain things like 'has not moved' and 'has moved' correctly... we should change to a separate bonus somehow
                 		bonusMovement = bonusMovement * -1;
                 		bonusMovement = Math.min(bonusMovement, UnitAttachment.get(u.getType()).getMovement(player));
                 		change.add(ChangeFactory.unitPropertyChange(u,bonusMovement, TripleAUnit.ALREADY_MOVED));

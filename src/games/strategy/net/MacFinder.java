@@ -34,6 +34,8 @@ public class MacFinder
     public static void main(String[] args)
     {
         System.out.println(GetHashedMacAddress());
+        System.out.println(tryToParseMACFromOutput("ether 12:34:56:78:89:01 ", Arrays.asList("-", ":", "."), false));
+        System.out.println(tryToParseMACFromOutput("ether 0:00:00:00:01:34 ", Arrays.asList("-", ":", "."), true));
     }
     
     /**
