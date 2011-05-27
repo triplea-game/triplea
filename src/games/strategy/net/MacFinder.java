@@ -34,10 +34,12 @@ public class MacFinder
     public static void main(String[] args)
     {
         System.out.println(GetHashedMacAddress());
-        System.out.println(tryToParseMACFromOutput("ether 12:34:56:78:89:01 ", Arrays.asList("-", ":", "."), false));
-        System.out.println(tryToParseMACFromOutput("ether 0:00:00:00:01:34 ", Arrays.asList("-", ":", "."), true));
-        System.out.println(isMacValid("00.00.00.00.00.E0") ? "valid" : "not valid");
-        System.out.println(isMacValid("00.00.00.00.00.D0") ? "valid" : "not valid");
+        System.out.println(tryToParseMACFromOutput("ether 12:34:56:78:89:01 ", Arrays.asList("-", ":", "."), false)); // should be valid
+        System.out.println(tryToParseMACFromOutput("ether 0:00:00:00:01:34 ", Arrays.asList("-", ":", "."), true)); // should be valid
+        System.out.println(isMacValid("00.00.00.00.00.E0") ? "valid" : "not valid"); // should not be valid
+        System.out.println(isMacValid("00.00.00.00.00.D0") ? "valid" : "not valid"); // rest should be valid
+        System.out.println(isMacValid("00.1b.63.9f.b4.d3") ? "valid" : "not valid");
+        System.out.println(isMacValid("00.60.08.C4.99.AA") ? "valid" : "not valid");
     }
     
     /**
@@ -258,7 +260,7 @@ public class MacFinder
             return false;
         if (!mac.contains("."))
             return false;
-        if(!mac.matches("[0-9A-F.]+"))
+        if(!mac.matches("[0-9A-Fa-f.]+"))
             return false;
         char[] chars = mac.toCharArray();
         int periodCount = 0;
