@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Big World : 1942 v3 Rules" version="3.7"/>
+        <info name="Big World : 1942 v3 Rules" version="3.7.1"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -2953,7 +2953,6 @@
                         <unitPlacement unitType="artillery" territory="Moscow" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="armour" territory="Moscow" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="fighter" territory="Moscow" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="bomber" territory="Moscow" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="factory" territory="Stalingrad" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="aaGun" territory="Stalingrad" quantity="1" owner="Russians"/>
@@ -2970,6 +2969,7 @@
                         <unitPlacement unitType="infantry" territory="Sverdlovsk" quantity="2" owner="Russians"/>
                         <unitPlacement unitType="artillery" territory="Sverdlovsk" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="armour" territory="Sverdlovsk" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="bomber" territory="Sverdlovsk" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="infantry" territory="Novo-Sibirsk" quantity="2" owner="Russians"/>
 

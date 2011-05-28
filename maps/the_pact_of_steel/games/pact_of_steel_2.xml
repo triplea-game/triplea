@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Pact of Steel 2" version="3.0"/>
+        <info name="Pact of Steel 2" version="3.1"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
 			<!-- A MOD of original POS by VEQRYN
@@ -824,7 +824,7 @@
                 </productionRule>
 
                 <productionRule name="buyHarbour">
-                        <cost resource="PUs" quantity="15" />
+                        <cost resource="PUs" quantity="12" />
                         <result resourceOrUnit="harbour" quantity="1"/>
                 </productionRule>
 
@@ -2248,15 +2248,15 @@
 						 <option name="maxConstructionsPerTypePerTerr" value="1"/>
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
 						 <option name="givesMovement" value="1:transport"/>
-						 <option name="givesMovement" value="1:jp_transport"/>
-						 <option name="givesMovement" value="1:submarine"/>
 						 <!--<option name="givesMovement" value="1:midget_submarine"/>-->
+						 <!--<option name="givesMovement" value="1:jp_transport"/>
+						 <option name="givesMovement" value="1:submarine"/>
 						 <option name="givesMovement" value="1:destroyer"/>
 						 <option name="givesMovement" value="1:jp_destroyer"/>
 						 <option name="givesMovement" value="1:cruiser"/>
 						 <option name="givesMovement" value="1:carrier"/>
 						 <option name="givesMovement" value="1:battleship"/>
-						 <option name="givesMovement" value="1:super_carrier"/>
+						 <option name="givesMovement" value="1:super_carrier"/>-->
 						 <!--<option name="isAAforBombingThisUnitOnly" value="true"/>-->
                 </attatchment>
 				
@@ -4458,10 +4458,10 @@
         				<br>3. Sea Zones 37, 47, 48, 49, 58, are Blockade Zones. Each enemy warship in these zones reduces the income of touching land territories by 1 per warship, 2 per normal submarine.
         				<br>4. Air_Transport is an air unit that specializes in dropping off units, has 4 movement, and can carry into battle or drop off in a friendly territory any 2-3 units. Enabled when you get "paratroopers" tech.
 						<br>5. Super_Carrier is a beefed up carrier that can also transport 1 infantry and 1 other land unit like a tank or artillery. It has only 1 hitpoint, just like normal carriers and cruisers.
-						<br>6. Midget_Submarine is a Japanese only unit with 3 attack, 2 defence, and 2 movement (costs 4). If it attacks or defends it will die after shooting (it is a suicide unit). Japan can purchase them after certain conditions are met. They do not receive any movement bonus from Harbours.
+						<br>6. Midget_Submarine is a Japanese only unit with 3 attack, 2 defence, and 2 movement (costs 4). If it attacks or defends it will die after shooting (it is a suicide unit). Japan can purchase them after certain conditions are met.
 						<br>7. Kamikaze Fighters are what Japanese fighters turn into if certain conditions are met.  They have 5 attack, 3 defense, and 3 movement (cost 8), and they are allowed to use up all their movement to go to a battle, and they will die after rolling their dice.
-						<br>8. Airfield gives +1 movement to air units, and allows fighters to scramble to defend surrounding sea zones, if you turn on "Scramble Rules In Effect".
-						<br>9. Harbour gives +1 movement to naval units, and are needed to repair Battleships, if you turn on "Two HitPoint Units Require Repair Facilities".
+						<br>8. Airfield gives +1 movement to air units, and allows fighters to scramble to defend surrounding sea zones if you turn on "Scramble Rules In Effect".
+						<br>9. Harbour gives +1 movement to transports, and are needed to repair Battleships if you turn on "Two HitPoint Units Require Repair Facilities".
 						<br>10. Bunkers are defensive units that can also be bombed/rocketted, will not participate in battle if damaged, and will die if they reach 4 damage.  They may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours) where you also have a land unit, but there is a limit of 1 per territory.
 						<br>11. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att, +1 def to subs). Available to Germans after they get superSubs.
 						<br>12. Each nation may only purchase factories up to 3 total, if a nation controls more than 3 they can not purchase new factories (they can keep capturing new ones though).
