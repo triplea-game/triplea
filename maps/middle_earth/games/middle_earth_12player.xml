@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Middle Earth 12 Army" version="1.1"/>
+        <info name="Lord of the Rings: Middle Earth" version="1.1"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
         <map>
@@ -623,21 +623,19 @@
         </resourceList>
 
         <playerList>
-                <!-- Evil -->
-                <player name="Mordor" optional="false"/>
-                <player name="Haradrim" optional="false"/>
-                <player name="Goblins" optional="false"/>
+                <!-- Saruman - Freefolk - Mordor - Rohan - Goblins - Elves - Haradrim - Gondor - Rhun - Dale - Khand - Dwarves -->
                 <player name="Saruman" optional="false"/>
-                <player name="Rhun" optional="false"/>
-                <player name="Khand" optional="false"/>
-
-                <!-- Good -->
-                <player name="Elves" optional="false"/>
-                <player name="Gondor" optional="false"/>
-                <player name="Rohan" optional="false"/>
-                <player name="Dwarves" optional="false"/>
-                <player name="Dale" optional="false"/>
                 <player name="Freefolk" optional="false"/>
+                <player name="Mordor" optional="false"/>
+                <player name="Rohan" optional="false"/>
+                <player name="Goblins" optional="false"/>
+                <player name="Elves" optional="false"/>
+                <player name="Haradrim" optional="false"/>
+                <player name="Gondor" optional="false"/>
+                <player name="Rhun" optional="false"/>
+                <player name="Dale" optional="false"/>
+                <player name="Khand" optional="false"/>
+                <player name="Dwarves" optional="false"/>
 
                 <!-- Evil Alliances -->
                 <alliance player="Mordor" alliance="Evil"/>
@@ -730,6 +728,16 @@
                         <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
 
                         <!-- Bidding Phase -->
+						<!-- Saruman - Freefolk - Mordor - Rohan - Goblins - Elves - Haradrim - Gondor - Rhun - Dale - Khand - Dwarves -->
+                        <step name="sarumanBid" delegate="bid" player="Saruman" maxRunCount="1"/>
+                        <step name="sarumanBidPlace" delegate="placeBid" player="Saruman" maxRunCount="1"/>
+						
+                        <step name="freefolkBid" delegate="bid" player="Freefolk" maxRunCount="1"/>
+                        <step name="freefolkBidPlace" delegate="placeBid" player="Freefolk" maxRunCount="1"/>
+
+                        <step name="mordorBid" delegate="bid" player="Mordor" maxRunCount="1"/>
+                        <step name="mordorBidPlace" delegate="placeBid" player="Mordor" maxRunCount="1"/>
+						
                         <step name="rohanBid" delegate="bid" player="Rohan" maxRunCount="1"/>
                         <step name="rohanBidPlace" delegate="placeBid" player="Rohan" maxRunCount="1"/>
 
@@ -744,9 +752,18 @@
 
                         <step name="gondorBid" delegate="bid" player="Gondor" maxRunCount="1"/>
                         <step name="gondorBidPlace" delegate="placeBid" player="Gondor" maxRunCount="1"/>
-
-                        <step name="mordorBid" delegate="bid" player="Mordor" maxRunCount="1"/>
-                        <step name="mordorBidPlace" delegate="placeBid" player="Mordor" maxRunCount="1"/>
+						
+                        <step name="rhunBid" delegate="bid" player="Rhun" maxRunCount="1"/>
+                        <step name="rhunBidPlace" delegate="placeBid" player="Rhun" maxRunCount="1"/>
+						
+                        <step name="daleBid" delegate="bid" player="Dale" maxRunCount="1"/>
+                        <step name="daleBidPlace" delegate="placeBid" player="Dale" maxRunCount="1"/>
+						
+                        <step name="khandBid" delegate="bid" player="Khand" maxRunCount="1"/>
+                        <step name="khandBidPlace" delegate="placeBid" player="Khand" maxRunCount="1"/>
+						
+                        <step name="dwarvesBid" delegate="bid" player="Dwarves" maxRunCount="1"/>
+                        <step name="dwarvesBidPlace" delegate="placeBid" player="Dwarves" maxRunCount="1"/>
 
                         <!-- Saruman Game Sequence -->
 
@@ -1284,17 +1301,17 @@
                         <frontierRules name="buyFortifications"/>
                 </productionFrontier>
 
-                <playerProduction player="Elves" frontier="elfProduction"/>
-                <playerProduction player="Gondor" frontier="gondorProduction"/>
-                <playerProduction player="Rohan" frontier="rohanProduction"/>
-                <playerProduction player="Mordor" frontier="mordorProduction"/>
-                <playerProduction player="Haradrim" frontier="haradrimProduction"/>
-                <playerProduction player="Goblins" frontier="goblinProduction"/>
-                <playerProduction player="Rhun" frontier="rhunProduction"/>
-                <playerProduction player="Khand" frontier="khandProduction"/>
                 <playerProduction player="Saruman" frontier="sarumanProduction"/>
-                <playerProduction player="Dale" frontier="daleProduction"/>
                 <playerProduction player="Freefolk" frontier="freefolkProduction"/>
+                <playerProduction player="Mordor" frontier="mordorProduction"/>
+                <playerProduction player="Rohan" frontier="rohanProduction"/>
+                <playerProduction player="Goblins" frontier="goblinProduction"/>
+                <playerProduction player="Elves" frontier="elfProduction"/>
+                <playerProduction player="Haradrim" frontier="haradrimProduction"/>
+                <playerProduction player="Gondor" frontier="gondorProduction"/>
+                <playerProduction player="Rhun" frontier="rhunProduction"/>
+                <playerProduction player="Dale" frontier="daleProduction"/>
+                <playerProduction player="Khand" frontier="khandProduction"/>
                 <playerProduction player="Dwarves" frontier="dwarvesProduction"/>
         </production>
 
@@ -1960,7 +1977,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="Moria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="Goblins"/>
-                        <option name="victoryCity" value="true"/>
+                        <!--<option name="victoryCity" value="true"/>-->
                     </attatchment>
 
                     <!-- Neutral Lands -->
@@ -2582,23 +2599,35 @@
                 </unitInitialize>
 
                 <resourceInitialize>
-                        <resourceGiven player="Elves" resource="PUs" quantity="22"/>
-                        <resourceGiven player="Gondor" resource="PUs" quantity="33"/>
-                        <resourceGiven player="Rohan" resource="PUs" quantity="18"/>
-                        <resourceGiven player="Mordor" resource="PUs" quantity="20"/>
-                        <resourceGiven player="Haradrim" resource="PUs" quantity="18"/>
-                        <resourceGiven player="Goblins" resource="PUs" quantity="12"/>
                         <resourceGiven player="Saruman" resource="PUs" quantity="10"/>
-                        <resourceGiven player="Khand" resource="PUs" quantity="10"/>
+                        <resourceGiven player="Freefolk" resource="PUs" quantity="14"/>
+                        <resourceGiven player="Mordor" resource="PUs" quantity="20"/>
+                        <resourceGiven player="Rohan" resource="PUs" quantity="18"/>
+                        <resourceGiven player="Goblins" resource="PUs" quantity="12"/>
+                        <resourceGiven player="Elves" resource="PUs" quantity="22"/>
+                        <resourceGiven player="Haradrim" resource="PUs" quantity="18"/>
+                        <resourceGiven player="Gondor" resource="PUs" quantity="33"/>
                         <resourceGiven player="Rhun" resource="PUs" quantity="12"/>
                         <resourceGiven player="Dale" resource="PUs" quantity="9"/>
-                        <resourceGiven player="Freefolk" resource="PUs" quantity="14"/>
+                        <resourceGiven player="Khand" resource="PUs" quantity="10"/>
                         <resourceGiven player="Dwarves" resource="PUs" quantity="16"/>
                 </resourceInitialize>  
         </initialize>
 
         <propertyList>
                 <!-- Bids -->
+                <property name="Saruman bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+
+                <property name="Freefolk bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+
+                <property name="Mordor bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+
                 <property name="Rohan bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
@@ -2619,19 +2648,7 @@
                         <number min="0" max="1000"/>
                 </property>
 
-                <property name="Mordor bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-
                 <property name="Rhun bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-
-                <property name="Khand bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-
-                <property name="Saruman bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
 
@@ -2639,7 +2656,7 @@
                         <number min="0" max="1000"/>
                 </property>
 
-                <property name="Freefolk bid" value="0" editable="true">
+                <property name="Khand bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
 
@@ -2690,7 +2707,7 @@
                 <property name="maxFactoriesPerTerritory" value="1"/>
 
 				<property name="Display Units as Counters" value="0" editable="true">
-						<number min="0" max="20"/>
+						<number min="0" max="30"/>
 				</property>
 				
                 <property name="mapName" value="middle_earth" editable="false"/>
@@ -2704,7 +2721,7 @@
 
 &lt;table border=&quot;1&quot;bgcolor=&quot;9F1E0A&quot;&gt;
 &lt;tr&gt;
-&lt;th style=&quot;font-size:140%;000000&quot;&gt;====================&lt;br&gt;#Middle Earth 12 Army#&lt;br&gt;====================&lt;/th&gt;
+&lt;th style=&quot;font-size:140%;000000&quot;&gt;====================&lt;br&gt;Lord of the Rings&lt;br&gt;Middle Earth 12 Army&lt;br&gt;====================&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/table&gt;
 &lt;br&gt;
@@ -2717,7 +2734,7 @@
 &lt;br&gt;
 
 &lt;b&gt;Take part and prevail in Tolkien-based epical conflict &lt;/b&gt; &lt;br&gt;
-&lt;b&gt;In the south evil armies gather in an attempt to destroy proud nation of Gondor &lt;/b&gt; &lt;br&gt;
+&lt;b&gt;In the south evil armies gather in an attempt to destroy the proud nation of Gondor &lt;/b&gt; &lt;br&gt;
 &lt;b&gt;Elsewhere, Elves along with their allies attempt to stop expansion of Goblins,Rhun and Saruman &lt;/b&gt; &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;
