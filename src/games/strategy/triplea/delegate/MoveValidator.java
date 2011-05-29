@@ -1176,7 +1176,7 @@ public class MoveValidator
                 if (!MoveValidator.hasEnoughMovement(unit, route))
                 {
                 	boolean unitOK = false;
-                	if ((Matches.UnitIsAirTransportable.match(unit) && TripleAUnit.get(unit).getAlreadyMoved() == 0) && (mechanizedSupportAvailable > 0 && TripleAUnit.get(unit).getAlreadyMoved() == 0 && Matches.UnitIsInfantry.match(unit)))
+                	if ((Matches.UnitIsAirTransportable.match(unit) && Matches.unitHasNotMoved.match(unit)) && (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved.match(unit) && Matches.UnitIsInfantry.match(unit)))
                 	{
                 		// we have paratroopers and mechanized infantry, so we must check for both
                 		// simple: if it movement group contains an air-transport, then assume we are doing paratroopers.  else, assume we are doing mechanized
@@ -1196,7 +1196,7 @@ public class MoveValidator
                 		else
                 			mechanizedSupportAvailable --;
                 	}
-                	else if(Matches.UnitIsAirTransportable.match(unit) && TripleAUnit.get(unit).getAlreadyMoved() == 0)
+                	else if(Matches.UnitIsAirTransportable.match(unit) && Matches.unitHasNotMoved.match(unit))
                     {	
                     	for(Unit airTransport:dependencies.keySet())
                     	{
@@ -1209,7 +1209,7 @@ public class MoveValidator
                     	if(!unitOK)
                     		result.addDisallowedUnit("Not all units have enough movement",unit);
                     }
-                    else if(mechanizedSupportAvailable > 0 && TripleAUnit.get(unit).getAlreadyMoved() == 0 && Matches.UnitIsInfantry.match(unit))
+                    else if(mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved.match(unit) && Matches.UnitIsInfantry.match(unit))
                     {
                     	mechanizedSupportAvailable --;
                     }
@@ -1842,7 +1842,7 @@ public class MoveValidator
             while (!isEditMode && iter.hasNext())
             {
                 TripleAUnit unit = (TripleAUnit) iter.next();
-                if (unit.getAlreadyMoved() != 0)
+                if (Matches.unitHasMoved.match(unit))
                     result.addDisallowedUnit("Units cannot move before loading onto transports",unit);
                 Unit transport = unitsToTransports.get(unit);
                 if (transport == null)
@@ -2003,13 +2003,13 @@ public class MoveValidator
            
             for (Unit paratroop : airTransportsAndParatroops.keySet())
 			{				
-            	if(TripleAUnit.get(paratroop).getAlreadyMoved() != 0) 
+            	if(Matches.unitHasMoved.match(paratroop)) 
             	{
             		result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
             	}
 
             	Unit transport = airTransportsAndParatroops.get(paratroop);
-            	if(TripleAUnit.get(transport).getAlreadyMoved() != 0)
+            	if(Matches.unitHasMoved.match(transport))
             	{
             		result.addDisallowedUnit("Cannot move then transport paratroops", transport);
             	}
@@ -2018,7 +2018,7 @@ public class MoveValidator
             Territory routeEnd = route.getEnd();
             for (Unit paratroop : paratroopsRequiringTransport)
             {
-            	if(TripleAUnit.get(paratroop).getAlreadyMoved() != 0) 
+            	if(Matches.unitHasMoved.match(paratroop)) 
             	{
             		result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
             	}
