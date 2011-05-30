@@ -904,13 +904,20 @@ public class MoveValidator
         {    //check aircraft
         	if (Match.someMatch(units, Matches.UnitIsAir) && route.getLength() >= 1)
         	{
+        		/*
         		// No neutral countries on route predicate
         		Match<Territory> noNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral));
         		//ignore the end territory in our tests                    
         		Match<Territory> territoryIsEnd = Matches.territoryIs(route.getEnd());
         		//See if there are neutrals in the path    
         		if (data.getMap().getRoute(route.getStart(), route.getEnd(), new CompositeMatchOr<Territory>(noNeutral, territoryIsEnd)) == null)
-        			return result.setErrorReturnResult("Air units cannot fly over neutral territories");        		
+        			return result.setErrorReturnResult("Air units cannot fly over neutral territories");
+        		*/
+        		Collection<Territory> middleOfRoute = route.getTerritories();
+        		middleOfRoute.remove(route.getStart());
+        		middleOfRoute.remove(route.getEnd());
+        		if (Match.someMatch(middleOfRoute, Matches.TerritoryIsNeutral)) // we should add a global property switch here, after the stable
+        			return result.setErrorReturnResult("Air units cannot fly over neutral territories");
         	}
         }
         
@@ -992,11 +999,11 @@ public class MoveValidator
 
         if (Match.allMatch(units, Matches.UnitIsAir))
         {
-        	if(isNeutralsImpassable(data))
-            {
+        	//if(isNeutralsImpassable(data)) // we should add a global property switch here, after the stable
+            //{
         		if (route.someMatch(Matches.TerritoryIsNeutral))
         			return result.setErrorReturnResult("Air units cannot fly over neutral territories in non combat");
-            }
+            //}
         } else
         {
             CompositeMatch<Territory> neutralOrEnemy = new CompositeMatchOr<Territory>(Matches.TerritoryIsNeutral, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));

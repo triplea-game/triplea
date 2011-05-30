@@ -1,4 +1,6 @@
 Changes for 1.3.1.2
+* Fixed bug in movement validation that allowed both combat and noncombat flyover of neutrals. (veqryn)
+
 * Fixed bug in movement validation for paratroopers and mechanized infantry techs when a unit has received bonus movement from an airfield or harbour. (veqryn)
 
 * Several small changes to Middle Earth, Big World v3 rules, and Pact of Steel 2. (veqryn)
