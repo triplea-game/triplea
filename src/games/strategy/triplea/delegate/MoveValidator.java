@@ -1551,9 +1551,8 @@ public class MoveValidator
 		int nearestLand = Integer.MAX_VALUE;
 		int nearestFactory = Integer.MAX_VALUE;
 		
-		Match<Territory> canMoveThrough = new InverseMatch<Territory>(Matches.TerritoryIsImpassable);
 		Match<Territory> notNeutral = new InverseMatch<Territory>(Matches.TerritoryIsNeutral);
-		Match<Territory> notNeutralAndNotImpassible = new CompositeMatchAnd<Territory>(canMoveThrough, notNeutral);
+		Match<Territory> notNeutralAndNotImpassibleOrRestricted = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player), notNeutral);
 		Match<Unit> ownedFactory = new CompositeMatchAnd<Unit>(Matches.UnitIsFactory, Matches.unitOwnedBy(player));
 		boolean UseNeutrals = !isNeutralsImpassable(data);
 		
@@ -1571,7 +1570,7 @@ public class MoveValidator
 			boolean hasOwnedFactory = territory.getUnits().someMatch(ownedFactory);
 
 			//Get a path WITHOUT using neutrals
-			Route noNeutralRoute = data.getMap().getRoute(route.getEnd(), territory, notNeutralAndNotImpassible); 
+			Route noNeutralRoute = data.getMap().getRoute(route.getEnd(), territory, notNeutralAndNotImpassibleOrRestricted); 
 			if(noNeutralRoute != null)
 			{
 				nearestLand = Math.min(nearestLand, noNeutralRoute.getLength());
@@ -1583,9 +1582,10 @@ public class MoveValidator
 				}
 			}
 			//Get a path WITH using neutrals
-			if(UseNeutrals)
+			UseNeutrals = false; // delete after stable
+			if(UseNeutrals) // we should add a global property switch here, after the stable
 			{
-				Route neutralViolatingRoute = data.getMap().getRoute(route.getEnd(), territory, notNeutral);
+				Route neutralViolatingRoute = data.getMap().getRoute(route.getEnd(), territory, Matches.TerritoryIsPassableAndNotRestricted(player));
 				if((neutralViolatingRoute != null) && getNeutralCharge(data, neutralViolatingRoute) <= player.getResources().getQuantity(Constants.PUS))
 				{
 					nearestLand = Math.min(nearestLand, neutralViolatingRoute.getLength());
