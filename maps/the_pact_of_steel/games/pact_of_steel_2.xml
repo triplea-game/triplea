@@ -2895,7 +2895,7 @@
 			atWarPlayers						values: player names, in a : delimited list (example: value="Germans:Italians:Japanese" count="2" means that you must be at war with 2 of the 3 listed players) [this option currently does NOTHING]
 			directOwnershipTerritories			values: "original", "enemy", or a : delimited list of territories
 			alliedOwnershipTerritories			values: "original", "enemy", or a : delimited list of territories
-			directExcludedTerritories 			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
+			directExclusionTerritories 			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
 			alliedExclusionTerritories			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
 			enemyExclusionTerritories			values: "original", "map" (map = all territories on map), or a : delimited list of territories
 			enemySurfaceExclusionTerritories	values: "original", "map" (map = all territories on map), or a : delimited list of territories
@@ -2904,7 +2904,7 @@
 			enemyPresenceTerritories 			values: "original", "map" (map = all territories on map), or a : delimited list of territories
 			unitPresence 						values: "ANY" or the exact name of the unit, and the number of that unit.  (example: value="infantry" count="2", or: value="ANY" count="3")
 														unitPresence can be put in multiple times. Its purpose is to specify the units for presence and excluded territories. If missing, then presence needs only 1 of any unit, and excluded needs to be completely devoid of units
-														It can be used in conjunction with directPresenceTerritories, alliedPresenceTerritories, enemyPresenceTerritories, directExcludedTerritories, alliedExclusionTerritories, enemyExclusionTerritories, enemySurfaceExclusionTerritories
+														It can be used in conjunction with directPresenceTerritories, alliedPresenceTerritories, enemyPresenceTerritories, directExclusionTerritories, alliedExclusionTerritories, enemyExclusionTerritories, enemySurfaceExclusionTerritories
 														If used with an exclusion, then the number of units of that type must be less than or equal the count.  (Use count="0" if you want no units of that type in the territories).
 			techs								values: any list of technologies, : delimited (if count = zero, then must have exactly zero technologies [if count is missing, defaults to zero])
 	-->
@@ -4432,6 +4432,10 @@
 				</property>
 
 				<property name="Neutrals Are Blitzable" value="false" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Neutral Flyover Allowed" value="false" editable="false">
 						<boolean/>
 				</property>
 

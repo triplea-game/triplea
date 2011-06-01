@@ -2703,6 +2703,10 @@
 				<property name="Neutrals Are Blitzable" value="false" editable="true">
 						<boolean/>
 				</property>
+
+				<property name="Neutral Flyover Allowed" value="false" editable="true">
+						<boolean/>
+				</property>
 				
                 <property name="maxFactoriesPerTerritory" value="1"/>
 

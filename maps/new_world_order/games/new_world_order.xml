@@ -4219,6 +4219,10 @@
 			<boolean/>
 		</property>
 
+				<property name="Neutral Flyover Allowed" value="false" editable="true">
+						<boolean/>
+				</property>
+
                 <property name="neutralCharge" value="0"/>
 
                <!-- Map Name: also used for map utils when asked -->

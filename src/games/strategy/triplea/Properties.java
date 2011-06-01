@@ -804,6 +804,10 @@ public class Properties implements Constants {
     	return data.getProperties().get(DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES, false);
     }
     
+    public static boolean getNeutralFlyoverAllowed(GameData data) {
+    	return data.getProperties().get(NEUTRAL_FLYOVER_ALLOWED, false);
+    }
+    
     private Properties() {
     }
 }

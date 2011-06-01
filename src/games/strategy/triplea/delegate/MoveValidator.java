@@ -902,21 +902,12 @@ public class MoveValidator
         }
         else 
         {    //check aircraft
-        	if (Match.someMatch(units, Matches.UnitIsAir) && route.getLength() >= 1)
+        	if (Match.someMatch(units, Matches.UnitIsAir) && route.getLength() >= 1 && (!games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data)))
         	{
-        		/*
-        		// No neutral countries on route predicate
-        		Match<Territory> noNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral));
-        		//ignore the end territory in our tests                    
-        		Match<Territory> territoryIsEnd = Matches.territoryIs(route.getEnd());
-        		//See if there are neutrals in the path    
-        		if (data.getMap().getRoute(route.getStart(), route.getEnd(), new CompositeMatchOr<Territory>(noNeutral, territoryIsEnd)) == null)
-        			return result.setErrorReturnResult("Air units cannot fly over neutral territories");
-        		*/
         		Collection<Territory> middleOfRoute = route.getTerritories();
         		middleOfRoute.remove(route.getStart());
         		middleOfRoute.remove(route.getEnd());
-        		if (Match.someMatch(middleOfRoute, Matches.TerritoryIsNeutral)) // we should add a global property switch here, after the stable
+        		if (Match.someMatch(middleOfRoute, Matches.TerritoryIsNeutral))
         			return result.setErrorReturnResult("Air units cannot fly over neutral territories");
         	}
         }
@@ -999,11 +990,8 @@ public class MoveValidator
 
         if (Match.allMatch(units, Matches.UnitIsAir))
         {
-        	//if(isNeutralsImpassable(data)) // we should add a global property switch here, after the stable
-            //{
-        		if (route.someMatch(Matches.TerritoryIsNeutral))
+        		if (route.someMatch(Matches.TerritoryIsNeutral) && (!games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data)))
         			return result.setErrorReturnResult("Air units cannot fly over neutral territories in non combat");
-            //}
         } else
         {
             CompositeMatch<Territory> neutralOrEnemy = new CompositeMatchOr<Territory>(Matches.TerritoryIsNeutral, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
@@ -1554,7 +1542,7 @@ public class MoveValidator
 		Match<Territory> notNeutral = new InverseMatch<Territory>(Matches.TerritoryIsNeutral);
 		Match<Territory> notNeutralAndNotImpassibleOrRestricted = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player), notNeutral);
 		Match<Unit> ownedFactory = new CompositeMatchAnd<Unit>(Matches.UnitIsFactory, Matches.unitOwnedBy(player));
-		boolean UseNeutrals = !isNeutralsImpassable(data);
+		boolean UseNeutrals = (games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) && !isNeutralsImpassable(data));
 		
 		//find the closest land territory where everyone can land        
 		Iterator<Territory> iter = data.getMap().getNeighbors(route.getEnd(), maxMovement + 1).iterator();
@@ -1582,8 +1570,7 @@ public class MoveValidator
 				}
 			}
 			//Get a path WITH using neutrals
-			UseNeutrals = false; // delete after stable
-			if(UseNeutrals) // we should add a global property switch here, after the stable
+			if(UseNeutrals)
 			{
 				Route neutralViolatingRoute = data.getMap().getRoute(route.getEnd(), territory, Matches.TerritoryIsPassableAndNotRestricted(player));
 				if((neutralViolatingRoute != null) && getNeutralCharge(data, neutralViolatingRoute) <= player.getResources().getQuantity(Constants.PUS))
