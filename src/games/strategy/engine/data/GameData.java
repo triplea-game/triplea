@@ -30,8 +30,11 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.ListenerList;
 import games.strategy.util.Version;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -110,6 +113,8 @@ public class GameData implements java.io.Serializable
     private IGameLoader m_loader;
 	private final History m_gameHistory = new History(this);
     private volatile transient boolean m_testLockIsHeld = false;
+
+	private List<IAttachment> attachmentOrder = new ArrayList<IAttachment>();
 
 	/** Creates new GameData */
 	public GameData()
@@ -472,6 +477,14 @@ public class GameData implements java.io.Serializable
         m_resourceLoader = ResourceLoader.getMapresourceLoader(m_gameName);
         return getResourceLoader();
     }
+
+	public void setAttachmentOrder(IAttachment attachment) {
+		attachmentOrder.add(attachment);
+	}
+	
+	public List<IAttachment> getOrderedAttachmentList() {
+		return attachmentOrder ;
+	}
     
     
 }

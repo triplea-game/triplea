@@ -53,7 +53,7 @@ public class UnitSupportAttachment extends DefaultAttachment{
 	private static final long serialVersionUID = -3015679930172496082L;
 
 	
-	private Set<UnitType> m_unitTypes = null;
+	private Set<UnitType> m_unitType = null;
     private boolean m_offence = false;
     private boolean m_defence = false;
     private boolean m_roll = false;
@@ -98,13 +98,13 @@ public class UnitSupportAttachment extends DefaultAttachment{
     }
     public void setUnitType(String names) throws GameParseException
     {
-    	m_unitTypes = new HashSet<UnitType>();
+    	m_unitType = new HashSet<UnitType>();
     	String[] s = names.split(":");
     	for( int i=0; i < s.length; i++){
             UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
             if(type == null)
                 throw new GameParseException("Supports: Could not find unitType. name:" + s[i]);
-            m_unitTypes.add(type);
+            m_unitType.add(type);
     	}
     }
     
@@ -181,7 +181,7 @@ public class UnitSupportAttachment extends DefaultAttachment{
     }
     
     public Set<UnitType> getUnitTypes() {
-    	return m_unitTypes;
+    	return m_unitType;
     }
     
     public List<PlayerID> getPlayers() {
@@ -256,9 +256,9 @@ public class UnitSupportAttachment extends DefaultAttachment{
     {
     	if( types == null )
     		return;
-    	if( m_unitTypes == null)
-    		m_unitTypes = new HashSet<UnitType>();
-        m_unitTypes.addAll(types);
+    	if( m_unitType == null)
+    		m_unitType = new HashSet<UnitType>();
+        m_unitType.addAll(types);
     }
     
     public static void setOldSupportCount (UnitType type, GameData data, String count){

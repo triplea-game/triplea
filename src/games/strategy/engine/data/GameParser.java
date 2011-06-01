@@ -1051,6 +1051,7 @@ public class GameParser
         TechnologyFrontier techs = data.getTechnologyFrontier();
         parseTechs( getChildren("techname", element), techs);
     }
+    
     private void parsePlayerTech(List elements) throws GameParseException
     {
         for( int i = 0; i < elements.size(); i++)
@@ -1196,6 +1197,7 @@ public class GameParser
             attachment.setAttatchedTo(attachable);
             attachment.setName(name);
             setValues(attachment, values);
+            data.setAttachmentOrder(attachment); // keep a list of attachment references in the order they were added
             
             if (obj instanceof RulesAttachment)
             {

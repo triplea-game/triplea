@@ -83,10 +83,10 @@ public class RulesAttachment extends DefaultAttachment
 	
 	// Territory lists
 	private String[] m_alliedOwnershipTerritories;
-	private String[] m_alliedExcludedTerritories;
-	private String[] m_directExcludedTerritories;
-	private String[] m_enemyExcludedTerritories;
-	private String[] m_enemySurfaceExcludedTerritories;
+	private String[] m_alliedExclusionTerritories;
+	private String[] m_directExclusionTerritories;
+	private String[] m_enemyExclusionTerritories;
+	private String[] m_enemySurfaceExclusionTerritories;
 	private String[] m_directOwnershipTerritories;
 	private String[] m_directPresenceTerritories;
 	private String[] m_alliedPresenceTerritories;
@@ -161,36 +161,36 @@ public class RulesAttachment extends DefaultAttachment
 	// exclusion types = controlled, controlledNoWater, original, all, or list
 	public void setAlliedExclusionTerritories(String value)
 	{
-		m_alliedExcludedTerritories = value.split(":");
-		validateNames(m_alliedExcludedTerritories);
+		m_alliedExclusionTerritories = value.split(":");
+		validateNames(m_alliedExclusionTerritories);
 	}
 	
 	public String[] getAlliedExclusionTerritories()
 	{
-		return m_alliedExcludedTerritories;
+		return m_alliedExclusionTerritories;
 	}
 	
 	public void setDirectExclusionTerritories(String value)
 	{
-		m_directExcludedTerritories = value.split(":");
-		validateNames(m_directExcludedTerritories);
+		m_directExclusionTerritories = value.split(":");
+		validateNames(m_directExclusionTerritories);
 	}
 	
 	public String[] getDirectExclusionTerritories()
 	{
-		return m_directExcludedTerritories;
+		return m_directExclusionTerritories;
 	}
 	
 	// exclusion types = original or list
 	public void setEnemyExclusionTerritories(String value)
 	{
-		m_enemyExcludedTerritories = value.split(":");
-		validateNames(m_enemyExcludedTerritories);
+		m_enemyExclusionTerritories = value.split(":");
+		validateNames(m_enemyExclusionTerritories);
 	}
 	
 	public String[] getEnemyExclusionTerritories()
 	{
-		return m_enemyExcludedTerritories;
+		return m_enemyExclusionTerritories;
 	}
 	
 	public void setDirectPresenceTerritories(String value)
@@ -229,13 +229,13 @@ public class RulesAttachment extends DefaultAttachment
 	// exclusion types = original or list
 	public void setEnemySurfaceExclusionTerritories(String value)
 	{
-		m_enemySurfaceExcludedTerritories = value.split(":");
-		validateNames(m_enemySurfaceExcludedTerritories);
+		m_enemySurfaceExclusionTerritories = value.split(":");
+		validateNames(m_enemySurfaceExclusionTerritories);
 	}
 	
 	public String[] getEnemySurfaceExclusionTerritories()
 	{
-		return m_enemySurfaceExcludedTerritories;
+		return m_enemySurfaceExclusionTerritories;
 	}
 	
 	public void setDirectOwnershipTerritories(String value)
@@ -977,13 +977,13 @@ public class RulesAttachment extends DefaultAttachment
 	{
 		validateNames(m_alliedOwnershipTerritories);
 		
-		validateNames(m_enemyExcludedTerritories);
+		validateNames(m_enemyExclusionTerritories);
 		
-		validateNames(m_enemySurfaceExcludedTerritories);
+		validateNames(m_enemySurfaceExclusionTerritories);
 		
-		validateNames(m_alliedExcludedTerritories);
+		validateNames(m_alliedExclusionTerritories);
 		
-		validateNames(m_directExcludedTerritories);
+		validateNames(m_directExclusionTerritories);
 		
 		validateNames(m_directOwnershipTerritories);
 		
@@ -996,15 +996,21 @@ public class RulesAttachment extends DefaultAttachment
 		validateNames(m_enemyPresenceTerritories);
 	}
 	
+	
+	
+	
 	private void validateNames(String[] terrList)
 	{
-		if (terrList != null && (!terrList.equals("controlled") && !terrList.equals("controlledNoWater") && !terrList.equals("original") && !terrList.equals("all") && !terrList.equals("map") && !terrList.equals("enemy")))
+		/*if (terrList != null && (!terrList.equals("controlled") && !terrList.equals("controlledNoWater") && !terrList.equals("original") && !terrList.equals("all") && !terrList.equals("map") && !terrList.equals("enemy")))
 		{
 			if (terrList.length != 2)
 				getListedTerritories(terrList);
 			else if (terrList.length == 2 && (!terrList[1].equals("controlled") && !terrList[1].equals("controlledNoWater") && !terrList[1].equals("original") && !terrList[1].equals("all") && !terrList[1].equals("map") && !terrList[1].equals("enemy")))
 				getListedTerritories(terrList);
-		} 
+		}*/
+		if(terrList != null)
+			getListedTerritories(terrList);
+		//removed checks for length & group commands because it breaks the setTerritoryCount feature.
 	}
 	
 	// Validate that all listed territories actually exist

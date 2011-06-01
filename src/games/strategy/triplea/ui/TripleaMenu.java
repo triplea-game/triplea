@@ -17,6 +17,7 @@ package games.strategy.triplea.ui;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.export.GameDataExporter;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataUtils;
@@ -192,6 +193,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         JMenu menuGame = new JMenu("Export");
         menuBar.add(menuGame);
 
+        addExportXML(menuGame);
         addExportStats(menuGame);
         addExportSetupCharts(menuGame);
         addSaveScreenshot(menuGame);
@@ -740,6 +742,52 @@ private void addLockMap(JMenu parentMenu)
 
     }
 
+    private void addExportXML(JMenu parentMenu) {
+    	Action exportXML = new AbstractAction("Export game.xml file (Beta)...")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                exportXMLFile();
+
+            }
+
+            /**
+             *
+             */
+            private void exportXMLFile()
+            {
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                File rootDir = new File(System.getProperties().getProperty("user.dir"));
+                chooser.setSelectedFile(new File(rootDir, "game.xml"));
+
+                if(chooser.showSaveDialog(m_frame) != JOptionPane.OK_OPTION)
+                    return;
+
+                GameData data = getData();               
+               
+                GameDataExporter exporter = new games.strategy.engine.data.export.GameDataExporter(data);
+                String xmlFile = exporter.getXML();
+                try
+                {
+                    FileWriter writer = new FileWriter(chooser.getSelectedFile());
+                    try
+                    {
+                        writer.write(xmlFile);
+                    }
+                    finally
+                    {
+                        writer.close();
+                    }
+                } catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
+            }
+        };
+        parentMenu.add(exportXML);
+    	
+    }
 
     /**
      * @param parentMenu

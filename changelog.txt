@@ -1,4 +1,6 @@
-Changes for 1.3.1.2
+Changes for 1.3.2.1
+* Added ability to export a savegame to an xml, thereby allowing in game editing of maps. (edwin van der wal)
+
 * Added new game property, "Neutral Flyover Allowed", which like it says, will allow you to fly over neutrals. (veqryn)
 
 * Fixed bug in movement validation that allowed paths over impassibles and restricted territories to be taken into account for landing zones. (veqryn)
