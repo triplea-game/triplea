@@ -230,10 +230,10 @@ public class Chat
        return m_messengers.getMessenger().getServerNode();
    }
    
-    private List<INode> m_playersThatLeft = new ArrayList<INode>();    
-    public List<INode> GetPlayersThatLeft()
+    private List<INode> m_playersThatLeft_Last10 = new ArrayList<INode>();    
+    public List<INode> GetPlayersThatLeft_Last10()
     {
-        return m_playersThatLeft;
+        return m_playersThatLeft_Last10;
     }
     
     public List<INode> GetOnlinePlayers()
@@ -361,7 +361,9 @@ public class Chat
                         listener.addStatusMessage(node.getName() + " has left");
                     }
                     
-                    m_playersThatLeft.add(node);
+                    m_playersThatLeft_Last10.add(node);
+                    if(m_playersThatLeft_Last10.size() > 10)
+                        m_playersThatLeft_Last10.remove(0);
                 }
             }
         }

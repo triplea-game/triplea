@@ -102,8 +102,8 @@ public class LobbyMenu extends JMenuBar
                 {
                     builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
                 }
-                builder.append("Players That Have Left:\r\n\r\n");
-                for(INode player : m_frame.GetChatMessagePanel().getChat().GetPlayersThatLeft())
+                builder.append("Players That Have Left (Last 10):\r\n\r\n");
+                for(INode player : m_frame.GetChatMessagePanel().getChat().GetPlayersThatLeft_Last10())
                 {
                     builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
                 }

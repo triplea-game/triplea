@@ -240,7 +240,10 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
     {
         synchronized(m_cachedListLock)
         {
-            return m_cachedMacAddresses.get(name);
+            String mac = m_cachedMacAddresses.get(name);
+            if(mac == null)
+                mac = m_playersThatLeftMacs_Last10.get(name);
+            return mac;
         }
     }
     //We need to cache whether players are muted, because otherwise the database would have to be accessed each time a message was sent, which can be very slow
@@ -355,13 +358,20 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
             }
         }
     }
+    private HashMap<String, String> m_playersThatLeftMacs_Last10 = new HashMap<String, String>();    
+    public HashMap<String, String> GetPlayersThatLeftMacs_Last10()
+    {
+        return m_playersThatLeftMacs_Last10;
+    }
     private void NotifyPlayerRemoval(INode node)
     {
-        //Commented out so admin's can see a player's hashed mac even after the player has left
-        /*synchronized (m_cachedListLock)
+        synchronized (m_cachedListLock)
         {
+            m_playersThatLeftMacs_Last10.put(node.getName(), m_cachedMacAddresses.get(node.getName()));
+            if (m_playersThatLeftMacs_Last10.size() > 10)
+                m_playersThatLeftMacs_Last10.remove(m_playersThatLeftMacs_Last10.entrySet().iterator().next().toString());
             m_cachedMacAddresses.remove(node.getName());
-        }*/
+        }
     }
     public static final String YOU_HAVE_BEEN_MUTED_LOBBY = "?YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER"; //Special character to stop spoofing by server
     public static final String YOU_HAVE_BEEN_MUTED_GAME = "?YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST"; //Special character to stop spoofing by host
