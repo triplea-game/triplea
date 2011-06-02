@@ -185,7 +185,7 @@ public class LobbyFrame extends JFrame
                 banTypes.add("Name, IP, Mac");
                 banTypes.add("Cancel");
                 
-                int resultBT = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the type of ban: ", "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, banTypes.toArray(), banTypes.toArray()[6]);
+                int resultBT = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the type of ban: ", "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, banTypes.toArray(), banTypes.toArray()[7]);
 
                 if(resultBT < 0)
                     return;
@@ -205,7 +205,7 @@ public class LobbyFrame extends JFrame
                 timeUnits.add("Forever");
                 timeUnits.add("Cancel");
 
-                int resultTU = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ", "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, timeUnits.toArray(), timeUnits.toArray()[3]);
+                int resultTU = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ", "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, timeUnits.toArray(), timeUnits.toArray()[7]);
 
                 if(resultTU < 0)
                     return;
@@ -277,7 +277,7 @@ public class LobbyFrame extends JFrame
                 muteTypes.add("Name, IP, Mac");
                 muteTypes.add("Cancel");
                 
-                int resultMT = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the type of mute: ", "Select Mute Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, muteTypes.toArray(), muteTypes.toArray()[6]);
+                int resultMT = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the type of mute: ", "Select Mute Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, muteTypes.toArray(), muteTypes.toArray()[7]);
 
                 if(resultMT < 0)
                     return;
@@ -295,13 +295,17 @@ public class LobbyFrame extends JFrame
                 timeUnits.add("Month");
                 timeUnits.add("Year");
                 timeUnits.add("Forever");
+                timeUnits.add("Cancel");
 
-                int resultTU = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ", "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, timeUnits.toArray(), timeUnits.toArray()[3]);
+                int resultTU = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ", "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, timeUnits.toArray(), timeUnits.toArray()[7]);
 
                 if(resultTU < 0)
                     return;
 
                 String selectedTimeUnit = (String)timeUnits.toArray()[resultTU];
+                
+                if(selectedTimeUnit.equals("Cancel"))
+                	return;
 
                 if(selectedTimeUnit.equals("Forever"))
                 {                    
