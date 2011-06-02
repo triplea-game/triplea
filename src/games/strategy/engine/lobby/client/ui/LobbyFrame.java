@@ -217,7 +217,7 @@ public class LobbyFrame extends JFrame
 
                 if(selectedTimeUnit.equals("Forever"))
                 {                    
-                    if(selectedBanType.toLowerCase().contains("username"))
+                    if(selectedBanType.toLowerCase().contains("name"))
                         controller.banUsername(clickedOn, null);
                     if(selectedBanType.toLowerCase().contains("ip"))
                         controller.banIp(clickedOn, null);
@@ -253,7 +253,7 @@ public class LobbyFrame extends JFrame
 
                 long expire = System.currentTimeMillis() + ticks;
                 
-                if (selectedBanType.toLowerCase().contains("username"))
+                if (selectedBanType.toLowerCase().contains("name"))
                     controller.banUsername(clickedOn, new Date(expire));
                 if (selectedBanType.toLowerCase().contains("ip"))
                     controller.banIp(clickedOn, new Date(expire));
@@ -305,7 +305,7 @@ public class LobbyFrame extends JFrame
 
                 if(selectedTimeUnit.equals("Forever"))
                 {                    
-                    if(selectedMuteType.toLowerCase().contains("username"))
+                    if(selectedMuteType.toLowerCase().contains("name"))
                         controller.muteUsername(clickedOn, null);
                     if(selectedMuteType.toLowerCase().contains("ip"))
                         controller.muteIp(clickedOn, null);
@@ -340,7 +340,7 @@ public class LobbyFrame extends JFrame
 
                 long expire = System.currentTimeMillis() + ticks;
                 
-                if (selectedMuteType.toLowerCase().contains("username"))
+                if (selectedMuteType.toLowerCase().contains("name"))
                     controller.muteUsername(clickedOn, new Date(expire));
                 if (selectedMuteType.toLowerCase().contains("ip"))
                     controller.muteIp(clickedOn, new Date(expire));
