@@ -176,12 +176,12 @@ public class LobbyFrame extends JFrame
             public void actionPerformed(ActionEvent e)
             {
                 List<String> banTypes = new ArrayList<String>();
-                banTypes.add("Username");
                 banTypes.add("IP Address");
                 banTypes.add("Mac Address");
+                banTypes.add("Username");
+                banTypes.add("IP and Mac");
                 banTypes.add("Username and IP");
                 banTypes.add("Username and Mac");
-                banTypes.add("IP and Mac");
                 banTypes.add("Username, IP, and Mac");
                 
                 int resultBT = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the type of ban: ", "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, banTypes.toArray(), banTypes.toArray()[6]);
@@ -260,12 +260,12 @@ public class LobbyFrame extends JFrame
             public void actionPerformed(ActionEvent e)
             {
                 List<String> muteTypes = new ArrayList<String>();
-                muteTypes.add("Username");
                 muteTypes.add("IP Address");
                 muteTypes.add("Mac Address");
+                muteTypes.add("Username");
+                muteTypes.add("IP and Mac");
                 muteTypes.add("Username and IP");
                 muteTypes.add("Username and Mac");
-                muteTypes.add("IP and Mac");
                 muteTypes.add("Username, IP, and Mac");
                 
                 int resultMT = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the type of mute: ", "Select Mute Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, muteTypes.toArray(), muteTypes.toArray()[6]);
@@ -299,7 +299,6 @@ public class LobbyFrame extends JFrame
                         controller.muteIp(clickedOn, null);
                     if(selectedMuteType.toLowerCase().contains("mac"))
                         controller.muteMac(clickedOn, null);
-                    controller.boot(clickedOn); //Should we keep this auto?
                     return;
                 }
 
