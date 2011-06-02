@@ -179,10 +179,11 @@ public class LobbyFrame extends JFrame
                 banTypes.add("IP Address");
                 banTypes.add("Mac Address");
                 banTypes.add("Username");
-                banTypes.add("IP and Mac");
-                banTypes.add("Username and IP");
-                banTypes.add("Username and Mac");
-                banTypes.add("Username, IP, and Mac");
+                banTypes.add("IP, Mac");
+                banTypes.add("Name, IP");
+                banTypes.add("Name, Mac");
+                banTypes.add("Name, IP, Mac");
+                banTypes.add("Cancel");
                 
                 int resultBT = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the type of ban: ", "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, banTypes.toArray(), banTypes.toArray()[6]);
 
@@ -190,6 +191,9 @@ public class LobbyFrame extends JFrame
                     return;
                 
                 String selectedBanType = (String)banTypes.toArray()[resultBT];
+                
+                if(selectedBanType.equals("Cancel"))
+                	return;
                 
                 List<String> timeUnits = new ArrayList<String>();
                 timeUnits.add("Minute");
@@ -199,6 +203,7 @@ public class LobbyFrame extends JFrame
                 timeUnits.add("Month");
                 timeUnits.add("Year");
                 timeUnits.add("Forever");
+                timeUnits.add("Cancel");
 
                 int resultTU = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ", "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, timeUnits.toArray(), timeUnits.toArray()[3]);
 
@@ -206,6 +211,9 @@ public class LobbyFrame extends JFrame
                     return;
 
                 String selectedTimeUnit = (String)timeUnits.toArray()[resultTU];
+
+                if(selectedTimeUnit.equals("Cancel"))
+                	return;
 
                 if(selectedTimeUnit.equals("Forever"))
                 {                    
@@ -263,10 +271,11 @@ public class LobbyFrame extends JFrame
                 muteTypes.add("IP Address");
                 muteTypes.add("Mac Address");
                 muteTypes.add("Username");
-                muteTypes.add("IP and Mac");
-                muteTypes.add("Username and IP");
-                muteTypes.add("Username and Mac");
-                muteTypes.add("Username, IP, and Mac");
+                muteTypes.add("IP, Mac");
+                muteTypes.add("Name, IP");
+                muteTypes.add("Name, Mac");
+                muteTypes.add("Name, IP, Mac");
+                muteTypes.add("Cancel");
                 
                 int resultMT = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the type of mute: ", "Select Mute Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, muteTypes.toArray(), muteTypes.toArray()[6]);
 
@@ -274,6 +283,9 @@ public class LobbyFrame extends JFrame
                     return;
                 
                 String selectedMuteType = (String)muteTypes.toArray()[resultMT];
+                
+                if(selectedMuteType.equals("Cancel"))
+                	return;
                 
                 List<String> timeUnits = new ArrayList<String>();
                 timeUnits.add("Minute");
