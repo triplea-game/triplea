@@ -44,13 +44,14 @@ public class DBExplorerPanel extends JPanel
     {
         m_execute = new JButton("Execute");
         m_sql = new JTextArea();
-        m_sql.setText("select * from ta_users " +
-                "\n\n" +
-                "update ta_users set password = \'foo\' where username = \'1152218272375\'\n\n" +
-                "select * from ta_users where CAST(joined as DATE) < CAST('2008-11-12' AS DATE) \n" +
-                "select * from bad_words \n" +
-                "select * from banned_ips"
-                
+        m_sql.setText("select * from ta_users "
+                + "\n\n"
+                + "update ta_users set password = \'foo\' where username = \'1152218272375\'\n\n"
+                + "select * from ta_users where CAST(joined as DATE) < CAST('2008-11-12' AS DATE) \n"
+                + "select * from bad_words \n"
+                + "select * from banned_ips \n"
+                + "\n"
+                + "delete from banned_ips where ip = \'192.168.1.0\'"              
         );
         m_table = new JTable();
     }
@@ -67,19 +68,15 @@ public class DBExplorerPanel extends JPanel
     {
         m_execute.addActionListener(new ActionListener()
         {
-        
             public void actionPerformed(ActionEvent e)
             {
                 execute();
-        
             }
-        
         });
     }
     
     public static boolean isNotQuery(String sql)
-    {
-        
+    {        
         sql = sql.toUpperCase().trim();
         return (sql.startsWith("INSERT") || sql.startsWith("UPDATE") || sql.startsWith("CREATE") || sql.startsWith("DELETE"));
     }

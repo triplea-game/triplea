@@ -187,7 +187,6 @@ public class Chat
 
     private void updateConnections()
     {
-
         synchronized(m_mutex)
         {
             if(m_nodes == null)
@@ -230,6 +229,17 @@ public class Chat
    {
        return m_messengers.getMessenger().getServerNode();
    }
+   
+    private List<INode> m_playersThatLeft = new ArrayList<INode>();    
+    public List<INode> GetPlayersThatLeft()
+    {
+        return m_playersThatLeft;
+    }
+    
+    public List<INode> GetOnlinePlayers()
+    {
+        return m_nodes;
+    }
 
     private IChatChannel m_chatChannelSubscribor = new IChatChannel()
     {
@@ -301,16 +311,13 @@ public class Chat
                 if(m_chatInitVersion == -1)
                 {
                     m_queuedInitMessages.add(new Runnable()
-                    {
-                    
+                    {                    
                         public void run()
                         {
-                               speakerAdded(node, version);
-                        }
-                    
+                            speakerAdded(node, version);
+                        }                    
                     });
-                    return;
-                    
+                    return;                    
                 }
                 
                 if(version > m_chatInitVersion)
@@ -321,34 +328,28 @@ public class Chat
                     for(IChatListener listener: m_listeners)
                     {
                         listener.addStatusMessage(node.getName() + " has joined");
-                    }
-                    
+                    }                    
                 }
-            }
-            
+            }            
         }
-
+        
         public void speakerRemoved(final INode node, final long version)
         {
             assertMessageFromServer();
             
             synchronized(m_mutex)
-            {
-                
-                if(m_chatInitVersion == -1)
+            {                
+                if (m_chatInitVersion == -1)
                 {
                     m_queuedInitMessages.add(new Runnable()
                     {
-                    
                         public void run()
                         {
-                               speakerRemoved(node, version);
+                            speakerRemoved(node, version);
                         }
-                    
                     });
                     return;
                 }
-                
                 
                 if(version > m_chatInitVersion)
                 {
@@ -360,9 +361,8 @@ public class Chat
                         listener.addStatusMessage(node.getName() + " has left");
                     }
                     
+                    m_playersThatLeft.add(node);
                 }
-                
-                
             }
         }
         

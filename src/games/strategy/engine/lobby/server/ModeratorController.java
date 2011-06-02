@@ -66,11 +66,11 @@ public class ModeratorController implements IModeratorController
         INode modNode = MessageContext.getSender();
         String mac = getNodeMacAddress(node);
         new BannedUsernameController().addBannedUsername(getRealName(node), banExpires);
-        boot(node);
 
-        s_logger.info(DUtils.Format("User was banned from the lobby(Username ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}"
+        s_logger.info(DUtils.Format("User was banned from the lobby(Username ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}"
                 , node.getName(), node.getAddress().getHostAddress(), mac
-                , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
+                , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)
+                , banExpires.toString()));
     }
     public void banIp(INode node, Date banExpires)
     {
@@ -81,11 +81,11 @@ public class ModeratorController implements IModeratorController
         INode modNode = MessageContext.getSender();
         String mac = getNodeMacAddress(node);
         new BannedIpController().addBannedIp(node.getAddress().getHostAddress(), banExpires);
-        boot(node);
         
-        s_logger.info(DUtils.Format("User was banned from the lobby(IP ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}"
+        s_logger.info(DUtils.Format("User was banned from the lobby(IP ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}"
                 , node.getName(), node.getAddress().getHostAddress(), mac
-                , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
+                , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)
+                , banExpires.toString()));
     }
     public void banMac(INode node, Date banExpires)
     {
@@ -96,11 +96,11 @@ public class ModeratorController implements IModeratorController
         INode modNode = MessageContext.getSender();
         String mac = getNodeMacAddress(node);
         new BannedMacController().addBannedMac(mac, banExpires);
-        boot(node);
         
-        s_logger.info(DUtils.Format("User was banned from the lobby(Mac ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}"
+        s_logger.info(DUtils.Format("User was banned from the lobby(Mac ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}"
                 , node.getName(), node.getAddress().getHostAddress(), mac
-                , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
+                , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)
+                , banExpires.toString()));
     }
     public void muteUsername(INode node, Date muteExpires)
     {
@@ -108,8 +108,15 @@ public class ModeratorController implements IModeratorController
         if(isPlayerAdmin(node))
             throw new IllegalStateException("Can't mute an admin");
 
+        INode modNode = MessageContext.getSender();
+        String mac = getNodeMacAddress(node);
         new MutedUsernameController().addMutedUsername(getRealName(node), muteExpires);
-        ServerMessenger.getInstance().NotifyIPMutingOfPlayer(node.getAddress().getHostAddress(), muteExpires.getTime());
+        ServerMessenger.getInstance().NotifyUsernameMutingOfPlayer(node.getAddress().getHostAddress(), muteExpires.getTime());
+        
+        s_logger.info(DUtils.Format("User was muted on the lobby(Username mute). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}"
+                , node.getName(), node.getAddress().getHostAddress(), mac
+                , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)
+                , muteExpires.toString()));
     }
     public void muteIp(INode node, Date muteExpires)
     {
@@ -117,8 +124,15 @@ public class ModeratorController implements IModeratorController
         if(isPlayerAdmin(node))
             throw new IllegalStateException("Can't mute an admin");
 
+        INode modNode = MessageContext.getSender();
+        String mac = getNodeMacAddress(node);
         new MutedIpController().addMutedIp(node.getAddress().getHostAddress(), muteExpires);
         ServerMessenger.getInstance().NotifyIPMutingOfPlayer(node.getAddress().getHostAddress(), muteExpires.getTime());
+        
+        s_logger.info(DUtils.Format("User was muted on the lobby(IP mute). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}"
+                , node.getName(), node.getAddress().getHostAddress(), mac
+                , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)
+                , muteExpires.toString()));
     }
     public void muteMac(INode node, Date muteExpires)
     {
@@ -126,9 +140,15 @@ public class ModeratorController implements IModeratorController
         if(isPlayerAdmin(node))
             throw new IllegalStateException("Can't mute an admin");
 
+        INode modNode = MessageContext.getSender();
         String mac = getNodeMacAddress(node);
         new MutedMacController().addMutedMac(mac, muteExpires);
         ServerMessenger.getInstance().NotifyMacMutingOfPlayer(mac, muteExpires.getTime());
+        
+        s_logger.info(DUtils.Format("User was muted on the lobby(Mac mute). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}"
+                , node.getName(), node.getAddress().getHostAddress(), mac
+                , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)
+                , muteExpires.toString()));
     }
     private String getNodeMacAddress(INode node)
     {
@@ -141,12 +161,17 @@ public class ModeratorController implements IModeratorController
         if(!MessageContext.getSender().getName().equals("Admin") && isPlayerAdmin(node)) //Let the master lobby administrator boot admins
             throw new IllegalStateException("Can't boot an admin");
         
-        //you can't boot the server node
-        if(m_messenger.getServerNode().equals(node)) 
-        {            
+        //You can't boot the server node
+        if(m_messenger.getServerNode().equals(node))
             throw new IllegalStateException("Cant boot server node");
-        }
+        
+        INode modNode = MessageContext.getSender();
+        String mac = getNodeMacAddress(node);
         m_messenger.removeConnection(node);
+        
+        s_logger.info(DUtils.Format("User was booted from the lobby. Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}"
+                , node.getName(), node.getAddress().getHostAddress(), mac
+                , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     }
 
     void assertUserIsAdmin() 

@@ -50,9 +50,7 @@ public class MutedUsernameController
     public void addMutedUsername(String username, Date muteTill)
     {
         if(isUsernameMuted(username))
-        {
             removeMutedUsername(username);
-        }
 
         Timestamp muteTillTs = null;
         if(muteTill != null) {
@@ -119,7 +117,7 @@ public class MutedUsernameController
     public boolean isUsernameMuted(String username)
     {
         long muteTill = getUsernameUnmuteTime(username);
-        return muteTill <= System.currentTimeMillis();
+        return muteTill > System.currentTimeMillis();
     }
     public long getUsernameUnmuteTime(String username)
     {

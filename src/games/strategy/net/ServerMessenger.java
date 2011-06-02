@@ -357,10 +357,11 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
     }
     private void NotifyPlayerRemoval(INode node)
     {
-        synchronized (m_cachedListLock)
+        //Commented out so admin's can see a player's hashed mac even after the player has left
+        /*synchronized (m_cachedListLock)
         {
             m_cachedMacAddresses.remove(node.getName());
-        }
+        }*/
     }
     public static final String YOU_HAVE_BEEN_MUTED_LOBBY = "?YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER"; //Special character to stop spoofing by server
     public static final String YOU_HAVE_BEEN_MUTED_GAME = "?YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST"; //Special character to stop spoofing by host

@@ -51,9 +51,7 @@ public class MutedIpController
     public void addMutedIp(String ip, Date muteTill)
     {
         if(isIpMuted(ip))
-        {
             removeMutedIp(ip);
-        }
 
         Timestamp muteTillTs = null;
         if(muteTill != null) {
@@ -120,7 +118,7 @@ public class MutedIpController
     public boolean isIpMuted(String ip)
     {
         long muteTill = getIpUnmuteTime(ip);
-        return muteTill <= System.currentTimeMillis();
+        return muteTill > System.currentTimeMillis();
     }
     public long getIpUnmuteTime(String ip)
     {

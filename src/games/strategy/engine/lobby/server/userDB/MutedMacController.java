@@ -51,9 +51,7 @@ public class MutedMacController
     public void addMutedMac(String mac, Date muteTill)
     {
         if(isMacMuted(mac))
-        {
             removeMutedMac(mac);
-        }
 
         Timestamp muteTillTs = null;
         if(muteTill != null) {
@@ -120,7 +118,7 @@ public class MutedMacController
     public boolean isMacMuted(String mac)
     {
         long muteTill = getMacUnmuteTime(mac);
-        return muteTill <= System.currentTimeMillis();
+        return muteTill > System.currentTimeMillis();
     }
     public long getMacUnmuteTime(String mac)
     {
