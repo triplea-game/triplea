@@ -221,29 +221,28 @@ public class Chat
         return m_ignoreList.shouldIgnore(node.getName());
     }
 
-   public INode getLocalNode()
-   {
-       return m_messengers.getMessenger().getLocalNode();
-   }
-   public INode getServerNode()
-   {
-       return m_messengers.getMessenger().getServerNode();
-   }
+    public INode getLocalNode()
+    {
+        return m_messengers.getMessenger().getLocalNode();
+    }
+    public INode getServerNode()
+    {
+        return m_messengers.getMessenger().getServerNode();
+    }
    
     private List<INode> m_playersThatLeft_Last10 = new ArrayList<INode>();    
     public List<INode> GetPlayersThatLeft_Last10()
     {
-        return m_playersThatLeft_Last10;
+        return new ArrayList<INode>(m_playersThatLeft_Last10);
     }
     
     public List<INode> GetOnlinePlayers()
     {
-        return m_nodes;
+        return new ArrayList<INode>(m_nodes);
     }
 
     private IChatChannel m_chatChannelSubscribor = new IChatChannel()
-    {
-        
+    {        
         private void assertMessageFromServer()
         {
             

@@ -95,51 +95,68 @@ public class LobbyMenu extends JMenuBar
         {
             public void actionPerformed(ActionEvent e)
             {
-                IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers().getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-                StringBuilder builder = new StringBuilder();
-                builder.append("Online Players:\r\n\r\n");
-                for(INode player : m_frame.GetChatMessagePanel().getChat().GetOnlinePlayers())
+                Runnable runner = new Runnable()
                 {
-                    builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
-                }
-                builder.append("Players That Have Left (Last 10):\r\n\r\n");
-                for(INode player : m_frame.GetChatMessagePanel().getChat().GetPlayersThatLeft_Last10())
-                {
-                    builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
-                }
-                
-                final JDialog dialog = new JDialog(m_frame, "Players Information");
-                JTextArea label = new JTextArea(builder.toString());
-                label.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-                label.setEditable(false);
-                label.setAutoscrolls(true);
-                label.setLineWrap(false);
-                label.setFocusable(true);
-                label.setWrapStyleWord(true);
-                label.setLocation(0, 0);
-                dialog.setBackground(label.getBackground());
-                dialog.setLayout(new BorderLayout());
-                JScrollPane pane = new JScrollPane();
-                pane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-                pane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-                pane.setViewportView(label);
-                dialog.add(pane, BorderLayout.CENTER);
-                JButton button = new JButton(new AbstractAction()
-                {
-                    public void actionPerformed(ActionEvent e)
+                    public void run()
                     {
-                        dialog.dispose();
+                        IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers().getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+                        final StringBuilder builder = new StringBuilder();
+                        builder.append("Online Players:\r\n\r\n");
+                        for (INode player : m_frame.GetChatMessagePanel().getChat().GetOnlinePlayers())
+                        {
+                            builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
+                        }
+                        builder.append("Players That Have Left (Last 10):\r\n\r\n");
+                        for (INode player : m_frame.GetChatMessagePanel().getChat().GetPlayersThatLeft_Last10())
+                        {
+                            builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
+                        }
+
+                        Runnable componentCreation = new Runnable()
+                        {
+                            public void run()
+                            {
+                                final JDialog dialog = new JDialog(m_frame, "Players Information");
+                                JTextArea label = new JTextArea(builder.toString());
+                                label.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+                                label.setEditable(false);
+                                label.setAutoscrolls(true);
+                                label.setLineWrap(false);
+                                label.setFocusable(true);
+                                label.setWrapStyleWord(true);
+                                label.setLocation(0, 0);
+                                dialog.setBackground(label.getBackground());
+                                dialog.setLayout(new BorderLayout());
+                                JScrollPane pane = new JScrollPane();
+                                pane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                                pane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+                                pane.setViewportView(label);
+                                dialog.add(pane, BorderLayout.CENTER);
+                                JButton button = new JButton(new AbstractAction()
+                                {
+                                    public void actionPerformed(ActionEvent e)
+                                    {
+                                        dialog.dispose();
+                                    }
+                                });
+                                button.setText("Close");
+                                button.setMinimumSize(new Dimension(100, 30));
+                                dialog.add(button, BorderLayout.SOUTH);
+                                dialog.setMinimumSize(new Dimension(500, 300));
+                                dialog.setSize(new Dimension(800, 600));
+                                dialog.setResizable(true);
+                                dialog.setLocationRelativeTo(m_frame);
+                                dialog.setDefaultCloseOperation(2);
+                                dialog.setVisible(true);
+                            }
+                        };
+
+                        SwingUtilities.invokeLater(componentCreation);
                     }
-                });
-                button.setText("Close");
-                button.setMinimumSize(new Dimension(100, 30));
-                dialog.add(button, BorderLayout.SOUTH);
-                dialog.setMinimumSize(new Dimension(500, 300));
-                dialog.setSize(new Dimension(800, 600));
-                dialog.setResizable(true);
-                dialog.setLocationRelativeTo(m_frame);
-                dialog.setDefaultCloseOperation(2);
-                dialog.setVisible(true);
+                };
+
+                Thread thread = new Thread(runner);
+                thread.start();
             }
         });
         parentMenu.add(revive);
