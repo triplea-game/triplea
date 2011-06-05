@@ -386,6 +386,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             	if (ua.getCarrierCapacity() == -1)
             		continue;
             	Collection<Unit> fighters = dependencies.get(carrier);
+            	// Dependencies count both land and air units.  Land units could be allied or owned, while air is just allied since owned already launched at beginning of turn
+            	fighters.retainAll(Match.getMatches(fighters, Matches.UnitIsAir));
             	for (Unit fighter : fighters)
             	{
             		//Set transportedBy for fighter

@@ -1,4 +1,8 @@
 Changes for 1.3.2.1
+* Balancing fixes for Pact of Steel 2. (veqryn)
+
+* Fixed issue with carriers that are also transports not allowing their land units to participate in battle when the sea unit has participated in battle. (veqryn)
+
 * Added many new admin features to lobby server and client. (wisconsin)
 
 * Added ability to export a savegame to an xml, thereby allowing in game editing of maps. (edwin van der wal)

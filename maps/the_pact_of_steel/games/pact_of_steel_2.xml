@@ -794,7 +794,7 @@
                 </productionRule>
 
                 <productionRule name="buySuper_Carrier">
-                        <cost resource="PUs" quantity="20" />
+                        <cost resource="PUs" quantity="21" />
                         <result resourceOrUnit="super_carrier" quantity="1"/>
                 </productionRule>
 
@@ -2916,7 +2916,7 @@
 
                 <attatchment name="objectiveAttachmentGermans2" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="4"/>
-                	<option name="enemySurfaceExclusionTerritories" value="5 Sea Zone:6 Sea Zone:7 Sea Zone" count="2"/>
+                	<option name="enemySurfaceExclusionTerritories" value="5 Sea Zone:6 Sea Zone:7 Sea Zone" count="3"/>
 					<option name="alliedOwnershipTerritories" value="Western Europe" count="1"/>
                 </attatchment>
 
@@ -2958,7 +2958,12 @@
 
                 <attatchment name="objectiveAttachmentBritish2" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="4"/>
-                	<option name="alliedOwnershipTerritories" value="Gibraltar:Algeria:Libya:Anglo Egypt:Trans-Jordan:Persia:French West Africa:French Equatorial Africa:Italian East Africa:Belgian Congo:Kenya:Union of South Africa" count="11"/>
+                	<option name="alliedOwnershipTerritories" value="Gibraltar:Algeria:Libya:Anglo Egypt:Trans-Jordan:Persia:French West Africa:French Equatorial Africa:Italian East Africa:Belgian Congo:Kenya" count="9"/>
+                </attatchment>
+
+                <attatchment name="objectiveAttachmentBritish3" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="4"/>
+                	<option name="alliedOwnershipTerritories" value="Union of South Africa:India:Australia" count="3"/>
                 </attatchment>
 
 	<!-- Italian Objectives -->
@@ -2971,7 +2976,7 @@
 	<!-- American Objectives -->
                 <attatchment name="objectiveAttachmentAmericans1" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="4"/>
-                	<option name="alliedOwnershipTerritories" value="Western Europe:Sardinia:Sicily:Greece:West Balkans:Algeria:Libya" count="4"/>
+                	<option name="alliedOwnershipTerritories" value="Western Europe:Sardinia:Sicily:Italy:Greece:West Balkans:Algeria:Libya" count="3"/>
                 	<option name="enemySurfaceExclusionTerritories" value="1 Sea Zone:2 Sea Zone:7 Sea Zone:8 Sea Zone:9 Sea Zone:10 Sea Zone:11 Sea Zone:12 Sea Zone:13 Sea Zone:14 Sea Zone" count="10"/>
                 </attatchment>
 
@@ -3050,7 +3055,7 @@
 	
 	<!-- Germans Conditions -->
                 <attatchment name="conditionAttachmentGermans1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="turns" value="4"/>
+                	<option name="turns" value="4:5"/>
                 	<option name="enemySurfaceExclusionTerritories" value="5 Sea Zone:6 Sea Zone:7 Sea Zone" count="3"/>
                 </attatchment>
 				
@@ -3119,7 +3124,7 @@
                 	<option name="techs" value="paratroopers" count="1"/>
                 </attatchment>
 				
-                <attatchment name="conditionAttachmentJapaneseMidget1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                <!--<attatchment name="conditionAttachmentJapaneseMidget1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="alliedOwnershipTerritories" value="Okinawa:Philipine Islands" count="2"/>
                 	<option name="invert" value="true"/>
                 </attatchment>
@@ -3127,10 +3132,20 @@
                 <attatchment name="conditionAttachmentJapaneseMidget2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="alliedOwnershipTerritories" value="East Indies:Borneo:New Guinea:Solomon Islands:Caroline Islands:Wake Island" count="6"/>
                 	<option name="invert" value="true"/>
+                </attatchment>-->
+				
+                <attatchment name="conditionAttachmentJapaneseMidget" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="alliedOwnershipTerritories" value="Okinawa:Philipine Islands:East Indies:Borneo:New Guinea:Solomon Islands:Caroline Islands:Wake Island" count="7"/>
+                	<option name="invert" value="true"/>
                 </attatchment>
 				
-                <attatchment name="conditionAttachmentJapaneseKamikaze" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="alliedOwnershipTerritories" value="Okinawa:Philipine Islands" count="1"/>
+                <attatchment name="conditionAttachmentJapaneseKamikaze1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="alliedOwnershipTerritories" value="Philipine Islands" count="1"/>
+                	<option name="invert" value="true"/>
+                </attatchment>
+				
+                <attatchment name="conditionAttachmentJapaneseKamikaze2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="alliedOwnershipTerritories" value="Okinawa:East Indies:Borneo:New Guinea:Solomon Islands:Caroline Islands:Wake Island" count="7"/>
                 	<option name="invert" value="true"/>
                 </attatchment>
 				
@@ -3164,7 +3179,7 @@
 				
 	<!-- Americans Conditions -->
                 <attatchment name="conditionAttachmentAmericans1" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="turns" value="3:4"/>
+                	<option name="turns" value="3-5"/>
                 	<option name="alliedOwnershipTerritories" value="Western Europe" count="1"/>
                 </attatchment>
 				
@@ -3380,19 +3395,19 @@
                 </attatchment>
 
                 <attatchment name="triggerAttachmentJapaneseMidgetSub" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentJapaneseMidget1:conditionAttachmentJapaneseMidget2"/>
+                	<option name="trigger" value="conditionAttachmentJapaneseMidget"/>
 					<option name="frontier" value="JapaneseMidgetSub_production"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentJapaneseKamikaze1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentJapaneseKamikaze"/>
+                	<option name="trigger" value="conditionAttachmentJapaneseKamikaze1:conditionAttachmentJapaneseKamikaze2"/>
 					<option name="frontier" value="JapaneseKamikaze_production"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentJapaneseKamikaze2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentJapaneseKamikaze"/>
+                	<option name="trigger" value="conditionAttachmentJapaneseKamikaze1:conditionAttachmentJapaneseKamikaze2"/>
 			    	<option name="unitType" value="jp_fighter"/>
 					<option name="unitProperty" value="attack" count="5"/>
 					<option name="unitProperty" value="defense" count="3"/>
@@ -3492,7 +3507,7 @@
                 <attatchment name="triggerAttachmentRussians1" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="objectiveAttachmentRussians3"/>
 					<option name="resource" value="techTokens"/>
-					<option name="resourceCount" value="1"/>
+					<option name="resourceCount" value="2"/>
 					<option name="uses" value="1"/>
                 </attatchment>
 
@@ -3790,7 +3805,7 @@
                         <unitPlacement unitType="battleship" territory="5 Sea Zone" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="destroyer" territory="5 Sea Zone" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="submarine" territory="5 Sea Zone" quantity="2" owner="Germans"/>
-                        <unitPlacement unitType="submarine" territory="8 Sea Zone" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="submarine" territory="7 Sea Zone" quantity="1" owner="Germans"/>
 
                         <!-- British Unit Placements -->
                         <unitPlacement unitType="armour" territory="Eastern Canada" quantity="1" owner="British"/>
@@ -4463,7 +4478,7 @@
         				<br>4. Air_Transport is an air unit that specializes in dropping off units, has 4 movement, and can carry into battle or drop off in a friendly territory any 2-3 units. Enabled when you get "paratroopers" tech.
 						<br>5. Super_Carrier is a beefed up carrier that can also transport 1 infantry and 1 other land unit like a tank or artillery. It has only 1 hitpoint, just like normal carriers and cruisers.
 						<br>6. Midget_Submarine is a Japanese only unit with 3 attack, 2 defence, and 2 movement (costs 4). If it attacks or defends it will die after shooting (it is a suicide unit). Japan can purchase them after certain conditions are met, and they don't receive bonus movement from harbours.
-						<br>7. Kamikaze Fighters are what Japanese fighters turn into if certain conditions are met.  They have 5 attack, 3 defense, and 3 movement (cost 8), and they are allowed to use up all their movement to go to a battle, and they will die after rolling their dice.
+						<br>7. Kamikaze Fighters are what Japanese fighters turn into if certain conditions are met.  They have 5 attack, 3 defense, and 3 movement (cost 8), and they are allowed to use up all their movement to go to a battle, do not require a landing zone for movement, and they will die after rolling their dice.
 						<br>8. Airfield gives +1 movement to air units, and allows fighters to scramble to defend surrounding sea zones if you turn on "Scramble Rules In Effect".
 						<br>9. Harbour gives +1 movement to warships, and are needed to repair Battleships if you turn on "Two HitPoint Units Require Repair Facilities".
 						<br>10. Bunkers are defensive units that can also be bombed/rocketted, will not participate in battle if damaged, and will die if they reach 4 damage.  They may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours) where you also have a land unit, but there is a limit of 1 per territory.
@@ -4476,8 +4491,8 @@
         				<i>Germany: Lebensraum-</i><br>
         				+4 PUs if Axis control 7 out of 9 of
 							East Balkans, Eastern Europe, Ukraine S.S.R., Belorussia, West Russia, Norway, Karelia S.S.R., Archangel, Caucus<br>
-        				+4 PUs if Axis control Western Europe, AND there are NO enemy surface ships in 2 out of 3 of sea zones 5, 6, and 7<br>
-						* Germany gains Super Subs if at the end of their 4th turn, there are NO enemy surface ships in 3 out of 3 of
+        				+4 PUs if Axis control Western Europe, AND there are NO enemy surface ships in 3 out of 3 of sea zones 5, 6, and 7<br>
+						* Germany gains Super Subs if at the end of their 4th or 5th turn, there are NO enemy surface ships in 3 out of 3 of
 							sea zones 5, 6, and 7<br>
         				* Germany gains Mechanized Infantry if at the end of their 3rd or 4th turn, the Axis control 6 out of 7 of
 							East Balkans, Eastern Europe, Ukraine S.S.R., Belorussia, Karelia S.S.R., Archangel, Caucus<br>
@@ -4493,10 +4508,9 @@
 						* Japan's transports gain an additional capacity of 1 (allowing 3 infantry or 2 tanks per transport) If at the end of their 3rd, 4th, or 5th turns,
 							Japan controls 3 out of 3 of Australia, India, Sinkiang<br>
 						* Japan gains, only once, a single additional midget_submarine in sz61 If it loses control over any of its original territories<br>
-						* Japan gains the ability to produce midget_submarines If it loses control over 1 of Okinawa, Philipine Islands, 
-							AND also loses control over 1 of East Indies, Borneo, New Guinea, Solomon Islands, Caroline Islands, Wake Island<br>
+						* Japan gains the ability to produce midget_submarines If it loses control over 2 of its islands: Okinawa, Philipine Islands, East Indies, Borneo, New Guinea, Solomon Islands, Caroline Islands, Wake Island<br>
 						* Japan gains the ability to produce kamikaze fighters, and all their current fighters turn into kamikaze fighters 
-							If it loses control over 2 out of 2 of Okinawa, Philipine Islands<br>
+							If it loses control over 2 of its islands, one of which being Philipine Islands (note that this objective may or may not be wanted, depending on the situation)<br>
         				<br>
         				<i>Italy: Mare Nostrum-</i><br>
         				+4 PUs if Axis control 8 out of 11 of
@@ -4507,12 +4521,12 @@
         				<br>
         				<i>United States: The Arsenal of Democracy-</i><br>
 						+2-10 PUs, starting on turn 2 America will begin making +2 income as America's war-time economy ramps up. This will increase by +2 more every 2 turns, so that turn 4 will begin making +4, turn 6 will make +6, and so on until +10 is reached<br>
-        				+4 PUs if Allies control 4 out of 7 of Western Europe, Sardinia, Sicily, Greece, West Balkans, Algeria, Libya
+        				+4 PUs if Allies control 3 out of 8 of Western Europe, Sardinia, Sicily, Italy, Greece, West Balkans, Algeria, Libya
 							AND no enemy surface ships in sea zones 1, 2, 7, 8, 9, 10, 11, 12, 13, and 14<br>
         				+4 PUs if Allies controls 6 out of 13 of Alaska, East Indies, Borneo, Philipine Islands, New Guinea, Solomon Islands, Caroline Islands,
 							Australia, New Zealand, Okinawa, Wake Island, Hawaiian Islands, Midway<br>
 						+4 PUs if Japan has no Battleships OR no Carriers at the end of USA's turn<br>
-						* USA gains Paratroopers if at the end of Germany's 3rd or 4th turn, the Allies control Western Europe<br>
+						* USA gains Paratroopers if at the end of Germany's 3rd, 4th or 5th turns, the Allies control Western Europe<br>
 						* USA gains Improved Shipyards if at the end of their 3rd, 4th or 5th turns, USA controls 4 out of 4 of
 							Alaska, Wake Island, Hawaiian Islands, Midway<br>
 						* USA gains War Bonds if at any time before the end of the 8th turn, the above 2 conditions are met at the end of Germany's turn<br>
@@ -4521,16 +4535,17 @@
         				<br>
         				<i>United Kingdom: The British Empire-</i><br>
         				+4 PUs if the UK controls 1 out of 6 of East Indies, Borneo, New Guinea, Solomon Islands, Caroline Islands, Okinawa<br>
-        				+4 PUs if Allies control 11 out of 12 of Gibraltar, Algeria, Libya, Anglo Egypt, Trans-Jordan, Persia, French West Africa,
-							French Equatorial Africa, Italian East Africa, Belgian Congo, Kenya, Union of South Africa<br>
-						* UK gains Paratroopers if at the end of Germany's 3rd or 4th turn, the Allies control Western Europe<br>
+        				+4 PUs if Allies control 9 out of 11 of Gibraltar, Algeria, Libya, Anglo Egypt, Trans-Jordan, Persia, French West Africa,
+							French Equatorial Africa, Italian East Africa, Belgian Congo, Kenya<br>
+						+4 PUs if Allies control 3 out of 3 of Union of South Africa, India, Australia<br>
+						* UK gains Paratroopers if at the end of Germany's 3rd, 4th or 5th turns, the Allies control Western Europe<br>
 						* UK gains AA Radar if at the end their 3rd or 4th turn, the Allies control 4 out of 5 of
 							Union of South Africa, Gibraltar, Anglo Egypt, India, Australia<br>
         				<br>
         				<i>Soviet Union: The Great Patriotic War-</i><br>
         				+4 PUs if Soviets control 3 out of 5 of Norway, Eastern Europe, East Balkans, Ukraine S.S.R., Belorussia<br>
         				+4 PUs if Soviets control Archangel and no allied forces in Soviet controlled land territories<br>
-						+2 PUs AND +1 Tech Token, only once, if Soviets control Norway or East Balkans<br>
+						+2 PUs AND +2 Tech Token, only once, if Soviets control Norway or East Balkans<br>
         				* Soviet's artillery gain the ability to support 2 infantry on attack If at the end of their 3rd or 4th turn, the Soviets control
 							Karelia S.S.R. and Caucus (this effect can be doubled to 4 infantry supported if Russia gets Improved Artillery technology)<br>
 						* Soviets gain, only once, an additional 3 infantry in Yakut S.S.R. if at the beginning of their turn, Japan controls any original Russian territory<br>
@@ -4627,7 +4642,7 @@
 						<br>Many of the new properties and options were coded by Veqryn.
 						<br>A personal thank you to Squid Daddy and ComradeKev for coding some of the new features that this map shows off
 						<br>Relief Tiles by Conarymor.
-						<br>Only actual unit changes: some destroyers turned into cruisers, and a German destroyer added to sz5.
+						<br>Only actual unit changes: some destroyers turned into cruisers, and a German destroyer added to sz5, German sub in sz8 moved to sz7.
 						<br>The AIs are meant to be bad at this map, please don't tell me the AIs are bad at this map.
 					]]>
 					</value>
