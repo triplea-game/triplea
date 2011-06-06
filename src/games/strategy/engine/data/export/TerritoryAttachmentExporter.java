@@ -23,11 +23,9 @@ package games.strategy.engine.data.export;
 
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
-
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+
 
 public class TerritoryAttachmentExporter extends DefaultAttachmentExporter {	
 	@Override
@@ -39,8 +37,39 @@ public class TerritoryAttachmentExporter extends DefaultAttachmentExporter {
 			return mCaptureUnitOnEnteringByHandler(field,attachment);
 		if(fieldName.equals("m_production")) // exception because gameParser breaks when production isn't set, even when it is default
 			return super.printIntegerOption(field, "production", attachment, true);
+		if(fieldName.equals("m_unitProduction")) // don't display unitProduction when production is the same.
+			return mUnitProductionHandler(field,attachment);
+		if(fieldName.equals("m_occupiedTerrOf"))
+		return mOccupiedTerrOfHandler(field,attachment);
+		if(fieldName.equals("m_originalOwner"))
+			return "";
 		
 		return super.printOption(field, attachment);
+	}
+
+	
+	/*private String mOriginalOwnerHandler(Field field, IAttachment attachment) {
+		TerritoryAttachment att = (TerritoryAttachment) attachment;
+		PlayerID originalOwner = att.getOriginalOwner();
+		if(originalOwner == null)
+			return "";
+		return printDefaultOption("originalOwner", originalOwner.getName());
+	}*/
+	
+	private String mOccupiedTerrOfHandler(Field field, IAttachment attachment) {
+		TerritoryAttachment att = (TerritoryAttachment) attachment;
+		PlayerID occupiedTerrOf = att.getOccupiedTerrOf();
+		if(occupiedTerrOf == null)
+			return "";
+		return printDefaultOption("occupiedTerrOf", occupiedTerrOf.getName());
+	}
+
+
+	private String mUnitProductionHandler(Field field, IAttachment attachment) throws AttachmentExportException {
+		TerritoryAttachment att = (TerritoryAttachment) attachment;
+		if(!(att.getProduction() == att.getUnitProduction()))
+			return printIntegerOption(field, "unitProduction", attachment);
+		return "";
 	}
 
 	private String mCaptureUnitOnEnteringByHandler(Field field, IAttachment attachment) throws AttachmentExportException {

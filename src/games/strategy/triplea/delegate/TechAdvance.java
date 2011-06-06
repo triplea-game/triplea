@@ -129,6 +129,11 @@ public abstract class TechAdvance implements java.io.Serializable
 		}
 		throw new IllegalArgumentException(s + " is not a valid technology");
 	}
+    
+    public static List<TechAdvance> getDefinedAdvances() {
+    	return s_allDefined;
+    }
+    
     //initialize the advances, note s_advances is made unmodifiable
     static
     {

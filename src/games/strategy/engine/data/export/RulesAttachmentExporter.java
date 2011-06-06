@@ -44,17 +44,18 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
 		if(fieldName.equals("m_productionPerXTerritories"))
 			return mProductionPerXTerritoriesHandler(field,attachment);
 		if(fieldName.equals("m_atWarPlayers"))
-			return mAtWarPlayersHandler(field,attachment);
-		// At War Count is part of m_atWarPlayers
+			return mAtWarPlayersHandler(field,attachment); // AtWarCount is part of m_atWarPlayers
 		if(fieldName.equals("m_atWarCount"))
-			return "";
-		// At Territory Count is part of m_*Territories
+			return ""; // AtWarCount is part of m_atWarPlayers
 		if(fieldName.equals("m_territoryCount"))
-			return "";
+			return ""; // atTerritoryCount is part of m_*Territories
 		if(fieldName.matches("m_allied.*Territories") || fieldName.matches("m_enemy.*Territories") || fieldName.matches("m_direct.*Territories"))
 			return territoryCountListHandler(field,attachment,fieldName);
 		if(fieldName.equals("m_techs"))
-			return mTechsHandler(field,attachment);		
+			return mTechsHandler(field,attachment);
+		if(fieldName.equals("m_techCount"))
+			return ""; // techCount is part of m_techs
+
 		return super.printOption(field, attachment);
 	}
 	
@@ -62,19 +63,18 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
 		String[] valueArray;
 		try {
 			valueArray = (String[]) field.get(attachment);
-			if (valueArray == null || valueArray.length < 2)
+			if (valueArray == null || valueArray.length == 0)
 				return "";
 			Iterator<String> values = Arrays.asList(valueArray).iterator();
-			values.next(); // skip the arrayLength entry in the array
+			if(valueArray.length > 1)
+				values.next(); // skip the arrayLength entry in the array because for Arrays > 1 the first entry is the count;
 			String returnValue = values.next();
 			while(values.hasNext()) {
 				returnValue = returnValue + ":" + values.next();
 			}
 			if(returnValue.length()==0)
 				return "";
-			Field countField = field.getDeclaringClass().getDeclaredField("m_territoryCount");
-			countField.setAccessible(true);
-			String count = ((Integer) countField.get(attachment)).toString();
+			String count = ""+ ((RulesAttachment) attachment).getTerritoryCount();
 			return printCountOption(fieldName.substring(2),returnValue,count);
 		} catch (IllegalArgumentException e) {
 			 throw new AttachmentExportException("e: "+e+" for territoryCountListHandler on option: "+fieldName+" on Attachment: "+attachment.getName());
@@ -82,10 +82,7 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
 			 throw new AttachmentExportException("e: "+e+" for territoryCountListHandler on option: "+fieldName+" on Attachment: "+attachment.getName());
 		} catch (SecurityException e) {
 			 throw new AttachmentExportException("e: "+e+" for territoryCountListHandler on option: "+fieldName+" on Attachment: "+attachment.getName());
-		} catch (NoSuchFieldException e) {
-			 throw new AttachmentExportException("e: "+e+" for territoryCountListHandler on option: "+fieldName+" on Attachment: "+attachment.getName());
-
-		}			
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -171,7 +168,7 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
 			}
 			if(returnValue.length()==0)
 				return "";
-			return printDefaultOption("techs",returnValue);
+			return super.printCountOption("techs", returnValue, ""+((RulesAttachment)attachment).getTechCount());
 		} catch (IllegalArgumentException e) {
 			 throw new AttachmentExportException("e: "+e+" for mTechHandler on field: "+field.getName()+" on Attachment: "+attachment.getName());
 		} catch (IllegalAccessException e) {

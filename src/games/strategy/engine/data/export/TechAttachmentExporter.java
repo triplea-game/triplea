@@ -37,5 +37,10 @@ public class TechAttachmentExporter extends DefaultAttachmentExporter {
 			//return mGenericTechsHandler(field,attachment);
 		return super.printOption(field, attachment);		
 	}
+	
+	@Override
+	protected String printBooleanOption(Field field, String option, IAttachment attachment) throws AttachmentExportException {
+		return printBooleanOption(field,option,attachment,true);
+	}
 
 }

@@ -22,14 +22,10 @@ package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Constants;
 import java.util.*;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import games.strategy.engine.data.*;
 
@@ -43,10 +39,10 @@ public class TerritoryAttachment extends DefaultAttachment
 
     public static Territory getCapital(PlayerID player, GameData data)
     {
-        Iterator iter = data.getMap().getTerritories().iterator();
+        Iterator<Territory> iter = data.getMap().getTerritories().iterator();
         while(iter.hasNext())
         {
-            Territory current = (Territory) iter.next();
+            Territory current = iter.next();
             TerritoryAttachment ta = TerritoryAttachment.get(current);
             if(ta != null && ta.getCapital() != null)
             {
@@ -71,10 +67,10 @@ public class TerritoryAttachment extends DefaultAttachment
     public static List<Territory> getAllCapitals(PlayerID player, GameData data)
     {
     	List<Territory> capitals = new ArrayList<Territory>();
-    	Iterator iter = data.getMap().getTerritories().iterator();
+    	Iterator<Territory> iter = data.getMap().getTerritories().iterator();
         while(iter.hasNext())
         {
-            Territory current = (Territory) iter.next();
+            Territory current = iter.next();
             TerritoryAttachment ta = TerritoryAttachment.get(current);
             if(ta != null && ta.getCapital() != null)
             {
@@ -101,10 +97,10 @@ public class TerritoryAttachment extends DefaultAttachment
     public static List<Territory> getAllCurrentlyOwnedCapitals(PlayerID player, GameData data)
     {
     	List<Territory> capitals = new ArrayList<Territory>();
-    	Iterator iter = data.getMap().getTerritories().iterator();
+    	Iterator<Territory> iter = data.getMap().getTerritories().iterator();
         while(iter.hasNext())
         {
-            Territory current = (Territory) iter.next();
+            Territory current = iter.next();
             TerritoryAttachment ta = TerritoryAttachment.get(current);
             if(ta != null && ta.getCapital() != null)
             {

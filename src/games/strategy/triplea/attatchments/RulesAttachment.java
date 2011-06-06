@@ -20,34 +20,14 @@
 
 package games.strategy.triplea.attatchments;
 
-import games.strategy.engine.data.DefaultAttachment;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.PlayerList;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.DelegateFinder;
-import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.OriginalOwnerTracker;
-import games.strategy.triplea.delegate.TechAdvance;
-import games.strategy.triplea.delegate.TechTracker;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
-
-import java.io.File;
-import java.util.*;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.*;
+import games.strategy.util.*;
+import java.util.*;
+
+
 
 /**
  * 
@@ -73,11 +53,12 @@ public class RulesAttachment extends DefaultAttachment
 	}
 	
 	// Players
-	private PlayerID m_ruleOwner = null;
+	// not used?
+	// private PlayerID m_ruleOwner = null;
 	
 	// Strings
-	private String m_alliedExclusion = null;
-	private String m_enemyExclusion = null;
+	//private String m_alliedExclusion = null;
+	//private String m_enemyExclusion = null;
 	private String m_allowedUnitType = null;
 	private String m_movementRestrictionType = null;
 	
@@ -127,7 +108,7 @@ public class RulesAttachment extends DefaultAttachment
 	{
 	}
 	
-	public void setRuleOwner(PlayerID player)
+	/*public void setRuleOwner(PlayerID player)
 	{
 		m_ruleOwner = player;
 	}
@@ -135,7 +116,7 @@ public class RulesAttachment extends DefaultAttachment
 	public PlayerID getRuleOwner()
 	{
 		return m_ruleOwner;
-	}
+	}*/
 	
 	public void setObjectiveValue(String value)
 	{
@@ -438,6 +419,11 @@ public class RulesAttachment extends DefaultAttachment
 	public int getAtWarCount()
 	{
 		return m_atWarCount;
+	}
+	
+	public int getTechCount()
+	{ 
+		return m_techCount;
 	}
 	
 	public void setAtWarCount(String s)
@@ -1024,6 +1010,7 @@ public class RulesAttachment extends DefaultAttachment
 			try
 			{
 				// Leave the temp field- it checks if the list just starts with a territory by failing the TRY
+				@SuppressWarnings("unused")
 				int temp = getInt(name);
 				setTerritoryCount(name);
 				continue;

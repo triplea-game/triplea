@@ -55,6 +55,7 @@ public class GameDataExporter {
 	public GameDataExporter(GameData data) {
 		xmlfile = new StringBuffer();
 		init(data);
+		diceSides(data);
 		map(data);
 		resourceList(data);
 		playerList(data);
@@ -68,55 +69,77 @@ public class GameDataExporter {
 		finish();
 	}
 
-	private void technology(GameData data) {
-		xmlfile.append("    <technology>\n");
-		technologies(data);
-		playertechs(data);
-		xmlfile.append("    </technology>\n");
+	private void diceSides(GameData data) {
+		int diceSides = data.getDiceSides();
+		xmlfile.append("    <diceSides value=\""+diceSides+"\"/>\n");
 	}
 
-	private void playertechs(GameData data) {
+	private void technology(GameData data) {
+		String technologies = technologies(data);
+		String playerTechs = playertechs(data);
+		if(technologies.length()>0 || playerTechs.length()>0) {
+			xmlfile.append("    <technology>\n");
+			xmlfile.append(technologies);
+			xmlfile.append(playerTechs);
+			xmlfile.append("    </technology>\n");
+		}
+	}
+
+	private String playertechs(GameData data) {
 		Iterator<PlayerID> players = data.getPlayerList().iterator();
+		StringBuffer returnValue = new StringBuffer();
+		
 		while(players.hasNext()) {
 			PlayerID player = players.next();
-			xmlfile.append("        <playerTech player=\""+player.getName()+"\">\n");
-
 			Iterator<TechnologyFrontier> frontierList = player.getTechnologyFrontierList().getFrontiers().iterator();
-			while(frontierList.hasNext()) {
-				TechnologyFrontier frontier = frontierList.next();
-				xmlfile.append("            <category name=\""+frontier.getName()+"\">\n");
-				Iterator<TechAdvance> techs = frontier.getTechs().iterator();
-				while(techs.hasNext()) {
-					TechAdvance tech = techs.next();
-					String techName = tech.getName();
-					if(techName.contains(" "))
-						techName = tech.getProperty();
-						
-					xmlfile.append("                <tech name=\""+techName+"\"/>\n");					
+			if(frontierList.hasNext()) {
+				returnValue.append("        <playerTech player=\""+player.getName()+"\">\n");
+				while(frontierList.hasNext()) {
+					TechnologyFrontier frontier = frontierList.next();
+					returnValue.append("            <category name=\""+frontier.getName()+"\">\n");
+					Iterator<TechAdvance> techs = frontier.getTechs().iterator();
+					while(techs.hasNext()) {
+						TechAdvance tech = techs.next();
+						String techName = tech.getName();
+						if(techName.contains(" "))
+							techName = tech.getProperty();
+							
+						returnValue.append("                <tech name=\""+techName+"\"/>\n");					
+					}
+					returnValue.append("            </category>\n");
 				}
-				xmlfile.append("            </category>\n");				
+				returnValue.append("        </playerTech>\n");
 			}
-			xmlfile.append("        </playerTech>\n");
-
 		}
-		
+		return returnValue.toString();
 	}
 
-	private void technologies(GameData data) {
+	private String technologies(GameData data) {
 		Iterator<TechAdvance> techs = data.getTechnologyFrontier().getTechs().iterator();
-		xmlfile.append("        <technologies>\n");
-		while(techs.hasNext()) {
-			TechAdvance tech = techs.next();
-			String name = tech.getName();
-			String cat = tech.getProperty();
-			if(name.contains(" "))
-				name = cat;
-			xmlfile.append("            <techname name=\""+name+"\"");
-			if(!name.equals(cat))
-				xmlfile.append(" tech=\""+cat+"\" ");
-			xmlfile.append("/>\n");
-		}		
-		xmlfile.append("        </technologies>\n");
+		StringBuffer returnValue = new StringBuffer();
+		if(techs.hasNext()) {
+			returnValue.append("        <technologies>\n");
+			while(techs.hasNext()) {
+				TechAdvance tech = techs.next();
+				String name = tech.getName();
+				String cat = tech.getProperty();
+				
+				// definedAdvances are handled differently by gameparser, they are set in xml with the category as the name but
+				// stored in java with the normal category and name, this causes an xml bug when exporting.
+				Iterator<TechAdvance> definedAdvances = TechAdvance.getDefinedAdvances().iterator();
+				while(definedAdvances.hasNext()) {
+					if(definedAdvances.next().getName().equals(name))
+						name = cat;
+				}
+				
+				returnValue.append("            <techname name=\""+name+"\"");
+				if(!name.equals(cat))
+					returnValue.append(" tech=\""+cat+"\" ");
+				returnValue.append("/>\n");
+			}		
+			returnValue.append("        </technologies>\n");
+		}
+		return returnValue.toString();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -224,7 +247,7 @@ public class GameDataExporter {
 			if(propName.equals("notes")) {
 				// Special handling of notes property
 				printNotes((String) conProperties.get(propName));
-			} else if(propName.equals("GAME_UUID") || propName.equals("games.strategy.engine.framework.ServerGame.GameHasBeenSaved")) {
+			} else if(propName.equals("EditMode") || propName.equals("GAME_UUID") || propName.equals("games.strategy.engine.framework.ServerGame.GameHasBeenSaved")) {
 				// Don't print these options
 			} else {
 				printConstantProperty(propName,conProperties.get(propName));
@@ -272,7 +295,8 @@ public class GameDataExporter {
 			Iterator<Resource> resources = data.getResourceList().getResources().iterator();
 			while(resources.hasNext()) {
 				Resource resource = resources.next();
-				xmlfile.append("            <resourceGiven player=\""+player.getName()+"\" resource=\""+resource.getName()+"\" quantity=\""+player.getResources().getQuantity(resource.getName())+"\"/>\n");
+				if(player.getResources().getQuantity(resource.getName()) > 0)
+						xmlfile.append("            <resourceGiven player=\""+player.getName()+"\" resource=\""+resource.getName()+"\" quantity=\""+player.getResources().getQuantity(resource.getName())+"\"/>\n");
 			}
 		}
 		xmlfile.append("        </resourceInitialize>\n");
@@ -327,23 +351,23 @@ public class GameDataExporter {
 			try {
 				IAttachmentExporter exporter = AttachmentExporterFactory.getExporter(attachment);
 			 	String attachmentOptions = exporter.getAttachmentOptions(attachment);
-				 NamedAttachable attachTo = (NamedAttachable) attachment.getAttatchedTo();
-				 String type = "";
-				 if(attachTo.getClass().equals(PlayerID.class))
-					 type = "player";
-				 if(attachTo.getClass().equals(UnitType.class))
-					 type = "unitType";
-				 if(attachTo.getClass().equals(Territory.class))
-					 type = "territory";
-				 if(attachTo.getClass().equals(Resource.class))
-					 type = "resource";
-				 if(type.equals(""))
-					 throw new AttachmentExportException("no attachmentType known for "+attachTo.getClass().getCanonicalName());
-					 
-				 xmlfile.append("        <attatchment name=\""+attachment.getName()+"\" attatchTo=\""+attachTo.getName()+"\" javaClass=\""+attachment.getClass().getCanonicalName()+"\" type=\""+type+"\">\n");
-				 xmlfile.append(attachmentOptions);		 				 
-				 xmlfile.append("        </attatchment>\n");
-
+				NamedAttachable attachTo = (NamedAttachable) attachment.getAttatchedTo();
+				String type = "";
+				if(attachTo.getClass().equals(PlayerID.class))
+					type = "player";
+				if(attachTo.getClass().equals(UnitType.class))
+					type = "unitType";
+				if(attachTo.getClass().equals(Territory.class))
+					type = "territory";
+				if(attachTo.getClass().equals(Resource.class))
+					type = "resource";
+				if(type.equals(""))
+					throw new AttachmentExportException("no attachmentType known for "+attachTo.getClass().getCanonicalName());
+				if(attachmentOptions.length()>0) { 
+					xmlfile.append("        <attatchment name=\""+attachment.getName()+"\" attatchTo=\""+attachTo.getName()+"\" javaClass=\""+attachment.getClass().getCanonicalName()+"\" type=\""+type+"\">\n");
+					xmlfile.append(attachmentOptions);		 				 
+					xmlfile.append("        </attatchment>\n");
+				}
 		  } catch (Exception e) {
 			  e.printStackTrace();
 		  }
@@ -481,7 +505,8 @@ public class GameDataExporter {
         Iterator<IDelegate> delegates = data.getDelegateList().iterator();
         while(delegates.hasNext()) {
         	IDelegate delegate = delegates.next();
-			xmlfile.append("        <delegate name=\""+delegate.getName()+"\" javaClass=\""+delegate.getClass().getCanonicalName()+"\" display=\""+delegate.getDisplayName()+"\"/>\n");
+        	if(!delegate.getName().equals("edit"))
+        		xmlfile.append("        <delegate name=\""+delegate.getName()+"\" javaClass=\""+delegate.getClass().getCanonicalName()+"\" display=\""+delegate.getDisplayName()+"\"/>\n");
         }
         sequence(data);
 		xmlfile.append("    </gamePlay>\n");	
@@ -511,6 +536,8 @@ public class GameDataExporter {
 			}
 			if(step.getPlayerID()!=null) 
 				 xmlfile.append(" player=\""+step.getPlayerID().getName()+"\"");
+			if(step.getDisplayName()!=null) 
+				 xmlfile.append(" display=\""+step.getDisplayName()+"\"");
 			if(step.getMaxRunCount()>-1)  {
 				int maxRun = step.getMaxRunCount();
 				if (maxRun == 0)

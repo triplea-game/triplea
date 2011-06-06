@@ -59,12 +59,17 @@ public class UnitSupportAttachment extends DefaultAttachment{
     private boolean m_roll = false;
     private boolean m_strength = false;
     private int m_bonus = 0;
-    private int m_numberSupported = 0;
+    private int m_number = 0;
     private boolean m_allied = false;
     private boolean m_enemy = false;
     private String m_bonusType = null;
     private List<PlayerID> m_players = new ArrayList<PlayerID>();
     private boolean m_impArtTech = false;
+    
+    // strings
+    private String m_dice = null;
+    private String m_faction = null;
+    private String m_side = null;
 
     public UnitSupportAttachment()
     {
@@ -119,6 +124,12 @@ public class UnitSupportAttachment extends DefaultAttachment{
     		else
     			throw new GameParseException("Supports: " + faction + " faction must be allied, or enemy");
     	}
+    	
+    	m_faction = faction;
+    }
+    
+    public String getFaction() {
+    	return m_faction;
     }
  
     public void setSide(String side) throws GameParseException{
@@ -132,6 +143,12 @@ public class UnitSupportAttachment extends DefaultAttachment{
     		else
     			throw new GameParseException("Supports: " + side + " side must be defence or offence");
     	}
+    	
+    	m_side = side;
+    }
+    
+    public String getSide() {
+    	return m_side;
     }
     
     public void setDice(String dice) throws GameParseException{
@@ -145,6 +162,12 @@ public class UnitSupportAttachment extends DefaultAttachment{
     		else
     			throw new GameParseException("Supports: " + dice + " dice must be roll or strength");
     	}
+    	
+    	m_dice = dice;
+    }
+    
+    public String getDice() {
+    	return m_dice;
     }
 
     public void setBonus(String bonus) {
@@ -152,7 +175,7 @@ public class UnitSupportAttachment extends DefaultAttachment{
     }
 
     public void setNumber(String number) {
-    	m_numberSupported = getInt(number);
+    	m_number = getInt(number);
     }
     
     public void setBonusType(String type) {
@@ -189,7 +212,7 @@ public class UnitSupportAttachment extends DefaultAttachment{
     }
     
     public int getNumber() {
-    	return m_numberSupported;
+    	return m_number;
     }
     
     public int getBonus() {

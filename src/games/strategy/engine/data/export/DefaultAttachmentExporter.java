@@ -69,14 +69,14 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
 			if(fieldName.startsWith("m_is")) {
 				// Check for Boolean Options
 				// Boolean Option with an setIs-setter java: boolean m_isAir & setIsAir(String) xml: isAir
-				try {
+				 try {
 					 attachment.getClass().getMethod("setIs"+fieldName.substring(4), java.lang.String.class);
-					return printBooleanOption(field,fieldName.substring(2),attachment);				
-				} catch (NoSuchMethodException nsme) { /* not this one */ }
+					 return printBooleanOption(field,fieldName.substring(2),attachment);
+				 } catch (NoSuchMethodException nsme) { /* not this one */}
 				 try {
 					 // Boolean Option with the set-setter java: boolean m_isFemale & setFemale(String) xml: female
 					 attachment.getClass().getMethod("set"+Character.toUpperCase(fieldName.charAt(4))+fieldName.substring(5), java.lang.String.class);
-					 return printBooleanOption(field,fieldName.substring(4),attachment);
+					 return printBooleanOption(field,""+Character.toLowerCase(fieldName.charAt(4))+fieldName.substring(5),attachment);
 				 } catch (NoSuchMethodException nsme) { /* not this one */}
 			 }  else {
 				 if(fieldName.startsWith("m_")) {
@@ -103,10 +103,10 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
 						 }
 						 throw new AttachmentExportException("unknown handler for field: "+field+" of class: "+field.getType());
 					 } catch (NullPointerException npe){
-						 System.out.println("npe: field: "+fieldName);
+						 System.err.println("npe: field: "+fieldName);
 						 npe.printStackTrace();
 					} catch (NoSuchMethodException e) {
-						 // no Setter for this property
+						System.err.println("no method: set"+(Character.toUpperCase(fieldName.charAt(2))+fieldName.substring(3))+" found on: "+attachment.getClass().getCanonicalName());
 					}
 				 }
 			 } 

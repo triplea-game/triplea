@@ -23,6 +23,7 @@ package games.strategy.engine.data.export;
 
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.attatchments.UnitSupportAttachment;
 
 import java.lang.reflect.Field;
 import java.util.Iterator;
@@ -35,10 +36,13 @@ public class UnitSupportAttachmentExporter extends DefaultAttachmentExporter {
 		if(fieldName.equals("m_unitType"))
 			return mUnitTypeHandler(field,attachment);
 		if(fieldName.equals("m_players"))
-			return mPlayersHandler(field,attachment);
-		
+			return mPlayersHandler(field,attachment);	
+		if(fieldName.equals("m_offence") || fieldName.equals("m_defence") || fieldName.equals("m_roll")
+					|| fieldName.equals("m_strength") || fieldName.equals("m_allied") || fieldName.equals("m_enemy"))
+			return "";
 		return super.printOption(field, attachment);
 	}
+
 
 	private String mPlayersHandler(Field field, IAttachment attachment) throws AttachmentExportException {
 		return printPlayerList(field, attachment);
