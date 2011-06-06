@@ -147,12 +147,7 @@ public class BetterAI extends AbstractAI {
 	
 	public static int counter = 0;
 	
-	interface Equatable<X>
-	{
-	    public boolean equals(X x);
-	}
-	
-	class State extends GameState<Move> implements Equatable<GameState<Move>>
+	class State extends GameState<Move>
 	{
 		private int[][] m_data;
 	    
