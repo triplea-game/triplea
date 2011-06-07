@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Lord of the Rings: Middle Earth" version="1.1"/>
+        <info name="Lord of the Rings: Middle Earth" version="1.2"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
         <map>
@@ -880,12 +880,12 @@
         <production>
                 <!-- Unit Production Cost -->
                 <productionRule name="buyFortifications">
-                        <cost resource="PUs" quantity="2" />
-                        <result resourceOrUnit="fortifications" quantity="1"/>
+                        <cost resource="PUs" quantity="3" />
+                        <result resourceOrUnit="fortifications" quantity="2"/>
                 </productionRule>
 
                 <productionRule name="buyTower">
-                        <cost resource="PUs" quantity="6" />
+                        <cost resource="PUs" quantity="5" />
                         <result resourceOrUnit="tower" quantity="1"/>
                 </productionRule>
 
@@ -905,7 +905,7 @@
                 </productionRule>
 
                 <productionRule name="buyTowerGuard">
-                        <cost resource="PUs" quantity="5" />
+                        <cost resource="PUs" quantity="4" />
                         <result resourceOrUnit="towerGuard" quantity="1"/>
                 </productionRule>
 
@@ -915,7 +915,7 @@
                 </productionRule>
 
                 <productionRule name="buyHeavyCavalry">
-                        <cost resource="PUs" quantity="6" />
+                        <cost resource="PUs" quantity="5" />
                         <result resourceOrUnit="heavyCavalry" quantity="1"/>
                 </productionRule>
 
@@ -955,7 +955,7 @@
                 </productionRule>
 
                 <productionRule name="buyGriffin">
-                        <cost resource="PUs" quantity="8" />
+                        <cost resource="PUs" quantity="7" />
                         <result resourceOrUnit="griffin" quantity="1"/>
                 </productionRule>
 
@@ -985,7 +985,7 @@
                 </productionRule>
 
                 <productionRule name="buyTrolls">
-                        <cost resource="PUs" quantity="7" />
+                        <cost resource="PUs" quantity="6" />
                         <result resourceOrUnit="trolls" quantity="1"/>
                 </productionRule>
 
@@ -1447,7 +1447,7 @@
                          <option name="movement" value="2"/>
                          <option name="isSea" value="true"/>
                          <option name="transportCapacity" value="1"/>
-                         <option name="carrierCapacity" value="1"/>
+                         <!--<option name="carrierCapacity" value="1"/>-->
                          <option name="attack" value="1"/>
                          <option name="defense" value="1"/>
                     </attatchment>
@@ -1456,7 +1456,7 @@
                          <option name="movement" value="2"/>
                          <option name="isSea" value="true"/>
                          <option name="transportCapacity" value="2"/>
-                         <option name="carrierCapacity" value="2"/>
+                         <!--<option name="carrierCapacity" value="2"/>-->
                          <option name="attack" value="2"/>
                          <option name="defense" value="2"/>
                     </attatchment>
@@ -1465,7 +1465,7 @@
                          <option name="movement" value="2"/>
                          <option name="isSea" value="true"/>
                          <option name="transportCapacity" value="1"/>
-                         <option name="carrierCapacity" value="1"/>
+                         <!--<option name="carrierCapacity" value="1"/>-->
                          <option name="attack" value="1"/>
                          <option name="defense" value="1"/>
                     </attatchment>
@@ -1474,7 +1474,7 @@
                          <option name="movement" value="2"/>
                          <option name="isSea" value="true"/>
                          <option name="transportCapacity" value="2"/>
-                         <option name="carrierCapacity" value="2"/>
+                         <!--<option name="carrierCapacity" value="2"/>-->
                          <option name="attack" value="2"/>
                          <option name="defense" value="2"/>
                     </attatchment>
@@ -1539,7 +1539,7 @@
                          <option name="isAir" value="true"/>
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
-                         <option name="carrierCost" value="1"/>
+                         <!--<option name="carrierCost" value="1"/>-->
                     </attatchment>
 
                     <attatchment name="unitAttatchment" attatchTo="zepplin" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
@@ -1547,7 +1547,7 @@
                          <option name="isAir" value="true"/>
                          <option name="attack" value="3"/>
                          <option name="defense" value="1"/>
-                         <option name="carrierCost" value="1"/>
+                         <!--<option name="carrierCost" value="1"/>-->
                     </attatchment>
 
                     <attatchment name="unitAttatchment" attatchTo="eagles" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
@@ -1555,14 +1555,14 @@
                          <option name="isAir" value="true"/>
                          <option name="attack" value="2"/>
                          <option name="defense" value="2"/>
-                         <option name="carrierCost" value="1"/>
+                         <!--<option name="carrierCost" value="1"/>-->
                     </attatchment>
 
                     <attatchment name="unitAttatchment" attatchTo="swanBoat" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="2"/>
                          <option name="isSea" value="true"/>
                          <option name="transportCapacity" value="1"/>
-                         <option name="carrierCapacity" value="1"/>
+                         <!--<option name="carrierCapacity" value="1"/>-->
                          <option name="attack" value="0"/>
                          <option name="defense" value="1"/>
                     </attatchment>
@@ -1578,7 +1578,7 @@
                          <option name="movement" value="4"/>
                          <option name="isSea" value="true"/>
                          <option name="transportCapacity" value="3"/>
-                         <option name="carrierCapacity" value="3"/>
+                         <!--<option name="carrierCapacity" value="3"/>-->
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
                     </attatchment>
@@ -1630,6 +1630,7 @@
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
                          <option name="canBlitz" value="true"/>
+                         <option name="artillerySupportable" value="true"/>
                     </attatchment>
 
                     <attatchment name="unitAttatchment" attatchTo="siegeTower" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
@@ -1660,16 +1661,17 @@
                          <option name="movement" value="4"/>
                          <option name="isAir" value="true"/>
                          <option name="isTwoHit" value="true"/>
-                         <option name="attack" value="4"/>
+                         <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
-                         <option name="carrierCost" value="2"/>
+                         <!--<option name="carrierCost" value="2"/>-->
+                         <option name="artillery" value="true"/>
                     </attatchment>
 
                     <attatchment name="unitAttatchment" attatchTo="trireme" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="2"/>
                          <option name="isSea" value="true"/>
                          <option name="transportCapacity" value="1"/>
-                         <option name="carrierCapacity" value="1"/>
+                         <!--<option name="carrierCapacity" value="1"/>-->
                          <option name="attack" value="2"/>
                          <option name="defense" value="2"/>
                     </attatchment>
@@ -1678,7 +1680,7 @@
                          <option name="movement" value="2"/>
                          <option name="isSea" value="true"/>
                          <option name="transportCapacity" value="3"/>
-                         <option name="carrierCapacity" value="3"/>
+                         <!--<option name="carrierCapacity" value="3"/>-->
                          <option name="attack" value="4"/>
                          <option name="defense" value="4"/>
                     </attatchment>
@@ -1713,7 +1715,7 @@
                          <option name="attack" value="5"/>
                          <option name="defense" value="3"/>
                          <option name="isAir" value="true"/>
-                         <option name="carrierCost" value="6"/>
+                         <!--<option name="carrierCost" value="6"/>-->
 			       <option name="isStrategicBomber" value="true"/>
                     </attatchment>
 
@@ -1730,15 +1732,15 @@
                          <option name="isAir" value="true"/>
                          <option name="attack" value="2"/>
                          <option name="defense" value="1"/>
-                         <option name="carrierCost" value="1"/>
+                         <!--<option name="carrierCost" value="1"/>-->
                     </attatchment>
 
                     <attatchment name="unitAttatchment" attatchTo="raft" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="1"/>
                          <option name="isSea" value="true"/>
                          <option name="transportCapacity" value="1"/>
-                         <option name="carrierCapacity" value="1"/>
-                         <option name="attack" value="1"/>
+                         <!--<option name="carrierCapacity" value="1"/>-->
+                         <option name="attack" value="0"/>
                          <option name="defense" value="1"/>
                     </attatchment>
 
@@ -1746,7 +1748,7 @@
                          <option name="movement" value="1"/>
                          <option name="isSea" value="true"/>
                          <option name="transportCapacity" value="5"/>
-                         <option name="carrierCapacity" value="5"/>
+                         <!--<option name="carrierCapacity" value="5"/>-->
                          <option name="attack" value="2"/>
                          <option name="defense" value="1"/>
                     </attatchment>
@@ -2489,7 +2491,8 @@
                         <unitPlacement unitType="castle" territory="Dol Goldur" quantity="1" owner="Mordor"/>
                         <unitPlacement unitType="tower" territory="Dol Goldur" quantity="1" owner="Mordor"/>
                         <unitPlacement unitType="fortifications" territory="Dol Goldur" quantity="2" owner="Mordor"/>
-                        <unitPlacement unitType="orcs" territory="Dol Goldur" quantity="4" owner="Mordor"/>
+                        <unitPlacement unitType="orcs" territory="Dol Goldur" quantity="3" owner="Mordor"/>
+                        <unitPlacement unitType="siegeTower" territory="Dol Goldur" quantity="1" owner="Mordor"/>
                         <unitPlacement unitType="trolls" territory="Dol Goldur" quantity="2" owner="Mordor"/>
                         <unitPlacement unitType="castle" territory="Isengard" quantity="1" owner="Saruman"/>
                         <unitPlacement unitType="tower" territory="Isengard" quantity="1" owner="Saruman"/>
@@ -2594,6 +2597,7 @@
                         <unitPlacement unitType="spearInfantry" territory="S. Arthedain" quantity="1" owner="Freefolk"/>
                         <unitPlacement unitType="spearInfantry" territory="Celduin" quantity="1"/>
                         <unitPlacement unitType="hobbits" territory="Hobbiton" quantity="2" owner="Freefolk"/>
+                        <unitPlacement unitType="castle" territory="Hobbiton" quantity="1" owner="Freefolk"/>
                         <unitPlacement unitType="hobbits" territory="Shire" quantity="1" owner="Freefolk"/>
 
                 </unitInitialize>
@@ -2836,9 +2840,9 @@
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
-	&lt;td&gt;7&lt;/td&gt;
+	&lt;td&gt;6&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
-	&lt;td&gt;canBlitz&lt;/td&gt;
+	&lt;td&gt;isSupportable, canBlitz&lt;/td&gt;
 	&lt;/tr&gt;
 	
 	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
@@ -2912,7 +2916,7 @@
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
-	&lt;td&gt;6&lt;/td&gt;
+	&lt;td&gt;5&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;canBlitz&lt;/td&gt;
 	&lt;/tr&gt;
@@ -2988,7 +2992,7 @@
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
-	&lt;td&gt;5&lt;/td&gt;
+	&lt;td&gt;4&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;isSupportable&lt;/td&gt;
 	&lt;/tr&gt;
@@ -3102,9 +3106,9 @@
 	&lt;td&gt;0&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;0&lt;/td&gt;
-	&lt;td&gt;2&lt;/td&gt;
+	&lt;td&gt;1.5&lt;/td&gt;
 	&lt;td&gt;-&lt;/td&gt;
-	&lt;td&gt;immobile&lt;/td&gt;
+	&lt;td&gt;immobile, buy 2 units for 3 PUs&lt;/td&gt;
 	&lt;/tr&gt;
 	
 	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
@@ -3112,7 +3116,7 @@
 	&lt;td&gt;0&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
 	&lt;td&gt;0&lt;/td&gt;
-	&lt;td&gt;6&lt;/td&gt;
+	&lt;td&gt;5&lt;/td&gt;
 	&lt;td&gt;-&lt;/td&gt;
 	&lt;td&gt;immobile&lt;/td&gt;
 	&lt;/tr&gt;
@@ -3155,11 +3159,11 @@
 
 	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
 	&lt;td&gt;nazgul&lt;/td&gt;
-	&lt;td&gt;4&lt;/td&gt;
+	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
 	&lt;td&gt;24&lt;/td&gt;
-	&lt;td&gt;is 2hit&lt;/td&gt;
+	&lt;td&gt;givesSupport, is 2hit&lt;/td&gt;
 	&lt;/tr&gt;
 	
 	&lt;td&gt;bats&lt;/td&gt;
@@ -3192,7 +3196,7 @@
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
-	&lt;td&gt;8&lt;/td&gt;
+	&lt;td&gt;7&lt;/td&gt;
 	&lt;td&gt;&lt;/td&gt;
 	&lt;/tr&gt;
 	
@@ -3231,11 +3235,11 @@
 
 	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
 	&lt;td&gt;raft&lt;/td&gt;
-	&lt;td&gt;1&lt;/td&gt;
+	&lt;td&gt;0&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
-	&lt;td&gt;1land, 1air&lt;/td&gt;
+	&lt;td&gt;1land&lt;/td&gt;
 	&lt;/tr&gt;
 	
 	&lt;td&gt;Trireme&lt;/td&gt;
@@ -3243,7 +3247,7 @@
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;8&lt;/td&gt;
-	&lt;td&gt;1land, 1air&lt;/td&gt;
+	&lt;td&gt;1land&lt;/td&gt;
 	&lt;/tr&gt;
 	
 	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
@@ -3252,7 +3256,7 @@
 	&lt;td&gt;4&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;16&lt;/td&gt;
-	&lt;td&gt;3land, 3air&lt;/td&gt;
+	&lt;td&gt;3land&lt;/td&gt;
 	&lt;/tr&gt;
 
 	&lt;td&gt;caravel&lt;/td&gt;
@@ -3260,7 +3264,7 @@
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;5&lt;/td&gt;
-	&lt;td&gt;1land, 1air&lt;/td&gt;
+	&lt;td&gt;1land&lt;/td&gt;
 	&lt;/tr&gt;
 	
 	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
@@ -3269,7 +3273,7 @@
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;8&lt;/td&gt;
-	&lt;td&gt;2land, 2air&lt;/td&gt;
+	&lt;td&gt;2land&lt;/td&gt;
 	&lt;/tr&gt;
 	
 	&lt;td&gt;barge&lt;/td&gt;
@@ -3277,7 +3281,7 @@
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
-	&lt;td&gt;5land, 5air&lt;/td&gt;
+	&lt;td&gt;5land&lt;/td&gt;
 	&lt;/tr&gt;
 	
 	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
@@ -3286,7 +3290,7 @@
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
-	&lt;td&gt;1land, 1air&lt;/td&gt;
+	&lt;td&gt;1land&lt;/td&gt;
 	&lt;/tr&gt;
 	
 	&lt;td&gt;cutter&lt;/td&gt;
@@ -3303,7 +3307,7 @@
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
 	&lt;td&gt;14&lt;/td&gt;
-	&lt;td&gt;3land, 3air&lt;/td&gt;
+	&lt;td&gt;3land&lt;/td&gt;
 	&lt;/tr&gt;
 	
 	&lt;td&gt;longship&lt;/td&gt;
@@ -3311,7 +3315,7 @@
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;6&lt;/td&gt;
-	&lt;td&gt;1land, 1air&lt;/td&gt;
+	&lt;td&gt;1land&lt;/td&gt;
 	&lt;/tr&gt;
 	
 	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
@@ -3320,7 +3324,7 @@
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;12&lt;/td&gt;
-	&lt;td&gt;2land, 2air&lt;/td&gt;
+	&lt;td&gt;2land&lt;/td&gt;
 	&lt;/tr&gt;
 
 	&lt;tr&gt;
@@ -3375,6 +3379,37 @@
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Another thing to keep in mind is the possibility of removing blockers with allied armies so that you are free to blitz.
 &lt;br&gt;
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;There are 12 capitols in the game, sometimes they can fall easily, but on the other hand losing 1 capitol doesnt mean game has to be over yet.
+&lt;br&gt;
+&lt;br&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
+&lt;br&gt;&lt;b&gt;Changelist from 1.1 - 1.2:&lt;/b&gt;
+&lt;br&gt;
+&lt;div style=&quot;text-align: left;&quot;&gt;
+&lt;br&gt;
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Air units can no longer land on ships.
+&lt;br&gt;
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Exchanged 1 orc for 1 siegeTower in Dol Goldur
+&lt;br&gt;
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Added Castle to Hobbiton
+&lt;br&gt;
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of Griffin from 8 to 7
+&lt;br&gt;
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduce attack of Raft from 1 to 0
+&lt;br&gt;
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of Trolls from 7 to 6, and allowed them to accept support
+&lt;br&gt;
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced attack of Nazgul from 4 to 3, and allowed them to give support
+&lt;br&gt;
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of TowerGuard from 5 to 4
+&lt;br&gt;
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of Heavy Cavalry from 6 to 5
+&lt;br&gt;
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of Fortifications from 2 to 1.5 (buy 2 fortifications price of 3)
+&lt;br&gt;
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of Tower from 6 to 5
+&lt;br&gt;
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Added game options to allow/disallow blitzing and flying over of neutrals, and many other game options too.
+&lt;br&gt;
+&lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
 &lt;br&gt;&lt;b&gt;Changelist from beta:&lt;/b&gt;

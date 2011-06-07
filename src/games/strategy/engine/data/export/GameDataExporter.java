@@ -100,11 +100,15 @@ public class GameDataExporter {
 					Iterator<TechAdvance> techs = frontier.getTechs().iterator();
 					while(techs.hasNext()) {
 						TechAdvance tech = techs.next();
-						String techName = tech.getName();
-						if(techName.contains(" "))
-							techName = tech.getProperty();
+						String name = tech.getName();
+						String cat = tech.getProperty();
+						Iterator<TechAdvance> definedAdvances = TechAdvance.getDefinedAdvances().iterator();
+						while(definedAdvances.hasNext()) {
+							if(definedAdvances.next().getName().equals(name))
+								name = cat;
+						}
 							
-						returnValue.append("                <tech name=\""+techName+"\"/>\n");					
+						returnValue.append("                <tech name=\""+name+"\"/>\n");					
 					}
 					returnValue.append("            </category>\n");
 				}

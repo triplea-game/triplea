@@ -1,5 +1,7 @@
 Changes for 1.3.2.1
-* Small fixes to exporter classes. (edwin van der wal)
+* Balancing fixes for LOTR Middle Earth. (ajmdemen)
+
+* Small fixes to exporter classes. (edwin van der wal & veqryn)
 
 * Balancing fixes for Pact of Steel 2. (veqryn)
 

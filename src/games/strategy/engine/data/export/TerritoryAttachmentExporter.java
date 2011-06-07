@@ -68,7 +68,7 @@ public class TerritoryAttachmentExporter extends DefaultAttachmentExporter {
 	private String mUnitProductionHandler(Field field, IAttachment attachment) throws AttachmentExportException {
 		TerritoryAttachment att = (TerritoryAttachment) attachment;
 		if(!(att.getProduction() == att.getUnitProduction()))
-			return printIntegerOption(field, "unitProduction", attachment);
+			return printIntegerOption(field, "unitProduction", attachment, true);
 		return "";
 	}
 
