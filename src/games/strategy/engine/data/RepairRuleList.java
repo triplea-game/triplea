@@ -50,4 +50,8 @@ public class RepairRuleList extends GameDataComponent
 	{
 		return m_repairRules.get(name);
 	}
+
+	public Collection<RepairRule> getRepairRules() {
+		return m_repairRules.values();
+	}
 }

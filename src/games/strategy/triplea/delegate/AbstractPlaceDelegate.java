@@ -284,7 +284,14 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     	Collection<Unit> unitsInTO = to.getUnits().getUnits();
         Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
         if (Matches.TerritoryIsWater.match(to))
-        	unitsPlacedAlready.addAll(getAlreadyProduced(getProducer(to, m_player)));
+        {
+        	Iterator<Territory> iter = getAllProducers(to, m_player).iterator();
+        	while (iter.hasNext())
+        	{
+        		Territory current = iter.next();
+        		unitsPlacedAlready.addAll(getAlreadyProduced(current));
+        	}
+        }
         Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
         unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
         return unitsAtStartOfTurnInTO;
@@ -302,7 +309,14 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         Collection<Unit> unitsInTO = to.getUnits().getUnits();
         Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
         if (Matches.TerritoryIsWater.match(to))
-        	unitsPlacedAlready.addAll(getAlreadyProduced(getProducer(to, m_player)));
+        {
+        	Iterator<Territory> iter = getAllProducers(to, m_player).iterator();
+        	while (iter.hasNext())
+        	{
+        		Territory current = iter.next();
+        		unitsPlacedAlready.addAll(getAlreadyProduced(current));
+        	}
+        }
         Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
         unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
         
@@ -700,7 +714,14 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         Collection<Unit> unitsInTO = to.getUnits().getUnits();
         Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
         if (Matches.TerritoryIsWater.match(to))
-        	unitsPlacedAlready.addAll(getAlreadyProduced(getProducer(to, m_player)));
+        {
+        	Iterator<Territory> iter = getAllProducers(to, m_player).iterator();
+        	while (iter.hasNext())
+        	{
+        		Territory current = iter.next();
+        		unitsPlacedAlready.addAll(getAlreadyProduced(current));
+        	}
+        }
         Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
         unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
     	Collection<Unit> removedUnits = new ArrayList<Unit>();
@@ -1050,16 +1071,42 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             return to;
 
         Territory neighborFactory = null;
+        Iterator<Territory> iter = getAllProducers(to, player).iterator();
+        while (iter.hasNext())
+        {
+            Territory current = (Territory) iter.next();
+            neighborFactory = getBetterProducer(current, neighborFactory, player);
+        }
+        return neighborFactory;
+    }
+    private Collection<Territory> getAllProducers(Territory to, PlayerID player)
+    {
+    	Collection<Territory> producers = new ArrayList<Territory>();
+        //if not water then must produce in that territory
+        if (!to.isWater())
+        {
+        	producers.add(to);
+        	return producers;
+        }
+
         Iterator<Territory> iter = m_data.getMap().getNeighbors(to).iterator();
         while (iter.hasNext())
         {
             Territory current = (Territory) iter.next();
-            if (current.getUnits().someMatch(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player)) && !Match.someMatch(getAlreadyProduced(current), Matches.UnitIsFactoryOrCanProduceUnits) && current.getOwner().equals(m_player))
+            if (current.getOwner().equals(m_player))
             {
-                neighborFactory = getBetterProducer(current, neighborFactory, player);
+                Collection<Unit> unitsInTO = current.getUnits().getUnits();
+                Collection<Unit> unitsPlacedAlready = getAlreadyProduced(current);
+                Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
+                unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
+                unitsAtStartOfTurnInTO.retainAll(Match.getMatches(unitsAtStartOfTurnInTO, Matches.unitIsOwnedBy(player)));
+                if (Match.someMatch(unitsAtStartOfTurnInTO, Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player)))
+                {
+                    producers.add(current);
+                }
             }
         }
-        return neighborFactory;
+    	return producers;
     }
 
     /**

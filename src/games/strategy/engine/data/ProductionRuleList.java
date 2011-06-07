@@ -50,4 +50,8 @@ public class ProductionRuleList extends GameDataComponent
 	{
 		return m_productionRules.get(name);
 	}
+
+	public Collection<ProductionRule> getProductionRules() {
+		return m_productionRules.values();
+	}
 }

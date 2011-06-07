@@ -393,15 +393,8 @@ public class GameDataExporter {
 	}
 
 
-	private void repairRules(GameData data) {
-		//Can't get a list of productionrules from the rulelist, so using workaround through frontiers
-		Iterator<String> frontiers = data.getRepairFrontierList().getRepairFrontierNames().iterator();
-		HashSet<RepairRule> repairRules = new HashSet<RepairRule>();
-		while (frontiers.hasNext()) {
-			RepairFrontier frontier = data.getRepairFrontierList().getRepairFrontier(frontiers.next());
-			repairRules.addAll(frontier.getRules());
-		}
-		Iterator<RepairRule> iRepairRules =  repairRules.iterator();
+	private void repairRules(GameData data) {	
+		Iterator<RepairRule> iRepairRules = data.getRepairRuleList().getRepairRules().iterator();		
 		while(iRepairRules.hasNext()) {
 			RepairRule rr = iRepairRules.next();
 			xmlfile.append("        <repairRule name=\""+rr.getName()+"\">\n");
@@ -481,14 +474,8 @@ public class GameDataExporter {
 	}
 
 	private void productionRules(GameData data) {
-		//Can't get a list of productionrules from the rulelist, so using workaround through frontiers
-		Iterator<String> frontiers = data.getProductionFrontierList().getProductionFrontierNames().iterator();
-		HashSet<ProductionRule> productionrules = new HashSet<ProductionRule>();
-		while (frontiers.hasNext()) {
-			ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier(frontiers.next());
-			productionrules.addAll(frontier.getRules());
-		}
-		Iterator<ProductionRule> productionRules =  productionrules.iterator();
+		
+		Iterator<ProductionRule> productionRules = data.getProductionRuleList().getProductionRules().iterator();
 		while(productionRules.hasNext()) {
 			ProductionRule pr = productionRules.next();
 			xmlfile.append("        <productionRule name=\""+pr.getName()+"\">\n");
@@ -619,19 +606,47 @@ public class GameDataExporter {
         		 xmlfile.append(" water=\"true\"");
         	 xmlfile.append("/>\n");
         }
-        
-		xmlfile.append("        <!-- Territory Connections -->\n");
+        connections(data);
+		
+		xmlfile.append("    </map>\n");
+	}
+	
+	private class Connection {
+		private Territory _t1;
+		private Territory _t2;
+		private Connection(Territory t1, Territory t2) {
+			_t1 = t1;
+			_t2 = t2;
+		}
+		
+		@Override
+		public boolean equals(Object o) {
+			Connection con = (Connection) o;
+			return (_t1==con._t1 && _t2 == con._t2);
+		}
+		
+	}
 
-        terrs = map.getTerritories().iterator();
+	private void connections(GameData data) {
+		xmlfile.append("        <!-- Territory Connections -->\n");
+		GameMap map = data.getMap();
+		
+		ArrayList<Connection> reverseConnectionTracker = new ArrayList<Connection>();
+		
+		
+        Iterator<Territory> terrs = map.getTerritories().iterator();
         while(terrs.hasNext()) {   
         	Territory ter = terrs.next();
         	Iterator<Territory> nbs = map.getNeighbors(ter).iterator();
         	while(nbs.hasNext()) {
         		Territory nb=nbs.next();
-        		xmlfile.append("        <connection t1=\""+ter.getName()+"\" t2=\""+nb.getName()+"\"/>\n");
+        		if(!reverseConnectionTracker.contains(new Connection(ter,nb))) {
+        			xmlfile.append("        <connection t1=\""+ter.getName()+"\" t2=\""+nb.getName()+"\"/>\n");
+        			reverseConnectionTracker.add(new Connection(nb,ter));
+        		}
         	}
         }	
-		xmlfile.append("    </map>\n");
+		
 	}
 
 	private void init(GameData data) {
