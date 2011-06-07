@@ -283,6 +283,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     		return new ArrayList<Unit>();
     	Collection<Unit> unitsInTO = to.getUnits().getUnits();
         Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
+        if (Matches.TerritoryIsWater.match(to))
+        	unitsPlacedAlready.addAll(getAlreadyProduced(getProducer(to, m_player)));
         Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
         unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
         return unitsAtStartOfTurnInTO;
@@ -299,6 +301,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
 
         Collection<Unit> unitsInTO = to.getUnits().getUnits();
         Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
+        if (Matches.TerritoryIsWater.match(to))
+        	unitsPlacedAlready.addAll(getAlreadyProduced(getProducer(to, m_player)));
         Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
         unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
         
@@ -695,6 +699,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     	boolean weCanConsume = true;
         Collection<Unit> unitsInTO = to.getUnits().getUnits();
         Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
+        if (Matches.TerritoryIsWater.match(to))
+        	unitsPlacedAlready.addAll(getAlreadyProduced(getProducer(to, m_player)));
         Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
         unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
     	Collection<Unit> removedUnits = new ArrayList<Unit>();
