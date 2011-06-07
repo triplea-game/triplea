@@ -320,7 +320,10 @@ public class GameDataExporter {
 				Iterator<UnitType> units = ucp.keySet().iterator();
 				while(units.hasNext()) {
 					UnitType unit = units.next();
-					xmlfile.append("            <unitPlacement unitType=\""+unit.getName()+"\" territory=\""+terr.getName()+"\" quantity=\""+ucp.getInt(unit)+"\" owner=\""+player.getName()+"\"/>\n");
+					if (player == null || player.getName().equals("Neutral"))
+						xmlfile.append("            <unitPlacement unitType=\""+unit.getName()+"\" territory=\""+terr.getName()+"\" quantity=\""+ucp.getInt(unit)+"\"/>\n");
+					else
+						xmlfile.append("            <unitPlacement unitType=\""+unit.getName()+"\" territory=\""+terr.getName()+"\" quantity=\""+ucp.getInt(unit)+"\" owner=\""+player.getName()+"\"/>\n");
 				}
 			}
 			
