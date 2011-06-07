@@ -3415,6 +3415,23 @@ public class MustFightBattle implements Battle, BattleStepStrings
         	}
         }
         
+        //Clear the transported_by for successfully won battles where there was an allied air unit held as cargo by an carrier unit
+        Collection<Unit> carriers = Match.getMatches(m_attackingUnits, Matches.UnitIsCarrier);
+        if (!carriers.isEmpty() && isAlliedAirDependents())
+        {
+        	Match alliedFighters = new CompositeMatchAnd<Unit>(Matches.isUnitAllied(m_attacker, m_data), Matches.unitIsOwnedBy(m_attacker).invert(), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier);
+        	Collection<Unit> alliedAirInTerr = Match.getMatches(m_battleSite.getUnits().getUnits(), alliedFighters);
+        	CompositeChange change = new CompositeChange();
+        	for (Unit fighter : alliedAirInTerr)
+        	{
+        		TripleAUnit taUnit = (TripleAUnit) fighter;
+        		if (taUnit.getTransportedBy() != null)
+        			change.add(ChangeFactory.unitPropertyChange(fighter, null, TripleAUnit.TRANSPORTED_BY ));
+        	}
+            if (!change.isEmpty())
+            	bridge.addChange(change);
+        }
+        
         bridge.getHistoryWriter()
                 .addChildToEvent(m_attacker.getName() + " win", m_attackingUnits);
         showCasualties(bridge);
