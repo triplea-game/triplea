@@ -1362,7 +1362,7 @@ public class UnitAttachment extends DefaultAttachment
 	  //TODO: Need to account for support attachments here somehow.
 	  
 	  if (m_isArtillerySupportable)
-		  stats.append("can Get Attack Bonus, ");
+		  stats.append("can Receive Attack Bonus, ");
 	  
 	  if (m_isMarine)
 		  stats.append("1" + " Amphibious Attack Bonus, ");

@@ -239,11 +239,13 @@ public class DiceRoll implements Externalizable
     private static DiceRoll rollDiceLowLuck(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
     {
     	boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
-    	int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
-        int rollCount = BattleCalculator.getRolls(units, player, defending, artillerySupportAvailable);
+    	//int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
         Set<List<UnitSupportAttachment>> supportRules = new HashSet<List<UnitSupportAttachment>>();
         IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<UnitSupportAttachment>();
         getSupport(units,supportRules,supportLeft,data,defending);
+        
+        // make a copy to send to getRolls (due to need to know number of rolls based on support, as zero attack units will or will not get a roll depending)
+        int rollCount = BattleCalculator.getRolls(units, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft));
         if (rollCount == 0)
         {
             return new DiceRoll(new ArrayList<Die>(0), 0);
@@ -258,8 +260,9 @@ public class DiceRoll implements Externalizable
         while (iter.hasNext())
         {
             Unit current = iter.next();
-            UnitAttachment ua = UnitAttachment.get(current.getType());            
-            int rolls = BattleCalculator.getRolls(current, player, defending, artillerySupportAvailable);
+            UnitAttachment ua = UnitAttachment.get(current.getType());
+            // make a copy for getRolls
+            int rolls = BattleCalculator.getRolls(current, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft));
             int totalStr =0;
             for (int i = 0; i < rolls; i++)
             {
@@ -489,11 +492,13 @@ public class DiceRoll implements Externalizable
     	sortByStrength(units, defending);
     	boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
 
-        int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
+        //int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
         Set<List<UnitSupportAttachment>> supportRules = new HashSet<List<UnitSupportAttachment>>();
         IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<UnitSupportAttachment>();
         getSupport(units,supportRules,supportLeft,data,defending);
-        int rollCount = BattleCalculator.getRolls(units, player, defending, artillerySupportAvailable);
+        
+        // make a copy to send to getRolls (due to need to know number of rolls based on support, as zero attack units will or will not get a roll depending)
+        int rollCount = BattleCalculator.getRolls(units, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft));
         if (rollCount == 0)
         {
             return new DiceRoll(new ArrayList<Die>(), 0);
@@ -512,7 +517,9 @@ public class DiceRoll implements Externalizable
         {
             Unit current = (Unit) iter.next();
             UnitAttachment ua = UnitAttachment.get(current.getType());
-            int rolls = BattleCalculator.getRolls(current, player, defending, artillerySupportAvailable);
+            
+            // make a copy for getRolls
+            int rolls = BattleCalculator.getRolls(current, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft));
 
             //lhtr heavy bombers take best of n dice for both attack and defense
             if(rolls > 1 && lhtrBombers && ua.isStrategicBomber())

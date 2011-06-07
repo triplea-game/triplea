@@ -58,6 +58,21 @@ public  class IntegerMap<T> implements Cloneable, Serializable
         addAll(objects, value);
     }
 
+    /**
+     * This will make a new IntegerMap that is not linked to the original.
+     * @param integerMap
+     */
+    public IntegerMap(IntegerMap<T> integerMap)
+    {
+    	m_values = new HashMap<T, Integer>(integerMap.size());
+    	Iterator iter = integerMap.keySet().iterator();
+    	while (iter.hasNext())
+    	{
+    		T t = (T) iter.next();
+    		m_values.put(t, integerMap.getInt(t));
+    	}
+    }
+
     public int size()
     {
         return m_values.size();

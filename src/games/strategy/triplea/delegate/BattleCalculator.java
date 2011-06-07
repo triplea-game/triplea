@@ -834,7 +834,7 @@ public class BattleCalculator
         return false;
     }
     
-    public static int getRolls(Collection<Unit> units, PlayerID id, boolean defend)    
+    public static int getRolls(Collection<Unit> units, PlayerID id, boolean defend, Set<List<UnitSupportAttachment>> supportRulesCopy, IntegerMap<UnitSupportAttachment> supportLeftCopy)
     {
         int count = 0;
         int unitRoll = 0;
@@ -842,42 +842,40 @@ public class BattleCalculator
         while (iter.hasNext())
         {
             Unit unit = iter.next();
-            unitRoll = getRolls(unit, id, defend);
+            unitRoll = getRolls(unit, id, defend, supportRulesCopy, supportLeftCopy);
             
             count += unitRoll;
         }
         return count;
     }
-
-    public static int getRolls(Collection<Unit> units, PlayerID id, boolean defend, int availableSupport)
+    
+    public static int getRolls(Collection<Unit> units, PlayerID id, boolean defend)
     {
-        int count = 0;
-        int unitRoll = 0;
-        Iterator<Unit> iter = units.iterator();
-        while (iter.hasNext())
-        {
-            Unit unit = iter.next();                       
-            unitRoll = getRolls(unit, id, defend, availableSupport);       
-            count += unitRoll;       
-        }
-        return count;
+    	return getRolls(units, id, defend, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>());
     }
 
-    public static int getRolls(Unit unit, PlayerID id, boolean defend)    
+    public static int getRolls(Unit unit, PlayerID id, boolean defend, Set<List<UnitSupportAttachment>> supportRulesCopy, IntegerMap<UnitSupportAttachment> supportLeftCopy)
     {
         UnitAttachment unitAttachment = UnitAttachment.get(unit.getType());
+        int rolls = 0;
         if (defend)
-        	return unitAttachment.getDefenseRolls(id);
-        return unitAttachment.getAttackRolls(id);
+        	rolls = unitAttachment.getDefenseRolls(id);
+        else
+        	rolls = unitAttachment.getAttackRolls(id);
+        
+        // Don't forget that units can have zero attack, and then be given attack power by support, and therefore be able to roll
+        if (rolls == 0 && unitAttachment.getAttack(id) == 0)
+        {
+        	if (DiceRoll.getSupport(unit.getType(), supportRulesCopy, supportLeftCopy) > 0)
+        		rolls += 1;
+        }
+        
+        return rolls;
     }
-  
-    public static int getRolls(Unit unit, PlayerID id, boolean defend, int artillerySupport)
-    {
-        UnitAttachment unitAttachment = UnitAttachment.get(unit.getType());
-        if (defend)       
-        	return unitAttachment.getDefenseRolls(id);
-        return unitAttachment.getAttackRolls(id);
 
+    public static int getRolls(Unit unit, PlayerID id, boolean defend)
+    {
+    	return getRolls(unit, id, defend, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>());
     }
     
     /**

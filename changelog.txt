@@ -1,4 +1,6 @@
 Changes for 1.3.2.1
+* Fixed bug where units with zero attack that were supportable never got to roll in combat. Also, re-wrote getRolls. (veqryn)
+
 * Balancing fixes for LOTR Middle Earth. (ajmdemen)
 
 * Small fixes to exporter classes. (edwin van der wal & veqryn)
