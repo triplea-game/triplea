@@ -2670,7 +2670,7 @@
 
 				
 				<!-- Low Luck -->
-                <property name="Low Luck" value="false" editable="true">
+                <property name="Low Luck" value="true" editable="true">
                         <boolean/>
                 </property>
 				
@@ -2708,7 +2708,7 @@
 						<boolean/>
 				</property>
 
-				<property name="Neutral Flyover Allowed" value="false" editable="true">
+				<property name="Neutral Flyover Allowed" value="true" editable="true">
 						<boolean/>
 				</property>
 				
@@ -2735,7 +2735,7 @@
 &lt;br&gt;
 &lt;table border=&quot;1&quot;bgcolor=&quot;757780&quot;&gt;
 &lt;tr&gt;
-&lt;th style=&quot;font-size:120%;000000&quot;colspan=&quot;2&quot;&gt;1.1&lt;/th&gt;
+&lt;th style=&quot;font-size:120%;000000&quot;colspan=&quot;2&quot;&gt;1.2&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/table&gt;
 &lt;br&gt;
@@ -2798,16 +2798,16 @@
 	&lt;th style=&quot;font-size:120%;000000&quot;bgcolor=&quot;7B6243&quot;colspan=&quot;7&quot;&gt;Land Units&lt;/th&gt;
 	&lt;/tr&gt;
 
-	&lt;th&gt;Unit name&lt;/th&gt;
-	&lt;th&gt;att&lt;/th&gt;
-	&lt;th&gt;def&lt;/th&gt;
-	&lt;th&gt;move&lt;/th&gt;
-	&lt;th&gt;cost&lt;/th&gt;
-	&lt;th&gt;size&lt;/th&gt;
-	&lt;th&gt;special abilities&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;Unit name&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;att&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;def&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;move&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;cost&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;size&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;special abilities&lt;/th&gt;
 	&lt;/tr&gt;
 
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;orcs&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
@@ -2826,7 +2826,7 @@
 	&lt;td&gt;isSupportable&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;urukhai&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
@@ -2845,7 +2845,7 @@
 	&lt;td&gt;isSupportable, canBlitz&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;siegeTower&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
@@ -2861,10 +2861,10 @@
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;8&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
-	&lt;td&gt;canBlitz, purchasable by elves only&lt;/td&gt;
+	&lt;td&gt;canBlitz,&lt;br&gt; only Elves can buy more&lt;/td&gt;
 	&lt;/tr&gt;
 
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;spearInfantry&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
@@ -2883,7 +2883,7 @@
 	&lt;td&gt;isSupportable&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;Archers&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
@@ -2902,7 +2902,7 @@
 	&lt;td&gt;givesSupport&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;lightCavalry&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
@@ -2921,7 +2921,7 @@
 	&lt;td&gt;canBlitz&lt;/td&gt;
 	&lt;/tr&gt;
 
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;trebuche&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
@@ -2940,7 +2940,7 @@
 	&lt;td&gt;isSupportable&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;shooters&lt;/td&gt;
 	&lt;td&gt;0&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
@@ -2959,7 +2959,7 @@
 	&lt;td&gt;canBlitz&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;hunters&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
@@ -2978,7 +2978,7 @@
 	&lt;td&gt;isSupportable&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;oliphant&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
@@ -2997,7 +2997,7 @@
 	&lt;td&gt;isSupportable&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;chariotArchers&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
@@ -3016,7 +3016,7 @@
 	&lt;td&gt;canBlitz&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;warWagon&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
@@ -3035,7 +3035,7 @@
 	&lt;td&gt;givesSupport&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;warWolves&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
@@ -3054,7 +3054,7 @@
 	&lt;td&gt;canBlitz&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;axeInfantry&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
@@ -3073,7 +3073,7 @@
 	&lt;td&gt;isSupportable&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;phalanx&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
@@ -3092,7 +3092,7 @@
 	&lt;td&gt;givesSupport&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;mortar&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
@@ -3108,10 +3108,10 @@
 	&lt;td&gt;0&lt;/td&gt;
 	&lt;td&gt;1.5&lt;/td&gt;
 	&lt;td&gt;-&lt;/td&gt;
-	&lt;td&gt;immobile, buy 2 units for 3 PUs&lt;/td&gt;
+	&lt;td&gt;immobile, &lt;br&gt;buy 2 units for 3 PUs&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;tower&lt;/td&gt;
 	&lt;td&gt;0&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
@@ -3131,13 +3131,13 @@
 	&lt;/tr&gt;
 	
 	&lt;tr&gt;
-	&lt;th&gt;Unit name&lt;/th&gt;
-	&lt;th&gt;att&lt;/th&gt;
-	&lt;th&gt;def&lt;/th&gt;
-	&lt;th&gt;move&lt;/th&gt;
-	&lt;th&gt;cost&lt;/th&gt;
-	&lt;th&gt;size&lt;/th&gt;
-	&lt;th&gt;special abilities&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;Unit name&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;att&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;def&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;move&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;cost&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;size&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;special abilities&lt;/th&gt;
 	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;br&gt;
@@ -3149,15 +3149,15 @@
 	&lt;th style=&quot;font-size:120%;000000&quot;bgcolor=&quot;7B6243&quot;colspan=&quot;6&quot;&gt;Air Units&lt;/th&gt;
 	&lt;/tr&gt;
 
-	&lt;th&gt;Unit name&lt;/th&gt;
-	&lt;th&gt;att&lt;/th&gt;
-	&lt;th&gt;def&lt;/th&gt;
-	&lt;th&gt;move&lt;/th&gt;
-	&lt;th&gt;cost&lt;/th&gt;
-	&lt;th&gt;special abilities&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;Unit name&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;att&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;def&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;move&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;cost&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;special abilities&lt;/th&gt;
 	&lt;/tr&gt;
 
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;nazgul&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
@@ -3174,7 +3174,7 @@
 	&lt;td&gt;&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;balrog&lt;/td&gt;
 	&lt;td&gt;5&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
@@ -3191,7 +3191,7 @@
 	&lt;td&gt;&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;griffin&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
@@ -3209,12 +3209,12 @@
 	&lt;/tr&gt;
 
 	&lt;tr&gt;
-	&lt;th&gt;Unit name&lt;/th&gt;
-	&lt;th&gt;att&lt;/th&gt;
-	&lt;th&gt;def&lt;/th&gt;
-	&lt;th&gt;move&lt;/th&gt;
-	&lt;th&gt;cost&lt;/th&gt;
-	&lt;th&gt;special abilities&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;Unit name&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;att&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;def&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;move&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;cost&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;special abilities&lt;/th&gt;
 	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;br&gt;
@@ -3225,15 +3225,15 @@
 	&lt;th style=&quot;font-size:120%;000000&quot;bgcolor=&quot;7B6243&quot;colspan=&quot;6&quot;&gt;Naval Units&lt;/th&gt;
 	&lt;/tr&gt;
 
-	&lt;th&gt;Unit name&lt;/th&gt;
-	&lt;th&gt;att&lt;/th&gt;
-	&lt;th&gt;def&lt;/th&gt;
-	&lt;th&gt;move&lt;/th&gt;
-	&lt;th&gt;cost&lt;/th&gt;
-	&lt;th&gt;Capacity&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;Unit name&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;att&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;def&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;move&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;cost&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;Capacity&lt;/th&gt;
 	&lt;/tr&gt;
 
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;raft&lt;/td&gt;
 	&lt;td&gt;0&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
@@ -3250,7 +3250,7 @@
 	&lt;td&gt;1land&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;battleship&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
@@ -3267,7 +3267,7 @@
 	&lt;td&gt;1land&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;galleon&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
@@ -3284,7 +3284,7 @@
 	&lt;td&gt;5land&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;swanBoat&lt;/td&gt;
 	&lt;td&gt;0&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
@@ -3301,7 +3301,7 @@
 	&lt;td&gt;0&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;clipper&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
@@ -3318,7 +3318,7 @@
 	&lt;td&gt;1land&lt;/td&gt;
 	&lt;/tr&gt;
 	
-	&lt;tr bgcolor=&quot;9F1E0A&quot;&gt;
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;greatship&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
@@ -3328,12 +3328,12 @@
 	&lt;/tr&gt;
 
 	&lt;tr&gt;
-	&lt;th&gt;Unit name&lt;/th&gt;
-	&lt;th&gt;att&lt;/th&gt;
-	&lt;th&gt;def&lt;/th&gt;
-	&lt;th&gt;move&lt;/th&gt;
-	&lt;th&gt;cost&lt;/th&gt;
-	&lt;th&gt;special abilities&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;Unit name&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;att&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;def&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;move&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;cost&lt;/th&gt;
+	&lt;th bgcolor=&quot;A08058&quot;&gt;special abilities&lt;/th&gt;
 	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;br&gt;
@@ -3342,20 +3342,23 @@
 &lt;br&gt;
 &lt;br&gt;
 &lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;br&gt;==========================================================
+&lt;br&gt;=========================================================
 &lt;br&gt;
 &lt;h1 style=&quot;text-align: center;font-size:120%;000000&quot;&gt;Rule Clarifications and Hints&lt;/h1&gt;
 
 &lt;br&gt; &lt;b&gt;Neutral air and normal blitz clarification:&lt;/b&gt;
 &lt;br&gt;
 &lt;div style=&quot;text-align: left;&quot;&gt;
-&lt;br&gt;&lt;b&gt; ->&lt;/b&gt; You &lt;b&gt;can not &lt;/b&gt; fly over multiple neutrals with air units.
+&lt;br&gt;&lt;b&gt; ->&lt;/b&gt; You &lt;b&gt;can &lt;/b&gt; fly over neutrals with air units.
 &lt;br&gt;
-&lt;br&gt;&lt;b&gt; ->&lt;/b&gt; You &lt;b&gt;can not &lt;/b&gt; blitz neutrals with land units.
+&lt;br&gt;&lt;b&gt; ->&lt;/b&gt; You &lt;b&gt;can NOT &lt;/b&gt; blitz neutrals with land units.
 &lt;br&gt;
 &lt;br&gt;&lt;b&gt; ->&lt;/b&gt; You &lt;b&gt;can &lt;/b&gt; however blitz through formerly neutral territories on noncombat move phase.
 &lt;br&gt;
 &lt;br&gt;&lt;b&gt; ->&lt;/b&gt; Good understanding of these rules is crucial in the first rounds, especially for Goblin and Elf player.
+&lt;br&gt;
+&lt;br&gt;&lt;b&gt; ->&lt;/b&gt; Low Luck is On by default, you can switch it off in game options. 
+&lt;br&gt;(Low luck means that all attack or defense powers get added up and divided by 6 to determine the number of hits a side will do. The remainder is then rolled for.  So, for example, 3 trolls have 9 attack total, so they will get 1 hit for sure and roll one dice at 3 to determine if they get a second hit.)
 &lt;br&gt;
 &lt;br&gt;
 &lt;div style=&quot;text-align: center;&quot;&gt;
@@ -3386,29 +3389,18 @@
 &lt;div style=&quot;text-align: left;&quot;&gt;
 &lt;br&gt;
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Air units can no longer land on ships.
-&lt;br&gt;
-&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Exchanged 1 orc for 1 siegeTower in Dol Goldur
-&lt;br&gt;
-&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Added Castle to Hobbiton
-&lt;br&gt;
-&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of Griffin from 8 to 7
-&lt;br&gt;
-&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduce attack of Raft from 1 to 0
-&lt;br&gt;
-&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of Trolls from 7 to 6, and allowed them to accept support
-&lt;br&gt;
-&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced attack of Nazgul from 4 to 3, and allowed them to give support
-&lt;br&gt;
-&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of TowerGuard from 5 to 4
-&lt;br&gt;
-&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of Heavy Cavalry from 6 to 5
-&lt;br&gt;
-&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of Fortifications from 2 to 1.5 (buy 2 fortifications price of 3)
-&lt;br&gt;
-&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of Tower from 6 to 5
-&lt;br&gt;
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Air units are allowed to fly over neutrals now.
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Exchanged 1 orc for 1 siegeTower in Dol Goldur.
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Added Castle to Hobbiton.
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of Griffin from 8 to 7.
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduce attack of Raft from 1 to 0.
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of Trolls from 7 to 6, and allowed them to accept support.
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced attack of Nazgul from 4 to 3, and allowed them to give support.
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of TowerGuard from 5 to 4.
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of Heavy Cavalry from 6 to 5.
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of Fortifications from 2 to 1.5 (buy 2 fortifications price of 3).
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of Tower from 6 to 5.
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Added game options to allow/disallow blitzing and flying over of neutrals, and many other game options too.
-&lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
@@ -3417,17 +3409,11 @@
 &lt;div style=&quot;text-align: left;&quot;&gt;
 &lt;br&gt;
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Stabber's price increased from 1PU to 2PU.
-&lt;br&gt;
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Hobbit's price reduced from 3PU to 2PU.
-&lt;br&gt;
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Wizard's price reduced from 10PU to 8PU.
-&lt;br&gt;
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;WarChariot's price reduced from 8PU to 6PU.
-&lt;br&gt;
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;WarWagon's price reduced from 10PU to 8PU.
-&lt;br&gt;
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Galleon's price reduced from 9PU to 8PU.
-&lt;br&gt;
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Caravel's price reduced from 6PU to 5PU.
 &lt;br&gt;
 &lt;br&gt;
