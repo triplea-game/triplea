@@ -48,9 +48,10 @@ public class ProductionPanel extends JPanel
     private JDialog m_dialog;
     private final UIContext m_uiContext;
     
-    private List<Rule> m_rules = new ArrayList<Rule>();
-    private JLabel m_left = new JLabel();
-    private JButton m_done;
+    // Edwin: made these protected so the class can be extended
+    protected List<Rule> m_rules = new ArrayList<Rule>();
+    protected JLabel m_left = new JLabel();
+    protected JButton m_done;
     private PlayerID m_id;
     private boolean m_bid;
     private GameData m_data;
@@ -148,7 +149,8 @@ public class ProductionPanel extends JPanel
 
     }
 
-    private void initLayout(PlayerID id)
+    // Edwin: made this protected so the class can be extended
+    protected void initLayout(PlayerID id)
     {
         Insets nullInsets = new Insets(0, 0, 0, 0);
         this.removeAll();

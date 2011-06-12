@@ -66,6 +66,9 @@ public class PurchasePanel extends ActionPanel
   private SimpleUnitPanel m_purhcasedUnits;
   private JLabel m_purchasedLabel = new JLabel();
   private JButton m_buyButton;
+  
+  // if this is set Purchase will use the tabbedProductionPanel - this is modifyable through the View Menu
+  private static boolean m_tabbedProduction = true;
 
   private final String BUY = "Buy...";
   private final String CHANGE = "Change...";
@@ -174,7 +177,10 @@ public class PurchasePanel extends ActionPanel
         PlayerID player = getCurrentPlayer();
         GameData data = getData();
         
-    	m_purchase = ProductionPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, m_bid, m_purchase,getMap().getUIContext());
+    	if(isTabbedProduction())
+    		m_purchase = TabbedProductionPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, m_bid, m_purchase,getMap().getUIContext());
+    	else
+    		m_purchase = ProductionPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, m_bid, m_purchase,getMap().getUIContext());
     	m_purhcasedUnits.setUnitsFromProductionRuleMap(m_purchase, player, data);
     	if(m_purchase.totalValues() == 0)
     	{
@@ -292,4 +298,12 @@ public class PurchasePanel extends ActionPanel
   {
     return "PurchasePanel";
   }
+
+public static void setTabbedProduction(boolean tabbedProduction) {
+	m_tabbedProduction = tabbedProduction;
+}
+
+public static boolean isTabbedProduction() {
+	return m_tabbedProduction;
+}
 }

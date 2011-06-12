@@ -220,7 +220,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         addShowCommentLog(menuView);
         addShowGameUuid(menuView);
         addSetLookAndFeel(menuView);
-
+        // The menuItem to turn TabbedProduction on or off
+        addTabbedProduction(menuView);
     }
     
     private boolean isJavaGreatThan5() {
@@ -498,6 +499,22 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         });
 
         parentMenu.add(showEnemyCasualties);
+    }
+    
+    private void addTabbedProduction(JMenu parentMenu)
+    {
+    	final JCheckBoxMenuItem tabbedProduction = new JCheckBoxMenuItem("Show Production Tabs");
+    	tabbedProduction.setSelected(PurchasePanel.isTabbedProduction());
+    	tabbedProduction.addActionListener(new AbstractAction()
+    	{
+    		public void actionPerformed(ActionEvent e)
+            {
+                PurchasePanel.setTabbedProduction(tabbedProduction.isSelected());
+            }
+    		
+    	});
+    	
+    	parentMenu.add(tabbedProduction);
     }
     /**
      * @param menuGame

@@ -1,4 +1,6 @@
 Changes for 1.3.2.1
+* Added tabs option to production panel. (edwin van der wal)
+
 * Fixed bug where upgrades of sea units could be placed same turn as the base unit. (veqryn)
 
 * Fixed bug where air units may not participate in a battle if they had been on an allied carrier that was involved in a battle. (veqryn)
