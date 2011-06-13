@@ -218,10 +218,10 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         addShowMapBlends(menuView);
         addChatTimeMenu(menuView);
         addShowCommentLog(menuView);
-        addShowGameUuid(menuView);
-        addSetLookAndFeel(menuView);
         // The menuItem to turn TabbedProduction on or off
         addTabbedProduction(menuView);
+        addShowGameUuid(menuView);
+        addSetLookAndFeel(menuView);
     }
     
     private boolean isJavaGreatThan5() {

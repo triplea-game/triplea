@@ -4223,6 +4223,14 @@
 						<boolean/>
 				</property>
 
+				<property name="Shore Bombard Per Ground Unit Restricted" value="false" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Naval Bombard Casualties Return Fire Restricted" value="false" editable="true">
+						<boolean/>
+				</property>
+
                 <property name="neutralCharge" value="0"/>
 
                <!-- Map Name: also used for map utils when asked -->

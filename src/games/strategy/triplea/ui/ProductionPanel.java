@@ -87,7 +87,6 @@ public class ProductionPanel extends JPanel
         m_dialog.dispose();
 
         return getProduction();
-
     }
 
     // this method can be accessed by subclasses
@@ -136,7 +135,7 @@ public class ProductionPanel extends JPanel
             
             for(ProductionRule productionRule : player.getProductionFrontier())
             {
-                Rule rule = new Rule(productionRule, player, m_uiContext);
+                Rule rule = new Rule(productionRule, player);
                 int initialQuantity = initialPurchase.getInt(productionRule);
                 rule.setQuantity(initialQuantity);
                 m_rules.add(rule);
@@ -146,7 +145,6 @@ public class ProductionPanel extends JPanel
         {
             m_data.releaseReadLock();
         }
-
     }
 
     // Edwin: made this protected so the class can be extended
@@ -165,10 +163,8 @@ public class ProductionPanel extends JPanel
         
         for (int x = 0; x < m_rules.size(); x++)
         {
-            
-            add(m_rules.get(x), new GridBagConstraints(x / rows, (x % rows) + 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+            add(m_rules.get(x).getPanelComponent(), new GridBagConstraints(x / rows, (x % rows) + 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH,
                     nullInsets, 0, 0));
-
         }
 
         int startY = m_rules.size() / rows;
@@ -176,7 +172,6 @@ public class ProductionPanel extends JPanel
         m_done = new JButton(m_done_action);
         add(m_done, new GridBagConstraints(0, startY + 2, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,
                 0, 8, 0), 0, 0));
-
     }
 
     // This method can be overridden by subclasses
@@ -234,7 +229,6 @@ public class ProductionPanel extends JPanel
             max += current.getQuantity();
             current.setMax(max);
         }
-
     }
 
     private int getPUs()
@@ -247,45 +241,54 @@ public class ProductionPanel extends JPanel
             return m_id.getResources().getQuantity(Constants.PUS);
     }
 
-    class Rule extends JPanel
+    class Rule
     {
-        private ScrollableTextField m_text = new ScrollableTextField(0, Integer.MAX_VALUE);
-        private int m_cost;         
+        private int m_cost;
+        private int m_quantity;
         private ProductionRule m_rule;
+        private PlayerID m_id;
+        private Set<ScrollableTextField> m_textFields = new HashSet<ScrollableTextField>();
  
-
-        Rule(ProductionRule rule, PlayerID id, UIContext uiContext)
-        {            
-            setLayout(new GridBagLayout());
-            m_rule = rule;
-            m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.PUS));
-            UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
+        protected JPanel getPanelComponent() {
+        	JPanel panel = new JPanel();
+            ScrollableTextField i_text = new ScrollableTextField(0, Integer.MAX_VALUE);
+            i_text.setValue(m_quantity);
+        	panel.setLayout(new GridBagLayout());
+            UnitType type = (UnitType) m_rule.getResults().keySet().iterator().next();
+            Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, m_id, m_data, false, false);
             UnitAttachment attach= UnitAttachment.get(type);
-            int attack=attach.getAttack(id);
-            int movement=attach.getMovement(id);
-            int defense=attach.getDefense(id);
-            Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, false, false);
+            int attack=attach.getAttack(m_id);
+            int movement=attach.getMovement(m_id);
+            int defense=attach.getDefense(m_id);
             String text = " x " + (m_cost < 10 ? " " : "") + m_cost;
             JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
             JLabel info=new JLabel(attack+"/"+defense+"/"+movement);
             //info.setToolTipText(" attack:" + attack + " defense :" + defense +" movement:" +movement);
-            String toolTipText = type.getName() + ": " + attach.toStringShortAndOnlyImportantDifferences(id);
+            String toolTipText = type.getName() + ": " + attach.toStringShortAndOnlyImportantDifferences(m_id);
             info.setToolTipText(toolTipText);
             label.setToolTipText(toolTipText);
-
             int space = 8;
-            this.add(new JLabel(type.getName()), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+            panel.add(new JLabel(type.getName()), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
                     new Insets(2, 0, 0, 0), 0, 0));
-            this.add(label, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space,
+            panel.add(label, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space,
                     space), 0, 0));
-            this.add(info, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space,
+            panel.add(info, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space,
                     space), 0, 0));
 
-            this.add(m_text, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, space,
+            panel.add(i_text, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, space,
                     space, space), 0, 0));
+            i_text.addChangeListener(m_listener);
+            m_textFields.add(i_text);
+            panel.setBorder(new EtchedBorder());
+            
+        	return panel;
+        }
 
-            m_text.addChangeListener(m_listener);
-            setBorder(new EtchedBorder());
+        Rule(ProductionRule rule, PlayerID id)
+        {            
+            m_rule = rule;
+            m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.PUS));
+            m_id = id;
         }
 
         int getCost()
@@ -295,12 +298,16 @@ public class ProductionPanel extends JPanel
 
         int getQuantity()
         {
-            return m_text.getValue();
+            return m_quantity;
         }
 
         void setQuantity(int quantity)
         {
-            m_text.setValue(quantity);
+            m_quantity = quantity;
+            for(ScrollableTextField textField:m_textFields) {
+            	if(textField.getValue() != quantity)
+            		textField.setValue(quantity);
+            }
         }
 
         ProductionRule getProductionRule()
@@ -310,18 +317,26 @@ public class ProductionPanel extends JPanel
 
         void setMax(int max)
         {
-            m_text.setMax(max);
+            for(ScrollableTextField textField:m_textFields) {
+            	textField.setMax(max);
+            }
         }
-    }
-
-
-    private ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
-    {
-        public void changedValue(ScrollableTextField stf)
+        
+        private ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
         {
-            calculateLimits();
-        }
-    };
-
+            public void changedValue(ScrollableTextField stf)
+            {
+	            if(stf.getValue() != m_quantity) { 
+		            m_quantity = stf.getValue();
+	                calculateLimits();
+	                for(ScrollableTextField textField:m_textFields) {
+	                	if(!stf.equals(textField))
+	                		textField.setValue(m_quantity);
+	                }
+	            }
+            }
+        };
+    }
+    
 }
 

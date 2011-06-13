@@ -56,22 +56,11 @@ public class TabbedProductionPanel extends ProductionPanel
     		this.removeAll();
     		this.setLayout(new GridBagLayout());
     	}
-    	
-    	protected void addRules(List<Rule> mRules) {
-    	       int rows = Math.max(1, mRules.size()/8);
-    	         
-    	         for (int x = 0; x < mRules.size(); x++)
-    	         {
-    	        	 add(mRules.get(x), new GridBagConstraints(x / rows, (x % rows), 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH,
-    	        			 new Insets(0, 0, 0, 0), 0, 0));
-    	        }
-    	}
     }
     
     @Override
     protected void initLayout(PlayerID id)
     {
-        Insets nullInsets = new Insets(0, 0, 0, 0);
         this.removeAll();
         this.setLayout(new GridBagLayout());
         JLabel legendLabel = new JLabel("Attack/Defense/Movement");
@@ -125,6 +114,12 @@ public class TabbedProductionPanel extends ProductionPanel
         if(constructRules.size()>0)
         	tabs.addTab("Construction",constructPanel);
         
+        allPanel.validate();
+        landPanel.validate();
+        airPanel.validate();
+        seaPanel.validate();
+        constructPanel.validate();
+        
         add(m_left, new GridBagConstraints(0, 2, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
         m_done = new JButton(m_done_action);
         add(m_done, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,  0, 8, 0), 0, 0));
@@ -139,7 +134,7 @@ public class TabbedProductionPanel extends ProductionPanel
         
         for (int x = 0; x < rules.size(); x++)
         {
-        	panel.add(rules.get(x), new GridBagConstraints(x / rows, (x % rows) + 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, nullInsets, 0, 0));
+        	panel.add(rules.get(x).getPanelComponent(), new GridBagConstraints(x / rows, (x % rows) + 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, nullInsets, 0, 0));
         }
     }
 }
