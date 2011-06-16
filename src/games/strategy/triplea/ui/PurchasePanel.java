@@ -34,12 +34,14 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.ui.ProductionPanel.Rule;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.awt.event.ActionEvent;
 import java.util.Collection;
+import java.util.Iterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -190,10 +192,23 @@ public class PurchasePanel extends ActionPanel
     	else
     	{
     		m_buyButton.setText(CHANGE);
-    		m_purchasedLabel.setText(m_purchase.totalValues()+MyFormatter.pluralize(" unit", m_purchase.totalValues())+" to be produced:");
+    		m_purchasedLabel.setText(totalUnitNumberPurchased(m_purchase)+MyFormatter.pluralize(" unit", totalUnitNumberPurchased(m_purchase))+" to be produced:");
     	}
     }
   };
+  
+  private int totalUnitNumberPurchased(final IntegerMap<ProductionRule> purchase)
+  {
+      int totalUnits = 0;
+      Collection<ProductionRule> rules = purchase.keySet();
+      Iterator<ProductionRule> iter = rules.iterator();
+      while (iter.hasNext())
+      {
+    	  ProductionRule current = iter.next();
+    	  totalUnits += purchase.getInt(current) * current.getResults().totalValues();
+      }
+      return totalUnits;
+  }
 
   private Action DoneAction = new AbstractAction("Done")
   {
@@ -253,7 +268,7 @@ public class PurchasePanel extends ActionPanel
                 UnitAttachment ua = UnitAttachment.get((UnitType) rule.getResults().keySet().iterator().next());
                 
                 if(!ua.isFactory() && !ua.isConstruction()) {
-                    totalProduced+= m_purchase.getInt(rule);
+                    totalProduced+= m_purchase.getInt(rule) * rule.getResults().totalValues();
                 }
             }
             

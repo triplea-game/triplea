@@ -2309,6 +2309,8 @@
                 </attatchment>
 				
 				
+				<!-- <option name="unitProduction" value="x"/> must be placed under <option name="production" value="x"/> if it is being used. This is because a recent update to TripleA had the setting of 'production' automatically set 'unitProduction' to be equal to it. -->
+				
 				<attatchment name="territoryAttatchment" attatchTo="West Balkans" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
                 </attatchment>
@@ -2343,6 +2345,7 @@
 						<option name="victoryCity" value="true"/>
 						<!-- unitProduction is used only with ww2v3 factory damage rules. only put in territories that start with a factory. should be equal to the production of the territory, but can be less if you want the factories to start damaged.  
 								Only needed if you are using "SBR Affects Unit Production", and not needed if you are using "Damage From Bombing Done To Units Instead Of Territories" 
+								Must be placed UNDER 'production' in the xml, because 'production' automatically sets 'unitProduction' to be equal otherwise.
                         <option name="unitProduction" value="14"/>-->
 						<!--- originalFactory means that the original controller of the territory may produce infinite units there, however if it is captured the opponent may only produce as normal, not infinite units 
 						<option name="originalFactory" value="true"/> -->
@@ -4559,7 +4562,7 @@
         				+4 PUs and the ability to produce extra units, if Allies control Sinkiang, Central China, India.
 							May use this money to produce a limited selection of units. May purchase tanks and fighters if these territories are controlled.<br>
 						* China gains 1 infantry in Sinkiang if at the beginning of their turn, there are no enemy units in 3 out of 6 of
-							Sinkiang, Central China, China, Manchuria, Kwangtung, French Indochina<br>
+							Sinkiang, Central China, China, Manchuria, Kwangtung, French Indochina. This unit is given at the beginning of combat move step, and can not be moved until next turn.<br>
 						* No Chinese Units, including the Chinese Fighter may leave Chinese territory: Sinkiang, Central China, China, Manchuria, Kwangtung, French Indochina
 							(this means no entering sea zones)<br>
 						* Chinese destroy any non-combat units they would otherwise capture (factories, aa guns, harbours, airfields)<br>

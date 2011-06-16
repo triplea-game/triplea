@@ -175,12 +175,12 @@ public class ProductionPanel extends JPanel
     }
 
     // This method can be overridden by subclasses
-    protected void setLeft(int left)
+    protected void setLeft(int left, int totalUnits)
     {
         int total = getPUs();
         int spent = total - left;
         
-        m_left.setText("You have " + left + " " + StringUtil.plural("PU", spent) + " left out of " + total +  " "  + StringUtil.plural("PU", total)) ;
+        m_left.setText("You have " + left + " " + StringUtil.plural("PU", spent) + " left out of " + total +  " "  + StringUtil.plural("PU", total) + ", Purchasing a total of " + totalUnits + " units.") ;
     }
 
     Action m_done_action = new AbstractAction("Done")
@@ -212,14 +212,16 @@ public class ProductionPanel extends JPanel
     {
         int PUs = getPUs();
         int spent = 0;
+        int totalUnits = 0;
         Iterator<Rule> iter = m_rules.iterator();
         while (iter.hasNext())
         {
             Rule current = iter.next();
             spent += current.getQuantity() * current.getCost();
+            totalUnits += current.getQuantity() * current.getProductionRule().getResults().totalValues();
         }
         int leftToSpend = PUs - spent;
-        setLeft(leftToSpend);
+        setLeft(leftToSpend, totalUnits);
 
         iter = m_rules.iterator();
         while (iter.hasNext())
@@ -251,6 +253,10 @@ public class ProductionPanel extends JPanel
  
         protected JPanel getPanelComponent() {
         	JPanel panel = new JPanel();
+        	/*String eol = "  ";
+        	try {
+        		eol = System.getProperty("line.separator");
+        	} catch (Exception e) { }*/
             ScrollableTextField i_text = new ScrollableTextField(0, Integer.MAX_VALUE);
             i_text.setValue(m_quantity);
         	panel.setLayout(new GridBagLayout());
@@ -260,7 +266,12 @@ public class ProductionPanel extends JPanel
             int attack=attach.getAttack(m_id);
             int movement=attach.getMovement(m_id);
             int defense=attach.getDefense(m_id);
-            String text = " x " + (m_cost < 10 ? " " : "") + m_cost;
+            int numberOfUnitsGiven = m_rule.getResults().totalValues();
+            String text;
+            if (numberOfUnitsGiven > 1)
+            	text = "<html> x " + (m_cost < 10 ? " " : "") + m_cost + "<br>" + "for " + numberOfUnitsGiven + "<br>" + " units</html>";
+            else
+            	text = " x " + (m_cost < 10 ? " " : "") + m_cost;
             JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
             JLabel info=new JLabel(attack+"/"+defense+"/"+movement);
             //info.setToolTipText(" attack:" + attack + " defense :" + defense +" movement:" +movement);
@@ -268,7 +279,14 @@ public class ProductionPanel extends JPanel
             info.setToolTipText(toolTipText);
             label.setToolTipText(toolTipText);
             int space = 8;
-            panel.add(new JLabel(type.getName()), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+            JLabel name = new JLabel(type.getName());
+            // change name color for 'upgrades and consumes' unit types
+            if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() == 1)
+            	name.setForeground(Color.CYAN);
+            else if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() > 1)
+            	name.setForeground(Color.BLUE);
+            
+            panel.add(name, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
                     new Insets(2, 0, 0, 0), 0, 0));
             panel.add(label, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space,
                     space), 0, 0));

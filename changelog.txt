@@ -1,4 +1,6 @@
 Changes for 1.3.2.1
+* Added information on number of units being purchased to production panel. Also changed all upgrade/consumes type units to have their names displayed in blue. (veqryn)
+
 * Added tabs option to production panel. (edwin van der wal)
 
 * Fixed bug where upgrades of sea units could be placed same turn as the base unit. (veqryn)

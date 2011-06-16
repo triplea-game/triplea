@@ -25,8 +25,8 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.IntegerMap;
 
 import java.awt.*;
+import java.math.BigDecimal;
 import java.util.*;
-import java.util.List;
 
 import javax.swing.*;
 
@@ -39,9 +39,11 @@ import javax.swing.*;
  */
 public class TabbedProductionPanel extends ProductionPanel
 {
-    
+	private static final int MAX_COLUMNS = 10;
+    private int m_rows;
+	private int m_columns;
 
-    protected TabbedProductionPanel(UIContext uiContext) {
+	protected TabbedProductionPanel(UIContext uiContext) {
 		super(uiContext);
 	}
 
@@ -49,44 +51,38 @@ public class TabbedProductionPanel extends ProductionPanel
     {
         return new TabbedProductionPanel(context).show(id, parent, data, bid, initialPurchase);
     }
-        
-
-    class UnitRulePanel extends JPanel {
-    	protected UnitRulePanel() {
-    		this.removeAll();
-    		this.setLayout(new GridBagLayout());
-    	}
-    }
+       
     
     @Override
     protected void initLayout(PlayerID id)
     {
         this.removeAll();
         this.setLayout(new GridBagLayout());
-        JLabel legendLabel = new JLabel("Attack/Defense/Movement");
-        add(legendLabel, new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
+        add(new JLabel("Attack/Defense/Movement"), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
 
         JTabbedPane tabs = new JTabbedPane();
-        UnitRulePanel allPanel = new UnitRulePanel();
-        UnitRulePanel landPanel = new UnitRulePanel();
-        UnitRulePanel airPanel = new UnitRulePanel();
-        UnitRulePanel seaPanel = new UnitRulePanel();
-        UnitRulePanel constructPanel = new UnitRulePanel();
+        tabs.setMinimumSize(new Dimension(700,480));
+        this.setMinimumSize(new Dimension(800,600));
         
-        add(tabs,new GridBagConstraints(0,1,400,1,1,1,GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
+        add(tabs,new GridBagConstraints(0,1,1,1,1,1,GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(8, 8, 8, 0), 0, 0));
 
         ArrayList<Rule> allRules = new ArrayList<Rule>();
         ArrayList<Rule> landRules = new ArrayList<Rule>();
         ArrayList<Rule> airRules = new ArrayList<Rule>();
         ArrayList<Rule> seaRules = new ArrayList<Rule>();
         ArrayList<Rule> constructRules = new ArrayList<Rule>();
-
+        ArrayList<Rule> upgradeConsumesRules = new ArrayList<Rule>();
 
         for(Rule rule : m_rules) {
             UnitType type = (UnitType) rule.getProductionRule().getResults().keySet().iterator().next();
             UnitAttachment attach= UnitAttachment.get(type);
+            
             allRules.add(rule);
-            if(attach.isConstruction() || attach.isFactory()) {
+            
+            if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() >= 1)
+            	upgradeConsumesRules.add(rule);
+            
+            if(attach.isConstruction() || attach.isFactory()) { // canproduceUnits isn't checked on purpose, since this category is for units that can be placed anywhere (placed without needing a factory).
             	constructRules.add(rule);
             } else if(attach.isSea()) {
             	seaRules.add(rule);
@@ -96,46 +92,55 @@ public class TabbedProductionPanel extends ProductionPanel
             	landRules.add(rule);
             }
         }
+         m_rows = Math.max(2, new BigDecimal(m_rules.size()).divide(new BigDecimal(MAX_COLUMNS),BigDecimal.ROUND_DOWN).intValue());
+         m_columns = new BigDecimal(m_rules.size()).divide(new BigDecimal(m_rows), BigDecimal.ROUND_UP).intValue();
         
-        addRulesToPanelWithRows(allPanel, allRules);
-        addRulesToPanelWithRows(landPanel, landRules);
-        addRulesToPanelWithRows(airPanel, airRules);
-        addRulesToPanelWithRows(seaPanel, seaRules);
-        addRulesToPanelWithRows(constructPanel, constructRules);
-
-        if(allRules.size()>0)
-        	tabs.addTab("All", allPanel);
-        if(landRules.size()>0)
-        	tabs.addTab("Land", landPanel);
-        if(airRules.size()>0)
-        	tabs.addTab("Air", airPanel);
-        if(seaRules.size()>0)
-        	tabs.addTab("Sea", seaPanel);
-        if(constructRules.size()>0)
-        	tabs.addTab("Construction",constructPanel);
         
-        allPanel.validate();
-        landPanel.validate();
-        airPanel.validate();
-        seaPanel.validate();
-        constructPanel.validate();
-        
-        add(m_left, new GridBagConstraints(0, 2, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
+        if(allRules.size()>0) {
+        	tabs.addTab("All", new JScrollPane(getRulesPanel(allRules)));
+        }
+        if(landRules.size()>0){
+        	tabs.addTab("Land", new JScrollPane(getRulesPanel(landRules)));
+        }
+        if(airRules.size()>0) {
+        	tabs.addTab("Air", new JScrollPane(getRulesPanel(airRules)));
+        }
+        if(seaRules.size()>0) {
+        	tabs.addTab("Sea", new JScrollPane(getRulesPanel(seaRules)));
+        }
+        if(constructRules.size()>0) {
+        	tabs.addTab("Construction",new JScrollPane(getRulesPanel(constructRules)));
+        }
+        if(upgradeConsumesRules.size()>0) {
+        	tabs.addTab("Upgrades/Consumes",new JScrollPane(getRulesPanel(upgradeConsumesRules)));
+        }
+               
+        add(m_left, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
         m_done = new JButton(m_done_action);
-        add(m_done, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,  0, 8, 0), 0, 0));
+        add(m_done, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,  0, 8, 0), 0, 0));
     }
     
-    private void addRulesToPanelWithRows(UnitRulePanel panel, ArrayList<Rule> rules)
+    private JPanel getRulesPanel(ArrayList<Rule> rules)
     {
-        Insets nullInsets = new Insets(0, 0, 0, 0);
-
-        int rows = rules.size() / 7;
-        rows = Math.max(2, rows);
+    	JPanel panel = new JPanel();
+    	panel.setLayout(new GridLayout(m_rows,m_columns));
+    	JPanel[][] panelHolder = new JPanel[m_rows][m_columns];
+    	
+    	for (int m = 0; m < m_rows; m++) {
+    		for (int n = 0; n < m_columns; n++) {
+    			panelHolder[m][n] = new JPanel(new BorderLayout());
+    			panel.add(panelHolder[m][n]);
+    		}
+    	}
         
-        for (int x = 0; x < rules.size(); x++)
+        for (int x = 0; x < m_columns * m_rows; x++)
         {
-        	panel.add(rules.get(x).getPanelComponent(), new GridBagConstraints(x / rows, (x % rows) + 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, nullInsets, 0, 0));
+        	if (x < rules.size())
+        		panelHolder[(x % m_rows)][(x / m_rows)].add(rules.get(x).getPanelComponent());
+        	//else
+        		//panelHolder[(x % m_rows)][(x / m_rows)].add(new JPanel());
         }
+        return panel;
     }
 }
 

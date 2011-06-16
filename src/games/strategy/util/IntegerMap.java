@@ -59,11 +59,15 @@ public  class IntegerMap<T> implements Cloneable, Serializable
     }
 
     /**
-     * This will make a new IntegerMap that is not linked to the original.
+     * This will make a new IntegerMap. 
+     * The Objects will be linked, but the integers mapped to them will not be linked. 
      * @param integerMap
      */
     public IntegerMap(IntegerMap<T> integerMap)
     {
+    	/* this will also work:
+    	m_values = new HashMap<T,Integer>(integerMap.m_values);
+    	 */
     	m_values = new HashMap<T, Integer>(integerMap.size());
     	Iterator iter = integerMap.keySet().iterator();
     	while (iter.hasNext())
