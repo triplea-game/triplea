@@ -61,8 +61,6 @@ public class TabbedProductionPanel extends ProductionPanel
         add(new JLabel("Attack/Defense/Movement"), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
 
         JTabbedPane tabs = new JTabbedPane();
-        tabs.setMinimumSize(new Dimension(700,480));
-        this.setMinimumSize(new Dimension(800,600));
         
         add(tabs,new GridBagConstraints(0,1,1,1,1,1,GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(8, 8, 8, 0), 0, 0));
 
@@ -92,7 +90,7 @@ public class TabbedProductionPanel extends ProductionPanel
             	landRules.add(rule);
             }
         }
-         m_rows = Math.max(2, new BigDecimal(m_rules.size()).divide(new BigDecimal(MAX_COLUMNS),BigDecimal.ROUND_DOWN).intValue());
+         m_rows = Math.max(2, new BigDecimal(m_rules.size()).divide(new BigDecimal(MAX_COLUMNS),BigDecimal.ROUND_UP).intValue());
          m_columns = new BigDecimal(m_rules.size()).divide(new BigDecimal(m_rows), BigDecimal.ROUND_UP).intValue();
         
         
