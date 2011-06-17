@@ -39,7 +39,7 @@ import javax.swing.*;
  */
 public class TabbedProductionPanel extends ProductionPanel
 {
-	private static final int MAX_COLUMNS = 10;
+	private static final int MAX_COLUMNS = 9;
     private int m_rows;
 	private int m_columns;
 
@@ -116,6 +116,16 @@ public class TabbedProductionPanel extends ProductionPanel
         add(m_left, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
         m_done = new JButton(m_done_action);
         add(m_done, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,  0, 8, 0), 0, 0));
+        
+        Dimension dtab = tabs.getPreferredSize();
+        Dimension dthis = this.getPreferredSize();
+        if (dtab != null && dthis != null)
+        {
+        	tabs.setPreferredSize(new Dimension(dtab.width + 2, dtab.height + 2)); // for whatever dumb reason, the tabs need a couple extra height and width or else scroll bars will appear
+            this.setPreferredSize(new Dimension(dthis.width + 4, dthis.height + 20)); // for whatever dumb reason, the window needs to be at least 16 pixels greater in height than normal, to accommodate the tabs
+        }
+        tabs.validate();
+        this.validate();
     }
     
     private JPanel getRulesPanel(ArrayList<Rule> rules)
