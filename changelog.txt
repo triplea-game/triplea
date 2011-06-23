@@ -1,4 +1,7 @@
 Changes for 1.3.2.1
+* Updated "unitProduction" so when used in conjunction with "Damage From Bombing Done To Units Instead Of Territories" it sets the allowed number of units to be produced in that territory, thereby finally un-associating the PU production of a territory from the Unit production of a territory.
+  Also, updated "production" to automatically set "unitProduction" to be equal. So if you want a different unitProduction value, you must set it after production when attaching to a territory. (veqryn)
+
 * Fixed bug related to territory damage in history panel, as well as a null pointer error for factories on territories with no attachments, and also fixed a bug that was not allowing canProduceUnits units to have same max damage as factory units. (veqryn)
 
 * Added information on number of units being purchased to production panel. Also changed all upgrade/consumes type units to have their names displayed in blue. (veqryn)
