@@ -159,13 +159,14 @@ public class EditDelegate implements IDelegate, IEditDelegate
         if (null != (result = EditValidator.validateAddUnits(m_data, territory, units)))
             return result;
 
+        /* No longer needed, as territory unitProduction is now set by default to equal the territory value. Therefore any time it is different from the default, the map maker set it, so we shouldn't screw with it.
         if(Match.someMatch(units, Matches.UnitIsFactoryOrCanProduceUnits) && !Match.someMatch(territory.getUnits().getUnits(), Matches.UnitIsFactoryOrCanProduceUnits)&& games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data))
         {
             TerritoryAttachment ta = TerritoryAttachment.get(territory);
 
             Change change = ChangeFactory.changeUnitProduction(territory, getProduction(territory));
             m_bridge.addChange(change);
-        }
+        }*/
         
         logEvent("Adding units owned by "+m_bridge.getPlayerID().getName()+" to "+territory.getName()+": "+MyFormatter.unitsToTextNoOwner(units), units);
         m_bridge.addChange(ChangeFactory.addUnits(territory, units));

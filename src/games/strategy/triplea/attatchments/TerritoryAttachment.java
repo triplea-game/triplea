@@ -193,10 +193,23 @@ public class TerritoryAttachment extends DefaultAttachment
         return m_originalFactory;
     }
 
+    /**
+     * setProduction (or just "production" in a map xml) sets both the m_production AND the m_unitProduction of a territory to be equal to the String value passed.
+     * @param value
+     */
     public void setProduction(String value)
     {
         m_production = getInt(value);
-        m_unitProduction = m_production;
+        m_unitProduction = m_production; // do NOT remove. unitProduction should always default to production
+    }
+
+    /**
+     * Sets only m_production
+     * @param value
+     */
+    public void setProductionOnly(int value)
+    {
+        m_production = value;
     }
 
     public int getProduction()

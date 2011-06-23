@@ -1,4 +1,6 @@
 Changes for 1.3.2.1
+* Fixed bug related to territory damage in history panel, as well as a null pointer error for factories on territories with no attachments, and also fixed a bug that was not allowing canProduceUnits units to have same max damage as factory units. (veqryn)
+
 * Added information on number of units being purchased to production panel. Also changed all upgrade/consumes type units to have their names displayed in blue. (veqryn)
 
 * Added tabs option to production panel. (edwin van der wal)

@@ -14,7 +14,7 @@
 			-->
 
 		<!-- diceSides defaults to 6 if not in the xml.  Can be set to any number between 1 and 200.
-				WARNING: Setting diceSides to a number other than 6 can result in unexpected behavior.  Especially true for odd-sided dice (like 5, or 7, etc.) -->
+				WARNING: Setting diceSides to a number other than 6 can result in unexpected behavior. -->
 		<diceSides value="6"/>
 		
         <map>
@@ -621,7 +621,7 @@
 
                 <sequence>
 					<!-- it is very important that the "name" ends with the correct phrase, or else the game will not work properly.
-						 Please end with: xxBid, xxBidPlace, xxTech, xxPurchase, xxCombatMove, xxBattle, xxNonCombatMove, xxPlace, xxTechActivation, xxEndTurn  -->
+						 Please end with ("xx" = faction name): xxBid, xxBidPlace, xxTech, xxPurchase, xxCombatMove, xxBattle, xxNonCombatMove, xxPlace, xxTechActivation, xxEndTurn  -->
 						 
                         <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
 
@@ -834,6 +834,7 @@
                 </productionRule>
 
                 <!-- Advanced Industrial Production -->
+					<!-- IndustrialTechnology production rules are only needed if you are using or plan to use the "industrialTechnology" tech -->
 
                 <productionRule name="buyInfantryIndustrialTechnology">
                         <cost resource="PUs" quantity="3" />
@@ -946,6 +947,7 @@
                 </productionRule>
 
                 <!-- SHIPYARD PRICES -->
+					<!-- Shipyards production rules are only needed if you are using the "shipyards" tech (and the tech is turned on in the game options too). -->
 
                 <productionRule name="buyTransportShipyards">
                         <cost resource="PUs" quantity="6" />
@@ -998,7 +1000,7 @@
                 </productionRule>
 
                <!-- Repair rules -->
-			   <!-- if you use ww2v3 style factory damage, you need repair rules -->
+					<!-- if you use ww2v3 style factory damage, you need repair rules -->
                 <repairRule name="repairFactory">
                         <cost resource="PUs" quantity="1" />
                         <result resourceOrUnit="factory" quantity="1"/>
@@ -1674,28 +1676,33 @@
 				<!-- list all available techs for this map, for all players possible -->
 				<technologies>
 						<!-- this is the current list of all HARDCODED techs that come with TripleA -->
-						<!-- superSub requires all isSub units to have a "_ss" image variant -->
+						<!-- (+1 attack to isSub) superSub requires all isSub units to have a "_ss" image variant -->
 						<techname name="superSub"/>
-						<!-- jetPower requires all non-isStrategicBomber units to have a "_jp" image variant (and "_lr_jp") -->
+						<!-- (+1 att or def for isAir non-isStrategicBomber) jetPower requires all non-isStrategicBomber units to have a "_jp" image variant (and "_lr_jp") -->
 						<techname name="jetPower"/>
+						<!-- (removes all sea units from "production" and adds "Shipyards" production rules.  Only currently works when all players use a production frontier called "production") -->
 						<techname name="shipyards"/>
-						<!-- aARadar requires all isAA units to have a "_r" image variant (and "rockets_r") -->
+						<!-- (+1 attack for anti-air units) aARadar requires all isAA units to have a "_r" image variant (and "rockets_r" or "_rockets_r") -->
 						<techname name="aARadar"/>
-						<!-- longRangeAir requires all isAir units to have a "_lr" image variant (and "_lr_jp" OR "_lr_hb") -->
+						<!-- (+2 movement for isAir) longRangeAir requires all isAir units to have a "_lr" image variant (and "_lr_jp" OR "_lr_hb") -->
 						<techname name="longRangeAir"/>
-						<!-- heavyBomber requires all isStrategicBomber units to have a "_hb" image variant (and "_lr_hb") -->
+						<!-- (+X dice rolls for isAir isStrategicBomber) heavyBomber requires all isStrategicBomber units to have a "_hb" image variant (and "_lr_hb") -->
 						<techname name="heavyBomber"/>
+						<!-- (doubles number of units supported by artillery, and optionally by other support types) -->
 						<techname name="improvedArtillerySupport"/>
-						<!-- rocket requires all isAA units to have a "rockets" image variant (and "rockets_r") -->
+						<!-- (allows isAA and isRocket to shoot rockets) rocket requires all isAA units to have a "rockets" image variant if they are called "aaGun", and a "_rockets" if they are called anything else (and "rockets_r" or "_rockets_r") -->
 						<techname name="rocket"/>
+						<!-- (allows isAirTransport units to carry isAirTransportable units) -->
 						<techname name="paratroopers"/>
-						<!-- increasedFactoryProduction requires all isFactory units to have a "_it" image variant (and "_hit" and "_it_hit") -->
+						<!-- (gives +2 production slots to factories on territories worth at least 3, and halves the price of repairing) increasedFactoryProduction requires all isFactory units to have a "_it" image variant (and "_hit" and "_it_hit") -->
 						<techname name="increasedFactoryProduction"/>
+						<!-- (rolls a die at the end of the player's turn, adds that many PUs to their bank) -->
 						<techname name="warBonds"/>
+						<!-- (allows isLandTransport units to carry isInfantry units) -->
 						<techname name="mechanizedInfantry"/>
-						<!-- this is an example of renaming a technology. the first part is the new name, the second is the old name (the hardcoded tech's name) -->
+						<!-- (destroyerBombard allows isDestroyer to bombard) this is an example of renaming a technology. the first part is the new name, the second is the old name (the hardcoded tech's name) -->
 						<techname name="destroyersCanBombard" tech="destroyerBombard"/>
-						<!-- industrial technology replaces a users production frontier with one called productionIndustrialTechnology (and i don't use it in this map)
+						<!-- (industrialTechnology replaces a users production frontier with one called productionIndustrialTechnology (and i don't use it in this map))
 						<techname name="industrialTechnology"/> -->
 						
 						<!-- below is a list of user created techs. they do nothing by themselves, but can be used a conditions for triggers. simply use a name that isn't already taken by a hardcoded tech -->
@@ -1753,7 +1760,7 @@
 								<tech name="mechanizedInfantry"/>
 						</category>
 						<category name="Submarine Technology">
-								<!-- as you can see, this is empty but there.  that is because we will add techs to thsi category later by triggers -->
+								<!-- as you can see, this category is empty.  that is because we will add techs to this category later by triggers -->
 						</category>
 				</playerTech>
 				<playerTech player="British">
@@ -1834,14 +1841,15 @@
 						if the unit has "isAA", but is not exactly named "aaGun", then you need units called "_rockets" and "_r" and "_rockets_r"
 						if the unit has "isRocket", you need "_rockets"
 						if the unit has "isAAforCombatOnly" and/or "isAAforBombingThisUnitOnly", then you need "_r"
-						if the unit has "isAir", but not "isStrategicBomber", then you need "_lr", and "_jp"
-						if the unit has "isAir", and is "isStrategicBomber", then you need "_lr", and "_hb"
+						if the unit has "isAir", but not "isStrategicBomber", then you need "_lr", and "_jp", and "_lr_jp"
+						if the unit has "isAir", and is "isStrategicBomber", then you need "_lr", and "_hb", and "_lr_hb"
 						if the unit has "isSub", then you need "_ss"
-						if the unit has "isFactory", or is called "factory", then you need "_it"
-						if a unit can be damaged (by being a factory, or by having "canBeDamaged", then you will need "_hit" and "_disabled"
+						if the unit has "isFactory", or is called "factory", then you need "_it", and "_it_hit"
+						if a unit can be damaged (by being a factory, or by having "canBeDamaged", then you will need "_hit"
+						if a unit can be disabled, then you will need "_disabled"
 						-->
 						
-				<!-- the following is a list of all ww2v3 technology.  These are not required, they only determine if a country starts with a tech or not -->
+				<!-- Tech Attachments for players.  The following is a list of all ww2v3 technology.  These are not required, they only determine if a country starts with a tech or not. -->
         		<!-- Germans -->
                 <attatchment name="techAttatchment" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
 						<!-- techCost is optional, and defaults to 5 if missing.  techs default to false if missing -->
@@ -1944,6 +1952,10 @@
                         <option name="warBonds" value="false"/>
                         <option name="mechanizedInfantry" value="false"/>
                 </attatchment>
+				
+				
+				
+				<!-- Unit Attachments -->
 
                 <!-- Infantry -->
                 <attatchment name="unitAttatchment" attatchTo="infantry" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
@@ -1955,9 +1967,9 @@
 						 <!-- <option name="isMarine" value="true"/> -->
                          <option name="attack" value="1"/>
                          <option name="defense" value="2"/>
-						 <!-- allows the unit to receive support from an "artillery" unit (land, sea, or air are allowed) -->
+						 <!-- artillerySupportable allows the unit to receive support from an "artillery" unit (land, sea, or air are allowed) -->
                          <option name="artillerySupportable" value="true"/>
-						 <!-- allows the unit to be transported by an "isAirTransport" unit, IF you have paratroopers technology -->
+						 <!-- isAirTransportable allows the unit to be transported by an "isAirTransport" unit, IF you have paratroopers technology -->
                          <option name="isAirTransportable" value="true"/>
 						 <!-- canBeGivenByTerritoryTo will allow a unit to be given from one player to another player, if it is in a territory with changeUnitOwners 
 								must be a list of Players who this unit can be given to.  example: value="Russians:Chinese" -->
@@ -1977,9 +1989,9 @@
                          <option name="transportCost" value="3"/>
                          <option name="attack" value="2"/>
                          <option name="defense" value="2"/>
-						 <!-- gives support (+1 attack) to "artillerySupportable" units (land, sea, or air are allowed) -->
+						 <!-- artillery gives support (+1 attack) to "artillerySupportable" units (land, sea, or air are allowed) -->
                          <option name="artillery" value="true"/>
-						 <!-- number of units that will be supported by the artillery, defaults to 1 if missing -->
+						 <!-- unitSupportCount is the number of units that will be supported by the artillery, defaults to 1 if missing -->
                          <option name="unitSupportCount" value="1"/>
 						 <option name="canBeGivenByTerritoryTo" value="Russians"/>
                          <option name="isAirTransportable" value="true"/>
@@ -1989,11 +2001,11 @@
                 <attatchment name="unitAttatchment" attatchTo="armour" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="2"/>
                          <option name="transportCost" value="3"/>
-						 <!-- allows the unit to move through multiple empty enemy territories in one turn -->
+						 <!-- canBlitz allows the unit to move through multiple empty enemy territories in one turn -->
                          <option name="canBlitz" value="true"/>
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
-						 <!-- allows the unit to transport "isInfantry" on a one-to-one basis, if you have the mechanizedInfantry technology -->
+						 <!-- isLandTransport allows the unit to transport "isInfantry" on a one-to-one basis, if you have the mechanizedInfantry technology -->
                          <option name="isLandTransport" value="true"/>
 						 <option name="canBeGivenByTerritoryTo" value="Russians"/>
 						 <!-- consumesUnits requires that a unit be present in a territory, then when this unit is placed the other units are destroyed / upgraded into this unit.  Can have multiple instances of this, which means it consumes multiple types of units.
@@ -2009,13 +2021,9 @@
                          <option name="isAir" value="true"/>
                          <option name="attack" value="3"/>
                          <option name="defense" value="4"/>
-						 <!-- properties for scrambling. allows the aircraft to enter a surrounding sea zone if the enemy is doing an attack on or from the surrounding sea zone -->
+						 <!-- canScramble and maxScrambleDistance are properties for scrambling. allows the aircraft to enter a surrounding sea zone if the enemy is doing an attack on or from the surrounding sea zone -->
                          <option name="canScramble" value="true"/>
                          <option name="maxScrambleDistance" value="1"/>
-						 <!-- isSuicide makes a unit die before combat begins, however they do get to roll -->
-						 <!--<option name="isSuicide" value="true"/>-->
-						 <!-- isKamikaze allows an air unit to use up all of its movement to go to a battle -->
-						 <!--<option name="isKamikaze" value="true"/>-->
                 </attatchment>
 				
                 <attatchment name="unitAttatchment" attatchTo="jp_fighter" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
@@ -2026,6 +2034,10 @@
                          <option name="defense" value="4"/>
 						 <option name="canScramble" value="true"/>
                          <option name="maxScrambleDistance" value="1"/>
+						 <!-- isSuicide makes a unit die before combat begins, however they do get to roll -->
+						 <!--<option name="isSuicide" value="true"/>-->
+						 <!-- isKamikaze allows an air unit to use up all of its movement to go to a battle -->
+						 <!--<option name="isKamikaze" value="true"/>-->
                 </attatchment>
 
                 <!-- Bomber -->
@@ -2034,7 +2046,7 @@
                          <option name="isAir" value="true"/>
                          <option name="attack" value="4"/>
                          <option name="defense" value="1"/>
-						 <!-- used for bombing factories -->
+						 <!-- isStrategicBomber allows a unit to bombing factories and canBeDamaged units -->
                          <option name="isStrategicBomber" value="true"/>
 						 <!-- transportCapacity + isAirTransport can be used for transporting units IF you have the paratroopers technology -->
                          <option name="transportCapacity" value="2"/>
@@ -2176,24 +2188,25 @@
                          <option name="defense" value="4"/>
 						 <!-- canBeDamaged sets if a unit can be attacked by strategic bombing raids or by rockets.  isFactory also allows these things -->
 						 <option name="canBeDamaged" value="true"/>
-						 <!-- maxDamage is the total damage the unit can take.  If a factory, and canProduceXUnits = -1 or is missing then maxDamage will be a multiple of the territory value (maxDamage defaults to 2 if canProduceXUnits = -1), otherwise it will be a set number -->
+						 <!-- maxDamage is the total damage the unit can take.  If a factory, and canProduceXUnits = -1 or is missing then maxDamage will be a multiple of the territory value (maxDamage defaults to 2 if canProduceXUnits = -1), otherwise it will be a set number 
+								So for example, if the unit isFactory Or canProduceUnits, And canProduceXUnits = -1, And maxDamage = 3, THEN you will be able to do 3x the territory value in damage to this unit. If However, canProduceXUnits = 2, and maxDamage = 3, then you can do up to 3 damage to this unit. -->
 						 <option name="maxDamage" value="4"/>
-						 <!-- maxOperationalDamage is used with certain features like isAirBase, repairsUnits, and givesMovement to determine if those features work or not based on the current damage of this unit. Does Not work with isFactory or canProduceUnits. -->
+						 <!-- maxOperationalDamage is used with certain features like isAirBase, repairsUnits, and givesMovement to determine if those features work or not based on the current damage of this unit. A disabled unit will not participate in combat too.  Does Not work with isFactory or canProduceUnits. -->
 						 <option name="maxOperationalDamage" value="0"/>
-						 <!-- isConstruction allows the unit to be placed in territories that don't contain factories. only "constructionsPerTerrPerTypePerTurn" contructions per territory per turn. 
-								may have only "maxConstructionsPerTypePerTerr" constructions total per territory without factory unless you enable "More Constructions without Factory", 
-								and may only have a number of constructions up to the value of the territory unless you enable "Unlimited Constructions" -->
+						 <!-- isConstruction allows the unit to be placed in territories that don't contain factories. only "constructionsPerTerrPerTypePerTurn" contructions of "constructionType" may be placed per territory per turn. 
+								may have only "maxConstructionsPerTypePerTerr" constructions Total per territory with/without a factory unless you enable "More Constructions with/without Factory", which will allow up a total number of up to the territory value
+								and "Unlimited Constructions" game property allows unlimited constructions total in a territory -->
 						 <option name="isConstruction" value="true"/>
 						 <!-- constructionType is just a unique string which identifies what kind of construction this. 
-								if two or more constructions have the exact same constructionType (and the same PerType rules), then will follow the same rules for placement.
+								if two or more constructions have the exact same constructionType (and the same PerType rules), then they will follow the same rules for placement.
 								example: if you have little_bunker and big_bunker both as type "bunker", with constructionsPerTerrPerTypePerTurn=2, then you could place 2 littles, or 2 bigs, or 1 little and 1 big in a territory 
 								if you do not want this unit to be effected by the global properties "More Constructions with/without Factory" and "Unlimited Constructions", then make sure the type ends in "structure". example: "harbour_structure" -->
 						 <option name="constructionType" value="bunker"/>
 						 <!-- constructionsPerTerrPerTypePerTurn is how many of this type you can place in a territory every turn -->
 						 <option name="constructionsPerTerrPerTypePerTurn" value="1"/>
 						 <!-- maxConstructionsPerTypePerTerr is how many max of this type may be in a territory. this must be greater than constructionsPerTerrPerTypePerTurn
-								if More Constructions without Factory = true, then the minimum will be either maxConstructionsPerTypePerTerr or the PU value of the territory (whichever number is greater) in territories without factories, while in territories with factories the limit is 10000.
-								if Unlimited Constructions = true, then this number becomes 10000 -->
+								if "More Constructions with/without Factory" = true, then the minimum will be either maxConstructionsPerTypePerTerr or the PU value of the territory (whichever number is greater) in territories with/without factories
+								if "Unlimited Constructions" = true, then this number becomes 10000 -->
 						 <option name="maxConstructionsPerTypePerTerr" value="1"/>
 						 <!--<option name="isTwoHit" value="true"/>-->
 						 <!-- canDieFromReachingMaxDamage means that if this unit reaches its maxDamage, then it will die.  maxDamage must be larger than zero -->
@@ -2240,7 +2253,8 @@
 						 <option name="maxDamage" value="6"/>
 						 <option name="maxOperationalDamage" value="3"/>
 						 <!-- repairsUnits is a colon delimited list of all the units this unit can repair. units to be repaired must be in the same territory as this unit. 
-								unless the unit being repaired is sea, and the unit repairing it is land, in which case the sea unit must be adjacent to the land unit -->
+								unless the unit being repaired is sea, and the unit repairing it is land, in which case the sea unit must be adjacent to the land unit 
+								example: option name="repairsUnits" value="battleship:super_carrier" -->
 						 <option name="repairsUnits" value="battleship"/>
 						 <option name="isConstruction" value="true"/>
 						 <option name="constructionType" value="harbour_structure"/>
@@ -2262,20 +2276,21 @@
 				
                 <!-- Factory -->
                 <attatchment name="unitAttatchment" attatchTo="factory" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
-						 <!-- factories can have movement, but not much else -->
+						 <!-- isFactory units can have movement, but not much else -->
                          <option name="isFactory" value="true"/>
+						 <!--<option name="maxDamage" value="-1"/>-->
 						 <!-- unitPlacementRestrictions are a list of territories where this unit can not be built. list can contain any number of territories, including sea zones .
 								every unit may have a list, and the lists may be different for each unit. default is no list.  
 								the list may be turned on/off with "Unit Placement Restrictions" game property -->
 						 <option name="unitPlacementRestrictions" value="Midway:Greenland:Gibraltar:Solomon Islands:Wake Island:Caroline Islands"/>
 						 <!-- canOnlyBePlacedInTerritoryValuedAtX means the minimum territory value to place the unit there. defaults to "-1" which means anywhere -->
 						 <option name="canOnlyBePlacedInTerritoryValuedAtX" value="2"/>
-						 <!-- maxBuiltPerPlayer is the number of this unit that can be BUILT by a player.  If they have fewer than this number they can build more, if they have more than this number they can not build more [this does not cause excess ones to disappear] -->
+						 <!-- maxBuiltPerPlayer is the number of this unit that can be BUILT by a player.  If they have fewer than this number they can build more, if they have more than this number they can not build more [this does not cause excess ones to disappear, and the player can still capture more and more of them if they are capturable] -->
 						 <option name="maxBuiltPerPlayer" value="3"/>
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
 						 <!-- unitPlacementOnlyAllowedIn is the direct inverse of unitPlacementRestrictions
 						 <option name="unitPlacementOnlyAllowedIn" value="Germany:East Balkans"/>-->
-						 <!-- canProduceXUnits allows a factory-type unit to produce a set amount of units no matter where it is located.  if -1 then it will produce at the value of the territory where it is.  if greater than -1, you must have "maxDamage" set to some number.  defaults to -1 if missing -->
+						 <!-- canProduceXUnits allows a factory-type unit to produce a set amount of units no matter where it is located.  if -1 then it will produce at the value of the territory where it is.  if greater than -1, you must have "maxDamage" set to some number if the unit is also "canBeDamaged" or "isFactory".  defaults to -1 if missing -->
 						 <option name="canProduceXUnits" value="-1"/>
 						 <!-- canProduceUnits allows a unit to be a factory, without all the other things that come with being a factory (like capturable, land, non-combat, etc).  So if you want flying factories, go ahead. Just don't complain if you get errors. 
 						 <option name="canProduceUnits" value="true"/>-->
@@ -2295,12 +2310,11 @@
 						 <!-- attackAA sets the value the AA will attack at (radar adds 1 if this is not 0). Defaults to 1.  Can not be more than half the diceSides (even with radar)-->
 						 <option name="attackAA" value="1"/>
 						 <!-- attackAAmaxDieSides sets the dice sides for aa guns.  defaults to whatever you chose above in diceSides (or 6 if you didn't choose).  
-								Be Warned that having different AA guns in the same territory, with different maxDiceSides for each, could result in unexpected behavior.  
-								Also be warned that all aa attack values (including with Radar and without Radar), MUST divide into attackAAmaxDieSides without remainders, or else there WILL be errors in LowLuck! -->
+								Be Warned that all aa attack values (including with Radar and without Radar), MUST divide into attackAAmaxDieSides without remainders, or else there WILL be errors in LowLuck! -->
 						 <option name="attackAAmaxDieSides" value="6"/>
 						 <!-- isAAforCombatOnly allows this unit to be an AA gun for normal combat only.  it will not defend against strategic bombing raids 
 						 <option name="isAAforCombatOnly" value="true"/>-->
-						 <!-- isAAforBombingThisUnitOnly allows this unit to be an AA gun only when this unit is directly attacked by a strategic bombing raid.  it will not defend against a normal attack 
+						 <!-- isAAforBombingThisUnitOnly allows this unit to be an AA gun only when this unit is directly attacked by a strategic bombing raid (currently defends against all strategic bombing attacks in this territory, not just against this unit).  it will not defend against a normal attack 
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>-->
 						 <!-- isRocket allows this unit to become a rocket if the player has the rocket technology.  If the unit is named exactly "aaGun" then it will require an image called "rockets".  If the unit is named anything else, then it will require an image with "_rockets" appended to its original name.
 						 <option name="isRocket" value="true"/>-->
@@ -2309,7 +2323,8 @@
                 </attatchment>
 				
 				
-				<!-- <option name="unitProduction" value="x"/> must be placed under <option name="production" value="x"/> if it is being used. This is because a recent update to TripleA had the setting of 'production' automatically set 'unitProduction' to be equal to it. -->
+				<!-- Territory Attachments -->
+					<!-- <option name="unitProduction" value="x"/> must be placed under <option name="production" value="x"/> if it is being used. This is because a recent update to TripleA had the setting of 'production' automatically set 'unitProduction' to be equal to it. -->
 				
 				<attatchment name="territoryAttatchment" attatchTo="West Balkans" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
@@ -2343,10 +2358,6 @@
                         <option name="capital" value="Germans"/>
 						<!-- victoryCity uses an image located in the "misc" folder of a map called "vc.png", and the location is determined in a file called "vc.txt" in the map's root directory -->
 						<option name="victoryCity" value="true"/>
-						<!-- unitProduction is used only with ww2v3 factory damage rules. only put in territories that start with a factory. should be equal to the production of the territory, but can be less if you want the factories to start damaged.  
-								Only needed if you are using "SBR Affects Unit Production", and not needed if you are using "Damage From Bombing Done To Units Instead Of Territories" 
-								Must be placed UNDER 'production' in the xml, because 'production' automatically sets 'unitProduction' to be equal otherwise.
-                        <option name="unitProduction" value="14"/>-->
 						<!--- originalFactory means that the original controller of the territory may produce infinite units there, however if it is captured the opponent may only produce as normal, not infinite units 
 						<option name="originalFactory" value="true"/> -->
 						<!-- navalBase territory attachment works according to original pacific rules: it increases the non-combat movement of naval units by +1 IF they go from friendly naval base TO friendly naval base
@@ -2354,6 +2365,16 @@
 						<!-- airBase territory attachment works according to original pacific rules: it allows free movement between the land territory and any connecting water territories, 
 								which potentially gives an air units +2 movement if they move from airbase to airbase and both airbases have water connecting to them on the route (or are islands)
 						<option name="airBase" value="true"/> -->
+						<!-- unitProduction is complex and has 2 uses, depending on how you plan on dealing with damage. 
+									(setting "production" sets "unitProduction" at the same time to be equal, therefore unitProduction defaults to production if it is not set, or if it is set before production. 
+									If you want unitProduction to be different, please set it after you set production.)
+							1. 	First use is used only with ww2v3 factory damage rules ("SBR Affects Unit Production"), which have damage done to a Territory, not to a Unit.
+									This decides the damage the territory starts at.  If unitProduction is less than production, then the territory starts damaged.  If they are equal, then the territory is not damaged. 
+							2. 	Second use is used with newer maps which are using the new damage rules ("Damage From Bombing Done To Units Instead Of Territories"), which have damage done to an individual Unit instead of a Territory.
+									When used with these rules, "unitProduction" lets you set the unit production potential of a territory, separate from the production. This means a territory with unitProduction = 2 will be able to produce 2 units there, regardless of if production is 0 or 20.
+									The damage potential of these units will normally be 2x the unitProduction, but this can be set individually by creative use of maxDamage and canProduceXUnits.
+								Must be placed UNDER 'production' in the xml, because 'production' automatically sets 'unitProduction' to be equal otherwise.
+                        <option name="unitProduction" value="14"/>-->
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Midway" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">

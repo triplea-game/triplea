@@ -481,18 +481,27 @@ class ChangeUnitProduction extends Change
     private static final long serialVersionUID = -1485932997086849018L;
     
     private final int m_unitProduction;
+    private final int m_old;
     private final Territory m_location;
 
 
+    ChangeUnitProduction(Territory terr, int quantity, int oldQuantity)
+    {
+        m_location = terr;
+        m_unitProduction = quantity;
+        m_old = oldQuantity;
+    }
+    
     ChangeUnitProduction(Territory terr, int quantity)
     {
         m_location = terr;
         m_unitProduction = quantity;
+        m_old = TerritoryAttachment.get(terr).getUnitProduction();
     }
 
     public Change invert()
     {
-        return new ChangeUnitProduction(m_location, -m_unitProduction);
+        return new ChangeUnitProduction(m_location, m_old, m_unitProduction);
     }
 
     protected void perform(GameData data)

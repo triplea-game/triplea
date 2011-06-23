@@ -1163,11 +1163,12 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         change.add(remove);
         change.add(place);
         
+        /* No longer needed, as territory unitProduction is now set by default to equal the territory value. Therefore any time it is different from the default, the map maker set it, so we shouldn't screw with it.
         if(Match.someMatch(units, Matches.UnitIsFactoryOrCanProduceUnits) && Match.countMatches(unitsAlreadyThere, Matches.UnitIsFactoryOrCanProduceUnits) < 1 && isSBRAffectsUnitProduction())
         {
             Change unitProd = ChangeFactory.changeUnitProduction(at, getProduction(at));
             change.add(unitProd);
-        }
+        }*/
 
         //can we move planes to land there
         

@@ -1026,7 +1026,7 @@ public class UnitAttachment extends DefaultAttachment
         m_isAirTransportable || 
         m_isCombatTransport
         )
-        throw new GameParseException("Invalid Unit attatchment" + this);
+        throw new GameParseException("Invalid Unit attatchment, " + this);
 
     }
     else if(m_isSea)
@@ -1047,7 +1047,7 @@ public class UnitAttachment extends DefaultAttachment
         m_isAirTransport || 
         m_isKamikaze
         )
-        throw new GameParseException("Invalid Unit Attatchment" + this);
+        throw new GameParseException("Invalid Unit Attatchment, " + this);
     }
     else //if land
     {
@@ -1061,39 +1061,39 @@ public class UnitAttachment extends DefaultAttachment
         m_isCombatTransport || 
         m_isKamikaze
         )
-        throw new GameParseException("Invalid Unit Attatchment" + this);
+        throw new GameParseException("Invalid Unit Attatchment, " + this);
     }
 
     if(m_attackAA < 0 || m_attackAAmaxDieSides < -1 || m_attackAAmaxDieSides > 200)
     {
-      throw new GameParseException("Invalid Unit Attatchment" + this);
+      throw new GameParseException("Invalid Unit Attatchment, attackAA or attackAAmaxDieSides is wrong, " + this);
     }
 
     if(m_carrierCapacity != -1 && m_carrierCost != -1)
     {
-      throw new GameParseException("Invalid Unit Attatchment" + this);
+      throw new GameParseException("Invalid Unit Attatchment, carrierCost and carrierCapacity can not be set at same time, " + this);
     }
 
     if(m_transportCost != -1 && m_transportCapacity != -1)
     {
-      throw new GameParseException("Invalid Unit Attatchment" + this);
+      throw new GameParseException("Invalid Unit Attatchment, transportCost and transportCapacity can not be set at same time, " + this);
     }
 
     if(((m_bombingBonus >= 0 || m_bombingMaxDieSides >= 0) && !(m_isStrategicBomber || m_isAA))
     		|| (m_bombingBonus < -1 || m_bombingMaxDieSides < -1)
     		|| (m_bombingBonus > 10000 || m_bombingMaxDieSides > 200))
     {
-      throw new GameParseException("Invalid Unit Attatchment" + this);
+      throw new GameParseException("Invalid Unit Attatchment, something wrong with bombingBonus or bombingMaxDieSides, " + this);
     }
 
     if(m_maxBuiltPerPlayer < -1)
     {
-      throw new GameParseException("Invalid Unit Attatchment" + this);
+      throw new GameParseException("Invalid Unit Attatchment, maxBuiltPerPlayer can not be negative, " + this);
     }
 
     if(m_isCombatTransport && m_transportCapacity < 1)
     {
-      throw new GameParseException("Invalid Unit Attatchment" + this);
+      throw new GameParseException("Invalid Unit Attatchment, can not have isCombatTransport on unit without transportCapacity, " + this);
     }
 
     if(m_isSea && m_transportCapacity != -1 && Properties.getTransportCasualtiesRestricted(data) && (m_attack > 0 || m_defense > 0) && !m_isCombatTransport) 
@@ -1130,7 +1130,7 @@ public class UnitAttachment extends DefaultAttachment
     
     if((m_canBeDamaged && (m_maxDamage < 1)) || (!m_canBeDamaged && !m_isFactory && (m_maxDamage >= 0)) || (m_canDieFromReachingMaxDamage && !(m_maxDamage >= 0 || m_isFactory)) || (m_canBeDamaged && m_isFactory))
     {
-    	throw new GameParseException("Invalid Unit Attatchment" + this);
+    	throw new GameParseException("Invalid Unit Attatchment, something wrong with canBeDamaged or maxDamage or canDieFromReachingMaxDamage or isFactory, " + this);
     }
     
   }
@@ -1336,12 +1336,14 @@ public class UnitAttachment extends DefaultAttachment
 		  stats.append("can be Damaged By Raids, ");
 		  if (m_maxOperationalDamage > -1)
 			  stats.append(m_maxOperationalDamage + " Max Operational Damage, ");
-		  if (m_maxDamage > -1)
+		  if ((m_canProduceUnits || m_isFactory) && m_canProduceXUnits < 0)
+			  stats.append("Total Damage up to " + (m_maxDamage > -1 ? m_maxDamage : 2) + "x Territory Value, ");
+		  else if (m_maxDamage > -1)
 			  stats.append(m_maxDamage + " Max Total Damage, ");
 		  if (m_canDieFromReachingMaxDamage)
 			  stats.append("will Die If Max Damage Reached, ");
 	  }
-	  else if (m_isFactory)
+	  else if (m_canBeDamaged || m_isFactory)
 		  stats.append("can be Attacked By Raids, ");
 	  
 	  if (m_isTwoHit)
@@ -1454,7 +1456,7 @@ public class UnitAttachment extends DefaultAttachment
 		  stats.append("has Placement Restrictions, ");
 	  
 	  if (m_canOnlyBePlacedInTerritoryValuedAtX > 0 && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
-		  stats.append("must be Placed In Territory Valued " + m_canOnlyBePlacedInTerritoryValuedAtX + " Or Greater, ");
+		  stats.append("must be Placed In Territory Valued >=" + m_canOnlyBePlacedInTerritoryValuedAtX + ", ");
 	  
 	  
 	  if (stats.indexOf(", ") > -1)

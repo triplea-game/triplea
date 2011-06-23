@@ -618,6 +618,7 @@ public class TriggerAttachment extends DefaultAttachment{
         Change place = ChangeFactory.addUnits(terr, units);
         change.add(place);
         
+        /* No longer needed, as territory unitProduction is now set by default to equal the territory value. Therefore any time it is different from the default, the map maker set it, so we shouldn't screw with it.
         if(Match.someMatch(units, Matches.UnitIsFactoryOrCanProduceUnits) && !Match.someMatch(terr.getUnits().getUnits(), Matches.UnitIsFactoryOrCanProduceUnits) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
         {
         	// if no factories are there, make sure the territory has no damage (that unitProduction = production)
@@ -628,7 +629,7 @@ public class TriggerAttachment extends DefaultAttachment{
         	
             Change unitProd = ChangeFactory.changeUnitProduction(terr, prod);
             change.add(unitProd);
-        }
+        }*/
 
         aBridge.addChange(change);
         // handle adding to enemy territories

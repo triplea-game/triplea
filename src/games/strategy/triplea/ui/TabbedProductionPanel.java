@@ -39,7 +39,7 @@ import javax.swing.*;
  */
 public class TabbedProductionPanel extends ProductionPanel
 {
-	private static final int MAX_COLUMNS = 9;
+	private int m_maxColumns = 10;
     private int m_rows;
 	private int m_columns;
 
@@ -90,8 +90,16 @@ public class TabbedProductionPanel extends ProductionPanel
             	landRules.add(rule);
             }
         }
-         m_rows = Math.max(2, new BigDecimal(m_rules.size()).divide(new BigDecimal(MAX_COLUMNS),BigDecimal.ROUND_UP).intValue());
-         m_columns = new BigDecimal(m_rules.size()).divide(new BigDecimal(m_rows), BigDecimal.ROUND_UP).intValue();
+        
+        if (m_rules.size() <= 36) // 8 columns 2 rows is perfect for small screens, 12 columns 3 rows is perfect for mid-sized screens, while 16 columns and 5-8 rows is perfect for really big screens.
+        	m_maxColumns = Math.max(8, Math.min(12, new BigDecimal(m_rules.size()).divide(new BigDecimal(3),BigDecimal.ROUND_UP).intValue()));
+        else if (m_rules.size() <= 64)
+        	m_maxColumns = Math.max(8, Math.min(16, new BigDecimal(m_rules.size()).divide(new BigDecimal(4),BigDecimal.ROUND_UP).intValue()));
+        else
+        	m_maxColumns = Math.max(8, Math.min(16, new BigDecimal(m_rules.size()).divide(new BigDecimal(5),BigDecimal.ROUND_UP).intValue()));
+        
+        m_rows = Math.max(2, new BigDecimal(m_rules.size()).divide(new BigDecimal(m_maxColumns),BigDecimal.ROUND_UP).intValue());
+        m_columns = new BigDecimal(m_rules.size()).divide(new BigDecimal(m_rows), BigDecimal.ROUND_UP).intValue();
         
         
         if(allRules.size()>0) {
