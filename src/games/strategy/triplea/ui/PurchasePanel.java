@@ -28,6 +28,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -234,30 +235,10 @@ public class PurchasePanel extends ActionPanel
             getData().acquireReadLock();
             try
             {
-            	if(isSBRAffectsUnitProduction())
-            	{
-            	    int addedProd = 0;
-            	    PlayerID player = getCurrentPlayer();
-            	    if(isIncreasedFactoryProduction(player))
-            	        addedProd = 2;
-            	    
-            		for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getData(), getCurrentPlayer()))) 
-                    {
-            		    TerritoryAttachment ta = TerritoryAttachment.get(t);
-                        int terrProd = ta.getUnitProduction();
-                        if(ta.getProduction() > 2)
-                            totalProd += Math.max(0, terrProd + addedProd);
-                        else
-                            totalProd += Math.max(0, terrProd);
-                    }
-            	}
-            	else
-            	{            		
-	                for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getData(), getCurrentPlayer()))) 
-	                {
-	                    totalProd += TerritoryAttachment.get(t).getProduction();
-	                }
-            	}
+                for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getData(), getCurrentPlayer()))) 
+                {
+                    totalProd += TripleAUnit.getProductionPotentialOfTerritory(t.getUnits().getUnits(), t, getCurrentPlayer(), getData(), true);
+                }
             } finally
             {
                 getData().releaseReadLock();

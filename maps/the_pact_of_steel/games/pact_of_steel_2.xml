@@ -4431,6 +4431,7 @@
 						<number min="1" max="100"/>
 				</property>
 
+						<!-- Placement Restricted By Factory warns the player whenever they try to produce more units than their factories can handle (can be turned off for individual players using rules attachments for unlimitedProduction -->
 				<property name="Placement Restricted By Factory" value="true" editable="false">
 						<boolean/>
 				</property>
