@@ -1026,7 +1026,7 @@ public class UnitAttachment extends DefaultAttachment
         m_isAirTransportable || 
         m_isCombatTransport
         )
-        throw new GameParseException("Invalid Unit attatchment, " + this);
+        throw new GameParseException("Invalid Unit attatchment, air units can not have certain properties, " + this);
 
     }
     else if(m_isSea)
@@ -1047,7 +1047,7 @@ public class UnitAttachment extends DefaultAttachment
         m_isAirTransport || 
         m_isKamikaze
         )
-        throw new GameParseException("Invalid Unit Attatchment, " + this);
+        throw new GameParseException("Invalid Unit Attatchment, sea units can not have certain properties, " + this);
     }
     else //if land
     {
@@ -1061,7 +1061,7 @@ public class UnitAttachment extends DefaultAttachment
         m_isCombatTransport || 
         m_isKamikaze
         )
-        throw new GameParseException("Invalid Unit Attatchment, " + this);
+        throw new GameParseException("Invalid Unit Attatchment, land units can not have certain properties, " + this);
     }
 
     if(m_attackAA < 0 || m_attackAAmaxDieSides < -1 || m_attackAAmaxDieSides > 200)
@@ -1098,22 +1098,22 @@ public class UnitAttachment extends DefaultAttachment
 
     if(m_isSea && m_transportCapacity != -1 && Properties.getTransportCasualtiesRestricted(data) && (m_attack > 0 || m_defense > 0) && !m_isCombatTransport) 
     {
-    	throw new GameParseException("Restricted transports cannot have attack or defense");
+    	throw new GameParseException("Restricted transports cannot have attack or defense, " + this);
     }
     
     if(m_isConstruction && (m_constructionType == "none" || m_constructionType == "" || m_constructionType == null || m_constructionsPerTerrPerTypePerTurn < 0 || m_maxConstructionsPerTypePerTerr < 0))
     {
-    	throw new GameParseException("Constructions must have constructionType and positive constructionsPerTerrPerType and maxConstructionsPerType");
+    	throw new GameParseException("Constructions must have constructionType and positive constructionsPerTerrPerType and maxConstructionsPerType, " + this);
     }
     
     if(!m_isConstruction && ((m_constructionType != "none" && m_constructionType != "" && m_constructionType != null) || m_constructionsPerTerrPerTypePerTurn >= 0 || m_maxConstructionsPerTypePerTerr >= 0))
     {
-    	throw new GameParseException("Constructions must have isConstruction true");
+    	throw new GameParseException("Constructions must have isConstruction true, " + this);
     }
     
     if(m_constructionsPerTerrPerTypePerTurn > m_maxConstructionsPerTypePerTerr)
     {
-    	throw new GameParseException("Constructions must have constructionsPerTerrPerTypePerTurn Less than maxConstructionsPerTypePerTerr");
+    	throw new GameParseException("Constructions must have constructionsPerTerrPerTypePerTurn Less than maxConstructionsPerTypePerTerr, " + this);
     }
     
     if(m_unitPlacementRestrictions != null)
@@ -1144,7 +1144,7 @@ public class UnitAttachment extends DefaultAttachment
     	  //Validate all units exist
     	  UnitType ut = getData().getUnitTypeList().getUnitType(name);
           if(ut == null)
-              throw new IllegalStateException("Unit Attachments: No unit called:" + name);
+              throw new IllegalStateException("Unit Attachments: No unit called: " + name);
           rVal.add(ut);
       }
       return rVal;
@@ -1159,7 +1159,7 @@ public class UnitAttachment extends DefaultAttachment
     	  //Validate all territories exist
           Territory territory = getData().getMap().getTerritory(name);
           if(territory == null)
-              throw new IllegalStateException("Unit Attachments: No territory called:" + name); 
+              throw new IllegalStateException("Unit Attachments: No territory called: " + name); 
           rVal.add(territory);
       }        
       return rVal;

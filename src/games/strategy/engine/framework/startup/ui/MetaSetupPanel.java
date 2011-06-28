@@ -9,6 +9,8 @@ import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
+import games.strategy.net.BareBonesBrowserLaunch;
+import games.strategy.ui.Util;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -49,6 +51,7 @@ public class MetaSetupPanel extends SetupPanel
     private JButton m_connectToHostedGame;
     private JButton m_connectToLobby;
     private JButton m_downloadMaps;
+    private JButton m_ruleBook;
     private JButton m_about;
     private SetupPanelModel m_model;
     
@@ -70,6 +73,7 @@ public class MetaSetupPanel extends SetupPanel
         m_connectToHostedGame = new JButton("Connect to Networked Game");
         m_connectToLobby = new JButton("Find Games Online on the Lobby Server");
         m_downloadMaps = new JButton("Download Maps");
+        m_ruleBook = new JButton("Rule Book...");
         m_about = new JButton("About...");
     }
 
@@ -87,7 +91,8 @@ public class MetaSetupPanel extends SetupPanel
         add(m_connectToHostedGame, new GridBagConstraints(0,4,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
         add(m_connectToLobby, new GridBagConstraints(0,5,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
         add(m_downloadMaps, new GridBagConstraints(0,6,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
-        add(m_about, new GridBagConstraints(0,7,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
+        add(m_ruleBook, new GridBagConstraints(0,7,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
+        add(m_about, new GridBagConstraints(0,8,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
 
         //top space
         add(new JPanel(), new GridBagConstraints(0,100,1,1,1,1,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00,0,0,0), 0,0) );
@@ -154,6 +159,12 @@ public class MetaSetupPanel extends SetupPanel
 			}
 		});
         
+        m_ruleBook.addActionListener(new ActionListener() {			
+			public void actionPerformed(ActionEvent e) {
+				ruleBook();				
+			}
+		});
+        
         m_about.addActionListener(new ActionListener() {			
 			public void actionPerformed(ActionEvent e) {
 				about();				
@@ -166,11 +177,50 @@ public class MetaSetupPanel extends SetupPanel
     	DownloadMapDialog.downloadGames(this);
 		
 	}
+    
+    private void ruleBook() {
+    	try {
+    		// We open both the actual rule book, and the web page for all guides.  
+    		// This way we can add other guides and rulebooks and tutorials later, as well as being able to update them after the stable is out.
+    		BareBonesBrowserLaunch.openURL("http://triplea.sourceforge.net/TripleA_RuleBook.pdf");
+    		BareBonesBrowserLaunch.openURL("http://triplea.sourceforge.net/mywiki/Guides");
+    		//BareBonesBrowserLaunch.openURL("https://sourceforge.net/projects/triplea/files/help/");
+    	} catch (Exception ex) {
+    		System.out.println("Error: " + ex);  //print the error
+		}
+    	/* we could also try opening the file on the computer, if triplea comes with it:
+    	class pdfopen           //class pdfopen
+		{
+		    public static void main(String args[])       //main function
+		    {
+		        try                                      //try statement
+		        {
+		            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + "c:\\chart.pdf");   //open the file chart.pdf
+		
+		        } catch (Exception e)                    //catch any exceptions here
+		          {
+		              System.out.println("Error" + e );  //print the error
+		          }
+		    }
+		}
+		
+		// or...
+		if (Desktop.isSupported()) {
+		    try {
+		        File myFile = new File("/path/to/file.pdf");
+		        Desktop.getDesktop().open(myFile);
+		    } catch (IOException ex) {
+		        // no application registered for PDFs
+		    }
+		}
+
+    	 */
+    }
 
     private void about() {
     	String text = "<h2>TripleA</h2>"+
 		"<p><b>Engine Version:</b> " + games.strategy.engine.EngineVersion.VERSION.toString()+
-		"<br><b>Authors:</b> Sean Bridges, and many others. Current Developers: ComradeKev, Veqryn, Wisconsin."+
+		"<br><b>Authors:</b> Sean Bridges, and many others. Current Developers: ComradeKev, Veqryn (Chris Duncan), Wisconsin."+
 		"<br>TripleA is an open-source game engine, allowing people to play many different games and maps."+
 		"<br>For more information please visit:<br>"+
 		"<b>WIKI:</b> <a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a><br>"+

@@ -1,172 +1,174 @@
 Changes for 1.3.2.1
+* Added new button to main screen, "Rule Book...", which will open up the user's default web browser and go to the triplea sf page with our future rulebook. (veqryn [Mark Christopher Duncan])
+
 * Updated "unitProduction" so when used in conjunction with "Damage From Bombing Done To Units Instead Of Territories" it sets the allowed number of units to be produced in that territory, thereby finally un-associating the PU production of a territory from the Unit production of a territory.
-  Also, updated "production" to automatically set "unitProduction" to be equal. So if you want a different unitProduction value, you must set it after production when attaching to a territory. (veqryn)
+  Also, updated "production" to automatically set "unitProduction" to be equal. So if you want a different unitProduction value, you must set it after production when attaching to a territory. (veqryn [Mark Christopher Duncan])
 
-* Fixed bug related to territory damage in history panel, as well as a null pointer error for factories on territories with no attachments, and also fixed a bug that was not allowing canProduceUnits units to have same max damage as factory units. (veqryn)
+* Fixed bug related to territory damage in history panel, as well as a null pointer error for factories on territories with no attachments, and also fixed a bug that was not allowing canProduceUnits units to have same max damage as factory units. (veqryn [Mark Christopher Duncan])
 
-* Added information on number of units being purchased to production panel. Also changed all upgrade/consumes type units to have their names displayed in blue. (veqryn)
+* Added information on number of units being purchased to production panel. Also changed all upgrade/consumes type units to have their names displayed in blue. (veqryn [Mark Christopher Duncan])
 
 * Added tabs option to production panel. (edwin van der wal)
 
-* Fixed bug where upgrades of sea units could be placed same turn as the base unit. (veqryn)
+* Fixed bug where upgrades of sea units could be placed same turn as the base unit. (veqryn [Mark Christopher Duncan])
 
-* Fixed bug where air units may not participate in a battle if they had been on an allied carrier that was involved in a battle. (veqryn)
+* Fixed bug where air units may not participate in a battle if they had been on an allied carrier that was involved in a battle. (veqryn [Mark Christopher Duncan])
 
-* Fixed bug where units with zero attack that were supportable never got to roll in combat. Also, re-wrote getRolls. (veqryn)
+* Fixed bug where units with zero attack that were supportable never got to roll in combat. Also, re-wrote getRolls. (veqryn [Mark Christopher Duncan])
 
 * Balancing fixes for LOTR Middle Earth. (ajmdemen)
 
-* Small fixes to exporter classes. (edwin van der wal & veqryn)
+* Small fixes to exporter classes. (edwin van der wal & veqryn [Mark Christopher Duncan])
 
-* Balancing fixes for Pact of Steel 2. (veqryn)
+* Balancing fixes for Pact of Steel 2. (veqryn [Mark Christopher Duncan])
 
-* Fixed issue with carriers that are also transports not allowing their land units to participate in battle when the sea unit has participated in battle. (veqryn)
+* Fixed issue with carriers that are also transports not allowing their land units to participate in battle when the sea unit has participated in battle. (veqryn [Mark Christopher Duncan])
 
 * Added many new admin features to lobby server and client. (wisconsin)
 
 * Added ability to export a savegame to an xml, thereby allowing in game editing of maps. (edwin van der wal)
 
-* Added new game property, "Neutral Flyover Allowed", which like it says, will allow you to fly over neutrals. (veqryn)
+* Added new game property, "Neutral Flyover Allowed", which like it says, will allow you to fly over neutrals. (veqryn [Mark Christopher Duncan])
 
-* Fixed bug in movement validation that allowed paths over impassibles and restricted territories to be taken into account for landing zones. (veqryn)
+* Fixed bug in movement validation that allowed paths over impassibles and restricted territories to be taken into account for landing zones. (veqryn [Mark Christopher Duncan])
 
-* Fixed bug in movement validation that allowed both combat and noncombat flyover of neutrals. (veqryn)
+* Fixed bug in movement validation that allowed both combat and noncombat flyover of neutrals. (veqryn [Mark Christopher Duncan])
 
-* Fixed bug in movement validation for paratroopers and mechanized infantry techs when a unit has received bonus movement from an airfield or harbour. (veqryn)
+* Fixed bug in movement validation for paratroopers and mechanized infantry techs when a unit has received bonus movement from an airfield or harbour. (veqryn [Mark Christopher Duncan])
 
-* Several small changes to Middle Earth, Big World v3 rules, and Pact of Steel 2. (veqryn)
+* Several small changes to Middle Earth, Big World v3 rules, and Pact of Steel 2. (veqryn [Mark Christopher Duncan])
 
-* Fixed to allow old Mac OS X computers to connect to lobby, again. (veqryn)
+* Fixed to allow old Mac OS X computers to connect to lobby, again. (veqryn [Mark Christopher Duncan])
 
-* Small fix to validation of user data for lobby. (veqryn)
+* Small fix to validation of user data for lobby. (veqryn [Mark Christopher Duncan])
 
-* Fixed bug where allied fighters on carriers were not moving with the carriers under certain situations, like when there was an transport ship in the same sea zone, or a harbour or airfield had modified their movement. (veqryn)
+* Fixed bug where allied fighters on carriers were not moving with the carriers under certain situations, like when there was an transport ship in the same sea zone, or a harbour or airfield had modified their movement. (veqryn [Mark Christopher Duncan])
 
 
 Changes for 1.3.1.1
-* Allowing lobby to parse user data more effectively. (wisconsin & veqryn)
+* Allowing lobby to parse user data more effectively. (wisconsin & veqryn [Mark Christopher Duncan])
 
-* Fixed major bug in low luck support attachments, where units got up to double the support they were supposed to get. (veqryn)
+* Fixed major bug in low luck support attachments, where units got up to double the support they were supposed to get. (veqryn [Mark Christopher Duncan])
 
 * Fixed Dynamix settings menu to use java 1.5 compatible coding, instead of java 1.6.  With this change, and the removal of string isEmpty calls, TripleA is once again compatible with java 1.5 and Mac OS computers. (wisconsin)
 
-* Updated then Added "Big World : v3 Rules" game, a mod of the original Big World mostly by Prussia, to triplea. (veqryn)
+* Updated then Added "Big World : v3 Rules" game, a mod of the original Big World mostly by Prussia, to triplea. (veqryn [Mark Christopher Duncan])
 
-* Removed String .isEmpty calls, as they are not supported under Java 1.5, also called java 5. (veqryn)
+* Removed String .isEmpty calls, as they are not supported under Java 1.5, also called java 5. (veqryn [Mark Christopher Duncan])
 
-* Fixed fighters and air disappearing even if you bought a carrier, if there is another turn like china, between yours and the placement of the carrier. (veqryn) 
+* Fixed fighters and air disappearing even if you bought a carrier, if there is another turn like china, between yours and the placement of the carrier. (veqryn [Mark Christopher Duncan]) 
 
-* Fixed paratrooper loading creating multiple copies of units. Fixed bugs for deselection of paratroopers and air. (veqryn)
+* Fixed paratrooper loading creating multiple copies of units. Fixed bugs for deselection of paratroopers and air. (veqryn [Mark Christopher Duncan])
 
-* Fixed minor bugs, including units having to roll to kill unescorted transports. (veqryn)
+* Fixed minor bugs, including units having to roll to kill unescorted transports. (veqryn [Mark Christopher Duncan])
 
-* Added more ways to get user info for connecting to the lobby on older max-os / unix machines. (veqryn)
+* Added more ways to get user info for connecting to the lobby on older max-os / unix machines. (veqryn [Mark Christopher Duncan])
 
 * Got lobby actions to correctly be logged, and fixed bug in banning system. (wisconsin)
 
-* Fixed all issues surrounding connecting to the lobby. (veqryn)
+* Fixed all issues surrounding connecting to the lobby. (veqryn [Mark Christopher Duncan])
 
-* Updated packaged java JRE to java 6 update 25. (veqryn)
+* Updated packaged java JRE to java 6 update 25. (veqryn [Mark Christopher Duncan])
 
 * Added ability to remove games from the lobby screen. (wisconsin)
 
 * Fixed error for old java versions that were unable to access online lobby. (wisconsin)
 
-* Created new unit attachment, createsUnitsList, which allows automatic creation of units by other units at end of turn. (veqryn)
+* Created new unit attachment, createsUnitsList, which allows automatic creation of units by other units at end of turn. (veqryn [Mark Christopher Duncan])
 
-* Fixed unitAttachment validation to allow factories to have maxDamage. (veqryn)
+* Fixed unitAttachment validation to allow factories to have maxDamage. (veqryn [Mark Christopher Duncan])
 
-* Fixed build.xml to work for macRelease. (veqryn)
+* Fixed build.xml to work for macRelease. (veqryn [Mark Christopher Duncan])
 
 
 Changes for 1.3.1.0
-* Fixed "what should bomber bomb" AI error, in all AIs. Also fixed bug in easy ai where it would not place any units if some were bunkers. (veqryn)
+* Fixed "what should bomber bomb" AI error, in all AIs. Also fixed bug in easy ai where it would not place any units if some were bunkers. (veqryn [Mark Christopher Duncan])
 
-* Fixed moore AI and easy AI to use new repairing method when trying to repair unit damage instead of territory damage. (veqryn)
+* Fixed moore AI and easy AI to use new repairing method when trying to repair unit damage instead of territory damage. (veqryn [Mark Christopher Duncan])
 
 * Some updates for Dynamix AI, and fixed AI bug caused by more than one map was opened per TripleA instance, and Added a Resource Collection Increaser cheat. (wisconsin)
 
 * Finished making repair rules work for both damage done to units and damage done to territories. 
-  A note to map makers: repair rules should mention the actual unit, not a _hit version of the unit.  This means all repair rules that mention "factory_hit" will need to be changed to mention "factory". (veqryn)
+  A note to map makers: repair rules should mention the actual unit, not a _hit version of the unit.  This means all repair rules that mention "factory_hit" will need to be changed to mention "factory". (veqryn [Mark Christopher Duncan])
 
-* Initial work on making repair rules work for damage done to units. (veqryn)
+* Initial work on making repair rules work for damage done to units. (veqryn [Mark Christopher Duncan])
 
-* Fixed null pointer in moore ai for games which don't have carriers. (veqryn)
+* Fixed null pointer in moore ai for games which don't have carriers. (veqryn [Mark Christopher Duncan])
 
-* Added method to unit class to find territory unit is in. (veqryn)
+* Added method to unit class to find territory unit is in. (veqryn [Mark Christopher Duncan])
 
-* Fixed moore AI and easy AI to not purchase any unit which has consumesUnits. (veqryn)
+* Fixed moore AI and easy AI to not purchase any unit which has consumesUnits. (veqryn [Mark Christopher Duncan])
 
-* Fixed bug in scrambling code where user was not being asked if they want to scramble. (veqryn)
+* Fixed bug in scrambling code where user was not being asked if they want to scramble. (veqryn [Mark Christopher Duncan])
 
-* Fixed infinite loop introduced into original factory owner check. (veqryn)
+* Fixed infinite loop introduced into original factory owner check. (veqryn [Mark Christopher Duncan])
 
-* Added new unit attachment, canProduceUnits, which allows a unit to produce other units, without being a factory. Therefor we can now have combat factories, flying factories, or aa gun factories, or w/e. (veqryn)
+* Added new unit attachment, canProduceUnits, which allows a unit to produce other units, without being a factory. Therefor we can now have combat factories, flying factories, or aa gun factories, or w/e. (veqryn [Mark Christopher Duncan])
 
-* Added the developer forum and the war club to the lobby help menu. (veqryn)
+* Added the developer forum and the war club to the lobby help menu. (veqryn [Mark Christopher Duncan])
 
-* Added tool tips for units to battle calculator. (veqryn)
+* Added tool tips for units to battle calculator. (veqryn [Mark Christopher Duncan])
 
-* Fixed null pointer caused by using .getOwner().getData()  and a word to anyone else who ever thinks about using this: don't, it causes null pointers if there are any neutrals, since neutral is a null player. (veqryn)
+* Fixed null pointer caused by using .getOwner().getData()  and a word to anyone else who ever thinks about using this: don't, it causes null pointers if there are any neutrals, since neutral is a null player. (veqryn [Mark Christopher Duncan])
 
-* Created new unit attachment, requiresUnits, which allows units to be placed only when certain units are in the territory. (veqryn)
+* Created new unit attachment, requiresUnits, which allows units to be placed only when certain units are in the territory. (veqryn [Mark Christopher Duncan])
 
-* Changed it so that Territory production defaults to Zero instead of 2, and that unitProduction gets set to a territory's production, though you can still set unitProduction manually if you set it AFTER you set production. (veqryn)
+* Changed it so that Territory production defaults to Zero instead of 2, and that unitProduction gets set to a territory's production, though you can still set unitProduction manually if you set it AFTER you set production. (veqryn [Mark Christopher Duncan])
 
-* Created new unit attachment, consumesUnits, which allows units to be upgraded or placed on top of other units. (veqryn)
+* Created new unit attachment, consumesUnits, which allows units to be upgraded or placed on top of other units. (veqryn [Mark Christopher Duncan])
 
-* Created new unit attachment, canOnlyBePlacedInTerritoryValuedAtX, which defaults to -1 meaning can be placed anywhere. (veqryn)
+* Created new unit attachment, canOnlyBePlacedInTerritoryValuedAtX, which defaults to -1 meaning can be placed anywhere. (veqryn [Mark Christopher Duncan])
 
-* Expanded 'disabled' logic to include airbases, repairsUnits, givesMovement, and combat units. Disabled units will not provide their abilities, like scrambling, movement, or repairing, to other units.  Disabled combat units will not participate in combat, and will be destroyed if captured. (veqryn)
+* Expanded 'disabled' logic to include airbases, repairsUnits, givesMovement, and combat units. Disabled units will not provide their abilities, like scrambling, movement, or repairing, to other units.  Disabled combat units will not participate in combat, and will be destroyed if captured. (veqryn [Mark Christopher Duncan])
 
-* Created the placement logic for canProduceXUnits, which now works properly. (veqryn)
+* Created the placement logic for canProduceXUnits, which now works properly. (veqryn [Mark Christopher Duncan])
 
-* Fixed display error where units with unit damage were not having their damage amount displayed. Still some bugs though for groups of units. (veqryn)
+* Fixed display error where units with unit damage were not having their damage amount displayed. Still some bugs though for groups of units. (veqryn [Mark Christopher Duncan])
 
-* Created new unit attachment, canDieFromReachingMaxDamage, which will cause a unit to die if they reach max damage through strat bombing or rockets. (veqryn)
+* Created new unit attachment, canDieFromReachingMaxDamage, which will cause a unit to die if they reach max damage through strat bombing or rockets. (veqryn [Mark Christopher Duncan])
 
-* Fixed bug in triggers that caused unit production damage to be done to a territory if a factory was placed via triggers. (veqryn)
+* Fixed bug in triggers that caused unit production damage to be done to a territory if a factory was placed via triggers. (veqryn [Mark Christopher Duncan])
 
-* Allowed rockets to also damage a unit, rather than a territory.  Further work on getting unit damage to work and display properly. (veqryn)
+* Allowed rockets to also damage a unit, rather than a territory.  Further work on getting unit damage to work and display properly. (veqryn [Mark Christopher Duncan])
 
-* Made disabled units actually work. (veqryn)
+* Made disabled units actually work. (veqryn [Mark Christopher Duncan])
 
-* Fixed bugs introduced into Strategic Bombing. (veqryn)
+* Fixed bugs introduced into Strategic Bombing. (veqryn [Mark Christopher Duncan])
 
 * Created new global property, "Damage From Bombing Done To Units Instead Of Territories", which when ON will have damage be done to units rather than territories, as territory damage was the old way of doing things. 
-  In order for this to work, you must have "SBR Affects Unit Production" turned OFF, as that is the trigger for per territory damage. (veqryn)
+  In order for this to work, you must have "SBR Affects Unit Production" turned OFF, as that is the trigger for per territory damage. (veqryn [Mark Christopher Duncan])
 
-* Created "canProduceXUnits" unit attachment. Set to "-1" if you want to produce the value of the territory the unit is in. Still working on the code for this. (veqryn)
+* Created "canProduceXUnits" unit attachment. Set to "-1" if you want to produce the value of the territory the unit is in. Still working on the code for this. (veqryn [Mark Christopher Duncan])
 
-* Removed "isCombatInfrastructure" and "unitDamage" from unit attachments, and also removed m_maxOperationalDamage from TripleAUnits. Unit damage is per unit, not per unit type, so it should never be a unit attachment. (veqryn)
+* Removed "isCombatInfrastructure" and "unitDamage" from unit attachments, and also removed m_maxOperationalDamage from TripleAUnits. Unit damage is per unit, not per unit type, so it should never be a unit attachment. (veqryn [Mark Christopher Duncan])
 
-* Stopped both Moore AI and Easy AI from buying any units that have maxBuildRestrictions. (veqryn)
+* Stopped both Moore AI and Easy AI from buying any units that have maxBuildRestrictions. (veqryn [Mark Christopher Duncan])
 
-* Added lobby rules web page to list of web pages available from the new help menu in the lobby screen. (veqryn)
+* Added lobby rules web page to list of web pages available from the new help menu in the lobby screen. (veqryn [Mark Christopher Duncan])
 
-* Fixed null pointer in unit drawer. (veqryn)
+* Fixed null pointer in unit drawer. (veqryn [Mark Christopher Duncan])
 
-* Fix for Moore AI, it was choosing to never ever attack neutrals in some situations, even if they blocked the path towards the enemy. (veqryn)
+* Fix for Moore AI, it was choosing to never ever attack neutrals in some situations, even if they blocked the path towards the enemy. (veqryn [Mark Christopher Duncan])
 
 * Abstracting MovePanel class. (frigoref)
 
-* Removing constants that refer to specific units, as we should be using unit attachments instead.  Also minor updates to unit attachment's new toString. (veqryn)
+* Removing constants that refer to specific units, as we should be using unit attachments instead.  Also minor updates to unit attachment's new toString. (veqryn [Mark Christopher Duncan])
 
-* Added "Reset" button to Map Zoom. (veqryn)
+* Added "Reset" button to Map Zoom. (veqryn [Mark Christopher Duncan])
 
-* Allowed for more information about units to be displayed as a tool tip on the territory panel. (veqryn)
+* Allowed for more information about units to be displayed as a tool tip on the territory panel. (veqryn [Mark Christopher Duncan])
 
-* Created new toString in unit attachment to only display important information that is different from a default unit with no attachments. (veqryn)
+* Created new toString in unit attachment to only display important information that is different from a default unit with no attachments. (veqryn [Mark Christopher Duncan])
 
-* Allowed for more information about units to be displayed as a tool tip during production screen.  Allowed tool tip to be displayed when hovering over unit icon, in addition to small info stats. (veqryn)
+* Allowed for more information about units to be displayed as a tool tip during production screen.  Allowed tool tip to be displayed when hovering over unit icon, in addition to small info stats. (veqryn [Mark Christopher Duncan])
 
-* Fixes for various null pointer errors. (veqryn)
+* Fixes for various null pointer errors. (veqryn [Mark Christopher Duncan])
 
-* New unit attachment setter, "unitPlacementOnlyAllowedIn", which is the direct inverse of "unitPlacementRestrictions". (veqryn)
+* New unit attachment setter, "unitPlacementOnlyAllowedIn", which is the direct inverse of "unitPlacementRestrictions". (veqryn [Mark Christopher Duncan])
 
-* Fixed issue [bug 3294118] where transports drop their ground units in the ocean when they engage in combat. (veqryn)
+* Fixed issue [bug 3294118] where transports drop their ground units in the ocean when they engage in combat. (veqryn [Mark Christopher Duncan])
 
-* Added new global property, "On Entering Units Destroyed Instead Of Captured", which if true allows units normally captured on entering to be destroyed.  Does not affect non-combat units, only affects combat units with the canBeCapturedOnEnteringBy attachment. (veqryn)
+* Added new global property, "On Entering Units Destroyed Instead Of Captured", which if true allows units normally captured on entering to be destroyed.  Does not affect non-combat units, only affects combat units with the canBeCapturedOnEnteringBy attachment. (veqryn [Mark Christopher Duncan])
 
 
 Changes for 1.3.0.0
@@ -174,149 +176,149 @@ Changes for 1.3.0.0
 
 * Another patch for Dynamix AI (wisconsin)
 
-* Added airfield_disabled.png and harbour_disabled.png for all nations (veqryn)
+* Added airfield_disabled.png and harbour_disabled.png for all nations (veqryn [Mark Christopher Duncan])
 
-* Flipped all unit graphics. All axis sea and air point left, while allies point right (except russian air points left).  All ground units for a country point same direction, left for japan and russia, right for everyone else. Non-combat units and aaGuns do not point any direction, or are same for all nations. (veqryn)
+* Flipped all unit graphics. All axis sea and air point left, while allies point right (except russian air points left).  All ground units for a country point same direction, left for japan and russia, right for everyone else. Non-combat units and aaGuns do not point any direction, or are same for all nations. (veqryn [Mark Christopher Duncan])
 
-* Fixed Neutrals charge to work properly, without java errors, if the neutral is attacked and there is a battle. Will now display a message in history panel if there is not enough PUs to remove. (veqryn)
+* Fixed Neutrals charge to work properly, without java errors, if the neutral is attacked and there is a battle. Will now display a message in history panel if there is not enough PUs to remove. (veqryn [Mark Christopher Duncan])
 
 * Determine if units are 'disabled' and display a unique icon for them (ComradeKev)
 
 * Initial work on Scrambling aircraft (ComradeKev)
 
-* Fixed bug in StrongAI/MooreAI where it would never attack a player if it lost too much TUV, and the TUV calc thought the enemy had zero TUV. Also fixed bug where it calced for the offensive value of walk in territories, instead of defensive value. (veqryn)
+* Fixed bug in StrongAI/MooreAI where it would never attack a player if it lost too much TUV, and the TUV calc thought the enemy had zero TUV. Also fixed bug where it calced for the offensive value of walk in territories, instead of defensive value. (veqryn [Mark Christopher Duncan])
 
-* Added a global property, "Capture Units On Entering Territory", which if true allows units to be captured instead of fighting. (veqryn)
+* Added a global property, "Capture Units On Entering Territory", which if true allows units to be captured instead of fighting. (veqryn [Mark Christopher Duncan])
 
-* Added new player attachment, captureUnitOnEnteringBy, which will allow this player to let some of the units be captured when a territory is taken over. (veqryn)
+* Added new player attachment, captureUnitOnEnteringBy, which will allow this player to let some of the units be captured when a territory is taken over. (veqryn [Mark Christopher Duncan])
 
-* Added new territory attachment, captureUnitOnEnteringBy, which will allow units in the territory to be taken when the territory is captured. (veqryn)
+* Added new territory attachment, captureUnitOnEnteringBy, which will allow units in the territory to be taken when the territory is captured. (veqryn [Mark Christopher Duncan])
 
-* Added new unit attachment, canBeCapturedOnEnteringBy, which will allow a unit to be taken when the territory is captured. (veqryn)
+* Added new unit attachment, canBeCapturedOnEnteringBy, which will allow a unit to be taken when the territory is captured. (veqryn [Mark Christopher Duncan])
 
-* Changed Strategic Bombing to account for isSuicide units. Now isSuicide units will also die if they strategic bomb something. (veqryn)
+* Changed Strategic Bombing to account for isSuicide units. Now isSuicide units will also die if they strategic bomb something. (veqryn [Mark Christopher Duncan])
 
-* Fixed error unit display of unit graphics, where things that were _hit needed _it on the end instead of front, sometimes resulting in needing _it_hit_it, etc. (veqryn)
+* Fixed error unit display of unit graphics, where things that were _hit needed _it on the end instead of front, sometimes resulting in needing _it_hit_it, etc. (veqryn [Mark Christopher Duncan])
 
-* Fixed null pointer in game data getNeighbors match. (veqryn)
+* Fixed null pointer in game data getNeighbors match. (veqryn [Mark Christopher Duncan])
 
-* Updating default maps to use latest properties. (veqryn)
+* Updating default maps to use latest properties. (veqryn [Mark Christopher Duncan])
 
-* Rewrote entire RulesAttachment.java so that territory conditions could use "count" with options like "original", "controlled", etc. (veqryn)
+* Rewrote entire RulesAttachment.java so that territory conditions could use "count" with options like "original", "controlled", etc. (veqryn [Mark Christopher Duncan])
 
-* Added new rule property option, "map", for use with Presence and Exclusion conditions. If used, it will return the entire map's territories. (veqryn)
+* Added new rule property option, "map", for use with Presence and Exclusion conditions. If used, it will return the entire map's territories. (veqryn [Mark Christopher Duncan])
 
-* Made it so that jet power technology and super subs technology no longer affect units with zero attack and zero defense. (veqryn)
+* Made it so that jet power technology and super subs technology no longer affect units with zero attack and zero defense. (veqryn [Mark Christopher Duncan])
 
-* Completely re-wrote checkUnitExclusions and Made unitPresence work with directExcludedTerritories, alliedExclusionTerritories, enemyExclusionTerritories, enemySurfaceExclusionTerritories. (veqryn)
+* Completely re-wrote checkUnitExclusions and Made unitPresence work with directExcludedTerritories, alliedExclusionTerritories, enemyExclusionTerritories, enemySurfaceExclusionTerritories. (veqryn [Mark Christopher Duncan])
 
-* Added new rule property and condition/objective, "directExcludedTerritories", which applies to the attached player. (veqryn)
+* Added new rule property and condition/objective, "directExcludedTerritories", which applies to the attached player. (veqryn [Mark Christopher Duncan])
 
 * Added new rule property and condition/objective, "unitPresence", as well as "directPresenceTerritories", "alliedPresenceTerritories", and "enemyPresenceTerritories". 
-  unitPresence is a unit and count for that unit, which must be used with a presence territories to determine if there are those units in those territories or not. (veqryn)
+  unitPresence is a unit and count for that unit, which must be used with a presence territories to determine if there are those units in those territories or not. (veqryn [Mark Christopher Duncan])
 
-* Added new trigger option, "conditionType", which can be set to AND, OR, XOR. This option defines the relationship conditions in a trigger must have, when there is more than 1 condition in the trigger. (veqryn)
+* Added new trigger option, "conditionType", which can be set to AND, OR, XOR. This option defines the relationship conditions in a trigger must have, when there is more than 1 condition in the trigger. (veqryn [Mark Christopher Duncan])
 
-* Fixed bug in triggers where an inverted trigger would activate when it should not, when one condition was false but another true. (veqryn)
+* Fixed bug in triggers where an inverted trigger would activate when it should not, when one condition was false but another true. (veqryn [Mark Christopher Duncan])
 
-* Added the ability for any construction of type ending in "structure" not to be changed by setting global values for unlimited/more constructions. Also fixed issue with submarine suicide units able to attack aircraft. (veqryn)
+* Added the ability for any construction of type ending in "structure" not to be changed by setting global values for unlimited/more constructions. Also fixed issue with submarine suicide units able to attack aircraft. (veqryn [Mark Christopher Duncan])
 
-* Updating UnitImageFactory to not rely on hardcoded unit names. Now any unit with isAA unit attachment will require _r and _rockets and _rockets_r IF you have those technologies.  Same applied for new aa gun rules and factories. (veqryn)
+* Updating UnitImageFactory to not rely on hardcoded unit names. Now any unit with isAA unit attachment will require _r and _rockets and _rockets_r IF you have those technologies.  Same applied for new aa gun rules and factories. (veqryn [Mark Christopher Duncan])
 
 * Added new unit attachment, isRocket, which will turn the unit into a rocket when the player has the rocket technology, without the unit being an AA gun.  
-  If the unit is named exactly "aaGun" then it will require an image called "rockets".  If the unit is named anything else, then it will require an image with "_rockets" appended to its original name. (veqryn)
+  If the unit is named exactly "aaGun" then it will require an image called "rockets".  If the unit is named anything else, then it will require an image with "_rockets" appended to its original name. (veqryn [Mark Christopher Duncan])
 
-* Added new unit attachment, isAAmovement, which when true the unit will follow the rules specified for movement of an AA gun, even if it is not an AA gun, or is a special kind of AA gun. (veqryn)
+* Added new unit attachment, isAAmovement, which when true the unit will follow the rules specified for movement of an AA gun, even if it is not an AA gun, or is a special kind of AA gun. (veqryn [Mark Christopher Duncan])
 
-* Fixed issue where battle calc calls with AA units was generating divide by zero. (veqryn)
+* Fixed issue where battle calc calls with AA units was generating divide by zero. (veqryn [Mark Christopher Duncan])
 
-* Fixed bug where battles never ended between units with zero attack/defense power. (veqryn)
+* Fixed bug where battles never ended between units with zero attack/defense power. (veqryn [Mark Christopher Duncan])
 
-* Added new menu option during a game, "Roll Dice...", in the "Game" drop down menu. It allows a player to roll as many dice, with any dice sides, that they want, independant from playing the game. (veqryn)
+* Added new menu option during a game, "Roll Dice...", in the "Game" drop down menu. It allows a player to roll as many dice, with any dice sides, that they want, independant from playing the game. (veqryn [Mark Christopher Duncan])
 
-* Added new unit attachments, <option name="isAAforCombatOnly" value="true"/> and <option name="isAAforBombingThisUnitOnly" value="true"/>, allow units to be AA guns for only certain attack types. (veqryn)
+* Added new unit attachments, <option name="isAAforCombatOnly" value="true"/> and <option name="isAAforBombingThisUnitOnly" value="true"/>, allow units to be AA guns for only certain attack types. (veqryn [Mark Christopher Duncan])
 
 * Added new unit attachments, <option name="attackAAmaxDieSides" value="6"/> and <option name="attackAA" value="1"/>, which allow you to independently set the attack values and max dice sides for AA units. Radar Tech changed to add "1" to the attack values. 
-  Attack values, including radar, may never go above half of the max dice sides. All attack values (with and without radar) should divide into diceSides without any remainder, otherwise the players will get errors during LowLuck. (veqryn)
+  Attack values, including radar, may never go above half of the max dice sides. All attack values (with and without radar) should divide into diceSides without any remainder, otherwise the players will get errors during LowLuck. (veqryn [Mark Christopher Duncan])
 
-* Fixed a bug where a player with both Mechanized Infantry and Paratroopers technology could no longer do any mechanized infantry movement because the validator was checking for paratroopers first. (veqryn)
+* Fixed a bug where a player with both Mechanized Infantry and Paratroopers technology could no longer do any mechanized infantry movement because the validator was checking for paratroopers first. (veqryn [Mark Christopher Duncan])
 
-* Created Low Luck for Strategic Bombing and Rockets. New global property, "Low Luck for Bombing and Territory Damage", and new Unit Attachments, bombingMaxDieSides and bombingBonus. Can be used to set different values for strategic bombing and rocket attacks, separate from the rest of the game. (veqryn)
+* Created Low Luck for Strategic Bombing and Rockets. New global property, "Low Luck for Bombing and Territory Damage", and new Unit Attachments, bombingMaxDieSides and bombingBonus. Can be used to set different values for strategic bombing and rocket attacks, separate from the rest of the game. (veqryn [Mark Christopher Duncan])
 
-* Added new unit attachment, <option name="givesMovement" value="1:fighter"/>, and global property, "Units May Give Bonus Movement", which allow units to give movement to other units. (veqryn)
+* Added new unit attachment, <option name="givesMovement" value="1:fighter"/>, and global property, "Units May Give Bonus Movement", which allow units to give movement to other units. (veqryn [Mark Christopher Duncan])
 
-* Fixed edit mode to allow changing ownership of sea territories, so long as it is not un-owned. (veqryn)
+* Fixed edit mode to allow changing ownership of sea territories, so long as it is not un-owned. (veqryn [Mark Christopher Duncan])
 
-* Fixed convoy zone movement validation, and created new global property to manage it: "Naval Units May Not NonCombat Move Into Controlled Sea Zones". Previously was disallowing moves into convoy zones during non-combat, and was marking transported land units as having been in battle. (veqryn)
+* Fixed convoy zone movement validation, and created new global property to manage it: "Naval Units May Not NonCombat Move Into Controlled Sea Zones". Previously was disallowing moves into convoy zones during non-combat, and was marking transported land units as having been in battle. (veqryn [Mark Christopher Duncan])
 
-* Updates to Pact of Steel 2, so that Japanese make use of isKamikaze and isSuicide. (veqryn)
+* Updates to Pact of Steel 2, so that Japanese make use of isKamikaze and isSuicide. (veqryn [Mark Christopher Duncan])
 
-* Added new unit attachment, isKamikaze, which will allow an air unit to use up all of its movement to go to a battle, if it wants to. (veqryn)
+* Added new unit attachment, isKamikaze, which will allow an air unit to use up all of its movement to go to a battle, if it wants to. (veqryn [Mark Christopher Duncan])
 
-* Fix for bug 3052260, Ww2v2 revised subs should now roll dice correctly, instead of dying prematurely in cases where the enemy has a destroyer. (veqryn)
+* Fix for bug 3052260, Ww2v2 revised subs should now roll dice correctly, instead of dying prematurely in cases where the enemy has a destroyer. (veqryn [Mark Christopher Duncan])
 
-* Fixed suicide units combat to take into account subs and destroyers. Follows relatively simple rules compared with normal combat. (veqryn)
+* Fixed suicide units combat to take into account subs and destroyers. Follows relatively simple rules compared with normal combat. (veqryn [Mark Christopher Duncan])
 
 * Created new global property, "Defending Suicide and Munition Units Do Not Fire", which when true will stop defending suicide units from acting like suicide units: dying first round, shooting before everyone else. 
-  So if true, defending suicide units act like normal units, however they still can not be taken casualty to attacks by other suicide units. (veqryn)
+  So if true, defending suicide units act like normal units, however they still can not be taken casualty to attacks by other suicide units. (veqryn [Mark Christopher Duncan])
 
-* Fixed various matches and places in the code to do with non-combat units, so that they will now also include isInfrastructure. (veqryn)
+* Fixed various matches and places in the code to do with non-combat units, so that they will now also include isInfrastructure. (veqryn [Mark Christopher Duncan])
 
 * Finished work on isSuicide, and also created new game property, "Suicide and Munition Casualties Restricted", which stops casualties from returning fire if true. 
-  Please be aware that the the code in MustFightBattle for these two new features needs to be double checked, especially for multiplayer games. (veqryn)
+  Please be aware that the the code in MustFightBattle for these two new features needs to be double checked, especially for multiplayer games. (veqryn [Mark Christopher Duncan])
 
-* Beginning work on unit attachment "isSuicide", which will allow a unit to die at the beginning of combat. (veqryn)
+* Beginning work on unit attachment "isSuicide", which will allow a unit to die at the beginning of combat. (veqryn [Mark Christopher Duncan])
 
-* Changed "isInfrastructure" to NOT be bombable. Made it so that "canBeDamaged" is now the switch to make something bombable. (veqryn)
+* Changed "isInfrastructure" to NOT be bombable. Made it so that "canBeDamaged" is now the switch to make something bombable. (veqryn [Mark Christopher Duncan])
 
-* Changed "isInfrastructure" to be captured when taken.  isInfrastructure will now be used in place of the planned 'isNonCombat'. (veqryn)
+* Changed "isInfrastructure" to be captured when taken.  isInfrastructure will now be used in place of the planned 'isNonCombat'. (veqryn [Mark Christopher Duncan])
 
-* Added new unit attachment, destroyedWhenCapturedBy, which is a list of players who would destroy a unit rather than capture it. New global property to activate it, "Units Can Be Destroyed Instead Of Captured". (veqryn)
+* Added new unit attachment, destroyedWhenCapturedBy, which is a list of players who would destroy a unit rather than capture it. New global property to activate it, "Units Can Be Destroyed Instead Of Captured". (veqryn [Mark Christopher Duncan])
 
-* Added new unit attachment, maxBuiltPerPlayer, which limits the number of a unittype that can be built for each player. (veqryn)
+* Added new unit attachment, maxBuiltPerPlayer, which limits the number of a unittype that can be built for each player. (veqryn [Mark Christopher Duncan])
 
-* Added history entries for many triggers. (veqryn)
+* Added history entries for many triggers. (veqryn [Mark Christopher Duncan])
 
-* Updated ui and utilities to allow islands to be selectable if they are inside a sea zone that ends or begins with "Sea Zone". Previously only allowed water territories to end with, not begin with "Sea Zone". (veqryn)
+* Updated ui and utilities to allow islands to be selectable if they are inside a sea zone that ends or begins with "Sea Zone". Previously only allowed water territories to end with, not begin with "Sea Zone". (veqryn [Mark Christopher Duncan])
 
-* Updated giveUnits and takeUnits to not throw Java errors for older maps. Not backwards compatible, just ignore it if true or false. (veqryn)
+* Updated giveUnits and takeUnits to not throw Java errors for older maps. Not backwards compatible, just ignore it if true or false. (veqryn [Mark Christopher Duncan])
 
-* Dice change: now allows max dice sides to be set in the xml, <diceSides value="6"/>. Defaults to 6 if not present. Can be any number between 1 and 200. This will allow many new types of games to be made. (veqryn and gansito)
+* Dice change: now allows max dice sides to be set in the xml, <diceSides value="6"/>. Defaults to 6 if not present. Can be any number between 1 and 200. This will allow many new types of games to be made. (veqryn [Mark Christopher Duncan] and gansito)
 
-* Bug fix in Trigger Attachments Tech change, was disqualifying techs based on attached player instead of aPlayer. (veqryn)
+* Bug fix in Trigger Attachments Tech change, was disqualifying techs based on attached player instead of aPlayer. (veqryn [Mark Christopher Duncan])
 
-* Redid canBeGivenByTerritoryTo unit attachment to be a colon delimited list of players, who are the players this unit can be given to. Also added a missing toString. (veqryn)
+* Redid canBeGivenByTerritoryTo unit attachment to be a colon delimited list of players, who are the players this unit can be given to. Also added a missing toString. (veqryn [Mark Christopher Duncan])
 
 * Completely redid giveUnitControl to be flexible. giveUnitControl and changeUnitOwners are now lists of players to give to, and a new unit attachment, canBeGivenByTerritory, and a new global property, "Give Units By Territory".  
-  takeUnitControl is deleted since no longer needed. This will break compatibility with 2 maps, but I have already updated them, so users just have to update their maps after the next version comes out. (veqryn, with some inspiration from rolflarsson)
+  takeUnitControl is deleted since no longer needed. This will break compatibility with 2 maps, but I have already updated them, so users just have to update their maps after the next version comes out. (veqryn [Mark Christopher Duncan], with some inspiration from rolflarsson)
 
-* New game property, "Triggered Victory", and new trigger option, "victory" value = victory message. Can be based on any condition. (veqryn)
+* New game property, "Triggered Victory", and new trigger option, "victory" value = victory message. Can be based on any condition. (veqryn [Mark Christopher Duncan])
 
 * Dynamix AI patch, various small improvements and logic fixes. (wisconsin)
 
-* New game property, "Low Luck for Technology", which will apply low luck rules to rolling for tech. (veqryn)
+* New game property, "Low Luck for Technology", which will apply low luck rules to rolling for tech. (veqryn [Mark Christopher Duncan])
 
 * Dynamix AI logging patch, should make logs easier to read. (wisconsin)
 
-* Completely re-wrote NoPuDelegate, and re-wrote the Rules Attachment for productionPerXTerritories. Now looks like: <option name="productionPerXTerritories" value="infantry" count="2"/>, and you can have multiple instances of this. (veqryn)
+* Completely re-wrote NoPuDelegate, and re-wrote the Rules Attachment for productionPerXTerritories. Now looks like: <option name="productionPerXTerritories" value="infantry" count="2"/>, and you can have multiple instances of this. (veqryn [Mark Christopher Duncan])
 
-* Small bug fix for Support attachments (squiddaddy), and a bug fix for the new placement logic. (veqryn)
+* Small bug fix for Support attachments (squiddaddy), and a bug fix for the new placement logic. (veqryn [Mark Christopher Duncan])
 
 * Dynamix AI patch, adding more features and improving some logic. (wisconsin)
 
-* New Repair options. New unit attachment: <option name="repairsUnits" value="battleship:bunker"/> will cause the attached unit to repair units in the list. New game properties: "Battleships repair at beginning of round" and "Two HitPoint Units Require Repair Facilities". (veqryn)
+* New Repair options. New unit attachment: <option name="repairsUnits" value="battleship:bunker"/> will cause the attached unit to repair units in the list. New game properties: "Battleships repair at beginning of round" and "Two HitPoint Units Require Repair Facilities". (veqryn [Mark Christopher Duncan])
 
-* Created 2 new autosaves: autosave_round_even and autosave_round_odd, which will autosave at the beginning of each round. Provides only the last 2 rounds in order to keep file spam to a minimum. (veqryn)
+* Created 2 new autosaves: autosave_round_even and autosave_round_odd, which will autosave at the beginning of each round. Provides only the last 2 rounds in order to keep file spam to a minimum. (veqryn [Mark Christopher Duncan])
 
 * New Carrier-Fighter interleaver for AI casualty selection.  Another patch for Dynamix AI. (wisconsin)
 
-* Fixed bug where the NoPuPurchase delegate was calling the normal Purchase delegate if the player had PUs left over, Resulting in the player getting multiple purchase screens. (veqryn)
+* Fixed bug where the NoPuPurchase delegate was calling the normal Purchase delegate if the player had PUs left over, Resulting in the player getting multiple purchase screens. (veqryn [Mark Christopher Duncan])
 
-* New game property, "Unit Placement Restrictions", and new Unit Attachment option, <option name="unitPlacementRestrictions" value="territory1:territory2"/>, prevent a unit or units from being placed in any given territory. (veqryn)
+* New game property, "Unit Placement Restrictions", and new Unit Attachment option, <option name="unitPlacementRestrictions" value="territory1:territory2"/>, prevent a unit or units from being placed in any given territory. (veqryn [Mark Christopher Duncan])
 
-* Beginning work on Unit Placement Restrictions. (veqryn)
+* Beginning work on Unit Placement Restrictions. (veqryn [Mark Christopher Duncan])
 
-* Moore AI's casualty picking fixed to work with all maps, not just ww2vX maps. (veqryn)
+* Moore AI's casualty picking fixed to work with all maps, not just ww2vX maps. (veqryn [Mark Christopher Duncan])
 
 * Caching of game data to speed up dynamix ai and multiple battle calcing in one turn.  And another patch for Dynamix AI. (wisconsin)
 
@@ -324,37 +326,37 @@ Changes for 1.3.0.0
 
 * Fix for Moore AI moving units towards capitals already conquered, and not letting units leave once they get there. (wisconsin)
 
-* Fix for Null Pointer error in Moore AI's factory movement. (veqryn)
+* Fix for Null Pointer error in Moore AI's factory movement. (veqryn [Mark Christopher Duncan])
 
-* Fix for Null Pointer error in Moore AI's movePlanesHomeNonCom. (veqryn)
+* Fix for Null Pointer error in Moore AI's movePlanesHomeNonCom. (veqryn [Mark Christopher Duncan])
 
-* Fix for Moore AI's horrible purchasing of transportable land units, which often resulted in the purchase of no land units. This also fixes the 'moore ai buying too many sea transports' issue. (veqryn)
+* Fix for Moore AI's horrible purchasing of transportable land units, which often resulted in the purchase of no land units. This also fixes the 'moore ai buying too many sea transports' issue. (veqryn [Mark Christopher Duncan])
 
-* Added new method for Moore AI to move landlocked units to coastal territories if amphibious (wisconsin), and fixed the purchasing of Transports to purchase land when needed and transports when needed, hopefully without over-purchasing either. (veqryn)
+* Added new method for Moore AI to move landlocked units to coastal territories if amphibious (wisconsin), and fixed the purchasing of Transports to purchase land when needed and transports when needed, hopefully without over-purchasing either. (veqryn [Mark Christopher Duncan])
 
-* Added new option for alliedExclusionTerritories: "controlledNoWater", which will not count water or impassible territories. (veqryn)
+* Added new option for alliedExclusionTerritories: "controlledNoWater", which will not count water or impassible territories. (veqryn [Mark Christopher Duncan])
 
 * Major patch for Dynamix AI. Updated battle calc to cache sorted casualty lists. (wisconsin)
 
-* Created a map skin for Middle Earth based on the alterate relief tiles. (veqryn)
+* Created a map skin for Middle Earth based on the alterate relief tiles. (veqryn [Mark Christopher Duncan])
 
 * Added Middle Earth 12 player map, thanks to original creators: (flanagany & ajmdemen)
 
-* Balancing changes to Napoleonic Empires, removed a connection, added fortress to majorca, removed tower from catalonia, changed two fortresses in candia into chasseurs. (veqryn)
+* Balancing changes to Napoleonic Empires, removed a connection, added fortress to majorca, removed tower from catalonia, changed two fortresses in candia into chasseurs. (veqryn [Mark Christopher Duncan])
 
-* Fixed battle calc to show correct results in battles where artillery and supportables had same attack power. (veqryn)
+* Fixed battle calc to show correct results in battles where artillery and supportables had same attack power. (veqryn [Mark Christopher Duncan])
 
-* Changed default casualty picker to choose optimal casualties based on artillery and supportability. (veqryn)
+* Changed default casualty picker to choose optimal casualties based on artillery and supportability. (veqryn [Mark Christopher Duncan])
 
 * Added relief tiles to Pact of Steel. (conarymor)
 
-* Fixed a bug where Undo-ing the placement of a factory, to a territory that already had a factory, under ww2v3 isSBRAffectsUnitProduction rules, caused max damage to be done to the original factory. (veqryn)
+* Fixed a bug where Undo-ing the placement of a factory, to a territory that already had a factory, under ww2v3 isSBRAffectsUnitProduction rules, caused max damage to be done to the original factory. (veqryn [Mark Christopher Duncan])
 
 * Completely re-wrote isConstructions to be completely customizable. Factories now count as constructions when being placed, eliminating placement code specifically for factories. 
   New properties for isConstructions: "constructionType" is a string identifying what kind of construction it order to determine stacking, "constructionsPerTerrPerTypePerTurn" and "maxConstructionsPerTypePerTerr" to limit placement.  
-  Created a new property called "More Constructions with Factory" as the counterpart to the without factory version.  isConstructions can be any unit, factory, aaGun, airfield, infantry, land unit, etc. (veqryn)
+  Created a new property called "More Constructions with Factory" as the counterpart to the without factory version.  isConstructions can be any unit, factory, aaGun, airfield, infantry, land unit, etc. (veqryn [Mark Christopher Duncan])
 
-* Some work on completely rewriting isConstructions. (veqryn)
+* Some work on completely rewriting isConstructions. (veqryn [Mark Christopher Duncan])
 
 * Another patch for Dynamix AI. (wisconsin)
 
@@ -362,70 +364,70 @@ Changes for 1.3.0.0
 
 * Fix for serializing and techs java error. (squid daddy)
 
-* Added Napoleonic Empires, a beautiful map created by Veqryn and Lssah. Updated to use triggers and combat transports. (veqryn & lssah)
+* Added Napoleonic Empires, a beautiful map created by veqryn [Mark Christopher Duncan] and Lssah. Updated to use triggers and combat transports. (veqryn [Mark Christopher Duncan] & lssah)
 
 * Fix for support/triggers/rules java error. (squid daddy)
 
-* New player attachments, "destroysPUs", which when set for a player means that player destroys their PUs rather than let them be captured. (veqryn)
+* New player attachments, "destroysPUs", which when set for a player means that player destroys their PUs rather than let them be captured. (veqryn [Mark Christopher Duncan])
 
-* New player attachments to deal with multiple capitals, "retainCapitalNumber" and "retainCapitalProduceNumber", which be set to the number of capitals need to lose money and gain/spend it respectively. (veqryn)
+* New player attachments to deal with multiple capitals, "retainCapitalNumber" and "retainCapitalProduceNumber", which be set to the number of capitals need to lose money and gain/spend it respectively. (veqryn [Mark Christopher Duncan])
 
-* New player rule, "maxPlacePerTerritory", overrides both factory rules and infinite placement. Also fixed a bug in isCombatTransport that stopped the casualty picker from choosing it. (veqryn)
+* New player rule, "maxPlacePerTerritory", overrides both factory rules and infinite placement. Also fixed a bug in isCombatTransport that stopped the casualty picker from choosing it. (veqryn [Mark Christopher Duncan])
 
-* Fixed bunker placement validation to work properly. No longer able to place infinite units by creative clicking orders. Also fixed a bug that allowed infinite placement. (veqryn)
+* Fixed bunker placement validation to work properly. No longer able to place infinite units by creative clicking orders. Also fixed a bug that allowed infinite placement. (veqryn [Mark Christopher Duncan])
 
-* Bunker rules allowed by new unit property, isConstruction, and new game properties for it (crystalct), heavily modified and bugs fixed, with updated NWO and POS2. (veqryn)
+* Bunker rules allowed by new unit property, isConstruction, and new game properties for it (crystalct), heavily modified and bugs fixed, with updated NWO and POS2. (veqryn [Mark Christopher Duncan])
 
-* Updating Pact of Steel 2, to take advantage of latest technology list abilities. (veqryn)
+* Updating Pact of Steel 2, to take advantage of latest technology list abilities. (veqryn [Mark Christopher Duncan])
 
 * Patch for technology lists, to allow creation of new technologies and renaming of old ones. Allows adding new technologies by trigger. (squid daddy)
 
-* Created two new properties for map.properties, "map.showConvoyNames=true" and "map.useNation_convoyFlags=true". If useNation_convoyFlags is true, the flags folder of a game must have "<nation_name>_convoy.png" for each nation with convoys. Convoy names can be moved in name_place.txt (veqryn)
+* Created two new properties for map.properties, "map.showConvoyNames=true" and "map.useNation_convoyFlags=true". If useNation_convoyFlags is true, the flags folder of a game must have "<nation_name>_convoy.png" for each nation with convoys. Convoy names can be moved in name_place.txt (veqryn [Mark Christopher Duncan])
 
-* Increasing Max Memory to 512mb for linux/mac/windows, and to 192mb for the server. (veqryn)
+* Increasing Max Memory to 512mb for linux/mac/windows, and to 192mb for the server. (veqryn [Mark Christopher Duncan])
 
-* New Property, "Low Luck for AntiAircraft", will turn on Low Luck only for Anti Aircraft shots. (veqryn)
+* New Property, "Low Luck for AntiAircraft", will turn on Low Luck only for Anti Aircraft shots. (veqryn [Mark Christopher Duncan])
 
-* Allowed blockade and convoy images to be moved with 2 new txt files: "blockade.txt" and "convoy.txt". Also fixed bug where a convoy zone that was occupied territory displayed the wrong owner, and the bug where a convoy route was displayed as a convoy zone. (veqryn)
+* Allowed blockade and convoy images to be moved with 2 new txt files: "blockade.txt" and "convoy.txt". Also fixed bug where a convoy zone that was occupied territory displayed the wrong owner, and the bug where a convoy route was displayed as a convoy zone. (veqryn [Mark Christopher Duncan])
 
-* Added images to be displayed for Blockades. Default image is "blockade.png" in the misc folder of a map. (veqryn)
+* Added images to be displayed for Blockades. Default image is "blockade.png" in the misc folder of a map. (veqryn [Mark Christopher Duncan])
 
-* Added new unit property, "isCombatTransport", which allows a transport to fight, be taken casualty, and not allow enemies to move through it, under ww2v3 rules. (veqryn)
+* Added new unit property, "isCombatTransport", which allows a transport to fight, be taken casualty, and not allow enemies to move through it, under ww2v3 rules. (veqryn [Mark Christopher Duncan])
 
 * Added new property, "Multiply PUs", which will multiply all PUs gained or lost during a turn, but not yet multiply costs of units, repairs, or starting PUs. (squid daddy)
 
 * Added Technology Frontiers, and ability to customize which tech is available to which player. (squid daddy)
 
-* Changed Pact of Steel 2 to take advantage of new Tech choosing attachments. (veqryn)
+* Changed Pact of Steel 2 to take advantage of new Tech choosing attachments. (veqryn [Mark Christopher Duncan])
 
-* Added a new About... dialog box to main screen. Shows TripleA, engine version, authors, website, as well as a short how-to-play. (veqryn)
+* Added a new About... dialog box to main screen. Shows TripleA, engine version, authors, website, as well as a short how-to-play. (veqryn [Mark Christopher Duncan])
 
 * Added a new AI, Dynamix AI, a scripted AI that seeks to be properly coded and easy to understand, as well as solving all problems in moore ai. (wisconsin)
 
-* Added some flags made by Veqryn, and some by Pulicat. Added "airfield" and "harbour" unit images to all nations, thanks to Hepster. (veqryn)
+* Added some flags made by veqryn [Mark Christopher Duncan], and some by Pulicat. Added "airfield" and "harbour" unit images to all nations, thanks to Hepster. (veqryn [Mark Christopher Duncan])
 
 * Created Pact of Steel 2, a mod of pos that runs on ww2v3 rules but with drastic changes. Designed to show off every single feature TripleA has to offer on customizing maps. 
-  Includes detailed notes on each any every property, option, attachment that exists in triplea. Can be used as an example by future map makers on what everything should look like when it works. (veqryn)
+  Includes detailed notes on each any every property, option, attachment that exists in triplea. Can be used as an example by future map makers on what everything should look like when it works. (veqryn [Mark Christopher Duncan])
 
-* Added Pact Of Steel map to triplea, thanks to makers: TripleElk and others.  Also fixed baseTiles, updated to current engine. (tripleelk, veqryn)
+* Added Pact Of Steel map to triplea, thanks to makers: TripleElk and others.  Also fixed baseTiles, updated to current engine. (tripleelk, veqryn [Mark Christopher Duncan])
 
-* Added New World Order map to triplea, thanks to makers: Sieg, ErnieBommel, and others. Also updated to remove special characters from name and files, and updated to take advantage of Triggers. (sieg & erniebommel, veqryn)
+* Added New World Order map to triplea, thanks to makers: Sieg, ErnieBommel, and others. Also updated to remove special characters from name and files, and updated to take advantage of Triggers. (sieg & erniebommel, veqryn [Mark Christopher Duncan])
 
-* Deleted unused uncoded game Properties. (veqryn)
+* Deleted unused uncoded game Properties. (veqryn [Mark Christopher Duncan])
 
-* Made "LHTR Carrier production rules" completely over-ride the other 4 carrier-fighter properties, that way it is finaly a single switch toggle for the rules-set. (veqryn)
+* Made "LHTR Carrier production rules" completely over-ride the other 4 carrier-fighter properties, that way it is finaly a single switch toggle for the rules-set. (veqryn [Mark Christopher Duncan])
 
-* Small bug in triggers, production changes were always occuring no matter what, missing brackets. (veqryn)
+* Small bug in triggers, production changes were always occuring no matter what, missing brackets. (veqryn [Mark Christopher Duncan])
 
 * Further updates to Trigger Attachments and Support attachments, as well as creating a new property to turn triggers on and off, defaults to false: "Use Triggers". (squid daddy)
 
-* Bug fix in alliedOwnership and directOwnership NatObj's use of original and enemy, was returning a list of territories that did not exist. (veqryn)
+* Bug fix in alliedOwnership and directOwnership NatObj's use of original and enemy, was returning a list of territories that did not exist. (veqryn [Mark Christopher Duncan])
 
 * Trigger Attachment and Rules Attachment updates. (squid daddy)
 
-* Added isLandTransport to support moving isInfantry land units using Mechanized Infantry tech, now separated from canBlitz and isMarine. (veqryn)
+* Added isLandTransport to support moving isInfantry land units using Mechanized Infantry tech, now separated from canBlitz and isMarine. (veqryn [Mark Christopher Duncan])
 
-* Minor Updates to Big World and Great War, updates for bugs in the xml as well as small balancing changes. (veqryn)
+* Minor Updates to Big World and Great War, updates for bugs in the xml as well as small balancing changes. (veqryn [Mark Christopher Duncan])
 
 * Added Purchases to the Trigger Attachment. (squid daddy)
 
@@ -437,13 +439,13 @@ Changes for 1.3.0.0
 
 * Lobby Moderator Enhancement patch added. (wisconsin)
 
-* Moore AI fix to Rank Territories, was considering islands as being closer to enemy capitols than other territories with a land route. Also much improved the defense of transports and trasporting locations. (veqryn)
+* Moore AI fix to Rank Territories, was considering islands as being closer to enemy capitols than other territories with a land route. Also much improved the defense of transports and trasporting locations. (veqryn [Mark Christopher Duncan])
 
-* Moore AI improvement: created a new method so that the AI will attempt to defend the beginning and end of its transport chain. (veqryn)
+* Moore AI improvement: created a new method so that the AI will attempt to defend the beginning and end of its transport chain. (veqryn [Mark Christopher Duncan])
 
-* Fixed a null pointer errors in Moore AI's rank territories method. (veqryn)
+* Fixed a null pointer errors in Moore AI's rank territories method. (veqryn [Mark Christopher Duncan])
 
-* Combined isTerritoryEnemyAndNotNuetralWater AND isTerritoryEnemyAndNotNeutral INTO isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted. (veqryn)
+* Combined isTerritoryEnemyAndNotNuetralWater AND isTerritoryEnemyAndNotNeutral INTO isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted. (veqryn [Mark Christopher Duncan])
 
 * New Territory Attachment, blockadeZone, and Unit Attachment, blockade = value, will allow sea units to blockade territories. (squid daddy)
 
@@ -454,17 +456,17 @@ Changes for 1.3.0.0
 * Enhanced Combat Support attachments. (squid daddy)
 
 * Moore AI purchases tweaking and speeding up. Will no longer consider for purchasing units with zero movement, units with 3 or more attack than defense or defense than attack, 
-  and units with zero defense, and sea units with 1 movement, if there are 2 movement sea units available. Also now records when it purchases transports in getDidPurchaseTransports(). (veqryn)
+  and units with zero defense, and sea units with 1 movement, if there are 2 movement sea units available. Also now records when it purchases transports in getDidPurchaseTransports(). (veqryn [Mark Christopher Duncan])
 
-* Null Pointer Exception fix in StrongAI transporting. (veqryn)
+* Null Pointer Exception fix in StrongAI transporting. (veqryn [Mark Christopher Duncan])
 
-* Moore AI fixes for previous update. (veqryn)
+* Moore AI fixes for previous update. (veqryn [Mark Christopher Duncan])
 
 * Create new CompositeRouteFinder.java, which will find a route based on 3 territory composite matches. (wisconsin)
 
 * Moore AI fixed several of the reasons why ai can't seem to transport units intelligently or at all. Also made it buy more transports if it needs them. Added new matches and renamed findCertainShips to findTersWithUnitsMatching. (wisconsin)
 
-* Moore AI out of bounds exception fixed in SUtils.removeUnit(). (veqryn)
+* Moore AI out of bounds exception fixed in SUtils.removeUnit(). (veqryn [Mark Christopher Duncan])
 
 * Moore AI speed fix, and added combined getNeighbors() to GameMap.java. Moore AI now as additional logging properties, comments, and several methods updated to work much faster. (squidbait)
 
@@ -482,88 +484,88 @@ Changes for 1.3.0.0
 
 * Moore AI SUtils fix, findNearest() and distanceToEnemy() completely re-written to be much faster. (squidbait)
 
-* Moore AI and Easy AI repair rules fix, will now repair intelligently, and never under repair at all, or over repair by more than a couple pu's. (veqryn)
+* Moore AI and Easy AI repair rules fix, will now repair intelligently, and never under repair at all, or over repair by more than a couple pu's. (veqryn [Mark Christopher Duncan])
 
 * Moore AI fixed a bug in SUtils.distanceToEnemy() so that it will return the minimum distance, rather than the first distance it finds. (squidbait)
 
-* Moore AI will now move factories if they can move them and there is more than 1 in a territory (veqryn), and some non-combat fixes and logging (squidbait)
+* Moore AI will now move factories if they can move them and there is more than 1 in a territory (veqryn [Mark Christopher Duncan]), and some non-combat fixes and logging (squidbait)
 
-* Moore AI will now bid single units to territories, and bid to all it territories before cycling over to bid to the first one again. Starts with territories touching the enemy. Also fixed a bug in SUtils.distanceToEnemy(). (veqryn)
+* Moore AI will now bid single units to territories, and bid to all it territories before cycling over to bid to the first one again. Starts with territories touching the enemy. Also fixed a bug in SUtils.distanceToEnemy(). (veqryn [Mark Christopher Duncan])
 
-* MustFightBattle was removing all movement from all units (including air) that stopped to kill an undefended transport, and should not remove movement of air units. (veqryn)
+* MustFightBattle was removing all movement from all units (including air) that stopped to kill an undefended transport, and should not remove movement of air units. (veqryn [Mark Christopher Duncan])
 
-* Moore AI and Weak AI fixes, they were not repairing any factories when they had multiple damaged factories. Both will now repair correctly, and limit repairs to half of total PUs, and limit individual factories to a repair of one quarter total PUs. (veqryn)
+* Moore AI and Weak AI fixes, they were not repairing any factories when they had multiple damaged factories. Both will now repair correctly, and limit repairs to half of total PUs, and limit individual factories to a repair of one quarter total PUs. (veqryn [Mark Christopher Duncan])
 
-* Moore AI fixes, will now return immediately if it has nothing to do for moves and purchasing (wisconsin), and will now repair damaged factories correctly (veqryn).
+* Moore AI fixes, will now return immediately if it has nothing to do for moves and purchasing (wisconsin), and will now repair damaged factories correctly (veqryn [Mark Christopher Duncan]).
 
 * Moore AI major fix, was considering defender's attack values instead of defense values under some circumstances. Formula to remove casualty units was returning the list as is without properly sorting first, 
-and was saying that anything with zero attack value has zero rolls in any battles, even if defending. Removed zero-movement units from combat-movement considerations. Also added a debug logger to moore ai properties. (veqryn)
+and was saying that anything with zero attack value has zero rolls in any battles, even if defending. Removed zero-movement units from combat-movement considerations. Also added a debug logger to moore ai properties. (veqryn [Mark Christopher Duncan])
 
-* Moore AI major fix, was disqualifying all land units from attacking when those land units did not have artillery, isInfantry, or blitz. Much improved performance on 270BC. (veqryn)
+* Moore AI major fix, was disqualifying all land units from attacking when those land units did not have artillery, isInfantry, or blitz. Much improved performance on 270BC. (veqryn [Mark Christopher Duncan])
 
-* Moore AI SUtils getExactNeighbors() fix, was returning incorrect data for any distance greater than 2. (veqryn)
+* Moore AI SUtils getExactNeighbors() fix, was returning incorrect data for any distance greater than 2. (veqryn [Mark Christopher Duncan])
 
 * Moore AI logic fix, calculations for taking enemy capitol with allied help included owned strength when looking at allied strength, also 
   getExactNeighbors was returning incorrect data by not fully removing previous iterations (getExactNeighbors still returns incorrect data if distance > 2). (squidbait)
 
-* Easy AI major fix, was considering all water territories on the map in the list of territories to attack with land units. (veqryn)
+* Easy AI major fix, was considering all water territories on the map in the list of territories to attack with land units. (veqryn [Mark Christopher Duncan])
 
-* Easy AI will now purchase units for bid, however it will only purchase land units, and only place them in the capitol. (veqryn)
+* Easy AI will now purchase units for bid, however it will only purchase land units, and only place them in the capitol. (veqryn [Mark Christopher Duncan])
 
-* Easy AI bug fix, was purchasing zero units when it had to repair a factory and also had at least 1 other factory with no repairs. Also fixed AI not using all of its money when it had enough left to buy one more unit.  (veqryn)
+* Easy AI bug fix, was purchasing zero units when it had to repair a factory and also had at least 1 other factory with no repairs. Also fixed AI not using all of its money when it had enough left to buy one more unit.  (veqryn [Mark Christopher Duncan])
 
 * Fixed Moore AI not puchasing anything when it has placeanywhere rules and no factories, and fixed it placing everything inside a capitol which is impassable (bug 2965154), 
 and fixed a list which was growing indefinitely each round with duplicates, the AI will no longer place in any impassible territory, the AI will not attempt to place factories in territories just conquered, 
-and also made further tweaks to the AI (veqryn).
+and also made further tweaks to the AI (veqryn [Mark Christopher Duncan]).
 
 * More work on Moore AI's purchasing and placing. Will now sort territories into a list which represents both production ability and closeness to enemy.
-AI is now discouraged from buying submarines. And AI will now attempt to buy a factory if it has no factories. (veqryn)
+AI is now discouraged from buying submarines. And AI will now attempt to buy a factory if it has no factories. (veqryn [Mark Christopher Duncan])
 
 * Added a swap sides button to the battle calculator, corrected a misspelled class, and reduced default calcs from 5000 to 3000 (dav_eagle)
 
 * Moore AI purchase fixes. AI was buying factories then trying to place them in water. When rich it was purchasing only the cheapest unit (bug 2989178), 
 and even when it was supposed to it was not buying any factories. Tried to purchase all air way too often. Was attempting to place factories it did not have. 
 Was purchasing specialty units like walls, bunkers, and mortars, way too often. Was not buying factories if the enemy had any units within 3 territories of potential factory territory.
-And lots of small tweaks to purchasing algorithm to allow moore ai to work for more maps other than ww2v3, especially bigger maps. (veqryn)
+And lots of small tweaks to purchasing algorithm to allow moore ai to work for more maps other than ww2v3, especially bigger maps. (veqryn [Mark Christopher Duncan])
 
-* Moore AI logic fix, will now attack alone transports correctly, and some small tweaks (veqryn & wisconsin)
+* Moore AI logic fix, will now attack alone transports correctly, and some small tweaks (veqryn [Mark Christopher Duncan] & wisconsin)
 
 * Moore AI logic fixes, including amphibious attacks, and clearing of data in loops (squidbait)
 
-* Small balancing change to minimap.  Russians -6 PUs, Italians +9 PUs. (veqryn)
+* Small balancing change to minimap.  Russians -6 PUs, Italians +9 PUs. (veqryn [Mark Christopher Duncan])
 
 * MoveValidator fix, was returning true if route contained subs/trans in part of route, and surface warships in another part of route. (squidbait)
 
-* logic bug fix for easy ai: it was checking for the att value for def units in territories to walk into. (veqryn)
+* logic bug fix for easy ai: it was checking for the att value for def units in territories to walk into. (veqryn [Mark Christopher Duncan])
 
 * logic bug fix for the weak/easy ai, so that it will not try to move zero movement units. (daral)
 
 * logic bug fix for the moore ai, which tries to move units out of range. (wisconsin)
 
-* Adding a browser launcher utility that works with java 5 and 6. (Veqryn)
+* Adding a browser launcher utility that works with java 5 and 6. (veqryn [Mark Christopher Duncan])
 
 * Adding buttons to the map download dialog, as well as the lobby menu, that when clicked open a web browser to the 
-  triplea sourceforge web page for threads on how to download maps, how to host games, and how to report bugs. (veqryn & bung)
+  triplea sourceforge web page for threads on how to download maps, how to host games, and how to report bugs. (veqryn [Mark Christopher Duncan] & bung)
 
-* Allowing any country name which begins in "AI" to be automatically set to be AI (in addition to "Neutral"). (veqryn)
+* Allowing any country name which begins in "AI" to be automatically set to be AI (in addition to "Neutral"). (veqryn [Mark Christopher Duncan])
 
 * Added a few new properties to start to support next gen engine (ComradeKev)
 
-* limit status message length and remove combining characters (sgb)
+* limit status message length and remove combining characters (sgb [Sean Bridges])
  
-* better server side INode validation (sgb)
+* better server side INode validation (sgb [Sean Bridges])
 
 * fix null pointer when selecting various air transport loads (ComradeKev)
 
 * Added Great War reliefs (Pulicat)
 
-* Updated BigWorld game (Veqryn, Uboat, Pulicat, and others)
+* Updated BigWorld game (veqryn [Mark Christopher Duncan], Uboat, Pulicat, and others)
 
 * fix part of bug 3012752 - unitSupportCount not working (ComradeKev)
 
 * fix bug 3081799 air units capable of landing on land included in carrier landing calculations (ComradeKev)
 
-* add SELECTABLE_ZERO_MOVEMENT_UNITS property support (Veqryn)
+* add SELECTABLE_ZERO_MOVEMENT_UNITS property support (veqryn [Mark Christopher Duncan])
 
 * fix bug 3043828 pending sea battles with transports causes crash (ComradeKev)
 
@@ -583,7 +585,7 @@ And lots of small tweaks to purchasing algorithm to allow moore ai to work for m
  
 * feature request (2799840) add tech tokens to status tab (ComradeKev)
 
-* update .ico and .png icons (veqryn)
+* update .ico and .png icons (veqryn [Mark Christopher Duncan])
 
 * feature request add dialog showing results of War Bonds (ComradeKev)
 
@@ -611,7 +613,7 @@ And lots of small tweaks to purchasing algorithm to allow moore ai to work for m
 
 * fix type in battle screen (Bung)
 
-* update cruiser and Italian infantry  (veqryn, crystalct)
+* update cruiser and Italian infantry  (veqryn [Mark Christopher Duncan], crystalct)
 
 
 Changes for 1.2.5.5 stable
@@ -622,9 +624,9 @@ Changes for 1.2.5.4 stable
 
 * ask users to restart after downloading a map as workaround to 2981890 (sgb)
 
-* replace japanese_fade gif with png (veqryn)
+* replace japanese_fade gif with png (veqryn [Mark Christopher Duncan])
 
-* new free french flags (veqryn, crystalct)
+* new free french flags (veqryn [Mark Christopher Duncan], crystalct)
 
 * fix bug 2981512 game hangs during purchase units phase with mooreAI (sgb)
 
@@ -638,7 +640,7 @@ Changes for 1.2.5.2
 
 * fixed bug ConcurrentModificationException (sgb)
 
-* low luck air now works according the to the Veqryn rules (sgb)
+* low luck air now works according the to the veqryn [Mark Christopher Duncan] rules (sgb)
 
 * validate zip file on map download (sgb)
 
@@ -668,9 +670,9 @@ Changes for 1.2.5
 
 * fix bug stack overflow in NWO 1.7.7 on Hard AI (sgb)
 
-* updated german, italian and neutral flags (Veqryn)
+* updated german, italian and neutral flags (veqryn [Mark Christopher Duncan])
 
-* better packaged windows icon file (Veqryn)
+* better packaged windows icon file (veqryn [Mark Christopher Duncan])
 
 * fix bug 2964947, minimap AI error (sgb)
 
@@ -705,7 +707,7 @@ Changes for 1.2.3
 * remove nwo map in default install, this allows it to be updated independently (sgb)
 
 * update xml for big world,great war, update misc images for great war, update flags for great war, update italian cruiser image, update chineese and american aa gun,
- add various flags, add various missing units (Veqryn, ubernaut, EB (OnanTheBrBr), and U-boat)
+ add various flags, add various missing units (veqryn [Mark Christopher Duncan], ubernaut, EB (OnanTheBrBr), and U-boat)
 
 * add optional version number to map listing xml file.  This version number will be saved when the game is downloaded.  When the user is asked to delete
 an already downloaded map, the dialog will have the old and new versions in the overwrite message.  Version numbers are 2-4 numbers separated by a '.', eg 1.2, 12.23, 1.2.3, 1.2.3.4  (sgb)
@@ -728,7 +730,7 @@ an already downloaded map, the dialog will have the old and new versions in the 
 
 Changes for 1.2.2
 
-* update flag images in the base flags folder (u-boat,Veqryn)
+* update flag images in the base flags folder (u-boat,veqryn [Mark Christopher Duncan])
 
 * allow flag images to be gif or png, gif's will be preferred if both are available to prevent new images in the base folder from overriding images in mods (sgb)
 
@@ -827,7 +829,7 @@ Changes for 1.2.1
 
 * rename nwo map to new_world_order_eb, this is all lowercase which works on linux, and matches the other map names (sgb)
 
-* rounded neutral flags (Veqryn)
+* rounded neutral flags (veqryn [Mark Christopher Duncan])
 
 * Fix bug 2919513 units with 0 attack not getting artillery support (ComradeKev)
 
@@ -881,7 +883,7 @@ Changes for 1.1.2
 
 Changes for 1.1.1
 
-* new neutral flag images (Veqryn)
+* new neutral flag images (veqryn [Mark Christopher Duncan])
 
 * allow users the option to replace downloaded maps when downloading (sgb)
 
@@ -2391,7 +2393,7 @@ Changes for 0.4.9
 
 * Fixed bug when defending subs get first strike fire, even if an enemy destroyer is present. (Sean Bridges)
 
-* Changes in Battle Panel relating to SWING event thread to stop game from freezing in battle mode. (Sean Bridges)
+* Changes in Battle Panel relating to SWING event thread to stop game from freezing in battle mode. (sgb [Sean Bridges])
 
 * Fix for Bug #1001946 fixed for units crossing water. Now crossesWater only returns true if the route starts and ends on land and also contains a water territory. (James Damour)
 

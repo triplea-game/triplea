@@ -185,7 +185,7 @@ public interface Constants
   public static final String TRIGGERS = "Use Triggers";
   public static final String PU_MULTIPLIER = "Multiply PUs";
   
-  // veqryn
+  // veqryn (Mark Christopher Duncan)
   public static final String LL_AA_ONLY = "Low Luck for AntiAircraft";
   public static final String COUNTERS_DISPLAY = "Display Units as Counters";
   public static final String SELECTABLE_ZERO_MOVEMENT_UNITS = "Selectable Zero Movement Units";
