@@ -1534,9 +1534,9 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				one to make changes to the images and maps that the game will use. This
 				is where a user can add their own customized map, and perhaps some customized
 				units. However, even though this allows one more customization it still
-				leaves the user bound to some existing game logic. (ie, A&A Pact of Steel and
+				leaves the user bound to some existing game logic. (ie, Pact of Steel and
 				BigWorld 1942 uses customized images, maps, and XML files but are still bound
-				to the game logic of Axis And Allies 4th Edition rules.)
+				to the game logic of TripleA's standard rules.)
 			</p>
 			
 			<p>
@@ -3042,7 +3042,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 
 				
 				<p>
-					Below is a list of TripleA's captial markers that are used for Axis & Allies
+					Below is a list of TripleA's captial markers that are used for World War II
 					games and other variants:<br/>
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
@@ -3437,7 +3437,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 			<p>
 				The sections below will mainly go over how to edit and change values in some
 				of the XML game files that come with TripleA. TripleA currently has game logic
-				code for use with Axis and Allies games, so the following sections shall use
+				code for use with standard war games, so the following sections shall use
 				those as examples.
 			</p>
 			
@@ -3518,7 +3518,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					on the main TripleA window when the game is loaded.<br/>
 					<br/>
 					The &quot;loader&quot; tag defines what class file is used to load this game. As we
-					can see below; the class used to load this Axis And Allies 4th Edition game is a class
+					can see below; the class used to load this World War II type game is a class
 					called <b>TripleA.class</b> but we do not include the &quot;.class&quot; but we do
 					include the full package path.<br/>
 					<br/>
@@ -4050,7 +4050,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				</p>
 				
 				<p>
-					For example; all the game logic for conducting battles in an Axis And Allies 4th Edtion
+					For example; all the game logic for conducting battles in a World War II v2 Revised 
 					game are in the <b>BattleDelegate.java</b> class located in <i>games.strategy.triplea.delegate</i>
 					class path. When we want to reference that delegate in the XML we have to make a <b>delegate</b>
 					tag and bind it to a name. A name as &quot;battle&quot; would be fine.
@@ -4144,7 +4144,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					Of course there will be many delegates that TripleA can use for handeling game logic.
 					And thus would need numerous delegate tags defined in the XML to set-up a game properly.
 					For the sake of completenes and practicallity, below is an example of all the delegate
-					tags used in the Axis And Allies 4th Edition XML file:<br/>
+					tags used in the World War II v2 Revised XML file:<br/>
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
@@ -4566,7 +4566,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				
 				<p>
 					A <b>productionFrontier</b> tag groups different types of production rules.
-					There can be more than one production frontier. For example in Axis And Allies 4th Edition,
+					There can be more than one production frontier. For example in World War II v2 Revised,
 					there is regular production of units and production of technologically advanced
 					units. Both are in different frontiers beacuse they deal with the same kind of
 					units, but with different values. Such as a standard airplane vs a jet powered airplane.
