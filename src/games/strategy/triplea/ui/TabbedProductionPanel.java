@@ -62,7 +62,7 @@ public class TabbedProductionPanel extends ProductionPanel
 
         JTabbedPane tabs = new JTabbedPane();
         
-        add(tabs,new GridBagConstraints(0,1,1,1,1,1,GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(8, 8, 8, 0), 0, 0));
+        add(tabs,new GridBagConstraints(0,1,1,1,100,100,GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(8, 8, 8, 0), 0, 0));
 
         ArrayList<Rule> allRules = new ArrayList<Rule>();
         ArrayList<Rule> landRules = new ArrayList<Rule>();
