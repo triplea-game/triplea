@@ -4250,7 +4250,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				{
 					// planes only move if carrier in fleet or at target
 					// no consideration for landing spaces.
-					if (!(swapRoute.getEnd().getUnits().someMatch(ownedAC) || start.getUnits().someMatch(carrierCanMove)))
+					if (!((swapRoute.getEnd() != null && swapRoute.getEnd().getUnits().someMatch(ownedAC)) || start.getUnits().someMatch(carrierCanMove)))
 						swapUnits.removeAll(start.getUnits().getMatches(airAttackUnit));
 					if (swapUnits.isEmpty())
 						continue;
