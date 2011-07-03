@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Big World : 1942 v3 Rules" version="3.7.1"/>
+        <info name="Big World : 1942 v3 Rules" version="3.8"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -1259,18 +1259,18 @@
 
                         <step name="britishBid" delegate="bid" player="British" maxRunCount="1"/>
                         <step name="britishBidPlace" delegate="placeBid" player="British" maxRunCount="1"/>
+						
+						<step name="italianBid" delegate="bid" player="Italians" maxRunCount="1"/>
+                        <step name="italianBidPlace" delegate="placeBid" player="Italians" maxRunCount="1"/>
+
+                        <step name="chineseBid" delegate="bid" player="Chinese" maxRunCount="1"/>
+                        <step name="chineseBidPlace" delegate="placeBid" player="Chinese" maxRunCount="1"/>
                         
                         <step name="japaneseBid" delegate="bid" player="Japanese" maxRunCount="1"/>
                         <step name="japaneseBidPlace" delegate="placeBid" player="Japanese" maxRunCount="1"/>
 
                         <step name="americanBid" delegate="bid" player="Americans" maxRunCount="1"/>
                         <step name="americanBidPlace" delegate="placeBid" player="Americans" maxRunCount="1"/>
-
-                        <step name="chineseBid" delegate="bid" player="Chinese" maxRunCount="1"/>
-                        <step name="chineseBidPlace" delegate="placeBid" player="Chinese" maxRunCount="1"/>
-
-			<step name="italianBid" delegate="bid" player="Italians" maxRunCount="1"/>
-                        <step name="italianBidPlace" delegate="placeBid" player="Italians" maxRunCount="1"/>
                         
 						
 						<!-- Russians Game Sequence -->
@@ -1819,7 +1819,7 @@
 			 <option name="isMarine" value="true"/>
                          <option name="isParatroop" value="false"/>
                          <option name="isMechanized" value="false"/> 
-                         <option name="artillerySupportable" value="false"/>  
+                         <option name="artillerySupportable" value="true"/>  
 		</attatchment>
 
                 <!-- Halftrack -->
@@ -3720,7 +3720,7 @@
                         <boolean/>
                 </property>
 
-                <property name="Move existing fighters to new carriers" value="false" editable="false">
+                <property name="Move existing fighters to new carriers" value="false" editable="true">
                         <boolean/>
                 </property>
 
@@ -3728,7 +3728,7 @@
                         <boolean/>
                 </property>
 
-                <property name="LHTR Carrier production rules" value="true" editable="false">
+                <property name="LHTR Carrier production rules" value="false" editable="false">
                         <boolean/>
                 </property>
                 

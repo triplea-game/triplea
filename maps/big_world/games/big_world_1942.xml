@@ -1252,15 +1252,15 @@
 
                         <step name="britishBid" delegate="bid" player="British" maxRunCount="1"/>
                         <step name="britishBidPlace" delegate="placeBid" player="British" maxRunCount="1"/>
+
+                        <step name="chineseBid" delegate="bid" player="Chinese" maxRunCount="1"/>
+                        <step name="chineseBidPlace" delegate="placeBid" player="Chinese" maxRunCount="1"/>
                         
                         <step name="japaneseBid" delegate="bid" player="Japanese" maxRunCount="1"/>
                         <step name="japaneseBidPlace" delegate="placeBid" player="Japanese" maxRunCount="1"/>
 
                         <step name="americanBid" delegate="bid" player="Americans" maxRunCount="1"/>
                         <step name="americanBidPlace" delegate="placeBid" player="Americans" maxRunCount="1"/>
-
-                        <step name="chineseBid" delegate="bid" player="Chinese" maxRunCount="1"/>
-                        <step name="chineseBidPlace" delegate="placeBid" player="Chinese" maxRunCount="1"/>
 
                         
                         
