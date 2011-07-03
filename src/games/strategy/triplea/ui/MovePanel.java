@@ -112,7 +112,8 @@ public class MovePanel extends AbstractMovePanel
     public MovePanel(GameData data, MapPanel map, TripleAFrame frame)
     {
         super(data, map, frame);
-        
+
+        m_undoableMovesPanel = new UndoableMovesPanel(data, this);
         m_mouseCurrentTerritory = null;
         m_unitsThatCanMoveOnRoute = Collections.emptyList();
         
@@ -1034,7 +1035,7 @@ public class MovePanel extends AbstractMovePanel
                     unitsToLoad.removeAll(m_selectedUnits);
                     for (Unit u : s_dependentUnits.keySet())
                     {
-                    	unitsToLoad.removeAll(s_dependentUnits.get(u));
+                        unitsToLoad.removeAll(s_dependentUnits.get(u));
                     }
                     
                     // Get the potential air transports to load
@@ -1044,7 +1045,7 @@ public class MovePanel extends AbstractMovePanel
                     candidateAirTransportsMatch.add(Matches.unitHasNotMoved);
                     candidateAirTransportsMatch.add(Matches.transportIsNotTransporting());
                     Collection<Unit> candidateAirTransports = Match.getMatches(t.getUnits().getMatches(unitsToMoveMatch), candidateAirTransportsMatch);
-                    //candidateAirTransports.removeAll(m_selectedUnits);
+                    // candidateAirTransports.removeAll(m_selectedUnits);
                     candidateAirTransports.removeAll(s_dependentUnits.keySet());
                     
                     if (unitsToLoad.size() > 0 && candidateAirTransports.size() > 0)
@@ -1068,7 +1069,6 @@ public class MovePanel extends AbstractMovePanel
                 setFirstSelectedTerritory(null);
         }
         
-
         public Collection<Unit> getAirTransportsToLoad(final Collection<Unit> candidateAirTransports)
         {
             Set<Unit> defaultSelections = new HashSet<Unit>();
@@ -1207,14 +1207,16 @@ public class MovePanel extends AbstractMovePanel
                     if (!s_dependentUnits.isEmpty())
                     {
                         s_dependentUnits.clear();
-                    	/*for (Unit airTransport : unitsWithoutDependents)
-                        {
-                            if (s_dependentUnits.containsKey(airTransport))
-                            {
-                                unitsToRemove.addAll(s_dependentUnits.get(airTransport));
-                                s_dependentUnits.remove(airTransport);
-                            }
-                        }*/
+                        /*
+                         * for (Unit airTransport : unitsWithoutDependents)
+                         * {
+                         * if (s_dependentUnits.containsKey(airTransport))
+                         * {
+                         * unitsToRemove.addAll(s_dependentUnits.get(airTransport));
+                         * s_dependentUnits.remove(airTransport);
+                         * }
+                         * }
+                         */
                     }
                 }
                 else if (!unitsWithoutDependents.isEmpty())
@@ -1690,6 +1692,31 @@ public class MovePanel extends AbstractMovePanel
         getMap().addMapSelectionListener(m_MAP_SELECTION_LISTENER);
         getMap().addUnitSelectionListener(m_UNIT_SELECTION_LISTENER);
         getMap().addMouseOverUnitListener(m_MOUSE_OVER_UNIT_LISTENER);
+    }
+    
+    @Override
+    protected boolean doneMoveAction()
+    {
+        // TODO Auto-generated method stub
+        if (m_undoableMovesPanel.getCountOfMovesMade() == 0)
+        {
+            int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(MovePanel.this), "Are you sure you dont want to move?", "End Move", JOptionPane.YES_NO_OPTION);
+            if (rVal != JOptionPane.YES_OPTION)
+            {
+                return false;
+            }
+            else
+                return true;
+            
+        }
+        return true;
+    }
+    
+    @Override
+    protected boolean setCancelButton()
+    {
+        // TODO Auto-generated method stub
+        return true;
     }
     
 }

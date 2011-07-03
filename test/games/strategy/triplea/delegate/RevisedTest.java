@@ -609,7 +609,7 @@ public class RevisedTest extends TestCase
         UndoableMove move1 = moveDelegate.getMovesMade().get(0);
         
         //the first unload
-        UndoableMove move2 = moveDelegate.getMovesMade().get(0);
+        AbstractUndoableMove move2 = moveDelegate.getMovesMade().get(0);
         
         //the second unload must be done first
         assertFalse(move1.getcanUndo());

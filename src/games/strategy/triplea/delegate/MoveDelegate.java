@@ -333,7 +333,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         if (!moveToUndo.getcanUndo())
             return moveToUndo.getReasonCantUndo();
 
-        moveToUndo.undo(m_bridge, m_data);
+        moveToUndo.undo(m_data,m_bridge);
         m_movesToUndo.remove(moveIndex);
         updateUndoableMoveIndexes();
 

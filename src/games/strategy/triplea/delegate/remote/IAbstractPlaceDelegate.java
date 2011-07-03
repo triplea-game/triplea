@@ -24,13 +24,8 @@ import java.util.Collection;
 /**
  * @author Sean Bridges
  */
-public interface IAbstractPlaceDelegate extends IRemote
+public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate
 {
-    /**
-     * Undoes the last placement.
-     */
-    public void undoLastPlacement();
-    
     /**
      * Place units.
      * The return value is used to return an error code if the 

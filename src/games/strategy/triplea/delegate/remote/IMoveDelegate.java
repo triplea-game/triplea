@@ -19,10 +19,8 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.delegate.UndoableMove;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,7 +28,7 @@ import java.util.Map;
  * 
  * @author Sean Bridges
  */
-public interface IMoveDelegate extends IRemote
+public interface IMoveDelegate extends IAbstractMoveDelegate
 {
     /**
      * 
@@ -51,19 +49,6 @@ public interface IMoveDelegate extends IRemote
      */
     public String move(Collection<Unit> units, Route route);
 
-    /**
-     * Get the moves already made 
-     * @return a list of UndoableMoves
-     */
-    public List<UndoableMove> getMovesMade();
-    
-    /**
-     * 
-     * @param moveIndex - an index in the list getMovesMade
-     * @return an error string if the move could not be undone, null otherwise
-     */
-    public String undoMove(int moveIndex);
-    
     /**
      * Get what air units must move before the end of the players turn
      * @return a list of Territories with air units that must move

@@ -26,6 +26,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
+import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.*;
 
@@ -36,158 +37,70 @@ import javax.swing.*;
 
 /**
  * 
- * @author Sean Bridges
- * @version 1.0
+ * @author Sean Bridges, edited by Erik von der Osten
+ * @version 1.1
  */
-public class PlacePanel extends ActionPanel
+public class PlacePanel extends AbstractMovePanel
 {
-
+    
     private JLabel actionLabel = new JLabel();
-
+    
     private PlaceData m_placeData;
-
+    
     private SimpleUnitPanel m_unitsToPlace;
-
-    private IPlayerBridge m_bridge;
-
+    
     /** Creates new PlacePanel */
-    public PlacePanel(GameData data, MapPanel map)
+    public PlacePanel(GameData data, MapPanel map, TripleAFrame frame)
     {
-        super(data, map);
+        super(data, map, frame);
+        m_undoableMovesPanel = new UndoablePlacementsPanel(data, this);
         m_unitsToPlace = new SimpleUnitPanel(map.getUIContext());
     }
-
+    
     public void display(final PlayerID id)
     {
-        super.display(id);
-        
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            public void run()
-            {
-                removeAll();
-                actionLabel.setText(id.getName() + " place");
-                add(actionLabel);
-                add(new JButton(UNDO_PLACE_ACTION));
-                add(new JButton(DONE_PLACE_ACTION));
-                SwingUtilities.invokeLater(REFRESH);
-
-                add(new JLabel("Units left to place:"));
-                add(m_unitsToPlace);
-                updateUnits();
-                
-            }
-        });
+        super.display(id, " place");
     }
-
-    private void refreshUndoButton() throws NumberFormatException
-    {
-        final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge
-                .getRemote();
-        SwingUtilities.invokeLater(new Runnable()
-        {
-        
-            public void run()
-            {
-                UNDO_PLACE_ACTION.setEnabled(placeDel.getPlacementsMade() > 0);
-            }
-        
-        });
-        
-    }
-
+    
     private void refreshActionLabelText(final boolean bid)
     {
         SwingUtilities.invokeLater(new Runnable()
         {
-        
+            
             public void run()
             {
-                actionLabel.setText(getCurrentPlayer().getName() + " place"
-                        + (bid ? " for bid" : ""));
+                actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : ""));
             }
-        
+            
         });
         
     }
-
-    public PlaceData waitForPlace(boolean bid, IPlayerBridge bridge)
+    
+    public PlaceData waitForPlace(boolean bid, IPlayerBridge playerBridge)
     {
-        m_bridge = bridge;
-        refreshActionLabelText(bid);
-        refreshUndoButton();
+        setUp(playerBridge);
+        refreshActionLabelText(bid); // workaround: meant to be in setUpSpecific, but it requires a variable
         
-        getMap().addMapSelectionListener(PLACE_MAP_SELECTION_LISTENER);
-
         waitForRelease();
-
-        getMap().removeMapSelectionListener(
-                PLACE_MAP_SELECTION_LISTENER);
-        m_bridge = null;
         
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            public void run()
-            {
-                removeAll();
-                SwingUtilities.invokeLater(REFRESH);
-            }
-        });
+        cleanUp();
         
         return m_placeData;
     }
-
-    private final AbstractAction UNDO_PLACE_ACTION = new AbstractAction(
-            "Undo Last Placement")
-    {
-        public void actionPerformed(ActionEvent e)
-        {
-            IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge
-                    .getRemote();
-            placeDel.undoLastPlacement();
-            refreshUndoButton();
-            updateUnits();
-            validate();
-        }
-    };
-
-    private final AbstractAction DONE_PLACE_ACTION = new AbstractAction("Done")
-    {
-        public void actionPerformed(ActionEvent e)
-        {
-            if (getCurrentPlayer().getUnits().size() > 0)
-            {
-                int option = JOptionPane
-                        .showConfirmDialog(
-                                (JFrame) getTopLevelAncestor(),
-                                "You have not placed all your units yet.  Are you sure you want to end your turn?",
-                                "TripleA", JOptionPane.YES_NO_OPTION,
-                                JOptionPane.PLAIN_MESSAGE);
-                //TODO COMCO add code here to store the units until next time
-                if (option != JOptionPane.YES_OPTION)
-                    return;
-            }
-
-            m_placeData = null;
-
-            release();
-
-        }
-    };
-
+    
     private boolean canProduceFightersOnCarriers()
     {
-        return games.strategy.triplea.Properties.getProduce_Fighters_On_Carriers(getData());        
+        return games.strategy.triplea.Properties.getProduce_Fighters_On_Carriers(getData());
     }
-
+    
     private boolean canProduceNewFightersOnOldCarriers()
-    {    	
-        return games.strategy.triplea.Properties.getProduce_New_Fighters_On_Old_Carriers(getData());        
+    {
+        return games.strategy.triplea.Properties.getProduce_New_Fighters_On_Old_Carriers(getData());
     }
-
+    
     private boolean isLHTR_Carrier_Production_Rules()
-    {    	
-        return games.strategy.triplea.Properties.getLHTR_Carrier_Production_Rules(getData());        
+    {
+        return games.strategy.triplea.Properties.getLHTR_Carrier_Production_Rules(getData());
     }
     
     private final MapSelectionListener PLACE_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
@@ -196,46 +109,39 @@ public class PlacePanel extends ActionPanel
         {
             if (!getActive() || (e.getButton() != MouseEvent.BUTTON1))
                 return;
-
+            
             int maxUnits[] = new int[1];
             Collection<Unit> units = getUnitsToPlace(territory, maxUnits);
             if (units.isEmpty())
                 return;
-
-            UnitChooser chooser = new UnitChooser(units, Collections
-                    .<Unit, Collection<Unit>> emptyMap(), getData(), false,
-                    getMap().getUIContext());
+            
+            UnitChooser chooser = new UnitChooser(units, Collections.<Unit, Collection<Unit>> emptyMap(), getData(), false, getMap().getUIContext());
             String messageText = "Place units in " + territory.getName();
             if (maxUnits[0] > 0)
                 chooser.setMaxAndShowMaxButton(maxUnits[0]);
-
-            int option = JOptionPane.showOptionDialog(
-                    getTopLevelAncestor(), chooser, messageText,
-                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
-                    null, null, null);
+            
+            int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, messageText, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
             if (option == JOptionPane.OK_OPTION)
             {
                 Collection<Unit> choosen = chooser.getSelected();
-
+                
                 m_placeData = new PlaceData(choosen, territory);
                 updateUnits();
                 release();
             }
         }
     };
-
-    private Collection<Unit> getUnitsToPlace(Territory territory,
-            int maxUnits[])
+    
+    private Collection<Unit> getUnitsToPlace(Territory territory, int maxUnits[])
     {
         
         getData().acquireReadLock();
         try
         {
             // not our territory
-            if (!territory.isWater()
-                    && !territory.getOwner().equals(getCurrentPlayer()))
+            if (!territory.isWater() && !territory.getOwner().equals(getCurrentPlayer()))
                 return Collections.emptyList();
-    
+            
             // get the units that can be placed on this territory.
             Collection<Unit> units = getCurrentPlayer().getUnits().getUnits();
             if (territory.isWater())
@@ -244,49 +150,101 @@ public class PlacePanel extends ActionPanel
                     units = Match.getMatches(units, Matches.UnitIsSea);
                 else
                 {
-                    CompositeMatch<Unit> unitIsSeaOrCanLandOnCarrier = new CompositeMatchOr<Unit>(
-                            Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
+                    CompositeMatch<Unit> unitIsSeaOrCanLandOnCarrier = new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
                     units = Match.getMatches(units, unitIsSeaOrCanLandOnCarrier);
                 }
-            } else
+            }
+            else
                 units = Match.getMatches(units, Matches.UnitIsNotSea);
-    
+            
             if (units.isEmpty())
                 return Collections.emptyList();
-    
-            IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge
-                    .getRemote();
-    
-            PlaceableUnits production = placeDel
-                    .getPlaceableUnits(units, territory);
-    
+            
+            IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemote();
+            
+            PlaceableUnits production = placeDel.getPlaceableUnits(units, territory);
+            
             if (production.isError())
             {
-                JOptionPane.showMessageDialog(getTopLevelAncestor(), production
-                        .getErrorMessage(), "No units",
-                        JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(getTopLevelAncestor(), production.getErrorMessage(), "No units", JOptionPane.INFORMATION_MESSAGE);
                 return Collections.emptyList();
             }
-    
+            
             maxUnits[0] = production.getMaxUnits();
             return production.getUnits();
         }
-        finally 
+        finally
         {
             getData().releaseReadLock();
         }
     }
-
+    
     private void updateUnits()
     {
-        Collection unitCategories = UnitSeperator.categorize(getCurrentPlayer()
-                .getUnits().getUnits());
+        Collection<UnitCategory> unitCategories = UnitSeperator.categorize(getCurrentPlayer().getUnits().getUnits());
         m_unitsToPlace.setUnitsFromCategories(unitCategories, getData());
     }
-
+    
     public String toString()
     {
         return "PlacePanel";
     }
-
+    
+    @Override
+    protected final void cancelMoveAction()
+    {
+        // TODO Auto-generated method stub
+        getMap().showMouseCursor();
+        getMap().setMouseShadowUnits(null);
+    }
+    
+    @Override
+    protected final void undoMoveSpecific()
+    {
+        // TODO Auto-generated method stub
+        updateUnits();
+    }
+    
+    @Override
+    protected final void cleanUpSpecific()
+    {
+        // TODO Auto-generated method stub
+        getMap().removeMapSelectionListener(PLACE_MAP_SELECTION_LISTENER);
+    }
+    
+    @Override
+    protected final void setUpSpecific()
+    {
+        // TODO Auto-generated method stub
+        getMap().addMapSelectionListener(PLACE_MAP_SELECTION_LISTENER);
+    }
+    
+    @Override
+    protected boolean doneMoveAction()
+    {
+        // TODO Auto-generated method stub
+        if (getCurrentPlayer().getUnits().size() > 0)
+        {
+            int option = JOptionPane.showConfirmDialog((JFrame) getTopLevelAncestor(), "You have not placed all your units yet.  Are you sure you want to end your turn?", "TripleA", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+            // TODO COMCO add code here to store the units until next time
+            if (option != JOptionPane.YES_OPTION)
+                return false;
+        }
+        m_placeData = null;
+        return true;
+    }
+    
+    @Override
+    protected boolean setCancelButton()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    
+    final protected void addAdditionalButtons()
+    {
+        add(leftBox(new JLabel("Units left to place:")));
+        add(m_unitsToPlace);
+        updateUnits();
+    }
 }

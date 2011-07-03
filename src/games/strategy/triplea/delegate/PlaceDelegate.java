@@ -20,6 +20,8 @@
 
 package games.strategy.triplea.delegate;
 
+import java.util.List;
+
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 

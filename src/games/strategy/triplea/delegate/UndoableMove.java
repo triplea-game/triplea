@@ -27,176 +27,140 @@ import games.strategy.triplea.ui.MovePanel;
  * Contains all the data to describe a move and to undo it.
  */
 
-public class UndoableMove implements Serializable
+public class UndoableMove extends AbstractUndoableMove
 {
-    /**
-     * Stores data about a move so that it can be undone.
-     * Stores the serialized state of the move and battle delegates (just
-     * as if they were saved), and a CompositeChange that represents all the changes that
-     * were made during the move.
-     *
-     * Some moves (such as those following an aa fire) can't be undone.
-     */
-    private int m_index;
-    private CompositeChange m_undoChange = new CompositeChange();
     private String m_reasonCantUndo;
     private String m_description;
-
-    //this move is dependent on these moves
-    //these moves cant be undone until this one has been
+    
+    // this move is dependent on these moves
+    // these moves cant be undone until this one has been
     private Set<UndoableMove> m_iDependOn = new HashSet<UndoableMove>();
-    //these moves depend on me
-    //we cant be undone until this is empty
+    // these moves depend on me
+    // we cant be undone until this is empty
     private Set<UndoableMove> m_dependOnMe = new HashSet<UndoableMove>();
-
-    //list of countries we took over
+    
+    // list of countries we took over
     private Set<Territory> m_conquered = new HashSet<Territory>();
-
-    //transports loaded by this move
+    
+    // transports loaded by this move
     private Set<Unit> m_loaded = new HashSet<Unit>();
-
-    //transports unloaded by this move
+    
+    // transports unloaded by this move
     private Set<Unit> m_unloaded = new HashSet<Unit>();;
-
+    
     private final Route m_route;
-    private final Collection<Unit> m_units;
-
-    public Collection<Unit> getUnits()
-    {
-        return m_units;
-    }
-
     public void addToConquered(Territory t)
     {
         m_conquered.add(t);
     }
-
+    
     public Route getRoute()
     {
         return m_route;
     }
-
-    public int getIndex()
-    {
-        return m_index;
-    }
-
-    public void setIndex(int index)
-    {
-        m_index = index;
-    }
-
+    
     public boolean getcanUndo()
     {
         return m_reasonCantUndo == null && m_dependOnMe.isEmpty();
     }
-
+    
     public String getReasonCantUndo()
     {
-        if(m_reasonCantUndo != null)
+        if (m_reasonCantUndo != null)
             return m_reasonCantUndo;
-        else if(!m_dependOnMe.isEmpty())
-            return "Move " +
-                   (m_dependOnMe.iterator().next().getIndex() + 1) +
-                   " must be undone first";
+        else if (!m_dependOnMe.isEmpty())
+            return "Move " + (m_dependOnMe.iterator().next().getIndex() + 1) + " must be undone first";
         else
             throw new IllegalStateException("no reason");
-
+        
     }
-
+    
     public void setCantUndo(String reason)
     {
         m_reasonCantUndo = reason;
     }
-
-    public void addChange(Change aChange)
-    {
-        m_undoChange.add(aChange);
-    }
-
+    
+    
     public String getDescription()
     {
         return m_description;
     }
-
+    
     public void setDescription(String description)
     {
         m_description = description;
     }
-
+    
     public UndoableMove(GameData data, Collection<Unit> units, Route route)
-    {        
+    {
+        super(new CompositeChange(), units);
         m_route = route;
-        m_units = units;
     }
-
+    
     public void load(Unit transport)
     {
         m_loaded.add(transport);
     }
-
+    
     public void unload(Unit transport)
     {
         m_unloaded.add(transport);
     }
-
-    public void undo(IDelegateBridge bridge, GameData data)
-    {        
+    
+    @Override
+    protected void undoSpecific(GameData data, IDelegateBridge bridge)
+    {
         BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
         
-
-        bridge.getHistoryWriter().startEvent(bridge.getPlayerID().getName() +
-                                     " undo move " + (m_index + 1)+ ".");
+        bridge.getHistoryWriter().startEvent(bridge.getPlayerID().getName() + " undo move " + (m_index + 1) + ".");
         bridge.getHistoryWriter().setRenderingData(new MoveDescription(m_units, m_route));
-
-        //undo any changes to the game data
-        bridge.addChange(m_undoChange.invert());
-
+        
         battleTracker.undoBattle(m_route, m_units, bridge.getPlayerID(), data, bridge);
-
-        //clean up dependencies
-        Iterator iter = m_iDependOn.iterator();
-        while (iter.hasNext()) {
-            UndoableMove other = (UndoableMove)iter.next();
+        
+        // clean up dependencies
+        Iterator<UndoableMove> iter1 = m_iDependOn.iterator();
+        while (iter1.hasNext())
+        {
+            UndoableMove other = iter1.next();
             other.m_dependOnMe.remove(this);
         }
-
         
-        //if we are moving out of a battle zone, mark it
-        //this can happen for air units moving out of a battle zone
-        Battle battleLand =battleTracker.getPendingBattle(m_route.getStart(), false);
-        Battle battleAir =battleTracker.getPendingBattle(m_route.getStart(), true);
-        if(battleLand != null || battleAir != null)
+        // if we are moving out of a battle zone, mark it
+        // this can happen for air units moving out of a battle zone
+        Battle battleLand = battleTracker.getPendingBattle(m_route.getStart(), false);
+        Battle battleAir = battleTracker.getPendingBattle(m_route.getStart(), true);
+        if (battleLand != null || battleAir != null)
         {
-            iter = m_units.iterator();
-            while(iter.hasNext())
+            Iterator<Unit> iter2 = m_units.iterator();
+            while (iter2.hasNext())
             {
-                Unit unit = (Unit) iter.next();
+                Unit unit = iter2.next();
                 Route routeUnitUsedToMove = DelegateFinder.moveDelegate(data).getRouteUsedToMoveInto(unit, m_route.getStart());
-                if(battleLand != null && !battleLand.isOver())
+                if (battleLand != null && !battleLand.isOver())
                 {
-                    //route units used to move will be null in the case
-                    //where an enemry sub is submerged in the territory, and another unit
-                    //moved in to attack it, but some of the units in the original 
-                    //territory are moved out.  Undoing this last move, the route used to move
-                    //into the battle zone will be null
-                    if(routeUnitUsedToMove != null) {
+                    // route units used to move will be null in the case
+                    // where an enemy sub is submerged in the territory, and another unit
+                    // moved in to attack it, but some of the units in the original
+                    // territory are moved out. Undoing this last move, the route used to move
+                    // into the battle zone will be null
+                    if (routeUnitUsedToMove != null)
+                    {
                         Change change = battleLand.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit));
                         bridge.addChange(change);
                     }
                 }
-                if(battleAir != null && !battleAir.isOver())
+                if (battleAir != null && !battleAir.isOver())
                 {
-                    Change change = battleAir.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit));                    
+                    Change change = battleAir.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit));
                     bridge.addChange(change);
                 }
             }
         }
         
-        //Clear any temporary dependents
-        MovePanel.clearDependents(m_units);        
+        // Clear any temporary dependents
+        MovePanel.clearDependents(m_units);
     }
-
+    
     /**
      * Update the dependencies.
      */
@@ -206,26 +170,24 @@ public class UndoableMove implements Serializable
         while (iter.hasNext())
         {
             UndoableMove other = iter.next();
-
-            if(other == null)
+            
+            if (other == null)
             {
-              System.err.println(undoableMoves);
-              throw new IllegalStateException("other should not be null");
+                System.err.println(undoableMoves);
+                throw new IllegalStateException("other should not be null");
             }
-
-            if( //if the other move has moves that depend on this
-                !Util.intersection(other.getUnits(), this.getUnits() ).isEmpty() ||
-                //if the other move has transports that we are loading
-                !Util.intersection(other.m_units, this.m_loaded).isEmpty() ||
-                //or we are moving through a previously conqueured territory
-                //we should be able to take this out later
-                //we need to add logic for this move to take over the same territories
-                //when the other move is undone
-                !Util.intersection(other.m_conquered, m_route.getTerritories()).isEmpty() ||
-                //or we are unloading transports that have moved in another turn 
-                !Util.intersection(other.m_units, this.m_unloaded).isEmpty() ||
-                !Util.intersection(other.m_unloaded, this.m_unloaded).isEmpty()
-               )
+            
+            if ( // if the other move has moves that depend on this
+            !Util.intersection(other.getUnits(), this.getUnits()).isEmpty() ||
+            // if the other move has transports that we are loading
+                    !Util.intersection(other.m_units, this.m_loaded).isEmpty() ||
+                    // or we are moving through a previously conqueured territory
+                    // we should be able to take this out later
+                    // we need to add logic for this move to take over the same territories
+                    // when the other move is undone
+                    !Util.intersection(other.m_conquered, m_route.getTerritories()).isEmpty() ||
+                    // or we are unloading transports that have moved in another turn
+                    !Util.intersection(other.m_units, this.m_unloaded).isEmpty() || !Util.intersection(other.m_unloaded, this.m_unloaded).isEmpty())
             {
                 m_iDependOn.add(other);
                 other.m_dependOnMe.add(this);
@@ -238,14 +200,23 @@ public class UndoableMove implements Serializable
         return m_unloaded.contains(transport);
     }
     
-    public boolean wasTransportLoaded(Unit transport) 
+    public boolean wasTransportLoaded(Unit transport)
     {
         return m_loaded.contains(transport);
     }
-
+    
     public String toString()
     {
         return "UndoableMove index;" + m_index + " description:" + m_description;
     }
     
+    public final String getMoveLabel()
+    {
+        return m_route.getStart() + " -> " + m_route.getEnd();
+    }
+    
+    public final Territory getEnd()
+    {
+        return m_route.getEnd();
+    }
 }

@@ -32,6 +32,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -88,37 +89,28 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
 {
 
     private String m_name;
-
     private String m_displayName;
-
-    private IDelegateBridge m_bridge;
-
+    private IDelegateBridge m_delegateBridge;
+    private PlayerID m_player;
+    protected GameData m_data; // protected to allow access by subclasses
     //maps Territory-> Collection of units
     protected Map<Territory, Collection<Unit>> m_produced = new HashMap<Territory, Collection<Unit>>();
-
-    private PlayerID m_player;
-
     //a list of CompositeChanges
-    private List<UndoPlace> m_placements = new ArrayList<UndoPlace>();
-
-    protected GameData m_data; // protected to allow access by subclasses
+    private List<UndoablePlacement> m_placements = new ArrayList<UndoablePlacement>();
 
     public void initialize(String name)
     {
-
         initialize(name, name);
     }
 
     public void initialize(String name, String displayName)
     {
-
         m_name = name;
         m_displayName = displayName;
     }
 
     private Collection<Unit> getAlreadyProduced(Territory t)
     {
-
         if (m_produced.containsKey(t))
             return m_produced.get(t);
         return new ArrayList<Unit>();
@@ -129,21 +121,18 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
      */
     public void start(IDelegateBridge aBridge, GameData gameData)
     {
-
-        m_bridge = aBridge;
+        m_delegateBridge = aBridge;
         m_data = gameData;
-        m_player = aBridge.getPlayerID();
+        m_player = m_delegateBridge.getPlayerID();
     }
 
     public String getName()
     {
-
         return m_name;
     }
 
     public String getDisplayName()
     {
-
         return m_displayName;
     }
 
@@ -152,25 +141,47 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return m_placements.size();
     }
     
-
     void setProduced(Map<Territory, Collection<Unit>> produced)
     {
-
         m_produced = produced;
     }
 
-    public void undoLastPlacement()
+    protected final Map<Territory, Collection<Unit>> getProduced()
     {
-        int lastChange = m_placements.size() - 1;
-        UndoPlace undoPlace = m_placements.get(lastChange);
-        undoPlace.undo(m_data, m_bridge, this);
-        m_placements.remove(lastChange);
+        return m_produced;
     }
 
+    // returns List<AbstractUndoableMove>
+    public List getMovesMade()
+    {
+        return m_placements;
+    }
+    
+    @Override
+    public String undoMove(int moveIndex)
+    {
+        if (moveIndex < m_placements.size() && moveIndex >= 0)
+        {
+            UndoablePlacement undoPlace = m_placements.get(moveIndex);
+            undoPlace.undo(m_data, m_delegateBridge);
+            m_placements.remove(moveIndex);
+            updateUndoablePlacementIndexes();
+        }
+        return null;
+    }
+    
+    private void updateUndoablePlacementIndexes()
+    {
+        for (int i = 0; i < m_placements.size(); i++)
+        {
+            m_placements.get(i).setIndex(i);
+        }
+    }
     
     public String placeUnits(Collection<Unit> units, Territory at)
     {
-    	if(units == null || units.isEmpty()) {
+        if (units == null || units.isEmpty())
+        {
     		return null;
     	}
     	
@@ -300,8 +311,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     /**
      * will return an empty IntegerMap if you can't produce any constructions, will never return null
      */
-    public IntegerMap<String> howManyOfEachConstructionCanPlace(Territory to, Collection<Unit> units,
-                PlayerID player)
+    public IntegerMap<String> howManyOfEachConstructionCanPlace(Territory to, Collection<Unit> units, PlayerID player)
     {
         if (!Match.someMatch(units, Matches.UnitIsFactoryOrConstruction))
         	return new IntegerMap<String>();
@@ -472,8 +482,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         };
     }
 
-    public String canUnitsBePlaced(Territory to, Collection<Unit> units,
-            PlayerID player)
+    public String canUnitsBePlaced(Territory to, Collection<Unit> units, PlayerID player)
     {
         Collection<Unit> allowedUnits = getUnitsToBePlaced(to, units, player);
         
@@ -505,7 +514,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             String canLand = validateNewAirCanLandOnCarriers(to, units);
             if (canLand != null)
                 return canLand;
-        } else
+        }
+        else
         {
             //make sure we own the territory
             if (!to.getOwner().equals(player))
@@ -543,21 +553,20 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return null;
     }
 
-    private Collection<Unit> getUnitsToBePlaced(Territory to, Collection<Unit> units,
-            PlayerID player)
+    private Collection<Unit> getUnitsToBePlaced(Territory to, Collection<Unit> units, PlayerID player)
     {
         if (to.isWater())
         {
             return getUnitsToBePlacedSea(to, units, player);
-        } else
+        }
+        else
         //if land
         {
             return getUnitsToBePlacedLand(to, units, player);
         }
     }
 
-    protected Collection<Unit> getUnitsToBePlacedSea(Territory to, Collection<Unit> units,
-            PlayerID player)
+    protected Collection<Unit> getUnitsToBePlacedSea(Territory to, Collection<Unit> units, PlayerID player)
     {
 
         Collection<Unit> placeableUnits = new ArrayList<Unit>();
@@ -576,12 +585,10 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             airThatCanLandOnCarrier.add(Matches.UnitIsAir);
             airThatCanLandOnCarrier.add(Matches.UnitCanLandOnCarrier);
 
-            placeableUnits.addAll(Match.getMatches(units,
-                    airThatCanLandOnCarrier));
+            placeableUnits.addAll(Match.getMatches(units, airThatCanLandOnCarrier));
         }
 
-        if ((!isWW2V2() && !isUnitPlacementInEnemySeas())
-                && to.getUnits().someMatch(Matches.enemyUnit(player, m_data)))
+        if ((!isWW2V2() && !isUnitPlacementInEnemySeas()) && to.getUnits().someMatch(Matches.enemyUnit(player, m_data)))
             return null;
         
         // remove any units that require other units to be consumed on creation (veqryn)
@@ -621,8 +628,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return placeableUnits2;
     }
 
-    protected Collection<Unit> getUnitsToBePlacedLand(Territory to, Collection<Unit> units,
-            PlayerID player)
+    protected Collection<Unit> getUnitsToBePlacedLand(Territory to, Collection<Unit> units, PlayerID player)
     {    	
         Collection<Unit> placeableUnits = new ArrayList<Unit>();
         Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
@@ -634,7 +640,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             if (isWW2V2() || isWW2V3() || isMultipleAAPerTerritory())
             {
                 placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAAorIsAAmovement));
-            } else
+            }
+            else
             {
                 //allow 1 AA to be placed if none already exists
                 if (!to.getUnits().someMatch(Matches.UnitIsAAorIsAAmovement))
@@ -680,7 +687,6 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         			placeableUnits.remove(unit);
         	}
         }
-        
         
         if (!isUnitPlacementRestrictions())
         	return placeableUnits;
@@ -742,7 +748,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         	for (UnitType ut : requiredUnits)
         	{
         		int requiredNumber = requiredUnitsMap.getInt(ut);
-        		Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unit.getOwner()), Matches.unitIsOfType(ut), Matches.UnitHasSomeUnitDamage().invert(), Matches.UnitIsNotDamaged, Matches.UnitIsDisabled().invert(), Matches.unitIsInTerritoryThatHasTerritoryDamage(to).invert());
+                Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unit.getOwner()), Matches.unitIsOfType(ut), Matches.UnitHasSomeUnitDamage().invert(), Matches.UnitIsNotDamaged, Matches.UnitIsDisabled().invert(), Matches
+                        .unitIsInTerritoryThatHasTerritoryDamage(to).invert());
         		Collection<Unit> unitsBeingRemoved = Match.getNMatches(unitsAtStartOfTurnInTO, requiredNumber, unitIsOwnedByAndOfTypeAndNotDamaged);
         		unitsAtStartOfTurnInTO.removeAll(unitsBeingRemoved);
         		// if we should actually do it, not just test, then add to bridge
@@ -757,8 +764,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     	if (weCanConsume && actuallyDoIt && change != null && !change.isEmpty())
     	{
     		//m_bridge.addChange(change);
-	        m_bridge.getHistoryWriter().startEvent("Units in " + to.getName() + " being upgraded or consumed: " + MyFormatter.unitsToTextNoOwner(removedUnits));
-	        m_bridge.getHistoryWriter().setRenderingData(removedUnits);
+            m_delegateBridge.getHistoryWriter().startEvent("Units in " + to.getName() + " being upgraded or consumed: " + MyFormatter.unitsToTextNoOwner(removedUnits));
+            m_delegateBridge.getHistoryWriter().setRenderingData(removedUnits);
     	}
     	
     	return weCanConsume;
@@ -774,13 +781,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
 
         //if its an original factory then unlimited production
         TerritoryAttachment ta = TerritoryAttachment.get(producer);
-        Collection<Unit> factoryUnits = producer.getUnits().getMatches(
-                Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player));
+        Collection<Unit> factoryUnits = producer.getUnits().getMatches(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player));
         boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
         boolean unitPlacementPerTerritoryRestricted = isUnitPlacementPerTerritoryRestricted();
         boolean originalFactory = ta.isOriginalFactory();
-        boolean playerIsOriginalOwner = factoryUnits.size() > 0 ? m_player
-                .equals(getOriginalFactoryOwner(producer)) : false;
+        boolean playerIsOriginalOwner = factoryUnits.size() > 0 ? m_player.equals(getOriginalFactoryOwner(producer)) : false;
 
         RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
         int unitCountAlreadyProduced = getAlreadyProduced(producer).size();
@@ -870,8 +875,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
      * the placement. AlreadyProduced maps territory->units already produced
      * this turn by that territory.
      */
-    protected String canProduce(Territory to, Collection<Unit> units,
-            PlayerID player)
+    protected String canProduce(Territory to, Collection<Unit> units, PlayerID player)
     {
     	Territory producer = getProducer(to, player);
         //the only reason to could be null is if its water and no
@@ -892,8 +896,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             //check to see if we are producing a factory
             if (Match.someMatch(units, Matches.UnitIsFactory))
                 return null;
-            else
-                if (Match.someMatch(units, Matches.UnitIsConstruction)) 
+            else if (Match.someMatch(units, Matches.UnitIsConstruction))
                       if (howManyOfEachConstructionCanPlace(to, units, player).totalValues() > 0) //No error, Construction to place
                     	  return null;
                       else
@@ -909,9 +912,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             else
             	return "Factories cant produce until 1 turn after they are created";
                    
-        
-        if (to.isWater() && (!isWW2V2() && !isUnitPlacementInEnemySeas())
-                && to.getUnits().someMatch(Matches.enemyUnit(player, m_data)))
+        if (to.isWater() && (!isWW2V2() && !isUnitPlacementInEnemySeas()) && to.getUnits().someMatch(Matches.enemyUnit(player, m_data)))
             return "Cannot place sea units with enemy naval units";
 
         return null;
@@ -922,8 +923,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
      * the placement. AlreadyProduced maps territory->units already produced
      * this turn by that territory.
      */
-    protected String checkProduction(Territory to, Collection<Unit> units,
-            PlayerID player)
+    protected String checkProduction(Territory to, Collection<Unit> units, PlayerID player)
     {
         Territory producer = getProducer(to, player);
         if(producer == null)
@@ -1009,14 +1009,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return ta.hasIncreasedFactoryProduction();
     }
     
-
-    
     /**
      * Returns the better producer of the two territories, either of which can
      * be null.
      */
-    private Territory getBetterProducer(Territory t1, Territory t2,
-            PlayerID player)
+    private Territory getBetterProducer(Territory t1, Territory t2, PlayerID player)
     {
         //anything is better than nothing
         if (t1 == null)
@@ -1039,8 +1036,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             return t2;
 
         //which can produce the most
-        if (getProduction(t1) - getAlreadyProduced(t1).size() > getProduction(t2)
-                - getAlreadyProduced(t2).size())
+        if (getProduction(t1) - getAlreadyProduced(t1).size() > getProduction(t2) - getAlreadyProduced(t2).size())
             return t1;
         return t2;
     }
@@ -1048,8 +1044,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     private boolean isOriginalOwner(Territory t, PlayerID id)
     {
 
-        OriginalOwnerTracker tracker = DelegateFinder.battleDelegate(m_data)
-                .getOriginalOwnerTracker();
+        OriginalOwnerTracker tracker = DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker();
         return tracker.getOriginalOwner(t).equals(id);
     }
 
@@ -1115,11 +1110,9 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
      */
     private PlayerID getOriginalFactoryOwner(Territory territory)
     {
-        Collection<Unit> factoryUnits = territory.getUnits().getMatches(
-                Matches.UnitIsFactoryOrCanProduceUnits);
+        Collection<Unit> factoryUnits = territory.getUnits().getMatches(Matches.UnitIsFactoryOrCanProduceUnits);
         if (factoryUnits.size() == 0)
-            throw new IllegalStateException("No factory in territory:"
-                    + territory);
+            throw new IllegalStateException("No factory in territory:" + territory);
         
         Iterator<Unit> iter = factoryUnits.iterator();
         while (iter.hasNext())
@@ -1129,14 +1122,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         		return DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(factory2);
         }
         Unit factory = (Unit) factoryUnits.iterator().next();
-        return DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker()
-                .getOriginalOwner(factory);
+        return DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(factory);
     }
 
     private void performPlace(Collection<Unit> units, Territory at, PlayerID player)
     {
-        
-        Map<Territory, Collection<Unit>> placedBeforeProduce = new HashMap<Territory, Collection<Unit>>(m_produced);
         Collection<Unit> unitsAlreadyThere = new ArrayList<Unit>(at.getUnits().getUnits());
         
         CompositeChange change = new CompositeChange();
@@ -1147,15 +1137,12 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         	throw new IllegalStateException("Something wrong with consuming/upgrading units");
         
         //TODO: veqryn, again, do we need to initialize infrastructure or not?
-        Collection<Unit> factoryAndAA = Match.getMatches(units,
-                Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
-        change.add(DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker()
-                .addOriginalOwnerChange(factoryAndAA, m_player));
+        Collection<Unit> factoryAndAA = Match.getMatches(units, Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
+        change.add(DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndAA, m_player));
        
-        String transcriptText = MyFormatter.unitsToTextNoOwner(units)
-                + " placed in " + at.getName();
-        m_bridge.getHistoryWriter().startEvent(transcriptText);
-        m_bridge.getHistoryWriter().setRenderingData(units);
+        String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " placed in " + at.getName();
+        m_delegateBridge.getHistoryWriter().startEvent(transcriptText);
+        m_delegateBridge.getHistoryWriter().setRenderingData(units);
 
         Change remove = ChangeFactory.removeUnits(player, units);
         Change place = ChangeFactory.addUnits(at, units);
@@ -1173,8 +1160,9 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         //can we move planes to land there
         
         moveAirOntoNewCarriers(at, units, player, change);
-        m_bridge.addChange(change);
-        m_placements.add(new UndoPlace(m_data, this, change, placedBeforeProduce));
+        m_delegateBridge.addChange(change);
+        m_placements.add(new UndoablePlacement(m_player, this, change, at, units));
+        updateUndoablePlacementIndexes();
 
         Territory producer = getProducer(at, player);
         Collection<Unit> produced = new ArrayList<Unit>();
@@ -1186,11 +1174,10 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     
     private ITripleaPlayer getRemotePlayer()
     {
-        return (ITripleaPlayer) m_bridge.getRemote();
+        return (ITripleaPlayer) m_delegateBridge.getRemote();
     }
 //TODO Here's the spot for special air placement rules
-    private void moveAirOntoNewCarriers(Territory territory, Collection<Unit> units,
-            PlayerID player, CompositeChange placeChange)
+    private void moveAirOntoNewCarriers(Territory territory, Collection<Unit> units, PlayerID player, CompositeChange placeChange)
     {
         //not water, dont bother
         if (!territory.isWater())
@@ -1213,8 +1200,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
 
         Collection<Territory> neighbors = m_data.getMap().getNeighbors(territory, 1);
         Iterator<Territory> iter = neighbors.iterator();
-        CompositeMatch<Unit> ownedFighters = new CompositeMatchAnd<Unit>(
-                Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player));
+        CompositeMatch<Unit> ownedFighters = new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player));
 
         while (iter.hasNext())
         {
@@ -1231,13 +1217,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
                 continue;
             if (wasConquered(neighbor))
                 continue;
-            if (Match.someMatch(getAlreadyProduced(neighbor),
-                    Matches.UnitIsFactoryOrCanProduceUnits))
+            if (Match.someMatch(getAlreadyProduced(neighbor), Matches.UnitIsFactoryOrCanProduceUnits))
                 continue;
 
             List<Unit> fighters = neighbor.getUnits().getMatches(ownedFighters);
-            while (fighters.size() > 0
-                    && MoveValidator.carrierCost(fighters) > capacity)
+            while (fighters.size() > 0 && MoveValidator.carrierCost(fighters) > capacity)
             {
                 fighters.remove(0);
             }
@@ -1247,13 +1231,9 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
 
             Collection<Unit> movedFighters = getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, neighbor);
 
-            Change change = ChangeFactory.moveUnits(neighbor, territory,
-                    movedFighters);
+            Change change = ChangeFactory.moveUnits(neighbor, territory, movedFighters);
             placeChange.add(change);
-            m_bridge.getHistoryWriter().addChildToEvent(
-                    MyFormatter.unitsToTextNoOwner(movedFighters)
-                            + "  moved from " + neighbor.getName() + " to "
-                            + territory);
+            m_delegateBridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(movedFighters) + "  moved from " + neighbor.getName() + " to " + territory);
 
             //only allow 1 movement
             //technically only the territory that produced the
@@ -1270,18 +1250,16 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     public void end()
     {
 
-        PlayerID player = m_bridge.getPlayerID();
+        PlayerID player = m_delegateBridge.getPlayerID();
         //clear all units not placed
         Collection<Unit> units = player.getUnits().getUnits();
         if (!Properties.getUnplacedUnitsLive(m_data) && !units.isEmpty())
         {
-            m_bridge.getHistoryWriter().startEvent(
-                    MyFormatter.unitsToTextNoOwner(units)
-                            + " were produced but were not placed");
-            m_bridge.getHistoryWriter().setRenderingData(units);
+            m_delegateBridge.getHistoryWriter().startEvent(MyFormatter.unitsToTextNoOwner(units) + " were produced but were not placed");
+            m_delegateBridge.getHistoryWriter().setRenderingData(units);
 
             Change change = ChangeFactory.removeUnits(player, units);
-            m_bridge.addChange(change);
+            m_delegateBridge.addChange(change);
         }
 
         //reset ourselves for next turn
@@ -1289,7 +1267,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         m_placements.clear();
         
         //only for lhtr rules
-        new AirThatCantLandUtil(m_data, m_bridge).removeAirThatCantLand(m_player, false);
+        new AirThatCantLandUtil(m_data, m_delegateBridge).removeAirThatCantLand(m_player, false);
     }
     
     /**
@@ -1298,7 +1276,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
      */
     public Collection<Territory> getTerritoriesWhereAirCantLand()
     {
-        return new AirThatCantLandUtil(m_data, m_bridge).getTerritoriesWhereAirCantLand(m_player);
+        return new AirThatCantLandUtil(m_data, m_delegateBridge).getTerritoriesWhereAirCantLand(m_player);
     }
 
     /**
@@ -1327,7 +1305,6 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     	return false;
     }
     
-
     private boolean isPlacementAllowedInCapturedTerritory(PlayerID player)
     {
             RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
@@ -1393,32 +1370,9 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     }
 }
 
-class UndoPlace implements Serializable
-{
-
-    private final CompositeChange m_change;
-    private final Map<Territory, Collection<Unit>> m_produced;
-    
-    public UndoPlace(GameData data, AbstractPlaceDelegate delegate,
-            CompositeChange change, Map<Territory, Collection<Unit>> produced)
-    {
-        m_change = change;
-        m_produced = new HashMap<Territory, Collection<Unit>>(produced);      
-    }
-
-    public void undo(GameData data, IDelegateBridge bridge,
-            AbstractPlaceDelegate delegate)
-    {
-        //undo any changes to the game data
-        bridge.addChange(m_change.invert());
-        delegate.setProduced(new HashMap<Territory, Collection<Unit>>(m_produced));
-    }
-
-}
-
 class PlaceState implements Serializable
 {
 
     public Map<Territory, Collection<Unit>> m_produced;
-    public List<UndoPlace> m_placements;
+    public List<UndoablePlacement> m_placements;
 }

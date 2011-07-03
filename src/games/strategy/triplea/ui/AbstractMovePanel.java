@@ -5,7 +5,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
-import games.strategy.triplea.delegate.remote.IMoveDelegate;
+import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -39,24 +39,17 @@ public abstract class AbstractMovePanel extends ActionPanel
     private TripleAFrame m_frame;
     private boolean m_listening = false;
     private JLabel m_actionLabel = new JLabel();
-    private MoveDescription m_moveMessage;
-    private List<UndoableMove> m_undoableMoves;
-    private final AbstractAction m_doneMove = new AbstractAction("Done")
+    protected MoveDescription m_moveMessage;
+    protected List<UndoableMove> m_undoableMoves;
+    protected AbstractAction m_doneMove = new AbstractAction("Done")
     {
         public void actionPerformed(ActionEvent e)
         {
-            if (m_undoableMovesPanel.getCountOfMovesMade() == 0)
+            if (doneMoveAction())
             {
-                int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(AbstractMovePanel.this), "Are you sure you dont want to move?", "End Move", JOptionPane.YES_NO_OPTION);
-                if (rVal != JOptionPane.YES_OPTION)
-                {
-                    return;
-                }
-                
+                m_moveMessage = null;
+                release();
             }
-            
-            m_moveMessage = null;
-            release();
             
         }
     };
@@ -73,19 +66,26 @@ public abstract class AbstractMovePanel extends ActionPanel
         }
     };
     /*
+     * sub-classes method for done handling
+     */
+    abstract protected boolean doneMoveAction();
+    /*
      * sub-classes method for cancel handling
      */
     abstract protected void cancelMoveAction();
     private final AbstractAction m_CANCEL_MOVE_ACTION = new WeakAction("Cancel", m_cancelMove);
-    private UndoableMovesPanel m_undoableMovesPanel;
-    private IPlayerBridge m_bridge; 
+    protected AbstractUndoableMovesPanel m_undoableMovesPanel;
+    private IPlayerBridge m_bridge;
+    
+    protected IPlayerBridge getPlayerBridge(){
+        return m_bridge;
+    }
     
     public AbstractMovePanel(GameData data, MapPanel map, TripleAFrame frame)
     {
         super(data, map);
         m_frame = frame;
         m_CANCEL_MOVE_ACTION.setEnabled(false);
-        m_undoableMovesPanel = new UndoableMovesPanel(data, this);
         m_undoableMoves = Collections.emptyList();
     }
     
@@ -102,37 +102,37 @@ public abstract class AbstractMovePanel extends ActionPanel
     {
         m_frame.setStatusWarningMessage(message);
     }
-
+    
     protected final boolean getListening()
     {
         return m_listening;
     }
-
+    
     protected final void setMoveMessage(MoveDescription message)
     {
-        m_moveMessage = message;        
+        m_moveMessage = message;
     }
     
     protected final List<UndoableMove> getUndoableMoves()
     {
-        return m_undoableMoves;        
+        return m_undoableMoves;
     }
     
     protected final void enableCancelButton()
     {
         m_CANCEL_MOVE_ACTION.setEnabled(true);
     }
-
+    
     /**
      * @return m_bridge.getGameData()
      */
-    protected final GameData getGameData() 
+    protected final GameData getGameData()
     {
         return m_bridge.getGameData();
     }
-    private IMoveDelegate getDelegate()
+    private IAbstractMoveDelegate getDelegate()
     {
-        return (IMoveDelegate) m_bridge.getRemote();
+        return (IAbstractMoveDelegate) m_bridge.getRemote();
     }
     
     protected final void updateMoves()
@@ -150,7 +150,6 @@ public abstract class AbstractMovePanel extends ActionPanel
     {
         // clean up any state we may have
         m_CANCEL_MOVE_ACTION.actionPerformed(null);
-        undoMoveSpecific();
         
         // undo the move
         String error = getDelegate().undoMove(moveIndex);
@@ -162,6 +161,7 @@ public abstract class AbstractMovePanel extends ActionPanel
         {
             updateMoves();
         }
+        undoMoveSpecific();
         
     }
     /*
@@ -236,8 +236,12 @@ public abstract class AbstractMovePanel extends ActionPanel
                 removeAll();
                 m_actionLabel.setText(id.getName() + actionLabel);
                 add(leftBox(m_actionLabel));
-                add(leftBox(new JButton(m_CANCEL_MOVE_ACTION)));
+                if (setCancelButton())
+                    add(leftBox(new JButton(m_CANCEL_MOVE_ACTION)));
                 add(leftBox(new JButton(m_DONE_MOVE_ACTION)));
+                
+                addAdditionalButtons();
+                
                 add(Box.createVerticalStrut(s_entryPadding));
                 
                 add(m_undoableMovesPanel);
@@ -251,7 +255,13 @@ public abstract class AbstractMovePanel extends ActionPanel
         
     }
     
-    private final JComponent leftBox(JComponent c)
+    protected void addAdditionalButtons()
+    {
+        
+    }
+    abstract protected boolean setCancelButton();
+    
+    protected final JComponent leftBox(JComponent c)
     {
         Box b = new Box(BoxLayout.X_AXIS);
         b.add(c);

@@ -1,0 +1,74 @@
+package games.strategy.triplea.delegate;
+
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.CompositeChange;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.delegate.IDelegateBridge;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
+
+abstract public class AbstractUndoableMove implements Serializable
+{ 
+    
+    /**
+     * Stores data about a move so that it can be undone.
+     * Stores the serialized state of the move and battle delegates (just
+     * as if they were saved), and a CompositeChange that represents all the changes that
+     * were made during the move.
+     *
+     * Some moves (such as those following an aa fire) can't be undone.
+     */
+    protected final CompositeChange m_change;
+    protected int m_index;
+    protected final Collection<Unit> m_units;
+
+    public AbstractUndoableMove(CompositeChange change, Collection<Unit> units)
+    {
+        m_change = change;
+        m_units = units;
+    }
+
+    final public void undo(GameData data, IDelegateBridge delegateBridge)
+    {
+        // undo any changes to the game data
+        delegateBridge.addChange(m_change.invert());
+        undoSpecific(data, delegateBridge);
+    }
+    
+    abstract protected void undoSpecific(GameData data, IDelegateBridge bridge);
+    
+    public final CompositeChange getChange()
+    {
+        return m_change;
+    }
+
+
+    public final void addChange(Change aChange)
+    {
+        m_change.add(aChange);
+        
+    }
+    
+    public Collection<Unit> getUnits()
+    {
+        return m_units;
+    }
+
+    public int getIndex()
+    {
+        return m_index;
+    }
+
+    public void setIndex(int index)
+    {
+        m_index = index;
+    }
+    
+    abstract public String getMoveLabel();
+    abstract public Territory getEnd();
+}
