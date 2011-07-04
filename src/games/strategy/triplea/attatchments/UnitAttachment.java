@@ -22,6 +22,7 @@ package games.strategy.triplea.attatchments;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -82,6 +83,9 @@ public class UnitAttachment extends DefaultAttachment
   
   // a colon delimited list of territories where this unit may not be placed
   private String[] m_unitPlacementRestrictions;
+  
+  // a colon delimited list of transports where this unit may invade from, it supports "none" and if empty it allows you to invade from all
+  private String[] m_canInvadeOnlyFrom;
   
   // a colon delimited list of the units this unit can repair. (units must be in same territory, unless this unit is land and the repaired unit is sea)
   private String[] m_repairsUnits;
@@ -424,6 +428,50 @@ public class UnitAttachment extends DefaultAttachment
   public void setRepairsUnits(String value)
   {
 	  m_repairsUnits = value.split(":");
+  }
+  
+  public void setCanInvadeOnlyFrom(String value) throws GameParseException
+  {
+	  String[] canOnlyInvadeFrom = value.split(":");
+	  if(canOnlyInvadeFrom[0].toLowerCase().equals("none")) {
+		  m_canInvadeOnlyFrom = new String[]{"none"};
+		  return;
+	  }
+	  if(canOnlyInvadeFrom[0].toLowerCase().equals("all")) {
+		  m_canInvadeOnlyFrom = new String[]{"all"};
+		  return;
+	  }
+	  for(String transport:canOnlyInvadeFrom) {
+		  UnitType ut = getData().getUnitTypeList().getUnitType(transport);
+	      if(ut == null)
+	          throw new GameParseException("Unit Attachments: No unit called:" + transport);
+
+	      if(ut.getAttachments().isEmpty())
+	          throw new GameParseException("Unit Attachments:" + transport +" has no attachments, please declare "+transport+" in the xml before using it as a transport");  
+	      
+	      UnitAttachment ua = (UnitAttachment) ut.getAttachments().values().iterator().next();
+	      if(ua.getTransportCapacity() == 0)
+	          throw new GameParseException("Unit Attachments:" + transport +" is not a transport");  
+	  }
+	  m_canInvadeOnlyFrom = canOnlyInvadeFrom;
+  }
+  
+  public boolean canInvadeFrom(String transport) {
+	  
+	  UnitType ut = getData().getUnitTypeList().getUnitType(transport);
+	  if(ut == null)
+          throw new IllegalStateException("Unit Attachments: No unit called:" + transport);
+	  UnitAttachment ua = (UnitAttachment) ut.getAttachments().values().iterator().next();
+	  if(ua.getTransportCapacity() == 0)
+	      throw new IllegalStateException("Unit Attachments:" + transport +" is not a transport");  
+	  
+	  if(m_canInvadeOnlyFrom == null || 
+			  Arrays.asList(m_canInvadeOnlyFrom).isEmpty() || 
+			  m_canInvadeOnlyFrom[0].equals("") ||
+			  m_canInvadeOnlyFrom[0].equals("all") ) {
+		  return true;
+	  }
+	  return Arrays.asList(m_canInvadeOnlyFrom).contains(transport);
   }
   
   public String[] getRepairsUnits()
@@ -1024,7 +1072,8 @@ public class UnitAttachment extends DefaultAttachment
         m_isInfantry ||
         m_isLandTransport ||
         m_isAirTransportable || 
-        m_isCombatTransport
+        m_isCombatTransport ||
+        m_canInvadeOnlyFrom != null
         )
         throw new GameParseException("Invalid Unit attatchment, air units can not have certain properties, " + this);
 
@@ -1045,7 +1094,9 @@ public class UnitAttachment extends DefaultAttachment
         m_isLandTransport ||
         m_isAirTransportable ||
         m_isAirTransport || 
-        m_isKamikaze
+        m_isKamikaze ||
+        m_canInvadeOnlyFrom != null
+
         )
         throw new GameParseException("Invalid Unit Attatchment, sea units can not have certain properties, " + this);
     }

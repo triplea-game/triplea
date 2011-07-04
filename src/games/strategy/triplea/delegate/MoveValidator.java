@@ -751,8 +751,9 @@ public class MoveValidator
         }
         else
         {
-            if (validateCombat(data, units, route, player, result).getError() != null)
+            if (validateCombat(data, units, route, player, result).getError() != null) 
                 return result;
+            
         }
 
         if (validateNonEnemyUnitsOnPath(data, units, route, player, result).getError() != null)
@@ -928,6 +929,15 @@ public class MoveValidator
         	
         	if(Match.allMatch(end, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data)) && !route.getEnd().getUnits().isEmpty())
         		return result.setErrorReturnResult("Units cannot participate in multiple battles");
+        }
+        
+        
+        //See if we are doing invasions in combat phase, with units or transports that can't do invasion.
+        if (MoveValidator.isUnload(route) && Match.someMatch(units,Matches.LandUnitThatCannotInvade)) {
+           for (Unit unit : units) {
+        	   if(Matches.LandUnitThatCannotInvade.match(unit)) 
+            	 result.addDisallowedUnit(unit.getUnitType().getName()+" can't invade from "+TripleAUnit.get(unit).getTransportedBy().getUnitType().getName(), unit);
+           }
         }
         
         return result; 

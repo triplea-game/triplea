@@ -2616,6 +2616,23 @@ public class Matches
     public static final Match<Unit> UnitIsFactoryOrCanBeDamaged = new CompositeMatchOr<Unit>(UnitIsFactory, UnitCanBeDamagedButIsNotFactory);
     
     public static final Match<Unit> UnitIsFactoryOrCanProduceUnits = new CompositeMatchOr<Unit>(UnitIsFactory, UnitCanProduceUnits);
+
+
+    // See if this unit can Invade, invaders can invade from any craft, non Invaders can invade from crafts that don't have the InvasionRestrcted attachment
+    public static final Match<Unit> UnitCanInvade = new Match<Unit>() {
+        	
+       public boolean match(Unit unit) {
+          // is the unit being transported?
+          Unit transport = TripleAUnit.get(unit).getTransportedBy();
+          if(transport == null)
+        	 return false; // Unit isn't transported so can't Invade   
+          
+          UnitAttachment ua = UnitAttachment.get(unit.getType());       		   		
+          return ua.canInvadeFrom(transport.getUnitType().getName());
+       }	
+     };
+        
+    public static final Match<Unit> LandUnitThatCannotInvade = new CompositeMatchAnd<Unit>(UnitIsLand,new InverseMatch<Unit>(UnitCanInvade));
     
     public static final Match<Unit> UnitIsOwnedAndIsFactoryOrCanProduceUnits(final PlayerID player)
     {
