@@ -933,11 +933,12 @@ public class MoveValidator
         
         
         //See if we are doing invasions in combat phase, with units or transports that can't do invasion.
-        if (MoveValidator.isUnload(route) && Match.someMatch(units,Matches.LandUnitThatCannotInvade)) {
-           for (Unit unit : units) {
-        	   if(Matches.LandUnitThatCannotInvade.match(unit)) 
-            	 result.addDisallowedUnit(unit.getUnitType().getName()+" can't invade from "+TripleAUnit.get(unit).getTransportedBy().getUnitType().getName(), unit);
-           }
+        if (MoveValidator.isUnload(route) && Matches.isTerritoryEnemy(player, data).match(route.getEnd())) 
+        {
+        	for (Unit unit : Match.getMatches(units, Matches.UnitCanInvade.invert())) 
+        	{
+        		result.addDisallowedUnit(unit.getUnitType().getName()+" can't invade from "+TripleAUnit.get(unit).getTransportedBy().getUnitType().getName(), unit);
+            }
         }
         
         return result; 

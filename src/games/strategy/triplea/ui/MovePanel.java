@@ -559,9 +559,9 @@ public class MovePanel extends AbstractMovePanel
         if (!allResults.isMoveValid())
         {
             // if the player is invading only consider units that can invade
-            if (!m_nonCombat && MoveValidator.isUnload(route))
+            if (!m_nonCombat && MoveValidator.isUnload(route) && Matches.isTerritoryEnemy(getCurrentPlayer(), getData()).match(route.getEnd()))
             {
-            	best = Match.getMatches(best, new InverseMatch<Unit>(Matches.LandUnitThatCannotInvade));
+            	best = Match.getMatches(best, Matches.UnitCanInvade);
                 bestWithDependents = addMustMoveWith(best);
                 lastResults = MoveValidator.validateMove(bestWithDependents, route, getCurrentPlayer(), transportsToLoad, m_nonCombat, getUndoableMoves(), getData());
             }

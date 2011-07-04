@@ -441,18 +441,6 @@ public class UnitAttachment extends DefaultAttachment
 		  m_canInvadeOnlyFrom = new String[]{"all"};
 		  return;
 	  }
-	  for(String transport:canOnlyInvadeFrom) {
-		  UnitType ut = getData().getUnitTypeList().getUnitType(transport);
-	      if(ut == null)
-	          throw new GameParseException("Unit Attachments: No unit called:" + transport);
-
-	      if(ut.getAttachments().isEmpty())
-	          throw new GameParseException("Unit Attachments:" + transport +" has no attachments, please declare "+transport+" in the xml before using it as a transport");  
-	      
-	      UnitAttachment ua = (UnitAttachment) ut.getAttachments().values().iterator().next();
-	      if(ua.getTransportCapacity() == 0)
-	          throw new GameParseException("Unit Attachments:" + transport +" is not a transport");  
-	  }
 	  m_canInvadeOnlyFrom = canOnlyInvadeFrom;
   }
   
@@ -461,9 +449,9 @@ public class UnitAttachment extends DefaultAttachment
 	  UnitType ut = getData().getUnitTypeList().getUnitType(transport);
 	  if(ut == null)
           throw new IllegalStateException("Unit Attachments: No unit called:" + transport);
-	  UnitAttachment ua = (UnitAttachment) ut.getAttachments().values().iterator().next();
-	  if(ua.getTransportCapacity() == 0)
-	      throw new IllegalStateException("Unit Attachments:" + transport +" is not a transport");  
+	  // UnitAttachment ua = UnitAttachment.get(ut); //(UnitAttachment) ut.getAttachments().values().iterator().next();
+
+	  // Units may be considered transported if they are on a carrier, or if they are paratroopers, or if they are mech infantry. The "transporter" may not be an actual transport, so we should not check for that here.
 	  
 	  if(m_canInvadeOnlyFrom == null || 
 			  Arrays.asList(m_canInvadeOnlyFrom).isEmpty() || 
@@ -1072,8 +1060,7 @@ public class UnitAttachment extends DefaultAttachment
         m_isInfantry ||
         m_isLandTransport ||
         m_isAirTransportable || 
-        m_isCombatTransport ||
-        m_canInvadeOnlyFrom != null
+        m_isCombatTransport
         )
         throw new GameParseException("Invalid Unit attatchment, air units can not have certain properties, " + this);
 
@@ -1094,8 +1081,7 @@ public class UnitAttachment extends DefaultAttachment
         m_isLandTransport ||
         m_isAirTransportable ||
         m_isAirTransport || 
-        m_isKamikaze ||
-        m_canInvadeOnlyFrom != null
+        m_isKamikaze
 
         )
         throw new GameParseException("Invalid Unit Attatchment, sea units can not have certain properties, " + this);
@@ -1182,6 +1168,20 @@ public class UnitAttachment extends DefaultAttachment
     if((m_canBeDamaged && (m_maxDamage < 1)) || (!m_canBeDamaged && !m_isFactory && (m_maxDamage >= 0)) || (m_canDieFromReachingMaxDamage && !(m_maxDamage >= 0 || m_isFactory)) || (m_canBeDamaged && m_isFactory))
     {
     	throw new GameParseException("Invalid Unit Attatchment, something wrong with canBeDamaged or maxDamage or canDieFromReachingMaxDamage or isFactory, " + this);
+    }
+    
+    if (m_canInvadeOnlyFrom != null && !m_canInvadeOnlyFrom[0].equals("all") && !m_canInvadeOnlyFrom[0].equals("none"))
+    {
+  	  for(String transport:m_canInvadeOnlyFrom) {
+  		  UnitType ut = getData().getUnitTypeList().getUnitType(transport);
+  	      if(ut == null)
+  	          throw new GameParseException("Unit Attachments: No unit called:" + transport);
+
+  	      if(ut.getAttachments() == null || ut.getAttachments().isEmpty())
+  	          throw new GameParseException("Unit Attachments:" + transport +" has no attachments, please declare "+transport+" in the xml before using it as a transport");  
+  	      
+  	      // Units may be considered transported if they are on a carrier, or if they are paratroopers, or if they are mech infantry. The "transporter" may not be an actual transport, so we should not check for that here.
+  	  }
     }
     
   }
