@@ -46,13 +46,13 @@ public class ProductionPanel extends JPanel
 
     private JFrame m_owner;
     private JDialog m_dialog;
-    private final UIContext m_uiContext;
     
     // Edwin: made these protected so the class can be extended
+    protected final UIContext m_uiContext;
     protected List<Rule> m_rules = new ArrayList<Rule>();
     protected JLabel m_left = new JLabel();
     protected JButton m_done;
-    private PlayerID m_id;
+    protected PlayerID m_id;
     private boolean m_bid;
     private GameData m_data;
     

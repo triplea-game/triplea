@@ -23,10 +23,12 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.*;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Tuple;
 
 import java.awt.*;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.List;
 
 import javax.swing.*;
 
@@ -39,7 +41,6 @@ import javax.swing.*;
  */
 public class TabbedProductionPanel extends ProductionPanel
 {
-	private int m_maxColumns = 10;
     private int m_rows;
 	private int m_columns;
 
@@ -63,7 +64,63 @@ public class TabbedProductionPanel extends ProductionPanel
         JTabbedPane tabs = new JTabbedPane();
         
         add(tabs,new GridBagConstraints(0,1,1,1,100,100,GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(8, 8, 8, 0), 0, 0));
+        
+    	ProductionTabsProperties properties = ProductionTabsProperties.getInstance(m_id,m_rules,m_uiContext.getMapDir());
+        List<Tuple<String,List<Rule>>> ruleLists = getRuleLists(properties);
+        calculateXY(properties);
+        
+        for(Tuple<String,List<Rule>> ruleList:ruleLists) {
+        	if(ruleList.getSecond().size()>0) {
+        		tabs.addTab(ruleList.getFirst(), new JScrollPane(getRulesPanel(ruleList.getSecond())));
+        	}
+        }
+               
+        add(m_left, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
+        m_done = new JButton(m_done_action);
+        add(m_done, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,  0, 8, 0), 0, 0));
+        
+        Dimension dtab = tabs.getPreferredSize();
+        Dimension dthis = this.getPreferredSize();
+        if (dtab != null && dthis != null)
+        {
+        	tabs.setPreferredSize(new Dimension(dtab.width + 2, dtab.height + 2)); // for whatever dumb reason, the tabs need a couple extra height and width or else scroll bars will appear
+            this.setPreferredSize(new Dimension(dthis.width + 4, dthis.height + 20)); // for whatever dumb reason, the window needs to be at least 16 pixels greater in height than normal, to accommodate the tabs
+        }
+        tabs.validate();
+        this.validate();
+    }
+    
+    private void calculateXY(ProductionTabsProperties properties) {
+      	if(properties.getRows()==0 || properties.getColumns()==0) {
+    		int m_maxColumns;
+        	if (m_rules.size() <= 36) // 8 columns 2 rows is perfect for small screens, 12 columns 3 rows is perfect for mid-sized screens, while 16 columns and 5-8 rows is perfect for really big screens.
+            	m_maxColumns = Math.max(8, Math.min(12, new BigDecimal(m_rules.size()).divide(new BigDecimal(3),BigDecimal.ROUND_UP).intValue()));
+            else if (m_rules.size() <= 64)
+            	m_maxColumns = Math.max(8, Math.min(16, new BigDecimal(m_rules.size()).divide(new BigDecimal(4),BigDecimal.ROUND_UP).intValue()));
+            else
+            	m_maxColumns = Math.max(8, Math.min(16, new BigDecimal(m_rules.size()).divide(new BigDecimal(5),BigDecimal.ROUND_UP).intValue()));
+    		m_rows = Math.max(2, new BigDecimal(m_rules.size()).divide(new BigDecimal(m_maxColumns),BigDecimal.ROUND_UP).intValue());
+			m_columns = new BigDecimal(m_rules.size()).divide(new BigDecimal(m_rows), BigDecimal.ROUND_UP).intValue();	
+    	} else {
+    		m_rows = properties.getRows();    		
+    	    m_columns = properties.getColumns();
+    	}
 
+	}
+
+	private List<Tuple<String, List<Rule>>> getRuleLists(ProductionTabsProperties properties) {
+    	
+    	if(!properties.useDefaultTabs()) {
+    		return properties.getRuleLists();
+    	} else {
+    		return getDefaultRuleLists();
+    	}
+ 
+	}
+
+	private List<Tuple<String, List<Rule>>> getDefaultRuleLists() {
+    	
+    	List<Tuple<String, List<Rule>>> ruleLists = new ArrayList<Tuple<String,List<Rule>>>();
         ArrayList<Rule> allRules = new ArrayList<Rule>();
         ArrayList<Rule> landRules = new ArrayList<Rule>();
         ArrayList<Rule> airRules = new ArrayList<Rule>();
@@ -91,52 +148,17 @@ public class TabbedProductionPanel extends ProductionPanel
             }
         }
         
-        if (m_rules.size() <= 36) // 8 columns 2 rows is perfect for small screens, 12 columns 3 rows is perfect for mid-sized screens, while 16 columns and 5-8 rows is perfect for really big screens.
-        	m_maxColumns = Math.max(8, Math.min(12, new BigDecimal(m_rules.size()).divide(new BigDecimal(3),BigDecimal.ROUND_UP).intValue()));
-        else if (m_rules.size() <= 64)
-        	m_maxColumns = Math.max(8, Math.min(16, new BigDecimal(m_rules.size()).divide(new BigDecimal(4),BigDecimal.ROUND_UP).intValue()));
-        else
-        	m_maxColumns = Math.max(8, Math.min(16, new BigDecimal(m_rules.size()).divide(new BigDecimal(5),BigDecimal.ROUND_UP).intValue()));
+        ruleLists.add(new Tuple<String,List<Rule>>("All",allRules));
+        ruleLists.add(new Tuple<String,List<Rule>>("Land",landRules));
+        ruleLists.add(new Tuple<String,List<Rule>>("Air",airRules));
+        ruleLists.add(new Tuple<String,List<Rule>>("Sea",seaRules));
+        ruleLists.add(new Tuple<String,List<Rule>>("Construction",constructRules));
+        ruleLists.add(new Tuple<String,List<Rule>>("Upgrades/Consumes",upgradeConsumesRules));
         
-        m_rows = Math.max(2, new BigDecimal(m_rules.size()).divide(new BigDecimal(m_maxColumns),BigDecimal.ROUND_UP).intValue());
-        m_columns = new BigDecimal(m_rules.size()).divide(new BigDecimal(m_rows), BigDecimal.ROUND_UP).intValue();
-        
-        
-        if(allRules.size()>0) {
-        	tabs.addTab("All", new JScrollPane(getRulesPanel(allRules)));
-        }
-        if(landRules.size()>0){
-        	tabs.addTab("Land", new JScrollPane(getRulesPanel(landRules)));
-        }
-        if(airRules.size()>0) {
-        	tabs.addTab("Air", new JScrollPane(getRulesPanel(airRules)));
-        }
-        if(seaRules.size()>0) {
-        	tabs.addTab("Sea", new JScrollPane(getRulesPanel(seaRules)));
-        }
-        if(constructRules.size()>0) {
-        	tabs.addTab("Construction",new JScrollPane(getRulesPanel(constructRules)));
-        }
-        if(upgradeConsumesRules.size()>0) {
-        	tabs.addTab("Upgrades/Consumes",new JScrollPane(getRulesPanel(upgradeConsumesRules)));
-        }
-               
-        add(m_left, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
-        m_done = new JButton(m_done_action);
-        add(m_done, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,  0, 8, 0), 0, 0));
-        
-        Dimension dtab = tabs.getPreferredSize();
-        Dimension dthis = this.getPreferredSize();
-        if (dtab != null && dthis != null)
-        {
-        	tabs.setPreferredSize(new Dimension(dtab.width + 2, dtab.height + 2)); // for whatever dumb reason, the tabs need a couple extra height and width or else scroll bars will appear
-            this.setPreferredSize(new Dimension(dthis.width + 4, dthis.height + 20)); // for whatever dumb reason, the window needs to be at least 16 pixels greater in height than normal, to accommodate the tabs
-        }
-        tabs.validate();
-        this.validate();
-    }
-    
-    private JPanel getRulesPanel(ArrayList<Rule> rules)
+	    return ruleLists;
+	}
+
+	private JPanel getRulesPanel(List<Rule> rules)
     {
     	JPanel panel = new JPanel();
     	panel.setLayout(new GridLayout(m_rows,m_columns));
