@@ -67,7 +67,7 @@ public class TabbedProductionPanel extends ProductionPanel
         
     	ProductionTabsProperties properties = ProductionTabsProperties.getInstance(m_id,m_rules,m_uiContext.getMapDir());
         List<Tuple<String,List<Rule>>> ruleLists = getRuleLists(properties);
-        calculateXY(properties);
+        calculateXY(properties, largestList(ruleLists));
         
         for(Tuple<String,List<Rule>> ruleList:ruleLists) {
         	if(ruleList.getSecond().size()>0) {
@@ -90,23 +90,32 @@ public class TabbedProductionPanel extends ProductionPanel
         this.validate();
     }
     
-    private void calculateXY(ProductionTabsProperties properties) {
-      	if(properties.getRows()==0 || properties.getColumns()==0) {
+    private void calculateXY(ProductionTabsProperties properties, int largestList) {
+      	if(properties == null || properties.getRows()==0 || properties.getColumns()==0 || properties.getRows() * properties.getColumns() < largestList) {
     		int m_maxColumns;
-        	if (m_rules.size() <= 36) // 8 columns 2 rows is perfect for small screens, 12 columns 3 rows is perfect for mid-sized screens, while 16 columns and 5-8 rows is perfect for really big screens.
-            	m_maxColumns = Math.max(8, Math.min(12, new BigDecimal(m_rules.size()).divide(new BigDecimal(3),BigDecimal.ROUND_UP).intValue()));
-            else if (m_rules.size() <= 64)
-            	m_maxColumns = Math.max(8, Math.min(16, new BigDecimal(m_rules.size()).divide(new BigDecimal(4),BigDecimal.ROUND_UP).intValue()));
+        	if (largestList <= 36) // 8 columns 2 rows is perfect for small screens, 12 columns 3 rows is perfect for mid-sized screens, while 16 columns and 5-8 rows is perfect for really big screens.
+            	m_maxColumns = Math.max(8, Math.min(12, new BigDecimal(largestList).divide(new BigDecimal(3),BigDecimal.ROUND_UP).intValue()));
+            else if (largestList <= 64)
+            	m_maxColumns = Math.max(8, Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(4),BigDecimal.ROUND_UP).intValue()));
             else
-            	m_maxColumns = Math.max(8, Math.min(16, new BigDecimal(m_rules.size()).divide(new BigDecimal(5),BigDecimal.ROUND_UP).intValue()));
-    		m_rows = Math.max(2, new BigDecimal(m_rules.size()).divide(new BigDecimal(m_maxColumns),BigDecimal.ROUND_UP).intValue());
-			m_columns = new BigDecimal(m_rules.size()).divide(new BigDecimal(m_rows), BigDecimal.ROUND_UP).intValue();	
+            	m_maxColumns = Math.max(8, Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(5),BigDecimal.ROUND_UP).intValue()));
+    		m_rows = Math.max(2, new BigDecimal(largestList).divide(new BigDecimal(m_maxColumns),BigDecimal.ROUND_UP).intValue());
+			m_columns = new BigDecimal(largestList).divide(new BigDecimal(m_rows), BigDecimal.ROUND_UP).intValue();	
     	} else {
     		m_rows = properties.getRows();    		
     	    m_columns = properties.getColumns();
     	}
-
 	}
+    
+    private int largestList(final List<Tuple<String,List<Rule>>> ruleLists) {
+    	int largestList = 0;
+    	for (Tuple<String,List<Rule>> tuple : ruleLists)
+    	{
+    		if (largestList < tuple.getSecond().size())
+    			largestList = tuple.getSecond().size();
+    	}
+    	return largestList;
+    }
 
 	private List<Tuple<String, List<Rule>>> getRuleLists(ProductionTabsProperties properties) {
     	
