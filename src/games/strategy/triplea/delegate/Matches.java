@@ -24,6 +24,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -2166,6 +2167,52 @@ public class Matches
     		{
     			if (transportTracker.isTransporting(transport))
     				return true;
+    			return false;
+    		}
+    	};
+    }
+
+    /**
+     * Only tests the TripleAUnit getTransportedBy value, 
+     * which is normally set for sea transport movement of land units, 
+     * and sometimes set for other things like paratroopers and dependent allied fighters sitting as cargo on a ship. (not sure if set for mech inf or not)
+     */
+    public static Match<Unit> unitIsBeingTransported()
+    {
+    	return new Match<Unit>()
+    	{
+    		public boolean match(Unit dependent)
+    		{
+    			return ((TripleAUnit) dependent).getTransportedBy() != null;
+    		}
+    	};
+    }
+
+    /**
+     * Tests the TripleAUnit getTransportedBy value, 
+     * And also tests for paratroopers, and for dependent allied fighters sitting as cargo on a ship. 
+     * (not sure if set for mech inf or not)
+     */
+    public static Match<Unit> unitIsBeingTransportedOrIsDependent(final Collection<Unit> units, final Route route, final PlayerID currentPlayer, final GameData data)
+    {
+    	return new Match<Unit>()
+    	{
+    		public boolean match(Unit dependent)
+    		{
+    			if (((TripleAUnit) dependent).getTransportedBy() != null)
+    				return true;
+    			else if (MoveValidator.carrierMustMoveWith(units, units, data, currentPlayer).containsValue(dependent))
+    				return true;
+    			else
+    			{
+    	            Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
+    	            Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
+    	            if(!airTransports.isEmpty() && !paratroops.isEmpty())
+    	            {
+    	            	if (MoveDelegate.mapAirTransports(route, paratroops, airTransports, true, currentPlayer).containsKey(dependent))
+    	            		return true;
+    	            }
+    			}
     			return false;
     		}
     	};

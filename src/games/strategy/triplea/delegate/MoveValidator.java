@@ -2291,50 +2291,50 @@ public class MoveValidator
     @SuppressWarnings("unchecked")
     public static Route getBestRoute(Territory start, Territory end, GameData data, PlayerID player, Collection<Unit> units)
     {
-        // No neutral countries on route predicate
-        Match<Territory> noNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral));
-
-        //ignore the end territory in our tests
-        //it must be in the route, so it shouldn't affect the route choice
+        //ignore the end territory in our tests.  it must be in the route, so it shouldn't affect the route choice
         Match<Territory> territoryIsEnd = Matches.territoryIs(end);
+        
+    	// No neutral countries on route predicate
+        Match<Territory> noNeutral = new CompositeMatchOr<Territory>(territoryIsEnd, Matches.TerritoryIsNeutral.invert());
+
+        // No aa guns on route predicate
+        Match<Territory> noAA = new CompositeMatchOr<Territory>(territoryIsEnd, Matches.territoryHasEnemyAA(player, data).invert());
+
+        //no enemy units on the route predicate
+        Match<Territory> noEnemy = new CompositeMatchOr<Territory>(territoryIsEnd, Matches.territoryHasEnemyUnits(player, data).invert());
 
         Route defaultRoute;
         if (isWW2V2(data) || isNeutralsImpassable(data))
-
-        	//defaultRoute = data.getMap().getRoute(start, end, new CompositeMatchOr(new CompositeMatchAnd(noNeutral, notEnemyAA), territoryIsEnd));
-        	defaultRoute = data.getMap().getRoute(start, end, new CompositeMatchOr(noNeutral, territoryIsEnd));
+        	defaultRoute = data.getMap().getRoute(start, end, noNeutral);
         	
         else
-        {
-        	//defaultRoute = data.getMap().getRoute(start, end, new CompositeMatchOr(notEnemyAA, territoryIsEnd));
         	defaultRoute = data.getMap().getRoute(start, end);
-        }
 
         if (defaultRoute == null)
         	defaultRoute = data.getMap().getRoute(start, end);
         
-        if(defaultRoute == null) {
+        if(defaultRoute == null)
         	return null;
-        }
+        
+        // we don't want to look at the dependents
+        Collection<Unit> unitsWhichAreNotBeingTransportedOrDependent = new ArrayList<Unit>(Match.getMatches(units, Matches.unitIsBeingTransportedOrIsDependent(units, defaultRoute, player, data).invert()));
+        boolean mustGoLand = false;
+        boolean mustGoSea = false;
         
         //If start and end are land, try a land route.
         //don't force a land route, since planes may be moving
         if(!start.isWater() && !end.isWater())
         { 
         	Route landRoute;
-        	if (isWW2V2(data) || isNeutralsImpassable(data))
-        		landRoute = data.getMap().getRoute(start, end, new CompositeMatchAnd( Matches.TerritoryIsLand, new CompositeMatchOr(noNeutral, territoryIsEnd)));
+        	if (isNeutralsImpassable(data))
+        		landRoute = data.getMap().getRoute(start, end, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, noNeutral));
         	else
-        	{
         		landRoute = data.getMap().getRoute(start, end, Matches.TerritoryIsLand);
-        	}
         	
-            if (landRoute != null &&
-            		landRoute.getLength() == defaultRoute.getLength())
+            if (landRoute != null && (Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsLand)))
             {
-            	//If there are no air units, return the land route
-            	if(Match.noneMatch(units, Matches.UnitIsAir))
-            		defaultRoute = landRoute;
+            	defaultRoute = landRoute;
+            	mustGoLand = true;
             }
         }
         
@@ -2342,55 +2342,51 @@ public class MoveValidator
         //dont force a water route, since planes may be moving
         if (start.isWater() && end.isWater())
         {
-            Route waterRoute = data.getMap().getRoute(start, end,
-                Matches.TerritoryIsWater);
-            if (waterRoute != null &&
-                waterRoute.getLength() == defaultRoute.getLength())
+            Route waterRoute = data.getMap().getRoute(start, end, Matches.TerritoryIsWater);
+            if (waterRoute != null && (Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsSea)))
+            {
             	defaultRoute = waterRoute;
-        }
-
-        // No aa guns on route predicate
-        Match<Territory> noAA = new InverseMatch<Territory>(Matches.territoryHasEnemyAA(player, data));
-
-        //no enemy units on the route predicate
-        Match<Territory> noEnemy = new InverseMatch<Territory>(Matches.territoryHasEnemyUnits(player, data));
-        
-        
-        //these are the conditions we would like the route to satisfy, starting
-        //with the most important
-        List<Match<Territory>> tests = new ArrayList( Arrays.asList(
-                //best if no enemy and no neutral
-                new CompositeMatchOr<Territory>(noEnemy, noNeutral),
-                //we will be satisfied if no aa and no neutral
-                new CompositeMatchOr<Territory>(noAA, noNeutral),
-                //single matches
-                noEnemy, noAA, noNeutral));
-        
-        
-        //remove matches that already pass
-        //ignore the end
-        for(Iterator<Match<Territory>> iter = tests.iterator(); iter.hasNext(); ) {
-            Match<Territory> current = iter.next();
-            if(defaultRoute.allMatch(new CompositeMatchOr(current, territoryIsEnd))) {
-                iter.remove();
+            	mustGoSea = true;
             }
         }
         
         
+        //these are the conditions we would like the route to satisfy, starting
+        //with the most important
+        List<Match<Territory>> tests;
+        if (isNeutralsImpassable(data))
+        {
+        	tests = new ArrayList<Match<Territory>>( Arrays.asList(
+                        //best if no enemy and no neutral
+                        new CompositeMatchAnd<Territory>(noEnemy, noNeutral),
+                        //we will be satisfied if no aa and no neutral
+                        new CompositeMatchAnd<Territory>(noAA, noNeutral)));
+        }
+        else
+        {
+        	tests = new ArrayList<Match<Territory>>( Arrays.asList(
+                        //best if no enemy and no neutral
+                        new CompositeMatchAnd<Territory>(noEnemy, noNeutral),
+                        //we will be satisfied if no aa and no neutral
+                        new CompositeMatchAnd<Territory>(noAA, noNeutral),
+                        //single matches
+                        noEnemy, noAA, noNeutral));
+        }
+        
         for(Match<Territory> t : tests) {            
             Match<Territory> testMatch = null;
-            if (isWW2V2(data) || isNeutralsImpassable(data))
-                testMatch = new CompositeMatchAnd<Territory>(t, noNeutral);
+            if (mustGoLand)
+                testMatch = new CompositeMatchAnd<Territory>(t, Matches.TerritoryIsLand);
+            else if (mustGoSea)
+                testMatch = new CompositeMatchAnd<Territory>(t, Matches.TerritoryIsWater);
             else
-                testMatch = t;
+            	testMatch = t;
 
             Route testRoute = data.getMap().getRoute(start, end, new CompositeMatchOr<Territory>(testMatch, territoryIsEnd));
             
             if(testRoute != null && testRoute.getLength() == defaultRoute.getLength())
                 return testRoute;
         }
-            
-        
         
         return defaultRoute;
     }
