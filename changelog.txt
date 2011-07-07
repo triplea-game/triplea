@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Added ability to customize tooltips for units, using "tooltips.properties". (edwin van der wal)
+
 * Stop caching of production_tabs properties, will now read the file each time purchase screen is displayed. (edwin van der wal)
 
 * Small fixes to new production_tabs properties and display. User specified production tabs must include all units possible to be purchased by a player, or else an error will be thrown. (veqryn)

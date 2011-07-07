@@ -20,6 +20,10 @@
 
 package games.strategy.engine.data;
 
+import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.ui.TooltipProperties;
+import games.strategy.triplea.ui.UIContext;
+
 import java.util.*;
 import java.io.*;
 
@@ -85,6 +89,22 @@ public class UnitType extends NamedAttachable implements Serializable
 	public int hashCode()
 	{
 		return getName().hashCode();
+	}
+	
+	public String getTooltip(UIContext uiContext,PlayerID playerId) {
+		if(TooltipProperties.getInstance(uiContext).getToolTip(this, playerId) == null || TooltipProperties.getInstance(uiContext).getToolTip(this, playerId).equals("")) {
+			for(IAttachment at:this.getAttachments().values()) {
+				try {
+					UnitAttachment ut = (UnitAttachment) at;
+					return ut.toStringShortAndOnlyImportantDifferences(playerId);
+				} catch (ClassCastException cce) {
+					// this wasn't a UnitAttachment: just ignore
+				}
+			}
+			return ""; //Apparently no unitattachments.
+		} else {
+			return TooltipProperties.getInstance(uiContext).getToolTip(this, playerId);
+		}
 	}
 
 }

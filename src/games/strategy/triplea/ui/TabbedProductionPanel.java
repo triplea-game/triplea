@@ -132,7 +132,7 @@ public class TabbedProductionPanel extends ProductionPanel
 
 	private List<Tuple<String, List<Rule>>> getRuleLists(ProductionTabsProperties properties) {
     	
-    	if(!properties.useDefaultTabs()) {
+    	if(properties != null && !properties.useDefaultTabs()) {
     		List<Tuple<String, List<Rule>>> ruleLists = properties.getRuleLists();
     		checkLists(ruleLists);
     		return ruleLists;

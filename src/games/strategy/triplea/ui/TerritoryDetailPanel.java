@@ -146,7 +146,7 @@ public class TerritoryDetailPanel extends JPanel
                     SwingConstants.LEFT
                     );
             
-            String toolTipText = item.getType().getName() + ": " + UnitAttachment.get(item.getType()).toStringShortAndOnlyImportantDifferences(item.getOwner());
+            String toolTipText = item.getType().getName() + ": " + item.getType().getTooltip(m_uiContext, currentPlayer);
             label.setToolTipText(toolTipText);
 
             add(label);
