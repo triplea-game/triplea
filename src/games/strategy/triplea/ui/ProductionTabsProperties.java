@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.ProductionPanel.Rule;
@@ -39,7 +40,6 @@ public class ProductionTabsProperties {
 	private static final String NUMBER_OF_COLUMNS = "production_tabs.columns";
 	
 	
-	private static HashMap<String,ProductionTabsProperties> instances = new HashMap<String,ProductionTabsProperties>();
 	private Properties m_properties = new Properties();
 	private List<Rule> m_rules;
 	private List<Tuple<String, List<Rule>>> m_ruleLists;
@@ -66,13 +66,8 @@ public class ProductionTabsProperties {
 	}
 
 	public static ProductionTabsProperties getInstance(PlayerID playerId, List<Rule> mRules, String mapDir) {
-		if(instances.get(playerId.getName()) == null) {
-			ProductionTabsProperties ptp = new ProductionTabsProperties(playerId,mRules,mapDir);
-			instances.put(playerId.getName(), ptp);
-		}
-		return instances.get(playerId.getName());
+			 return new ProductionTabsProperties(playerId,mRules,mapDir);
 	}
-
 
 	public List<Tuple<String, List<Rule>>> getRuleLists() {
 		if(m_ruleLists !=null)

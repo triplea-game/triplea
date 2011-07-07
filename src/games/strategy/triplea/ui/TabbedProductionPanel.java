@@ -100,10 +100,10 @@ public class TabbedProductionPanel extends ProductionPanel
             else
             	m_maxColumns = Math.max(8, Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(5),BigDecimal.ROUND_UP).intValue()));
     		m_rows = Math.max(2, new BigDecimal(largestList).divide(new BigDecimal(m_maxColumns),BigDecimal.ROUND_UP).intValue());
-			m_columns = new BigDecimal(largestList).divide(new BigDecimal(m_rows), BigDecimal.ROUND_UP).intValue();	
+			m_columns = Math.max(3, new BigDecimal(largestList).divide(new BigDecimal(m_rows), BigDecimal.ROUND_UP).intValue());	
     	} else {
-    		m_rows = properties.getRows();    		
-    	    m_columns = properties.getColumns();
+    		m_rows = Math.max(2, properties.getRows());
+    	    m_columns = Math.max(3, properties.getColumns()); // There are small display problems if the size is less than 2x3 cells.
     	}
 	}
     
@@ -116,11 +116,26 @@ public class TabbedProductionPanel extends ProductionPanel
     	}
     	return largestList;
     }
+    
+    private void checkLists(final List<Tuple<String, List<Rule>>> ruleLists) {
+    	List<Rule> rulesCopy = new ArrayList<Rule>(m_rules);
+    	for (Tuple<String,List<Rule>> tuple : ruleLists)
+    	{
+    		for (Rule rule : tuple.getSecond())
+    		{
+    			rulesCopy.remove(rule);
+    		}
+    	}
+    	if (rulesCopy.size() > 0)
+    		throw new IllegalStateException("production_tabs: must include all player production rules/units");
+    }
 
 	private List<Tuple<String, List<Rule>>> getRuleLists(ProductionTabsProperties properties) {
     	
     	if(!properties.useDefaultTabs()) {
-    		return properties.getRuleLists();
+    		List<Tuple<String, List<Rule>>> ruleLists = properties.getRuleLists();
+    		checkLists(ruleLists);
+    		return ruleLists;
     	} else {
     		return getDefaultRuleLists();
     	}
