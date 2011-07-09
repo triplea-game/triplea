@@ -19,6 +19,8 @@ Changes for 1.3.3.0
 
 
 Changes for 1.3.2.2
+* Fixed bug in validation of air that can't land for mixed allied and owned air attempting to land where there already is a carrier and a new carrier will also be placed. (veqryn)
+
 * Fixed null pointer error in Strong AI sea movement. (veqryn)
 
 

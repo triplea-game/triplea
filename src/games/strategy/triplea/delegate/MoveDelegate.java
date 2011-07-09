@@ -643,7 +643,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             PlayerID player = iter.next();
             //Check if player still has units to place
             if (!player.equals(m_player)) // && !player.getUnits().isEmpty()
-                util.removeAirThatCantLand(player, (player.getUnits().someMatch(Matches.UnitIsCarrier) && lhtrCarrierProd));
+                util.removeAirThatCantLand(player, ((player.getUnits().someMatch(Matches.UnitIsCarrier) || hasProducedCarriers) && lhtrCarrierProd));
         }
     }
    

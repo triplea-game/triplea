@@ -1464,6 +1464,21 @@ public class Matches
         };
     }
 
+    public static Match<Territory> territoryHasAlliedIsFactoryOrCanProduceUnits(final GameData data, final PlayerID player)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                if(!isTerritoryAllied(player, data).match(t))
+                    return false;
+                if(!t.getUnits().someMatch(Matches.UnitIsFactoryOrCanProduceUnits))
+                    return false;
+                return true;
+            }
+        };
+    }
+
     public static Match<Territory> territoryHasEnemyFactory(final GameData data, final PlayerID player)
     {
         return new Match<Territory>()
