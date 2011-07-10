@@ -153,7 +153,10 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                     }
                 }
                 if (!found)
-                    throw new IllegalStateException("Cannot load all units");
+                    throw new IllegalStateException("Cannot load all land units in sea transports. " +
+                    		"Please make sure you have enough transports. " +
+                    		"You may need to re-order the xml's placement of transports and land units, " +
+                    		"as the engine will try to fill them in the order they are given.");
             }
             
         }
