@@ -93,7 +93,8 @@ public class UnitType extends NamedAttachable implements Serializable
 	
 	public String getTooltip(UIContext uiContext,PlayerID playerId) {
 		if(TooltipProperties.getInstance(uiContext).getToolTip(this, playerId) == null || TooltipProperties.getInstance(uiContext).getToolTip(this, playerId).equals("")) {
-			for(IAttachment at:this.getAttachments().values()) {
+			return UnitAttachment.get(this).toStringShortAndOnlyImportantDifferences(playerId);
+			/*for(IAttachment at:this.getAttachments().values()) {
 				try {
 					UnitAttachment ut = (UnitAttachment) at;
 					return ut.toStringShortAndOnlyImportantDifferences(playerId);
@@ -101,7 +102,7 @@ public class UnitType extends NamedAttachable implements Serializable
 					// this wasn't a UnitAttachment: just ignore
 				}
 			}
-			return ""; //Apparently no unitattachments.
+			return ""; //Apparently no unitattachments.*/
 		} else {
 			return TooltipProperties.getInstance(uiContext).getToolTip(this, playerId);
 		}
