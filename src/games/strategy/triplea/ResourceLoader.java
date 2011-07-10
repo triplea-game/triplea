@@ -64,8 +64,8 @@ public class ResourceLoader
         //At least one must exist
         if(existing.isEmpty())
         {
-            throw new IllegalStateException("Could not find file for map: " + mapName + ". Please DOWNLOAD THIS MAP if you do not have it." + "\r\n"
-                    + "If you are making a map or mod, Make sure the mapName property within the xml game file exactly matches the map zip or folder name.");
+            throw new IllegalStateException("Could not find file for map: " + mapName + "\r\n" + "Please DOWNLOAD THIS MAP if you do not have it." + "\r\n"
+                    + "If you are making a map or mod, Make sure the mapName property within the xml game file exactly matches the map zip or folder name." + "\r\n" + "\r\n");
         }
         
         File match = existing.iterator().next();        
