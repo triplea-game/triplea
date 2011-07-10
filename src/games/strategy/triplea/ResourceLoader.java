@@ -64,8 +64,8 @@ public class ResourceLoader
         //At least one must exist
         if(existing.isEmpty())
         {
-            throw new IllegalStateException("Could not find file for map: " + mapName + "\r\n"
-                    + "Make sure the mapName property within the xml game file exactly matches the map zip or folder name.");
+            throw new IllegalStateException("Could not find file for map: " + mapName + ". Please DOWNLOAD THIS MAP if you do not have it." + "\r\n"
+                    + "If you are making a map or mod, Make sure the mapName property within the xml game file exactly matches the map zip or folder name.");
         }
         
         File match = existing.iterator().next();        
@@ -77,7 +77,7 @@ public class ResourceLoader
     		
         if(!fileName.equals(mapName)) {
             throw new IllegalStateException("Map case is incorrect, xml: " + mapName + " file: " + match.getName() + "\r\n"
-                    + "Make sure the mapName property within the xml game file exactly matches the map zip or folder name.");
+                    + "Make sure the mapName property within the xml game file exactly matches the map zip or folder name." + "\r\n");
         }
      
         
