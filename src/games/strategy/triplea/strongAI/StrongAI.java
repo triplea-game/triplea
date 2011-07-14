@@ -9295,7 +9295,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			{
 				int quickCost = quickProd.getCosts().getInt(pus);
 				
-				if (leftToSpend < quickCost || unitCount >= totProd)
+				if (leftToSpend < quickCost || unitCount >= totProd || quickCost < 1)
 					continue;
 				
 				UnitType intResults = (UnitType) quickProd.getResults().keySet().iterator().next();

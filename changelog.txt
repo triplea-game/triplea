@@ -19,6 +19,8 @@ Changes for 1.3.3.0
 
 
 Changes for 1.3.2.2
+* Fixed infinite loops in purchasing methods for both Strong AI and Weak AI, for low cost units. (veqryn)
+
 * Fixed null pointer error in Strong AI landing of air units for players with impassible capitals. (veqryn)
 
 * Changed savegame-xml exporter to add occupiedTerrOf to any territory not owned by current owner. (veqryn)

@@ -987,11 +987,21 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             IntegerMap<ProductionRule> purchase = new IntegerMap<ProductionRule>();
 
             int minCost = Integer.MAX_VALUE;
-            while(minCost == Integer.MAX_VALUE ||  leftToSpend >= minCost)
+            int i = 0;
+            while((minCost == Integer.MAX_VALUE ||  leftToSpend >= minCost) && i < 100000)
             {
+            	i++;
                 for(ProductionRule rule : rules)
                 {
+                    UnitType results = (UnitType) rule.getResults().keySet().iterator().next();
+                    if(Matches.UnitTypeIsSea.match(results) || Matches.UnitTypeIsAir.match(results) ||  Matches.UnitTypeIsAAOrIsFactoryOrIsInfrastructure.match(results) || Matches.UnitTypeHasMaxBuildRestrictions.match(results) || Matches.UnitTypeConsumesUnitsOnCreation.match(results) || Matches.unitTypeIsStatic(player).match(results))
+                    {
+                        continue;
+                    }
+                    
                     int cost = rule.getCosts().getInt(PUs);
+                    if (cost < 1)
+                    	continue;
                     
                     if(minCost == Integer.MAX_VALUE)
                     {
@@ -1002,11 +1012,6 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                         minCost = cost;
                     }
                     
-                    UnitType results = (UnitType) rule.getResults().keySet().iterator().next();
-                    if(Matches.UnitTypeIsSea.match(results) || Matches.UnitTypeIsAir.match(results) ||  Matches.UnitTypeIsAAOrIsFactoryOrIsInfrastructure.match(results) || Matches.UnitTypeHasMaxBuildRestrictions.match(results) || Matches.UnitTypeConsumesUnitsOnCreation.match(results) || Matches.unitTypeIsStatic(player).match(results))
-                    {
-                        continue;
-                    }
                     
                     //give a preference to cheap units
                     if (Math.random() * cost < 2)
@@ -1274,21 +1279,12 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 
         int minCost = Integer.MAX_VALUE;
-        while(minCost == Integer.MAX_VALUE ||  leftToSpend >= minCost)
+        int i = 0;
+        while((minCost == Integer.MAX_VALUE ||  leftToSpend >= minCost) && i < 100000)
         {
+        	i++;
             for(ProductionRule rule : rules)
             {
-                int cost = rule.getCosts().getInt(PUs);
-                
-                if(minCost == Integer.MAX_VALUE)
-                {
-                    minCost = cost;
-                }
-                if(minCost > cost)
-                {
-                    minCost = cost;
-                }
-                
                 UnitType results = (UnitType) rule.getResults().keySet().iterator().next();
                 if(Matches.UnitTypeIsAir.match(results) ||  Matches.UnitTypeIsAAOrIsFactoryOrIsInfrastructure.match(results) || Matches.UnitTypeHasMaxBuildRestrictions.match(results) || Matches.UnitTypeConsumesUnitsOnCreation.match(results) || Matches.unitTypeIsStatic(player).match(results))
                 {
@@ -1301,6 +1297,19 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 if(!isAmphib || transportCapacity <= 0)
                 {
                     continue;
+                }
+
+                int cost = rule.getCosts().getInt(PUs);
+                if (cost < 1)
+                	continue;
+                
+                if(minCost == Integer.MAX_VALUE)
+                {
+                    minCost = cost;
+                }
+                if(minCost > cost)
+                {
+                    minCost = cost;
                 }
                 
                 //give a preferene to cheap units, and to transports
