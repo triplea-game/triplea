@@ -39,22 +39,24 @@ import games.strategy.engine.message.IRemote;
  * The delegate will be initialized with a call of initialize(..) before used.
  *
  * Delegates start executing with the start method, and stop with the end message.
- * 
- * Delegates can be made accesseble to players through implementing an IRemote,
+ *
+ * Delegates can be made accessible to players through implementing an IRemote,
  * and will be called through RemoteMessenger.
  *
  * @author  Sean Bridges
  * @version 1.0
  */
-public interface IDelegate 
+public interface IDelegate
 {
 	/*
-	 * Uses name as the interal unique name and displayName for display to users
+	 * Uses name as the internal unique name and displayName for display to users
 	 */
 	public void initialize(String name, String displayName);
 
 	/**
 	 * Called before the delegate will run.
+	 * @param aBridge IDelegateBridge
+	 * @param gameData GameData
 	 */
 	public void start(IDelegateBridge aBridge, GameData gameData);
 	/**
@@ -65,25 +67,22 @@ public interface IDelegate
 	public String getName();
 
 	public String getDisplayName();
-	
+
     /**
-     * Returns the state of the Delegate.
+     * @return state of the Delegate
      */
     public Serializable saveState();
-    
+
     /**
-     * Loads the delegates state
+     * @param state the delegates state
      */
-    public void loadState(Serializable state);  
-    
+    public void loadState(Serializable state);
+
 	/**
-	 * Get the remote type of this delegate for use 
-	 * by a RemoteMessenger.
-	 * 
-	 * Class must be an interface that extends IRemote
-	 * 
-	 * If the return value is null, then it indicates that this 
-	 * delegate should not be used as in IRemote.
+	 * @return the remote type of this delegate for use
+     * by a RemoteMessenger (Class must be an interface that extends IRemote.
+     * If the return value is null, then it indicates that this
+     * delegate should not be used as in IRemote.)
 	 */
 	public Class<? extends IRemote> getRemoteType();
 }

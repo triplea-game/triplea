@@ -20,7 +20,7 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.List;
+import java.io.Serializable;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -50,7 +50,7 @@ public class PlaceDelegate extends AbstractPlaceDelegate
 
 	/**
 	 *
-	 * @return gets the production of the territory, ignores wether the territory was an original factory
+	 * @return gets the production of the territory, ignores whether the territory was an original factory
 	 */
 	protected int getProduction(Territory territory)
 	{
@@ -58,8 +58,13 @@ public class PlaceDelegate extends AbstractPlaceDelegate
 		return ta.getProduction();
 	}
 
-	
-	
+	public Serializable saveState() {
+	    return super.saveState();
+	}
+
+	public final void loadState(Serializable aState) {
+	    super.loadState(aState);
+	}
 }
 
 

@@ -15,7 +15,6 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 
 /**
@@ -23,16 +22,18 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 *  Delegates should only have access to these functions.
 *  The rest of the history writers functions should only
 *  be used by the GameData
+*
+*  
  */
 
 public class TripleADelegateHistoryWriter implements IDelegateHistoryWriter
 {
-    IDelegateBridge m_bridge;
+    IDelegateHistoryWriter m_delegateHistoryWriter;
     GameData m_data;
 
-    public TripleADelegateHistoryWriter(IDelegateBridge bridge, GameData data)
+    public TripleADelegateHistoryWriter(IDelegateHistoryWriter delegateHistoryWriter, GameData data)
     {
-        m_bridge = bridge;
+        m_delegateHistoryWriter = delegateHistoryWriter;
         m_data = data;
     }
 
@@ -46,25 +47,25 @@ public class TripleADelegateHistoryWriter implements IDelegateHistoryWriter
     public void startEvent(String eventName)
     {
         if (eventName.startsWith("COMMENT: "))
-            m_bridge.getHistoryWriter().startEvent(eventName); 
+            m_delegateHistoryWriter.startEvent(eventName);
         else
-            m_bridge.getHistoryWriter().startEvent(getEventPrefix()+eventName); 
+            m_delegateHistoryWriter.startEvent(getEventPrefix()+eventName);
     }
 
     public void addChildToEvent(String child)
     {
         if (child.startsWith("COMMENT: "))
-            m_bridge.getHistoryWriter().addChildToEvent(child, null); 
+            m_delegateHistoryWriter.addChildToEvent(child, null);
         else
-            m_bridge.getHistoryWriter().addChildToEvent(getEventPrefix()+child, null); 
+            m_delegateHistoryWriter.addChildToEvent(getEventPrefix()+child, null);
     }
 
     public void addChildToEvent(String child, Object renderingData)
     {
         if (child.startsWith("COMMENT: "))
-            m_bridge.getHistoryWriter().addChildToEvent(child, renderingData); 
+            m_delegateHistoryWriter.addChildToEvent(child, renderingData);
         else
-            m_bridge.getHistoryWriter().addChildToEvent(getEventPrefix()+child, renderingData); 
+            m_delegateHistoryWriter.addChildToEvent(getEventPrefix()+child, renderingData);
     }
 
     /**
@@ -72,7 +73,7 @@ public class TripleADelegateHistoryWriter implements IDelegateHistoryWriter
      */
     public void setRenderingData(Object renderingData)
     {
-        m_bridge.getHistoryWriter().setRenderingData(renderingData);
+        m_delegateHistoryWriter.setRenderingData(renderingData);
     }
 
 

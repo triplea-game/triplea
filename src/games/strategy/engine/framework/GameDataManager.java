@@ -1,23 +1,35 @@
 package games.strategy.engine.framework;
 
-import java.io.*;
-import java.util.*;
+import games.strategy.engine.EngineVersion;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.delegate.IDelegate;
+import games.strategy.util.Version;
 
-import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.*;
-import games.strategy.util.*;
-import java.util.zip.*;
-import games.strategy.engine.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * <p>
  * Title: TripleA
  * </p>
  * <p>
- * Description: Respsible for loading saved games, new games from xml, and
+ * Description: Responsible for loading saved games, new games from xml, and
  * saving games
  * </p>
- * 
+ *
  * @author Sean Bridges
  */
 
@@ -110,13 +122,13 @@ public class GameDataManager
 
     public void saveGame(File destination, GameData data) throws IOException
     {
-        
+
         BufferedOutputStream out = null;
         try
         {
             OutputStream fileStream = new FileOutputStream(destination);
             out = new BufferedOutputStream(fileStream);
-            
+
             saveGame(fileStream, data);
         } finally
         {
@@ -137,7 +149,7 @@ public class GameDataManager
     }
 
     public void saveGame(OutputStream sink, GameData data, boolean saveDelegateInfo) throws IOException
-    {        
+    {
         //write internally first in case of error
         ByteArrayOutputStream bytes = new ByteArrayOutputStream(25000);
         ObjectOutputStream outStream = new ObjectOutputStream(bytes);
@@ -147,7 +159,7 @@ public class GameDataManager
         try
         {
             outStream.writeObject(data);
-                
+
 	        if (saveDelegateInfo)
 	            writeDelegates(data, outStream);
 	        else
@@ -157,7 +169,7 @@ public class GameDataManager
         {
             data.releaseReadLock();
         }
-        
+
         GZIPOutputStream zippedOut = new GZIPOutputStream(sink);
         //now write to file
         zippedOut.write(bytes.toByteArray());
@@ -168,12 +180,12 @@ public class GameDataManager
     private void writeDelegates(GameData data, ObjectOutputStream out) throws IOException
     {
 
-        Iterator iter = data.getDelegateList().iterator();
+        Iterator<IDelegate> iter = data.getDelegateList().iterator();
         while (iter.hasNext())
         {
             out.writeObject(DELEGATE_START);
 
-            IDelegate delegate = (IDelegate) iter.next();
+            IDelegate delegate = iter.next();
 
             //write out the delegate info
             out.writeObject(delegate.getName());

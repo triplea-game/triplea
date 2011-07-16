@@ -14,56 +14,67 @@
 
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-import java.util.*;
-
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.CompositeChange;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.util.*;
-import games.strategy.triplea.delegate.dataObjects.*;
+import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.ui.MovePanel;
+import games.strategy.util.Util;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Contains all the data to describe a move and to undo it.
+ *
+ * @author Erik von der Osten
  */
-
+@SuppressWarnings("serial")
 public class UndoableMove extends AbstractUndoableMove
 {
     private String m_reasonCantUndo;
     private String m_description;
-    
+
     // this move is dependent on these moves
     // these moves cant be undone until this one has been
     private Set<UndoableMove> m_iDependOn = new HashSet<UndoableMove>();
     // these moves depend on me
     // we cant be undone until this is empty
     private Set<UndoableMove> m_dependOnMe = new HashSet<UndoableMove>();
-    
+
     // list of countries we took over
     private Set<Territory> m_conquered = new HashSet<Territory>();
-    
+
     // transports loaded by this move
     private Set<Unit> m_loaded = new HashSet<Unit>();
-    
+
     // transports unloaded by this move
     private Set<Unit> m_unloaded = new HashSet<Unit>();;
-    
+
     private final Route m_route;
     public void addToConquered(Territory t)
     {
         m_conquered.add(t);
     }
-    
+
     public Route getRoute()
     {
         return m_route;
     }
-    
+
     public boolean getcanUndo()
     {
         return m_reasonCantUndo == null && m_dependOnMe.isEmpty();
     }
-    
+
     public String getReasonCantUndo()
     {
         if (m_reasonCantUndo != null)
@@ -72,51 +83,51 @@ public class UndoableMove extends AbstractUndoableMove
             return "Move " + (m_dependOnMe.iterator().next().getIndex() + 1) + " must be undone first";
         else
             throw new IllegalStateException("no reason");
-        
+
     }
-    
+
     public void setCantUndo(String reason)
     {
         m_reasonCantUndo = reason;
     }
-    
-    
+
+
     public String getDescription()
     {
         return m_description;
     }
-    
+
     public void setDescription(String description)
     {
         m_description = description;
     }
-    
+
     public UndoableMove(GameData data, Collection<Unit> units, Route route)
     {
         super(new CompositeChange(), units);
         m_route = route;
     }
-    
+
     public void load(Unit transport)
     {
         m_loaded.add(transport);
     }
-    
+
     public void unload(Unit transport)
     {
         m_unloaded.add(transport);
     }
-    
+
     @Override
     protected void undoSpecific(GameData data, IDelegateBridge bridge)
     {
         BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
-        
+
         bridge.getHistoryWriter().startEvent(bridge.getPlayerID().getName() + " undo move " + (m_index + 1) + ".");
-        bridge.getHistoryWriter().setRenderingData(new MoveDescription(m_units, m_route));
-        
+        bridge.getHistoryWriter().setRenderingData(getDescriptionObject());
+
         battleTracker.undoBattle(m_route, m_units, bridge.getPlayerID(), data, bridge);
-        
+
         // clean up dependencies
         Iterator<UndoableMove> iter1 = m_iDependOn.iterator();
         while (iter1.hasNext())
@@ -124,7 +135,7 @@ public class UndoableMove extends AbstractUndoableMove
             UndoableMove other = iter1.next();
             other.m_dependOnMe.remove(this);
         }
-        
+
         // if we are moving out of a battle zone, mark it
         // this can happen for air units moving out of a battle zone
         Battle battleLand = battleTracker.getPendingBattle(m_route.getStart(), false);
@@ -156,13 +167,14 @@ public class UndoableMove extends AbstractUndoableMove
                 }
             }
         }
-        
+
         // Clear any temporary dependents
         MovePanel.clearDependents(m_units);
     }
-    
+
     /**
      * Update the dependencies.
+     * @param undoableMoves list of moves that should be undone
      */
     public void initializeDependencies(List<UndoableMove> undoableMoves)
     {
@@ -170,13 +182,13 @@ public class UndoableMove extends AbstractUndoableMove
         while (iter.hasNext())
         {
             UndoableMove other = iter.next();
-            
+
             if (other == null)
             {
                 System.err.println(undoableMoves);
                 throw new IllegalStateException("other should not be null");
             }
-            
+
             if ( // if the other move has moves that depend on this
             !Util.intersection(other.getUnits(), this.getUnits()).isEmpty() ||
             // if the other move has transports that we are loading
@@ -194,29 +206,33 @@ public class UndoableMove extends AbstractUndoableMove
             }
         }
     }
-    
+
     public boolean wasTransportUnloaded(Unit transport)
     {
         return m_unloaded.contains(transport);
     }
-    
+
     public boolean wasTransportLoaded(Unit transport)
     {
         return m_loaded.contains(transport);
     }
-    
+
     public String toString()
     {
         return "UndoableMove index;" + m_index + " description:" + m_description;
     }
-    
+
     public final String getMoveLabel()
     {
         return m_route.getStart() + " -> " + m_route.getEnd();
     }
-    
+
     public final Territory getEnd()
     {
         return m_route.getEnd();
+    }
+
+    public final MoveDescription getDescriptionObject() {
+        return new MoveDescription(m_units, m_route);
     }
 }

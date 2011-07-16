@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -43,13 +42,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  *
  * Central place to find all the information for a running game.
- * Using this object you can find the territores, connections, production rules,
+ * Using this object you can find the territories, connections, production rules,
  * unit types...<p>
- * 
- * Threading.  The game data, and all parts of the game data (such as Territories, Players, Units...) are 
+ *
+ * Threading.  The game data, and all parts of the game data (such as Territories, Players, Units...) are
  * protected by a read/write lock.  If you are reading the game data, you should read while you
  * have the read lock as below. <p>
- * 
+ *
  * <code>
  * data.acquireReadLock();
  * try
@@ -61,32 +60,29 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *   data.releaseReadLock();
  * }
  * </code>
- * 
+ *
  * The exception is delegates within a start(), end() or any method called from an IGamePlayer through
- * the delgates remote interface.  The delegate will have a read lock for the duration of those methods.<p>
- * 
+ * the delegates remote interface.  The delegate will have a read lock for the duration of those methods.<p>
+ *
  * Non engine code must NOT acquire the games writeLock().  All changes to game Data must be made through a
  * DelegateBridge or through a History object.<p>
- * 
- * 
- * 
- * 
- * 
+ *
  *
  * @author  Sean Bridges
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class GameData implements java.io.Serializable
 {
     public static final String GAME_UUID = "GAME_UUID";
-    
+
     private final ReadWriteLock m_readWriteLock = new ReentrantReadWriteLock();
 
     private volatile transient boolean m_forceInSwingEventThread = false;
-    
+
     private String m_gameName;
 	private Version m_gameVersion;
-	
+
 	private int m_diceSides;
 
 	private transient ListenerList<TerritoryListener> m_territoryListeners = new ListenerList<TerritoryListener>();
@@ -98,7 +94,7 @@ public class GameData implements java.io.Serializable
 	private final PlayerList m_playerList = new PlayerList(this);
 	private final ProductionFrontierList m_productionFrontierList = new ProductionFrontierList(this);
 	private final ProductionRuleList m_productionRuleList = new ProductionRuleList(this);
-	private final RepairFrontierList m_repairFrontierList = new RepairFrontierList(this);	
+	private final RepairFrontierList m_repairFrontierList = new RepairFrontierList(this);
 	private final RepairRuleList m_repairRuleList = new RepairRuleList(this);
 	private final ResourceList m_resourceList = new ResourceList(this);
 	private final GameSequence m_sequence = new GameSequence(this);
@@ -106,7 +102,7 @@ public class GameData implements java.io.Serializable
 	private final GameProperties m_properties = new GameProperties(this);
 	private final UnitsList m_unitsList = new UnitsList();
 	private final TechnologyFrontier m_technologyFrontier= new TechnologyFrontier("allTechsForGame",this);
-	
+
 	private transient ResourceLoader m_resourceLoader;
 
 
@@ -124,9 +120,9 @@ public class GameData implements java.io.Serializable
 	}
 
     /**
-     * Return the GameMap.  The game map allows you to list the territories in the game, and 
+     * Return the GameMap.  The game map allows you to list the territories in the game, and
      * to see which territory is connected to which.
-     * 
+     *
      * @return the map for this game.
      */
 	public GameMap getMap()
@@ -136,23 +132,23 @@ public class GameData implements java.io.Serializable
 
     /**
      * Print an exception report if we are testing the lock is held, and
-     * do not currently hold the read or write lock 
+     * do not currently hold the read or write lock
      */
     private void ensureLockHeld() {
         if(!m_testLockIsHeld)
             return;
         if(m_readWriteLock == null)
             return;
-        
+
         if(!LockUtil.isLockHeld(m_readWriteLock.readLock()) &&
-           !LockUtil.isLockHeld(m_readWriteLock.writeLock())        
+           !LockUtil.isLockHeld(m_readWriteLock.writeLock())
         ) {
             new Exception("Lock not held").printStackTrace(System.out);
         }
     }
-    
+
     /**
-     * 
+     *
      * @return a collection of all units in the game
      */
 	public UnitsList getUnits()
@@ -162,7 +158,7 @@ public class GameData implements java.io.Serializable
 	}
 
     /**
-     * Get the list of Players in the game.
+     * @return list of Players in the game
      */
 	public PlayerList getPlayerList()
 	{
@@ -170,7 +166,7 @@ public class GameData implements java.io.Serializable
 	}
 
     /**
-     * Get the list of resources available in the game.
+     * @return list of resources available in the game.
      */
 	public ResourceList getResourceList()
 	{
@@ -179,7 +175,7 @@ public class GameData implements java.io.Serializable
 	}
 
     /**
-     * Get the list of production Frontiers for this game.
+     * @return list of production Frontiers for this game.
      */
 	public ProductionFrontierList getProductionFrontierList()
 	{
@@ -188,16 +184,16 @@ public class GameData implements java.io.Serializable
 	}
 
     /**
-     * Get the list of Production Rules for the game.
+     * @return list of Production Rules for the game.
      */
 	public ProductionRuleList getProductionRuleList()
 	{
         ensureLockHeld();
 		return m_productionRuleList;
 	}
-	
+
 	/**
-     * Get the Technology Frontier for this game.
+     * @return the Technology Frontier for this game.
      */
 	public TechnologyFrontier getTechnologyFrontier()
 	{
@@ -206,7 +202,7 @@ public class GameData implements java.io.Serializable
 	}
 
     /**
-     * Get the list of production Frontiers for this game.
+     * @return the list of production Frontiers for this game.
      */
 	public RepairFrontierList getRepairFrontierList()
 	{
@@ -215,25 +211,25 @@ public class GameData implements java.io.Serializable
 	}
 
     /**
-     * Get the list of Production Rules for the game.
+     * @return the list of Production Rules for the game.
      */
 	public RepairRuleList getRepairRuleList()
 	{
         ensureLockHeld();
 		return m_repairRuleList;
 	}
-	
+
     /**
-     * Get the Alliance Tracker for the game.
+     * @return the Alliance Tracker for the game.
      */
 	public AllianceTracker getAllianceTracker()
 	{
         ensureLockHeld();
 		return m_alliances;
 	}
-    
+
     /**
-     * Should we throw an error if changes to this game data are made outside of the swing
+     * @return whether we should throw an error if changes to this game data are made outside of the swing
      * event thread.
      */
     public boolean areChangesOnlyInSwingEventThread()
@@ -268,9 +264,6 @@ public class GameData implements java.io.Serializable
 		return m_delegateList;
 	}
 
-    /**
-     * 
-     */
 	public UnitHolder getUnitHolder(String name, String type)
 	{
         ensureLockHeld();
@@ -280,7 +273,7 @@ public class GameData implements java.io.Serializable
 			return m_map.getTerritory(name);
         else
             throw new IllegalStateException("Invalid type:" + type);
-		
+
 	}
 
 	public GameProperties getProperties()
@@ -368,7 +361,7 @@ public class GameData implements java.io.Serializable
 	{
 		return m_gameName;
 	}
-	
+
 	void setDiceSides(int diceSides)
 	{
 		if (diceSides > 0 && diceSides <= 200)
@@ -376,12 +369,12 @@ public class GameData implements java.io.Serializable
 		else
 			m_diceSides = 6;
 	}
-	
+
 	public int getDiceSides()
 	{
 		return m_diceSides;
 	}
-	
+
     public History getHistory()
     {
         //don't ensure the lock is held when getting the history
@@ -397,56 +390,56 @@ public class GameData implements java.io.Serializable
 	{
 		m_territoryListeners = new ListenerList<TerritoryListener>();
 		m_dataChangeListeners = new ListenerList<GameDataChangeListener>();
-		
+
 	}
-	
+
 	/**
 	 * No changes to the game data should be made unless this lock is held.
-	 * calls to acquire lock will block if the lock is held, and will be held 
+	 * calls to acquire lock will block if the lock is held, and will be held
 	 * until the release method is called
-	 * 
+	 *
 	 */
 	public void acquireReadLock()
 	{
         //this can happen in very odd cirumcstances while deserializing
         if(m_readWriteLock == null)
             return;
-        
+
         LockUtil.acquireLock(m_readWriteLock.readLock());
 	}
-	
-	
+
+
 	public void releaseReadLock()
 	{
         //this can happen in very odd cirumcstances while deserializing
         if(m_readWriteLock == null)
             return;
-        
+
         LockUtil.releaseLock(m_readWriteLock.readLock());
 	}
 
 
     /**
      * No changes to the game data should be made unless this lock is held.
-     * calls to acquire lock will block if the lock is held, and will be held 
+     * calls to acquire lock will block if the lock is held, and will be held
      * until the release method is called
-     * 
+     *
      */
     public void acquireWriteLock()
-    {   
+    {
         //this can happen in very odd cirumcstances while deserializing
         if(m_readWriteLock == null)
             return;
         LockUtil.acquireLock(m_readWriteLock.writeLock());
     }
-    
-    
+
+
     public void releaseWriteLock()
     {
         //this can happen in very odd cirumcstances while deserializing
         if(m_readWriteLock == null)
             return;
-        
+
         LockUtil.releaseLock(m_readWriteLock.writeLock());
     }
 
@@ -454,21 +447,21 @@ public class GameData implements java.io.Serializable
     {
         m_dataChangeListeners.clear();
         m_territoryListeners.clear();
-        
+
         if(m_resourceLoader != null) {
             m_resourceLoader.close();
             m_resourceLoader = null;
         }
     }
-	
+
     /**
      * On reads of the game data components, make sure that the
-     * read or write lock is held. 
+     * read or write lock is held.
      */
     public void testLocksOnRead() {
         m_testLockIsHeld = true;
     }
-    
+
 
     public ResourceLoader getResourceLoader() {
         if(m_resourceLoader != null) {
@@ -481,10 +474,10 @@ public class GameData implements java.io.Serializable
 	public void setAttachmentOrder(IAttachment attachment) {
 		attachmentOrder.add(attachment);
 	}
-	
+
 	public List<IAttachment> getOrderedAttachmentList() {
 		return attachmentOrder ;
 	}
-    
-    
+
+
 }

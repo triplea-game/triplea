@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Fixed inability to save games during placement phase. (frigoref)
+
 * Added ability to customize tooltips for units, using "tooltips.properties". (edwin van der wal)
 
 * Stop caching of production_tabs properties, will now read the file each time purchase screen is displayed. (edwin van der wal)

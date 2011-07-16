@@ -13,30 +13,31 @@ package games.strategy.triplea.delegate.remote;
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.delegate.UndoableMove;
 
 import java.util.List;
 
 /**
  * Remote interface for MoveDelegate and PlaceDelegate
- * 
+ *
  * @author Sean Bridges
  */
-public interface IAbstractMoveDelegate extends IRemote
+public interface IAbstractMoveDelegate extends IRemote, IDelegate
 {
-    
+
     /**
-     * Get the moves already made 
+     * Get the moves already made
      * @return a list of UndoableMoves
      */
+    @SuppressWarnings("rawtypes")
     public abstract List getMovesMade();
-    
+
     /**
-     * 
+     *
      * @param moveIndex - an index in the list getMovesMade
      * @return an error string if the move could not be undone, null otherwise
      */
     public abstract String undoMove(int moveIndex);
-    
+
 }

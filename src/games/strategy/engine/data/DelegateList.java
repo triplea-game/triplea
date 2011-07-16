@@ -20,10 +20,13 @@
 
 package games.strategy.engine.data;
 
-import games.strategy.engine.delegate.*;
+import games.strategy.engine.delegate.IDelegate;
 
-import java.util.*;
-import java.io.*;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  *
@@ -31,6 +34,7 @@ import java.io.*;
  *
  *
  */
+@SuppressWarnings("serial")
 public class DelegateList extends GameDataComponent implements Iterable<IDelegate>
 {
 	private Map<String, IDelegate> m_delegates = new HashMap<String, IDelegate>();

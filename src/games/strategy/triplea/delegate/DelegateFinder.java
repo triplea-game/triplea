@@ -28,41 +28,40 @@ import games.strategy.engine.delegate.*;
  * @author  Sean Bridges
  * @version 1.0
  */
-public class DelegateFinder 
+public class DelegateFinder
 {
+    private static final IDelegate findDelegate(GameData data, String delegate_name) {
+        IDelegate delegate =  data.getDelegateList().getDelegate(delegate_name);
+        if(delegate == null)
+            throw new IllegalStateException(delegate_name + " delegate not found");
+        return delegate;
+    }
 
 	public static final BattleDelegate battleDelegate(GameData data)
 	{
-		IDelegate delegate =  data.getDelegateList().getDelegate("battle");
-		if(delegate == null)
-			throw new IllegalStateException("Battle delegate not found");
-		return (BattleDelegate) delegate;
-		
+		return (BattleDelegate) findDelegate(data,"battle");
 	}
-	
+
 	public static final MoveDelegate moveDelegate(GameData data)
 	{
-		IDelegate delegate =  data.getDelegateList().getDelegate("move");
-		if(delegate == null)
-			throw new IllegalStateException("Move delegate not found");
-		return (MoveDelegate) delegate;
-		
+        return (MoveDelegate) findDelegate(data,"move");
+
 	}
+
+    public static final PlaceDelegate placeDelegate(GameData data)
+    {
+        return (PlaceDelegate) findDelegate(data,"place");
+
+    }
 
 	public static final TechnologyDelegate techDelegate(GameData data)
 	{
-		IDelegate delegate =  data.getDelegateList().getDelegate("tech");
-		if(delegate == null)
-			throw new IllegalStateException("Tech delegate not found");
-		return (TechnologyDelegate) delegate;
+        return (TechnologyDelegate) findDelegate(data,"tech");
 	}
 
 	public static final GivePUsDelegate givePUsDelegate(GameData data)
 	{
-		IDelegate delegate =  data.getDelegateList().getDelegate("givePUs");
-		if(delegate == null)
-			throw new IllegalStateException("givePUs delegate not found");
-		return (GivePUsDelegate) delegate;
+        return (GivePUsDelegate) findDelegate(data,"givePUs");
 	}
-	
+
 }

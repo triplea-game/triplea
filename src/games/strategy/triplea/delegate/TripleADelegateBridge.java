@@ -25,9 +25,9 @@ import games.strategy.engine.message.IRemote;
 import java.util.Properties;
 
 /**
- * 
+ *
  * TripleA implementation of DelegateBridge
- * 
+ *
  * @author Tony Clayton
  */
 public class TripleADelegateBridge implements IDelegateBridge
@@ -37,17 +37,20 @@ public class TripleADelegateBridge implements IDelegateBridge
     private final TripleADelegateHistoryWriter m_historyWriter;
     private final GameData m_data;
 
-    /** Creates new TripleADelegateBridge to wrap an existing IDelegateBridge */
+    /** Creates new TripleADelegateBridge to wrap an existing IDelegateBridge
+     * @param bridge delegate bridge
+     * @param data GameData object
+     * */
     public TripleADelegateBridge(IDelegateBridge bridge, GameData data)
     {
         m_bridge = bridge;
         m_data = data;
-        m_historyWriter = new TripleADelegateHistoryWriter(m_bridge, m_data);
+        m_historyWriter = new TripleADelegateHistoryWriter(m_bridge.getHistoryWriter(), m_data);
     }
 
     /**
      * Return our custom historyWriter instead of the default one
-     * 
+     *
      */
     public IDelegateHistoryWriter getHistoryWriter()
     {
@@ -88,7 +91,7 @@ public class TripleADelegateBridge implements IDelegateBridge
     {
         return m_bridge.getStepName();
     }
-    
+
     /*
      * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
      */
@@ -112,17 +115,17 @@ public class TripleADelegateBridge implements IDelegateBridge
     {
         return m_bridge.getDisplayChannelBroadcaster();
     }
-    
+
     public Properties getStepProperties()
     {
         return m_bridge.getStepProperties();
     }
-    
+
     public void leaveDelegateExecution()
     {
         m_bridge.leaveDelegateExecution();
     }
-    
+
     public void enterDelegateExecution()
     {
         m_bridge.enterDelegateExecution();

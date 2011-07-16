@@ -20,8 +20,10 @@
 
 package games.strategy.twoIfBySea.delegate;
 
-import games.strategy.engine.data.*;
-import games.strategy.triplea.delegate.*;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.delegate.AbstractPlaceDelegate;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
 
 import java.util.Collection;
@@ -38,7 +40,7 @@ public class PlaceDelegate extends AbstractPlaceDelegate
 
 	/**
 	 *
-	 * @return gets the production of the territory, ignores wether the territory was an original factory
+	 * @return gets the production of the territory, ignores whether the territory was an original factory
 	 */
 	protected int getProduction(Territory territory)
 	{

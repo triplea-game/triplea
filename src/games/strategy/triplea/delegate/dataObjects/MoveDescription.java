@@ -20,37 +20,34 @@
 
 package games.strategy.triplea.delegate.dataObjects;
 
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Unit;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
- * 
+ *
  * @author Sean Bridges
  */
-public class MoveDescription implements java.io.Serializable
+@SuppressWarnings("serial")
+public class MoveDescription extends AbstractMoveDescription
 {
     private final Route m_route;
-    private final Collection<Unit> m_units;
     private Collection<Unit> m_transportsThatCanBeLoaded;
 
     public MoveDescription(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded)
     {
+        super(units);
         m_route = route;
-        m_units = units;
         m_transportsThatCanBeLoaded = transportsThatCanBeLoaded;
     }
-       
-    
+
+
     public MoveDescription(Collection<Unit> units, Route route)
     {
+        super(units);
         m_route = route;
-        m_units = units;
-    }
-
-    public Collection<Unit> getUnits()
-    {
-        return m_units;
     }
 
     public Route getRoute()
@@ -60,9 +57,9 @@ public class MoveDescription implements java.io.Serializable
 
     public String toString()
     {
-        return "Move message route:" + m_route + " units:" + m_units;
+        return "Move message route:" + m_route + " units:" + getUnits();
     }
-    
+
     public Collection<Unit> getTransportsThatCanBeLoaded()
     {
         if(m_transportsThatCanBeLoaded == null)
