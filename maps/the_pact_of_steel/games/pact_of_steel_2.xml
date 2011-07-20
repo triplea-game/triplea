@@ -2359,6 +2359,9 @@
 						 <!-- createsUnitsList is a list of units that this unit will create every turn at the end of the turn. can have multiple instances
 						 <option name="createsUnitsList" value="2:infantry"/>
 						 <option name="createsUnitsList" value="1:artillery"/>-->
+						 <!-- createsResourcesList is a list of resources that this unit will create every turn at the end of the turn. can have multiple instances 
+						 <option name="createsResourcesList" value="3:PUs"/>
+						 <option name="createsResourcesList" value="2:techTokens"/>-->
                 </attatchment>
 
                 <!-- AA Gun -->

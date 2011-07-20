@@ -91,9 +91,9 @@ public class UnitType extends NamedAttachable implements Serializable
 		return getName().hashCode();
 	}
 	
-	public String getTooltip(UIContext uiContext,PlayerID playerId) {
+	public String getTooltip(UIContext uiContext,PlayerID playerId, boolean useHTML) {
 		if(TooltipProperties.getInstance(uiContext).getToolTip(this, playerId) == null || TooltipProperties.getInstance(uiContext).getToolTip(this, playerId).equals("")) {
-			return UnitAttachment.get(this).toStringShortAndOnlyImportantDifferences(playerId);
+			return UnitAttachment.get(this).toStringShortAndOnlyImportantDifferences(playerId, useHTML);
 			/*for(IAttachment at:this.getAttachments().values()) {
 				try {
 					UnitAttachment ut = (UnitAttachment) at;

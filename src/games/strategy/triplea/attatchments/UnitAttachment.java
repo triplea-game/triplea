@@ -149,6 +149,7 @@ public class UnitAttachment extends DefaultAttachment
   private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
   private IntegerMap<UnitType> m_consumesUnits = new IntegerMap<UnitType>();
   private IntegerMap<UnitType> m_createsUnitsList = new IntegerMap<UnitType>();
+  private IntegerMap<Resource> m_createsResourcesList = new IntegerMap<Resource>();
 
 
   /** Creates new UnitAttatchment */
@@ -934,7 +935,7 @@ public class UnitAttachment extends DefaultAttachment
 	  // validate that this unit exists in the xml
 	  UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
       if(ut == null)
-          throw new IllegalStateException("Unit Attachments: No unit called:" + unitTypeToProduce);
+          throw new IllegalStateException("Unit Attachments: createsUnitsList: No unit called:" + unitTypeToProduce);
       
       int n = getInt(s[0]);
       if (n < 1)
@@ -946,6 +947,32 @@ public class UnitAttachment extends DefaultAttachment
   public IntegerMap<UnitType> getCreatesUnitsList()
   {
       return m_createsUnitsList;
+  }
+
+  public void setCreatesResourcesList(String value)
+  {
+	  String[] s = value.split(":");
+	  if (s.length <= 0 || s.length > 2)
+		  throw new IllegalStateException("Unit Attachments: createsResourcesList can not be empty or have more than two fields");
+	  
+	  String resourceToProduce;
+	  resourceToProduce = s[1];
+	  
+	  // validate that this resource exists in the xml
+	  Resource r = getData().getResourceList().getResource(resourceToProduce);
+      if(r == null)
+          throw new IllegalStateException("Unit Attachments: createsResourcesList: No resource called:" + resourceToProduce);
+      
+      int n = getInt(s[0]);
+      if (n < 1)
+    	  throw new IllegalStateException("Unit Attachments: createsResourcesList must have positive values");
+      
+      m_createsResourcesList.put(r, n);
+  }
+
+  public IntegerMap<Resource> getCreatesResourcesList()
+  {
+      return m_createsResourcesList;
   }
   
   public void setBombingBonus(String s)
@@ -1315,7 +1342,7 @@ public class UnitAttachment extends DefaultAttachment
     "  defense:" + m_defense;
   }
 
-  public String toStringShortAndOnlyImportantDifferences(PlayerID player)
+  public String toStringShortAndOnlyImportantDifferences(PlayerID player, boolean useHTML)
   {
 	  // displays everything in a very short form, in English rather than as xml stuff
 	  // shows all except for: m_constructionType, m_constructionsPerTerrPerTypePerTurn, m_maxConstructionsPerTypePerTerr, m_canBeGivenByTerritoryTo, m_destroyedWhenCapturedBy, m_canBeCapturedOnEnteringBy
@@ -1348,7 +1375,12 @@ public class UnitAttachment extends DefaultAttachment
 	  if (m_createsUnitsList != null && m_createsUnitsList.size() == 1)
 		  stats.append("Produces " + m_createsUnitsList.totalValues() + " " + m_createsUnitsList.keySet().iterator().next().getName() + " Each Turn, ");
 	  else if (m_createsUnitsList != null && m_createsUnitsList.size() > 1)
-		  stats.append("Produces " + m_createsUnitsList.totalValues() + " Different Units Each Turn, ");
+		  stats.append("Produces " + m_createsUnitsList.totalValues() + " Units Each Turn, ");
+
+	  if (m_createsResourcesList != null && m_createsResourcesList.size() == 1)
+		  stats.append("Produces " + m_createsResourcesList.totalValues() + " " + m_createsResourcesList.keySet().iterator().next().getName() + " Each Turn, ");
+	  else if (m_createsResourcesList != null && m_createsResourcesList.size() > 1)
+		  stats.append("Produces " + m_createsResourcesList.totalValues() + " Resources Each Turn, ");
 	  
 	  if (m_isAA || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly)
 	  {
@@ -1369,6 +1401,10 @@ public class UnitAttachment extends DefaultAttachment
 		  else
 			  stats.append("1-" + getData().getDiceSides() + " Rocket Damage, ");
 	  }
+	  
+	  // line break
+	  if (useHTML)
+		  stats.append("<br> &nbsp;&nbsp;&nbsp;&nbsp; ");
 	  
 	  if (m_isInfrastructure || m_isAA || m_isFactory)
 		  stats.append("can be Captured, ");
@@ -1481,6 +1517,10 @@ public class UnitAttachment extends DefaultAttachment
 	  
 	  if (m_carrierCapacity > 0)
 		  stats.append(m_carrierCapacity + " Carrier Capacity, ");
+	  
+	  // line break
+	  if (useHTML)
+		  stats.append("<br> &nbsp;&nbsp;&nbsp;&nbsp; ");
 	  
 	  if (m_maxBuiltPerPlayer > -1)
 		  stats.append(m_maxBuiltPerPlayer + " Max Built Allowed, ");

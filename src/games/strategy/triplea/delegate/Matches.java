@@ -2541,6 +2541,18 @@ public class Matches
     	}
     };
 
+    public static final Match<Unit> UnitCreatesResources = new Match<Unit>()
+    {
+    	public boolean match(Unit obj)
+    	{
+    		Unit unit = (Unit) obj;
+    		UnitAttachment ua = UnitAttachment.get(unit.getType());
+    		if(ua == null)
+    			return false;
+    		return (ua.getCreatesResourcesList() != null && ua.getCreatesResourcesList().size() > 0);
+    	}
+    };
+
     public static final Match<UnitType> UnitTypeConsumesUnitsOnCreation = new Match<UnitType>()
     {
     	public boolean match(UnitType obj)

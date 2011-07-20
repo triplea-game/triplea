@@ -85,27 +85,32 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
         PlayerID americans = m_data.getPlayerList().getPlayerID(Constants.AMERICANS);
 
         //TODO kev see if we can abstract this from the specific players/games
-                if(m_data.getProperties().get(Constants.PACIFIC_THEATER, false))
-                {
-                    PlayerAttachment pa = PlayerAttachment.get(japanese);
+        if(m_data.getProperties().get(Constants.PACIFIC_THEATER, false))
+        {
+            PlayerAttachment pa = PlayerAttachment.get(japanese);
 
-                    
-                    if(pa != null && Integer.parseInt(pa.getVps()) >= 22)
-                    {
-                        m_gameOver = true;
-                        victoryMessage = "Axis achieve VP victory";
-                        bridge.getHistoryWriter().startEvent(victoryMessage);
-                        signalGameOver(victoryMessage,bridge);
-                        return;
-                    } 
-                } 
+            
+            if(pa != null && Integer.parseInt(pa.getVps()) >= 22)
+            {
+                m_gameOver = true;
+                victoryMessage = "Axis achieve VP victory";
+                bridge.getHistoryWriter().startEvent(victoryMessage);
+                signalGameOver(victoryMessage,bridge);
+                return;
+            } 
+        } 
 
-        		if (isNationalObjectives())
-        		{
-        			determineNationalObjectives(m_data, bridge);
-        		}
+        // do national objectives
+		if (isNationalObjectives())
+		{
+			determineNationalObjectives(m_data, bridge);
+		}
         		
+        // create units if any owned units have the ability
         createUnits(m_data, bridge);
+        
+        // create resources if any owned units have the ability
+        createResources(m_data, bridge);
         		
         if(isWW2V2())
             return;
@@ -235,6 +240,49 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
         		        bridge.getHistoryWriter().setRenderingData(toAddLand);
         		        Change place = ChangeFactory.addUnits(tl, toAddLand);
         		        change.add(place);
+    				}
+    			}
+    		}
+    	}
+    	if (change != null && !change.isEmpty())
+    		bridge.addChange(change);
+    }
+    
+    /**
+     * 
+     * @param data
+     * @param bridge
+     */
+    private void createResources(GameData data, IDelegateBridge bridge)
+    {
+    	PlayerID player = data.getSequence().getStep().getPlayerID();
+    	Match<Unit> myCreatorsMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCreatesResources);
+    	CompositeChange change = new CompositeChange();
+    	
+    	for (Territory t : data.getMap().getTerritories())
+    	{
+    		Collection<Unit> myCreators = Match.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
+    		if (myCreators != null && !myCreators.isEmpty())
+    		{
+    			for (Unit u : myCreators)
+    			{
+    				UnitAttachment ua = UnitAttachment.get(u.getType());
+    	        	IntegerMap<Resource> createsUnitsMap = ua.getCreatesResourcesList();
+    	        	Collection<Resource> willBeCreated = createsUnitsMap.keySet();
+    				for (Resource r : willBeCreated)
+    				{
+    					int toAdd = createsUnitsMap.getInt(r);
+    					if (r.getName().equals(Constants.PUS))
+    						toAdd *= Properties.getPU_Multiplier(data);
+    					int total = player.getResources().getQuantity(r) + toAdd;
+    					if(total < 0) {
+    						toAdd -= total;
+    						total = 0;
+    					}
+        		        String transcriptText = u.getUnitType().getName() + " in " + t.getName() + " creates " + toAdd + " " + r.getName() + "; " + player.getName() + " end with " + total + " " + r.getName();
+        		        bridge.getHistoryWriter().startEvent(transcriptText);
+        		        Change resources = ChangeFactory.changeResourcesChange(player, r, toAdd);
+    					change.add(resources);
     				}
     			}
     		}

@@ -65,6 +65,29 @@ public class AllianceTracker extends GameDataComponent
 			alliances.add(allianceName);
 		}
 	}
+	
+	/**
+	 * Removes player from alliance allianceName.  Throws an exception if
+	 * player is not in that alliance.  Throws an exception if the player
+	 * is not in the specified alliance.
+	 * 
+	 * @param player The player to remove from the alliance.
+	 * @param allianceName The alliance to remove from.
+	 
+	protected void removeFromAlliance(PlayerID player, String allianceName) {
+		if (!m_alliances.containsKey(player)) {
+			throw new IllegalStateException(
+					"Cannot remove player from alliance they are not in.");
+		} else {
+			Collection<String> alliances = m_alliances.get(player);
+			if (!alliances.contains(allianceName)) {
+				throw new IllegalStateException(
+						"Cannot remove player from alliance they are not in.");
+			} else {
+				alliances.remove(allianceName);
+			}
+		}
+	}*/
 
 	/**
 	 * Returns whether two players are allied.<br>

@@ -763,7 +763,7 @@ class UnitPanel extends JPanel
         m_textField.setShowMaxAndMin(false);
         
         Image img = m_context.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data, m_category.getDamaged(),m_category.getDisabled());
-        String toolTipText = m_category.getType().getName() + ": " + m_category.getType().getTooltip(context, m_category.getOwner());
+        String toolTipText = "<html>"+ m_category.getType().getName() + ": " + m_category.getType().getTooltip(context, m_category.getOwner(), true) + "</html>";
         
         setCount(m_category.getUnits().size());
         
