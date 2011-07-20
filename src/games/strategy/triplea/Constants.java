@@ -44,6 +44,7 @@ public interface Constants
   public static final String RULES_ATTATCHMENT_NAME = "rulesAttatchment";
   public static final String RULES_OBJECTIVE_PREFIX = "objectiveAttachment";
   public static final String PLAYER_ATTATCHMENT_NAME = "playerAttatchment";
+  public static final String RELATIONSHIPTYPE_ATTATCHMENT_NAME = "relationshipTypeAttachment";
   public static final String CANAL_ATTATCHMENT_PREFIX = "canalAttatchment";
   public static final String SUPPORT_ATTACHMENT_PREFIX = "supportAttachment";
   public static final String PUS = "PUs";
@@ -209,5 +210,11 @@ public interface Constants
   public static final String DESTROY_UNITS_ON_ENTERING_TERRITORY = "On Entering Units Destroyed Instead Of Captured";
   public static final String DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES = "Damage From Bombing Done To Units Instead Of Territories";
   public static final String NEUTRAL_FLYOVER_ALLOWED = "Neutral Flyover Allowed";
+  public static final String RELATIONSHIP_TYPE_SELF = "self_relation";
+  public static final String RELATIONSHIP_TYPE_NULL = "null_relation";
+  public static final String RELATIONSHIP_ANY_NEUTRAL = "anyNeutral";
+  public static final String RELATIONSHIP_ANY = "any";
+  public static final String RELATIONSHIP_ANY_ALLIED = "anyAllied";
+  public static final String RELATIONSHIP_ANY_WAR = "anyWar";
   
 }

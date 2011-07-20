@@ -89,6 +89,9 @@ public class GameData implements java.io.Serializable
 	private transient ListenerList<GameDataChangeListener> m_dataChangeListeners = new ListenerList<GameDataChangeListener>();
 
 	private final AllianceTracker m_alliances = new AllianceTracker(this);
+	
+	// Tracks current relationships between players, this is empty if relationships aren't used
+	private final RelationshipTracker m_relationships = new RelationshipTracker(this);
 	private final DelegateList m_delegateList;
 	private final GameMap m_map = new GameMap(this);
 	private final PlayerList m_playerList = new PlayerList(this);
@@ -99,6 +102,8 @@ public class GameData implements java.io.Serializable
 	private final ResourceList m_resourceList = new ResourceList(this);
 	private final GameSequence m_sequence = new GameSequence(this);
 	private final UnitTypeList m_unitTypeList = new UnitTypeList(this);
+	// Tracks all relationshipTypes that are in the current game, default there will be the SelfRelation and the NullRelation any other relations are mapdesigner created.
+	private final RelationshipTypeList m_relationshipTypeList = new RelationshipTypeList(this);
 	private final GameProperties m_properties = new GameProperties(this);
 	private final UnitsList m_unitsList = new UnitsList();
 	private final TechnologyFrontier m_technologyFrontier= new TechnologyFrontier("allTechsForGame",this);
@@ -111,6 +116,7 @@ public class GameData implements java.io.Serializable
     private volatile transient boolean m_testLockIsHeld = false;
 
 	private List<IAttachment> attachmentOrder = new ArrayList<IAttachment>();
+
 
 	/** Creates new GameData */
 	public GameData()
@@ -478,6 +484,22 @@ public class GameData implements java.io.Serializable
 	public List<IAttachment> getOrderedAttachmentList() {
 		return attachmentOrder ;
 	}
-
-
+	
+	/**
+	 * 
+	 * @return all relationshipTypes that are valid in this game, default there is the NullRelation (relation with the Nullplayer / Neutral) and the SelfRelation (Relation with yourself) all other relations are mapdesigner defined.
+	 */
+	public RelationshipTypeList getRelationshipTypeList() {
+	    ensureLockHeld();
+		return m_relationshipTypeList;
+	}
+	/**
+	 * 
+	 * @return a tracker which tracks all current relationships that exist between all players.
+	 */
+	public RelationshipTracker getRelationshipTracker() {
+		 ensureLockHeld();
+		return m_relationships;
+	}
+    
 }

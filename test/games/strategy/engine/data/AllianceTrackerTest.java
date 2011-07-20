@@ -33,8 +33,11 @@ public class AllianceTrackerTest extends TestCase {
 		assertEquals(tracker.isAllied(bush,castro), true);
 		
 	}
-	
-	public void testRemoveAlliance() throws Exception
+
+	//TODO create test suite for Alliance/Relationships/Politics
+/* Shouldn't test something that the engine doesn't use.
+ 
+ 	public void testRemoveAlliance() throws Exception
 	{
 		//reset the GameData
 		URL url = this.getClass().getResource("Test.xml");
@@ -49,6 +52,8 @@ public class AllianceTrackerTest extends TestCase {
 		assertEquals(tracker.isAllied(castro, chretian), false);
 		
 	}
+	
+	*/
 	
 
 	

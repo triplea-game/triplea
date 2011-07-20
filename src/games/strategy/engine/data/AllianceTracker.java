@@ -20,6 +20,9 @@
 
 package games.strategy.engine.data;
 
+import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
+import games.strategy.triplea.delegate.Matches;
+
 import java.util.*;
 
 /**
@@ -62,29 +65,6 @@ public class AllianceTracker extends GameDataComponent
 			alliances.add(allianceName);
 		}
 	}
-	
-	/**
-	 * Removes player from alliance allianceName.  Throws an exception if
-	 * player is not in that alliance.  Throws an exception if the player
-	 * is not in the specified alliance.
-	 * 
-	 * @param player The player to remove from the alliance.
-	 * @param allianceName The alliance to remove from.
-	 */
-	protected void removeFromAlliance(PlayerID player, String allianceName) {
-		if (!m_alliances.containsKey(player)) {
-			throw new IllegalStateException(
-					"Cannot remove player from alliance they are not in.");
-		} else {
-			Collection<String> alliances = m_alliances.get(player);
-			if (!alliances.contains(allianceName)) {
-				throw new IllegalStateException(
-						"Cannot remove player from alliance they are not in.");
-			} else {
-				alliances.remove(allianceName);
-			}
-		}
-	}
 
 	/**
 	 * Returns whether two players are allied.<br>
@@ -92,26 +72,32 @@ public class AllianceTracker extends GameDataComponent
 	 */
 	public boolean isAllied(PlayerID p1, PlayerID p2)
 	{
-
+		if(useRelationshipModel()) {
+			return Matches.RelationshipIsAllied.match((getRelationshipType(p1,p2)));
+		} 
+		
 		if(p1 == null || p2 == null)
 			throw new IllegalArgumentException("Arguments cannot be null p1:" + p1 + " p2:" + p2);
-
+		
 		if(p1.equals(p2))
 			return true;
-		if(!m_alliances.containsKey(p1))
-			return false;
-		if(!m_alliances.containsKey(p2))
+			
+
+		if(!m_alliances.containsKey(p1) || !m_alliances.containsKey(p2))
 			return false;
 
 		Collection<String> a1 = m_alliances.get(p1);
 		Collection<String> a2 = m_alliances.get(p2);
-
+	
 		return games.strategy.util.Util.someIntersect(a1,a2);
+		
 	}
+
+
 
 	/**
 	 *
-	 * @return a set of all the games alliances
+	 * @return a set of all the games alliances, this will return an empty set if you aren't using alliances
 	 */
 	public Set<String> getAlliances()
 	{
@@ -133,6 +119,7 @@ public class AllianceTracker extends GameDataComponent
 	 * 
 	 * @param allianceName Alliance name
 	 * @return all the players in the given alliance
+	 * 
 	 */
 	public Set<PlayerID> getPlayersInAlliance(String allianceName)
 	{
@@ -151,11 +138,58 @@ public class AllianceTracker extends GameDataComponent
 	}
 	/**
 	 * returns true if p1 is at war with p2
-	 * @param p1
-	 * @param p2
-	 * @return
+	 * @param p1 player1
+	 * @param p2 player2
+	 * @return whether p1 is at war with p2
 	 */
 	public boolean isAtWar(PlayerID p1, PlayerID p2) {
+		if(useRelationshipModel())
+			return Matches.RelationshipIsAtWar.match((getRelationshipType(p1,p2)));
+
 		return !isAllied(p1,p2); //holder method war not yet implemented
 	}
+	/**
+	 * 
+	 * @param p1 player1 
+	 * @param p2 player2
+	 * @return whether player1 is neutral to player2
+	 */
+	public boolean isNeutral(PlayerID p1, PlayerID p2) {
+		if(useRelationshipModel()) 
+			return Matches.RelationshipIsNeutral.match((getRelationshipType(p1,p2)));
+		return false; // alliancemodel doesn't know neutrality so always return false.
+	}
+	
+	/** 
+	 * <strong>example</strong> method on how to extract a boolean from isAlliance();
+	 * use this method instead of isAlliance in the spots to be used
+	 * @return
+	 */
+	/*TODO this needs to be done in the rest of the game!, now the game determines whether to defend at see by checking isAllied()
+	 this is just an example on how to externalize autorisations from the isAllied() method for more fine-grained relationships.
+	 */
+	public boolean helpsDefendAtSea(PlayerID p1, PlayerID p2) {
+		if(useRelationshipModel())
+			return Matches.RelationshipHelpsDefendAtSea.match((getRelationshipType(p1,p2)));
+		return isAllied(p1,p1); // when using alliances only people in your alliance help defend at sea.
+	}
+	
+	/** 
+	 * Convenience method to see whether we are using relationshipModel, relationshipModel means we are looking at
+	 * individual relationships between players rather then alliance memberships
+	 * @return whether we are using relationship model
+	 */
+	private boolean useRelationshipModel() {
+		return getData().getRelationshipTracker().useRelationshipModel();
+	}
+	
+	/**
+	 * Convenience method to get RelationshipType so you can do relationshipChecks on the relationship between these 2 players
+	 * @return RelationshipType between these to players
+	 */
+	private RelationshipType getRelationshipType(PlayerID p1,PlayerID p2) {
+		return getData().getRelationshipTracker().getRelationshipType(p1, p2);
+	}
+
+	
 }

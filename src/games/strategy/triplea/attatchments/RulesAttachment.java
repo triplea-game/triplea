@@ -25,6 +25,7 @@ import games.strategy.engine.data.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.*;
 import games.strategy.util.*;
+
 import java.util.*;
 
 
@@ -102,6 +103,8 @@ public class RulesAttachment extends DefaultAttachment
 	// using map as tuple set, describes ranges from Integer-Integer
 	private Map<Integer, Integer> m_turns = null;
 	private List<TechAdvance> m_techs = null;
+	// list of all relationships that should be in place for this condition to be valid array of "Germany:Italy:Allied", "UK:USA:Allied" etc.
+	private List<String> m_relationship = new ArrayList<String>();
 	
 	/** Creates new RulesAttachment */
 	public RulesAttachment()
@@ -126,6 +129,27 @@ public class RulesAttachment extends DefaultAttachment
 	public int getObjectiveValue()
 	{
 		return m_objectiveValue;
+	}
+	
+	/**
+	 * condition to check if a certain relationship exists between 2 players
+	 * @param should be a string containing: "player:player:relationship"
+	 * @throws GameParseException 
+	 */
+	public void setRelationship(String value) throws GameParseException {
+		String[] s = value.split(":");
+		if(s.length != 3)
+			throw new GameParseException("relationship should have value=\"playername:playername:relationshiptype\"");
+		if(getData().getPlayerList().getPlayerID(s[0]) == null)
+			throw new GameParseException("playername: "+s[0]+" isn't valid in condition with relationship: "+value+" for RulesAttachment "+getName());
+		if(getData().getPlayerList().getPlayerID(s[1]) == null)
+			throw new GameParseException("playername: "+s[1]+" isn't valid in condition with relationship: "+value+" for RulesAttachment "+getName());
+		if(     !(s[2].equals(Constants.RELATIONSHIP_ANY_ALLIED) || 
+				s[2].equals(Constants.RELATIONSHIP_ANY_NEUTRAL)||
+				s[2].equals(Constants.RELATIONSHIP_ANY_WAR) ||
+				Matches.isValidRelationshipName(getData()).match(s[2])))
+			throw new GameParseException("relationship: "+s[2]+" isn't valid in condition with relationship: "+value+" for RulesAttachment "+getName());
+		m_relationship.add(value);
 	}
 	
 	public void setAlliedOwnershipTerritories(String value)
@@ -951,10 +975,16 @@ public class RulesAttachment extends DefaultAttachment
 		{
 			objectiveMet = checkTechs(player, data);
 		}
+		// check for relationships
+		if (m_relationship.size()>0) {
+			objectiveMet = checkRelationships();
+		}
 		
 		return objectiveMet != m_invert;
 	}
 	
+
+
 	/**
 	 * Called after the attatchment is created.
 	 * (edit: actually this isn't being called AT ALL)
@@ -1029,6 +1059,24 @@ public class RulesAttachment extends DefaultAttachment
 			rVal.add(territory);
 		}
 		return rVal;
+	}
+	/**
+	 * checks if all relationshiprequirements are set
+	 * @return whether all relationships as are required are set correctly.
+	 */
+	private boolean checkRelationships() {
+		for(String aRelationCheck:m_relationship) {
+			String[] relationCheck = aRelationCheck.split(":");
+			PlayerID p1 = getData().getPlayerList().getPlayerID(relationCheck[0]);
+			PlayerID p2 = getData().getPlayerList().getPlayerID(relationCheck[1]);
+			RelationshipType currentRelationship = getData().getRelationshipTracker().getRelationshipType(p1, p2);
+			if (! (relationCheck[2].equals(Constants.RELATIONSHIP_ANY_ALLIED) && Matches.RelationshipIsAllied.match(currentRelationship) ||
+						   relationCheck[2].equals(Constants.RELATIONSHIP_ANY_NEUTRAL) && Matches.RelationshipIsNeutral.match(currentRelationship) ||
+						   relationCheck[2].equals(Constants.RELATIONSHIP_ANY_WAR) && Matches.RelationshipIsAtWar.match(currentRelationship) ||
+						   currentRelationship.equals(getData().getRelationshipTypeList().getRelationshipType(relationCheck[2]))))
+				return false;
+		}
+		return true;
 	}
 	
 	/**

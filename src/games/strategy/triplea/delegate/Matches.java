@@ -24,6 +24,8 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.RelationshipTracker;
+import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -1817,7 +1819,8 @@ public class Matches
       };
   }
 
-    public static Match<Territory> isTerritoryEnemy(final PlayerID player, final GameData data)
+  //TODO this needs updating for isEnemy()
+  public static Match<Territory> isTerritoryEnemy(final PlayerID player, final GameData data)
     {
         return new Match<Territory>()
         {
@@ -1830,7 +1833,7 @@ public class Matches
         };
     }
 
-
+  //TODO this needs updating for isEnemy()
     public static Match<Territory> isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(final PlayerID player, final GameData data)
     {
         return new Match<Territory>()
@@ -1849,7 +1852,8 @@ public class Matches
             }
         };
     }
-
+    
+    //TODO this needs updating for isEnemy()
     public static Match<Territory> TerritoryIsBlitzable(final PlayerID player, final GameData data)
     {
         return new Match<Territory>()
@@ -1864,7 +1868,8 @@ public class Matches
             }
         };
     }
-
+    
+    //TODO review for relations
     public static Match<Territory> isTerritoryFreeNeutral(final GameData data)
     {
         return new Match<Territory>()
@@ -1895,6 +1900,7 @@ public class Matches
     }
 */
 
+    //TODO this needs updating for isEnemy()
     public static Match<Unit> enemyUnit(PlayerID player, GameData data)
     {
         return new InverseMatch<Unit>(alliedUnit(player, data));
@@ -2035,7 +2041,7 @@ public class Matches
     };
   }
 
-
+  //TODO this needs updating for isEnemy()
     public static Match<Territory> territoryHasNoEnemyUnits(final PlayerID player, final GameData data)
     {
         return new Match<Territory>()
@@ -2693,6 +2699,64 @@ public class Matches
 			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.canInvadeFrom(transport.getUnitType().getName());
 		}
+	};
+	
+	public static final Match<RelationshipType> RelationshipIsAllied = new Match<RelationshipType>() {
+		public boolean match(RelationshipType relationship) {
+			return relationship.getRelationshipTypeAttachment().isAllied();
+		}
+	};
+	
+	public static final Match<RelationshipType> RelationshipIsNeutral = new Match<RelationshipType>() {
+		public boolean match(RelationshipType relationship) {
+			return relationship.getRelationshipTypeAttachment().isNeutral();
+		}
+	};
+	
+	public static final Match<RelationshipType> RelationshipIsAtWar = new Match<RelationshipType>() {
+		public boolean match(RelationshipType relationship) {
+			return relationship.getRelationshipTypeAttachment().isWar();
+		}
+	};
+
+	// should we build the default logic (what to do if helpsDefendAtSea = "default") in here, or in RelationshipAttachment?
+	public static final Match<RelationshipType> RelationshipHelpsDefendAtSea = new Match<RelationshipType>() {
+		public boolean match(RelationshipType relationship) {
+			return relationship.getRelationshipTypeAttachment().helpsDefendAtSea();
+		}
+	};
+	
+	public static final Match<String> isValidRelationshipName(final GameData data) {
+		return new Match<String>() {
+			public boolean match(String relationshipName) {
+				return data.getRelationshipTypeList().getRelationshipType(relationshipName) != null;
+			}
+
+		};
+	};
+	
+	public static final Match<PlayerID> isAtWar(final PlayerID player) {
+		return new Match<PlayerID>() {
+			public boolean match(PlayerID player2) {
+				return player.getData().getAllianceTracker().isAtWar(player, player2);
+			}	
+		};
+	};
+	
+	public static final Match<PlayerID> isAllied(final PlayerID player) {
+		return new Match<PlayerID>() {
+			public boolean match(PlayerID player2) {
+				return player.getData().getAllianceTracker().isAllied(player, player2);
+			}	
+		};
+	};
+	
+	public static final Match<PlayerID> isNeutral(final PlayerID player) {
+		return new Match<PlayerID>() {
+			public boolean match(PlayerID player2) {
+				return player.getData().getAllianceTracker().isNeutral(player, player2);
+			}	
+		};
 	};
     
     public static final Match<Unit> UnitIsOwnedAndIsFactoryOrCanProduceUnits(final PlayerID player)

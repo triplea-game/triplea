@@ -220,7 +220,53 @@ public class ChangeFactory
     {
 
     }
+    /** Creates a change of relationshipType between 2 players, for example: change Germany-France relationship from neutral to war. 
+     * @return the Change of relationship between 2 players
+     * */
+	public static Change relationshipChange(PlayerID player, PlayerID player2, RelationshipType currentRelation, RelationshipType newRelation) {
+		return new RelationshipChange(player,player2,currentRelation,newRelation);
+	}
 
+}
+
+/** 
+ * RelationshipChange this creates a change in relationshipType between two players, for example from Neutral to War.
+ * 
+ */
+
+class RelationshipChange extends Change
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2694339584633196289L;
+	private final PlayerID m_player1;
+	private final PlayerID m_player2;
+	private final RelationshipType m_OldRelation;
+	private final RelationshipType m_NewRelation;
+	
+	RelationshipChange(PlayerID player1, PlayerID player2, RelationshipType oldRelation, RelationshipType newRelation) {
+		m_player1 = player1;
+		m_player2 = player2;
+		m_OldRelation = oldRelation;
+		m_NewRelation = newRelation;
+	}
+    public Change invert()
+    {
+        return new RelationshipChange(m_player1,m_player2,m_NewRelation,m_OldRelation);
+    }
+    
+    protected void perform(GameData data)
+    {
+
+        data.getRelationshipTracker().setRelationship(m_player1, m_player2, m_NewRelation);
+    }
+   
+    public String toString()
+    {
+        return "Add relation change. "+m_player1.getName()+" and "+m_player2.getName()+" change from "+m_OldRelation.getName()+" to "+m_NewRelation.getName();
+    }
+	
 }
 
 /**

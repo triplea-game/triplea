@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!ELEMENT game (info, loader, diceSides?, map, resourceList?, playerList, unitList?, gamePlay, production?, technology?, attatchmentList? , initialize?, propertyList?)>
+<!ELEMENT game (info, loader, diceSides?, map, resourceList?, playerList, unitList?, relationshipTypes?, gamePlay, production?, technology?, attatchmentList? , initialize?, propertyList?)>
 
 <!-- version must be in the form xx.xx or xx.xx.xx where xx is a positive integer -->
 <!ELEMENT info EMPTY>
@@ -63,6 +63,12 @@
 		name ID #REQUIRED
 	>
 
+<!ELEMENT relationshipTypes (relationshipType+) >
+	<!ELEMENT relationshipType EMPTY>
+	<!ATTLIST relationshipType 
+		name ID #REQUIRED
+	>
+
 <!ELEMENT playerList (player+, alliance*) >
 	<!ELEMENT player EMPTY>
 	<!ATTLIST player
@@ -75,6 +81,7 @@
 		player IDREF #REQUIRED 
 		alliance CDATA #REQUIRED
 	>
+	
 
 	
 
@@ -184,7 +191,7 @@
 		name CDATA #REQUIRED
 		attatchTo CDATA #REQUIRED
 		javaClass CDATA #REQUIRED
-		type (unitType | territory | resource | player)  "unitType"
+		type (unitType | territory | resource | player | relationship)  "unitType"
 	>
 		<!ELEMENT option EMPTY > 
 		<!ATTLIST option
@@ -194,7 +201,7 @@
 		>
 		
 
-<!ELEMENT initialize (ownerInitialize?, unitInitialize?, resourceInitialize?) >
+<!ELEMENT initialize (ownerInitialize?, unitInitialize?, resourceInitialize?, relationshipInitialize?) >
 	<!ELEMENT ownerInitialize (territoryOwner+) >
 		<!ELEMENT territoryOwner EMPTY>
 		<!ATTLIST territoryOwner 
@@ -224,7 +231,17 @@
 			resource IDREF #REQUIRED
 			quantity CDATA #REQUIRED
 		>
-		
+
+	<!ELEMENT relationshipInitialize (relationship+) >		
+		<!ELEMENT relationship EMPTY>
+	
+		<!ATTLIST relationship
+			player1 IDREF #REQUIRED
+			player2 IDREF #REQUIRED 
+			type IDREF #REQUIRED
+		>
+
+	
 <!ELEMENT propertyList (property*)>
 	<!ELEMENT property (boolean?, string?, file?, number?, color?, list?, value?) >
 	<!-- can the player edit this on start up? if true then the type must be specified with a nested element -->

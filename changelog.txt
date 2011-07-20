@@ -1,4 +1,9 @@
 Changes for 1.3.3.0
+* Created framework and objects for having individual relationships between players, rather than set alliances and war as the only option. (edwin van der wal, with some help from frigoref and veqryn)
+
+* Created politics delegate, which will eventually be filled with the logic and ui elements to allow players to change their alliances and relationships with other players. (edwin van der wal)
+    <delegate name="politics" javaClass="games.strategy.triplea.delegate.PoliticsDelegate" display="Politics"/>
+
 * Fixed inability to save games during placement phase. (frigoref)
 
 * Added ability to customize tooltips for units, using "tooltips.properties". (edwin van der wal)

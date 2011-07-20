@@ -561,17 +561,23 @@
                 <player name="Americans" optional="false"/>
                 <player name="Chinese" optional="false"/>
 
+				
+				
 				<!-- alliances can have any name, not just axis and allies.  there can be more than 2 alliances -->
                 <!-- Axis alliance -->
+                <!--  since triplea version 1.3.3.0 it is preferred to use relationships instead of alliances
                 <alliance player="Germans" alliance="Axis"/>
                 <alliance player="Japanese" alliance="Axis"/>
                 <alliance player="Italians" alliance="Axis"/>
-
+				-->
                 <!-- Allies alliance -->
+                <!--  since triplea version 1.3.3.0 it is preferred to use relationships instead of alliances
                 <alliance player="British" alliance="Allies"/>
                 <alliance player="Russians" alliance="Allies"/>
                 <alliance player="Americans" alliance="Allies"/>
                 <alliance player="Chinese" alliance="Allies"/>
+                -->
+                
         </playerList>
 
         <unitList>
@@ -598,6 +604,18 @@
                 <unit name="airfield"/>
                 <unit name="harbour"/>
         </unitList>
+        <!--  this is the list of relationshipTypes you can create between players -->
+        <!--  each relationshipType you define here MUST have a RelationshipTypeAttachment to define this relationship 
+              also each RelationshipTypeAttachment MUST have an archetype set to either: "allied", "neutral" or "war"
+        -->
+        
+        <relationshipTypes>
+			<relationshipType name="Allied"/>
+			<relationshipType name="War"/>
+			<relationshipType name="Neutral"/>
+			<relationshipType name="NAP"/>
+			<relationshipType name="ColdWar"/>
+		</relationshipTypes>
 
         <gamePlay>
 				<!-- this currently is all the delegates triplea has.  not all are needed for a regular game though -->
@@ -617,6 +635,8 @@
                 <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
                 <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
                 <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+                <delegate name="politics" javaClass="games.strategy.triplea.delegate.PoliticsDelegate" display="Politics"/>
+                
 				<!-- <delegate name="givePUs" javaClass="games.strategy.triplea.delegate.GivePUsDelegate" display="Give PUs"/> -->
 
                 <sequence>
@@ -645,6 +665,7 @@
                         <!-- Italians Game Sequence -->
                         <step name="italianTech" delegate="tech" player="Italians"/>
                         <step name="italianPurchase" delegate="purchase" player="Italians"/>
+                        <step name="italianPolitics" delegate="politics" player="Italians"/>
                         <step name="italianCombatMove" delegate="move" player="Italians"/>
                         <step name="italianBattle" delegate="battle" player="Italians"/>
                         <step name="italianNonCombatMove" delegate="move" player="Italians" display="Non Combat Move"/>
@@ -655,6 +676,7 @@
                         <!-- Russians Game Sequence -->
                         <step name="russianTech" delegate="tech" player="Russians"/>
                         <step name="russianPurchase" delegate="purchase" player="Russians"/>
+                        <step name="russianPolitics" delegate="politics" player="Russians"/>
                         <step name="russianCombatMove" delegate="move" player="Russians"/>
                         <step name="russianBattle" delegate="battle" player="Russians"/>
                         <step name="russianNonCombatMove" delegate="move" player="Russians" display="Non Combat Move"/>
@@ -666,6 +688,7 @@
 						<!-- <step name="germanGivePUs" delegate="givePUs" player="Germans"/> -->
                         <step name="germanTech" delegate="tech" player="Germans"/>
                         <step name="germanPurchase" delegate="purchase" player="Germans"/>
+                        <step name="germanPolitics" delegate="politics" player="Germans"/>
                         <step name="germanCombatMove" delegate="move" player="Germans"/>
                         <step name="germanBattle" delegate="battle" player="Germans"/>
                         <step name="germanNonCombatMove" delegate="move" player="Germans" display="Non Combat Move"/>
@@ -676,6 +699,7 @@
                         <!-- British Game Sequence -->
                         <step name="britishTech" delegate="tech" player="British"/>
                         <step name="britishPurchase" delegate="purchase" player="British"/>
+                        <step name="britishPolitics" delegate="politics" player="British"/>
                         <step name="britishCombatMove" delegate="move" player="British"/>
                         <step name="britishBattle" delegate="battle" player="British"/>
                         <step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move"/>
@@ -686,6 +710,7 @@
                         <!-- Japanese Game Sequence -->
                         <step name="japaneseTech" delegate="tech" player="Japanese"/>
                         <step name="japanesePurchase" delegate="purchase" player="Japanese"/>
+                        <step name="japanesePolitics" delegate="politics" player="Japanese"/>
                         <step name="japaneseCombatMove" delegate="move" player="Japanese"/>
                         <step name="japaneseBattle" delegate="battle" player="Japanese"/>
                         <step name="japaneseNonCombatMove" delegate="move" player="Japanese" display="Non Combat Move"/>
@@ -696,6 +721,7 @@
                         <!-- Americans Game Sequence -->
                         <step name="americanTech" delegate="tech" player="Americans"/>
                         <step name="americanPurchase" delegate="purchase" player="Americans"/>
+                        <step name="americanPolitics" delegate="politics" player="Americans"/>
                         <step name="americanCombatMove" delegate="move" player="Americans"/>
                         <step name="americanBattle" delegate="battle" player="Americans"/>
                         <step name="americanNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
@@ -705,6 +731,7 @@
 						
 						<!-- Chinese Game Sequence -->
 						<step name="chineseBurmaRoadPurchase" delegate="purchase" player="Chinese"/>
+                        <step name="chinesePolitics" delegate="politics" player="Chinese"/>
 						<step name="chineseCombatMove" delegate="move" player="Chinese"/>
 						<step name="chineseBattle" delegate="battle" player="Chinese"/>
 						<step name="chineseNonCombatMove" delegate="move" player="Chinese" display="Non Combat Move"/>
@@ -1835,20 +1862,36 @@
 		</technology>
 
         <attatchmentList>
-				<!-- Certain units require extra graphical icons present, for when technology is researched or damage is done.  Here is a list, in order of what is needed:
-						Anything I list as "_something" means that you must have the units exact name in front of it, example: fighter_jp
-						if the unit is called "aaGun" then you need units called "rockets", "rockets_r", and "aaGun_r"
-						if the unit has "isAA", but is not exactly named "aaGun", then you need units called "_rockets" and "_r" and "_rockets_r"
-						if the unit has "isRocket", you need "_rockets"
-						if the unit has "isAAforCombatOnly" and/or "isAAforBombingThisUnitOnly", then you need "_r"
-						if the unit has "isAir", but not "isStrategicBomber", then you need "_lr", and "_jp", and "_lr_jp"
-						if the unit has "isAir", and is "isStrategicBomber", then you need "_lr", and "_hb", and "_lr_hb"
-						if the unit has "isSub", then you need "_ss"
-						if the unit has "isFactory", or is called "factory", then you need "_it", and "_it_hit"
-						if a unit can be damaged (by being a factory, or by having "canBeDamaged", then you will need "_hit"
-						if a unit can be disabled, then you will need "_disabled"
-						-->
+        
+        		<!--  relationshipType Attachments -->
+        		<!--  each PoliticalRelationship needs a relationshipTypeAttachment 
+                      and each relationshipTypeAttachment needs an option: archetype that needs to be set to one of the following 3 values:
+                      * "allied"
+                      * "neutral"
+                      * "war"
+                      the archeType determines the default behaviour of this relationshipType that can be modified by setting other options.
+                      Also the archeType determines the outcomes of isAllied, isNeutral and isWar query in the engine-->
+        				
+        				<attatchment name="relationshipTypeAttachment" attatchTo="War" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+							<option name="archeType" value="war"/>
+						</attatchment>
 						
+						<attatchment name="relationshipTypeAttachment" attatchTo="Allied" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+							<option name="archeType" value="allied"/>
+						</attatchment>
+						
+						<attatchment name="relationshipTypeAttachment" attatchTo="Neutral" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+							<option name="archeType" value="neutral"/>
+						</attatchment>
+						
+						<attatchment name="relationshipTypeAttachment" attatchTo="NAP" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+							<option name="archeType" value="neutral"/>
+						</attatchment>
+						
+						<attatchment name="relationshipTypeAttachment" attatchTo="ColdWar" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+							<option name="archeType" value="neutral"/>
+						</attatchment>
+												
 				<!-- Tech Attachments for players.  The following is a list of all ww2v3 technology.  These are not required, they only determine if a country starts with a tech or not. -->
         		<!-- Germans -->
                 <attatchment name="techAttatchment" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -1956,6 +1999,21 @@
 				
 				
 				<!-- Unit Attachments -->
+				
+						<!-- Certain units require extra graphical icons present, for when technology is researched or damage is done.  Here is a list, in order of what is needed:
+						Anything I list as "_something" means that you must have the units exact name in front of it, example: fighter_jp
+						if the unit is called "aaGun" then you need units called "rockets", "rockets_r", and "aaGun_r"
+						if the unit has "isAA", but is not exactly named "aaGun", then you need units called "_rockets" and "_r" and "_rockets_r"
+						if the unit has "isRocket", you need "_rockets"
+						if the unit has "isAAforCombatOnly" and/or "isAAforBombingThisUnitOnly", then you need "_r"
+						if the unit has "isAir", but not "isStrategicBomber", then you need "_lr", and "_jp", and "_lr_jp"
+						if the unit has "isAir", and is "isStrategicBomber", then you need "_lr", and "_hb", and "_lr_hb"
+						if the unit has "isSub", then you need "_ss"
+						if the unit has "isFactory", or is called "factory", then you need "_it", and "_it_hit"
+						if a unit can be damaged (by being a factory, or by having "canBeDamaged", then you will need "_hit"
+						if a unit can be disabled, then you will need "_disabled"
+						-->
+	
 
                 <!-- Infantry -->
                 <attatchment name="unitAttatchment" attatchTo="infantry" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
@@ -2916,7 +2974,7 @@
 			uses								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
 			invert								values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
 			count								values: the number required to satisfy a rule. if missing, it defaults to ALL. the below options use count:
-			atWarPlayers						values: player names, in a : delimited list (example: value="Germans:Italians:Japanese" count="2" means that you must be at war with 2 of the 3 listed players) [this option currently does NOTHING]
+			atWarPlayers						values: player names, in a : delimited list (example: value="Germans:Italians:Japanese" count="2" means that you must be at war with 2 of the 3 listed players)
 			directOwnershipTerritories			values: "original", "enemy", or a : delimited list of territories
 			alliedOwnershipTerritories			values: "original", "enemy", or a : delimited list of territories
 			directExclusionTerritories 			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
@@ -2931,6 +2989,7 @@
 														It can be used in conjunction with directPresenceTerritories, alliedPresenceTerritories, enemyPresenceTerritories, directExclusionTerritories, alliedExclusionTerritories, enemyExclusionTerritories, enemySurfaceExclusionTerritories
 														If used with an exclusion, then the number of units of that type must be less than or equal the count.  (Use count="0" if you want no units of that type in the territories).
 			techs								values: any list of technologies, : delimited (if count = zero, then must have exactly zero technologies [if count is missing, defaults to zero])
+			relationship						values: a relationship that needs to be present in the game: "player1:player2:relationship" for example: "Japan:China:War" it will accept "anyWar", "anyNeutral" and "anyAllied" as well.
 	-->
 	<!-- German Objectives -->
                 <attatchment name="objectiveAttachmentGermans1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -3200,6 +3259,11 @@
                 <attatchment name="conditionAttachmentItaliansShipyards" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="techs" value="shipyards" count="1"/>
                 </attatchment>
+                
+                <attatchment name="conditionAttachmentItalianTurn2" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="turns" value="2"/>
+                </attatchment>
+                
 				
 	<!-- Americans Conditions -->
                 <attatchment name="conditionAttachmentAmericans1" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -3253,7 +3317,11 @@
                 	<option name="turns" value="3:4"/>
                 	<option name="alliedOwnershipTerritories" value="Karelia S.S.R.:Caucus" count="2"/>
                 </attatchment>
-				
+                
+				<attatchment name="conditionAttachmentRussiansWarItalians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="relationship" value="Italians:Russians:anyWar"/>
+                </attatchment>
+                
                 <attatchment name="conditionAttachmentRussians3" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="alliedOwnershipTerritories" value="Burytia S.S.R." count="1"/>
                 	<option name="invert" value="true"/>
@@ -3306,6 +3374,9 @@
 															so adding or removing them as unit properties will do nothing (the bonusType for them is "ArtyOld", and the supportAttachment name is "supportAttachmentArtyOld<nameofUnit>") unitProperty changes are done for ALL players who use that unitType, 
 															regardless of the player specified in the trigger. In order to have a unitType+unitProperty change only affect certain players and not others, you need to make a new unit type for those players (ie: rename the unit for those players only)
 			victory								values: the string message to be displayed if the condition is true.
+			relationshipChange					values: the change in relationship for this player, format: "player:oldRelation:newRelation" example: "Russia:coldWar:allOutWar"
+														oldRelation may be "any" "anyWar" "anyNeutral" "anyAllied" or an actual relationshipType used in this xml
+														You can enter multiple relationshipChanges in the trigger and it will perform every change in the trigger which is valid
 	-->
 	<!-- Victory Triggers -->
 						<!-- Victory Triggers can be attached to anyone. Only 1 is needed per victory condition -->
@@ -3447,7 +3518,14 @@
 					<option name="uses" value="1"/>
                 </attatchment>
 				
-	<!-- Italians Triggers -->
+	<!-- Italians Triggers -->			
+                <attatchment name="triggerAttachmentItaliansWarRussians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<!-- on turn 2 italy will go automatically to war with Russia -->
+                	<option name="trigger" value="conditionAttachmentItalianTurn2"/>
+					<option name="relationshipChange" value="Russians:any:War"/>					
+                </attatchment>
+				
+				
                 <attatchment name="triggerAttachmentItalians1" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentItalians1"/>
 					<option name="purchase" value="cruiser" count="1"/>
@@ -3528,11 +3606,23 @@
                 </attatchment>
 				
 	<!-- Russians Triggers and Conditions -->
+	            <attatchment name="triggerAttachmentRussiansWarJapanese" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<!-- when Italy is at War with Russia, Russia will automatically go to war with Japan from any Neutral stance -->
+                	<option name="trigger" value="conditionAttachmentRussiansWarItalians"/>
+					<option name="relationshipChange" value="Japanese:anyNeutral:War"/>
+                </attatchment>
+                
                 <attatchment name="triggerAttachmentRussians1" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="objectiveAttachmentRussians3"/>
 					<option name="resource" value="techTokens"/>
 					<option name="resourceCount" value="2"/>
 					<option name="uses" value="1"/>
+                </attatchment>
+                
+                <attatchment name="triggerAttachmentRussiansWarGermans" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<!-- when Italy is at War with Russia, Russia will automatically go to war with Germany from exactly Neutral state -->
+                	<option name="trigger" value="conditionAttachmentRussiansWarItalians"/>
+					<option name="relationshipChange" value="Germans:Neutral:War"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentRussians2" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -3948,6 +4038,39 @@
                         <resourceGiven player="Italians" resource="PUs" quantity="16"/>
                         <resourceGiven player="Chinese" resource="PUs" quantity="0"/>
                 </resourceInitialize>
+                               
+        
+        	<relationshipInitialize>
+        
+        	   <relationship type="Allied" player1="Italians" player2="Germans"/>
+               <relationship type="Allied" player1="Italians" player2="Japanese"/>
+               <relationship type="Allied" player1="Germans" player2="Japanese"/>
+               
+               <relationship type="Allied" player1="Russians" player2="British"/>
+               <relationship type="Allied" player1="Russians" player2="Americans"/>
+               <relationship type="Allied" player1="Russians" player2="Chinese"/>
+               <relationship type="Allied" player1="Americans" player2="British"/>
+               <relationship type="Allied" player1="Americans" player2="Chinese"/>
+               <relationship type="Allied" player1="British" player2="Chinese"/>
+               
+               <relationship type="War" player1="British" player2="Germans"/>
+               <relationship type="War" player1="British" player2="Italians"/>
+               <relationship type="War" player1="British" player2="Japanese"/>
+               
+               <relationship type="War" player1="Americans" player2="Germans"/>
+               <relationship type="War" player1="Americans" player2="Italians"/>
+               <relationship type="War" player1="Americans" player2="Japanese"/>
+               
+               <relationship type="Neutral" player1="Russians" player2="Germans"/>
+               <relationship type="Allied" player1="Russians" player2="Italians"/>
+               <relationship type="ColdWar" player1="Russians" player2="Japanese"/>
+               
+               <relationship type="War" player1="Chinese" player2="Germans"/>
+               <relationship type="War" player1="Chinese" player2="Italians"/>
+               <relationship type="War" player1="Chinese" player2="Japanese"/>  
+               
+      	 </relationshipInitialize>
+                
         </initialize>
 
 		<propertyList>

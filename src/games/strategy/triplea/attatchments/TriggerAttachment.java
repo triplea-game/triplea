@@ -20,6 +20,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
@@ -31,10 +32,12 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.delegate.TripleADelegateBridge;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -46,7 +49,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	 * 
 	 */
 	private static final long serialVersionUID = -3327739180569606093L;
-	
+
 	private List<RulesAttachment> m_trigger = null;
 	private ProductionFrontier m_frontier = null;
 	private boolean m_invert = false;
@@ -59,10 +62,14 @@ public class TriggerAttachment extends DefaultAttachment{
 	private List<PlayerID> m_players= new ArrayList<PlayerID>();
 	private Map<UnitSupportAttachment, Boolean> m_support = null;
 	private List<String> m_unitProperty = null;
+	// List of relationshipChanges that should be executed when this trigger hits.
+	private List<String> m_relationshipChange = new ArrayList<String>();
+
 	private UnitType m_unitType = null;
 	private Map<String,Map<TechAdvance,Boolean>> m_availableTechs = null;
 	private String m_victory = null;
 	private String m_conditionType = "AND";
+
 
 	public TriggerAttachment() {
 	}
@@ -265,6 +272,30 @@ public class TriggerAttachment extends DefaultAttachment{
 			throw new GameParseException( "Triggers: Invalid resource: " +s);
 		else
 			m_resource = s;
+	}
+	
+	public List<String> getRelationshipChange() {
+		return m_relationshipChange;
+	}
+	
+	public void setRelationshipChange(String relChange) throws GameParseException {
+		String[] s = relChange.split(":");
+		if(s.length !=3)
+			throw new GameParseException("Triggers: Invalid relationshipChange declaration: "+relChange+" \n Use: player:oldRelation:newRelation\n");
+		if(getData().getPlayerList().getPlayerID(s[0]) == null)
+			throw new GameParseException("Triggers: Invalid relationshipChange declaration: "+relChange+" \n player: "+s[0]+" unknown in: "+getName());
+		
+		if(!(s[1].equals(Constants.RELATIONSHIP_ANY_NEUTRAL) || 
+				s[1].equals(Constants.RELATIONSHIP_ANY) ||
+				s[1].equals(Constants.RELATIONSHIP_ANY_ALLIED) ||
+				s[1].equals(Constants.RELATIONSHIP_ANY_WAR) ||
+				Matches.isValidRelationshipName(getData()).match(s[1])))
+			throw new GameParseException("Triggers: Invalid relationshipChange declaration: "+relChange+" \n relationshipType: "+s[1]+" unknown in: "+getName());
+		
+		if(Matches.isValidRelationshipName(getData()).invert().match(s[2]))
+			throw new GameParseException("Triggers: Invalid relationshipChange declaration: "+relChange+" \n relationshipType: "+s[2]+" unknown in: "+getName());
+		
+		m_relationshipChange.add(relChange);
 	}
 	
 	public List<String> getUnitProperty() {
@@ -573,7 +604,51 @@ public class TriggerAttachment extends DefaultAttachment{
 		if( !change.isEmpty())
 			aBridge.addChange(change);
 	}
+
+	public static void triggerRelationshipChange(PlayerID player,IDelegateBridge aBridge, GameData data) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,relationshipChangeMatch);
+		CompositeChange change = new CompositeChange();
+		for(TriggerAttachment t: trigs) {
+			if(isMet(t,data)) {
+				t.use(aBridge);
+				for(String relationshipChange:t.getRelationshipChange()) {
+					String[] s = relationshipChange.split(":");
+					PlayerID player2 = data.getPlayerList().getPlayerID(s[0]);
+					RelationshipType currentRelation = data.getRelationshipTracker().getRelationshipType(player, player2);
+					
+					if(  s[1].equals(Constants.RELATIONSHIP_ANY) || 
+							(s[1].equals(Constants.RELATIONSHIP_ANY_NEUTRAL) && Matches.RelationshipIsNeutral.match(currentRelation)) ||
+							(s[1].equals(Constants.RELATIONSHIP_ANY_ALLIED)  && Matches.RelationshipIsAllied.match(currentRelation)) ||
+							(s[1].equals(Constants.RELATIONSHIP_ANY_WAR)     && Matches.RelationshipIsAtWar.match(currentRelation)) ||
+							currentRelation.equals(data.getRelationshipTypeList().getRelationshipType(s[1]))) {
+				
+						RelationshipType triggerNewRelation = data.getRelationshipTypeList().getRelationshipType(s[2]);
+						change.add(ChangeFactory.relationshipChange(player, player2, currentRelation,triggerNewRelation));
+						aBridge.getHistoryWriter().startEvent("Triggers: Changing Relationship for "+player.getName()+" and "+player2.getName()+" from "+currentRelation.getName()+" to "+triggerNewRelation.getName());
+						if(Matches.RelationshipIsAtWar.match(triggerNewRelation))
+							triggerMustFightBattle(player,player2,aBridge,data);
+					}
+				}
+			}
+			
+		}
+		if( !change.isEmpty())
+			aBridge.addChange(change);		
+	}
 	
+	private static void triggerMustFightBattle(PlayerID player1, PlayerID player2, IDelegateBridge aBridge, GameData data) {
+		for (Territory terr : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player1))) {
+			if (Matches.territoryHasEnemyUnits(player1, data).match(terr))
+				DelegateFinder.battleDelegate(data).getBattleTracker().addBattle(new CRoute(terr), terr.getUnits().getMatches(Matches.unitIsOwnedBy(player1)), false, player1, data, aBridge, null);
+		}
+	}
+	
+	private static BattleTracker getBattleTracker(GameData data) {
+		return DelegateFinder.battleDelegate(data).getBattleTracker();
+	}
+
+
+
 	public static void triggerUnitPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
 		Set<TriggerAttachment> trigs = getTriggers(player,data,unitPropertyMatch);
 		CompositeChange change = new CompositeChange();
@@ -593,6 +668,7 @@ public class TriggerAttachment extends DefaultAttachment{
 		if( !change.isEmpty())
 			aBridge.addChange(change);
 	}
+	
 	private static void placeUnits(Territory terr, IntegerMap<UnitType> uMap,PlayerID player,GameData data,IDelegateBridge aBridge){
 		// createUnits
 		List<Unit> units = new ArrayList<Unit>();;
@@ -634,7 +710,7 @@ public class TriggerAttachment extends DefaultAttachment{
         aBridge.addChange(change);
         // handle adding to enemy territories
         if( Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data).match(terr))
-        	DelegateFinder.battleDelegate(data).getBattleTracker().addBattle(new CRoute(terr), units, false, player, data, aBridge, null);
+        	getBattleTracker(data).addBattle(new CRoute(terr), units, false, player, data, aBridge, null);
 	}
 	private void use (IDelegateBridge aBridge) {
 		if( m_uses > 0) {
@@ -704,6 +780,14 @@ public class TriggerAttachment extends DefaultAttachment{
 			return t.getUnitType() != null && t.getUnitProperty() !=null && t.getUses()!=0;
 		}
 	};
+	
+	private static Match<TriggerAttachment> relationshipChangeMatch = new Match<TriggerAttachment>()
+	{
+		public boolean match(TriggerAttachment t)
+		{
+			return !(t.getRelationshipChange().isEmpty() || t.getUses()==0);
+		}
+	};
 
 	private static Match<TriggerAttachment> victoryMatch = new Match<TriggerAttachment>()
 	{
@@ -740,4 +824,6 @@ public class TriggerAttachment extends DefaultAttachment{
 	        return getStart();
 	    }
 	}
+
+
 }

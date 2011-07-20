@@ -32,7 +32,6 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.Version;
@@ -116,7 +115,11 @@ public class GameParser
         Node resourceList = getSingleChild("resourceList", root, true);
         if(resourceList != null)
             parseResources(resourceList);
-
+        // Parse all different relationshipTypes that are defined in the xml, for example: War, Allied, Neutral, NAP
+        Node relationshipTypes = getSingleChild("relationshipTypes",root, true);
+        if(relationshipTypes != null)
+        	parseRelationshipTypes(relationshipTypes);
+        
         parsePlayers(getSingleChild("playerList", root));
         parseGamePlay(getSingleChild("gamePlay", root));
 
@@ -144,6 +147,9 @@ public class GameParser
         Node properties = getSingleChild("propertyList", root, true);
         if(properties != null)
             parseProperties(properties);
+        
+
+
 
         validate();
         
@@ -168,9 +174,28 @@ public class GameParser
 		for(Resource r : data.getResourceList().getResources()) 
 		{
 			validateAttachments(r);
-		}		
+		}	
+		//if relationships are used, every player should have a relationship with every other player
+		validateRelationships();
+		
 	}
 	
+	private void validateRelationships() throws GameParseException{
+		// only if we are using the relationships and not alliances to track politics
+		if(data.getRelationshipTracker().useRelationshipModel()) {
+			// for every player
+			for(PlayerID player:data.getPlayerList()) {
+				// in relation to every player
+				for(PlayerID player2:data.getPlayerList()) {
+					// See if there is a relationship between them
+					if((data.getRelationshipTracker().getRelationshipType(player, player2) == null))
+						throw new GameParseException("No relation set for: "+player.getName()+" and "+player2.getName());
+					      // or else throw an exception!
+				}
+			}
+		}
+	}
+
 	private void validateAttachments(Attachable attachable) throws GameParseException 
 	{
 		for(IAttachment a : attachable.getAttachments().values()) 
@@ -204,6 +229,22 @@ public class GameParser
 
         return player;
     }
+    
+    /**
+     * If mustfind is true and cannot find the player an exception will be thrown.
+     * @return a RelationshipType from the relationshipTypeList, at this point all relationshipTypes should have been declared
+     * @throws GameParseException when 
+     */
+    private RelationshipType getRelationshipType(Element element, String attribute, boolean mustFind) throws GameParseException
+    {
+        String name = element.getAttribute(attribute);
+        RelationshipType relation = data.getRelationshipTypeList().getRelationshipType(name);
+        if(relation == null && mustFind)
+            throw new GameParseException("Could not find relation name:" + name);
+
+        return relation;
+    }
+    
 
     /**
      * If mustfind is true and cannot find the productionRule an exception will be thrown.
@@ -673,6 +714,14 @@ public class GameParser
         }
     }
 
+    private void parseRelationshipTypes(Node root) {
+    	List<Node> relationshipTypeList = getChildren("relationshipType", root);
+    	for(int i = 0; i < relationshipTypeList.size(); i++)
+        {
+            Element relationshipType = (Element) relationshipTypeList.get(i);
+            data.getRelationshipTypeList().addRelationshipType(new RelationshipType(relationshipType.getAttribute("name"), data));
+        }
+	}
 
     private void parseUnits(Node root)
     {
@@ -709,6 +758,21 @@ public class GameParser
         }
     }
 
+    private void parseRelationInitialize(List<Node> relations) throws GameParseException {
+    	RelationshipTracker tracker = data.getRelationshipTracker();
+    	if(relations.size()>0) {
+	    	for (int i = 0; i<relations.size();i++) {
+	    		Element current = (Element) relations.get(i);
+	    		PlayerID p1 = getPlayerID(current, "player1", true);
+	    		PlayerID p2 = getPlayerID(current, "player2", true);
+	    		RelationshipType r = getRelationshipType(current, "type", true);
+	    		tracker.setRelationship(p1,p2,r);
+	    	}
+    		tracker.setSelfRelations();
+    		tracker.setNullPlayerRelations();
+    	}
+    }
+    
     private void parseAlliances(Node root) throws GameParseException
     {
         List alliances = getChildren("alliance", root);
@@ -1223,6 +1287,9 @@ public class GameParser
         } else if(type.equals("player"))
         {
             returnVal = getPlayerID(element, name, true);
+        } else if(type.equals("relationship"))
+        {
+        	returnVal = this.getRelationshipType(element, name, true);
         } else
         {
             throw new GameParseException("Type not found to attach to:" + type);
@@ -1320,6 +1387,10 @@ public class GameParser
         Node resource = getSingleChild("resourceInitialize", root, true);
         if(resource != null)
             parseResourceInitialization(getChildren("resourceGiven", resource));
+        Node relationInitialize = getSingleChild("relationshipInitialize", root, true);
+        if(relationInitialize != null) 
+        	parseRelationInitialize(getChildren("relationship",relationInitialize));
+
     }
 
     private void parseOwner(List elements) throws GameParseException

@@ -42,6 +42,7 @@ import games.strategy.triplea.delegate.dataObjects.TechRoll;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
+import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
@@ -125,6 +126,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
             battle();
         else if (name.endsWith("Place"))
             place(name.indexOf("Bid") != -1);
+        else if (name.endsWith("Politics"))
+        	politics();
         else if (name.endsWith("EndTurn"))
             endTurn();
         else
@@ -165,7 +168,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
             }
         }
     };
-
+    
+	private void politics() {
+		IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
+		
+	}
+	
     private void tech()
     {
         //can we tech?
