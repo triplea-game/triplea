@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Pact of Steel 2" version="3.1"/>
+        <info name="Pact of Steel 2" version="3.2"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
 			<!-- A MOD of original POS by VEQRYN
@@ -604,17 +604,17 @@
                 <unit name="airfield"/>
                 <unit name="harbour"/>
         </unitList>
+		
         <!--  this is the list of relationshipTypes you can create between players -->
         <!--  each relationshipType you define here MUST have a RelationshipTypeAttachment to define this relationship 
               also each RelationshipTypeAttachment MUST have an archetype set to either: "allied", "neutral" or "war"
         -->
-        
-        <relationshipTypes>
-			<relationshipType name="Allied"/>
-			<relationshipType name="War"/>
-			<relationshipType name="Neutral"/>
-			<relationshipType name="NAP"/>
-			<relationshipType name="ColdWar"/>
+		<relationshipTypes>
+				<relationshipType name="Allied"/>
+				<relationshipType name="War"/>
+				<relationshipType name="Neutral"/>
+				<relationshipType name="NAP"/>
+				<relationshipType name="ColdWar"/>
 		</relationshipTypes>
 
         <gamePlay>
@@ -1871,27 +1871,27 @@
                       * "war"
                       the archeType determines the default behaviour of this relationshipType that can be modified by setting other options.
                       Also the archeType determines the outcomes of isAllied, isNeutral and isWar query in the engine-->
-        				
-        				<attatchment name="relationshipTypeAttachment" attatchTo="War" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
-							<option name="archeType" value="war"/>
-						</attatchment>
-						
-						<attatchment name="relationshipTypeAttachment" attatchTo="Allied" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
-							<option name="archeType" value="allied"/>
-						</attatchment>
-						
-						<attatchment name="relationshipTypeAttachment" attatchTo="Neutral" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
-							<option name="archeType" value="neutral"/>
-						</attatchment>
-						
-						<attatchment name="relationshipTypeAttachment" attatchTo="NAP" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
-							<option name="archeType" value="neutral"/>
-						</attatchment>
-						
-						<attatchment name="relationshipTypeAttachment" attatchTo="ColdWar" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
-							<option name="archeType" value="neutral"/>
-						</attatchment>
-												
+
+				<attatchment name="relationshipTypeAttachment" attatchTo="War" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+						<option name="archeType" value="war"/>
+				</attatchment>
+
+				<attatchment name="relationshipTypeAttachment" attatchTo="Allied" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+						<option name="archeType" value="allied"/>
+				</attatchment>
+
+				<attatchment name="relationshipTypeAttachment" attatchTo="Neutral" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+						<option name="archeType" value="neutral"/>
+				</attatchment>
+
+				<attatchment name="relationshipTypeAttachment" attatchTo="NAP" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+						<option name="archeType" value="neutral"/>
+				</attatchment>
+
+				<attatchment name="relationshipTypeAttachment" attatchTo="ColdWar" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+						<option name="archeType" value="neutral"/>
+				</attatchment>
+							
 				<!-- Tech Attachments for players.  The following is a list of all ww2v3 technology.  These are not required, they only determine if a country starts with a tech or not. -->
         		<!-- Germans -->
                 <attatchment name="techAttatchment" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -2053,6 +2053,10 @@
                          <option name="unitSupportCount" value="1"/>
 						 <option name="canBeGivenByTerritoryTo" value="Russians"/>
                          <option name="isAirTransportable" value="true"/>
+						 <!-- canInvadeOnlyFrom is a colon dilimited list of the transporting units which this unit can perform amphibious assaults from. 
+								A unit which can not perform amphibious assaults may instead disembark during non-combat
+								can be set to "all", or "none", or a list of some transports. if this option is not present, it defaults to "all" -->
+						 <option name="canInvadeOnlyFrom" value="transport:jp_transport:air_transport:super_carrier"/>
                 </attatchment>
 
                 <!-- Armour -->
@@ -3374,9 +3378,9 @@
 															so adding or removing them as unit properties will do nothing (the bonusType for them is "ArtyOld", and the supportAttachment name is "supportAttachmentArtyOld<nameofUnit>") unitProperty changes are done for ALL players who use that unitType, 
 															regardless of the player specified in the trigger. In order to have a unitType+unitProperty change only affect certain players and not others, you need to make a new unit type for those players (ie: rename the unit for those players only)
 			victory								values: the string message to be displayed if the condition is true.
-			relationshipChange					values: the change in relationship for this player, format: "player:oldRelation:newRelation" example: "Russia:coldWar:allOutWar"
-														oldRelation may be "any" "anyWar" "anyNeutral" "anyAllied" or an actual relationshipType used in this xml
-														You can enter multiple relationshipChanges in the trigger and it will perform every change in the trigger which is valid
+			relationshipChange					values: the change in relationship for this attached player, format: "player:oldRelation:newRelation" example: "Russia:coldWar:allOutWar"
+														oldRelation may be "any", "anyWar", "anyNeutral", "anyAllied", or an actual relationshipType used in this xml
+														You can enter multiple relationshipChanges in the trigger and it will perform every change in the trigger which is valid.
 	-->
 	<!-- Victory Triggers -->
 						<!-- Victory Triggers can be attached to anyone. Only 1 is needed per victory condition -->
@@ -4038,39 +4042,39 @@
                         <resourceGiven player="Italians" resource="PUs" quantity="16"/>
                         <resourceGiven player="Chinese" resource="PUs" quantity="0"/>
                 </resourceInitialize>
-                               
-        
-        	<relationshipInitialize>
-        
-        	   <relationship type="Allied" player1="Italians" player2="Germans"/>
-               <relationship type="Allied" player1="Italians" player2="Japanese"/>
-               <relationship type="Allied" player1="Germans" player2="Japanese"/>
-               
-               <relationship type="Allied" player1="Russians" player2="British"/>
-               <relationship type="Allied" player1="Russians" player2="Americans"/>
-               <relationship type="Allied" player1="Russians" player2="Chinese"/>
-               <relationship type="Allied" player1="Americans" player2="British"/>
-               <relationship type="Allied" player1="Americans" player2="Chinese"/>
-               <relationship type="Allied" player1="British" player2="Chinese"/>
-               
-               <relationship type="War" player1="British" player2="Germans"/>
-               <relationship type="War" player1="British" player2="Italians"/>
-               <relationship type="War" player1="British" player2="Japanese"/>
-               
-               <relationship type="War" player1="Americans" player2="Germans"/>
-               <relationship type="War" player1="Americans" player2="Italians"/>
-               <relationship type="War" player1="Americans" player2="Japanese"/>
-               
-               <relationship type="Neutral" player1="Russians" player2="Germans"/>
-               <relationship type="Allied" player1="Russians" player2="Italians"/>
-               <relationship type="ColdWar" player1="Russians" player2="Japanese"/>
-               
-               <relationship type="War" player1="Chinese" player2="Germans"/>
-               <relationship type="War" player1="Chinese" player2="Italians"/>
-               <relationship type="War" player1="Chinese" player2="Japanese"/>  
-               
-      	 </relationshipInitialize>
-                
+
+				<relationshipInitialize>
+						<!-- the order of player1 and player2 does not matter. 
+						having them listed twice in different orders will just have the later one overwrite the earlier one -->
+						
+						<relationship type="Allied" player1="Italians" player2="Germans"/>
+						<relationship type="Allied" player1="Italians" player2="Japanese"/>
+						<relationship type="Allied" player1="Germans" player2="Japanese"/>
+
+						<relationship type="Allied" player1="Russians" player2="British"/>
+						<relationship type="Allied" player1="Russians" player2="Americans"/>
+						<relationship type="Allied" player1="Russians" player2="Chinese"/>
+						<relationship type="Allied" player1="Americans" player2="British"/>
+						<relationship type="Allied" player1="Americans" player2="Chinese"/>
+						<relationship type="Allied" player1="British" player2="Chinese"/>
+
+						<relationship type="War" player1="British" player2="Germans"/>
+						<relationship type="War" player1="British" player2="Italians"/>
+						<relationship type="War" player1="British" player2="Japanese"/>
+
+						<relationship type="War" player1="Americans" player2="Germans"/>
+						<relationship type="War" player1="Americans" player2="Italians"/>
+						<relationship type="War" player1="Americans" player2="Japanese"/>
+
+						<relationship type="Neutral" player1="Russians" player2="Germans"/>
+						<relationship type="Allied" player1="Russians" player2="Italians"/>
+						<relationship type="ColdWar" player1="Russians" player2="Japanese"/>
+
+						<relationship type="War" player1="Chinese" player2="Germans"/>
+						<relationship type="War" player1="Chinese" player2="Italians"/>
+						<relationship type="War" player1="Chinese" player2="Japanese"/>
+				</relationshipInitialize>
+
         </initialize>
 
 		<propertyList>
