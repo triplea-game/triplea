@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Cleaning up of relationships, have alliances auto-create relationships based on default war or allied, and creation of relationship interpreter class. (frigoref)
+
 * Allowed basic html to be used inside unit tool tips. (veqryn)
 
 * Created new unit attachment, createsUnitsList, which allows units to create resources like PUs and techTokens each turn for their owner. (veqryn)

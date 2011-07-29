@@ -195,7 +195,7 @@ public class DoCombatMove
                     return false;
                 if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
                     return false;
-                if (data.getAllianceTracker().isAllied(ter.getOwner(), player))
+                if (data.getRelationshipTracker().isAllied(ter.getOwner(), player))
                     return false;
                 if (TerritoryAttachment.get(ter) == null)
                     return false;
@@ -221,7 +221,7 @@ public class DoCombatMove
                     return false;
                 if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
                     return false;
-                if (ter.getOwner() != null && data.getAllianceTracker().isAllied(ter.getOwner(), player))
+                if (ter.getOwner() != null && data.getRelationshipTracker().isAllied(ter.getOwner(), player))
                     return false;
                 if (GlobalCenter.IsFFAGame)
                 {
@@ -248,7 +248,7 @@ public class DoCombatMove
                     return false;
                 if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
                     return false;
-                if (ter.getOwner() != null && data.getAllianceTracker().isAllied(ter.getOwner(), player))
+                if (ter.getOwner() != null && data.getRelationshipTracker().isAllied(ter.getOwner(), player))
                     return false;
 
                 return true;
@@ -265,7 +265,7 @@ public class DoCombatMove
                     return false;
                 if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
                     return false;
-                if (ter.getOwner() != null && data.getAllianceTracker().isAllied(ter.getOwner(), player))
+                if (ter.getOwner() != null && data.getRelationshipTracker().isAllied(ter.getOwner(), player))
                     return false;
                 if (ter.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1), Matches.unitIsEnemyOf(data, player), Matches.UnitIsNotAA)).isEmpty())
                     return false; //This is a land-grab

@@ -21,16 +21,13 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.MovePanel;
 import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
@@ -42,75 +39,76 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
+@SuppressWarnings("serial")
 public class MovePerformer implements Serializable
 {
 
     private transient MoveDelegate m_moveDelegate;
-    private transient GameData m_data; 
+    private transient GameData m_data;
     private transient IDelegateBridge m_bridge;
     private transient PlayerID m_player;
-    
+
     private AAInMoveUtil m_aaInMoveUtil;
     private ExecutionStack m_executionStack = new ExecutionStack();
     private UndoableMove m_currentMove;
-    
-    
-    
+
+
+
     MovePerformer()
     {
-        
+
     }
-    
+
     private BattleTracker getBattleTracker()
     {
         return DelegateFinder.battleDelegate(m_data).getBattleTracker();
     }
-    
+
     void initialize(MoveDelegate delegate, GameData data, IDelegateBridge bridge)
     {
         m_moveDelegate = delegate;
         m_data = data;
         m_bridge = bridge;
         m_player = bridge.getPlayerID();
-        
+
         if(m_aaInMoveUtil != null)
             m_aaInMoveUtil.initialize(bridge, data);
     }
-    
+
     private ITripleaPlayer getRemotePlayer(PlayerID id)
     {
         return (ITripleaPlayer) m_bridge.getRemote(id);
     }
-    
+
     private ITripleaPlayer getRemotePlayer()
     {
         return getRemotePlayer(m_player);
     }
-    
+
     void moveUnits(final Collection<Unit> units, final  Route route, final PlayerID id, final Collection<Unit> transportsToLoad, UndoableMove currentMove)
     {
-        
+
         m_currentMove = currentMove;
-        
+
         populateStack(units, route, id, transportsToLoad);
 
         m_executionStack.execute(m_bridge, m_data);
     }
-    
+
     public void resume()
     {
         m_executionStack.execute(m_bridge, m_data);
     }
-    
+
     public void setOriginatingTerritory(Collection<Unit> units, Territory t)
     {
     	CompositeChange change = new CompositeChange();
-    	
+
     	for(Unit u:units)
     	{
     		change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
     	}
-    	
+
     	m_bridge.addChange(change);
     }
     /**
@@ -118,10 +116,10 @@ public class MovePerformer implements Serializable
      */
     void populateStack(final Collection<Unit> units, final  Route route, final PlayerID id, final Collection<Unit> transportsToLoad)
     {
-        
+
         IExecutable preAAFire = new IExecutable()
         {
-        
+
             public void execute(ExecutionStack stack, IDelegateBridge bridge,
                     GameData data)
             {
@@ -131,10 +129,10 @@ public class MovePerformer implements Serializable
                 Battle bombingBattle = getBattleTracker().getPendingBattle(route.getStart(), true);
                 if (nonBombingBattle != null || bombingBattle != null)
                 {
-                    Iterator iter = units.iterator();
+                    Iterator<Unit> iter = units.iterator();
                     while (iter.hasNext())
                     {
-                        Unit unit = (Unit) iter.next();
+                        Unit unit = iter.next();
                         Route routeUnitUsedToMove = m_moveDelegate.getRouteUsedToMoveInto(unit, route.getStart());
                         if (nonBombingBattle != null)
                         {
@@ -147,29 +145,28 @@ public class MovePerformer implements Serializable
                     }
                 }
 
-        
+
             }
-        
+
         };
-        
+
         //hack to allow the execuables to share state
-        final Collection[] arrivingUnits = new Collection[1];
-        
+        @SuppressWarnings("unchecked")
+        final Collection<Unit>[] arrivingUnits = new Collection[1];
+
         IExecutable fireAA = new IExecutable()
         {
 
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 Collection<Unit> aaCasualties = fireAA(route, units);
-                arrivingUnits[0]  = Util.difference(units, aaCasualties);                
+                arrivingUnits[0]  = Util.difference(units, aaCasualties);
             }
-            
+
         };
-        
+
         IExecutable postAAFire = new IExecutable()
         {
-        
-            @SuppressWarnings("unchecked")
             public void execute(ExecutionStack stack, IDelegateBridge bridge,
                     GameData data)
             {
@@ -181,12 +178,12 @@ public class MovePerformer implements Serializable
                 mustFightThrough.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, m_data));
                 mustFightThrough.add(Matches.territoryHasNonSubmergedEnemyUnits(id, m_data));
 
-                Collection<Unit> arrived = Util.intersection(units, (Collection<Unit>) arrivingUnits[0]);
+                Collection<Unit> arrived = Util.intersection(units, arrivingUnits[0]);
 
                 Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, arrived, transportsToLoad);
-                
+
                 markTransportsMovement(arrived, transporting, route);
-                
+
                 if (route.someMatch(mustFightThrough) && arrivingUnits[0].size() != 0)
                 {
                     boolean bombing = false;
@@ -197,7 +194,7 @@ public class MovePerformer implements Serializable
 
                     Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, m_data));
                     Collection<Unit> enemyTargets = Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert());
-                    
+
                     boolean targetedAttack = false;
                     //if it's all bombers and there's something to bomb
                     if (allCanBomb && !enemyTargets.isEmpty())
@@ -211,7 +208,7 @@ public class MovePerformer implements Serializable
                         	Unit target;
                         	if (enemyTargets.size() == 1)
                         		target = enemyTargets.iterator().next();
-                        	else 
+                        	else
                         		target = getRemotePlayer().whatShouldBomberBomb(route.getEnd(), enemyTargets);
                         	if(target == null)
                         	{
@@ -227,14 +224,14 @@ public class MovePerformer implements Serializable
                     }
                     //Ignore Trn on Trn forces.
                     if(isIgnoreTransportInMovement(data))
-                    {                    	
+                    {
                     	boolean allOwnedTransports = Match.allMatch(arrived, Matches.UnitIsTransportButNotCombatTransport);
                     	boolean allEnemyTransports = Match.allMatch(enemyUnits, Matches.UnitIsTransportButNotCombatTransport);
                     	//If everybody is a transport, don't create a battle
                     	if(allOwnedTransports && allEnemyTransports)
                     		ignoreBattle=true;
                     }
-                    
+
                     if(!ignoreBattle && !MoveDelegate.isNonCombat(m_bridge) && !targetedAttack)
                     {
                     	getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_data, m_bridge, m_currentMove);
@@ -243,12 +240,12 @@ public class MovePerformer implements Serializable
 
                 //mark movement
                 Change moveChange = markMovementChange(arrived, route);
-                
+
                 CompositeChange change = new CompositeChange(moveChange);
                 //actually move the units
                 Change remove = null;
                 Change add = null;
-                
+
                 if(route.getStart() != null && route.getEnd() != null)
                 {
                     ChangeFactory.addUnits(route.getEnd(), arrivingUnits[0]);
@@ -256,19 +253,19 @@ public class MovePerformer implements Serializable
                     add = ChangeFactory.addUnits(route.getEnd(), arrived);
                     change.add(add,remove);
                 }
-                
+
                 m_bridge.addChange(change);
 
                 m_currentMove.addChange(change);
 
                 m_currentMove.setDescription(MyFormatter.unitsToTextNoOwner(arrived) + " moved from " + route.getStart().getName() + " to "
                         + route.getEnd().getName());
-                
+
                 m_moveDelegate.updateUndoableMoves(m_currentMove);
             }
 
         };
-        
+
         m_executionStack.push(postAAFire);
         m_executionStack.push(fireAA);
         m_executionStack.push(preAAFire);
@@ -276,22 +273,22 @@ public class MovePerformer implements Serializable
 
 
     }
-    
+
 
     private Change markMovementChange(Collection<Unit> units, Route route)
     {
         CompositeChange change = new CompositeChange();
-        
+
         int moved = route.getLength();
 
-        Territory routeStart = (Territory) route.getStart();
-		TerritoryAttachment taRouteStart = TerritoryAttachment.get(routeStart);        	
-        Territory routeEnd = (Territory) route.getEnd();
+        Territory routeStart = route.getStart();
+		TerritoryAttachment taRouteStart = TerritoryAttachment.get(routeStart);
+        Territory routeEnd = route.getEnd();
 		TerritoryAttachment taRouteEnd = null;
 
         if(routeEnd != null)
             taRouteEnd = TerritoryAttachment.get(routeEnd);
-        
+
         Iterator<Unit> iter = units.iterator();
         while (iter.hasNext())
         {
@@ -299,14 +296,14 @@ public class MovePerformer implements Serializable
 
             UnitAttachment ua = UnitAttachment.get(unit.getType());
             if (ua.isAir())
-            {            	
-            	if(taRouteStart != null && taRouteStart.isAirBase() && m_data.getAllianceTracker().isAllied(route.getStart().getOwner(), unit.getOwner()))            		
+            {
+            	if(taRouteStart != null && taRouteStart.isAirBase() && m_data.getRelationshipTracker().isAllied(route.getStart().getOwner(), unit.getOwner()))
             		moved --;
-            
-            	if(taRouteEnd != null && taRouteEnd.isAirBase() && m_data.getAllianceTracker().isAllied(route.getEnd().getOwner(), unit.getOwner()))
+
+            	if(taRouteEnd != null && taRouteEnd.isAirBase() && m_data.getRelationshipTracker().isAllied(route.getEnd().getOwner(), unit.getOwner()))
             		moved --;
             }
-                        
+
             change.add(ChangeFactory.unitPropertyChange(unit, moved + unit.getAlreadyMoved(), TripleAUnit.ALREADY_MOVED));
 
             if(MoveDelegate.isNonCombat(m_bridge))
@@ -323,7 +320,7 @@ public class MovePerformer implements Serializable
             iter = land.iterator();
             while (iter.hasNext())
             {
-                Unit unit = (Unit) iter.next();
+                Unit unit = iter.next();
                 change.add(m_moveDelegate.markNoMovementChange(Collections.singleton(unit)));
             }
         }
@@ -342,11 +339,11 @@ public class MovePerformer implements Serializable
         paratroopNAirTransports.add(Matches.UnitIsAirTransport);
         paratroopNAirTransports.add(Matches.UnitIsAirTransportable);
         boolean paratroopsLanding = Match.someMatch(arrived, paratroopNAirTransports) && MoveValidator.allLandUnitsAreBeingParatroopered(arrived, route, m_player);
-        
+
         Map<Unit, Collection<Unit>> dependentAirTransportableUnits = MoveValidator.getDependents(Match.getMatches(arrived, Matches.UnitCanTransport), m_data);
         if(dependentAirTransportableUnits.isEmpty())
         	dependentAirTransportableUnits = MovePanel.getDependents();
-        
+
         //If paratroops moved normally (within their normal movement) remove their dependency to the airTransports
         //So they can all continue to move normally
         if(!paratroopsLanding && !dependentAirTransportableUnits.isEmpty())
@@ -355,7 +352,7 @@ public class MovePerformer implements Serializable
         		airTransports.addAll(dependentAirTransportableUnits.keySet());
         			MovePanel.clearDependents(airTransports);
         }
-         
+
         //load the transports
         if (MoveValidator.isLoad(route) || paratroopsLanding)
         {
@@ -388,25 +385,25 @@ public class MovePerformer implements Serializable
         		}
         	}
         }
-        
+
         if (MoveValidator.isUnload(route) || paratroopsLanding)
         {
             Collection<Unit> units = new ArrayList<Unit>();
             units.addAll(transporting.values());
             units.addAll(transporting.keySet());
             // if there are multiple units on a single transport, the transport will be in units list multiple times
-            
+
             if(transporting.isEmpty())
             {
             	units.addAll(dependentAirTransportableUnits.keySet());
             	for(Unit airTransport:dependentAirTransportableUnits.keySet())
             	{
             		units.addAll(dependentAirTransportableUnits.get(airTransport));
-            	}            	
+            	}
         	}
             Iterator<Unit> iter = units.iterator();
-            //any pending battles in the unloading zone? 
-            BattleTracker tracker = getBattleTracker(); 
+            //any pending battles in the unloading zone?
+            BattleTracker tracker = getBattleTracker();
             boolean pendingBattles = tracker.getPendingBattle(route.getStart(), false) != null;
 
             while (iter.hasNext())
@@ -414,18 +411,18 @@ public class MovePerformer implements Serializable
             	Unit unit = iter.next();
             	if(paratroopsLanding && Matches.UnitIsAirTransport.match(unit))
             		continue;
-            	
+
                 //unload the transports
                 Change change =  m_moveDelegate.getTransportTracker().unloadTransportChange((TripleAUnit) unit, m_currentMove.getRoute().getEnd(), m_player, pendingBattles);
-                m_currentMove.addChange(change);     
-                m_currentMove.unload(unit);               
+                m_currentMove.addChange(change);
+                m_currentMove.unload(unit);
                 m_bridge.addChange(change);
-        		
+
         		//set noMovement
             	change = m_moveDelegate.markNoMovementChange(Collections.singleton(unit));
-            	m_currentMove.addChange(change);            
-            	m_bridge.addChange(change);                
-            }           
+            	m_currentMove.addChange(change);
+            	m_bridge.addChange(change);
+            }
         }
     }
 
@@ -451,18 +448,18 @@ public class MovePerformer implements Serializable
         {
             m_aaInMoveUtil = new AAInMoveUtil();
         }
-        
+
         m_aaInMoveUtil.initialize(m_bridge, m_data);
         Collection<Unit> rVal = m_aaInMoveUtil.fireAA(route, units, UnitComparator.getDecreasingMovementComparator(), m_currentMove);
         m_aaInMoveUtil = null;
         return rVal;
     }
-    
+
     /**
      * @return
      */
     private static boolean isIgnoreTransportInMovement(GameData data)
     {
     	return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);
-    }    
+    }
 }

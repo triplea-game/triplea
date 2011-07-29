@@ -135,7 +135,7 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
         {
             Territory current = (Territory) iter.next();
             String terrName = current.getName();
-            if((terrName.equals("Burma") || terrName.equals("India") || terrName.equals("Yunnan") || terrName.equals("Szechwan")) && m_data.getAllianceTracker().isAllied(current.getOwner(), player))
+            if((terrName.equals("Burma") || terrName.equals("India") || terrName.equals("Yunnan") || terrName.equals("Szechwan")) && m_data.getRelationshipTracker().isAllied(current.getOwner(), player))
                 ++burmaRoadCount;
         }
 

@@ -103,7 +103,7 @@ public class Utils
             if (capitol == null)
             	return false;
                         	
-            if(data.getAllianceTracker().isAllied(us, capitol.getOwner()))
+            if(data.getRelationshipTracker().isAllied(us, capitol.getOwner()))
                 continue;
             
             if(data.getMap().getDistance(t, capitol, Matches.TerritoryIsLand) != -1)

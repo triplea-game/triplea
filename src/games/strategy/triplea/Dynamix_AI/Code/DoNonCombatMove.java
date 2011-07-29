@@ -480,7 +480,7 @@ public class DoNonCombatMove
                     return false;
                 if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
                     return false;
-                if (data.getAllianceTracker().isAllied(ter.getOwner(), player))
+                if (data.getRelationshipTracker().isAllied(ter.getOwner(), player))
                     return false;
                 if (TerritoryAttachment.get(ter).getProduction() < 1)
                     return false;
@@ -505,7 +505,7 @@ public class DoNonCombatMove
                     return false;
                 if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
                     return false;
-                if (!data.getAllianceTracker().isAllied(ter.getOwner(), player))
+                if (!data.getRelationshipTracker().isAllied(ter.getOwner(), player))
                     return false;
 
                 List<Unit> attackers = DUtils.GetNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
@@ -543,7 +543,7 @@ public class DoNonCombatMove
                     return false;
                 if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
                     return false;
-                if (!data.getAllianceTracker().isAllied(ter.getOwner(), player))
+                if (!data.getRelationshipTracker().isAllied(ter.getOwner(), player))
                     return false;
                 if(!ourCaps.contains(ter))
                     return false;

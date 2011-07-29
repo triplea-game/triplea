@@ -637,7 +637,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             for(PlayerID otherPlayer : data.getPlayerList().getPlayers())
             {
                 Territory capitol =  TerritoryAttachment.getCapital(otherPlayer, data);
-                if(capitol != null && !data.getAllianceTracker().isAllied(player, capitol.getOwner()))
+                if(capitol != null && !data.getRelationshipTracker().isAllied(player, capitol.getOwner()))
                 {
                     Route route = data.getMap().getRoute(t, capitol, moveThrough);
                     if(route != null)

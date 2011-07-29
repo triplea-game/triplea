@@ -221,7 +221,7 @@ public class DUtils
         {
             if(unit.getOwner().equals(player))
                 attacking.add(unit);
-            else if(!data.getAllianceTracker().isAllied(player, unit.getOwner()))
+            else if(!data.getRelationshipTracker().isAllied(player, unit.getOwner()))
                 defending.add(unit);
         }
 
@@ -378,7 +378,7 @@ public class DUtils
         List<PlayerID> result = new ArrayList<PlayerID>();
         for (PlayerID enemy : data.getPlayerList().getPlayers())
         {
-            if (!data.getAllianceTracker().isAllied(player, enemy) && TerritoryAttachment.getAllCurrentlyOwnedCapitals(enemy, data).size() > 0)
+            if (!data.getRelationshipTracker().isAllied(player, enemy) && TerritoryAttachment.getAllCurrentlyOwnedCapitals(enemy, data).size() > 0)
                 result.add(enemy);
         }
         return result;
@@ -388,7 +388,7 @@ public class DUtils
         List<PlayerID> result = new ArrayList<PlayerID>();
         for (PlayerID player : data.getPlayerList().getPlayers())
         {
-            if (!data.getAllianceTracker().isAllied(us, player))
+            if (!data.getRelationshipTracker().isAllied(us, player))
                 result.add(player);
         }
         return result;
@@ -398,7 +398,7 @@ public class DUtils
         List<PlayerID> result = new ArrayList<PlayerID>();
         for (PlayerID player : data.getPlayerList().getPlayers())
         {
-            if (data.getAllianceTracker().isAllied(us, player))
+            if (data.getRelationshipTracker().isAllied(us, player))
                 result.add(player);
         }
         return result;
@@ -623,7 +623,7 @@ public class DUtils
         List<Territory> result = new ArrayList<Territory>();
         for (Territory ter : attackLocs)
         {
-            if (data.getAllianceTracker().isAllied(ter.getOwner(), player))
+            if (data.getRelationshipTracker().isAllied(ter.getOwner(), player))
                 continue;
             if(ter.isWater())
                 continue;
@@ -882,7 +882,7 @@ public class DUtils
         List<Territory> result = new ArrayList<Territory>();
         for(PlayerID enemy : data.getPlayerList().getPlayers())
         {
-            if(data.getAllianceTracker().isAllied(enemy, player))
+            if(data.getRelationshipTracker().isAllied(enemy, player))
                 continue;
 
             result.addAll(GetAllOurCaps(data, enemy));
@@ -897,7 +897,7 @@ public class DUtils
         List<Territory> result = new ArrayList<Territory>();
         for (PlayerID enemy : data.getPlayerList().getPlayers())
         {
-            if (data.getAllianceTracker().isAllied(enemy, player))
+            if (data.getRelationshipTracker().isAllied(enemy, player))
                 continue;
 
             result.addAll(GetAllOurCaps_ThatWeOwn(data, enemy));
@@ -1033,7 +1033,7 @@ public class DUtils
         {
             if (ter == target)
                 continue;
-            if (data.getAllianceTracker().isAllied(player, ter.getOwner()))
+            if (data.getRelationshipTracker().isAllied(player, ter.getOwner()))
                 continue;
             List<Unit> enemyUnits = ter.getUnits().getMatches(Matches.unitIsEnemyOf(data, player));
             int dist = DUtils.GetJumpsFromXToY_PassableLand(data, ter, target);
@@ -1147,7 +1147,7 @@ public class DUtils
             {
                 if(otherPlayer == player)
                     continue;
-                if (data.getAllianceTracker().isAtWar(player, otherPlayer))
+                if (data.getRelationshipTracker().isAtWar(player, otherPlayer))
                 {
                     if(result.containsKey(otherPlayer)) //If this player already has an assignment
                         continue;
@@ -1199,7 +1199,7 @@ public class DUtils
             {
                 if(otherPlayer == player)
                     continue;
-                if (data.getAllianceTracker().isAtWar(player, otherPlayer))
+                if (data.getRelationshipTracker().isAtWar(player, otherPlayer))
                 {
                     if(result.containsKey(otherPlayer)) //If this player already has an assignment
                         continue;
@@ -2716,7 +2716,7 @@ public class DUtils
         int movementAfterAttack = ta.getMovementLeft() - jumpDist;
         for (Territory ter : data.getMap().getTerritories())
         {
-            if (!data.getAllianceTracker().isAllied(ter.getOwner(), airUnit.getOwner()))
+            if (!data.getRelationshipTracker().isAllied(ter.getOwner(), airUnit.getOwner()))
                 continue;
             int dist = DUtils.GetJumpsFromXToY_AirPassable(data, ter, to);
             if(dist > movementAfterAttack)
@@ -2727,7 +2727,7 @@ public class DUtils
                 //TODO: If we find all attackers, we cause airplane determining endless loop. Current hack: Only figure in land units that can attack
                 List<Unit> attackers = GetSPNNEnemyBasedOnLUnitsOnlyThatCanReach(data, ter, airUnit.getOwner(), Matches.TerritoryIsLand);
                 List<Unit> defenders = ToList(ter.getUnits().getUnits());
-                if(data.getAllianceTracker().isAtWar(airUnit.getOwner(), GlobalCenter.CurrentPlayer)) //If we're checking if an enemy plane can land
+                if(data.getRelationshipTracker().isAtWar(airUnit.getOwner(), GlobalCenter.CurrentPlayer)) //If we're checking if an enemy plane can land
                 {
                     List<Territory> neighbors = DUtils.GetTerritoriesWithinXDistanceOfY(data, ter, 1);
                     defenders = DUtils.GetUnitsMatchingXInTerritories(neighbors, Matches.unitIsLandAndOwnedBy(airUnit.getOwner()));
@@ -2996,7 +2996,7 @@ public class DUtils
         {
             if(ter.isWater())
                 continue;
-            if(data.getAllianceTracker().isAtWar(ter.getOwner(), player))
+            if(data.getRelationshipTracker().isAtWar(ter.getOwner(), player))
                 continue;
             if(ter.getUnits().isEmpty())
                 continue;

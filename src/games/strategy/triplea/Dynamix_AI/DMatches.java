@@ -167,7 +167,7 @@ public class DMatches
             {
                 if(u.getOwner().isNull())
                     return false;
-                return !data.getAllianceTracker().isAllied(u.getOwner(), player);
+                return !data.getRelationshipTracker().isAllied(u.getOwner(), player);
             }
         };
     }
@@ -317,7 +317,7 @@ public class DMatches
         {
             public boolean match(Territory t)
             {
-                if(!data.getAllianceTracker().isAllied(player, t.getOwner()))
+                if(!data.getRelationshipTracker().isAllied(player, t.getOwner()))
                     return true;
                 return false;
             }
@@ -329,7 +329,7 @@ public class DMatches
         {
             public boolean match(Territory t)
             {
-                if(!t.getOwner().isNull() && !data.getAllianceTracker().isAllied(player, t.getOwner()))
+                if(!t.getOwner().isNull() && !data.getRelationshipTracker().isAllied(player, t.getOwner()))
                     return true;
                 return false;
             }
@@ -372,7 +372,7 @@ public class DMatches
         {
             public boolean match(Territory t)
             {
-                return data.getAllianceTracker().isAllied(player, t.getOwner());
+                return data.getRelationshipTracker().isAllied(player, t.getOwner());
             }
         };
     }
@@ -407,7 +407,7 @@ public class DMatches
                 {
                     if(lastPlayer == null)
                         lastPlayer = unit.getOwner();
-                    if(!data.getAllianceTracker().isAllied(lastPlayer, unit.getOwner()))
+                    if(!data.getRelationshipTracker().isAllied(lastPlayer, unit.getOwner()))
                         return true;
                 }
                 return false;

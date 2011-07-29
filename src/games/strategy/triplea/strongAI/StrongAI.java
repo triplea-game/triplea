@@ -7223,7 +7223,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         {
             public boolean match(Territory ter)
             {
-                if(!data.getAllianceTracker().isAllied(player, ter.getOwner()))
+                if(!data.getRelationshipTracker().isAllied(player, ter.getOwner()))
                     return false;
                 if(data.getMap().getNeighbors(ter, Matches.TerritoryIsWater).isEmpty())
                     return false;

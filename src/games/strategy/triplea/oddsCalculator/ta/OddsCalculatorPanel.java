@@ -126,7 +126,7 @@ public class OddsCalculatorPanel extends JPanel
                     // we need to find out the defender for sea zones
                     for (PlayerID player : location.getUnits().getPlayersWithUnits())
                     {
-                        if(player != getAttacker() && !m_data.getAllianceTracker().isAllied(player, getAttacker()))
+                        if(player != getAttacker() && !m_data.getRelationshipTracker().isAllied(player, getAttacker()))
                         {
                             m_defenderCombo.setSelectedItem(player);
                             break;
@@ -182,7 +182,7 @@ public class OddsCalculatorPanel extends JPanel
             
             public void actionPerformed(ActionEvent e)
             {
-                if(m_data.getAllianceTracker().isAllied(getDefender(), getAttacker()))
+                if(m_data.getRelationshipTracker().isAllied(getDefender(), getAttacker()))
                 {
                     m_attackerCombo.setSelectedItem(getNonAllied(getDefender()));
                 }
@@ -200,7 +200,7 @@ public class OddsCalculatorPanel extends JPanel
             	m_data.acquireReadLock();
             	try
             	{
-	                if(m_data.getAllianceTracker().isAllied(getDefender(), getAttacker()))
+	                if(m_data.getRelationshipTracker().isAllied(getDefender(), getAttacker()))
 	                {
 	                    m_defenderCombo.setSelectedItem(getNonAllied(getAttacker()));
 	                }
@@ -405,7 +405,7 @@ public class OddsCalculatorPanel extends JPanel
     {
         for (PlayerID id : m_data.getPlayerList())
         {
-            if(!m_data.getAllianceTracker().isAllied(player, id))
+            if(!m_data.getRelationshipTracker().isAllied(player, id))
                 return id;
         }
         

@@ -20,26 +20,29 @@
 
 package games.strategy.engine.data;
 
-import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
-import games.strategy.triplea.delegate.Matches;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Tracks alliances between players.
  *
  * An alliance is a named entity, players are added to an alliance.
  *
- * @author  Sean Bridges
+ * @author  Sean Bridges, modified by Erik von der Osten
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class AllianceTracker extends GameDataComponent
 {
 
 	//maps PlayerID to Collection of alliances names
-	private Map<PlayerID, Collection<String>> m_alliances = new HashMap<PlayerID, Collection<String>>();
+	Map<PlayerID, Collection<String>> m_alliances = new HashMap<PlayerID, Collection<String>>();
 
-	/** Creates new Alliance Tracker. */
     public AllianceTracker(GameData data)
 	{
 		super(data);
@@ -47,7 +50,7 @@ public class AllianceTracker extends GameDataComponent
 
 	/**
 	 * Adds PlayerID player to the alliance specified by allianceName.
-	 * 
+	 *
 	 * @param player The player to add to the alliance.
 	 * @param allianceName The alliance to add to.
 	 */
@@ -65,15 +68,15 @@ public class AllianceTracker extends GameDataComponent
 			alliances.add(allianceName);
 		}
 	}
-	
+
 	/**
 	 * Removes player from alliance allianceName.  Throws an exception if
 	 * player is not in that alliance.  Throws an exception if the player
 	 * is not in the specified alliance.
-	 * 
+	 *
 	 * @param player The player to remove from the alliance.
 	 * @param allianceName The alliance to remove from.
-	 
+
 	protected void removeFromAlliance(PlayerID player, String allianceName) {
 		if (!m_alliances.containsKey(player)) {
 			throw new IllegalStateException(
@@ -92,7 +95,7 @@ public class AllianceTracker extends GameDataComponent
 	/**
 	 * Returns whether two players are allied.<br>
 	 * isAllied(a,a) returns true.
-	 */
+	 
 	public boolean isAllied(PlayerID p1, PlayerID p2)
 	{
 		if(useRelationshipModel()) {
@@ -114,7 +117,7 @@ public class AllianceTracker extends GameDataComponent
 	
 		return games.strategy.util.Util.someIntersect(a1,a2);
 		
-	}
+	}*/
 
 
 
@@ -139,16 +142,16 @@ public class AllianceTracker extends GameDataComponent
 	/**
 	 * Returns the PlayerID's that are members of the alliance
 	 * specified by the String allianceName
-	 * 
+	 *
 	 * @param allianceName Alliance name
 	 * @return all the players in the given alliance
-	 * 
+	 *
 	 */
-	public Set<PlayerID> getPlayersInAlliance(String allianceName)
+	public HashSet<PlayerID> getPlayersInAlliance(String allianceName)
 	{
 
 		Iterator<PlayerID> keys = m_alliances.keySet().iterator();
-		Set<PlayerID> rVal = new HashSet<PlayerID>();
+		HashSet<PlayerID> rVal = new HashSet<PlayerID>();
 
 		while(keys.hasNext())
 		{
@@ -159,60 +162,9 @@ public class AllianceTracker extends GameDataComponent
 		}
 		return rVal;
 	}
-	/**
-	 * returns true if p1 is at war with p2
-	 * @param p1 player1
-	 * @param p2 player2
-	 * @return whether p1 is at war with p2
-	 */
-	public boolean isAtWar(PlayerID p1, PlayerID p2) {
-		if(useRelationshipModel())
-			return Matches.RelationshipIsAtWar.match((getRelationshipType(p1,p2)));
 
-		return !isAllied(p1,p2); //holder method war not yet implemented
+	public Map<PlayerID, Collection<String>> getAlliancesMap()
+	{
+	    return m_alliances;
 	}
-	/**
-	 * 
-	 * @param p1 player1 
-	 * @param p2 player2
-	 * @return whether player1 is neutral to player2
-	 */
-	public boolean isNeutral(PlayerID p1, PlayerID p2) {
-		if(useRelationshipModel()) 
-			return Matches.RelationshipIsNeutral.match((getRelationshipType(p1,p2)));
-		return false; // alliancemodel doesn't know neutrality so always return false.
-	}
-	
-	/** 
-	 * <strong>example</strong> method on how to extract a boolean from isAlliance();
-	 * use this method instead of isAlliance in the spots to be used
-	 * @return
-	 */
-	/*TODO this needs to be done in the rest of the game!, now the game determines whether to defend at see by checking isAllied()
-	 this is just an example on how to externalize autorisations from the isAllied() method for more fine-grained relationships.
-	 */
-	public boolean helpsDefendAtSea(PlayerID p1, PlayerID p2) {
-		if(useRelationshipModel())
-			return Matches.RelationshipHelpsDefendAtSea.match((getRelationshipType(p1,p2)));
-		return isAllied(p1,p1); // when using alliances only people in your alliance help defend at sea.
-	}
-	
-	/** 
-	 * Convenience method to see whether we are using relationshipModel, relationshipModel means we are looking at
-	 * individual relationships between players rather then alliance memberships
-	 * @return whether we are using relationship model
-	 */
-	private boolean useRelationshipModel() {
-		return getData().getRelationshipTracker().useRelationshipModel();
-	}
-	
-	/**
-	 * Convenience method to get RelationshipType so you can do relationshipChecks on the relationship between these 2 players
-	 * @return RelationshipType between these to players
-	 */
-	private RelationshipType getRelationshipType(PlayerID p1,PlayerID p2) {
-		return getData().getRelationshipTracker().getRelationshipType(p1, p2);
-	}
-
-	
 }

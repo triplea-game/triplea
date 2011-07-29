@@ -654,7 +654,7 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable
         {
             if(!territory.isWater()) 
             {
-                if(!data.getAllianceTracker().isAllied(p, territory.getOwner()) ) 
+                if(!data.getRelationshipTracker().isAllied(p, territory.getOwner()) ) 
                 {
                     attacker = p;
                     draw = true;
@@ -666,7 +666,7 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable
                 //O(n^2), but n is usually 2, and almost always < 10
                 for(PlayerID p2 : players) 
                 {
-                    if(!data.getAllianceTracker().isAllied(p, p2) ) 
+                    if(!data.getRelationshipTracker().isAllied(p, p2) ) 
                     {
                         draw = true;
                         break;

@@ -64,7 +64,7 @@ public class SUtils
 			if (otherPlayer == player)
 				continue;
 			Territory capitol = TerritoryAttachment.getCapital(otherPlayer, data);
-			if (capitol != null && data.getAllianceTracker().isAllied(player, capitol.getOwner()))
+			if (capitol != null && data.getRelationshipTracker().isAllied(player, capitol.getOwner()))
 				alliedCapitols.add(capitol);
 		}
 		for (Territory cap : alliedCapitols)
@@ -1170,7 +1170,7 @@ public class SUtils
 		List<PlayerID> enemyPlayers = new ArrayList<PlayerID>();
 		for (PlayerID players : data.getPlayerList().getPlayers())
 		{
-			if (!data.getAllianceTracker().isAllied(player, players))
+			if (!data.getRelationshipTracker().isAllied(player, players))
 				enemyPlayers.add(players);
 		}
 		return enemyPlayers;
@@ -1243,7 +1243,7 @@ public class SUtils
 		
 		for (PlayerID otherPlayer : data.getPlayerList().getPlayers())
 		{
-			if (!data.getAllianceTracker().isAllied(player, otherPlayer))
+			if (!data.getRelationshipTracker().isAllied(player, otherPlayer))
 			{
 				Territory capitol = TerritoryAttachment.getCapital(otherPlayer, data);
 				if (capitol != null)
@@ -2244,7 +2244,7 @@ public class SUtils
 		{
 			Territory capitol = TerritoryAttachment.getCapital(ePlayer, data);
 			
-			if (capitol == null || data.getAllianceTracker().isAllied(player, capitol.getOwner()))
+			if (capitol == null || data.getRelationshipTracker().isAllied(player, capitol.getOwner()))
 				continue;
 			
 			if (data.getMap().getDistance(t, capitol, Matches.TerritoryIsNotImpassableToLandUnits(player)) != -1)

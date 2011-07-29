@@ -622,7 +622,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         while (iter.hasNext())
         {
             PlayerID current = iter.next();
-            if (m_data.getAllianceTracker().isAllied(m_attacker, current)
+            if (m_data.getRelationshipTracker().isAllied(m_attacker, current)
                     || current.equals(m_attacker))
                 continue;
             int count = players.getInt(current);
@@ -746,7 +746,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         transcriptText = "";
         for (PlayerID current : playerSet )
         {
-            if (m_data.getAllianceTracker().isAllied(m_attacker, current)
+            if (m_data.getRelationshipTracker().isAllied(m_attacker, current)
                     || current.equals(m_attacker))
                 attackers.add(current);
         }
@@ -792,7 +792,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         transcriptText = "";
         for (PlayerID current : playerSet )
         {
-            if (m_data.getAllianceTracker().isAllied(m_defender, current)
+            if (m_data.getRelationshipTracker().isAllied(m_defender, current)
                     || current.equals(m_defender))
             {
                 defenders.add(current);

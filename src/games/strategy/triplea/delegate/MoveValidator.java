@@ -183,14 +183,14 @@ public class MoveValidator
             {
             	Territory terrNext = (Territory) startNeighborIter.next();
             	TerritoryAttachment taNeighbor = TerritoryAttachment.get(terrNext);
-            	if (taNeighbor != null && taNeighbor.isNavalBase() && unit.getData().getAllianceTracker().isAllied(terrNext.getOwner(), player))
+            	if (taNeighbor != null && taNeighbor.isNavalBase() && unit.getData().getRelationshipTracker().isAllied(terrNext.getOwner(), player))
             	{
             		Iterator <Territory> endNeighborIter = unit.getData().getMap().getNeighbors(route.getEnd(), 1).iterator();            
                     while (endNeighborIter.hasNext())
                     {
                     	Territory terrEnd = (Territory) endNeighborIter.next();
                     	TerritoryAttachment taEndNeighbor = TerritoryAttachment.get(terrEnd);
-                    	if (taEndNeighbor != null && taEndNeighbor.isNavalBase() && unit.getData().getAllianceTracker().isAllied(terrEnd.getOwner(), player))
+                    	if (taEndNeighbor != null && taEndNeighbor.isNavalBase() && unit.getData().getRelationshipTracker().isAllied(terrEnd.getOwner(), player))
                     	{
                     		left++;
                     		break;
@@ -584,7 +584,7 @@ public class MoveValidator
     {
         if(p1.equals(p2) )
             return true;
-        else return data.getAllianceTracker().isAllied(p1,p2);
+        else return data.getRelationshipTracker().isAllied(p1,p2);
     }
 
     public static boolean ownedByFriendly(Unit unit, PlayerID player, GameData data)
@@ -799,7 +799,7 @@ public class MoveValidator
             
                 boolean unload = MoveValidator.isUnload(route);
                 PlayerID endOwner = route.getEnd().getOwner();
-                boolean attack = !data.getAllianceTracker().isAllied(endOwner, player) 
+                boolean attack = !data.getRelationshipTracker().isAllied(endOwner, player) 
                                || MoveDelegate.getBattleTracker(data).wasConquered(route.getEnd());
                 //unless they are unloading into another battle
                 if (!(unload && attack))
@@ -858,7 +858,7 @@ public class MoveValidator
         		if (current.isWater())
         			continue;
 
-        		if (!data.getAllianceTracker().isAllied(current.getOwner(), player)
+        		if (!data.getRelationshipTracker().isAllied(current.getOwner(), player)
         				|| MoveDelegate.getBattleTracker(data).wasConquered(current))
         		{
         			enemyCount++;
@@ -1157,7 +1157,7 @@ public class MoveValidator
             for(Unit unit : Match.getMatches(moveTest, Matches.unitIsOwnedBy(player).invert())) {
             	//allow allied fighters to move with carriers
             	if(!(UnitAttachment.get(unit.getType()).getCarrierCost() > 0 &&
-            		data.getAllianceTracker().isAllied(player, unit.getOwner()))) {
+            		data.getRelationshipTracker().isAllied(player, unit.getOwner()))) {
             		result.addDisallowedUnit("Can only move own troops", unit);
             	}
             }
@@ -1263,7 +1263,7 @@ public class MoveValidator
             for (int i = 0; i < route.getLength(); i++)
             {
                 Territory current = route.at(i);
-                if (!(current.isWater() || current.getOwner().equals(player) || data.getAllianceTracker().isAllied(player, current.getOwner())))
+                if (!(current.isWater() || current.getOwner().equals(player) || data.getRelationshipTracker().isAllied(player, current.getOwner())))
                 {
                     for (Unit unit : Match.getMatches(units, Matches.UnitIsAAorIsAAmovement))
                         result.addDisallowedUnit("AA units cannot advance to battle", unit);
@@ -1639,10 +1639,10 @@ public class MoveValidator
 		TerritoryAttachment taStart = TerritoryAttachment.get(startTerr);
 		TerritoryAttachment taEnd = TerritoryAttachment.get(endTerr);
 
-		if(taStart != null && taStart.isAirBase() && data.getAllianceTracker().isAllied(startTerr.getOwner(), player))
+		if(taStart != null && taStart.isAirBase() && data.getRelationshipTracker().isAllied(startTerr.getOwner(), player))
 			startAirBase = true;
 
-		if (taEnd != null && taEnd.isAirBase() && data.getAllianceTracker().isAllied(endTerr.getOwner(), player))
+		if (taEnd != null && taEnd.isAirBase() && data.getRelationshipTracker().isAllied(endTerr.getOwner(), player))
 			endAirBase = true;
 		
 		//Go through the list of units and set each unit's movement as well as the overall group maxMovement
@@ -1676,8 +1676,8 @@ public class MoveValidator
             {
             	Territory terrNext = (Territory) neighboriter.next();
             	TerritoryAttachment taNeighbor = TerritoryAttachment.get(terrNext);
-            	if ((taEnd != null && taEnd.isAirBase() && data.getAllianceTracker().isAllied(route.getEnd().getOwner(), unit.getOwner())) || 
-            			(taNeighbor != null && taNeighbor.isAirBase()) && data.getAllianceTracker().isAllied(terrNext.getOwner(), unit.getOwner()))
+            	if ((taEnd != null && taEnd.isAirBase() && data.getRelationshipTracker().isAllied(route.getEnd().getOwner(), unit.getOwner())) || 
+            			(taNeighbor != null && taNeighbor.isAirBase()) && data.getRelationshipTracker().isAllied(terrNext.getOwner(), unit.getOwner()))
             	{
             		movement++;
             		break;
@@ -2076,7 +2076,7 @@ public class MoveValidator
             
                 for(Territory borderTerritory : attachment.getLandTerritories())
                 {
-                    if (!data.getAllianceTracker().isAllied(player, borderTerritory.getOwner()))
+                    if (!data.getRelationshipTracker().isAllied(player, borderTerritory.getOwner()))
                     {
                         return "Must own " + borderTerritory.getName() + " to go through " + attachment.getCanalName();
                     }
