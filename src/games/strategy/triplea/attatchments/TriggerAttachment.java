@@ -285,10 +285,10 @@ public class TriggerAttachment extends DefaultAttachment{
 		if(getData().getPlayerList().getPlayerID(s[0]) == null)
 			throw new GameParseException("Triggers: Invalid relationshipChange declaration: "+relChange+" \n player: "+s[0]+" unknown in: "+getName());
 		
-		if(!(s[1].equals(Constants.RELATIONSHIP_ANY_NEUTRAL) || 
-				s[1].equals(Constants.RELATIONSHIP_ANY) ||
-				s[1].equals(Constants.RELATIONSHIP_ANY_ALLIED) ||
-				s[1].equals(Constants.RELATIONSHIP_ANY_WAR) ||
+		if(!(s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) || 
+				s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY) ||
+				s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) ||
+				s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) ||
 				Matches.isValidRelationshipName(getData()).match(s[1])))
 			throw new GameParseException("Triggers: Invalid relationshipChange declaration: "+relChange+" \n relationshipType: "+s[1]+" unknown in: "+getName());
 		
@@ -616,10 +616,10 @@ public class TriggerAttachment extends DefaultAttachment{
 					PlayerID player2 = data.getPlayerList().getPlayerID(s[0]);
 					RelationshipType currentRelation = data.getRelationshipTracker().getRelationshipType(player, player2);
 					
-					if(  s[1].equals(Constants.RELATIONSHIP_ANY) || 
-							(s[1].equals(Constants.RELATIONSHIP_ANY_NEUTRAL) && Matches.RelationshipIsNeutral.match(currentRelation)) ||
-							(s[1].equals(Constants.RELATIONSHIP_ANY_ALLIED)  && Matches.RelationshipIsAllied.match(currentRelation)) ||
-							(s[1].equals(Constants.RELATIONSHIP_ANY_WAR)     && Matches.RelationshipIsAtWar.match(currentRelation)) ||
+					if(  s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY) || 
+							(s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) && Matches.RelationshipIsNeutral.match(currentRelation)) ||
+							(s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)  && Matches.RelationshipIsAllied.match(currentRelation)) ||
+							(s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)     && Matches.RelationshipIsAtWar.match(currentRelation)) ||
 							currentRelation.equals(data.getRelationshipTypeList().getRelationshipType(s[1]))) {
 				
 						RelationshipType triggerNewRelation = data.getRelationshipTypeList().getRelationshipType(s[2]);

@@ -210,14 +210,20 @@ public interface Constants
   public static final String DESTROY_UNITS_ON_ENTERING_TERRITORY = "On Entering Units Destroyed Instead Of Captured";
   public static final String DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES = "Damage From Bombing Done To Units Instead Of Territories";
   public static final String NEUTRAL_FLYOVER_ALLOWED = "Neutral Flyover Allowed";
+  
+  // relationships stuff (Edwin, with help from Veqryn and Frig)
   public static final String RELATIONSHIP_TYPE_SELF = "self_relation";
   public static final String RELATIONSHIP_TYPE_NULL = "null_relation";
   public static final String RELATIONSHIP_TYPE_DEFAULT_ALLIED = "default_allied_relation";
   public static final String RELATIONSHIP_TYPE_DEFAULT_WAR = "default_war_relation";
-  public static final String RELATIONSHIP_ANY_NEUTRAL = "anyNeutral";
-  public static final String RELATIONSHIP_ANY = "any";
-  public static final String RELATIONSHIP_ANY_ALLIED = "anyAllied";
-  public static final String RELATIONSHIP_ANY_WAR = "anyWar";
-
-  
+  public static final String RELATIONSHIP_CONDITION_ANY_NEUTRAL = "anyNeutral";
+  public static final String RELATIONSHIP_CONDITION_ANY = "any";
+  public static final String RELATIONSHIP_CONDITION_ANY_ALLIED = "anyAllied";
+  public static final String RELATIONSHIP_CONDITION_ANY_WAR = "anyWar";
+  public static final String RELATIONSHIP_ARCHETYPE_NEUTRAL = "neutral";
+  public static final String RELATIONSHIP_ARCHETYPE_WAR = "war";
+  public static final String RELATIONSHIP_ARCHETYPE_ALLIED = "allied";
+  public static final String RELATIONSHIP_PROPERTY_DEFAULT = "default";
+  public static final String RELATIONSHIP_PROPERTY_TRUE = "true";
+  public static final String RELATIONSHIP_PROPERTY_FALSE = "false";
 }

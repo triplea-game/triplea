@@ -366,7 +366,7 @@ public class Matches
     		@Override
     		public boolean match(Unit u)
     		{
-    			return !data.getRelationshipTracker().isAllied(u.getOwner(), player);
+    			return data.getRelationshipTracker().isAtWar(u.getOwner(), player);
     		}
     	};
     }
@@ -1330,7 +1330,7 @@ public class Matches
     	            while(iter.hasNext())
     	            {
     	            	Territory current = iter.next();
-    	            	if (data.getRelationshipTracker().isAllied(player, current.getOwner()))
+    	            	if (!data.getRelationshipTracker().isAtWar(player, current.getOwner()))
     	            		continue;
     	            	if(data.getMap().getDistance(t, current, Matches.TerritoryIsPassableAndNotRestricted(player)) != -1)
     	            		return true;
@@ -1359,7 +1359,7 @@ public class Matches
     	            while(iter.hasNext())
     	            {
     	            	Territory current = iter.next();
-    	            	if (data.getRelationshipTracker().isAllied(player, current.getOwner()))
+    	            	if (!data.getRelationshipTracker().isAtWar(player, current.getOwner()))
     	            		continue;
     	            	if(data.getMap().getDistance(t, current, Matches.TerritoryIsNotImpassableToLandUnits(player)) != -1)
     	            		return true;
@@ -1488,7 +1488,7 @@ public class Matches
         {
             public boolean match(Territory t)
             {
-                if(data.getRelationshipTracker().isAllied(player, t.getOwner()))
+                if(!data.getRelationshipTracker().isAtWar(player, t.getOwner()))
                     return false;
                 if(t.getOwner().isNull())
                     return false;
@@ -1818,7 +1818,6 @@ public class Matches
       };
   }
 
-  //TODO this needs updating for isEnemy()
   public static Match<Territory> isTerritoryEnemy(final PlayerID player, final GameData data)
     {
         return new Match<Territory>()
@@ -1827,12 +1826,11 @@ public class Matches
             {
                 if(t.getOwner().equals(player))
                     return false;
-                return !data.getRelationshipTracker().isAllied(player, t.getOwner());
+                return data.getRelationshipTracker().isAtWar(player, t.getOwner());
             }
         };
     }
 
-  //TODO this needs updating for isEnemy()
     public static Match<Territory> isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(final PlayerID player, final GameData data)
     {
         return new Match<Territory>()
@@ -1847,12 +1845,11 @@ public class Matches
                     return false;
                 if(!Matches.TerritoryIsPassableAndNotRestricted(player).match(t))
                 	return false;
-                return !data.getRelationshipTracker().isAllied(player, t.getOwner());
+                return data.getRelationshipTracker().isAtWar(player, t.getOwner());
             }
         };
     }
 
-    //TODO this needs updating for isEnemy()
     public static Match<Territory> TerritoryIsBlitzable(final PlayerID player, final GameData data)
     {
         return new Match<Territory>()
@@ -1868,14 +1865,13 @@ public class Matches
         };
     }
 
-    //TODO review for relations
     public static Match<Territory> isTerritoryFreeNeutral(final GameData data)
     {
         return new Match<Territory>()
         {
           public boolean match(Territory t)
           {
-            return (t.getOwner().equals(PlayerID.NULL_PLAYERID) && Properties.getNeutralCharge(data) == 0);
+            return (t.getOwner().equals(PlayerID.NULL_PLAYERID) && Properties.getNeutralCharge(data) <= 0);
           }
         };
     }
@@ -1893,16 +1889,21 @@ public class Matches
                     return false;
                 if(t.getOwner().equals(PlayerID.NULL_PLAYERID))
                     return false;
-                return !data.getRelationshipTracker().isAllied(player, t.getOwner());
+                return data.getRelationshipTracker().isAtWar(player, t.getOwner());
             }
         };
     }
 */
 
-    //TODO this needs updating for isEnemy()
-    public static Match<Unit> enemyUnit(PlayerID player, GameData data)
+    public static Match<Unit> enemyUnit(final PlayerID player, final GameData data)
     {
-        return new InverseMatch<Unit>(alliedUnit(player, data));
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unit)
+            {
+                return data.getRelationshipTracker().isAtWar(player, unit.getOwner());
+            }
+        };
     }
 
     public static Match<Unit> unitOwnedBy(final PlayerID player)
@@ -2040,14 +2041,13 @@ public class Matches
     };
   }
 
-  //TODO this needs updating for isEnemy()
     public static Match<Territory> territoryHasNoEnemyUnits(final PlayerID player, final GameData data)
     {
         return new Match<Territory>()
         {
             public boolean match(Territory t)
             {
-                return t.getUnits().allMatch( alliedUnit(player,data));
+                return !t.getUnits().allMatch( enemyUnit(player,data));
             }
         };
 
@@ -2348,7 +2348,7 @@ public class Matches
     }
 
 
-    public static Match<Territory> territoryHasEnemyCanal(final PlayerID player)
+    public static Match<Territory> territoryHasNonAlliedCanal(final PlayerID player)
     {
         return new Match<Territory>()
         {
@@ -2738,7 +2738,6 @@ public class Matches
 		}
 	};
 
-	// should we build the default logic (what to do if helpsDefendAtSea = "default") in here, or in RelationshipAttachment?
 	public static final Match<RelationshipType> RelationshipHelpsDefendAtSea = new Match<RelationshipType>() {
 		public boolean match(RelationshipType relationship) {
 			return relationship.getRelationshipTypeAttachment().helpsDefendAtSea();
@@ -2750,7 +2749,6 @@ public class Matches
 			public boolean match(String relationshipName) {
 				return data.getRelationshipTypeList().getRelationshipType(relationshipName) != null;
 			}
-
 		};
 	};
 

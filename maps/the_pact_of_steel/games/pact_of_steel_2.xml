@@ -565,18 +565,18 @@
 				
 				<!-- alliances can have any name, not just axis and allies.  there can be more than 2 alliances -->
                 <!-- Axis alliance -->
-                <!--  since triplea version 1.3.3.0 it is preferred to use relationships instead of alliances
+                <!--  since triplea version 1.3.3.0 it is preferred to use relationships instead of alliances If relationships are set, then alliances will only matter for the stats panel and any game option type victory conditions -->
                 <alliance player="Germans" alliance="Axis"/>
                 <alliance player="Japanese" alliance="Axis"/>
                 <alliance player="Italians" alliance="Axis"/>
-				-->
+				
                 <!-- Allies alliance -->
-                <!--  since triplea version 1.3.3.0 it is preferred to use relationships instead of alliances
+                <!--  since triplea version 1.3.3.0 it is preferred to use relationships instead of alliances. If relationships are set, then alliances will only matter for the stats panel and any game option type victory conditions -->
                 <alliance player="British" alliance="Allies"/>
                 <alliance player="Russians" alliance="Allies"/>
                 <alliance player="Americans" alliance="Allies"/>
                 <alliance player="Chinese" alliance="Allies"/>
-                -->
+                
                 
         </playerList>
 

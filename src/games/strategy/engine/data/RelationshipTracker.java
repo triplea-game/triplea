@@ -157,6 +157,11 @@ public class RelationshipTracker extends RelationshipInterpreter{
 		public RelationshipTypeAttachment getRelationshipTypeAttachment() {
 			return m_p1.getData().getRelationshipTracker().getRelationshipTypeAttachment(m_p1, m_p2);
 		}
+		
+		public String toString()
+		{
+			return m_p1.getName() + "-" + m_p2.getName();
+		}
 
 	}
 

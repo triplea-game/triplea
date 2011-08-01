@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Fixing of some matches to use new relationships, and some general code cleanup. (veqryn)
+
 * Various code cleaning. (frigoref)
 
 * Some changes to how politics gets initialized. (edwin van der wal)

@@ -4841,7 +4841,7 @@ public class SUtils
 		// shouldn't be a huge problem
 		// if we fail due to canal, then don't go near any enemy canals
 		if (MoveValidator.validateCanal(r, player, data) != null)
-			r = data.getMap().getRoute(start, destination, new CompositeMatchAnd<Territory>(routeCondition, Matches.territoryHasEnemyCanal(player).invert()));
+			r = data.getMap().getRoute(start, destination, new CompositeMatchAnd<Territory>(routeCondition, Matches.territoryHasNonAlliedCanal(player).invert()));
 		if (r == null || r.getEnd() == null)
 			return null;
 		int rDist = r.getLength();

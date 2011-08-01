@@ -37,17 +37,17 @@ import games.strategy.triplea.Constants;
 @SuppressWarnings("serial")
 public class RelationshipTypeAttachment extends DefaultAttachment {
 	
-	public static final String NEUTRAL_ARCHETYPE = "neutral";
-	public static final String WAR_ARCHETYPE = "war";
-	public static final String ALLIED_ARCHETYPE = "allied";
+	public static final String ARCHETYPE_NEUTRAL = Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL;
+	public static final String ARCHETYPE_WAR = Constants.RELATIONSHIP_ARCHETYPE_WAR;
+	public static final String ARCHETYPE_ALLIED = Constants.RELATIONSHIP_ARCHETYPE_ALLIED;
 	
-	private final String PROPERTY_DEFAULT = "default";
-	private final String PROPERTY_TRUE = "true";
-	private final String PROPERTY_FALSE = "false";
+	private final String PROPERTY_DEFAULT = Constants.RELATIONSHIP_PROPERTY_DEFAULT;
+	private final String PROPERTY_TRUE = Constants.RELATIONSHIP_PROPERTY_TRUE;
+	private final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
 
 
 
-	private String m_archeType = WAR_ARCHETYPE;
+	private String m_archeType = ARCHETYPE_WAR;
 	private String m_canFlyOver = PROPERTY_DEFAULT;
 	private String m_helpsDefendAtSea = PROPERTY_DEFAULT;
 
@@ -79,13 +79,13 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
      * @throws GameParseException if archeType isn't set to war, allied or neutral 
      */
     public void setArcheType(String archeType) throws GameParseException {
-    	if(archeType.toLowerCase().equals(WAR_ARCHETYPE)) 
-    		m_archeType = WAR_ARCHETYPE;
-    	else if(archeType.toLowerCase().equals(ALLIED_ARCHETYPE))
-    		m_archeType = ALLIED_ARCHETYPE;
-    	else if(archeType.toLowerCase().equals(NEUTRAL_ARCHETYPE))
-    		m_archeType = NEUTRAL_ARCHETYPE;
-    	else throw new GameParseException("archeType must be "+WAR_ARCHETYPE+","+ALLIED_ARCHETYPE+" or "+NEUTRAL_ARCHETYPE+" for "+Constants.RELATIONSHIPTYPE_ATTATCHMENT_NAME+": "+getName());
+    	if(archeType.toLowerCase().equals(ARCHETYPE_WAR)) 
+    		m_archeType = ARCHETYPE_WAR;
+    	else if(archeType.toLowerCase().equals(ARCHETYPE_ALLIED))
+    		m_archeType = ARCHETYPE_ALLIED;
+    	else if(archeType.toLowerCase().equals(ARCHETYPE_NEUTRAL))
+    		m_archeType = ARCHETYPE_NEUTRAL;
+    	else throw new GameParseException("archeType must be "+ARCHETYPE_WAR+","+ARCHETYPE_ALLIED+" or "+ARCHETYPE_NEUTRAL+" for "+Constants.RELATIONSHIPTYPE_ATTATCHMENT_NAME+": "+getName());
     }
     
     /**
@@ -122,7 +122,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
      * @return whether this relationship is based on the WAR_ARCHETYPE
      */
     public boolean isWar() {
-		return m_archeType.equals(RelationshipTypeAttachment.WAR_ARCHETYPE);
+		return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_WAR);
 	}
 
     /**
@@ -130,14 +130,14 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
      * @return whether this relationship is based on the ALLIED_ARCHETYPE
      */
 	public boolean isAllied() {
-		return m_archeType.equals(RelationshipTypeAttachment.ALLIED_ARCHETYPE);
+		return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_ALLIED);
 	}
 	 /**
      * 
      * @return whether this relationship is based on the NEUTRAL_ARCHETYPE
      */
 	public boolean isNeutral() {
-		return m_archeType.equals(RelationshipTypeAttachment.NEUTRAL_ARCHETYPE);
+		return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_NEUTRAL);
 	}
     /** 
      * <strong> EXAMPLE</strong> method on how you could do finegrained autorisations instead of looking at isNeutral, isAllied or isWar();

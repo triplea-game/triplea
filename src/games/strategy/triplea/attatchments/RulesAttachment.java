@@ -146,9 +146,9 @@ public class RulesAttachment extends DefaultAttachment
 			throw new GameParseException("playername: "+s[0]+" isn't valid in condition with relationship: "+value+" for RulesAttachment "+getName());
 		if(getData().getPlayerList().getPlayerID(s[1]) == null)
 			throw new GameParseException("playername: "+s[1]+" isn't valid in condition with relationship: "+value+" for RulesAttachment "+getName());
-		if(     !(s[2].equals(Constants.RELATIONSHIP_ANY_ALLIED) ||
-				s[2].equals(Constants.RELATIONSHIP_ANY_NEUTRAL)||
-				s[2].equals(Constants.RELATIONSHIP_ANY_WAR) ||
+		if(     !(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) ||
+				s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)||
+				s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) ||
 				Matches.isValidRelationshipName(getData()).match(s[2])))
 			throw new GameParseException("relationship: "+s[2]+" isn't valid in condition with relationship: "+value+" for RulesAttachment "+getName());
 		m_relationship.add(value);
@@ -1072,9 +1072,9 @@ public class RulesAttachment extends DefaultAttachment
 			PlayerID p1 = getData().getPlayerList().getPlayerID(relationCheck[0]);
 			PlayerID p2 = getData().getPlayerList().getPlayerID(relationCheck[1]);
 			RelationshipType currentRelationship = getData().getRelationshipTracker().getRelationshipType(p1, p2);
-			if (! (relationCheck[2].equals(Constants.RELATIONSHIP_ANY_ALLIED) && Matches.RelationshipIsAllied.match(currentRelationship) ||
-						   relationCheck[2].equals(Constants.RELATIONSHIP_ANY_NEUTRAL) && Matches.RelationshipIsNeutral.match(currentRelationship) ||
-						   relationCheck[2].equals(Constants.RELATIONSHIP_ANY_WAR) && Matches.RelationshipIsAtWar.match(currentRelationship) ||
+			if (! (relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) && Matches.RelationshipIsAllied.match(currentRelationship) ||
+						   relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) && Matches.RelationshipIsNeutral.match(currentRelationship) ||
+						   relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) && Matches.RelationshipIsAtWar.match(currentRelationship) ||
 						   currentRelationship.equals(getData().getRelationshipTypeList().getRelationshipType(relationCheck[2]))))
 				return false;
 		}

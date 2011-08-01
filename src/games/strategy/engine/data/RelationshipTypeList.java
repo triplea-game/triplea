@@ -62,10 +62,10 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 	protected RelationshipTypeList(GameData data) {
 		super(data);
 		try {
-			createDefaultRelationship(Constants.RELATIONSHIP_TYPE_SELF,RelationshipTypeAttachment.ALLIED_ARCHETYPE,data);
-			createDefaultRelationship(Constants.RELATIONSHIP_TYPE_NULL,RelationshipTypeAttachment.WAR_ARCHETYPE,data);		
-			createDefaultRelationship(Constants.RELATIONSHIP_TYPE_DEFAULT_WAR,RelationshipTypeAttachment.WAR_ARCHETYPE,data);		
-			createDefaultRelationship(Constants.RELATIONSHIP_TYPE_DEFAULT_ALLIED,RelationshipTypeAttachment.ALLIED_ARCHETYPE,data);
+			createDefaultRelationship(Constants.RELATIONSHIP_TYPE_SELF,RelationshipTypeAttachment.ARCHETYPE_ALLIED,data);
+			createDefaultRelationship(Constants.RELATIONSHIP_TYPE_NULL,RelationshipTypeAttachment.ARCHETYPE_WAR,data);
+			createDefaultRelationship(Constants.RELATIONSHIP_TYPE_DEFAULT_WAR,RelationshipTypeAttachment.ARCHETYPE_WAR,data);
+			createDefaultRelationship(Constants.RELATIONSHIP_TYPE_DEFAULT_ALLIED,RelationshipTypeAttachment.ARCHETYPE_ALLIED,data);
 		} catch (GameParseException e) {
 			// this should never happen, createDefaultRelationship only throws a GameParseException when the wrong ArcheType is supplied, but we never do that
 			throw new IllegalStateException(e);

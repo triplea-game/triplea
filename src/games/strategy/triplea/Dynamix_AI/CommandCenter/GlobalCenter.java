@@ -74,7 +74,7 @@ public class GlobalCenter
         MapTerCountScale = ((float)data.getMap().getTerritories().size() / 75.0F);
 
         IsFFAGame = true;
-        for(String alliance : data.getAllianceTracker().getAlliances())
+        for(String alliance : data.getAllianceTracker().getAlliances()) // TODO: update this for looking into relationships instead of alliances.
         {
             List<PlayerID> playersInAlliance = DUtils.ToList(data.getAllianceTracker().getPlayersInAlliance(alliance));
             if(playersInAlliance.size() > 1)
