@@ -34,6 +34,7 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.Constants;
 
+@SuppressWarnings("serial")
 public class RelationshipTypeAttachment extends DefaultAttachment {
 	
 	public static final String NEUTRAL_ARCHETYPE = "neutral";

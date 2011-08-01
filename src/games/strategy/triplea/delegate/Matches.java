@@ -2757,7 +2757,7 @@ public class Matches
 	public static final Match<PlayerID> isAtWar(final PlayerID player) {
 		return new Match<PlayerID>() {
 			public boolean match(PlayerID player2) {
-				return player.getData().getRelationshipTracker().isAtWar(player, player2);
+				return Matches.RelationshipIsAtWar.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
 			}
 		};
 	};
@@ -2765,7 +2765,7 @@ public class Matches
 	public static final Match<PlayerID> isAllied(final PlayerID player) {
 		return new Match<PlayerID>() {
 			public boolean match(PlayerID player2) {
-				return player.getData().getRelationshipTracker().isAllied(player, player2);
+				return Matches.RelationshipIsAllied.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
 			}
 		};
 	};
@@ -2773,7 +2773,7 @@ public class Matches
 	public static final Match<PlayerID> isNeutral(final PlayerID player) {
 		return new Match<PlayerID>() {
 			public boolean match(PlayerID player2) {
-				return player.getData().getRelationshipTracker().isNeutral(player, player2);
+				return Matches.RelationshipIsNeutral.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
 			}
 		};
 	};

@@ -57,46 +57,42 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 	/**
 	 * Constructs a new RelationshipTypeList
 	 * @param data GameData used for construction
+	 * @throws GameParseException 
 	 */
 	protected RelationshipTypeList(GameData data) {
 		super(data);
-		createSelfRelation(data);
-		createNullRelation(data);
-	}
-
-	/** 
-	 * Creates the NullRelation and puts it in the relationshipTypeList
-	 * @param data used for construction
-	 */
-	private void createNullRelation(GameData data) {
-		RelationshipType relation = new RelationshipType(Constants.RELATIONSHIP_TYPE_NULL,data);
-	    RelationshipTypeAttachment at = new RelationshipTypeAttachment();
-	    try {
-			at.setArcheType(RelationshipTypeAttachment.WAR_ARCHETYPE); // for now relationships with NULL_Players are "war"
+		try {
+			createDefaultRelationship(Constants.RELATIONSHIP_TYPE_SELF,RelationshipTypeAttachment.ALLIED_ARCHETYPE,data);
+			createDefaultRelationship(Constants.RELATIONSHIP_TYPE_NULL,RelationshipTypeAttachment.WAR_ARCHETYPE,data);		
+			createDefaultRelationship(Constants.RELATIONSHIP_TYPE_DEFAULT_WAR,RelationshipTypeAttachment.WAR_ARCHETYPE,data);		
+			createDefaultRelationship(Constants.RELATIONSHIP_TYPE_DEFAULT_ALLIED,RelationshipTypeAttachment.ALLIED_ARCHETYPE,data);
 		} catch (GameParseException e) {
-			// won't happen
+			// this should never happen, createDefaultRelationship only throws a GameParseException when the wrong ArcheType is supplied, but we never do that
+			throw new IllegalStateException(e);
 		}
-		relation.addAttachment(Constants.RELATIONSHIPTYPE_ATTATCHMENT_NAME, at);
-	    at.setAttatchedTo(relation);
-		addRelationshipType(relation);
-	 }
-
-	/**
-	 * Creates the SelfRelation and puts it in the relationshipTypeList
-	 * @param data used for construction
-	 */
-	private void createSelfRelation(GameData data) {
-		RelationshipType relation = new RelationshipType(Constants.RELATIONSHIP_TYPE_SELF,data);
-	    RelationshipTypeAttachment at = new RelationshipTypeAttachment();
-	    try {
-			at.setArcheType(RelationshipTypeAttachment.ALLIED_ARCHETYPE); // for now relationships with Self are "allied"
-		} catch (GameParseException e) {
-			// won't happen
-		}
-		relation.addAttachment(Constants.RELATIONSHIPTYPE_ATTATCHMENT_NAME, at);
-	    at.setAttatchedTo(relation);
-		addRelationshipType(relation);
 	}
+	
+/**
+ * Creates a default relationship
+ * @param relationshipTypeConstant the type of relationship
+ * @param relationshipArcheType the archetype of the relationship
+ * @param data the GameData object for this relationship
+ * @throws GameParseException if the wrong relationshipArcheType is used
+ */
+	
+	private void createDefaultRelationship(final String relationshipTypeConstant, final String relationshipArcheType, GameData data) throws GameParseException {
+		// create a new relationshipType with the name from the constant
+		RelationshipType relationshipType = new RelationshipType(relationshipTypeConstant,data);
+		// create a new attachment to attach to this type
+	    RelationshipTypeAttachment at = new RelationshipTypeAttachment();
+	    // set the archeType to this attachment
+		at.setArcheType(relationshipArcheType); 
+		// attach this attachment to this type
+		relationshipType.addAttachment(Constants.RELATIONSHIPTYPE_ATTATCHMENT_NAME, at);
+	    at.setAttatchedTo(relationshipType);
+		addRelationshipType(relationshipType);
+	}
+	
 
 	/** adds a new RelationshipType, this should only be called by the GameParser.
 	 * 
@@ -126,10 +122,18 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 
 	/**
 	 * 
-	 * @return site of the relationshipTypeList, be aware that the standard size = 2 (Self and Null Relation)
+	 * @return site of the relationshipTypeList, be aware that the standard size = 4 (Allied, War, Self and Null Relation)
 	 */
 	public int size() {
 		return m_relationshipTypes.size();
+	}
+	
+	public RelationshipType getDefaultAlliedRelationship() {
+		return this.getRelationshipType(Constants.RELATIONSHIP_TYPE_DEFAULT_ALLIED);
+	}
+	
+	public RelationshipType getDefaultWarRelationship() {
+		return this.getRelationshipType(Constants.RELATIONSHIP_TYPE_DEFAULT_WAR);
 	}
 
 

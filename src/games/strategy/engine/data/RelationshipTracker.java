@@ -30,11 +30,7 @@ import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
 
 import java.io.Serializable;
 import java.util.HashMap;
-/**
-*
-* @author  Erik von der Osten
-* @version 1.0
-*/
+
 @SuppressWarnings("serial")
 public class RelationshipTracker extends RelationshipInterpreter{
 
@@ -66,13 +62,6 @@ public class RelationshipTracker extends RelationshipInterpreter{
 		return m_relationships.get(new RelatedPlayers(p1,p2));
 	}
 
-	/**
-	 * are we using relationships or alliances
-	 * @return whether we are using relationships rather then alliances.
-	 */
-	public boolean useRelationshipModel() {
-		return !m_relationships.isEmpty();
-	}
 	/**
 	 * Convenience method to directly access relationshipTypeAttachment on the relationship that exists between two players
 	 * @param p1 Player 1 in the relationship

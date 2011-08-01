@@ -158,7 +158,9 @@ public class GameParser
 
 
 
-
+        // set & override default relationships
+        data.getRelationshipTracker().setNullPlayerRelations(); // sets the relationship between all players and the NullPlayer to NullRelation (with archeType War)
+        data.getRelationshipTracker().setSelfRelations(); // sets the relationship for all players with themselfs to the SelfRelation (with archeType Allied)
         validate();
 
         return data;
@@ -189,17 +191,14 @@ public class GameParser
 	}
 
 	private void validateRelationships() throws GameParseException{
-		// only if we are using the relationships and not alliances to track politics
-		if(data.getRelationshipTracker().useRelationshipModel()) {
-			// for every player
-			for(PlayerID player:data.getPlayerList()) {
-				// in relation to every player
-				for(PlayerID player2:data.getPlayerList()) {
-					// See if there is a relationship between them
-					if((data.getRelationshipTracker().getRelationshipType(player, player2) == null))
-						throw new GameParseException("No relation set for: "+player.getName()+" and "+player2.getName());
-					      // or else throw an exception!
-				}
+		// for every player
+		for(PlayerID player:data.getPlayerList()) {
+			// in relation to every player
+			for(PlayerID player2:data.getPlayerList()) {
+				// See if there is a relationship between them
+				if((data.getRelationshipTracker().getRelationshipType(player, player2) == null))
+					throw new GameParseException("No relation set for: "+player.getName()+" and "+player2.getName());
+				      // or else throw an exception!
 			}
 		}
 	}
@@ -762,7 +761,6 @@ public class GameParser
         AllianceTracker allianceTracker = data.getAllianceTracker();
 
         Iterator<Node> iter = getChildren("alliance", root).iterator();
-        Boolean has_alliance_node = iter.hasNext();
         while(iter.hasNext())
         {
             Element current = (Element) iter.next();
@@ -771,58 +769,50 @@ public class GameParser
             allianceTracker.addToAlliance(p1,alliance);
         }
 
-        /*
-         * if we are using alliances than the relationships aren't in the xml (old style)
-         * therefore we set the relationships based on the alliances
-         */
-        if (has_alliance_node)
+        
+        // if relationships aren't initialized based on relationshipInitialize we use the alliances to set the relationships
+        if (getSingleChild("relationshipInitialize", root, true) == null)
         {
             RelationshipTracker relationshipTracker = data.getRelationshipTracker();
-            Set<String> alliances = allianceTracker.getAlliances();
-            List<PlayerID> allPlayers = new ArrayList<PlayerID>(data.getPlayerList().getPlayers());
-            Iterator<String> iterAlliance = alliances.iterator();
-            while(iterAlliance.hasNext())
-            {
-                HashSet<PlayerID> alliancePlayersSet = allianceTracker.getPlayersInAlliance(iterAlliance.next());
-                PlayerID[] alliancePlayers = alliancePlayersSet.toArray(new PlayerID[alliancePlayersSet.size()]);
-                List<PlayerID> enemies =  new ArrayList<PlayerID>(allPlayers);
-                enemies.removeAll(alliancePlayersSet);
-                for(int i=0 ; i<alliancePlayers.length ; ++i)
-                {
-                    relationshipTracker.setRelationship(alliancePlayers[i], alliancePlayers[i], new RelationshipType(Constants.RELATIONSHIP_TYPE_SELF, data));
-                    relationshipTracker.setRelationship(alliancePlayers[i], PlayerID.NULL_PLAYERID, new RelationshipType(Constants.RELATIONSHIP_TYPE_NULL, data));
-                    for(int j=i+1 ; j<alliancePlayers.length ; ++j)
-                    {
-                        relationshipTracker.setRelationship(alliancePlayers[i], alliancePlayers[j], new RelationshipType(Constants.RELATIONSHIP_ANY_ALLIED, data));
-                        //relationshipTracker.setRelationship(alliancePlayers[j], alliancePlayers[i], new RelationshipType(Constants.RELATIONSHIP_ANY_ALLIED, data));
-                    }
-                    Iterator<PlayerID> iterEnemy = enemies.iterator();
-                    while (iterEnemy.hasNext())
-                    {
-                        relationshipTracker.setRelationship(alliancePlayers[i], iterEnemy.next(), new RelationshipType(Constants.RELATIONSHIP_ANY_WAR, data));
-                    }
-                }
+            RelationshipTypeList relationshipTypeList = data.getRelationshipTypeList();
+            Iterator<PlayerID> iterPlayers = data.getPlayerList().getPlayers().iterator();
+            
+        	// iterate through all players to get known allies and enemies
+            while(iterPlayers.hasNext()) {
+            	PlayerID currentPlayer = iterPlayers.next();
+            	HashSet<PlayerID> enemies = new HashSet<PlayerID>(data.getPlayerList().getPlayers()); // start with all players as enemies
+            	HashSet<PlayerID> allies = new HashSet<PlayerID>(); // start with no players as allies
+            		// iterate through all alliances the player is in
+            	if(allianceTracker.getAlliancesMap().get(currentPlayer) != null) {
+            		Iterator<String> iterAlliances = allianceTracker.getAlliancesMap().get(currentPlayer).iterator();
+            		while(iterAlliances.hasNext()) {
+            	
+            			//iterate through the members of the alliances
+            			Iterator<PlayerID> iterMembers = allianceTracker.getPlayersInAlliance(iterAlliances.next()).iterator();
+            			while(iterMembers.hasNext()) {
+            				PlayerID currentMember = iterMembers.next();
+            				allies.add(currentMember); // add each allianceMember to the alliesList
+            				enemies.remove(currentMember); // remove each allianceMember from the enemiesList
+            			}
+            		}
+            	}
+ 	
+            	enemies.remove(currentPlayer); //remove self from enemieslist (in case of free-for-all)
+            	allies.remove(currentPlayer); //remove self from allieslist (in case you are a member of an alliance)
+            	
+            	// At this point enemies and allies should be set for this player.
+            	Iterator<PlayerID> iterAllies = allies.iterator();
+            	while(iterAllies.hasNext()) {
+            		relationshipTracker.setRelationship(currentPlayer, iterAllies.next(), relationshipTypeList.getDefaultAlliedRelationship());
+            	}
+            	Iterator<PlayerID> iterEnemies = enemies.iterator();
+            	while(iterEnemies.hasNext()) {
+            		relationshipTracker.setRelationship(currentPlayer, iterEnemies.next(), relationshipTypeList.getDefaultWarRelationship());
+            	}            	
             }
-        }
-        else {
-            throw new NoAllianceNodesException("No alliances where specified.");
-        }
+        } 
     }
 
-    /* This is now relationshipInitialize.  can delete: private void parsePlayerRelationships(Node root) throws GameParseException
-    {
-        RelationshipTracker tracker = data.getRelationshipTracker();
-
-        Iterator<Node> iter = getChildren("relationship", root).iterator();
-        while(iter.hasNext())
-        {
-            Element current = (Element) iter.next();
-            PlayerID p1 = getPlayerID(current, "player1", true);
-            PlayerID p2 = getPlayerID(current, "player2", true);
-            RelationshipType relationshipType = new RelationshipType(current.getAttribute("type"), data);
-            tracker.setRelationship(p1, p2, relationshipType);
-        }
-    }*/
 
     private void parseRelationInitialize(List<Node> relations) throws GameParseException {
     	if(relations.size()>0) {
@@ -836,8 +826,6 @@ public class GameParser
 	    		RelationshipType r = getRelationshipType(current, "type", true);
 	    		tracker.setRelationship(p1,p2,r);
 	    	}
-    		tracker.setSelfRelations();
-    		tracker.setNullPlayerRelations();
     	}
     }
 

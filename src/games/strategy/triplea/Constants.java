@@ -212,9 +212,12 @@ public interface Constants
   public static final String NEUTRAL_FLYOVER_ALLOWED = "Neutral Flyover Allowed";
   public static final String RELATIONSHIP_TYPE_SELF = "self_relation";
   public static final String RELATIONSHIP_TYPE_NULL = "null_relation";
+  public static final String RELATIONSHIP_TYPE_DEFAULT_ALLIED = "default_allied_relation";
+  public static final String RELATIONSHIP_TYPE_DEFAULT_WAR = "default_war_relation";
   public static final String RELATIONSHIP_ANY_NEUTRAL = "anyNeutral";
   public static final String RELATIONSHIP_ANY = "any";
   public static final String RELATIONSHIP_ANY_ALLIED = "anyAllied";
   public static final String RELATIONSHIP_ANY_WAR = "anyWar";
+
   
 }
