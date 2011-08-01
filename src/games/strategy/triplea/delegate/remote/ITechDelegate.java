@@ -24,11 +24,12 @@ import games.strategy.triplea.delegate.dataObjects.TechResults;
 public interface ITechDelegate extends IRemote
 {
     /**
-     * 
-     * @param rollCount - the number of tech rolls
-     * @param tech - the tech category to roll for, should be null if the game does not support
-     *               rolling for certain techs
-     * @return TechResults.  If the tech could not be rolled, then a message saying why.
+     *
+     * @param rollCount the number of tech rolls
+     * @param techToRollFor the tech category to roll for, should be null if the game does not support
+     * rolling for certain techs
+     * @param newTokens if WW2V3TechModel is used it set rollCount
+     * @return TechResults. If the tech could not be rolled, then a message saying why.
      */
     public TechResults rollTech(int rollCount, TechnologyFrontier techToRollFor, int newTokens);
 }

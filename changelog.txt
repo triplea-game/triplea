@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Various code cleaning. (frigoref)
+
 * Some changes to how politics gets initialized. (edwin van der wal)
 
 * Fixed error related to two-hit battleships in middle earth. (veqryn)

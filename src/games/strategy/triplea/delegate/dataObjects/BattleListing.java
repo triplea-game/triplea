@@ -26,35 +26,39 @@ import java.io.Serializable;
 import java.util.Collection;
 
 /**
- * Sent by the battle delegate to the game player to indicate 
+ * Sent by the battle delegate to the game player to indicate
  * which battles are left to be fought.
  *
  * @author  Sean Bridges
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class BattleListing implements Serializable
 {
 
 	private Collection<Territory> m_battles;
 	private Collection<Territory> m_strategicRaids;
-	
-	/** Creates new BattleListingMessage */
-    public BattleListing(Collection<Territory> battles, Collection<Territory> strategicRaids) 
+
+	/** Creates new BattleListingMessage
+	 * @param battles battles to list
+	 * @param strategicRaids strategic raids
+	 */
+    public BattleListing(Collection<Territory> battles, Collection<Territory> strategicRaids)
 	{
 		m_battles = battles;
 		m_strategicRaids = strategicRaids;
     }
-	
+
 	public Collection<Territory> getBattles()
 	{
 		return m_battles;
 	}
-	
+
 	public Collection<Territory> getStrategicRaids()
 	{
 		return m_strategicRaids;
 	}
-	
+
 	public boolean isEmpty()
 	{
 		return m_battles.size() == 0 && m_strategicRaids.size() == 0;

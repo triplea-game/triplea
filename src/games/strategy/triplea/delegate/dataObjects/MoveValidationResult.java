@@ -12,6 +12,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+@SuppressWarnings("serial")
 public class MoveValidationResult implements Serializable, Comparable<MoveValidationResult>
 {
     private String m_error = null;
@@ -21,7 +22,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
     private List<String> m_unresolvedUnitWarnings;
     private List<Collection<Unit>> m_unresolvedUnitsList;
 
-    
+
     public MoveValidationResult()
     {
         m_disallowedUnitWarnings = new ArrayList<String>();
@@ -158,7 +159,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
             return Collections.emptyList();
         return new ArrayList<Unit>(m_unresolvedUnitsList.get(index));
     }
-    
+
 
     public Collection<String> getDisallowedUnitWarnings()
     {
@@ -211,14 +212,14 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
 
     public boolean isMoveValid()
     {
-        return !hasError() 
-                && !hasDisallowedUnits() 
+        return !hasError()
+                && !hasDisallowedUnits()
                 && !hasUnresolvedUnits();
     }
 
     public int getTotalWarningCount()
     {
-        return m_unresolvedUnitWarnings.size() 
+        return m_unresolvedUnitWarnings.size()
                + m_disallowedUnitWarnings.size();
     }
 
@@ -232,7 +233,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
             for (Unit unit : oldResult.getUnresolvedUnits(warning))
                 if (disallowedUnits.contains(unit))
                     removeUnresolvedUnit(warning, unit);
-    } 
+    }
 
     public int compareTo(MoveValidationResult other)
     {
@@ -250,7 +251,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
             return 1;
         return 0;
     }
-    
+
     public String toString() {
         return "Move Validation Results, error:" + m_error + " isValid():" + isMoveValid();
 

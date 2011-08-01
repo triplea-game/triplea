@@ -20,17 +20,23 @@
 
 package games.strategy.engine.data.properties;
 
-import java.util.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataComponent;
 
-import games.strategy.engine.data.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Properties of the current game. <br>
  * Maps string -> Object <br>
  * Set through changeFactory.setProperty.
- * 
+ *
  * @author Sean Bridges
  */
+@SuppressWarnings("serial")
 public class GameProperties extends GameDataComponent
 {
 
@@ -43,7 +49,9 @@ public class GameProperties extends GameDataComponent
     // added.
     private final List<String> m_ordering = new ArrayList<String>();
 
-    /** Creates a new instance of Properties */
+    /** Creates a new instance of Properties
+     * @param data  game data
+     */
     public GameProperties(GameData data)
     {
         super(data);
@@ -52,6 +60,8 @@ public class GameProperties extends GameDataComponent
     /**
      * Setting a property to null has the effect of unbinding the key.
      * package access to prevent outsiders from setting properties
+     * @param key key of property
+     * @param value property
      */
     public void set(String key, Object value)
     {
@@ -67,15 +77,15 @@ public class GameProperties extends GameDataComponent
     }
 
     /**
-     * Could potentially return null. <br>
-     * The object returned should not be modified, as modifications will not
-     * appear globally.
+     *
+     * @param key referring key
+     * @return property with key or null if property is not contained in the list
+     * (The object returned should not be modified, as modifications will not appear globally.)
      */
     public Object get(String key)
     {
         if (m_editableProperties.containsKey(key))
                 return m_editableProperties.get(key).getValue();
-	
         return m_constantProperties.get(key);
     }
 
@@ -104,7 +114,7 @@ public class GameProperties extends GameDataComponent
 
     /**
      * Return list of editable properties in the order they were added.
-     * 
+     *
      * @return a list of IEditableProperty
      */
     public List<IEditableProperty> getEditableProperties()

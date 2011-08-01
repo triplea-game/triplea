@@ -14,7 +14,8 @@
 package games.strategy.engine.data.properties;
 
 
-import games.strategy.ui.*;
+import games.strategy.ui.IntTextField;
+import games.strategy.ui.IntTextFieldChangeListener;
 
 import javax.swing.JComponent;
 

@@ -32,21 +32,24 @@ import java.util.Map;
  *
  * A response to a must move query.
  * Returns a mapping of unit -> collection of units.
- * Units that must move are land units in transports, 
- * and friendly aircracft that must move with carriers.
+ * Units that must move are land units in transports,
+ * and friendly aircraft that must move with carriers.
  */
+@SuppressWarnings("serial")
 public class MustMoveWithDetails implements java.io.Serializable
 {
 	/**
 	 * Maps Unit -> Collection of units.
 	 */
 	private Map<Unit,Collection<Unit>> m_mapping;
-	
-	/** Creates new MustMoveWithReplay */
-    public MustMoveWithDetails(Map<Unit,Collection<Unit>> mapping) 
+
+	/** Creates new MustMoveWithReplay
+	 * @param mapping a mapping of unit (that must move) -> collection of units
+	 */
+    public MustMoveWithDetails(Map<Unit,Collection<Unit>> mapping)
 	{
 		m_mapping = mapping;
-	
+
     }
 
 	public Map<Unit,Collection<Unit>> getMustMoveWith()

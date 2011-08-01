@@ -19,6 +19,7 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.event.*;
 
+@SuppressWarnings("serial")
 public class ListProperty extends AEditableProperty
 {
 
@@ -27,7 +28,9 @@ public class ListProperty extends AEditableProperty
 
   /**
    *
-   * @param values A collection of Strings
+   * @param name name of the property
+   * @param defaultValue default string value
+   * @param possibleValues collection of Strings
    */
   public ListProperty(String name, String defaultValue, Collection<String> possibleValues)
   {

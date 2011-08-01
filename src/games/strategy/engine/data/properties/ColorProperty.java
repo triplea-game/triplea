@@ -28,9 +28,9 @@ import javax.swing.SwingUtilities;
 /**
  * User editable property representing a color.
  * <p>
- * Presents a clickable label with the currently selected color, 
+ * Presents a clickable label with the currently selected color,
  * through which a color swatch panel is accessable to change the color.
- * 
+ *
  * @author Lane O.B. Schwartz
  * @version $LastChangedDate$
  */
@@ -42,7 +42,7 @@ public class ColorProperty extends AEditableProperty
   private final int m_max = 0xFFFFFF;
   private final int m_min = 0x000000;
   private Color m_color;
-  
+
   public ColorProperty(String name, int def)
   {
     super(name);
@@ -60,20 +60,21 @@ public class ColorProperty extends AEditableProperty
 
   public JComponent getEditorComponent()
   {
-      final JLabel label = new JLabel(" ") {
-          public void paintComponent(Graphics g) 
+      @SuppressWarnings("serial")
+    final JLabel label = new JLabel(" ") {
+          public void paintComponent(Graphics g)
           {
               Graphics2D g2 = (Graphics2D)g;
               g2.setColor(m_color);
               g2.fill(g2.getClip());
           }
       };
-      
+
       label.addMouseListener(new MouseListener() {
           public void mouseClicked(MouseEvent e) {
               System.out.println(m_color);
               m_color = JColorChooser.showDialog(label, "Choose color", m_color);
-              
+
               // Ask Swing to repaint this label when it's convenient
               SwingUtilities.invokeLater(new Runnable()
               {
@@ -88,7 +89,7 @@ public class ColorProperty extends AEditableProperty
           public void mousePressed(MouseEvent e) {}
           public void mouseReleased(MouseEvent e) {}
       });
-      
+
       return label;
 
   }

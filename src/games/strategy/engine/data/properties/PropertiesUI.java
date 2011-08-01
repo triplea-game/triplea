@@ -14,11 +14,19 @@
 
 package games.strategy.engine.data.properties;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class PropertiesUI extends JPanel
 {
 
@@ -58,7 +66,7 @@ public class PropertiesUI extends JPanel
     init();
 
     m_properties = properties;
-    Iterator iter = m_properties.getEditableProperties().iterator();
+    Iterator<IEditableProperty> iter = m_properties.getEditableProperties().iterator();
 
     while(iter.hasNext())
     {
@@ -69,8 +77,8 @@ public class PropertiesUI extends JPanel
     		m_labelColumn += 2;
     		m_nextRow = 0;
     	}
-    	 
-      IEditableProperty property = (IEditableProperty) iter.next();
+
+      IEditableProperty property = iter.next();
       if(editable)
         addItem(property.getName(), property.getEditorComponent());
       else
@@ -130,7 +138,7 @@ public class PropertiesUI extends JPanel
       itemConstraints.anchor  = GridBagConstraints.WEST;
       //itemConstraints.fill    = GridBagConstraints.HORIZONTAL;
       itemConstraints.fill    = GridBagConstraints.NONE;
-      
+
       add(item, itemConstraints);
 
       m_nextRow++;

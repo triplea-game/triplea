@@ -1,7 +1,8 @@
 package games.strategy.triplea.delegate.dataObjects;
 
+import games.strategy.engine.data.PlayerID;
+
 import java.util.List;
-import games.strategy.engine.data.*;
 
 /**
  * <p>
@@ -16,18 +17,19 @@ import games.strategy.engine.data.*;
  * <p>
  * Company:
  * </p>
- * 
+ *
  * @author unascribed
  * @version 1.0
  */
 
+@SuppressWarnings("serial")
 public class TechResults implements java.io.Serializable
 {
 
     private int[] m_rolls;
 
     private int m_hits;
-    
+
     private int m_remainder = 0;
 
     //a list of Strings
@@ -43,17 +45,15 @@ public class TechResults implements java.io.Serializable
     }
 
     /**
-     * Was there an error?
+     * @return whether there was an error
      */
     public boolean isError()
     {
         return m_errorString != null;
     }
-    
+
     /**
-     * 
-     * The error, null if no error occured, use isError to see 
-     * if there was an error
+     * @return string error or null if no error occurred (use isError to see if there was an error)
      */
     public String getErrorString()
     {
@@ -61,9 +61,12 @@ public class TechResults implements java.io.Serializable
     }
 
     /**
-     * 
-     * @param advances -
-     *            a List of Strings
+     *
+     * @param rolls rolls
+     * @param remainder remainder
+     * @param hits number of hits
+     * @param advances a List of Strings
+     * @param id player id
      */
     public TechResults(int[] rolls, int remainder, int hits, List<String> advances, PlayerID id)
     {
@@ -95,7 +98,7 @@ public class TechResults implements java.io.Serializable
     }
 
     /**
-     * 
+     *
      * @return a List of Strings
      */
     public List<String> getAdvances()

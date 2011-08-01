@@ -18,31 +18,29 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.message.IRemote;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * Remote interface for MoveDelegate
- * 
+ *
  * @author Sean Bridges
  */
 public interface IMoveDelegate extends IAbstractMoveDelegate
 {
     /**
-     * 
+     *
      * @param units - the units to move
      * @param route - the route to move along
      * @param m_transportsThatCanBeLoaded - transports that can be loaded while moving, must be non null
-     * @return an error message if the move cant be made, null otherwise
+     * @return an error message if the move can't be made, null otherwise
      */
     public String move(Collection<Unit> units, Route route, Collection<Unit> m_transportsThatCanBeLoaded );
-    
-   
+
+
     /**
      * equivalent to move(units, route, Collections.EMPTY_LIST)
-     * 
+     *
      * @param units - the units to move
      * @param route - the route to move along
      * @return an error message if the move cant be made, null otherwise
@@ -51,10 +49,11 @@ public interface IMoveDelegate extends IAbstractMoveDelegate
 
     /**
      * Get what air units must move before the end of the players turn
-     * @return a list of Territories with air units that must move
+     * @param player referring player ID
+     * @return a list of territories with air units that must move of player ID
      */
     public Collection<Territory> getTerritoriesWhereAirCantLand(PlayerID player);
-    
+
     public Collection<Territory> getTerritoriesWhereAirCantLand();
 
     /**

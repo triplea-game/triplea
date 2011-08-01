@@ -14,13 +14,12 @@
 package games.strategy.triplea.delegate.dataObjects;
 
 import games.strategy.engine.data.TechnologyFrontier;
-import games.strategy.triplea.delegate.TechAdvance;
 
 
 /**
  * Used to describe a tech roll.
  * advance may be null if the game does not support rolling for
- * specific techs 
+ * specific techs
  */
 public class TechRoll
 {
@@ -33,24 +32,24 @@ public class TechRoll
         m_rolls = rolls;
         m_tech = advance;
     }
-    
+
     public TechRoll(TechnologyFrontier advance, int rolls, int newTokens)
     {
         m_rolls = rolls;
         m_tech = advance;
         m_newTokens = newTokens;
     }
-    
+
     public int getRolls()
     {
         return m_rolls;
     }
-    
+
     public TechnologyFrontier getTech()
     {
         return m_tech;
     }
-    
+
     public int getNewTokens()
     {
         return m_newTokens;

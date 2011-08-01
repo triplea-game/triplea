@@ -26,20 +26,23 @@ import games.strategy.engine.data.Unit;
 import java.util.Collection;
 
 
+@SuppressWarnings("serial")
 public class PlaceableUnits implements java.io.Serializable
 {
-	
+
 	private String m_errorMessage;
 	private Collection<Unit> m_units;
 	private int m_maxUnits;
-	
-	/** Creates new ProductionResponseMessage */
-    public PlaceableUnits(String errorMessage) 
+
+	/** Creates new ProductionResponseMessage
+	 * @param errorMessage error message
+	 */
+    public PlaceableUnits(String errorMessage)
 	{
 		m_errorMessage = errorMessage;
     }
 
-    public PlaceableUnits(Collection<Unit> units, int maxUnits) 
+    public PlaceableUnits(Collection<Unit> units, int maxUnits)
 	{
 		m_units = units;
 	    m_maxUnits = maxUnits;
@@ -49,27 +52,27 @@ public class PlaceableUnits implements java.io.Serializable
 	{
 		return m_units;
 	}
-	
+
 
 	/**
-     * 
+     *
      * @return -1 if no limit
 	 */
 	public int getMaxUnits()
 	{
 	    return m_maxUnits;
 	}
-	
+
 	public String getErrorMessage()
 	{
 	    return m_errorMessage;
 	}
-	
+
 	public boolean isError()
 	{
 	   return m_errorMessage != null;
 	}
-	
+
 	public String toString()
 	{
 		return "ProductionResponseMessage units:" + m_units;

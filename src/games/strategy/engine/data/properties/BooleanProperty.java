@@ -14,15 +14,17 @@
 
 package games.strategy.engine.data.properties;
 
-import javax.swing.*;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 
 public class BooleanProperty extends AEditableProperty
 {
   // compatible with 0.9.0.2 saved games
   private static final long serialVersionUID = -7265501762343216435L;
-  
+
   private boolean mValue;
 
   public BooleanProperty(String name, boolean defaultValue)
@@ -41,7 +43,7 @@ public class BooleanProperty extends AEditableProperty
   {
       mValue = aValue;
   }
-  
+
   /**
    *
    * @return component used to edit this property

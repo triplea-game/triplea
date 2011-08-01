@@ -32,9 +32,9 @@ import javax.swing.SwingUtilities;
 /**
  * User editable property representing a file.
  * <p>
- * Presents a clickable label with the currently selected file name, 
+ * Presents a clickable label with the currently selected file name,
  * through which a file dialog panel is accessible to change the file.
- * 
+ *
  * @author Lane O.B. Schwartz
  * @version $LastChangedDate$
  */
@@ -48,7 +48,7 @@ public class FileProperty extends AEditableProperty
 
     /**
      * Construct a new file property.
-     * 
+     *
      * @param name The name of the property
      * @param fileName The name of the file to be associated with this property
      */
@@ -64,17 +64,17 @@ public class FileProperty extends AEditableProperty
 
     /**
      * Gets the file associated with this property.
-     * 
+     *
      * @return The file associated with this property
      */
     public Object getValue()
-    {   
+    {
         return m_file;
     }
 
     /**
      * Gets a Swing component to display this property.
-     * 
+     *
      * @return a non-editable JTextField
      */
     public JComponent getEditorComponent()
@@ -103,7 +103,7 @@ public class FileProperty extends AEditableProperty
                         {
                             label.repaint();
                         }
-                    });   
+                    });
                 }
             }
             public void mouseEntered(MouseEvent e) {}
@@ -118,12 +118,12 @@ public class FileProperty extends AEditableProperty
 
     /**
      * Prompts the user to select a file.
-     * 
+     *
      * @param acceptableSuffixes
      * @return
      */
     private File getFileUsingDialog(final String... acceptableSuffixes) {
-        // For some strange reason, 
+        // For some strange reason,
         //    the only way to get a Mac OS X native-style file dialog
         //    is to use an AWT FileDialog instead of a Swing JDialog
         if(GameRunner.isMac())
@@ -132,19 +132,16 @@ public class FileProperty extends AEditableProperty
             fileDialog.setMode(FileDialog.LOAD);
             fileDialog.setFilenameFilter(new FilenameFilter(){
                 public boolean accept(File dir, String name)
-                {   
+                {
                     if (acceptableSuffixes==null || acceptableSuffixes.length==0)
                         return true;
-                    else
+                    for (String suffix : acceptableSuffixes)
                     {
-                        for (String suffix : acceptableSuffixes)
-                        {
-                            if (name.toLowerCase().endsWith(suffix))
-                                return true;
-                        }
-
-                        return false;
+                        if (name.toLowerCase().endsWith(suffix))
+                            return true;
                     }
+
+                    return false;
 
                 }
             });
@@ -157,53 +154,43 @@ public class FileProperty extends AEditableProperty
 
             if (fileName==null)
                 return null;
-            else
-                return new File(dirName, fileName);
+            return new File(dirName, fileName);
 
         }
-
-        // Non-Mac platforms should use the normal Swing JFileChooser
-        else
-        {
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileFilter(new FileFilter() {
-                public boolean accept(File file)
-                {   
-                    if (file==null)
-                        return false;
-                    else if (file.isDirectory())
-                        return true;
-                    else
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileFilter() {
+            public boolean accept(File file)
+            {
+                if (file==null)
+                    return false;
+                else if (file.isDirectory())
+                    return true;
+                else
+                {
+                    String name = file.getAbsolutePath().toLowerCase();
+                    for (String suffix : acceptableSuffixes)
                     {
-                        String name = file.getAbsolutePath().toLowerCase();
-                        for (String suffix : acceptableSuffixes)
-                        {
-                            if (name.endsWith(suffix))
-                                return true;
-                        }
-
-                        return false;
+                        if (name.endsWith(suffix))
+                            return true;
                     }
 
+                    return false;
                 }
 
-                public String getDescription()
-                {
-                    return Arrays.toString(acceptableSuffixes);
-                }
-            });
-
-            int rVal = fileChooser.showOpenDialog(MainFrame.getInstance());
-            if (rVal == JFileChooser.APPROVE_OPTION)
-            {
-                return fileChooser.getSelectedFile();
-            }
-            else
-            {
-                return null;
             }
 
+            public String getDescription()
+            {
+                return Arrays.toString(acceptableSuffixes);
+            }
+        });
+
+        int rVal = fileChooser.showOpenDialog(MainFrame.getInstance());
+        if (rVal == JFileChooser.APPROVE_OPTION)
+        {
+            return fileChooser.getSelectedFile();
         }
+        return null;
     }
 
 }
