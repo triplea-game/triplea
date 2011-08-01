@@ -2682,7 +2682,8 @@
 						<boolean/>
 				</property>
 
-				<property name="Two hit battleship" value="true" editable="true">
+				<!-- do not make this true -->
+				<property name="Two hit battleship" value="false" editable="false">
 						<boolean/>
 				</property>
 

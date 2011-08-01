@@ -4509,6 +4509,7 @@
 						<boolean/>
 				</property>
 
+						<!-- Only affects units exactly called "battleship" -->
 				<property name="Two hit battleship" value="true" editable="false">
 						<boolean/>
 				</property>
