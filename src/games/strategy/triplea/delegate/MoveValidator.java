@@ -1947,6 +1947,10 @@ public class MoveValidator
         	return true;
         }
         
+        if (!Match.allMatch(units, new CompositeMatchOr<Unit>(Matches.UnitIsAir, Matches.UnitIsLand))) {
+        	return true;
+        }
+        
     	for (Unit unit : Match.getMatches(units, Matches.UnitIsNotAirTransportable))
         {
             if (Matches.UnitIsLand.match(unit))

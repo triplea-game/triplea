@@ -5,8 +5,6 @@ Changes for 1.3.3.0
 
 * Some changes to how politics gets initialized. (edwin van der wal)
 
-* Fixed error related to two-hit battleships in middle earth. (veqryn)
-
 * Cleaning up of relationships, have alliances auto-create relationships based on default war or allied, and creation of relationship interpreter class. (frigoref)
 
 * Allowed basic html to be used inside unit tool tips. (veqryn)
@@ -37,6 +35,12 @@ Changes for 1.3.3.0
 * Created new unit attachment, canInvadeOnlyFrom, which determines if a unit can conduct amphibious assaults or if it has to disembark in noncombat. (edwin van der wal)
 
 * Made placements appear as a list, just like moves do, and can now be undone individually. Abstracted undoable moves and placements. (frigoref)
+
+
+Changes for 1.3.2.3
+* Fixed error where after a player got paratroopers, ships no longer had their movement validated correctly. (veqryn)
+
+* Fixed error related to two-hit battleships in middle earth. (veqryn)
 
 
 Changes for 1.3.2.2
