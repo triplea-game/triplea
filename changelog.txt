@@ -38,6 +38,8 @@ Changes for 1.3.3.0
 
 
 Changes for 1.3.2.3
+* Fixed error where allied air on defending carriers may not shoot at non-sub units under certain conditions. (veqryn)
+
 * Fixed error where after a player got paratroopers, ships no longer had their movement validated correctly. (veqryn)
 
 * Fixed error related to two-hit battleships in middle earth. (veqryn)

@@ -2442,7 +2442,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection<Unit> units = new ArrayList<Unit>(m_defendingUnits.size() + m_defendingWaitingToDie.size());
         units.addAll(m_defendingUnits);
         units.addAll(m_defendingWaitingToDie); 
-        units = Match.getMatches(units, Matches.unitIsOwnedBy(m_defender));        
+        //units = Match.getMatches(units, Matches.unitIsOwnedBy(m_defender)); //why is this here? allied air units can still shoot!        
         
         if(!canAirAttackSubs(m_attackingUnits, units))
         {
