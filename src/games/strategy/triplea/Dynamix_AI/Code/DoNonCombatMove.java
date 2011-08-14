@@ -66,7 +66,7 @@ public class DoNonCombatMove
         if (DUtils.GetTerTakeoverChanceAtEndOfTurn(data, player, ourCap) > .1F) //If our cap is in danger
         {
             float priority = DUtils.GetNCMTaskPriority_Stabalize(data, player, ourCap);
-            NCM_Task task = new NCM_Task(data, ourCap, NCM_TaskType.Reinforce_Stabilize, priority);
+            NCM_Task task = new NCM_Task(data, ourCap, NCM_TaskType.Land_Reinforce_Stabilize, priority);
             task.SetTaskRequirements(.1F); //Just get safe enough for task's to realize if they endanger cap
             task.RecruitUnits();
             if (task.IsPlannedMoveWorthwhile(Arrays.asList(task)))
@@ -214,7 +214,7 @@ public class DoNonCombatMove
         DUtils.Log(Level.FINE, "  Calculating and performing regular ncm move-to-target moves.");
         for(Territory ter : (List<Territory>)DUtils.ShuffleList(data.getMap().getTerritories()))
         {
-            if(DMatches.territoryIsOwnedByEnemy(data, player).match(ter))
+            if(!DMatches.territoryIsOwnedByXOrAlly(data, player).match(ter))
                 continue;
 
             List<Unit> terUnits = ter.getUnits().getMatches(DUtils.CompMatchAnd(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft, Matches.UnitIsNotAir));
@@ -273,7 +273,7 @@ public class DoNonCombatMove
         final GameData data = pack.Data;
         final PlayerID player = pack.Player;
         final List<Territory> ourCaps = TerritoryAttachment.getAllCapitals(player, data);
-        Match<Territory> isReinforce_Block = new Match<Territory>()
+        Match<Territory> isLand_Reinforce_Block = new Match<Territory>()
         {
             @Override
             public boolean match(Territory ter)
@@ -282,7 +282,7 @@ public class DoNonCombatMove
                     return false;
                 if(ter.isWater())
                     return false;
-                if(DUtils.GetNNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand, 1).isEmpty())
+                if(DUtils.GetNNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater, 1).isEmpty())
                     return false; //If there are no attackers
                 //If this ter was not conquered and it is not owned by us or our allies, this can't be a ter we reinforce
                 if(!DMatches.territoryIsOwnedByXOrAlly(data, player).match(ter) && !CachedInstanceCenter.CachedBattleTracker.wasConquered(ter))
@@ -291,7 +291,7 @@ public class DoNonCombatMove
                     return false;
                 if (data.getMap().getNeighbors(ter, DMatches.territoryIsOwnedByNNEnemy(data, player)).isEmpty()) //If it's not next to enemy
                     return false;
-                List<Unit> blitzers = DUtils.GetNNEnemyLUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
+                List<Unit> blitzers = DUtils.GetNNEnemyLUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
                 if(blitzers.isEmpty()) //If no enemy can blitz it
                     return false;
                 if (data.getMap().getNeighbors(ter, DMatches.terIsFriendlyEmptyAndWithoutEnemyNeighbors(data, player)).isEmpty()) //We only block when there is territory to protect from blitzing
@@ -303,7 +303,7 @@ public class DoNonCombatMove
         final List<Territory> capsAndNeighbors = new ArrayList<Territory>();
         for(Territory cap : ourCaps)
             capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(data, cap, 1));
-        Match<Territory> isReinforce_Stabilize = new Match<Territory>()
+        Match<Territory> isLand_Reinforce_Stabilize = new Match<Territory>()
         {
             @Override
             public boolean match(Territory ter)
@@ -312,7 +312,7 @@ public class DoNonCombatMove
                     return false;
                 if(ter.isWater())
                     return false;
-                if(DUtils.GetNNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand, 1).isEmpty())
+                if(DUtils.GetNNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater, 1).isEmpty())
                     return false; //If there are no attackers
                 //If this ter is not owned by us or our allies, this can't be a ter we reinforce
                 if(!DMatches.territoryIsOwnedByXOrAlly(data, player).match(ter))
@@ -331,7 +331,7 @@ public class DoNonCombatMove
                 return true;
             }
         };
-        Match<Territory> isReinforce_FrontLine = new Match<Territory>()
+        Match<Territory> isLand_Reinforce_FrontLine = new Match<Territory>()
         {
             @Override
             public boolean match(Territory ter)
@@ -381,7 +381,7 @@ public class DoNonCombatMove
                 if(uniqueEnemyNeighbors.isEmpty() && !isTerLinkBetweenFriendlies) //If this ter does not have unique enemy neighbors, and is not a link between two friendlies, we must not be a front
                     return false;
 
-                if(DUtils.GetNNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand, 1).isEmpty())
+                if(DUtils.GetNNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater, 1).isEmpty())
                     return false; //If there are no attackers
 
                 return true;
@@ -391,24 +391,24 @@ public class DoNonCombatMove
         DUtils.Log(Level.FINE, "  Beginning task creation loop.");
         for (Territory ter : tersWeCanMoveTo)
         {
-            if(isReinforce_Block.match(ter))
+            if(isLand_Reinforce_Block.match(ter))
             {
                 float priority = DUtils.GetNCMTaskPriority_Block(data, player, ter);
-                NCM_Task task = new NCM_Task(data, ter, NCM_TaskType.Reinforce_Block, priority);
+                NCM_Task task = new NCM_Task(data, ter, NCM_TaskType.Land_Reinforce_Block, priority);
                 result.add(task);
                 DUtils.Log(Level.FINER, "     Reinforce block task added. Ter: {0} Priority: {1}", ter.getName(), priority);
             }
-            else if(isReinforce_Stabilize.match(ter))
+            else if(isLand_Reinforce_Stabilize.match(ter))
             {
                 float priority = DUtils.GetNCMTaskPriority_Stabalize(data, player, ter);
-                NCM_Task task = new NCM_Task(data, ter, NCM_TaskType.Reinforce_Stabilize, priority);
+                NCM_Task task = new NCM_Task(data, ter, NCM_TaskType.Land_Reinforce_Stabilize, priority);
                 result.add(task);
                 DUtils.Log(Level.FINER, "     Reinforce stabalize task added. Ter: {0} Priority: {1}", ter.getName(), priority);
             }
-            else if(isReinforce_FrontLine.match(ter))
+            else if(isLand_Reinforce_FrontLine.match(ter))
             {
                 float priority = DUtils.GetNCMTaskPriority_Frontline(data, player, ter);
-                NCM_Task task = new NCM_Task(data, ter, NCM_TaskType.Reinforce_FrontLine, priority);
+                NCM_Task task = new NCM_Task(data, ter, NCM_TaskType.Land_Reinforce_FrontLine, priority);
                 result.add(task);
                 DUtils.Log(Level.FINER, "     Reinforce frontline task added. Ter: {0} Priority: {1}", ter.getName(), priority);
             }
@@ -486,7 +486,7 @@ public class DoNonCombatMove
                     return false;
                 if (ter.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1), Matches.unitIsEnemyOf(data, player), Matches.UnitIsNotAA)).size() > 0)
                     return false;
-                if(Match.getMatches(DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLand), Matches.UnitIsLand).size() > 0) //If we have no units that can already grab it
+                if(Match.getMatches(DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater), Matches.UnitIsLand).size() > 0) //If we have no units that can already grab it
                     return false;
                 if(data.getMap().getNeighbors(ter, DMatches.territoryIsOwnedByXOrAlly(data, player)).isEmpty()) //If this ter is within enemy territory
                     return false;
@@ -508,7 +508,7 @@ public class DoNonCombatMove
                 if (!data.getRelationshipTracker().isAllied(ter.getOwner(), player))
                     return false;
 
-                List<Unit> attackers = DUtils.GetNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
+                List<Unit> attackers = DUtils.GetNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
                 if(attackers.isEmpty())
                     return false;
 
@@ -521,7 +521,7 @@ public class DoNonCombatMove
                 if(strategy != StrategyType.Enemy_Defensive)
                     return false;
 
-                List<Unit> defenders = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLand);
+                List<Unit> defenders = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
                 defenders.removeAll(DUtils.GetTerUnitsAtEndOfTurn(data, player, ter));
                 defenders.addAll(DUtils.GetTerUnitsAtEndOfTurn(data, player, ter));
 
@@ -558,21 +558,21 @@ public class DoNonCombatMove
             if(isLandGrabCall.match(ter))
             {
                 float priority = DUtils.GetNCMCallPriority_ForLandGrab(data, player, ter);
-                NCM_Call task = new NCM_Call(data, ter, NCM_CallType.Call_ForLandGrab, priority);
+                NCM_Call task = new NCM_Call(data, ter, NCM_CallType.Land_ForLandGrab, priority);
                 result.add(task);
                 DUtils.Log(Level.FINER, "     For land grab call added. Ter: {0} Priority: {1}", ter.getName(), priority);
             }
             else if(isDefensiveFrontCall.match(ter))
             {
                 float priority = DUtils.GetNCMCallPriority_ForDefensiveFront(data, player, ter);
-                NCM_Call task = new NCM_Call(data, ter, NCM_CallType.Call_ForDefensiveFront, priority);
+                NCM_Call task = new NCM_Call(data, ter, NCM_CallType.Land_ForDefensiveFront, priority);
                 result.add(task);
                 DUtils.Log(Level.FINER, "     For defensive front call added. Ter: {0} Priority: {1}", ter.getName(), priority);
             }
             else if(isCapitalDefenseCall.match(ter))
             {
-                float priority = DUtils.GetNCMCallPriority_ForDefensiveFront(data, player, ter);
-                NCM_Call task = new NCM_Call(data, ter, NCM_CallType.Call_ForCapitalDefense, priority);
+                float priority = DUtils.GetNCMCallPriority_ForCapitalDefense(data, player, ter);
+                NCM_Call task = new NCM_Call(data, ter, NCM_CallType.Land_ForCapitalDefense, priority);
                 result.add(task);
                 DUtils.Log(Level.FINER, "     For capital defense call added. Ter: {0} Priority: {1}", ter.getName(), priority);
             }

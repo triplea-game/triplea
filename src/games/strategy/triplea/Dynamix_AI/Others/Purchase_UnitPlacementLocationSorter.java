@@ -57,7 +57,7 @@ public class Purchase_UnitPlacementLocationSorter
             if(!DMatches.territoryCanHaveUnitsPlacedOnIt(data, player).match(ter))
                 continue;
 
-            List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
+            List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
             AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.GetTerUnitsAtEndOfTurn(data, player, ter), ter, data, 500, true);
 
             int score = 0;
@@ -77,7 +77,7 @@ public class Purchase_UnitPlacementLocationSorter
                     score -= terToTargetRoute.getLength() * 5; //We like to place units at factories closer to our ncm target
             }
 
-            Territory closestEnemy = DUtils.GetClosestTerMatchingXAndHavingRouteMatchingY(data, ter, DMatches.territoryIsOwnedByNNEnemy(data, player), Matches.TerritoryIsLand);
+            Territory closestEnemy = DUtils.GetClosestTerMatchingXAndHavingRouteMatchingY(data, ter, DMatches.territoryIsOwnedByNNEnemy(data, player), Matches.TerritoryIsLandOrWater);
             if (closestEnemy != null)
             {
                 Route terToClosestEnemyRoute = CachedCalculationCenter.GetPassableLandRoute(data, ter, closestEnemy);

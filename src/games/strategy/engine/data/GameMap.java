@@ -347,6 +347,12 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
         return engine.findRoute(t1, t2);
     }
 
+    public Route getCompositeRoute_IgnoreEnd(Territory t1, Territory t2, HashMap<Match<Territory>, Integer> matches)
+    {
+        matches.put(Matches.territoryIs(t2), 0);
+        return getCompositeRoute(t1, t2, matches);
+    }
+
 	/**
 	 * Returns the distance between two territories.
 	 * Returns -1 if they are not connected.

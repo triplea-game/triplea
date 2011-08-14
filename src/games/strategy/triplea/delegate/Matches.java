@@ -1717,6 +1717,38 @@ public class Matches
     		}
     	};
     }
+    
+    public static Match<Unit> unitIsTransporting()
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unit)
+            {
+                Collection<Unit> transporting = TripleAUnit.get(unit).getTransporting();
+                if(transporting == null || transporting.isEmpty())
+                    return false;
+                return true;
+            }
+        };
+    }
+    
+    public static Match<Unit> unitHasEnoughTransportSpaceLeft(final int spaceNeeded)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unit)
+            {
+                UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
+                int loadCost = 0;
+                for (Unit cargo : TripleAUnit.get(unit).getTransporting())
+                    loadCost += UnitAttachment.get(cargo.getUnitType()).getTransportCost();
+                if (ua.getTransportCapacity() - loadCost >= spaceNeeded)
+                    return true;
+                else
+                    return false;
+            }
+        };
+    }
 
     public static Match<Unit> unitIsTransportingSomeCategories(final Collection<Unit> units)
     {
@@ -2047,10 +2079,9 @@ public class Matches
         {
             public boolean match(Territory t)
             {
-                return !t.getUnits().allMatch( enemyUnit(player,data));
+                return t.getUnits().allMatch(alliedUnit(player,data));
             }
         };
-
     }
 
     public static Match<Territory> territoryHasNoAlliedUnits(final PlayerID player, final GameData data)
@@ -2059,7 +2090,7 @@ public class Matches
         {
             public boolean match(Territory t)
             {
-                return !t.getUnits().someMatch( alliedUnit(player,data));
+                return t.getUnits().allMatch(enemyUnit(player,data));
             }
         };
     }

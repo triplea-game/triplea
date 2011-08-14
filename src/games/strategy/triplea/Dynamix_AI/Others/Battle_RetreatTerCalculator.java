@@ -57,7 +57,8 @@ public class Battle_RetreatTerCalculator
                 score += 100000;
 
             score += newSurvivalChance * 10000;
-            score += DUtils.GetValueOfLandTer(ter, data, player);
+            if(!ter.isWater())
+                score += DUtils.GetValueOfLandTer(ter, data, player);
 
             if(score > highestScore)
             {

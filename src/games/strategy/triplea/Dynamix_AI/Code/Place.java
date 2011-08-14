@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import javax.swing.SwingUtilities;
 
@@ -249,6 +250,17 @@ public class Place
     private static boolean doPlace(Dynamix_AI ai, Territory ter, Collection<Unit> units, IAbstractPlaceDelegate placer)
     {
         DUtils.Log(Level.FINER, "    Placing units. Territory: {0} Units: {1}", ter, DUtils.UnitList_ToString(units));
+        
+        //Temporary hack to get ships placed down. Later, I will code this correctly
+        if(units.size() > 0 && UnitAttachment.get(units.iterator().next().getUnitType()).isSea() && GlobalCenter.CurrentPlayer.getData().getMap().getNeighbors(ter, Matches.TerritoryIsWater).size() > 0)
+        {
+            Set<Territory> openPorts = ter.getData().getMap().getNeighbors(ter, DUtils.CompMatchAnd(Matches.TerritoryIsWater, Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyOf(ter.getData(), ter.getOwner())).invert()));
+            if (openPorts.size() > 0)
+                ter = openPorts.iterator().next();
+            else
+                ter = GlobalCenter.CurrentPlayer.getData().getMap().getNeighbors(ter, Matches.TerritoryIsWater).iterator().next();
+        }
+        
         String message = placer.placeUnits(new ArrayList<Unit>(units), ter);
         if (message != null)
         {

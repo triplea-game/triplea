@@ -146,12 +146,12 @@ public class NCM_Call
     private float m_minSurvivalChance = 0.0F;
     public void CalculateCallRequirements()
     {
-        if(m_callType.equals(NCM_CallType.Call_ForLandGrab))
+        if(m_callType.equals(NCM_CallType.Land_ForLandGrab))
             return; //Only one unit needed for land grab call
 
-        if (m_callType == NCM_CallType.Call_ForDefensiveFront)
+        if (m_callType == NCM_CallType.Land_ForDefensiveFront)
             m_minSurvivalChance = .75F;
-        else if(m_callType == NCM_CallType.Call_ForCapitalDefense)
+        else if(m_callType == NCM_CallType.Land_ForCapitalDefense)
             m_minSurvivalChance = 1.0F;
         //DUtils.Log(Level.FINER, "    NCM Call requirements calculated. Min Survival Chance: {0}", m_minSurvivalChance);
     }
@@ -165,7 +165,7 @@ public class NCM_Call
 
     private float getMeetingOfMinSurvivalChanceScore(AggregateResults simulatedAttack, float minSurvivalChance)
     {
-        if(m_callType.equals(NCM_CallType.Call_ForLandGrab))
+        if(m_callType.equals(NCM_CallType.Land_ForLandGrab))
         {
             if(m_recruitedUnits.size() > 0)
                 return 1.0F; //Has reached, but not exceeded
@@ -178,7 +178,7 @@ public class NCM_Call
 
     private float getMeetingOfMaxBattleVolleysScore(AggregateResults simulatedAttack, int maxBattleVolleys)
     {
-        if(m_callType.equals(NCM_CallType.Call_ForLandGrab))
+        if(m_callType.equals(NCM_CallType.Land_ForLandGrab))
         {
             if(m_recruitedUnits.size() > 0)
                 return 1.0F; //Has reached, but not exceeded
@@ -197,7 +197,7 @@ public class NCM_Call
 
     public void RecruitUnits2()
     {
-        if(m_callType.equals(NCM_CallType.Call_ForLandGrab) && m_recruitedUnits.size() > 0)
+        if(m_callType.equals(NCM_CallType.Land_ForLandGrab) && m_recruitedUnits.size() > 0)
             return; //Only one unit needed for land grab call
 
         float minSurvivalChance = .90F;
@@ -208,7 +208,7 @@ public class NCM_Call
 
     public void RecruitUnits3()
     {
-        if(m_callType.equals(NCM_CallType.Call_ForLandGrab) && m_recruitedUnits.size() > 0)
+        if(m_callType.equals(NCM_CallType.Land_ForLandGrab) && m_recruitedUnits.size() > 0)
             return; //Only one unit needed for land grab call
 
         float minSurvivalChance = 1.0F;
@@ -228,7 +228,7 @@ public class NCM_Call
             if(m_recruitedUnits.contains(ug)) //If already recruited
                 continue;
 
-            List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
+            List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
             List<Unit> defenders = GetRecruitedUnitsAsUnitList();
             defenders.addAll(DUtils.GetUnitsGoingToBePlacedAtX(m_data, GlobalCenter.CurrentPlayer, m_target));
             if(!DSettings.LoadSettings().AA_ignoreAlliedUnitsAsDefenses)
@@ -263,7 +263,7 @@ public class NCM_Call
             if(m_recruitedUnits.contains(ug)) //If already recruited
                 continue;
 
-            List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
+            List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
             List<Unit> defenders = GetRecruitedUnitsAsUnitList();
             defenders.addAll(DUtils.GetUnitsGoingToBePlacedAtX(m_data, GlobalCenter.CurrentPlayer, m_target));
             if(!DSettings.LoadSettings().AA_ignoreAlliedUnitsAsDefenses)
@@ -348,7 +348,7 @@ public class NCM_Call
             }
         }
 
-        List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
+        List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
         List<Unit> defenders = GetRecruitedUnitsAsUnitList();
         defenders.addAll(DUtils.GetUnitsGoingToBePlacedAtX(m_data, GlobalCenter.CurrentPlayer, m_target));
         if (!DSettings.LoadSettings().AA_ignoreAlliedUnitsAsDefenses)
@@ -359,7 +359,7 @@ public class NCM_Call
         AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile, true);
         DUtils.Log(Level.FINEST, "        Enemy attack simulated. Attackers Size: {0} Defenders Size: {1} Takeover Chance: {2}", attackers.size(), defenders.size(), simulatedAttack.getAttackerWinPercent());
 
-        if (m_callType.equals(NCM_CallType.Call_ForDefensiveFront))
+        if (m_callType.equals(NCM_CallType.Land_ForDefensiveFront))
         {
             float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, m_minSurvivalChance);
             DUtils.Log(Level.FINEST, "        How close to meeting min survival chance: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, .98F);
@@ -369,7 +369,7 @@ public class NCM_Call
 
             return true; //We've met all requirements
         }
-        else if (m_callType.equals(NCM_CallType.Call_ForCapitalDefense))
+        else if (m_callType.equals(NCM_CallType.Land_ForCapitalDefense))
         {
             float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, m_minSurvivalChance);
             DUtils.Log(Level.FINEST, "        How close to meeting min survival chance: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, .98F);
@@ -391,7 +391,7 @@ public class NCM_Call
             int unitCost = DUtils.GetTUVOfUnits(GetRecruitedUnitsAsUnitList(), GlobalCenter.GetPUResource());
             TerritoryAttachment ta = TerritoryAttachment.get(m_target);
 
-            List<Unit> landAttackers = DUtils.GetNNEnemyLUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
+            List<Unit> landAttackers = DUtils.GetNNEnemyLUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
 
             if (unitCost - 1 <= ta.getProduction() || landAttackers.isEmpty())
                 return true;

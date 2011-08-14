@@ -19,16 +19,24 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
 import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
 import games.strategy.triplea.Dynamix_AI.Others.TerritoryStatus;
+import games.strategy.triplea.Properties;
+import games.strategy.triplea.attatchments.CanalAttachment;
+import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Some notes on the matches in this class:
@@ -317,7 +325,8 @@ public class DMatches
         {
             public boolean match(Territory t)
             {
-                if(!data.getRelationshipTracker().isAllied(player, t.getOwner()))
+                //Note that first block was added so that water is not considered 'enemy' territory (technically 'neutral', but is really ownerless)
+                if(!(t.isWater() && t.getOwner().isNull()) && data.getRelationshipTracker().isAtWar(player, t.getOwner()))
                     return true;
                 return false;
             }
@@ -329,7 +338,7 @@ public class DMatches
         {
             public boolean match(Territory t)
             {
-                if(!t.getOwner().isNull() && !data.getRelationshipTracker().isAllied(player, t.getOwner()))
+                if(!t.getOwner().isNull() && data.getRelationshipTracker().isAtWar(player, t.getOwner()))
                     return true;
                 return false;
             }
@@ -351,9 +360,47 @@ public class DMatches
         return new Match<Territory>()
         {
             public boolean match(Territory ter)
-            {
-                return !ter.isWater() && player.equals(ter.getOwner());
-            }
+    		{
+    			GameData data = player.getData();
+    			if (Matches.TerritoryIsImpassable.match(ter))
+    				return false;
+            	if(!Properties.getMovementByTerritoryRestricted(data))
+            		return true;
+
+            	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+            	if(ra == null || ra.getMovementRestrictionTerritories() == null)
+            		return true;
+
+            	String movementRestrictionType = ra.getMovementRestrictionType();
+            	Collection<Territory> listedTerritories = ra.getListedTerritories(ra.getMovementRestrictionTerritories());
+            	return (movementRestrictionType.equals("allowed") == listedTerritories.contains(ter));
+    		}
+        };
+    }
+    public static Match<Territory> territoryIsWaterAndPassableTo(final PlayerID player)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory ter)
+    		{
+                if(!ter.isWater())
+                    return false;
+                GameData data = player.getData();
+                for(CanalAttachment attachment : CanalAttachment.get(ter))
+                {
+                    if (attachment == null)
+                        continue;
+                    for (Territory borderTerritory : attachment.getLandTerritories())
+                    {
+                        if (!data.getRelationshipTracker().isAllied(player, borderTerritory.getOwner()))
+                            return false;
+                        if (MoveDelegate.getBattleTracker(data).wasConquered(borderTerritory))
+                            return false;
+                    }
+                }
+                
+                return true;                
+    		}
         };
     }
     public static Match<Territory> territoryIsLandAndOwnedBy(final PlayerID player)

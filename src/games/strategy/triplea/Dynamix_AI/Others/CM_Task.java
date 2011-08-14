@@ -19,7 +19,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedCalculationCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
@@ -38,12 +37,10 @@ import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
-import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -138,13 +135,13 @@ public class CM_Task
         
         List<Unit> sortedPossibles = DUtils.ToList(possibles.keySet());
         //For now, shuffle
-        Collections.shuffle(sortedPossibles);
+        //Collections.shuffle(sortedPossibles);
         //Then interleave infantry and artillery (or any unit with support/support receiving)
         //sortedPossibles = DUtils.ToList(BattleCalculator.sortUnitsForCasualtiesWithSupport(sortedPossibles, false, GlobalCenter.CurrentPlayer, BattleCalculator.getCosts(GlobalCenter.CurrentPlayer, m_data), m_data, false));
         //Then sort by score. In this way, equal scored attack units are shuffled (Though atm the hashmap sorting method seems to shuffle them up even if they're equally scored, so we comment out the other line)
         sortedPossibles = DSorting.SortListByScores_HashMap_D(sortedPossibles, possibles);
 
-        if(m_taskType.equals(CM_TaskType.LandGrab) && sortedPossibles.size() > 0) //Only one unit needed for land grab
+        if(m_taskType.equals(CM_TaskType.Land_LandGrab) && sortedPossibles.size() > 0) //Only one unit needed for land grab
             return DUtils.CreateUnitGroupsForUnits(Collections.singletonList(sortedPossibles.get(0)), unitLocations.get(sortedPossibles.get(0)), m_data);
 
         //Now put the units into UnitGroups and return the list
@@ -164,10 +161,10 @@ public class CM_Task
     private float m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired = 0.0F;
     public void CalculateTaskRequirements()
     {
-        if(m_taskType.equals(CM_TaskType.LandGrab))
+        if(m_taskType.equals(CM_TaskType.Land_LandGrab))
             return; //Only one unit needed for land grab
 
-        if (m_taskType == CM_TaskType.Attack_Offensive)
+        if (m_taskType == CM_TaskType.Land_Attack_Offensive)
         {
             if (m_target.getOwner().isNull())
             {
@@ -188,7 +185,7 @@ public class CM_Task
                 m_minCounterAttackTradeScoreForBypass = DSettings.LoadSettings().TR_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement;
             }
         }
-        else if (m_taskType == CM_TaskType.Attack_Stabilize)
+        else if (m_taskType == CM_TaskType.Land_Attack_Stabilize)
         {
             if (m_target.getOwner().isNull()){}
             else if (DUtils.GetAllEnemyCaps_ThatAreOwnedByOriginalOwner(m_data, GlobalCenter.CurrentPlayer).contains(m_target)){}
@@ -199,7 +196,7 @@ public class CM_Task
                 m_minCounterAttackTradeScoreForBypass = DSettings.LoadSettings().TR_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement;
             }
         }
-        else if (m_taskType == CM_TaskType.Attack_Trade)
+        else if (m_taskType == CM_TaskType.Land_Attack_Trade)
         {
             if (m_target.getOwner().isNull())
             {
@@ -226,7 +223,7 @@ public class CM_Task
 
     private float getMeetingOfMinTakeoverChance(AggregateResults simulatedAttack, float minTakeoverChance)
     {
-        if(m_taskType.equals(CM_TaskType.LandGrab))
+        if(m_taskType.equals(CM_TaskType.Land_LandGrab))
         {
             if(m_recruitedUnits.size() > 0)
                 return 1.0F; //Has reached, but not exceeded
@@ -239,7 +236,7 @@ public class CM_Task
 
     private float getMeetingOfMinSurvivalChance(AggregateResults simulatedResponse, float minSurvivalChance)
     {
-        if(m_taskType.equals(CM_TaskType.LandGrab))
+        if(m_taskType.equals(CM_TaskType.Land_LandGrab))
         {
             if(m_recruitedUnits.size() > 0)
                 return 1.0F; //Has reached, but not exceeded
@@ -252,7 +249,7 @@ public class CM_Task
 
     private float getMeetingOfMaxBattleVolleysScore(AggregateResults simulatedAttack, int maxBattleVolleys)
     {
-        if(m_taskType.equals(CM_TaskType.LandGrab))
+        if(m_taskType.equals(CM_TaskType.Land_LandGrab))
         {
             if(m_recruitedUnits.size() > 0)
                 return 1.0F; //Has reached, but not exceeded
@@ -266,7 +263,7 @@ public class CM_Task
     private List<UnitGroup> m_recruitedUnits = new ArrayList<UnitGroup>();
     public void RecruitUnits()
     {
-        if(m_taskType.equals(CM_TaskType.Attack_Trade))
+        if(m_taskType.equals(CM_TaskType.Land_Attack_Trade))
         {
             recruitEnoughUnitsForTradeTask(m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired, false);
             return;
@@ -277,9 +274,9 @@ public class CM_Task
 
     public void RecruitUnits2()
     {
-        if(m_taskType.equals(CM_TaskType.LandGrab) && m_recruitedUnits.size() > 0)
+        if(m_taskType.equals(CM_TaskType.Land_LandGrab) && m_recruitedUnits.size() > 0)
             return; //We only need one unit
-        if(m_taskType.equals(CM_TaskType.Attack_Trade))
+        if(m_taskType.equals(CM_TaskType.Land_Attack_Trade))
         {
             //recruitEnoughUnitsForTradeTask(m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired, false);
             return;
@@ -289,7 +286,7 @@ public class CM_Task
         float minSurvivalChance;
         int maxBattleVolleys = 5;
 
-        if (m_taskType == CM_TaskType.Attack_Offensive)
+        if (m_taskType == CM_TaskType.Land_Attack_Offensive)
         {
             minTakeoverChance = .85F;
             minSurvivalChance = .65F;
@@ -305,9 +302,9 @@ public class CM_Task
 
     public void RecruitUnits3()
     {
-        if(m_taskType.equals(CM_TaskType.LandGrab) && m_recruitedUnits.size() > 0)
+        if(m_taskType.equals(CM_TaskType.Land_LandGrab) && m_recruitedUnits.size() > 0)
             return; //We only need one unit
-        if(m_taskType.equals(CM_TaskType.Attack_Trade))
+        if(m_taskType.equals(CM_TaskType.Land_Attack_Trade))
         {
             //recruitEnoughUnitsForTradeTask(m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired, false);
             return;
@@ -317,7 +314,7 @@ public class CM_Task
         float minSurvivalChance;
         int maxBattleVolleys = 3;
 
-        if (m_taskType == CM_TaskType.Attack_Offensive)
+        if (m_taskType == CM_TaskType.Land_Attack_Offensive)
         {
             minTakeoverChance = .95F;
             minSurvivalChance = .75F;
@@ -333,9 +330,9 @@ public class CM_Task
 
     public void RecruitUnits4()
     {
-        if(m_taskType.equals(CM_TaskType.LandGrab) && m_recruitedUnits.size() > 0)
+        if(m_taskType.equals(CM_TaskType.Land_LandGrab) && m_recruitedUnits.size() > 0)
             return; //We only need one unit
-        if(m_taskType.equals(CM_TaskType.Attack_Trade))
+        if(m_taskType.equals(CM_TaskType.Land_Attack_Trade))
         {
             recruitEnoughUnitsForTradeTask(m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired, true);
             return;
@@ -604,7 +601,7 @@ public class CM_Task
         }
 
         //This code block stops certain attacks on enemies that are calculated to be ones we use the Enemy_Defensive strategy on
-        if (m_taskType == CM_TaskType.Attack_Offensive || m_taskType == CM_TaskType.Attack_Trade)
+        if (m_taskType == CM_TaskType.Land_Attack_Offensive || m_taskType == CM_TaskType.Land_Attack_Trade)
         {
             GameData data = m_target.getData();
             Territory closestToTargetEnemyCap = DUtils.GetClosestTerInList(data, DUtils.GetAllEnemyCaps_ThatAreOwnedByOriginalOwner(data, player), m_target);
@@ -644,7 +641,7 @@ public class CM_Task
             return false;
 
         List<Territory> ourCaps = DUtils.GetAllOurCaps(m_data, player);
-        if (!m_taskType.equals(CM_TaskType.LandGrab)) //If this is a land grab, we don't care if the cap is in danger (We can move the unit back)
+        if (!m_taskType.equals(CM_TaskType.Land_LandGrab)) //If this is a land grab, we don't care if the cap is in danger (We can move the unit back)
         {
             List<Territory> capsAndNeighbors = new ArrayList<Territory>();
             for (Territory cap : ourCaps)
@@ -691,7 +688,7 @@ public class CM_Task
         DUtils.Log(Level.FINEST, "        Attack simulated. Attackers Size: {0} Defenders Size: {1} Takeover Chance: {2}", attackers.size(), defenders.size(), simulatedAttack.getAttackerWinPercent());
         DUtils.Log(Level.FINEST, "        Counter attack simulated. Attackers Size: {0} Defenders Size: {1} Takeover Chance: {2}", responseAttackers.size(), responseDefenders.size(), simulatedResponse.getAttackerWinPercent());
 
-        if (m_taskType == CM_TaskType.Attack_Offensive)
+        if (m_taskType == CM_TaskType.Land_Attack_Offensive)
         {
             //Commented this out so after trade task is performed, a regular attack can be performed 'on top'
             //if(StatusCenter.get(m_data, player).GetStatusOfTerritory(m_target).WasAttacked())
@@ -724,7 +721,7 @@ public class CM_Task
 
             return true; //We've met all requirements
         }
-        else if (m_taskType.equals(m_taskType.Attack_Stabilize))
+        else if (m_taskType.equals(CM_TaskType.Land_Attack_Stabilize))
         {
             float howCloseToMeetingTakeoverChanceMin = getMeetingOfMinTakeoverChance(simulatedAttack, m_minTakeoverChance);
             DUtils.Log(Level.FINEST, "        How close to meeting takeover chance min: {0} Needed: {1}", .98F);
@@ -748,7 +745,7 @@ public class CM_Task
 
             return true; //We've met all requirements
         }
-        else if(m_taskType == CM_TaskType.Attack_Trade)
+        else if(m_taskType == CM_TaskType.Land_Attack_Trade)
         {
             if(StatusCenter.get(m_data, player).GetStatusOfTerritory(m_target).WasAttacked())
                 return false; //Another attack (of another type) was already done on this ter
@@ -807,7 +804,7 @@ public class CM_Task
             int unitCost = DUtils.GetTUVOfUnits(GetRecruitedUnitsAsUnitList(), GlobalCenter.GetPUResource());
             TerritoryAttachment ta = TerritoryAttachment.get(m_target);
 
-            List<Unit> landAttackers = DUtils.GetNNEnemyLUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
+            List<Unit> landAttackers = DUtils.GetNNEnemyLUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
             int cheapestLAttacker = 0;
             if(landAttackers.size() > 0)
                 cheapestLAttacker = DUtils.GetTUVOfUnit(DUtils.GetCheapestUnitInList(landAttackers), GlobalCenter.GetPUResource());
@@ -836,7 +833,7 @@ public class CM_Task
         PlayerID player = GlobalCenter.CurrentPlayer;
 
         List<Territory> ourCaps = DUtils.GetAllOurCaps(m_data, player);
-        if (!m_taskType.equals(CM_TaskType.LandGrab)) //If this is a land grab, we don't care if the cap is in danger (We can move the unit back)
+        if (!m_taskType.equals(CM_TaskType.Land_LandGrab)) //If this is a land grab, we don't care if the cap is in danger (We can move the unit back)
         {
             List<Territory> capsAndNeighbors = new ArrayList<Territory>();
             for (Territory cap : ourCaps)
@@ -893,7 +890,7 @@ public class CM_Task
     {
         PlayerID player = GlobalCenter.CurrentPlayer;
 
-        if (m_taskType == CM_TaskType.Attack_Offensive)
+        if (m_taskType == CM_TaskType.Land_Attack_Offensive)
         {
             ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation(); //We want to invalidate threats only if this task REALLY DOES resist ALL ENEMIES, including INVALIDATED ones.
             AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 250, true);
@@ -906,11 +903,11 @@ public class CM_Task
             if (simulatedResponse.getDefenderWinPercent() > .4F)
             {
                 ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats, m_target);
-                //DUtils.Log(Level.FINER, "      Attack_Offensive task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
+                //DUtils.Log(Level.FINER, "      Land_Attack_Offensive task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
             }
             ThreatInvalidationCenter.get(m_data, player).ResumeThreatInvalidation();
         }
-        else if (m_taskType == CM_TaskType.Attack_Stabilize)
+        else if (m_taskType == CM_TaskType.Land_Attack_Stabilize)
         {
             ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation(); //We want to invalidate threats only if this task REALLY DOES resist ALL ENEMIES, including INVALIDATED ones.
             AggregateResults simulatedAttack = DUtils.GetBattleResults(GetRecruitedUnitsAsUnitList(), DUtils.ToList(m_target.getUnits().getMatches(Matches.unitIsEnemyOf(m_data, GlobalCenter.CurrentPlayer))), m_target, m_data, 250, true);
@@ -923,7 +920,7 @@ public class CM_Task
             if (simulatedResponse.getDefenderWinPercent() > .4F)
             {
                 ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats, m_target);
-                //DUtils.Log(Level.FINER, "      Attack_Stabalize task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
+                //DUtils.Log(Level.FINER, "      Land_Attack_Stabalize task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
             }
             ThreatInvalidationCenter.get(m_data, player).ResumeThreatInvalidation();
         }
@@ -980,7 +977,7 @@ public class CM_Task
         ReconsiderSignalCenter.get(m_data, GlobalCenter.CurrentPlayer).ObjectsToReconsider.addAll(CachedInstanceCenter.CachedGameData.getMap().getNeighbors(m_target));
         m_completed = true;
 
-        if(m_taskType.equals(CM_TaskType.Attack_Offensive) || m_taskType.equals(CM_TaskType.Attack_Stabilize))
+        if(m_taskType.equals(CM_TaskType.Land_Attack_Offensive) || m_taskType.equals(CM_TaskType.Land_Attack_Stabilize))
             TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).BattleRetreatChanceAssignments.put(m_target, m_minTakeoverChance);
 
         StatusCenter.get(m_data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(m_target).NotifyTaskPerform(this);

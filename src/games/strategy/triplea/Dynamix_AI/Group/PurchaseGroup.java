@@ -66,7 +66,7 @@ public class PurchaseGroup
         m_generatedRules.clear();
         m_generatedSampleUnits.clear();
         m_totalPurchasePrice = 0;
-
+        
         int totalUnitRulesCosts = 0;
         for (Unit unit : m_units)
         {
@@ -79,6 +79,10 @@ public class PurchaseGroup
                 }
             }
         }
+        
+        if(totalUnitRulesCosts == 0)
+            return; //Try to buy a unit that can't be bought
+        
         int timesUnitsCanBeBought = (m_maxPurchaseCost / totalUnitRulesCosts);
         int timesEachUnitShouldBeBought = Math.min(timesUnitsCanBeBought, m_maxPurchaseCount / m_units.size());
         timesEachUnitShouldBeBought = Math.max(timesEachUnitShouldBeBought, 1); //Buy at least one

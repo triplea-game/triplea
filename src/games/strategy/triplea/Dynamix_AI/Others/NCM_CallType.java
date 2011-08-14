@@ -11,8 +11,8 @@ package games.strategy.triplea.Dynamix_AI.Others;
  */
 public enum NCM_CallType
 {
-    Call_ForLandGrab,
-    Call_ForDefensiveFront,
-    Call_ForCapitalDefense,
+    Land_ForLandGrab,
+    Land_ForDefensiveFront,
+    Land_ForCapitalDefense,
     Empty
 }

@@ -20,9 +20,9 @@ package games.strategy.triplea.Dynamix_AI.Others;
  */
 public enum CM_TaskType
 {
-     LandGrab,
-     Attack_Stabilize,
-     Attack_Offensive,
-     Attack_Trade,
+     Land_LandGrab,
+     Land_Attack_Stabilize,
+     Land_Attack_Offensive,
+     Land_Attack_Trade,
      Empty
 }

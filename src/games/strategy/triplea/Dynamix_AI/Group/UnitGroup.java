@@ -125,11 +125,11 @@ public class UnitGroup
         }
         else if(sea)
         {
-            m_cmRouteMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, m_data));
+            m_cmRouteMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player));//, Matches.territoryHasNoEnemyUnits(player, m_data));
         }
         else
         {
-            m_cmRouteMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.territoryHasNoEnemyUnits(player, m_data));
+            m_cmRouteMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand);//, Matches.territoryHasNoEnemyUnits(player, m_data));
         }
 
         if(air)
@@ -141,10 +141,11 @@ public class UnitGroup
         else if(sea)
         {
             m_ncmCRouteMatches = new HashMap<Match<Territory>, Integer>();
-            m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasUnitsOwnedBy(player)), 10); //We love sea with our units, cause we can control the movement
-            m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyOf(m_data, player).invert())), 15); //Allied is ok, but they could move
-            m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, m_data)), 20); //Enemy free is fine
-            m_ncmCRouteMatches.put(Matches.TerritoryIsWater, 25); //We don't like having to go through enemies
+            m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player), Matches.territoryHasUnitsOwnedBy(player)), 10); //We love sea with our units, cause we can control the movement
+            m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player), Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyOf(m_data, player).invert())), 15); //Allied is ok, but they could move
+            m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player), Matches.territoryHasNoEnemyUnits(player, m_data)), 20); //Enemy free is fine
+            m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player)), 100); //Ters with enemies, but without having to go through enemy canals, is second worst
+            m_ncmCRouteMatches.put(Matches.TerritoryIsWater, 1000000); //Finally, we add the any-sea match, which we unfortunately can't get through... (Well, unless we conquer enemies and canals)
         }
         else
         {
@@ -223,11 +224,12 @@ public class UnitGroup
      */
     public Route GetNCMRoute(Territory target, boolean extraChecks)
     {
-        Route route = m_data.getMap().getCompositeRoute(m_fromTer, target, m_ncmCRouteMatches);
+        Route route = m_data.getMap().getCompositeRoute_IgnoreEnd(m_fromTer, target, m_ncmCRouteMatches);
         if (route == null || route.getTerritories() == null || route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName()))
             return null;
 
         int slowest = DUtils.GetSlowestMovementUnitInList(new ArrayList<Unit>(m_units));
+            
         if(slowest < 1)
             return null;
         if(UnitAttachment.get(GetFirstUnit().getUnitType()).isAir())
@@ -425,7 +427,17 @@ public class UnitGroup
         if (unitsToMove.isEmpty())
             return "Move prepared, though there are no un-frozen units to move!";
 
-        String moveError = mover.move(unitsToMove, route);
+        
+        
+        //Hack, for transport code
+        Collection<Unit> tUnits = route.getEnd().getUnits().getMatches(DUtils.CompMatchAnd(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.unitHasEnoughTransportSpaceLeft(1), Matches.unitIsOwnedBy(GlobalCenter.CurrentPlayer)));
+        String moveError = mover.move(unitsToMove, route, tUnits);
+        
+        if (moveError != null) //Now do it the normal way
+            moveError = mover.move(unitsToMove, route);
+        
+        
+        
         if (moveError != null)
             return moveError;
 

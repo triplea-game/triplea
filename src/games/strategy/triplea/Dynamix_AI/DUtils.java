@@ -27,6 +27,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedCalculationCenter;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedCalculationCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.FactoryCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StrategyCenter;
@@ -133,6 +134,11 @@ public class DUtils
         }
 
         return result;
+    }
+    /**Shortcut for CachedCalculationCenter.GetMapTersFromPoint*/
+    public static List<Territory> GetMapTersFromPoint(Territory target)
+    {
+        return CachedCalculationCenter.GetMapTersFromPoint(target);
     }
     public static List<Unit> GetUnitsOnMap(GameData data)
     {        
@@ -451,7 +457,8 @@ public class DUtils
         Collections.shuffle(rules);
         for (ProductionRule rule : rules)
         {
-            Unit unit = ((UnitType) rule.getResults().keySet().toArray()[0]).create(player);
+            Object[] unitTypes = rule.getResults().keySet().toArray();
+            Unit unit = ((UnitType)PickRandom(unitTypes)).create(player);
             if (match.match(unit))
                 return unit;
         }
@@ -556,7 +563,7 @@ public class DUtils
     }
     
     /**
-     * this can return null, if either ters is empty or none of the territories match
+     * This can return null, if either ters is empty or none of the territories match
      */
     public static Territory GetRandomTerritoryMatchingXInList(Collection<Territory> ters, Match<Territory> match)
     {
@@ -571,8 +578,25 @@ public class DUtils
         if (list.isEmpty())
         	return null;
         
-        return list.get(new Random().nextInt(list.size()));
+        return (Territory)PickRandom(list);
     }
+    
+    /**
+     * Returns a random object from the list supplied.
+     */
+    public static Object PickRandom(Collection list)
+    {
+        return PickRandom(list.toArray());
+    }
+    
+    /**
+     * Returns a random object from the array supplied.
+     */
+    public static Object PickRandom(Object[] array)
+    {
+        return array[new Random().nextInt(array.length)];
+    }
+    
     public static Match CompMatchAnd(Match ... matches)
     {
         return new CompositeMatchAnd(matches);
@@ -595,7 +619,7 @@ public class DUtils
     }
     public static List<Territory> GetEnemyLandTersThatCanBeAttackedByLandUnitsOwnedBy(GameData data, PlayerID player)
     {
-        return GetTersMatchingXThatCanBeAttackedByUnitsMatchingYInTersMatchingZ(data, player, CompMatchAnd(Matches.TerritoryIsLand, DMatches.territoryIsOwnedByEnemy(data, player)), DMatches.territoryIsOwnedByEnemy(data, player).invert(), Matches.unitIsLandAndOwnedBy(player));
+        return GetTersMatchingXThatCanBeAttackedByUnitsMatchingYInTersMatchingZ(data, player, CompMatchAnd(Matches.TerritoryIsLandOrWater, DMatches.territoryIsOwnedByEnemy(data, player)), DMatches.territoryIsOwnedByEnemy(data, player).invert(), Matches.unitIsLandAndOwnedBy(player));
     }
     public static List<Territory> GetEnemySeaTersThatCanBeAttackedByUnitsOwnedBy(GameData data, PlayerID player)
     {
@@ -618,7 +642,7 @@ public class DUtils
     }
     public static List<Territory> GetEnemyLandTersThatCanBeAttackedByLandUnitsInList(GameData data, PlayerID player, List<Unit> units, Territory territory)
     {
-        List<Territory> attackLocs = DUtils.GetTersThatUnitsCanReach(data, Match.getMatches(units, Matches.UnitIsLand), territory, player, new CompositeMatchAnd<Territory>(DMatches.territoryIsOwnedByNNEnemy(data, player), Matches.TerritoryIsLand));
+        List<Territory> attackLocs = DUtils.GetTersThatUnitsCanReach(data, Match.getMatches(units, Matches.UnitIsLand), territory, player, new CompositeMatchAnd<Territory>(DMatches.territoryIsOwnedByNNEnemy(data, player), Matches.TerritoryIsLandOrWater));
 
         List<Territory> result = new ArrayList<Territory>();
         for (Territory ter : attackLocs)
@@ -727,7 +751,9 @@ public class DUtils
             TripleAUnit tu = TripleAUnit.get(unit);
             if (tu.getMovementLeft() < lowestMovement)
             {
-                lowestMovement = tu.getMovementLeft();
+                //If like was added so units on transport wouldn't slow transport down
+                if(TripleAUnit.get(unit).getTransportedBy() == null || !list.contains(TripleAUnit.get(unit).getTransportedBy()))
+                    lowestMovement = tu.getMovementLeft();
             }
         }
         if(lowestMovement == Integer.MAX_VALUE)
@@ -1004,12 +1030,19 @@ public class DUtils
             }
             else
             {
+                //Sea unit on land
             }
         }
         else
         {
             if (ter.isWater())
             {
+                //Land unit on a transport
+                if(ua.isAA() && GlobalCenter.CurrentPhaseType != GlobalCenter.CurrentPhaseType.Non_Combat_Move)
+                    return false; //AA's can't move unless in ncm phase
+                Route route = DUtils.GetAttackRouteFromXToY_ByLand_CountZAsPassthroughs(data, player, ter, target, passthroughTers);
+                if (route != null && ta.getMovementLeft() >= route.getLength())
+                    return true;
             }
             else
             {
@@ -1330,6 +1363,12 @@ public class DUtils
     {
         float priority = 750F; //TODO
         priority += GetValueOfLandTer(ter, data, player);
+        return priority;
+    }
+    public static float GetNCMTaskPriority_ConflictedContinent(GameData data, PlayerID player, Territory ter)
+    {
+        float priority = -500F; //TODO
+        priority += GetValueOfLandTer(ter, data, player) * 1000;
         return priority;
     }
     public static float GetNCMCallPriority_ForLandGrab(GameData data, PlayerID player, Territory ter)
@@ -1673,17 +1712,17 @@ public class DUtils
         if(TacticalCenter.get(data, GlobalCenter.CurrentPlayer).GetFrozenUnits().contains(unit))
             movementLeft = 0;
 
-        if (task.GetTaskType() == CM_TaskType.Attack_Offensive)
+        if (task.GetTaskType() == CM_TaskType.Land_Attack_Offensive)
         {
             List<Territory> targets = DUtils.GetTersThatUnitsCanReach(data, Collections.singletonList(unit), ter, GlobalCenter.CurrentPlayer, CompMatchAnd(Matches.TerritoryIsLand, DMatches.territoryIsOwnedByNNEnemy(data, GlobalCenter.CurrentPlayer)));
             result -= targets.size(); //We want low-attack target units to attack
         }
-        else if (task.GetTaskType() == CM_TaskType.Attack_Stabilize)
+        else if (task.GetTaskType() == CM_TaskType.Land_Attack_Stabilize)
         {
             List<Territory> targets = DUtils.GetTersThatUnitsCanReach(data, Collections.singletonList(unit), ter, GlobalCenter.CurrentPlayer, CompMatchAnd(Matches.TerritoryIsLand, DMatches.territoryIsOwnedByNNEnemy(data, GlobalCenter.CurrentPlayer)));
             result -= targets.size(); //We want low-attack target units to attack
         }
-        else if (task.GetTaskType() == CM_TaskType.LandGrab)
+        else if (task.GetTaskType() == CM_TaskType.Land_LandGrab)
         {
             if(ua.isAir())
                 return Integer.MIN_VALUE;
@@ -1698,7 +1737,7 @@ public class DUtils
             result += movementAfterBlitz * 10; //We want ones that can blitz away the most to attack
             result -= dist; //If two halftracks match, we want the closer but with less movement one to blitz it
         }
-        else if(task.GetTaskType() == CM_TaskType.Attack_Trade)
+        else if(task.GetTaskType() == CM_TaskType.Land_Attack_Trade)
         {
             //Unit pairing or interlacing is, or will be, done in the CM_Task class for trade attacks
         }
@@ -1724,13 +1763,13 @@ public class DUtils
         if(TacticalCenter.get(data, GlobalCenter.CurrentPlayer).GetFrozenUnits().contains(unit))
             movementLeft = 0;
 
-        if(task.GetTaskType().equals(NCM_TaskType.Reinforce_Block))
+        if(task.GetTaskType().equals(NCM_TaskType.Land_Reinforce_Block))
         {
             if (ua.isAir())
                 return Integer.MIN_VALUE;
             result -= tuv; //We will lose unit, so send cheapest
         }
-        else if(task.GetTaskType().equals(NCM_TaskType.Reinforce_FrontLine))
+        else if(task.GetTaskType().equals(NCM_TaskType.Land_Reinforce_FrontLine))
         {
             if (ua.isAir())
                 return Integer.MIN_VALUE;
@@ -1745,7 +1784,7 @@ public class DUtils
             if(ua.isAA() && task.GetTarget().getUnits().getMatches(Matches.UnitIsFactory).size() > 0 && task.GetTarget().getUnits().getMatches(Matches.UnitIsAA).isEmpty())
                 result += 10;
         }
-        else if (task.GetTaskType().equals(NCM_TaskType.Reinforce_Stabilize))
+        else if (task.GetTaskType().equals(NCM_TaskType.Land_Reinforce_Stabilize))
         {
             if (ua.isAir())
                 return Integer.MIN_VALUE;
@@ -1780,7 +1819,7 @@ public class DUtils
         if(TacticalCenter.get(data, GlobalCenter.CurrentPlayer).GetFrozenUnits().contains(unit))
             movementLeft = 0;
 
-        if(call.GetCallType().equals(NCM_CallType.Call_ForDefensiveFront))
+        if(call.GetCallType().equals(NCM_CallType.Land_ForDefensiveFront))
         {
             if (ua.isAir())
                 return Integer.MIN_VALUE;
@@ -1792,7 +1831,7 @@ public class DUtils
             
             result -= turnsToGetThere; //We want to call units there as quickly as possible
         }
-        else if(call.GetCallType().equals(NCM_CallType.Call_ForLandGrab))
+        else if(call.GetCallType().equals(NCM_CallType.Land_ForLandGrab))
         {
             if (ua.isAir())
                 return Integer.MIN_VALUE;
@@ -1804,7 +1843,7 @@ public class DUtils
             
             result -= turnsToGetThere; //We want to call units there as quickly as possible
         }
-        else if(call.GetCallType().equals(NCM_CallType.Call_ForCapitalDefense))
+        else if(call.GetCallType().equals(NCM_CallType.Land_ForCapitalDefense))
         {
             if (ua.isAir())
                 return Integer.MIN_VALUE;
@@ -1949,7 +1988,7 @@ public class DUtils
      */
     public static float GetVulnerabilityOfArmy(GameData data, PlayerID player, Territory ter, List<Unit> defendUnits, int calcRuns)
     {
-        List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
+        List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
         possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
         AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defendUnits, ter, data, calcRuns, true);
 
@@ -1961,7 +2000,7 @@ public class DUtils
      */
     public static float GetSurvivalChanceOfArmy(GameData data, PlayerID player, Territory ter, Collection<Unit> defendUnits, int calcRuns)
     {
-        List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
+        List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
         possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
         AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defendUnits, ter, data, calcRuns, true);
 
@@ -2022,7 +2061,7 @@ public class DUtils
             if(!ter.isWater())
                 continue;
 
-            List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLand);
+            List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
             possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.UnitIsAir));
 
             if(possibleAttackers.size() > 0)
@@ -2036,7 +2075,8 @@ public class DUtils
     }
     public static UnitType GetRandomUnitType()
     {
-        return (UnitType)GlobalCenter.GetMergedAndAveragedProductionFrontier().getRules().get(0).getResults().keySet().iterator().next();
+        List<ProductionRule> rules = GlobalCenter.GetMergedAndAveragedProductionFrontier().getRules();
+        return (UnitType)((ProductionRule)PickRandom(rules)).getResults().keySet().iterator().next();
     }
     /**
      * Runs simulated battles numerous times and returns an AggregateResults object that lists the percent of times the attacker won, lost, etc.
@@ -2187,7 +2227,7 @@ public class DUtils
         for (Territory ter : route.getTerritories())
         {
             newTers.add(ter);
-            if (match.match(ter))
+            if (match.match(ter) && i != 0) //It's okay if the from ter doesn't match (you can always come out-of a territory)
                 break;
             i++;
             if (i > newRouteJumpCount)
@@ -2205,7 +2245,7 @@ public class DUtils
         int i = 0;
         for(Territory ter : route.getTerritories())
         {
-            if(match.match(ter))
+            if(match.match(ter) && i != 0) //It's okay if the from ter doesn't match (you can always come out-of a territory)
                 break;
             newTers.add(ter);
             i++;
@@ -2389,8 +2429,10 @@ public class DUtils
     public static List<Unit> GetNUnitsMatchingXThatCanReach_CountYAsPassthroughs(final GameData data, Territory target, Match<Territory> terMatch, Match<Unit> unitMatch, List<Territory> passthroughTers, int maxResults)
     {
         List<Unit> result = new ArrayList<Unit>();
-        for (Territory ter : data.getMap().getTerritories())
+        for (Territory ter : GetMapTersFromPoint(target))
         {
+            if(CachedCalculationCenter.GetRoute(data, ter, target).getLength() > GlobalCenter.FastestUnitMovement)
+                break; //We started search from point checking ters outward, so if out of range, the rest is too
             if(!terMatch.match(ter))
                 continue;
 
@@ -2420,8 +2462,10 @@ public class DUtils
     public static HashMap<Territory, List<Unit>> GetUnitsMatchingXThatCanReach_Mapped_CountYAsPassthroughs(final GameData data, Territory target, Match<Territory> terMatch, Match<Unit> unitMatch, List<Territory> passthroughTers)
     {
         HashMap<Territory, List<Unit>> result = new HashMap<Territory, List<Unit>>();
-        for (Territory ter : data.getMap().getTerritories())
+        for (Territory ter : GetMapTersFromPoint(target))
         {
+            if(CachedCalculationCenter.GetRoute(data, ter, target).getLength() > GlobalCenter.FastestUnitMovement)
+                break; //We started search from point checking ters outward, so if out of range, the rest is too
             if(!terMatch.match(ter))
                 continue;
 
@@ -2725,7 +2769,7 @@ public class DUtils
             if (survivalChance != 0.0F)
             {
                 //TODO: If we find all attackers, we cause airplane determining endless loop. Current hack: Only figure in land units that can attack
-                List<Unit> attackers = GetSPNNEnemyBasedOnLUnitsOnlyThatCanReach(data, ter, airUnit.getOwner(), Matches.TerritoryIsLand);
+                List<Unit> attackers = GetSPNNEnemyBasedOnLUnitsOnlyThatCanReach(data, ter, airUnit.getOwner(), Matches.TerritoryIsLandOrWater);
                 List<Unit> defenders = ToList(ter.getUnits().getUnits());
                 if(data.getRelationshipTracker().isAtWar(airUnit.getOwner(), GlobalCenter.CurrentPlayer)) //If we're checking if an enemy plane can land
                 {
@@ -2906,7 +2950,7 @@ public class DUtils
     }
     public static List<Unit> DetermineResponseAttackers(GameData data, PlayerID player, Territory battleTer, AggregateResults results)
     {
-        List<Unit> responseAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, battleTer, player, Matches.TerritoryIsLand);
+        List<Unit> responseAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, battleTer, player, Matches.TerritoryIsLandOrWater);
         responseAttackers.removeAll(battleTer.getUnits().getUnits());
         return responseAttackers;
     }    
@@ -2928,7 +2972,7 @@ public class DUtils
     public static float GetTerTakeoverChance(GameData data, PlayerID player, Territory ter)
     {
         List<Unit> oldCapDefenders = new ArrayList<Unit>(ter.getUnits().getUnits()); //Cap defenders before move
-        List<Unit> oldCapAttackers = DUtils.GetSPNNEnemyWithLUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand); //Cap attackers before move
+        List<Unit> oldCapAttackers = DUtils.GetSPNNEnemyWithLUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater); //Cap attackers before move
 
         AggregateResults oldResults = DUtils.GetBattleResults(oldCapAttackers, oldCapDefenders, ter, data, 1000, true); //Takeover results before move
 
@@ -2940,7 +2984,7 @@ public class DUtils
     public static float GetTerTakeoverChanceAtEndOfTurn(GameData data, PlayerID player, Territory ter)
     {
         List<Unit> oldTerDefenders = GetTerUnitsAtEndOfTurn(data, player, ter);
-        List<Unit> oldTerAttackers = DUtils.GetSPNNEnemyWithLUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand); //Cap attackers before move
+        List<Unit> oldTerAttackers = DUtils.GetSPNNEnemyWithLUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater); //Cap attackers before move
 
         AggregateResults oldResults = DUtils.GetBattleResults(oldTerAttackers, oldTerDefenders, ter, data, 1000, true); //Takeover results before move
 
@@ -3015,7 +3059,7 @@ public class DUtils
 
         List<Unit> oldTerDefenders = new ArrayList<Unit>(terToCheck.getUnits().getUnits()); //Ter defenders before move
         oldTerDefenders.addAll(goingToBePlaced);
-        List<Unit> oldTerAttackers = DUtils.GetSPNNEnemyWithLUnitsThatCanReach(data, terToCheck, player, Matches.TerritoryIsLand); //Ter attackers before move
+        List<Unit> oldTerAttackers = DUtils.GetSPNNEnemyWithLUnitsThatCanReach(data, terToCheck, player, Matches.TerritoryIsLandOrWater); //Ter attackers before move
         
         AggregateResults oldResults = DUtils.GetBattleResults(oldTerAttackers, oldTerDefenders, terToCheck, data, calcAmount, true); //Takeover results before move
         
@@ -3027,7 +3071,7 @@ public class DUtils
             newTerDefenders.addAll(unitsToMove);
         }
 
-        List<Unit> newTerAttackers = DUtils.GetSPNNEnemyWithLUnitsThatCanReach_CountXAsPassthroughs(data, terToCheck, player, CompMatchAnd(Matches.TerritoryIsLand, Matches.territoryIsNotInList(movedToTers)), movedFromTersThatBecomeEmpty); //Ter attackers after move
+        List<Unit> newTerAttackers = DUtils.GetSPNNEnemyWithLUnitsThatCanReach_CountXAsPassthroughs(data, terToCheck, player, CompMatchAnd(Matches.TerritoryIsLandOrWater, Matches.territoryIsNotInList(movedToTers)), movedFromTersThatBecomeEmpty); //Ter attackers after move
         
         //Now look through the old attack-from enemy territories, and remove the units from the list of new attackers if the attack route will be blocked after the move
         List<Territory> attackFromLocs = DUtils.GetEnemyTerritoriesWithinXLandDistanceThatHaveEnemyUnitsThatCanAttack(terToCheck, data, player, GlobalCenter.FastestUnitMovement);

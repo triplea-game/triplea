@@ -38,7 +38,6 @@ import java.util.*;
  */
 public abstract class Match<T>
 {
-
 	/**
 	 * A match that always returns true.
 	 */

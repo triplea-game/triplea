@@ -32,6 +32,7 @@ import games.strategy.triplea.Dynamix_AI.DSorting;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -40,6 +41,7 @@ import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -118,14 +120,15 @@ public class NCM_Task
                 continue;
             
             for (Unit unit : units)
-            {                
+            {
                 if (Matches.UnitIsAA.match(unit))
                 {
+                    //NOTE: AA movement is currently disabled. Uncomment below to re-enable.
                     //If this is an AA and we've already added an AA as a recruit or (the from ter has a factory and this is the only AA), skip AA
-                    if (addedAA || (ter.getUnits().getMatches(Matches.UnitIsFactory).size() > 0 && ter.getUnits().getMatches(Matches.UnitIsAA).size() <= 1))
+                    //if (addedAA || (ter.getUnits().getMatches(Matches.UnitIsFactory).size() > 0 && ter.getUnits().getMatches(Matches.UnitIsAA).size() <= 1))
                         continue;
-                    else
-                        addedAA = true;
+                    //else
+                    //    addedAA = true;
                 }
                 int suitability = DUtils.HowWellIsUnitSuitedToTask(m_data, this, ter, unit);
                 if(suitability == Integer.MIN_VALUE)
@@ -137,10 +140,10 @@ public class NCM_Task
 
         List<Unit> sortedPossibles = DUtils.ToList(possibles.keySet());
         //For now, shuffle,
-        Collections.shuffle(sortedPossibles);
+        //Collections.shuffle(sortedPossibles);
         //Then sort by score. In this way, equal scored attack units are shuffled
         sortedPossibles = DSorting.SortListByScores_List_D(sortedPossibles, possibles.values());
-
+        
         //Now put the units into UnitGroups and return the list
         List<UnitGroup> result = new ArrayList<UnitGroup>();
         for(Unit unit : sortedPossibles)
@@ -151,12 +154,12 @@ public class NCM_Task
     private float m_minSurvivalChance = 0.0F;
     public void CalculateTaskRequirements()
     {
-        if (m_taskType.equals(NCM_TaskType.Reinforce_Block))
+        if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Block))
             return; //Only one unit needed for block
 
-        if (m_taskType == NCM_TaskType.Reinforce_FrontLine)
+        if (m_taskType == NCM_TaskType.Land_Reinforce_FrontLine)
             m_minSurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceFrontLine_enemyAttackSurvivalChanceRequired);
-        else if (m_taskType.equals(m_taskType.Reinforce_Stabilize))
+        else if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Stabilize))
             m_minSurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceStabalize_enemyAttackSurvivalChanceRequired);
 
         //DUtils.Log(Level.FINER, "    NCM Task requirements calculated. Min Survival Chance: {0}", m_minSurvivalChance);
@@ -171,7 +174,7 @@ public class NCM_Task
 
     private float getMeetingOfMinSurvivalChanceScore(AggregateResults simulatedAttack, float minSurvivalChance)
     {
-        if(m_taskType.equals(NCM_TaskType.Reinforce_Block))
+        if(m_taskType.equals(NCM_TaskType.Land_Reinforce_Block))
         {
             if(m_recruitedUnits.size() > 0)
                 return 1.0F; //Has reached, but not exceeded
@@ -184,7 +187,7 @@ public class NCM_Task
 
     private float getMeetingOfMaxBattleVolleysScore(AggregateResults simulatedAttack, int maxBattleVolleys)
     {
-        if(m_taskType.equals(NCM_TaskType.Reinforce_Block))
+        if(m_taskType.equals(NCM_TaskType.Land_Reinforce_Block))
         {
             if(m_recruitedUnits.size() > 0)
                 return 1.0F; //Has reached, but not exceeded
@@ -203,7 +206,7 @@ public class NCM_Task
 
     public void RecruitUnits2()
     {
-        if(m_taskType.equals(NCM_TaskType.Reinforce_Block) && m_recruitedUnits.size() > 0)
+        if(m_taskType.equals(NCM_TaskType.Land_Reinforce_Block) && m_recruitedUnits.size() > 0)
             return; //We only need one unit
 
         float minSurvivalChance = .8F;
@@ -214,7 +217,7 @@ public class NCM_Task
 
     public void RecruitUnits3()
     {
-        if(m_taskType.equals(NCM_TaskType.Reinforce_Block) && m_recruitedUnits.size() > 0)
+        if(m_taskType.equals(NCM_TaskType.Land_Reinforce_Block) && m_recruitedUnits.size() > 0)
             return; //We only need one unit
 
         float minSurvivalChance = .9F;
@@ -225,7 +228,7 @@ public class NCM_Task
 
     public void RecruitUnits4()
     {
-        if(m_taskType.equals(NCM_TaskType.Reinforce_Block) && m_recruitedUnits.size() > 0)
+        if(m_taskType.equals(NCM_TaskType.Land_Reinforce_Block) && m_recruitedUnits.size() > 0)
             return; //We only need one unit
 
         float minSurvivalChance = 1.0F;
@@ -245,7 +248,7 @@ public class NCM_Task
             if(m_recruitedUnits.contains(ug)) //If already recruited
                 continue;
 
-            List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
+            List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
             List<Unit> defenders = GetRecruitedUnitsAsUnitList();
             defenders.addAll(DUtils.GetUnitsGoingToBePlacedAtX(m_data, GlobalCenter.CurrentPlayer, m_target));
             if(!DSettings.LoadSettings().AA_ignoreAlliedUnitsAsDefenses)
@@ -280,7 +283,7 @@ public class NCM_Task
             if(m_recruitedUnits.contains(ug)) //If already recruited
                 continue;
 
-            List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
+            List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
             List<Unit> defenders = GetRecruitedUnitsAsUnitList();
             defenders.addAll(DUtils.GetUnitsGoingToBePlacedAtX(m_data, GlobalCenter.CurrentPlayer, m_target));
             if(!DSettings.LoadSettings().AA_ignoreAlliedUnitsAsDefenses)
@@ -365,7 +368,7 @@ public class NCM_Task
             }
         }
 
-        List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
+        List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
         List<Unit> defenders = GetRecruitedUnitsAsUnitList();
         defenders.addAll(DUtils.GetUnitsGoingToBePlacedAtX(m_data, GlobalCenter.CurrentPlayer, m_target));
         if (!DSettings.LoadSettings().AA_ignoreAlliedUnitsAsDefenses)
@@ -376,7 +379,7 @@ public class NCM_Task
         AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile, true);
         DUtils.Log(Level.FINEST, "        Enemy attack simulated. Attackers Size: {0} Defenders Size: {1} Takeover Chance: {2}", attackers.size(), defenders.size(), simulatedAttack.getAttackerWinPercent());
 
-        if (m_taskType.equals(m_taskType.Reinforce_Block))
+        if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Block))
         {
             if(m_recruitedUnits.isEmpty())
                 return false;
@@ -389,7 +392,7 @@ public class NCM_Task
 
             return true;
         }
-        else if (m_taskType.equals(NCM_TaskType.Reinforce_FrontLine))
+        else if (m_taskType.equals(NCM_TaskType.Land_Reinforce_FrontLine))
         {
             float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, m_minSurvivalChance);
             if(StatusCenter.get(m_data, player).GetStatusOfTerritory(m_target).WasAttacked_Stabalize || StatusCenter.get(m_data, player).GetStatusOfTerritory(m_target).WasAttacked_Offensive)
@@ -408,7 +411,7 @@ public class NCM_Task
 
             return true; //We've met all requirements
         }
-        else
+        else if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Stabilize))
         {
             float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, m_minSurvivalChance);
             DUtils.Log(Level.FINEST, "        How close to meeting min survival chance: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, .98F);
@@ -424,6 +427,10 @@ public class NCM_Task
             }
 
             return true; //We've met all requirements
+        }
+        else
+        {
+            return false; //Shouldn't happen        
         }
     }
 
@@ -500,20 +507,20 @@ public class NCM_Task
         }
 
         //Have the frontline move to a safe frontline territory, if existing, otherwise, move to safest neighbor.
-        if (m_taskType.equals(NCM_TaskType.Reinforce_FrontLine))
+        if (m_taskType.equals(NCM_TaskType.Land_Reinforce_FrontLine))
         {
             Territory bestRetreatTer = null;
             float bestRetreatTerScore = Integer.MIN_VALUE;
             for(NCM_Task task : (List<NCM_Task>)DUtils.ShuffleList(allTasks)) //Shuffle, so our retreat isn't predicatable
             {
-                if(task.IsCompleted() && (task.GetTaskType().equals(NCM_TaskType.Reinforce_FrontLine) || task.GetTaskType().equals(NCM_TaskType.Reinforce_Stabilize)))
+                if(task.IsCompleted() && (task.GetTaskType().equals(NCM_TaskType.Land_Reinforce_FrontLine) || task.GetTaskType().equals(NCM_TaskType.Land_Reinforce_Stabilize)))
                 {
                     Route ncmRoute = m_data.getMap().getLandRoute(m_target, task.GetTarget());
                     if (ncmRoute == null)
                         continue;
                     if (Match.allMatch(retreatUnits, DMatches.UnitGroupHasEnoughMovement_All(ncmRoute.getLength()))) //If this is a valid, reachable frontline territory
                     {
-                        List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, task.GetTarget(), GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
+                        List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, task.GetTarget(), GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
                         possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
                         List<Unit> defenders = DUtils.GetTerUnitsAtEndOfTurn(m_data, player, task.GetTarget());
                         defenders.retainAll(TacticalCenter.get(m_data, player).GetFrozenUnits()); //Only count units that have been frozen here
@@ -549,7 +556,7 @@ public class NCM_Task
                         continue;
                     if (Match.allMatch(retreatUnits, DMatches.UnitGroupHasEnoughMovement_All(ncmRoute.getLength()))) //If this is a valid, reachable reinforce ter
                     {
-                        List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach_CountXAsPassthroughs(m_data, ter, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand, Collections.singletonList(m_target));
+                        List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach_CountXAsPassthroughs(m_data, ter, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater, Collections.singletonList(m_target));
                         possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
                         List<Unit> defenders = DUtils.GetTerUnitsAtEndOfTurn(m_data, player, ter);
                         defenders.retainAll(TacticalCenter.get(m_data, player).GetFrozenUnits()); //Only count units that have been frozen here
@@ -625,7 +632,7 @@ public class NCM_Task
             else
                 DUtils.Log(Level.FINER, "      No retreat to ter found for for task. Target: {0} Recruits: {1} Retreat Units: {2}", m_target, m_recruitedUnits, DUtils.UnitGroupList_ToString(retreatUnits));
         }
-        else if(m_taskType.equals(NCM_TaskType.Reinforce_Stabilize))
+        else if(m_taskType.equals(NCM_TaskType.Land_Reinforce_Stabilize))
         {
             Territory bestRetreatTer = null;
             float bestRetreatTerScore = Integer.MIN_VALUE;
@@ -651,7 +658,7 @@ public class NCM_Task
                         continue;
                     if (Match.allMatch(retreatUnits, DMatches.UnitGroupHasEnoughMovement_All(ncmRoute.getLength()))) //If this is a valid, reachable reinforce ter
                     {
-                        List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach_CountXAsPassthroughs(m_data, ter, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand, Collections.singletonList(m_target));
+                        List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach_CountXAsPassthroughs(m_data, ter, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater, Collections.singletonList(m_target));
                         possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
                         //Note that since this ter was not a reinforce_task ter(well, at least not a successful one), it is most likely within our territory
                         List<Unit> defenders = DUtils.GetTerUnitsAtEndOfTurn(m_data, player, ter);
@@ -745,9 +752,9 @@ public class NCM_Task
         if(m_target.getUnits().getMatches(Matches.UnitIsFactory).size() > 0) //If this is a factory ter, don't invalidate it's threats (we don't want to attack neighbors that get taken over from fact ters
             return;
 
-        if(m_taskType == NCM_TaskType.Reinforce_FrontLine)
+        if(m_taskType == NCM_TaskType.Land_Reinforce_FrontLine)
         {
-            List<Unit> threats = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
+            List<Unit> threats = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
             if(threats.isEmpty()) //No threats to invalidate
                 return;
             List<Unit> defenders = GetRecruitedUnitsAsUnitList();
@@ -757,12 +764,12 @@ public class NCM_Task
             if (simulatedAttack.getDefenderWinPercent() > .4F)
             {
                 ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats, m_target);
-                //DUtils.Log(Level.FINER, "      Reinforce_Frontline task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
+                //DUtils.Log(Level.FINER, "      Land_Reinforce_Frontline task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
             }
         }
-        else if (m_taskType == NCM_TaskType.Reinforce_Stabilize)
+        else if (m_taskType == NCM_TaskType.Land_Reinforce_Stabilize)
         {
-            List<Unit> threats = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand);
+            List<Unit> threats = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
             if(threats.isEmpty()) //No threats to invalidate
                 return;
             List<Unit> defenders = GetRecruitedUnitsAsUnitList();
@@ -772,7 +779,7 @@ public class NCM_Task
             if (simulatedAttack.getDefenderWinPercent() > .4F)
             {
                 ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats, m_target);
-                //DUtils.Log(Level.FINER, "      Reinforce_Stabalize task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
+                //DUtils.Log(Level.FINER, "      Land_Reinforce_Stabalize task succeeded with enough defense, so invalidating threats resisted by this task. Target: {0} Units Invalidated: {1}", m_target, threats);
             }
         }
     }
@@ -801,7 +808,7 @@ public class NCM_Task
         }
         UnitGroup.EnableMoveBuffering();
         boolean anythingMoved = false;
-        for(UnitGroup ug : m_recruitedUnits)
+        for (UnitGroup ug : m_recruitedUnits)
         {
             if (ug.GetMovedTo() != null)
                 continue; //If this recruit has already moved
@@ -814,15 +821,16 @@ public class NCM_Task
                 anythingMoved = true;
             }
         }
-        if(!anythingMoved)
+
+        if (!anythingMoved)
         {
             m_disqualified = true;
             return;
         }
-        if(!m_completed) //Only pause if this is the initial attack group
+        if (!m_completed) //Only pause if this is the initial attack group
             Dynamix_AI.Pause();
         String errors = UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
-        if(errors != null)
+        if (errors != null)
         {
             DUtils.Log(Level.FINER, "      Some errors occurred while performing moves: {0}", errors);
             m_disqualified = true;

@@ -186,7 +186,7 @@ public class Purchase
                             continue;
                         if (ter.getUnits().someMatch(Matches.UnitIsFactory)) //It already has a factory
                             continue;
-                        List<Unit> attackers = DUtils.GetSPNNEnemyWithLUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLand);
+                        List<Unit> attackers = DUtils.GetSPNNEnemyWithLUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
                         List<Unit> defenders = new ArrayList<Unit>(ter.getUnits().getUnits());
                         AggregateResults results = DUtils.GetBattleResults(attackers, defenders, ter, data, 250, true);
 
@@ -352,7 +352,12 @@ public class Purchase
     {
         Territory ncmTarget = NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), new ArrayList<NCM_Task>());
         if(ncmTarget == null) //No ncm target, so buy random units
-            return new PurchaseGroup(Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player, DUtils.CompMatchAnd(Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotFactory))), purchaser, data, player);
+        {
+            if (data.getMap().getNeighbors(ter, DUtils.CompMatchAnd(Matches.TerritoryIsWater, Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyOf(data, player)).invert())).size() > 0) //Has a safe port
+                return new PurchaseGroup(Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player, DUtils.CompMatchAnd(Matches.UnitIsNotAA, Matches.UnitIsNotFactory))), purchaser, data, player);
+            else
+                return new PurchaseGroup(Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player, DUtils.CompMatchAnd(Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotFactory))), purchaser, data, player);
+        }
 
         Integer productionSpaceLeft = DUtils.GetCheckedUnitProduction(ter);
         if(FactoryCenter.get(data, player).ChosenAAPlaceTerritories.contains(ter)) //If we're going to build an AA here

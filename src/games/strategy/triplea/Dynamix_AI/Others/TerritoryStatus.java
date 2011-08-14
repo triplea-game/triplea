@@ -49,23 +49,23 @@ public class TerritoryStatus
 
     public void NotifyTaskPerform(CM_Task task)
     {
-        if (task.GetTaskType() == task.GetTaskType().LandGrab)
+        if (task.GetTaskType() == CM_TaskType.Land_LandGrab)
             WasAttacked_LandGrab = true;
-        else if (task.GetTaskType() == task.GetTaskType().Attack_Stabilize)
+        else if (task.GetTaskType() == CM_TaskType.Land_Attack_Stabilize)
             WasAttacked_Stabalize = true;
-        else if (task.GetTaskType() == task.GetTaskType().Attack_Offensive)
+        else if (task.GetTaskType() == CM_TaskType.Land_Attack_Offensive)
             WasAttacked_Offensive = true;
-        else if (task.GetTaskType() == task.GetTaskType().Attack_Trade)
+        else if (task.GetTaskType() == CM_TaskType.Land_Attack_Trade)
             WasAttacked_Trade = true;
     }
 
     public void NotifyTaskPerform(NCM_Task task)
     {
-        if (task.GetTaskType() == task.GetTaskType().Reinforce_Block)
+        if (task.GetTaskType() == NCM_TaskType.Land_Reinforce_Block)
             WasReinforced_Block = true;
-        else if (task.GetTaskType() == task.GetTaskType().Reinforce_FrontLine)
+        else if (task.GetTaskType() == NCM_TaskType.Land_Reinforce_FrontLine)
             WasReinforced_Frontline = true;
-        else if (task.GetTaskType() == task.GetTaskType().Reinforce_Stabilize)
+        else if (task.GetTaskType() == NCM_TaskType.Land_Reinforce_Stabilize)
             WasReinforced_Stabalize = true;
     }
 }
