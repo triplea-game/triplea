@@ -2079,7 +2079,7 @@ public class Matches
         {
             public boolean match(Territory t)
             {
-                return t.getUnits().allMatch(alliedUnit(player,data));
+                return !t.getUnits().someMatch(enemyUnit(player,data));
             }
         };
     }
@@ -2090,7 +2090,7 @@ public class Matches
         {
             public boolean match(Territory t)
             {
-                return t.getUnits().allMatch(enemyUnit(player,data));
+                return !t.getUnits().someMatch(alliedUnit(player,data));
             }
         };
     }
