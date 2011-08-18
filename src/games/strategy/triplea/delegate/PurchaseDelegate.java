@@ -84,7 +84,8 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
     {
         super.start(aBridge, gameData);
         if(games.strategy.triplea.Properties.getTriggers(m_data)) {
-        	TriggerAttachment.triggerProductionChange(m_player,m_bridge,m_data); 
+        	TriggerAttachment.triggerProductionChange(m_player,m_bridge,m_data);
+        	TriggerAttachment.triggerProductionFrontierEditChange(m_player, m_bridge, m_data);
         	TriggerAttachment.triggerPurchase(m_player,m_bridge,m_data);
         }
     }

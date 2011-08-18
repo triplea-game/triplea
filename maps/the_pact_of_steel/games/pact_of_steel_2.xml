@@ -654,18 +654,18 @@
                         <!-- Bidding Phase -->
                         <step name="italiansBid" delegate="bid" player="Italians" maxRunCount="1"/>
                         <step name="italiansBidPlace" delegate="placeBid" player="Italians" maxRunCount="1"/>
-                        <step name="germanBid" delegate="bid" player="Germans" maxRunCount="1"/>
-                        <step name="germanBidPlace" delegate="placeBid" player="Germans" maxRunCount="1"/>
-                        <step name="japaneseBid" delegate="bid" player="Japanese" maxRunCount="1"/>
-                        <step name="japaneseBidPlace" delegate="placeBid" player="Japanese" maxRunCount="1"/>
                         <step name="russianBid" delegate="bid" player="Russians" maxRunCount="1"/>
                         <step name="russianBidPlace" delegate="placeBid" player="Russians" maxRunCount="1"/>
+                        <step name="germanBid" delegate="bid" player="Germans" maxRunCount="1"/>
+                        <step name="germanBidPlace" delegate="placeBid" player="Germans" maxRunCount="1"/>
                         <step name="britishBid" delegate="bid" player="British" maxRunCount="1"/>
                         <step name="britishBidPlace" delegate="placeBid" player="British" maxRunCount="1"/>
-						<step name="chineseBid" delegate="bid" player="Chinese" maxRunCount="1"/>
-						<step name="chineseBidPlace" delegate="placeBid" player="Chinese" maxRunCount="1"/>
+                        <step name="japaneseBid" delegate="bid" player="Japanese" maxRunCount="1"/>
+                        <step name="japaneseBidPlace" delegate="placeBid" player="Japanese" maxRunCount="1"/>
                         <step name="americanBid" delegate="bid" player="Americans" maxRunCount="1"/>
                         <step name="americanBidPlace" delegate="placeBid" player="Americans" maxRunCount="1"/>
+						<step name="chineseBid" delegate="bid" player="Chinese" maxRunCount="1"/>
+						<step name="chineseBidPlace" delegate="placeBid" player="Chinese" maxRunCount="1"/>
 
 						<!-- it is generally a good idea to put tech activation at the end of the turn, for balancing reasons -->
                         <!-- Italians Game Sequence -->
@@ -866,8 +866,60 @@
                         <result resourceOrUnit="aaGun" quantity="1"/>
                 </productionRule>
 
+                <!-- SHIPYARD PRICES -->
+					<!-- Shipyards production rules are only needed if you are using the "shipyards" tech AND have the shipyards game option ON. -->
+                <productionRule name="buyTransportShipyards">
+                        <cost resource="PUs" quantity="6" />
+                        <result resourceOrUnit="transport" quantity="1"/>
+                </productionRule>
+				
+                <productionRule name="buyJP_TransportShipyards">
+                        <cost resource="PUs" quantity="6" />
+                        <result resourceOrUnit="jp_transport" quantity="1"/>
+                </productionRule>
+
+                <productionRule name="buyCarrierShipyards">
+                        <cost resource="PUs" quantity="11" />
+                        <result resourceOrUnit="carrier" quantity="1"/>
+                </productionRule>
+
+                <productionRule name="buyDestroyerShipyards">
+                        <cost resource="PUs" quantity="7" />
+                        <result resourceOrUnit="destroyer" quantity="1"/>
+                </productionRule>
+
+                <productionRule name="buyJP_DestroyerShipyards">
+                        <cost resource="PUs" quantity="7" />
+                        <result resourceOrUnit="jp_destroyer" quantity="1"/>
+                </productionRule>
+				
+				<productionRule name="buyCruiserShipyards">
+                        <cost resource="PUs" quantity="10" />
+                        <result resourceOrUnit="cruiser" quantity="1"/>
+                </productionRule>
+
+                <productionRule name="buyBattleshipShipyards">
+                        <cost resource="PUs" quantity="17" />
+                        <result resourceOrUnit="battleship" quantity="1"/>
+                </productionRule>
+
+                <productionRule name="buySuper_CarrierShipyards">
+                        <cost resource="PUs" quantity="17" />
+                        <result resourceOrUnit="super_carrier" quantity="1"/>
+                </productionRule>
+
+                <productionRule name="buySubmarineShipyards">
+                        <cost resource="PUs" quantity="5" />
+                        <result resourceOrUnit="submarine" quantity="1"/>
+                </productionRule>
+
+                <productionRule name="buyMidget_SubmarineShipyards">
+                        <cost resource="PUs" quantity="3" />
+                        <result resourceOrUnit="midget_submarine" quantity="1"/>
+                </productionRule>
+
                 <!-- Advanced Industrial Production -->
-					<!-- IndustrialTechnology production rules are only needed if you are using or plan to use the "industrialTechnology" tech -->
+					<!-- IndustrialTechnology production rules are only needed if you are using or plan to use the "industrialTechnology" tech.
 
                 <productionRule name="buyInfantryIndustrialTechnology">
                         <cost resource="PUs" quantity="3" />
@@ -978,59 +1030,7 @@
                         <cost resource="PUs" quantity="5" />
                         <result resourceOrUnit="aaGun" quantity="1"/>
                 </productionRule>
-
-                <!-- SHIPYARD PRICES -->
-					<!-- Shipyards production rules are only needed if you are using the "shipyards" tech (and the tech is turned on in the game options too). -->
-
-                <productionRule name="buyTransportShipyards">
-                        <cost resource="PUs" quantity="6" />
-                        <result resourceOrUnit="transport" quantity="1"/>
-                </productionRule>
-				
-                <productionRule name="buyJP_TransportShipyards">
-                        <cost resource="PUs" quantity="6" />
-                        <result resourceOrUnit="jp_transport" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyCarrierShipyards">
-                        <cost resource="PUs" quantity="11" />
-                        <result resourceOrUnit="carrier" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyDestroyerShipyards">
-                        <cost resource="PUs" quantity="7" />
-                        <result resourceOrUnit="destroyer" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyJP_DestroyerShipyards">
-                        <cost resource="PUs" quantity="7" />
-                        <result resourceOrUnit="jp_destroyer" quantity="1"/>
-                </productionRule>
-				
-				<productionRule name="buyCruiserShipyards">
-                        <cost resource="PUs" quantity="10" />
-                        <result resourceOrUnit="cruiser" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyBattleshipShipyards">
-                        <cost resource="PUs" quantity="17" />
-                        <result resourceOrUnit="battleship" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buySuper_CarrierShipyards">
-                        <cost resource="PUs" quantity="17" />
-                        <result resourceOrUnit="super_carrier" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buySubmarineShipyards">
-                        <cost resource="PUs" quantity="5" />
-                        <result resourceOrUnit="submarine" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyMidget_SubmarineShipyards">
-                        <cost resource="PUs" quantity="3" />
-                        <result resourceOrUnit="midget_submarine" quantity="1"/>
-                </productionRule>
+				-->
 
                <!-- Repair rules -->
 					<!-- if you use ww2v3 style factory damage, you need repair rules -->
@@ -1082,15 +1082,14 @@
                 	<repairRules name="repairHarbourIndustrialTechnology"/>
                 </repairFrontier>
 
-				<!-- only "production" is needed for most maps. if you use ww2v2 tech then you need IndustrialTechnology production, and if you use ww2v3 tech you need Shipyards -->
 				<!-- all players can use the same frontier, or you can have a different frontier for each player -->
-                <productionFrontier name="production">
+				<!-- only "production" (a single production frontier) is needed for most maps. if you use ww2v2 tech then you need IndustrialTechnology production, and if you use ww2v3 tech you need Shipyards -->
+                <!--<productionFrontier name="production">
                         <frontierRules name="buyInfantry"/>
                         <frontierRules name="buyArtillery"/>
                         <frontierRules name="buyArmour"/>
                         <frontierRules name="buyFighter"/>
                         <frontierRules name="buyBomber"/>
-                        <!--<frontierRules name="buyAir_Transport"/>-->
                         <frontierRules name="buyTransport"/>
                         <frontierRules name="buySubmarine"/>
                         <frontierRules name="buyDestroyer"/>
@@ -1103,15 +1102,14 @@
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
                         <frontierRules name="buyHarbour"/>
-                </productionFrontier>
+                </productionFrontier>-->
 
-                <productionFrontier name="productionIndustrialTechnology">
+                <!--<productionFrontier name="productionIndustrialTechnology">
                         <frontierRules name="buyInfantryIndustrialTechnology"/>
                         <frontierRules name="buyArtilleryIndustrialTechnology"/>
                         <frontierRules name="buyArmourIndustrialTechnology"/>
                         <frontierRules name="buyFighterIndustrialTechnology"/>
                         <frontierRules name="buyBomberIndustrialTechnology"/>
-                        <!--<frontierRules name="buyAir_TransportIndustrialTechnology"/>-->
                         <frontierRules name="buyTransportIndustrialTechnology"/>
                         <frontierRules name="buySubmarineIndustrialTechnology"/>
                         <frontierRules name="buyDestroyerIndustrialTechnology"/>
@@ -1124,8 +1122,10 @@
                         <frontierRules name="buyFactoryIndustrialTechnology"/>
                         <frontierRules name="buyAirfieldIndustrialTechnology"/>
                         <frontierRules name="buyHarbourIndustrialTechnology"/>
-                </productionFrontier>
+                </productionFrontier>-->
 
+					<!-- Shipyards frontier rules are only needed if you are using the "shipyards" tech AND have the shipyards game option ON. If the shipyards game option is ON, then all players must use 1 frontier called "production".
+							If you want to use multiple production frontiers for different nations, then it is highly recommended you use triggers to add or remove productionRules instead of using the shipyard frontier. 
                 <productionFrontier name="productionShipyards">
                         <frontierRules name="buyTransportShipyards"/>
                         <frontierRules name="buySubmarineShipyards"/>
@@ -1134,7 +1134,7 @@
                         <frontierRules name="buyCarrierShipyards"/>
                         <frontierRules name="buyBattleshipShipyards"/>
                         <frontierRules name="buySuper_CarrierShipyards"/>
-                </productionFrontier>
+                </productionFrontier>-->
 
                 <productionFrontier name="Germans_production">
                         <frontierRules name="buyInfantry"/>
@@ -1154,57 +1154,6 @@
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
                         <frontierRules name="buyHarbour"/>
-                </productionFrontier>
-
-                <productionFrontier name="GermansParatroopers_production">
-                        <frontierRules name="buyInfantry"/>
-                        <frontierRules name="buyArtillery"/>
-                        <frontierRules name="buyArmour"/>
-                        <frontierRules name="buyFighter"/>
-                        <frontierRules name="buyBomber"/>
-                        <frontierRules name="buyAir_Transport"/>
-                        <frontierRules name="buyTransport"/>
-                        <frontierRules name="buySubmarine"/>
-                        <frontierRules name="buyDestroyer"/>
-						<frontierRules name="buyCruiser"/>
-                        <frontierRules name="buyCarrier"/>
-                        <frontierRules name="buyBattleship"/>
-                        <frontierRules name="buySuper_Carrier"/>
-                        <frontierRules name="buyBunker"/>
-                        <frontierRules name="buyAAGun"/>
-                        <frontierRules name="buyFactory"/>
-                        <frontierRules name="buyAirfield"/>
-                        <frontierRules name="buyHarbour"/>
-                </productionFrontier>
-
-                <productionFrontier name="Germans_productionIndustrialTechnology">
-                        <frontierRules name="buyInfantryIndustrialTechnology"/>
-                        <frontierRules name="buyArtilleryIndustrialTechnology"/>
-                        <frontierRules name="buyArmourIndustrialTechnology"/>
-                        <frontierRules name="buyFighterIndustrialTechnology"/>
-                        <frontierRules name="buyBomberIndustrialTechnology"/>
-                        <frontierRules name="buyTransportIndustrialTechnology"/>
-                        <frontierRules name="buySubmarineIndustrialTechnology"/>
-                        <frontierRules name="buyDestroyerIndustrialTechnology"/>
-						<frontierRules name="buyCruiserIndustrialTechnology"/>
-                        <frontierRules name="buyCarrierIndustrialTechnology"/>
-                        <frontierRules name="buyBattleshipIndustrialTechnology"/>
-                        <frontierRules name="buySuper_CarrierIndustrialTechnology"/>
-                        <frontierRules name="buyBunkerIndustrialTechnology"/>
-                        <frontierRules name="buyAAGunIndustrialTechnology"/>
-                        <frontierRules name="buyFactoryIndustrialTechnology"/>
-                        <frontierRules name="buyAirfieldIndustrialTechnology"/>
-                        <frontierRules name="buyHarbourIndustrialTechnology"/>
-                </productionFrontier>
-
-                <productionFrontier name="Germans_productionShipyards">
-                        <frontierRules name="buyTransportShipyards"/>
-                        <frontierRules name="buySubmarineShipyards"/>
-                        <frontierRules name="buyDestroyerShipyards"/>
-						<frontierRules name="buyCruiserShipyards"/>
-                        <frontierRules name="buyCarrierShipyards"/>
-                        <frontierRules name="buyBattleshipShipyards"/>
-                        <frontierRules name="buySuper_CarrierShipyards"/>
                 </productionFrontier>
 
                 <productionFrontier name="Russians_production">
@@ -1227,57 +1176,6 @@
                         <frontierRules name="buyHarbour"/>
                 </productionFrontier>
 
-                <productionFrontier name="RussiansParatroopers_production">
-                        <frontierRules name="buyInfantry"/>
-                        <frontierRules name="buyArtillery"/>
-                        <frontierRules name="buyArmour"/>
-                        <frontierRules name="buyFighter"/>
-                        <frontierRules name="buyBomber"/>
-                        <frontierRules name="buyAir_Transport"/>
-                        <frontierRules name="buyTransport"/>
-                        <frontierRules name="buySubmarine"/>
-                        <frontierRules name="buyDestroyer"/>
-						<frontierRules name="buyCruiser"/>
-                        <frontierRules name="buyCarrier"/>
-                        <frontierRules name="buyBattleship"/>
-                        <frontierRules name="buySuper_Carrier"/>
-                        <frontierRules name="buyBunker"/>
-                        <frontierRules name="buyAAGun"/>
-                        <frontierRules name="buyFactory"/>
-                        <frontierRules name="buyAirfield"/>
-                        <frontierRules name="buyHarbour"/>
-                </productionFrontier>
-
-                <productionFrontier name="Russians_productionIndustrialTechnology">
-                        <frontierRules name="buyInfantryIndustrialTechnology"/>
-                        <frontierRules name="buyArtilleryIndustrialTechnology"/>
-                        <frontierRules name="buyArmourIndustrialTechnology"/>
-                        <frontierRules name="buyFighterIndustrialTechnology"/>
-                        <frontierRules name="buyBomberIndustrialTechnology"/>
-                        <frontierRules name="buyTransportIndustrialTechnology"/>
-                        <frontierRules name="buySubmarineIndustrialTechnology"/>
-                        <frontierRules name="buyDestroyerIndustrialTechnology"/>
-						<frontierRules name="buyCruiserIndustrialTechnology"/>
-                        <frontierRules name="buyCarrierIndustrialTechnology"/>
-                        <frontierRules name="buyBattleshipIndustrialTechnology"/>
-                        <frontierRules name="buySuper_CarrierIndustrialTechnology"/>
-                        <frontierRules name="buyBunkerIndustrialTechnology"/>
-                        <frontierRules name="buyAAGunIndustrialTechnology"/>
-                        <frontierRules name="buyFactoryIndustrialTechnology"/>
-                        <frontierRules name="buyAirfieldIndustrialTechnology"/>
-                        <frontierRules name="buyHarbourIndustrialTechnology"/>
-                </productionFrontier>
-
-                <productionFrontier name="Russians_productionShipyards">
-                        <frontierRules name="buyTransportShipyards"/>
-                        <frontierRules name="buySubmarineShipyards"/>
-                        <frontierRules name="buyDestroyerShipyards"/>
-						<frontierRules name="buyCruiserShipyards"/>
-                        <frontierRules name="buyCarrierShipyards"/>
-                        <frontierRules name="buyBattleshipShipyards"/>
-                        <frontierRules name="buySuper_CarrierShipyards"/>
-                </productionFrontier>
-
                 <productionFrontier name="Japanese_production">
                         <frontierRules name="buyInfantry"/>
                         <frontierRules name="buyArtillery"/>
@@ -1296,99 +1194,6 @@
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
                         <frontierRules name="buyHarbour"/>
-                </productionFrontier>
-
-                <productionFrontier name="JapaneseMidgetSub_production">
-                        <frontierRules name="buyInfantry"/>
-                        <frontierRules name="buyArtillery"/>
-                        <frontierRules name="buyArmour"/>
-                        <frontierRules name="buyJP_Fighter"/>
-                        <frontierRules name="buyBomber"/>
-                        <frontierRules name="buyJP_Transport"/>
-                        <frontierRules name="buyMidget_Submarine"/>
-                        <frontierRules name="buySubmarine"/>
-                        <frontierRules name="buyJP_Destroyer"/>
-						<frontierRules name="buyCruiser"/>
-                        <frontierRules name="buyCarrier"/>
-                        <frontierRules name="buyBattleship"/>
-                        <frontierRules name="buySuper_Carrier"/>
-                        <frontierRules name="buyBunker"/>
-                        <frontierRules name="buyAAGun"/>
-                        <frontierRules name="buyFactory"/>
-                        <frontierRules name="buyAirfield"/>
-                        <frontierRules name="buyHarbour"/>
-                </productionFrontier>
-
-                <productionFrontier name="JapaneseKamikaze_production">
-                        <frontierRules name="buyInfantry"/>
-                        <frontierRules name="buyArtillery"/>
-                        <frontierRules name="buyArmour"/>
-                        <frontierRules name="buyJP_FighterKamikaze"/>
-                        <frontierRules name="buyBomber"/>
-                        <frontierRules name="buyJP_Transport"/>
-                        <frontierRules name="buyMidget_Submarine"/>
-                        <frontierRules name="buySubmarine"/>
-                        <frontierRules name="buyJP_Destroyer"/>
-						<frontierRules name="buyCruiser"/>
-                        <frontierRules name="buyCarrier"/>
-                        <frontierRules name="buyBattleship"/>
-                        <frontierRules name="buySuper_Carrier"/>
-                        <frontierRules name="buyBunker"/>
-                        <frontierRules name="buyAAGun"/>
-                        <frontierRules name="buyFactory"/>
-                        <frontierRules name="buyAirfield"/>
-                        <frontierRules name="buyHarbour"/>
-                </productionFrontier>
-
-                <productionFrontier name="JapaneseParatroopers_production">
-                        <frontierRules name="buyInfantry"/>
-                        <frontierRules name="buyArtillery"/>
-                        <frontierRules name="buyArmour"/>
-                        <frontierRules name="buyJP_Fighter"/>
-                        <frontierRules name="buyBomber"/>
-                        <frontierRules name="buyAir_Transport"/>
-                        <frontierRules name="buyJP_Transport"/>
-                        <frontierRules name="buySubmarine"/>
-                        <frontierRules name="buyJP_Destroyer"/>
-						<frontierRules name="buyCruiser"/>
-                        <frontierRules name="buyCarrier"/>
-                        <frontierRules name="buyBattleship"/>
-                        <frontierRules name="buySuper_Carrier"/>
-                        <frontierRules name="buyBunker"/>
-                        <frontierRules name="buyAAGun"/>
-                        <frontierRules name="buyFactory"/>
-                        <frontierRules name="buyAirfield"/>
-                        <frontierRules name="buyHarbour"/>
-                </productionFrontier>
-
-                <productionFrontier name="Japanese_productionIndustrialTechnology">
-                        <frontierRules name="buyInfantryIndustrialTechnology"/>
-                        <frontierRules name="buyArtilleryIndustrialTechnology"/>
-                        <frontierRules name="buyArmourIndustrialTechnology"/>
-                        <frontierRules name="buyJP_FighterIndustrialTechnology"/>
-                        <frontierRules name="buyBomberIndustrialTechnology"/>
-                        <frontierRules name="buyJP_TransportIndustrialTechnology"/>
-                        <frontierRules name="buySubmarineIndustrialTechnology"/>
-                        <frontierRules name="buyJP_DestroyerIndustrialTechnology"/>
-						<frontierRules name="buyCruiserIndustrialTechnology"/>
-                        <frontierRules name="buyCarrierIndustrialTechnology"/>
-                        <frontierRules name="buyBattleshipIndustrialTechnology"/>
-                        <frontierRules name="buySuper_CarrierIndustrialTechnology"/>
-                        <frontierRules name="buyBunkerIndustrialTechnology"/>
-                        <frontierRules name="buyAAGunIndustrialTechnology"/>
-                        <frontierRules name="buyFactoryIndustrialTechnology"/>
-                        <frontierRules name="buyAirfieldIndustrialTechnology"/>
-                        <frontierRules name="buyHarbourIndustrialTechnology"/>
-                </productionFrontier>
-
-                <productionFrontier name="Japanese_productionShipyards">
-                        <frontierRules name="buyJP_TransportShipyards"/>
-                        <frontierRules name="buySubmarineShipyards"/>
-                        <frontierRules name="buyJP_DestroyerShipyards"/>
-						<frontierRules name="buyCruiserShipyards"/>
-                        <frontierRules name="buyCarrierShipyards"/>
-                        <frontierRules name="buyBattleshipShipyards"/>
-                        <frontierRules name="buySuper_CarrierShipyards"/>
                 </productionFrontier>
 
                 <productionFrontier name="British_production">
@@ -1411,57 +1216,6 @@
                         <frontierRules name="buyHarbour"/>
                 </productionFrontier>
 
-                <productionFrontier name="BritishParatroopers_production">
-                        <frontierRules name="buyInfantry"/>
-                        <frontierRules name="buyArtillery"/>
-                        <frontierRules name="buyArmour"/>
-                        <frontierRules name="buyFighter"/>
-                        <frontierRules name="buyBomber"/>
-                        <frontierRules name="buyAir_Transport"/>
-                        <frontierRules name="buyTransport"/>
-                        <frontierRules name="buySubmarine"/>
-                        <frontierRules name="buyDestroyer"/>
-						<frontierRules name="buyCruiser"/>
-                        <frontierRules name="buyCarrier"/>
-                        <frontierRules name="buyBattleship"/>
-                        <frontierRules name="buySuper_Carrier"/>
-                        <frontierRules name="buyBunker"/>
-                        <frontierRules name="buyAAGun"/>
-                        <frontierRules name="buyFactory"/>
-                        <frontierRules name="buyAirfield"/>
-                        <frontierRules name="buyHarbour"/>
-                </productionFrontier>
-
-                <productionFrontier name="British_productionIndustrialTechnology">
-                        <frontierRules name="buyInfantryIndustrialTechnology"/>
-                        <frontierRules name="buyArtilleryIndustrialTechnology"/>
-                        <frontierRules name="buyArmourIndustrialTechnology"/>
-                        <frontierRules name="buyFighterIndustrialTechnology"/>
-                        <frontierRules name="buyBomberIndustrialTechnology"/>
-                        <frontierRules name="buyTransportIndustrialTechnology"/>
-                        <frontierRules name="buySubmarineIndustrialTechnology"/>
-                        <frontierRules name="buyDestroyerIndustrialTechnology"/>
-						<frontierRules name="buyCruiserIndustrialTechnology"/>
-                        <frontierRules name="buyCarrierIndustrialTechnology"/>
-                        <frontierRules name="buyBattleshipIndustrialTechnology"/>
-                        <frontierRules name="buySuper_CarrierIndustrialTechnology"/>
-                        <frontierRules name="buyBunkerIndustrialTechnology"/>
-                        <frontierRules name="buyAAGunIndustrialTechnology"/>
-                        <frontierRules name="buyFactoryIndustrialTechnology"/>
-                        <frontierRules name="buyAirfieldIndustrialTechnology"/>
-                        <frontierRules name="buyHarbourIndustrialTechnology"/>
-                </productionFrontier>
-
-                <productionFrontier name="British_productionShipyards">
-                        <frontierRules name="buyTransportShipyards"/>
-                        <frontierRules name="buySubmarineShipyards"/>
-                        <frontierRules name="buyDestroyerShipyards"/>
-						<frontierRules name="buyCruiserShipyards"/>
-                        <frontierRules name="buyCarrierShipyards"/>
-                        <frontierRules name="buyBattleshipShipyards"/>
-                        <frontierRules name="buySuper_CarrierShipyards"/>
-                </productionFrontier>
-
                 <productionFrontier name="Italians_production">
                         <frontierRules name="buyInfantry"/>
                         <frontierRules name="buyArtillery"/>
@@ -1482,58 +1236,7 @@
                         <frontierRules name="buyHarbour"/>
                 </productionFrontier>
 
-                <productionFrontier name="ItaliansParatroopers_production">
-                        <frontierRules name="buyInfantry"/>
-                        <frontierRules name="buyArtillery"/>
-                        <frontierRules name="buyArmour"/>
-                        <frontierRules name="buyFighter"/>
-                        <frontierRules name="buyBomber"/>
-                        <frontierRules name="buyAir_Transport"/>
-                        <frontierRules name="buyTransport"/>
-                        <frontierRules name="buySubmarine"/>
-                        <frontierRules name="buyDestroyer"/>
-						<frontierRules name="buyCruiser"/>
-                        <frontierRules name="buyCarrier"/>
-                        <frontierRules name="buyBattleship"/>
-                        <frontierRules name="buySuper_Carrier"/>
-                        <frontierRules name="buyBunker"/>
-                        <frontierRules name="buyAAGun"/>
-                        <frontierRules name="buyFactory"/>
-                        <frontierRules name="buyAirfield"/>
-                        <frontierRules name="buyHarbour"/>
-                </productionFrontier>
-
-                <productionFrontier name="Italians_productionIndustrialTechnology">
-                        <frontierRules name="buyInfantryIndustrialTechnology"/>
-                        <frontierRules name="buyArtilleryIndustrialTechnology"/>
-                        <frontierRules name="buyArmourIndustrialTechnology"/>
-                        <frontierRules name="buyFighterIndustrialTechnology"/>
-                        <frontierRules name="buyBomberIndustrialTechnology"/>
-                        <frontierRules name="buyTransportIndustrialTechnology"/>
-                        <frontierRules name="buySubmarineIndustrialTechnology"/>
-                        <frontierRules name="buyDestroyerIndustrialTechnology"/>
-						<frontierRules name="buyCruiserIndustrialTechnology"/>
-                        <frontierRules name="buyCarrierIndustrialTechnology"/>
-                        <frontierRules name="buyBattleshipIndustrialTechnology"/>
-                        <frontierRules name="buySuper_CarrierIndustrialTechnology"/>
-                        <frontierRules name="buyBunkerIndustrialTechnology"/>
-                        <frontierRules name="buyAAGunIndustrialTechnology"/>
-                        <frontierRules name="buyFactoryIndustrialTechnology"/>
-                        <frontierRules name="buyAirfieldIndustrialTechnology"/>
-                        <frontierRules name="buyHarbourIndustrialTechnology"/>
-                </productionFrontier>
-
-                <productionFrontier name="Italians_productionShipyards">
-                        <frontierRules name="buyTransportShipyards"/>
-                        <frontierRules name="buySubmarineShipyards"/>
-                        <frontierRules name="buyDestroyerShipyards"/>
-						<frontierRules name="buyCruiserShipyards"/>
-                        <frontierRules name="buyCarrierShipyards"/>
-                        <frontierRules name="buyBattleshipShipyards"/>
-                        <frontierRules name="buySuper_CarrierShipyards"/>
-                </productionFrontier>
-
-                <productionFrontier name="Chinese_production">
+                <!--<productionFrontier name="Chinese_production">
                         <frontierRules name="buyInfantry"/>
                         <frontierRules name="buyArtillery"/>
                         <frontierRules name="buyArmour"/>
@@ -1551,28 +1254,7 @@
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
                         <frontierRules name="buyHarbour"/>
-                </productionFrontier>
-
-                <productionFrontier name="ChineseParatroopers_production">
-                        <frontierRules name="buyInfantry"/>
-                        <frontierRules name="buyArtillery"/>
-                        <frontierRules name="buyArmour"/>
-                        <frontierRules name="buyFighter"/>
-                        <frontierRules name="buyBomber"/>
-                        <frontierRules name="buyAir_Transport"/>
-                        <frontierRules name="buyTransport"/>
-                        <frontierRules name="buySubmarine"/>
-                        <frontierRules name="buyDestroyer"/>
-						<frontierRules name="buyCruiser"/>
-                        <frontierRules name="buyCarrier"/>
-                        <frontierRules name="buyBattleship"/>
-                        <frontierRules name="buySuper_Carrier"/>
-                        <frontierRules name="buyBunker"/>
-                        <frontierRules name="buyAAGun"/>
-                        <frontierRules name="buyFactory"/>
-                        <frontierRules name="buyAirfield"/>
-                        <frontierRules name="buyHarbour"/>
-                </productionFrontier>
+                </productionFrontier>-->
 
                 <productionFrontier name="ChineseAlt1_production">
                         <frontierRules name="buyInfantry"/>
@@ -1584,36 +1266,6 @@
                         <frontierRules name="buyArtillery"/>
                         <frontierRules name="buyArmour"/>
                         <frontierRules name="buyFighter"/>
-                </productionFrontier>
-
-                <productionFrontier name="Chinese_productionIndustrialTechnology">
-                        <frontierRules name="buyInfantryIndustrialTechnology"/>
-                        <frontierRules name="buyArtilleryIndustrialTechnology"/>
-                        <frontierRules name="buyArmourIndustrialTechnology"/>
-                        <frontierRules name="buyFighterIndustrialTechnology"/>
-                        <frontierRules name="buyBomberIndustrialTechnology"/>
-                        <frontierRules name="buyTransportIndustrialTechnology"/>
-                        <frontierRules name="buySubmarineIndustrialTechnology"/>
-                        <frontierRules name="buyDestroyerIndustrialTechnology"/>
-						<frontierRules name="buyCruiserIndustrialTechnology"/>
-                        <frontierRules name="buyCarrierIndustrialTechnology"/>
-                        <frontierRules name="buyBattleshipIndustrialTechnology"/>
-                        <frontierRules name="buySuper_CarrierIndustrialTechnology"/>
-                        <frontierRules name="buyBunkerIndustrialTechnology"/>
-                        <frontierRules name="buyAAGunIndustrialTechnology"/>
-                        <frontierRules name="buyFactoryIndustrialTechnology"/>
-                        <frontierRules name="buyAirfieldIndustrialTechnology"/>
-                        <frontierRules name="buyHarbourIndustrialTechnology"/>
-                </productionFrontier>
-
-                <productionFrontier name="Chinese_productionShipyards">
-                        <frontierRules name="buyTransportShipyards"/>
-                        <frontierRules name="buySubmarineShipyards"/>
-                        <frontierRules name="buyDestroyerShipyards"/>
-						<frontierRules name="buyCruiserShipyards"/>
-                        <frontierRules name="buyCarrierShipyards"/>
-                        <frontierRules name="buyBattleshipShipyards"/>
-                        <frontierRules name="buySuper_CarrierShipyards"/>
                 </productionFrontier>
 
                 <productionFrontier name="Americans_production">
@@ -1634,57 +1286,6 @@
                         <frontierRules name="buyFactory"/>
                         <frontierRules name="buyAirfield"/>
                         <frontierRules name="buyHarbour"/>
-                </productionFrontier>
-
-                <productionFrontier name="AmericansParatroopers_production">
-                        <frontierRules name="buyInfantry"/>
-                        <frontierRules name="buyArtillery"/>
-                        <frontierRules name="buyArmour"/>
-                        <frontierRules name="buyFighter"/>
-                        <frontierRules name="buyBomber"/>
-                        <frontierRules name="buyAir_Transport"/>
-                        <frontierRules name="buyTransport"/>
-                        <frontierRules name="buySubmarine"/>
-                        <frontierRules name="buyDestroyer"/>
-						<frontierRules name="buyCruiser"/>
-                        <frontierRules name="buyCarrier"/>
-                        <frontierRules name="buyBattleship"/>
-                        <frontierRules name="buySuper_Carrier"/>
-                        <frontierRules name="buyBunker"/>
-                        <frontierRules name="buyAAGun"/>
-                        <frontierRules name="buyFactory"/>
-                        <frontierRules name="buyAirfield"/>
-                        <frontierRules name="buyHarbour"/>
-                </productionFrontier>
-
-                <productionFrontier name="Americans_productionIndustrialTechnology">
-                        <frontierRules name="buyInfantryIndustrialTechnology"/>
-                        <frontierRules name="buyArtilleryIndustrialTechnology"/>
-                        <frontierRules name="buyArmourIndustrialTechnology"/>
-                        <frontierRules name="buyFighterIndustrialTechnology"/>
-                        <frontierRules name="buyBomberIndustrialTechnology"/>
-                        <frontierRules name="buyTransportIndustrialTechnology"/>
-                        <frontierRules name="buySubmarineIndustrialTechnology"/>
-                        <frontierRules name="buyDestroyerIndustrialTechnology"/>
-						<frontierRules name="buyCruiserIndustrialTechnology"/>
-                        <frontierRules name="buyCarrierIndustrialTechnology"/>
-                        <frontierRules name="buyBattleshipIndustrialTechnology"/>
-                        <frontierRules name="buySuper_CarrierIndustrialTechnology"/>
-                        <frontierRules name="buyBunkerIndustrialTechnology"/>
-                        <frontierRules name="buyAAGunIndustrialTechnology"/>
-                        <frontierRules name="buyFactoryIndustrialTechnology"/>
-                        <frontierRules name="buyAirfieldIndustrialTechnology"/>
-                        <frontierRules name="buyHarbourIndustrialTechnology"/>
-                </productionFrontier>
-
-                <productionFrontier name="Americans_productionShipyards">
-                        <frontierRules name="buyTransportShipyards"/>
-                        <frontierRules name="buySubmarineShipyards"/>
-                        <frontierRules name="buyDestroyerShipyards"/>
-						<frontierRules name="buyCruiserShipyards"/>
-                        <frontierRules name="buyCarrierShipyards"/>
-                        <frontierRules name="buyBattleshipShipyards"/>
-                        <frontierRules name="buySuper_CarrierShipyards"/>
                 </productionFrontier>
 
                 <playerProduction player="Germans" frontier="Germans_production"/>
@@ -2983,7 +2584,7 @@
 					<option name="impArtTech" value="false"/>
 			    </attatchment>
 				
-			    <attatchment name="supportAttachmentSubmarineWolfPackTacticsDefence" attatchTo="submarine" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+			    <!--<attatchment name="supportAttachmentSubmarineWolfPackTacticsDefence" attatchTo="submarine" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
 			    	<option name="unitType" value="submarine"/>
 					<option name="faction" value="allied"/>
 					<option name="side" value="defence"/>
@@ -2992,7 +2593,7 @@
 					<option name="number" value="1"/>
 					<option name="bonusType" value="tactics2"/>
 					<option name="impArtTech" value="false"/>
-			    </attatchment>
+			    </attatchment>-->
 
 <!--  National Objectives -->
 	<!-- all Objective Attachments, Conditions, Triggers, Rules, etc, must have a unique name (if you don't use unique names, you may get funny results with your trigger attachments, or even java errors) -->
@@ -3381,6 +2982,7 @@
 				
 				
 <!-- Triggers -->
+	<!-- Triggers that have a "uses" amount (ie: they are not infinite) should ONLY have 1 purpose. In other words, if you set a trigger to have 2 uses, and to give resources, change a production frontier, and notify the player, THEN each action will use up a 'use', so you should instead make 3 separate triggers. -->
 	<!-- the following options are allowed for "triggerAttachmentXXX"
 			trigger								values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
 															can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
@@ -3395,6 +2997,8 @@
 			resource							values: "PUs" or "techTokens", given at end of turn phase
 			resourceCount						values: the number of specified resource to be given
 			frontier							values: name of a production frontier, changes the player's production frontier to BE the one listed, at beginning of the purchase phase. (does not add the production to the current list, is a new list completely)
+			productionRule						values: the name of the frontier, and then the name of the production rule you want to add or remove from a frontier, at beginning of the purchase phase.
+														If prefixed with "-" then it will remove the production rule instead of adding it. (example: value="Germans_production:buySuper_Carrier" or value="Germans_production:-buyEarly_Fighter")
 			placement							values: places units at beginning of combat movement phase. first in list is territory to be placed it, then list of units, then count (example: value="Moscow:artillery:infantry" count="2" [if count is missing, defaults to 1])
 			purchase							values: adds listed units to user's purchase at beginning of purchase phase (example: value="infantry:destroyer" count="3")
 			support								values: name of support attachment, adds specified player to the list of players a supportAttachment supports. Can be a list. (example: value="supportAttachmentGermans1AwesomeArtillery")
@@ -3457,7 +3061,7 @@
 
                 <attatchment name="triggerAttachmentGermansParatroopers" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentGermansParatroopers"/>
-					<option name="frontier" value="GermansParatroopers_production"/>
+					<option name="productionRule" value="Germans_production:buyAir_Transport"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermansSuperSubs1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -3481,14 +3085,27 @@
 
                 <attatchment name="triggerAttachmentGermansWolfPackTactics" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentGermansWolfPackTactics"/>
-                	<option name="support" value="supportAttachmentSubmarineWolfPackTacticsOffence:supportAttachmentSubmarineWolfPackTacticsDefence"/>
+                	<option name="support" value="supportAttachmentSubmarineWolfPackTacticsOffence"/>
                 	<!--<option name="support" value="supportAttachmentSubmarineWolfPackTacticsDefence"/>-->
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermansShipyards" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentGermansShipyards"/>
-					<option name="purchase" value="destroyer:transport" count="1"/>
+					<option name="productionRule" value="Germans_production:-buyTransport"/>
+					<option name="productionRule" value="Germans_production:-buySubmarine"/>
+					<option name="productionRule" value="Germans_production:-buyDestroyer"/>
+					<option name="productionRule" value="Germans_production:-buyCruiser"/>
+					<option name="productionRule" value="Germans_production:-buyCarrier"/>
+					<option name="productionRule" value="Germans_production:-buyBattleship"/>
+					<option name="productionRule" value="Germans_production:-buySuper_Carrier"/>
+					<option name="productionRule" value="Germans_production:buyTransportShipyards"/>
+					<option name="productionRule" value="Germans_production:buySubmarineShipyards"/>
+					<option name="productionRule" value="Germans_production:buyDestroyerShipyards"/>
+					<option name="productionRule" value="Germans_production:buyCruiserShipyards"/>
+					<option name="productionRule" value="Germans_production:buyCarrierShipyards"/>
+					<option name="productionRule" value="Germans_production:buyBattleshipShipyards"/>
+					<option name="productionRule" value="Germans_production:buySuper_CarrierShipyards"/>
 					<option name="uses" value="1"/>
                 </attatchment>
 				
@@ -3516,23 +3133,25 @@
 
                 <attatchment name="triggerAttachmentJapaneseParatroopers" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentJapaneseParatroopers"/>
-					<option name="frontier" value="JapaneseParatroopers_production"/>
+					<option name="productionRule" value="Japanese_production:buyAir_Transport"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentJapaneseMidgetSub" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentJapaneseMidget"/>
-					<option name="frontier" value="JapaneseMidgetSub_production"/>
+					<option name="productionRule" value="Japanese_production:buyMidget_Submarine"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentJapaneseKamikaze1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentJapaneseKamikaze1:conditionAttachmentJapaneseKamikaze2"/>
-					<option name="frontier" value="JapaneseKamikaze_production"/>
-                	<option name="uses" value="1"/>
+					<option name="productionRule" value="Japanese_production:-buyJP_Fighter"/>
+                	<option name="productionRule" value="Japanese_production:buyJP_FighterKamikaze"/>
+					<option name="uses" value="1"/>
                 </attatchment>
 
-                <attatchment name="triggerAttachmentJapaneseKamikaze2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<!-- since unit property changes occur at end of turn, we have this trigger as attached to British so that it happens at the end of their turn (British go right before Japan does) -->
+                <attatchment name="triggerAttachmentJapaneseKamikaze2" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentJapaneseKamikaze1:conditionAttachmentJapaneseKamikaze2"/>
 			    	<option name="unitType" value="jp_fighter"/>
 					<option name="unitProperty" value="attack" count="5"/>
@@ -3545,7 +3164,20 @@
 
                 <attatchment name="triggerAttachmentJapaneseShipyards" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentJapaneseShipyards"/>
-					<option name="purchase" value="destroyer:transport" count="1"/>
+					<option name="productionRule" value="Japanese_production:-buyTransport"/>
+					<option name="productionRule" value="Japanese_production:-buySubmarine"/>
+					<option name="productionRule" value="Japanese_production:-buyDestroyer"/>
+					<option name="productionRule" value="Japanese_production:-buyCruiser"/>
+					<option name="productionRule" value="Japanese_production:-buyCarrier"/>
+					<option name="productionRule" value="Japanese_production:-buyBattleship"/>
+					<option name="productionRule" value="Japanese_production:-buySuper_Carrier"/>
+					<option name="productionRule" value="Japanese_production:buyTransportShipyards"/>
+					<option name="productionRule" value="Japanese_production:buySubmarineShipyards"/>
+					<option name="productionRule" value="Japanese_production:buyDestroyerShipyards"/>
+					<option name="productionRule" value="Japanese_production:buyCruiserShipyards"/>
+					<option name="productionRule" value="Japanese_production:buyCarrierShipyards"/>
+					<option name="productionRule" value="Japanese_production:buyBattleshipShipyards"/>
+					<option name="productionRule" value="Japanese_production:buySuper_CarrierShipyards"/>
 					<option name="uses" value="1"/>
                 </attatchment>
 				
@@ -3565,7 +3197,7 @@
 
                 <attatchment name="triggerAttachmentItaliansParatroopers" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentItaliansParatroopers"/>
-					<option name="frontier" value="ItaliansParatroopers_production"/>
+					<option name="productionRule" value="Italians_production:buyAir_Transport"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentItaliansReinforcedHulls" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -3576,7 +3208,20 @@
 
                 <attatchment name="triggerAttachmentItaliansShipyards" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentItaliansShipyards"/>
-					<option name="purchase" value="destroyer:transport" count="1"/>
+					<option name="productionRule" value="Italians_production:-buyTransport"/>
+					<option name="productionRule" value="Italians_production:-buySubmarine"/>
+					<option name="productionRule" value="Italians_production:-buyDestroyer"/>
+					<option name="productionRule" value="Italians_production:-buyCruiser"/>
+					<option name="productionRule" value="Italians_production:-buyCarrier"/>
+					<option name="productionRule" value="Italians_production:-buyBattleship"/>
+					<option name="productionRule" value="Italians_production:-buySuper_Carrier"/>
+					<option name="productionRule" value="Italians_production:buyTransportShipyards"/>
+					<option name="productionRule" value="Italians_production:buySubmarineShipyards"/>
+					<option name="productionRule" value="Italians_production:buyDestroyerShipyards"/>
+					<option name="productionRule" value="Italians_production:buyCruiserShipyards"/>
+					<option name="productionRule" value="Italians_production:buyCarrierShipyards"/>
+					<option name="productionRule" value="Italians_production:buyBattleshipShipyards"/>
+					<option name="productionRule" value="Italians_production:buySuper_CarrierShipyards"/>
 					<option name="uses" value="1"/>
                 </attatchment>
                 
@@ -3622,12 +3267,25 @@
 
                 <attatchment name="triggerAttachmentAmericansParatroopers" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentAmericansParatroopers"/>
-					<option name="frontier" value="AmericansParatroopers_production"/>
+					<option name="productionRule" value="Americans_production:buyAir_Transport"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentAmericansShipyards" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentAmericansShipyards"/>
-					<option name="purchase" value="destroyer:transport" count="1"/>
+					<option name="productionRule" value="Americans_production:-buyTransport"/>
+					<option name="productionRule" value="Americans_production:-buySubmarine"/>
+					<option name="productionRule" value="Americans_production:-buyDestroyer"/>
+					<option name="productionRule" value="Americans_production:-buyCruiser"/>
+					<option name="productionRule" value="Americans_production:-buyCarrier"/>
+					<option name="productionRule" value="Americans_production:-buyBattleship"/>
+					<option name="productionRule" value="Americans_production:-buySuper_Carrier"/>
+					<option name="productionRule" value="Americans_production:buyTransportShipyards"/>
+					<option name="productionRule" value="Americans_production:buySubmarineShipyards"/>
+					<option name="productionRule" value="Americans_production:buyDestroyerShipyards"/>
+					<option name="productionRule" value="Americans_production:buyCruiserShipyards"/>
+					<option name="productionRule" value="Americans_production:buyCarrierShipyards"/>
+					<option name="productionRule" value="Americans_production:buyBattleshipShipyards"/>
+					<option name="productionRule" value="Americans_production:buySuper_CarrierShipyards"/>
 					<option name="uses" value="1"/>
                 </attatchment>
 				
@@ -3640,12 +3298,25 @@
 
                 <attatchment name="triggerAttachmentBritishParatroopers" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentBritishParatroopers"/>
-					<option name="frontier" value="BritishParatroopers_production"/>
+					<option name="productionRule" value="British_production:buyAir_Transport"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentBritishShipyards" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentBritishShipyards"/>
-					<option name="purchase" value="destroyer:transport" count="1"/>
+					<option name="productionRule" value="British_production:-buyTransport"/>
+					<option name="productionRule" value="British_production:-buySubmarine"/>
+					<option name="productionRule" value="British_production:-buyDestroyer"/>
+					<option name="productionRule" value="British_production:-buyCruiser"/>
+					<option name="productionRule" value="British_production:-buyCarrier"/>
+					<option name="productionRule" value="British_production:-buyBattleship"/>
+					<option name="productionRule" value="British_production:-buySuper_Carrier"/>
+					<option name="productionRule" value="British_production:buyTransportShipyards"/>
+					<option name="productionRule" value="British_production:buySubmarineShipyards"/>
+					<option name="productionRule" value="British_production:buyDestroyerShipyards"/>
+					<option name="productionRule" value="British_production:buyCruiserShipyards"/>
+					<option name="productionRule" value="British_production:buyCarrierShipyards"/>
+					<option name="productionRule" value="British_production:buyBattleshipShipyards"/>
+					<option name="productionRule" value="British_production:buySuper_CarrierShipyards"/>
 					<option name="uses" value="1"/>
                 </attatchment>
 				
@@ -3690,12 +3361,25 @@
 
                 <attatchment name="triggerAttachmentRussiansParatroopers" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentRussiansParatroopers"/>
-					<option name="frontier" value="RussiansParatroopers_production"/>
+					<option name="productionRule" value="Russians_production:buyAir_Transport"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentRussiansShipyards" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentRussiansShipyards"/>
-					<option name="purchase" value="destroyer:transport" count="1"/>
+					<option name="productionRule" value="Russians_production:-buyTransport"/>
+					<option name="productionRule" value="Russians_production:-buySubmarine"/>
+					<option name="productionRule" value="Russians_production:-buyDestroyer"/>
+					<option name="productionRule" value="Russians_production:-buyCruiser"/>
+					<option name="productionRule" value="Russians_production:-buyCarrier"/>
+					<option name="productionRule" value="Russians_production:-buyBattleship"/>
+					<option name="productionRule" value="Russians_production:-buySuper_Carrier"/>
+					<option name="productionRule" value="Russians_production:buyTransportShipyards"/>
+					<option name="productionRule" value="Russians_production:buySubmarineShipyards"/>
+					<option name="productionRule" value="Russians_production:buyDestroyerShipyards"/>
+					<option name="productionRule" value="Russians_production:buyCruiserShipyards"/>
+					<option name="productionRule" value="Russians_production:buyCarrierShipyards"/>
+					<option name="productionRule" value="Russians_production:buyBattleshipShipyards"/>
+					<option name="productionRule" value="Russians_production:buySuper_CarrierShipyards"/>
 					<option name="uses" value="1"/>
                 </attatchment>
 				
@@ -3718,12 +3402,25 @@
 
                 <!--<attatchment name="triggerAttachmentChineseParatroopers" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentChineseParatroopers"/>
-					<option name="frontier" value="ChineseParatroopers_production"/>
+					<option name="productionRule" value="Germans_production:buyAir_Transport"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentChineseShipyards" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentChineseShipyards"/>
-					<option name="purchase" value="destroyer:transport" count="1"/>
+					<option name="productionRule" value="Chinese_production:-buyTransport"/>
+					<option name="productionRule" value="Chinese_production:-buySubmarine"/>
+					<option name="productionRule" value="Chinese_production:-buyDestroyer"/>
+					<option name="productionRule" value="Chinese_production:-buyCruiser"/>
+					<option name="productionRule" value="Chinese_production:-buyCarrier"/>
+					<option name="productionRule" value="Chinese_production:-buyBattleship"/>
+					<option name="productionRule" value="Chinese_production:-buySuper_Carrier"/>
+					<option name="productionRule" value="Chinese_production:buyTransportShipyards"/>
+					<option name="productionRule" value="Chinese_production:buySubmarineShipyards"/>
+					<option name="productionRule" value="Chinese_production:buyDestroyerShipyards"/>
+					<option name="productionRule" value="Chinese_production:buyCruiserShipyards"/>
+					<option name="productionRule" value="Chinese_production:buyCarrierShipyards"/>
+					<option name="productionRule" value="Chinese_production:buyBattleshipShipyards"/>
+					<option name="productionRule" value="Chinese_production:buySuper_CarrierShipyards"/>
 					<option name="uses" value="1"/>
                 </attatchment>-->
 				
@@ -4675,7 +4372,7 @@
 						<br>8. Airfield gives +1 movement to air units, and allows fighters to scramble to defend surrounding sea zones if you turn on "Scramble Rules In Effect".
 						<br>9. Harbour gives +1 movement to warships, and are needed to repair Battleships if you turn on "Two HitPoint Units Require Repair Facilities".
 						<br>10. Bunkers are defensive units that can also be bombed/rocketted, will not participate in battle if damaged, and will die if they reach 4 damage.  They may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours) where you also have a land unit, but there is a limit of 1 per territory.
-						<br>11. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att, +1 def to subs). Available to Germans after they get superSubs.
+						<br>11. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att). Available to Germans after they get superSubs.
 						<br>12. Each nation may only purchase factories up to 3 total, if a nation controls more than 3 they can not purchase new factories (they can keep capturing new ones though).
         				<br>
         				<br>
@@ -4762,7 +4459,7 @@
          				*** Air/Naval Tech ***<br>
         				SUPER SUBS- submarine units get +1 attack<br>
         				JET POWER- fighters and air transports get +1 attack<br>
-        				IMPROVED SHIPYARDS- naval units are cheaper (currently not working. until it works, you will just get a destroyer and transport for free)<br>
+        				IMPROVED SHIPYARDS- naval units are cheaper<br>
         				AA RADAR- AA hit on 2 or less<br>
         				LONG RANGE AIRCRAFT- aircraft range increased by 2<br>
         				HEAVY BOMBER- roll 2 dice for each bomber attack (if LHTR enabled: rolls 2 dice and selects the best one, StratBombing adds one to result)<br>

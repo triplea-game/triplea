@@ -80,19 +80,16 @@ public class ChangeFactory
     
     public static Change changeOwner(Territory territory, PlayerID owner)
     {
-
         return new OwnerChange(territory, owner);
     }
 
     public static Change changeOwner(Collection<Unit> units, PlayerID owner, Territory location)
     {
-
         return new PlayerOwnerChange(units, owner, location);
     }
 
     public static Change changeOwner(Unit unit, PlayerID owner, Territory location)
     {
-
         ArrayList<Unit> list = new ArrayList<Unit>(1);
         list.add(unit);
         return new PlayerOwnerChange(list, owner, location);
@@ -105,31 +102,26 @@ public class ChangeFactory
     
     public static Change addUnits(Territory territory, Collection<Unit> units)
     {
-
         return new AddUnits(territory.getUnits(), units);
     }
 
     public static Change removeUnits(Territory territory, Collection<Unit> units)
     {
-
         return new RemoveUnits(territory.getUnits(), units);
     }
 
     public static Change addUnits(PlayerID player, Collection<Unit> units)
     {
-
         return new AddUnits(player.getUnits(), units);
     }
 
     public static Change removeUnits(PlayerID player, Collection<Unit> units)
     {
-
         return new RemoveUnits(player.getUnits(), units);
     }
 
     public static Change moveUnits(Territory start, Territory end, Collection<Unit> units)
     {
-
         units = new ArrayList<Unit>(units);
         List<Change> changes = new ArrayList<Change>(2);
         changes.add(removeUnits(start, units));
@@ -139,25 +131,21 @@ public class ChangeFactory
 
     public static Change changeProductionFrontier(PlayerID player, ProductionFrontier frontier)
     {
-
         return new ProductionFrontierChange(frontier, player);
-    }
-
-    public static Change changeResourcesChange(PlayerID player, Resource resource, int quantity)
-    {
-
-        return new ChangeResourceChange(player, resource, quantity);
     }
 
     public static Change changeProductionFrontierChange(PlayerID player, ProductionFrontier newFrontier)
     {
-
         return new ProductionFrontierChange(newFrontier, player);
+    }
+
+    public static Change changeResourcesChange(PlayerID player, Resource resource, int quantity)
+    {
+        return new ChangeResourceChange(player, resource, quantity);
     }
 
     public static Change setProperty(String property, Object value, GameData data)
     {
-
         return new SetPropertyChange(property, value, data.getProperties());
     }
 
@@ -258,7 +246,10 @@ class RelationshipChange extends Change
     
     protected void perform(GameData data)
     {
-
+    	if (m_player1 == null || m_player2 == null || m_OldRelation == null || m_NewRelation == null)
+    		throw new IllegalStateException("RelationshipChange may not have null arguments: m_player1: " + m_player1 + 
+    					", m_player2: " + m_player2 + ", m_OldRelation: " + m_OldRelation + ", m_NewRelation: " + m_NewRelation);
+    	
         data.getRelationshipTracker().setRelationship(m_player1, m_player2, m_NewRelation);
     }
    

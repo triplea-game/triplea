@@ -717,7 +717,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     }
     
     public void notification(String message) {
-    	EventThreadJOptionPane.showMessageDialog(this, message, "notification", JOptionPane.INFORMATION_MESSAGE, true);
+    	EventThreadJOptionPane.showMessageDialog(this, message, "Notification", JOptionPane.INFORMATION_MESSAGE, true);
     }
 
     

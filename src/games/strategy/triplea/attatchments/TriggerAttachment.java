@@ -20,6 +20,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.Resource;
@@ -55,6 +56,7 @@ public class TriggerAttachment extends DefaultAttachment{
 
 	private List<RulesAttachment> m_trigger = null;
 	private ProductionFrontier m_frontier = null;
+	private List<String> m_productionRule = null;
 	private boolean m_invert = false;
 	private List<TechAdvance> m_tech = new ArrayList<TechAdvance>();
 	private Map<Territory,IntegerMap<UnitType>> m_placement = null;
@@ -120,6 +122,29 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	public ProductionFrontier getFrontier() {
 		return m_frontier;
+	}
+	
+	/**
+	 * add, not set.
+	 */
+	public void setProductionRule(String prop) throws GameParseException{
+		String[] s = prop.split(":");
+		if(s.length!=2) 
+    		throw new GameParseException("Triggers: Invalid productionRule declaration: " + prop);
+		if(m_productionRule== null)
+			m_productionRule = new ArrayList<String>();
+		if(getData().getProductionFrontierList().getProductionFrontier(s[0]) == null)
+			throw new GameParseException("Triggers: Could not find frontier. name:" + s[0]);
+		String rule = s[1];
+		if (rule.startsWith("-"))
+			rule = rule.replaceFirst("-", "");
+		if (getData().getProductionRuleList().getProductionRule(rule) == null)
+			throw new GameParseException("Triggers: Could not find production rule. name:" + rule);
+		m_productionRule.add(prop);
+	}
+	
+	public List<String> getProductionRule() {
+		return m_productionRule;
 	}
 	
 	public int getResourceCount() {
@@ -461,6 +486,9 @@ public class TriggerAttachment extends DefaultAttachment{
 		return met;
 	}
 	
+	
+	
+	
 	public static void triggerProductionChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
 		Set<TriggerAttachment> trigs = getTriggers(player,data,prodMatch);
 		CompositeChange change = new CompositeChange();
@@ -477,6 +505,51 @@ public class TriggerAttachment extends DefaultAttachment{
 		}
 		if( !change.isEmpty())
 			aBridge.addChange(change);
+	}
+	
+	public static void triggerProductionFrontierEditChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
+		Set<TriggerAttachment> trigs = getTriggers(player, data, prodFrontierEditMatch);
+		CompositeChange change = new CompositeChange();
+		for(TriggerAttachment t:trigs) {
+			boolean met = isMet(t, data);
+			if(met)
+			{
+				t.use(aBridge);
+				Iterator<String> iter = t.getProductionRule().iterator();
+				while (iter.hasNext())
+				{
+					boolean add = true;
+					String[] s = iter.next().split(":");
+					ProductionFrontier front = data.getProductionFrontierList().getProductionFrontier(s[0]);
+					String rule = s[1];
+					if (rule.startsWith("-"))
+					{
+						rule = rule.replaceFirst("-", "");
+						add = false;
+					}
+					ProductionRule pRule = data.getProductionRuleList().getProductionRule(rule);
+					
+					if (add) 
+					{
+						if (!front.getRules().contains(pRule))
+						{
+							change.add(ChangeFactory.addProductionRule(pRule, front));
+							aBridge.getHistoryWriter().startEvent("Triggers: " + pRule.getName() + " added to " + front.getName());
+						}
+					}
+					else
+					{
+						if (front.getRules().contains(pRule))
+						{
+							change.add(ChangeFactory.removeProductionRule(pRule, front));
+							aBridge.getHistoryWriter().startEvent("Triggers: " + pRule.getName() + " removed from " + front.getName());
+						}
+					}
+				}
+			}
+		}
+		if( !change.isEmpty())
+			aBridge.addChange(change); // TODO: we should sort the frontier list if we make changes to it...
 	}
 	
 	public static String triggerVictory(PlayerID player, IDelegateBridge aBridge, GameData data) {
@@ -761,6 +834,9 @@ public class TriggerAttachment extends DefaultAttachment{
         if( Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data).match(terr))
         	getBattleTracker(data).addBattle(new CRoute(terr), units, false, player, data, aBridge, null);
 	}
+	
+	
+	
 	private void use (IDelegateBridge aBridge) {
 		if( m_uses > 0) {
 			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, new Integer(m_uses-1).toString(), "uses"));
@@ -772,6 +848,14 @@ public class TriggerAttachment extends DefaultAttachment{
 		public boolean match(TriggerAttachment t)
 		{
 			return t.getFrontier() != null && t.getUses()!=0;
+		}
+	};
+	
+	private static Match<TriggerAttachment> prodFrontierEditMatch = new Match<TriggerAttachment>()
+	{
+		public boolean match(TriggerAttachment t)
+		{
+			return t.getProductionRule() != null && t.getProductionRule().size() > 0 && t.getUses()!=0;
 		}
 	};
 
