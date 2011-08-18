@@ -1009,7 +1009,11 @@ public class MoveValidator
             if (route.someMatch(neutralOrEnemy))
             {
             	if (!(!navalMayNotNonComIntoControlled && route.allMatch(Matches.TerritoryIsWater) && MoveValidator.onlyAlliedUnitsOnPath(route, player, data) && !Matches.territoryHasEnemyUnits(player, data).match(route.getEnd())))
-            		return result.setErrorReturnResult("Cannot move units to neutral or enemy territories in non combat");
+            	{
+            		if (!route.allMatch(new CompositeMatchOr<Territory>(Matches.TerritoryIsWater, new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player), Matches.isTerritoryAllied(player, data), Matches.TerritoryIsLand)))
+            					|| nonParatroopersPresent(player, units) || !allLandUnitsAreBeingParatroopered(units, route, player))
+            			return result.setErrorReturnResult("Cannot move units to neutral or enemy territories in non combat");
+            	}
             }
         }
         return result;
