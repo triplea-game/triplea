@@ -30,8 +30,8 @@ public interface IAbstractMoveDelegate extends IRemote, IDelegate
      * Get the moves already made
      * @return a list of UndoableMoves
      */
-    @SuppressWarnings("rawtypes")
-    public abstract List getMovesMade();
+    @SuppressWarnings("unchecked")
+	public abstract List getMovesMade();
 
     /**
      *

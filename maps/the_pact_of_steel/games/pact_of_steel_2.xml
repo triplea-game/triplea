@@ -541,6 +541,8 @@
                 <connection t1="Italian East Africa" t2="Kenya"/>
                 <connection t1="Kenya" t2="Union of South Africa"/>
         </map>
+        
+
 
         <resourceList>
 				<!-- for now, only these 2 resources are supported -->
@@ -616,6 +618,10 @@
 				<relationshipType name="NAP"/>
 				<relationshipType name="ColdWar"/>
 		</relationshipTypes>
+		
+		<territoryEffectList>
+        	<territoryEffect name="mountain"/>
+        </territoryEffectList>
 
         <gamePlay>
 				<!-- this currently is all the delegates triplea has.  not all are needed for a regular game though -->
@@ -2787,6 +2793,7 @@
 
                 <attatchment name="territoryAttatchment" attatchTo="Central United States" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="4"/>
+						<option name="territoryEffect" value="mountain"/>
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Argentina" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2890,6 +2897,20 @@
 			    	<option name="canalName" value="Panama Canal"/>
 			    	<option name="landTerritories" value="Panama"/>
 			    </attatchment>
+				
+				
+				
+<!-- Territory Effects -->
+	<!-- the following options are allowed for territoryEffectAttachment
+			combatOffenseEffect					values: the name of the unit, and the count of how much offense you want to give this unit
+			combatDefenseEffect					values: the name of the unit, and the count of how much defense you want to give this unit
+	-->
+				<attatchment name="territoryEffectAttachment" attatchTo="mountain" javaClass="games.strategy.triplea.attatchments.TerritoryEffectAttachment" type="territoryEffect">
+					<option name="combatOffenseEffect" value="infantry" count="1"/>
+					<option name="combatDefenseEffect" value="armour" count="-2"/>
+				</attatchment>
+				
+				
 				
 <!-- Support Attachments -->
 	<!-- the following options are allowed for "supportAttachmentXXX" (must be unique names!)
@@ -3270,6 +3291,9 @@
                 <attatchment name="conditionAttachmentItalianTurn2" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="turns" value="2"/>
                 </attatchment>
+                 <attatchment name="conditionAttachmentItalianTurn1" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="turns" value="1"/>
+                </attatchment>
                 
 				
 	<!-- Americans Conditions -->
@@ -3555,6 +3579,19 @@
 					<option name="purchase" value="destroyer:transport" count="1"/>
 					<option name="uses" value="1"/>
                 </attatchment>
+                
+                <!--  these triggers are notificationtriggers -->
+                
+                <attatchment name="triggerItalyTurn1CombatMoveNotification" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentItalianTurn1"/>
+					<option name="notification" value="before:italianCombatMove:ITALY_TURN1_BEFORE_CM"/>
+                </attatchment>
+                
+                 <attatchment name="triggerItalyTurn1AfterBattleNotification" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentItalianTurn1"/>
+					<option name="notification" value="after:italianBattle:ITALY_TURN1_AFTER_BATTLE"/>
+                </attatchment>
+                
 				
 	<!-- Americans Triggers -->
                 <!--<attatchment name="triggerAttachmentAmericans1" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">

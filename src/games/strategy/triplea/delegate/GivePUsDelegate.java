@@ -20,10 +20,10 @@
 
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 
 import java.io.Serializable;
@@ -36,12 +36,9 @@ import java.util.Iterator;
  * @author  Kevin Comcowich
  * @version 1.0
  */
-public class GivePUsDelegate implements IDelegate
+public class GivePUsDelegate extends BaseDelegate
 {
-	private String m_name;
-	private String m_displayName;
-	private GameData m_data;
-	//to prevent repeat notifications
+
 	private boolean m_gameOver = false;
 
 	/** Creates a new instance of GivePUsDelegate */
@@ -50,48 +47,26 @@ public class GivePUsDelegate implements IDelegate
     }
 
 
-	public void initialize(String name, String displayName)
-	{
-		m_name = name;
-		m_displayName = displayName;
-	}
-
-
 	/**
 	 * Called before the delegate will run.
 	 */
 	public void start(IDelegateBridge aBridge, GameData gameData)
 	{
+		super.start(aBridge,gameData);
+		
 		if(m_gameOver)
 			return;
-
-		m_data = gameData;
 
 		if(isWW2V2())
 		    return;
 	}
 
-	public String getName()
-	{
-		return m_name;
-	}
-
-	public String getDisplayName()
-	{
-		return m_displayName;
-	}
 	
 	private boolean isWW2V2()
     {
     	return games.strategy.triplea.Properties.getWW2V2(m_data);
     }
-	/**
-	 * Called before the delegate will stop running.
-	 */
-	public void end()
-	{
-	}
-
+	
 	public int getProduction(PlayerID id)
 	{
 		int sum = 0;

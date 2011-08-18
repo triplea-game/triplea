@@ -21,8 +21,10 @@
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.DefaultAttachment;
+import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.triplea.Constants;
 import java.util.*;
 
@@ -142,6 +144,7 @@ public class TerritoryAttachment extends DefaultAttachment
     private boolean m_kamikazeZone = false;
     private int m_unitProduction = 0;  
     private boolean m_blockadeZone = false;
+	private Collection<TerritoryEffect> m_territoryEffect = new ArrayList<TerritoryEffect>();
 
   /** Creates new TerritoryAttatchment */
   public TerritoryAttachment()
@@ -296,6 +299,18 @@ public class TerritoryAttachment extends DefaultAttachment
     	}
     }
     
+    public void setTerritoryEffect(String value) throws GameParseException {
+    	String[] s = value.split(":");
+    	for (String name : s) {
+    		TerritoryEffect effect = getData().getTerritoryEffectList().get(name);
+    		if(effect != null)
+    			m_territoryEffect.add(effect);
+    		else
+    			throw new GameParseException("No TerritoryEffect named: " + name);
+    	}
+    }
+    
+    
     public Collection<PlayerID> getCaptureUnitOnEnteringBy()
     {
         return m_captureUnitOnEnteringBy;
@@ -350,4 +365,8 @@ public class TerritoryAttachment extends DefaultAttachment
     {
     	return m_blockadeZone;
     }
+
+	public Collection<TerritoryEffect> getTerritoryEffects() {
+		return m_territoryEffect ;
+	}
 }

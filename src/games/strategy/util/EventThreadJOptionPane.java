@@ -21,6 +21,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.Icon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -75,22 +76,32 @@ public class EventThreadJOptionPane {
     }
     
     public static void showMessageDialog(
+            final Component parentComponent,
+            final Object message, 
+            final String title,
+            final int messageType
+            ) {
+    	EventThreadJOptionPane.showMessageDialog(parentComponent, message, title, messageType, false);
+    }
+    
+    public static void showMessageDialog(
         final Component parentComponent,
         final Object message, 
         final String title,
-        final int messageType
-        )
+        final int messageType, 
+        final boolean useJLabel)
     {
         
         if(SwingUtilities.isEventDispatchThread()) {
-            JOptionPane.showMessageDialog(parentComponent, message, title, messageType);
+ 
+            JOptionPane.showMessageDialog(parentComponent, useJLabel?new JLabel((String)message):message, title, messageType);
             return;
         }
         
         final CountDownLatch latch = new CountDownLatch(1);        
         SwingUtilities.invokeLater(new Runnable() {        
             public void run() {
-                JOptionPane.showMessageDialog(parentComponent, message, title, messageType);
+                JOptionPane.showMessageDialog(parentComponent, useJLabel?new JLabel((String)message):message, title, messageType);
                 latch.countDown();        
             }
         });

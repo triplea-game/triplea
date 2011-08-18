@@ -1404,7 +1404,7 @@ public class UnitAttachment extends DefaultAttachment
 	  
 	  // line break
 	  if (useHTML)
-		  stats.append("<br> &nbsp;&nbsp;&nbsp;&nbsp; ");
+		  stats.append("<br /> &nbsp;&nbsp;&nbsp;&nbsp; ");
 	  
 	  if (m_isInfrastructure || m_isAA || m_isFactory)
 		  stats.append("can be Captured, ");
@@ -1520,7 +1520,7 @@ public class UnitAttachment extends DefaultAttachment
 	  
 	  // line break
 	  if (useHTML)
-		  stats.append("<br> &nbsp;&nbsp;&nbsp;&nbsp; ");
+		  stats.append("<br /> &nbsp;&nbsp;&nbsp;&nbsp; ");
 	  
 	  if (m_maxBuiltPerPlayer > -1)
 		  stats.append(m_maxBuiltPerPlayer + " Max Built Allowed, ");

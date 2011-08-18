@@ -18,6 +18,7 @@
 
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -65,14 +66,10 @@ import java.util.Set;
  * @version 1.0
  *
  */
-public class MoveDelegate implements IMoveDelegate
+public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 {
 
-    private String m_name;
-    private String m_displayName;
-    private IDelegateBridge m_bridge;
-    private GameData m_data;
-    private PlayerID m_player;
+  
     private boolean m_firstRun = true;
     private boolean m_nonCombat;
     private final TransportTracker m_transportTracker = new TransportTracker();
@@ -93,11 +90,6 @@ public class MoveDelegate implements IMoveDelegate
 
     }
 
-    public void initialize(String name, String displayName)
-    {
-        m_name = name;
-        m_displayName = displayName;
-    }
 
     /**
      * Want to make sure that all units in the sea that can be transported are
@@ -162,7 +154,7 @@ public class MoveDelegate implements IMoveDelegate
 
     GameData getGameData()
     {
-        return m_data;
+        return getData();
     }
 
     public static boolean isNonCombat(IDelegateBridge aBridge)
@@ -304,17 +296,6 @@ public class MoveDelegate implements IMoveDelegate
        aBridge.getHistoryWriter().startEvent(damaged.size() + " " +  MyFormatter.pluralize("unit", damaged.size()) + " repaired.");
     }
 
-    public String getName()
-    {
-
-        return m_name;
-    }
-
-    public String getDisplayName()
-    {
-
-        return m_displayName;
-    }
 
     public List<UndoableMove> getMovesMade()
     {

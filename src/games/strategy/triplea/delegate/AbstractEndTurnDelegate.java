@@ -20,6 +20,7 @@
 
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -60,24 +61,15 @@ import java.util.List;
  *
  * At the end of the turn collect income.
  */
-public abstract class AbstractEndTurnDelegate
-    implements IDelegate, IAbstractEndTurnDelegate
+public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IAbstractEndTurnDelegate
 {
-    private IDelegateBridge m_bridge = null;
-    private String m_name;
-    private String m_displayName;
-    protected GameData m_data;
-
+  
     //we only want to notify once that the game is over
     private boolean m_needToInitialize = true;
     private boolean m_hasPostedTurnSummary = false;
     protected boolean m_gameOver = false;
 
-    public void initialize(String name, String displayName)
-    {
-        m_name = name;
-        m_displayName = displayName;
-    }
+   
 
     private boolean doBattleShipsRepairEndOfTurn()
     {
@@ -95,8 +87,7 @@ public abstract class AbstractEndTurnDelegate
      */
     public void start(IDelegateBridge aBridge, GameData gameData)
     {
-        m_bridge = aBridge;
-        m_data = gameData;
+        super.start(aBridge, gameData);
         if(!m_needToInitialize)
             return;
         m_hasPostedTurnSummary = false;
@@ -185,10 +176,10 @@ public abstract class AbstractEndTurnDelegate
        Match<Unit> damagedBattleship = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);
         
        Collection<Unit> damaged = new ArrayList<Unit>();
-       Iterator iter = m_data.getMap().getTerritories().iterator();
+       Iterator<Territory> iter = m_data.getMap().getTerritories().iterator();
        while(iter.hasNext())
        {
-           Territory current = (Territory) iter.next();
+           Territory current =  iter.next();
            if (!games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(m_data))
         	   damaged.addAll(current.getUnits().getMatches(damagedBattleship));
            else
@@ -199,10 +190,10 @@ public abstract class AbstractEndTurnDelegate
            return;
        
        IntegerMap<Unit> hits = new IntegerMap<Unit>();
-       iter = damaged.iterator();
-       while(iter.hasNext())
+       Iterator<Unit> iter2 = damaged.iterator();
+       while(iter2.hasNext())
        {
-           Unit unit = (Unit) iter.next();
+           Unit unit = iter2.next();
            hits.put(unit,0);
        }
        aBridge.addChange(ChangeFactory.unitsHit(hits));
@@ -248,7 +239,6 @@ public abstract class AbstractEndTurnDelegate
     {
         int value = 0;
         Iterator<Territory> iter = territories.iterator();
-        HashSet<Territory> canBeBlockaded = new HashSet<Territory>();
         while(iter.hasNext() )
         {
             Territory current = (Territory) iter.next();
@@ -385,6 +375,7 @@ public abstract class AbstractEndTurnDelegate
     }
 }
 
+@SuppressWarnings("serial")
 class EndTurnState
     implements Serializable
 {

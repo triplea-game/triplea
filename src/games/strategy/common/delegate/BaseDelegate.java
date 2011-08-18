@@ -101,4 +101,13 @@ public abstract class BaseDelegate implements IDelegate
      * Otherwise, returns null.
      */
     public abstract Class<? extends IRemote> getRemoteType();
+    
+	public IDelegateBridge getBridge() {
+        return m_bridge;
+	}
+    
+    protected GameData getData()
+    {
+        return m_data;
+    }
 }

@@ -834,7 +834,7 @@ public class BattleCalculator
         return false;
     }
     
-    public static int getRolls(Collection<Unit> units, PlayerID id, boolean defend, Set<List<UnitSupportAttachment>> supportRulesCopy, IntegerMap<UnitSupportAttachment> supportLeftCopy)
+    public static int getRolls(Collection<Unit> units, Territory location, PlayerID id, boolean defend, Set<List<UnitSupportAttachment>> supportRulesCopy, IntegerMap<UnitSupportAttachment> supportLeftCopy)
     {
         int count = 0;
         int unitRoll = 0;
@@ -842,19 +842,19 @@ public class BattleCalculator
         while (iter.hasNext())
         {
             Unit unit = iter.next();
-            unitRoll = getRolls(unit, id, defend, supportRulesCopy, supportLeftCopy);
+            unitRoll = getRolls(unit, location, id, defend, supportRulesCopy, supportLeftCopy);
             
             count += unitRoll;
         }
         return count;
     }
     
-    public static int getRolls(Collection<Unit> units, PlayerID id, boolean defend)
+    public static int getRolls(Collection<Unit> units, Territory location, PlayerID id, boolean defend)
     {
-    	return getRolls(units, id, defend, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>());
+    	return getRolls(units, location, id, defend, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>());
     }
 
-    public static int getRolls(Unit unit, PlayerID id, boolean defend, Set<List<UnitSupportAttachment>> supportRulesCopy, IntegerMap<UnitSupportAttachment> supportLeftCopy)
+    public static int getRolls(Unit unit, Territory location, PlayerID id, boolean defend, Set<List<UnitSupportAttachment>> supportRulesCopy, IntegerMap<UnitSupportAttachment> supportLeftCopy)
     {
         UnitAttachment unitAttachment = UnitAttachment.get(unit.getType());
         int rolls = 0;
@@ -869,13 +869,18 @@ public class BattleCalculator
         	if (DiceRoll.getSupport(unit.getType(), supportRulesCopy, supportLeftCopy) > 0)
         		rolls += 1;
         }
+        if (rolls == 0 && unitAttachment.getAttack(id) == 0) {
+        	if (TerritoryEffectCalculator.getTerritoryCombatBonus(unit.getType(),location, defend) > 0)
+        		rolls += 1;
+        }
+        	
         
         return rolls;
     }
 
-    public static int getRolls(Unit unit, PlayerID id, boolean defend)
+    public static int getRolls(Unit unit, Territory location, PlayerID id, boolean defend)
     {
-    	return getRolls(unit, id, defend, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>());
+    	return getRolls(unit, location, id, defend, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>());
     }
     
     /**

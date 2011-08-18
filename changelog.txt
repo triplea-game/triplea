@@ -1,4 +1,8 @@
 Changes for 1.3.3.0
+* Beginning work on territory effects, and some cleanup in the use of basedelegate. (edwin van der wal, with help from frigoref and veqryn)
+
+* Adding ability to trigger notification messages to the players. (edwin van der wal)
+
 * Fixing of some matches to use new relationships, and some general code cleanup. (veqryn)
 
 * Various code cleaning. (frigoref)

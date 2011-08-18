@@ -496,7 +496,7 @@ public class StrategicBombingRaidBattle implements Battle
         
         private void rollDice(IDelegateBridge bridge)
         {
-            int rollCount = BattleCalculator.getRolls(m_units, m_attacker, false);
+            int rollCount = BattleCalculator.getRolls(m_units, m_battleSite, m_attacker, false);
             if (rollCount == 0)
             {
                 m_dice = null;
@@ -570,7 +570,7 @@ public class StrategicBombingRaidBattle implements Battle
             {
                 int rolls;
                 
-                rolls = BattleCalculator.getRolls(iter.next(), m_attacker, false);
+                rolls = BattleCalculator.getRolls(iter.next(), m_battleSite, m_attacker, false);
                 
                 int costThisUnit = 0;
                 

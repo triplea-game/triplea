@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!ELEMENT game (info, loader, diceSides?, map, resourceList?, playerList, unitList?, relationshipTypes?, gamePlay, production?, technology?, attatchmentList? , initialize?, propertyList?)>
+<!ELEMENT game (info, loader, diceSides?, map, resourceList?, playerList, unitList?, relationshipTypes?, territoryEffectList?, gamePlay, production?, technology?, attatchmentList? , initialize?, propertyList?)>
 
 <!-- version must be in the form xx.xx or xx.xx.xx where xx is a positive integer -->
 <!ELEMENT info EMPTY>
@@ -82,8 +82,11 @@
 		alliance CDATA #REQUIRED
 	>
 	
-
-	
+<!ELEMENT territoryEffectList (territoryEffect+) >
+	<!ELEMENT territoryEffect EMPTY>
+	<!ATTLIST territoryEffect 
+		name ID #REQUIRED
+	>
 
 		
 <!ELEMENT gamePlay (delegate+, sequence)>
@@ -191,7 +194,7 @@
 		name CDATA #REQUIRED
 		attatchTo CDATA #REQUIRED
 		javaClass CDATA #REQUIRED
-		type (unitType | territory | resource | player | relationship)  "unitType"
+		type (unitType | territory | resource | player | relationship | territoryEffect)  "unitType"
 	>
 		<!ELEMENT option EMPTY > 
 		<!ATTLIST option

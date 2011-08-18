@@ -26,6 +26,7 @@
 
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -34,7 +35,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -79,14 +79,9 @@ import java.util.Map;
  * capacity to produce in f. If anyone ever accidently runs into this situation
  * then they can undo the production, produce in f first, and then produce in e.
  */
-public abstract class AbstractPlaceDelegate implements IAbstractPlaceDelegate
+public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbstractPlaceDelegate
 {
 
-    private String m_name;
-    private String m_displayName;
-    private IDelegateBridge m_delegateBridge;
-    private PlayerID m_player;
-    protected GameData m_data; // protected to allow access by subclasses
     //maps Territory-> Collection of units
     protected Map<Territory, Collection<Unit>> m_produced = new HashMap<Territory, Collection<Unit>>();
     //a list of CompositeChanges
@@ -97,11 +92,6 @@ public abstract class AbstractPlaceDelegate implements IAbstractPlaceDelegate
         initialize(name, name);
     }
 
-    public void initialize(String name, String displayName)
-    {
-        m_name = name;
-        m_displayName = displayName;
-    }
 
     private Collection<Unit> getAlreadyProduced(Territory t)
     {
@@ -110,26 +100,7 @@ public abstract class AbstractPlaceDelegate implements IAbstractPlaceDelegate
         return new ArrayList<Unit>();
     }
 
-    /**
-     * Called before the delegate will run.
-     */
-    public void start(IDelegateBridge aBridge, GameData gameData)
-    {
-        m_delegateBridge = aBridge;
-        m_data = gameData;
-        m_player = m_delegateBridge.getPlayerID();
-    }
-
-    public String getName()
-    {
-        return m_name;
-    }
-
-    public String getDisplayName()
-    {
-        return m_displayName;
-    }
-
+  
     public int getPlacementsMade()
     {
         return m_placements.size();
@@ -146,19 +117,17 @@ public abstract class AbstractPlaceDelegate implements IAbstractPlaceDelegate
     }
 
     // returns List<AbstractUndoableMove>
-    @SuppressWarnings("rawtypes")
-    public List getMovesMade()
+    public List<UndoablePlacement> getMovesMade()
     {
         return m_placements;
     }
 
-    @Override
     public String undoMove(int moveIndex)
     {
         if (moveIndex < m_placements.size() && moveIndex >= 0)
         {
             UndoablePlacement undoPlace = m_placements.get(moveIndex);
-            undoPlace.undo(m_data, m_delegateBridge);
+            undoPlace.undo(m_data, m_bridge);
             m_placements.remove(moveIndex);
             updateUndoablePlacementIndexes();
         }
@@ -763,8 +732,8 @@ public abstract class AbstractPlaceDelegate implements IAbstractPlaceDelegate
     	if (weCanConsume && actuallyDoIt && change != null && !change.isEmpty())
     	{
     		//m_bridge.addChange(change);
-            m_delegateBridge.getHistoryWriter().startEvent("Units in " + to.getName() + " being upgraded or consumed: " + MyFormatter.unitsToTextNoOwner(removedUnits));
-            m_delegateBridge.getHistoryWriter().setRenderingData(removedUnits);
+            m_bridge.getHistoryWriter().startEvent("Units in " + to.getName() + " being upgraded or consumed: " + MyFormatter.unitsToTextNoOwner(removedUnits));
+            m_bridge.getHistoryWriter().setRenderingData(removedUnits);
     	}
 
     	return weCanConsume;
@@ -1104,8 +1073,8 @@ public abstract class AbstractPlaceDelegate implements IAbstractPlaceDelegate
         change.add(DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndAA, m_player));
 
         String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " placed in " + at.getName();
-        m_delegateBridge.getHistoryWriter().startEvent(transcriptText);
-        m_delegateBridge.getHistoryWriter().setRenderingData(units);
+        m_bridge.getHistoryWriter().startEvent(transcriptText);
+        m_bridge.getHistoryWriter().setRenderingData(units);
 
         Change remove = ChangeFactory.removeUnits(player, units);
         Change place = ChangeFactory.addUnits(at, units);
@@ -1123,7 +1092,7 @@ public abstract class AbstractPlaceDelegate implements IAbstractPlaceDelegate
         //can we move planes to land there
 
         moveAirOntoNewCarriers(at, units, player, change);
-        m_delegateBridge.addChange(change);
+        m_bridge.addChange(change);
         m_placements.add(new UndoablePlacement(m_player, change, at, units));
         updateUndoablePlacementIndexes();
 
@@ -1137,7 +1106,7 @@ public abstract class AbstractPlaceDelegate implements IAbstractPlaceDelegate
 
     private ITripleaPlayer getRemotePlayer()
     {
-        return (ITripleaPlayer) m_delegateBridge.getRemote();
+        return (ITripleaPlayer) m_bridge.getRemote();
     }
 //TODO Here's the spot for special air placement rules
     private void moveAirOntoNewCarriers(Territory territory, Collection<Unit> units, PlayerID player, CompositeChange placeChange)
@@ -1196,7 +1165,7 @@ public abstract class AbstractPlaceDelegate implements IAbstractPlaceDelegate
 
             Change change = ChangeFactory.moveUnits(neighbor, territory, movedFighters);
             placeChange.add(change);
-            m_delegateBridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(movedFighters) + "  moved from " + neighbor.getName() + " to " + territory);
+            m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(movedFighters) + "  moved from " + neighbor.getName() + " to " + territory);
 
             //only allow 1 movement
             //technically only the territory that produced the
@@ -1213,16 +1182,16 @@ public abstract class AbstractPlaceDelegate implements IAbstractPlaceDelegate
     public void end()
     {
 
-        PlayerID player = m_delegateBridge.getPlayerID();
+        PlayerID player = m_bridge.getPlayerID();
         //clear all units not placed
         Collection<Unit> units = player.getUnits().getUnits();
         if (!Properties.getUnplacedUnitsLive(m_data) && !units.isEmpty())
         {
-            m_delegateBridge.getHistoryWriter().startEvent(MyFormatter.unitsToTextNoOwner(units) + " were produced but were not placed");
-            m_delegateBridge.getHistoryWriter().setRenderingData(units);
+            m_bridge.getHistoryWriter().startEvent(MyFormatter.unitsToTextNoOwner(units) + " were produced but were not placed");
+            m_bridge.getHistoryWriter().setRenderingData(units);
 
             Change change = ChangeFactory.removeUnits(player, units);
-            m_delegateBridge.addChange(change);
+            m_bridge.addChange(change);
         }
 
         //reset ourselves for next turn
@@ -1230,7 +1199,7 @@ public abstract class AbstractPlaceDelegate implements IAbstractPlaceDelegate
         m_placements.clear();
 
         //only for lhtr rules
-        new AirThatCantLandUtil(m_data, m_delegateBridge).removeAirThatCantLand(m_player, false);
+        new AirThatCantLandUtil(m_data, m_bridge).removeAirThatCantLand(m_player, false);
     }
 
     /**
@@ -1239,7 +1208,7 @@ public abstract class AbstractPlaceDelegate implements IAbstractPlaceDelegate
      */
     public Collection<Territory> getTerritoriesWhereAirCantLand()
     {
-        return new AirThatCantLandUtil(m_data, m_delegateBridge).getTerritoriesWhereAirCantLand(m_player);
+        return new AirThatCantLandUtil(m_data, m_bridge).getTerritoriesWhereAirCantLand(m_player);
     }
 
     private boolean isPlayerAllowedToPlaceAnywhere(PlayerID player)

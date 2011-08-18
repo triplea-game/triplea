@@ -20,6 +20,7 @@
 
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
@@ -35,24 +36,11 @@ import java.util.*;
  * @author Ali Ibrahim
  * @version 1.0
  */
-public class TechActivationDelegate implements IDelegate
+public class TechActivationDelegate extends BaseDelegate
 {
-
-    private String m_name;
-    private String m_displayName;
-    private GameData m_data;
-    private IDelegateBridge m_bridge;
-    private PlayerID m_player;
-
     /** Creates new TechActivationDelegate */
     public TechActivationDelegate()
     {
-    }
-
-    public void initialize(String name, String displayName)
-    {
-        m_name = name;
-        m_displayName = displayName;
     }
 
     /**
@@ -61,19 +49,16 @@ public class TechActivationDelegate implements IDelegate
      */
     public void start(IDelegateBridge aBridge, GameData gameData)
     {
-        m_bridge = aBridge;
-        m_data = gameData;
-        m_player = aBridge.getPlayerID();
-
+        super.start(aBridge,gameData);
         // Activate techs
-        Map<PlayerID, Collection> techMap = DelegateFinder.techDelegate(m_data).getAdvances();
-        Collection advances = techMap.get(m_player);
+        Map<PlayerID, Collection<TechAdvance>> techMap = DelegateFinder.techDelegate(m_data).getAdvances();
+        Collection<TechAdvance> advances = techMap.get(m_player);
         if ((advances != null) && (advances.size() > 0))
         {
             // Start event
             m_bridge.getHistoryWriter().startEvent(m_player.getName() + " activating " + advancesAsString(advances));
 
-            Iterator techsIter = advances.iterator();
+            Iterator<TechAdvance> techsIter = advances.iterator();
             while (techsIter.hasNext())
             {
                 TechAdvance advance = (TechAdvance) techsIter.next();
@@ -91,9 +76,9 @@ public class TechActivationDelegate implements IDelegate
     }
 
     // Return string representing all advances in collection
-    private String advancesAsString(Collection advances)
+    private String advancesAsString(Collection<TechAdvance> advances)
     {
-        Iterator iter = advances.iterator();
+        Iterator<TechAdvance> iter = advances.iterator();
         int count = advances.size();
         StringBuilder text = new StringBuilder();
 
@@ -110,38 +95,6 @@ public class TechActivationDelegate implements IDelegate
         return text.toString();
     }
 
-    public String getName()
-    {
-        return m_name;
-    }
-
-    public String getDisplayName()
-    {
-        return m_displayName;
-    }
-
-    /**
-     * Called before the delegate will stop running.
-     */
-    public void end()
-    {
-    }
-
-    /**
-     * Returns the state of the Delegate.
-     */
-    public Serializable saveState()
-    {
-        return null;
-    }
-
-    /**
-     * Loads the delegates state
-     */
-    public void loadState(Serializable state)
-    {
-
-    }
 
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()

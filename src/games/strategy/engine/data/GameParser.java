@@ -120,6 +120,10 @@ public class GameParser
         Node relationshipTypes = getSingleChild("relationshipTypes",root, true);
         if(relationshipTypes != null)
         	parseRelationshipTypes(relationshipTypes);
+        
+        Node territoryEffectList = getSingleChild("territoryEffectList",root, true);
+        if(territoryEffectList != null)
+        	parseTerritoryEffects(territoryEffectList);
 
         Node playerListNode = getSingleChild("playerList", root);
         parsePlayerList(playerListNode);
@@ -250,6 +254,16 @@ public class GameParser
             throw new GameParseException("Could not find relation name:" + name);
 
         return relation;
+    }
+    
+    private TerritoryEffect getTerritoryEffect(Element element, String attribute, boolean mustFind) throws GameParseException
+    {
+        String name = element.getAttribute(attribute);
+        TerritoryEffect effect = data.getTerritoryEffectList().get(name);
+        if(effect == null && mustFind)
+            throw new GameParseException("Could not find territoryEffect name:" + name);
+        return effect;
+
     }
 
 
@@ -724,6 +738,15 @@ public class GameParser
             data.getRelationshipTypeList().addRelationshipType(new RelationshipType(((Element)iter.next()).getAttribute("name"), data));
         }
 	}
+    
+    private void parseTerritoryEffects(Node root) {
+    	Iterator<Node> iter = getChildren("territoryEffect", root).iterator();
+    	while(iter.hasNext())
+        {
+    		String name = ((Element)iter.next()).getAttribute("name");
+            data.getTerritoryEffectList().put(name, new TerritoryEffect(name,data));
+        }
+    }
 
     private void parseUnits(Node root)
     {
@@ -1337,6 +1360,9 @@ public class GameParser
         } else if(type.equals("resource"))
         {
             returnVal = getResource(element, name, true);
+        } else if(type.equals("territoryEffect"))
+        {
+            returnVal = getTerritoryEffect(element, name, true);
         } else if(type.equals("player"))
         {
             returnVal = getPlayerID(element, name, true);

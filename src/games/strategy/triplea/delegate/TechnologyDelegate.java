@@ -21,6 +21,7 @@
 
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.triplea.Constants;
@@ -29,18 +30,12 @@ import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.TechPanel;
 import games.strategy.util.Util;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
+
 import java.io.Serializable;
 import java.util.*;
 
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 /**
  * Logic for dealing with player tech rolls. This class requires the
@@ -49,24 +44,14 @@ import javax.swing.JPanel;
  * @author Sean Bridges
  * @version 1.0
  */
-public class TechnologyDelegate implements IDelegate, ITechDelegate
+public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 {
 
-    private String m_name;
-
-    private String m_displayName;
-    
+  
     private int m_techCost;
-    
-    private GameData m_data;
-
-    private IDelegateBridge m_bridge;
-
-    private PlayerID m_player;
-
-    private HashMap<PlayerID, Collection> m_techs;
-
+    private HashMap<PlayerID, Collection<TechAdvance>> m_techs;
     private TechnologyFrontier m_techCategory;
+	private TripleADelegateBridge m_bridge;
     
     /** Creates new TechnolgoyDelegate */
     public TechnologyDelegate()
@@ -75,9 +60,8 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
 
     public void initialize(String name, String displayName)
     {
-        m_name = name;
-        m_displayName = displayName;
-        m_techs = new HashMap<PlayerID, Collection>();
+        super.initialize(name, displayName);
+        m_techs = new HashMap<PlayerID, Collection<TechAdvance>>();
         m_techCost = -1;
     }
 
@@ -86,15 +70,15 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
      */
     public void start(IDelegateBridge aBridge, GameData gameData)
     {
-    	m_bridge = new TripleADelegateBridge(aBridge, gameData);
-    	m_data = gameData;
-    	m_player = aBridge.getPlayerID();
+        m_bridge = new TripleADelegateBridge(aBridge, gameData);
+        m_data = gameData;
+        m_player = aBridge.getPlayerID();
     	if(games.strategy.triplea.Properties.getTriggers(m_data)){
     		TriggerAttachment.triggerAvailableTechChange(m_player, m_bridge, m_data);
     	}
     }
 
-    public Map<PlayerID, Collection> getAdvances()
+    public Map<PlayerID, Collection<TechAdvance>> getAdvances()
     {
         return m_techs;
     }
@@ -399,15 +383,6 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         return available;
     }
     
-    public String getName()
-    {
-        return m_name;
-    }
-
-    public String getDisplayName()
-    {
-        return m_displayName;
-    }
 
     public int getTechCost()
     {
@@ -415,13 +390,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         return m_techCost >0 ? m_techCost : Constants.TECH_ROLL_COST;        
     }
     
-    /**
-     * Called before the delegate will stop running.
-     */
-    public void end()
-    {
-    }
-
+    
     /**
      * Returns the state of the Delegate.
      */
@@ -436,7 +405,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
     @SuppressWarnings("unchecked")
     public void loadState(Serializable state)
     {
-        m_techs = (HashMap<PlayerID, Collection>) state;
+        m_techs = (HashMap<PlayerID, Collection<TechAdvance>>) state;
     }
 
     /*
@@ -446,5 +415,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
     {
         return ITechDelegate.class;
     }
+
+
 
 }

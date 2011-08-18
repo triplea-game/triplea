@@ -30,6 +30,7 @@ import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
@@ -49,6 +50,7 @@ import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.BattleDisplay;
+import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.triplea.ui.PlaceData;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.CompositeMatchAnd;
@@ -111,7 +113,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
             }
         });
         
-
+        showBeforeNotificationsByTrigger();
         if (name.endsWith("Bid"))
             purchase(true);
         else if (name.endsWith("Tech"))
@@ -146,9 +148,20 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         
         if (badStep)
             throw new IllegalArgumentException("Unrecognized step name:" + name);
+        showAfterNotificationsByTrigger();
+
     }
     
-    private AbstractAction m_editModeAction = new AbstractAction()
+	private void showAfterNotificationsByTrigger() {
+		notificationsByTrigger(TriggerAttachment.NOTIFICATION_AFTER);
+	}
+
+	private void showBeforeNotificationsByTrigger() {
+		notificationsByTrigger(TriggerAttachment.NOTIFICATION_BEFORE);
+	}
+
+
+	private AbstractAction m_editModeAction = new AbstractAction()
     {
         public void actionPerformed(ActionEvent ae)
         {
@@ -170,8 +183,15 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     };
     
 	private void politics() {
-		IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
-		
+	}
+	
+	private void notificationsByTrigger(String beforeOrAfter) {
+			 Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(beforeOrAfter,m_id,getGameData()).iterator();
+
+			while(notificationMessages.hasNext()) {
+				String notificationMessageKey = notificationMessages.next();
+				m_ui.notification(NotificationMessages.getInstance(m_ui.getUIContext()).getMessage(notificationMessageKey));
+			}
 	}
 	
     private void tech()

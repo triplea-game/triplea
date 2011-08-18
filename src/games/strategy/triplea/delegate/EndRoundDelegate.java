@@ -20,6 +20,7 @@
 
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
@@ -42,20 +43,9 @@ import javax.swing.JOptionPane;
  *
  * @author  Sean Bridges
  */
-public class EndRoundDelegate implements IDelegate
+public class EndRoundDelegate extends BaseDelegate
 {
-	//private final static int AXIS_ECONOMIC_VICTORY = 84;
-	//private final static int ALLIES_ECONOMIC_VICTORY = 84;
-    //private final static int TOTAL_VICTORY_VCS = 18;
-    //private final static int SURRENDER_WITH_HONOR_VCS = 15;
-    //private final static int PROJECTION_OF_POWER_VCS = 13;
-    //private final static String AXIS = "Axis";
-    //private final static String ALLIES = "Allies";
 
-	private String m_name;
-	private String m_displayName;
-	private GameData m_data;
-	//to prevent repeat notifications
 	private boolean m_gameOver = false;
 
 	/** Creates a new instance of EndRoundDelegate */
@@ -64,22 +54,17 @@ public class EndRoundDelegate implements IDelegate
     }
 
 
-	public void initialize(String name, String displayName)
-	{
-		m_name = name;
-		m_displayName = displayName;
-	}
-
 
 	/**
 	 * Called before the delegate will run.
 	 */
 	public void start(IDelegateBridge aBridge, GameData gameData)
 	{
+		super.start(aBridge, gameData);
+		
 		if(m_gameOver)
 			return;
 
-		m_data = gameData;
 		String victoryMessage = null;
 
 		//Check for Winning conditions        
@@ -103,7 +88,7 @@ public class EndRoundDelegate implements IDelegate
 
         if (isEconomicVictory()) //Check for regular economic victory
 		{
-			Iterator allianceIter = m_data.getAllianceTracker().getAlliances().iterator();
+			Iterator<String> allianceIter = m_data.getAllianceTracker().getAlliances().iterator();
 			String allianceName = null;
 			while (allianceIter.hasNext())
 			{
@@ -148,7 +133,7 @@ public class EndRoundDelegate implements IDelegate
 
 	private void checkVictoryCities(IDelegateBridge aBridge, GameData m_data, String victoryMessage, String victoryType) 
 	{
-		Iterator allianceIter = m_data.getAllianceTracker().getAlliances().iterator();
+		Iterator<String> allianceIter = m_data.getAllianceTracker().getAlliances().iterator();
 		String allianceName = null;
 		while (allianceIter.hasNext())
 		{
@@ -246,23 +231,6 @@ public class EndRoundDelegate implements IDelegate
         return games.strategy.triplea.Properties.getTriggeredVictory(m_data);
     }  
 	
-	public String getName()
-	{
-		return m_name;
-	}
-
-	public String getDisplayName()
-	{
-		return m_displayName;
-	}
-	
-	/**
-	 * Called before the delegate will stop running.
-	 */
-	public void end()
-	{
-	}
-
 	public int getProduction(PlayerID id)
 	{
 		int sum = 0;

@@ -74,6 +74,7 @@ public class Unit extends GameDataComponent implements Serializable
   }
 
   /**
+   * DO NOT USE THIS METHOD if at all possible.  It is very slow.
    * This can return null if the unit is not in any territories.  
    * A unit just created, or held by a player after purchasing may not be in a territory.
    * A unit can be in exactly 2 territories, if the unit is in the process of moving from one territory to another. This method will just return the first territory found.

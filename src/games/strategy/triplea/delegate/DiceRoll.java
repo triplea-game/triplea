@@ -243,9 +243,10 @@ public class DiceRoll implements Externalizable
         Set<List<UnitSupportAttachment>> supportRules = new HashSet<List<UnitSupportAttachment>>();
         IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<UnitSupportAttachment>();
         getSupport(units,supportRules,supportLeft,data,defending);
+        Territory location = battle.getTerritory();
         
         // make a copy to send to getRolls (due to need to know number of rolls based on support, as zero attack units will or will not get a roll depending)
-        int rollCount = BattleCalculator.getRolls(units, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft));
+        int rollCount = BattleCalculator.getRolls(units, location, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft));
         if (rollCount == 0)
         {
             return new DiceRoll(new ArrayList<Die>(0), 0);
@@ -262,7 +263,7 @@ public class DiceRoll implements Externalizable
             Unit current = iter.next();
             UnitAttachment ua = UnitAttachment.get(current.getType());
             // make a copy for getRolls
-            int rolls = BattleCalculator.getRolls(current, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft));
+            int rolls = BattleCalculator.getRolls(current, location, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft));
             int totalStr =0;
             for (int i = 0; i < rolls; i++)
             {
@@ -298,6 +299,7 @@ public class DiceRoll implements Externalizable
                     	strength = ua.getBombard(current.getOwner());  
                     strength += getSupport(current.getType(), supportRules, supportLeft);
                 }
+                strength += TerritoryEffectCalculator.getTerritoryCombatBonus(current.getType(),location,defending);
                 totalStr += strength;
                 power += Math.min(Math.max(strength, 0), data.getDiceSides());;
             }
@@ -444,7 +446,7 @@ public class DiceRoll implements Externalizable
     	}
     	return strength;
     }
-    
+ 
     public static void sortByStrength (List<Unit> units, final boolean defending){
     	
     	Comparator<Unit> comp = new Comparator<Unit>()
@@ -491,6 +493,7 @@ public class DiceRoll implements Externalizable
         List<Unit> units = new ArrayList<Unit>(unitsList);
     	sortByStrength(units, defending);
     	boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
+    	Territory location = battle.getTerritory();
 
         //int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
         Set<List<UnitSupportAttachment>> supportRules = new HashSet<List<UnitSupportAttachment>>();
@@ -498,7 +501,7 @@ public class DiceRoll implements Externalizable
         getSupport(units,supportRules,supportLeft,data,defending);
         
         // make a copy to send to getRolls (due to need to know number of rolls based on support, as zero attack units will or will not get a roll depending)
-        int rollCount = BattleCalculator.getRolls(units, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft));
+        int rollCount = BattleCalculator.getRolls(units, location, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft));
         if (rollCount == 0)
         {
             return new DiceRoll(new ArrayList<Die>(), 0);
@@ -519,7 +522,7 @@ public class DiceRoll implements Externalizable
             UnitAttachment ua = UnitAttachment.get(current.getType());
             
             // make a copy for getRolls
-            int rolls = BattleCalculator.getRolls(current, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft));
+            int rolls = BattleCalculator.getRolls(current, location, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft));
 
             //lhtr heavy bombers take best of n dice for both attack and defense
             if(rolls > 1 && lhtrBombers && ua.isStrategicBomber())
@@ -531,6 +534,7 @@ public class DiceRoll implements Externalizable
                     strength = ua.getAttack(current.getOwner());
                 
                 strength += getSupport(current.getType(), supportRules, supportLeft);
+                strength += TerritoryEffectCalculator.getTerritoryCombatBonus(current.getType(),location,defending);
                 strength = Math.min(Math.max(strength, 0), data.getDiceSides());
                 
                 int minIndex = 0;
@@ -581,6 +585,7 @@ public class DiceRoll implements Externalizable
                         	strength = ua.getBombard(current.getOwner());  
                         strength += getSupport(current.getType(), supportRules, supportLeft);
                     }
+                    strength += TerritoryEffectCalculator.getTerritoryCombatBonus(current.getType(),location,defending);
                     strength = Math.min(Math.max(strength, 0), data.getDiceSides());
                     boolean hit = strength > random[diceIndex];
                     dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
@@ -918,4 +923,6 @@ public class DiceRoll implements Externalizable
     public String toString() {
     	return "DiceRoll dice:" + m_rolls + " hits:" + m_hits;
     }
+
+	
 }

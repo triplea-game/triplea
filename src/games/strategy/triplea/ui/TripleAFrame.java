@@ -31,6 +31,7 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.GameStepListener;
@@ -589,6 +590,18 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
                 TerritoryAttachment ta = TerritoryAttachment.get(in);
                 if (ta != null)
                 {
+                    
+                    Iterator<TerritoryEffect> iter = ta.getTerritoryEffects().iterator();
+                    if(iter.hasNext()) {
+                    	buf.append(" (");
+                    }
+                    while(iter.hasNext()) {
+                    	buf.append(iter.next().getName());
+                    	if(iter.hasNext())
+                    		buf.append(", ");
+                    	else
+                    		buf.append(")");
+                    }
                     int production = ta.getProduction();
                     if (production > 0)
                         buf.append(" production:" + production);
@@ -701,6 +714,10 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     public void notifyMessage(String message)
     {
         EventThreadJOptionPane.showMessageDialog(this, message, message, JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    public void notification(String message) {
+    	EventThreadJOptionPane.showMessageDialog(this, message, "notification", JOptionPane.INFORMATION_MESSAGE, true);
     }
 
     

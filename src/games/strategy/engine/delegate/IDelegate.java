@@ -67,6 +67,8 @@ public interface IDelegate
 	public String getName();
 
 	public String getDisplayName();
+	
+	public IDelegateBridge getBridge();
 
     /**
      * @return state of the Delegate

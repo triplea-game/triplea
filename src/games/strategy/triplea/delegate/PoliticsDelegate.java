@@ -21,6 +21,7 @@ package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
 
+import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegate;
@@ -38,82 +39,25 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
  * @version 1.0
  *  
  */
-public class PoliticsDelegate implements IPoliticsDelegate
+public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 {
-    
-  
-
-    private String m_name;
-	private String m_displayName ;
-	private boolean m_firstRun = true;
-	private TripleADelegateBridge m_bridge;
-	private PlayerID m_player;
-	private GameData m_data;
-
 	/** Creates new PoliticsDelegate */
     public PoliticsDelegate()
     {
 
     }
     
-    /** run the first time only */
-    private void firstRun() {
-    	m_firstRun = false;
-    }
-
-    public void initialize(String name, String displayName)
-    {
-     m_name = name;
-     m_displayName = displayName;
-    }
-
-    
     /**
      * Called before the delegate will run.
      */
 	public void start(IDelegateBridge aBridge, GameData gameData) {
-		// Run only the first time 
-		if (m_firstRun)
-	            firstRun();
-        m_bridge = new TripleADelegateBridge(aBridge, gameData);
-        m_player = aBridge.getPlayerID();
-        m_data = gameData;
-        
+		super.start(aBridge, gameData);
         if(games.strategy.triplea.Properties.getTriggers(m_data)) {
         	TriggerAttachment.triggerRelationshipChange(m_player,m_bridge,m_data); 
         }		 
 	}
     
   
-    public String getName()
-    {
-
-        return m_name;
-    }
-
-    public String getDisplayName()
-    {
-
-        return m_displayName;
-    }
-
-
-    /**
-     * Called before the delegate will stop running.
-     */
-    public void end()
-    {
-    	
-
-    }
-  
-    public Serializable saveState()
-    {
-    	PoliticsState state = new PoliticsState();
-    	state.m_firstRun = m_firstRun;
-        return state;
-    }
-
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
@@ -121,17 +65,4 @@ public class PoliticsDelegate implements IPoliticsDelegate
     {
         return IPoliticsDelegate.class;
     }
-
-	public void loadState(Serializable aState) {
-        PoliticsState state = (PoliticsState) aState;
-        m_firstRun = state.m_firstRun;
-		
-	}
-}
-
-@SuppressWarnings("serial")
-class PoliticsState implements Serializable
-{
-    public boolean m_firstRun = true;
-
 }

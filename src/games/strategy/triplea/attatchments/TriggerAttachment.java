@@ -50,6 +50,9 @@ public class TriggerAttachment extends DefaultAttachment{
 	 */
 	private static final long serialVersionUID = -3327739180569606093L;
 
+	public static final String NOTIFICATION_AFTER = "after";
+	public static final String NOTIFICATION_BEFORE = "before";
+
 	private List<RulesAttachment> m_trigger = null;
 	private ProductionFrontier m_frontier = null;
 	private boolean m_invert = false;
@@ -69,6 +72,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	private Map<String,Map<TechAdvance,Boolean>> m_availableTechs = null;
 	private String m_victory = null;
 	private String m_conditionType = "AND";
+	private String m_notification = null;
 
 
 	public TriggerAttachment() {
@@ -150,6 +154,39 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	public void setVictory(String s) {
 		m_victory = s;
+	}
+	
+	public void setNotification(String sNotification) throws GameParseException {
+		String[] s = sNotification.split(":");
+		if(s.length != 3)
+			throw new GameParseException("Triggers: notification must exist in 3 parts: \"before/after:stepName:MessageId\".");
+		if(!(s[0].equals(NOTIFICATION_AFTER) || s[0].equals(NOTIFICATION_BEFORE)))
+			throw new GameParseException("Triggers: notificaition must start with: "+NOTIFICATION_BEFORE+" or "+NOTIFICATION_AFTER);
+		m_notification = sNotification;
+	}
+	
+	protected String getNotification() {
+		return m_notification;
+	}
+	
+	protected String getNotificationStepName() {
+		if(m_notification == null)
+			return null;
+		String[] s = m_notification.split(":");
+		return s[1];
+	}
+	
+	protected String getNotificationBeforeOrAfter() {
+		if(m_notification == null)
+			return null;
+		String[] s = m_notification.split(":");
+		return s[0];	}
+	
+	public String getNotificationMessage() {
+		if(m_notification == null)
+			return null;
+		String[] s = m_notification.split(":");
+		return s[2];
 	}
 	
 	public String getConditionType() {
@@ -647,6 +684,18 @@ public class TriggerAttachment extends DefaultAttachment{
 		return DelegateFinder.battleDelegate(data).getBattleTracker();
 	}
 
+	public static Set<String> triggerNotifications(String beforeOrAfter, PlayerID player, GameData data) {
+		String stepName = data.getSequence().getStep().getName();
+		Set<TriggerAttachment> trigs = getTriggers(player,data,getNotificationStepTriggerMatch(beforeOrAfter,stepName));
+		Set<String> notifications = new HashSet<String>();
+		for(TriggerAttachment t:trigs) {
+			if(isMet(t,data)) {
+				t.use(data.getSequence().getStep().getDelegate().getBridge());
+				notifications.add(t.getNotificationMessage());
+			}
+		}
+		return notifications;	
+	}
 
 
 	public static void triggerUnitPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
@@ -788,6 +837,15 @@ public class TriggerAttachment extends DefaultAttachment{
 			return !(t.getRelationshipChange().isEmpty() || t.getUses()==0);
 		}
 	};
+	
+	private static Match<TriggerAttachment> getNotificationStepTriggerMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getNotification() != null && stepName.equals(t.getNotificationStepName()) && beforeOrAfter.equals(t.getNotificationBeforeOrAfter()) && t.getNotificationMessage().length() > 0 && t.getUses()!= 0;
+			}
+		};
+	}
+
 
 	private static Match<TriggerAttachment> victoryMatch = new Match<TriggerAttachment>()
 	{

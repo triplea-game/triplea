@@ -20,6 +20,7 @@
 
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -32,7 +33,6 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
@@ -49,9 +49,7 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -73,19 +71,10 @@ import java.util.TreeSet;
  * @author  Sean Bridges
  * @version 1.0
  */
-public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
+public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 {
-    private String m_name;
-    private String m_displayName;
-    private IDelegateBridge m_bridge;
-    private PlayerID m_player;
-    private GameData m_data;    
+ 
 
-    public void initialize(String name, String displayName)
-    {
-        m_name = name;
-        m_displayName = displayName;
-    }
 
 
     /**
@@ -93,29 +82,13 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
      */
     public void start(IDelegateBridge aBridge, GameData gameData)
     {
-        m_bridge = aBridge;
-        m_player = aBridge.getPlayerID();
-        m_data = gameData;
+        super.start(aBridge, gameData);
         if(games.strategy.triplea.Properties.getTriggers(m_data)) {
         	TriggerAttachment.triggerProductionChange(m_player,m_bridge,m_data); 
         	TriggerAttachment.triggerPurchase(m_player,m_bridge,m_data);
         }
     }
 
-    public String getName()
-    {
-        return m_name;
-    }
-
-    public String getDisplayName()
-    {
-        return m_displayName;
-    }
-
-    protected GameData getData()
-    {
-        return m_data;
-    }
 
 
     /**
@@ -458,29 +431,6 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
 
 
 
-    /**
-     * Returns the state of the Delegate.
-     */
-    public Serializable saveState()
-    {
-        return null;
-    }
-
-    /**
-     * Loads the delegates state
-     */
-    public void loadState(Serializable state)
-    {}
-
-
-    /**
-     * Called before the delegate will stop running.
-     */
-    public void end()
-    {
-        //this space intentionally left blank
-    }
-
 
     /* 
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
@@ -494,7 +444,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     protected String removeFromPlayer(PlayerID player, IntegerMap<Resource> costs, CompositeChange changes, Collection<Unit> totalUnits)
     {
         Iterator<Resource> costsIter = costs.keySet().iterator();
-        int AvailPUs = player.getResources().getQuantity(Constants.PUS);
+        //int AvailPUs = player.getResources().getQuantity(Constants.PUS);
 
         while(costsIter.hasNext() )
         {
@@ -507,7 +457,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
                 Set<UnitCategory> categorized = UnitSeperator.categorize(totalUnits);
                 if (categorized.size() == 1)
                 {
-                    UnitCategory unitCategory =  categorized.iterator().next();
+                    //UnitCategory unitCategory =  categorized.iterator().next();
                     //if(unitCategory.getType().getName().endsWith("_hit"))
                     cost = (int) (Math.round(quantity/2));
                 }

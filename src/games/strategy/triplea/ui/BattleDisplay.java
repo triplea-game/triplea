@@ -29,6 +29,7 @@ import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MovePerformer;
+import games.strategy.triplea.delegate.TerritoryEffectCalculator;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -152,9 +153,9 @@ public class BattleDisplay extends JPanel
         m_data = data;
         m_casualties = new CasualtyNotificationPanel(data, m_mapPanel.getUIContext());
 
-        m_defenderModel = new BattleModel(m_data, defendingUnits, false, m_mapPanel.getUIContext());
+        m_defenderModel = new BattleModel(m_data, defendingUnits, m_location, false, m_mapPanel.getUIContext());
         m_defenderModel.refresh();
-        m_attackerModel = new BattleModel(m_data, attackingUnits, true, m_mapPanel.getUIContext());
+        m_attackerModel = new BattleModel(m_data, attackingUnits, m_location, true, m_mapPanel.getUIContext());
         m_attackerModel.refresh();
         m_uiContext = mapPanel.getUIContext(); 
 
@@ -1156,6 +1157,7 @@ class BattleModel extends DefaultTableModel
     //is the player the agressor?
     private boolean m_attack;
     private Collection<Unit> m_units;
+    private Territory m_location;
 
     private static String[] VarDiceArray(GameData data)
     {
@@ -1172,7 +1174,7 @@ class BattleModel extends DefaultTableModel
     	return diceColumns;
     }
     
-    BattleModel(GameData data, Collection<Unit> units, boolean attack, UIContext uiContext)
+    BattleModel(GameData data, Collection<Unit> units, Territory battleLocation, boolean attack, UIContext uiContext)
     {
     	super(new Object[0][0],  VarDiceArray(data));
                                             
@@ -1181,6 +1183,8 @@ class BattleModel extends DefaultTableModel
         m_attack = attack;
         //were going to modify the units
         m_units = new ArrayList<Unit>(units);
+        m_location = battleLocation;
+        
     }
 
     public void notifyRetreat(Collection<Unit> retreating)
@@ -1259,6 +1263,7 @@ class BattleModel extends DefaultTableModel
             			m_data.releaseReadLock();
             		}
             	}
+        		strength += TerritoryEffectCalculator.getTerritoryCombatBonus(category.getType(), m_location, !m_attack);
             	strength = Math.min(Math.max(strength, 0), m_data.getDiceSides());
             	shift[strength]++;
             }

@@ -18,13 +18,13 @@
 
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.AutoSave;
-import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
@@ -49,31 +49,18 @@ import java.util.Map;
  * @version 1.0
  */
 @AutoSave(beforeStepStart=true,afterStepEnd=true)
-public class BattleDelegate implements IDelegate, IBattleDelegate
+public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 {
-
-    private String m_name;
-
-    private String m_displayName;
-
-    private IDelegateBridge m_bridge;
 
     private BattleTracker m_battleTracker = new BattleTracker();
 
     private OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
-
-    private GameData m_data;
-
     
     private boolean m_needToInitialize = true;
     
     private Battle m_currentBattle = null;
 
-    public void initialize(String name, String displayName)
-    {
-        m_name = name;
-        m_displayName = displayName;
-    }
+ 
 
     /**
      * Called before the delegate will run.
@@ -92,18 +79,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         }
     }
 
-    public String getName()
-    {
-        return m_name;
-    }
-
-    public String getDisplayName()
-    {
-        return m_displayName;
-    }
-    
-    
-
+ 
     public String fightBattle(Territory territory, boolean bombing)
     {
         
@@ -201,9 +177,10 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
 
     public IDelegateBridge getBattleBridge()
     {
-        return m_bridge;
+        return getBridge();
     }
     
+        
     public OriginalOwnerTracker getOriginalOwnerTracker()
     {
         return m_originalOwnerTracker;
@@ -534,8 +511,11 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
             return null;
         }
     }
+
+
 }
 
+@SuppressWarnings("serial")
 class BattleState implements Serializable
 {
     public BattleTracker m_battleTracker = new BattleTracker();

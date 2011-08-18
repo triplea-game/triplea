@@ -22,6 +22,7 @@ package games.strategy.engine.xml;
 
 import java.io.Serializable;
 
+import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
@@ -34,10 +35,8 @@ import games.strategy.engine.message.IRemote;
  * A simple dumb delegate, dont acutally call these methods.
  * Simply to satisfy the interface requirements for testing.
  */
-public final class TestDelegate implements IDelegate
+public final class TestDelegate extends BaseDelegate
 {
-	private String m_name;
-
 	public TestDelegate() {}
 
 	public boolean supportsTransactions() {return false;}
@@ -49,7 +48,6 @@ public final class TestDelegate implements IDelegate
 	public boolean inTransaction() {return false;}
 	public String getName() {return m_name;}
 	public void cancelTransaction() {}
-	public void start(IDelegateBridge aBridge, GameData gameData) {	}
 	
 	public void end() {	}
 	public String getDisplayName() {return "displayName";}

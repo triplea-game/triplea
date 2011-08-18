@@ -12,6 +12,7 @@
 
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -33,7 +34,6 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 
-import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -42,13 +42,20 @@ import java.util.Collection;
  *
  * @author Tony Clayton
  */
-public class EditDelegate implements IDelegate, IEditDelegate
+public class EditDelegate extends BaseDelegate implements IEditDelegate
 {
-    private String m_name;
-    private String m_displayName;
-    private TripleADelegateBridge m_bridge;
-    private GameData m_data;
+	private TripleADelegateBridge m_bridge;
 
+    /**
+     * Called before the delegate will run.
+     */
+    public void start(IDelegateBridge bridge, GameData gameData)
+    {   
+        m_bridge = new TripleADelegateBridge(bridge, gameData);
+        m_data = gameData;
+        m_player = bridge.getPlayerID();
+    }
+	
     public static boolean getEditMode(GameData data)
     {
         Object editMode = data.getProperties().get(Constants.EDIT_MODE);
@@ -82,42 +89,7 @@ public class EditDelegate implements IDelegate, IEditDelegate
         initialize(name, name);
     }
 
-    public void initialize(String name, String displayName)
-    {
-
-        m_name = name;
-        m_displayName = displayName;
-    }
-
-    /**
-     * Called before the delegate will run.
-     */
-    public void start(IDelegateBridge aBridge, GameData gameData)
-    {
-
-        m_bridge = new TripleADelegateBridge(aBridge, gameData);
-        m_data = gameData;
-    }
-
-    /**
-     * This will never be called since this is an IPersistentDelegate
-     */
-    public void end()
-    {
-    }
-
-    public String getName()
-    {
-
-        return m_name;
-    }
-
-    public String getDisplayName()
-    {
-
-        return m_displayName;
-    }
-
+   
     public String setEditMode(boolean editMode)
     {
         ITripleaPlayer remotePlayer = (ITripleaPlayer)m_bridge.getRemote();
@@ -320,12 +292,5 @@ public class EditDelegate implements IDelegate, IEditDelegate
         return IEditDelegate.class;
     }
 
-    public void loadState(Serializable state)
-    {
-    }
-
-    public Serializable saveState()
-    {
-        return null;
-    }
+   
 }

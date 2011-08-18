@@ -47,6 +47,7 @@ public interface Constants
   public static final String RELATIONSHIPTYPE_ATTATCHMENT_NAME = "relationshipTypeAttachment";
   public static final String CANAL_ATTATCHMENT_PREFIX = "canalAttatchment";
   public static final String SUPPORT_ATTACHMENT_PREFIX = "supportAttachment";
+  public static final String TERRITORYEFFECT_ATTATCHMENT_NAME = "territoryEffectAttachment";
   public static final String PUS = "PUs";
   public static final String TECH_TOKENS = "techTokens";
   public static final String VPS = "VPs";

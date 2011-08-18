@@ -540,11 +540,12 @@ public class DiceRollTest extends TestCase
     {
 
         PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        Territory location = m_data.getMap().getTerritory("United Kingdom");
         Unit bombers =  m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber).get(0);
         
         //default 1 roll
-        assertEquals(1, BattleCalculator.getRolls(bombers, british, false) );
-        assertEquals(1, BattleCalculator.getRolls(bombers, british, true) );
+        assertEquals(1, BattleCalculator.getRolls(bombers, location, british, false) );
+        assertEquals(1, BattleCalculator.getRolls(bombers, location, british, true) );
         
         
         //hb, for revised 2 on attack, 1 on defence
@@ -553,15 +554,15 @@ public class DiceRollTest extends TestCase
         TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
         m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.FALSE);
 
-        assertEquals(2, BattleCalculator.getRolls(bombers, british, false) );
-        assertEquals(1, BattleCalculator.getRolls(bombers, british, true) );
+        assertEquals(2, BattleCalculator.getRolls(bombers, location, british, false) );
+        assertEquals(1, BattleCalculator.getRolls(bombers, location, british, true) );
 
 
         
         //lhtr hb, 2 for both
         m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
-        assertEquals(2, BattleCalculator.getRolls(bombers, british, false) );
-        assertEquals(2, BattleCalculator.getRolls(bombers, british, true) );
+        assertEquals(2, BattleCalculator.getRolls(bombers, location, british, false) );
+        assertEquals(2, BattleCalculator.getRolls(bombers, location, british, true) );
     }
     
 }

@@ -22,6 +22,7 @@
 
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
@@ -30,7 +31,6 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.IntegerMap;
 
-import java.io.Serializable;
 import java.util.*;
 
 
@@ -38,10 +38,9 @@ import java.util.*;
  * 
  * @author Sean Bridges
  */
-public class InitializationDelegate implements IDelegate
+public class InitializationDelegate extends BaseDelegate
 {
-    private String m_name;
-    private String m_displayName;
+   
 
     /** Creates a new instance of InitializationDelegate */
     public InitializationDelegate()
@@ -59,6 +58,7 @@ public class InitializationDelegate implements IDelegate
      */
     public void start(IDelegateBridge aBridge, GameData gameData)
     {
+        super.start(aBridge, gameData);
         init(gameData, aBridge);
     }
 
@@ -99,11 +99,11 @@ public class InitializationDelegate implements IDelegate
 
     private void initTech(GameData data, IDelegateBridge bridge)
     {
-        Iterator players = data.getPlayerList().getPlayers().iterator();
+        Iterator<PlayerID> players = data.getPlayerList().getPlayers().iterator();
         while(players.hasNext())
         {
             PlayerID player = (PlayerID) players.next();
-            Iterator advances = TechTracker.getTechAdvances(player,data).iterator();
+            Iterator<TechAdvance> advances = TechTracker.getTechAdvances(player,data).iterator();
             if(advances.hasNext())
             {
                 bridge.getHistoryWriter().startEvent("Initializing " + player.getName() + " with tech advances");
@@ -264,37 +264,7 @@ public class InitializationDelegate implements IDelegate
         aBridge.addChange(changes);
     }
 
-    public String getName()
-    {
-        return m_name;
-    }
-
-    public String getDisplayName()
-    {
-        return m_displayName;
-    }
-
-    /**
-     * Called before the delegate will stop running.
-     */
-    public void end()
-    {
-    }
-
-    /**
-     * Returns the state of the Delegate.
-     */
-    public Serializable saveState()
-    {
-        return null;
-    }
-    
-    /**
-     * Loads the delegates state
-     */
-    public void loadState(Serializable state)
-    {}
-
+   
 
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()

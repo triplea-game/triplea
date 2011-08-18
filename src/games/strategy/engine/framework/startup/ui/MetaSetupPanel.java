@@ -220,7 +220,7 @@ public class MetaSetupPanel extends SetupPanel
     private void about() {
     	String text = "<h2>TripleA</h2>"+
 		"<p><b>Engine Version:</b> " + games.strategy.engine.EngineVersion.VERSION.toString()+
-		"<br><b>Authors:</b> Sean Bridges, and many others. Current Developers: ComradeKev, Veqryn (Chris Duncan), Wisconsin."+
+		"<br><b>Authors:</b> Sean Bridges, and many others. Current Developers: Veqryn (Chris Duncan), Wisconsin, Edwin, Frigoref."+
 		"<br>TripleA is an open-source game engine, allowing people to play many different games and maps."+
 		"<br>For more information please visit:<br>"+
 		"<b>WIKI:</b> <a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a><br>"+

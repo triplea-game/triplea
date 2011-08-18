@@ -27,10 +27,12 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.history.History;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.util.ListenerList;
 import games.strategy.util.Version;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -116,6 +118,8 @@ public class GameData implements java.io.Serializable
     private volatile transient boolean m_testLockIsHeld = false;
 
 	private List<IAttachment> attachmentOrder = new ArrayList<IAttachment>();
+
+	private Hashtable<String, TerritoryEffect> m_territoryEffectList = new Hashtable<String, TerritoryEffect>();
 
 
 	/** Creates new GameData */
@@ -500,6 +504,10 @@ public class GameData implements java.io.Serializable
 	public RelationshipTracker getRelationshipTracker() {
 		 ensureLockHeld();
 		return m_relationships;
+	}
+
+	public Hashtable<String,TerritoryEffect> getTerritoryEffectList() {
+		return m_territoryEffectList;
 	}
     
 }
