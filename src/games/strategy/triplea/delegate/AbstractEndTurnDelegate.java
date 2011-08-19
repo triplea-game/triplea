@@ -212,7 +212,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		while (terrIter.hasNext())
 		{
 			Territory currTerritory = (Territory) terrIter.next();
-            TerritoryAttachment ta = (TerritoryAttachment) currTerritory.getAttachment(Constants.TERRITORY_ATTATCHMENT_NAME);
+            TerritoryAttachment ta = (TerritoryAttachment) currTerritory.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
             //if ownership should change in this territory
             if(ta != null && ta.getChangeUnitOwners() != null && !ta.getChangeUnitOwners().isEmpty())
             {
@@ -242,7 +242,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
         while(iter.hasNext() )
         {
             Territory current = (Territory) iter.next();
-            TerritoryAttachment attatchment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTATCHMENT_NAME);
+            TerritoryAttachment attatchment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
 
             if(attatchment == null)
                 throw new IllegalStateException("No attachment for owned territory:" + current.getName());
@@ -300,7 +300,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
     
     private boolean isWarBonds(PlayerID player)
     {
-        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
         if(ta != null)
             return ta.hasWarBonds();
         

@@ -57,7 +57,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
      */
     public static RelationshipTypeAttachment get(RelationshipType pr)
     {
-        return (RelationshipTypeAttachment) pr.getAttachment(Constants.RELATIONSHIPTYPE_ATTATCHMENT_NAME);
+        return (RelationshipTypeAttachment) pr.getAttachment(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
     }
 
     /** Creates new RelationshipTypeAttachment
@@ -85,7 +85,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     		m_archeType = ARCHETYPE_ALLIED;
     	else if(archeType.toLowerCase().equals(ARCHETYPE_NEUTRAL))
     		m_archeType = ARCHETYPE_NEUTRAL;
-    	else throw new GameParseException("archeType must be "+ARCHETYPE_WAR+","+ARCHETYPE_ALLIED+" or "+ARCHETYPE_NEUTRAL+" for "+Constants.RELATIONSHIPTYPE_ATTATCHMENT_NAME+": "+getName());
+    	else throw new GameParseException("archeType must be "+ARCHETYPE_WAR+","+ARCHETYPE_ALLIED+" or "+ARCHETYPE_NEUTRAL+" for "+Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME+": "+getName());
     }
     
     /**
@@ -152,7 +152,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     		m_helpsDefendAtSea = PROPERTY_FALSE;
     	else if(helpsDefendAtSea.toLowerCase().equals(PROPERTY_DEFAULT))
     		m_helpsDefendAtSea = PROPERTY_DEFAULT;
-    	else throw new GameParseException("helpsDefendAtSea must be "+PROPERTY_TRUE+","+PROPERTY_FALSE+" or "+PROPERTY_DEFAULT+" for "+Constants.RELATIONSHIPTYPE_ATTATCHMENT_NAME+": "+getName());
+    	else throw new GameParseException("helpsDefendAtSea must be "+PROPERTY_TRUE+","+PROPERTY_FALSE+" or "+PROPERTY_DEFAULT+" for "+Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME+": "+getName());
      }
     /**
      * <strong> EXAMPLE</strong> method on how you could do finegrained autorisations instead of looking at isNeutral, isAllied or isWar();

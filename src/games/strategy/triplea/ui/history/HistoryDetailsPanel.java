@@ -14,16 +14,32 @@
 
 package games.strategy.triplea.ui.history;
 
-import javax.swing.*;
-import java.util.*;
-import games.strategy.engine.data.*;
-import games.strategy.engine.history.*;
-import games.strategy.triplea.delegate.*;
-import java.awt.*;
-import games.strategy.triplea.ui.*;
-import games.strategy.triplea.util.*;
-import games.strategy.triplea.delegate.dataObjects.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.history.HistoryNode;
+import games.strategy.engine.history.Renderable;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.dataObjects.MoveDescription;
+import games.strategy.triplea.delegate.dataObjects.PlacementDescription;
+import games.strategy.triplea.ui.DicePanel;
+import games.strategy.triplea.ui.MapPanel;
+import games.strategy.triplea.ui.SimpleUnitPanel;
+import games.strategy.triplea.util.UnitCategory;
+import games.strategy.triplea.util.UnitSeperator;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.util.Collection;
+import java.util.Iterator;
+
+import javax.swing.Box;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+@SuppressWarnings("serial")
 public class HistoryDetailsPanel extends JPanel
 {
     private final GameData m_data;
@@ -80,6 +96,12 @@ public class HistoryDetailsPanel extends JPanel
                 m_mapPanel.setRoute(moveMessage.getRoute());
                 if (!m_mapPanel.isShowing(moveMessage.getRoute().getEnd()))
                     m_mapPanel.centerOn(moveMessage.getRoute().getEnd());
+            } else if (details instanceof PlacementDescription)
+            {
+            	PlacementDescription placeMessage = (PlacementDescription) details;
+            	renderUnits(mainConstraints, placeMessage.getUnits());
+            	if (!m_mapPanel.isShowing(placeMessage.getTerritory()))
+            		m_mapPanel.centerOn(placeMessage.getTerritory());
             } else if (details instanceof Collection)
             {
                 Collection objects = (Collection)details;
@@ -95,7 +117,6 @@ public class HistoryDetailsPanel extends JPanel
                 Territory t = (Territory) details;
                 if (!m_mapPanel.isShowing(t))
                     m_mapPanel.centerOn(t);
-
             }
 
         }
@@ -109,7 +130,7 @@ public class HistoryDetailsPanel extends JPanel
     private void renderUnits(GridBagConstraints mainConstraints,
             Collection<Unit> units)
     {
-        Collection unitsCategories = UnitSeperator.categorize(units);
+        Collection<UnitCategory> unitsCategories = UnitSeperator.categorize(units);
         SimpleUnitPanel unitsPanel = new SimpleUnitPanel(m_mapPanel
                 .getUIContext());
         unitsPanel.setUnitsFromCategories(unitsCategories, m_data);

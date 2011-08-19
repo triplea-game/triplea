@@ -34,42 +34,41 @@ import java.util.Map;
 @SuppressWarnings("serial")
 class UndoablePlacement extends AbstractUndoableMove
 {
-    final Territory m_territory;
+    final Territory m_place_territory;
+    final Territory m_producer_territory;
     PlayerID m_player;
 
-    public UndoablePlacement(PlayerID player, CompositeChange change, Territory territory, Collection<Unit> units)
+    public UndoablePlacement(PlayerID player, CompositeChange change, Territory producer_territory, Territory place_territory, Collection<Unit> units)
     {
         super(change, units);
-        m_territory = territory;
+        m_place_territory = place_territory;
+        m_producer_territory = producer_territory;
         m_player = player;
     }
 
     protected final void undoSpecific(GameData data, IDelegateBridge bridge)
     {
-        bridge.getHistoryWriter().startEvent(bridge.getPlayerID().getName() + " undo move " + (m_index + 1) + ".");
-        bridge.getHistoryWriter().setRenderingData(new PlacementDescription(m_units, m_territory));
-
-        Map<Territory, Collection<Unit>> produced = DelegateFinder.placeDelegate(data).getProduced();
-        Collection<Unit> units = produced.get(m_territory);
+    	Map<Territory, Collection<Unit>> produced = DelegateFinder.placeDelegate(data).getProduced();
+    	Collection<Unit> units = produced.get(m_producer_territory);
         units.removeAll(getUnits());
         if (units.isEmpty())
         {
-            produced.remove(m_territory);
+            produced.remove(m_producer_territory);
         }
         DelegateFinder.placeDelegate(data).setProduced(new HashMap<Territory, Collection<Unit>>(produced));
     }
 
     public final String getMoveLabel()
     {
-        return m_territory.getName();
+        return m_place_territory.getName();
     }
 
     public final Territory getEnd()
     {
-        return m_territory;
+        return m_place_territory;
     }
 
-    public final PlacementDescription getDescriptionObject() {
-        return new PlacementDescription(m_units, m_territory);
+    protected final PlacementDescription getDescriptionObject() {
+        return new PlacementDescription(m_units, m_place_territory);
     }
 }

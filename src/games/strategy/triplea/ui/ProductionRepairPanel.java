@@ -243,7 +243,7 @@ public class ProductionRepairPanel extends JPanel
     
     private boolean isIncreasedFactoryProduction(PlayerID player)    
     {
-        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
         if(ta == null)
         	return false;
         return ta.hasIncreasedFactoryProduction();

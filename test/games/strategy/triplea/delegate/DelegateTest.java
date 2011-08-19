@@ -126,13 +126,13 @@ public class DelegateTest extends TestCase
         input.close();
 		
 		british = m_data.getPlayerList().getPlayerID("British");
-		british.addAttachment(Constants.TECH_ATTATCHMENT_NAME, new TechAttachment());
+		british.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
 		japanese = m_data.getPlayerList().getPlayerID("Japanese");
-		japanese.addAttachment(Constants.TECH_ATTATCHMENT_NAME, new TechAttachment());	
+		japanese.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());	
 		russians = m_data.getPlayerList().getPlayerID("Russians");
-		russians.addAttachment(Constants.TECH_ATTATCHMENT_NAME, new TechAttachment());	
+		russians.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());	
 		germans = m_data.getPlayerList().getPlayerID("Germans");
-		germans.addAttachment(Constants.TECH_ATTATCHMENT_NAME, new TechAttachment());	
+		germans.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());	
 		
 		northSea = m_data.getMap().getTerritory("North Sea Zone");
 		blackSea = m_data.getMap().getTerritory("Black Sea Zone");

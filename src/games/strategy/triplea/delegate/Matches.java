@@ -230,7 +230,7 @@ public class Matches
 				return false;
 			}
 
-	        TechAttachment ta = (TechAttachment) unit.getOwner().getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+	        TechAttachment ta = (TechAttachment) unit.getOwner().getAttachment(Constants.TECH_ATTACHMENT_NAME);
 	        if(ta == null)
 	        	return false;
 	        return ta.hasAARadar();
@@ -1571,7 +1571,7 @@ public class Matches
             	if(!Properties.getMovementByTerritoryRestricted(data))
             		return true;
 
-            	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+            	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
             	if(ra == null || ra.getMovementRestrictionTerritories() == null)
             		return true;
 

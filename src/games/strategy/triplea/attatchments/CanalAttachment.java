@@ -45,7 +45,7 @@ public class CanalAttachment extends DefaultAttachment
         {
             IAttachment attachment = map.get(iter.next());
             String name = attachment.getName();
-            if (name.startsWith(Constants.CANAL_ATTATCHMENT_PREFIX))
+            if (name.startsWith(Constants.CANAL_ATTACHMENT_PREFIX))
             {
                 rVal.add((CanalAttachment)attachment);
             }

@@ -123,9 +123,6 @@ public class UndoableMove extends AbstractUndoableMove
     {
         BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
 
-        bridge.getHistoryWriter().startEvent(bridge.getPlayerID().getName() + " undo move " + (m_index + 1) + ".");
-        bridge.getHistoryWriter().setRenderingData(getDescriptionObject());
-
         battleTracker.undoBattle(m_route, m_units, bridge.getPlayerID(), data, bridge);
 
         // clean up dependencies
@@ -232,7 +229,7 @@ public class UndoableMove extends AbstractUndoableMove
         return m_route.getEnd();
     }
 
-    public final MoveDescription getDescriptionObject() {
+    protected final MoveDescription getDescriptionObject() {
         return new MoveDescription(m_units, m_route);
     }
 }

@@ -46,7 +46,7 @@ public class UnitAttachment extends DefaultAttachment
    */
   public static UnitAttachment get(UnitType type)
   {
-    return (UnitAttachment) type.getAttachment(Constants.UNIT_ATTATCHMENT_NAME);
+    return (UnitAttachment) type.getAttachment(Constants.UNIT_ATTACHMENT_NAME);
   }
 
   private boolean m_isAir = false;
@@ -1250,7 +1250,7 @@ public class UnitAttachment extends DefaultAttachment
 
   private boolean playerHasAARadar(PlayerID player)
   {
-	  TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+	  TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 	  if(ta == null)
 	  	return false;
 	  return ta.hasAARadar(); 
@@ -1258,7 +1258,7 @@ public class UnitAttachment extends DefaultAttachment
 
   private boolean playerHasRockets(PlayerID player)
   {
-	  TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+	  TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 	  if(ta == null)
 	  	return false;
 	  return ta.hasRocket(); 
@@ -1266,7 +1266,7 @@ public class UnitAttachment extends DefaultAttachment
 
   private boolean playerHasMechInf(PlayerID player)
   {
-	  TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+	  TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 	  if(ta == null)
 	  	return false;
 	  return ta.hasMechanizedInfantry(); 
@@ -1274,7 +1274,7 @@ public class UnitAttachment extends DefaultAttachment
 
   private boolean playerHasParatroopers(PlayerID player)
   {
-	  TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+	  TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 	  if(ta == null)
 	  	return false;
 	  return ta.hasParatroopers(); 

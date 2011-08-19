@@ -2696,7 +2696,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     
     private boolean isParatroopers(PlayerID player)    
     {
-        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
         if(ta == null)
         	return false;
         return ta.hasParatroopers();

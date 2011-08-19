@@ -740,7 +740,7 @@ public class DiceRoll implements Externalizable
     	if(player == null) {
     		return false;
     	}
-        RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+        RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
         if(ra == null)
         	return false;
         return ra.getDominatingFirstRoundAttack();
@@ -748,7 +748,7 @@ public class DiceRoll implements Externalizable
 
     private static boolean isNegateDominatingFirstRoundAttack(PlayerID player)    
     {
-        RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+        RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
         if(ra == null)
         	return false;
         return ra.getNegateDominatingFirstRoundAttack();
@@ -799,7 +799,7 @@ public class DiceRoll implements Externalizable
 
     private static boolean isImprovedArtillerySupport(PlayerID player)
     {
-        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
         if(ta == null)
         	return false;
         return ta.hasImprovedArtillerySupport();     

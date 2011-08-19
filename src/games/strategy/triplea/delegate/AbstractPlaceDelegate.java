@@ -755,7 +755,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         boolean originalFactory = ta.isOriginalFactory();
         boolean playerIsOriginalOwner = factoryUnits.size() > 0 ? m_player.equals(getOriginalFactoryOwner(producer)) : false;
 
-        RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+        RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
         int unitCountAlreadyProduced = getAlreadyProduced(producer).size();
 
         if (originalFactory && playerIsOriginalOwner) // && !placementRestrictedByFactory && !unitPlacementPerTerritoryRestricted
@@ -1072,10 +1072,6 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         Collection<Unit> factoryAndAA = Match.getMatches(units, Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
         change.add(DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndAA, m_player));
 
-        String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " placed in " + at.getName();
-        m_bridge.getHistoryWriter().startEvent(transcriptText);
-        m_bridge.getHistoryWriter().setRenderingData(units);
-
         Change remove = ChangeFactory.removeUnits(player, units);
         Change place = ChangeFactory.addUnits(at, units);
 
@@ -1092,14 +1088,21 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         //can we move planes to land there
 
         moveAirOntoNewCarriers(at, units, player, change);
-        m_bridge.addChange(change);
-        m_placements.add(new UndoablePlacement(m_player, change, at, units));
-        updateUndoablePlacementIndexes();
-
+        
         Territory producer = getProducer(at, player);
         Collection<Unit> produced = new ArrayList<Unit>();
         produced.addAll(getAlreadyProduced(producer));
         produced.addAll(units);
+
+        UndoablePlacement current_placement = new UndoablePlacement(m_player, change, producer, at, units);
+        m_placements.add(current_placement);
+        updateUndoablePlacementIndexes();
+        
+        String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " placed in " + at.getName();
+        m_bridge.getHistoryWriter().startEvent(transcriptText);
+        m_bridge.getHistoryWriter().setRenderingData(current_placement.getDescriptionObject());
+        
+        m_bridge.addChange(change);
 
         m_produced.put(producer, produced);
     }
@@ -1215,7 +1218,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
     {
     	if(isPlaceInAnyTerritory())
     	{
-    		RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+    		RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
         	if(ra != null && ra.getPlacementAnyTerritory())
         	{
         		return true;
@@ -1227,7 +1230,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 
     private boolean isPlacementAllowedInCapturedTerritory(PlayerID player)
     {
-            RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+            RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
             if(ra != null && ra.getPlacementCapturedTerritory())
             {
                 return true;
@@ -1238,7 +1241,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 
     private boolean isPlacementInCapitalRestricted(PlayerID player)
     {
-            RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+            RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
             if(ra != null && ra.getPlacementInCapitalRestricted())
             {
                 return true;

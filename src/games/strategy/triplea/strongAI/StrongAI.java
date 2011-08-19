@@ -7814,7 +7814,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		boolean isLand = SUtils.doesLandExistAt(myCapital, data, false); // gives different info than isamphib
 		boolean skipShips = false, buyTransports = true;
 		boolean buyPlanesOnly = false, buyOnePlane = false, buyBattleShip = false, buySub = false, buyOneShip = false, buyCarrier = false;
-		RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+		RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
 		List<Territory> factories = new ArrayList<Territory>();
 		if (ra != null && ra.getPlacementAnyTerritory()) // make them all available for placing
 		{
@@ -9483,7 +9483,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		if (capDanger && !impassableTerrs.contains(capitol))
 			placeAllWeCanOn(bid, data, capitol, capitol, placeDelegate, player);
 		// check for no factories, but still can place
-		RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+		RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
 		if ((ra != null && ra.getPlacementAnyTerritory()) || bid) // make them all available for placing
 			factoryTerritories.addAll(SUtils.allOurTerritories(data, player));
 		List<Territory> cloneFactTerritories = new ArrayList<Territory>(factoryTerritories);

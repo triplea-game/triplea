@@ -88,7 +88,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 	    // set the archeType to this attachment
 		at.setArcheType(relationshipArcheType); 
 		// attach this attachment to this type
-		relationshipType.addAttachment(Constants.RELATIONSHIPTYPE_ATTATCHMENT_NAME, at);
+		relationshipType.addAttachment(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME, at);
 	    at.setAttatchedTo(relationshipType);
 		addRelationshipType(relationshipType);
 	}

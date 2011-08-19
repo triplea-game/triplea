@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Fixed bug introduced into undoing moves, where undoing a sea placement generated an error. (frigoref)
+
 * Created new trigger ability to add and remove production rules from a production frontier. (veqryn)
 
 * Beginning work on territory effects, and some cleanup in the use of basedelegate. (edwin van der wal, with help from frigoref and veqryn)

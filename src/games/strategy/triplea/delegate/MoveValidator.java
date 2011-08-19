@@ -346,7 +346,7 @@ public class MoveValidator
         
     private static boolean isMechanizedInfantry(PlayerID player)    
     {
-        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
         if(ta == null)
         	return false;
         return ta.hasMechanizedInfantry();
@@ -354,7 +354,7 @@ public class MoveValidator
     
     private static boolean isParatroopers(PlayerID player)    
     {
-        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
         if(ta == null)
         	return false;
         return ta.hasParatroopers();
@@ -1056,7 +1056,7 @@ public class MoveValidator
     	if(!isMovementByTerritoryRestricted(data))
     		return result;
     	
-    	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+    	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     	if(ra == null || ra.getMovementRestrictionTerritories() == null)
     		return result;
     	    	

@@ -670,7 +670,7 @@ public class MapPanel extends ImageScrollerLargeView
                 if (aChange instanceof ChangeAttachmentChange)
                 {
                     ChangeAttachmentChange changeAttatchment = (ChangeAttachmentChange) aChange;
-                    if (changeAttatchment.getAttatchmentName().equals(Constants.TECH_ATTATCHMENT_NAME))
+                    if (changeAttatchment.getAttatchmentName().equals(Constants.TECH_ATTACHMENT_NAME))
                     {
                         players.add((PlayerID) changeAttatchment.getAttatchedTo());
                     }

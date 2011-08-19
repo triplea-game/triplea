@@ -49,7 +49,7 @@ public class RulesAttachment extends DefaultAttachment
 	 */
 	public static RulesAttachment get(Rule r)
 	{
-		RulesAttachment rVal = (RulesAttachment) r.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+		RulesAttachment rVal = (RulesAttachment) r.getAttachment(Constants.RULES_ATTACHMENT_NAME);
 		if (rVal == null)
 			throw new IllegalStateException("Rules & Conditions: No rule attachment for:" + r.getName());
 		return rVal;

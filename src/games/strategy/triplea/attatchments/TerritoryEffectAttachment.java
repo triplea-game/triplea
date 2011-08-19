@@ -50,7 +50,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
      */
     public static TerritoryEffectAttachment get(TerritoryEffect te)
     {
-        return (TerritoryEffectAttachment) te.getAttachment(Constants.TERRITORYEFFECT_ATTATCHMENT_NAME);
+        return (TerritoryEffectAttachment) te.getAttachment(Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
     }
     
     /** Creates new TerritoryEffectAttachment

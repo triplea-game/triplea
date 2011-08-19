@@ -367,7 +367,7 @@ public class DMatches
             	if(!Properties.getMovementByTerritoryRestricted(data))
             		return true;
 
-            	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+            	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
             	if(ra == null || ra.getMovementRestrictionTerritories() == null)
             		return true;
 

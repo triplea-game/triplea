@@ -39,6 +39,9 @@ abstract public class AbstractUndoableMove implements Serializable
     final public void undo(GameData data, IDelegateBridge delegateBridge)
     {
         // undo any changes to the game data
+    	delegateBridge.getHistoryWriter().startEvent(delegateBridge.getPlayerID().getName() + " undo move " + (getIndex() + 1) + ".");
+    	delegateBridge.getHistoryWriter().setRenderingData(getDescriptionObject());
+    	
         delegateBridge.addChange(m_change.invert());
         undoSpecific(data, delegateBridge);
     }
@@ -74,5 +77,5 @@ abstract public class AbstractUndoableMove implements Serializable
 
     abstract public String getMoveLabel();
     abstract public Territory getEnd();
-    abstract public AbstractMoveDescription getDescriptionObject();
+    abstract protected AbstractMoveDescription getDescriptionObject();
 }

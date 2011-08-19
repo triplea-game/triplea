@@ -21,6 +21,7 @@
 package games.strategy.engine.xml;
 
 import games.strategy.engine.data.*;
+import games.strategy.triplea.Constants;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -146,16 +147,16 @@ public class ParserTest extends TestCase
 
 	public void testAttatchments()
 	{
-		TestAttachment att = (TestAttachment) gameData.getResourceList().getResource("gold").getAttachment("resourceAttatchment");
+		TestAttachment att = (TestAttachment) gameData.getResourceList().getResource("gold").getAttachment(Constants.RESOURCE_ATTACHMENT_NAME);
 		assertEquals(att.getValue(), "gold");
 
-		att = (TestAttachment) gameData.getUnitTypeList().getUnitType("inf").getAttachment("infAttatchment");
+		att = (TestAttachment) gameData.getUnitTypeList().getUnitType("inf").getAttachment(Constants.INF_ATTACHMENT_NAME);
 		assertEquals(att.getValue(), "inf");
 
-		att = (TestAttachment) gameData.getMap().getTerritory("us").getAttachment("territoryAttatchment");
+		att = (TestAttachment) gameData.getMap().getTerritory("us").getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
 		assertEquals(att.getValue(), "us of a");
 
-		att = (TestAttachment) gameData.getPlayerList().getPlayerID("chretian").getAttachment("playerAttatchment");
+		att = (TestAttachment) gameData.getPlayerList().getPlayerID("chretian").getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
 		assertEquals(att.getValue(), "liberal");
 
 	}

@@ -372,7 +372,7 @@ public class DUtils
     {
     	if(Properties.getPlaceInAnyTerritory(data))
     	{
-    		RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+    		RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
         	if(ra != null && ra.getPlacementAnyTerritory())
         		return true;
     	}

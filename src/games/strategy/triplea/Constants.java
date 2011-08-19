@@ -38,16 +38,18 @@ public interface Constants
   public static final String ITALIANS = "Italians";
   public static final String CHINESE = "Chinese";
 
-  public static final String UNIT_ATTATCHMENT_NAME = "unitAttatchment";
-  public static final String TECH_ATTATCHMENT_NAME = "techAttatchment";
-  public static final String TERRITORY_ATTATCHMENT_NAME = "territoryAttatchment";
-  public static final String RULES_ATTATCHMENT_NAME = "rulesAttatchment";
+  public static final String UNIT_ATTACHMENT_NAME = "unitAttatchment";
+  public static final String INF_ATTACHMENT_NAME = "infAttatchment";
+  public static final String TECH_ATTACHMENT_NAME = "techAttatchment";
+  public static final String RESOURCE_ATTACHMENT_NAME = "resourceAttatchment";
+  public static final String TERRITORY_ATTACHMENT_NAME = "territoryAttatchment";
+  public static final String RULES_ATTACHMENT_NAME = "rulesAttatchment";
   public static final String RULES_OBJECTIVE_PREFIX = "objectiveAttachment";
-  public static final String PLAYER_ATTATCHMENT_NAME = "playerAttatchment";
-  public static final String RELATIONSHIPTYPE_ATTATCHMENT_NAME = "relationshipTypeAttachment";
-  public static final String CANAL_ATTATCHMENT_PREFIX = "canalAttatchment";
+  public static final String PLAYER_ATTACHMENT_NAME = "playerAttatchment";
+  public static final String RELATIONSHIPTYPE_ATTACHMENT_NAME = "relationshipTypeAttachment";
+  public static final String CANAL_ATTACHMENT_PREFIX = "canalAttatchment";
   public static final String SUPPORT_ATTACHMENT_PREFIX = "supportAttachment";
-  public static final String TERRITORYEFFECT_ATTATCHMENT_NAME = "territoryEffectAttachment";
+  public static final String TERRITORYEFFECT_ATTACHMENT_NAME = "territoryEffectAttachment";
   public static final String PUS = "PUs";
   public static final String TECH_TOKENS = "techTokens";
   public static final String VPS = "VPs";
@@ -64,31 +66,31 @@ public interface Constants
   public static final String PRODUCE_NEW_FIGHTERS_ON_OLD_CARRIERS = "Produce new fighters on old carriers";
   public static final String MOVE_EXISTING_FIGHTERS_TO_NEW_CARRIERS = "Move existing fighters to new carriers";
   public static final String LAND_EXISTING_FIGHTERS_ON_NEW_CARRIERS = "Land existing fighters on new carriers";
-  
-  
+
+
   public static final String HEAVY_BOMBER_DICE_ROLLS = "Heavy Bomber Dice Rolls";
   public static final String TWO_HIT_BATTLESHIPS_REPAIR_END_OF_TURN = "Battleships repair at end of round";
   public static final String WW2V2 = "WW2V2";
   public static final String TOTAL_VICTORY = "Total Victory";
   public static final String HONORABLE_SURRENDER = "Honorable Surrender";
-  public static final String PROJECTION_OF_POWER = "Projection of Power";  
+  public static final String PROJECTION_OF_POWER = "Projection of Power";
   public static final String ALL_ROCKETS_ATTACK = "All Rockets Attack";
   public static final String ROCKETS_CAN_FLY_OVER_IMPASSABLES = "Rockets Can Fly Over Impassables";
   public static final String NEUTRALS_ARE_IMPASSABLE = "Neutrals Are Impassable";
-  public static final String NEUTRALS_ARE_BLITZABLE = "Neutrals Are Blitzable";  
+  public static final String NEUTRALS_ARE_BLITZABLE = "Neutrals Are Blitzable";
   public static final String PARTIAL_AMPHIBIOUS_RETREAT = "Partial Amphibious Retreat";
   public static final String PREVIOUS_UNITS_FIGHT = "Previous Units Fight";
-  
+
   /**
    * These are the individual rules from a game (All default to FALSE)
    */
   public static final String PLACEMENT_RESTRICTED_BY_FACTORY = "Placement Restricted By Factory";
   public static final String SELECTABLE_TECH_ROLL = "Selectable Tech Roll";
-  public static final String WW2V3_Tech_Model = "WW2V3 Tech Model";  
-  public static final String TECH_DEVELOPMENT = "Tech Development";  
+  public static final String WW2V3_Tech_Model = "WW2V3 Tech Model";
+  public static final String TECH_DEVELOPMENT = "Tech Development";
   public static final String TRANSPORT_UNLOAD_RESTRICTED = "Transport Restricted Unload";
   public static final String RANDOM_AA_CASUALTIES = "Random AA Casualties";
-  public static final String ROLL_AA_INDIVIDUALLY = "Roll AA Individually";  
+  public static final String ROLL_AA_INDIVIDUALLY = "Roll AA Individually";
   public static final String LIMIT_SBR_DAMAGE_TO_PRODUCTION = "Limit SBR Damage To Factory Production";
   public static final String LIMIT_ROCKET_DAMAGE_TO_PRODUCTION = "Limit SBR Damage To Factory Production";
   public static final String SBR_VICTORY_POINTS = "SBR Victory Points";
@@ -105,18 +107,18 @@ public interface Constants
   /**
    * End individual rules (All default to FALSE)
    */
-  
+
 
   /**
    * These are the individual rules for TripleA WW2V3 (All default to FALSE)
    */
   public static final String NATIONAL_OBJECTIVES = "National Objectives";
   public static final String SUB_CONTROL_SEA_ZONE_RESTRICTED = "Sub Control Sea Zone Restricted";
-  public static final String UNIT_PLACEMENT_IN_ENEMY_SEAS = "Unit Placement In Enemy Seas";  
+  public static final String UNIT_PLACEMENT_IN_ENEMY_SEAS = "Unit Placement In Enemy Seas";
   public static final String TRANSPORT_CONTROL_SEA_ZONE = "Transport Control Sea Zone";
   public static final String PRODUCTION_PER_X_TERRITORIES_RESTRICTED = "Production Per X Territories Restricted";
   public static final String PLACE_IN_ANY_TERRITORY = "Place in Any Territory";
-  public static final String UNIT_PLACEMENT_PER_TERRITORY_RESTRICTED = "Unit Placement Per Territory Restricted";  
+  public static final String UNIT_PLACEMENT_PER_TERRITORY_RESTRICTED = "Unit Placement Per Territory Restricted";
   public static final String MOVEMENT_BY_TERRITORY_RESTRICTED = "Movement By Territory Restricted";
   public static final String TRANSPORT_CASUALTIES_RESTRICTED = "Transport Casualties Restricted";
   public static final String SUB_RETREAT_BEFORE_BATTLE = "Sub Retreat Before Battle"; // may be SUBMERSIBLE_SUBS below
@@ -125,9 +127,9 @@ public interface Constants
   public static final String AA_TERRITORY_RESTRICTED = "AA Territory Restricted";
   public static final String MULTIPLE_AA_PER_TERRITORY = "Multiple AA Per Territory";
   public static final String IGNORE_TRANSPORT_IN_MOVEMENT = "Ignore Transport In Movement";
-  public static final String IGNORE_SUB_IN_MOVEMENT = "Ignore Sub In Movement";  
+  public static final String IGNORE_SUB_IN_MOVEMENT = "Ignore Sub In Movement";
   public static final String HARI_KARI_UNITS = "Hari-Kari Units";
-  public static final String HARI_KARI = "Hari-Kari Units";  
+  public static final String HARI_KARI = "Hari-Kari Units";
   public static final String UNPLACED_UNITS_LIVE = "Unplaced units live when not placed";
   /**
    * End individual rules for TripleA WW2V3 (All default to FALSE)
@@ -138,7 +140,7 @@ public interface Constants
   public static final String PACIFIC_THEATER = "Pacific Theater";
   public static final String WW2V3 = "WW2V3";
   public static final String ECONOMIC_VICTORY = "Economic Victory";
-  
+
   public static final String SUBMERSIBLE_SUBS = "Submersible Subs";
   public static final String TWO_HIT = "isTwoHit";
   public static final String ORIGINAL_OWNER = "originalOwner";
@@ -149,10 +151,10 @@ public interface Constants
   public static final String KAMIKAZE = "Kamikaze Airplanes";
   public static final String LHTR_HEAVY_BOMBERS = "LHTR Heavy Bombers";
   public static final String EDIT_MODE = "EditMode";
-  
+
   //by defaul this is 0, but for lhtr, it is 1
   public static final String SUPER_SUB_DEFENSE_BONUS = "Super Sub Defence Bonus";
-  
+
   public static final int TECH_ROLL_COST = 5;
 
   public static final String INFANTRY_TYPE = "infantry";
@@ -172,9 +174,9 @@ public interface Constants
   public static final String SMALL_MAP_FILENAME = "smallMap.jpeg";
   public static final String MAP_NAME = "mapName";
   public static final String DISPLAY_SEA_NAMES = "Display Sea Names";
-  
+
   public static final String SHOW_ENEMY_CASUALTIES_USER_PREF = "ShowEnemyCasualties";
-  
+
   //new scramble property names
   public static final String SCRAMBLE_RULES_IN_EFFECT = "Scramble Rules In Effect";
   public static final String SCRAMBLED_UNITS_RETURN_TO_BASE = "Scrambled Units Return To Base";
@@ -186,7 +188,7 @@ public interface Constants
   public static final String SUPPORT_RULE_NAME_OLD = SUPPORT_ATTACHMENT_PREFIX+OLD_ART_RULE_NAME;
   public static final String TRIGGERS = "Use Triggers";
   public static final String PU_MULTIPLIER = "Multiply PUs";
-  
+
   // veqryn (Mark Christopher Duncan)
   public static final String LL_AA_ONLY = "Low Luck for AntiAircraft";
   public static final String COUNTERS_DISPLAY = "Display Units as Counters";
@@ -211,7 +213,7 @@ public interface Constants
   public static final String DESTROY_UNITS_ON_ENTERING_TERRITORY = "On Entering Units Destroyed Instead Of Captured";
   public static final String DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES = "Damage From Bombing Done To Units Instead Of Territories";
   public static final String NEUTRAL_FLYOVER_ALLOWED = "Neutral Flyover Allowed";
-  
+
   // relationships stuff (Edwin, with help from Veqryn and Frig)
   public static final String RELATIONSHIP_TYPE_SELF = "self_relation";
   public static final String RELATIONSHIP_TYPE_NULL = "null_relation";
