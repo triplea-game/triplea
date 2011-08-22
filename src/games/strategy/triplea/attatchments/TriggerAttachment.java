@@ -758,16 +758,24 @@ public class TriggerAttachment extends DefaultAttachment{
 	}
 
 	public static Set<String> triggerNotifications(String beforeOrAfter, PlayerID player, GameData data) {
-		String stepName = data.getSequence().getStep().getName();
-		Set<TriggerAttachment> trigs = getTriggers(player,data,getNotificationStepTriggerMatch(beforeOrAfter,stepName));
-		Set<String> notifications = new HashSet<String>();
-		for(TriggerAttachment t:trigs) {
-			if(isMet(t,data)) {
-				t.use(data.getSequence().getStep().getDelegate().getBridge());
-				notifications.add(t.getNotificationMessage());
+		try {
+			data.acquireReadLock();
+			String stepName = data.getSequence().getStep().getName();
+			Set<TriggerAttachment> trigs = getTriggers(player,data,getNotificationStepTriggerMatch(beforeOrAfter,stepName));
+			Set<String> notifications = new HashSet<String>();
+			for(TriggerAttachment t:trigs) {
+				if(isMet(t,data)) {
+					t.use(data.getSequence().getStep().getDelegate().getBridge());
+					notifications.add(t.getNotificationMessage());
+				}
 			}
+			return notifications;	
+
+		} finally {
+			data.releaseReadLock();
 		}
-		return notifications;	
+		
+		
 	}
 
 

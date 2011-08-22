@@ -228,17 +228,25 @@ class RelationshipChange extends Change
 	 * 
 	 */
 	private static final long serialVersionUID = 2694339584633196289L;
-	private final PlayerID m_player1;
-	private final PlayerID m_player2;
-	private final RelationshipType m_OldRelation;
-	private final RelationshipType m_NewRelation;
+	private final String m_player1;
+	private final String m_player2;
+	private final String m_OldRelation;
+	private final String m_NewRelation;
 	
 	RelationshipChange(PlayerID player1, PlayerID player2, RelationshipType oldRelation, RelationshipType newRelation) {
+		m_player1 = player1.getName();
+		m_player2 = player2.getName();
+		m_OldRelation = oldRelation.getName();
+		m_NewRelation = newRelation.getName();
+	}
+	
+	private RelationshipChange(String player1, String player2, String oldRelation, String newRelation) {
 		m_player1 = player1;
 		m_player2 = player2;
 		m_OldRelation = oldRelation;
 		m_NewRelation = newRelation;
 	}
+	
     public Change invert()
     {
         return new RelationshipChange(m_player1,m_player2,m_NewRelation,m_OldRelation);
@@ -250,12 +258,16 @@ class RelationshipChange extends Change
     		throw new IllegalStateException("RelationshipChange may not have null arguments: m_player1: " + m_player1 + 
     					", m_player2: " + m_player2 + ", m_OldRelation: " + m_OldRelation + ", m_NewRelation: " + m_NewRelation);
     	
-        data.getRelationshipTracker().setRelationship(m_player1, m_player2, m_NewRelation);
+        data.getRelationshipTracker().setRelationship(data.getPlayerList().getPlayerID(m_player1), data.getPlayerList().getPlayerID(m_player2), data.getRelationshipTypeList().getRelationshipType(m_NewRelation));
     }
    
     public String toString()
     {
-        return "Add relation change. "+m_player1.getName()+" and "+m_player2.getName()+" change from "+m_OldRelation.getName()+" to "+m_NewRelation.getName();
+    	if (m_player1 == null || m_player2 == null || m_OldRelation == null || m_NewRelation == null)
+    		throw new IllegalStateException("RelationshipChange may not have null arguments: m_player1: " + m_player1 + 
+    					", m_player2: " + m_player2 + ", m_OldRelation: " + m_OldRelation + ", m_NewRelation: " + m_NewRelation);
+        
+        return "Add relation change. "+m_player1+" and "+m_player2+" change from "+m_OldRelation+" to "+m_NewRelation;
     }
 	
 }
