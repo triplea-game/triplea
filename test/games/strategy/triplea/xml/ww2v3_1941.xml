@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="World War 2 Version 3a" version="1.0.0"/>
+        <info name="World War 2 Version 3a" version="1.4"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -616,19 +616,18 @@
   
         <unitList>
                 <unit name="infantry"/>
+                <unit name="artillery"/>
                 <unit name="armour"/>
                 <unit name="fighter"/>
                 <unit name="bomber"/>
                 <unit name="transport"/>
-                <unit name="battleship"/>
-                <unit name="carrier"/>
                 <unit name="submarine"/>
-                <unit name="factory"/>
-                <unit name="factory_hit"/>
-                <unit name="aaGun"/>
-                <unit name="artillery"/>
                 <unit name="destroyer"/>
 				<unit name="cruiser"/>
+                <unit name="carrier"/>
+                <unit name="battleship"/>
+                <unit name="aaGun"/>
+                <unit name="factory"/>
         </unitList>
 
         <gamePlay>
@@ -659,7 +658,7 @@
                         <step name="russianBidPlace" delegate="placeBid" player="Russians" maxRunCount="1"/>
 						
 						<step name="japaneseBid" delegate="bid" player="Japanese" maxRunCount="1"/>
-                        <step name="japanesedPlace" delegate="placeBid" player="Japanese" maxRunCount="1"/>
+                        <step name="japaneseBidPlace" delegate="placeBid" player="Japanese" maxRunCount="1"/>
 						
 						<step name="britishBid" delegate="bid" player="British" maxRunCount="1"/>
                         <step name="britishBidPlace" delegate="placeBid" player="British" maxRunCount="1"/>
@@ -831,12 +830,12 @@
                 </productionRule>
                 
                 <productionRule name="buyFighterIndustrialTechnology">
-                        <cost resource="PUs" quantity="10" />
+                        <cost resource="PUs" quantity="9" />
                         <result resourceOrUnit="fighter" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyBomberIndustrialTechnology">
-                        <cost resource="PUs" quantity="12" />
+                        <cost resource="PUs" quantity="11" />
                         <result resourceOrUnit="bomber" quantity="1"/>
                 </productionRule>
                 
@@ -857,7 +856,7 @@
 				
 				<productionRule name="buyCruiserIndustrialTechnology">
                         <cost resource="PUs" quantity="10" />
-                        <result resourceOrUnit="destroyer" quantity="1"/>
+                        <result resourceOrUnit="cruiser" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyBattleshipIndustrialTechnology">
@@ -871,12 +870,12 @@
                 </productionRule>
                 
                 <productionRule name="buyFactoryIndustrialTechnology">
-                        <cost resource="PUs" quantity="15" />
+                        <cost resource="PUs" quantity="12" />
                         <result resourceOrUnit="factory" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyAAGunIndustrialTechnology">
-                        <cost resource="PUs" quantity="6" />
+                        <cost resource="PUs" quantity="5" />
                         <result resourceOrUnit="aaGun" quantity="1"/>
                 </productionRule>
                 
@@ -917,12 +916,12 @@
                <!-- Repair rules -->                
                 <repairRule name="repairFactory">
                         <cost resource="PUs" quantity="1" />
-                        <result resourceOrUnit="factory_hit" quantity="1"/>
+                        <result resourceOrUnit="factory" quantity="1"/>
                 </repairRule>
                 
                 <repairRule name="repairFactoryIndustrialTechnology">
                         <cost resource="PUs" quantity="1" />
-                        <result resourceOrUnit="factory_hit" quantity="2"/>
+                        <result resourceOrUnit="factory" quantity="2"/>
                 </repairRule>
                 
                 <repairFrontier name="repair">
@@ -941,9 +940,9 @@
                         <frontierRules name="buyBomber"/>
                         <frontierRules name="buyTransport"/>
                         <frontierRules name="buySubmarine"/>
-                        <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyDestroyer"/>
 						<frontierRules name="buyCruiser"/>
+                        <frontierRules name="buyCarrier"/>
                         <frontierRules name="buyBattleship"/>
                         <frontierRules name="buyAAGun"/>
                         <frontierRules name="buyFactory"/>        
@@ -957,9 +956,9 @@
                         <frontierRules name="buyBomberIndustrialTechnology"/>
                         <frontierRules name="buyTransportIndustrialTechnology"/>
                         <frontierRules name="buySubmarineIndustrialTechnology"/>
-                        <frontierRules name="buyCarrierIndustrialTechnology"/>
                         <frontierRules name="buyDestroyerIndustrialTechnology"/>
 						<frontierRules name="buyCruiserIndustrialTechnology"/>
+                        <frontierRules name="buyCarrierIndustrialTechnology"/>
                         <frontierRules name="buyBattleshipIndustrialTechnology"/>
                         <frontierRules name="buyAAGunIndustrialTechnology"/>
                         <frontierRules name="buyFactoryIndustrialTechnology"/>        
@@ -968,9 +967,9 @@
                 <productionFrontier name="productionShipyards">
                         <frontierRules name="buyTransportShipyards"/>
                         <frontierRules name="buySubmarineShipyards"/>
-                        <frontierRules name="buyCarrierShipyards"/>
                         <frontierRules name="buyDestroyerShipyards"/>
 						<frontierRules name="buyCruiserShipyards"/>
+                        <frontierRules name="buyCarrierShipyards"/>
                         <frontierRules name="buyBattleshipShipyards"/>   
                 </productionFrontier>
                 
@@ -1095,10 +1094,12 @@
                          <option name="movement" value="1"/>
                          <option name="transportCost" value="2"/>
                          <option name="isInfantry" value="true"/>
+                         <option name="isAirTransportable" value="true"/>
+                         <option name="isParatroop" value="false"/>
+                         <option name="isMechanized" value="false"/>
                          <option name="attack" value="1"/>
                          <option name="defense" value="2"/>
                          <option name="artillerySupportable" value="true"/>
-                         <option name="isAirTransportable" value="true"/>
                 </attatchment>
 				
 				
@@ -1115,10 +1116,10 @@
                 <attatchment name="unitAttatchment" attatchTo="armour" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="2"/>
                          <option name="transportCost" value="3"/>
-                         <option name="canBlitz" value="true"/>                         
+                         <option name="canBlitz" value="true"/>
+                         <option name="isLandTransport" value="true"/>
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
-
                 </attatchment>
             
                 <!-- Fighter -->
@@ -1199,10 +1200,6 @@
 
                 <!-- Factory -->
                 <attatchment name="unitAttatchment" attatchTo="factory" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
-                         <option name="isFactory" value="true"/>   
-                </attatchment>
-                
-                <attatchment name="unitAttatchment" attatchTo="factory_hit" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="isFactory" value="true"/>   
                 </attatchment>
             
@@ -2062,8 +2059,7 @@
 						<unitPlacement unitType="battleship" territory="53 Sea Zone" quantity="1" owner="Americans"/>
 						<unitPlacement unitType="transport" territory="56 Sea Zone" quantity="1" owner="Americans"/>
 						<unitPlacement unitType="destroyer" territory="56 Sea Zone" quantity="1" owner="Americans"/>
-						
-				</unitInitialize>
+                </unitInitialize>
         
                 <resourceInitialize>                      
                         <resourceGiven player="Germans" resource="PUs" quantity="31"/>
@@ -2084,249 +2080,290 @@
                 </resourceInitialize>
         </initialize>
 
-        <propertyList>                        
+		<propertyList>
+				<!-- PLEASE KEEP YOUR PROPERTIES IN THIS ORDER!!! -->
+				<!-- TYPICAL OPTIONAL PROPERTIES -->
+				<!-- Bidding -->
+				<property name="Italians bid" value="0" editable="true">
+						<number min="0" max="1000"/>
+				</property>
 
-		<!-- OPTIONAL PROPERTIES -->  
-				<property name="Total Victory" value="false" editable="true">
-                        <boolean/>
-                </property>
-                
-				<property name="Honorable Surrender" value="true" editable="true">
-                        <boolean/>
-                </property>
-                
-				<property name="Projection of Power" value="false" editable="true">
-                        <boolean/>
-                </property> 
-                
-                <property name="National Objectives" value="true" editable="true">
-                	<boolean/>
-                </property>
-                
-                <property name="Tech Development" value="true" editable="true">
-                	<boolean/>
-                </property>
-                
-		<!-- END OF OPTIONAL PROPERTIES -->
-                
-                
-				<property name="WW2V3" value="true" editable="false">
-                        <boolean/>
-                </property>                
-                
-				<property name="Multiple AA Per Territory" value="true" editable="false">
-                        <boolean/>
-                </property>
-                
-				<property name="Blitz Through Factories And AA Restricted" value="true" editable="false">
-                        <boolean/>
-                </property>
-
-				<property name="Partial Amphibious Retreat" value="true" editable="false">
-                        <boolean/>
-                </property>
-                
-				<property name="Neutrals Are Impassable" value="true" editable="false">
-                        <boolean/>
-                </property>
-                
-				<property name="Defending Subs Sneak Attack" value="true" editable="false">
-                        <boolean/>
-                </property>
-                
-				<property name="Surviving Air Move To Land" value="true" editable="false">
-                        <boolean/>
-                </property>
-                
-                <property name="Produce fighters on carriers" value="true" editable="false">
-                        <boolean/>
-                </property>
-
-                <property name="LHTR Carrier production rules" value="true" editable="false">
-                        <boolean/>
-                </property>
-                
-				<property name="All Rockets Attack" value="true" editable="false">
-                        <boolean/>
-                </property>
-                
-				<property name="Rockets Can Fly Over Impassables" value="false" editable="false">
-                        <boolean/>
-                </property>
-
-				<property name="Unit Placement In Enemy Seas" value="true" editable="false">
-                        <boolean/>
-                </property>
-                
-				<property name="Roll AA Individually" value="true" editable="false">
-                        <boolean/>
-                </property>
-                       
-				<property name="Sub Retreat Before Battle" value="true" editable="false">
-                        <boolean/>
-                </property>
-                
-				<property name="Use Shipyards" value="true" editable="false">
-                        <boolean/>
-                </property>        
-                
-				<property name="Naval Bombard Casualties Return Fire Restricted" value="true" editable="false">
-                        <boolean/>
-                </property>
-                
-				<!-- Use Submersible Subs-->
-                <property name="Submersible Subs" value="true" editable="false">
-                        <boolean/>
-                </property>
-                
-				<!-- Heavy Bomber Rolls-->
-                <property name="Heavy Bomber Dice Rolls" value="2" editable="true">
-                        <number min="2" max="10"/>
-                </property>
-                
-				<!-- Two Hit Battleship-->
-                <property name="Two hit battleship" value="true" editable="false">
-                        <boolean/>
-                </property>
-                
-				<!-- Produce Fighters on Carriers-->
-                <property name="Produce fighters on carriers" value="true" editable="false">
-                        <boolean/>
-                </property>
-                
-				<!-- Battleships Repair at End of Round-->
-                <property name="Battleships repair at end of round" value="true" editable="true">
-                        <boolean/>
-                </property>
-				
-				<!-- Territory Turn Limit-->
-				<property name="Territory Turn Limit" value="false" editable="false">
-                        <boolean/>
-                </property>
-                
-				<!-- Neutral Charge-->
-                <property name="neutralCharge" value="9999999"/>
-                
-				<!-- Maximum Factories per Territory-->
-                <property name="maxFactoriesPerTerritory" value="1"/>
-                
-                <!-- Low Luck -->
-                <property name="Low Luck" value="false" editable="true">
-                        <boolean/>
-                </property>
-                
-                <!-- Bidding -->
-                <property name="Italians bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-				
 				<property name="Russians bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-                
-                <property name="Germans bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-				
+						<number min="0" max="1000"/>
+				</property>
+
+				<property name="Germans bid" value="0" editable="true">
+						<number min="0" max="1000"/>
+				</property>
+
 				<property name="British bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-                
-                <property name="Japanese bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
+						<number min="0" max="1000"/>
+				</property>
 
-                <property name="Americans bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
+				<property name="Japanese bid" value="0" editable="true">
+						<number min="0" max="1000"/>
+				</property>
 
-                <property name="WW2V3 Tech Model" value="true" editable="false">
-                	<boolean/>
-                </property>
-                
-                <property name="Sub Control Sea Zone Restricted" value="true" editable="false">
-                	<boolean/>
-                </property>
-                
-                <property name="Transport Casualties Restricted" value="true" editable="false">
-                	<boolean/>
-                </property>
+				<property name="Americans bid" value="0" editable="true">
+						<number min="0" max="1000"/>
+				</property>
+				
+				<!-- victory options -->
+				<property name="Projection of Power" value="true" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Honorable Surrender" value="false" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Total Victory" value="false" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Low Luck" value="false" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Low Luck for AntiAircraft" value="false" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Low Luck for Technology" value="false" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Low Luck for Bombing and Territory Damage" value="false" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="National Objectives" value="true" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Tech Development" value="true" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="LHTR Heavy Bombers" value="false" editable="true">
+				  		<boolean/>
+				</property>
+
+				<property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+						<number min="2" max="3"/>
+				</property>
+
+				<property name="Always on AA" value="false" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Kamikaze Airplanes" value="false" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Super Sub Defence Bonus" value="0" editable="true">
+						<number min="0" max="1"/>
+				</property>
+
+				<property name="Battleships repair at end of round" value="true" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Battleships repair at beginning of round" value="false" editable="true">
+						<boolean/>
+				</property>
+				<!-- END OF TYPICAL OPTIONAL PROPERTIES -->
+
+				<!-- rules and tech -->
+				<property name="WW2V3" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="WW2V3 Tech Model" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Use Shipyards" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="All Rockets Attack" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Rockets Can Fly Over Impassables" value="false" editable="false">
+						<boolean/>
+				</property>
+
+				<!-- These require an associated value in the attachments section above-->
+				<property name="Movement By Territory Restricted" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Production Per X Territories Restricted" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Unit Placement Per Territory Restricted" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Place in Any Territory" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Unplaced units live when not placed" value ="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Occupied Territories" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<!-- specific rules -->
+				<!-- land related -->
+				<property name="Blitz Through Factories And AA Restricted" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Roll AA Individually" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Choose AA Casualties" value="false" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="AA Territory Restricted" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<!-- sea related -->
+				<property name="Partial Amphibious Retreat" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Shore Bombard Per Ground Unit Restricted" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Naval Bombard Casualties Return Fire Restricted" value="true" editable="false">
+						<boolean/>
+				</property>
 
 				<property name="Hari-Kari Units" value="true" editable="false">
-                	<boolean/>
-                </property> 
-                
-				<property name="Kamikaze Airplanes" value="false" editable="false">
-                	<boolean/>
-                </property>
-                
-                <property name="Ignore Transport In Movement" value="true" editable="false">
-                	<boolean/>
-                </property>
-                
-                <property name="Ignore Sub In Movement" value="true" editable="false">
-                	<boolean/>
-                </property>
+						<boolean/>
+				</property>
 
-                <property name="Air Attack Sub Restricted" value="true" editable="false">
-                	<boolean/>
-                </property>
+				<property name="Allied Air Dependents" value="true" editable="false">
+						<boolean/>
+				</property>
 
-                <property name="Shore Bombard Per Ground Unit Restricted" value="true" editable="false">
-                	<boolean/>
-                </property>
+				<property name="Surviving Air Move To Land" value="true" editable="false">
+						<boolean/>
+				</property>
 
-                <property name="AA Territory Restricted" value="true" editable="false">
-                	<boolean/>
-                </property>
+				<property name="Air Attack Sub Restricted" value="true" editable="false">
+						<boolean/>
+				</property>
 
-                <property name="Occupied Territories" value="true" editable="false">
-                	<boolean/>
-                </property>
+				<property name="Ignore Transport In Movement" value="true" editable="false">
+						<boolean/>
+				</property>
 
-                <property name="Unescorted Transport Dies" value="true" editable="false">
-                	<boolean/>
-                </property>
+				<property name="Transport Casualties Restricted" value="true" editable="false">
+						<boolean/>
+				</property>
 
-                <property name="Blitz Through Factories And AA Restricted" value="true" editable="false">
-                	<boolean/>
-                </property>
+				<property name="Unescorted Transport Dies" value="true" editable="false">
+						<boolean/>
+				</property>
 
-                <property name="SBR Affects Unit Production" value="true" editable="false">
-                	<boolean/>
-                </property>
+				<property name="Ignore Sub In Movement" value="true" editable="false">
+						<boolean/>
+				</property>
 
-                <property name="Placement Restricted By Factory" value="true" editable="false">
-                	<boolean/>
-                </property>
-                
-                
-<!-- These require an associated value in the attachments section above-->                 
-                <property name="Movement By Territory Restricted" value="true" editable="false">
-                	<boolean/>
-                </property>
-                
-                <property name="Production Per X Territories Restricted" value="true" editable="false">
-                	<boolean/>
-                </property>                
-                
-                <property name="Unit Placement Per Territory Restricted" value="true" editable="false">
-                	<boolean/>
-                </property>
-                
-                <property name="Place in Any Territory" value="true" editable="false">
-                	<boolean/>
-                </property>
-                
-                <property name="Unplaced units live when not placed" value ="true" editable="false">
-                    <boolean/>
-                </property>
-                
-                <!-- Map Name: also used for map utils when asked -->
-                <property name="mapName" value="aa50" editable="false"/>
-				
+				<property name="Defending Subs Sneak Attack" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Sub Retreat Before Battle" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Submersible Subs" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<!-- Sub Control Sea Zone Restricted should be FALSE if there are any convoy zones! -->
+				<property name="Sub Control Sea Zone Restricted" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Previous Units Fight" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Two hit battleship" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<!-- production related -->
+				<property name="Produce fighters on carriers" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Produce new fighters on old carriers" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Move existing fighters to new carriers" value="false" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Land existing fighters on new carriers" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="LHTR Carrier production rules" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Unit Placement In Enemy Seas" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Territory Turn Limit" value="false" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="maxFactoriesPerTerritory" value="1"/>
+
+				<property name="Placement Restricted By Factory" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="SBR Affects Unit Production" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<!-- to do with neutrals, (set neutrals charge to zero if you plan on attacking neutrals) -->
+				<property name="neutralCharge" value="9999999"/>
+
+				<property name="Neutrals Are Impassable" value="true" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Neutrals Are Blitzable" value="false" editable="false">
+						<boolean/>
+				</property>
+
+
+				<!-- Map Name: also used for map utils when asked -->
+				<property name="mapName" value="aa50" editable="false"/>
+
 				<!-- notes appear in the notes menu in the main screen, format as html -->
-		
+
 				<property name="notes">
 					<value>
 					<![CDATA[  
@@ -2351,9 +2388,9 @@
         				<br>
          				*** Land/Production Tech ***<br>
         				IMPROVED ARTILLERY SUPPORT- artillery support 2 infantry<br>
-        				ROCKETS- AA conduct rocket attacks for 1d6 damage to production<br>
-        				PARATROOPERS- each bomber may carry 1 infantry into combat<br>
-        				INCREASED FACTORY PRODUCTION- factories produce 2 additional units, repairs 1/2 price<br>
+        				ROCKETS- AA conduct rocket attacks for 1d6 damage to production (each factory may only be targetted once per turn by one rocket, and only 1 rocket in each territory may fire)<br>
+        				PARATROOPERS- each bomber may carry 1 infantry into combat (must stop in first enemy territory it reaches)<br>
+        				INCREASED FACTORY PRODUCTION- factories produce 2 additional units (if territory value is 3 or greater), repairs 1/2 price<br>
         				WAR BONDS- collect an 1d6 extra PUs each turn<br>
         				MECHANIZED INFANTRY- tanks may carry 1 infantry each for 2 spaces<br>
         				<br>
@@ -2393,7 +2430,12 @@
         				<i>Soviet Union: The Great Patriotic War-</i><br>
         				+10 PUs if Allies control 3 of Norway, Finland, Poland, Bulgaria, Czechoslovakia, and Balkans.<br>
         				+5 PUs if Soviets control Archangel and no allied forces in Soviet controlled territories.<br>
-        				  
+        				
+        				<br>
+						<i>China: Chinese Resistance & The Flying Tigers </i><br>
+        				+1 infantry for every two territories controlled by China at the beginning of her turn.  These infantry must be place in a territory with less than three Chinese pieces.  <br>
+        				No Chinese Units, including the Chinese Fighter may leave Chinese territory (except for Kwangtung) (this means no entering sea zones). <br>  
+        				
         				
         
 					]]>	
@@ -2402,4 +2444,11 @@
 
         </propertyList>
 </game>
-<!-- WW2V2 XML by Zero Pilot 9.08-->
+						<!-- 
+						WW2V2 XML by Zero Pilot 9.08
+						Triplelk Jason Clark - baseline
+						Zero Pilot Mike McCaughey - integration
+						ComradeKev - custom code and rules
+						Seidelin - playtesting
+						Veqryn - Minor updates for engine 1.2.5.x, and again for engine 1.3.x.x
+						-->

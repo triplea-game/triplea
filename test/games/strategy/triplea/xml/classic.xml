@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="Classic" version="1.7"/>
+	<info name="Classic" version="1.8"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -509,7 +509,7 @@
 			<step name="germanBidPlace" delegate="placeBid" player="Germans" maxRunCount="1"/>
 
 			<step name="japaneseBid" delegate="bid" player="Japanese" maxRunCount="1"/>
-			<step name="japanesedPlace" delegate="placeBid" player="Japanese" maxRunCount="1"/>
+			<step name="japaneseBidPlace" delegate="placeBid" player="Japanese" maxRunCount="1"/>
 
 			<step name="russianTech" delegate="tech" player="Russians"/>
                         <step name="russianTechActivation" delegate="tech_activation" player="Russians"/>
@@ -1425,12 +1425,28 @@
 	</initialize>
 
 	<propertyList>
+		<property name="Economic Victory" value="true" editable="true">
+            <boolean/>
+        </property>
+				
+		<property name="Axis Economic Victory" value="84" editable="false">
+			<number min="70" max="147"/>
+		</property>
+				
+		<property name="Allies Economic Victory" value="140" editable="false">
+			<number min="120" max="147"/>
+		</property>
+		
 		<property name="Use Destroyers and Artillery" value="false" editable="true">
 			<boolean/>
 		</property>
 		
 		<property name="Tech Development" value="true" editable="true">
 			<boolean/>
+		</property>
+		
+		<property name="Heavy Bomber Dice Rolls" value="3" editable="false">
+				<number min="2" max="3"/>
 		</property>
 		
 		<property name="Two hit battleship" value="false" editable="true">
@@ -1445,6 +1461,14 @@
 			<boolean/>
 		</property>
 		
+		<property name="Move existing fighters to new carriers" value="false" editable="true">
+            <boolean/>
+        </property>
+		
+		<property name="Allied Air Dependents" value="true" editable="false">
+			<boolean/>
+		</property>
+		
 		<property name="Submersible Subs" value="false" editable="true">
 			<boolean/>
 		</property>
@@ -1452,6 +1476,10 @@
 		<property name="Always on AA" value="false" editable="true">
 			<boolean/>
 		</property>
+		
+		<property name="Choose AA Casualties" value="false" editable="true">
+            <boolean/>
+        </property>
 
 		<property name="Kamikaze Airplanes" value="false" editable="true">
 			<boolean/>
@@ -1469,21 +1497,17 @@
 			<number min="0" max="1000"/>
 		</property>
 
-                <property name="Americans bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
+		<property name="Americans bid" value="0" editable="true">
+				<number min="0" max="1000"/>
+		</property>
 
-                <property name="British bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
+		<property name="British bid" value="0" editable="true">
+				<number min="0" max="1000"/>
+		</property>
 
-                <property name="Russians bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-		
-                <property name="Heavy Bomber Dice Rolls" value="3" editable="false">
-                        <number min="2" max="3"/>
-                </property>
+		<property name="Russians bid" value="0" editable="true">
+				<number min="0" max="1000"/>
+		</property>
 
 		<property name="neutralCharge" value="3"/>
 
