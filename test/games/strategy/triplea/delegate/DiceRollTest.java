@@ -17,6 +17,7 @@ import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.Collection;
@@ -303,6 +304,11 @@ public class DiceRollTest extends TestCase
         
         PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
         
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+        UnitType aaGunType = m_data.getUnitTypeList().getUnitType("aaGun");
+        List<Unit> aaGunList = aaGunType.create(1, germans);
+        GameDataTestUtil.addTo(westRussia, aaGunList);
+        
         ITestDelegateBridge bridge = getDelegateBridge(russians);
      
         List<Unit> bombers = bomber(m_data).create(1, british(m_data)); 
@@ -330,6 +336,11 @@ public class DiceRollTest extends TestCase
         Territory westRussia = m_data.getMap().getTerritory("West Russia");
         
         PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
+        
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+        UnitType aaGunType = m_data.getUnitTypeList().getUnitType("aaGun");
+        List<Unit> aaGunList = aaGunType.create(1, germans);
+        GameDataTestUtil.addTo(westRussia, aaGunList);
 
         UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
         List<Unit> fighterList = fighterType.create(1, russians);
@@ -365,6 +376,11 @@ public class DiceRollTest extends TestCase
         Territory westRussia = m_data.getMap().getTerritory("West Russia");
         
         PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
+        
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+        UnitType aaGunType = m_data.getUnitTypeList().getUnitType("aaGun");
+        List<Unit> aaGunList = aaGunType.create(1, germans);
+        GameDataTestUtil.addTo(westRussia, aaGunList);
 
         UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
         List<Unit> fighterList = fighterType.create(6, russians);
@@ -386,13 +402,12 @@ public class DiceRollTest extends TestCase
         makeGameLowLuck();
         Territory westRussia = m_data.getMap().getTerritory("West Russia");
         PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+        GameDataTestUtil.addTo(westRussia, GameDataTestUtil.aaGun(m_data).create(1, germans));
         UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
         List<Unit> fighterList = fighterType.create(1, russians);
         
-        GameDataTestUtil.addTo(westRussia, GameDataTestUtil.aaGun(m_data).create(1, russians));
-        
-        
-        TechAttachment.get(russians).setAARadar("true");
+        TechAttachment.get(germans).setAARadar("true");
         
         ITestDelegateBridge bridge = getDelegateBridge(russians);
      
@@ -509,8 +524,8 @@ public class DiceRollTest extends TestCase
         
         DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, m_data, new MockBattle(m_data.getMap().getTerritory("Germany")), "");
         
-        assertEquals(Die.DieType.IGNORED, dice.getRolls(4).get(0).getType() );
-        assertEquals(Die.DieType.HIT, dice.getRolls(4).get(1).getType() );
+        assertEquals(Die.DieType.HIT, dice.getRolls(4).get(0).getType() );
+        assertEquals(Die.DieType.IGNORED, dice.getRolls(4).get(1).getType() );
         assertEquals(1, dice.getHits());
     }
     

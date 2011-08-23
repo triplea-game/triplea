@@ -1362,7 +1362,14 @@
 				<property name="Unit Placement Per Territory Restricted" value="true" editable="false">
                         <boolean/>
                 </property>
-                
-                
+				
+				<property name="neutralCharge" value="3" editable="false">
+						<number min="0" max="9999999"/>
+				</property>
+				
+				<property name="Heavy Bomber Dice Rolls" value="3" editable="false">
+						<number min="1" max="10"/>
+				</property>
+				
 	  </propertyList>
 </game>

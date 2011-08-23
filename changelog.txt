@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Fixing some unit tests. (veqryn & frigoref)
+
 * Updated all test xmls. (veqryn)
 
 * Fixed bug introduced into undoing moves, where undoing a sea placement generated an error. (frigoref)
