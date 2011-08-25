@@ -954,8 +954,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
         
         if(m_battleSite.isWater() &&
-            !defenderSubsFireFirst && !onlyAttackerSneakAttack&&
-            returnFireAgainstDefendingSubs() != ReturnFire.ALL) 
+            !defenderSubsFireFirst && !onlyAttackerSneakAttack &&
+            (returnFireAgainstDefendingSubs() != ReturnFire.ALL || returnFireAgainstAttackingSubs() != ReturnFire.ALL)) 
         {
             steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
         }

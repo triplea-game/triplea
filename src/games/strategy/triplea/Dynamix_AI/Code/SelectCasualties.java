@@ -25,6 +25,8 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyList;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -47,7 +49,7 @@ public class SelectCasualties
             useDefaultSelectionThisTime = true;
         }
     }
-    public static CasualtyDetails selectCasualties(Dynamix_AI ai, GameData data, Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
+    public static CasualtyDetails selectCasualties(Dynamix_AI ai, GameData data, Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID)
     {
         ai.pause();
         HashSet<Unit> damaged = new HashSet<Unit>();
@@ -55,7 +57,10 @@ public class SelectCasualties
         if (useDefaultSelectionThisTime)
         {
             useDefaultSelectionThisTime = false;
-            for (Unit unit : defaultCasualties)
+            damaged.addAll(defaultCasualties.getDamaged());
+            destroyed.addAll(defaultCasualties.getKilled());
+            
+            /*for (Unit unit : defaultCasualties)
             {
                 boolean twoHit = UnitAttachment.get(unit.getType()).isTwoHit();
                 //If it appears in casualty list once, it's damaged, if twice, it's damaged and additionally destroyed
@@ -63,7 +68,7 @@ public class SelectCasualties
                     damaged.add(unit);
                 else
                     destroyed.add(unit);
-            }
+            }*/
         }
         else
         {

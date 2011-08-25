@@ -43,6 +43,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
@@ -479,7 +480,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         return dice;
     }
 
-    public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
+    public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID)
     {
         DUtils.Log(Level.FINE, "Select casualties method called. Message: {0}", message);
         return SelectCasualties.selectCasualties(this, getGameData(), selectFrom, dependents, count, message, dice, hit, defaultCasualties, battleID);

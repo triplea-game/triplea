@@ -1455,12 +1455,15 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
      *      Added new collection autoKilled to handle killing units prior to casualty selection
      */
 
-    public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
+    public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID)
     {
         List<Unit> rDamaged = new ArrayList<Unit>();
         List<Unit> rKilled = new ArrayList<Unit>();
+
+        rDamaged.addAll(defaultCasualties.getDamaged());
+        rKilled.addAll(defaultCasualties.getKilled());
         
-        for(Unit unit : defaultCasualties)
+        /*for(Unit unit : defaultCasualties)
         {
             boolean twoHit = UnitAttachment.get(unit.getType()).isTwoHit();
             //if it appears twice it then it both damaged and killed
@@ -1468,7 +1471,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 rDamaged.add(unit);
             else 
                 rKilled.add(unit);
-        }
+        }*/
         
         
         CasualtyDetails m2 = new CasualtyDetails(rKilled, rDamaged, false);

@@ -36,6 +36,7 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.UnitCategory;
@@ -329,7 +330,7 @@ public class BattleCalculator
         // case prices change, we do it here.
         IntegerMap<UnitType> costs = getCosts(player, data);
 
-        List<Unit> defaultCasualties = getDefaultCasualties(targets, hitsRemaining, defending, player, costs, data);
+        CasualtyList defaultCasualties = getDefaultCasualties(targets, hitsRemaining, defending, player, costs, data);
 
         ITripleaPlayer tripleaPlayer;
         if(player.isNull())
@@ -449,10 +450,22 @@ public class BattleCalculator
     private static HashMap<Integer,List<Unit>> s_cachedSortedCasualties = new HashMap<Integer, List<Unit>>();
     private static final Object s_cachedLock = new Object();
 
-    private static List<Unit> getDefaultCasualties(Collection<Unit> targets, int hits, boolean defending, PlayerID player, IntegerMap<UnitType> costs, GameData data)
+    /**
+     * A unit with two hitpoints will be listed twice if they will die.  The first time they are listed it is as damaged. The second time they are listed, it is dead.
+     * @param targets
+     * @param hits
+     * @param defending
+     * @param player
+     * @param costs
+     * @param data
+     * @return
+     */
+    private static CasualtyList getDefaultCasualties(Collection<Unit> targets, int hits, boolean defending, PlayerID player, IntegerMap<UnitType> costs, GameData data)
     {
+    	CasualtyList defaultCasualtySelection = new CasualtyList();
+    	
         // Remove two hit bb's selecting them first for default casualties
-        ArrayList<Unit> defaultCasualties = new ArrayList<Unit>();
+        
         int numSelectedCasualties = 0;
         Iterator<Unit> targetsIter = targets.iterator();
         while (targetsIter.hasNext())
@@ -460,14 +473,14 @@ public class BattleCalculator
             // Stop if we have already selected as many hits as there are targets
             if (numSelectedCasualties >= hits)
             {
-                return defaultCasualties;
+                return defaultCasualtySelection;
             }
             Unit unit = targetsIter.next();
             UnitAttachment ua = UnitAttachment.get(unit.getType());
             if (ua.isTwoHit() && (unit.getHits() == 0))
             {
                 numSelectedCasualties++;
-                defaultCasualties.add(unit);
+                defaultCasualtySelection.addToDamaged(unit);
             }
         }
 
@@ -481,15 +494,15 @@ public class BattleCalculator
             // Stop if we have already selected as many hits as there are targets
             if (numSelectedCasualties >= hits)
             {
-                return defaultCasualties;
+                return defaultCasualtySelection;
             }
             Unit unit = sortedIter.next();
             
-            defaultCasualties.add(unit);
+            defaultCasualtySelection.addToKilled(unit);
             numSelectedCasualties++;
         }
 
-        return defaultCasualties;
+        return defaultCasualtySelection;
     }
 
     /**

@@ -1,4 +1,8 @@
 Changes for 1.3.3.0
+* Fixing some unit tests, creating tests for Revised sub bug. (veqryn)
+
+* Fixed casualty selection hang bug, and also abstracted CasualtyDetails. (veqryn)
+
 * Fixing some unit tests. (veqryn & frigoref)
 
 * Updated all test xmls. (veqryn)

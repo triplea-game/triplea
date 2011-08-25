@@ -22,6 +22,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeperator;
@@ -109,6 +110,21 @@ public class UnitChooser extends JPanel
   public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit, UIContext uiContext)
   {
       this(units, defaultSelections, dependent, false, false, data, allowTwoHit, uiContext);
+  }
+
+  public UnitChooser(Collection<Unit> units, CasualtyList defaultSelections, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit, UIContext uiContext)
+  {
+	  m_dependents = dependent;
+	  m_data = data;
+	  m_allowTwoHit = allowTwoHit;
+	  m_uiContext = uiContext;
+	  m_match = null;
+
+      List<Unit> combinedList = defaultSelections.getDamaged();
+      combinedList.addAll(defaultSelections.getKilled());
+	  
+	  createEntries(units, dependent, false, false, combinedList);
+	  layoutEntries();
   }
 
   public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, GameData data, boolean allowTwoHit, UIContext uiContext)

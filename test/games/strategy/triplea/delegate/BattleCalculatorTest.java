@@ -9,6 +9,7 @@ import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.Match;
@@ -130,7 +131,7 @@ public class BattleCalculatorTest extends TestCase
 					Collection<Unit> selectFrom,
 					Map<Unit, Collection<Unit>> dependents, int count,
 					String message, DiceRoll dice, PlayerID hit,
-					List<Unit> defaultCasualties, GUID battleID) {
+					CasualtyList defaultCasualties, GUID battleID) {
 				
 				List<Unit> selected = Match.getNMatches(selectFrom, count, Matches.UnitIsStrategicBomber);
 				return new CasualtyDetails(selected, new ArrayList<Unit>(), false);
@@ -167,7 +168,7 @@ public class BattleCalculatorTest extends TestCase
 					Collection<Unit> selectFrom,
 					Map<Unit, Collection<Unit>> dependents, int count,
 					String message, DiceRoll dice, PlayerID hit,
-					List<Unit> defaultCasualties, GUID battleID) {
+					CasualtyList defaultCasualties, GUID battleID) {
 				
 				List<Unit> selected = Match.getNMatches(selectFrom, count, Matches.UnitIsStrategicBomber);
 				return new CasualtyDetails(selected, new ArrayList<Unit>(), false);

@@ -29,6 +29,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 
 import java.awt.BorderLayout;
@@ -501,7 +502,7 @@ public class BattlePanel extends ActionPanel
     }
 
     public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message,
-            final DiceRoll dice, final PlayerID hit, final List<Unit> defaultCasualties, GUID battleID)
+            final DiceRoll dice, final PlayerID hit, final CasualtyList defaultCasualties, GUID battleID)
     {
         //if the battle display is null, then this is an aa fire during move
         if (battleID == null)
@@ -510,7 +511,7 @@ public class BattlePanel extends ActionPanel
         {
             //something is wong
             if(!ensureBattleIsDisplayed(battleID))
-                return new CasualtyDetails(defaultCasualties, Collections.<Unit>emptyList(), true);
+                return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
             
             return m_battleDisplay.getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties);
         }
@@ -519,7 +520,7 @@ public class BattlePanel extends ActionPanel
 
     private CasualtyDetails getCasualtiesAA(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, 
     		final int count, final String message, final DiceRoll dice,
-            final PlayerID hit, final List defaultCasualties)
+            final PlayerID hit, final CasualtyList defaultCasualties)
     {
     	Task<CasualtyDetails> task = new Task<CasualtyDetails>() {
 

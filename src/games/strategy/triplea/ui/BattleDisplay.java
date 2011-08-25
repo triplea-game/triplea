@@ -31,6 +31,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MovePerformer;
 import games.strategy.triplea.delegate.TerritoryEffectCalculator;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.sound.SoundPath;
@@ -858,7 +859,7 @@ public class BattleDisplay extends JPanel
     }
 
     public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message,
-            final DiceRoll dice, final PlayerID hit, final List<Unit> defaultCasualties)
+            final DiceRoll dice, final PlayerID hit, final CasualtyList defaultCasualties)
     {
         if (SwingUtilities.isEventDispatchThread())
             throw new IllegalStateException("This method should not be run in the event dispatch thread");

@@ -42,6 +42,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MustFightBattle;
 import games.strategy.triplea.delegate.TripleADelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
@@ -345,7 +346,7 @@ class DummyPlayer extends AbstractAI
         }
     }
     //Added new collection autoKilled to handle killing units prior to casualty selection
-    public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
+    public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID)
     {
         HashSet<Unit> damaged = new HashSet<Unit>();
         HashSet<Unit> destroyed = new HashSet<Unit>();
@@ -353,7 +354,9 @@ class DummyPlayer extends AbstractAI
         if (useDefaultSelectionThisTime)
         {
             useDefaultSelectionThisTime = false;
-            for (Unit unit : defaultCasualties)
+            damaged.addAll(defaultCasualties.getDamaged());
+            destroyed.addAll(defaultCasualties.getKilled());
+            /*for (Unit unit : defaultCasualties)
             {
                 boolean twoHit = UnitAttachment.get(unit.getType()).isTwoHit();
                 //If it appears in casualty list once, it's damaged, if twice, it's damaged and additionally destroyed
@@ -365,11 +368,14 @@ class DummyPlayer extends AbstractAI
                     throw new Error("Wisc: If this error has occured, it most likely means that the attacking/defending units sent to the DUtils.GetBattleResults method contains duplicate units. " +
                             "(The list of attackers/defenders contains units that are in the list multiple times)\r\n" +
                             " Please look back into your code and remove anything that could be causing a unit to be added to the attacking/defending list of units multiple times.");
-            }
+            }*/
         }
         else
         {
-            for (Unit unit : defaultCasualties)
+            damaged.addAll(defaultCasualties.getDamaged());
+            destroyed.addAll(defaultCasualties.getKilled());
+            
+            /*for (Unit unit : defaultCasualties)
             {
                 boolean twoHit = UnitAttachment.get(unit.getType()).isTwoHit();
                 //If it appears in casualty list once, it's damaged, if twice, it's damaged and additionally destroyed
@@ -377,7 +383,7 @@ class DummyPlayer extends AbstractAI
                     damaged.add(unit);
                 else
                     destroyed.add(unit);
-            }
+            }*/
 
 
             if (m_keepAtLeastOneLand)

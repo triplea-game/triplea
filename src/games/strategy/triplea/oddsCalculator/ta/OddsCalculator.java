@@ -28,6 +28,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MustFightBattle;
 import games.strategy.triplea.delegate.TripleADelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
@@ -309,12 +310,15 @@ class DummyPlayer extends AbstractAI
         return null;
     }
     //Added new collection autoKilled to handle killing units prior to casualty selection
-    public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
+    public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID)
     {
         List<Unit> rDamaged = new ArrayList<Unit>();
         List<Unit> rKilled = new ArrayList<Unit>();
         
-        for(Unit unit : defaultCasualties)
+        rDamaged.addAll(defaultCasualties.getDamaged());
+        rKilled.addAll(defaultCasualties.getKilled());
+        
+        /*for(Unit unit : defaultCasualties)
         {
             boolean twoHit = UnitAttachment.get(unit.getType()).isTwoHit();
             //if it appears twice it then it both damaged and killed
@@ -322,7 +326,7 @@ class DummyPlayer extends AbstractAI
                 rDamaged.add(unit);
             else 
                 rKilled.add(unit);
-        }
+        }*/
         
         
         if(m_keepAtLeastOneLand)

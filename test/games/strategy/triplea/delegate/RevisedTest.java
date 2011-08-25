@@ -35,6 +35,7 @@ import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -291,13 +292,13 @@ public class RevisedTest extends TestCase
         addTo(uk, infantry(m_data).create(2, americans));
         
         //try to load them on the british players turn
-        
         Territory sz2 = territory("2 Sea Zone", m_data);
         String error = moveDelegate(m_data).move(
             uk.getUnits().getMatches(Matches.unitIsOwnedBy(americans)), 
             new Route(uk, sz2), 
             sz2.getUnits().getMatches(Matches.UnitIsTransport));
         
+        // should not be able to load on british turn, only on american turn
         assertFalse(error == null);
         
     }
@@ -1122,9 +1123,11 @@ public class RevisedTest extends TestCase
 
         ITestDelegateBridge bridge = getDelegateBridge(british);
         bridge.setRemote(getDummyPlayer());
-        //aa guns rolls 0 and hits, second die is the bombing raid cost for the 
-        //surviving bomber
-        bridge.setRandomSource(new ScriptedRandomSource( new int[] {0, 0,ScriptedRandomSource.ERROR} ));
+        // should be exactly 3 rolls total.  would be exactly 2 rolls if the number of units being shot at = max dice side of the AA gun, because the casualty selection roll would not happen in LL
+        // first 0 is the AA gun rolling 1@2 and getting a 1, which is a hit
+        // second 0 is the LL AA casualty selection randomly picking the first unit to die
+        // third 0 is the single remaining bomber dealing 1 damage to the enemy's PUs
+        bridge.setRandomSource(new ScriptedRandomSource( new int[] {0, 0, 0, ScriptedRandomSource.ERROR} ));
 
         int pusBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
         
@@ -1368,9 +1371,8 @@ public class RevisedTest extends TestCase
         Territory attacked = territory("31 Sea Zone", m_data);
         Territory from = territory("32 Sea Zone", m_data);
         
-        //1 sub attacks 1 sub and 1 destroyer
-        //defender sneak attacks, not attacker
-        addTo(from, submarine(m_data).create(1,british(m_data)));
+        //2 sub attacks 1 sub and 1 destroyer
+        addTo(from, submarine(m_data).create(2,british(m_data)));
         addTo(attacked, submarine(m_data).create(1,germans(m_data)));
         addTo(attacked, destroyer(m_data).create(1,germans(m_data)));
         
@@ -1385,23 +1387,31 @@ public class RevisedTest extends TestCase
         MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false);
         
         List<String> steps = battle.determineStepStrings(true, bridge);
+        
+        /* Here are the exact errata clarifications on how REVISED rules subs work:
+         * 
+         * Every sub, regardless of whether it’s on the attacking or defending side, fires in the Opening Fire step of combat. That’s the only time a sub ever fires.
+         * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal attack and defense rolls, unless the enemy has a destroyer present.
+         * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs aren’t removed until the Remove Casualties step (step 6) of combat.
+         * 
+         * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever stops a sub from rolling its die (attack or defense) in the Opening Fire step. 
+         * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step 6, allowing them to fire back before going to the scrap heap.
+         */
         assertEquals(                
             Arrays.asList(
-                
+            	attacker + SUBS_FIRE,
+            	defender + SELECT_SUB_CASUALTIES,
                 
                 defender + SUBS_FIRE,
                 attacker + SELECT_SUB_CASUALTIES,
                 
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
                 
-                attacker + SUBS_FIRE,
-                defender + SELECT_SUB_CASUALTIES,
-                
-                
-                
                 defender + FIRE,
                 attacker + SELECT_CASUALTIES,
+                
                 REMOVE_CASUALTIES,
+                
                 defender + SUBS_SUBMERGE,
                 attacker + ATTACKER_WITHDRAW
             ).toString(),
@@ -1412,20 +1422,100 @@ public class RevisedTest extends TestCase
         int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
         int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
         
-        assertTrue(defendSubs < attackSubs);
+        assertTrue(attackSubs < defendSubs);
         
         bridge.setRemote(new DummyTripleAPlayer());
         
-        //defending subs sneak attack and hit
-        //no chance to return fire
+        //attacking subs fires, defending destroyer and sub still gets to fire
+        //attacking subs still gets to fire even if defending sub hits
         ScriptedRandomSource randomSource = new ScriptedRandomSource(
-            0,ScriptedRandomSource.ERROR);
+            0,2,0,0,ScriptedRandomSource.ERROR);
         bridge.setRandomSource(randomSource);
         battle.fight(bridge);
         
-        assertEquals(1, randomSource.getTotalRolled());
+        assertEquals(4, randomSource.getTotalRolled());
         assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(british(m_data))).isEmpty());
-        assertEquals(2, attacked.getUnits().size());
+        assertEquals(1, attacked.getUnits().size());
+    }
+    
+    public void testAttackSubsAndBBOnDestroyerAndSubs() 
+    {
+        String defender = "Germans";
+        String attacker = "British";
+        
+        Territory attacked = territory("31 Sea Zone", m_data);
+        Territory from = territory("32 Sea Zone", m_data);
+        
+        //1 sub and 1 BB (two hp) attacks 3 subs and 1 destroyer
+        addTo(from, submarine(m_data).create(1,british(m_data)));
+        addTo(from, battleship(m_data).create(1,british(m_data)));
+        addTo(attacked, submarine(m_data).create(3,germans(m_data)));
+        addTo(attacked, destroyer(m_data).create(1,germans(m_data)));
+        
+        ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+        bridge.setStepName("CombatMove");
+        moveDelegate(m_data).start(bridge, m_data);
+        
+        move(from.getUnits().getUnits(), new Route(from,attacked));
+       
+        moveDelegate(m_data).end();
+        
+        MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false);
+        
+        List<String> steps = battle.determineStepStrings(true, bridge);
+        
+        /* Here are the exact errata clarifications on how REVISED rules subs work:
+         * 
+         * Every sub, regardless of whether it’s on the attacking or defending side, fires in the Opening Fire step of combat. That’s the only time a sub ever fires.
+         * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal attack and defense rolls, unless the enemy has a destroyer present.
+         * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs aren’t removed until the Remove Casualties step (step 6) of combat.
+         * 
+         * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever stops a sub from rolling its die (attack or defense) in the Opening Fire step. 
+         * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step 6, allowing them to fire back before going to the scrap heap.
+         */
+        assertEquals(                
+            Arrays.asList(
+            	attacker + SUBS_FIRE,
+            	defender + SELECT_SUB_CASUALTIES,
+                
+                defender + SUBS_FIRE,
+                attacker + SELECT_SUB_CASUALTIES,
+                
+                REMOVE_SNEAK_ATTACK_CASUALTIES,
+                
+                attacker + FIRE,
+                defender + SELECT_CASUALTIES,
+                
+                defender + FIRE,
+                attacker + SELECT_CASUALTIES,
+                
+                REMOVE_CASUALTIES,
+                
+                defender + SUBS_SUBMERGE,
+                attacker + ATTACKER_WITHDRAW
+            ).toString(),
+            steps.toString()
+        );
+        
+        List<IExecutable> execs = battle.getBattleExecutables();
+        int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
+        int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
+        
+        assertTrue(attackSubs < defendSubs);
+        
+        bridge.setRemote(new DummyTripleAPlayer());
+        
+        //attacking subs fires, defending destroyer and sub still gets to fire
+        //attacking subs still gets to fire even if defending sub hits
+        //battleship will not get to fire since it is killed by defending sub's sneak attack
+        ScriptedRandomSource randomSource = new ScriptedRandomSource(
+            0,0,0,0,ScriptedRandomSource.ERROR);
+        bridge.setRandomSource(randomSource);
+        battle.fight(bridge);
+        
+        assertEquals(4, randomSource.getTotalRolled());
+        assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(british(m_data))).isEmpty());
+        assertEquals(3, attacked.getUnits().size());
     }
     
 
@@ -1461,10 +1551,10 @@ public class RevisedTest extends TestCase
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
                 
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
-                
                 defender + SUBS_FIRE,
                 attacker + SELECT_SUB_CASUALTIES,
+                
+                REMOVE_SNEAK_ATTACK_CASUALTIES,
                 
                 attacker + FIRE,
                 defender + SELECT_CASUALTIES,
@@ -1485,16 +1575,95 @@ public class RevisedTest extends TestCase
         
         bridge.setRemote(new DummyTripleAPlayer());
         
-        //defending subs sneak attack and hit
-        //no chance to return fire
+        //attacking sub hits with sneak attack, but defending sub gets to return fire because it is a sub and this is revised rules
         ScriptedRandomSource randomSource = new ScriptedRandomSource(
-            0,ScriptedRandomSource.ERROR);
+            0,0,ScriptedRandomSource.ERROR);
         bridge.setRandomSource(randomSource);
         battle.fight(bridge);
         
-        assertEquals(1, randomSource.getTotalRolled());
+        assertEquals(2, randomSource.getTotalRolled());
         assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(germans(m_data))).isEmpty());
-        assertEquals(2, attacked.getUnits().size());
+        assertEquals(1, attacked.getUnits().size());
+    }
+    
+    public void testAttackSubsAndDestroyerOnBBAndSubs() 
+    {
+        String defender = "Germans";
+        String attacker = "British";
+        
+        Territory attacked = territory("31 Sea Zone", m_data);
+        Territory from = territory("32 Sea Zone", m_data);
+        
+        //1 sub and 1 BB (two hp) attacks 3 subs and 1 destroyer
+        addTo(from, submarine(m_data).create(3,british(m_data)));
+        addTo(from, destroyer(m_data).create(1,british(m_data)));
+        addTo(attacked, submarine(m_data).create(1,germans(m_data)));
+        addTo(attacked, battleship(m_data).create(1,germans(m_data)));
+        
+        ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+        bridge.setStepName("CombatMove");
+        moveDelegate(m_data).start(bridge, m_data);
+        
+        move(from.getUnits().getUnits(), new Route(from,attacked));
+       
+        moveDelegate(m_data).end();
+        
+        MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false);
+        
+        List<String> steps = battle.determineStepStrings(true, bridge);
+        
+        /* Here are the exact errata clarifications on how REVISED rules subs work:
+         * 
+         * Every sub, regardless of whether it’s on the attacking or defending side, fires in the Opening Fire step of combat. That’s the only time a sub ever fires.
+         * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal attack and defense rolls, unless the enemy has a destroyer present.
+         * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs aren’t removed until the Remove Casualties step (step 6) of combat.
+         * 
+         * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever stops a sub from rolling its die (attack or defense) in the Opening Fire step. 
+         * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step 6, allowing them to fire back before going to the scrap heap.
+         */
+        assertEquals(                
+            Arrays.asList(
+            	attacker + SUBS_FIRE,
+            	defender + SELECT_SUB_CASUALTIES,
+                
+                defender + SUBS_FIRE,
+                attacker + SELECT_SUB_CASUALTIES,
+                
+                REMOVE_SNEAK_ATTACK_CASUALTIES,
+                
+                attacker + FIRE,
+                defender + SELECT_CASUALTIES,
+                
+                defender + FIRE,
+                attacker + SELECT_CASUALTIES,
+                
+                REMOVE_CASUALTIES,
+                
+                attacker + SUBS_SUBMERGE,
+                attacker + ATTACKER_WITHDRAW
+            ).toString(),
+            steps.toString()
+        );
+        
+        List<IExecutable> execs = battle.getBattleExecutables();
+        int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
+        int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
+        
+        assertTrue(attackSubs < defendSubs);
+        
+        bridge.setRemote(new DummyTripleAPlayer());
+        
+        //attacking subs fires, defending destroyer and sub still gets to fire
+        //attacking subs still gets to fire even if defending sub hits
+        //battleship will not get to fire since it is killed by defending sub's sneak attack
+        ScriptedRandomSource randomSource = new ScriptedRandomSource(
+            0,0,0,0,ScriptedRandomSource.ERROR);
+        bridge.setRandomSource(randomSource);
+        battle.fight(bridge);
+        
+        assertEquals(4, randomSource.getTotalRolled());
+        assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(germans(m_data))).isEmpty());
+        assertEquals(3, attacked.getUnits().size());
     }
 
     
@@ -1559,7 +1728,7 @@ public class RevisedTest extends TestCase
             @Override
             public CasualtyDetails selectCasualties(Collection<Unit> selectFrom,
                 Map<Unit, Collection<Unit>> dependents, int count, String message,
-                DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID) {
+                DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID) {
                 
                 return new CasualtyDetails(
                     Arrays.asList(selectFrom.iterator().next()),

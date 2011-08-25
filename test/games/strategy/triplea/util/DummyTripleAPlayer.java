@@ -26,6 +26,7 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.Match;
 
@@ -112,9 +113,9 @@ public class DummyTripleAPlayer implements ITripleaPlayer {
 
     public CasualtyDetails selectCasualties(Collection<Unit> selectFrom,
         Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice,
-        PlayerID hit, List<Unit> defaultCasualties, GUID battleID) {
+        PlayerID hit, CasualtyList defaultCasualties, GUID battleID) {
         
-        return new CasualtyDetails(defaultCasualties, new ArrayList<Unit>(), true);
+        return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
     }
 
     public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title, int diceSides) {

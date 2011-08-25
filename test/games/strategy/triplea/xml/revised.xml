@@ -896,7 +896,7 @@
                          <option name="attack" value="4"/>
                          <option name="defense" value="4"/>
                          <option name="canBombard" value="true"/>
-                         <option name="isTwoHit" value="false"/>
+                         <option name="isTwoHit" value="true"/>
                     </attatchment>
                  
                     <attatchment name="unitAttatchment" attatchTo="destroyer" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">

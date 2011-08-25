@@ -36,6 +36,7 @@ import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
@@ -1004,7 +1005,7 @@ public class WW2V3_41_Test extends TestCase {
                 @Override
                 public CasualtyDetails selectCasualties(Collection<Unit> selectFrom,
                     Map<Unit, Collection<Unit>> dependents, int count, String message,
-                    DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID) {
+                    DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID) {
                     
                     return new CasualtyDetails(
                         Arrays.asList(selectFrom.iterator().next()),

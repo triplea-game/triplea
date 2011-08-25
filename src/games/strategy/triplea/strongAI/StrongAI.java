@@ -9882,15 +9882,24 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	 *      games.strategy.engine.data.PlayerID, java.util.List)
 	 */
 
-	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
+	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID)
 	{
+		if (defaultCasualties.size() != count)
+			throw new IllegalStateException("Select Casualties showing different numbers for number of hits to take vs total size of default casualty selections");
+		
 		final GameData data = getPlayerBridge().getGameData();
 		TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		
 		List<Unit> rDamaged = new ArrayList<Unit>();
 		List<Unit> rKilled = new ArrayList<Unit>();
+        
 		int xCount = count; // how many the game is saying we should have
-		for (Unit unitBB : selectFrom)
+		xCount -= defaultCasualties.getDamaged().size();
+
+        rDamaged.addAll(defaultCasualties.getDamaged());
+        //rKilled.addAll(defaultCasualties.getKilled());
+		
+		/*for (Unit unitBB : selectFrom2)
 		{
 			if (Matches.UnitIsTwoHit.match(unitBB))
 			{
@@ -9900,15 +9909,24 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					xCount--;
 				}
 			}
-		}
+		}*/
+        
 		if (xCount == 0)
 		{
+			if (count != rKilled.size() + rDamaged.size())
+				throw new IllegalStateException("Moore AI selected wrong number of casualties");
 			return new CasualtyDetails(rKilled, rDamaged, false);
+		}
+		if (xCount < 0)
+		{
+			throw new IllegalStateException("Can not choose more casualties than the number of hits");
 		}
 		if (xCount >= selectFrom.size())
 		{
 			rKilled.addAll(selectFrom);
 			CasualtyDetails m4 = new CasualtyDetails(rKilled, rDamaged, false);
+			if (count != rKilled.size() + rDamaged.size())
+				throw new IllegalStateException("Moore AI selected wrong number of casualties");
 			return m4;
 		}
 		
@@ -9925,6 +9943,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		
 		CasualtyDetails m2 = new CasualtyDetails(rKilled, rDamaged, false);
+
+		if (count != rKilled.size() + rDamaged.size())
+			throw new IllegalStateException("Moore AI selected wrong number of casualties");
 		
 		return m2;
 		

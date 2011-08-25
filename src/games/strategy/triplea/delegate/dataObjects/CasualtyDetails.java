@@ -27,14 +27,13 @@ import java.util.List;
 
 /**
  *
- * @author  Sean Bridges
- * @version 1.0
+ * @author  Sean Bridges & Mark Christopher Duncan
+ * @version 1.1
  */
 @SuppressWarnings("serial")
-public class CasualtyDetails implements Serializable
+public class CasualtyDetails extends CasualtyList implements Serializable
 {
-  private final List<Unit> m_killed;
-  private final  List<Unit> m_damaged;
+  // since this now extends CasualtyList, it has access to the protected fields of m_killed and m_damaged
   private final boolean m_autoCalculated;
 
   /** Creates new SelectCasualtyMessage
@@ -53,26 +52,17 @@ public class CasualtyDetails implements Serializable
     m_damaged = damaged;
     m_autoCalculated = autoCalculated;
   }
-
-  /**
-   * @return list of killed units
-   */
-  public List<Unit> getKilled()
+  public CasualtyDetails(CasualtyList casualties, boolean autoCalculated)
   {
-    return m_killed;
-  }
+    if(casualties == null)
+      throw new IllegalArgumentException("null casualties");
 
-  public List<Unit> getDamaged()
-  {
-    return m_damaged;
+    m_killed = casualties.getKilled();
+    m_damaged = casualties.getDamaged();
+    m_autoCalculated = autoCalculated;
   }
 
   public boolean getAutoCalculated() {
     return m_autoCalculated;
-  }
-
-  public String toString()
-  {
-    return "SelectCasualtyMessage killed:" + m_killed + " damaged:" + m_damaged;
   }
 }

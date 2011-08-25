@@ -17,11 +17,11 @@ package games.strategy.triplea.player;
 import java.util.*;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.message.IRemote;
 import games.strategy.net.*;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 
 /**
  * Interface the TriplePlayer presents to Delegates through IRemoteMessenger
@@ -48,7 +48,7 @@ public interface ITripleaPlayer extends IRemote
      */
 
     public CasualtyDetails selectCasualties(
-            Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents,  int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID     
+            Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents,  int count, String message, DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID     
     );
     /**
      * Select a fixed dice roll
