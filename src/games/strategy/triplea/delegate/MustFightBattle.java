@@ -676,7 +676,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if(m_stack.isExecuting())
         {
             ITripleaDisplay display = getDisplay(bridge);
-            display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits), removeNonCombatants(m_defendingUnits), m_dependentUnits, m_attacker, m_defender);
+            display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker), removeNonCombatants(m_defendingUnits, false, m_defender), m_dependentUnits, m_attacker, m_defender);
 
             display.listBattleSteps(m_battleID, m_stepStrings);
             
@@ -690,9 +690,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         writeUnitsToHistory(bridge);
         
-        //it is possible that no attacking units are present, if so
-        //end now
-        if (m_attackingUnits.size() == 0)
+        //it is possible that no attacking units are present, if so end now
+        //changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns, and infrastructure.
+        if (Match.getMatches(m_attackingUnits, Matches.UnitIsDestructibleInCombatShort).size() == 0)
         {
             endBattle(bridge);
             defenderWins(bridge);
@@ -700,7 +700,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         //it is possible that no defending units exist
-        if (m_defendingUnits.size() == 0)
+        //changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns, and infrastructure.
+        if (Match.getMatches(m_defendingUnits, Matches.UnitIsDestructibleInCombatShort).size() == 0)
         {
             endBattle(bridge);
             attackerWins(bridge);
@@ -714,7 +715,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         m_stepStrings = determineStepStrings(true, bridge);
 
         ITripleaDisplay display = getDisplay(bridge);
-        display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits), removeNonCombatants(m_defendingUnits), m_dependentUnits, m_attacker, m_defender);
+        display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker), removeNonCombatants(m_defendingUnits, false, m_defender), m_dependentUnits, m_attacker, m_defender);
 
         display.listBattleSteps(m_battleID, m_stepStrings);
 
@@ -1252,8 +1253,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
             // compatible with 0.9.0.2 saved games
             private static final long serialVersionUID = 5259103822937067667L;
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-            {            	
-                if (m_attackingUnits.size() == 0)
+            {
+
+                //changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns, and infrastructure.
+                if (Match.getMatches(m_attackingUnits, Matches.UnitIsDestructibleInCombatShort).size() == 0)
                 {
                 	if(isTransportCasualtiesRestricted())
                 	{ 
@@ -1287,7 +1290,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 	                	endBattle(bridge);	                	
 	                	defenderWins(bridge);
                 	}
-                } else if (m_defendingUnits.size() == 0)
+                }
+                //changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns, and infrastructure.
+                else if (Match.getMatches(m_defendingUnits, Matches.UnitIsDestructibleInCombatShort).size() == 0)
                 {
                 	if(isTransportCasualtiesRestricted())
                 	{
@@ -2938,7 +2943,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
      *         combatants include such things as factories, aaguns, land units
      *         in a water battle.
      */
-    private List<Unit> removeNonCombatants(Collection<Unit> units)
+    private List<Unit> removeNonCombatants(Collection<Unit> units, boolean attacking, PlayerID player)
     {
         CompositeMatch<Unit> combat = new CompositeMatchAnd<Unit>();
         combat.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
@@ -2950,8 +2955,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         List<Unit> unitList = Match.getMatches(units, combat);
         
+        //still allow infrastructure type units that can provide support have combat abilities
+        CompositeMatch<Unit> infrastructureNotSupporterAndNotHasCombatAbilities = new CompositeMatchAnd<Unit>(Matches.UnitIsInfrastructure, Matches.UnitIsSupporterOrHasCombatAbility(attacking, player, m_data).invert());
         //remove infrastructure units that can't take part in combat (air/naval bases, etc...)
-        unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsInfrastructure));
+        unitList.removeAll(Match.getMatches(unitList, infrastructureNotSupporterAndNotHasCombatAbilities));
         
         //remove any disabled units from combat
         unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsDisabled()));
@@ -2964,8 +2971,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private void removeNonCombatants()
     {
-        m_defendingUnits = removeNonCombatants(m_defendingUnits);
-        m_attackingUnits = removeNonCombatants(m_attackingUnits);
+        m_defendingUnits = removeNonCombatants(m_defendingUnits, false, m_defender);
+        m_attackingUnits = removeNonCombatants(m_attackingUnits, true, m_attacker);
     }
 
     private void landParatroops(IDelegateBridge bridge)
@@ -3617,7 +3624,11 @@ class Fire implements IExecutable
             Collection<Unit> firingUnits, String stepName, String text, MustFightBattle battle, 
             boolean defending, Map<Unit, Collection<Unit>> dependentUnits, ExecutionStack stack, boolean headless)
     {
-        m_attackableUnits = attackableUnits;
+    	/* This is to remove any Factories, AAguns, and Infrastructure from possible targets for the firing. 
+    	 * If, in the future, Infrastructure or other things could be taken casualty, then this will need to be changed back to: 
+    	 * m_attackableUnits = attackableUnits;
+    	 */
+        m_attackableUnits = Match.getMatches(attackableUnits, Matches.UnitIsDestructibleInCombatShort);
         
         m_canReturnFire = canReturnFire;
         

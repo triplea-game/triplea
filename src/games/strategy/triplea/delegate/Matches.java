@@ -38,6 +38,7 @@ import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
@@ -613,6 +614,31 @@ public class Matches
             return ua.getIsInfrastructure();
         }
     };
+
+    public static final Match<Unit> UnitIsSupporterOrHasCombatAbility(final boolean attack, final PlayerID player, final GameData data)
+    {
+    	return new Match<Unit>()
+    	{
+    		public boolean match(Unit unit)
+            {
+    			// if unit has attack or defense, return true
+                UnitAttachment ua = UnitAttachment.get(unit.getType());
+                if (attack && ua.getAttack(player) > 0)
+                	return true;
+                if (!attack && ua.getDefense(player) > 0)
+                	return true;
+                
+                // if unit can support other units, return true
+                Iterator<UnitSupportAttachment> iter = UnitSupportAttachment.get(data).iterator();
+                while(iter.hasNext()) {
+                	UnitSupportAttachment rule = iter.next();
+                	if (unit.getType().equals((UnitType)rule.getAttatchedTo()))
+                		return true;
+                }
+                return false;
+            }
+    	};
+    }
 
     public static final Match<Unit> UnitCanScramble = new Match<Unit>()
     {
