@@ -331,13 +331,6 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
         }
     }
 
-    private PlayerID getUnitOwner(Collection<Unit> units)
-    {
-        if (!units.isEmpty())
-            return units.iterator().next().getOwner();
-        return m_player;
-    }
-
     public String move(Collection<Unit> units, Route route)
     {
         return move(units, route, Collections.<Unit>emptyList());
@@ -345,11 +338,9 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 
     public String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded)
     {
-        PlayerID player = getUnitOwner(units);
-
         MoveValidationResult result = MoveValidator.validateMove(units,
                                                                  route,
-                                                                 player,
+ m_player,
                                                                  transportsThatCanBeLoaded,
                                                                  m_nonCombat,
                                                                  m_movesToUndo,
@@ -437,7 +428,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 
         m_tempMovePerformer = new MovePerformer();
         m_tempMovePerformer.initialize(this, m_data, m_bridge);
-        m_tempMovePerformer.moveUnits(units, route, player, transportsThatCanBeLoaded, currentMove);
+        m_tempMovePerformer.moveUnits(units, route, m_player, transportsThatCanBeLoaded, currentMove);
         m_tempMovePerformer = null;
 
         return null;
@@ -490,37 +481,11 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
     }
 
 
-    /**
-     * Mark units as having no movement.
-     * @param units referring units
-     * @return change that contains marking of units as having no movement
-     */
-    public Change markNoMovementChange(Collection<Unit> units)
-    {
-        if(units.isEmpty())
-            return ChangeFactory.EMPTY_CHANGE;
-
-        CompositeChange change = new CompositeChange();
-        Iterator<Unit> iter = units.iterator();
-        while (iter.hasNext())
-        {
-            change.add(markNoMovementChange(iter.next()));
-        }
-        return change;
-    }
-
-
     public Change ensureCanMoveOneSpaceChange(Unit unit)
     {
         int alreadyMoved = TripleAUnit.get(unit).getAlreadyMoved();
         int maxMovement = UnitAttachment.get(unit.getType()).getMovement(unit.getOwner());
         return ChangeFactory.unitPropertyChange(unit, Math.min(alreadyMoved, maxMovement - 1), TripleAUnit.ALREADY_MOVED);
-    }
-
-    private Change markNoMovementChange(Unit unit)
-    {
-        UnitAttachment ua = UnitAttachment.get(unit.getType());
-        return ChangeFactory.unitPropertyChange(unit, ua.getMovement(unit.getOwner()), TripleAUnit.ALREADY_MOVED);
     }
 
     /**

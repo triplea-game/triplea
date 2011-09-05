@@ -61,4 +61,10 @@ public abstract class AEditableProperty implements IEditableProperty, java.io.Se
     return -1;
   }
 
+    @Override
+    public String toString()
+    {
+        return getName() + "=" + getValue().toString();
+    }
+
 }

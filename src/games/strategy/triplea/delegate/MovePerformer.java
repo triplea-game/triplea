@@ -321,7 +321,7 @@ public class MovePerformer implements Serializable
             while (iter.hasNext())
             {
                 Unit unit = iter.next();
-                change.add(m_moveDelegate.markNoMovementChange(Collections.singleton(unit)));
+                change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
             }
         }
         return change;
@@ -419,7 +419,7 @@ public class MovePerformer implements Serializable
                 m_bridge.addChange(change);
 
         		//set noMovement
-            	change = m_moveDelegate.markNoMovementChange(Collections.singleton(unit));
+            	change = ChangeFactory.markNoMovementChange(Collections.singleton(unit));
             	m_currentMove.addChange(change);
             	m_bridge.addChange(change);
             }

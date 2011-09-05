@@ -20,8 +20,10 @@ package games.strategy.engine.data;
 
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.net.GUID;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PropertyUtil;
@@ -218,6 +220,31 @@ public class ChangeFactory
 	{
 		return new RelationshipChange(player, player2, currentRelation, newRelation);
 	}
+
+    /**
+     * Mark units as having no movement.
+     * @param units referring units
+     * @return change that contains marking of units as having no movement
+     */
+    static public Change markNoMovementChange(Collection<Unit> units)
+    {
+        if(units.isEmpty())
+            return EMPTY_CHANGE;
+    
+        CompositeChange change = new CompositeChange();
+        Iterator<Unit> iter = units.iterator();
+        while (iter.hasNext())
+        {
+            change.add(markNoMovementChange(iter.next()));
+        }
+        return change;
+    }
+
+    private static Change markNoMovementChange(Unit unit)
+    {
+        UnitAttachment ua = UnitAttachment.get(unit.getType());
+        return unitPropertyChange(unit, ua.getMovement(unit.getOwner()), TripleAUnit.ALREADY_MOVED);
+    }
 	
 }
 

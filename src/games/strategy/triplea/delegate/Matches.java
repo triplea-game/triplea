@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -2273,26 +2274,37 @@ public class Matches
      * @return Match that tests the TripleAUnit getTransportedBy value
      * (also tests for para-troopers, and for dependent allied fighters sitting as cargo on a ship)
      */
-    public static Match<Unit> unitIsBeingTransportedOrIsDependent(final Collection<Unit> units, final Route route, final PlayerID currentPlayer, final GameData data)
+    public static Match<Unit> unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(final Collection<Unit> units, final Route route, final PlayerID currentPlayer, final GameData data)
     {
     	return new Match<Unit>()
     	{
     		public boolean match(Unit dependent)
     		{
-    			if (((TripleAUnit) dependent).getTransportedBy() != null)
+    			// transported on a sea transport
+    			Unit transportedBy = ((TripleAUnit) dependent).getTransportedBy();
+    			if (transportedBy != null && units.contains(transportedBy))
     				return true;
-    			else if (MoveValidator.carrierMustMoveWith(units, units, data, currentPlayer).containsValue(dependent))
-    				return true;
-    			else
+    			
+    			// cargo on a carrier
+    			Map<Unit, Collection<Unit>> carrierMustMoveWith = MoveValidator.carrierMustMoveWith(units, units, data, currentPlayer);
+    			if (carrierMustMoveWith != null)
     			{
-    	            Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
-    	            Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
-    	            if(!airTransports.isEmpty() && !paratroops.isEmpty())
-    	            {
-    	            	if (MoveDelegate.mapAirTransports(route, paratroops, airTransports, true, currentPlayer).containsKey(dependent))
-    	            		return true;
-    	            }
+    				for (Unit unit : carrierMustMoveWith.keySet())
+    				{
+    					if (carrierMustMoveWith.get(unit).contains(dependent))
+    						return true;
+    				}
     			}
+    			
+    			// paratrooper on an air transport
+	            Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
+	            Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
+	            if(!airTransports.isEmpty() && !paratroops.isEmpty())
+	            {
+	            	if (MoveDelegate.mapAirTransports(route, paratroops, airTransports, true, currentPlayer).containsKey(dependent))
+	            		return true;
+	            }
+	            
     			return false;
     		}
     	};

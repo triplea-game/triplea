@@ -452,7 +452,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return change;
         
 
-        change.add(DelegateFinder.moveDelegate(m_data).markNoMovementChange(nonAir));
+        change.add(ChangeFactory.markNoMovementChange(nonAir));
         return change;
     }
 
@@ -572,7 +572,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return change;
         
 
-        change.add(DelegateFinder.moveDelegate(m_data).markNoMovementChange(nonAir));
+        change.add(ChangeFactory.markNoMovementChange(nonAir));
         return change;
     }
 
@@ -2334,7 +2334,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     		//If there are attackers set their movement to 0 and kill the transports  
         	if (enemyUnits.size() > 0)
         	{
-        		Change change =DelegateFinder.moveDelegate(m_data).markNoMovementChange(Match.getMatches(enemyUnits, Matches.UnitIsSea));
+        		Change change =ChangeFactory.markNoMovementChange(Match.getMatches(enemyUnits, Matches.UnitIsSea));
                 bridge.addChange(change);
                 
     			remove(alliedTransports, bridge, m_battleSite, false);   
@@ -2614,7 +2614,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //bombarding units cant move after bombarding
         if(!m_headless) 
         {
-            Change change =DelegateFinder.moveDelegate(m_data).markNoMovementChange(bombard);
+            Change change =ChangeFactory.markNoMovementChange(bombard);
             bridge.addChange(change);
         }
         //TODO

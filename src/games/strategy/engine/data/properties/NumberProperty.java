@@ -45,7 +45,7 @@ public class NumberProperty extends AEditableProperty
 
   public Object getValue()
   {
-    return "" + m_value;
+        return Integer.toString(m_value);
   }
 
   public JComponent getEditorComponent()

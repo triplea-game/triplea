@@ -29,7 +29,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.CanalAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
@@ -38,6 +37,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.MovePanel;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -720,9 +720,12 @@ public class MoveValidator
                                                     final List<UndoableMove> undoableMoves, 
                                                     GameData data)
     {
-	    IntegerMap<Unit> movementLeft = new IntegerMap<Unit>();
-	    
         MoveValidationResult result = new MoveValidationResult();
+        
+        if (!units.isEmpty() && !Match.allMatch(Match.getMatches(units, Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, player, data).invert()), Matches.unitIsOwnedBy(player)) && !getEditMode(data)) {
+            result.setError("Player, " + player.getName() + ", is not owner of all the units: " + MyFormatter.unitsToTextNoOwner(units));
+            return result;
+        }
 
         //this should never happen
         if(new HashSet<Unit>(units).size() != units.size()) {
@@ -762,6 +765,7 @@ public class MoveValidator
         if (validateBasic(isNonCombat, data, units, route, player, transportsToLoad, result).getError() != null)
             return result;
 
+        IntegerMap<Unit> movementLeft = new IntegerMap<Unit>();
         if (validateAirCanLand(data, units, route, player, result, movementLeft).getError() != null)
             return result;
 
@@ -1846,7 +1850,7 @@ public class MoveValidator
             Map<Unit,Unit> unitsToTransports = MoveDelegate.mapTransports(route, land, transportsToLoad);
 
             Iterator<Unit> iter = land.iterator();
-            CompositeMatch<Unit> landUnitsAtSea = new CompositeMatchOr<Unit>(Matches.unitIsLandAndOwnedBy(player), Matches.UnitCanBeTransported);
+            //CompositeMatch<Unit> landUnitsAtSea = new CompositeMatchOr<Unit>(Matches.unitIsLandAndOwnedBy(player), Matches.UnitCanBeTransported);
             
             while (!isEditMode && iter.hasNext())
             {
@@ -1871,7 +1875,7 @@ public class MoveValidator
                 		if(!transportTracker.isTransportUnloadRestrictedToAnotherTerritory(trn, route.getEnd()))
                 		{
                             UnitAttachment ua = UnitAttachment.get(unit.getType());
-                            UnitAttachment trna = UnitAttachment.get(trn.getType());
+                            //UnitAttachment trna = UnitAttachment.get(trn.getType());
                             if(transportTracker.getAvailableCapacity(trn) >= ua.getTransportCost())
                 			{
                 				alreadyUnloadedTo = null;
@@ -2325,7 +2329,7 @@ public class MoveValidator
         	return null;
         
         // we don't want to look at the dependents
-        Collection<Unit> unitsWhichAreNotBeingTransportedOrDependent = new ArrayList<Unit>(Match.getMatches(units, Matches.unitIsBeingTransportedOrIsDependent(units, defaultRoute, player, data).invert()));
+        Collection<Unit> unitsWhichAreNotBeingTransportedOrDependent = new ArrayList<Unit>(Match.getMatches(units, Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, defaultRoute, player, data).invert()));
         boolean mustGoLand = false;
         boolean mustGoSea = false;
         

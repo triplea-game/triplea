@@ -623,7 +623,7 @@ public class BattleTracker implements java.io.Serializable
         CompositeMatch<Unit> willBeCaptured = new CompositeMatchOr<Unit>(enemyNonCom, Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
 
         Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);
-        Change noMovementChange = DelegateFinder.moveDelegate(data).markNoMovementChange(nonCom);
+        Change noMovementChange = ChangeFactory.markNoMovementChange(nonCom);
         bridge.addChange(noMovementChange);
         if(changeTracker != null)
             changeTracker.addChange(noMovementChange);

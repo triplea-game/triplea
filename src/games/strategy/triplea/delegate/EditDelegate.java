@@ -183,7 +183,7 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
             enemyNonCom.add(Matches.enemyUnit(player, m_data));
             Collection<Unit> units = territory.getUnits().getMatches(enemyNonCom);
             // mark no movement for enemy units
-            m_bridge.addChange(DelegateFinder.moveDelegate(m_data).markNoMovementChange(units));
+            m_bridge.addChange(ChangeFactory.markNoMovementChange(units));
             // change ownership of enemy AA and factories
             for (Unit unit : units)
                 m_bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
