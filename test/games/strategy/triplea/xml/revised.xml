@@ -1654,7 +1654,7 @@
                         <boolean/>
                 </property>
 
-				<property name="Choose AA Casualties" value="false" editable="false">
+				<property name="Choose AA Casualties" value="false" editable="true">
 					<boolean/>
 				</property>
 

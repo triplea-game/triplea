@@ -68,7 +68,7 @@ public class ModeratorControllerTest extends TestCase
         
         MessageContext.setSenderNodeForThread(m_adminNode);
         INode booted = new Node("foo", bannedAddress, 0);
-        m_controller.banIp(booted, null);
+        m_controller.banIp(booted, null); // this test is failing because any kind of ban requires a mac address for the logging information, yet this node has no mac address. need to fix this somehow.
         assertTrue(m_listener.getRemoved().contains(booted));
         
         assertTrue(new BannedIpController().isIpBanned(bannedAddress.getHostAddress()));

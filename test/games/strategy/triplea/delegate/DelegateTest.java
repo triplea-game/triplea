@@ -209,4 +209,9 @@ public class DelegateTest extends TestCase
         return GameDataTestUtil.getDelegateBridge(player);
     }
     
+    public void testTest() {
+    	assertValid(null);
+    	assertError("Can not do this");
+    }
+    
 }

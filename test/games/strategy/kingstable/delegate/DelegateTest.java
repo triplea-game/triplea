@@ -105,5 +105,10 @@ public class DelegateTest extends TestCase
 	{
 	    assertNotNull(string);
 	}
+    
+    public void testTest() {
+    	assertValid(null);
+    	assertError("Can not do this");
+    }
 	
 }

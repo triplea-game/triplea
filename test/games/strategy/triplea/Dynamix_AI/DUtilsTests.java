@@ -66,7 +66,8 @@ public class DUtilsTests extends TestCase
         assertEquals(1.0D, results.getAttackerWinPercent());
         assertEquals(1.0D, results.getAverageAttackingUnitsLeft());
         assertEquals(0.0D, results.getAverageDefendingUnitsLeft());
-        assertEquals(0.0D, results.getAverageBattleRoundsFought());
+        // actually zero (0.0) rounds are fought, however the getAverageBattleRoundsFought() method will return 1.0 if there are zero or empty rounds
+        assertEquals(1.0D, results.getAverageBattleRoundsFought());
     }
     public void testTemp()
     {
