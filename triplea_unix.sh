@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if ! java -version > /dev/null 2>&1
 then
 echo "Could not find Java."
@@ -6,7 +8,7 @@ exit
 fi
 
 relativePathToGame=`dirname $0`
-cd $relativePathToGame
+cd "$relativePathToGame"
 
 
 java -Xmx512m -cp bin/patch.jar:bin/triplea.jar games.strategy.engine.framework.GameRunner
