@@ -27,25 +27,26 @@ import java.util.*;
  * @author  Sean Bridges
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class ProductionRuleList extends GameDataComponent
 {
 	private final Map<String, ProductionRule> m_productionRules = new HashMap<String, ProductionRule>();
-	
-    public ProductionRuleList(GameData data) 
+
+    public ProductionRuleList(GameData data)
 	{
 		super(data);
     }
-	
+
 	protected void addProductionRule(ProductionRule pf)
 	{
 		m_productionRules.put(pf.getName(), pf);
 	}
-	
+
 	public int size()
 	{
 		return m_productionRules.size();
 	}
-	
+
 	public ProductionRule getProductionRule(String name)
 	{
 		return m_productionRules.get(name);

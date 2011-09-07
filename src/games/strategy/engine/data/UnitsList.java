@@ -19,6 +19,7 @@ import java.util.*;
 
 import games.strategy.net.*;
 
+@SuppressWarnings("serial")
 public class UnitsList implements java.io.Serializable, Iterable<Unit>
 {
     //maps GUID -> Unit

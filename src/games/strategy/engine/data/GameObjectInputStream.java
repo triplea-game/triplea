@@ -25,7 +25,7 @@ import games.strategy.engine.framework.GameObjectStreamFactory;
 
 /**
  * Please refer to the comments on GameObjectOutputStream
- * 
+ *
  * @author  Sean Bridges
  * @version 1.0
  */
@@ -33,7 +33,11 @@ public class GameObjectInputStream extends ObjectInputStream
 {
   private final GameObjectStreamFactory m_dataSource;
 
-  /** Creates new GameObjectReader */
+  /** Creates new GameObjectReader
+   * @param dataSource data source
+   * @param input input stream
+   * @throws IOException
+   */
   public GameObjectInputStream(GameObjectStreamFactory dataSource, InputStream input) throws IOException
   {
     super(input);
@@ -49,13 +53,13 @@ public class GameObjectInputStream extends ObjectInputStream
 
   protected Object resolveObject(Object obj) throws IOException
   {
-    //when loading units, we want to maintain == relationships for many 
+    //when loading units, we want to maintain == relationships for many
     //of the game data objects.
-    //this is to prevent the situation where we have 2 Territory objects for the 
+    //this is to prevent the situation where we have 2 Territory objects for the
     //the same territory, or two object for the same player id or ...
     //thus, in one vm you can add some units to a territory, and when you serialize the change
-    //and look at the Territory object in another vm, the units have not been added 
-      
+    //and look at the Territory object in another vm, the units have not been added
+
     if (obj instanceof GameData)
     {
       return m_dataSource.getData();
@@ -80,16 +84,13 @@ public class GameObjectInputStream extends ObjectInputStream
         Unit local = m_dataSource.getData().getUnits().get(unit.getID());
         if (local != null)
           return local;
-        else
-        {
-          getData().getUnits().put(unit);
-          return unit;
-        }
+        getData().getUnits().put(unit);
+        return unit;
     }
-    finally 
+    finally
     {
         m_dataSource.getData().releaseReadLock();
-        
+
     }
   }
 }

@@ -27,13 +27,17 @@ import java.util.*;
  * @author  Kevin Comcowich
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule>
 {
 
 	private final List<RepairRule> m_rules = new ArrayList<RepairRule>();
 	private List<RepairRule> m_cachedRules;
 
-	/** Creates new RepairFrontier */
+	/** Creates new RepairFrontier
+	 * @param name name of new repair frontier
+	 * @param data game data
+	 */
     public RepairFrontier(String name, GameData data)
 	{
 		super(name, data);
@@ -47,14 +51,14 @@ public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule>
 		m_rules.add(rule);
 		m_cachedRules = null;
 	}
-	
+
 	public void removeRule(RepairRule rule)
 	{
         if(!m_rules.contains(rule))
             throw new IllegalStateException("Rule not present:" + rule);
 
   		m_rules.remove(rule);
-  		m_cachedRules = null;	    
+  		m_cachedRules = null;
 	}
 
 	public List<RepairRule> getRules()

@@ -27,25 +27,26 @@ import java.util.*;
  * @author  Kevin Comcowich
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class RepairRuleList extends GameDataComponent
 {
 	private final Map<String, RepairRule> m_repairRules = new HashMap<String, RepairRule>();
-	
-    public RepairRuleList(GameData data) 
+
+    public RepairRuleList(GameData data)
 	{
 		super(data);
     }
-	
+
 	protected void addRepairRule(RepairRule pf)
 	{
 		m_repairRules.put(pf.getName(), pf);
 	}
-	
+
 	public int size()
 	{
 		return m_repairRules.size();
 	}
-	
+
 	public RepairRule getRepairRule(String name)
 	{
 		return m_repairRules.get(name);

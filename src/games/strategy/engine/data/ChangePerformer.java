@@ -28,15 +28,17 @@ import javax.swing.SwingUtilities;
  *
  * Allows changes to be performed outside of the data package.
  * Should not be created by non engine code.
- * Made this since I didnt want to unprotect the Change.perform method,
- * but didnt want to put everything that needed to
+ * Made this since I didn't want to unprotect the Change.perform method,
+ * but didn't want to put everything that needed to
  * perform a change in the data package.
  */
 public class ChangePerformer
 {
 	private final GameData m_data;
 
-	/** Creates a new instance of ChangePerformer */
+	/** Creates a new instance of ChangePerformer
+	 * @param data game data
+	 */
     public ChangePerformer(GameData data)
 	{
         if(data == null)
@@ -46,10 +48,10 @@ public class ChangePerformer
 
 	public void perform(Change aChange)
 	{
-        
+
         if(m_data.areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread())
             throw new IllegalStateException("Wrong thread");
-        
+
 		try
 		{
 		    m_data.acquireWriteLock();
@@ -59,6 +61,6 @@ public class ChangePerformer
 		    m_data.releaseWriteLock();
 		}
         m_data.notifyGameDataChanged(aChange);
-        
+
 	}
 }

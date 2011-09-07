@@ -31,13 +31,17 @@ import games.strategy.util.*;
  *
  * A collection of units.
  */
+@SuppressWarnings("serial")
 public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 {
 
 	private final List<Unit> m_units = new ArrayList<Unit>();
 	private final NamedUnitHolder m_holder;
 
-	/** Creates new UnitCollection */
+	/** Creates new UnitCollection
+	 * @param holder named unit holder
+	 * @param data game data
+	 */
     public UnitCollection(NamedUnitHolder holder, GameData data)
 	{
 		super(data);
@@ -76,11 +80,10 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 	public int getUnitCount(UnitType type)
 	{
 		int count = 0;
-		for(int i = 0; i < m_units.size(); i++)
+		Iterator<Unit> iterator = m_units.iterator();
+		while(iterator.hasNext())
 		{
-			Unit current = m_units.get(i);
-
-			if(current.getType().equals(type))
+			if(iterator.next().getType().equals(type))
 				count++;
 		}
 		return count;
@@ -89,10 +92,10 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 	public int getUnitCount(UnitType type, PlayerID owner)
 	{
 		int count = 0;
-		for(int i = 0; i < m_units.size(); i++)
-		{
-			Unit current = m_units.get(i);
-
+		Iterator<Unit> iterator = m_units.iterator();
+        while(iterator.hasNext())
+        {
+            Unit current = iterator.next();
 			if(current.getType().equals(type) && current.getOwner().equals(owner))
 				count++;
 		}
@@ -102,11 +105,10 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 	public int getUnitCount(PlayerID owner)
 	{
 		int count = 0;
-		for(int i = 0; i < m_units.size(); i++)
-		{
-			Unit current = m_units.get(i);
-
-			if(current.getOwner().equals(owner))
+		Iterator<Unit> iterator = m_units.iterator();
+        while(iterator.hasNext())
+        {
+            if(iterator.next().getOwner().equals(owner))
 				count++;
 		}
 		return count;
@@ -123,30 +125,33 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 	}
 
 	/**
-	 * returns up to int units of a given type currently in
-	 * the collection.
+	 * @param type referring unit type
+	 * @param max_units maximal number of units
+	 * @return up to count units of a given type currently in the collection.
 	 */
-	public Collection<Unit> getUnits(UnitType type, int count)
+	public Collection<Unit> getUnits(UnitType type, int max_units)
 	{
-		if(count == 0)
+		if(max_units == 0)
 			return new ArrayList<Unit>();
-		if(count < 0)
-			throw new IllegalArgumentException("value must be positiive.  Instead its:" + count);
+		if(max_units < 0)
+			throw new IllegalArgumentException("value must be positiive.  Instead its:" + max_units);
 
 		Collection<Unit> rVal = new ArrayList<Unit>();
-		for(int i = 0; i < m_units.size(); i++)
+		Iterator<Unit> iter = m_units.iterator();
+		while(iter.hasNext())
 		{
-			Unit current = m_units.get(i);
-			if(current.getType().equals(type))
+			Unit current = iter.next();
+			if(current.getType().equals(type)) {
 				rVal.add(current);
-			if(rVal.size() == count)
-				return rVal;
+				if(rVal.size() == max_units)
+				    return rVal;
+			}
 		}
 		return rVal;
 	}
 
 	/**
-	 * Returns a map of UnitType -> int.
+	 * @return integer map of UnitType
 	 */
 	public IntegerMap<UnitType> getUnitsByType()
 	{
@@ -164,8 +169,8 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 	}
 
 	/**
-	 * Returns a map of UnitType -> int.
-	 * Only returns units for the specified player
+	 * @param id referring player ID
+	 * @return map of UnitType (only of units for the specified player)
 	 */
 	public IntegerMap<UnitType> getUnitsByType(PlayerID id)
 	{
@@ -184,8 +189,8 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 
 
 	/**
-	 * Passed a map of UnitType -> int
-	 * return a collection of units of each type up to max
+	 * @param types map of unit types
+	 * @return collection of units of each type up to max
 	 */
 	public Collection<Unit> getUnits(IntegerMap<UnitType> types)
 	{
@@ -215,7 +220,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 	}
 
 	/**
-     * 
+     *
      * @return a Set of all players who have units in this collection.
 	 */
 	public Set<PlayerID> getPlayersWithUnits()
@@ -235,7 +240,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 
 
 	/**
-     * 
+     *
      * @return the count of units each player has in this collection.
 	 */
 	public IntegerMap<PlayerID> getPlayerUnitCounts()
@@ -289,7 +294,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 	{
 	    return Match.countMatches(m_units, predicate);
 	}
-	
+
 	public List<Unit> getMatches(Match<Unit> predicate)
 	{
 		List<Unit> values = new ArrayList<Unit>();

@@ -20,20 +20,21 @@
 
 package games.strategy.engine.data;
 
-import java.util.Properties;
+import games.strategy.engine.delegate.IDelegate;
 
-import games.strategy.engine.delegate.*;
+import java.util.Properties;
 
 /**
  * A single step in a game.<p>
- * 
+ *
  * Typically turn based strategy games are composed of a set of distinct phases (in chess this would
  * be two, white move, black move).
- * 
+ *
  *
  * @author  Sean Bridges
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class GameStep extends GameDataComponent
 {
   private final String m_name;
@@ -42,11 +43,18 @@ public class GameStep extends GameDataComponent
   private final String m_delegate;
   private int m_hashCode = -1;
   private int m_runCount = 0;
-  private int m_maxRunCount = -1; 
+  private int m_maxRunCount = -1;
   private final Properties m_properties;
 
 
-  /** Creates new GameStep */
+  /** Creates new GameStep
+   * @param name name of the game step
+   * @param displayName name that gets displayed
+   * @param player player who executes the game step
+   * @param delegate delegate for the game step
+   * @param data game data
+   * @param stepProperties properties of the game step
+   */
   public GameStep(String name, String displayName, PlayerID player, IDelegate delegate, GameData data, Properties stepProperties)
   {
     super(data);
@@ -126,10 +134,9 @@ public class GameStep extends GameDataComponent
   {
     if(m_displayName == null)
       return getDelegate().getDisplayName();
-    else
-      return m_displayName;
+    return m_displayName;
   }
-  
+
   public Properties getProperties()
   {
       return m_properties;

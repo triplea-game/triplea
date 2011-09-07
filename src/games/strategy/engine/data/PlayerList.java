@@ -28,43 +28,46 @@ import java.util.*;
  * @version 1.0
  *
  */
+@SuppressWarnings("serial")
 public class PlayerList extends GameDataComponent implements Iterable<PlayerID>
 {
 
 	//maps String playerName -> PlayerID
 	private final Map<String,PlayerID> m_players = new LinkedHashMap<String,PlayerID>();
-	
-	/** Creates new PlayerCollection */
-    public PlayerList(GameData data) 
+
+	/** Creates new PlayerCollection
+	 * @param data game data
+	 */
+    public PlayerList(GameData data)
 	{
 		super(data);
-		
+
     }
-	
+
 	protected void addPlayerID(PlayerID player)
 	{
 		m_players.put(player.getName(), player);
 	}
-	
+
 	public int size()
 	{
 		return m_players.size();
 	}
-	
+
 	public PlayerID getPlayerID(String name)
 	{
 	    if(PlayerID.NULL_PLAYERID.getName().equals(name))
 	        return PlayerID.NULL_PLAYERID;
 		return m_players.get(name);
 	}
-	
+
 	public String[] getNames()
 	{
 		String[] values = new String[size()];
 		m_players.keySet().toArray(values);
 		return values;
 	}
-	
+
 	public Collection<PlayerID> getPlayers()
 	{
 		return m_players.values();

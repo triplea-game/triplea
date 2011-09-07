@@ -14,6 +14,7 @@
 
 package games.strategy.engine.data;
 
+@SuppressWarnings("serial")
 public class DefaultUnitFactory implements IUnitFactory
 {
 

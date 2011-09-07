@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Engine code cleanup. (frigoref)
+
 * Some small fixes for unit tests, and some small abstractions. (frigoref and veqryn)
 
 * Changed combat filters to allow infrastructure with support or combat abilities to take part in combat. (veqryn)

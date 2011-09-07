@@ -29,35 +29,38 @@ import java.util.*;
  *
  * A collection of unit types
  */
+@SuppressWarnings("serial")
 public class UnitTypeList extends GameDataComponent implements Iterable<UnitType>
 {
 
 	private final Map<String, UnitType> m_unitTypes = new HashMap<String, UnitType>();
-	
-	/** Creates new UnitTypeCollection */
-    public UnitTypeList(GameData data) 
+
+	/** Creates new UnitTypeCollection
+	 * @param data game data
+	 */
+    public UnitTypeList(GameData data)
 	{
 		super(data);
     }
-	
+
 	protected void addUnitType(UnitType type)
 	{
 		m_unitTypes.put(type.getName(), type);
 	}
-	
+
 	public UnitType getUnitType(String name)
 	{
 		return m_unitTypes.get(name);
 	}
-	
+
 	public int size()
 	{
 		return m_unitTypes.size();
 	}
-	
+
 	public Iterator<UnitType> iterator()
 	{
 		return m_unitTypes.values().iterator();
 	}
-	
+
 }

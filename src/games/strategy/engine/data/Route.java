@@ -25,38 +25,38 @@ import java.util.*;
 import games.strategy.util.*;
 
 /**
- * 
+ *
  * A route between two territories.<p>
- * 
+ *
  * A route consists of a start territory, and a sequence of steps.  To create a route
  * do,
- * 
+ *
  * <code>
  * Route aRoute = new Route();
  * route.setStart(someTerritory);
  * route.add(anotherTerritory);
  * route.add(yetAnotherTerritory);
  * </code>
- * 
- * 
- * 
+ *
+ *
+ *
  * @author Sean Bridges
  * @version 1.0
- * 
+ *
  */
+@SuppressWarnings("serial")
 public class Route implements java.io.Serializable, Iterable<Territory>
 {
     private List<Territory> m_route = new ArrayList<Territory>();
 
     private Territory m_start;
 
-    
     public Route() {
-        
+
     }
-    
+
   public Route(List<Territory> route) {
-        
+
         setStart(route.get(0));
         if(route.size() == 1) {
             return;
@@ -65,26 +65,28 @@ public class Route implements java.io.Serializable, Iterable<Territory>
             add(t);
         }
     }
-    
-    
+
+
     public Route(Territory start, Territory ... route) {
-        
+
         setStart(start);
         for(Territory t: route) {
             add(t);
-        }        
+        }
     }
-    
-    
-    
+
+
+
     /**
      * Join the two routes. It must be the case that r1.end() equals r2.start()
      * or r1.end() == null and r1.start() equals r2
-     * 
+     *
+     * @param r1 route 1
+     * @param r2 route 2
      * @return a new Route starting at r1.start() going to r2.end() along r1,
-     *         r2, or null if the routes cant be joined it the joining would
+     *         r2, or null if the routes can't be joined it the joining would
      *         form a loop
-     * 
+     *
      */
     public static Route join(Route r1, Route r2)
     {
@@ -144,6 +146,7 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 
     /**
      * Set the start of this route.
+     * @param t new start territory
      */
     public void setStart(Territory t)
     {
@@ -154,7 +157,7 @@ public class Route implements java.io.Serializable, Iterable<Territory>
     }
 
     /**
-     * Get the start territory for this route.
+     * @return start territory for this route
      */
     public Territory getStart()
     {
@@ -164,7 +167,7 @@ public class Route implements java.io.Serializable, Iterable<Territory>
     /**
      * Determines if the route crosses water by checking if any of the
      * territories except the start and end are sea territories.
-     * 
+     *
      * @return whether the route encounters water other than at the start of the
      *         route.
      */
@@ -182,10 +185,10 @@ public class Route implements java.io.Serializable, Iterable<Territory>
                 overWater = true;
             }
         }
-        
+
         if(terr == null)
             return false;
-        
+
         // If we started on land, went over water, and ended on land, we cross
         // water.
         return (startLand && overWater && !terr.isWater());
@@ -193,6 +196,7 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 
     /**
      * Add the given territory to the end of the route.
+     * @param t referring territory
      */
     public void add(Territory t)
     {
@@ -205,7 +209,7 @@ public class Route implements java.io.Serializable, Iterable<Territory>
     }
 
     /**
-     * 
+     *
      * @return the number of steps in this route.
      */
     public int getLength()
@@ -214,8 +218,8 @@ public class Route implements java.io.Serializable, Iterable<Territory>
     }
 
     /**
-     * Get the territory we will be in after the i'th step for this route has been made.
-     *  
+     * @param i step number
+     * @return territory we will be in after the i'th step for this route has been made
      */
     public Territory at(int i)
     {
@@ -223,8 +227,8 @@ public class Route implements java.io.Serializable, Iterable<Territory>
     }
 
     /**
-     * Do all territories in this route match the given match?  The start territory
-     * is not tested. 
+     * @param aMatch referring match
+     * @return whether all territories in this route match the given match (start territory is not tested)
      */
     public boolean allMatch(Match<Territory> aMatch)
     {
@@ -237,8 +241,8 @@ public class Route implements java.io.Serializable, Iterable<Territory>
     }
 
     /**
-     * Do some territories in this route match the given match?  The start territory
-     * is not tested. 
+     * @param aMatch referring match
+     * @return whether some territories in this route match the given match (start territory is not tested)
      */
     public boolean someMatch(Match<Territory> aMatch)
     {
@@ -251,8 +255,8 @@ public class Route implements java.io.Serializable, Iterable<Territory>
     }
 
     /**
-     * Get all territories in this route match the given match?  The start territory
-     * is not tested. 
+     * @param aMatch referring match
+     * @return all territories in this route match the given match (start territory is not tested)
      */
     public Collection<Territory> getMatches(Match<Territory> aMatch)
     {
@@ -265,13 +269,13 @@ public class Route implements java.io.Serializable, Iterable<Territory>
         for (int i = 0; i < getLength(); i++)
         {
             buf.append(" -> ");
-            buf.append(at(i).getName());           
+            buf.append(at(i).getName());
         }
         return buf.toString();
     }
 
     /**
-     * Returns a collection of all territories in this route, including the start.
+     * @return collection of all territories in this route, including the start
      */
     public List<Territory> getTerritories()
     {
@@ -281,8 +285,7 @@ public class Route implements java.io.Serializable, Iterable<Territory>
     }
 
     /**
-     * Get the last territory in the route, this is the destination.
-     * If the route consists of only a starting territory, this will return null.
+     * @return last territory in the route, this is the destination or null if the route consists of only a starting territory
      */
     public Territory getEnd()
     {
@@ -292,7 +295,8 @@ public class Route implements java.io.Serializable, Iterable<Territory>
     }
 
     /**
-     * does this route extend another route
+     * @param baseRoute referring base route
+     * @return whether this route extend another route
      */
     public boolean extend(Route baseRoute)
     {

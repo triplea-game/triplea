@@ -20,7 +20,11 @@
 
 package games.strategy.engine.data;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 
 /**
  *
@@ -33,7 +37,9 @@ public class GameDataComponent implements java.io.Serializable
 
 	private GameData m_data;
 
-	/** Creates new GameDataComponent */
+	/** Creates new GameDataComponent
+	 * @param data game data
+	 */
     public GameDataComponent(GameData data)
 	{
 		m_data = data;
@@ -58,15 +64,14 @@ public class GameDataComponent implements java.io.Serializable
 		//else we write it.
 		if(stream instanceof GameObjectOutputStream)
 			return;
-		else
-		    stream.writeObject(m_data);
+		stream.writeObject(m_data);
     }
 
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException
 	{
         readInternal(stream);
 	}
-    
+
     protected final void readInternal(ObjectInput stream) throws IOException, ClassNotFoundException
     {
         if(stream instanceof GameObjectInputStream)

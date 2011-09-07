@@ -27,30 +27,31 @@ import java.util.*;
  * @author  Sean Bridges
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class ProductionFrontierList extends GameDataComponent
 {
 	private final Map<String, ProductionFrontier> m_productionFrontiers = new HashMap<String, ProductionFrontier>();
-	
-    public ProductionFrontierList(GameData data) 
+
+    public ProductionFrontierList(GameData data)
 	{
 		super(data);
     }
-	
+
 	protected void addProductionFrontier(ProductionFrontier pf)
 	{
 		m_productionFrontiers.put(pf.getName(), pf);
 	}
-	
+
 	public int size()
 	{
 		return m_productionFrontiers.size();
 	}
-	
+
 	public ProductionFrontier getProductionFrontier(String name)
 	{
 		return m_productionFrontiers.get(name);
 	}
-	
+
 	public Set<String> getProductionFrontierNames()
 	{
 	    return m_productionFrontiers.keySet();

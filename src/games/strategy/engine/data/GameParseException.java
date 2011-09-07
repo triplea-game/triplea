@@ -11,10 +11,10 @@ package games.strategy.engine.data;
  * @author  Sean Bridges
  * @version 1.0
  */
-public class GameParseException extends Exception 
+@SuppressWarnings("serial")
+public class GameParseException extends Exception
 {
 
-	
 	public GameParseException(String error)
 	{
 		super(error);

@@ -31,9 +31,9 @@ public class GameObjectStreamData implements Externalizable
 
     enum GameType
     {
-      PLAYERID, UNITTYPE, TERRITORY, PRODUCTIONRULE, PRODUCTIONFRONTIER 
+      PLAYERID, UNITTYPE, TERRITORY, PRODUCTIONRULE, PRODUCTIONFRONTIER
     }
-    
+
 
 	public static boolean canSerialize(Named obj)
 	{
@@ -51,10 +51,12 @@ public class GameObjectStreamData implements Externalizable
 
 	public GameObjectStreamData()
 	{
-	    
+
 	}
-	
-	/** Creates a new instance of GameObjectStreamData */
+
+	/** Creates a new instance of GameObjectStreamData
+	 * @param named named entity
+	 */
     public GameObjectStreamData(Named named)
 	{
 		m_name = named.getName();
@@ -89,10 +91,10 @@ public class GameObjectStreamData implements Externalizable
 
         data.acquireReadLock();
         try
-        {        
+        {
             switch(m_type)
             {
-                case PLAYERID : 
+                case PLAYERID :
                     return data.getPlayerList().getPlayerID(m_name);
                 case TERRITORY :
                     return data.getMap().getTerritory(m_name);
@@ -105,7 +107,7 @@ public class GameObjectStreamData implements Externalizable
             }
             throw new IllegalStateException("Unknown type" + this);
         }
-        finally 
+        finally
         {
             data.releaseReadLock();
         }
@@ -116,7 +118,7 @@ public class GameObjectStreamData implements Externalizable
     {
         m_name = (String) in.readObject();
         m_type = GameType.values()[in.readByte()];
-        
+
     }
 
     public void writeExternal(ObjectOutput out) throws IOException

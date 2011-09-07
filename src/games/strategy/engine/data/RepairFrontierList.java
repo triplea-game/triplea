@@ -27,30 +27,31 @@ import java.util.*;
  * @author  Kevin Comcowich
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class RepairFrontierList extends GameDataComponent
 {
 	private final Map<String, RepairFrontier> m_repairFrontiers = new HashMap<String, RepairFrontier>();
-	
-    public RepairFrontierList(GameData data) 
+
+    public RepairFrontierList(GameData data)
 	{
 		super(data);
     }
-	
+
 	protected void addRepairFrontier(RepairFrontier pf)
 	{
 	    m_repairFrontiers.put(pf.getName(), pf);
 	}
-	
+
 	public int size()
 	{
 		return m_repairFrontiers.size();
 	}
-	
+
 	public RepairFrontier getRepairFrontier(String name)
 	{
 		return m_repairFrontiers.get(name);
 	}
-	
+
 	public Set<String> getRepairFrontierNames()
 	{
 	    return m_repairFrontiers.keySet();

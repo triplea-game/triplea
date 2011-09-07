@@ -27,13 +27,17 @@ import java.util.*;
  * @author  Sean Bridges
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class ProductionFrontier extends DefaultNamed implements Iterable<ProductionRule>
 {
 
 	private final List<ProductionRule> m_rules = new ArrayList<ProductionRule>();
 	private List<ProductionRule> m_cachedRules;
 
-	/** Creates new ProductionFrontier */
+	/** Creates new ProductionFrontier
+	 * @param name name of production frontier
+	 * @param data game data
+	 */
     public ProductionFrontier(String name, GameData data)
 	{
 		super(name, data);
@@ -47,14 +51,14 @@ public class ProductionFrontier extends DefaultNamed implements Iterable<Product
 		m_rules.add(rule);
 		m_cachedRules = null;
 	}
-	
+
 	public void removeRule(ProductionRule rule)
 	{
         if(!m_rules.contains(rule))
             throw new IllegalStateException("Rule not present:" + rule);
 
   		m_rules.remove(rule);
-  		m_cachedRules = null;	    
+  		m_cachedRules = null;
 	}
 
 	public List<ProductionRule> getRules()

@@ -8,16 +8,13 @@ import java.util.Iterator;
 import java.util.List;
 
 public class TechnologyFrontier extends GameDataComponent implements Iterable<TechAdvance> {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -5245743727479551766L;
 	private List<TechAdvance> m_techs = new ArrayList<TechAdvance>();
 	private List<TechAdvance> m_cachedTechs;
 	private final String m_name;
 
-	
+
     public TechnologyFrontier(String name, GameData data)
 	{
 		super(data);
@@ -29,9 +26,9 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
         m_cachedTechs = null;
 		m_techs.add(t);
 		Util.reorder(m_techs, getData().getTechnologyFrontier().getTechs());
-		
+
 	}
-	
+
 	public void addAdvance(List<TechAdvance> list)
 	{
 		for(TechAdvance t:list)
@@ -43,23 +40,23 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
             throw new IllegalStateException("Advance not present:" + t);
         }
             m_cachedTechs = null;
-  		m_techs.remove(t);	
+  		m_techs.remove(t);
 	}
-	
+
 	public TechAdvance getAdvanceByProperty(String property){
 		for( TechAdvance ta: m_techs)
 			if(ta.getProperty().equals(property))
 				return ta;
 		return null;
 	}
-	
+
 	public TechAdvance getAdvanceByName(String name){
 		for( TechAdvance ta: m_techs)
 			if(ta.getName().equals(name))
 				return ta;
 		return null;
 	}
-	
+
 	public List<TechAdvance> getTechs()
 	{
 		if(m_cachedTechs == null)
@@ -71,7 +68,7 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
     {
         return getTechs().iterator();
     }
-    
+
     public String getName()
     {
       return m_name;
@@ -84,7 +81,7 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
     {
       return m_name;
     }
-    
+
     public boolean equals(Object o)
     {
       if (o == null || ! (o instanceof TechnologyFrontier))
@@ -94,5 +91,5 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 
       return this.m_name.equals(other.getName());
     }
-    
+
 }

@@ -27,13 +27,16 @@ import games.strategy.util.IntegerMap;
  * @author  Sean Bridges
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class ResourceCollection extends GameDataComponent
 {
 
 	private final IntegerMap<Resource> m_resources = new IntegerMap<Resource>();
-	
-	/** Creates new ResourceCollection */
-    public ResourceCollection(GameData data) 
+
+	/** Creates new ResourceCollection
+	 * @param data game data
+	 */
+    public ResourceCollection(GameData data)
 	{
 		super(data);
     }
@@ -43,11 +46,13 @@ public class ResourceCollection extends GameDataComponent
 		if(quantity < 0)
 			throw new IllegalArgumentException("quantity must be positive");
 		change(resource, quantity);
-	
+
 	}
-	
+
 	/**
 	 * You cannot remove more than the collection contains.
+	 * @param resource referring resource
+	 * @param quantity quantity of the resource that should be removed
 	 */
 	public void removeResource(Resource resource, int quantity)
 	{
@@ -56,20 +61,20 @@ public class ResourceCollection extends GameDataComponent
 		int current = getQuantity(resource);
 		if((current - quantity) < 0)
 			throw new IllegalArgumentException("Cant remove more than player has. current:" + current + " toRemove: " + quantity);
-				
-		change(resource, -quantity);	
+
+		change(resource, -quantity);
 	}
 
 	private void change(Resource resource, int quantity)
 	{
 		m_resources.add(resource, quantity);
-	}	
-	
+	}
+
 	public int getQuantity(Resource resource)
 	{
 		return m_resources.getInt(resource);
 	}
-	
+
 	public int getQuantity(String name)
 	{
         getData().acquireReadLock();
@@ -80,12 +85,12 @@ public class ResourceCollection extends GameDataComponent
     			throw new IllegalArgumentException("No resource named:" + name);
     		return getQuantity(resource);
         }
-        finally 
+        finally
         {
             getData().releaseReadLock();
         }
 	}
-	
+
 	public boolean has(IntegerMap<Resource> map)
 	{
 		return m_resources.greaterThanOrEqualTo(map);

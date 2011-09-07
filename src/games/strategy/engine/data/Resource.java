@@ -25,10 +25,14 @@ package games.strategy.engine.data;
  * @author  Sean Bridges
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class Resource extends NamedAttachable
 {
-	/** Creates new Resource */
-    public Resource(String name, GameData data) 
+	/** Creates new Resource
+	 * @param name name of the resource
+	 * @param data game data
+	 */
+    public Resource(String name, GameData data)
 	{
 		super(name, data);
     }

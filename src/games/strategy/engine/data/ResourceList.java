@@ -27,11 +27,12 @@ import java.util.*;
  * @author  Sean Bridges
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class ResourceList extends GameDataComponent
 {
 	private Map<String, Resource> m_resourceList = new HashMap<String, Resource>();
-	
-    public ResourceList(GameData data) 
+
+    public ResourceList(GameData data)
 	{
 		super(data);
     }
@@ -40,7 +41,7 @@ public class ResourceList extends GameDataComponent
 	{
 		m_resourceList.put(resource.getName(), resource);
 	}
-	
+
 	public int size()
 	{
 		return m_resourceList.size();
@@ -51,9 +52,9 @@ public class ResourceList extends GameDataComponent
 		return m_resourceList.get(name);
 	}
 
-    public List<Resource> getResources() 
+    public List<Resource> getResources()
     {
         return new ArrayList<Resource>(m_resourceList.values());
     }
-    
+
 }

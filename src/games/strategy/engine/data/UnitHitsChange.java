@@ -18,6 +18,7 @@ import games.strategy.util.*;
 
 import java.util.*;
 
+@SuppressWarnings("serial")
 public class UnitHitsChange extends Change
 {
     private final IntegerMap<Unit> m_hits;
@@ -28,7 +29,7 @@ public class UnitHitsChange extends Change
         m_hits = hits;
         m_undoHits = undoHits;
     }
-    
+
     public Collection<Unit> getUnits()
     {
         return m_hits.keySet();
@@ -54,16 +55,16 @@ public class UnitHitsChange extends Change
             Unit item = iter.next();
             item.setHits(m_hits.getInt(item));
         }
-        
+
         Set<Unit> units = m_hits.keySet();
-        Iterator terrIter = data.getMap().getTerritories().iterator();
+        Iterator<Territory> terrIter = data.getMap().getTerritories().iterator();
         while (terrIter.hasNext())
         {
-            Territory element = (Territory) terrIter.next();
+            Territory element = terrIter.next();
             if(Util.someIntersect(element.getUnits().getUnits(), units))
             {
                 element.notifyChanged();
-            }            
+            }
         }
     }
 
