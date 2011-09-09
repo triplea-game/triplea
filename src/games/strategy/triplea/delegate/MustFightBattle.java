@@ -669,9 +669,19 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return other.getTerritory().equals(this.m_battleSite)
                 && other.isBombingRun() == this.isBombingRun();
     }
+    
+    private void removeUnitsThatNoLongerExist()
+    {
+    	// we were having a problem with units that had been killed previously were still part of MFB's variables, so we double check that the stuff still exists here.
+    	m_defendingUnits.retainAll(m_battleSite.getUnits().getUnits());
+    	m_attackingUnits.retainAll(m_battleSite.getUnits().getUnits());
+    }
 
     public void fight(IDelegateBridge bridge)
     {
+    	// remove units that may already be dead due to a previous event (like they died from a strategic bombing raid, rocket attack, or during scrambling, etc)
+    	removeUnitsThatNoLongerExist();
+    	
         //we have already started
         if(m_stack.isExecuting())
         {

@@ -709,12 +709,12 @@ public class BattleCalculator
 	        			if (ua.isArtillery())
 	        			{
 	        				unitsByPowerGives.get(i).remove(0);
-	        				iArtillery--;
+	        				iArtillery -= DiceRoll.getArtillerySupportAvailable(u, defending, player);
 	        			}
 	        			else
 	        			{
 	        				unitsByPowerReceives.get(i).remove(0);
-	        				iSupportable--;
+	        				iSupportable -= DiceRoll.getSupportableAvailable(u, defending, player);
 	        			}
 	        			Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs, data, bonus));
 	        			perfectlySortedUnitsList.addAll(tempList1);

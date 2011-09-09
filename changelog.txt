@@ -64,6 +64,10 @@ Changes for 1.3.3.0
 
 
 Changes for 1.3.2.3
+* Fixed bug where casualty selection window was never shown and battles hanged, due to infinite loop inside default casualty sorting process under special conditions. (veqryn)
+
+* Fixed bug where units that had previously died to strat bombing, rockets, or scrambling, were still present in the battle if there was a conventional battle immediately afterwards in that territory. (veqryn)
+
 * Fixed bug in validation of non-combat movement of paratroopers. (veqryn)
 
 * Fixed error where allied air on defending carriers may not shoot at non-sub units under certain conditions. (veqryn)
