@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Allowed for units that were in territories suddenly made hostile by a change in politics to create battles in those territories. (veqryn)
+
 * Fixed remaining unit tests. (veqryn)
 
 * Engine code cleanup. (frigoref)

@@ -73,7 +73,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
         //only initialize once
         if(m_needToInitialize)
         {
-            setupSeaUnitsInSameSeaZoneBattles(m_bridge);
+            setupUnitsInSameTerritoryBattles(m_bridge);
             addBombardmentSources();
             m_needToInitialize = false;
         }
@@ -125,7 +125,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
         return new BattleListing(battles, bombing);
     }
 
-    private void addContinuedSeaBattles(GameData data, PlayerID id)
+    private void addContinuedBattles(GameData data, PlayerID id)
     {
     	Collection<Territory> terrs = data.getMap().getTerritories();
     	CompositeMatch<Territory> enemyAndOwnedUnits = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyUnits(id, data));
@@ -136,10 +136,6 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
     	
     	for(Territory terr : battleTerrs)
     	{
-    	    if(!terr.isWater()) 
-    	    {
-    	        continue;
-    	    }
     		Collection<Unit> ownedUnits = Match.getMatches(terr.getUnits().getUnits(),Matches.unitIsOwnedBy(id));
     		
     		if(Match.someMatch(ownedUnits, Matches.unitCanAttack(id)))
@@ -351,24 +347,23 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
      * same sea zone. This happens when subs emerge (after being submerged), and
      * when naval units are placed in enemy occupied sea zones
      */
-    private void setupSeaUnitsInSameSeaZoneBattles(IDelegateBridge aBridge)
+    private void setupUnitsInSameTerritoryBattles(IDelegateBridge aBridge)
     {
         PlayerID player = m_bridge.getPlayerID();
         
         //Set up any continued battles from previous actions
         //This can be the basis for multi-round games like D-Day
-        addContinuedSeaBattles(m_data, player);
+        addContinuedBattles(m_data, player);
         
         //we want to match all sea zones with our units and enemy units
-        CompositeMatch<Territory> seaWithOwnAndEnemy = new CompositeMatchAnd<Territory>();
-        seaWithOwnAndEnemy.add(Matches.TerritoryIsWater);
-        seaWithOwnAndEnemy.add(Matches.territoryHasUnitsOwnedBy(player));
-        seaWithOwnAndEnemy.add(Matches.territoryHasEnemyUnits(player, m_data));
+        CompositeMatch<Territory> territoryWithOwnAndEnemy = new CompositeMatchAnd<Territory>();
+        territoryWithOwnAndEnemy.add(Matches.territoryHasUnitsOwnedBy(player));
+        territoryWithOwnAndEnemy.add(Matches.territoryHasEnemyUnits(player, m_data));
 
         boolean ignoreTransports = isIgnoreTransportInMovement(m_data);
         boolean ignoreSubs = isIgnoreSubInMovement(m_data);
         
-        Iterator<Territory> territories = Match.getMatches(m_data.getMap().getTerritories(), seaWithOwnAndEnemy).iterator();
+        Iterator<Territory> territories = Match.getMatches(m_data.getMap().getTerritories(), territoryWithOwnAndEnemy).iterator();
         
         Match<Unit> ownedUnit = Matches.unitIsOwnedBy(player);
         Match<Unit> enemyUnit =  Matches.enemyUnit(player, m_data);
@@ -396,8 +391,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
             
            
             //Reach stalemate if all attacking and defending units are transports
-            if ((ignoreTransports && battle != null && Match.allMatch(attackingUnits, seaTransports) 
-            		&& Match.allMatch(enemyUnits, seaTransports)) 
+            if ((ignoreTransports && battle != null && Match.allMatch(attackingUnits, seaTransports) && Match.allMatch(enemyUnits, seaTransports)) 
             		|| ((Match.allMatch(attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())) && Match.allMatch(enemyUnits, Matches.unitHasDefendValueOfAtLeast(1).invert())))
             {
             	m_battleTracker.removeBattle(battle);

@@ -514,7 +514,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 
         if(!m_nonCombat && (isWW2V3() || isWW2V2() || isPreviousUnitsFight()))
         {
-            change.add(addLingeringSeaUnitsToBattles());
+            change.add(addLingeringUnitsToBattles());
         }
 
         //do at the end of the round
@@ -547,37 +547,39 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
         }
     }
 
-    private Change addLingeringSeaUnitsToBattles()
-    {
-        //if an enemy placed units in a hostile sea zone
-        //and then during combat move, we attacked the newly placed units
-        //our units in the sea zone need to join the battle
-        CompositeChange change = new CompositeChange();
-        BattleTracker tracker = getBattleTracker(m_data);
-        for(Territory t : tracker.getPendingBattleSites(false))
-        {
-            if(!t.isWater())
-            {
-                continue;
-            }
-            if(!(tracker.getPendingBattle(t, false) instanceof MustFightBattle))
-            {
-                continue;
-            }
-            MustFightBattle mfb = (MustFightBattle) tracker.getPendingBattle(t,false);
-            Set<Unit> ownedSeaUnits = new HashSet<Unit>(t.getUnits().getMatches(new CompositeMatchAnd<Unit>(
-                Matches.UnitIsLand.invert(),
-                Matches.unitIsOwnedBy(m_player))));
-             ownedSeaUnits.removeAll(mfb.getAttackingUnits());
-             if(!ownedSeaUnits.isEmpty())
-             {
-                 change.add(mfb.addAttackChange(new Route(t), ownedSeaUnits));
-             }
-
-        }
-        return change;
-
-    }
+	private Change addLingeringUnitsToBattles()
+	{
+		// if an enemy placed units in a hostile sea zone
+		// and then during combat move, we attacked the newly placed units
+		// our units in the sea zone need to join the battle
+		// also, if our relation state with the nation changed to an at-war type of relation, we will need to add all units in those territories
+		CompositeChange change = new CompositeChange();
+		BattleTracker tracker = getBattleTracker(m_data);
+		for (Territory t : tracker.getPendingBattleSites(false))
+		{
+			if (!(tracker.getPendingBattle(t, false) instanceof MustFightBattle))
+			{
+				continue;
+			}
+			MustFightBattle mfb = (MustFightBattle) tracker.getPendingBattle(t, false);
+			Set<Unit> ownedUnits;
+			if (t.isWater())
+			{
+				ownedUnits = new HashSet<Unit>(t.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsLand.invert(), Matches.unitIsOwnedBy(m_player))));
+			}
+			else
+			{
+				ownedUnits = new HashSet<Unit>(t.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsSea.invert(), Matches.unitIsOwnedBy(m_player))));
+			}
+			ownedUnits.removeAll(mfb.getAttackingUnits());
+			if (!ownedUnits.isEmpty())
+			{
+				change.add(mfb.addAttackChange(new Route(t), ownedUnits));
+			}
+			
+		}
+		return change;
+	}
 
     private void removeAirThatCantLand()
     {
