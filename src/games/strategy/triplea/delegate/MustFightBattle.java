@@ -3544,6 +3544,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return m_attackingUnits;
     }
     
+    public Collection<Unit> getDefendingUnits()
+    {
+    	return m_defendingUnits;
+    }
+    
     public Collection<Territory> getAttackingFrom()
     {
         return m_attackingFrom;
@@ -3601,7 +3606,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     public int getBattleRound()
     {
         return m_round;
-    }    
+    }
 }
 
 

@@ -271,7 +271,7 @@ public class StrategicBombingRaidBattle implements Battle
         getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
     }
 
-    private List<Unit> getDefendingUnits()
+    public List<Unit> getDefendingUnits()
     {
     	Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAA, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert());
     	if(m_targets.isEmpty())
@@ -282,6 +282,11 @@ public class StrategicBombingRaidBattle implements Battle
     		targets.addAll(m_targets);
     		return targets;
     	}	
+    }
+
+    public List<Unit> getAttackingUnits()
+    {
+        return m_units;
     }
 
     class FireAA implements IExecutable

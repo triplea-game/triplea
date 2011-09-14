@@ -109,5 +109,18 @@ interface Battle extends java.io.Serializable
      */
     public Collection<Unit> getBombardingUnits();
 
+    /**
+     * Return what round this battle is in
+     */
     public int getBattleRound();
+    
+    /**
+     * Return units which are attacking
+     */
+    public Collection<Unit> getAttackingUnits();
+    
+    /**
+     * Return units which are defending
+     */
+    public Collection<Unit> getDefendingUnits();
 }

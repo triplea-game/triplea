@@ -137,6 +137,11 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
     	for(Territory terr : battleTerrs)
     	{
     		Collection<Unit> ownedUnits = Match.getMatches(terr.getUnits().getUnits(),Matches.unitIsOwnedBy(id));
+    		// we need to remove any units which are participating in bombing raids
+    		if (getBattleTracker().getPendingBattle(terr, true) != null)
+    		{
+    			ownedUnits.removeAll(getBattleTracker().getPendingBattle(terr, true).getAttackingUnits());
+    		}
     		
     		if(Match.someMatch(ownedUnits, Matches.unitCanAttack(id)))
     		{
@@ -376,9 +381,17 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 
             List<Unit> attackingUnits = territory.getUnits().getMatches(ownedUnit);
             List<Unit> enemyUnits = territory.getUnits().getMatches(enemyUnit);
+            
+            if (getBattleTracker().getPendingBattle(territory, true) != null)
+            {
+                // we need to remove any units which are participating in bombing raids
+                attackingUnits.removeAll(getBattleTracker().getPendingBattle(territory, true).getAttackingUnits());
+                if (attackingUnits.isEmpty())
+                	continue;
+            }
                         
             Battle battle = m_battleTracker.getPendingBattle(territory, false);
-            if(battle == null) 
+            if(battle == null)
             {
             	Route route = new Route();
 				route.setStart(territory);

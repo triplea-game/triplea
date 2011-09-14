@@ -121,4 +121,14 @@ public class MockBattle implements Battle
         return 0;
     }
 
+    public Collection<Unit> getAttackingUnits()
+    {
+        return new ArrayList<Unit>();
+    }
+    
+    public Collection<Unit> getDefendingUnits()
+    {
+    	return new ArrayList<Unit>();
+    }
+
 }
