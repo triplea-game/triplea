@@ -23,6 +23,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -424,7 +427,10 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
                     
                     fileDialog.setVisible(true);
                     
+                    /*DateFormat format = new SimpleDateFormat("yyyy_MM_dd");
+                    String defaultFileName = "game_" + format.format(new Date()) + "_" + getData().getGameName() + "_round_" + getData().getSequence().getRound() + ".tsvg";
                     
+                    fileDialog.setFile(defaultFileName);*/
                     String fileName = fileDialog.getFile();
                     String dirName = fileDialog.getDirectory();
                     

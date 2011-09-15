@@ -149,7 +149,6 @@ public class AllianceTracker extends GameDataComponent
 	 */
 	public HashSet<PlayerID> getPlayersInAlliance(String allianceName)
 	{
-
 		Iterator<PlayerID> keys = m_alliances.keySet().iterator();
 		HashSet<PlayerID> rVal = new HashSet<PlayerID>();
 
@@ -161,6 +160,11 @@ public class AllianceTracker extends GameDataComponent
 				rVal.add(player);
 		}
 		return rVal;
+	}
+	
+	public Collection<String> getAlliancesPlayerIsIn(PlayerID player)
+	{
+		return m_alliances.get(player);
 	}
 
 	public Map<PlayerID, Collection<String>> getAlliancesMap()

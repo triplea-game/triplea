@@ -16,13 +16,16 @@ package games.strategy.triplea.ui;
 
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.export.GameDataExporter;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
@@ -48,13 +51,17 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -776,7 +783,11 @@ private void addLockMap(JMenu parentMenu)
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 File rootDir = new File(System.getProperties().getProperty("user.dir"));
-                chooser.setSelectedFile(new File(rootDir, "game.xml"));
+                
+                DateFormat format = new SimpleDateFormat("yyyy_MM_dd");
+                String defaultFileName = "xml_" + format.format(new Date()) + "_" + getData().getGameName() + "_round_" + getData().getSequence().getRound() + ".xml";
+                
+                chooser.setSelectedFile(new File(rootDir, defaultFileName));
 
                 if(chooser.showSaveDialog(m_frame) != JOptionPane.OK_OPTION)
                     return;
@@ -828,7 +839,11 @@ private void addLockMap(JMenu parentMenu)
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 File rootDir = new File(System.getProperties().getProperty("user.dir"));
-                chooser.setSelectedFile(new File(rootDir, "stats.csv"));
+                
+                DateFormat format = new SimpleDateFormat("yyyy_MM_dd");
+                String defaultFileName = "stats_" + format.format(new Date()) + "_" + getData().getGameName() + "_round_" + getData().getSequence().getRound() + ".csv";
+                
+                chooser.setSelectedFile(new File(rootDir, defaultFileName));
 
                 if(chooser.showSaveDialog(m_frame) != JOptionPane.OK_OPTION)
                     return;
@@ -858,6 +873,79 @@ private void addLockMap(JMenu parentMenu)
 
 
                 StringBuilder text = new StringBuilder(1000);
+
+                text.append(defaultFileName + ",");
+                text.append("\n");
+                
+                text.append("TripleA Engine Version: ,");
+                text.append(games.strategy.engine.EngineVersion.VERSION.toString() + ",");
+                text.append("\n");
+                
+                text.append("Game Name: ,");
+                text.append(getData().getGameName() + ",");
+                text.append("\n");
+                
+                text.append("Game Version: ,");
+                text.append(getData().getGameVersion() + ",");
+                text.append("\n");
+                text.append("\n");
+                
+                text.append("Current Round: ,");
+                text.append(getData().getSequence().getRound() + ",");
+                text.append("\n");
+                
+                text.append("Number of Players: ,");
+                text.append(statPanel.getPlayers().size() + ",");
+                text.append("\n");
+                
+                text.append("Number of Alliances: ,");
+                text.append(statPanel.getAlliances().size() + ",");
+                text.append("\n");
+                
+                text.append("\n");
+                text.append("Turn Order: ,");
+                text.append("\n");
+
+                List<PlayerID> playerOrderList = new ArrayList<PlayerID>();
+                Iterator<GameStep> gameStepIterator = getData().getSequence().iterator();
+                while (gameStepIterator.hasNext())
+                {
+                    GameStep currentStep = gameStepIterator.next();
+                    PlayerID currentPlayerID = currentStep.getPlayerID();
+
+                    if (currentPlayerID != null && !currentPlayerID.isNull())
+                    {
+                    	playerOrderList.add(currentPlayerID);
+                    }
+                }
+                Set<PlayerID> playerOrderSetNoDuplicates = new LinkedHashSet<PlayerID>(playerOrderList);
+
+                Iterator<PlayerID> playerOrderIterator = playerOrderSetNoDuplicates.iterator();
+                while (playerOrderIterator.hasNext())
+                {
+                    PlayerID currentPlayerID = playerOrderIterator.next();
+                    text.append(currentPlayerID.getName() + ",");
+                    Iterator<String> allianceName = getData().getAllianceTracker().getAlliancesPlayerIsIn(currentPlayerID).iterator();
+                    while (allianceName.hasNext())
+                    {
+                    	text.append(allianceName.next() + ",");
+                    }
+                    text.append("\n");
+                }
+
+                text.append("\n");
+                text.append("Resource Chart: ,");
+                text.append("\n");
+                Iterator<Resource> resourceIterator = getData().getResourceList().getResources().iterator();
+                while(resourceIterator.hasNext())
+                {
+                	text.append(resourceIterator.next().getName() + ",");
+                    text.append("\n");
+                }
+                
+                text.append("\n");
+                text.append("Stats: ,");
+                text.append("\n");
 
                 text.append("Round,Player Turn,");
 
