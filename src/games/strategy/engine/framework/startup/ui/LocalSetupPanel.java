@@ -51,11 +51,12 @@ public class LocalSetupPanel extends SetupPanel implements Observer
         String[] playerTypes =  data.getGameLoader().getServerPlayerTypes();
 
         String[] playerNames = data.getPlayerList().getNames();
-        Arrays.sort(playerNames);
-
+        // if the xml was created correctly, this list will be in turn order.  we want to keep it that way.
+        //Arrays.sort(playerNames); // alphabetical order
+        
         for(int i = 0; i < playerNames.length; i++)
         {
-          LocalPlayerComboBoxSelector selector = new LocalPlayerComboBoxSelector(playerNames[i], playerTypes);
+          LocalPlayerComboBoxSelector selector = new LocalPlayerComboBoxSelector(playerNames[i], data.getAllianceTracker().getAlliancesPlayerIsIn(data.getPlayerList().getPlayerID(playerNames[i])), playerTypes);
           m_playerTypes.add(selector);
           selector.layout(i, this);
         }
@@ -145,9 +146,10 @@ class LocalPlayerComboBoxSelector
 {
   private final String m_playerName;
   private final JComboBox m_playerTypes;
+  private final String m_playerAlliances;
 
 
-  LocalPlayerComboBoxSelector(String playerName, String[] types)
+  LocalPlayerComboBoxSelector(String playerName, Collection<String> playerAlliances, String[] types)
   {
     m_playerName = playerName;
     m_playerTypes = new JComboBox(types);
@@ -156,13 +158,17 @@ class LocalPlayerComboBoxSelector
         //Uncomment to disallow players from changing the default
         //m_playerTypes.setEnabled(false);
     }
+    if (playerAlliances.contains(playerName))
+    	m_playerAlliances = "";
+    else
+    	m_playerAlliances = playerAlliances.toString();
   }
 
   public void layout(int row, Container container)
   {
     container.add(new JLabel(m_playerName + ":"), new GridBagConstraints(0,row, 1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,5,5),0,0) );
     container.add(m_playerTypes, new GridBagConstraints(1, row, 1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,5,5),0,0) );
-
+    container.add(new JLabel(m_playerAlliances.toString()), new GridBagConstraints(2,row, 1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,2,5,5),0,0) );
   }
 
   public String getPlayerName()
@@ -174,7 +180,5 @@ class LocalPlayerComboBoxSelector
   {
     return (String) m_playerTypes.getSelectedItem();
   }
-
-  
 
 }

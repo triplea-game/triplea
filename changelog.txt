@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Updating local player selection screen to show players in turn order, assuming xml was done properly, and to show their alliances. (veqryn)
+
 * Updating 'Export Game Stats...' to give more general information about the game. (veqryn)
 
 * Fixing bug where newly created battles now included duplicates of any units that were strategically bombing a territory. (veqryn)

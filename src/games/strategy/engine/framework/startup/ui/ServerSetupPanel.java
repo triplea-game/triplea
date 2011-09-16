@@ -324,6 +324,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       private JLabel m_playerLabel;
       private JCheckBox m_localCheckBox;
       private JComboBox m_type;
+      // maybe add alliances label here?
 
       PlayerRow(String playerName, String[] types)
       {
