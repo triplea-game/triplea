@@ -17,6 +17,7 @@ package games.strategy.engine.framework.startup.mc;
 import games.strategy.engine.framework.startup.ui.*;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.util.Observable;
 
 public class SetupPanelModel extends Observable
@@ -60,6 +61,9 @@ public class SetupPanelModel extends Observable
             return;
         }
         setGameTypePanel(new ServerSetupPanel(model, m_gameSelectorModel));
+        
+        // for whatever reason, the server window is showing very very small, causing the nation info to be cut and requiring scroll bars
+        ui.setMinimumSize(new Dimension(800,750));
     }
 
     public void showClient(Component ui)

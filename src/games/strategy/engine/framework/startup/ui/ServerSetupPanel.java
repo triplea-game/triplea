@@ -31,6 +31,7 @@ import games.strategy.engine.lobby.client.ui.action.*;
 
 import games.strategy.net.*;
 
+@SuppressWarnings("serial")
 public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 {
     private final ServerModel m_model;    
@@ -50,7 +51,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     
     public ServerSetupPanel(ServerModel model, GameSelectorModel gameSelectorModel)
     {
-        m_model = model;
+    	m_model = model;
         m_gameSelectorModel = gameSelectorModel;
         m_model.setRemoteModelListener(this);
         
@@ -150,7 +151,12 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       GridBagConstraints typeConstraints = new GridBagConstraints();
       typeConstraints.anchor = GridBagConstraints.WEST;
       typeConstraints.gridx = 3;
-      typeConstraints.insets = lastSpacing;
+      typeConstraints.insets = spacing;
+      
+      GridBagConstraints allianceConstraints = new GridBagConstraints();
+      allianceConstraints.anchor = GridBagConstraints.WEST;
+      allianceConstraints.gridx = 4;
+      allianceConstraints.insets = lastSpacing;
 
       JLabel nameLabel = new JLabel("Name");
       nameLabel.setForeground(Color.black);
@@ -171,6 +177,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       typeLabel.setForeground(Color.black);
       layout.setConstraints(typeLabel, typeConstraints);
       players.add(typeLabel);
+      
+      JLabel allianceLabel = new JLabel("Alliance");
+      allianceLabel.setForeground(Color.black);
+      layout.setConstraints(allianceLabel, allianceConstraints);
+      players.add(allianceLabel);
 
 
       Iterator<PlayerRow> iter = m_playerRows.iterator();
@@ -197,6 +208,9 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         
         layout.setConstraints(row.getType(), typeConstraints);
         players.add(row.getType());
+        
+        layout.setConstraints(row.getAlliance(), allianceConstraints);
+        players.add(row.getAlliance());
 
       }
 
@@ -304,11 +318,14 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         
         m_playerRows = new ArrayList<PlayerRow>();
         Map<String,String> players = m_model.getPlayers();
-        List<String> keys = new ArrayList<String>(players.keySet());
-        Collections.sort(keys);
-        for(String name: keys)
+        //List<String> keys = new ArrayList<String>(players.keySet());
+        //Collections.sort(keys);//we don't want to sort them alphabetically.  let them stay in turn order.
+        String[] playerNames = m_gameSelectorModel.getGameData().getPlayerList().getNames();
+        for(String name: playerNames)
         {
-            PlayerRow newPlayerRow = new PlayerRow(name, m_gameSelectorModel.getGameData().getGameLoader().getServerPlayerTypes());
+            PlayerRow newPlayerRow = new PlayerRow(name, 
+            		m_gameSelectorModel.getGameData().getAllianceTracker().getAlliancesPlayerIsIn(m_gameSelectorModel.getGameData().getPlayerList().getPlayerID(name)), 
+            		m_gameSelectorModel.getGameData().getGameLoader().getServerPlayerTypes());
             
             m_playerRows.add(newPlayerRow);
             newPlayerRow.update(players);
@@ -324,9 +341,9 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       private JLabel m_playerLabel;
       private JCheckBox m_localCheckBox;
       private JComboBox m_type;
-      // maybe add alliances label here?
+      private JLabel m_alliance;
 
-      PlayerRow(String playerName, String[] types)
+      PlayerRow(String playerName, Collection<String> playerAlliances, String[] types)
       {
         m_nameLabel = new JLabel(playerName);
         m_playerLabel = new JLabel(m_model.getMessenger().getLocalNode().getName());
@@ -339,6 +356,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
             //Uncomment to disallow players from changing the default
             //m_playerTypes.setEnabled(false);
         }
+        if (playerAlliances.contains(playerName))
+        	m_alliance = new JLabel();
+        else
+        	m_alliance = new JLabel(playerAlliances.toString());
+        
         m_type.addActionListener(new ActionListener()
         {
         
@@ -359,6 +381,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       public JLabel getName()
       {
         return m_nameLabel;
+      }
+      
+      public JLabel getAlliance()
+      {
+        return m_alliance;
       }
 
       public JLabel getPlayer()
