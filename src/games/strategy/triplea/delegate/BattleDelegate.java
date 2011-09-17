@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -402,7 +403,22 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
             if(battle.isEmpty())
             	battle.addAttackChange(new Route(territory), attackingUnits);
             
-           
+            if(!battle.getAttackingUnits().containsAll(attackingUnits))
+            {
+            	List<Unit> attackingUnitsNeedToBeAdded = attackingUnits;
+            	attackingUnitsNeedToBeAdded.removeAll(battle.getAttackingUnits());
+    			if (territory.isWater())
+    				attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.UnitIsLand.invert());
+    			else
+    				attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.UnitIsSea.invert());
+    			
+    			if (!attackingUnitsNeedToBeAdded.isEmpty())
+    			{
+    				// TODO: don't we need a change object here?
+    				battle.addAttackChange(new Route(territory), attackingUnitsNeedToBeAdded);
+    			}
+            }
+            
             //Reach stalemate if all attacking and defending units are transports
             if ((ignoreTransports && battle != null && Match.allMatch(attackingUnits, seaTransports) && Match.allMatch(enemyUnits, seaTransports)) 
             		|| ((Match.allMatch(attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())) && Match.allMatch(enemyUnits, Matches.unitHasDefendValueOfAtLeast(1).invert())))

@@ -48,12 +48,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  *
@@ -451,10 +449,10 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
     	return games.strategy.triplea.Properties.getWW2V2(m_data);
     }
 
-    private boolean isPreviousUnitsFight()
+    /*private boolean isPreviousUnitsFight()
     {
     	return games.strategy.triplea.Properties.getPreviousUnitsFight(m_data);
-    }
+    }*/
 
     private boolean isWW2V3()
     {
@@ -512,10 +510,11 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
         }
         CompositeChange change = new CompositeChange();
 
+        /* This code is already done in BattleDelegate, so why is it duplicated here?
         if(!m_nonCombat && (isWW2V3() || isWW2V2() || isPreviousUnitsFight()))
         {
             change.add(addLingeringUnitsToBattles());
-        }
+        }*/
 
         //do at the end of the round
         //if we do it at the start of non combat, then
@@ -547,6 +546,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
         }
     }
 
+	/* This code is already done in BattleDelegate, so why is it duplicated here?
 	private Change addLingeringUnitsToBattles()
 	{
 		// if an enemy placed units in a hostile sea zone
@@ -579,7 +579,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			
 		}
 		return change;
-	}
+	}*/
 
     private void removeAirThatCantLand()
     {
