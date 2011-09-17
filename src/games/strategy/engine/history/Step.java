@@ -41,6 +41,16 @@ public class Step extends IndexedHistoryNode
     {
         return new StepHistorySerializer(m_stepName, m_delegateName, m_player, super.getTitle());
     }
+    
+    public String getDelegateName()
+    {
+    	return m_delegateName;
+    }
+    
+    public String getStepName()
+    {
+    	return m_stepName;
+    }
 
 }
 

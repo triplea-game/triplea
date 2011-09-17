@@ -128,7 +128,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         else if (name.endsWith("Battle"))
             battle();
         else if (name.endsWith("Place"))
-            place(name.indexOf("Bid") != -1);
+            place(name.endsWith("BidPlace"));
         else if (name.endsWith("Politics"))
         	politics();
         else if (name.endsWith("EndTurn"))
