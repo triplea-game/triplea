@@ -17,6 +17,7 @@ public class ClientSetupPanel extends SetupPanel
 {
     private final Insets BUTTON_INSETS = new Insets(0,0,0,0);
     private final ClientModel m_model;
+    private final GameSelectorModel m_gameSelectorModel;
     
     private List<PlayerRow> m_playerRows = Collections.emptyList();
     
@@ -40,9 +41,10 @@ public class ClientSetupPanel extends SetupPanel
     
     };
     
-    public ClientSetupPanel(ClientModel model)
+    public ClientSetupPanel(ClientModel model, GameSelectorModel gameSelectorModel)
     {
         m_model = model;
+        m_gameSelectorModel = gameSelectorModel;
         createComponents();
         layoutComponents();
         setupListeners();
@@ -56,15 +58,15 @@ public class ClientSetupPanel extends SetupPanel
         m_playerRows = new ArrayList<PlayerRow>();
         
 
-        List<String> keys = new ArrayList<String>(m_players.keySet());
-        Collections.sort(keys);
-        Iterator<String> iter = keys.iterator();
+        //List<String> keys = new ArrayList<String>(m_players.keySet());
+        //Collections.sort(keys);//we don't want to sort them alphabetically.  let them stay in turn order.
         
-        
-        while(iter.hasNext())
+        String[] playerNames = m_gameSelectorModel.getGameData().getPlayerList().getNames();
+        for(String name: playerNames)
         {
-          String name = iter.next();
-          PlayerRow playerRow = new PlayerRow(name, IGameLoader.CLIENT_PLAYER_TYPE);
+          PlayerRow playerRow = new PlayerRow(name, 
+              		m_gameSelectorModel.getGameData().getAllianceTracker().getAlliancesPlayerIsIn(m_gameSelectorModel.getGameData().getPlayerList().getPlayerID(name)),
+              		IGameLoader.CLIENT_PLAYER_TYPE);
           m_playerRows.add(playerRow);
           playerRow.setPlayerName(m_players.get(name));
           
@@ -108,7 +110,12 @@ public class ClientSetupPanel extends SetupPanel
         GridBagConstraints playConstraints = new GridBagConstraints();
         playConstraints.anchor = GridBagConstraints.WEST;
         playConstraints.gridx = 3;
-        playConstraints.insets = lastSpacing;
+        playConstraints.insets = spacing;
+
+        GridBagConstraints allianceConstraints = new GridBagConstraints();
+        allianceConstraints.anchor = GridBagConstraints.WEST;
+        allianceConstraints.gridx = 4;
+        allianceConstraints.insets = lastSpacing;
 
         JLabel nameLabel = new JLabel("Name");
         nameLabel.setForeground(Color.black);
@@ -123,6 +130,11 @@ public class ClientSetupPanel extends SetupPanel
         JLabel playedByLabel = new JLabel("                    ");
         layout.setConstraints(playedByLabel, playConstraints);
         players.add(playedByLabel);
+        
+        JLabel allianceLabel = new JLabel("Alliance");
+        allianceLabel.setForeground(Color.black);
+        layout.setConstraints(allianceLabel, allianceConstraints);
+        players.add(allianceLabel);
 
         Iterator<PlayerRow> iter = m_playerRows.iterator();
         while(iter.hasNext())
@@ -137,6 +149,9 @@ public class ClientSetupPanel extends SetupPanel
 
           layout.setConstraints(row.getPlayerComponent(), playConstraints);
           players.add(row.getPlayerComponent());
+          
+          layout.setConstraints(row.getAlliance(), allianceConstraints);
+          players.add(row.getAlliance());
         }
 
         add(players, BorderLayout.CENTER);
@@ -179,13 +194,19 @@ public class ClientSetupPanel extends SetupPanel
       private JLabel m_playerLabel;
       private JComponent m_playerComponent;
       private String m_localPlayerType;
+      private JLabel m_alliance;
 
-      PlayerRow(String playerName, String localPlayerType)
+      PlayerRow(String playerName, Collection<String> playerAlliances, String localPlayerType)
       {
         m_playerNameLabel = new JLabel(playerName);
         m_playerLabel = new JLabel("");
         m_playerComponent = new JLabel("");
         m_localPlayerType = localPlayerType;
+        
+        if (playerAlliances.contains(playerName))
+        	m_alliance = new JLabel();
+        else
+        	m_alliance = new JLabel(playerAlliances.toString());
       }
 
       public JLabel getName()
@@ -201,6 +222,11 @@ public class ClientSetupPanel extends SetupPanel
       public String getPlayerName()
       {
         return m_playerNameLabel.getText();
+      }
+      
+      public JLabel getAlliance()
+      {
+        return m_alliance;
       }
 
       public void setPlayerName(String playerName)

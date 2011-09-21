@@ -74,7 +74,7 @@ public class SetupPanelModel extends Observable
             model.cancel();
             return;
         }
-        setGameTypePanel(new ClientSetupPanel(model));
+        setGameTypePanel(new ClientSetupPanel(model, m_gameSelectorModel));
     }
 
     
