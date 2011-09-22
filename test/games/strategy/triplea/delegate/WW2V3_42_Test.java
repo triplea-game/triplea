@@ -139,6 +139,9 @@ public class WW2V3_42_Test extends TestCase {
             
             moveDelegate(m_data).end();
             
+            //adding of lingering units was moved from end of combat-move phase, to start of battle phase
+            battleDelegate(m_data).start(bridge, m_data);
+            
             //all units in sz5 should be involved in the battle
             
             MustFightBattle mfb =  (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz5, false);
@@ -166,6 +169,9 @@ public class WW2V3_42_Test extends TestCase {
             move(sz7.getUnits().getUnits(), new Route(sz7,sz6,sz5));
             
             moveDelegate(m_data).end();
+            
+            //adding of lingering units was moved from end of combat-move phase, to start of battle phase
+            battleDelegate(m_data).start(bridge, m_data);
             
             //all units in sz5 should be involved in the battle
             //except the italian carrier
@@ -195,6 +201,9 @@ public class WW2V3_42_Test extends TestCase {
             move(sz5.getUnits().getMatches(Matches.UnitIsTransport), new Route(sz5,sz6));
             
             moveDelegate(m_data).end();
+            
+            //adding of lingering units was moved from end of combat-move phase, to start of battle phase
+            battleDelegate(m_data).start(bridge, m_data);
             
             //all units in sz5 should be involved in the battle
             
