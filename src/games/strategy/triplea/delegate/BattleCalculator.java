@@ -68,7 +68,7 @@ import java.util.Set;
  */
 public class BattleCalculator
 {
-	private static IntegerMap<UnitType> s_costsForTuvForAllPlayersMergedAndAveraged;
+	//private static IntegerMap<UnitType> s_costsForTuvForAllPlayersMergedAndAveraged; //There is a problem with this variable, that it isn't being cleared out when we switch maps.
 	
 	//we want to sort in a determined way so that those looking at the dice results 
     //can tell what dice is for who
@@ -800,6 +800,13 @@ public class BattleCalculator
         return costs;
     }
     
+    /*
+     * This clears out the variable map keeping track of the average costs of units on this game. Should use this any time you load a game or switch games.
+     *
+    public static void clearCostsForTuvForAllPlayersMergedAndAveraged() {
+    	s_costsForTuvForAllPlayersMergedAndAveraged.clear();
+    }*/
+    
     /**
      * Return a map where key are unit types and values are the AVERAGED for all RULES (not for all players).
      * 
@@ -813,8 +820,8 @@ public class BattleCalculator
      */
     public static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(GameData data)
     {
-    	if (s_costsForTuvForAllPlayersMergedAndAveraged != null)
-    		return s_costsForTuvForAllPlayersMergedAndAveraged;
+    	/*if (s_costsForTuvForAllPlayersMergedAndAveraged != null && s_costsForTuvForAllPlayersMergedAndAveraged.size() > 0)
+    		return s_costsForTuvForAllPlayersMergedAndAveraged;*/
     	
     	IntegerMap<UnitType> costs = new IntegerMap<UnitType>();
         HashMap<UnitType, List<Integer>> differentCosts = new HashMap<UnitType, List<Integer>>();
@@ -847,8 +854,8 @@ public class BattleCalculator
             int averagedCost = (int) Math.round(((double)totalCosts / (double)costsForType.size()));
             costs.put(ut, averagedCost);
     	}
-    	s_costsForTuvForAllPlayersMergedAndAveraged = costs;
-		return s_costsForTuvForAllPlayersMergedAndAveraged;
+    	//s_costsForTuvForAllPlayersMergedAndAveraged = costs; //There is a problem with this variable, that it isn't being cleared out when we switch maps.
+		return costs;
     }
 
     /**
