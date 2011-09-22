@@ -31,7 +31,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -57,7 +56,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -70,6 +68,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class BattleCalculator
 {
+	private static IntegerMap<UnitType> s_costsForTuvForAllPlayersMergedAndAveraged;
+	
 	//we want to sort in a determined way so that those looking at the dice results 
     //can tell what dice is for who
     //we also want to sort by movement, so casualties will be choosen as the 
@@ -251,7 +251,7 @@ public class BattleCalculator
     {
     	int attackThenDiceSides[] = DiceRoll.getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), bridge.getPlayerID().getData(), typeOfAA);
         int highestAttack = attackThenDiceSides[0];
-        int chosenDiceSize = attackThenDiceSides[1];
+        //int chosenDiceSize = attackThenDiceSides[1];
         
     	Collection<Unit> casualties = new ArrayList<Unit>();
         int hits = dice.getHits();
@@ -328,7 +328,7 @@ public class BattleCalculator
 
         // Create production cost map, Maybe should do this elsewhere, but in
         // case prices change, we do it here.
-        IntegerMap<UnitType> costs = getCosts(player, data);
+        IntegerMap<UnitType> costs = getCostsForTUV(player, data);
 
         CasualtyList defaultCasualties = getDefaultCasualties(targets, hitsRemaining, defending, player, costs, data);
 
@@ -757,31 +757,98 @@ public class BattleCalculator
     }
 
     /**
-     * Return map where keys are unit types and values are PU costs of that
-     * unit type
+     * Return map where keys are unit types and values are PU costs of that unit type, based on a player.
      * 
-     * @param player
-     *            The player to get costs schedule for
-     * @param data
-     *            The game data.
+     * Any production rule that produces multiple units
+     * (like artillery in NWO, costs 7 but makes 2 artillery, meaning effective price is 3.5 each)
+     * will have their costs rounded up on a per unit basis (so NWO artillery will become 4).
+     * Therefore, this map should NOT be used for Purchasing information!
+     * 
+     * @param player The player to get costs schedule for
+     * @param data The game data.
      * @return a map of unit types to PU cost
      */
-    public static IntegerMap<UnitType> getCosts(PlayerID player, GameData data)
+    public static IntegerMap<UnitType> getCostsForTUV(PlayerID player, GameData data)
     {
         IntegerMap<UnitType> costs = new IntegerMap<UnitType>();
-        ProductionFrontier frontier =player.getProductionFrontier();
+        ProductionFrontier frontier = player.getProductionFrontier();
         //any one will do then
         if(frontier == null)
-            frontier = data.getProductionFrontierList().getProductionFrontier(data.getProductionFrontierList().getProductionFrontierNames().iterator().next().toString());
+            return getCostsForTuvForAllPlayersMergedAndAveraged(data);
+        
         Iterator<ProductionRule> iter = frontier.getRules().iterator();
         while (iter.hasNext())
         {
             ProductionRule rule = iter.next();
-            int cost = rule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));
+            int costPerGroup = rule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));
             UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
-            costs.put(type, cost);
+    		int numberProduced = rule.getResults().getInt(type);
+    		// we average the cost for a single unit, rounding up
+    		int roundedCostPerSingle = (int) Math.ceil((double)costPerGroup / (double)numberProduced);
+            costs.put(type, roundedCostPerSingle);
         }
+        
+        // since our production frontier may not cover all the units we control, and not the enemy units,
+        // we will add any unit types not in our list, based on the list for everyone
+        IntegerMap<UnitType> costsAll = getCostsForTuvForAllPlayersMergedAndAveraged(data);
+        for (UnitType ut : costsAll.keySet())
+        {
+        	if (!costs.keySet().contains(ut))
+        		costs.put(ut, costsAll.getInt(ut));
+        }
+        
         return costs;
+    }
+    
+    /**
+     * Return a map where key are unit types and values are the AVERAGED for all RULES (not for all players).
+     * 
+     * Any production rule that produces multiple units
+     * (like artillery in NWO, costs 7 but makes 2 artillery, meaning effective price is 3.5 each)
+     * will have their costs rounded up on a per unit basis.
+     * Therefore, this map should NOT be used for Purchasing information!
+     * 
+     * @param data
+     * @return
+     */
+    public static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(GameData data)
+    {
+    	if (s_costsForTuvForAllPlayersMergedAndAveraged != null)
+    		return s_costsForTuvForAllPlayersMergedAndAveraged;
+    	
+    	IntegerMap<UnitType> costs = new IntegerMap<UnitType>();
+        HashMap<UnitType, List<Integer>> differentCosts = new HashMap<UnitType, List<Integer>>();
+    	for (ProductionRule rule : data.getProductionRuleList().getProductionRules())
+    	{
+    		// only works for the first result, so we are assuming each purchase frontier only gives one type of unit
+    		UnitType ut = (UnitType) rule.getResults().keySet().iterator().next();
+    		int numberProduced = rule.getResults().getInt(ut);
+    		int costPerGroup = rule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));
+    		// we round up the cost
+    		int roundedCostPerSingle = (int) Math.ceil((double)costPerGroup / (double)numberProduced);
+
+            if (differentCosts.containsKey(ut))
+            	differentCosts.get(ut).add(roundedCostPerSingle);
+            else
+            {
+            	List<Integer> listTemp = new ArrayList<Integer>();
+            	listTemp.add(roundedCostPerSingle);
+            	differentCosts.put(ut, listTemp);
+            }
+    	}
+    	for (UnitType ut : differentCosts.keySet())
+    	{
+            int totalCosts = 0;
+            List<Integer> costsForType = differentCosts.get(ut);
+            for(int cost : costsForType)
+            {
+                totalCosts += cost;
+            }
+            int averagedCost = (int) Math.round(((double)totalCosts / (double)costsForType.size()));
+            costs.put(ut, averagedCost);
+    	}
+    	s_costsForTuvForAllPlayersMergedAndAveraged = costs;
+		return s_costsForTuvForAllPlayersMergedAndAveraged;
     }
 
     /**

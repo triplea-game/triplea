@@ -3459,10 +3459,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (m_killed.isEmpty())
             return;
         //a handy summary of all the units killed
-        IntegerMap<UnitType> costs = BattleCalculator.getCosts(m_attacker, m_data);
+        IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
         int tuvLostAttacker = BattleCalculator.getTUV(m_killed, m_attacker,
                 costs, m_data);
-        costs = BattleCalculator.getCosts(m_defender, m_data);
+        costs = BattleCalculator.getCostsForTUV(m_defender, m_data);
         int tuvLostDefender = BattleCalculator.getTUV(m_killed, m_defender,
                 costs, m_data);
         int tuvChange = tuvLostDefender - tuvLostAttacker;

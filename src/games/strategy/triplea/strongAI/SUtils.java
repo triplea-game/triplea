@@ -422,7 +422,7 @@ public class SUtils
 		Collection<PlayerID> playerList = data.getPlayerList().getPlayers();
 		for (PlayerID cPlayer : playerList)
 		{
-			IntegerMap<UnitType> playerCostMap = BattleCalculator.getCosts(cPlayer, data);
+			IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(cPlayer, data);
 			costMap.put(cPlayer, playerCostMap);
 		}
 		return costMap;

@@ -9931,7 +9931,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		
 		boolean defending = !get_onOffense();
-		IntegerMap<UnitType> costs = BattleCalculator.getCosts(hit, data);
+		IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(hit, data);
 		float canWinPercentage = 1.0F; // we need to run a battle calc or something to determine what the chance of us winning is
 		boolean bonus = (canWinPercentage > .8);
 		List<Unit> workUnits1 = new ArrayList<Unit>(BattleCalculator.sortUnitsForCasualtiesWithSupport(selectFrom, defending, hit, costs, data, bonus));

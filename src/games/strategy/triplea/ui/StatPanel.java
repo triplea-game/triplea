@@ -710,7 +710,7 @@ class TUVStat extends AbstractStat
 
     public double getValue(PlayerID player, GameData data)
     {
-        IntegerMap<UnitType> costs = BattleCalculator.getCosts(player, data);
+        IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(player, data);
         
         Match<Unit> unitIsOwnedBy = Matches.unitIsOwnedBy(player);
         
