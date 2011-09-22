@@ -318,13 +318,14 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         
         m_playerRows = new ArrayList<PlayerRow>();
         Map<String,String> players = m_model.getPlayers();
+        Map<String,Collection<String>> m_playerNamesAndAlliancesInTurnOrder = m_model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
         //List<String> keys = new ArrayList<String>(players.keySet());
         //Collections.sort(keys);//we don't want to sort them alphabetically.  let them stay in turn order.
-        String[] playerNames = m_gameSelectorModel.getGameData().getPlayerList().getNames();
+        Set<String> playerNames = m_playerNamesAndAlliancesInTurnOrder.keySet();
         for(String name: playerNames)
         {
-            PlayerRow newPlayerRow = new PlayerRow(name, 
-            		m_gameSelectorModel.getGameData().getAllianceTracker().getAlliancesPlayerIsIn(m_gameSelectorModel.getGameData().getPlayerList().getPlayerID(name)), 
+            PlayerRow newPlayerRow = new PlayerRow(name,
+            		m_playerNamesAndAlliancesInTurnOrder.get(name),
             		m_gameSelectorModel.getGameData().getGameLoader().getServerPlayerTypes());
             
             m_playerRows.add(newPlayerRow);

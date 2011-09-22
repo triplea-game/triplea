@@ -48,21 +48,28 @@ public class PlayerListing implements Serializable
   private final Version m_gameVersion;
   private final String m_gameName;
   private final String m_gameRound;
+  private Map<String,Collection<String>> m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String,Collection<String>>();
 
   /**
    * Creates a new instance of PlayerListingMessage
    */
-  public PlayerListing(Map<String, String> map, Version gameVersion, String gameName, String gameRound)
+  public PlayerListing(Map<String, String> map, Version gameVersion, String gameName, String gameRound, Map<String,Collection<String>> playerNamesAndAlliancesInTurnOrderLinkedHashMap)
   {
     m_playerListing = new HashMap<String, String>(map);
     m_gameVersion = gameVersion;
     m_gameName = gameName;
     m_gameRound = gameRound;
+    m_playerNamesAndAlliancesInTurnOrder = playerNamesAndAlliancesInTurnOrderLinkedHashMap;
   }
 
   public Map<String,String> getPlayerListing()
   {
     return m_playerListing;
+  }
+
+  public Map<String,Collection<String>> getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap()
+  {
+    return m_playerNamesAndAlliancesInTurnOrder;
   }
 
   public String getGameName()
@@ -80,7 +87,7 @@ public class PlayerListing implements Serializable
     return "PlayerListingMessage:" + m_playerListing;
   }
 
-  public Set getPlayers()
+  public Set<String> getPlayers()
   {
     return m_playerListing.keySet();
   }

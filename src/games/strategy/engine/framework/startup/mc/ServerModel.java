@@ -56,6 +56,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     private GameData m_data;
     
     private Map<String, String> m_players  = new HashMap<String, String>();
+    private Map<String,Collection<String>> m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String,Collection<String>>();
     private IRemoteModelListener m_listener = IRemoteModelListener.NULL_LISTENER;
     private final GameSelectorModel m_gameSelectorModel;
     private Component m_ui;
@@ -128,9 +129,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
             if(m_data != null)
             {
                 m_players = new HashMap<String,String>();
+                m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String,Collection<String>>();
                 for(String name :  m_data.getPlayerList().getNames())
                 {
                     m_players.put(name, m_serverMessenger.getLocalNode().getName());
+                    m_playerNamesAndAlliancesInTurnOrder.put(name, m_data.getAllianceTracker().getAlliancesPlayerIsIn(m_data.getPlayerList().getPlayerID(name)));
                 }
             }
             m_objectStreamFactory.setData(m_data);
@@ -288,9 +291,9 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       synchronized(this)
       {
           if(m_data == null)
-              return new PlayerListing(new HashMap<String,String>(), new Version(0,0), m_gameSelectorModel.getGameName(), m_gameSelectorModel.getGameRound());
+              return new PlayerListing(new HashMap<String,String>(), new Version(0,0), m_gameSelectorModel.getGameName(), m_gameSelectorModel.getGameRound(), new LinkedHashMap<String,Collection<String>>());
           else
-              return new PlayerListing(new HashMap<String,String>(m_players), m_data.getGameVersion(), m_data.getGameName(), m_data.getSequence().getRound() + "");
+              return new PlayerListing(new HashMap<String,String>(m_players), m_data.getGameVersion(), m_data.getGameName(), m_data.getSequence().getRound() + "", m_playerNamesAndAlliancesInTurnOrder);
       }
     }
     
@@ -340,6 +343,14 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         {
             return new HashMap<String,String>(m_players);
         }
+    }
+    
+    public Map<String,Collection<String>> getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap()
+    {
+    	synchronized(this)
+    	{
+    		return new LinkedHashMap<String,Collection<String>>(m_playerNamesAndAlliancesInTurnOrder);
+    	}
     }
     
 

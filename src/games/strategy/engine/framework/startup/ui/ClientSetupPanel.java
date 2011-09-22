@@ -13,11 +13,11 @@ import javax.swing.*;
 
 
 
+@SuppressWarnings("serial")
 public class ClientSetupPanel extends SetupPanel
 {
     private final Insets BUTTON_INSETS = new Insets(0,0,0,0);
     private final ClientModel m_model;
-    private final GameSelectorModel m_gameSelectorModel;
     
     private List<PlayerRow> m_playerRows = Collections.emptyList();
     
@@ -41,10 +41,9 @@ public class ClientSetupPanel extends SetupPanel
     
     };
     
-    public ClientSetupPanel(ClientModel model, GameSelectorModel gameSelectorModel)
+    public ClientSetupPanel(ClientModel model)
     {
         m_model = model;
-        m_gameSelectorModel = gameSelectorModel;
         createComponents();
         layoutComponents();
         setupListeners();
@@ -54,6 +53,7 @@ public class ClientSetupPanel extends SetupPanel
     private void internalPlayersChanged()
     {
         Map<String,String> m_players = m_model.getPlayerMapping();
+        Map<String,Collection<String>> m_playerNamesAndAlliancesInTurnOrder = m_model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
         
         m_playerRows = new ArrayList<PlayerRow>();
         
@@ -61,11 +61,11 @@ public class ClientSetupPanel extends SetupPanel
         //List<String> keys = new ArrayList<String>(m_players.keySet());
         //Collections.sort(keys);//we don't want to sort them alphabetically.  let them stay in turn order.
         
-        String[] playerNames = m_gameSelectorModel.getGameData().getPlayerList().getNames();
+        Set<String> playerNames = m_playerNamesAndAlliancesInTurnOrder.keySet();
         for(String name: playerNames)
         {
-          PlayerRow playerRow = new PlayerRow(name, 
-              		m_gameSelectorModel.getGameData().getAllianceTracker().getAlliancesPlayerIsIn(m_gameSelectorModel.getGameData().getPlayerList().getPlayerID(name)),
+          PlayerRow playerRow = new PlayerRow(name,
+        			m_playerNamesAndAlliancesInTurnOrder.get(name),
               		IGameLoader.CLIENT_PLAYER_TYPE);
           m_playerRows.add(playerRow);
           playerRow.setPlayerName(m_players.get(name));

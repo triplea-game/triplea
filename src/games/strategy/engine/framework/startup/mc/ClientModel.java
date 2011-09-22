@@ -49,7 +49,9 @@ import games.strategy.util.EventThreadJOptionPane;
 import java.awt.Component;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -85,6 +87,7 @@ public class ClientModel implements IMessengerErrorListener
     private GameData m_gameDataOnStartup;
     
     private Map<String,String> m_players = new HashMap<String,String>();
+    private Map<String,Collection<String>> m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String,Collection<String>>();
 
     ClientModel(GameSelectorModel gameSelectorModel, SetupPanelModel typePanelModel)
     {
@@ -457,6 +460,7 @@ public class ClientModel implements IMessengerErrorListener
         synchronized(this)
         {
             m_players = listing.getPlayerListing();
+            m_playerNamesAndAlliancesInTurnOrder = listing.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
         }
         
         SwingUtilities.invokeLater(new Runnable()
@@ -475,6 +479,14 @@ public class ClientModel implements IMessengerErrorListener
         synchronized(this)
         {
             return new HashMap<String,String>(m_players);
+        }
+    }
+    
+    public Map<String,Collection<String>> getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap()
+    {
+        synchronized(this)
+        {
+            return new LinkedHashMap<String,Collection<String>>(m_playerNamesAndAlliancesInTurnOrder);
         }
     }
     

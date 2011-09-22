@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Updating client game and server model to carry information on alliances and player order. (veqryn)
+
 * Allowed the exporting of stats based on the individual phases in a players turn. (veqryn)
 
 * Updating local player selection screen to show players in turn order, assuming xml was done properly, and to show their alliances. (veqryn)
