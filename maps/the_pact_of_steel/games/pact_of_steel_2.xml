@@ -2619,6 +2619,13 @@
 														If used with an exclusion, then the number of units of that type must be less than or equal the count.  (Use count="0" if you want no units of that type in the territories).
 			techs								values: any list of technologies, : delimited (if count = zero, then must have exactly zero technologies [if count is missing, defaults to zero])
 			relationship						values: a relationship that needs to be present in the game: "player1:player2:relationship" for example: "Japan:China:War" it will accept "anyWar", "anyNeutral" and "anyAllied" as well.
+			conditions							values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
+															can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
+															any condition which includes other conditions, is considered a meta-condition, and it must come AFTER any conditions that it includes.
+			conditionType 						values: AND, OR, XOR.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the conditions. 
+														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false.
+														conditionType only affects the conditions listed under the option name="conditions", and does not affect any additional things also present.
+			
 	-->
 	<!-- German Objectives -->
                 <attatchment name="objectiveAttachmentGermans1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -3012,6 +3019,8 @@
 			relationshipChange					values: the change in relationship for this attached player, format: "player:oldRelation:newRelation" example: "Russia:coldWar:allOutWar"
 														oldRelation may be "any", "anyWar", "anyNeutral", "anyAllied", or an actual relationshipType used in this xml
 														You can enter multiple relationshipChanges in the trigger and it will perform every change in the trigger which is valid.
+			notification						values: this is a popup window containing a message that will be given to the current player. "before/after:name-of-step:name-of-entry-in-notifications.properties"
+			
 	-->
 	<!-- Victory Triggers -->
 						<!-- Victory Triggers can be attached to anyone. Only 1 is needed per victory condition -->
@@ -3225,8 +3234,7 @@
 					<option name="uses" value="1"/>
                 </attatchment>
                 
-                <!--  these triggers are notificationtriggers -->
-                
+				<!--  these triggers are notificationtriggers -->
                 <attatchment name="triggerItalyTurn1CombatMoveNotification" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentItalianTurn1"/>
 					<option name="notification" value="before:italianCombatMove:ITALY_TURN1_BEFORE_CM"/>

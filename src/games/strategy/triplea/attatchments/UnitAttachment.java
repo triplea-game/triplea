@@ -1367,6 +1367,9 @@ public class UnitAttachment extends DefaultAttachment
 	  if (getMovement(player) > 0)
 		  stats.append(getMovement(player) + " Movement, ");
 	  
+	  if (m_isTwoHit)
+		  stats.append("Two Hitpoints, ");
+	  
 	  if ((m_isFactory || m_canProduceUnits) && m_canProduceXUnits < 0)
 		  stats.append("can Produce Units Up To Territory Value, ");
 	  else if ((m_isFactory || m_canProduceUnits) && m_canProduceXUnits > 0)
@@ -1432,9 +1435,6 @@ public class UnitAttachment extends DefaultAttachment
 	  }
 	  else if (m_canBeDamaged || m_isFactory)
 		  stats.append("can be Attacked By Raids, ");
-	  
-	  if (m_isTwoHit)
-		  stats.append("Two Hitpoints, ");
 	  
 	  if (m_isAirBase && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData()))
 		  stats.append("can Allow Scrambling, ");

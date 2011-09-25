@@ -606,9 +606,14 @@ public class BattleCalculator
             	perfectlySortedUnitsList.addAll(unitsByPowerAll.get(i));
             else
             {
+            	int count = 0;
             	while (0 < unitsByPowerBoth.get(i).size() || 0 < unitsByPowerGives.get(i).size()
 	        				 || 0 < unitsByPowerReceives.get(i).size() || 0 < unitsByPowerNone.get(i).size())
 	        	{
+            		count++;
+            		if (count > 100000)
+    	        		throw new IllegalStateException("Infinite loop in sortUnitsForCasualtiesWithSupport.");
+            		
 	        		tempList1.clear();
 	        		tempList2.clear();
 	        		// four variables: we have artillery, we have support, above has artillery, above has support.  need every combination covered.

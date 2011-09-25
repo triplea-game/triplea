@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Created ability to make conditions and rules attachments that include other conditions in them, and the ability to set the relationship of these conditions to AND, OR, XOR. (veqryn)
+
 * Fixed bug where getCosts in BattleCalculator was only returning the costs for the units that a nation could produce, instead of all units that nation could own. Changed to BattleCalculator.getCostsForTUV (veqryn)
 
 * Fixed bug where TUV in stats panel showed units that had multiple given per production, like NWO's artillery was buy 2 for 7 PUs, incorrectly show on the TUV panel as 7 PUs each. Now it shows up as the rounded up value. (veqryn)

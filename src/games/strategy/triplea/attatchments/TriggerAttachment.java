@@ -38,7 +38,6 @@ import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
-import games.strategy.triplea.delegate.TripleADelegateBridge;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -559,9 +558,7 @@ public class TriggerAttachment extends DefaultAttachment{
 			if(met) {
 				t.use(aBridge);
 				// no need for history writing as the method calling this has its own history writer
-				for( PlayerID aPlayer: t.getPlayers()){
-					return t.getVictory();
-				}
+				return t.getVictory();
 			}
 		}
 		return null;

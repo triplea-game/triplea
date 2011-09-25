@@ -58,12 +58,16 @@ public class RulesAttachment extends DefaultAttachment
 	// Players
 	// not used?
 	// private PlayerID m_ruleOwner = null;
+	
+	// meta-conditions rules attachment lists
+	private List<RulesAttachment> m_conditions = null;
 
 	// Strings
 	//private String m_alliedExclusion = null;
 	//private String m_enemyExclusion = null;
 	private String m_allowedUnitType = null;
 	private String m_movementRestrictionType = null;
+	private String m_conditionType = "AND";
 
 	// Territory lists
 	private String[] m_alliedOwnershipTerritories;
@@ -132,6 +136,37 @@ public class RulesAttachment extends DefaultAttachment
 	{
 		return m_objectiveValue;
 	}
+	
+	public void setConditions(String conditions) throws GameParseException{
+		String[] s = conditions.split(":");
+		for(int i = 0;i<s.length;i++) {
+			RulesAttachment condition = null;
+			for(PlayerID p:getData().getPlayerList().getPlayers()){
+				condition = (RulesAttachment) p.getAttachment(s[i]);
+				if( condition != null)
+					break;
+			}
+			if(condition == null)
+				throw new GameParseException("Rules & Conditions: Could not find rule (conditions which hold other conditions should be listed after the conditions they contain). name:" + s[i]);
+			if(m_conditions == null)
+				m_conditions = new ArrayList<RulesAttachment>();
+			m_conditions.add(condition);
+		}
+	}
+	
+	public List<RulesAttachment> getConditions() {
+		return m_conditions;
+	}
+	
+	public String getConditionType() {
+		return m_conditionType;
+	}
+	
+	public void setConditionType(String s) throws GameParseException{
+		if (!(s.equals("and") || s.equals("AND") || s.equals("or") || s.equals("OR") || s.equals("XOR") || s.equals("xor")))
+			throw new GameParseException("Rules & Conditions: conditionType must be equal to AND or OR or XOR");
+		m_conditionType = s;
+	}
 
 	/**
 	 * condition to check if a certain relationship exists between 2 players
@@ -141,16 +176,16 @@ public class RulesAttachment extends DefaultAttachment
 	public void setRelationship(String value) throws GameParseException {
 		String[] s = value.split(":");
 		if(s.length != 3)
-			throw new GameParseException("relationship should have value=\"playername:playername:relationshiptype\"");
+			throw new GameParseException("Rules & Conditions: relationship should have value=\"playername:playername:relationshiptype\"");
 		if(getData().getPlayerList().getPlayerID(s[0]) == null)
-			throw new GameParseException("playername: "+s[0]+" isn't valid in condition with relationship: "+value+" for RulesAttachment "+getName());
+			throw new GameParseException("Rules & Conditions: playername: "+s[0]+" isn't valid in condition with relationship: "+value+" for RulesAttachment "+getName());
 		if(getData().getPlayerList().getPlayerID(s[1]) == null)
-			throw new GameParseException("playername: "+s[1]+" isn't valid in condition with relationship: "+value+" for RulesAttachment "+getName());
+			throw new GameParseException("Rules & Conditions: playername: "+s[1]+" isn't valid in condition with relationship: "+value+" for RulesAttachment "+getName());
 		if(     !(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) ||
 				s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)||
 				s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) ||
 				Matches.isValidRelationshipName(getData()).match(s[2])))
-			throw new GameParseException("relationship: "+s[2]+" isn't valid in condition with relationship: "+value+" for RulesAttachment "+getName());
+			throw new GameParseException("Rules & Conditions: relationship: "+s[2]+" isn't valid in condition with relationship: "+value+" for RulesAttachment "+getName());
 		m_relationship.add(value);
 	}
 
@@ -693,21 +728,77 @@ public class RulesAttachment extends DefaultAttachment
 
 		return value;
 	}
+	
+	/**
+	 * This will account for Invert and conditionType while looking at all the conditions, 
+	 * but if invert is true we will reverse at the end since RulesAttachment.isSatisfied() will test for invert again later.
+	 * Similar to TriggerAttachment.isMet()
+	 */
+	private boolean isMetForMetaConditions(GameData data) {
+		boolean met = false;
+		String conditionType = getConditionType();
+		if (conditionType.equals("AND") || conditionType.equals("and"))
+		{
+			for (RulesAttachment c : getConditions()) {
+				met = c.isSatisfied(data) != m_invert;
+				if (!met)
+					break;
+			}
+		}
+		else if (conditionType.equals("OR") || conditionType.equals("or"))
+		{
+			for (RulesAttachment c : getConditions()) {
+				met = c.isSatisfied(data) != m_invert;
+				if (met)
+					break;
+			}
+		}
+		else if (conditionType.equals("XOR") || conditionType.equals("xor"))
+		{
+			// XOR is confusing with more than 2 conditions, so we will just say that one has to be true, while all others must be false
+			boolean isOneTrue = false;
+			for (RulesAttachment c : getConditions()) {
+				met = c.isSatisfied(data) != m_invert;
+				if (isOneTrue && met)
+				{
+					isOneTrue = false;
+					break;
+				}
+				else if (met)
+					isOneTrue = true;
+			}
+			met = isOneTrue;
+		}
+		
+		if (m_invert)
+			return !met;
+		else
+			return met;
+	}
 
 	public boolean isSatisfied(GameData data)
 	{
 		boolean objectiveMet = true;
 		PlayerID player = (PlayerID) getAttatchedTo();
+		
+		//
+		// check meta conditions (conditions which hold other conditions)
+		//
+		if (objectiveMet && m_conditions != null && m_conditions.size() > 0)
+		{
+			objectiveMet = isMetForMetaConditions(data);
+		}
+		
 		//
 		// check turn limits
 		//
-		if (m_turns != null)
+		if (objectiveMet && m_turns != null)
 			objectiveMet = checkTurns(data);
 
 		//
 		// Check for unit presence (Veqryn)
 		//
-		if (getDirectPresenceTerritories() != null && objectiveMet)
+		if (objectiveMet && getDirectPresenceTerritories() != null)
 		{
 			// Get the listed territories
 			String[] terrs = getDirectPresenceTerritories();
@@ -723,7 +814,7 @@ public class RulesAttachment extends DefaultAttachment
 		//
 		// Check for unit presence (Veqryn)
 		//
-		if (getAlliedPresenceTerritories() != null && objectiveMet)
+		if (objectiveMet && getAlliedPresenceTerritories() != null)
 		{
 			// Get the listed territories
 			String[] terrs = getAlliedPresenceTerritories();
@@ -739,7 +830,7 @@ public class RulesAttachment extends DefaultAttachment
 		//
 		// Check for unit presence (Veqryn)
 		//
-		if (getEnemyPresenceTerritories() != null && objectiveMet)
+		if (objectiveMet && getEnemyPresenceTerritories() != null)
 		{
 			// Get the listed territories
 			String[] terrs = getEnemyPresenceTerritories();
@@ -755,7 +846,7 @@ public class RulesAttachment extends DefaultAttachment
 		//
 		// Check for direct unit exclusions (veqryn)
 		//
-		if (getDirectExclusionTerritories() != null && objectiveMet)
+		if (objectiveMet && getDirectExclusionTerritories() != null)
 		{
 			// Get the listed territories
 			String[] terrs = getDirectExclusionTerritories();
@@ -771,7 +862,7 @@ public class RulesAttachment extends DefaultAttachment
 		//
 		// Check for allied unit exclusions
 		//
-		if (getAlliedExclusionTerritories() != null && objectiveMet)
+		if (objectiveMet && getAlliedExclusionTerritories() != null)
 		{
 			// Get the listed territories
 			String[] terrs = getAlliedExclusionTerritories();
@@ -787,7 +878,7 @@ public class RulesAttachment extends DefaultAttachment
 		//
 		// Check for enemy unit exclusions (ANY UNITS)
 		//
-		if (getEnemyExclusionTerritories() != null && objectiveMet == true)
+		if (objectiveMet && getEnemyExclusionTerritories() != null)
 		{
 			// Get the listed territories
 			String[] terrs = getEnemyExclusionTerritories();
@@ -801,7 +892,7 @@ public class RulesAttachment extends DefaultAttachment
 		}
 
 		// Check for enemy unit exclusions (SURFACE UNITS with ATTACK POWER)
-		if (getEnemySurfaceExclusionTerritories() != null && objectiveMet == true)
+		if (objectiveMet && getEnemySurfaceExclusionTerritories() != null)
 		{
 			// Get the listed territories
 			String[] terrs = getEnemySurfaceExclusionTerritories();
@@ -817,7 +908,7 @@ public class RulesAttachment extends DefaultAttachment
 		//
 		// Check for Territory Ownership rules
 		//
-		if (getAlliedOwnershipTerritories() != null && objectiveMet == true)
+		if (objectiveMet && getAlliedOwnershipTerritories() != null)
 		{
 			// Get the listed territories
 			String[] terrs = getAlliedOwnershipTerritories();
@@ -905,7 +996,7 @@ public class RulesAttachment extends DefaultAttachment
 		//
 		// Check for Direct Territory Ownership rules
 		//
-		if (getDirectOwnershipTerritories() != null && objectiveMet == true)
+		if (objectiveMet && getDirectOwnershipTerritories() != null)
 		{
 			// Get the listed territories
 			String[] terrs = getDirectOwnershipTerritories();
@@ -968,16 +1059,17 @@ public class RulesAttachment extends DefaultAttachment
 			objectiveMet = checkDirectOwnership(objectiveMet, getListedTerritories(terrs), getTerritoryCount(), player);
 		}
 
-		if (getAtWarPlayers() != null && objectiveMet == true)
+		if (objectiveMet && getAtWarPlayers() != null)
 		{
 			objectiveMet = checkAtWar(player, getAtWarPlayers(), getAtWarCount(), data);
 		}
-		if (m_techs != null && objectiveMet == true)
+		if (objectiveMet && m_techs != null)
 		{
 			objectiveMet = checkTechs(player, data);
 		}
 		// check for relationships
-		if (m_relationship.size()>0) {
+		if (objectiveMet && m_relationship.size()>0)
+		{
 			objectiveMet = checkRelationships();
 		}
 
