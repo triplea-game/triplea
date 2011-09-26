@@ -3170,8 +3170,6 @@
 					<option name="unitProperty" value="movement" count="3"/>
 					<option name="unitProperty" value="isSuicide" count="true"/>
 					<option name="unitProperty" value="isKamikaze" count="true"/>
-					<option name="unitProperty" value="requiresUnits" count="fighter:bomber:air_transport"/>
-					<option name="unitProperty" value="requiresUnits" count="factory:airfield"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 

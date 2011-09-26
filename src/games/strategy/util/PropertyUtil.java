@@ -39,6 +39,37 @@ public class PropertyUtil
             throw new IllegalStateException("Could not set property:" + propertyName + " subject:" + subject + " new value:" + value,  e);
         }
     }
+    
+    public static void set(String propertyName, Object value, Object subject, boolean clearFirst) 
+    {
+    	if (clearFirst)
+    	{
+        	Method c = getClearer(propertyName, subject);
+            try
+            {
+                c.setAccessible(true);
+                c.invoke(subject);
+            } catch (Exception e)
+            {
+                throw new IllegalStateException("Could not clear property:" + propertyName + " subject:" + subject + " new value:" + value,  e);
+            }
+    	}
+    	set(propertyName, value, subject);
+    }
+    
+    public static void clear(String propertyName, Object subject)
+    {
+    	try
+    	{
+        	Method c = getClearer(propertyName, subject);
+            c.setAccessible(true);
+            c.invoke(subject);
+    	}
+        catch(Exception e)
+        {
+            throw new IllegalStateException("Could not clear property:" + propertyName + " subject:" + subject,  e);
+        }
+    }
 
     public static Object get(String propertyName, Object subject) 
     {
@@ -96,6 +127,29 @@ public class PropertyUtil
         }
 
         throw new IllegalStateException("No method called:" + setterName + " on:" + subject);
-        
+    }
+    
+    private static Method getClearer(String propertyName, Object subject) {
+        String clearerName = "clear" + capitalizeFirstLetter(propertyName );
+        for(Method c : subject.getClass().getDeclaredMethods()) {
+            if(c.getName().equals(clearerName)) 
+            {
+                try
+                {
+                    return subject.getClass().getMethod(clearerName);
+                } catch(NoSuchMethodException nsmf)
+                {
+                    //Go ahead and try the first one
+                    return c;                    
+                }
+                    catch(NullPointerException n)
+                {
+                    //Go ahead and try the first one
+                    return c;                    
+                }   
+            }
+        }
+
+        throw new IllegalStateException("No method called:" + clearerName + " on:" + subject);
     }
 }

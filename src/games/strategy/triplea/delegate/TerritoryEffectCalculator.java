@@ -39,7 +39,7 @@ public class TerritoryEffectCalculator {
     public static Collection<TerritoryEffect> getEffects(Territory location) {
     	TerritoryAttachment ta = TerritoryAttachment.get(location);
     	if(ta != null)
-    		return TerritoryAttachment.get(location).getTerritoryEffects();
+    		return TerritoryAttachment.get(location).getTerritoryEffect();
     	else
     		return new ArrayList<TerritoryEffect>();
     }

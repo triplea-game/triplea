@@ -280,6 +280,10 @@ public class TerritoryAttachment extends DefaultAttachment
         return m_isConvoyRoute;
     }
     
+    /**
+     * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+     * @param value
+     */
     public void setChangeUnitOwners(String value)
     {
     	String[] temp = value.split(":");
@@ -300,6 +304,15 @@ public class TerritoryAttachment extends DefaultAttachment
         return m_changeUnitOwners;
     }
     
+    public void clearChangeUnitOwners()
+    {
+    	m_changeUnitOwners.clear();
+    }
+
+    /**
+     * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+     * @param value
+     */
     public void setCaptureUnitOnEnteringBy(String value)
     {
     	String[] temp = value.split(":");
@@ -313,6 +326,20 @@ public class TerritoryAttachment extends DefaultAttachment
     	}
     }
     
+    public Collection<PlayerID> getCaptureUnitOnEnteringBy()
+    {
+        return m_captureUnitOnEnteringBy;
+    }
+    
+    public void clearCaptureUnitOnEnteringBy()
+    {
+        m_captureUnitOnEnteringBy.clear();
+    }
+
+    /**
+     * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+     * @param value
+     */
     public void setTerritoryEffect(String value) throws GameParseException {
     	String[] s = value.split(":");
     	for (String name : s) {
@@ -323,12 +350,16 @@ public class TerritoryAttachment extends DefaultAttachment
     			throw new GameParseException("No TerritoryEffect named: " + name);
     	}
     }
-    
-    
-    public Collection<PlayerID> getCaptureUnitOnEnteringBy()
-    {
-        return m_captureUnitOnEnteringBy;
-    }
+
+	public Collection<TerritoryEffect> getTerritoryEffect()
+	{
+		return m_territoryEffect ;
+	}
+
+	public void clearTerritoryEffect()
+	{
+		m_territoryEffect.clear();
+	}
     
     public void setConvoyAttached(String value)
     {
@@ -379,8 +410,4 @@ public class TerritoryAttachment extends DefaultAttachment
     {
     	return m_blockadeZone;
     }
-
-	public Collection<TerritoryEffect> getTerritoryEffects() {
-		return m_territoryEffect ;
-	}
 }

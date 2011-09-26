@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Preliminary work on allowing triggers to clear data from properties that allow multiple sets, in other words, properties that add data rather than overwriting. (veqryn)
+
 * Created new triggers for changing territory properties, using territoryName and territoryProperty. (veqryn)
 
 * Fixed unitProperty trigger change to accept properties with more than one colon. (veqryn)

@@ -591,7 +591,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
                 if (ta != null)
                 {
                     
-                    Iterator<TerritoryEffect> iter = ta.getTerritoryEffects().iterator();
+                    Iterator<TerritoryEffect> iter = ta.getTerritoryEffect().iterator();
                     if(iter.hasNext()) {
                     	buf.append(" (");
                     }
