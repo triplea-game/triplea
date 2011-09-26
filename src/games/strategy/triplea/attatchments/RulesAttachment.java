@@ -26,6 +26,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.*;
 import games.strategy.util.*;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 
@@ -126,6 +127,18 @@ public class RulesAttachment extends DefaultAttachment
 	{
 		return m_ruleOwner;
 	}*/
+
+	public String getRawProperty(String property) {
+		String s = "";
+		try {
+			Field field = getClass().getDeclaredField("m_" + property);
+			field.setAccessible(true);
+			s += field.get(this);
+		} catch (Exception e) {
+			throw new IllegalStateException("No such Property: m_" + property);
+		}
+		return s;
+	}
 
 	public void setObjectiveValue(String value)
 	{

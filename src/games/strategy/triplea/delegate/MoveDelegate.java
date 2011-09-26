@@ -181,6 +181,12 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
         if (m_firstRun)
             firstRun();
 
+        // territory property changes triggered at beginning of combat move
+        if(!m_nonCombat && games.strategy.triplea.Properties.getTriggers(m_data))
+        {
+        	TriggerAttachment.triggerTerritoryPropertyChange(player, aBridge, gameData);
+        }
+
         // repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at beginning of combat move)
         if(!m_nonCombat && games.strategy.triplea.Properties.getBattleships_Repair_At_Beginning_Of_Round(m_data))
         	repairBattleShips(m_bridge, m_data, m_player);

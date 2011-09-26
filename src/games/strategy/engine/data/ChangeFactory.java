@@ -180,6 +180,11 @@ public class ChangeFactory
 		return new ChangeAttachmentChange(attatchment, newValue, property);
 	}
 	
+	public static Change attachmentPropertyChange(IAttachment attatchment, Object newValue, String property, boolean getRaw)
+	{
+		return new ChangeAttachmentChange(attatchment, newValue, property, getRaw);
+	}
+	
 	public static Change attachmentPropertyChange(Attachable attatchment, String attatchmentName, Object newValue, Object oldValue, String property)
 	{
 		return new ChangeAttachmentChange(attatchment, attatchmentName, newValue, oldValue, property);

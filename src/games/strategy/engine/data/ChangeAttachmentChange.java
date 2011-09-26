@@ -55,7 +55,26 @@ public class ChangeAttachmentChange extends Change
     	m_newValue = newValue;
         m_property = property;
     }
-    
+  }
+  
+  ChangeAttachmentChange(IAttachment attatchment, Object newValue, String property, boolean getRaw)
+  {
+	    if(attatchment == null)
+	        throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
+	      
+	    m_attatchedTo = attatchment.getAttatchedTo();
+	    
+	    m_attatchmentName = attatchment.getName();
+	    if(getRaw) {
+	    	m_oldValue = PropertyUtil.getRaw(property, attatchment);
+	    	m_newValue = newValue;
+	        m_property = property;
+	    }
+	    else {
+	    	m_oldValue = PropertyUtil.get(property, attatchment);
+	    	m_newValue = newValue;
+	        m_property = property;
+	    }
   }
 
   public ChangeAttachmentChange(Attachable attatchTo, String attatchmentName, Object newValue, Object oldValue, String property)

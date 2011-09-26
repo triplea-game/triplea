@@ -3020,6 +3020,8 @@
 														oldRelation may be "any", "anyWar", "anyNeutral", "anyAllied", or an actual relationshipType used in this xml
 														You can enter multiple relationshipChanges in the trigger and it will perform every change in the trigger which is valid.
 			notification						values: this is a popup window containing a message that will be given to the current player. "before/after:name-of-step:name-of-entry-in-notifications.properties"
+			territoryName						values: the exact name of the territory to be affected by a territoryProperty change (example: value="Germany")
+			territoryProperty					values: the name of any actual territory property, with a count equal to the property's values (examples: value="production" count="4", or value="victoryCity" count="true"), requires a territoryName declared
 			
 	-->
 	<!-- Victory Triggers -->
@@ -3168,6 +3170,8 @@
 					<option name="unitProperty" value="movement" count="3"/>
 					<option name="unitProperty" value="isSuicide" count="true"/>
 					<option name="unitProperty" value="isKamikaze" count="true"/>
+					<option name="unitProperty" value="requiresUnits" count="fighter:bomber:air_transport"/>
+					<option name="unitProperty" value="requiresUnits" count="factory:airfield"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 

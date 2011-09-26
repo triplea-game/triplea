@@ -41,6 +41,7 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 
 public class TriggerAttachment extends DefaultAttachment{
@@ -65,15 +66,18 @@ public class TriggerAttachment extends DefaultAttachment{
 	private int m_uses = -1;
 	private List<PlayerID> m_players= new ArrayList<PlayerID>();
 	private Map<UnitSupportAttachment, Boolean> m_support = null;
-	private List<String> m_unitProperty = null;
 	// List of relationshipChanges that should be executed when this trigger hits.
 	private List<String> m_relationshipChange = new ArrayList<String>();
 
-	private UnitType m_unitType = null;
 	private Map<String,Map<TechAdvance,Boolean>> m_availableTechs = null;
 	private String m_victory = null;
 	private String m_conditionType = "AND";
 	private String m_notification = null;
+
+	private UnitType m_unitType = null;
+	private List<Tuple<String,String>> m_unitProperty = null;
+	private Territory m_territoryName = null;
+	private List<Tuple<String,String>> m_territoryProperty = null;
 
 
 	public TriggerAttachment() {
@@ -269,17 +273,6 @@ public class TriggerAttachment extends DefaultAttachment{
 		m_availableTechs.put(cat, tlist);
 	}
 	
-	public UnitType getUnitType() {
-		return m_unitType;
-	}
-	public void setUnitType(String name) throws GameParseException
-    {
-            UnitType type = getData().getUnitTypeList().getUnitType(name);
-            if(type == null)
-                throw new GameParseException("Triggers: Could not find unitType. name:" + name);
-            m_unitType = type;
-    	
-    }
 	public Map<UnitSupportAttachment, Boolean> getSupport() {
 		return m_support;
 	}
@@ -359,24 +352,80 @@ public class TriggerAttachment extends DefaultAttachment{
 		m_relationshipChange.add(relChange);
 	}
 	
-	public List<String> getUnitProperty() {
+	public UnitType getUnitType() {
+		return m_unitType;
+	}
+	public void setUnitType(String name) throws GameParseException
+    {
+            UnitType type = getData().getUnitTypeList().getUnitType(name);
+            if(type == null)
+                throw new GameParseException("Triggers: Could not find unitType. name:" + name);
+            m_unitType = type;
+    }
+	
+	public List<Tuple<String,String>> getUnitProperty() {
 		return m_unitProperty;
 	}
 	
 	// add not set
 	public void setUnitProperty(String prop) throws GameParseException{
 		String[] s = prop.split(":");
-		if(s.length!=2) 
-    		throw new GameParseException( "Triggers: Invalid unitProperty declaration: " +prop);
-		if(m_unitProperty== null)
-			m_unitProperty = new ArrayList<String>();
-		prop = s[1]+":"+s[0];
-		m_unitProperty.add(prop);
 		
+		if(m_unitProperty== null)
+			m_unitProperty = new ArrayList<Tuple<String,String>>();
+		
+		String property = s[s.length-1]; // the last one is the property we are changing, while the rest is the string we are changing it to
+		String value = "";
+		
+		for (int i=0;i<s.length-1;i++)
+			value += ":" + s[i];
+		
+		// Remove the leading colon
+		if (value.length() > 0 && value.startsWith(":"))
+			value = value.replaceFirst(":", "");
+		
+		m_unitProperty.add(new Tuple<String,String>(property, value));
 	}
+	
+	public Territory getTerritoryName() {
+		return m_territoryName;
+	}
+	public void setTerritoryName(String name) throws GameParseException
+    {
+		Territory terr = getData().getMap().getTerritory(name);
+		if (terr == null)
+			throw new GameParseException("Triggers: Could not find territory. name:" + name);
+		m_territoryName = terr;
+    }
+	
+	public List<Tuple<String,String>> getTerritoryProperty() {
+		return m_territoryProperty;
+	}
+	
+	// add not set
+	public void setTerritoryProperty(String prop) throws GameParseException{
+		String[] s = prop.split(":");
+		
+		if(m_territoryProperty== null)
+			m_territoryProperty = new ArrayList<Tuple<String,String>>();
+		
+		String property = s[s.length-1]; // the last one is the property we are changing, while the rest is the string we are changing it to
+		String value = "";
+		
+		for (int i=0;i<s.length-1;i++)
+			value += ":" + s[i];
+		
+		// Remove the leading colon
+		if (value.length() > 0 && value.startsWith(":"))
+			value = value.replaceFirst(":", "");
+		
+		m_territoryProperty.add(new Tuple<String,String>(property, value));
+	}
+	
 	public Map<Territory,IntegerMap<UnitType>> getPlacement() {
 		return m_placement;
 	}
+	
 	// fudging this, it really represents adding placements
 	public void setPlacement(String place) throws GameParseException{
 		String[] s = place.split(":");
@@ -783,12 +832,30 @@ public class TriggerAttachment extends DefaultAttachment{
 			boolean met = isMet(t, data);
 			if(met) {
 				t.use(aBridge);
-				for(String property:t.getUnitProperty()) {
-					String[] s = property.split(":");
-					if(UnitAttachment.get(t.getUnitType()).getRawProperty(s[0]).equals(s[1]))
+				for(Tuple<String,String> property : t.getUnitProperty()) {
+					if(UnitAttachment.get(t.getUnitType()).getRawProperty(property.getFirst()).equals(property.getSecond()))
 						continue;
-					change.add(ChangeFactory.attachmentPropertyChange(UnitAttachment.get(t.getUnitType()), property, "rawProperty"));
-					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + s[0]+ " to " + s[1] + " for " + t.getUnitType().getName());
+					change.add(ChangeFactory.attachmentPropertyChange(UnitAttachment.get(t.getUnitType()), property.getSecond(), property.getFirst(), true));
+					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + " to " + property.getSecond() + " for " + t.getUnitType().getName());
+				}
+			}	
+		}
+		if( !change.isEmpty())
+			aBridge.addChange(change);
+	}
+
+	public static void triggerTerritoryPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,territoryPropertyMatch);
+		CompositeChange change = new CompositeChange();
+		for(TriggerAttachment t:trigs) {
+			boolean met = isMet(t, data);
+			if(met) {
+				t.use(aBridge);
+				for(Tuple<String,String> property : t.getTerritoryProperty()) {
+					if(TerritoryAttachment.get(t.getTerritoryName()).getRawProperty(property.getFirst()).equals(property.getSecond()))
+						continue;
+					change.add(ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(t.getTerritoryName()), property.getSecond(), property.getFirst(), true));
+					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + " to " + property.getSecond() + " for " + t.getTerritoryName().getName());
 				}
 			}	
 		}
@@ -916,6 +983,14 @@ public class TriggerAttachment extends DefaultAttachment{
 		public boolean match(TriggerAttachment t)
 		{
 			return t.getUnitType() != null && t.getUnitProperty() !=null && t.getUses()!=0;
+		}
+	};
+	
+	private static Match<TriggerAttachment> territoryPropertyMatch = new Match<TriggerAttachment>()
+	{
+		public boolean match(TriggerAttachment t)
+		{
+			return t.getTerritoryName() != null && t.getTerritoryProperty() !=null && t.getUses()!=0;
 		}
 	};
 	
