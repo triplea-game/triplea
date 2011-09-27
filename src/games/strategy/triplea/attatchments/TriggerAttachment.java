@@ -73,7 +73,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	// List of relationshipChanges that should be executed when this trigger hits.
 	private List<String> m_relationshipChange = new ArrayList<String>();
 
-	private Map<String,Map<TechAdvance,Boolean>> m_availableTechs = null;
+	private Map<String,Map<TechAdvance,Boolean>> m_availableTech = null;
 	private String m_victory = null;
 	private String m_conditionType = "AND";
 	private String m_notification = null;
@@ -84,9 +84,24 @@ public class TriggerAttachment extends DefaultAttachment{
 	private List<Tuple<String,String>> m_territoryProperty = null;
 	private List<Tuple<String,String>> m_playerProperty = null;
 	private Tuple<String,String> m_attachmentToBeChangedName = null;
+	private List<Tuple<String,String>> m_attachmentToBeChangedProperty = null;
 
 
 	public TriggerAttachment() {
+	}
+	
+	/**
+	 * Convenience method.
+	 * @param player
+	 * @param nameOfAttachment
+	 * @return
+	 */
+	public static TriggerAttachment get(PlayerID player, String nameOfAttachment)
+	{
+		TriggerAttachment rVal = (TriggerAttachment) player.getAttachment(nameOfAttachment);
+		if (rVal == null)
+			throw new IllegalStateException("Triggers: No trigger attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+		return rVal;
 	}
 	
 	public static Set<TriggerAttachment> getTriggers(PlayerID player, GameData data, Match<TriggerAttachment> cond){
@@ -101,6 +116,12 @@ public class TriggerAttachment extends DefaultAttachment{
         }
         return trigs;
 	}
+	
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param triggers
+	 * @throws GameParseException
+	 */
 	public void setTrigger(String triggers) throws GameParseException{
 		String[] s = triggers.split(":");
 		for(int i = 0;i<s.length;i++) {
@@ -122,6 +143,10 @@ public class TriggerAttachment extends DefaultAttachment{
 		return m_trigger;
 	}
 	
+	public void clearTrigger() {
+		m_trigger.clear();
+	}
+	
 	public void setFrontier(String s) throws GameParseException{
 		ProductionFrontier front = getData().getProductionFrontierList().getProductionFrontier(s);
 		if(front == null)
@@ -134,7 +159,9 @@ public class TriggerAttachment extends DefaultAttachment{
 	}
 	
 	/**
-	 * add, not set.
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param prop
+	 * @throws GameParseException
 	 */
 	public void setProductionRule(String prop) throws GameParseException{
 		String[] s = prop.split(":");
@@ -154,6 +181,10 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	public List<String> getProductionRule() {
 		return m_productionRule;
+	}
+	
+	public void clearProductionRule() {
+		m_productionRule.clear();
 	}
 	
 	public int getResourceCount() {
@@ -233,10 +264,11 @@ public class TriggerAttachment extends DefaultAttachment{
 		m_conditionType = s;
 	}
 	
-	public List<TechAdvance> getTech() {
-		return m_tech;
-	}
-	
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param techs
+	 * @throws GameParseException
+	 */
 	public void setTech(String techs) throws GameParseException{
 		String[] s = techs.split(":");
 		for(int i = 0;i<s.length;i++){
@@ -249,10 +281,19 @@ public class TriggerAttachment extends DefaultAttachment{
 		}
 	}
 	
-	public Map<String,Map<TechAdvance,Boolean>> getAvailableTech() {
-		return m_availableTechs;
+	public List<TechAdvance> getTech() {
+		return m_tech;
 	}
 	
+	public void clearTech() {
+		m_tech.clear();
+	}
+	
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param techs
+	 * @throws GameParseException
+	 */
 	public void setAvailableTech(String techs) throws GameParseException{
 		String[] s = techs.split(":");
 		if(s.length<2)
@@ -272,17 +313,26 @@ public class TriggerAttachment extends DefaultAttachment{
 				throw new GameParseException("Triggers: Technology not found :"+s[i]);
 			tlist.put(ta,add);
 		}
-		if(m_availableTechs == null)
-			m_availableTechs = new HashMap<String,Map<TechAdvance,Boolean>>();
-		if(m_availableTechs.containsKey(cat))
-			tlist.putAll(m_availableTechs.get(cat));
-		m_availableTechs.put(cat, tlist);
+		if(m_availableTech == null)
+			m_availableTech = new HashMap<String,Map<TechAdvance,Boolean>>();
+		if(m_availableTech.containsKey(cat))
+			tlist.putAll(m_availableTech.get(cat));
+		m_availableTech.put(cat, tlist);
 	}
 	
-	public Map<UnitSupportAttachment, Boolean> getSupport() {
-		return m_support;
+	public Map<String,Map<TechAdvance,Boolean>> getAvailableTech() {
+		return m_availableTech;
 	}
 	
+	public void clearAvailableTech() {
+		m_availableTech.clear();
+	}
+	
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param sup
+	 * @throws GameParseException
+	 */
 	public void setSupport(String sup) throws GameParseException{
 		String[] s = sup.split(":");
 		for(int i =0;i<s.length;i++) {
@@ -306,6 +356,20 @@ public class TriggerAttachment extends DefaultAttachment{
 		}
 		
 	}
+	
+	public Map<UnitSupportAttachment, Boolean> getSupport() {
+		return m_support;
+	}
+	
+	public void clearSupport() {
+		m_support.clear();
+	}
+	
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param names
+	 * @throws GameParseException
+	 */
 	public void setPlayers(String names) throws GameParseException
 	{
 		String[] s = names.split(":");
@@ -316,12 +380,17 @@ public class TriggerAttachment extends DefaultAttachment{
 			m_players.add(player);
 		}
 	}
+	
 	public List<PlayerID> getPlayers() {
 		if(m_players.isEmpty()) 
 			return Collections.singletonList((PlayerID)getAttatchedTo());
 		else
 			return m_players;
     }
+	public void clearPlayers() {
+		m_players.clear();
+    }
+	
 	public String getResource() {
 		return m_resource;
 	}
@@ -334,10 +403,11 @@ public class TriggerAttachment extends DefaultAttachment{
 			m_resource = s;
 	}
 	
-	public List<String> getRelationshipChange() {
-		return m_relationshipChange;
-	}
-	
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param relChange
+	 * @throws GameParseException
+	 */
 	public void setRelationshipChange(String relChange) throws GameParseException {
 		String[] s = relChange.split(":");
 		if(s.length !=3)
@@ -358,6 +428,14 @@ public class TriggerAttachment extends DefaultAttachment{
 		m_relationshipChange.add(relChange);
 	}
 	
+	public List<String> getRelationshipChange() {
+		return m_relationshipChange;
+	}
+	
+	public void clearRelationshipChange() {
+		m_relationshipChange.clear();
+	}
+	
 	public UnitType getUnitType() {
 		return m_unitType;
 	}
@@ -369,11 +447,11 @@ public class TriggerAttachment extends DefaultAttachment{
             m_unitType = type;
     }
 	
-	public List<Tuple<String,String>> getUnitProperty() {
-		return m_unitProperty;
-	}
-	
-	// add not set
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param prop
+	 * @throws GameParseException
+	 */
 	public void setUnitProperty(String prop) throws GameParseException{
 		String[] s = prop.split(":");
 		
@@ -393,9 +471,14 @@ public class TriggerAttachment extends DefaultAttachment{
 		m_unitProperty.add(new Tuple<String,String>(property, value));
 	}
 	
-	public Territory getTerritoryName() {
-		return m_territoryName;
+	public List<Tuple<String,String>> getUnitProperty() {
+		return m_unitProperty;
 	}
+	
+	public void clearUnitProperty() {
+		m_unitProperty.clear();
+	}
+	
 	public void setTerritoryName(String name) throws GameParseException
     {
 		Territory terr = getData().getMap().getTerritory(name);
@@ -404,11 +487,15 @@ public class TriggerAttachment extends DefaultAttachment{
 		m_territoryName = terr;
     }
 	
-	public List<Tuple<String,String>> getTerritoryProperty() {
-		return m_territoryProperty;
+	public Territory getTerritoryName() {
+		return m_territoryName;
 	}
 	
-	// add not set
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param prop
+	 * @throws GameParseException
+	 */
 	public void setTerritoryProperty(String prop) throws GameParseException{
 		String[] s = prop.split(":");
 		
@@ -428,11 +515,19 @@ public class TriggerAttachment extends DefaultAttachment{
 		m_territoryProperty.add(new Tuple<String,String>(property, value));
 	}
 	
-	public List<Tuple<String,String>> getPlayerProperty() {
-		return m_playerProperty;
+	public List<Tuple<String,String>> getTerritoryProperty() {
+		return m_territoryProperty;
 	}
 	
-	// add not set
+	public void clearTerritoryProperty() {
+		m_territoryProperty.clear();
+	}
+	
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param prop
+	 * @throws GameParseException
+	 */
 	public void setPlayerProperty(String prop) throws GameParseException{
 		String[] s = prop.split(":");
 		
@@ -452,6 +547,14 @@ public class TriggerAttachment extends DefaultAttachment{
 		m_playerProperty.add(new Tuple<String,String>(property, value));
 	}
 	
+	public List<Tuple<String,String>> getPlayerProperty() {
+		return m_playerProperty;
+	}
+	
+	public void clearPlayerProperty() {
+		m_playerProperty.clear();
+	}
+	
 	public void setAttachmentToBeChangedName(String name) throws GameParseException {
 		String[] s = name.split(":");
 		if (s.length != 2)
@@ -469,11 +572,44 @@ public class TriggerAttachment extends DefaultAttachment{
 		return m_attachmentToBeChangedName;
 	}
 	
-	public Map<Territory,IntegerMap<UnitType>> getPlacement() {
-		return m_placement;
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param prop
+	 * @throws GameParseException
+	 */
+	public void setAttachmentToBeChangedProperty(String prop) throws GameParseException{
+		String[] s = prop.split(":");
+		
+		if(m_attachmentToBeChangedProperty== null)
+			m_attachmentToBeChangedProperty = new ArrayList<Tuple<String,String>>();
+		
+		String property = s[s.length-1]; // the last one is the property we are changing, while the rest is the string we are changing it to
+		String value = "";
+		
+		for (int i=0;i<s.length-1;i++)
+			value += ":" + s[i];
+		
+		// Remove the leading colon
+		if (value.length() > 0 && value.startsWith(":"))
+			value = value.replaceFirst(":", "");
+		
+		m_attachmentToBeChangedProperty.add(new Tuple<String,String>(property, value));
 	}
 	
-	// fudging this, it really represents adding placements
+	public List<Tuple<String,String>> getAttachmentToBeChangedProperty() {
+		return m_attachmentToBeChangedProperty;
+	}
+	
+	public void clearAttachmentToBeChangedProperty() {
+		m_attachmentToBeChangedProperty.clear();
+	}
+	
+	/**
+	 * Fudging this, it really represents adding placements.
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param place
+	 * @throws GameParseException
+	 */
 	public void setPlacement(String place) throws GameParseException{
 		String[] s = place.split(":");
     	int count = -1,i=0;
@@ -508,6 +644,19 @@ public class TriggerAttachment extends DefaultAttachment{
     	}	
 	}
 	
+	public Map<Territory,IntegerMap<UnitType>> getPlacement() {
+		return m_placement;
+	}
+	
+	public void clearPlacement() {
+		m_placement.clear();
+	}
+	
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param place
+	 * @throws GameParseException
+	 */
 	public void setPurchase(String place) throws GameParseException{
 		String[] s = place.split(":");
     	int count = -1,i=0;
@@ -532,11 +681,14 @@ public class TriggerAttachment extends DefaultAttachment{
     				m_purchase.add(type, count);
     		}	
     	}
-
-
 	}
+	
 	public IntegerMap<UnitType> getPurchase() {
 		return m_purchase;
+	}
+	
+	public void clearPurchase() {
+		m_purchase.clear();
 	}
 	
 	/**
@@ -893,7 +1045,7 @@ public class TriggerAttachment extends DefaultAttachment{
 						change.add(ChangeFactory.attachmentPropertyClear(UnitAttachment.get(t.getUnitType()), property.getFirst(), true));
 					else
 						change.add(ChangeFactory.attachmentPropertyChange(UnitAttachment.get(t.getUnitType()), newValue, property.getFirst(), true, clearFirst));
-					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + " to " + newValue + " for " + t.getUnitType().getName());
+					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getUnitType().getName());
 				}
 			}
 		}
@@ -922,7 +1074,7 @@ public class TriggerAttachment extends DefaultAttachment{
 						change.add(ChangeFactory.attachmentPropertyClear(TerritoryAttachment.get(t.getTerritoryName()), property.getFirst(), true));
 					else
 						change.add(ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(t.getTerritoryName()), newValue, property.getFirst(), true, clearFirst));
-					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + " to " + newValue + " for " + t.getTerritoryName().getName());
+					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getTerritoryName().getName());
 				}
 			}
 		}
@@ -953,7 +1105,53 @@ public class TriggerAttachment extends DefaultAttachment{
 							change.add(ChangeFactory.attachmentPropertyClear(PlayerAttachment.get(aPlayer), property.getFirst(), true));
 						else
 							change.add(ChangeFactory.attachmentPropertyChange(PlayerAttachment.get(aPlayer), newValue, property.getFirst(), true, clearFirst));
-						aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + " to " + newValue + " for " + aPlayer.getName());
+						aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + aPlayer.getName());
+					}
+				}
+			}
+		}
+		if( !change.isEmpty())
+			aBridge.addChange(change);
+	}
+
+	public static void triggerAttachmentToBeChangedPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,attachmentToBeChangedPropertyMatch);
+		CompositeChange change = new CompositeChange();
+		for(TriggerAttachment t:trigs) {
+			if(isMet(t, data)) {
+				t.use(aBridge);
+				for(Tuple<String,String> property : t.getAttachmentToBeChangedProperty()) {
+					for (PlayerID aPlayer : t.getPlayers())
+					{
+						String newValue = property.getSecond();
+						boolean clearFirst = false;
+						// test if we are clearing the variable first, and if so, remove the leading dash "-clear-"
+						if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+						{
+							newValue = newValue.replaceFirst("-clear-", "");
+							clearFirst = true;
+						}
+						if (t.getAttachmentToBeChangedName().getFirst() == "TriggerAttachment")
+						{
+							if(TriggerAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()).getRawProperty(property.getFirst()).equals(newValue))
+								continue;
+							if (clearFirst && newValue.length() < 1)
+								change.add(ChangeFactory.attachmentPropertyClear(TriggerAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()), property.getFirst(), true));
+							else
+								change.add(ChangeFactory.attachmentPropertyChange(TriggerAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()), newValue, property.getFirst(), true, clearFirst));
+							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getAttachmentToBeChangedName().getSecond());
+						}
+						else if (t.getAttachmentToBeChangedName().getFirst() == "RulesAttachment")
+						{
+							if(RulesAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()).getRawProperty(property.getFirst()).equals(newValue))
+								continue;
+							if (clearFirst && newValue.length() < 1)
+								change.add(ChangeFactory.attachmentPropertyClear(RulesAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()), property.getFirst(), true));
+							else
+								change.add(ChangeFactory.attachmentPropertyChange(RulesAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()), newValue, property.getFirst(), true, clearFirst));
+							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getAttachmentToBeChangedName().getSecond());
+						}
+						// TODO add other attachment changes here if they are the kind which have multiple attachments per attached player
 					}
 				}
 			}
@@ -1097,7 +1295,15 @@ public class TriggerAttachment extends DefaultAttachment{
 	{
 		public boolean match(TriggerAttachment t)
 		{
-			return t.getPlayerProperty() !=null && t.getUses()!=0;
+			return t.getPlayerProperty() != null && t.getUses()!=0;
+		}
+	};
+	
+	private static Match<TriggerAttachment> attachmentToBeChangedPropertyMatch = new Match<TriggerAttachment>()
+	{
+		public boolean match(TriggerAttachment t)
+		{
+			return t.getAttachmentToBeChangedName() != null && t.getAttachmentToBeChangedProperty() != null && t.getUses()!=0;
 		}
 	};
 	

@@ -79,7 +79,7 @@ public class RulesAttachment extends DefaultAttachment
 	{
 		RulesAttachment rVal = (RulesAttachment) player.getAttachment(nameOfAttachment);
 		if (rVal == null)
-			throw new IllegalStateException("Rules & Conditions: No rule attachment for:" + player.getName());
+			throw new IllegalStateException("Rules & Conditions: No rule attachment for:" + player.getName() + " with name: " + nameOfAttachment);
 		return rVal;
 	}
 

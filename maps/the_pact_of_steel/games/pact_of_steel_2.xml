@@ -3027,10 +3027,11 @@
 			territoryProperty					values: the name of any actual territory property, with a count equal to the property's values (examples: value="production" count="4", or value="victoryCity" count="true"), requires a territoryName declared
 			playerProperty						values: the name of any actual player attachment property, with a count equal to the property's values (examples: value="destroysPUs" count="true"). (requires players to be set, otherwise it uses the attached player)
 			attachmentToBeChangedName			values: the type of attachment (TriggerAttachment or RulesAttachment) and the exact full name of the attachment to be changed. (example: value="RulesAttachment" count="rulesAttatchment")
+			attachmentToBeChangedProperty		values: the name of any actual attachment property, with a count equal to the property's values (examples: value="placementAnyTerritory" count="true")
 			
 			
 	-->
-		<!-- Clarification on changing properties and clearing of properties:
+		<!-- Clarification on changing properties and clearing of properties. (Any property not in this list overwrites itself if you set it multiple times)
 				The following attachments may have MULTIPLE instances, meaning that they are adding to some variable, meaning that they may be cleared by triggers if you want to:
 				Unit Attachments:
 					canBeGivenByTerritoryTo
@@ -3054,9 +3055,25 @@
 				Objectives & Condition Attachments:
 					conditions
 					unitPresence
+					relationship
 				
 				Rules Attachments:
 					productionPerXTerritories
+					
+				Trigger Attachments:
+					trigger
+					productionRule
+					tech
+					availableTech
+					placement
+					purchase
+					support
+					players
+					relationshipChange
+					unitProperty
+					territoryProperty
+					playerProperty
+					attachmentToBeChangedProperty
 				
 		-->
 	<!-- Victory Triggers -->

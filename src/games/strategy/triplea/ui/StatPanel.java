@@ -769,11 +769,16 @@ class PlayerOrderComparator implements Comparator<PlayerID>
             if(s.getPlayerID() == null)
                 continue;
             
-            String delegateClassName = s.getDelegate().getClass().getName();
-            if (delegateClassName == "games.strategy.triplea.delegate.InitializationDelegate"
-    					|| delegateClassName == "games.strategy.triplea.delegate.BidPurchaseDelegate"
-            			|| delegateClassName == "games.strategy.triplea.delegate.BidPlaceDelegate"
-            			|| delegateClassName == "games.strategy.triplea.delegate.EndRoundDelegate")
+            if(s.getDelegate() != null && s.getDelegate().getClass() != null)
+            {
+                String delegateClassName = s.getDelegate().getClass().getName();
+                if (delegateClassName == "games.strategy.triplea.delegate.InitializationDelegate"
+        					|| delegateClassName == "games.strategy.triplea.delegate.BidPurchaseDelegate"
+                			|| delegateClassName == "games.strategy.triplea.delegate.BidPlaceDelegate"
+                			|| delegateClassName == "games.strategy.triplea.delegate.EndRoundDelegate")
+                	continue;
+            }
+            else if (s.getName() != null && (s.getName().endsWith("Bid") || s.getName().endsWith("BidPlace")))
             	continue;
             
             if(s.getPlayerID().equals(p1))
