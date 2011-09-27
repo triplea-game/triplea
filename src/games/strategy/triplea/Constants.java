@@ -45,6 +45,8 @@ public interface Constants
   public static final String TERRITORY_ATTACHMENT_NAME = "territoryAttatchment";
   public static final String RULES_ATTACHMENT_NAME = "rulesAttatchment";
   public static final String RULES_OBJECTIVE_PREFIX = "objectiveAttachment";
+  public static final String RULES_CONDITION_PREFIX = "conditionAttachment";
+  public static final String TRIGGER_ATTACHMENT_PREFIX = "triggerAttachment";
   public static final String PLAYER_ATTACHMENT_NAME = "playerAttatchment";
   public static final String RELATIONSHIPTYPE_ATTACHMENT_NAME = "relationshipTypeAttachment";
   public static final String CANAL_ATTACHMENT_PREFIX = "canalAttatchment";

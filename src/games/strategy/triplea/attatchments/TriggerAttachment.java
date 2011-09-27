@@ -43,7 +43,11 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-
+/**
+ * 
+ * @author SquidDaddy and Veqryn [Mark Christopher Duncan]
+ *
+ */
 public class TriggerAttachment extends DefaultAttachment{
 
 	/**
@@ -78,6 +82,8 @@ public class TriggerAttachment extends DefaultAttachment{
 	private List<Tuple<String,String>> m_unitProperty = null;
 	private Territory m_territoryName = null;
 	private List<Tuple<String,String>> m_territoryProperty = null;
+	private List<Tuple<String,String>> m_playerProperty = null;
+	private Tuple<String,String> m_attachmentToBeChangedName = null;
 
 
 	public TriggerAttachment() {
@@ -420,6 +426,47 @@ public class TriggerAttachment extends DefaultAttachment{
 			value = value.replaceFirst(":", "");
 		
 		m_territoryProperty.add(new Tuple<String,String>(property, value));
+	}
+	
+	public List<Tuple<String,String>> getPlayerProperty() {
+		return m_playerProperty;
+	}
+	
+	// add not set
+	public void setPlayerProperty(String prop) throws GameParseException{
+		String[] s = prop.split(":");
+		
+		if(m_playerProperty== null)
+			m_playerProperty = new ArrayList<Tuple<String,String>>();
+		
+		String property = s[s.length-1]; // the last one is the property we are changing, while the rest is the string we are changing it to
+		String value = "";
+		
+		for (int i=0;i<s.length-1;i++)
+			value += ":" + s[i];
+		
+		// Remove the leading colon
+		if (value.length() > 0 && value.startsWith(":"))
+			value = value.replaceFirst(":", "");
+		
+		m_playerProperty.add(new Tuple<String,String>(property, value));
+	}
+	
+	public void setAttachmentToBeChangedName(String name) throws GameParseException {
+		String[] s = name.split(":");
+		if (s.length != 2)
+			throw new GameParseException( "Triggers: attachmentToBeChangedName must have 2 entries, the type of attachment and the name of the attachment.");
+		if (s[1] != "TriggerAttachment" || s[1] != "RulesAttachment")
+			throw new GameParseException( "Triggers: attachmentToBeChangedName value must be TriggerAttachment or RulesAttachment");
+		// TODO validate attachment exists?
+		if (s[0].length()<1)
+			throw new GameParseException( "Triggers: attachmentToBeChangedName count must be a valid attachment name");
+		m_attachmentToBeChangedName = new Tuple<String,String>(s[1], s[0]);
+	}
+	
+	public Tuple<String,String> getAttachmentToBeChangedName()
+	{
+		return m_attachmentToBeChangedName;
 	}
 	
 	public Map<Territory,IntegerMap<UnitType>> getPlacement() {
@@ -842,7 +889,10 @@ public class TriggerAttachment extends DefaultAttachment{
 					}
 					if(UnitAttachment.get(t.getUnitType()).getRawProperty(property.getFirst()).equals(newValue))
 						continue;
-					change.add(ChangeFactory.attachmentPropertyChange(UnitAttachment.get(t.getUnitType()), newValue, property.getFirst(), true, clearFirst));
+					if (clearFirst && newValue.length() < 1)
+						change.add(ChangeFactory.attachmentPropertyClear(UnitAttachment.get(t.getUnitType()), property.getFirst(), true));
+					else
+						change.add(ChangeFactory.attachmentPropertyChange(UnitAttachment.get(t.getUnitType()), newValue, property.getFirst(), true, clearFirst));
 					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + " to " + newValue + " for " + t.getUnitType().getName());
 				}
 			}
@@ -868,8 +918,43 @@ public class TriggerAttachment extends DefaultAttachment{
 					}
 					if(TerritoryAttachment.get(t.getTerritoryName()).getRawProperty(property.getFirst()).equals(newValue))
 						continue;
-					change.add(ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(t.getTerritoryName()), newValue, property.getFirst(), true, clearFirst));
+					if (clearFirst && newValue.length() < 1)
+						change.add(ChangeFactory.attachmentPropertyClear(TerritoryAttachment.get(t.getTerritoryName()), property.getFirst(), true));
+					else
+						change.add(ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(t.getTerritoryName()), newValue, property.getFirst(), true, clearFirst));
 					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + " to " + newValue + " for " + t.getTerritoryName().getName());
+				}
+			}
+		}
+		if( !change.isEmpty())
+			aBridge.addChange(change);
+	}
+
+	public static void triggerPlayerPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,playerPropertyMatch);
+		CompositeChange change = new CompositeChange();
+		for(TriggerAttachment t:trigs) {
+			if(isMet(t, data)) {
+				t.use(aBridge);
+				for(Tuple<String,String> property : t.getPlayerProperty()) {
+					for (PlayerID aPlayer : t.getPlayers())
+					{
+						String newValue = property.getSecond();
+						boolean clearFirst = false;
+						// test if we are clearing the variable first, and if so, remove the leading dash "-clear-"
+						if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+						{
+							newValue = newValue.replaceFirst("-clear-", "");
+							clearFirst = true;
+						}
+						if(PlayerAttachment.get(aPlayer).getRawProperty(property.getFirst()).equals(newValue))
+							continue;
+						if (clearFirst && newValue.length() < 1)
+							change.add(ChangeFactory.attachmentPropertyClear(PlayerAttachment.get(aPlayer), property.getFirst(), true));
+						else
+							change.add(ChangeFactory.attachmentPropertyChange(PlayerAttachment.get(aPlayer), newValue, property.getFirst(), true, clearFirst));
+						aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + " to " + newValue + " for " + aPlayer.getName());
+					}
 				}
 			}
 		}
@@ -1005,6 +1090,14 @@ public class TriggerAttachment extends DefaultAttachment{
 		public boolean match(TriggerAttachment t)
 		{
 			return t.getTerritoryName() != null && t.getTerritoryProperty() !=null && t.getUses()!=0;
+		}
+	};
+	
+	private static Match<TriggerAttachment> playerPropertyMatch = new Match<TriggerAttachment>()
+	{
+		public boolean match(TriggerAttachment t)
+		{
+			return t.getPlayerProperty() !=null && t.getUses()!=0;
 		}
 	};
 	

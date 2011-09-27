@@ -196,6 +196,14 @@ public class ChangeFactory
 		return new ChangeAttachmentChange(attatchment, attatchmentName, newValue, oldValue, property, clearFirst);
 	}
 	
+	/**
+	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
+	 */
+	public static Change attachmentPropertyClear(IAttachment attatchment, String property, boolean getRaw)
+	{
+		return new AttachmentPropertyClear(attatchment, property, getRaw);
+	}
+	
 	public static Change genericTechChange(TechAttachment attatchment, Boolean value, String property)
 	{
 		return new GenericTechChange(attatchment, value, property);
@@ -257,6 +265,127 @@ public class ChangeFactory
         return unitPropertyChange(unit, ua.getMovement(unit.getOwner()), TripleAUnit.ALREADY_MOVED);
     }
 	
+}
+
+/**
+ * Clears the value from an attachment.
+ * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
+ */
+class AttachmentPropertyClear extends Change
+{
+	private static final long serialVersionUID = 9208154387325299072L;
+	private final Attachable m_attatchedTo;
+	private final String m_attatchmentName;
+	private Object m_oldValue;
+	private final String m_property;
+
+	/**
+	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
+	 */
+	AttachmentPropertyClear(IAttachment attatchment, String property, boolean getRaw)
+	{
+		if (attatchment == null)
+			throw new IllegalArgumentException("No attachment, property:" + property);
+		
+		m_attatchedTo = attatchment.getAttatchedTo();
+		
+		m_attatchmentName = attatchment.getName();
+		
+		if (getRaw)
+		{
+			m_oldValue = PropertyUtil.getRaw(property, attatchment);
+			m_property = property;
+		}
+		else
+		{
+			m_oldValue = PropertyUtil.get(property, attatchment);
+			m_property = property;
+		}
+	}
+	
+	/**
+	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
+	 */
+	AttachmentPropertyClear(Attachable attatchTo, String attatchmentName, Object oldValue, String property)
+	{
+		m_attatchmentName = attatchmentName;
+		m_attatchedTo = attatchTo;
+		m_oldValue = oldValue;
+		m_property = property;
+	}
+	
+	public Attachable getAttatchedTo()
+	{
+		return m_attatchedTo;
+	}
+	
+	public String getAttatchmentName()
+	{
+		return m_attatchmentName;
+	}
+	
+	public void perform(GameData data)
+	{
+		IAttachment attachment = m_attatchedTo.getAttachment(m_attatchmentName);
+		PropertyUtil.clear(m_property, attachment);
+	}
+	
+	public Change invert()
+	{
+		return new AttachmentPropertyClearUndo(m_attatchedTo, m_attatchmentName, m_oldValue, m_property);
+	}
+	
+	public String toString()
+	{
+		return "AttachmentPropertyClear attatched to:" + m_attatchedTo + " name:" + m_attatchmentName + ", cleared old value:" + m_oldValue;
+	}
+}
+
+
+class AttachmentPropertyClearUndo extends Change
+{
+	private static final long serialVersionUID = 5943939650116851332L;
+	private final Attachable m_attatchedTo;
+	private final String m_attatchmentName;
+	private final Object m_newValue;
+	private final String m_property;
+	
+	/**
+	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
+	 */
+	AttachmentPropertyClearUndo(Attachable attatchTo, String attatchmentName, Object newValue, String property)
+	{
+		m_attatchmentName = attatchmentName;
+		m_attatchedTo = attatchTo;
+		m_newValue = newValue;
+		m_property = property;
+	}
+	
+	public Attachable getAttatchedTo()
+	{
+		return m_attatchedTo;
+	}
+	
+	public String getAttatchmentName()
+	{
+		return m_attatchmentName;
+	}
+	
+	public void perform(GameData data)
+	{
+		IAttachment attachment = m_attatchedTo.getAttachment(m_attatchmentName);
+		PropertyUtil.set(m_property, m_newValue, attachment, false);
+	}
+	
+	public Change invert()
+	{
+		return new AttachmentPropertyClear(m_attatchedTo, m_attatchmentName, m_newValue, m_property);
+	}
+	
+	public String toString()
+	{
+		return "AttachmentPropertyClearUndo attatched to:" + m_attatchedTo + " name:" + m_attatchmentName + " new value:" + m_newValue;
+	}
 }
 
 /**

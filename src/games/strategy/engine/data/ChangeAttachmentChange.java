@@ -25,7 +25,7 @@ public class ChangeAttachmentChange extends Change
   private final Object m_newValue;
   private Object m_oldValue;
   private final String m_property;
-  private boolean m_clearFirst;
+  private boolean m_clearFirst = false;
 
   public Attachable getAttatchedTo()
   {

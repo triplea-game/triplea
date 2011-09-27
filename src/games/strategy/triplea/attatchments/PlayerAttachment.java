@@ -20,7 +20,6 @@
 
 package games.strategy.triplea.attatchments;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -47,7 +46,6 @@ public class PlayerAttachment extends DefaultAttachment
     private int m_captureVps = 0; // need to store some data during a turn
     private int m_retainCapitalNumber = 1; // number of capitals needed before we lose all our money
     private int m_retainCapitalProduceNumber = 1; // number of capitals needed before we lose ability to gain money and produce units
-    private boolean m_takeUnitControl = false; //no longer needed now that m_giveUnitControl is a list of players instead of a boolean (kept to ensure no java errors in older maps)
     private Collection<PlayerID> m_giveUnitControl = new ArrayList<PlayerID>();
     private Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
     private boolean m_destroysPUs = false; // do we lose our money and have it disappear or is that money captured?
@@ -98,16 +96,12 @@ public class PlayerAttachment extends DefaultAttachment
     }
     
     // setTakeUnitControl and getTakeUnitControl DO NOTHING.  They are kept for backwards compatibility only, otherwise users get Java errors.
-    public void setTakeUnitControl(String value)
-    {
-        m_takeUnitControl = getBool(value);
-    }
-
-    public boolean getTakeUnitControl()
-    {
-        return m_takeUnitControl;
-    }
+    public void setTakeUnitControl(String value) { }
     
+    /**
+     * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+     * @param value
+     */
     public void setGiveUnitControl(String value)
     {
     	String[] temp = value.split(":");
@@ -127,7 +121,16 @@ public class PlayerAttachment extends DefaultAttachment
     {
         return m_giveUnitControl;
     }
-    
+
+    public void clearGiveUnitControl()
+    {
+        m_giveUnitControl.clear();
+    }
+
+    /**
+     * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+     * @param value
+     */
     public void setCaptureUnitOnEnteringBy(String value)
     {
     	String[] temp = value.split(":");
@@ -144,6 +147,11 @@ public class PlayerAttachment extends DefaultAttachment
     public Collection<PlayerID> getCaptureUnitOnEnteringBy()
     {
         return m_captureUnitOnEnteringBy;
+    }
+
+    public void clearCaptureUnitOnEnteringBy()
+    {
+        m_captureUnitOnEnteringBy.clear();
     }
     
     public void setDestroysPUs(String value)

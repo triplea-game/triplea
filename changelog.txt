@@ -1,4 +1,8 @@
 Changes for 1.3.3.0
+* Preliminary work on making new triggers for rules attachments, and fixing issue with clearing properties without setting. (veqryn)
+
+* Created new triggers for changing player attachments, using players and playerProperty. (veqryn)
+
 * Finished work on allowing triggers to clear data from properties that add rather than overwrite data, by adding "-clear-" to the beginning of the new property, in the triggered change. (veqryn)
 
 * Fixed issue where stats panel and exported stats relied on the first game steps it saw to determine turn order, which meant it considered the order of bids as representative of turn order, instead of looking at things like movement. (veqryn) 

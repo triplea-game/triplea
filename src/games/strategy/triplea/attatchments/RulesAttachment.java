@@ -26,7 +26,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.*;
 import games.strategy.util.*;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 
@@ -44,15 +43,43 @@ public class RulesAttachment extends DefaultAttachment
 	private static final long serialVersionUID = 7301965634079412516L;
 
 	/**
-	 * Convenience method.
+	 * Convenience method, will not return objectives and conditions, only the rules attachment (like what China in ww2v3 has).
 	 * @param r rule
 	 * @return new rule attachment
 	 */
 	public static RulesAttachment get(Rule r)
 	{
+		// why the heck are we using "Rule" here?  there are no attachments onto Rule objects, as far as I know RulesAttachments get attached to players only
 		RulesAttachment rVal = (RulesAttachment) r.getAttachment(Constants.RULES_ATTACHMENT_NAME);
 		if (rVal == null)
 			throw new IllegalStateException("Rules & Conditions: No rule attachment for:" + r.getName());
+		return rVal;
+	}
+
+	/**
+	 * Convenience method, will not return objectives and conditions, only the rules attachment (like what China in ww2v3 has).
+	 * @param player PlayerID
+	 * @return new rule attachment
+	 */
+	public static RulesAttachment get(PlayerID player)
+	{
+		RulesAttachment rVal = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+		if (rVal == null)
+			throw new IllegalStateException("Rules & Conditions: No rule attachment for:" + player.getName());
+		return rVal;
+	}
+	
+	/**
+	 * Convenience method, for use with rules attachments, objectives, and condition attachments.
+	 * @param player PlayerID
+	 * @param nameOfAttachment exact full name of attachment
+	 * @return new rule attachment
+	 */
+	public static RulesAttachment get(PlayerID player, String nameOfAttachment)
+	{
+		RulesAttachment rVal = (RulesAttachment) player.getAttachment(nameOfAttachment);
+		if (rVal == null)
+			throw new IllegalStateException("Rules & Conditions: No rule attachment for:" + player.getName());
 		return rVal;
 	}
 
@@ -61,7 +88,7 @@ public class RulesAttachment extends DefaultAttachment
 	// private PlayerID m_ruleOwner = null;
 	
 	// meta-conditions rules attachment lists
-	private List<RulesAttachment> m_conditions = null;
+	private List<RulesAttachment> m_conditions = new ArrayList<RulesAttachment>();
 
 	// Strings
 	//private String m_alliedExclusion = null;
@@ -138,6 +165,11 @@ public class RulesAttachment extends DefaultAttachment
 		return m_objectiveValue;
 	}
 	
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param conditions
+	 * @throws GameParseException
+	 */
 	public void setConditions(String conditions) throws GameParseException{
 		String[] s = conditions.split(":");
 		for(int i = 0;i<s.length;i++) {
@@ -149,14 +181,16 @@ public class RulesAttachment extends DefaultAttachment
 			}
 			if(condition == null)
 				throw new GameParseException("Rules & Conditions: Could not find rule (conditions which hold other conditions should be listed after the conditions they contain). name:" + s[i]);
-			if(m_conditions == null)
-				m_conditions = new ArrayList<RulesAttachment>();
 			m_conditions.add(condition);
 		}
 	}
 	
 	public List<RulesAttachment> getConditions() {
 		return m_conditions;
+	}
+	
+	public void clearConditions() {
+		m_conditions.clear();
 	}
 	
 	public String getConditionType() {
@@ -170,7 +204,8 @@ public class RulesAttachment extends DefaultAttachment
 	}
 
 	/**
-	 * condition to check if a certain relationship exists between 2 players
+	 * Condition to check if a certain relationship exists between 2 players.
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
 	 * @param value should be a string containing: "player:player:relationship"
 	 * @throws GameParseException
 	 */
@@ -188,6 +223,16 @@ public class RulesAttachment extends DefaultAttachment
 				Matches.isValidRelationshipName(getData()).match(s[2])))
 			throw new GameParseException("Rules & Conditions: relationship: "+s[2]+" isn't valid in condition with relationship: "+value+" for RulesAttachment "+getName());
 		m_relationship.add(value);
+	}
+	
+	public List<String> getRelationship()
+	{
+		return m_relationship;
+	}
+	
+	public void clearRelationship()
+	{
+		m_relationship.clear();
 	}
 
 	public void setAlliedOwnershipTerritories(String value)
@@ -343,6 +388,10 @@ public class RulesAttachment extends DefaultAttachment
 		return m_movementRestrictionType;
 	}
 
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param value
+	 */
 	public void setProductionPerXTerritories(String value)
 	{
 		String[] s = value.split(":");
@@ -372,6 +421,15 @@ public class RulesAttachment extends DefaultAttachment
 		return m_productionPerXTerritories;
 	}
 
+	public void clearProductionPerXTerritories()
+	{
+		m_productionPerXTerritories.clear();
+	}
+
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param value
+	 */
 	public void setUnitPresence(String value)
 	{
 		String[] s = value.split(":");
@@ -396,6 +454,11 @@ public class RulesAttachment extends DefaultAttachment
 	public IntegerMap<UnitType> getUnitPresence()
 	{
 		return m_unitPresence;
+	}
+
+	public void clearUnitPresence()
+	{
+		m_unitPresence.clear();
 	}
 
 	public void setPlacementPerTerritory(String value)
@@ -525,29 +588,27 @@ public class RulesAttachment extends DefaultAttachment
 
 	public void setAtWarPlayers(String players) throws GameParseException
 	{
+		String[] s = players.split(":");
+		int count = -1;
+		if (s.length < 1)
+			throw new GameParseException("Rules & Conditions: Empty enemy list");
+		try
 		{
-			String[] s = players.split(":");
-			int count = -1;
-			if (s.length < 1)
-				throw new GameParseException("Rules & Conditions: Empty enemy list");
-			try
-			{
-				count = getInt(s[0]);
-				m_atWarCount = count;
-			} catch (Exception e)
-			{
-				m_atWarCount = 0;
-			}
-			if (s.length < 1 || s.length == 1 && count != -1)
-				throw new GameParseException("Rules & Conditions: Empty enemy list");
-			m_atWarPlayers = new HashSet<PlayerID>();
-			for (int i = count == -1 ? 0 : 1; i < s.length; i++)
-			{
-				PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
-				if (player == null)
-					throw new GameParseException("Rules & Conditions: Could not find player. name:" + s[i]);
-				m_atWarPlayers.add(player);
-			}
+			count = getInt(s[0]);
+			m_atWarCount = count;
+		} catch (Exception e)
+		{
+			m_atWarCount = 0;
+		}
+		if (s.length < 1 || s.length == 1 && count != -1)
+			throw new GameParseException("Rules & Conditions: Empty enemy list");
+		m_atWarPlayers = new HashSet<PlayerID>();
+		for (int i = count == -1 ? 0 : 1; i < s.length; i++)
+		{
+			PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
+			if (player == null)
+				throw new GameParseException("Rules & Conditions: Could not find player. name:" + s[i]);
+			m_atWarPlayers.add(player);
 		}
 	}
 
@@ -785,7 +846,7 @@ public class RulesAttachment extends DefaultAttachment
 		//
 		// check meta conditions (conditions which hold other conditions)
 		//
-		if (objectiveMet && m_conditions != null && m_conditions.size() > 0)
+		if (objectiveMet && m_conditions.size() > 0)
 		{
 			objectiveMet = isMetForMetaConditions(data);
 		}
