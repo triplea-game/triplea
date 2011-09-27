@@ -931,6 +931,11 @@ private void addLockMap(JMenu parentMenu)
         while (gameStepIterator.hasNext())
         {
             GameStep currentStep = gameStepIterator.next();
+            
+            if (currentStep.getDelegate().getClass().getName() == "games.strategy.triplea.delegate.BidPurchaseDelegate"
+            		|| currentStep.getDelegate().getClass().getName() == "games.strategy.triplea.delegate.BidPlaceDelegate")
+            	continue;
+            
             PlayerID currentPlayerID = currentStep.getPlayerID();
 
             if (currentPlayerID != null && !currentPlayerID.isNull())

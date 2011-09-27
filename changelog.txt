@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Fixed issue where stats panel and exported stats relied on the first game steps it saw to determine turn order, which meant it considered the order of bids as representative of turn order, instead of looking at things like movement. (veqryn) 
+
 * Preliminary work on allowing triggers to clear data from properties that allow multiple sets, in other words, properties that add data rather than overwriting. (veqryn)
 
 * Created new triggers for changing territory properties, using territoryName and territoryProperty. (veqryn)

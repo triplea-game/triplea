@@ -24,7 +24,6 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -69,6 +68,7 @@ import javax.swing.table.TableModel;
  * 
  * @author Sean Bridges
  */
+@SuppressWarnings("serial")
 public class StatPanel extends JPanel
 {
     private final StatTableModel m_dataModel;
@@ -84,7 +84,7 @@ public class StatPanel extends JPanel
         public int compare(PlayerID p1, PlayerID p2)
         {
             
-            Iterator iter = m_data.getSequence().iterator();
+            Iterator<GameStep> iter = m_data.getSequence().iterator();
             
             while(iter.hasNext())
             {
@@ -92,6 +92,10 @@ public class StatPanel extends JPanel
                 
                 if(s.getPlayerID() == null)
                     continue;
+                
+                if (s.getDelegate().getClass().getName() == "games.strategy.triplea.delegate.BidPurchaseDelegate"
+                		|| s.getDelegate().getClass().getName() == "games.strategy.triplea.delegate.BidPlaceDelegate")
+                	continue;
                 
                 if(s.getPlayerID().equals(p1))
                     return -1;
@@ -202,7 +206,7 @@ public class StatPanel extends JPanel
      */
     public Collection<String> getAlliances()
     {
-        Iterator allAlliances = m_data.getAllianceTracker().getAlliances().iterator();
+        Iterator<String> allAlliances = m_data.getAllianceTracker().getAlliances().iterator();
         //order the alliances use a Tree Set
         Collection<String> rVal = new TreeSet<String>();
 
@@ -261,13 +265,13 @@ public class StatPanel extends JPanel
             m_data.acquireReadLock();
             try
             {
-                List players = getPlayers();
+                List<PlayerID> players = getPlayers();
                 Collection<String> alliances = getAlliances();
 	            
 	            m_collectedData = new String[players.size() + alliances.size()][m_stats.length + 1];
 	            
 	            int row = 0;
-	            Iterator playerIter = players.iterator();
+	            Iterator<PlayerID> playerIter = players.iterator();
 	            while (playerIter.hasNext())
 	            {
 	                PlayerID player = (PlayerID) playerIter.next();
@@ -429,7 +433,7 @@ public class StatPanel extends JPanel
            
             /* Load the technology -> row mapping */
             rowMap = new HashMap<String, Integer>();
-            Iterator iter = TechAdvance.getTechAdvances(m_data,null).iterator();
+            Iterator<TechAdvance> iter = TechAdvance.getTechAdvances(m_data,null).iterator();
             int row = 0;
 
             if (useTech)
@@ -487,7 +491,7 @@ public class StatPanel extends JPanel
             gameData.acquireReadLock();
             try
             {
-                Iterator playerIter = gameData.getPlayerList().getPlayers().iterator();
+                Iterator<PlayerID> playerIter = gameData.getPlayerList().getPlayers().iterator();
                 while (playerIter.hasNext())
                 {
                     PlayerID pid = (PlayerID) playerIter.next();
@@ -505,7 +509,7 @@ public class StatPanel extends JPanel
                 		data[row][col] = tokens.toString();
                 	}
 
-                    Iterator advances = TechTracker.getTechAdvances(pid,m_data).iterator();
+                    Iterator<TechAdvance> advances = TechTracker.getTechAdvances(pid,m_data).iterator();
     
                     while (advances.hasNext())
                     {
@@ -606,7 +610,7 @@ class ProductionStat extends AbstractStat
     public double getValue(PlayerID player, GameData data)
     {
         int rVal = 0; 
-        Iterator iter = data.getMap().getTerritories().iterator();
+        Iterator<Territory> iter = data.getMap().getTerritories().iterator();
         while (iter.hasNext())
         {
             boolean isOwnedConvoyOrLand = false; 
@@ -689,7 +693,7 @@ class UnitsStat extends AbstractStat
     {
         int rVal = 0; 
         Match<Unit> ownedBy = Matches.unitIsOwnedBy(player);
-        Iterator iter = data.getMap().getTerritories().iterator();
+        Iterator<Territory> iter = data.getMap().getTerritories().iterator();
         while (iter.hasNext())
         {
             Territory place = (Territory) iter.next();
@@ -715,7 +719,7 @@ class TUVStat extends AbstractStat
         Match<Unit> unitIsOwnedBy = Matches.unitIsOwnedBy(player);
         
         int rVal = 0; 
-        Iterator iter = data.getMap().getTerritories().iterator();
+        Iterator<Territory> iter = data.getMap().getTerritories().iterator();
         while (iter.hasNext())
         {
             Territory place = (Territory) iter.next();
@@ -736,7 +740,7 @@ class VictoryCityStat extends AbstractStat
     public double getValue(PlayerID player, GameData data)
     {
         int rVal = 0; 
-        Iterator iter = data.getMap().getTerritories().iterator();
+        Iterator<Territory> iter = data.getMap().getTerritories().iterator();
         while (iter.hasNext())
         {
             Territory place = (Territory) iter.next();

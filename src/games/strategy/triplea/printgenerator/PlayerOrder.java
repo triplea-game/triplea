@@ -53,6 +53,11 @@ public class PlayerOrder
         while (m_gameStepIterator.hasNext())
         {
             GameStep currentStep = m_gameStepIterator.next();
+            
+            if (currentStep.getDelegate().getClass().getName() == "games.strategy.triplea.delegate.BidPurchaseDelegate"
+            		|| currentStep.getDelegate().getClass().getName() == "games.strategy.triplea.delegate.BidPlaceDelegate")
+            	continue;
+            
             PlayerID currentPlayerID = currentStep.getPlayerID();
 
             if (currentPlayerID != null && !currentPlayerID.isNull())
