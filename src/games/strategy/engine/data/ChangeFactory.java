@@ -179,15 +179,21 @@ public class ChangeFactory
 	{
 		return new ChangeAttachmentChange(attatchment, newValue, property);
 	}
-	
-	public static Change attachmentPropertyChange(IAttachment attatchment, Object newValue, String property, boolean getRaw)
+
+	/**
+	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
+	 */
+	public static Change attachmentPropertyChange(IAttachment attatchment, Object newValue, String property, boolean getRaw, boolean clearFirst)
 	{
-		return new ChangeAttachmentChange(attatchment, newValue, property, getRaw);
+		return new ChangeAttachmentChange(attatchment, newValue, property, getRaw, clearFirst);
 	}
 	
-	public static Change attachmentPropertyChange(Attachable attatchment, String attatchmentName, Object newValue, Object oldValue, String property)
+	/**
+	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
+	 */
+	public static Change attachmentPropertyChange(Attachable attatchment, String attatchmentName, Object newValue, Object oldValue, String property, boolean clearFirst)
 	{
-		return new ChangeAttachmentChange(attatchment, attatchmentName, newValue, oldValue, property);
+		return new ChangeAttachmentChange(attatchment, attatchmentName, newValue, oldValue, property, clearFirst);
 	}
 	
 	public static Change genericTechChange(TechAttachment attatchment, Boolean value, String property)

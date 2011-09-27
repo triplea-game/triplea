@@ -56,18 +56,6 @@ public class PlayerAttachment extends DefaultAttachment
     public PlayerAttachment()
     {
     }
-    
-	public String getRawProperty(String property) {
-		String s = "";
-		try {
-			Field field = getClass().getDeclaredField("m_" + property);
-			field.setAccessible(true);
-			s += field.get(this);
-		} catch (Exception e) {
-			throw new IllegalStateException("No such Property: m_" + property);
-		}
-		return s;
-	}
 
     public void setVps(String value)
     {

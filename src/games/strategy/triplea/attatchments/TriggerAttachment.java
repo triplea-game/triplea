@@ -829,16 +829,23 @@ public class TriggerAttachment extends DefaultAttachment{
 		Set<TriggerAttachment> trigs = getTriggers(player,data,unitPropertyMatch);
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t:trigs) {
-			boolean met = isMet(t, data);
-			if(met) {
+			if(isMet(t, data)) {
 				t.use(aBridge);
 				for(Tuple<String,String> property : t.getUnitProperty()) {
-					if(UnitAttachment.get(t.getUnitType()).getRawProperty(property.getFirst()).equals(property.getSecond()))
+					String newValue = property.getSecond();
+					boolean clearFirst = false;
+					// test if we are clearing the variable first, and if so, remove the leading dash "-clear-"
+					if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+					{
+						newValue = newValue.replaceFirst("-clear-", "");
+						clearFirst = true;
+					}
+					if(UnitAttachment.get(t.getUnitType()).getRawProperty(property.getFirst()).equals(newValue))
 						continue;
-					change.add(ChangeFactory.attachmentPropertyChange(UnitAttachment.get(t.getUnitType()), property.getSecond(), property.getFirst(), true));
-					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + " to " + property.getSecond() + " for " + t.getUnitType().getName());
+					change.add(ChangeFactory.attachmentPropertyChange(UnitAttachment.get(t.getUnitType()), newValue, property.getFirst(), true, clearFirst));
+					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + " to " + newValue + " for " + t.getUnitType().getName());
 				}
-			}	
+			}
 		}
 		if( !change.isEmpty())
 			aBridge.addChange(change);
@@ -848,16 +855,23 @@ public class TriggerAttachment extends DefaultAttachment{
 		Set<TriggerAttachment> trigs = getTriggers(player,data,territoryPropertyMatch);
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t:trigs) {
-			boolean met = isMet(t, data);
-			if(met) {
+			if(isMet(t, data)) {
 				t.use(aBridge);
 				for(Tuple<String,String> property : t.getTerritoryProperty()) {
-					if(TerritoryAttachment.get(t.getTerritoryName()).getRawProperty(property.getFirst()).equals(property.getSecond()))
+					String newValue = property.getSecond();
+					boolean clearFirst = false;
+					// test if we are clearing the variable first, and if so, remove the leading dash "-clear-"
+					if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+					{
+						newValue = newValue.replaceFirst("-clear-", "");
+						clearFirst = true;
+					}
+					if(TerritoryAttachment.get(t.getTerritoryName()).getRawProperty(property.getFirst()).equals(newValue))
 						continue;
-					change.add(ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(t.getTerritoryName()), property.getSecond(), property.getFirst(), true));
-					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + " to " + property.getSecond() + " for " + t.getTerritoryName().getName());
+					change.add(ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(t.getTerritoryName()), newValue, property.getFirst(), true, clearFirst));
+					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + " to " + newValue + " for " + t.getTerritoryName().getName());
 				}
-			}	
+			}
 		}
 		if( !change.isEmpty())
 			aBridge.addChange(change);

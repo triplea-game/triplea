@@ -29,6 +29,8 @@
 
 package games.strategy.triplea.attatchments;
 
+import java.lang.reflect.Field;
+
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.RelationshipType;

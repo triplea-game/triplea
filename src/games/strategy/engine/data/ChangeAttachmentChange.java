@@ -25,6 +25,7 @@ public class ChangeAttachmentChange extends Change
   private final Object m_newValue;
   private Object m_oldValue;
   private final String m_property;
+  private boolean m_clearFirst;
 
   public Attachable getAttatchedTo()
   {
@@ -42,6 +43,7 @@ public class ChangeAttachmentChange extends Change
         throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
       
     m_attatchedTo = attatchment.getAttatchedTo();
+    m_clearFirst = false;
     
     m_attatchmentName = attatchment.getName();
     if(property.equals("rawProperty")) {
@@ -57,12 +59,16 @@ public class ChangeAttachmentChange extends Change
     }
   }
   
-  ChangeAttachmentChange(IAttachment attatchment, Object newValue, String property, boolean getRaw)
+  /**
+   * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
+   */
+  ChangeAttachmentChange(IAttachment attatchment, Object newValue, String property, boolean getRaw, boolean clearFirst)
   {
 	    if(attatchment == null)
 	        throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
 	      
 	    m_attatchedTo = attatchment.getAttatchedTo();
+	    m_clearFirst = clearFirst;
 	    
 	    m_attatchmentName = attatchment.getName();
 	    if(getRaw) {
@@ -76,28 +82,31 @@ public class ChangeAttachmentChange extends Change
 	        m_property = property;
 	    }
   }
-
-  public ChangeAttachmentChange(Attachable attatchTo, String attatchmentName, Object newValue, Object oldValue, String property)
+  
+  /**
+   * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
+   */
+  public ChangeAttachmentChange(Attachable attatchTo, String attatchmentName, Object newValue, Object oldValue, String property, boolean clearFirst)
   {
     m_attatchmentName = attatchmentName;
     m_attatchedTo = attatchTo;
     m_newValue = newValue;
     m_oldValue = oldValue;
     m_property = property;
-
+    m_clearFirst = clearFirst;
   }
 
 
   public void perform(GameData data)
   {
       IAttachment attachment = m_attatchedTo.getAttachment(m_attatchmentName);
-      PropertyUtil.set(m_property, m_newValue, attachment);
+      PropertyUtil.set(m_property, m_newValue, attachment, m_clearFirst);
   }
   
 
   public Change invert()
   {
-    return new ChangeAttachmentChange(m_attatchedTo, m_attatchmentName, m_oldValue, m_newValue, m_property);
+    return new ChangeAttachmentChange(m_attatchedTo, m_attatchmentName, m_oldValue, m_newValue, m_property, m_clearFirst);
   }
 
   public String toString()

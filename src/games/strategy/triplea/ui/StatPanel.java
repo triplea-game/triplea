@@ -78,34 +78,6 @@ public class StatPanel extends JPanel
     private JTable m_statsTable;
     private Image m_statsImage;
     
-    //sort based on first step
-    private final Comparator<PlayerID> m_playerOrderComparator = new Comparator<PlayerID>()
-    {
-        public int compare(PlayerID p1, PlayerID p2)
-        {
-            
-            Iterator<GameStep> iter = m_data.getSequence().iterator();
-            
-            while(iter.hasNext())
-            {
-                GameStep s = (GameStep) iter.next();
-                
-                if(s.getPlayerID() == null)
-                    continue;
-                
-                if (s.getDelegate().getClass().getName() == "games.strategy.triplea.delegate.BidPurchaseDelegate"
-                		|| s.getDelegate().getClass().getName() == "games.strategy.triplea.delegate.BidPlaceDelegate")
-                	continue;
-                
-                if(s.getPlayerID().equals(p1))
-                    return -1;
-                else if(s.getPlayerID().equals(p2))
-                    return 1;
-            }
-            return 0;
-        }
-        
-    };
 
     /** Creates a new instance of InfoPanel */
     public StatPanel(GameData data)
@@ -225,7 +197,7 @@ public class StatPanel extends JPanel
     public List<PlayerID> getPlayers()
     {
         List<PlayerID> players = new ArrayList<PlayerID>( m_data.getPlayerList().getPlayers());
-        Collections.sort(players,m_playerOrderComparator);
+        Collections.sort(players, new PlayerOrderComparator(m_data));
         return players;
         
     }
@@ -771,5 +743,44 @@ class VPStat extends AbstractStat
         if(pa != null)
             return Double.parseDouble(pa.getVps());
         return 0; 
+    }
+}
+
+class PlayerOrderComparator implements Comparator<PlayerID>
+{
+    private GameData m_data;
+    
+	public PlayerOrderComparator(GameData data)
+	{
+		m_data = data;
+	}
+	
+	/**
+	 * sort based on first step that isn't a bid related step.
+	 */
+    public int compare(PlayerID p1, PlayerID p2)
+    {
+        Iterator<GameStep> iter = m_data.getSequence().iterator();
+        
+        while(iter.hasNext())
+        {
+            GameStep s = (GameStep) iter.next();
+            
+            if(s.getPlayerID() == null)
+                continue;
+            
+            String delegateClassName = s.getDelegate().getClass().getName();
+            if (delegateClassName == "games.strategy.triplea.delegate.InitializationDelegate"
+    					|| delegateClassName == "games.strategy.triplea.delegate.BidPurchaseDelegate"
+            			|| delegateClassName == "games.strategy.triplea.delegate.BidPlaceDelegate"
+            			|| delegateClassName == "games.strategy.triplea.delegate.EndRoundDelegate")
+            	continue;
+            
+            if(s.getPlayerID().equals(p1))
+                return -1;
+            else if(s.getPlayerID().equals(p2))
+                return 1;
+        }
+        return 0;
     }
 }

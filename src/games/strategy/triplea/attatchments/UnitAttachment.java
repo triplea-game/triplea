@@ -36,13 +36,19 @@ import games.strategy.util.IntegerMap;
 /**
  *  Despite the mis leading name, this attatches not to individual Units but to UnitTypes.
  *  
+ *  Please follow this naming convention:
+ *  if the property is called "m_fooBar"
+ *  then you must have a "setFooBar" and "getFooBar", 
+ *  and if the set method adds to a list or map, then you also need a "clearFooBar".
+ *  Do not change the name fooBar to make it plural or any other crap.  
+ *  
  * @author  Sean Bridges
  * @version 1.0
  */
 public class UnitAttachment extends DefaultAttachment
 {
   /**
-   * Conveniente method.
+   * Convenience method.
    */
   public static UnitAttachment get(UnitType type)
   {
@@ -183,6 +189,10 @@ public class UnitAttachment extends DefaultAttachment
     return m_isAirTransportable;
   }
   
+  /**
+   * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+   * @param value
+   */
   public void setCanBeGivenByTerritoryTo(String value)
   {
   	String[] temp = value.split(":");
@@ -202,7 +212,16 @@ public class UnitAttachment extends DefaultAttachment
   {
       return m_canBeGivenByTerritoryTo;
   }
-  
+
+  public void clearCanBeGivenByTerritoryTo()
+  {
+      m_canBeGivenByTerritoryTo.clear();
+  }
+
+  /**
+   * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+   * @param value
+   */
   public void setCanBeCapturedOnEnteringBy(String value)
   {
   	String[] temp = value.split(":");
@@ -220,7 +239,16 @@ public class UnitAttachment extends DefaultAttachment
   {
       return m_canBeCapturedOnEnteringBy;
   }
-  
+
+  public void clearCanBeCapturedOnEnteringBy()
+  {
+      m_canBeCapturedOnEnteringBy.clear();
+  }
+
+  /**
+   * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+   * @param value
+   */
   public void setDestroyedWhenCapturedBy(String value)
   {
   	String[] temp = value.split(":");
@@ -237,6 +265,11 @@ public class UnitAttachment extends DefaultAttachment
   public Collection<PlayerID> getDestroyedWhenCapturedBy()
   {
       return m_destroyedWhenCapturedBy;
+  }
+
+  public void clearDestroyedWhenCapturedBy()
+  {
+      m_destroyedWhenCapturedBy.clear();
   }
 
   public void setCanBlitz(String s)
@@ -467,7 +500,11 @@ public class UnitAttachment extends DefaultAttachment
   {
 	  return m_repairsUnits;
   }
-  
+
+  /**
+   * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+   * @param value
+   */
   public void setRequiresUnits(String value)
   {
 	  m_requiresUnits.add(value.split(":"));
@@ -476,6 +513,11 @@ public class UnitAttachment extends DefaultAttachment
   public ArrayList<String[]> getRequiresUnits()
   {
 	  return m_requiresUnits;
+  }
+  
+  public void clearRequiresUnits()
+  {
+	  m_requiresUnits.clear();
   }
   
   public boolean isConstruction()
@@ -872,6 +914,10 @@ public class UnitAttachment extends DefaultAttachment
     return m_blockade;
   }
 
+  /**
+   * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+   * @param value
+   */
   public void setGivesMovement(String value)
   {
 	  String[] s = value.split(":");
@@ -897,6 +943,15 @@ public class UnitAttachment extends DefaultAttachment
       return m_givesMovement;
   }
 
+  public void clearGivesMovement()
+  {
+      m_givesMovement.clear();
+  }
+
+  /**
+   * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+   * @param value
+   */
   public void setConsumesUnits(String value)
   {
 	  String[] s = value.split(":");
@@ -923,6 +978,15 @@ public class UnitAttachment extends DefaultAttachment
       return m_consumesUnits;
   }
 
+  public void clearConsumesUnits()
+  {
+      m_consumesUnits.clear();
+  }
+
+  /**
+   * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+   * @param value
+   */
   public void setCreatesUnitsList(String value)
   {
 	  String[] s = value.split(":");
@@ -949,6 +1013,15 @@ public class UnitAttachment extends DefaultAttachment
       return m_createsUnitsList;
   }
 
+  public void clearCreatesUnitsList()
+  {
+      m_createsUnitsList.clear();
+  }
+
+  /**
+   * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+   * @param value
+   */
   public void setCreatesResourcesList(String value)
   {
 	  String[] s = value.split(":");
@@ -973,6 +1046,11 @@ public class UnitAttachment extends DefaultAttachment
   public IntegerMap<Resource> getCreatesResourcesList()
   {
       return m_createsResourcesList;
+  }
+
+  public void clearCreatesResourcesList()
+  {
+      m_createsResourcesList.clear();
   }
   
   public void setBombingBonus(String s)
@@ -1056,18 +1134,6 @@ public class UnitAttachment extends DefaultAttachment
   }
   
   
-  
-  public String getRawProperty(String property) {
-	  String s = "";
-	  try {
-		  Field field = getClass().getDeclaredField("m_"+property);
-		  field.setAccessible(true);
-		  s += field.get(this);
-	  }catch (Exception e) {
-		  throw new IllegalStateException("No such Property: m_" +property);
-	  }
-	  return s;
-  }
   public void validate(GameData data) throws GameParseException
   {
     if(m_isAir)

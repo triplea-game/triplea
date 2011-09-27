@@ -27,7 +27,6 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.history.History;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.util.ListenerList;
 import games.strategy.util.Version;
 

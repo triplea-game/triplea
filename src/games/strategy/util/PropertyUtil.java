@@ -40,6 +40,9 @@ public class PropertyUtil
         }
     }
     
+    /**
+     * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
+     */
     public static void set(String propertyName, Object value, Object subject, boolean clearFirst) 
     {
     	if (clearFirst)
@@ -57,6 +60,9 @@ public class PropertyUtil
     	set(propertyName, value, subject);
     }
     
+    /**
+     * You don't want to clear the variable unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
+     */
     public static void clear(String propertyName, Object subject)
     {
     	try

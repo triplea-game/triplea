@@ -16,7 +16,6 @@ package games.strategy.triplea.ui;
 
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.export.GameDataExporter;
@@ -55,6 +54,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -925,24 +925,12 @@ private void addLockMap(JMenu parentMenu)
         text.append("\n");
         text.append("Turn Order: ,");
         text.append("\n");
-
+        
         List<PlayerID> playerOrderList = new ArrayList<PlayerID>();
-        Iterator<GameStep> gameStepIterator = getData().getSequence().iterator();
-        while (gameStepIterator.hasNext())
-        {
-            GameStep currentStep = gameStepIterator.next();
-            
-            if (currentStep.getDelegate().getClass().getName() == "games.strategy.triplea.delegate.BidPurchaseDelegate"
-            		|| currentStep.getDelegate().getClass().getName() == "games.strategy.triplea.delegate.BidPlaceDelegate")
-            	continue;
-            
-            PlayerID currentPlayerID = currentStep.getPlayerID();
-
-            if (currentPlayerID != null && !currentPlayerID.isNull())
-            {
-            	playerOrderList.add(currentPlayerID);
-            }
-        }
+        playerOrderList.addAll(getData().getPlayerList().getPlayers());
+        Collections.shuffle(playerOrderList);
+        Collections.sort(playerOrderList, new PlayerOrderComparator(getData()));
+        
         Set<PlayerID> playerOrderSetNoDuplicates = new LinkedHashSet<PlayerID>(playerOrderList);
 
         Iterator<PlayerID> playerOrderIterator = playerOrderSetNoDuplicates.iterator();

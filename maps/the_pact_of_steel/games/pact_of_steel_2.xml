@@ -3010,20 +3010,41 @@
 			purchase							values: adds listed units to user's purchase at beginning of purchase phase (example: value="infantry:destroyer" count="3")
 			support								values: name of support attachment, adds specified player to the list of players a supportAttachment supports. Can be a list. (example: value="supportAttachmentGermans1AwesomeArtillery")
 														If prefixed with "-" then it will remove that player from the support attachment (example: value="-supportAttachmentArtyOldartillery")
-			unitType							values: the exact name of the unit to be affected by a unitProperty change (example: value="cruiser")
-			unitProperty						values: the name of any actual unit property, with a count equal to the property's values (examples: value="attack" count="4", or value="isAir" count="true"), requires a unitType declared
-														Something to note is that <option name="artillery" value="true"/> AND <option name="artillerySupportable" value="true"/> AND <option name="unitSupportCount" value="1"/> are all converted into a support attachment when the game starts, 
-															so adding or removing them as unit properties will do nothing (the bonusType for them is "ArtyOld", and the supportAttachment name is "supportAttachmentArtyOld<nameofUnit>") unitProperty changes are done for ALL players who use that unitType, 
-															regardless of the player specified in the trigger. In order to have a unitType+unitProperty change only affect certain players and not others, you need to make a new unit type for those players (ie: rename the unit for those players only)
 			victory								values: the string message to be displayed if the condition is true.
 			relationshipChange					values: the change in relationship for this attached player, format: "player:oldRelation:newRelation" example: "Russia:coldWar:allOutWar"
 														oldRelation may be "any", "anyWar", "anyNeutral", "anyAllied", or an actual relationshipType used in this xml
 														You can enter multiple relationshipChanges in the trigger and it will perform every change in the trigger which is valid.
 			notification						values: this is a popup window containing a message that will be given to the current player. "before/after:name-of-step:name-of-entry-in-notifications.properties"
+			
+		For the following, you are actually changing raw data in the engine by calling the setters in the same way the engine does when it parses the xml.  
+		You may prefix the property count portion with "-clear-" if you wish to clear out the data in an array first (example: <option name="unitProperty" value="requiresUnits" count="-clear-factory:hangar"/> )
+			unitType							values: the exact name of the unit to be affected by a unitProperty change (example: value="cruiser")
+			unitProperty						values: the name of any actual unit property, with a count equal to the property's values (examples: value="attack" count="4", or value="isAir" count="true"), requires a unitType declared
+														Something to note is that <option name="artillery" value="true"/> AND <option name="artillerySupportable" value="true"/> AND <option name="unitSupportCount" value="1"/> are all converted into a support attachment when the game starts, 
+															so adding or removing them as unit properties will do nothing (the bonusType for them is "ArtyOld", and the supportAttachment name is "supportAttachmentArtyOld<nameofUnit>") unitProperty changes are done for ALL players who use that unitType, 
+															regardless of the player specified in the trigger. In order to have a unitType+unitProperty change only affect certain players and not others, you need to make a new unit type for those players (ie: rename the unit for those players only)
 			territoryName						values: the exact name of the territory to be affected by a territoryProperty change (example: value="Germany")
 			territoryProperty					values: the name of any actual territory property, with a count equal to the property's values (examples: value="production" count="4", or value="victoryCity" count="true"), requires a territoryName declared
 			
 	-->
+		<!-- Clarification on changing properties and clearing of properties:
+				The following attachments may have MULTIPLE instances, meaning that they are adding to some variable, meaning that they may be cleared by triggers if you want to:
+				Unit Attachments:
+					canBeGivenByTerritoryTo
+					canBeCapturedOnEnteringBy
+					destroyedWhenCapturedBy
+					requiresUnits
+					givesMovement
+					consumesUnits
+					createsUnitsList
+					createsResourcesList
+					
+				Territory Attachments:
+					changeUnitOwners
+					captureUnitOnEnteringBy
+					territoryEffect
+				
+		-->
 	<!-- Victory Triggers -->
 						<!-- Victory Triggers can be attached to anyone. Only 1 is needed per victory condition -->
                 <attatchment name="triggerAttachmentAxisVictory1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
