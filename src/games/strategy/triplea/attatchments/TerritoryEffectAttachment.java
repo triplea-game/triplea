@@ -19,13 +19,11 @@
 
 package games.strategy.triplea.attatchments;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Iterator;
 
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;

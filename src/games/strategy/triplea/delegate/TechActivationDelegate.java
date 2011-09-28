@@ -26,7 +26,6 @@ import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -69,9 +68,9 @@ public class TechActivationDelegate extends BaseDelegate
         //empty
         techMap.put(m_player, null);
         if(games.strategy.triplea.Properties.getTriggers(m_data)){
-        	TriggerAttachment.triggerTechChange(m_player, aBridge, m_data);
-        	TriggerAttachment.triggerSupportChange(m_player, aBridge, m_data);
-        	TriggerAttachment.triggerUnitPropertyChange(m_player, aBridge, m_data);
+        	TriggerAttachment.triggerTechChange(m_player, aBridge, m_data, null, null);
+        	TriggerAttachment.triggerSupportChange(m_player, aBridge, m_data, null, null);
+        	TriggerAttachment.triggerUnitPropertyChange(m_player, aBridge, m_data, null, null);
         }
     }
 

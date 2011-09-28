@@ -19,12 +19,8 @@
 
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-
 import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
@@ -53,7 +49,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	public void start(IDelegateBridge aBridge, GameData gameData) {
 		super.start(aBridge, gameData);
         if(games.strategy.triplea.Properties.getTriggers(m_data)) {
-        	TriggerAttachment.triggerRelationshipChange(m_player,m_bridge,m_data); 
+        	TriggerAttachment.triggerRelationshipChange(m_player,m_bridge,m_data, null, null); 
         }		 
 	}
     

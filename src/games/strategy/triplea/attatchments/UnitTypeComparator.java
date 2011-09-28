@@ -21,13 +21,13 @@ import java.util.*;
 import games.strategy.engine.data.*;
 
 
-public class UnitTypeComparator implements Comparator
+public class UnitTypeComparator implements Comparator<UnitType>
 {
 
-    public int compare(Object o1, Object o2)
+    public int compare(UnitType o1, UnitType o2)
     {
-        UnitType u1 = (UnitType) o1;
-        UnitType u2 = (UnitType) o2;
+        UnitType u1 = o1;
+        UnitType u2 = o2;
 
         UnitAttachment ua1 = UnitAttachment.get(u1);
         UnitAttachment ua2 = UnitAttachment.get(u2);
@@ -61,7 +61,5 @@ public class UnitTypeComparator implements Comparator
             return ua1.getRawAttack() - ua2.getRawAttack();
 
         return u1.getName().compareTo(u2.getName());
-
     }
-
 }

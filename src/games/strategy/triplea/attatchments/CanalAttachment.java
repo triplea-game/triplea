@@ -1,6 +1,5 @@
 package games.strategy.triplea.attatchments;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 import games.strategy.engine.data.*;

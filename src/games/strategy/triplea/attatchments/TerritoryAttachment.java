@@ -27,7 +27,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.triplea.Constants;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 

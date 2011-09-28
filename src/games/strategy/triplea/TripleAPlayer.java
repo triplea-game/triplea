@@ -33,6 +33,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -44,7 +45,6 @@ import games.strategy.triplea.delegate.dataObjects.TechRoll;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
-import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
@@ -60,6 +60,9 @@ import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.delegate.IDelegateBridge;
+
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -114,7 +117,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
             }
         });
         
-        showBeforeNotificationsByTrigger();
+        triggerBeforeTriggerAttachments();
         if (name.endsWith("Bid"))
             purchase(true);
         else if (name.endsWith("Tech"))
@@ -149,16 +152,64 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         
         if (badStep)
             throw new IllegalArgumentException("Unrecognized step name:" + name);
-        showAfterNotificationsByTrigger();
+        triggerAfterTriggerAttachments();
 
     }
-    
-	private void showAfterNotificationsByTrigger() {
-		notificationsByTrigger(TriggerAttachment.NOTIFICATION_AFTER);
-	}
 
-	private void showBeforeNotificationsByTrigger() {
-		notificationsByTrigger(TriggerAttachment.NOTIFICATION_BEFORE);
+	private void triggerBeforeTriggerAttachments() {
+		triggerWhenTriggerAttachments(TriggerAttachment.BEFORE);
+	}
+    
+	private void triggerAfterTriggerAttachments() {
+		triggerWhenTriggerAttachments(TriggerAttachment.AFTER);
+	}
+	
+	private void triggerWhenTriggerAttachments(String beforeOrAfter)
+	{
+		//TODO: should we loop through all players? if we don't, only triggers attached to the current player will be found.
+		String stepName = getGameData().getSequence().getStep().getName();
+		IDelegateBridge aBridge = getGameData().getSequence().getStep().getDelegate().getBridge();
+		//TODO: add all possible triggers here (in addition to their default locations)
+		TriggerAttachment.triggerAttachmentToBeChangedPropertyChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
+		TriggerAttachment.triggerPlayerPropertyChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
+		TriggerAttachment.triggerTerritoryPropertyChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
+		TriggerAttachment.triggerUnitPropertyChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
+
+		TriggerAttachment.triggerRelationshipChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
+		TriggerAttachment.triggerAvailableTechChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
+		TriggerAttachment.triggerTechChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
+		TriggerAttachment.triggerProductionFrontierEditChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
+		TriggerAttachment.triggerProductionChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
+		TriggerAttachment.triggerPurchase(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
+		TriggerAttachment.triggerSupportChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
+		TriggerAttachment.triggerUnitPlacement(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
+		TriggerAttachment.triggerResourceChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
+		
+		// now do notifications:
+		Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(m_id, aBridge, getGameData(), beforeOrAfter, stepName).iterator();
+		while (notificationMessages.hasNext())
+		{
+			String notificationMessageKey = notificationMessages.next();
+			m_ui.notification(NotificationMessages.getInstance(m_ui.getUIContext()).getMessage(notificationMessageKey));
+		}
+		
+		// now do victory messages:
+		String victoryMessage = TriggerAttachment.triggerVictory(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
+    	if (victoryMessage != null)
+    	{
+    		IDelegate delegateEndRound = getGameData().getDelegateList().getDelegate("endRound");
+    		((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage,aBridge);
+    	}
+	}
+	
+	private void triggerDefaultNotificationTriggerAttachments()
+	{
+		Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(m_id, getGameData().getSequence().getStep().getDelegate().getBridge(), getGameData(), null, null).iterator();
+		while (notificationMessages.hasNext())
+		{
+			String notificationMessageKey = notificationMessages.next();
+			m_ui.notification(NotificationMessages.getInstance(m_ui.getUIContext()).getMessage(notificationMessageKey));
+		}
 	}
 
 
@@ -184,15 +235,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     };
     
 	private void politics() {
-	}
-	
-	private void notificationsByTrigger(String beforeOrAfter) {
-			 Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(beforeOrAfter,m_id,getGameData()).iterator();
-
-			while(notificationMessages.hasNext()) {
-				String notificationMessageKey = notificationMessages.next();
-				m_ui.notification(NotificationMessages.getInstance(m_ui.getUIContext()).getMessage(notificationMessageKey));
-			}
 	}
 	
     private void tech()
@@ -227,6 +269,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 
     private void move(boolean nonCombat)
     {
+    	if (!nonCombat)
+    		triggerDefaultNotificationTriggerAttachments();
+    	
     	if (!m_scrambledUnitsReturned && nonCombat && getScramble_Rules_In_Effect())
     	{
     		m_scrambledUnitsReturned = true;

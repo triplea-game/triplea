@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Created new ability to set when a trigger fires, with "when", setting "before/after:stepName", that works with all triggers. Triggers still maintain a default step for firing. (veqryn)
+
 * Finished work on making triggers for rules and trigger attachments, using attachmentToBeChangedName and attachmentToBeChangedProperty. (veqryn)
 
 * Preliminary work on making new triggers for rules attachments, and fixing issue with clearing properties without setting. (veqryn)

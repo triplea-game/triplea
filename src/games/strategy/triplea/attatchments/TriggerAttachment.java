@@ -55,8 +55,8 @@ public class TriggerAttachment extends DefaultAttachment{
 	 */
 	private static final long serialVersionUID = -3327739180569606093L;
 
-	public static final String NOTIFICATION_AFTER = "after";
-	public static final String NOTIFICATION_BEFORE = "before";
+	public static final String AFTER = "after";
+	public static final String BEFORE = "before";
 
 	private List<RulesAttachment> m_trigger = null;
 	private ProductionFrontier m_frontier = null;
@@ -77,6 +77,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	private String m_victory = null;
 	private String m_conditionType = "AND";
 	private String m_notification = null;
+	private Tuple<String,String> m_when = null;
 
 	private UnitType m_unitType = null;
 	private List<Tuple<String,String>> m_unitProperty = null;
@@ -221,37 +222,25 @@ public class TriggerAttachment extends DefaultAttachment{
 		m_victory = s;
 	}
 	
-	public void setNotification(String sNotification) throws GameParseException {
-		String[] s = sNotification.split(":");
-		if(s.length != 3)
-			throw new GameParseException("Triggers: notification must exist in 3 parts: \"before/after:stepName:MessageId\".");
-		if(!(s[0].equals(NOTIFICATION_AFTER) || s[0].equals(NOTIFICATION_BEFORE)))
-			throw new GameParseException("Triggers: notificaition must start with: "+NOTIFICATION_BEFORE+" or "+NOTIFICATION_AFTER);
+	public void setWhen(String when) throws GameParseException {
+		String[] s = when.split(":");
+		if (s.length != 2)
+			throw new GameParseException("Triggers: when must exist in 2 parts: \"before/after:stepName\".");
+		if(!(s[0].equals(AFTER) || s[0].equals(BEFORE)))
+			throw new GameParseException("Triggers: notificaition must start with: "+BEFORE+" or "+AFTER);
+		m_when = new Tuple<String,String>(s[0],s[1]);
+	}
+	
+	public Tuple<String,String> getWhen() {
+		return m_when;
+	}
+	
+	public void setNotification(String sNotification) {
 		m_notification = sNotification;
 	}
 	
 	protected String getNotification() {
 		return m_notification;
-	}
-	
-	protected String getNotificationStepName() {
-		if(m_notification == null)
-			return null;
-		String[] s = m_notification.split(":");
-		return s[1];
-	}
-	
-	protected String getNotificationBeforeOrAfter() {
-		if(m_notification == null)
-			return null;
-		String[] s = m_notification.split(":");
-		return s[0];	}
-	
-	public String getNotificationMessage() {
-		if(m_notification == null)
-			return null;
-		String[] s = m_notification.split(":");
-		return s[2];
 	}
 	
 	public String getConditionType() {
@@ -691,475 +680,6 @@ public class TriggerAttachment extends DefaultAttachment{
 		m_purchase.clear();
 	}
 	
-	/**
-	 * This will account for Invert and conditionType
-	 */
-	private static boolean isMet(TriggerAttachment t, GameData data) {
-		boolean met = false;
-		String conditionType = t.getConditionType();
-		if (conditionType.equals("AND") || conditionType.equals("and"))
-		{
-			for (RulesAttachment c:t.getTrigger()) {
-				met = c.isSatisfied(data) != t.getInvert();
-				if (!met)
-					break;
-			}
-		}
-		else if (conditionType.equals("OR") || conditionType.equals("or"))
-		{
-			for (RulesAttachment c:t.getTrigger()) {
-				met = c.isSatisfied(data) != t.getInvert();
-				if (met)
-					break;
-			}
-		}
-		else if (conditionType.equals("XOR") || conditionType.equals("xor"))
-		{
-			// XOR is confusing with more than 2 conditions, so we will just say that one has to be true, while all others must be false
-			boolean isOneTrue = false;
-			for (RulesAttachment c:t.getTrigger()) {
-				met = c.isSatisfied(data) != t.getInvert();
-				if (isOneTrue && met)
-				{
-					isOneTrue = false;
-					break;
-				}
-				else if (met)
-					isOneTrue = true;
-			}
-			met = isOneTrue;
-		}
-		
-		return met;
-	}
-	
-	
-	
-	
-	public static void triggerProductionChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
-		Set<TriggerAttachment> trigs = getTriggers(player,data,prodMatch);
-		CompositeChange change = new CompositeChange();
-		for(TriggerAttachment t:trigs) {
-			boolean met = isMet(t, data);
-			if(met)
-			{
-				t.use(aBridge);
-				for( PlayerID aPlayer: t.getPlayers()){
-					change.add(ChangeFactory.changeProductionFrontier(aPlayer, t.getFrontier()));
-					aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " has their production frontier changed to: " + t.getFrontier().toString());
-				}
-			}
-		}
-		if( !change.isEmpty())
-			aBridge.addChange(change);
-	}
-	
-	public static void triggerProductionFrontierEditChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
-		Set<TriggerAttachment> trigs = getTriggers(player, data, prodFrontierEditMatch);
-		CompositeChange change = new CompositeChange();
-		for(TriggerAttachment t:trigs) {
-			boolean met = isMet(t, data);
-			if(met)
-			{
-				t.use(aBridge);
-				Iterator<String> iter = t.getProductionRule().iterator();
-				while (iter.hasNext())
-				{
-					boolean add = true;
-					String[] s = iter.next().split(":");
-					ProductionFrontier front = data.getProductionFrontierList().getProductionFrontier(s[0]);
-					String rule = s[1];
-					if (rule.startsWith("-"))
-					{
-						rule = rule.replaceFirst("-", "");
-						add = false;
-					}
-					ProductionRule pRule = data.getProductionRuleList().getProductionRule(rule);
-					
-					if (add) 
-					{
-						if (!front.getRules().contains(pRule))
-						{
-							change.add(ChangeFactory.addProductionRule(pRule, front));
-							aBridge.getHistoryWriter().startEvent("Triggers: " + pRule.getName() + " added to " + front.getName());
-						}
-					}
-					else
-					{
-						if (front.getRules().contains(pRule))
-						{
-							change.add(ChangeFactory.removeProductionRule(pRule, front));
-							aBridge.getHistoryWriter().startEvent("Triggers: " + pRule.getName() + " removed from " + front.getName());
-						}
-					}
-				}
-			}
-		}
-		if( !change.isEmpty())
-			aBridge.addChange(change); // TODO: we should sort the frontier list if we make changes to it...
-	}
-	
-	public static String triggerVictory(PlayerID player, IDelegateBridge aBridge, GameData data) {
-		Set<TriggerAttachment> trigs = getTriggers(player,data,victoryMatch);
-		for(TriggerAttachment t:trigs) {
-			boolean met = isMet(t, data);
-			if(met) {
-				t.use(aBridge);
-				// no need for history writing as the method calling this has its own history writer
-				return t.getVictory();
-			}
-		}
-		return null;
-	}
-	
-	public static void triggerTechChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
-		Set<TriggerAttachment> trigs = getTriggers(player,data,techMatch);
-		for(TriggerAttachment t:trigs) {
-			boolean met = isMet(t, data);
-			if(met) {
-				t.use(aBridge);
-				for( PlayerID aPlayer: t.getPlayers()){
-					for( TechAdvance ta:t.getTech()) {
-						if(ta.hasTech(TechAttachment.get(aPlayer))
-								|| !TechAdvance.getTechAdvances(data, aPlayer).contains(ta))
-							continue;
-						aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " activates " + ta);
-						TechTracker.addAdvance(aPlayer, data, aBridge, ta);
-					}
-				}
-			}
-		}
-	}
-	
-	public static void triggerAvailableTechChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
-		Set<TriggerAttachment> trigs = getTriggers(player,data,techAMatch);
-		for(TriggerAttachment t:trigs) {
-			boolean met = isMet(t, data);
-			if(met) {
-				t.use(aBridge);
-				for( PlayerID aPlayer: t.getPlayers()){
-					for(String cat:t.getAvailableTech().keySet()){
-						TechnologyFrontier tf = aPlayer.getTechnologyFrontierList().getTechnologyFrontier(cat);
-						if(tf == null)
-							throw new IllegalStateException("Triggers: tech category doesn't exist:"+cat+" for player:"+aPlayer);
-						for(TechAdvance ta: t.getAvailableTech().get(cat).keySet()){
-							if(t.getAvailableTech().get(cat).get(ta)) {
-								aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " gains access to " + ta);
-								Change change = ChangeFactory.addAvailableTech(tf, ta,aPlayer);
-								aBridge.addChange(change);
-							}
-							else {
-								aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " loses access to " + ta);
-								Change change = ChangeFactory.removeAvailableTech(tf, ta,aPlayer);
-								aBridge.addChange(change);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	public static void triggerUnitPlacement(PlayerID player, IDelegateBridge aBridge, GameData data) {
-		Set<TriggerAttachment> trigs = getTriggers(player,data,placeMatch);
-		for(TriggerAttachment t:trigs) {
-			boolean met = isMet(t, data);
-			if(met) {
-				t.use(aBridge);
-				for( PlayerID aPlayer: t.getPlayers()){
-					for(Territory ter: t.getPlacement().keySet()) {
-						//aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " places " + t.getPlacement().get(ter).toString() + " in territory " + ter.getName());
-						placeUnits(ter,t.getPlacement().get(ter),aPlayer,data,aBridge);
-					}
-				}
-			}
-		}
-	}
-	
-	public static void triggerPurchase(PlayerID player, IDelegateBridge aBridge, GameData data) {
-		Set<TriggerAttachment> trigs = getTriggers(player,data,purchaseMatch);
-		for(TriggerAttachment t:trigs) {
-			boolean met = isMet(t, data);
-			if(met) {
-				t.use(aBridge);
-				for( PlayerID aPlayer: t.getPlayers()){
-					List<Unit> units = new ArrayList<Unit>();
-					for(UnitType u: t.getPurchase().keySet()) {
-						units.addAll(u.create(t.getPurchase().getInt(u), aPlayer));
-					}
-					if(!units.isEmpty()) {
-						String transcriptText = "Triggers: " + MyFormatter.unitsToTextNoOwner(units) + " gained by " + aPlayer;
-						aBridge.getHistoryWriter().startEvent(transcriptText);
-						aBridge.getHistoryWriter().setRenderingData(units);
-						Change place = ChangeFactory.addUnits(aPlayer, units);
-						aBridge.addChange(place);
-					}
-				}
-			}	
-		}
-	}
-	
-	public static void triggerResourceChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
-		Set<TriggerAttachment> trigs = getTriggers(player,data,resourceMatch);
-		CompositeChange change = new CompositeChange();
-		for(TriggerAttachment t:trigs) {
-			boolean met = isMet(t, data);
-			if(met) {
-				t.use(aBridge);
-				for( PlayerID aPlayer: t.getPlayers()){
-					int toAdd = t.getResourceCount();
-					if(t.getResource().equals(Constants.PUS));
-						toAdd *= Properties.getPU_Multiplier(data);
-					int total = aPlayer.getResources().getQuantity(t.getResource()) + toAdd;
-					if(total < 0) {
-						toAdd -= total;
-						total = 0;
-					}
-					change.add(ChangeFactory.changeResourcesChange(aPlayer, data.getResourceList().getResource(t.getResource()), toAdd));
-					String PUMessage = "Triggers: " + aPlayer.getName() + " met a national objective for an additional " + t.getResourceCount() + " " + t.getResource()+
-					"; end with " + total + " " +t.getResource();
-					aBridge.getHistoryWriter().startEvent(PUMessage);
-				}
-			}
-				
-		}
-		if( !change.isEmpty())
-			aBridge.addChange(change);
-	}
-	
-	// note this change is silent
-	public static void triggerSupportChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
-		Set<TriggerAttachment> trigs = getTriggers(player,data,supportMatch);
-		CompositeChange change = new CompositeChange();
-		for(TriggerAttachment t:trigs) {
-			boolean met = isMet(t, data);
-			if(met) {
-				t.use(aBridge);
-				for( PlayerID aPlayer: t.getPlayers()){
-					for(UnitSupportAttachment usa:t.getSupport().keySet()){
-					List<PlayerID> p = new ArrayList<PlayerID>(usa.getPlayers());
-					if(p.contains(aPlayer)) {
-						if(!t.getSupport().get(usa)) {
-							p.remove(aPlayer);
-							change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
-							aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " is removed from " + usa.toString());
-						}
-					}
-					else {
-						if(t.getSupport().get(usa)) {
-							p.add(aPlayer);
-							change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
-							aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " is added to " + usa.toString());
-						}	
-					}
-					}
-				}
-			}
-		}
-		if( !change.isEmpty())
-			aBridge.addChange(change);
-	}
-
-	public static void triggerRelationshipChange(PlayerID player,IDelegateBridge aBridge, GameData data) {
-		Set<TriggerAttachment> trigs = getTriggers(player,data,relationshipChangeMatch);
-		CompositeChange change = new CompositeChange();
-		for(TriggerAttachment t: trigs) {
-			if(isMet(t,data)) {
-				t.use(aBridge);
-				for(String relationshipChange:t.getRelationshipChange()) {
-					String[] s = relationshipChange.split(":");
-					PlayerID player2 = data.getPlayerList().getPlayerID(s[0]);
-					RelationshipType currentRelation = data.getRelationshipTracker().getRelationshipType(player, player2);
-					
-					if(  s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY) || 
-							(s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) && Matches.RelationshipIsNeutral.match(currentRelation)) ||
-							(s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)  && Matches.RelationshipIsAllied.match(currentRelation)) ||
-							(s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)     && Matches.RelationshipIsAtWar.match(currentRelation)) ||
-							currentRelation.equals(data.getRelationshipTypeList().getRelationshipType(s[1]))) {
-				
-						RelationshipType triggerNewRelation = data.getRelationshipTypeList().getRelationshipType(s[2]);
-						change.add(ChangeFactory.relationshipChange(player, player2, currentRelation,triggerNewRelation));
-						aBridge.getHistoryWriter().startEvent("Triggers: Changing Relationship for "+player.getName()+" and "+player2.getName()+" from "+currentRelation.getName()+" to "+triggerNewRelation.getName());
-						if(Matches.RelationshipIsAtWar.match(triggerNewRelation))
-							triggerMustFightBattle(player,player2,aBridge,data);
-					}
-				}
-			}
-			
-		}
-		if( !change.isEmpty())
-			aBridge.addChange(change);		
-	}
-	
-	private static void triggerMustFightBattle(PlayerID player1, PlayerID player2, IDelegateBridge aBridge, GameData data) {
-		for (Territory terr : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player1))) {
-			if (Matches.territoryHasEnemyUnits(player1, data).match(terr))
-				DelegateFinder.battleDelegate(data).getBattleTracker().addBattle(new CRoute(terr), terr.getUnits().getMatches(Matches.unitIsOwnedBy(player1)), false, player1, data, aBridge, null);
-		}
-	}
-	
-	private static BattleTracker getBattleTracker(GameData data) {
-		return DelegateFinder.battleDelegate(data).getBattleTracker();
-	}
-
-	public static Set<String> triggerNotifications(String beforeOrAfter, PlayerID player, GameData data) {
-		try {
-			data.acquireReadLock();
-			String stepName = data.getSequence().getStep().getName();
-			Set<TriggerAttachment> trigs = getTriggers(player,data,getNotificationStepTriggerMatch(beforeOrAfter,stepName));
-			Set<String> notifications = new HashSet<String>();
-			for(TriggerAttachment t:trigs) {
-				if(isMet(t,data)) {
-					t.use(data.getSequence().getStep().getDelegate().getBridge());
-					notifications.add(t.getNotificationMessage());
-				}
-			}
-			return notifications;	
-
-		} finally {
-			data.releaseReadLock();
-		}
-		
-		
-	}
-
-
-	public static void triggerUnitPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
-		Set<TriggerAttachment> trigs = getTriggers(player,data,unitPropertyMatch);
-		CompositeChange change = new CompositeChange();
-		for(TriggerAttachment t:trigs) {
-			if(isMet(t, data)) {
-				t.use(aBridge);
-				for(Tuple<String,String> property : t.getUnitProperty()) {
-					String newValue = property.getSecond();
-					boolean clearFirst = false;
-					// test if we are clearing the variable first, and if so, remove the leading dash "-clear-"
-					if (newValue.length() > 0 && newValue.startsWith("-clear-"))
-					{
-						newValue = newValue.replaceFirst("-clear-", "");
-						clearFirst = true;
-					}
-					if(UnitAttachment.get(t.getUnitType()).getRawProperty(property.getFirst()).equals(newValue))
-						continue;
-					if (clearFirst && newValue.length() < 1)
-						change.add(ChangeFactory.attachmentPropertyClear(UnitAttachment.get(t.getUnitType()), property.getFirst(), true));
-					else
-						change.add(ChangeFactory.attachmentPropertyChange(UnitAttachment.get(t.getUnitType()), newValue, property.getFirst(), true, clearFirst));
-					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getUnitType().getName());
-				}
-			}
-		}
-		if( !change.isEmpty())
-			aBridge.addChange(change);
-	}
-
-	public static void triggerTerritoryPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
-		Set<TriggerAttachment> trigs = getTriggers(player,data,territoryPropertyMatch);
-		CompositeChange change = new CompositeChange();
-		for(TriggerAttachment t:trigs) {
-			if(isMet(t, data)) {
-				t.use(aBridge);
-				for(Tuple<String,String> property : t.getTerritoryProperty()) {
-					String newValue = property.getSecond();
-					boolean clearFirst = false;
-					// test if we are clearing the variable first, and if so, remove the leading dash "-clear-"
-					if (newValue.length() > 0 && newValue.startsWith("-clear-"))
-					{
-						newValue = newValue.replaceFirst("-clear-", "");
-						clearFirst = true;
-					}
-					if(TerritoryAttachment.get(t.getTerritoryName()).getRawProperty(property.getFirst()).equals(newValue))
-						continue;
-					if (clearFirst && newValue.length() < 1)
-						change.add(ChangeFactory.attachmentPropertyClear(TerritoryAttachment.get(t.getTerritoryName()), property.getFirst(), true));
-					else
-						change.add(ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(t.getTerritoryName()), newValue, property.getFirst(), true, clearFirst));
-					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getTerritoryName().getName());
-				}
-			}
-		}
-		if( !change.isEmpty())
-			aBridge.addChange(change);
-	}
-
-	public static void triggerPlayerPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
-		Set<TriggerAttachment> trigs = getTriggers(player,data,playerPropertyMatch);
-		CompositeChange change = new CompositeChange();
-		for(TriggerAttachment t:trigs) {
-			if(isMet(t, data)) {
-				t.use(aBridge);
-				for(Tuple<String,String> property : t.getPlayerProperty()) {
-					for (PlayerID aPlayer : t.getPlayers())
-					{
-						String newValue = property.getSecond();
-						boolean clearFirst = false;
-						// test if we are clearing the variable first, and if so, remove the leading dash "-clear-"
-						if (newValue.length() > 0 && newValue.startsWith("-clear-"))
-						{
-							newValue = newValue.replaceFirst("-clear-", "");
-							clearFirst = true;
-						}
-						if(PlayerAttachment.get(aPlayer).getRawProperty(property.getFirst()).equals(newValue))
-							continue;
-						if (clearFirst && newValue.length() < 1)
-							change.add(ChangeFactory.attachmentPropertyClear(PlayerAttachment.get(aPlayer), property.getFirst(), true));
-						else
-							change.add(ChangeFactory.attachmentPropertyChange(PlayerAttachment.get(aPlayer), newValue, property.getFirst(), true, clearFirst));
-						aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + aPlayer.getName());
-					}
-				}
-			}
-		}
-		if( !change.isEmpty())
-			aBridge.addChange(change);
-	}
-
-	public static void triggerAttachmentToBeChangedPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data) {
-		Set<TriggerAttachment> trigs = getTriggers(player,data,attachmentToBeChangedPropertyMatch);
-		CompositeChange change = new CompositeChange();
-		for(TriggerAttachment t:trigs) {
-			if(isMet(t, data)) {
-				t.use(aBridge);
-				for(Tuple<String,String> property : t.getAttachmentToBeChangedProperty()) {
-					for (PlayerID aPlayer : t.getPlayers())
-					{
-						String newValue = property.getSecond();
-						boolean clearFirst = false;
-						// test if we are clearing the variable first, and if so, remove the leading dash "-clear-"
-						if (newValue.length() > 0 && newValue.startsWith("-clear-"))
-						{
-							newValue = newValue.replaceFirst("-clear-", "");
-							clearFirst = true;
-						}
-						if (t.getAttachmentToBeChangedName().getFirst() == "TriggerAttachment")
-						{
-							if(TriggerAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()).getRawProperty(property.getFirst()).equals(newValue))
-								continue;
-							if (clearFirst && newValue.length() < 1)
-								change.add(ChangeFactory.attachmentPropertyClear(TriggerAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()), property.getFirst(), true));
-							else
-								change.add(ChangeFactory.attachmentPropertyChange(TriggerAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()), newValue, property.getFirst(), true, clearFirst));
-							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getAttachmentToBeChangedName().getSecond());
-						}
-						else if (t.getAttachmentToBeChangedName().getFirst() == "RulesAttachment")
-						{
-							if(RulesAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()).getRawProperty(property.getFirst()).equals(newValue))
-								continue;
-							if (clearFirst && newValue.length() < 1)
-								change.add(ChangeFactory.attachmentPropertyClear(RulesAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()), property.getFirst(), true));
-							else
-								change.add(ChangeFactory.attachmentPropertyChange(RulesAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()), newValue, property.getFirst(), true, clearFirst));
-							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getAttachmentToBeChangedName().getSecond());
-						}
-						// TODO add other attachment changes here if they are the kind which have multiple attachments per attached player
-					}
-				}
-			}
-		}
-		if( !change.isEmpty())
-			aBridge.addChange(change);
-	}
-	
 	private static void placeUnits(Territory terr, IntegerMap<UnitType> uMap,PlayerID player,GameData data,IDelegateBridge aBridge){
 		// createUnits
 		List<Unit> units = new ArrayList<Unit>();;
@@ -1204,133 +724,630 @@ public class TriggerAttachment extends DefaultAttachment{
         	getBattleTracker(data).addBattle(new CRoute(terr), units, false, player, data, aBridge, null);
 	}
 	
-	
-	
 	private void use (IDelegateBridge aBridge) {
 		if( m_uses > 0) {
 			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, new Integer(m_uses-1).toString(), "uses"));
 		}
 	}
 	
-	private static Match<TriggerAttachment> prodMatch = new Match<TriggerAttachment>()
-	{
-		public boolean match(TriggerAttachment t)
-		{
-			return t.getFrontier() != null && t.getUses()!=0;
+	private static void triggerMustFightBattle(PlayerID player1, PlayerID player2, IDelegateBridge aBridge, GameData data) {
+		for (Territory terr : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player1))) {
+			if (Matches.territoryHasEnemyUnits(player1, data).match(terr))
+				DelegateFinder.battleDelegate(data).getBattleTracker().addBattle(new CRoute(terr), terr.getUnits().getMatches(Matches.unitIsOwnedBy(player1)), false, player1, data, aBridge, null);
 		}
-	};
+	}
 	
-	private static Match<TriggerAttachment> prodFrontierEditMatch = new Match<TriggerAttachment>()
-	{
-		public boolean match(TriggerAttachment t)
+	private static BattleTracker getBattleTracker(GameData data) {
+		return DelegateFinder.battleDelegate(data).getBattleTracker();
+	}
+	
+	/**
+	 * This will account for Invert and conditionType
+	 */
+	private static boolean isMet(TriggerAttachment t, GameData data) {
+		boolean met = false;
+		String conditionType = t.getConditionType();
+		if (conditionType.equals("AND") || conditionType.equals("and"))
 		{
-			return t.getProductionRule() != null && t.getProductionRule().size() > 0 && t.getUses()!=0;
+			for (RulesAttachment c:t.getTrigger()) {
+				met = c.isSatisfied(data) != t.getInvert();
+				if (!met)
+					break;
+			}
 		}
-	};
+		else if (conditionType.equals("OR") || conditionType.equals("or"))
+		{
+			for (RulesAttachment c:t.getTrigger()) {
+				met = c.isSatisfied(data) != t.getInvert();
+				if (met)
+					break;
+			}
+		}
+		else if (conditionType.equals("XOR") || conditionType.equals("xor"))
+		{
+			// XOR is confusing with more than 2 conditions, so we will just say that one has to be true, while all others must be false
+			boolean isOneTrue = false;
+			for (RulesAttachment c:t.getTrigger()) {
+				met = c.isSatisfied(data) != t.getInvert();
+				if (isOneTrue && met)
+				{
+					isOneTrue = false;
+					break;
+				}
+				else if (met)
+					isOneTrue = true;
+			}
+			met = isOneTrue;
+		}
+		
+		return met;
+	}
+	
+	//
+	// And now for the actual triggers, as called throughout the engine.
+	// Each trigger should be called exactly twice, once in TripleAPlayer.java (for use with 'when'), and a second time as the default location for when 'when' is not used.
+	// Should be void unless you have a really good reason otherwise.
+	//
+	
+	public static void triggerProductionChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,prodMatch(beforeOrAfter,stepName));
+		CompositeChange change = new CompositeChange();
+		for(TriggerAttachment t:trigs) {
+			boolean met = isMet(t, data);
+			if(met)
+			{
+				t.use(aBridge);
+				for( PlayerID aPlayer: t.getPlayers()){
+					change.add(ChangeFactory.changeProductionFrontier(aPlayer, t.getFrontier()));
+					aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " has their production frontier changed to: " + t.getFrontier().toString());
+				}
+			}
+		}
+		if( !change.isEmpty())
+			aBridge.addChange(change);
+	}
+	
+	public static void triggerProductionFrontierEditChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		Set<TriggerAttachment> trigs = getTriggers(player, data, prodFrontierEditMatch(beforeOrAfter,stepName));
+		CompositeChange change = new CompositeChange();
+		for(TriggerAttachment t:trigs) {
+			boolean met = isMet(t, data);
+			if(met)
+			{
+				t.use(aBridge);
+				Iterator<String> iter = t.getProductionRule().iterator();
+				while (iter.hasNext())
+				{
+					boolean add = true;
+					String[] s = iter.next().split(":");
+					ProductionFrontier front = data.getProductionFrontierList().getProductionFrontier(s[0]);
+					String rule = s[1];
+					if (rule.startsWith("-"))
+					{
+						rule = rule.replaceFirst("-", "");
+						add = false;
+					}
+					ProductionRule pRule = data.getProductionRuleList().getProductionRule(rule);
+					
+					if (add) 
+					{
+						if (!front.getRules().contains(pRule))
+						{
+							change.add(ChangeFactory.addProductionRule(pRule, front));
+							aBridge.getHistoryWriter().startEvent("Triggers: " + pRule.getName() + " added to " + front.getName());
+						}
+					}
+					else
+					{
+						if (front.getRules().contains(pRule))
+						{
+							change.add(ChangeFactory.removeProductionRule(pRule, front));
+							aBridge.getHistoryWriter().startEvent("Triggers: " + pRule.getName() + " removed from " + front.getName());
+						}
+					}
+				}
+			}
+		}
+		if( !change.isEmpty())
+			aBridge.addChange(change); // TODO: we should sort the frontier list if we make changes to it...
+	}
+	
+	public static void triggerTechChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,techMatch(beforeOrAfter,stepName));
+		for(TriggerAttachment t:trigs) {
+			boolean met = isMet(t, data);
+			if(met) {
+				t.use(aBridge);
+				for( PlayerID aPlayer: t.getPlayers()){
+					for( TechAdvance ta:t.getTech()) {
+						if(ta.hasTech(TechAttachment.get(aPlayer))
+								|| !TechAdvance.getTechAdvances(data, aPlayer).contains(ta))
+							continue;
+						aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " activates " + ta);
+						TechTracker.addAdvance(aPlayer, data, aBridge, ta);
+					}
+				}
+			}
+		}
+	}
+	
+	public static void triggerAvailableTechChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,techAMatch(beforeOrAfter,stepName));
+		for(TriggerAttachment t:trigs) {
+			boolean met = isMet(t, data);
+			if(met) {
+				t.use(aBridge);
+				for( PlayerID aPlayer: t.getPlayers()){
+					for(String cat:t.getAvailableTech().keySet()){
+						TechnologyFrontier tf = aPlayer.getTechnologyFrontierList().getTechnologyFrontier(cat);
+						if(tf == null)
+							throw new IllegalStateException("Triggers: tech category doesn't exist:"+cat+" for player:"+aPlayer);
+						for(TechAdvance ta: t.getAvailableTech().get(cat).keySet()){
+							if(t.getAvailableTech().get(cat).get(ta)) {
+								aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " gains access to " + ta);
+								Change change = ChangeFactory.addAvailableTech(tf, ta,aPlayer);
+								aBridge.addChange(change);
+							}
+							else {
+								aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " loses access to " + ta);
+								Change change = ChangeFactory.removeAvailableTech(tf, ta,aPlayer);
+								aBridge.addChange(change);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public static void triggerUnitPlacement(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,placeMatch(beforeOrAfter,stepName));
+		for(TriggerAttachment t:trigs) {
+			boolean met = isMet(t, data);
+			if(met) {
+				t.use(aBridge);
+				for( PlayerID aPlayer: t.getPlayers()){
+					for(Territory ter: t.getPlacement().keySet()) {
+						//aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " places " + t.getPlacement().get(ter).toString() + " in territory " + ter.getName());
+						placeUnits(ter,t.getPlacement().get(ter),aPlayer,data,aBridge);
+					}
+				}
+			}
+		}
+	}
+	
+	public static void triggerPurchase(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,purchaseMatch(beforeOrAfter,stepName));
+		for(TriggerAttachment t:trigs) {
+			boolean met = isMet(t, data);
+			if(met) {
+				t.use(aBridge);
+				for( PlayerID aPlayer: t.getPlayers()){
+					List<Unit> units = new ArrayList<Unit>();
+					for(UnitType u: t.getPurchase().keySet()) {
+						units.addAll(u.create(t.getPurchase().getInt(u), aPlayer));
+					}
+					if(!units.isEmpty()) {
+						String transcriptText = "Triggers: " + MyFormatter.unitsToTextNoOwner(units) + " gained by " + aPlayer;
+						aBridge.getHistoryWriter().startEvent(transcriptText);
+						aBridge.getHistoryWriter().setRenderingData(units);
+						Change place = ChangeFactory.addUnits(aPlayer, units);
+						aBridge.addChange(place);
+					}
+				}
+			}	
+		}
+	}
+	
+	public static void triggerResourceChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,resourceMatch(beforeOrAfter,stepName));
+		CompositeChange change = new CompositeChange();
+		for(TriggerAttachment t:trigs) {
+			boolean met = isMet(t, data);
+			if(met) {
+				t.use(aBridge);
+				for( PlayerID aPlayer: t.getPlayers()){
+					int toAdd = t.getResourceCount();
+					if(t.getResource().equals(Constants.PUS));
+						toAdd *= Properties.getPU_Multiplier(data);
+					int total = aPlayer.getResources().getQuantity(t.getResource()) + toAdd;
+					if(total < 0) {
+						toAdd -= total;
+						total = 0;
+					}
+					change.add(ChangeFactory.changeResourcesChange(aPlayer, data.getResourceList().getResource(t.getResource()), toAdd));
+					String PUMessage = "Triggers: " + aPlayer.getName() + " met a national objective for an additional " + t.getResourceCount() + " " + t.getResource()+
+					"; end with " + total + " " +t.getResource();
+					aBridge.getHistoryWriter().startEvent(PUMessage);
+				}
+			}
+				
+		}
+		if( !change.isEmpty())
+			aBridge.addChange(change);
+	}
+	
+	// note this change is silent
+	public static void triggerSupportChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,supportMatch(beforeOrAfter,stepName));
+		CompositeChange change = new CompositeChange();
+		for(TriggerAttachment t:trigs) {
+			boolean met = isMet(t, data);
+			if(met) {
+				t.use(aBridge);
+				for( PlayerID aPlayer: t.getPlayers()){
+					for(UnitSupportAttachment usa:t.getSupport().keySet()){
+					List<PlayerID> p = new ArrayList<PlayerID>(usa.getPlayers());
+					if(p.contains(aPlayer)) {
+						if(!t.getSupport().get(usa)) {
+							p.remove(aPlayer);
+							change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
+							aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " is removed from " + usa.toString());
+						}
+					}
+					else {
+						if(t.getSupport().get(usa)) {
+							p.add(aPlayer);
+							change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
+							aBridge.getHistoryWriter().startEvent("Triggers: " + aPlayer.getName() + " is added to " + usa.toString());
+						}	
+					}
+					}
+				}
+			}
+		}
+		if( !change.isEmpty())
+			aBridge.addChange(change);
+	}
 
-	private static Match<TriggerAttachment> techMatch = new Match<TriggerAttachment>()
-	{
-		public boolean match(TriggerAttachment t)
-		{
-			return !t.getTech().isEmpty() && t.getUses()!=0;
+	public static void triggerRelationshipChange(PlayerID player,IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,relationshipChangeMatch(beforeOrAfter,stepName));
+		CompositeChange change = new CompositeChange();
+		for(TriggerAttachment t: trigs) {
+			if(isMet(t,data)) {
+				t.use(aBridge);
+				for(String relationshipChange:t.getRelationshipChange()) {
+					String[] s = relationshipChange.split(":");
+					PlayerID player2 = data.getPlayerList().getPlayerID(s[0]);
+					RelationshipType currentRelation = data.getRelationshipTracker().getRelationshipType(player, player2);
+					
+					if(  s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY) || 
+							(s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) && Matches.RelationshipIsNeutral.match(currentRelation)) ||
+							(s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)  && Matches.RelationshipIsAllied.match(currentRelation)) ||
+							(s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)     && Matches.RelationshipIsAtWar.match(currentRelation)) ||
+							currentRelation.equals(data.getRelationshipTypeList().getRelationshipType(s[1]))) {
+				
+						RelationshipType triggerNewRelation = data.getRelationshipTypeList().getRelationshipType(s[2]);
+						change.add(ChangeFactory.relationshipChange(player, player2, currentRelation,triggerNewRelation));
+						aBridge.getHistoryWriter().startEvent("Triggers: Changing Relationship for "+player.getName()+" and "+player2.getName()+" from "+currentRelation.getName()+" to "+triggerNewRelation.getName());
+						if(Matches.RelationshipIsAtWar.match(triggerNewRelation))
+							triggerMustFightBattle(player,player2,aBridge,data);
+					}
+				}
+			}
+			
 		}
-	};
+		if( !change.isEmpty())
+			aBridge.addChange(change);		
+	}
+
+	public static void triggerUnitPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,unitPropertyMatch(beforeOrAfter,stepName));
+		CompositeChange change = new CompositeChange();
+		for(TriggerAttachment t:trigs) {
+			if(isMet(t, data)) {
+				t.use(aBridge);
+				for(Tuple<String,String> property : t.getUnitProperty()) {
+					String newValue = property.getSecond();
+					boolean clearFirst = false;
+					// test if we are clearing the variable first, and if so, remove the leading dash "-clear-"
+					if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+					{
+						newValue = newValue.replaceFirst("-clear-", "");
+						clearFirst = true;
+					}
+					if(UnitAttachment.get(t.getUnitType()).getRawProperty(property.getFirst()).equals(newValue))
+						continue;
+					if (clearFirst && newValue.length() < 1)
+						change.add(ChangeFactory.attachmentPropertyClear(UnitAttachment.get(t.getUnitType()), property.getFirst(), true));
+					else
+						change.add(ChangeFactory.attachmentPropertyChange(UnitAttachment.get(t.getUnitType()), newValue, property.getFirst(), true, clearFirst));
+					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getUnitType().getName());
+				}
+			}
+		}
+		if( !change.isEmpty())
+			aBridge.addChange(change);
+	}
+
+	public static void triggerTerritoryPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,territoryPropertyMatch(beforeOrAfter,stepName));
+		CompositeChange change = new CompositeChange();
+		for(TriggerAttachment t:trigs) {
+			if(isMet(t, data)) {
+				t.use(aBridge);
+				for(Tuple<String,String> property : t.getTerritoryProperty()) {
+					String newValue = property.getSecond();
+					boolean clearFirst = false;
+					// test if we are clearing the variable first, and if so, remove the leading dash "-clear-"
+					if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+					{
+						newValue = newValue.replaceFirst("-clear-", "");
+						clearFirst = true;
+					}
+					if(TerritoryAttachment.get(t.getTerritoryName()).getRawProperty(property.getFirst()).equals(newValue))
+						continue;
+					if (clearFirst && newValue.length() < 1)
+						change.add(ChangeFactory.attachmentPropertyClear(TerritoryAttachment.get(t.getTerritoryName()), property.getFirst(), true));
+					else
+						change.add(ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(t.getTerritoryName()), newValue, property.getFirst(), true, clearFirst));
+					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getTerritoryName().getName());
+				}
+			}
+		}
+		if( !change.isEmpty())
+			aBridge.addChange(change);
+	}
+
+	public static void triggerPlayerPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,playerPropertyMatch(beforeOrAfter,stepName));
+		CompositeChange change = new CompositeChange();
+		for(TriggerAttachment t:trigs) {
+			if(isMet(t, data)) {
+				t.use(aBridge);
+				for(Tuple<String,String> property : t.getPlayerProperty()) {
+					for (PlayerID aPlayer : t.getPlayers())
+					{
+						String newValue = property.getSecond();
+						boolean clearFirst = false;
+						// test if we are clearing the variable first, and if so, remove the leading dash "-clear-"
+						if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+						{
+							newValue = newValue.replaceFirst("-clear-", "");
+							clearFirst = true;
+						}
+						if(PlayerAttachment.get(aPlayer).getRawProperty(property.getFirst()).equals(newValue))
+							continue;
+						if (clearFirst && newValue.length() < 1)
+							change.add(ChangeFactory.attachmentPropertyClear(PlayerAttachment.get(aPlayer), property.getFirst(), true));
+						else
+							change.add(ChangeFactory.attachmentPropertyChange(PlayerAttachment.get(aPlayer), newValue, property.getFirst(), true, clearFirst));
+						aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + aPlayer.getName());
+					}
+				}
+			}
+		}
+		if( !change.isEmpty())
+			aBridge.addChange(change);
+	}
+
+	public static void triggerAttachmentToBeChangedPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,attachmentToBeChangedPropertyMatch(beforeOrAfter,stepName));
+		CompositeChange change = new CompositeChange();
+		for(TriggerAttachment t:trigs) {
+			if(isMet(t, data)) {
+				t.use(aBridge);
+				for(Tuple<String,String> property : t.getAttachmentToBeChangedProperty()) {
+					for (PlayerID aPlayer : t.getPlayers())
+					{
+						String newValue = property.getSecond();
+						boolean clearFirst = false;
+						// test if we are clearing the variable first, and if so, remove the leading dash "-clear-"
+						if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+						{
+							newValue = newValue.replaceFirst("-clear-", "");
+							clearFirst = true;
+						}
+						if (t.getAttachmentToBeChangedName().getFirst() == "TriggerAttachment")
+						{
+							if(TriggerAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()).getRawProperty(property.getFirst()).equals(newValue))
+								continue;
+							if (clearFirst && newValue.length() < 1)
+								change.add(ChangeFactory.attachmentPropertyClear(TriggerAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()), property.getFirst(), true));
+							else
+								change.add(ChangeFactory.attachmentPropertyChange(TriggerAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()), newValue, property.getFirst(), true, clearFirst));
+							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getAttachmentToBeChangedName().getSecond());
+						}
+						else if (t.getAttachmentToBeChangedName().getFirst() == "RulesAttachment")
+						{
+							if(RulesAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()).getRawProperty(property.getFirst()).equals(newValue))
+								continue;
+							if (clearFirst && newValue.length() < 1)
+								change.add(ChangeFactory.attachmentPropertyClear(RulesAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()), property.getFirst(), true));
+							else
+								change.add(ChangeFactory.attachmentPropertyChange(RulesAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()), newValue, property.getFirst(), true, clearFirst));
+							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getAttachmentToBeChangedName().getSecond());
+						}
+						// TODO add other attachment changes here if they are the kind which have multiple attachments per attached player
+					}
+				}
+			}
+		}
+		if( !change.isEmpty())
+			aBridge.addChange(change);
+	}
 	
-	private static Match<TriggerAttachment> techAMatch = new Match<TriggerAttachment>()
-	{
-		public boolean match(TriggerAttachment t)
-		{
-			return t.getAvailableTech() != null && t.getUses()!=0;
+	public static String triggerVictory(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,victoryMatch(beforeOrAfter,stepName));
+		for(TriggerAttachment t:trigs) {
+			boolean met = isMet(t, data);
+			if(met) {
+				t.use(aBridge);
+				// no need for history writing as the method calling this has its own history writer
+				return t.getVictory();
+			}
 		}
-	};
-	private static Match<TriggerAttachment> placeMatch = new Match<TriggerAttachment>()
-	{
-		public boolean match(TriggerAttachment t)
-		{
-			return t.getPlacement() != null && t.getUses()!=0;
+		return null;
+	}
+
+	public static Set<String> triggerNotifications(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		try {
+			data.acquireReadLock();
+			Set<TriggerAttachment> trigs = getTriggers(player,data,notificationMatch(beforeOrAfter,stepName));
+			Set<String> notifications = new HashSet<String>();
+			for(TriggerAttachment t:trigs) {
+				if(isMet(t,data)) {
+					t.use(aBridge);
+					notifications.add(t.getNotification());
+				}
+			}
+			return notifications;
+			
+		} finally {
+			data.releaseReadLock();
 		}
-	};
+	}
 	
-	private static Match<TriggerAttachment> purchaseMatch = new Match<TriggerAttachment>()
-	{
-		public boolean match(TriggerAttachment t)
-		{
-			return t.getPurchase() != null && t.getUses()!=0;
-		}
-	};
-	
-	private static Match<TriggerAttachment> resourceMatch = new Match<TriggerAttachment>()
-	{
-		public boolean match(TriggerAttachment t)
-		{
-			return t.getResource() != null && t.getResourceCount() != 0 && t.getUses()!=0;
-		}
-	};
-	
-	private static Match<TriggerAttachment> supportMatch = new Match<TriggerAttachment>()
-	{
-		public boolean match(TriggerAttachment t)
-		{
-			return t.getSupport() != null && t.getUses()!=0;
-		}
-	};
-	
-	private static Match<TriggerAttachment> unitPropertyMatch = new Match<TriggerAttachment>()
-	{
-		public boolean match(TriggerAttachment t)
-		{
-			return t.getUnitType() != null && t.getUnitProperty() !=null && t.getUses()!=0;
-		}
-	};
-	
-	private static Match<TriggerAttachment> territoryPropertyMatch = new Match<TriggerAttachment>()
-	{
-		public boolean match(TriggerAttachment t)
-		{
-			return t.getTerritoryName() != null && t.getTerritoryProperty() !=null && t.getUses()!=0;
-		}
-	};
-	
-	private static Match<TriggerAttachment> playerPropertyMatch = new Match<TriggerAttachment>()
-	{
-		public boolean match(TriggerAttachment t)
-		{
-			return t.getPlayerProperty() != null && t.getUses()!=0;
-		}
-	};
-	
-	private static Match<TriggerAttachment> attachmentToBeChangedPropertyMatch = new Match<TriggerAttachment>()
-	{
-		public boolean match(TriggerAttachment t)
-		{
-			return t.getAttachmentToBeChangedName() != null && t.getAttachmentToBeChangedProperty() != null && t.getUses()!=0;
-		}
-	};
-	
-	private static Match<TriggerAttachment> relationshipChangeMatch = new Match<TriggerAttachment>()
-	{
-		public boolean match(TriggerAttachment t)
-		{
-			return !(t.getRelationshipChange().isEmpty() || t.getUses()==0);
-		}
-	};
-	
-	private static Match<TriggerAttachment> getNotificationStepTriggerMatch(final String beforeOrAfter, final String stepName) {
+	/**
+	 * If t.getWhen(), beforeOrAfter, and stepName, are all null, then this returns true.
+	 * Otherwise, all must be not null, and when's values must match the arguments.
+	 * @param beforeOrAfter can be null, or must be "before" or "after"
+	 * @param stepName can be null, or must be exact name of a specific stepName
+	 * @return true if when and both args are null, and true if all are not null and when matches the args, otherwise false
+	 */
+	private static Match<TriggerAttachment> whenOrDefaultMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
 			public boolean match(TriggerAttachment t) {
-				return t.getNotification() != null && stepName.equals(t.getNotificationStepName()) && beforeOrAfter.equals(t.getNotificationBeforeOrAfter()) && t.getNotificationMessage().length() > 0 && t.getUses()!= 0;
+				if (beforeOrAfter == null && stepName == null && t.getWhen() == null)
+					return true;
+				else if (beforeOrAfter != null && stepName != null && t.getWhen() != null && beforeOrAfter.equals(t.getWhen().getFirst()) && stepName.equals(t.getWhen().getSecond()))
+					return true;
+				return false;
 			}
 		};
 	}
-
-
-	private static Match<TriggerAttachment> victoryMatch = new Match<TriggerAttachment>()
-	{
-		public boolean match(TriggerAttachment t)
-		{
-			return t.getVictory() != null && t.getVictory().length() > 0 && t.getUses()!=0;
-		}
-	};
+	
+	//
+	// All matches need to check for: t.getUses()!=0
+	//
+	// In addition, all triggers can be activated in only 1 of 2 places: default or when
+	//
+	// default = t.getWhen == null  (this means when was not set, and so the trigger should activate in its default place, like before purchase phase for production frontier trigger changes
+	//
+	// when = t.getWhen != null  (this means when was set, and so the trigger should not activate in its default place, and instead should activate before or after a specific stepName
+	//
+	// therefore all matches also need to check for: whenStepOrDefaultTriggerMatch(beforeOrAfter, stepName).match(t)
+	//
+	
+	private static Match<TriggerAttachment> prodMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getFrontier() != null;
+			}
+		};
+	}
+	
+	private static Match<TriggerAttachment> prodFrontierEditMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getProductionRule() != null && t.getProductionRule().size() > 0;
+			}
+		};
+	}
+	
+	private static Match<TriggerAttachment> techMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getTech().isEmpty();
+			}
+		};
+	}
+	
+	private static Match<TriggerAttachment> techAMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getAvailableTech() != null;
+			}
+		};
+	}
+	
+	private static Match<TriggerAttachment> placeMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getPlacement() != null;
+			}
+		};
+	}
+	
+	private static Match<TriggerAttachment> purchaseMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getPurchase() != null;
+			}
+		};
+	}
+	
+	private static Match<TriggerAttachment> resourceMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getResource() != null && t.getResourceCount() != 0;
+			}
+		};
+	}
+	
+	private static Match<TriggerAttachment> supportMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getSupport() != null;
+			}
+		};
+	}
+	
+	private static Match<TriggerAttachment> unitPropertyMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getUnitType() != null && t.getUnitProperty() != null;
+			}
+		};
+	}
+	
+	private static Match<TriggerAttachment> territoryPropertyMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getTerritoryName() != null && t.getTerritoryProperty() != null;
+			}
+		};
+	}
+	
+	private static Match<TriggerAttachment> playerPropertyMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getPlayerProperty() != null;
+			}
+		};
+	}
+	
+	private static Match<TriggerAttachment> attachmentToBeChangedPropertyMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getAttachmentToBeChangedName() != null && t.getAttachmentToBeChangedProperty() != null;
+			}
+		};
+	}
+	
+	private static Match<TriggerAttachment> relationshipChangeMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getRelationshipChange().isEmpty();
+			}
+		};
+	}
+	
+	private static Match<TriggerAttachment> notificationMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getNotification() != null;
+			}
+		};
+	}
+	
+	private static Match<TriggerAttachment> victoryMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getVictory() != null && t.getVictory().length() > 0;
+			}
+		};
+	}
 	
 	public void validate(GameData data) throws GameParseException
 	{

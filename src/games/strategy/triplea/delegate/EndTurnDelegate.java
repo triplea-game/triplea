@@ -666,7 +666,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     		}
     	} //end while
     	if(games.strategy.triplea.Properties.getTriggers(data))
-    		TriggerAttachment.triggerResourceChange(player, bridge, data);
+    		TriggerAttachment.triggerResourceChange(player, bridge, data, null, null);
     } //end determineNationalObjectives
 
 	private boolean isNationalObjectives()

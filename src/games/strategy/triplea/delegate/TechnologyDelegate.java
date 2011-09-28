@@ -74,7 +74,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
         m_data = gameData;
         m_player = aBridge.getPlayerID();
     	if(games.strategy.triplea.Properties.getTriggers(m_data)){
-    		TriggerAttachment.triggerAvailableTechChange(m_player, m_bridge, m_data);
+    		TriggerAttachment.triggerAvailableTechChange(m_player, m_bridge, m_data, null, null);
     	}
     }
 

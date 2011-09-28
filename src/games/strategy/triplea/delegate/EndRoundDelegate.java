@@ -123,7 +123,7 @@ public class EndRoundDelegate extends BaseDelegate
         	Collection<PlayerID> playerList = m_data.getPlayerList().getPlayers();
         	for (PlayerID p : playerList)
         	{
-            	String vMessage = TriggerAttachment.triggerVictory(p, aBridge, m_data);
+            	String vMessage = TriggerAttachment.triggerVictory(p, aBridge, m_data, null, null);
             	if (vMessage != null)
             		signalGameOver(vMessage,aBridge);
         	}
@@ -192,7 +192,7 @@ public class EndRoundDelegate extends BaseDelegate
      * 
      * @param status the "game over" text to be displayed to each user.
      */
-    private void signalGameOver(String status, IDelegateBridge a_bridge)
+    public void signalGameOver(String status, IDelegateBridge a_bridge)
     {
         // If the game is over, we need to be able to alert all UIs to that fact.
         //    The display object can send a message to all UIs.
