@@ -51,7 +51,17 @@ public class UnitAttachment extends DefaultAttachment
    */
   public static UnitAttachment get(UnitType type)
   {
-    return (UnitAttachment) type.getAttachment(Constants.UNIT_ATTACHMENT_NAME);
+    UnitAttachment rVal = (UnitAttachment) type.getAttachment(Constants.UNIT_ATTACHMENT_NAME);
+    if(rVal == null)
+        throw new IllegalStateException("No unit type attachment for:" + type.getName());
+    return rVal;
+  }
+  public static UnitAttachment get(UnitType type, String nameOfAttachment)
+  {
+    UnitAttachment rVal = (UnitAttachment) type.getAttachment(nameOfAttachment);
+    if(rVal == null)
+        throw new IllegalStateException("No unit type attachment for:" + type.getName() + " with name:" + nameOfAttachment);
+    return rVal;
   }
 
   private boolean m_isAir = false;

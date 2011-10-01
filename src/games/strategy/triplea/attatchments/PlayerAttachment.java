@@ -35,11 +35,20 @@ import games.strategy.triplea.Constants;
 public class PlayerAttachment extends DefaultAttachment
 {
     /**
-     * Convenience method.
+     * Convenience method. can be null
      */
     public static PlayerAttachment get(PlayerID p)
     {
-        return (PlayerAttachment) p.getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
+        PlayerAttachment rVal =  (PlayerAttachment) p.getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
+        // allow null
+        return rVal;
+    }
+    public static PlayerAttachment get(PlayerID p, String nameOfAttachment)
+    {
+        PlayerAttachment rVal =  (PlayerAttachment) p.getAttachment(nameOfAttachment);
+        if(rVal == null)
+            throw new IllegalStateException("No player attachment for:" + p.getName() + " with name:" + nameOfAttachment);
+        return rVal;
     }
 
     private int m_vps = 0;

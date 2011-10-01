@@ -49,7 +49,17 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
      */
     public static TerritoryEffectAttachment get(TerritoryEffect te)
     {
-        return (TerritoryEffectAttachment) te.getAttachment(Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
+        TerritoryEffectAttachment rVal =  (TerritoryEffectAttachment) te.getAttachment(Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
+        if(rVal == null)
+            throw new IllegalStateException("No territoryEffect attachment for:" + te.getName());
+        return rVal;
+    }
+    public static TerritoryEffectAttachment get(TerritoryEffect te, String nameOfAttachment)
+    {
+        TerritoryEffectAttachment rVal =  (TerritoryEffectAttachment) te.getAttachment(nameOfAttachment);
+        if(rVal == null)
+            throw new IllegalStateException("No territoryEffect attachment for:" + te.getName() + " with name:" + nameOfAttachment);
+        return rVal;
     }
     
     /** Creates new TerritoryEffectAttachment
@@ -58,15 +68,41 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     public TerritoryEffectAttachment() {	
     }
     
+    /**
+     * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+     * @param combatDefenseEffect
+     * @throws GameParseException
+     */
     public void setCombatDefenseEffect(String combatDefenseEffect) throws GameParseException {
     	setCombatEffect(combatDefenseEffect, true);
     }
+	
+	public IntegerMap<UnitType> getCombatDefenseEffect() {
+		return m_combatDefenseEffect;
+	}
+	
+	public void clearCombatDefenseEffect() {
+		m_combatDefenseEffect.clear();
+	}
     
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param combatOffenseEffect
+	 * @throws GameParseException
+	 */
     public void setCombatOffenseEffect(String combatOffenseEffect) throws GameParseException {
     	setCombatEffect(combatOffenseEffect, false);
     }
-
-	private void setCombatEffect(String combatEffect, boolean defending) throws GameParseException {
+	
+	public IntegerMap<UnitType> getCombatOffenseEffect() {
+		return m_combatOffenseEffect;
+	}
+	
+	public void clearCombatOffenseEffect() {
+		m_combatOffenseEffect.clear();
+	}
+	
+    private void setCombatEffect(String combatEffect, boolean defending) throws GameParseException {
 		String[] s = combatEffect.split(":");
 		if (s.length < 2)
 			throw new GameParseException("TerritoryEffect Attachments: combatDefenseEffect and combatOffenseEffect must have a count and at least one unitType");
@@ -97,6 +133,4 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 	{
 		return this.getName();
 	}
-	
-
 }

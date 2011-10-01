@@ -34,7 +34,17 @@ public class TechAttachment extends DefaultAttachment
   public static TechAttachment get(PlayerID id)
   {
     TechAttachment attatchment = (TechAttachment) id.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-    //dont crash
+    //dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment for them
+    if(attatchment == null)
+        return new TechAttachment();
+    return attatchment;
+  }
+  public static TechAttachment get(PlayerID id, String nameOfAttachment)
+  {
+	if (!nameOfAttachment.equals(Constants.TECH_ATTACHMENT_NAME))
+		throw new IllegalStateException("TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);
+    TechAttachment attatchment = (TechAttachment) id.getAttachment(nameOfAttachment);
+    //dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment for them
     if(attatchment == null)
         return new TechAttachment();
     return attatchment;
@@ -55,7 +65,7 @@ public class TechAttachment extends DefaultAttachment
   private boolean m_mechanizedInfantry;
   private boolean m_aARadar;
   private boolean m_shipyards;
-  private final Map<String, Boolean> m_GenericTechs = new HashMap<String, Boolean>();
+  private final Map<String, Boolean> m_GenericTech = new HashMap<String, Boolean>();
 
   public void setTechCost(String s)
   {
@@ -288,16 +298,29 @@ public class TechAttachment extends DefaultAttachment
       for(TechAdvance ta :data.getTechnologyFrontier()){
     	  if(ta instanceof GenericTechAdvance )
     		  if(((GenericTechAdvance)ta).getAdvance()==null)
-    			  m_GenericTechs.put(ta.getProperty(), Boolean.FALSE);
+    			  m_GenericTech.put(ta.getProperty(), Boolean.FALSE);
       }
   }
   
   public Boolean hasGenericTech(String name){
-	  return m_GenericTechs.get(name);
+	  return m_GenericTech.get(name);
   }
   
+  /**
+   * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+   * @param name
+   * @param value
+   */
   public void setGenericTech(String name, Boolean value){
-	  m_GenericTechs.put(name, value);
+	  m_GenericTech.put(name, value);
   }
-
+  
+  public Map<String, Boolean> getGenericTech(){
+	  return m_GenericTech;
+  }
+  
+  public void clearGenericTech(){
+	  m_GenericTech.clear();
+  }
+  
 }

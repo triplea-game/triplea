@@ -2997,7 +2997,6 @@
 														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false.
 			invert 								values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
 			uses 								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
-			players								values: the names of the players to give these things to. if missing, defaults to attached player. (example: value="Germans:Italians")
 			tech		 						values: the names of any technology to be given to the active or specified player. given at end of tech activation phase. (example: value="rocket:longRangeAir")
 			availableTech						values: the name of the category to be added to, followed by the names of the technologies to add to it. (example: value="airCategory:longRangeAir:jetPower:superHeavyBomber")
 														If prefixed with "-" then it will remove the tech from that category (if the player already has the tech, it will do nothing).
@@ -3019,17 +3018,24 @@
 			
 		For the following, you are actually changing raw data in the engine by calling the setters in the same way the engine does when it parses the xml.  The following are not validated at all, so if you don't use them correctly you will probably cause the engine to crash mid-game.
 		You may prefix the property count portion with "-clear-" if you wish to clear out the data in an array first (example: <option name="unitProperty" value="requiresUnits" count="-clear-factory:hangar"/> )
-			unitType							values: the exact name of the unit to be affected by a unitProperty change (example: value="cruiser")
-			unitProperty						values: the name of any actual unit property, with a count equal to the property's values (examples: value="attack" count="4", or value="isAir" count="true"), requires a unitType declared
+			players								values: the names of the players to give these things to. if missing, defaults to attached player. (example: value="Germans:Italians"). Also used as list of players affected by a playerProperty change.
+			playerAttachmentName				values: the type of attachment (PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment) and the exact full name of the attachment to be changed. (example: value="RulesAttachment" count="rulesAttatchment"). Defaults to PlayerAttachment if missing.
+			playerProperty						values: the name of any actual attachment property, with a count equal to the property's values (examples: value="destroysPUs" count="true"). (requires players to be set, otherwise it uses the attached player)
+			unitType							values: the exact names of the unit to be affected by a unitProperty change (example: value="cruiser:super_cruiser")
+			unitAttachmentName					values: the type of attachment (UnitAttachment, UnitSupportAttachment) and the exact full name of the attachment to be changed. Defaults to UnitAttachment if missing.
+			unitProperty						values: the name of any actual attachment property, with a count equal to the property's values (examples: value="attack" count="4", or value="isAir" count="true"), requires unitType declared
 														Something to note is that <option name="artillery" value="true"/> AND <option name="artillerySupportable" value="true"/> AND <option name="unitSupportCount" value="1"/> are all converted into a support attachment when the game starts, 
 															so adding or removing them as unit properties will do nothing (the bonusType for them is "ArtyOld", and the supportAttachment name is "supportAttachmentArtyOld<nameofUnit>") unitProperty changes are done for ALL players who use that unitType, 
 															regardless of the player specified in the trigger. In order to have a unitType+unitProperty change only affect certain players and not others, you need to make a new unit type for those players (ie: rename the unit for those players only)
-			territoryName						values: the exact name of the territory to be affected by a territoryProperty change (example: value="Germany")
-			territoryProperty					values: the name of any actual territory property, with a count equal to the property's values (examples: value="production" count="4", or value="victoryCity" count="true"), requires a territoryName declared
-			playerProperty						values: the name of any actual player attachment property, with a count equal to the property's values (examples: value="destroysPUs" count="true"). (requires players to be set, otherwise it uses the attached player)
-			attachmentToBeChangedName			values: the type of attachment (TriggerAttachment or RulesAttachment) and the exact full name of the attachment to be changed. (example: value="RulesAttachment" count="rulesAttatchment")
-			attachmentToBeChangedProperty		values: the name of any actual attachment property, with a count equal to the property's values (examples: value="placementAnyTerritory" count="true")
-			
+			territories							values: the exact names of the territories to be affected by a territoryProperty change (example: value="Germany:Italy")
+			territoryAttachmentName				values: the type of attachment (TerritoryAttachment, CanalAttachment) and the exact full name of the attachment to be changed. Defaults to TerritoryAttachment if missing.
+			territoryProperty					values: the name of any actual attachment property, with a count equal to the property's values (examples: value="production" count="4", or value="victoryCity" count="true"), requires territories declared
+			relationshipTypes					values: the exact names of the relationshipType to be affected by a relationshipTypeProperty change
+			relationshipTypeAttachmentName		values: the type of attachment (RelationshipTypeAttachment) and the exact full name of the attachment to be changed. Defaults to RelationshipTypeAttachment if missing.
+			relationshipTypeProperty			values: the name of any actual attachment property, with a count equal to the property's values, requires relationshipTypes declared
+			territoryEffects					values: the exact names of the territoryEffects to be affected by a territoryEffectProperty change
+			territoryEffectAttachmentName		values: the type of attachment (TerritoryEffectAttachment) and the exact full name of the attachment to be changed. Defaults to TerritoryEffectAttachment if missing.
+			territoryEffectProperty				values: the name of any actual attachment property, with a count equal to the property's values, requires territoryEffects declared
 			
 	-->
 		<!-- Clarification on changing properties and clearing of properties. (Any property not in this list overwrites itself if you set it multiple times)
@@ -3069,13 +3075,19 @@
 					placement
 					purchase
 					support
-					players
 					relationshipChange
-					unitProperty
-					territoryProperty
+					
+					players
 					playerProperty
-					attachmentToBeChangedProperty
-				
+					unitType
+					unitProperty
+					territories
+					territoryProperty
+					relationshipTypes
+					relationshipTypeProperty
+					territoryEffects
+					territoryEffectProperty
+					
 		-->
 	<!-- Victory Triggers -->
 						<!-- Victory Triggers can be attached to anyone. Only 1 is needed per victory condition -->

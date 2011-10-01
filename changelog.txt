@@ -1,4 +1,16 @@
 Changes for 1.3.3.0
+* Created triggers for changing any attachment that is attached to a territoryEffect by using: territoryEffects, territoryEffectAttachmentName, and territoryEffectProperty. (veqryn)
+
+* Created triggers for changing any attachment that is attached to a relationshipType by using: relationshipTypes, relationshipTypeAttachmentName, and relationshipTypeProperty. (veqryn)
+
+* Created triggers for changing any attachment that is attached to a territory by using: territories, territoryAttachmentName, and territoryProperty. (veqryn)
+
+* Created triggers for changing any attachment that is attached to a unit by using: unitType, unitAttachmentName, and unitProperty. (veqryn)
+
+* Created triggers for changing any attachment that is attached to a player by using: players, playerAttachmentName, and playerProperty. (veqryn)
+
+* Completely re-wrote how raw changes were done, and deleted attachmentToBeChangedName and attachmentToBeChangedProperty. (veqryn)
+
 * Created new ability to set when a trigger fires, with "when", setting "before/after:stepName", that works with all triggers. Triggers still maintain a default step for firing. (veqryn)
 
 * Finished work on making triggers for rules and trigger attachments, using attachmentToBeChangedName and attachmentToBeChangedProperty. (veqryn)

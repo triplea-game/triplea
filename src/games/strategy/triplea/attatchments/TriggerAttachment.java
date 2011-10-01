@@ -27,6 +27,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -68,7 +69,6 @@ public class TriggerAttachment extends DefaultAttachment{
 	private String m_resource = null;
 	private int m_resourceCount = 0;
 	private int m_uses = -1;
-	private List<PlayerID> m_players= new ArrayList<PlayerID>();
 	private Map<UnitSupportAttachment, Boolean> m_support = null;
 	// List of relationshipChanges that should be executed when this trigger hits.
 	private List<String> m_relationshipChange = new ArrayList<String>();
@@ -79,14 +79,27 @@ public class TriggerAttachment extends DefaultAttachment{
 	private String m_notification = null;
 	private Tuple<String,String> m_when = null;
 
-	private UnitType m_unitType = null;
+	//raw property changes below:
+	
+	private List<UnitType> m_unitType = new ArrayList<UnitType>(); // really m_unitTypes
+	private Tuple<String,String> m_unitAttachmentName = null; // covers UnitAttachment, UnitSupportAttachment
 	private List<Tuple<String,String>> m_unitProperty = null;
-	private Territory m_territoryName = null;
+	
+	private List<Territory> m_territories = new ArrayList<Territory>();
+	private Tuple<String,String> m_territoryAttachmentName = null; // covers TerritoryAttachment, CanalAttachment
 	private List<Tuple<String,String>> m_territoryProperty = null;
-	private List<Tuple<String,String>> m_playerProperty = null;
-	private Tuple<String,String> m_attachmentToBeChangedName = null;
-	private List<Tuple<String,String>> m_attachmentToBeChangedProperty = null;
 
+	private List<PlayerID> m_players = new ArrayList<PlayerID>();
+	private Tuple<String,String> m_playerAttachmentName = null; // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment
+	private List<Tuple<String,String>> m_playerProperty = null;
+
+	private List<RelationshipType> m_relationshipTypes = new ArrayList<RelationshipType>();
+	private Tuple<String,String> m_relationshipTypeAttachmentName = null; // covers RelationshipTypeAttachment
+	private List<Tuple<String,String>> m_relationshipTypeProperty = null;
+
+	private List<TerritoryEffect> m_territoryEffects = new ArrayList<TerritoryEffect>();
+	private Tuple<String,String> m_territoryEffectAttachmentName = null; // covers TerritoryEffectAttachment
+	private List<Tuple<String,String>> m_territoryEffectProperty = null;
 
 	public TriggerAttachment() {
 	}
@@ -354,32 +367,6 @@ public class TriggerAttachment extends DefaultAttachment{
 		m_support.clear();
 	}
 	
-	/**
-	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
-	 * @param names
-	 * @throws GameParseException
-	 */
-	public void setPlayers(String names) throws GameParseException
-	{
-		String[] s = names.split(":");
-		for(int i =0;i<s.length;i++) {
-			PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
-			if(player == null)
-				throw new GameParseException("Triggers: Could not find player. name:" + s[i]);
-			m_players.add(player);
-		}
-	}
-	
-	public List<PlayerID> getPlayers() {
-		if(m_players.isEmpty()) 
-			return Collections.singletonList((PlayerID)getAttatchedTo());
-		else
-			return m_players;
-    }
-	public void clearPlayers() {
-		m_players.clear();
-    }
-	
 	public String getResource() {
 		return m_resource;
 	}
@@ -425,16 +412,54 @@ public class TriggerAttachment extends DefaultAttachment{
 		m_relationshipChange.clear();
 	}
 	
-	public UnitType getUnitType() {
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param names
+	 * @throws GameParseException
+	 */
+	public void setUnitType(String names) throws GameParseException
+    {
+		String[] s = names.split(":");
+		for(int i =0;i<s.length;i++) {
+			UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
+			if (type == null)
+				throw new GameParseException("Triggers: Could not find unitType. name:" + s[i]);
+			m_unitType.add(type);
+		}
+    }
+	
+	public List<UnitType> getUnitType() {
 		return m_unitType;
 	}
-	public void setUnitType(String name) throws GameParseException
-    {
-            UnitType type = getData().getUnitTypeList().getUnitType(name);
-            if(type == null)
-                throw new GameParseException("Triggers: Could not find unitType. name:" + name);
-            m_unitType = type;
-    }
+	
+	public void clearUnitType() {
+		m_unitType.clear();
+	}
+	
+	public void setUnitAttachmentName(String name) throws GameParseException {
+		String[] s = name.split(":");
+		if (s.length != 2)
+			throw new GameParseException( "Triggers: unitAttachmentName must have 2 entries, the type of attachment and the name of the attachment.");
+		// covers UnitAttachment, UnitSupportAttachment
+		if (s[1] != "UnitAttachment" || s[1] != "UnitSupportAttachment")
+			throw new GameParseException( "Triggers: unitAttachmentName value must be UnitAttachment or UnitSupportAttachment");
+		// TODO validate attachment exists?
+		if (s[0].length()<1)
+			throw new GameParseException( "Triggers: unitAttachmentName count must be a valid attachment name");
+		if (s[1] == "UnitAttachment" && !s[0].startsWith(Constants.UNIT_ATTACHMENT_NAME))
+			throw new GameParseException( "Triggers: attachment incorrectly named:" + s[0]);
+		if (s[1] == "UnitSupportAttachment" && !s[0].startsWith(Constants.SUPPORT_ATTACHMENT_PREFIX))
+			throw new GameParseException( "Triggers: attachment incorrectly named:" + s[0]);
+			
+		m_unitAttachmentName = new Tuple<String,String>(s[1], s[0]);
+	}
+	
+	public Tuple<String,String> getUnitAttachmentName()
+	{
+		if (m_unitAttachmentName == null)
+			return new Tuple<String,String>("UnitAttachment",Constants.UNIT_ATTACHMENT_NAME);
+		return m_unitAttachmentName;
+	}
 	
 	/**
 	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
@@ -468,16 +493,52 @@ public class TriggerAttachment extends DefaultAttachment{
 		m_unitProperty.clear();
 	}
 	
-	public void setTerritoryName(String name) throws GameParseException
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param names
+	 * @throws GameParseException
+	 */
+	public void setTerritories(String names) throws GameParseException
     {
-		Territory terr = getData().getMap().getTerritory(name);
-		if (terr == null)
-			throw new GameParseException("Triggers: Could not find territory. name:" + name);
-		m_territoryName = terr;
+		String[] s = names.split(":");
+		for(int i =0;i<s.length;i++) {
+			Territory terr = getData().getMap().getTerritory(s[i]);
+			if (terr == null)
+				throw new GameParseException("Triggers: Could not find territory. name:" + s[i]);
+			m_territories.add(terr);
+		}
     }
 	
-	public Territory getTerritoryName() {
-		return m_territoryName;
+	public List<Territory> getTerritories() {
+		return m_territories;
+	}
+	
+	public void clearTerritories() {
+		m_territories.clear();
+	}
+	
+	public void setTerritoryAttachmentName(String name) throws GameParseException {
+		String[] s = name.split(":");
+		if (s.length != 2)
+			throw new GameParseException( "Triggers: territoryAttachmentName must have 2 entries, the type of attachment and the name of the attachment.");
+		// covers TerritoryAttachment, CanalAttachment
+		if (s[1] != "TerritoryAttachment" || s[1] != "CanalAttachment")
+			throw new GameParseException( "Triggers: territoryAttachmentName value must be TerritoryAttachment or CanalAttachment");
+		// TODO validate attachment exists?
+		if (s[0].length()<1)
+			throw new GameParseException( "Triggers: territoryAttachmentName count must be a valid attachment name");
+		if (s[1] == "TerritoryAttachment" && !s[0].startsWith(Constants.TERRITORY_ATTACHMENT_NAME))
+			throw new GameParseException( "Triggers: attachment incorrectly named:" + s[0]);
+		if (s[1] == "CanalAttachment" && !s[0].startsWith(Constants.CANAL_ATTACHMENT_PREFIX))
+			throw new GameParseException( "Triggers: attachment incorrectly named:" + s[0]);
+		m_territoryAttachmentName = new Tuple<String,String>(s[1], s[0]);
+	}
+	
+	public Tuple<String,String> getTerritoryAttachmentName()
+	{
+		if (m_territoryAttachmentName == null)
+			return new Tuple<String,String>("TerritoryAttachment",Constants.TERRITORY_ATTACHMENT_NAME);
+		return m_territoryAttachmentName;
 	}
 	
 	/**
@@ -514,6 +575,62 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	/**
 	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param names
+	 * @throws GameParseException
+	 */
+	public void setPlayers(String names) throws GameParseException
+	{
+		String[] s = names.split(":");
+		for(int i =0;i<s.length;i++) {
+			PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
+			if(player == null)
+				throw new GameParseException("Triggers: Could not find player. name:" + s[i]);
+			m_players.add(player);
+		}
+	}
+	
+	public List<PlayerID> getPlayers() {
+		if(m_players.isEmpty()) 
+			return Collections.singletonList((PlayerID)getAttatchedTo());
+		else
+			return m_players;
+    }
+	
+	public void clearPlayers() {
+		m_players.clear();
+    }
+	
+	public void setPlayerAttachmentName(String name) throws GameParseException {
+		String[] s = name.split(":");
+		if (s.length != 2)
+			throw new GameParseException( "Triggers: playerAttachmentName must have 2 entries, the type of attachment and the name of the attachment.");
+		// covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment
+		if (s[1] != "PlayerAttachment" || s[1] != "RulesAttachment" || s[1] != "TriggerAttachment" || s[1] != "TechAttachment")
+			throw new GameParseException( "Triggers: playerAttachmentName value must be PlayerAttachment or RulesAttachment or TriggerAttachment or TechAttachment");
+		// TODO validate attachment exists?
+		if (s[0].length()<1)
+			throw new GameParseException( "Triggers: playerAttachmentName count must be a valid attachment name");
+		if (s[1] == "PlayerAttachment" && !s[0].startsWith(Constants.PLAYER_ATTACHMENT_NAME))
+			throw new GameParseException( "Triggers: attachment incorrectly named:" + s[0]);
+		if (s[1] == "RulesAttachment" && !(s[0].startsWith(Constants.RULES_ATTACHMENT_NAME) || 
+					s[0].startsWith(Constants.RULES_OBJECTIVE_PREFIX) || s[0].startsWith(Constants.RULES_CONDITION_PREFIX)))
+			throw new GameParseException( "Triggers: attachment incorrectly named:" + s[0]);
+		if (s[1] == "TriggerAttachment" && !s[0].startsWith(Constants.TRIGGER_ATTACHMENT_PREFIX))
+			throw new GameParseException( "Triggers: attachment incorrectly named:" + s[0]);
+		if (s[1] == "TechAttachment" && !s[0].startsWith(Constants.TECH_ATTACHMENT_NAME))
+			throw new GameParseException( "Triggers: attachment incorrectly named:" + s[0]);
+		m_playerAttachmentName = new Tuple<String,String>(s[1], s[0]);
+	}
+	
+	public Tuple<String,String> getPlayerAttachmentName()
+	{
+		if (m_playerAttachmentName == null)
+			return new Tuple<String,String>("PlayerAttachment",Constants.PLAYER_ATTACHMENT_NAME);
+		return m_playerAttachmentName;
+	}
+	
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
 	 * @param prop
 	 * @throws GameParseException
 	 */
@@ -544,21 +661,50 @@ public class TriggerAttachment extends DefaultAttachment{
 		m_playerProperty.clear();
 	}
 	
-	public void setAttachmentToBeChangedName(String name) throws GameParseException {
-		String[] s = name.split(":");
-		if (s.length != 2)
-			throw new GameParseException( "Triggers: attachmentToBeChangedName must have 2 entries, the type of attachment and the name of the attachment.");
-		if (s[1] != "TriggerAttachment" || s[1] != "RulesAttachment")
-			throw new GameParseException( "Triggers: attachmentToBeChangedName value must be TriggerAttachment or RulesAttachment");
-		// TODO validate attachment exists?
-		if (s[0].length()<1)
-			throw new GameParseException( "Triggers: attachmentToBeChangedName count must be a valid attachment name");
-		m_attachmentToBeChangedName = new Tuple<String,String>(s[1], s[0]);
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param names
+	 * @throws GameParseException
+	 */
+	public void setRelationshipTypes(String names) throws GameParseException
+	{
+		String[] s = names.split(":");
+		for(int i =0;i<s.length;i++) {
+			RelationshipType relation = getData().getRelationshipTypeList().getRelationshipType(s[i]);
+			if(relation == null)
+				throw new GameParseException("Triggers: Could not find relationshipType. name:" + s[i]);
+			m_relationshipTypes.add(relation);
+		}
 	}
 	
-	public Tuple<String,String> getAttachmentToBeChangedName()
+	public List<RelationshipType> getRelationshipTypes() {
+		return m_relationshipTypes;
+    }
+	
+	public void clearRelationshipTypes() {
+		m_relationshipTypes.clear();
+    }
+	
+	public void setRelationshipTypeAttachmentName(String name) throws GameParseException {
+		String[] s = name.split(":");
+		if (s.length != 2)
+			throw new GameParseException( "Triggers: relationshipTypeAttachmentName must have 2 entries, the type of attachment and the name of the attachment.");
+		// covers RelationshipTypeAttachment
+		if (s[1] != "RelationshipTypeAttachment")
+			throw new GameParseException( "Triggers: relationshipTypeAttachmentName value must be RelationshipTypeAttachment");
+		// TODO validate attachment exists?
+		if (s[0].length()<1)
+			throw new GameParseException( "Triggers: relationshipTypeAttachmentName count must be a valid attachment name");
+		if (s[1] == "RelationshipTypeAttachment" && !s[0].startsWith(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME))
+			throw new GameParseException( "Triggers: attachment incorrectly named:" + s[0]);
+		m_relationshipTypeAttachmentName = new Tuple<String,String>(s[1], s[0]);
+	}
+	
+	public Tuple<String,String> getRelationshipTypeAttachmentName()
 	{
-		return m_attachmentToBeChangedName;
+		if (m_relationshipTypeAttachmentName == null)
+			return new Tuple<String,String>("RelationshipTypeAttachment",Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
+		return m_relationshipTypeAttachmentName;
 	}
 	
 	/**
@@ -566,11 +712,11 @@ public class TriggerAttachment extends DefaultAttachment{
 	 * @param prop
 	 * @throws GameParseException
 	 */
-	public void setAttachmentToBeChangedProperty(String prop) throws GameParseException{
+	public void setRelationshipTypeProperty(String prop) throws GameParseException{
 		String[] s = prop.split(":");
 		
-		if(m_attachmentToBeChangedProperty== null)
-			m_attachmentToBeChangedProperty = new ArrayList<Tuple<String,String>>();
+		if(m_relationshipTypeProperty== null)
+			m_relationshipTypeProperty = new ArrayList<Tuple<String,String>>();
 		
 		String property = s[s.length-1]; // the last one is the property we are changing, while the rest is the string we are changing it to
 		String value = "";
@@ -582,15 +728,93 @@ public class TriggerAttachment extends DefaultAttachment{
 		if (value.length() > 0 && value.startsWith(":"))
 			value = value.replaceFirst(":", "");
 		
-		m_attachmentToBeChangedProperty.add(new Tuple<String,String>(property, value));
+		m_relationshipTypeProperty.add(new Tuple<String,String>(property, value));
 	}
 	
-	public List<Tuple<String,String>> getAttachmentToBeChangedProperty() {
-		return m_attachmentToBeChangedProperty;
+	public List<Tuple<String,String>> getRelationshipTypeProperty() {
+		return m_relationshipTypeProperty;
 	}
 	
-	public void clearAttachmentToBeChangedProperty() {
-		m_attachmentToBeChangedProperty.clear();
+	public void clearRelationshipTypeProperty() {
+		m_relationshipTypeProperty.clear();
+	}
+	
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param names
+	 * @throws GameParseException
+	 */
+	public void setTerritoryEffects(String names) throws GameParseException
+	{
+		String[] s = names.split(":");
+		for(int i =0;i<s.length;i++) {
+			TerritoryEffect effect = getData().getTerritoryEffectList().get(s[i]);
+			if(effect == null)
+				throw new GameParseException("Triggers: Could not find territoryEffect. name:" + s[i]);
+			m_territoryEffects.add(effect);
+		}
+	}
+	
+	public List<TerritoryEffect> getTerritoryEffects() {
+		return m_territoryEffects;
+    }
+	
+	public void clearTerritoryEffects() {
+		m_territoryEffects.clear();
+    }
+	
+	public void setTerritoryEffectAttachmentName(String name) throws GameParseException {
+		String[] s = name.split(":");
+		if (s.length != 2)
+			throw new GameParseException( "Triggers: territoryEffectAttachmentName must have 2 entries, the type of attachment and the name of the attachment.");
+		// covers TerritoryEffectAttachment
+		if (s[1] != "TerritoryEffectAttachment")
+			throw new GameParseException( "Triggers: territoryEffectAttachmentName value must be TerritoryEffectAttachment");
+		// TODO validate attachment exists?
+		if (s[0].length()<1)
+			throw new GameParseException( "Triggers: territoryEffectAttachmentName count must be a valid attachment name");
+		if (s[1] == "TerritoryEffectAttachment" && !s[0].startsWith(Constants.TERRITORYEFFECT_ATTACHMENT_NAME))
+			throw new GameParseException( "Triggers: attachment incorrectly named:" + s[0]);
+		m_territoryEffectAttachmentName = new Tuple<String,String>(s[1], s[0]);
+	}
+	
+	public Tuple<String,String> getTerritoryEffectAttachmentName()
+	{
+		if (m_territoryEffectAttachmentName == null)
+			return new Tuple<String,String>("TerritoryEffectAttachment",Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
+		return m_territoryEffectAttachmentName;
+	}
+	
+	/**
+	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * @param prop
+	 * @throws GameParseException
+	 */
+	public void setTerritoryEffectProperty(String prop) throws GameParseException{
+		String[] s = prop.split(":");
+		
+		if(m_territoryEffectProperty== null)
+			m_territoryEffectProperty = new ArrayList<Tuple<String,String>>();
+		
+		String property = s[s.length-1]; // the last one is the property we are changing, while the rest is the string we are changing it to
+		String value = "";
+		
+		for (int i=0;i<s.length-1;i++)
+			value += ":" + s[i];
+		
+		// Remove the leading colon
+		if (value.length() > 0 && value.startsWith(":"))
+			value = value.replaceFirst(":", "");
+		
+		m_territoryEffectProperty.add(new Tuple<String,String>(property, value));
+	}
+	
+	public List<Tuple<String,String>> getTerritoryEffectProperty() {
+		return m_territoryEffectProperty;
+	}
+	
+	public void clearTerritoryEffectProperty() {
+		m_territoryEffectProperty.clear();
 	}
 	
 	/**
@@ -1038,21 +1262,41 @@ public class TriggerAttachment extends DefaultAttachment{
 			if(isMet(t, data)) {
 				t.use(aBridge);
 				for(Tuple<String,String> property : t.getUnitProperty()) {
-					String newValue = property.getSecond();
-					boolean clearFirst = false;
-					// test if we are clearing the variable first, and if so, remove the leading dash "-clear-"
-					if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+					for (UnitType aUnitType : t.getUnitType())
 					{
-						newValue = newValue.replaceFirst("-clear-", "");
-						clearFirst = true;
+						String newValue = property.getSecond();
+						boolean clearFirst = false;
+						// test if we are clearing the variable first, and if so, remove the leading "-clear-"
+						if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+						{
+							newValue = newValue.replaceFirst("-clear-", "");
+							clearFirst = true;
+						}
+						// covers UnitAttachment, UnitSupportAttachment
+						if (t.getUnitAttachmentName().getFirst() == "UnitAttachment")
+						{
+							UnitAttachment attachment = UnitAttachment.get(aUnitType, t.getUnitAttachmentName().getSecond());
+							if(attachment.getRawProperty(property.getFirst()).equals(newValue))
+								continue;
+							if (clearFirst && newValue.length() < 1)
+								change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							else
+								change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getUnitAttachmentName().getSecond() + " attached to " + aUnitType.getName());
+						}
+						else if (t.getUnitAttachmentName().getFirst() == "UnitSupportAttachment")
+						{
+							UnitSupportAttachment attachment = UnitSupportAttachment.get(aUnitType, t.getUnitAttachmentName().getSecond());
+							if(attachment.getRawProperty(property.getFirst()).equals(newValue))
+								continue;
+							if (clearFirst && newValue.length() < 1)
+								change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							else
+								change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getUnitAttachmentName().getSecond() + " attached to " + aUnitType.getName());
+						}
+						// TODO add other attachment changes here if they attach to a unitType
 					}
-					if(UnitAttachment.get(t.getUnitType()).getRawProperty(property.getFirst()).equals(newValue))
-						continue;
-					if (clearFirst && newValue.length() < 1)
-						change.add(ChangeFactory.attachmentPropertyClear(UnitAttachment.get(t.getUnitType()), property.getFirst(), true));
-					else
-						change.add(ChangeFactory.attachmentPropertyChange(UnitAttachment.get(t.getUnitType()), newValue, property.getFirst(), true, clearFirst));
-					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getUnitType().getName());
 				}
 			}
 		}
@@ -1067,21 +1311,43 @@ public class TriggerAttachment extends DefaultAttachment{
 			if(isMet(t, data)) {
 				t.use(aBridge);
 				for(Tuple<String,String> property : t.getTerritoryProperty()) {
-					String newValue = property.getSecond();
-					boolean clearFirst = false;
-					// test if we are clearing the variable first, and if so, remove the leading dash "-clear-"
-					if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+					for (Territory aTerritory : t.getTerritories())
 					{
-						newValue = newValue.replaceFirst("-clear-", "");
-						clearFirst = true;
+						String newValue = property.getSecond();
+						boolean clearFirst = false;
+						// test if we are clearing the variable first, and if so, remove the leading "-clear-"
+						if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+						{
+							newValue = newValue.replaceFirst("-clear-", "");
+							clearFirst = true;
+						}
+						// covers TerritoryAttachment, CanalAttachment
+						if (t.getTerritoryAttachmentName().getFirst() == "TerritoryAttachment")
+						{
+							TerritoryAttachment attachment = TerritoryAttachment.get(aTerritory, t.getTerritoryAttachmentName().getSecond());
+							if (attachment == null)
+								throw new IllegalStateException("Triggers: No territory attachment for:" + aTerritory.getName()); // water territories may not have an attachment, so this could be null
+							if(attachment.getRawProperty(property.getFirst()).equals(newValue))
+								continue;
+							if (clearFirst && newValue.length() < 1)
+								change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							else
+								change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getTerritoryAttachmentName().getSecond() + " attached to " + aTerritory.getName());
+						}
+						else if (t.getTerritoryAttachmentName().getFirst() == "CanalAttachment")
+						{
+							CanalAttachment attachment = CanalAttachment.get(aTerritory, t.getTerritoryAttachmentName().getSecond());
+							if(attachment.getRawProperty(property.getFirst()).equals(newValue))
+								continue;
+							if (clearFirst && newValue.length() < 1)
+								change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							else
+								change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getTerritoryAttachmentName().getSecond() + " attached to " + aTerritory.getName());
+						}
+						// TODO add other attachment changes here if they attach to a territory
 					}
-					if(TerritoryAttachment.get(t.getTerritoryName()).getRawProperty(property.getFirst()).equals(newValue))
-						continue;
-					if (clearFirst && newValue.length() < 1)
-						change.add(ChangeFactory.attachmentPropertyClear(TerritoryAttachment.get(t.getTerritoryName()), property.getFirst(), true));
-					else
-						change.add(ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(t.getTerritoryName()), newValue, property.getFirst(), true, clearFirst));
-					aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getTerritoryName().getName());
 				}
 			}
 		}
@@ -1100,19 +1366,58 @@ public class TriggerAttachment extends DefaultAttachment{
 					{
 						String newValue = property.getSecond();
 						boolean clearFirst = false;
-						// test if we are clearing the variable first, and if so, remove the leading dash "-clear-"
+						// test if we are clearing the variable first, and if so, remove the leading "-clear-"
 						if (newValue.length() > 0 && newValue.startsWith("-clear-"))
 						{
 							newValue = newValue.replaceFirst("-clear-", "");
 							clearFirst = true;
 						}
-						if(PlayerAttachment.get(aPlayer).getRawProperty(property.getFirst()).equals(newValue))
-							continue;
-						if (clearFirst && newValue.length() < 1)
-							change.add(ChangeFactory.attachmentPropertyClear(PlayerAttachment.get(aPlayer), property.getFirst(), true));
-						else
-							change.add(ChangeFactory.attachmentPropertyChange(PlayerAttachment.get(aPlayer), newValue, property.getFirst(), true, clearFirst));
-						aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + aPlayer.getName());
+						// covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment
+						if (t.getPlayerAttachmentName().getFirst() == "PlayerAttachment")
+						{
+							PlayerAttachment attachment = PlayerAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
+							if(attachment.getRawProperty(property.getFirst()).equals(newValue))
+								continue;
+							if (clearFirst && newValue.length() < 1)
+								change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							else
+								change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
+						}
+						else if (t.getPlayerAttachmentName().getFirst() == "RulesAttachment")
+						{
+							RulesAttachment attachment = RulesAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
+							if(attachment.getRawProperty(property.getFirst()).equals(newValue))
+								continue;
+							if (clearFirst && newValue.length() < 1)
+								change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							else
+								change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
+						}
+						else if (t.getPlayerAttachmentName().getFirst() == "TriggerAttachment")
+						{
+							TriggerAttachment attachment = TriggerAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
+							if(attachment.getRawProperty(property.getFirst()).equals(newValue))
+								continue;
+							if (clearFirst && newValue.length() < 1)
+								change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							else
+								change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
+						}
+						else if (t.getPlayerAttachmentName().getFirst() == "TechAttachment")
+						{
+							TechAttachment attachment = TechAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
+							if(attachment.getRawProperty(property.getFirst()).equals(newValue))
+								continue;
+							if (clearFirst && newValue.length() < 1)
+								change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							else
+								change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
+						}
+						// TODO add other attachment changes here if they attach to a player
 					}
 				}
 			}
@@ -1121,44 +1426,74 @@ public class TriggerAttachment extends DefaultAttachment{
 			aBridge.addChange(change);
 	}
 
-	public static void triggerAttachmentToBeChangedPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
-		Set<TriggerAttachment> trigs = getTriggers(player,data,attachmentToBeChangedPropertyMatch(beforeOrAfter,stepName));
+	public static void triggerRelationshipTypePropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,relationshipTypePropertyMatch(beforeOrAfter,stepName));
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t:trigs) {
 			if(isMet(t, data)) {
 				t.use(aBridge);
-				for(Tuple<String,String> property : t.getAttachmentToBeChangedProperty()) {
-					for (PlayerID aPlayer : t.getPlayers())
+				for(Tuple<String,String> property : t.getRelationshipTypeProperty()) {
+					for (RelationshipType aRelationshipType : t.getRelationshipTypes())
 					{
 						String newValue = property.getSecond();
 						boolean clearFirst = false;
-						// test if we are clearing the variable first, and if so, remove the leading dash "-clear-"
+						// test if we are clearing the variable first, and if so, remove the leading "-clear-"
 						if (newValue.length() > 0 && newValue.startsWith("-clear-"))
 						{
 							newValue = newValue.replaceFirst("-clear-", "");
 							clearFirst = true;
 						}
-						if (t.getAttachmentToBeChangedName().getFirst() == "TriggerAttachment")
+						// covers RelationshipTypeAttachment
+						if (t.getTerritoryAttachmentName().getFirst() == "RelationshipTypeAttachment")
 						{
-							if(TriggerAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()).getRawProperty(property.getFirst()).equals(newValue))
+							RelationshipTypeAttachment attachment = RelationshipTypeAttachment.get(aRelationshipType, t.getRelationshipTypeAttachmentName().getSecond());
+							if(attachment.getRawProperty(property.getFirst()).equals(newValue))
 								continue;
 							if (clearFirst && newValue.length() < 1)
-								change.add(ChangeFactory.attachmentPropertyClear(TriggerAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()), property.getFirst(), true));
+								change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
 							else
-								change.add(ChangeFactory.attachmentPropertyChange(TriggerAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()), newValue, property.getFirst(), true, clearFirst));
-							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getAttachmentToBeChangedName().getSecond());
+								change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getRelationshipTypeAttachmentName().getSecond() + " attached to " + aRelationshipType.getName());
 						}
-						else if (t.getAttachmentToBeChangedName().getFirst() == "RulesAttachment")
+						// TODO add other attachment changes here if they attach to a territory
+					}
+				}
+			}
+		}
+		if( !change.isEmpty())
+			aBridge.addChange(change);
+	}
+
+	public static void triggerTerritoryEffectPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+		Set<TriggerAttachment> trigs = getTriggers(player,data,territoryEffectPropertyMatch(beforeOrAfter,stepName));
+		CompositeChange change = new CompositeChange();
+		for(TriggerAttachment t:trigs) {
+			if(isMet(t, data)) {
+				t.use(aBridge);
+				for(Tuple<String,String> property : t.getTerritoryEffectProperty()) {
+					for (TerritoryEffect aTerritoryEffect : t.getTerritoryEffects())
+					{
+						String newValue = property.getSecond();
+						boolean clearFirst = false;
+						// test if we are clearing the variable first, and if so, remove the leading "-clear-"
+						if (newValue.length() > 0 && newValue.startsWith("-clear-"))
 						{
-							if(RulesAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()).getRawProperty(property.getFirst()).equals(newValue))
+							newValue = newValue.replaceFirst("-clear-", "");
+							clearFirst = true;
+						}
+						// covers TerritoryEffectAttachment
+						if (t.getTerritoryEffectAttachmentName().getFirst() == "TerritoryEffectAttachment")
+						{
+							TerritoryEffectAttachment attachment = TerritoryEffectAttachment.get(aTerritoryEffect, t.getTerritoryEffectAttachmentName().getSecond());
+							if(attachment.getRawProperty(property.getFirst()).equals(newValue))
 								continue;
 							if (clearFirst && newValue.length() < 1)
-								change.add(ChangeFactory.attachmentPropertyClear(RulesAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()), property.getFirst(), true));
+								change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
 							else
-								change.add(ChangeFactory.attachmentPropertyChange(RulesAttachment.get(aPlayer, t.getAttachmentToBeChangedName().getSecond()), newValue, property.getFirst(), true, clearFirst));
-							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getAttachmentToBeChangedName().getSecond());
+								change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+							aBridge.getHistoryWriter().startEvent("Triggers: Setting " + property.getFirst() + (newValue.length()>0 ? " to " + newValue : " cleared ") + " for " + t.getTerritoryEffectAttachmentName().getSecond() + " attached to " + aTerritoryEffect.getName());
 						}
-						// TODO add other attachment changes here if they are the kind which have multiple attachments per attached player
+						// TODO add other attachment changes here if they attach to a territory
 					}
 				}
 			}
@@ -1296,7 +1631,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	private static Match<TriggerAttachment> unitPropertyMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
 			public boolean match(TriggerAttachment t) {
-				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getUnitType() != null && t.getUnitProperty() != null;
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getUnitType().isEmpty() && t.getUnitProperty() != null;
 			}
 		};
 	}
@@ -1304,7 +1639,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	private static Match<TriggerAttachment> territoryPropertyMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
 			public boolean match(TriggerAttachment t) {
-				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getTerritoryName() != null && t.getTerritoryProperty() != null;
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getTerritories().isEmpty() && t.getTerritoryProperty() != null;
 			}
 		};
 	}
@@ -1317,10 +1652,18 @@ public class TriggerAttachment extends DefaultAttachment{
 		};
 	}
 	
-	private static Match<TriggerAttachment> attachmentToBeChangedPropertyMatch(final String beforeOrAfter, final String stepName) {
+	private static Match<TriggerAttachment> relationshipTypePropertyMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
 			public boolean match(TriggerAttachment t) {
-				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getAttachmentToBeChangedName() != null && t.getAttachmentToBeChangedProperty() != null;
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getRelationshipTypes().isEmpty() && t.getRelationshipTypeProperty() != null;
+			}
+		};
+	}
+	
+	private static Match<TriggerAttachment> territoryEffectPropertyMatch(final String beforeOrAfter, final String stepName) {
+		return new Match<TriggerAttachment>() {
+			public boolean match(TriggerAttachment t) {
+				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getTerritoryEffects().isEmpty() && t.getTerritoryEffectProperty() != null;
 			}
 		};
 	}

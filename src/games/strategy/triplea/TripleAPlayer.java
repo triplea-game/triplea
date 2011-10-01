@@ -166,40 +166,46 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void triggerWhenTriggerAttachments(String beforeOrAfter)
 	{
-		//TODO: should we loop through all players? if we don't, only triggers attached to the current player will be found.
-		String stepName = getGameData().getSequence().getStep().getName();
-		IDelegateBridge aBridge = getGameData().getSequence().getStep().getDelegate().getBridge();
-		//TODO: add all possible triggers here (in addition to their default locations)
-		TriggerAttachment.triggerAttachmentToBeChangedPropertyChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
-		TriggerAttachment.triggerPlayerPropertyChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
-		TriggerAttachment.triggerTerritoryPropertyChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
-		TriggerAttachment.triggerUnitPropertyChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
-
-		TriggerAttachment.triggerRelationshipChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
-		TriggerAttachment.triggerAvailableTechChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
-		TriggerAttachment.triggerTechChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
-		TriggerAttachment.triggerProductionFrontierEditChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
-		TriggerAttachment.triggerProductionChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
-		TriggerAttachment.triggerPurchase(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
-		TriggerAttachment.triggerSupportChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
-		TriggerAttachment.triggerUnitPlacement(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
-		TriggerAttachment.triggerResourceChange(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
-		
-		// now do notifications:
-		Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(m_id, aBridge, getGameData(), beforeOrAfter, stepName).iterator();
-		while (notificationMessages.hasNext())
+		if (games.strategy.triplea.Properties.getTriggers(getGameData()))
 		{
-			String notificationMessageKey = notificationMessages.next();
-			m_ui.notification(NotificationMessages.getInstance(m_ui.getUIContext()).getMessage(notificationMessageKey));
+			for (PlayerID aPlayer : getGameData().getPlayerList())
+			{
+				String stepName = getGameData().getSequence().getStep().getName();
+				IDelegateBridge aBridge = getGameData().getSequence().getStep().getDelegate().getBridge();
+				//TODO: add all possible triggers here (in addition to their default locations)
+				TriggerAttachment.triggerPlayerPropertyChange(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
+				TriggerAttachment.triggerRelationshipTypePropertyChange(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
+				TriggerAttachment.triggerTerritoryPropertyChange(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
+				TriggerAttachment.triggerUnitPropertyChange(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
+				TriggerAttachment.triggerTerritoryEffectPropertyChange(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
+	
+				TriggerAttachment.triggerRelationshipChange(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
+				TriggerAttachment.triggerAvailableTechChange(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
+				TriggerAttachment.triggerTechChange(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
+				TriggerAttachment.triggerProductionFrontierEditChange(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
+				TriggerAttachment.triggerProductionChange(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
+				TriggerAttachment.triggerPurchase(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
+				TriggerAttachment.triggerSupportChange(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
+				TriggerAttachment.triggerUnitPlacement(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
+				TriggerAttachment.triggerResourceChange(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
+				
+				// now do notifications:
+				Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName).iterator();
+				while (notificationMessages.hasNext())
+				{
+					String notificationMessageKey = notificationMessages.next();
+					m_ui.notification(NotificationMessages.getInstance(m_ui.getUIContext()).getMessage(notificationMessageKey));
+				}
+				
+				// now do victory messages:
+				String victoryMessage = TriggerAttachment.triggerVictory(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
+		    	if (victoryMessage != null)
+		    	{
+		    		IDelegate delegateEndRound = getGameData().getDelegateList().getDelegate("endRound");
+		    		((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage,aBridge);
+		    	}
+			}
 		}
-		
-		// now do victory messages:
-		String victoryMessage = TriggerAttachment.triggerVictory(m_id, aBridge, getGameData(), beforeOrAfter, stepName);
-    	if (victoryMessage != null)
-    	{
-    		IDelegate delegateEndRound = getGameData().getDelegateList().getDelegate("endRound");
-    		((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage,aBridge);
-    	}
 	}
 	
 	private void triggerDefaultNotificationTriggerAttachments()
@@ -269,7 +275,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 
     private void move(boolean nonCombat)
     {
-    	if (!nonCombat)
+    	if (!nonCombat && games.strategy.triplea.Properties.getTriggers(getGameData()))
     		triggerDefaultNotificationTriggerAttachments();
     	
     	if (!m_scrambledUnitsReturned && nonCombat && getScramble_Rules_In_Effect())

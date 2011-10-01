@@ -119,13 +119,20 @@ public class TerritoryAttachment extends DefaultAttachment
     }
 
     /**
-     * Convenience method.
+     * Convenience method. can return null.
      */
     public static TerritoryAttachment get(Territory t)
     {
         TerritoryAttachment rVal =  (TerritoryAttachment) t.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
         if(rVal == null && !t.isWater())
             throw new IllegalStateException("No territory attachment for:" + t.getName());
+        return rVal;
+    }
+    public static TerritoryAttachment get(Territory t, String nameOfAttachment)
+    {
+        TerritoryAttachment rVal =  (TerritoryAttachment) t.getAttachment(nameOfAttachment);
+        if(rVal == null && !t.isWater())
+            throw new IllegalStateException("No territory attachment for:" + t.getName() + " with name:" + nameOfAttachment);
         return rVal;
     }
 

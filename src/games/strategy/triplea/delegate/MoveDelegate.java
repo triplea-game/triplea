@@ -184,9 +184,10 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
         // territory property changes triggered at beginning of combat move // TODO move to new delegate start of turn
         if(!m_nonCombat && games.strategy.triplea.Properties.getTriggers(m_data))
         {
-        	TriggerAttachment.triggerAttachmentToBeChangedPropertyChange(player, aBridge, gameData, null, null);
-        	TriggerAttachment.triggerTerritoryPropertyChange(player, aBridge, gameData, null, null);
         	TriggerAttachment.triggerPlayerPropertyChange(player, aBridge, gameData, null, null);
+        	TriggerAttachment.triggerRelationshipTypePropertyChange(player, aBridge, gameData, null, null);
+        	TriggerAttachment.triggerTerritoryPropertyChange(player, aBridge, gameData, null, null);
+        	TriggerAttachment.triggerTerritoryEffectPropertyChange(player, aBridge, gameData, null, null);
         }
 
         // repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at beginning of combat move)

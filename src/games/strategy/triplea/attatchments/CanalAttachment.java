@@ -51,7 +51,14 @@ public class CanalAttachment extends DefaultAttachment
             }
         }
         return rVal;
-        
+    }
+    
+    public static CanalAttachment get(Territory t, String nameOfAttachment)
+    {
+    	CanalAttachment rVal = (CanalAttachment) t.getAttachment(nameOfAttachment);
+		if (rVal == null)
+			throw new IllegalStateException("CanalAttachment: No canal attachment for:" + t.getName() + " with name: " + nameOfAttachment);
+		return rVal;
     }
     
     public void setCanalName(String name)

@@ -88,7 +88,13 @@ public class UnitSupportAttachment extends DefaultAttachment{
             }
         }
         return supports;
-    	
+    }
+    
+    public static UnitSupportAttachment get(UnitType u, String nameOfAttachment) {
+    	UnitSupportAttachment rVal = (UnitSupportAttachment) u.getAttachment(nameOfAttachment);
+        if(rVal == null)
+            throw new IllegalStateException("No unit type attachment for:" + u.getName() + " with name:" + nameOfAttachment);
+        return rVal;
     }
     
     public static Set<UnitSupportAttachment> get(GameData data) 
@@ -181,6 +187,11 @@ public class UnitSupportAttachment extends DefaultAttachment{
     	m_bonusType = type;
     }
     
+    /**
+     * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+     * @param names
+     * @throws GameParseException
+     */
     public void setPlayers(String names) throws GameParseException
     {
     	String[] s = names.split(":");
@@ -198,16 +209,20 @@ public class UnitSupportAttachment extends DefaultAttachment{
     	m_players = players;
     }
     
+    public List<PlayerID> getPlayers() {
+    	return m_players;
+    }
+    
+    public void clearPlayers() {
+    	m_players.clear();
+    }
+    
     public void setImpArtTech(String tech) {
     	m_impArtTech = getBool(tech);
     }
     
     public Set<UnitType> getUnitTypes() {
     	return m_unitType;
-    }
-    
-    public List<PlayerID> getPlayers() {
-    	return m_players;
     }
     
     public int getNumber() {

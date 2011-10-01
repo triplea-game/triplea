@@ -31,6 +31,7 @@ package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.Constants;
 
@@ -57,7 +58,17 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
      */
     public static RelationshipTypeAttachment get(RelationshipType pr)
     {
-        return (RelationshipTypeAttachment) pr.getAttachment(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
+        RelationshipTypeAttachment rVal =  (RelationshipTypeAttachment) pr.getAttachment(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
+        if(rVal == null)
+            throw new IllegalStateException("No relationshipType attachment for:" + pr.getName());
+        return rVal;
+    }
+    public static RelationshipTypeAttachment get(RelationshipType pr, String nameOfAttachment)
+    {
+        RelationshipTypeAttachment rVal =  (RelationshipTypeAttachment) pr.getAttachment(nameOfAttachment);
+        if(rVal == null)
+            throw new IllegalStateException("No relationshipType attachment for:" + pr.getName());
+        return rVal;
     }
 
     /** Creates new RelationshipTypeAttachment

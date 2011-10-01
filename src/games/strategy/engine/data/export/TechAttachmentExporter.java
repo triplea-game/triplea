@@ -32,9 +32,9 @@ public class TechAttachmentExporter extends DefaultAttachmentExporter {
 	@Override
 	protected String printOption(Field field, IAttachment attachment) throws AttachmentExportException {
 		String fieldName = field.getName();
-		if(fieldName.equals("m_GenericTechs")) 
-			return ""; // GenericTechs not set by XML
-			//return mGenericTechsHandler(field,attachment);
+		if(fieldName.equals("m_GenericTech")) 
+			return ""; // GenericTech not set by XML
+			//return mGenericTechHandler(field,attachment);
 		return super.printOption(field, attachment);		
 	}
 	
