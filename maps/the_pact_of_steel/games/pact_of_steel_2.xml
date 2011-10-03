@@ -1650,7 +1650,7 @@
 				
                 <!-- Artillery -->
                 <attatchment name="unitAttatchment" attatchTo="artillery" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
-                         <option name="movement" value="1"/>
+                         <option name="movement" value="2"/>
                          <option name="transportCost" value="3"/>
                          <option name="attack" value="2"/>
                          <option name="defense" value="2"/>
@@ -1681,6 +1681,8 @@
 						 <option name="consumesUnits" value="2:infantry"/>
 						 <option name="consumesUnits" value="1:artillery"/>-->
                          <option name="isAirTransportable" value="true"/>
+						 <!-- receivesAbilityWhenWith gives a unit an ability when they are with, or on the same route as, another unit 
+						 <option name="receivesAbilityWhenWith" value="canBlitz:armour"/>-->
                 </attatchment>
 
                 <!-- Fighter -->
@@ -3049,11 +3051,19 @@
 					consumesUnits
 					createsUnitsList
 					createsResourcesList
+					receivesAbilityWhenWith
+					
+				Unit Support Attachments:
+					players
 					
 				Territory Attachments:
 					changeUnitOwners
 					captureUnitOnEnteringBy
 					territoryEffect
+					
+				Territory Effect Attachments:
+					combatDefenseEffect
+					combatOffenseEffect
 					
 				Player Attachments:
 					giveUnitControl

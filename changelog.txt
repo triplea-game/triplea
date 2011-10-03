@@ -1,4 +1,8 @@
 Changes for 1.3.3.0
+* Updated receivesAbilityWhenWith to work for "canBlitz". (veqryn)
+
+* Created new unit attachment ability to have a unit receive an ability when in the presence or on the same route with another unit, using "receivesAbilityWhenWith". (veqryn)
+
 * Created triggers for changing any attachment that is attached to a territoryEffect by using: territoryEffects, territoryEffectAttachmentName, and territoryEffectProperty. (veqryn)
 
 * Created triggers for changing any attachment that is attached to a relationshipType by using: relationshipTypes, relationshipTypeAttachmentName, and relationshipTypeProperty. (veqryn)

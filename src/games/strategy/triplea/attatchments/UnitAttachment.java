@@ -23,13 +23,18 @@ package games.strategy.triplea.attatchments;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import games.strategy.engine.data.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 
 /**
@@ -62,6 +67,17 @@ public class UnitAttachment extends DefaultAttachment
     if(rVal == null)
         throw new IllegalStateException("No unit type attachment for:" + type.getName() + " with name:" + nameOfAttachment);
     return rVal;
+  }
+  
+  public static Collection<UnitType> getUnitTypesFromUnitList(final Collection<Unit> units)
+  {
+	  Collection<UnitType> types = new ArrayList<UnitType>();
+	  for (Unit u : units)
+	  {
+		  if (!types.contains(u.getType()))
+			  types.add(u.getType());
+	  }
+	  return types;
   }
 
   private boolean m_isAir = false;
@@ -107,6 +123,9 @@ public class UnitAttachment extends DefaultAttachment
   
   // multiple colon delimited lists of the unit combos required for this unit to be built somewhere. (units must be in same territory, owned by player, not be disabled)
   private ArrayList<String[]> m_requiresUnits = new ArrayList<String[]>();
+  
+  // a kind of support attachment for giving actual unit attachment abilities or other to a unit, when in the precense or on the same route with another unit
+  private ArrayList<String> m_receivesAbilityWhenWith = new ArrayList<String>();
   
   // can be any String except for "none" if isConstruction is true
   private String m_constructionType = "none";
@@ -527,6 +546,61 @@ public class UnitAttachment extends DefaultAttachment
   public void clearRequiresUnits()
   {
 	  m_requiresUnits.clear();
+  }
+  
+  /**
+   * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+   * @param value
+   */
+  public void setReceivesAbilityWhenWith(String value)
+  {
+	  m_receivesAbilityWhenWith.add(value);
+  }
+  
+  public ArrayList<String> getReceivesAbilityWhenWith()
+  {
+	  return m_receivesAbilityWhenWith;
+  }
+  
+  public void clearReceivesAbilityWhenWith()
+  {
+	  m_receivesAbilityWhenWith.clear();
+  }
+  
+  public static IntegerMap<Tuple<String,String>> getReceivesAbilityWhenWithMap(final Collection<Unit> units, final String filterForAbility, final GameData data)
+  {
+	  IntegerMap<Tuple<String,String>> map = new IntegerMap<Tuple<String,String>>();
+	  Collection<UnitType> canReceive = getUnitTypesFromUnitList(Match.getMatches(units, Matches.UnitCanReceivesAbilityWhenWith()));
+	  for (UnitType ut : canReceive)
+	  {
+		  Collection<String> receives = UnitAttachment.get(ut).getReceivesAbilityWhenWith();
+		  for (String receive : receives)
+		  {
+			  String[] s = receive.split(":");
+			  if (filterForAbility != null && !filterForAbility.equals(s[0]))
+				  continue;
+			  map.put(new Tuple<String,String>(s[0],s[1]), Match.countMatches(units, Matches.unitIsOfType(data.getUnitTypeList().getUnitType(s[1]))));
+		  }
+	  }
+	  return map;
+  }
+  
+  public static Collection<Unit> getUnitsWhichReceivesAbilityWhenWith(final Collection<Unit> units, final String filterForAbility, final GameData data)
+  {
+	  if (Match.noneMatch(units, Matches.UnitCanReceivesAbilityWhenWith()))
+		  return new ArrayList<Unit>();
+	  Collection<Unit> unitsCopy = new ArrayList<Unit>(units);
+	  HashSet<Unit> whichReceiveNoDuplicates = new HashSet<Unit>();
+	  IntegerMap<Tuple<String,String>> whichGive = getReceivesAbilityWhenWithMap(unitsCopy, filterForAbility, data);
+	  Iterator<Tuple<String,String>> abilitiesUnitTypeIter = whichGive.keySet().iterator();
+	  while (abilitiesUnitTypeIter.hasNext())
+	  {
+		  Tuple<String,String> abilityUnitType = abilitiesUnitTypeIter.next();
+		  Collection<Unit> receives = Match.getNMatches(unitsCopy, whichGive.getInt(abilityUnitType), Matches.UnitCanReceivesAbilityWhenWith(filterForAbility, abilityUnitType.getSecond()));
+		  whichReceiveNoDuplicates.addAll(receives);
+		  unitsCopy.removeAll(receives);
+	  }
+	  return whichReceiveNoDuplicates;
   }
   
   public boolean isConstruction()
@@ -1286,6 +1360,21 @@ public class UnitAttachment extends DefaultAttachment
   	  }
     }
     
+    if (!m_receivesAbilityWhenWith.isEmpty())
+    {
+    	for (String value : m_receivesAbilityWhenWith)
+    	{
+			// first is ability, second is unit that we get it from
+			String[] s = value.split(":");
+			if (s.length != 2)
+				throw new IllegalStateException("Unit Attachments: receivesAbilityWhenWith must have 2 parts, 'ability:unit'");
+			if (getData().getUnitTypeList().getUnitType(s[1]) == null)
+				throw new IllegalStateException("Unit Attachments: receivesAbilityWhenWith, unit does not exist, name:" + s[1]);
+			// currently only supports canBlitz (m_canBlitz)
+			if (!s[0].equals("canBlitz"))
+				throw new IllegalStateException("Unit Attachments: receivesAbilityWhenWith so far only supports: canBlitz");
+    	}
+    }
   }
   
   public Collection<UnitType> getListedUnits(String[] list)

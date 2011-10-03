@@ -876,11 +876,14 @@ public class MoveValidator
         			return result.setErrorReturnResult("Cannot blitz on that route");
 
         	} 
-        	else if (enemyCount >= 0 && allEnemyBlitzable && !(route.getStart().isWater() | route.getEnd().isWater()))
+        	else if (enemyCount >= 0 && allEnemyBlitzable && !(route.getStart().isWater() || route.getEnd().isWater()))
         	{
         		Match<Unit> blitzingUnit = new CompositeMatchOr<Unit>(Matches.UnitCanBlitz, Matches.UnitIsAir);
         		Match<Unit> nonBlitzing = new InverseMatch<Unit>(blitzingUnit);
         		Collection<Unit> nonBlitzingUnits = Match.getMatches(units, nonBlitzing);
+        		
+        		// remove any units that gain blitz due to certain abilities
+        		nonBlitzingUnits.removeAll(UnitAttachment.getUnitsWhichReceivesAbilityWhenWith(units, "canBlitz", data));
         		
         		Match<Territory> territoryIsNotEnd = new InverseMatch<Territory>(Matches.territoryIs(route.getEnd()));
         		Match<Territory> nonFriendlyTerritories= new InverseMatch<Territory>(Matches.isTerritoryFriendly(player, data));

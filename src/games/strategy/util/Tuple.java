@@ -22,9 +22,9 @@ public class Tuple<T,S> implements Serializable
     {
         return m_second;
     }
-
     
-    
-    
-    
+    public String toString()
+    {
+    	return "[" + m_first.toString() + ", " + m_second.toString() + "]";
+    }
 }

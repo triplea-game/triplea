@@ -2855,6 +2855,34 @@ public class Matches
     		}
     	};
     }
+    
+    public static final Match<Unit> UnitCanReceivesAbilityWhenWith()
+    {
+    	return new Match<Unit>()
+    	{
+    		public boolean match(Unit u)
+    		{
+    			return !UnitAttachment.get(u.getType()).getReceivesAbilityWhenWith().isEmpty();
+    		}
+    	};
+    }
+    
+    public static final Match<Unit> UnitCanReceivesAbilityWhenWith(final String filterForAbility, final String filterForUnitType)
+    {
+    	return new Match<Unit>()
+    	{
+    		public boolean match(Unit u)
+    		{
+    			for (String receives : UnitAttachment.get(u.getType()).getReceivesAbilityWhenWith())
+    			{
+    				String[] s = receives.split(":");
+    				if (s[0].equals(filterForAbility) && s[1].equals(filterForUnitType))
+    					return true;
+    			}
+    			return false;
+    		}
+    	};
+    }
 
     /** Creates new Matches */
     private Matches()
