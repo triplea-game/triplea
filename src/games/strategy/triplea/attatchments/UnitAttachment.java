@@ -1606,9 +1606,6 @@ public class UnitAttachment extends DefaultAttachment
 	  if (m_canScramble && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData()))
 		  stats.append("can Scramble " + (m_maxScrambleDistance > 0 ? m_maxScrambleDistance : 1) + " Distance, ");
 	  
-	  if (m_canBlitz)
-		  stats.append("can Blitz, ");
-	  
 	  if (m_isArtillery)
 		  stats.append("can Give Attack Bonus, ");
 	  
@@ -1619,6 +1616,17 @@ public class UnitAttachment extends DefaultAttachment
 	  
 	  if (m_isMarine)
 		  stats.append("1" + " Amphibious Attack Bonus, ");
+	  
+	  if (m_canBlitz)
+		  stats.append("can Blitz, ");
+	  
+	  if (!m_receivesAbilityWhenWith.isEmpty())
+	  {
+		  if (m_receivesAbilityWhenWith.size() == 1)
+			  stats.append("receives " + m_receivesAbilityWhenWith.get(0).split(":")[0] + " when paired with " + m_receivesAbilityWhenWith.get(0).split(":")[1] + ", ");
+		  else
+			  stats.append("receives abilities when paired with other units, ");
+	  }
 	  
 	  //TODO: Need to account for dice rolls, once we can customize dice rolls allowed per unit
 	  

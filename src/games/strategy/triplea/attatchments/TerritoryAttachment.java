@@ -223,6 +223,15 @@ public class TerritoryAttachment extends DefaultAttachment
         m_production = value;
     }
 
+    /**
+     * Sets only m_production
+     * @param value
+     */
+    public void setProductionOnly(String value)
+    {
+        m_production = getInt(value);
+    }
+
     public int getProduction()
     {
         return m_production;

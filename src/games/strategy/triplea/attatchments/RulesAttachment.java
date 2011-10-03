@@ -378,8 +378,10 @@ public class RulesAttachment extends DefaultAttachment
 		return m_movementRestrictionTerritories;
 	}
 
-	public void setMovementRestrictionType(String value)
+	public void setMovementRestrictionType(String value) throws GameParseException
 	{
+		if (!(value.equals("disallowed") || value.equals("allowed")))
+			throw new GameParseException("RulesAttachment: movementRestrictionType must be allowed or disallowed");
 		m_movementRestrictionType = value;
 	}
 

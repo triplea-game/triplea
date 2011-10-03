@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Adding notes about all properties to Pact of Steel 2 xml, and some code cleanup. (veqryn)
+
 * Updated receivesAbilityWhenWith to work for "canBlitz". (veqryn)
 
 * Created new unit attachment ability to have a unit receive an ability when in the presence or on the same route with another unit, using "receivesAbilityWhenWith". (veqryn)
