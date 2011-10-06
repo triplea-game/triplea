@@ -473,11 +473,32 @@ public class MoveValidator
         Iterator<Unit> iter = units.iterator();
         while(iter.hasNext())
         {
-            Unit unit = (Unit) iter.next();
+            Unit unit = iter.next();
             UnitAttachment ua = UnitAttachment.get(unit.getType());
             if(ua.getCarrierCapacity() != -1)
             {
-                sum+=ua.getCarrierCapacity();
+            	// here we check to see if the unit can no longer carry units
+            	if (Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLANDONCARRIER).match(unit))
+            	{
+            		// and we must check to make sure we let any allied air that are cargo stay here
+            		if (Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER).match(unit))
+            		{
+            			int countCargo = 0;
+            			// TODO: getTerritoryUnitIsIn() is horribly slow. need to find a better way to do this.
+            			Collection<Unit> airCargo = unit.getTerritoryUnitIsIn().getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier));
+            			for (Unit airUnit : airCargo)
+            			{
+            				TripleAUnit taUnit = (TripleAUnit) airUnit;
+            				if (taUnit.getTransportedBy() != null && taUnit.getTransportedBy().equals(unit))
+            					countCargo++;
+            			}
+            			sum+=countCargo; // capacity = are cargo only
+            		}
+            		else
+            			continue; // capacity = zero 0
+            	}
+            	else
+            		sum+=ua.getCarrierCapacity();
             }
         }
         return sum;

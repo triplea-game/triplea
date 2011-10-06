@@ -47,6 +47,7 @@ import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 import games.strategy.util.Util;
 
 import java.util.ArrayList;
@@ -201,15 +202,6 @@ public class Matches
         {
             UnitAttachment ua = UnitAttachment.get(type);
             return ua.getIsDestroyer();
-        }
-    };
-
-    public static final Match<Unit> UnitIsCruiser = new Match<Unit>()
-    { //need something in Unit Attachment, but for now...this will work
-        public boolean match(Unit unit)
-        {
-            UnitAttachment ua = UnitAttachment.get(unit.getType());
-            return (ua.isSea() && !ua.getIsDestroyer() && !ua.isTwoHit() && !ua.isSub() && (ua.getCarrierCapacity() == -1) && (ua.getTransportCapacity() < 1));
         }
     };
 
@@ -2877,6 +2869,45 @@ public class Matches
     			{
     				String[] s = receives.split(":");
     				if (s[0].equals(filterForAbility) && s[1].equals(filterForUnitType))
+    					return true;
+    			}
+    			return false;
+    		}
+    	};
+    }
+    
+    public static final Match<Unit> UnitHasWhenCombatDamagedEffect()
+    {
+    	return new Match<Unit>()
+    	{
+    		public boolean match(Unit u)
+    		{
+    			return !UnitAttachment.get(u.getType()).getWhenCombatDamaged().isEmpty();
+    		}
+    	};
+    }
+    
+    public static final Match<Unit> UnitHasWhenCombatDamagedEffect(final String filterForEffect)
+    {
+    	return new Match<Unit>()
+    	{
+    		public boolean match(Unit u)
+    		{
+    			if (!UnitHasWhenCombatDamagedEffect().match(u))
+    				return false;
+    			TripleAUnit taUnit = (TripleAUnit) u;
+    			int currentDamage = taUnit.getHits();
+    			ArrayList<Tuple<Tuple<Integer,Integer>,Tuple<String,String>>> whenCombatDamagedList = UnitAttachment.get(u.getType()).getWhenCombatDamaged();
+    			Iterator<Tuple<Tuple<Integer,Integer>,Tuple<String,String>>> iter = whenCombatDamagedList.iterator();
+    			while (iter.hasNext())
+    			{
+    				Tuple<Tuple<Integer,Integer>,Tuple<String,String>> key = iter.next();
+    				String effect = key.getSecond().getFirst();
+    				if (!effect.equals(filterForEffect))
+    					continue;
+    				int damagedFrom = key.getFirst().getFirst();
+    				int damagedTo = key.getFirst().getSecond();
+    				if (currentDamage >= damagedFrom && currentDamage <= damagedTo)
     					return true;
     			}
     			return false;

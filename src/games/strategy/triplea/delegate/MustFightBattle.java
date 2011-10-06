@@ -2975,6 +2975,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         //remove capturableOnEntering units (veqryn)
         unitList.removeAll(Match.getMatches(unitList, Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(m_attacker, m_battleSite, m_data)));
+        
+        //remove any allied air units that are stuck on damaged carriers (veqryn)
+        unitList.removeAll(Match.getMatches(unitList, new CompositeMatchAnd<Unit>(Matches.unitIsBeingTransported(), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier)));
 
         return unitList;
     }
@@ -3432,26 +3435,37 @@ public class MustFightBattle implements Battle, BattleStepStrings
         	}
         }
         
-        //Clear the transported_by for successfully won battles where there was an allied air unit held as cargo by an carrier unit
-        Collection<Unit> carriers = Match.getMatches(m_attackingUnits, Matches.UnitIsCarrier);
-        if (!carriers.isEmpty() && isAlliedAirDependents())
-        {
-        	Match alliedFighters = new CompositeMatchAnd<Unit>(Matches.isUnitAllied(m_attacker, m_data), Matches.unitIsOwnedBy(m_attacker).invert(), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier);
-        	Collection<Unit> alliedAirInTerr = Match.getMatches(m_battleSite.getUnits().getUnits(), alliedFighters);
-        	CompositeChange change = new CompositeChange();
-        	for (Unit fighter : alliedAirInTerr)
-        	{
-        		TripleAUnit taUnit = (TripleAUnit) fighter;
-        		if (taUnit.getTransportedBy() != null)
-        			change.add(ChangeFactory.unitPropertyChange(fighter, null, TripleAUnit.TRANSPORTED_BY ));
-        	}
-            if (!change.isEmpty())
-            	bridge.addChange(change);
-        }
+        CompositeChange clearAlliedAir = clearTransportedByForAlliedAirOnCarrier(m_attackingUnits, m_battleSite, m_attacker, m_data);
+        if (!clearAlliedAir.isEmpty())
+        	bridge.addChange(clearAlliedAir);
         
         bridge.getHistoryWriter()
                 .addChildToEvent(m_attacker.getName() + " win", m_attackingUnits);
         showCasualties(bridge);
+    }
+    
+    public static CompositeChange clearTransportedByForAlliedAirOnCarrier(Collection<Unit> attackingUnits, Territory battleSite, PlayerID attacker, GameData data)
+    {
+    	CompositeChange change = new CompositeChange();
+    	
+        //Clear the transported_by for successfully won battles where there was an allied air unit held as cargo by an carrier unit
+        Collection<Unit> carriers = Match.getMatches(attackingUnits, Matches.UnitIsCarrier);
+        if (!carriers.isEmpty() && games.strategy.triplea.Properties.getAlliedAirDependents(data))
+        {
+        	Match<Unit> alliedFighters = new CompositeMatchAnd<Unit>(Matches.isUnitAllied(attacker, data), Matches.unitIsOwnedBy(attacker).invert(), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier);
+        	Collection<Unit> alliedAirInTerr = Match.getMatches(battleSite.getUnits().getUnits(), alliedFighters);
+        	for (Unit fighter : alliedAirInTerr)
+        	{
+        		TripleAUnit taUnit = (TripleAUnit) fighter;
+        		if (taUnit.getTransportedBy() != null)
+        		{
+        			Unit carrierTransportingThisUnit = taUnit.getTransportedBy();
+        			if (!Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER).match(carrierTransportingThisUnit))
+        				change.add(ChangeFactory.unitPropertyChange(fighter, null, TripleAUnit.TRANSPORTED_BY ));
+        		}
+        	}
+        }
+    	return change;
     }
 
     private void showCasualties(IDelegateBridge bridge)

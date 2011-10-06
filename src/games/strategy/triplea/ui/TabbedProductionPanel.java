@@ -83,8 +83,8 @@ public class TabbedProductionPanel extends ProductionPanel
         Dimension dthis = this.getPreferredSize();
         if (dtab != null && dthis != null)
         {
-        	tabs.setPreferredSize(new Dimension(dtab.width + 2, dtab.height + 2)); // for whatever dumb reason, the tabs need a couple extra height and width or else scroll bars will appear
-            this.setPreferredSize(new Dimension(dthis.width + 4, dthis.height + 20)); // for whatever dumb reason, the window needs to be at least 16 pixels greater in height than normal, to accommodate the tabs
+        	tabs.setPreferredSize(new Dimension(dtab.width + 4, dtab.height + 4)); // for whatever dumb reason, the tabs need a couple extra height and width or else scroll bars will appear
+            this.setPreferredSize(new Dimension(dthis.width + 8, dthis.height + 24)); // for whatever dumb reason, the window needs to be at least 16 pixels greater in height than normal, to accommodate the tabs
         }
         tabs.validate();
         this.validate();

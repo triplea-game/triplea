@@ -29,7 +29,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.pbem.PBEMMessagePoster;
@@ -42,15 +41,12 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.remote.IAbstractEndTurnDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -141,7 +137,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 
         if(doBattleShipsRepairEndOfTurn())
         {
-            repairBattleShips(aBridge);
+        	MoveDelegate.repairBattleShips(aBridge, gameData, aBridge.getPlayerID(), false);
         }
         m_needToInitialize = false;
 
@@ -170,36 +166,6 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
     {
     	return (ITripleaPlayer) m_bridge.getRemote(player);
     }
-    
-    private void repairBattleShips(IDelegateBridge aBridge)
-    {
-       Match<Unit> damagedBattleship = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);
-        
-       Collection<Unit> damaged = new ArrayList<Unit>();
-       Iterator<Territory> iter = m_data.getMap().getTerritories().iterator();
-       while(iter.hasNext())
-       {
-           Territory current =  iter.next();
-           if (!games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(m_data))
-        	   damaged.addAll(current.getUnits().getMatches(damagedBattleship));
-           else
-        	   damaged.addAll(current.getUnits().getMatches(new CompositeMatchAnd<Unit>(damagedBattleship, Matches.unitIsOwnedBy(aBridge.getPlayerID()), Matches.UnitCanBeRepairedByFacilitiesInItsTerritory(current, aBridge.getPlayerID(), m_data))));
-       }
-
-       if(damaged.size() == 0)
-           return;
-       
-       IntegerMap<Unit> hits = new IntegerMap<Unit>();
-       Iterator<Unit> iter2 = damaged.iterator();
-       while(iter2.hasNext())
-       {
-           Unit unit = iter2.next();
-           hits.put(unit,0);
-       }
-       aBridge.addChange(ChangeFactory.unitsHit(hits));
-       aBridge.getHistoryWriter().startEvent(damaged.size() + " " +  MyFormatter.pluralize("unit", damaged.size()) + " repaired.");
-    }
-
 
 	private void changeUnitOwnership(IDelegateBridge aBridge, GameData gameData)
 	{

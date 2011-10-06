@@ -35,7 +35,8 @@ public class Unit extends GameDataComponent implements Serializable
 {
   private PlayerID m_owner;
   private final GUID m_uid;
-  private int m_hits;
+  private int m_hits = 0;
+  private int m_hitPoints = 1; // TODO: we need to work on this (veqryn)
   private final UnitType m_type;  
 
   /**

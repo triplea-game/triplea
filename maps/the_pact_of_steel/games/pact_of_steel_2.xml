@@ -1716,6 +1716,9 @@
 			repairsUnits						values: is a colon delimited list of all the units this unit can repair. units to be repaired must be in the same territory as this unit. 
 															unless the unit being repaired is sea, and the unit repairing it is land, in which case the sea unit must be adjacent to the land unit 
 															example: option name="repairsUnits" value="battleship:super_carrier"
+			whenCombatDamaged					values: this property lets you set certain behaviors for when this unit is damaged. the value is the effect, while the count is the damage from where to where. (example: <option name="whenCombatDamaged" value="unitsMayNotLandOnCarrier" count="1:2"/>)
+															units start at zero combat damage, and usually die at 1 damage. some units have 2 hp, so you can use this with 1:1 to say that when a unit has 1 damage they have this effect.
+															currently only allows: unitsMayNotLandOnCarrier, unitsMayNotLeaveAlliedCarrier
 	
 	production related:
 			isFactory							values: allows a unit to produce other units, not participate in combat, be placed anywhere you owned at the beginning of the turn, be capturable, and be damaged by rockets and raids
@@ -1951,6 +1954,9 @@
 						 <!-- isCombatTransport tells the engine that this sea unit can transport but can fight too. units will not be able to move through it like they would a transport, and it can be taken casualty during battle as normal -->
                          <option name="isCombatTransport" value="true"/>
                          <!--<option name="isTwoHit" value="true"/>-->
+						 <!-- whenCombatDamaged means that when this unit has x:y damage on it, it will have this effect
+						 <option name="whenCombatDamaged" value="unitsMayNotLandOnCarrier" count="1:2"/>
+						 <option name="whenCombatDamaged" value="unitsMayNotLeaveAlliedCarrier" count="1:2"/>-->
                 </attatchment>
 
                 <!-- Submarine -->

@@ -192,11 +192,15 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 
         // repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at beginning of combat move)
         if(!m_nonCombat && games.strategy.triplea.Properties.getBattleships_Repair_At_Beginning_Of_Round(m_data))
-        	repairBattleShips(m_bridge, m_data, m_player);
+        	MoveDelegate.repairBattleShips(m_bridge, m_data, m_player, true);
 
         // give movement to units which begin the turn in the same territory as units with giveMovement (like air and naval bases)
         if (!m_nonCombat && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(m_data))
         	giveBonusMovement(m_bridge, m_data, m_player);
+        
+        // take away all movement from allied fighters sitting on damaged carriers
+        if (!m_nonCombat)
+        	removeMovementFromAirOnDamagedAlliedCarriers(m_bridge, m_data, m_player);
 
         // placing triggered units at beginning of combat move.
         if(!m_nonCombat && games.strategy.triplea.Properties.getTriggers(m_data))
@@ -209,6 +213,33 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
             m_tempMovePerformer = null;
         }
     }
+    
+    private void removeMovementFromAirOnDamagedAlliedCarriers(IDelegateBridge aBridge, GameData data, PlayerID player)
+    {
+    	Match<Unit> crippledAlliedCarriersMatch = new CompositeMatchAnd<Unit>(Matches.isUnitAllied(player, data), Matches.unitIsOwnedBy(player).invert(), Matches.UnitIsCarrier, Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
+    	Match<Unit> ownedFightersMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier);
+    	CompositeChange change = new CompositeChange();
+    	for (Territory t : data.getMap().getTerritories())
+    	{
+    		Collection<Unit> ownedFighters = t.getUnits().getMatches(ownedFightersMatch);
+    		if (ownedFighters.isEmpty())
+    			continue;
+    		Collection<Unit> crippledAlliedCarriers = Match.getMatches(t.getUnits().getUnits(), crippledAlliedCarriersMatch);
+    		if (crippledAlliedCarriers.isEmpty())
+    			continue;
+    		for (Unit fighter : ownedFighters)
+    		{
+    			TripleAUnit taUnit = (TripleAUnit) fighter;
+    			if (taUnit.getTransportedBy() != null)
+    			{
+    				if (crippledAlliedCarriers.contains(taUnit.getTransportedBy()))
+    					change.add(ChangeFactory.unitPropertyChange(fighter, UnitAttachment.get(fighter.getType()).getMovement(player), TripleAUnit.ALREADY_MOVED));
+    			}
+    		}
+    	}
+    	if (!change.isEmpty())
+    		aBridge.addChange(change);
+    }
 
     /**
      * This entire method relies on the fact that "TripleAUnit.ALREADY_MOVED" can be a negative value.
@@ -216,7 +247,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
      * But since we make it a negative value here, a unit is temporarily gaining movement for this turn.
      * Thankfully the movement validator takes this into account.
      *
-     * changing ALREADY_MOVED means that a unit will not be able to match certain things like 'has not moved' and 'has moved' correctly... we should change to a separate bonus somehow
+     * changing ALREADY_MOVED means that a unit will not be able to match certain things like 'has not moved' and 'has moved' correctly... TODO: we should change to a separate bonus somehow
      *
      * (veqryn)
      */
@@ -274,33 +305,51 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
     	}
     }
 
-    private void repairBattleShips(IDelegateBridge aBridge, GameData data, PlayerID player)
+    public static void repairBattleShips(IDelegateBridge aBridge, GameData data, PlayerID player, boolean beforeTurn)
     {
-       Match<Unit> damagedBattleship = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged, Matches.unitIsOwnedBy(player));
+       Match<Unit> damagedBattleship = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);
+       Match<Unit> damagedBattleshipOwned = new CompositeMatchAnd<Unit>(damagedBattleship, Matches.unitIsOwnedBy(player));
 
        Collection<Unit> damaged = new ArrayList<Unit>();
-       Iterator<Territory> iter = data.getMap().getTerritories().iterator();
-       while(iter.hasNext())
+       Iterator<Territory> iterTerritories = data.getMap().getTerritories().iterator();
+       while(iterTerritories.hasNext())
        {
-           Territory current = iter.next();
+           Territory current = iterTerritories.next();
            if (!games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(data))
-        	   damaged.addAll(current.getUnits().getMatches(damagedBattleship));
+           {
+        	   if (beforeTurn)
+        		   damaged.addAll(current.getUnits().getMatches(damagedBattleshipOwned)); // we only repair ours
+        	   else
+        		   damaged.addAll(current.getUnits().getMatches(damagedBattleship)); // we repair everyone's
+           }
            else
-        	   damaged.addAll(current.getUnits().getMatches(new CompositeMatchAnd<Unit>(damagedBattleship, Matches.UnitCanBeRepairedByFacilitiesInItsTerritory(current, player, data))));
+        	   damaged.addAll(current.getUnits().getMatches(new CompositeMatchAnd<Unit>(damagedBattleshipOwned, Matches.UnitCanBeRepairedByFacilitiesInItsTerritory(current, player, data))));
        }
 
        if(damaged.size() == 0)
            return;
 
+       // now if damaged includes any carriers that are repairing, and have damaged abilities set for not allowing air units to leave while damaged, we need to remove those air units now
+       Collection<Unit> damagedCarriers = Match.getMatches(damaged, Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
+
        IntegerMap<Unit> hits = new IntegerMap<Unit>();
-       Iterator<Unit> iter2 = damaged.iterator();
-       while(iter.hasNext())
+       Iterator<Unit> iterUnits = damaged.iterator();
+       while(iterUnits.hasNext())
        {
-           Unit unit = iter2.next();
+           Unit unit = iterUnits.next();
            hits.put(unit,0);
        }
        aBridge.addChange(ChangeFactory.unitsHit(hits));
        aBridge.getHistoryWriter().startEvent(damaged.size() + " " +  MyFormatter.pluralize("unit", damaged.size()) + " repaired.");
+       
+       // now cycle through those now-repaired carriers, and remove allied air from being dependant
+       CompositeChange clearAlliedAir = new CompositeChange();
+       for (Unit carrier : damagedCarriers)
+       {
+    	   clearAlliedAir.add(MustFightBattle.clearTransportedByForAlliedAirOnCarrier(Collections.singleton(carrier), carrier.getTerritoryUnitIsIn(), carrier.getOwner(), data));
+       }
+       if (!clearAlliedAir.isEmpty())
+    	   aBridge.addChange(clearAlliedAir);
     }
 
 

@@ -79,6 +79,9 @@ public class UnitAttachment extends DefaultAttachment
 	  }
 	  return types;
   }
+  
+  public static final String UNITSMAYNOTLANDONCARRIER = "unitsMayNotLandOnCarrier";
+  public static final String UNITSMAYNOTLEAVEALLIEDCARRIER = "unitsMayNotLeaveAlliedCarrier";
 
   private boolean m_isAir = false;
   private boolean m_isSea = false;
@@ -126,6 +129,9 @@ public class UnitAttachment extends DefaultAttachment
   
   // a kind of support attachment for giving actual unit attachment abilities or other to a unit, when in the precense or on the same route with another unit
   private ArrayList<String> m_receivesAbilityWhenWith = new ArrayList<String>();
+  
+  // a set of information for dealing with special abilities or loss of abilities when a unit takes x-y amount of damage
+  private ArrayList<Tuple<Tuple<Integer,Integer>,Tuple<String,String>>> m_whenCombatDamaged = new ArrayList<Tuple<Tuple<Integer,Integer>,Tuple<String,String>>>();
   
   // can be any String except for "none" if isConstruction is true
   private String m_constructionType = "none";
@@ -546,6 +552,39 @@ public class UnitAttachment extends DefaultAttachment
   public void clearRequiresUnits()
   {
 	  m_requiresUnits.clear();
+  }
+  
+  /**
+   * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+   * @param value
+   * @throws GameParseException
+   */
+  public void setWhenCombatDamaged(String value) throws GameParseException
+  {
+	  String[] s = value.split(":");
+	  if (!(s.length == 3 || s.length == 4))
+		  throw new GameParseException("Invalid Unit attatchment, whenCombatDamaged must have 3 or 4 parts: value=effect:optionalNumber, count=integer:integer");
+	  int from = getInt(s[0]);
+	  int to = getInt(s[1]);
+	  if (from < 0 || to < 0 || to < from)
+		  throw new GameParseException("Invalid Unit attatchment, whenCombatDamaged damaged integers must be positive, and the second integer must be equal to or greater than the first");
+	  Tuple<Integer,Integer> fromTo = new Tuple<Integer,Integer>(from,to);
+	  Tuple<String,String> effectNum;
+	  if (s.length == 3)
+		  effectNum = new Tuple<String,String>(s[2],null);
+	  else
+		  effectNum = new Tuple<String,String>(s[2],s[3]);
+	  m_whenCombatDamaged.add(new Tuple<Tuple<Integer,Integer>,Tuple<String,String>>(fromTo,effectNum));
+  }
+  
+  public ArrayList<Tuple<Tuple<Integer,Integer>,Tuple<String,String>>> getWhenCombatDamaged()
+  {
+	  return m_whenCombatDamaged;
+  }
+  
+  public void clearWhenCombatDamaged()
+  {
+	  m_whenCombatDamaged.clear();
   }
   
   /**
@@ -1375,6 +1414,21 @@ public class UnitAttachment extends DefaultAttachment
 				throw new IllegalStateException("Unit Attachments: receivesAbilityWhenWith so far only supports: canBlitz");
     	}
     }
+    
+    if (!m_whenCombatDamaged.isEmpty())
+    {
+    	Iterator<Tuple<Tuple<Integer,Integer>,Tuple<String,String>>> iter = m_whenCombatDamaged.iterator();
+    	while (iter.hasNext())
+    	{
+    		Tuple<Tuple<Integer,Integer>,Tuple<String,String>> key = iter.next();
+    		String obj = key.getSecond().getFirst();
+    		if (obj.equals(UNITSMAYNOTLANDONCARRIER))
+    			continue;
+    		if (obj.equals(UNITSMAYNOTLEAVEALLIEDCARRIER))
+    			continue;
+    		throw new IllegalStateException("Unit Attachments: m_whenCombatDamaged so far only supports: " + UNITSMAYNOTLANDONCARRIER + ", " + UNITSMAYNOTLEAVEALLIEDCARRIER);
+    	}
+    }
   }
   
   public Collection<UnitType> getListedUnits(String[] list)
@@ -1689,6 +1743,11 @@ public class UnitAttachment extends DefaultAttachment
 	  
 	  if (m_carrierCapacity > 0)
 		  stats.append(m_carrierCapacity + " Carrier Capacity, ");
+	  
+	  if (!m_whenCombatDamaged.isEmpty())
+	  {
+		  stats.append("when hit this unit loses certain abilities, ");
+	  }
 	  
 	  // line break
 	  if (useHTML)
