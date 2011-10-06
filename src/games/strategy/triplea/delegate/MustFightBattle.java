@@ -3226,6 +3226,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         int carrierCost = MoveValidator.carrierCost(m_defendingAir);
         int carrierCapacity = MoveValidator.carrierCapacity(m_defendingUnits);
+        // add dependant air to carrier cost
+        carrierCost += MoveValidator.carrierCost(Match.getMatches(getDependentUnits(m_defendingUnits),alliedDefendingAir));
 
         //all planes can land, exit
         if (carrierCapacity >= carrierCost)
@@ -3234,6 +3236,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //find out what we must remove
         //remove all the air that can land on carriers from defendingAir
         carrierCost = 0;
+        // add dependant air to carrier cost
+        carrierCost += MoveValidator.carrierCost(Match.getMatches(getDependentUnits(m_defendingUnits),alliedDefendingAir));
         Iterator<Unit> defendingAirIter = new ArrayList<Unit>(m_defendingAir).iterator();
         while (defendingAirIter.hasNext() && carrierCapacity >= carrierCost)
         {

@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Fixing bug in moving defending air to land when a carrier is damaged on defense. (veqryn)
+
 * Fixing bugs surrounding unitsMayNotLandOnCarrier and unitsMayNotLeaveAlliedCarrier interacting with each other. (veqryn)
 
 * Updated whenCombatDamaged to work with unitsMayNotLeaveAlliedCarrier. (veqryn)
