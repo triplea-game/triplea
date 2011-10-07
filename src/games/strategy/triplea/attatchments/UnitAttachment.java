@@ -1502,65 +1502,87 @@ public class UnitAttachment extends DefaultAttachment
   public String toString()
   {
     return
+    "\n " +
+    ((this!=null && this.getAttatchedTo()!=null) ? this.getAttatchedTo() + " with: \n" : " \n") +
     "  air:" + m_isAir +
     "  sea:" + m_isSea +
-    "  aa:" + m_isAA +
-    "  isAAforCombatOnly:" + m_isAAforCombatOnly +
-    "  isAAforBombingThisUnitOnly:" + m_isAAforBombingThisUnitOnly +
-    "  isRocket:" + m_isRocket + 
-    "  isAAmovement:" + m_isAAmovement + 
-    "  factory:" + m_isFactory +
-    "  canProduceUnits:" + m_canProduceUnits + 
-    "  blitz:" + m_canBlitz +
-    "  airTransport:" + m_isAirTransport +
-    "  airTransportable:" + m_isAirTransportable +
-    "  sub:" + m_isSub +
-    "  canBombard:" + m_canBombard +
-    "  strategicBomber:" + m_isStrategicBomber +
+    "  movement:" + m_movement +
+    "  attack:" + m_attack +
+    "  defense:" + m_defense +
     "  twoHit:" + m_isTwoHit +
-    "  destroyer:" + m_isDestroyer +
-    "  artillery:" + m_isArtillery +
+    "  factory:" + m_isFactory +
+    "  aa:" + m_isAA +
+    
+    "  blitz:" + m_canBlitz +
     "  artillerySupportable:" + m_isArtillerySupportable +
+    "  artillery:" + m_isArtillery +
+    "  unitSupportCount:" + m_unitSupportCount +
     "  marine:" + m_isMarine +
     "  infantry:" + m_isInfantry +
     "  landTransport:" + m_isLandTransport +
-    "  canScramble:" + m_canScramble +
-    "  airBase:" + m_isAirBase +
-    "  infrastructure:" + m_isInfrastructure +
-    "  canBeDamaged:" + m_canBeDamaged +
-    "  canDieFromReachingMaxDamage:" + m_canDieFromReachingMaxDamage + 
-    "  isSuicide:" + m_isSuicide + 
-    "  isKamikaze:" + m_isKamikaze + 
-    "  combatTransport:" + m_isCombatTransport +
-    "  construction:" + m_isConstruction +
-    
-    "  constructionType:" + m_constructionType +
-    
-    "  constructionsPerTerrPerType:" + m_constructionsPerTerrPerTypePerTurn +
-    "  maxConstructionsPerType:" + m_maxConstructionsPerTypePerTerr +
-    "  maxScrambleDistance:" + m_maxScrambleDistance +
-    "  maxOperationalDamage:" + m_maxOperationalDamage +
-    "  maxDamage:" + m_maxDamage +
+    "  airTransportable:" + m_isAirTransportable +
+
+    "  airTransport:" + m_isAirTransport +
+    "  strategicBomber:" + m_isStrategicBomber +
     "  transportCapacity:" + m_transportCapacity +
     "  transportCost:" + m_transportCost +
     "  carrierCapacity:" + m_carrierCapacity +
     "  carrierCost:" + m_carrierCost +
-    "  maxBuiltPerPlayer:" + m_maxBuiltPerPlayer + 
+    
+    "  sub:" + m_isSub +
+    "  destroyer:" + m_isDestroyer +
+    "  canBombard:" + m_canBombard +
     "  bombard:" + m_bombard +
-    "  unitSupportCount:" + m_unitSupportCount +
+    
+    "  isAAforCombatOnly:" + m_isAAforCombatOnly +
+    "  isAAforBombingThisUnitOnly:" + m_isAAforBombingThisUnitOnly +
+    "  isAAmovement:" + m_isAAmovement + 
+    "  attackAA:" + m_attackAA + 
+    "  attackAAmaxDieSides:" + m_attackAAmaxDieSides + 
+    "  isRocket:" + m_isRocket + 
+    
+    "  canProduceUnits:" + m_canProduceUnits + 
+    "  canProduceXUnits:" + m_canProduceXUnits +
+    "  createsUnitsList:" + (m_createsUnitsList.size()==0 ? "empty" : m_createsUnitsList.toString()) +
+    "  createsResourcesList:" + (m_createsResourcesList.size()==0 ? "empty" : m_createsResourcesList.toString()) +
+    
+    "  infrastructure:" + m_isInfrastructure +
+    "  construction:" + m_isConstruction +
+    "  constructionType:" + m_constructionType +
+    "  constructionsPerTerrPerType:" + m_constructionsPerTerrPerTypePerTurn +
+    "  maxConstructionsPerType:" + m_maxConstructionsPerTypePerTerr +
+    "  destroyedWhenCapturedBy:" + m_destroyedWhenCapturedBy.toString() +
+    "  canBeCapturedOnEnteringBy:" + m_canBeCapturedOnEnteringBy.toString() +
+    
+    "  canBeDamaged:" + m_canBeDamaged +
+    "  canDieFromReachingMaxDamage:" + m_canDieFromReachingMaxDamage + 
+    "  maxOperationalDamage:" + m_maxOperationalDamage +
+    "  maxDamage:" + m_maxDamage +
+
+    "  unitPlacementRestrictions:" + (m_unitPlacementRestrictions!=null ? Arrays.toString(m_unitPlacementRestrictions) : "null") +
+    "  requiresUnits:" + m_requiresUnits.toString() +
+    "  consumesUnits:" + (m_consumesUnits.size()==0 ? "empty" : m_consumesUnits.toString()) +
+    "  canOnlyBePlacedInTerritoryValuedAtX:" + m_canOnlyBePlacedInTerritoryValuedAtX +
+    "  maxBuiltPerPlayer:" + m_maxBuiltPerPlayer + 
+    
+    "  isSuicide:" + m_isSuicide + 
+    "  isKamikaze:" + m_isKamikaze + 
+    "  combatTransport:" + m_isCombatTransport +
+    "  canInvadeOnlyFrom:" + (m_canInvadeOnlyFrom!=null ? Arrays.toString(m_canInvadeOnlyFrom) : "null") +
+    "  canBeGivenByTerritoryTo:" + m_canBeGivenByTerritoryTo.toString() +
+    "  receivesAbilityWhenWith:" + m_receivesAbilityWhenWith.toString() +
+    "  whenCombatDamaged:" + m_whenCombatDamaged.toString() +
     "  blockade:" + m_blockade +
     "  bombingMaxDieSides:" + m_bombingMaxDieSides + 
     "  bombingBonus:" + m_bombingBonus + 
-    "  attackAA:" + m_attackAA + 
-    "  attackAAmaxDieSides:" + m_attackAAmaxDieSides + 
-    "  canProduceXUnits:" + m_canProduceXUnits +
-    "  canOnlyBePlacedInTerritoryValuedAtX:" + m_canOnlyBePlacedInTerritoryValuedAtX +
-    "  movement:" + m_movement +
-    "  attack:" + m_attack +
-    "  defense:" + m_defense;
+    "  givesMovement:" + (m_givesMovement.size()==0 ? "empty" : m_givesMovement.toString()) +
+    "  repairsUnits:" + (m_repairsUnits!=null ? Arrays.toString(m_repairsUnits) : "null") +
+    "  canScramble:" + m_canScramble +
+    "  maxScrambleDistance:" + m_maxScrambleDistance +
+    "  airBase:" + m_isAirBase;
   }
 
-  public String toStringShortAndOnlyImportantDifferences(PlayerID player, boolean useHTML)
+  public String toStringShortAndOnlyImportantDifferences(PlayerID player, boolean useHTML, boolean includeAttachedToName)
   {
 	  // displays everything in a very short form, in English rather than as xml stuff
 	  // shows all except for: m_constructionType, m_constructionsPerTerrPerTypePerTurn, m_maxConstructionsPerTypePerTerr, m_canBeGivenByTerritoryTo, m_destroyedWhenCapturedBy, m_canBeCapturedOnEnteringBy
@@ -1568,6 +1590,9 @@ public class UnitAttachment extends DefaultAttachment
 	  
 	  //if (this != null && this.getName() != null)
 		//  stats.append(this.getName() + ": ");
+	  
+	  if (includeAttachedToName && this!=null && this.getAttatchedTo()!=null)
+		  stats.append(this.getAttatchedTo().toString());
 	  
 	  if (m_isAir)
 		  stats.append("Air unit, ");
