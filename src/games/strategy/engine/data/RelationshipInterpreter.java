@@ -55,6 +55,16 @@ public class RelationshipInterpreter extends GameDataComponent
     {
     	return Matches.RelationshipHelpsDefendAtSea.match((getRelationshipType(p1,p2)));
     }
+    
+    public boolean canMoveLandUnitsOverOwnedLand(PlayerID p1, PlayerID p2)
+    {
+    	return Matches.RelationshipCanMoveLandUnitsOverOwnedLand.match(getRelationshipType(p1,p2));
+    }
+    
+    public boolean canMoveAirUnitsOverOwnedLand(PlayerID p1, PlayerID p2)
+    {
+    	return Matches.RelationshipCanMoveAirUnitsOverOwnedLand.match(getRelationshipType(p1,p2));
+    }
 
     /**
      * Convenience method to get RelationshipType so you can do relationshipChecks on the relationship between these 2 players

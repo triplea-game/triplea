@@ -49,8 +49,9 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
 
 
 	private String m_archeType = ARCHETYPE_WAR;
-	private String m_canFlyOver = PROPERTY_DEFAULT;
 	private String m_helpsDefendAtSea = PROPERTY_DEFAULT;
+	private String m_canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
+	private String m_canMoveAirUnitsOverOwnedLand = PROPERTY_DEFAULT;
 
     /**
      * Convenience method.
@@ -108,24 +109,35 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     }
     
     /** 
-     * <strong> EXAMPLE</strong> method on how you could do finegrained autorisations instead of looking at isNeutral, isAllied or isWar();
+     * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral, isAllied or isWar();
      * Just for future reference, doesn't do anything right now.
      * @param canFlyOver should be "true", "false" or "default"
      */
-    public void setCanFlyOver(String canFlyOver) { 
-    	m_canFlyOver = canFlyOver;
+    public void setCanMoveAirUnitsOverOwnedLand(String canFlyOver) { 
+    	m_canMoveAirUnitsOverOwnedLand = canFlyOver;
     }
     
     /**
-     * <strong> EXAMPLE</strong> method on how you could do finegrained autorisations instead of looking at isNeutral, isAllied or isWar();
+     * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral, isAllied or isWar();
      * Just for future reference, doesn't do anything right now.
      * @return whether in this relationshipType you can fly over other territories
      */
-    public boolean canFlyOver() { // War: true, Allied: True, Neutral: false
-    	if(m_canFlyOver.equals(PROPERTY_DEFAULT)) {
+    public boolean getCanMoveAirUnitsOverOwnedLand() { // War: true, Allied: True, Neutral: false
+    	if(m_canMoveAirUnitsOverOwnedLand.equals(PROPERTY_DEFAULT)) {
     		return isWar() || isAllied();
     	}
-		return m_canFlyOver.equals(PROPERTY_TRUE);
+		return m_canMoveAirUnitsOverOwnedLand.equals(PROPERTY_TRUE);
+    }
+    
+    public void setCanMoveLandUnitsOverOwnedLand(String canFlyOver) { 
+    	m_canMoveLandUnitsOverOwnedLand = canFlyOver;
+    }
+    
+    public boolean getCanMoveLandUnitsOverOwnedLand() { // War: true, Allied: True, Neutral: false
+    	if(m_canMoveLandUnitsOverOwnedLand.equals(PROPERTY_DEFAULT)) {
+    		return isWar() || isAllied();
+    	}
+		return m_canMoveLandUnitsOverOwnedLand.equals(PROPERTY_TRUE);
     }
     
     /**
@@ -151,7 +163,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
 		return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_NEUTRAL);
 	}
     /** 
-     * <strong> EXAMPLE</strong> method on how you could do finegrained autorisations instead of looking at isNeutral, isAllied or isWar();
+     * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral, isAllied or isWar();
      * Just for future reference, doesn't do anything right now.
      * @param helpsDefendAtSea should be "true", "false" or "default"
      * @throws GameParseException 
@@ -166,9 +178,9 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     	else throw new GameParseException("helpsDefendAtSea must be "+PROPERTY_TRUE+","+PROPERTY_FALSE+" or "+PROPERTY_DEFAULT+" for "+Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME+": "+getName());
      }
     /**
-     * <strong> EXAMPLE</strong> method on how you could do finegrained autorisations instead of looking at isNeutral, isAllied or isWar();
+     * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral, isAllied or isWar();
      * Just for future reference, doesn't do anything right now.
-     * @return whether in this relationshipType you help eachother defend at Sea
+     * @return whether in this relationshipType you help each other defend at Sea
      */   
     public boolean helpsDefendAtSea() { // War: false, Allied: true, Neutral: false
     	if(m_helpsDefendAtSea.equals(PROPERTY_DEFAULT)) 

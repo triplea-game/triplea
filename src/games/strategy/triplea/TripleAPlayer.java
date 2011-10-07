@@ -194,13 +194,17 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 				while (notificationMessages.hasNext())
 				{
 					String notificationMessageKey = notificationMessages.next();
-					m_ui.notification(NotificationMessages.getInstance(m_ui.getUIContext()).getMessage(notificationMessageKey));
+					String message = NotificationMessages.getInstance(m_ui.getUIContext()).getMessage(notificationMessageKey);
+					message = "<html>" + message + "</html>";
+					m_ui.notification(message);
 				}
 				
 				// now do victory messages:
 				String victoryMessage = TriggerAttachment.triggerVictory(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
 		    	if (victoryMessage != null)
 		    	{
+		    		victoryMessage = NotificationMessages.getInstance(m_ui.getUIContext()).getMessage(victoryMessage);
+		    		victoryMessage = "<html>" + victoryMessage + "</html>";
 		    		IDelegate delegateEndRound = getGameData().getDelegateList().getDelegate("endRound");
 		    		((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage,aBridge);
 		    	}
@@ -214,7 +218,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		while (notificationMessages.hasNext())
 		{
 			String notificationMessageKey = notificationMessages.next();
-			m_ui.notification(NotificationMessages.getInstance(m_ui.getUIContext()).getMessage(notificationMessageKey));
+			String message = NotificationMessages.getInstance(m_ui.getUIContext()).getMessage(notificationMessageKey);
+			message = "<html>" + message + "</html>";
+			m_ui.notification(message);
 		}
 	}
 

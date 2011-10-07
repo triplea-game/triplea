@@ -26,6 +26,7 @@ import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
+import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Match;
@@ -125,7 +126,11 @@ public class EndRoundDelegate extends BaseDelegate
         	{
             	String vMessage = TriggerAttachment.triggerVictory(p, aBridge, m_data, null, null);
             	if (vMessage != null)
+            	{
+                	//vMessage = NotificationMessages.getInstance(m_ui.getUIContext()).getMessage(victoryMessage);
+            		vMessage = "<html>" + vMessage + "</html>";
             		signalGameOver(vMessage,aBridge);
+            	}
         	}
         }
 	}

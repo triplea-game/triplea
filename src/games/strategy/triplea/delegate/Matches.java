@@ -1527,7 +1527,7 @@ public class Matches
             {
                 CompositeMatch<Unit> nonCom = new CompositeMatchOr<Unit>();
                 nonCom.add(UnitIsAAOrFactory);
-                nonCom.add(alliedUnit(player, data));
+                nonCom.add(enemyUnit(player, data).invert());
                 nonCom.add(UnitIsInfrastructure); //UnitIsAAOrIsFactoryOrIsInfrastructure
                 //nonCom.add(UnitCanBeCapturedOnEnteringToInThisTerritory(player, t, data)); //this is causing issues where the newly captured units fight against themselves
                 return t.getUnits().allMatch(nonCom);
@@ -2802,6 +2802,18 @@ public class Matches
 	public static final Match<RelationshipType> RelationshipHelpsDefendAtSea = new Match<RelationshipType>() {
 		public boolean match(RelationshipType relationship) {
 			return relationship.getRelationshipTypeAttachment().helpsDefendAtSea();
+		}
+	};
+
+	public static final Match<RelationshipType> RelationshipCanMoveLandUnitsOverOwnedLand = new Match<RelationshipType>() {
+		public boolean match(RelationshipType relationship) {
+			return relationship.getRelationshipTypeAttachment().getCanMoveLandUnitsOverOwnedLand();
+		}
+	};
+
+	public static final Match<RelationshipType> RelationshipCanMoveAirUnitsOverOwnedLand = new Match<RelationshipType>() {
+		public boolean match(RelationshipType relationship) {
+			return relationship.getRelationshipTypeAttachment().getCanMoveAirUnitsOverOwnedLand();
 		}
 	};
 

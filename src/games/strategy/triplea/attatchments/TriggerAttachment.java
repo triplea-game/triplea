@@ -262,7 +262,21 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	public void setConditionType(String s) throws GameParseException{
 		if (!(s.equals("and") || s.equals("AND") || s.equals("or") || s.equals("OR") || s.equals("XOR") || s.equals("xor")))
-			throw new GameParseException("Triggers: conditionType must be equal to AND or OR or XOR");
+		{
+			String[] nums = s.split("-");
+			if (nums.length == 1)
+			{
+				if (Integer.parseInt(nums[0]) < 0)
+					throw new GameParseException("Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
+			}
+			else if (nums.length == 2)
+			{
+				if (Integer.parseInt(nums[0]) < 0 || Integer.parseInt(nums[1]) < 0 || !(Integer.parseInt(nums[0]) < Integer.parseInt(nums[1])))
+					throw new GameParseException("Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
+			}
+			else
+				throw new GameParseException("Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
+		}
 		m_conditionType = s;
 	}
 	
@@ -1002,6 +1016,33 @@ public class TriggerAttachment extends DefaultAttachment{
 					isOneTrue = true;
 			}
 			met = isOneTrue;
+		}
+		else
+		{
+			String[] nums = conditionType.split("-");
+			if (nums.length == 1)
+			{
+				int start = Integer.parseInt(nums[0]);
+				int count = 0;
+				for (RulesAttachment c : t.getTrigger()) {
+					met = c.isSatisfied(data) != t.getInvert();
+					if (met)
+						count++;
+				}
+				met = (count == start);
+			}
+			else if (nums.length == 2)
+			{
+				int start = Integer.parseInt(nums[0]);
+				int end = Integer.parseInt(nums[1]);
+				int count = 0;
+				for (RulesAttachment c : t.getTrigger()) {
+					met = c.isSatisfied(data) != t.getInvert();
+					if (met)
+						count++;
+				}
+				met = (count >= start && count <= end);
+			}
 		}
 		
 		return met;

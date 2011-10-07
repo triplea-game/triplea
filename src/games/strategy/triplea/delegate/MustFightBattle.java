@@ -3154,6 +3154,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         checkDefendingPlanesCanLand(bridge, m_defender);
 
+        BattleTracker.captureOrDestroyUnits(m_battleSite, m_defender, m_defender, bridge, m_data, null, m_defendingUnits);
     }
 
     private void nobodyWins(IDelegateBridge bridge)

@@ -554,7 +554,7 @@
         </resourceList>
 
         <playerList>
-                <!-- In turn order -->
+                <!-- In turn order (it is important that the players are listed in turn order)-->
                 <player name="Italians" optional="false"/>
                 <player name="Russians" optional="false"/>
                 <player name="Germans" optional="false"/>
@@ -562,6 +562,7 @@
                 <player name="Japanese" optional="false"/>
                 <player name="Americans" optional="false"/>
                 <player name="Chinese" optional="false"/>
+				<!-- optional just means 'does this player require a capital?'.  if a player is optional, some delegates may not work properly for that player. -->
 
 				
 				
@@ -2790,8 +2791,8 @@
 			conditions							values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
 															can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
 															any condition which includes other conditions, is considered a meta-condition, and it must come AFTER any conditions that it includes.
-			conditionType 						values: AND, OR, XOR.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the conditions. 
-														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false.
+			conditionType 						values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the conditions. 
+														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
 														conditionType only affects the conditions listed under the option name="conditions", and does not affect any additional things also present.
 			
 	-->
@@ -3161,8 +3162,8 @@
 	<!-- the following options are allowed for "triggerAttachmentXXX"
 			trigger								values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
 															can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
-			conditionType 						values: AND, OR, XOR.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition in the trigger. 
-														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false.
+			conditionType 						values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the trigger. 
+														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
 			invert 								values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
 			uses 								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
 			tech		 						values: the names of any technology to be given to the active or specified player. given at end of tech activation phase. (example: value="rocket:longRangeAir")
@@ -4063,7 +4064,9 @@
 
 				<relationshipInitialize>
 						<!-- the order of player1 and player2 does not matter. 
-						having them listed twice in different orders will just have the later one overwrite the earlier one -->
+								having them listed twice in different orders will just have the later one overwrite the earlier one.
+								Make sure you cover all possibilities
+						-->
 						
 						<relationship type="Allied" player1="Italians" player2="Germans"/>
 						<relationship type="Allied" player1="Italians" player2="Japanese"/>

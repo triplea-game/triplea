@@ -765,6 +765,31 @@ public class MoveValidator
         	return result;
         }
         
+        // can not enter territories owned by a player to which we are neutral towards
+        Collection<Territory> landOnRoute = route.getMatches(Matches.TerritoryIsLand);
+        if (!landOnRoute.isEmpty())
+        {
+        	for (Territory t : landOnRoute)
+        	{
+        		if (Match.someMatch(units, Matches.UnitIsLand))
+        		{
+        			if (!data.getRelationshipTracker().canMoveLandUnitsOverOwnedLand(player, t.getOwner()))
+        			{
+        				result.setError(player.getName() + " may not move land units over land owned by " + t.getOwner().getName());
+        				return result;
+        			}
+        		}
+        		if (Match.someMatch(units, Matches.UnitIsAir))
+        		{
+        			if (!data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(player, t.getOwner()))
+        			{
+        				result.setError(player.getName() + " may not move air units over land owned by " + t.getOwner().getName());
+        				return result;
+        			}
+        		}
+        	}
+        }
+        
         if (isNonCombat)
         {
             if (validateNonCombat(data, units, route, player, result).getError() != null)

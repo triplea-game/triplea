@@ -573,6 +573,65 @@ public class BattleTracker implements java.io.Serializable
             changeTracker.addToConquered(territory);
         }
 
+        //Remove any bombing raids against captured territory
+        if(Match.someMatch(territory.getUnits().getUnits(), new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, id), Matches.UnitIsFactoryOrCanBeDamaged)))
+        {
+            Battle bombingBattle = getPendingBattle(territory, true);
+            if(bombingBattle != null)
+            {
+                removeBattle(bombingBattle);
+            }
+        }
+        
+        captureOrDestroyUnits(territory, id, newOwner, bridge, data, changeTracker, arrivingUnits);
+
+        //is this territory our capitol or a capitol of our ally
+        //Also check to make sure playerAttachment even HAS a capital to fix abend
+        if (terrOrigOwner != null && ta.getCapital() != null && TerritoryAttachment.getCapital(terrOrigOwner, data).equals(territory)
+                && data.getRelationshipTracker().isAllied(terrOrigOwner, id))
+        {
+            //if it is give it back to the original owner
+            Collection<Territory> originallyOwned = origOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
+
+            // necessary as Matches.IsTerritory is a Match<Object> and alliedOccupiedTerritories is used as Match<Territory> later
+            @SuppressWarnings("rawtypes")
+            CompositeMatch alliedOccupiedTerritories = new CompositeMatchAnd();
+            alliedOccupiedTerritories.add(Matches.IsTerritory);
+            alliedOccupiedTerritories.add(Matches.isTerritoryAllied(terrOrigOwner, data));
+            List<Territory> friendlyTerritories = Match.getMatches(originallyOwned, alliedOccupiedTerritories);
+
+            //give back the factories as well.
+            for (Territory item : friendlyTerritories)
+            {
+                if (item.getOwner() == terrOrigOwner)
+                    continue;
+                Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);
+                bridge.addChange(takeOverFriendlyTerritories);
+                bridge.getHistoryWriter().addChildToEvent(takeOverFriendlyTerritories.toString());
+                if (changeTracker != null)
+                    changeTracker.addChange(takeOverFriendlyTerritories);
+                // TODO: do we need to add in infrastructure here?
+                Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
+                if (!units.isEmpty())
+                {
+                    Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner, territory);
+                    bridge.addChange(takeOverNonComUnits);
+                    if (changeTracker != null)
+                        changeTracker.addChange(takeOverNonComUnits);
+                }
+            }
+        }
+
+        //say they were in combat
+        //if the territory being taken over is water, then do not say any land units were in combat (they may want to unload from the transport and attack)
+        if (Matches.TerritoryIsWater.match(territory))
+        	arrivingUnits.removeAll(Match.getMatches(arrivingUnits, Matches.UnitIsLand));
+
+        markWasInCombat(arrivingUnits, bridge, changeTracker);
+    }
+    
+    public static void captureOrDestroyUnits(Territory territory, final PlayerID id, final PlayerID newOwner, IDelegateBridge bridge, GameData data, UndoableMove changeTracker, Collection<Unit> arrivingUnits)
+    {
         //destroy any units that should be destroyed on capture
         if(games.strategy.triplea.Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data))
         {
@@ -634,7 +693,6 @@ public class BattleTracker implements java.io.Serializable
         {
             //TODO: check if following line is necessary
             //PlayerID originalOwner = origOwnerTracker.getOriginalOwner(currentUnit);
-
             PlayerID terrOwner = newOwner;
 
             Change capture = ChangeFactory.changeOwner(currentUnit, terrOwner, territory);
@@ -642,60 +700,6 @@ public class BattleTracker implements java.io.Serializable
             if (changeTracker != null)
                 changeTracker.addChange(capture);
         }
-
-        //Remove any bombing raids against captured territory
-        if(Match.someMatch(nonCom, Matches.UnitIsFactoryOrCanBeDamaged))
-        {
-            Battle bombingBattle = getPendingBattle(territory, true);
-            if(bombingBattle != null)
-            {
-                removeBattle(bombingBattle);
-            }
-        }
-
-        //is this territory our capitol or a capitol of our ally
-        //Also check to make sure playerAttachment even HAS a capital to fix abend
-        if (terrOrigOwner != null && ta.getCapital() != null && TerritoryAttachment.getCapital(terrOrigOwner, data).equals(territory)
-                && data.getRelationshipTracker().isAllied(terrOrigOwner, id))
-        {
-            //if it is give it back to the original owner
-            Collection<Territory> originallyOwned = origOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
-
-            // necessary as Matches.IsTerritory is a Match<Object> and alliedOccupiedTerritories is used as Match<Territory> later
-            @SuppressWarnings("rawtypes")
-            CompositeMatch alliedOccupiedTerritories = new CompositeMatchAnd();
-            alliedOccupiedTerritories.add(Matches.IsTerritory);
-            alliedOccupiedTerritories.add(Matches.isTerritoryAllied(terrOrigOwner, data));
-            List<Territory> friendlyTerritories = Match.getMatches(originallyOwned, alliedOccupiedTerritories);
-
-            //give back the factories as well.
-            for (Territory item : friendlyTerritories)
-            {
-                if (item.getOwner() == terrOrigOwner)
-                    continue;
-                Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);
-                bridge.addChange(takeOverFriendlyTerritories);
-                bridge.getHistoryWriter().addChildToEvent(takeOverFriendlyTerritories.toString());
-                if (changeTracker != null)
-                    changeTracker.addChange(takeOverFriendlyTerritories);
-                // TODO: do we need to add in infrastructure here?
-                Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
-                if (!units.isEmpty())
-                {
-                    Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner, territory);
-                    bridge.addChange(takeOverNonComUnits);
-                    if (changeTracker != null)
-                        changeTracker.addChange(takeOverNonComUnits);
-                }
-            }
-        }
-
-        //say they were in combat
-        //if the territory being taken over is water, then do not say any land units were in combat (they may want to unload from the transport and attack)
-        if (Matches.TerritoryIsWater.match(territory))
-        	arrivingUnits.removeAll(Match.getMatches(arrivingUnits, Matches.UnitIsLand));
-
-        markWasInCombat(arrivingUnits, bridge, changeTracker);
     }
 
     private Change addMustFightBattleChange(Route route, Collection<Unit> units, PlayerID id, GameData data)

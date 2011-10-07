@@ -1,4 +1,13 @@
 Changes for 1.3.3.0
+* Created new Relationship attachments for canMoveLandUnitsOverOwnedLand and canMoveAirUnitsOverOwnedLand, and set them to validate movement. (veqryn)
+
+* Allowed conditionType for both triggers and conditions (objectives) attachments to have integer values, in addition to other values,
+  conditionType now allowing: 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y. (veqryn)
+
+* Allowing html to be used for both triggered notifications and for triggered victory messages. (veqryn) 
+
+* Added ability for the defender to capture units if it wins on defense and the attacker brought capturable infrastructure units to the battle. (veqryn)
+
 * Fixing bug in moving defending air to land when a carrier is damaged on defense. (veqryn)
 
 * Fixing bugs surrounding unitsMayNotLandOnCarrier and unitsMayNotLeaveAlliedCarrier interacting with each other. (veqryn)
