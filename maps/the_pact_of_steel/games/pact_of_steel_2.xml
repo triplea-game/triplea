@@ -1480,8 +1480,10 @@
 			the archeType determines the default behaviour of this relationshipType that can be modified by setting other options.
 			Also the archeType determines the outcomes of isAllied, isNeutral and isWar query in the engine
 	-->
-	<!-- the following options are allowed for "relationshipTypeAttachment"
-			archeType							values: "allied" or "war" or "neutral"
+	<!-- the following options are allowed for "relationshipTypeAttachment", (all options except for archeType only allow "true", "false", or "default")
+			archeType								values: "allied" or "war" or "neutral"
+			canMoveLandUnitsOverOwnedLand			values: "true", "false", or "default". default setting is "default", and "default" means that archeType of war and allied can move into, while neutral can not
+			canMoveAirUnitsOverOwnedLand			values: "true", "false", or "default". default setting is "default", and "default" means that archeType of war and allied can move into, while neutral can not
 	-->
 
 				<attatchment name="relationshipTypeAttachment" attatchTo="War" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">

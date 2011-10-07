@@ -24,6 +24,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.util.IntegerMap;
 
@@ -177,6 +178,38 @@ public class MyFormatter
         if (quantity == -1 || quantity == 1)
             return in;
         return pluralize(in);
+    }
+    
+    public static String attachmentNameToText(String attachmentGetName)
+    {
+    	String toText = attachmentGetName;
+    	if (attachmentGetName.startsWith(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME))
+    		toText = attachmentGetName.replaceFirst(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME, "Relationship Type ");
+    	else if (attachmentGetName.startsWith(Constants.TECH_ATTACHMENT_NAME))
+    		toText = attachmentGetName.replaceFirst(Constants.TECH_ATTACHMENT_NAME, "Player Tech Properties ");
+    	else if (attachmentGetName.startsWith(Constants.UNIT_ATTACHMENT_NAME))
+    		toText = attachmentGetName.replaceFirst(Constants.UNIT_ATTACHMENT_NAME, "Unit Type Properties ");
+    	else if (attachmentGetName.startsWith(Constants.TERRITORY_ATTACHMENT_NAME))
+    		toText = attachmentGetName.replaceFirst(Constants.TERRITORY_ATTACHMENT_NAME, "Territory Properties ");
+    	else if (attachmentGetName.startsWith(Constants.CANAL_ATTACHMENT_PREFIX))
+    		toText = attachmentGetName.replaceFirst(Constants.CANAL_ATTACHMENT_PREFIX, "Canal ");
+    	else if (attachmentGetName.startsWith(Constants.TERRITORYEFFECT_ATTACHMENT_NAME))
+    		toText = attachmentGetName.replaceFirst(Constants.TERRITORYEFFECT_ATTACHMENT_NAME, "Territory Effect ");
+    	else if (attachmentGetName.startsWith(Constants.SUPPORT_ATTACHMENT_PREFIX))
+    		toText = attachmentGetName.replaceFirst(Constants.SUPPORT_ATTACHMENT_PREFIX, "Support ");
+    	else if (attachmentGetName.startsWith(Constants.RULES_OBJECTIVE_PREFIX))
+    		toText = attachmentGetName.replaceFirst(Constants.RULES_OBJECTIVE_PREFIX, "Objective ");
+    	else if (attachmentGetName.startsWith(Constants.RULES_CONDITION_PREFIX))
+    		toText = attachmentGetName.replaceFirst(Constants.RULES_CONDITION_PREFIX, "Condition ");
+    	else if (attachmentGetName.startsWith(Constants.TRIGGER_ATTACHMENT_PREFIX))
+    		toText = attachmentGetName.replaceFirst(Constants.TRIGGER_ATTACHMENT_PREFIX, "Trigger ");
+    	else if (attachmentGetName.startsWith(Constants.RULES_ATTACHMENT_NAME))
+    		toText = attachmentGetName.replaceFirst(Constants.RULES_ATTACHMENT_NAME, "Rules ");
+    	else if (attachmentGetName.startsWith(Constants.PLAYER_ATTACHMENT_NAME))
+    		toText = attachmentGetName.replaceFirst(Constants.PLAYER_ATTACHMENT_NAME, "Player Properties ");
+    	
+    	toText = toText.trim();
+    	return toText;
     }
 
     /**
