@@ -34,9 +34,7 @@ import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -62,109 +60,19 @@ import java.util.Set;
 public class EndTurnDelegate extends AbstractEndTurnDelegate
 {
 
-    protected void checkForWinner(IDelegateBridge bridge)
+    protected void doNationalObjectivesAndOtherEndTurnEffects(IDelegateBridge bridge)
     {
-        //only notify once
-        if(m_gameOver)
-            return;
-        String victoryMessage = null;
-
-        // TODO: what the heck is this used for? it doesn't even include italians or chinese, or anyone else
-        PlayerID russians = m_data.getPlayerList().getPlayerID(Constants.RUSSIANS);
-        PlayerID germans = m_data.getPlayerList().getPlayerID(Constants.GERMANS);
-        PlayerID british = m_data.getPlayerList().getPlayerID(Constants.BRITISH);
-        PlayerID japanese = m_data.getPlayerList().getPlayerID(Constants.JAPANESE);
-        PlayerID americans = m_data.getPlayerList().getPlayerID(Constants.AMERICANS);
-
-        //TODO kev see if we can abstract this from the specific players/games
-        if(m_data.getProperties().get(Constants.PACIFIC_THEATER, false))
-        {
-            PlayerAttachment pa = PlayerAttachment.get(japanese);
-
-
-            if(pa != null && Integer.parseInt(pa.getVps()) >= 22)
-            {
-                m_gameOver = true;
-                victoryMessage = "Axis achieve VP victory";
-                bridge.getHistoryWriter().startEvent(victoryMessage);
-                signalGameOver(victoryMessage,bridge);
-                return;
-            }
-        }
-
         // do national objectives
 		if (isNationalObjectives())
 		{
 			determineNationalObjectives(m_data, bridge);
 		}
 
-        // create units if any owned units have the ability
-        createUnits(m_data, bridge);
-
         // create resources if any owned units have the ability
         createResources(m_data, bridge);
 
-        if(isWW2V2())
-            return;
-
-
-        if(germans == null || russians == null || british == null || japanese == null || americans == null)
-            return;
-
-        // Quick check to see who still owns their own capital
-        boolean russia = TerritoryAttachment.getCapital(russians, m_data).getOwner().equals(russians);
-        boolean germany = TerritoryAttachment.getCapital(germans, m_data).getOwner().equals(germans);
-        boolean britain = TerritoryAttachment.getCapital(british, m_data).getOwner().equals(british);
-        boolean japan = TerritoryAttachment.getCapital(japanese, m_data).getOwner().equals(japanese);
-        boolean america = TerritoryAttachment.getCapital(americans, m_data).getOwner().equals(americans);
-
-
-        int count = 0;
-        if (!russia) count++;
-        if (!britain) count++;
-        if (!america) count++;
-        victoryMessage = " achieve a military victory";
-
-        if ( germany && japan && count >=2)
-        {
-            m_gameOver = true;
-            bridge.getHistoryWriter().startEvent("Axis" + victoryMessage);
-            signalGameOver(victoryMessage,bridge);
-            //TODO We might want to find a more elegant way to end the game ala the TIC-TAC-TOE example
-            //Added this to end the game on victory conditions
-            //bridge.stopGameSequence();
-        }
-
-        if ( russia && !germany && britain && !japan && america)
-        {
-            m_gameOver = true;
-            bridge.getHistoryWriter().startEvent("Allies" + victoryMessage);
-            signalGameOver(victoryMessage,bridge);
-            //Added this to end the game on victory conditions
-            //bridge.stopGameSequence();
-        }
-    }
-
-    /**
-     * Notify all players that the game is over.
-     *
-     * @param status the "game over" text to be displayed to each user.
-     */
-    private void signalGameOver(String status, IDelegateBridge a_bridge)
-    {
-        // If the game is over, we need to be able to alert all UIs to that fact.
-        //    The display object can send a message to all UIs.
-        if (!m_gameOver)
-        {
-            m_gameOver = true;
-            //we can't talk to the user directly
-            //we need to go through an ITripleAPlayer, or an IDisplay
-
-//            // Make sure the user really wants to leave the game.
-//            int rVal = JOptionPane.showConfirmDialog(null, status +"\nDo you want to continue?", "Continue" , JOptionPane.YES_NO_OPTION);
-//            if(rVal != JOptionPane.OK_OPTION)
-//                a_bridge.stopGameSequence();
-        }
+        // create units if any owned units have the ability
+        createUnits(m_data, bridge);
     }
 
     /**
@@ -341,17 +249,15 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     			bridge.getHistoryWriter().startEvent(PUMessage);
     		}
     	} //end while
+    	
+    	// now do any triggers that add resources too
     	if(games.strategy.triplea.Properties.getTriggers(data))
     		TriggerAttachment.triggerResourceChange(player, bridge, data, null, null);
+    	
     } //end determineNationalObjectives
 
 	private boolean isNationalObjectives()
     {
     	return games.strategy.triplea.Properties.getNationalObjectives(m_data);
-    }
-
-    private boolean isWW2V2()
-    {
-    	return games.strategy.triplea.Properties.getWW2V2(m_data);
     }
 }

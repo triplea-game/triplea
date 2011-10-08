@@ -485,15 +485,52 @@ public class Matches
         };
     }
 
-    public static Match<Unit> UnitDestroyedWhenCapturedBy(final PlayerID player)
+    public static Match<Unit> UnitDestroyedWhenCapturedByOrFrom(final PlayerID playerBY)
     {
         return new Match<Unit>()
         {
             public boolean match(Unit o)
             {
-                Unit unit = o;
-                UnitAttachment ua = UnitAttachment.get(unit.getType());
-                return ua.getDestroyedWhenCapturedBy().contains(player);
+                Match<Unit> byOrFrom = new CompositeMatchOr<Unit>(UnitDestroyedWhenCapturedBy(playerBY), UnitDestroyedWhenCapturedFrom());
+                return byOrFrom.match(o);
+            }
+        };
+    }
+
+    public static Match<Unit> UnitDestroyedWhenCapturedBy(final PlayerID playerBY)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit u)
+            {
+                UnitAttachment ua = UnitAttachment.get(u.getType());
+                if (ua.getDestroyedWhenCapturedBy().isEmpty())
+                	return false;
+                for (Tuple<String,PlayerID> tuple : ua.getDestroyedWhenCapturedBy())
+                {
+                	if (tuple.getFirst().equals("BY") && tuple.getSecond().equals(playerBY))
+                		return true;
+                }
+                return false;
+            }
+        };
+    }
+
+    public static Match<Unit> UnitDestroyedWhenCapturedFrom()
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit u)
+            {
+                UnitAttachment ua = UnitAttachment.get(u.getType());
+                if (ua.getDestroyedWhenCapturedBy().isEmpty())
+                	return false;
+                for (Tuple<String,PlayerID> tuple : ua.getDestroyedWhenCapturedBy())
+                {
+                	if (tuple.getFirst().equals("FROM") && tuple.getSecond().equals(u.getOwner()))
+                		return true;
+                }
+                return false;
             }
         };
     }

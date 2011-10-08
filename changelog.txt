@@ -1,4 +1,12 @@
 Changes for 1.3.3.0
+* Created new rules attachment, placementAnySeaZone, that allows placing sea units beside any land territory owned at the beginning of the turn. (veqryn)
+
+* Fixing bugs in old victory conditions and moving them to endRoundDelegate, and also fixing bugs surrounding strings in attachment property change triggers. (veqryn)
+
+* Adding PactOfSteel2 and Pac40 xmls to test xml suite. (veqryn)
+
+* Changed destroyedWhenCapturedBy to allow destroying when capturing from a player, not just by a player, by adding a prefix of "BY:" or "FROM:" and also created destroyedWhenCapturedFrom which calls destroyedWhenCapturedBy with a "FROM:" prefix. (veqryn)
+
 * Changed unitAttachment toString to be much more informative, and include all values. (veqryn)
 
 * Created new Relationship attachments for canMoveLandUnitsOverOwnedLand and canMoveAirUnitsOverOwnedLand, and set them to validate movement. (veqryn)

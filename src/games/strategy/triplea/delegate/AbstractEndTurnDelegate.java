@@ -59,12 +59,8 @@ import java.util.List;
  */
 public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IAbstractEndTurnDelegate
 {
-  
-    //we only want to notify once that the game is over
     private boolean m_needToInitialize = true;
     private boolean m_hasPostedTurnSummary = false;
-    protected boolean m_gameOver = false;
-
    
 
     private boolean doBattleShipsRepairEndOfTurn()
@@ -133,7 +129,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
             aBridge.addChange(ccVP);
         }
 
-        checkForWinner(aBridge);
+        doNationalObjectivesAndOtherEndTurnEffects(aBridge);
 
         if(doBattleShipsRepairEndOfTurn())
         {
@@ -198,7 +194,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		}
 	}
 
-    protected abstract void checkForWinner(IDelegateBridge bridge);
+    protected abstract void doNationalObjectivesAndOtherEndTurnEffects(IDelegateBridge bridge);
 
 
     protected int getProduction(Collection<Territory> territories)

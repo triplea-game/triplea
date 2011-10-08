@@ -602,7 +602,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
         boolean wasFactoryThereAtStart = wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
 
-        if (wasFactoryThereAtStart || isPlayerAllowedToPlaceAnywhere(player))
+        if (wasFactoryThereAtStart || isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))
         {
             //make sure only 1 AA in territory for classic
             if (isWW2V2() || isWW2V3() || isMultipleAAPerTerritory())
@@ -848,7 +848,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         if (wasConquered(producer) && !isPlacementAllowedInCapturedTerritory(player))
             return producer.getName() + " was conquered this turn and cannot produce till next turn";
 
-        if(isPlayerAllowedToPlaceAnywhere(player))
+        if(isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))
         	return null;
 
         //make sure there is a factory
@@ -1027,7 +1027,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
                 Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
                 unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
                 unitsAtStartOfTurnInTO.retainAll(Match.getMatches(unitsAtStartOfTurnInTO, Matches.unitIsOwnedBy(player)));
-                if (Match.someMatch(unitsAtStartOfTurnInTO, Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player)))
+                if (Match.someMatch(unitsAtStartOfTurnInTO, Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player)) || isPlayerAllowedToPlacementAnySeaZoneByOwnedLand(player))
                 {
                     producers.add(current);
                 }
@@ -1214,12 +1214,26 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         return new AirThatCantLandUtil(m_data, m_bridge).getTerritoriesWhereAirCantLand(m_player);
     }
 
-    private boolean isPlayerAllowedToPlaceAnywhere(PlayerID player)
+    private boolean isPlayerAllowedToPlacementAnyTerritoryOwnedLand(PlayerID player)
     {
     	if(isPlaceInAnyTerritory())
     	{
     		RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
         	if(ra != null && ra.getPlacementAnyTerritory())
+        	{
+        		return true;
+        	}
+    	}
+
+    	return false;
+    }
+
+    private boolean isPlayerAllowedToPlacementAnySeaZoneByOwnedLand(PlayerID player)
+    {
+    	if(isPlaceInAnyTerritory())
+    	{
+    		RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+        	if(ra != null && ra.getPlacementAnySeaZone())
         	{
         		return true;
         	}

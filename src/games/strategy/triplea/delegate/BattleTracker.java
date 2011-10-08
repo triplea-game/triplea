@@ -635,12 +635,12 @@ public class BattleTracker implements java.io.Serializable
         //destroy any units that should be destroyed on capture
         if(games.strategy.triplea.Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data))
         {
-        	CompositeMatch<Unit> enemyToBeDestroyed = new CompositeMatchAnd<Unit>(Matches.enemyUnit(id, data), Matches.UnitDestroyedWhenCapturedBy(id));
+        	CompositeMatch<Unit> enemyToBeDestroyed = new CompositeMatchAnd<Unit>(Matches.enemyUnit(id, data), Matches.UnitDestroyedWhenCapturedByOrFrom(id));
             Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
             if (!destroyed.isEmpty())
             {
                 Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
-                bridge.getHistoryWriter().addChildToEvent(id.getName() + " destroys some non-combat units", destroyed);
+                bridge.getHistoryWriter().addChildToEvent("Some non-combat units are destroyed: ", destroyed);
                 bridge.addChange(destroyUnits);
                 if (changeTracker != null)
                     changeTracker.addChange(destroyUnits);

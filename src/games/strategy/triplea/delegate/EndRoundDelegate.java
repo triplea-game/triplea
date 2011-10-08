@@ -24,9 +24,10 @@ import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
-import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Match;
@@ -67,6 +68,18 @@ public class EndRoundDelegate extends BaseDelegate
 			return;
 
 		String victoryMessage = null;
+		
+        if(isPacificTheater())
+        {
+            PlayerID japanese = m_data.getPlayerList().getPlayerID(Constants.JAPANESE);
+            PlayerAttachment pa = PlayerAttachment.get(japanese);
+            if(pa != null && Integer.parseInt(pa.getVps()) >= 22)
+            {
+                victoryMessage = "Axis achieve VP victory";
+                aBridge.getHistoryWriter().startEvent(victoryMessage);
+                signalGameOver(victoryMessage,aBridge);
+            }
+        }
 
 		//Check for Winning conditions        
         if(isTotalVictory()) //Check for Win by Victory Cities
@@ -132,6 +145,48 @@ public class EndRoundDelegate extends BaseDelegate
             		signalGameOver(vMessage,aBridge);
             	}
         	}
+        }
+        
+        if(isWW2V2() || isWW2V3())
+            return;
+        
+        // now test older maps that only use these 5 players, to see if someone has won
+        PlayerID russians = m_data.getPlayerList().getPlayerID(Constants.RUSSIANS);
+        PlayerID germans = m_data.getPlayerList().getPlayerID(Constants.GERMANS);
+        PlayerID british = m_data.getPlayerList().getPlayerID(Constants.BRITISH);
+        PlayerID japanese = m_data.getPlayerList().getPlayerID(Constants.JAPANESE);
+        PlayerID americans = m_data.getPlayerList().getPlayerID(Constants.AMERICANS);
+        
+        if(germans == null || russians == null || british == null || japanese == null || americans == null || m_data.getPlayerList().size() > 5)
+            return;
+        
+        // Quick check to see who still owns their own capital
+        boolean russia = TerritoryAttachment.getCapital(russians, m_data).getOwner().equals(russians);
+        boolean germany = TerritoryAttachment.getCapital(germans, m_data).getOwner().equals(germans);
+        boolean britain = TerritoryAttachment.getCapital(british, m_data).getOwner().equals(british);
+        boolean japan = TerritoryAttachment.getCapital(japanese, m_data).getOwner().equals(japanese);
+        boolean america = TerritoryAttachment.getCapital(americans, m_data).getOwner().equals(americans);
+        
+        int count = 0;
+        if (!russia)
+        	count++;
+        if (!britain)
+        	count++;
+        if (!america)
+        	count++;
+        
+        victoryMessage = " achieve a military victory";
+        
+        if (germany && japan && count >=2)
+        {
+        	aBridge.getHistoryWriter().startEvent("Axis" + victoryMessage);
+            signalGameOver(victoryMessage,aBridge);
+        }
+
+        if (russia && !germany && britain && !japan && america)
+        {
+            aBridge.getHistoryWriter().startEvent("Allies" + victoryMessage);
+            signalGameOver(victoryMessage,aBridge);
         }
 	}
 
@@ -211,6 +266,21 @@ public class EndRoundDelegate extends BaseDelegate
         }
     }
     
+    private boolean isWW2V2()
+    {
+        return games.strategy.triplea.Properties.getWW2V2(m_data);
+    } 
+    
+    private boolean isWW2V3()
+    {
+        return games.strategy.triplea.Properties.getWW2V3(m_data);
+    } 
+    
+    private boolean isPacificTheater()
+    {
+        return games.strategy.triplea.Properties.getPacificTheater(m_data);
+    } 
+    
     private boolean isTotalVictory()
     {
         return games.strategy.triplea.Properties.getTotalVictory(m_data);
@@ -280,6 +350,4 @@ public class EndRoundDelegate extends BaseDelegate
         return null;
     }
 
-
-    
 }

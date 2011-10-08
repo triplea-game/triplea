@@ -19,12 +19,13 @@ import games.strategy.triplea.attatchments.*;
 
 public class EndTurnDelegate extends AbstractEndTurnDelegate
 {
+	protected boolean m_gameOver = false;
 
     public EndTurnDelegate()
     {
     }
 
-	protected void checkForWinner(IDelegateBridge bridge)
+	protected void doNationalObjectivesAndOtherEndTurnEffects(IDelegateBridge bridge)
 	{
 		PlayerID british = m_data.getPlayerList().getPlayerID(Constants.BRITISH);
 		PlayerID japanese = m_data.getPlayerList().getPlayerID(Constants.JAPANESE);

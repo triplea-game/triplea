@@ -183,7 +183,7 @@ public class UnitAttachment extends DefaultAttachment
   private int m_defense = 0;
   
   private Collection<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<PlayerID>();
-  private Collection<PlayerID> m_destroyedWhenCapturedBy = new ArrayList<PlayerID>();
+  private Collection<Tuple<String,PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<Tuple<String,PlayerID>>();
   private Collection<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<PlayerID>();
   
   private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
@@ -285,18 +285,39 @@ public class UnitAttachment extends DefaultAttachment
    */
   public void setDestroyedWhenCapturedBy(String value)
   {
+	// We can prefix this value with "BY" or "FROM" to change the setting.  If no setting, default to "BY" since this this is called by destroyedWhenCapturedBy
+	String byOrFrom = "BY";
+	if (value.startsWith("BY:") && getData().getPlayerList().getPlayerID("BY")==null)
+	{
+		byOrFrom = "BY";
+		value = value.replaceFirst("BY:", "");
+	}
+	else if (value.startsWith("FROM:") && getData().getPlayerList().getPlayerID("FROM")==null)
+	{
+		byOrFrom = "FROM";
+		value = value.replaceFirst("FROM:", "");
+	}
   	String[] temp = value.split(":");
   	for (String name : temp)
   	{
   		PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
   		if (tempPlayer != null)
-  			m_destroyedWhenCapturedBy.add(tempPlayer);
+  			m_destroyedWhenCapturedBy.add(new Tuple<String,PlayerID>(byOrFrom,tempPlayer));
   		else
   			throw new IllegalStateException("Unit Attachments: No player named: " + name);
   	}
   }
+  
+  public void setDestroyedWhenCapturedFrom(String value)
+  {
+	if (!(value.startsWith("BY:") || value.startsWith("FROM:")))
+	{
+		value = "FROM:" + value;
+	}
+	setDestroyedWhenCapturedBy(value);
+  }
 
-  public Collection<PlayerID> getDestroyedWhenCapturedBy()
+  public Collection<Tuple<String,PlayerID>> getDestroyedWhenCapturedBy()
   {
       return m_destroyedWhenCapturedBy;
   }

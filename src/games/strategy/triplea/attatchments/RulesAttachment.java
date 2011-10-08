@@ -111,7 +111,8 @@ public class RulesAttachment extends DefaultAttachment
 	private String[] m_movementRestrictionTerritories;
 
 	// booleans
-	private boolean m_placementAnyTerritory = false;
+	private boolean m_placementAnyTerritory = false; // only covers land
+	private boolean m_placementAnySeaZone = false; // only covers sea zones by owned land
 	private boolean m_placementCapturedTerritory = false;
 	private boolean m_unlimitedProduction = false;
 	private boolean m_placementInCapitalRestricted = false;
@@ -505,6 +506,16 @@ public class RulesAttachment extends DefaultAttachment
 	public boolean getPlacementAnyTerritory()
 	{
 		return m_placementAnyTerritory;
+	}
+	
+	public void setPlacementAnySeaZone(String value)
+	{
+		m_placementAnySeaZone = getBool(value);
+	}
+	
+	public boolean getPlacementAnySeaZone()
+	{
+		return m_placementAnySeaZone;
 	}
 
 	public void setPlacementCapturedTerritory(String value)
@@ -1223,15 +1234,23 @@ public class RulesAttachment extends DefaultAttachment
 			else if (terrList.length == 2 && (!terrList[1].equals("controlled") && !terrList[1].equals("controlledNoWater") && !terrList[1].equals("original") && !terrList[1].equals("all") && !terrList[1].equals("map") && !terrList[1].equals("enemy")))
 				getListedTerritories(terrList);
 		}*/
-		if(terrList != null)
+		if(terrList != null && terrList.length >0)
 			getListedTerritories(terrList);
 		//removed checks for length & group commands because it breaks the setTerritoryCount feature.
 	}
 
-	// Validate that all listed territories actually exist
+	/**
+	 * Validate that all listed territories actually exist.  Will return an empty list of territories if sent a list that is empty or contains only a "" string.
+	 * @param list
+	 * @return
+	 */
 	public Collection<Territory> getListedTerritories(String[] list)
 	{
 		List<Territory> rVal = new ArrayList<Territory>();
+		
+		// this list is empty, or contains "", so return a blank list of territories
+		if (list.length == 0 || (list.length == 1 && list[0].length()<1))
+			return rVal;
 
 		for (String name : list)
 		{
