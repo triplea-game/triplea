@@ -17,7 +17,9 @@ package games.strategy.triplea.ui;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.export.GameDataExporter;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.ClientGame;
@@ -33,6 +35,7 @@ import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.engine.stats.IStat;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.printgenerator.SetupFrame;
@@ -955,9 +958,41 @@ private void addLockMap(JMenu parentMenu)
         	text.append(resourceIterator.next().getName() + ",");
             text.append("\n");
         }
+
+        text.append("\n");
+        text.append("Production Rules: ,");
+        text.append("\n");
+        text.append("Name,Result,Quantity,Cost,Resource,\n");
+        Iterator<ProductionRule> purchaseOptionsIterator = getData().getProductionRuleList().getProductionRules().iterator();
+        while(purchaseOptionsIterator.hasNext())
+        {
+        	ProductionRule pr = purchaseOptionsIterator.next();
+        	text.append(pr.getName() + ","
+        			+ pr.getResults().keySet().iterator().next().getName() + ","
+        			+ pr.getResults().getInt(pr.getResults().keySet().iterator().next()) + ","
+        			+ pr.getCosts().getInt(pr.getCosts().keySet().iterator().next()) + ","
+        			+ pr.getCosts().keySet().iterator().next().getName() + ",");
+            text.append("\n");
+        }
+
+        text.append("\n");
+        text.append("Unit Types: ,");
+        text.append("\n");
+        text.append("Name,Listed Abilities\n");
+        Iterator<UnitType> allUnitsIterator = getData().getUnitTypeList().iterator();
+        while(allUnitsIterator.hasNext())
+        {
+        	String toModify = UnitAttachment.get(allUnitsIterator.next()).toString().replaceFirst("UnitType called ", "").replaceFirst(" with:", "").replaceAll("games.strategy.engine.data.", "").replaceAll("\n", ";").replaceAll(",", ";");
+        	toModify = toModify.replaceAll("  ", ",");
+        	toModify = toModify.replaceAll(", ", ",").replaceAll(" ,", ",");
+        	text.append(toModify);
+            text.append("\n");
+        }
         
         text.append("\n");
-        text.append((showPhaseStats ? "Full " : "Short ") + "Stats: ,");
+        text.append((showPhaseStats ? "Full Stats (includes each phase that had activity)," : "Short Stats (only shows first phase with activity per player per round),"));
+        text.append("\n");
+        text.append("Turn Stats: ,");
         text.append("\n");
 
         text.append("Round,Player Turn,Phase Name,");

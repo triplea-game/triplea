@@ -1522,9 +1522,11 @@ public class UnitAttachment extends DefaultAttachment
 
   public String toString()
   {
+	// should cover all values stored in UnitAttachment
+	// the stats exporter relies on this toString having two spaces after each entry, so do not change this please, except to add new abilities onto the end
+	// TODO: m_requiresUnits.toString() shows up as errors because it is an array list of string arrays
     return
-    "\n " +
-    ((this!=null && this.getAttatchedTo()!=null) ? this.getAttatchedTo() + " with: \n" : " \n") +
+    ((this!=null && this.getAttatchedTo()!=null) ? this.getAttatchedTo().toString().replaceFirst("games.strategy.engine.data.", "") + " with:" : "") +
     "  air:" + m_isAir +
     "  sea:" + m_isSea +
     "  movement:" + m_movement +
@@ -1613,7 +1615,7 @@ public class UnitAttachment extends DefaultAttachment
 		//  stats.append(this.getName() + ": ");
 	  
 	  if (includeAttachedToName && this!=null && this.getAttatchedTo()!=null)
-		  stats.append(this.getAttatchedTo().toString());
+		  stats.append(this.getAttatchedTo().toString().replaceFirst("games.strategy.engine.data.", "") + ", ");
 	  
 	  if (m_isAir)
 		  stats.append("Air unit, ");

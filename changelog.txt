@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Added information on productionRules and UnitTypes to the export stats function. (veqryn)
+
 * Changed some string comparing from == and != to .equals() and !.equals(). (veqryn)
 
 * Created new rules attachment, placementAnySeaZone, that allows placing sea units beside any land territory owned at the beginning of the turn. (veqryn)
