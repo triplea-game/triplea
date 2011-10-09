@@ -230,15 +230,15 @@ public class EndRoundDelegate extends BaseDelegate
 		try {
 			return Integer.parseInt((String) data.getProperties().get(alliance + type));
 		} catch (NumberFormatException e) {
-			if(type == " Total Victory VCs")
+			if(type.equals(" Total Victory VCs"))
 			{
 				return 18;
 			}
-			else if(type == " Honorable Victory VCs")
+			else if(type.equals(" Honorable Victory VCs"))
 			{
 				return 15;
 			}
-			else if(type == " Projection of Power VCs")
+			else if(type.equals(" Projection of Power VCs"))
 			{
 				return 13;
 			}

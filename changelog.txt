@@ -1,4 +1,6 @@
 Changes for 1.3.3.0
+* Changed some string comparing from == and != to .equals() and !.equals(). (veqryn)
+
 * Created new rules attachment, placementAnySeaZone, that allows placing sea units beside any land territory owned at the beginning of the turn. (veqryn)
 
 * Fixing bugs in old victory conditions and moving them to endRoundDelegate, and also fixing bugs surrounding strings in attachment property change triggers. (veqryn)

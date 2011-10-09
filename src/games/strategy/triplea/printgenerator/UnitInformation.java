@@ -20,6 +20,7 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.BattleCalculator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -164,25 +165,30 @@ class UnitInformation
         }
     }
     
-    private int getCostInformation(UnitType type)
-    {
-        List<ProductionRule> productionRules = m_data
-                .getProductionFrontierList()
-                .getProductionFrontier("production").getRules();
-        Iterator<ProductionRule> productionIterator = productionRules
-                .iterator();
-        while (productionIterator.hasNext())
-        {
-            ProductionRule currentRule = productionIterator.next();
-            UnitType currentType = (UnitType) currentRule.getResults().keySet()
-                    .iterator().next();
-            if (currentType.equals(type))
-            {
-                int cost = currentRule.getCosts().getInt(
-                        m_data.getResourceList().getResource(Constants.PUS));
-                return cost;
-            }
-        }
-        return -1;
-    }
+	private int getCostInformation(UnitType type) {
+		if (m_data.getProductionFrontierList().getProductionFrontier("production") != null) {
+			List<ProductionRule> productionRules = m_data
+					.getProductionFrontierList()
+					.getProductionFrontier("production").getRules();
+			Iterator<ProductionRule> productionIterator = productionRules
+					.iterator();
+			while (productionIterator.hasNext()) {
+				ProductionRule currentRule = productionIterator.next();
+				UnitType currentType = (UnitType) currentRule.getResults()
+						.keySet().iterator().next();
+				if (currentType.equals(type)) {
+					int cost = currentRule.getCosts()
+							.getInt(m_data.getResourceList().getResource(
+									Constants.PUS));
+					return cost;
+				}
+			}
+		}
+		else {
+			if (BattleCalculator.getCostsForTUV(m_data.getPlayerList().getPlayers().iterator().next(), m_data).getInt(type) > 0)
+				return BattleCalculator.getCostsForTUV(m_data.getPlayerList().getPlayers().iterator().next(), m_data).getInt(type);
+		}
+
+		return -1;
+	}
 }

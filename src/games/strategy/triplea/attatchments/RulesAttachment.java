@@ -1402,20 +1402,20 @@ public class RulesAttachment extends DefaultAttachment
 			Territory terr = ownedTerrIter.next();
 			Collection<Unit> allUnits = terr.getUnits().getUnits();
 
-			if (exclType == "allied")
+			if (exclType.equals("allied"))
 			{ // any allied units in the territory
 				allUnits.removeAll(Match.getMatches(allUnits, Matches.unitIsOwnedBy(player)));
 				allUnits.retainAll(Match.getMatches(allUnits, Matches.alliedUnit(player, data)));
 			}
-			else if (exclType == "direct")
+			else if (exclType.equals("direct"))
 			{
 				allUnits.removeAll(Match.getMatches(allUnits, Matches.unitIsOwnedBy(player).invert()));
 			}
-			else if (exclType == "enemy")
+			else if (exclType.equals("enemy"))
 			{ // any enemy units in the territory
 				allUnits.retainAll(Match.getMatches(allUnits, Matches.enemyUnit(player, data)));
 			}
-			else if (exclType == "enemy_surface")
+			else if (exclType.equals("enemy_surface"))
 			{ // any enemy units (not trn/sub) in the territory
 				allUnits.retainAll(Match.getMatches(allUnits, new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitIsNotSub, Matches.UnitIsNotTransportButCouldBeCombatTransport)));
 			}
