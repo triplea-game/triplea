@@ -22,8 +22,9 @@ public class TooltipProperties {
 	private static long s_timestamp = 0;
 	private Properties m_properties = new Properties();
 
-	protected TooltipProperties(UIContext uiContext) {
-		ResourceLoader loader = ResourceLoader.getMapresourceLoader(uiContext.getMapDir());
+    protected TooltipProperties()
+    {
+        ResourceLoader loader = ResourceLoader.getMapresourceLoader(UIContext.getMapDir());
         URL url = loader.getResource(PROPERTY_FILE);
         if(url == null) {
         	// no propertyfile found
@@ -37,9 +38,10 @@ public class TooltipProperties {
      }	
 	
 
-	public static TooltipProperties getInstance(UIContext uiContext) {
+    public static TooltipProperties getInstance()
+    {
 		if(s_ttp == null || Calendar.getInstance().getTimeInMillis() > s_timestamp+5000) { // cache properties for 5 seconds
-			s_ttp = new TooltipProperties(uiContext);
+            s_ttp = new TooltipProperties();
 			s_timestamp = Calendar.getInstance().getTimeInMillis();
 		}
 		return s_ttp;

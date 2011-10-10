@@ -48,7 +48,7 @@ public class UIContext
     
     private MapData m_mapData;
     private TileImageFactory m_tileImageFactory = new TileImageFactory();
-    private String m_mapDir;
+    private static String m_mapDir;
     private UnitImageFactory m_unitImageFactory = new UnitImageFactory();
     private MapImage m_mapImage ;
     private FlagIconImageFactory m_flagIconImageFactory = new FlagIconImageFactory();
@@ -214,7 +214,7 @@ public class UIContext
         return m_mapData;
     }
 
-    public String getMapDir()
+    public static String getMapDir()
     {
         return m_mapDir;
     }

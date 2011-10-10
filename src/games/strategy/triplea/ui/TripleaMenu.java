@@ -1236,7 +1236,7 @@ private void addLockMap(JMenu parentMenu)
             mapSubMenu.add(mapMenuItem);
             mapSubMenu.setEnabled(skins.size() > 1);
 
-            if(skins.get(key).equals(m_frame.getUIContext().getMapDir()))
+            if (skins.get(key).equals(UIContext.getMapDir()))
                 mapMenuItem.setSelected(true);
 
             mapMenuItem.addActionListener(new ActionListener()

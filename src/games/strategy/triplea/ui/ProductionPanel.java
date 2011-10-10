@@ -275,7 +275,7 @@ public class ProductionPanel extends JPanel
             JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
             JLabel info=new JLabel(attack+"/"+defense+"/"+movement);
             //info.setToolTipText(" attack:" + attack + " defense :" + defense +" movement:" +movement);
-            String toolTipText = "<html>"+ type.getName() + ": " + type.getTooltip(m_uiContext, m_id, true) + "</html>";
+            String toolTipText = "<html>" + type.getName() + ": " + type.getTooltip(m_id, true) + "</html>";
             info.setToolTipText(toolTipText);
             label.setToolTipText(toolTipText);
             int space = 8;

@@ -91,8 +91,9 @@ public class UnitType extends NamedAttachable implements Serializable
 		return getName().hashCode();
 	}
 	
-	public String getTooltip(UIContext uiContext,PlayerID playerId, boolean useHTML) {
-		if(TooltipProperties.getInstance(uiContext).getToolTip(this, playerId) == null || TooltipProperties.getInstance(uiContext).getToolTip(this, playerId).equals("")) {
+    public String getTooltip(PlayerID playerId, boolean useHTML)
+    {
+        if (TooltipProperties.getInstance().getToolTip(this, playerId) == null || TooltipProperties.getInstance().getToolTip(this, playerId).equals("")) {
 			return UnitAttachment.get(this).toStringShortAndOnlyImportantDifferences(playerId, useHTML, false);
 			/*for(IAttachment at:this.getAttachments().values()) {
 				try {
@@ -104,7 +105,7 @@ public class UnitType extends NamedAttachable implements Serializable
 			}
 			return ""; //Apparently no unitattachments.*/
 		} else {
-			return TooltipProperties.getInstance(uiContext).getToolTip(this, playerId);
+            return TooltipProperties.getInstance().getToolTip(this, playerId);
 		}
 	}
 

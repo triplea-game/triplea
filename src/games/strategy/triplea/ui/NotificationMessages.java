@@ -36,8 +36,9 @@ public class NotificationMessages {
 	private static long s_timestamp = 0;
 	private Properties m_properties = new Properties();
 
-	protected NotificationMessages(UIContext uiContext) {
-		ResourceLoader loader = ResourceLoader.getMapresourceLoader(uiContext.getMapDir());
+    protected NotificationMessages()
+    {
+        ResourceLoader loader = ResourceLoader.getMapresourceLoader(UIContext.getMapDir());
         URL url = loader.getResource(PROPERTY_FILE);
         if(url == null) {
         	// no propertyfile found
@@ -51,9 +52,10 @@ public class NotificationMessages {
      }	
 	
 
-	public static NotificationMessages getInstance(UIContext uiContext) {
+    public static NotificationMessages getInstance()
+    {
 		if(s_nm == null || Calendar.getInstance().getTimeInMillis() > s_timestamp+10000) { // cache properties for 10 seconds
-			s_nm = new NotificationMessages(uiContext);
+            s_nm = new NotificationMessages();
 			s_timestamp = Calendar.getInstance().getTimeInMillis();
 		}
 		return s_nm;
