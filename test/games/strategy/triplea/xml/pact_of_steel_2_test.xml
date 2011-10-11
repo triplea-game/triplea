@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Pact of Steel 2" version="3.2"/>
+        <info name="Pact of Steel 2 Test" version="3.2.1"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
 			<!-- A MOD of original POS by VEQRYN
@@ -4749,7 +4749,7 @@
 				</property>
 
 				<!-- Map Name: also used for map utils when asked (MUST exactly match the folder or zip name of your map (do not include the .zip of course). May point to another map folder if you are making a mod of that map) -->
-				<property name="mapName" value="the_pact_of_steel" editable="false"/>
+				<property name="mapName" value="the_pact_of_steel_test" editable="false"/>
 
 				<!-- notes appear in the notes menu in the main screen, format as html -->
 				<property name="notes">

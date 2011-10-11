@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Pacific" version="1.5"/>
+        <info name="World War II Pacific Test" version="1.5.1"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
         <map>
                 <!-- Territory Definitions -->
@@ -2631,7 +2631,7 @@
 				</property>
 
 				
-                <property name="mapName" value="World War II Pacific" editable="false"/>
+                <property name="mapName" value="World War II Pacific Test" editable="false"/>
                 <property name="notes">
                         <value>
                         <![CDATA[

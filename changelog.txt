@@ -1,4 +1,6 @@
-Changes for 1.3.3.0
+Changes for 1.4
+* Started making tests for all the features added in the last year. Made placeholder tests for everything revision 2800-3000. (veqryn)
+
 * Changing UIContext.m_mapDir static, so that is may be accessed anywhere. (frigoref)
 
 * Added information on productionRules and UnitTypes to the export stats function. (veqryn)
