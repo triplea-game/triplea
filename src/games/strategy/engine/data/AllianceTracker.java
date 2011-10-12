@@ -21,6 +21,7 @@
 package games.strategy.engine.data;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -158,6 +159,17 @@ public class AllianceTracker extends GameDataComponent
 			Collection<String> alliances = m_alliances.get(player);
 			if(alliances.contains(allianceName))
 				rVal.add(player);
+		}
+		return rVal;
+	}
+	
+	public Collection<PlayerID> getPlayersCollectionInAlliance(String allianceName)
+	{
+		HashSet<PlayerID> players = getPlayersInAlliance(allianceName);
+		Collection<PlayerID> rVal = new ArrayList<PlayerID>();
+		for (PlayerID p : players)
+		{
+			rVal.add(p);
 		}
 		return rVal;
 	}

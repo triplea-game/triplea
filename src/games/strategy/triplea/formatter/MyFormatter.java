@@ -29,6 +29,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.util.IntegerMap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -209,6 +210,18 @@ public class MyFormatter
     		toText = attachmentGetName.replaceFirst(Constants.PLAYER_ATTACHMENT_NAME, "Player Properties ");
     	
     	toText = toText.trim();
+    	return toText;
+    }
+    
+    public static String listOfArraysToString(ArrayList<String[]> listOfArrays)
+    {
+    	String toText = "[";
+    	for (String[] s : listOfArrays)
+    	{
+    		toText += Arrays.toString(s);
+    		toText += ",";
+    	}
+		toText += "]";
     	return toText;
     }
 

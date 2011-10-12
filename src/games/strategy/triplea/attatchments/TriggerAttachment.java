@@ -1539,14 +1539,14 @@ public class TriggerAttachment extends DefaultAttachment{
 			aBridge.addChange(change);
 	}
 	
-	public static String triggerVictory(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+	public static Tuple<String,Collection<PlayerID>> triggerVictory(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
 		Set<TriggerAttachment> trigs = getTriggers(player,data,victoryMatch(beforeOrAfter,stepName));
 		for(TriggerAttachment t:trigs) {
 			boolean met = isMet(t, data);
 			if(met) {
 				t.use(aBridge);
 				// no need for history writing as the method calling this has its own history writer
-				return t.getVictory();
+				return new Tuple<String,Collection<PlayerID>>(t.getVictory(),t.getPlayers());
 			}
 		}
 		return null;

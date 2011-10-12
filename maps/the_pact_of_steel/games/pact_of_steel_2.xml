@@ -1527,6 +1527,8 @@
 				</attatchment>
 							
 <!-- Tech Attachments -->
+	<!-- IF you are using custom technologies (generic techs), then ALL players need a tech attachment, even if it is an empty tech attachment, otherwise there will be errors
+	-->
 	<!-- the following options are allowed for "techAttatchment".  These are not required, they only determine if a country starts with a tech or not.  All default to False.
 			techCost							values: the cost of buying tech rolls for this player, defaults to 5
 			superSub
@@ -1646,6 +1648,14 @@
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
                         <option name="mechanizedInfantry" value="false"/>
+                </attatchment>
+
+                <!-- Chinese -->
+                <attatchment name="techAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+                        <option name="improvedArtillerySupport" value="false"/>
+						<!-- even the chinese, who can not roll for tech because they don't have a phase for it, must have a tech attachment because we are using custom techs,
+								so this here is an almost empty tech attachment.  actually, we could fill it with more stuff, that is false or true, but 1 is enough
+								just because something is in this list doesn't mean we can get it.  whether we can get it or not is determined by what is in "playerTech" -->
                 </attatchment>
 				
 				
@@ -3331,12 +3341,15 @@
 					<option name="when" value="after:chineseEndTurn"/>
 					<!-- both "victory" and "notification" will look in the "notifications.properties" in your maps root folder for a string with the value's name, and then it will use whatever is to the right of the = sign.-->
                 	<option name="victory" value="AXIS_VICTORY"/>
+					<!-- "players" when used with "victory" set which players are the winner. this is important for stats generation and for future use -->
+                	<option name="players" value="Germans:Italians:Japanese"/>
                 </attatchment>
 				
                 <attatchment name="triggerAttachmentAlliesVictory1_CapitalControl" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentAlliesVictory1"/>
 					<option name="when" value="after:chineseEndTurn"/>
                 	<option name="victory" value="ALLIES_VICTORY"/>
+                	<option name="players" value="Russians:British:Americans:Chinese"/>
                 </attatchment>
 	
 	<!-- Germans Triggers -->

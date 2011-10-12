@@ -58,6 +58,7 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
@@ -200,13 +201,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 				}
 				
 				// now do victory messages:
-				String victoryMessage = TriggerAttachment.triggerVictory(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
-		    	if (victoryMessage != null)
-		    	{
+				Tuple<String,Collection<PlayerID>> winnersMessage = TriggerAttachment.triggerVictory(aPlayer, aBridge, getGameData(), beforeOrAfter, stepName);
+		    	if (winnersMessage != null && winnersMessage.getFirst() != null)
+		    	{ 
+					String victoryMessage = winnersMessage.getFirst();
 		    		victoryMessage = NotificationMessages.getInstance().getMessage(victoryMessage);
 		    		victoryMessage = "<html>" + victoryMessage + "</html>";
 		    		IDelegate delegateEndRound = getGameData().getDelegateList().getDelegate("endRound");
-		    		((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage,aBridge);
+		    		((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage, winnersMessage.getSecond(), aBridge);
 		    	}
 			}
 		}

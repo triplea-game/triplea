@@ -24,6 +24,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -33,12 +34,14 @@ import games.strategy.engine.stats.IStat;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.PlayerAttachment;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -74,6 +77,7 @@ public class StatPanel extends JPanel
     private final StatTableModel m_dataModel;
     private final TechTableModel m_techModel;
     private IStat[] m_stats = new IStat[] {new PUStat(), new ProductionStat(), new UnitsStat(), new TUVStat()};
+    private IStat[] m_statsExtended = new IStat[] {};
     private GameData m_data;
     private JTable m_statsTable;
     private Image m_statsImage;
@@ -97,6 +101,8 @@ public class StatPanel extends JPanel
             stats.add(new VPStat());
             m_stats = stats.toArray(new IStat[stats.size()]);
         }
+        // fill out the extended stats
+        //fillExtendedStats(data);//moved to only fill out if requested by export stats
         
         setLayout(new GridLayout(2, 1));
 
@@ -139,7 +145,70 @@ public class StatPanel extends JPanel
         // add(scroll, BorderLayout.SOUTH);
         add(scroll);
 
-    }    
+    }
+    
+    private void fillExtendedStats(GameData data)
+    {
+    	// add other resources, other than PUs and tech tokens
+    	List<Resource> resources = data.getResourceList().getResources();
+    	for (Resource r : resources)
+    	{
+    		if (r.getName().equals(Constants.PUS) || r.getName().equals(Constants.TECH_TOKENS))
+    			continue;
+    		else
+    		{
+    			GenericResourceStat resourceStat = new GenericResourceStat();
+    			resourceStat.init(r.getName());
+                List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
+                statsExtended.add(resourceStat);
+                m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
+    		}
+    	}
+    	
+    	// add tech related stuff
+    	if(games.strategy.triplea.Properties.getTechDevelopment(data))
+    	{
+    		// add tech tokens
+            if (data.getResourceList().getResource(Constants.TECH_TOKENS) != null)
+            {
+                List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
+                statsExtended.add(new TechTokenStat());
+                m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
+            }
+            
+            // add number of techs 
+    		if (true)
+    		{
+                List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
+                statsExtended.add(new TechCountStat());
+                m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
+    		}
+            
+            // add individual techs
+            Iterator<TechAdvance> allTechsIter = TechAdvance.getTechAdvances(m_data,null).iterator();
+            while (allTechsIter.hasNext())
+            {
+            	TechAdvance ta = allTechsIter.next();
+    			GenericTechNameStat techNameStat = new GenericTechNameStat();
+    			techNameStat.init(ta);
+                List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
+                statsExtended.add(techNameStat);
+                m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
+            }
+    	}
+    	
+    	// now add actual number of each unit type (holy gumdrops batman, this is going to be long!)
+    	Iterator<UnitType> allUnitTypes = data.getUnitTypeList().iterator();
+    	while (allUnitTypes.hasNext())
+    	{
+    		UnitType ut = allUnitTypes.next();
+			GenericUnitNameStat unitNameStat = new GenericUnitNameStat();
+			unitNameStat.init(ut);
+            List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
+            statsExtended.add(unitNameStat);
+            m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
+    	}
+    }
     
     
     public void setGameData(GameData data)
@@ -205,6 +274,13 @@ public class StatPanel extends JPanel
     public IStat[] getStats()
     {
         return m_stats;
+    }
+
+    public IStat[] getStatsExtended(GameData data)
+    {
+    	if (m_statsExtended.length == 0)
+    		fillExtendedStats(data);
+        return m_statsExtended;
     }
     
  
@@ -742,9 +818,149 @@ class VPStat extends AbstractStat
         PlayerAttachment pa = PlayerAttachment.get(player);
         if(pa != null)
             return Double.parseDouble(pa.getVps());
-        return 0; 
+        return 0;
     }
 }
+
+class TechCountStat extends AbstractStat
+{
+    public String getName()
+    {
+        return "Techs";
+    }
+
+    public double getValue(PlayerID player, GameData data)
+    {
+        int count = 0;
+        TechAttachment ta = TechAttachment.get(player);
+        if (getBool(ta.getHeavyBomber()))
+        	count++;
+        if (getBool(ta.getLongRangeAir()))
+        	count++;
+        if (getBool(ta.getJetPower()))
+        	count++;
+        if (getBool(ta.getRocket()))
+        	count++;
+        if (getBool(ta.getIndustrialTechnology()))
+        	count++;
+        if (getBool(ta.getSuperSub()))
+        	count++;
+        if (getBool(ta.getDestroyerBombard()))
+        	count++;
+        if (getBool(ta.getImprovedArtillerySupport()))
+        	count++;
+        if (getBool(ta.getParatroopers()))
+        	count++;
+        if (getBool(ta.getIncreasedFactoryProduction()))
+        	count++;
+        if (getBool(ta.getWarBonds()))
+        	count++;
+        if (getBool(ta.getMechanizedInfantry()))
+        	count++;
+        if (getBool(ta.getAARadar()))
+        	count++;
+        if (getBool(ta.getShipyards()))
+        	count++;
+        for (boolean value : ta.getGenericTech().values())
+        {
+        	if (value)
+        		count++;
+        }
+        return count;
+    }
+    
+    private static boolean getBool(String aString)
+    {
+        if(aString.equalsIgnoreCase("true") )
+            return true;
+        else if(aString.equalsIgnoreCase("false"))
+            return false;
+        else
+            throw new IllegalArgumentException(aString + " is not a valid boolean");
+    }
+}
+
+class TechTokenStat extends AbstractStat
+{
+    public String getName()
+    {
+        return "Resource: " + "Tech Tokens";
+    }
+
+    public double getValue(PlayerID player, GameData data)
+    {
+        return player.getResources().getQuantity(Constants.TECH_TOKENS);
+    }
+}
+
+class GenericResourceStat extends AbstractStat
+{
+	private String m_name = null;
+	public void init(String name)
+	{
+		m_name = name;
+	}
+	
+    public String getName()
+    {
+        return "Resource: " + m_name;
+    }
+
+    public double getValue(PlayerID player, GameData data)
+    {
+        return player.getResources().getQuantity(m_name);
+    }
+}
+
+class GenericTechNameStat extends AbstractStat
+{
+	private TechAdvance m_ta = null;
+	public void init(TechAdvance ta)
+	{
+		m_ta = ta;
+	}
+	
+    public String getName()
+    {
+        return "TechAdvance: " + m_ta.getName();
+    }
+
+    public double getValue(PlayerID player, GameData data)
+    {
+    	if (m_ta.hasTech(TechAttachment.get(player)))
+    		return 1;
+    	return 0;
+    }
+}
+
+class GenericUnitNameStat extends AbstractStat
+{
+	private UnitType m_ut = null;
+	public void init(UnitType ut)
+	{
+		m_ut = ut;
+	}
+	
+    public String getName()
+    {
+        return "UnitType: " + m_ut.getName();
+    }
+
+    public double getValue(PlayerID player, GameData data)
+    {
+        int rVal = 0; 
+        Match<Unit> ownedBy = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(m_ut));
+        Iterator<Territory> iter = data.getMap().getTerritories().iterator();
+        while (iter.hasNext())
+        {
+            Territory place = (Territory) iter.next();
+            rVal += place.getUnits().countMatches(ownedBy);
+        }
+        return rVal;
+    }
+}
+
+
 
 class PlayerOrderComparator implements Comparator<PlayerID>
 {

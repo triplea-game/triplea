@@ -36,6 +36,7 @@ import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.engine.stats.IStat;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.printgenerator.SetupFrame;
@@ -882,6 +883,8 @@ private void addLockMap(JMenu parentMenu)
             getData().releaseReadLock();
         }
         IStat[] stats = statPanel.getStats();
+        // extended stats covers stuff that doesn't show up in the game stats menu bar, like custom resources or tech tokens or # techs, etc.
+        IStat[] statsExtended = statPanel.getStatsExtended(getData());
 
         String[] alliances = (String[]) statPanel.getAlliances().toArray(new String[statPanel.getAlliances().size()]);
         PlayerID[] players = (PlayerID[]) statPanel.getPlayers().toArray(new PlayerID[statPanel.getPlayers().size()]);
@@ -950,6 +953,20 @@ private void addLockMap(JMenu parentMenu)
         }
 
         text.append("\n");
+        text.append("Winners: ,");
+        EndRoundDelegate delegateEndRound = (EndRoundDelegate) getData().getDelegateList().getDelegate("endRound");
+        if (delegateEndRound != null && delegateEndRound.getWinners() != null)
+        {
+        	for (PlayerID p : delegateEndRound.getWinners())
+        	{
+        		text.append(p.getName() + ",");
+        	}
+        }
+        else
+        	text.append("none yet; game not over,");
+        text.append("\n");
+
+        text.append("\n");
         text.append("Resource Chart: ,");
         text.append("\n");
         Iterator<Resource> resourceIterator = getData().getResourceList().getResources().iterator();
@@ -959,35 +976,40 @@ private void addLockMap(JMenu parentMenu)
             text.append("\n");
         }
 
-        text.append("\n");
-        text.append("Production Rules: ,");
-        text.append("\n");
-        text.append("Name,Result,Quantity,Cost,Resource,\n");
-        Iterator<ProductionRule> purchaseOptionsIterator = getData().getProductionRuleList().getProductionRules().iterator();
-        while(purchaseOptionsIterator.hasNext())
+        // if short, we won't both showing production and unit info
+        if (showPhaseStats)
         {
-        	ProductionRule pr = purchaseOptionsIterator.next();
-        	text.append(pr.getName() + ","
-        			+ pr.getResults().keySet().iterator().next().getName() + ","
-        			+ pr.getResults().getInt(pr.getResults().keySet().iterator().next()) + ","
-        			+ pr.getCosts().getInt(pr.getCosts().keySet().iterator().next()) + ","
-        			+ pr.getCosts().keySet().iterator().next().getName() + ",");
-            text.append("\n");
+	        text.append("\n");
+	        text.append("Production Rules: ,");
+	        text.append("\n");
+	        text.append("Name,Result,Quantity,Cost,Resource,\n");
+	        Iterator<ProductionRule> purchaseOptionsIterator = getData().getProductionRuleList().getProductionRules().iterator();
+	        while(purchaseOptionsIterator.hasNext())
+	        {
+	        	ProductionRule pr = purchaseOptionsIterator.next();
+	        	text.append(pr.getName() + ","
+	        			+ pr.getResults().keySet().iterator().next().getName() + ","
+	        			+ pr.getResults().getInt(pr.getResults().keySet().iterator().next()) + ","
+	        			+ pr.getCosts().getInt(pr.getCosts().keySet().iterator().next()) + ","
+	        			+ pr.getCosts().keySet().iterator().next().getName() + ",");
+	            text.append("\n");
+	        }
+	
+	        text.append("\n");
+	        text.append("Unit Types: ,");
+	        text.append("\n");
+	        text.append("Name,Listed Abilities\n");
+	        Iterator<UnitType> allUnitsIterator = getData().getUnitTypeList().iterator();
+	        while(allUnitsIterator.hasNext())
+	        {
+	        	String toModify = UnitAttachment.get(allUnitsIterator.next()).toString().replaceFirst("UnitType called ", "").replaceFirst(" with:", "").replaceAll("games.strategy.engine.data.", "").replaceAll("\n", ";").replaceAll(",", ";");
+	        	toModify = toModify.replaceAll("  ", ",");
+	        	toModify = toModify.replaceAll(", ", ",").replaceAll(" ,", ",");
+	        	text.append(toModify);
+	            text.append("\n");
+	        }
         }
-
-        text.append("\n");
-        text.append("Unit Types: ,");
-        text.append("\n");
-        text.append("Name,Listed Abilities\n");
-        Iterator<UnitType> allUnitsIterator = getData().getUnitTypeList().iterator();
-        while(allUnitsIterator.hasNext())
-        {
-        	String toModify = UnitAttachment.get(allUnitsIterator.next()).toString().replaceFirst("UnitType called ", "").replaceFirst(" with:", "").replaceAll("games.strategy.engine.data.", "").replaceAll("\n", ";").replaceAll(",", ";");
-        	toModify = toModify.replaceAll("  ", ",");
-        	toModify = toModify.replaceAll(", ", ",").replaceAll(" ,", ",");
-        	text.append(toModify);
-            text.append("\n");
-        }
+        
         
         text.append("\n");
         text.append((showPhaseStats ? "Full Stats (includes each phase that had activity)," : "Short Stats (only shows first phase with activity per player per round),"));
@@ -1010,6 +1032,24 @@ private void addLockMap(JMenu parentMenu)
             for (int j = 0; j < alliances.length; j++)
             {
                 text.append(stats[i].getName()).append(" ");
+                text.append(alliances[j]);
+                text.append(",");
+            }
+        }
+
+        for(int i = 0; i < statsExtended.length; i++)
+        {
+            for (int j = 0; j < players.length; j++)
+            {
+                text.append(statsExtended[i].getName()).append(" ");
+                text.append(players[j].getName());
+                text.append(",");
+
+            }
+
+            for (int j = 0; j < alliances.length; j++)
+            {
+                text.append(statsExtended[i].getName()).append(" ");
                 text.append(alliances[j]);
                 text.append(",");
             }
@@ -1072,7 +1112,7 @@ private void addLockMap(JMenu parentMenu)
             else if (stepName.endsWith("BidPlace"))
             	stepName = "BidPlace";
             else if (stepName.endsWith("Place"))
-            		stepName = "Place";
+            	stepName = "Place";
             else if (stepName.endsWith("Politics"))
             	stepName = "Politics";
             else if (stepName.endsWith("EndTurn"))
@@ -1084,22 +1124,32 @@ private void addLockMap(JMenu parentMenu)
 
             for(int i = 0; i < stats.length; i++)
             {
-
-
                 for (int j = 0; j < players.length; j++)
                 {
                     text.append(stats[i].getFormatter().format(stats[i].getValue(players[j], clone)));
                     text.append(",");
 
                 }
-
                 for (int j = 0; j < alliances.length; j++)
                 {
                     text.append(stats[i].getFormatter().format(stats[i].getValue(alliances[j], clone)));
                     text.append(",");
                 }
+            }
 
+            for(int i = 0; i < statsExtended.length; i++)
+            {
+                for (int j = 0; j < players.length; j++)
+                {
+                    text.append(statsExtended[i].getFormatter().format(statsExtended[i].getValue(players[j], clone)));
+                    text.append(",");
 
+                }
+                for (int j = 0; j < alliances.length; j++)
+                {
+                    text.append(statsExtended[i].getFormatter().format(statsExtended[i].getValue(alliances[j], clone)));
+                    text.append(",");
+                }
             }
             text.append("\n");
         }

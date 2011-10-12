@@ -32,8 +32,10 @@ import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
@@ -50,6 +52,7 @@ public class EndRoundDelegate extends BaseDelegate
 {
 
 	private boolean m_gameOver = false;
+	private Collection<PlayerID> m_winners = new ArrayList<PlayerID>();
 
 	/** Creates a new instance of EndRoundDelegate */
     public EndRoundDelegate()
@@ -78,7 +81,9 @@ public class EndRoundDelegate extends BaseDelegate
             {
                 victoryMessage = "Axis achieve VP victory";
                 aBridge.getHistoryWriter().startEvent(victoryMessage);
-                signalGameOver(victoryMessage,aBridge);
+                Collection<PlayerID> winners = gameData.getAllianceTracker().getPlayersCollectionInAlliance(
+                			gameData.getAllianceTracker().getAlliancesPlayerIsIn(japanese).iterator().next());
+                signalGameOver(victoryMessage, winners, aBridge);
             }
         }
 
@@ -87,7 +92,7 @@ public class EndRoundDelegate extends BaseDelegate
 		{
         	victoryMessage = " achieve TOTAL VICTORY with ";
 		    checkVictoryCities(aBridge, m_data, victoryMessage, " Total Victory VCs");            
-		} 
+		}
 
         if(isHonorableSurrender())
 		{
@@ -124,8 +129,9 @@ public class EndRoundDelegate extends BaseDelegate
 				    {
 				    	victoryMessage = allianceName + " achieve economic victory";
 				    	aBridge.getHistoryWriter().startEvent(victoryMessage);
+		                Collection<PlayerID> winners = gameData.getAllianceTracker().getPlayersCollectionInAlliance(allianceName);
 				        //Added this to end the game on victory conditions
-				        signalGameOver(victoryMessage,aBridge);
+				        signalGameOver(victoryMessage, winners, aBridge);
 				    }
 				}
 			}
@@ -138,12 +144,13 @@ public class EndRoundDelegate extends BaseDelegate
         	Collection<PlayerID> playerList = m_data.getPlayerList().getPlayers();
         	for (PlayerID p : playerList)
         	{
-            	String vMessage = TriggerAttachment.triggerVictory(p, aBridge, m_data, null, null);
-            	if (vMessage != null)
-            	{
-                	vMessage = NotificationMessages.getInstance().getMessage(victoryMessage);
-            		vMessage = "<html>" + vMessage + "</html>";
-            		signalGameOver(vMessage,aBridge);
+				Tuple<String,Collection<PlayerID>> winnersMessage = TriggerAttachment.triggerVictory(p, aBridge, m_data, null, null);
+            	if (winnersMessage != null && winnersMessage.getFirst() != null)
+            	{ 
+    				victoryMessage = winnersMessage.getFirst();
+            		victoryMessage = NotificationMessages.getInstance().getMessage(victoryMessage);
+            		victoryMessage = "<html>" + victoryMessage + "</html>";
+            		signalGameOver(victoryMessage, winnersMessage.getSecond(), aBridge);
             	}
         	}
         }
@@ -181,38 +188,41 @@ public class EndRoundDelegate extends BaseDelegate
         if (germany && japan && count >=2)
         {
         	aBridge.getHistoryWriter().startEvent("Axis" + victoryMessage);
-            signalGameOver(victoryMessage,aBridge);
+            Collection<PlayerID> winners = gameData.getAllianceTracker().getPlayersCollectionInAlliance("Axis");
+            signalGameOver(victoryMessage, winners, aBridge);
         }
 
         if (russia && !germany && britain && !japan && america)
         {
             aBridge.getHistoryWriter().startEvent("Allies" + victoryMessage);
-            signalGameOver(victoryMessage,aBridge);
+            Collection<PlayerID> winners = gameData.getAllianceTracker().getPlayersCollectionInAlliance("Allies");
+            signalGameOver(victoryMessage, winners, aBridge);
         }
 	}
 
 
-	private void checkVictoryCities(IDelegateBridge aBridge, GameData m_data, String victoryMessage, String victoryType) 
+	private void checkVictoryCities(IDelegateBridge aBridge, GameData data, String victoryMessage, String victoryType) 
 	{
-		Iterator<String> allianceIter = m_data.getAllianceTracker().getAlliances().iterator();
+		Iterator<String> allianceIter = data.getAllianceTracker().getAlliances().iterator();
 		String allianceName = null;
 		while (allianceIter.hasNext())
 		{
 			allianceName = (String) allianceIter.next();
 			
-			int vcAmount = getVCAmount(m_data, allianceName, victoryType);
+			int vcAmount = getVCAmount(data, allianceName, victoryType);
 			
-			Set<PlayerID> teamMembers = m_data.getAllianceTracker().getPlayersInAlliance(allianceName);
+			Set<PlayerID> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
 			
 			Iterator<PlayerID> teamIter = teamMembers.iterator();
-			int teamVCs = Match.countMatches(m_data.getMap().getTerritories(), 
+			int teamVCs = Match.countMatches(data.getMap().getTerritories(), 
 			        new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity,Matches.isTerritoryAllied(teamIter.next(), m_data)));
 
 			if(teamVCs >= vcAmount)
 			{				
 				aBridge.getHistoryWriter().startEvent(allianceName + victoryMessage + vcAmount + " Victory Cities!");
+	            Collection<PlayerID> winners = data.getAllianceTracker().getPlayersCollectionInAlliance(allianceName);
 				//Added this to end the game on victory conditions
-				signalGameOver(allianceName + victoryMessage + vcAmount + " Victory Cities!",aBridge);
+				signalGameOver(allianceName + victoryMessage + vcAmount + " Victory Cities!", winners, aBridge);
 			}
 		}
 	}
@@ -253,18 +263,30 @@ public class EndRoundDelegate extends BaseDelegate
      * 
      * @param status the "game over" text to be displayed to each user.
      */
-    public void signalGameOver(String status, IDelegateBridge a_bridge)
+    public void signalGameOver(String status, Collection<PlayerID> winners, IDelegateBridge a_bridge)
     {
         // If the game is over, we need to be able to alert all UIs to that fact.
         //    The display object can send a message to all UIs.
         if (!m_gameOver)
         {
             m_gameOver = true;
+            m_winners = winners;
             // Make sure the user really wants to leave the game.
             int rVal =  EventThreadJOptionPane.showConfirmDialog(null, status +"\nDo you want to continue?", "Continue" , JOptionPane.YES_NO_OPTION);
             if(rVal != JOptionPane.OK_OPTION)
                 a_bridge.stopGameSequence();
         }
+    }
+    
+    /**
+     * if null, the game is not over yet
+     * @return
+     */
+    public Collection<PlayerID> getWinners()
+    {
+    	if (!m_gameOver)
+    		return null;
+    	return m_winners;
     }
     
     private boolean isWW2V2()

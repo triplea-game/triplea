@@ -1,4 +1,8 @@
 Changes for 1.4
+* Updated export stats to display far more information, about actual techs gained, and number of each unit type for each player, etc. (veqryn)
+
+* Updated game data to record the playerIDs of whoever wins the game. (veqryn)
+
 * Started making tests for all the features added in the last year. Made placeholder tests for everything revision 2800-3000. (veqryn)
 
 * Changing UIContext.m_mapDir static, so that is may be accessed anywhere. (frigoref)

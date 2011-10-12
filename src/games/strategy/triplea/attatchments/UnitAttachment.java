@@ -32,6 +32,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -1583,7 +1584,7 @@ public class UnitAttachment extends DefaultAttachment
     "  maxDamage:" + m_maxDamage +
 
     "  unitPlacementRestrictions:" + (m_unitPlacementRestrictions!=null ? Arrays.toString(m_unitPlacementRestrictions) : "null") +
-    "  requiresUnits:" + m_requiresUnits.toString() +
+    "  requiresUnits:" + MyFormatter.listOfArraysToString(m_requiresUnits) +
     "  consumesUnits:" + (m_consumesUnits.size()==0 ? "empty" : m_consumesUnits.toString()) +
     "  canOnlyBePlacedInTerritoryValuedAtX:" + m_canOnlyBePlacedInTerritoryValuedAtX +
     "  maxBuiltPerPlayer:" + m_maxBuiltPerPlayer + 
