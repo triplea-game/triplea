@@ -50,9 +50,9 @@ public class GivePUsDelegate extends BaseDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
-	public void start(IDelegateBridge aBridge, GameData gameData)
+    public void start(IDelegateBridge aBridge)
 	{
-		super.start(aBridge,gameData);
+        super.start(aBridge);
 		
 		if(m_gameOver)
 			return;
@@ -64,17 +64,17 @@ public class GivePUsDelegate extends BaseDelegate
 	
 	private boolean isWW2V2()
     {
-    	return games.strategy.triplea.Properties.getWW2V2(m_data);
+        return games.strategy.triplea.Properties.getWW2V2(getData());
     }
 	
 	public int getProduction(PlayerID id)
 	{
 		int sum = 0;
 
-		Iterator<Territory> territories = m_data.getMap().iterator();
+        Iterator<Territory> territories = getData().getMap().iterator();
 		while(territories.hasNext())
 		{
-			Territory current = (Territory) territories.next();
+            Territory current = territories.next();
 			if(current.getOwner().equals(id))
 			{
 				TerritoryAttachment ta = TerritoryAttachment.get(current);

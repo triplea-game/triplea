@@ -22,6 +22,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -49,12 +50,12 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge, GameData gameData)
+    public void start(IDelegateBridge bridge)
     {
-        super.start(bridge, gameData);
+        super.start(bridge);
 
         if (matches==null)
-            matches = new Matches(gameData);
+            matches = new Matches(getData());
         
         IKingsTableDisplay display = (IKingsTableDisplay) bridge.getDisplayChannelBroadcaster();
         display.setStatus(m_player.getName() + "'s turn");
@@ -96,21 +97,22 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
             // Get the coordinates where the move ended
             int endX = end.getX();
             int endY = end.getY();
-
+            
+            GameMap map = getData().getMap();
             // Look above end for a potential capture
             // This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
             { 
-                Territory possibleCapture = m_data.getMap().getTerritoryFromCoordinates(endX,endY-1);
+                Territory possibleCapture = map.getTerritoryFromCoordinates(endX, endY - 1);
                 if (matches.eligibleForCapture(possibleCapture, m_player))
                 {   
                     // Get the territory to the left of the possible capture
-                    Territory above = m_data.getMap().getTerritoryFromCoordinates(endX,endY-2);
+                    Territory above = map.getTerritoryFromCoordinates(endX, endY - 2);
                     
                     // Can the king be captured?
                     if (matches.kingInSquare(possibleCapture))
                     {   
-                        Territory left = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY-1);
-                        Territory right = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY-1);
+                        Territory left = map.getTerritoryFromCoordinates(endX - 1, endY - 1);
+                        Territory right = map.getTerritoryFromCoordinates(endX + 1, endY - 1);
 
                         if (matches.eligibleParticipantsInKingCapture(m_player, above, left, right))
                             captured.add(possibleCapture);
@@ -131,17 +133,17 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
             // Look below end for a potential capture
             // This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
             { 
-                Territory possibleCapture = m_data.getMap().getTerritoryFromCoordinates(endX,endY+1);
+                Territory possibleCapture = map.getTerritoryFromCoordinates(endX, endY + 1);
                 if (matches.eligibleForCapture(possibleCapture, m_player))
                 {   
                     // Get the territory to the left of the possible capture
-                    Territory below = m_data.getMap().getTerritoryFromCoordinates(endX,endY+2);
+                    Territory below = map.getTerritoryFromCoordinates(endX, endY + 2);
                     
                     // Can the king be captured?
                     if (matches.kingInSquare(possibleCapture))
                     {   
-                        Territory left = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY+1);
-                        Territory right = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY+1);
+                        Territory left = map.getTerritoryFromCoordinates(endX - 1, endY + 1);
+                        Territory right = map.getTerritoryFromCoordinates(endX + 1, endY + 1);
 
                         if (matches.eligibleParticipantsInKingCapture(m_player, below, left, right))
                             captured.add(possibleCapture);
@@ -162,17 +164,17 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
             // Look left end for a potential capture
             // This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces            
             { 
-                Territory possibleCapture = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY);
+                Territory possibleCapture = map.getTerritoryFromCoordinates(endX - 1, endY);
                 if (matches.eligibleForCapture(possibleCapture, m_player))
                 {   
                     // Get the territory to the left of the possible capture
-                    Territory left = m_data.getMap().getTerritoryFromCoordinates(endX-2,endY);
+                    Territory left = map.getTerritoryFromCoordinates(endX - 2, endY);
                     
                     // Can the king be captured?
                     if (matches.kingInSquare(possibleCapture))
                     {   
-                        Territory above = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY-1);
-                        Territory below = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY+1);
+                        Territory above = map.getTerritoryFromCoordinates(endX - 1, endY - 1);
+                        Territory below = map.getTerritoryFromCoordinates(endX - 1, endY + 1);
 
                         if (matches.eligibleParticipantsInKingCapture(m_player, left, above, below))
                             captured.add(possibleCapture);
@@ -193,17 +195,17 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
             // Look right end for a potential capture
             // This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
             { 
-                Territory possibleCapture = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY);
+                Territory possibleCapture = map.getTerritoryFromCoordinates(endX + 1, endY);
                 if (matches.eligibleForCapture(possibleCapture, m_player))
                 {   
                     // Get the territory to the left of the possible capture
-                    Territory right = m_data.getMap().getTerritoryFromCoordinates(endX+2,endY);
+                    Territory right = map.getTerritoryFromCoordinates(endX + 2, endY);
                     
                     // Can the king be captured?
                     if (matches.kingInSquare(possibleCapture))
                     {   
-                        Territory above = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY-1);
-                        Territory below = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY+1);
+                        Territory above = map.getTerritoryFromCoordinates(endX + 1, endY - 1);
+                        Territory below = map.getTerritoryFromCoordinates(endX + 1, endY + 1);
 
                         if (matches.eligibleParticipantsInKingCapture(m_player, right, above, below))
                             captured.add(possibleCapture);
@@ -249,6 +251,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
         int startY = start.getY();
         int endY = end.getY();
         
+        GameMap map = getData().getMap();
         // Pieces can only move in a straight line
         //   and the intervening spaces must be empty
         if (startX == endX)
@@ -266,7 +269,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 
             for (int y=y1; y<=y2; y++) 
             {
-                Territory at = m_data.getMap().getTerritoryFromCoordinates(startX,y);
+                Territory at = map.getTerritoryFromCoordinates(startX, y);
                 if (at.getUnits().size() > 0)
                     return "Pieces can only move through empty spaces.";
             }
@@ -286,7 +289,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
             }
             
             for (int x=x1; x<=x2; x++) {
-                Territory at = m_data.getMap().getTerritoryFromCoordinates(x,startY);
+                    Territory at = map.getTerritoryFromCoordinates(x, startY);
                 if (at.getUnits().size() > 0)
                     return "Intervening square (" + x + "," + startY + ") is not empty.";
             }

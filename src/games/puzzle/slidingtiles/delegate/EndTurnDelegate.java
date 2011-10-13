@@ -38,11 +38,11 @@ public class EndTurnDelegate extends BaseDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge, GameData gameData)
+    public void start(IDelegateBridge bridge)
     {   
-        super.start(bridge, gameData);
+        super.start(bridge);
         
-        if (gameOver(gameData.getMap()))
+        if (gameOver(getData().getMap()))
         {
             signalGameOver("Board solved!");
             

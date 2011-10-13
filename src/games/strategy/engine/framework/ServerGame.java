@@ -601,7 +601,7 @@ public class ServerGame implements IGame
             m_delegateExecutionManager.enterDelegateExecution();
             try
             {
-                delegate.start(bridge, m_data);
+                delegate.start(bridge);
             }
             finally
             {
@@ -644,7 +644,7 @@ public class ServerGame implements IGame
         m_delegateExecutionManager.enterDelegateExecution();
         try
         {
-            getCurrentStep().getDelegate().start(bridge, m_data);
+            getCurrentStep().getDelegate().start(bridge);
         }
         finally
         {

@@ -41,10 +41,10 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge, GameData gameData)
+    public void start(IDelegateBridge bridge)
     {
-        super.start(bridge, gameData);
-        map = gameData.getMap();
+        super.start(bridge);
+        map = getData().getMap();
     }
 
     /**

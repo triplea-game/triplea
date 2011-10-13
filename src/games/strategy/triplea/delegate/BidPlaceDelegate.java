@@ -118,8 +118,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
                         Matches.UnitIsFactory).size();
 
                 //max factories allowed
-                int maxFactory = games.strategy.triplea.Properties
-                        .getFactoriesPerCountry(m_data);
+                int maxFactory = games.strategy.triplea.Properties.getFactoriesPerCountry(getData());
 
                 placeableUnits.addAll(Match.getNMatches(units, maxFactory
                         - factoryCount, Matches.UnitIsFactory));

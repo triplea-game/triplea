@@ -58,7 +58,7 @@ public class InitializationDelegate extends BaseDelegate
      */
     public void start(IDelegateBridge aBridge, GameData gameData)
     {
-        super.start(aBridge, gameData);
+        super.start(aBridge);
         init(gameData, aBridge);
     }
 

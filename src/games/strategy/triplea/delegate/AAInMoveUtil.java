@@ -31,7 +31,6 @@ import java.util.*;
 class AAInMoveUtil implements Serializable
 {
 	private transient boolean m_nonCombat;
-    private transient GameData m_data;
     private transient IDelegateBridge m_bridge;
     private transient PlayerID m_player;
     private Collection<Unit> m_casualties;
@@ -43,24 +42,28 @@ class AAInMoveUtil implements Serializable
     {
     }
     
-    public AAInMoveUtil initialize(IDelegateBridge bridge, GameData data)
+    public AAInMoveUtil initialize(IDelegateBridge bridge)
     {    
         m_nonCombat = MoveDelegate.isNonCombat(bridge);
-        m_data = data;
         m_bridge = bridge;
         m_player = bridge.getPlayerID();        
         return this;
 
     }
     
+    private GameData getData()
+    {
+        return m_bridge.getData();
+    }
+
     private boolean isAlwaysONAAEnabled()
     {
-    	return games.strategy.triplea.Properties.getAlways_On_AA(m_data);
+        return games.strategy.triplea.Properties.getAlways_On_AA(getData());
     }
 
     private boolean isAATerritoryRestricted()
     {
-    	return games.strategy.triplea.Properties.getAATerritoryRestricted(m_data);
+        return games.strategy.triplea.Properties.getAATerritoryRestricted(getData());
     }
     
     private ITripleaPlayer getRemotePlayer(PlayerID id)
@@ -81,7 +84,7 @@ class AAInMoveUtil implements Serializable
         if(m_executionStack.isEmpty())
             populateExecutionStack(route, units, decreasingMovement, currentMove);
 
-        m_executionStack.execute(m_bridge, m_data);
+        m_executionStack.execute(m_bridge);
         return m_casualties;
 
     }
@@ -100,12 +103,11 @@ class AAInMoveUtil implements Serializable
         
         while (iter.hasNext())
         {
-            final Territory location = (Territory) iter.next();
+            final Territory location = iter.next();
             
             executables.add(new IExecutable()
             {
-                public void execute(ExecutionStack stack, IDelegateBridge bridge,
-                        GameData data)
+                public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     fireAA(location, targets, currentMove);
                 }
@@ -143,7 +145,7 @@ class AAInMoveUtil implements Serializable
         //and handled else where in this tangled mess
         CompositeMatch<Unit> hasAA = new CompositeMatchAnd<Unit>();
         hasAA.add(Matches.UnitIsAAforCombat);
-        hasAA.add(Matches.enemyUnit(ally, m_data));
+        hasAA.add(Matches.enemyUnit(ally, getData()));
 
         List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
 
@@ -176,7 +178,7 @@ class AAInMoveUtil implements Serializable
     
     private BattleTracker getBattleTracker()
     {
-        return DelegateFinder.battleDelegate(m_data).getBattleTracker();
+        return DelegateFinder.battleDelegate(getData()).getBattleTracker();
     }
     
     /**
@@ -199,10 +201,9 @@ class AAInMoveUtil implements Serializable
         IExecutable rollDice = new IExecutable()
         {
         
-            public void execute(ExecutionStack stack, IDelegateBridge bridge,
-                    GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
-            	dice[0] = DiceRoll.rollAA(units, m_bridge, territory, m_data, Matches.UnitIsAAforCombat);
+                dice[0] = DiceRoll.rollAA(units, m_bridge, territory, getData(), Matches.UnitIsAAforCombat);
             }
         };
         
@@ -210,8 +211,7 @@ class AAInMoveUtil implements Serializable
         IExecutable selectCasualties = new IExecutable()
         {
         
-            public void execute(ExecutionStack stack, IDelegateBridge bridge,
-                    GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 int hitCount = dice[0].getHits();
                 
@@ -238,7 +238,7 @@ class AAInMoveUtil implements Serializable
     {
         Collection<Unit> casualties = null;
         
-        casualties = BattleCalculator.getAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, m_data, battleID, territory, Matches.UnitIsAAforCombat);
+        casualties = BattleCalculator.getAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, getData(), battleID, territory, Matches.UnitIsAAforCombat);
        
         getRemotePlayer().reportMessage(casualties.size() + " AA hits in " + territory.getName());
         

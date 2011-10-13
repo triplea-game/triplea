@@ -101,7 +101,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
     {
         m_firstRun = false;
         //check every territory
-        Iterator<Territory> allTerritories = m_data.getMap().getTerritories().iterator();
+        Iterator<Territory> allTerritories = getData().getMap().getTerritories().iterator();
         while (allTerritories.hasNext())
         {
             Territory current = allTerritories.next();
@@ -168,47 +168,47 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge aBridge, GameData gameData)
+    public void start(IDelegateBridge aBridge)
     {
         m_nonCombat = isNonCombat(aBridge);
 
-        m_bridge = new TripleADelegateBridge(aBridge, gameData);
+        m_bridge = new TripleADelegateBridge(aBridge);
         PlayerID player = aBridge.getPlayerID();
 
-        m_data = gameData;
+        GameData data = getData();
         m_player = player;
 
         if (m_firstRun)
             firstRun();
 
         // territory property changes triggered at beginning of combat move // TODO move to new delegate start of turn
-        if(!m_nonCombat && games.strategy.triplea.Properties.getTriggers(m_data))
+        if (!m_nonCombat && games.strategy.triplea.Properties.getTriggers(data))
         {
-        	TriggerAttachment.triggerPlayerPropertyChange(player, aBridge, gameData, null, null);
-        	TriggerAttachment.triggerRelationshipTypePropertyChange(player, aBridge, gameData, null, null);
-        	TriggerAttachment.triggerTerritoryPropertyChange(player, aBridge, gameData, null, null);
-        	TriggerAttachment.triggerTerritoryEffectPropertyChange(player, aBridge, gameData, null, null);
+            TriggerAttachment.triggerPlayerPropertyChange(player, aBridge, null, null);
+            TriggerAttachment.triggerRelationshipTypePropertyChange(player, aBridge, null, null);
+            TriggerAttachment.triggerTerritoryPropertyChange(player, aBridge, null, null);
+            TriggerAttachment.triggerTerritoryEffectPropertyChange(player, aBridge, null, null);
         }
 
         // repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at beginning of combat move)
-        if(!m_nonCombat && games.strategy.triplea.Properties.getBattleships_Repair_At_Beginning_Of_Round(m_data))
-        	MoveDelegate.repairBattleShips(m_bridge, m_data, m_player, true);
+        if (!m_nonCombat && games.strategy.triplea.Properties.getBattleships_Repair_At_Beginning_Of_Round(data))
+            MoveDelegate.repairBattleShips(m_bridge, data, m_player, true);
 
         // give movement to units which begin the turn in the same territory as units with giveMovement (like air and naval bases)
-        if (!m_nonCombat && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(m_data))
-        	giveBonusMovement(m_bridge, m_data, m_player);
+        if (!m_nonCombat && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(data))
+            giveBonusMovement(m_bridge, data, m_player);
         
         // take away all movement from allied fighters sitting on damaged carriers
         if (!m_nonCombat)
-        	removeMovementFromAirOnDamagedAlliedCarriers(m_bridge, m_data, m_player);
+            removeMovementFromAirOnDamagedAlliedCarriers(m_bridge, data, m_player);
 
         // placing triggered units at beginning of combat move.
-        if(!m_nonCombat && games.strategy.triplea.Properties.getTriggers(m_data))
-        	TriggerAttachment.triggerUnitPlacement(player,m_bridge,gameData, null, null);
+        if (!m_nonCombat && games.strategy.triplea.Properties.getTriggers(data))
+            TriggerAttachment.triggerUnitPlacement(player, m_bridge, null, null);
 
         if(m_tempMovePerformer != null)
         {
-            m_tempMovePerformer.initialize(this, m_data, aBridge);
+            m_tempMovePerformer.initialize(this, data, aBridge);
             m_tempMovePerformer.resume();
             m_tempMovePerformer = null;
         }
@@ -371,7 +371,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
         if (!moveToUndo.getcanUndo())
             return moveToUndo.getReasonCantUndo();
 
-        moveToUndo.undo(m_data,m_bridge);
+        moveToUndo.undo(getData(), m_bridge);
         m_movesToUndo.remove(moveIndex);
         updateUndoableMoveIndexes();
 
@@ -394,13 +394,14 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 
     public String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded)
     {
+        GameData data = getData();
         MoveValidationResult result = MoveValidator.validateMove(units,
                                                                  route,
  m_player,
                                                                  transportsThatCanBeLoaded,
                                                                  m_nonCombat,
                                                                  m_movesToUndo,
-                                                                 m_data);
+ data);
 
         StringBuilder errorMsg = new StringBuilder(100);
 
@@ -415,7 +416,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
             return errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString();
 
         boolean isKamikaze = false;
-        boolean getKamikazeAir = games.strategy.triplea.Properties.getKamikaze_Airplanes(m_data);
+        boolean getKamikazeAir = games.strategy.triplea.Properties.getKamikaze_Airplanes(data);
         Collection<Unit> kamikazeUnits = new ArrayList<Unit>();
         //boolean isHariKari = false;
         // confirm kamikaze moves, and remove them from unresolved units
@@ -456,7 +457,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 
         // allow user to cancel move if aa guns will fire
         AAInMoveUtil aaInMoveUtil = new AAInMoveUtil();
-        aaInMoveUtil.initialize(m_bridge, m_data);
+        aaInMoveUtil.initialize(m_bridge);
         Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAAWillFire(route, units);
         if(!aaFiringTerritores.isEmpty())
         {
@@ -465,7 +466,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
         }
 
         //do the move
-        UndoableMove currentMove = new UndoableMove(m_data, units, route);
+        UndoableMove currentMove = new UndoableMove(data, units, route);
 
         String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName();
         m_bridge.getHistoryWriter().startEvent(transcriptText);
@@ -483,7 +484,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 
 
         m_tempMovePerformer = new MovePerformer();
-        m_tempMovePerformer.initialize(this, m_data, m_bridge);
+        m_tempMovePerformer.initialize(this, data, m_bridge);
         m_tempMovePerformer.moveUnits(units, route, m_player, transportsThatCanBeLoaded, currentMove);
         m_tempMovePerformer = null;
 
@@ -504,7 +505,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 
     private boolean isWW2V2()
     {
-    	return games.strategy.triplea.Properties.getWW2V2(m_data);
+        return games.strategy.triplea.Properties.getWW2V2(getData());
     }
 
     /*private boolean isPreviousUnitsFight()
@@ -514,7 +515,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 
     private boolean isWW2V3()
     {
-        return games.strategy.triplea.Properties.getWW2V3(m_data);
+        return games.strategy.triplea.Properties.getWW2V3(getData());
     }
 
     private ITripleaPlayer getRemotePlayer()
@@ -563,7 +564,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
             if (TechTracker.hasRocket(m_bridge.getPlayerID()))
             {
                 RocketsFireHelper helper = new RocketsFireHelper();
-                helper.fireRockets(m_bridge, m_data, m_bridge.getPlayerID());
+                helper.fireRockets(m_bridge, getData(), m_bridge.getPlayerID());
             }
         }
         CompositeChange change = new CompositeChange();
@@ -579,7 +580,8 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
         //we may do it in the middle of the round, while loading.
         if (m_nonCombat)
         {
-            for(Unit u : m_data.getUnits())
+            GameData data = getData();
+            for (Unit u : data.getUnits())
             {
                 if(TripleAUnit.get(u).getAlreadyMoved() != 0 )
                 {
@@ -591,7 +593,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
                 }
             }
 
-            change.add(m_transportTracker.endOfRoundClearStateChange(m_data));
+            change.add(m_transportTracker.endOfRoundClearStateChange(data));
             m_PUsLost.clear();
         }
 
@@ -641,12 +643,13 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 
     private void removeAirThatCantLand()
     {
-        boolean lhtrCarrierProd = AirThatCantLandUtil.isLHTRCarrierProduction(m_data) || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(m_data);
+        GameData data = getData();
+        boolean lhtrCarrierProd = AirThatCantLandUtil.isLHTRCarrierProduction(data) || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
         boolean hasProducedCarriers = m_player.getUnits().someMatch(Matches.UnitIsCarrier);
-        AirThatCantLandUtil util = new AirThatCantLandUtil(m_data, m_bridge);
+        AirThatCantLandUtil util = new AirThatCantLandUtil(data, m_bridge);
         util.removeAirThatCantLand(m_player, lhtrCarrierProd && hasProducedCarriers);
         // if edit mode has been on, we need to clean up after all players
-        Iterator<PlayerID> iter = m_data.getPlayerList().iterator();
+        Iterator<PlayerID> iter = data.getPlayerList().iterator();
         while (iter.hasNext())
         {
             PlayerID player = iter.next();
@@ -862,18 +865,18 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 
     public Collection<Territory> getTerritoriesWhereAirCantLand(PlayerID player)
     {
-        return new AirThatCantLandUtil(m_data, m_bridge).getTerritoriesWhereAirCantLand(player);
+        return new AirThatCantLandUtil(getData(), m_bridge).getTerritoriesWhereAirCantLand(player);
     }
 
     public Collection<Territory> getTerritoriesWhereAirCantLand()
     {
-        return new AirThatCantLandUtil(m_data, m_bridge).getTerritoriesWhereAirCantLand(m_player);
+        return new AirThatCantLandUtil(getData(), m_bridge).getTerritoriesWhereAirCantLand(m_player);
     }
 
 
     public Collection<Territory> getTerritoriesWhereUnitsCantFight()
     {
-        return new UnitsThatCantFightUtil(m_data).getTerritoriesWhereUnitsCantFight(m_player);
+        return new UnitsThatCantFightUtil(getData()).getTerritoriesWhereUnitsCantFight(m_player);
     }
 
 

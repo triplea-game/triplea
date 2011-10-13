@@ -40,7 +40,7 @@ public class ExecutionStack implements Serializable
     private IExecutable m_current;
     private final Stack<IExecutable> m_stack = new Stack<IExecutable>();
     
-    public void execute(IDelegateBridge bridge, GameData data)
+    public void execute(IDelegateBridge bridge)
     {
         //we were interrupted before, resume where we left off
         if(m_current != null)
@@ -49,7 +49,7 @@ public class ExecutionStack implements Serializable
         while(!m_stack.isEmpty())
         {
             m_current =  m_stack.pop();
-            m_current.execute(this, bridge, data);
+            m_current.execute(this, bridge);
         }
         m_current = null;
     }

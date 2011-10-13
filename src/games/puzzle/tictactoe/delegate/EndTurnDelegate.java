@@ -34,9 +34,9 @@ public class EndTurnDelegate extends BaseDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge, GameData gameData)
+    public void start(IDelegateBridge bridge)
     {   
-        super.start(bridge, gameData);
+        super.start(bridge);
         
         PlayerID winner = checkForWinner();
         if (winner != null)
@@ -77,19 +77,18 @@ public class EndTurnDelegate extends BaseDelegate
      * @return the player who has won, or <code>null</code> if there is no winner yet
      */
     private PlayerID checkForWinner()
-    {          
-        PlayerID player;
-        GameMap map = m_data.getMap();
+    {
+        GameMap map = getData().getMap();
 
-        int boardWidth = m_data.getMap().getXDimension();
-        int boardHeight = m_data.getMap().getYDimension();
+        int boardWidth = map.getXDimension();
+        int boardHeight = map.getYDimension();
         
         Territory[][] grid = new Territory[boardWidth][boardHeight];
         for (int y=0; y<boardHeight; y++) 
             for (int x=0; x<boardWidth; x++)  
                 grid[x][y] = map.getTerritoryFromCoordinates(x,y);
 
-        
+        PlayerID player;
         // Check for horizontal win
         for (int y=0; y<boardHeight; y++) 
         {   

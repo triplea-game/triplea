@@ -142,7 +142,7 @@ public class PacificTest extends DelegateTest
 		bridge.setStepName("americansCombatMove");
         m_delegate = new MoveDelegate();
         m_delegate.initialize("MoveDelegate", "MoveDelegate");
-        m_delegate.start(bridge, m_data);
+        m_delegate.start(bridge);
     }
 
     private Collection<Unit> getUnits(IntegerMap<UnitType> units, Territory from)
@@ -176,14 +176,14 @@ public class PacificTest extends DelegateTest
         List<Unit> infantryUS = infantry.create(1, americans);
         bridge.setRandomSource(new ScriptedRandomSource(new int[]
         { 1 }));
-        DiceRoll roll = DiceRoll.rollDice(infantryUS, true, americans, bridge, m_data, new MockBattle(queensland), "");
+        DiceRoll roll = DiceRoll.rollDice(infantryUS, true, americans, bridge, new MockBattle(queensland), "");
         assertEquals(1, roll.getHits());
 
         // Defending US marines hit on a 2 (0 base)
         List<Unit> marineUS = marine.create(1, americans);
         bridge.setRandomSource(new ScriptedRandomSource(new int[]
         { 1 }));
-        roll = DiceRoll.rollDice(marineUS, true, americans, bridge, m_data, new MockBattle(queensland), "");
+        roll = DiceRoll.rollDice(marineUS, true, americans, bridge, new MockBattle(queensland), "");
         assertEquals(1, roll.getHits());
 
         // Chinese units
@@ -191,7 +191,7 @@ public class PacificTest extends DelegateTest
         List<Unit> infantryChina = infantry.create(1, chinese);
         bridge.setRandomSource(new ScriptedRandomSource(new int[]
         { 1 }));
-        roll = DiceRoll.rollDice(infantryChina, true, chinese, bridge, m_data, new MockBattle(queensland), "");
+        roll = DiceRoll.rollDice(infantryChina, true, chinese, bridge, new MockBattle(queensland), "");
         assertEquals(1, roll.getHits());
 
     }
@@ -209,14 +209,14 @@ public class PacificTest extends DelegateTest
         List<Unit> infantryUS = infantry.create(1, americans);
         bridge.setRandomSource(new ScriptedRandomSource(new int[]
         { 1 }));
-        DiceRoll roll = DiceRoll.rollDice(infantryUS, true, americans, bridge, m_data, new MockBattle(queensland), "");
+        DiceRoll roll = DiceRoll.rollDice(infantryUS, true, americans, bridge, new MockBattle(queensland), "");
         assertEquals(0, roll.getHits());
 
         // Defending US marines miss on a 2 (0 base)
         List<Unit> marineUS = marine.create(1, americans);
         bridge.setRandomSource(new ScriptedRandomSource(new int[]
         { 1 }));
-        roll = DiceRoll.rollDice(marineUS, true, americans, bridge, m_data, new MockBattle(queensland), "");
+        roll = DiceRoll.rollDice(marineUS, true, americans, bridge, new MockBattle(queensland), "");
         assertEquals(0, roll.getHits());
 
         //      
@@ -226,26 +226,26 @@ public class PacificTest extends DelegateTest
         List<Unit> infantryChina = infantry.create(1, chinese);
         bridge.setRandomSource(new ScriptedRandomSource(new int[]
         { 1 }));
-        roll = DiceRoll.rollDice(infantryChina, true, chinese, bridge, m_data, new MockBattle(queensland), "");
+        roll = DiceRoll.rollDice(infantryChina, true, chinese, bridge, new MockBattle(queensland), "");
         assertEquals(1, roll.getHits());
 
         // Defending US infantry hit on a 1 (0 base)
         bridge.setRandomSource(new ScriptedRandomSource(new int[]
         { 0 }));
-        roll = DiceRoll.rollDice(infantryUS, true, americans, bridge, m_data, new MockBattle(queensland), "");
+        roll = DiceRoll.rollDice(infantryUS, true, americans, bridge, new MockBattle(queensland), "");
         assertEquals(1, roll.getHits());
 
         // Defending US marines hit on a 1 (0 base)
         bridge.setRandomSource(new ScriptedRandomSource(new int[]
         { 0 }));
-        roll = DiceRoll.rollDice(marineUS, true, americans, bridge, m_data, new MockBattle(queensland), "");
+        roll = DiceRoll.rollDice(marineUS, true, americans, bridge, new MockBattle(queensland), "");
         assertEquals(1, roll.getHits());
 
         // Chinese units
         // Defending Chinese infantry still hit on a 2 (0 base)
         bridge.setRandomSource(new ScriptedRandomSource(new int[]
         { 1 }));
-        roll = DiceRoll.rollDice(infantryChina, true, chinese, bridge, m_data, new MockBattle(queensland), "");
+        roll = DiceRoll.rollDice(infantryChina, true, chinese, bridge, new MockBattle(queensland), "");
         assertEquals(1, roll.getHits());
 
     }
@@ -329,7 +329,7 @@ public class PacificTest extends DelegateTest
 		
         m_delegate = new MoveDelegate();
         m_delegate.initialize("MoveDelegate", "MoveDelegate");
-        m_delegate.start(bridge, m_data);
+        m_delegate.start(bridge);
 
 		IntegerMap<UnitType> map = new IntegerMap<UnitType>();
 	    map.put(infantry, 1);

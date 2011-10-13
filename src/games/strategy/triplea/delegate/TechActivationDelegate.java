@@ -46,11 +46,12 @@ public class TechActivationDelegate extends BaseDelegate
      * Called before the delegate will run. In this class, this does all the
      * work.
      */
-    public void start(IDelegateBridge aBridge, GameData gameData)
+    public void start(IDelegateBridge aBridge)
     {
-        super.start(aBridge,gameData);
+        super.start(aBridge);
+        GameData data = getData();
         // Activate techs
-        Map<PlayerID, Collection<TechAdvance>> techMap = DelegateFinder.techDelegate(m_data).getAdvances();
+        Map<PlayerID, Collection<TechAdvance>> techMap = DelegateFinder.techDelegate(data).getAdvances();
         Collection<TechAdvance> advances = techMap.get(m_player);
         if ((advances != null) && (advances.size() > 0))
         {
@@ -62,15 +63,15 @@ public class TechActivationDelegate extends BaseDelegate
             {
                 TechAdvance advance = (TechAdvance) techsIter.next();
                 //advance.perform(m_bridge.getPlayerID(), m_bridge, m_data);
-                TechTracker.addAdvance(m_player, m_data, m_bridge, advance);
+                TechTracker.addAdvance(m_player, data, m_bridge, advance);
             }
         }
         //empty
         techMap.put(m_player, null);
-        if(games.strategy.triplea.Properties.getTriggers(m_data)){
-        	TriggerAttachment.triggerTechChange(m_player, aBridge, m_data, null, null);
-        	TriggerAttachment.triggerSupportChange(m_player, aBridge, m_data, null, null);
-        	TriggerAttachment.triggerUnitPropertyChange(m_player, aBridge, m_data, null, null);
+        if (games.strategy.triplea.Properties.getTriggers(data)) {
+            TriggerAttachment.triggerTechChange(m_player, aBridge, null, null);
+            TriggerAttachment.triggerSupportChange(m_player, aBridge, null, null);
+            TriggerAttachment.triggerUnitPropertyChange(m_player, aBridge, null, null);
         }
     }
 

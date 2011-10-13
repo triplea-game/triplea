@@ -35,17 +35,20 @@ public class TripleADelegateBridge implements IDelegateBridge
 
     private final IDelegateBridge m_bridge;
     private final TripleADelegateHistoryWriter m_historyWriter;
-    private final GameData m_data;
 
     /** Creates new TripleADelegateBridge to wrap an existing IDelegateBridge
      * @param bridge delegate bridge
      * @param data GameData object
      * */
-    public TripleADelegateBridge(IDelegateBridge bridge, GameData data)
+    public TripleADelegateBridge(IDelegateBridge bridge)
     {
         m_bridge = bridge;
-        m_data = data;
-        m_historyWriter = new TripleADelegateHistoryWriter(m_bridge.getHistoryWriter(), m_data);
+        m_historyWriter = new TripleADelegateHistoryWriter(m_bridge.getHistoryWriter(), getData());
+    }
+    
+    public GameData getData()
+    {
+        return m_bridge.getData();
     }
 
     /**

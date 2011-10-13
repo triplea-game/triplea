@@ -58,6 +58,11 @@ public class DefaultDelegateBridge implements IDelegateBridge
         m_randomStats = randomStats;
         m_delegateExecutionManager = delegateExecutionManager;
     }
+    
+    public GameData getData()
+    {
+        return m_data;
+    }
 
     public PlayerID getPlayerID()
     {

@@ -1,4 +1,6 @@
 Changes for 1.4
+* Removed needless gamedata passing, and added methods to get game data out of bridge. (frigoref)
+
 * Updated export stats to display far more information, about actual techs gained, and number of each unit type for each player, etc. (veqryn)
 
 * Updated game data to record the playerIDs of whoever wins the game. (veqryn)

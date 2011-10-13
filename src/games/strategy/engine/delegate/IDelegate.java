@@ -58,7 +58,7 @@ public interface IDelegate
 	 * @param aBridge IDelegateBridge
 	 * @param gameData GameData
 	 */
-	public void start(IDelegateBridge aBridge, GameData gameData);
+    public void start(IDelegateBridge aBridge);
 	/**
 	 * Called before the delegate will stop running.
 	 */

@@ -64,25 +64,26 @@ public class EndRoundDelegate extends BaseDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
-	public void start(IDelegateBridge aBridge, GameData gameData)
+    public void start(IDelegateBridge aBridge)
 	{
-		super.start(aBridge, gameData);
+        super.start(aBridge);
 		
 		if(m_gameOver)
 			return;
 
 		String victoryMessage = null;
 		
+        GameData data = getData();
         if(isPacificTheater())
         {
-            PlayerID japanese = m_data.getPlayerList().getPlayerID(Constants.JAPANESE);
+            PlayerID japanese = data.getPlayerList().getPlayerID(Constants.JAPANESE);
             PlayerAttachment pa = PlayerAttachment.get(japanese);
             if(pa != null && Integer.parseInt(pa.getVps()) >= 22)
             {
                 victoryMessage = "Axis achieve VP victory";
                 aBridge.getHistoryWriter().startEvent(victoryMessage);
-                Collection<PlayerID> winners = gameData.getAllianceTracker().getPlayersCollectionInAlliance(
-                			gameData.getAllianceTracker().getAlliancesPlayerIsIn(japanese).iterator().next());
+                Collection<PlayerID> winners = data.getAllianceTracker().getPlayersCollectionInAlliance(
+                			data.getAllianceTracker().getAlliancesPlayerIsIn(japanese).iterator().next());
                 signalGameOver(victoryMessage, winners, aBridge);
             }
         }
@@ -91,32 +92,32 @@ public class EndRoundDelegate extends BaseDelegate
         if(isTotalVictory()) //Check for Win by Victory Cities
 		{
         	victoryMessage = " achieve TOTAL VICTORY with ";
-		    checkVictoryCities(aBridge, m_data, victoryMessage, " Total Victory VCs");            
+            checkVictoryCities(aBridge, data, victoryMessage, " Total Victory VCs");
 		}
 
         if(isHonorableSurrender())
 		{
 			victoryMessage = " achieve an HONORABLE VICTORY with ";
-		    checkVictoryCities(aBridge, m_data, victoryMessage, " Honorable Victory VCs");    
+            checkVictoryCities(aBridge, data, victoryMessage, " Honorable Victory VCs");
 		}
 
         if (isProjectionOfPower())
 		{
 			victoryMessage = " achieve victory through a PROJECTION OF POWER with ";
-		    checkVictoryCities(aBridge, m_data, victoryMessage, " Projection of Power VCs");           
+            checkVictoryCities(aBridge, data, victoryMessage, " Projection of Power VCs");
 		}
 
         if (isEconomicVictory()) //Check for regular economic victory
 		{
-			Iterator<String> allianceIter = m_data.getAllianceTracker().getAlliances().iterator();
+            Iterator<String> allianceIter = data.getAllianceTracker().getAlliances().iterator();
 			String allianceName = null;
 			while (allianceIter.hasNext())
 			{
-				allianceName = (String) allianceIter.next();
+                allianceName = allianceIter.next();
 				
-				int victoryAmount = getEconomicVictoryAmount(m_data, allianceName);
+				int victoryAmount = getEconomicVictoryAmount(data, allianceName);
 				
-				Set<PlayerID> teamMembers = m_data.getAllianceTracker().getPlayersInAlliance(allianceName);
+				Set<PlayerID> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
 				
 				Iterator<PlayerID> teamIter = teamMembers.iterator();
 				int teamProd = 0;
@@ -129,7 +130,7 @@ public class EndRoundDelegate extends BaseDelegate
 				    {
 				    	victoryMessage = allianceName + " achieve economic victory";
 				    	aBridge.getHistoryWriter().startEvent(victoryMessage);
-		                Collection<PlayerID> winners = gameData.getAllianceTracker().getPlayersCollectionInAlliance(allianceName);
+		                Collection<PlayerID> winners = data.getAllianceTracker().getPlayersCollectionInAlliance(allianceName);
 				        //Added this to end the game on victory conditions
 				        signalGameOver(victoryMessage, winners, aBridge);
 				    }
@@ -141,10 +142,10 @@ public class EndRoundDelegate extends BaseDelegate
         if (isTriggeredVictory())
         {
         	// it is end of round, so loop through all players
-        	Collection<PlayerID> playerList = m_data.getPlayerList().getPlayers();
+            Collection<PlayerID> playerList = data.getPlayerList().getPlayers();
         	for (PlayerID p : playerList)
         	{
-				Tuple<String,Collection<PlayerID>> winnersMessage = TriggerAttachment.triggerVictory(p, aBridge, m_data, null, null);
+				Tuple<String,Collection<PlayerID>> winnersMessage = TriggerAttachment.triggerVictory(p, aBridge, null, null);
             	if (winnersMessage != null && winnersMessage.getFirst() != null)
             	{ 
     				victoryMessage = winnersMessage.getFirst();
@@ -158,22 +159,23 @@ public class EndRoundDelegate extends BaseDelegate
         if(isWW2V2() || isWW2V3())
             return;
         
+        PlayerList playerList = data.getPlayerList();
         // now test older maps that only use these 5 players, to see if someone has won
-        PlayerID russians = m_data.getPlayerList().getPlayerID(Constants.RUSSIANS);
-        PlayerID germans = m_data.getPlayerList().getPlayerID(Constants.GERMANS);
-        PlayerID british = m_data.getPlayerList().getPlayerID(Constants.BRITISH);
-        PlayerID japanese = m_data.getPlayerList().getPlayerID(Constants.JAPANESE);
-        PlayerID americans = m_data.getPlayerList().getPlayerID(Constants.AMERICANS);
+        PlayerID russians = playerList.getPlayerID(Constants.RUSSIANS);
+        PlayerID germans = playerList.getPlayerID(Constants.GERMANS);
+        PlayerID british = playerList.getPlayerID(Constants.BRITISH);
+        PlayerID japanese = playerList.getPlayerID(Constants.JAPANESE);
+        PlayerID americans = playerList.getPlayerID(Constants.AMERICANS);
         
-        if(germans == null || russians == null || british == null || japanese == null || americans == null || m_data.getPlayerList().size() > 5)
+        if (germans == null || russians == null || british == null || japanese == null || americans == null || playerList.size() > 5)
             return;
         
         // Quick check to see who still owns their own capital
-        boolean russia = TerritoryAttachment.getCapital(russians, m_data).getOwner().equals(russians);
-        boolean germany = TerritoryAttachment.getCapital(germans, m_data).getOwner().equals(germans);
-        boolean britain = TerritoryAttachment.getCapital(british, m_data).getOwner().equals(british);
-        boolean japan = TerritoryAttachment.getCapital(japanese, m_data).getOwner().equals(japanese);
-        boolean america = TerritoryAttachment.getCapital(americans, m_data).getOwner().equals(americans);
+        boolean russia = TerritoryAttachment.getCapital(russians, data).getOwner().equals(russians);
+        boolean germany = TerritoryAttachment.getCapital(germans, data).getOwner().equals(germans);
+        boolean britain = TerritoryAttachment.getCapital(british, data).getOwner().equals(british);
+        boolean japan = TerritoryAttachment.getCapital(japanese, data).getOwner().equals(japanese);
+        boolean america = TerritoryAttachment.getCapital(americans, data).getOwner().equals(americans);
         
         int count = 0;
         if (!russia)
@@ -188,14 +190,14 @@ public class EndRoundDelegate extends BaseDelegate
         if (germany && japan && count >=2)
         {
         	aBridge.getHistoryWriter().startEvent("Axis" + victoryMessage);
-            Collection<PlayerID> winners = gameData.getAllianceTracker().getPlayersCollectionInAlliance("Axis");
+            Collection<PlayerID> winners = data.getAllianceTracker().getPlayersCollectionInAlliance("Axis");
             signalGameOver(victoryMessage, winners, aBridge);
         }
 
         if (russia && !germany && britain && !japan && america)
         {
             aBridge.getHistoryWriter().startEvent("Allies" + victoryMessage);
-            Collection<PlayerID> winners = gameData.getAllianceTracker().getPlayersCollectionInAlliance("Allies");
+            Collection<PlayerID> winners = data.getAllianceTracker().getPlayersCollectionInAlliance("Allies");
             signalGameOver(victoryMessage, winners, aBridge);
         }
 	}
@@ -207,7 +209,7 @@ public class EndRoundDelegate extends BaseDelegate
 		String allianceName = null;
 		while (allianceIter.hasNext())
 		{
-			allianceName = (String) allianceIter.next();
+            allianceName = allianceIter.next();
 			
 			int vcAmount = getVCAmount(data, allianceName, victoryType);
 			
@@ -215,7 +217,7 @@ public class EndRoundDelegate extends BaseDelegate
 			
 			Iterator<PlayerID> teamIter = teamMembers.iterator();
 			int teamVCs = Match.countMatches(data.getMap().getTerritories(), 
-			        new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity,Matches.isTerritoryAllied(teamIter.next(), m_data)));
+			        new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity,Matches.isTerritoryAllied(teamIter.next(), data)));
 
 			if(teamVCs >= vcAmount)
 			{				
@@ -291,52 +293,52 @@ public class EndRoundDelegate extends BaseDelegate
     
     private boolean isWW2V2()
     {
-        return games.strategy.triplea.Properties.getWW2V2(m_data);
+        return games.strategy.triplea.Properties.getWW2V2(getData());
     } 
     
     private boolean isWW2V3()
     {
-        return games.strategy.triplea.Properties.getWW2V3(m_data);
+        return games.strategy.triplea.Properties.getWW2V3(getData());
     } 
     
     private boolean isPacificTheater()
     {
-        return games.strategy.triplea.Properties.getPacificTheater(m_data);
+        return games.strategy.triplea.Properties.getPacificTheater(getData());
     } 
     
     private boolean isTotalVictory()
     {
-        return games.strategy.triplea.Properties.getTotalVictory(m_data);
+        return games.strategy.triplea.Properties.getTotalVictory(getData());
     }   
     
     private boolean isHonorableSurrender()
     {
-        return games.strategy.triplea.Properties.getHonorableSurrender(m_data);
+        return games.strategy.triplea.Properties.getHonorableSurrender(getData());
     }   
     
     private boolean isProjectionOfPower()
     {
-        return games.strategy.triplea.Properties.getProjectionOfPower(m_data);
+        return games.strategy.triplea.Properties.getProjectionOfPower(getData());
     }   
 	
     private boolean isEconomicVictory()
     {
-        return games.strategy.triplea.Properties.getEconomicVictory(m_data);
+        return games.strategy.triplea.Properties.getEconomicVictory(getData());
     }   
 	
     private boolean isTriggeredVictory()
     {
-        return games.strategy.triplea.Properties.getTriggeredVictory(m_data);
+        return games.strategy.triplea.Properties.getTriggeredVictory(getData());
     }  
 	
 	public int getProduction(PlayerID id)
 	{
 		int sum = 0;
 
-		Iterator<Territory> territories = m_data.getMap().iterator();
+        Iterator<Territory> territories = getData().getMap().iterator();
 		while(territories.hasNext())
 		{
-			Territory current = (Territory) territories.next();
+            Territory current = territories.next();
 			if(current.getOwner().equals(id))
 			{
 				TerritoryAttachment ta = TerritoryAttachment.get(current);

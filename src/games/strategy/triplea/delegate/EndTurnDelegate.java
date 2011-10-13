@@ -65,25 +65,26 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
         // do national objectives
 		if (isNationalObjectives())
 		{
-			determineNationalObjectives(m_data, bridge);
+            determineNationalObjectives(bridge);
 		}
 
         // create resources if any owned units have the ability
-        createResources(m_data, bridge);
+        createResources(bridge);
 
         // create units if any owned units have the ability
-        createUnits(m_data, bridge);
+        createUnits(bridge);
     }
 
     /**
      *
      */
-    private void createUnits(GameData data, IDelegateBridge bridge)
+    private void createUnits(IDelegateBridge bridge)
     {
-    	PlayerID player = data.getSequence().getStep().getPlayerID();
+        GameData data = getData();
+        PlayerID player = data.getSequence().getStep().getPlayerID();
     	Match<Unit> myCreatorsMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCreatesUnits);
     	CompositeChange change = new CompositeChange();
-    	for (Territory t : data.getMap().getTerritories())
+        for (Territory t : data.getMap().getTerritories())
     	{
     		Collection<Unit> myCreators = Match.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
     		if (myCreators != null && !myCreators.isEmpty())
@@ -117,7 +118,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     			if (toAddSea != null && !toAddSea.isEmpty())
     			{
     				Match<Territory> myTerrs = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater);
-    				Collection<Territory> waterNeighbors = data.getMap().getNeighbors(t, myTerrs);
+                    Collection<Territory> waterNeighbors = data.getMap().getNeighbors(t, myTerrs);
     				if (waterNeighbors != null && !waterNeighbors.isEmpty())
     				{
     					Territory tw = waterNeighbors.iterator().next();
@@ -131,7 +132,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     			if (toAddLand != null && !toAddLand.isEmpty())
     			{
     				Match<Territory> myTerrs = new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(player), Matches.TerritoryIsLand);
-    				Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, myTerrs);
+                    Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, myTerrs);
     				if (landNeighbors != null && !landNeighbors.isEmpty())
     				{
     					Territory tl = landNeighbors.iterator().next();
@@ -153,13 +154,14 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
      * @param data
      * @param bridge
      */
-    private void createResources(GameData data, IDelegateBridge bridge)
+    private void createResources(IDelegateBridge bridge)
     {
-    	PlayerID player = data.getSequence().getStep().getPlayerID();
+        GameData data = getData();
+        PlayerID player = data.getSequence().getStep().getPlayerID();
     	Match<Unit> myCreatorsMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCreatesResources);
     	CompositeChange change = new CompositeChange();
 
-    	for (Territory t : data.getMap().getTerritories())
+        for (Territory t : data.getMap().getTerritories())
     	{
     		Collection<Unit> myCreators = Match.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
     		if (myCreators != null && !myCreators.isEmpty())
@@ -173,7 +175,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     				{
     					int toAdd = createsUnitsMap.getInt(r);
     					if (r.getName().equals(Constants.PUS))
-    						toAdd *= Properties.getPU_Multiplier(data);
+                            toAdd *= Properties.getPU_Multiplier(data);
     					int total = player.getResources().getQuantity(r) + toAdd;
     					if(total < 0) {
     						toAdd -= total;
@@ -195,9 +197,10 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
  * Determine if National Objectives have been met
  * @param data
  */
-    private void determineNationalObjectives(GameData data, IDelegateBridge bridge)
+    private void determineNationalObjectives(IDelegateBridge bridge)
     {
-    	PlayerID player = data.getSequence().getStep().getPlayerID();
+        GameData data = getData();
+        PlayerID player = data.getSequence().getStep().getPlayerID();
 
     	//See if the player has National Objectives
     	Set<RulesAttachment> natObjs = new HashSet<RulesAttachment>();
@@ -222,7 +225,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     		Integer uses = rule.getUses();
     		if( uses == 0)
     			continue;
-    		objectiveMet = rule.isSatisfied(data);
+            objectiveMet = rule.isSatisfied(data);
     		
     		//
     		//If all are satisfied add the PUs for this objective
@@ -230,13 +233,13 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     		if (objectiveMet)
     		{
     			int toAdd = rule.getObjectiveValue();
-    			toAdd *= Properties.getPU_Multiplier(m_data);
+                toAdd *= Properties.getPU_Multiplier(data);
     			int total = player.getResources().getQuantity(Constants.PUS) + toAdd;
     		    if(total < 0) {
     		    	toAdd -= total;
     		    	total = 0;
     		    }
-    		    Change change = ChangeFactory.changeResourcesChange(player, data.getResourceList().getResource(Constants.PUS), toAdd);
+                Change change = ChangeFactory.changeResourcesChange(player, data.getResourceList().getResource(Constants.PUS), toAdd);
     		    //player.getResources().addResource(data.getResourceList().getResource(Constants.PUS), rule.getObjectiveValue());
                 bridge.addChange(change);
         	    if( uses > 0) {
@@ -251,13 +254,13 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     	} //end while
     	
     	// now do any triggers that add resources too
-    	if(games.strategy.triplea.Properties.getTriggers(data))
-    		TriggerAttachment.triggerResourceChange(player, bridge, data, null, null);
+        if (games.strategy.triplea.Properties.getTriggers(data))
+            TriggerAttachment.triggerResourceChange(player, bridge, null, null);
     	
     } //end determineNationalObjectives
 
 	private boolean isNationalObjectives()
     {
-    	return games.strategy.triplea.Properties.getNationalObjectives(m_data);
+        return games.strategy.triplea.Properties.getNationalObjectives(getData());
     }
 }

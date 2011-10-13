@@ -72,7 +72,7 @@ public class MovePerformer implements Serializable
         m_player = bridge.getPlayerID();
 
         if(m_aaInMoveUtil != null)
-            m_aaInMoveUtil.initialize(bridge, data);
+            m_aaInMoveUtil.initialize(bridge);
     }
 
     private ITripleaPlayer getRemotePlayer(PlayerID id)
@@ -92,12 +92,12 @@ public class MovePerformer implements Serializable
 
         populateStack(units, route, id, transportsToLoad);
 
-        m_executionStack.execute(m_bridge, m_data);
+        m_executionStack.execute(m_bridge);
     }
 
     public void resume()
     {
-        m_executionStack.execute(m_bridge, m_data);
+        m_executionStack.execute(m_bridge);
     }
 
     public void setOriginatingTerritory(Collection<Unit> units, Territory t)
@@ -120,12 +120,11 @@ public class MovePerformer implements Serializable
         IExecutable preAAFire = new IExecutable()
         {
 
-            public void execute(ExecutionStack stack, IDelegateBridge bridge,
-                    GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 //if we are moving out of a battle zone, mark it
                 //this can happen for air units moving out of a battle zone
-                Battle nonBombingBattle = MoveDelegate.getBattleTracker(data).getPendingBattle(route.getStart(), false);
+                Battle nonBombingBattle = MoveDelegate.getBattleTracker(bridge.getData()).getPendingBattle(route.getStart(), false);
                 Battle bombingBattle = getBattleTracker().getPendingBattle(route.getStart(), true);
                 if (nonBombingBattle != null || bombingBattle != null)
                 {
@@ -157,7 +156,7 @@ public class MovePerformer implements Serializable
         IExecutable fireAA = new IExecutable()
         {
 
-            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 Collection<Unit> aaCasualties = fireAA(route, units);
                 arrivingUnits[0]  = Util.difference(units, aaCasualties);
@@ -167,8 +166,7 @@ public class MovePerformer implements Serializable
 
         IExecutable postAAFire = new IExecutable()
         {
-            public void execute(ExecutionStack stack, IDelegateBridge bridge,
-                    GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 //if any non enemy territories on route
                 //or if any enemy units on route the
@@ -223,7 +221,7 @@ public class MovePerformer implements Serializable
                         }
                     }
                     //Ignore Trn on Trn forces.
-                    if(isIgnoreTransportInMovement(data))
+                    if (isIgnoreTransportInMovement(bridge.getData()))
                     {
                     	boolean allOwnedTransports = Match.allMatch(arrived, Matches.UnitIsTransportButNotCombatTransport);
                     	boolean allEnemyTransports = Match.allMatch(enemyUnits, Matches.UnitIsTransportButNotCombatTransport);
@@ -269,7 +267,7 @@ public class MovePerformer implements Serializable
         m_executionStack.push(postAAFire);
         m_executionStack.push(fireAA);
         m_executionStack.push(preAAFire);
-        m_executionStack.execute(m_bridge, m_data);
+        m_executionStack.execute(m_bridge);
 
 
     }
@@ -449,7 +447,7 @@ public class MovePerformer implements Serializable
             m_aaInMoveUtil = new AAInMoveUtil();
         }
 
-        m_aaInMoveUtil.initialize(m_bridge, m_data);
+        m_aaInMoveUtil.initialize(m_bridge);
         Collection<Unit> rVal = m_aaInMoveUtil.fireAA(route, units, UnitComparator.getDecreasingMovementComparator(), m_currentMove);
         m_aaInMoveUtil = null;
         return rVal;

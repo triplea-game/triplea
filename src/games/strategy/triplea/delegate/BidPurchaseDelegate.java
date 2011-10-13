@@ -50,7 +50,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 
   public void start(IDelegateBridge bridge, GameData data)
   {
-      super.start(bridge, data);
+        super.start(bridge);
       
       if(m_hasBid)
           return;

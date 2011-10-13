@@ -147,7 +147,7 @@ public class StrategicBombingRaidBattle implements Battle
         if(m_stack.isExecuting())
         {
             showBattle(bridge);
-            m_stack.execute(bridge, m_data);
+            m_stack.execute(bridge);
             return;
         }
             
@@ -177,8 +177,7 @@ public class StrategicBombingRaidBattle implements Battle
         steps.add(new IExecutable()
         {
         
-            public void execute(ExecutionStack stack, IDelegateBridge bridge,
-                    GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 getDisplay(bridge).gotoBattleStep(m_battleID, RAID);
                 
@@ -239,8 +238,7 @@ public class StrategicBombingRaidBattle implements Battle
         steps.add(new IExecutable()
         {
         
-            public void execute(ExecutionStack stack, IDelegateBridge bridge,
-                    GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge)
             { 
                 if(isSBRAffectsUnitProduction())
                     getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidCost + " production.");
@@ -259,7 +257,7 @@ public class StrategicBombingRaidBattle implements Battle
         {
             m_stack.push(executable);
         }
-        m_stack.execute(bridge, m_data);
+        m_stack.execute(bridge);
         
         
     }
@@ -294,13 +292,13 @@ public class StrategicBombingRaidBattle implements Battle
         DiceRoll m_dice;
         Collection<Unit> m_casualties;
         
-        public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+        public void execute(ExecutionStack stack, IDelegateBridge bridge)
         {
-            boolean isEditMode = EditDelegate.getEditMode(data);
+            boolean isEditMode = EditDelegate.getEditMode(bridge.getData());
 
             IExecutable roll = new IExecutable()
             {
-                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                 	m_dice = DiceRoll.rollAA(m_units, bridge, m_battleSite, m_data, Matches.UnitIsAAforBombing);
                 }
@@ -309,7 +307,7 @@ public class StrategicBombingRaidBattle implements Battle
             IExecutable calculateCasualties = new IExecutable()
             {
             
-                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     m_casualties = calculateCasualties(bridge, m_dice);
             
@@ -320,7 +318,7 @@ public class StrategicBombingRaidBattle implements Battle
             IExecutable notifyCasualties = new IExecutable()
             {
             
-                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     notifyAAHits(bridge, m_dice, m_casualties);
             
@@ -332,7 +330,7 @@ public class StrategicBombingRaidBattle implements Battle
             IExecutable removeHits = new IExecutable()
             {
 
-                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     removeAAHits(bridge, m_dice, m_casualties);
                 }
@@ -470,13 +468,12 @@ public class StrategicBombingRaidBattle implements Battle
     {
         private int[] m_dice;
         
-        public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+        public void execute(ExecutionStack stack, IDelegateBridge bridge)
         {
             IExecutable rollDice = new IExecutable()
             {
             
-                public void execute(ExecutionStack stack, IDelegateBridge bridge,
-                        GameData data)
+                public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     rollDice(bridge);
                 }
@@ -485,7 +482,7 @@ public class StrategicBombingRaidBattle implements Battle
             
             IExecutable findCost = new IExecutable()
             {
-                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     findCost(bridge);
                 }

@@ -41,9 +41,9 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge, GameData gameData)
+    public void start(IDelegateBridge bridge)
     {
-        super.start(bridge, gameData);
+        super.start(bridge);
         
         
         ITicTacToeDisplay display = (ITicTacToeDisplay) bridge.getDisplayChannelBroadcaster();        
@@ -89,7 +89,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
     private void performPlay(Territory at, PlayerID player)
     {          
         Collection<Unit> units = new ArrayList<Unit>(1);
-        units.add(m_data.getUnitTypeList().getUnitType("ticmark").create(player));
+        units.add(getData().getUnitTypeList().getUnitType("ticmark").create(player));
 
         String transcriptText = player.getName() + " played in " + at.getName();
         m_bridge.getHistoryWriter().startEvent(transcriptText);

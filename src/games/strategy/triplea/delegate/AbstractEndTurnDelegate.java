@@ -65,41 +65,42 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 
     private boolean doBattleShipsRepairEndOfTurn()
     {
-    	return games.strategy.triplea.Properties.getBattleships_Repair_At_End_Of_Round(m_data);
+        return games.strategy.triplea.Properties.getBattleships_Repair_At_End_Of_Round(getData());
     }
 
     private boolean isGiveUnitsByTerritory()
     {
-    	return games.strategy.triplea.Properties.getGiveUnitsByTerritory(m_data);
+        return games.strategy.triplea.Properties.getGiveUnitsByTerritory(getData());
     }
 
 
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge aBridge, GameData gameData)
+    public void start(IDelegateBridge aBridge)
     {
-        super.start(aBridge, gameData);
+        super.start(aBridge);
         if(!m_needToInitialize)
             return;
         m_hasPostedTurnSummary = false;
         PlayerID player = aBridge.getPlayerID();
+        GameData data = getData();
 
         //can't collect unless you own your own capital
         PlayerAttachment pa = PlayerAttachment.get(player);
-        List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(player, m_data));
-        List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, m_data));
+        List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(player, data));
+        List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data));
         if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
         	return;
-
-        Resource PUs = gameData.getResourceList().getResource(Constants.PUS);
+        
+        Resource PUs = data.getResourceList().getResource(Constants.PUS);
         //just collect resources
-        Collection<Territory> territories = gameData.getMap().getTerritoriesOwnedBy(player);
+        Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(player);
 
         int toAdd = getProduction(territories);
-        int blockadeLoss = getProductionLoss(player,gameData);
+        int blockadeLoss = getProductionLoss(player, data);
         toAdd -= blockadeLoss;
-        toAdd *= Properties.getPU_Multiplier(m_data);
+        toAdd *= Properties.getPU_Multiplier(data);
         int total = player.getResources().getQuantity(PUs) + toAdd;
 
         String transcriptText;
@@ -121,7 +122,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
         Change change = ChangeFactory.changeResourcesChange(player, PUs, toAdd);
         aBridge.addChange(change);
 
-        if(m_data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null)
+        if (data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null)
         {      
             Change changeVP = (ChangeFactory.attachmentPropertyChange(pa, (new Integer(Integer.parseInt(pa.getVps()) + (toAdd / 10 + Integer.parseInt(pa.getCaptureVps()) / 10))).toString(), "vps"));
             Change changeCapVP = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
@@ -133,13 +134,13 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 
         if(doBattleShipsRepairEndOfTurn())
         {
-        	MoveDelegate.repairBattleShips(aBridge, gameData, aBridge.getPlayerID(), false);
+            MoveDelegate.repairBattleShips(aBridge, data, aBridge.getPlayerID(), false);
         }
         m_needToInitialize = false;
 
         if(isGiveUnitsByTerritory() && pa != null && pa.getGiveUnitControl() != null && !pa.getGiveUnitControl().isEmpty())
         {
-        	changeUnitOwnership(aBridge, gameData);
+            changeUnitOwnership(aBridge, data);
         }
     }
     
@@ -215,7 +216,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
             	//Preset the original owner
             	PlayerID origOwner = attatchment.getOccupiedTerrOf();
             	if(origOwner == null)
-            		origOwner = DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(current);
+                    origOwner = DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker().getOriginalOwner(current);
             	
             	if(origOwner != PlayerID.NULL_PLAYERID && origOwner == current.getOwner())
             		value += attatchment.getProduction();
@@ -226,7 +227,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
             	if (TerritoryAttachment.get(current).isConvoyRoute())
             	{
             		//Determine if both parts of the convoy route are owned by the attacker or allies
-            		boolean ownedConvoyRoute =  m_data.getMap().getNeighbors(current, Matches.territoryHasConvoyOwnedBy(current.getOwner(), m_data, current)).size() > 0;
+                    boolean ownedConvoyRoute = getData().getMap().getNeighbors(current, Matches.territoryHasConvoyOwnedBy(current.getOwner(), getData(), current)).size() > 0;
             		if(ownedConvoyRoute)
             			value += attatchment.getProduction();   
             		
@@ -301,7 +302,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
     public void end()
     {
         m_needToInitialize = true;
-        DelegateFinder.battleDelegate(m_data).getBattleTracker().clear();
+        DelegateFinder.battleDelegate(getData()).getBattleTracker().clear();
     }
 
     /* 

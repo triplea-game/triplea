@@ -80,13 +80,14 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge aBridge, GameData gameData)
+    public void start(IDelegateBridge aBridge)
     {
-        super.start(aBridge, gameData);
-        if(games.strategy.triplea.Properties.getTriggers(m_data)) {
-        	TriggerAttachment.triggerProductionChange(m_player,m_bridge,m_data, null, null);
-        	TriggerAttachment.triggerProductionFrontierEditChange(m_player, m_bridge, m_data, null, null);
-        	TriggerAttachment.triggerPurchase(m_player,m_bridge,m_data, null, null);
+        super.start(aBridge);
+        GameData data = getData();
+        if (games.strategy.triplea.Properties.getTriggers(data)) {
+            TriggerAttachment.triggerProductionChange(m_player, m_bridge, null, null);
+            TriggerAttachment.triggerProductionFrontierEditChange(m_player, m_bridge, null, null);
+            TriggerAttachment.triggerPurchase(m_player, m_bridge, null, null);
         }
     }
 
@@ -129,7 +130,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
                 	// check to see how many are currently fielded by this player
                 	int currentlyBuilt = 0;
                 	CompositeMatch<Unit> unitTypeOwnedBy = new CompositeMatchAnd<Unit>(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(m_player));
-                	Collection<Territory> allTerrs = m_data.getMap().getTerritories();
+                        Collection<Territory> allTerrs = getData().getMap().getTerritories();
                 	for (Territory t : allTerrs)
             		{
                 		currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);
@@ -234,7 +235,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
         	
         	for (Unit u : repairUnits)
         	{
-        		if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data))
+                if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
         		{
         			int repairCount = repairMap.get(u);
                     

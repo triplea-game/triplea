@@ -192,8 +192,9 @@ public class DiceRoll implements Externalizable
      * @param annotation 
      *  
      */
-    public static DiceRoll rollDice(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
+    public static DiceRoll rollDice(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, Battle battle, String annotation)
     {
+        GameData data = bridge.getData();
         // Decide whether to use low luck rules or normal rules.
         if (games.strategy.triplea.Properties.getLow_Luck(data))
         {

@@ -141,7 +141,7 @@ public class DOddsCalculator
         {
             final CompositeChange allChanges = new CompositeChange();
             DummyDelegateBridge bridge1 = new DummyDelegateBridge(m_attacker, s_dataForSimulation, allChanges, m_keepOneAttackingLandUnit);
-            TripleADelegateBridge bridge = new TripleADelegateBridge(bridge1, s_dataForSimulation);
+            TripleADelegateBridge bridge = new TripleADelegateBridge(bridge1);
             MustFightBattle battle = new MustFightBattle(m_location, m_attacker, s_dataForSimulation, battleTracker);
             battle.setHeadless(true);
             battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, m_defender);
@@ -188,6 +188,11 @@ class DummyDelegateBridge implements IDelegateBridge
         m_attacker = attacker;
         m_allChanges = allChanges;
         m_changePerformer = new ChangePerformer(m_data);
+    }
+
+    public GameData getData()
+    {
+        return m_data;
     }
 
    public void leaveDelegateExecution()

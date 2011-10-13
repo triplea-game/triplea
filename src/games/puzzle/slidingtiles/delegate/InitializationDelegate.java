@@ -42,11 +42,11 @@ public class InitializationDelegate extends BaseDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge, GameData gameData)
+    public void start(IDelegateBridge bridge)
     {   
-        super.start(bridge, gameData);
+        super.start(bridge);
 
-        GameMap map = gameData.getMap();
+        GameMap map = getData().getMap();
         
         int width = map.getXDimension();
         int height = map.getYDimension();
@@ -86,7 +86,7 @@ public class InitializationDelegate extends BaseDelegate
         Territory swap = null;
         
        //System.out.println("Random stuff!");
-        GameProperties properties = gameData.getProperties();
+        GameProperties properties = getData().getProperties();
         int numberOfShuffles = Integer.valueOf((String) properties.get("Difficulty Level"));
         //int numberOfShuffles = 0;
         // Randomly shuffle the tiles on the board,

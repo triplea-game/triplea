@@ -37,7 +37,7 @@ public class BigWorldTest extends TestCase {
         bridge.setStepName("CombatMove");
     	MoveDelegate moveDelegate = moveDelegate(m_data);
     	
-		moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
     	String error = moveDelegate.move(sz28.getUnits().getUnits(), new Route(sz28, sz27, sz29));
     	assertError(error);
     	

@@ -968,7 +968,9 @@ public class TriggerAttachment extends DefaultAttachment{
 		}
 	}
 	
-	private static void triggerMustFightBattle(PlayerID player1, PlayerID player2, IDelegateBridge aBridge, GameData data) {
+    private static void triggerMustFightBattle(PlayerID player1, PlayerID player2, IDelegateBridge aBridge)
+    {
+        GameData data = aBridge.getData();
 		for (Territory terr : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player1))) {
 			if (Matches.territoryHasEnemyUnits(player1, data).match(terr))
 				DelegateFinder.battleDelegate(data).getBattleTracker().addBattle(new CRoute(terr), terr.getUnits().getMatches(Matches.unitIsOwnedBy(player1)), false, player1, data, aBridge, null);
@@ -1054,7 +1056,9 @@ public class TriggerAttachment extends DefaultAttachment{
 	// Should be void unless you have a really good reason otherwise.
 	//
 	
-	public static void triggerProductionChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+    public static void triggerProductionChange(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+    {
+        GameData data = aBridge.getData();
 		Set<TriggerAttachment> trigs = getTriggers(player,data,prodMatch(beforeOrAfter,stepName));
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t:trigs) {
@@ -1072,7 +1076,9 @@ public class TriggerAttachment extends DefaultAttachment{
 			aBridge.addChange(change);
 	}
 	
-	public static void triggerProductionFrontierEditChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+    public static void triggerProductionFrontierEditChange(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+    {
+        GameData data = aBridge.getData();
 		Set<TriggerAttachment> trigs = getTriggers(player, data, prodFrontierEditMatch(beforeOrAfter,stepName));
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t:trigs) {
@@ -1117,7 +1123,9 @@ public class TriggerAttachment extends DefaultAttachment{
 			aBridge.addChange(change); // TODO: we should sort the frontier list if we make changes to it...
 	}
 	
-	public static void triggerTechChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+    public static void triggerTechChange(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+    {
+        GameData data = aBridge.getData();
 		Set<TriggerAttachment> trigs = getTriggers(player,data,techMatch(beforeOrAfter,stepName));
 		for(TriggerAttachment t:trigs) {
 			boolean met = isMet(t, data);
@@ -1136,7 +1144,9 @@ public class TriggerAttachment extends DefaultAttachment{
 		}
 	}
 	
-	public static void triggerAvailableTechChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+    public static void triggerAvailableTechChange(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+    {
+        GameData data = aBridge.getData();
 		Set<TriggerAttachment> trigs = getTriggers(player,data,techAMatch(beforeOrAfter,stepName));
 		for(TriggerAttachment t:trigs) {
 			boolean met = isMet(t, data);
@@ -1165,7 +1175,9 @@ public class TriggerAttachment extends DefaultAttachment{
 		}
 	}
 	
-	public static void triggerUnitPlacement(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+    public static void triggerUnitPlacement(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+    {
+        GameData data = aBridge.getData();
 		Set<TriggerAttachment> trigs = getTriggers(player,data,placeMatch(beforeOrAfter,stepName));
 		for(TriggerAttachment t:trigs) {
 			boolean met = isMet(t, data);
@@ -1181,7 +1193,9 @@ public class TriggerAttachment extends DefaultAttachment{
 		}
 	}
 	
-	public static void triggerPurchase(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+    public static void triggerPurchase(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+    {
+        GameData data = aBridge.getData();
 		Set<TriggerAttachment> trigs = getTriggers(player,data,purchaseMatch(beforeOrAfter,stepName));
 		for(TriggerAttachment t:trigs) {
 			boolean met = isMet(t, data);
@@ -1204,7 +1218,9 @@ public class TriggerAttachment extends DefaultAttachment{
 		}
 	}
 	
-	public static void triggerResourceChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+    public static void triggerResourceChange(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+    {
+        GameData data = aBridge.getData();
 		Set<TriggerAttachment> trigs = getTriggers(player,data,resourceMatch(beforeOrAfter,stepName));
 		for(TriggerAttachment t:trigs) {
 			boolean met = isMet(t, data);
@@ -1229,7 +1245,9 @@ public class TriggerAttachment extends DefaultAttachment{
 	}
 	
 	// note this change is silent
-	public static void triggerSupportChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+    public static void triggerSupportChange(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+    {
+        GameData data = aBridge.getData();
 		Set<TriggerAttachment> trigs = getTriggers(player,data,supportMatch(beforeOrAfter,stepName));
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t:trigs) {
@@ -1261,7 +1279,9 @@ public class TriggerAttachment extends DefaultAttachment{
 			aBridge.addChange(change);
 	}
 
-	public static void triggerRelationshipChange(PlayerID player,IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+    public static void triggerRelationshipChange(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+    {
+        GameData data = aBridge.getData();
 		Set<TriggerAttachment> trigs = getTriggers(player,data,relationshipChangeMatch(beforeOrAfter,stepName));
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t: trigs) {
@@ -1282,7 +1302,7 @@ public class TriggerAttachment extends DefaultAttachment{
 						change.add(ChangeFactory.relationshipChange(player, player2, currentRelation,triggerNewRelation));
 						aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Changing Relationship for "+player.getName()+" and "+player2.getName()+" from "+currentRelation.getName()+" to "+triggerNewRelation.getName());
 						if(Matches.RelationshipIsAtWar.match(triggerNewRelation))
-							triggerMustFightBattle(player,player2,aBridge,data);
+                            triggerMustFightBattle(player, player2, aBridge);
 					}
 				}
 			}
@@ -1292,7 +1312,9 @@ public class TriggerAttachment extends DefaultAttachment{
 			aBridge.addChange(change);		
 	}
 
-	public static void triggerUnitPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+    public static void triggerUnitPropertyChange(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+    {
+        GameData data = aBridge.getData();
 		Set<TriggerAttachment> trigs = getTriggers(player,data,unitPropertyMatch(beforeOrAfter,stepName));
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t:trigs) {
@@ -1341,7 +1363,9 @@ public class TriggerAttachment extends DefaultAttachment{
 			aBridge.addChange(change);
 	}
 
-	public static void triggerTerritoryPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+    public static void triggerTerritoryPropertyChange(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+    {
+        GameData data = aBridge.getData();
 		Set<TriggerAttachment> trigs = getTriggers(player,data,territoryPropertyMatch(beforeOrAfter,stepName));
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t:trigs) {
@@ -1392,7 +1416,9 @@ public class TriggerAttachment extends DefaultAttachment{
 			aBridge.addChange(change);
 	}
 
-	public static void triggerPlayerPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+    public static void triggerPlayerPropertyChange(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+    {
+        GameData data = aBridge.getData();
 		Set<TriggerAttachment> trigs = getTriggers(player,data,playerPropertyMatch(beforeOrAfter,stepName));
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t:trigs) {
@@ -1463,7 +1489,9 @@ public class TriggerAttachment extends DefaultAttachment{
 			aBridge.addChange(change);
 	}
 
-	public static void triggerRelationshipTypePropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+    public static void triggerRelationshipTypePropertyChange(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+    {
+        GameData data = aBridge.getData();
 		Set<TriggerAttachment> trigs = getTriggers(player,data,relationshipTypePropertyMatch(beforeOrAfter,stepName));
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t:trigs) {
@@ -1501,7 +1529,9 @@ public class TriggerAttachment extends DefaultAttachment{
 			aBridge.addChange(change);
 	}
 
-	public static void triggerTerritoryEffectPropertyChange(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+    public static void triggerTerritoryEffectPropertyChange(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+    {
+        GameData data = aBridge.getData();
 		Set<TriggerAttachment> trigs = getTriggers(player,data,territoryEffectPropertyMatch(beforeOrAfter,stepName));
 		CompositeChange change = new CompositeChange();
 		for(TriggerAttachment t:trigs) {
@@ -1539,7 +1569,9 @@ public class TriggerAttachment extends DefaultAttachment{
 			aBridge.addChange(change);
 	}
 	
-	public static Tuple<String,Collection<PlayerID>> triggerVictory(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+	public static Tuple<String,Collection<PlayerID>> triggerVictory(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+    {
+        GameData data = aBridge.getData();
 		Set<TriggerAttachment> trigs = getTriggers(player,data,victoryMatch(beforeOrAfter,stepName));
 		for(TriggerAttachment t:trigs) {
 			boolean met = isMet(t, data);
@@ -1552,7 +1584,9 @@ public class TriggerAttachment extends DefaultAttachment{
 		return null;
 	}
 
-	public static Set<String> triggerNotifications(PlayerID player, IDelegateBridge aBridge, GameData data, final String beforeOrAfter, final String stepName) {
+    public static Set<String> triggerNotifications(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+    {
+        GameData data = aBridge.getData();
 		try {
 			data.acquireReadLock();
 			Set<TriggerAttachment> trigs = getTriggers(player,data,notificationMatch(beforeOrAfter,stepName));

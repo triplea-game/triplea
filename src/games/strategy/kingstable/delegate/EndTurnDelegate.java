@@ -38,9 +38,9 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge, GameData gameData)
+    public void start(IDelegateBridge bridge)
     {   
-        super.start(bridge, gameData);
+        super.start(bridge);
         
         PlayerID winner = checkForWinner();
         if (winner != null)
@@ -94,7 +94,8 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
 
         PlayerID attacker = null;
         PlayerID defender = null;
-        for (PlayerID player : m_data.getPlayerList().getPlayers())
+        GameData data = getData();
+        for (PlayerID player : data.getPlayerList().getPlayers())
         {
             PlayerAttachment pa = (PlayerAttachment) player.getAttachment("playerAttachment");
             
@@ -115,7 +116,7 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
         int numAttackerPieces = 0;
         int numDefenderPieces = 0;
         
-        for (Territory t : m_data.getMap().getTerritories()) 
+        for (Territory t : data.getMap().getTerritories())
         {   if (t.getUnits().isEmpty())
                 continue;
             

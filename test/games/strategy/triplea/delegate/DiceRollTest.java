@@ -67,23 +67,23 @@ public class DiceRollTest extends TestCase
         
         //infantry defends and hits at 1 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
-        DiceRoll roll = DiceRoll.rollDice( infantry, true, russians, bridge, m_data, battle, "");
+        DiceRoll roll = DiceRoll.rollDice(infantry, true, russians, bridge, battle, "");
         assertEquals(1, roll.getHits());
         
         //infantry does not hit at 2 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {2}));
-        DiceRoll roll2 = DiceRoll.rollDice( infantry, true, russians, bridge, m_data, battle, "");
+        DiceRoll roll2 = DiceRoll.rollDice(infantry, true, russians, bridge, battle, "");
         assertEquals(0, roll2.getHits());
         
         
         //infantry attacks and hits at 0 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
-        DiceRoll roll3 = DiceRoll.rollDice( infantry, false, russians, bridge, m_data, battle, "");
+        DiceRoll roll3 = DiceRoll.rollDice(infantry, false, russians, bridge, battle, "");
         assertEquals(1, roll3.getHits());
         
         //infantry attack does not hit at 1 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
-        DiceRoll roll4 = DiceRoll.rollDice( infantry, false, russians, bridge, m_data, battle, "");
+        DiceRoll roll4 = DiceRoll.rollDice(infantry, false, russians, bridge, battle, "");
         assertEquals(0, roll4.getHits());
     }
     
@@ -103,23 +103,23 @@ public class DiceRollTest extends TestCase
         
         //infantry defends and hits at 1 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
-        DiceRoll roll = DiceRoll.rollDice( infantry, true, russians, bridge, m_data, battle, "");
+        DiceRoll roll = DiceRoll.rollDice(infantry, true, russians, bridge, battle, "");
         assertEquals(1, roll.getHits());
         
         //infantry does not hit at 2 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {2}));
-        DiceRoll roll2 = DiceRoll.rollDice( infantry, true, russians, bridge, m_data, battle, "");
+        DiceRoll roll2 = DiceRoll.rollDice(infantry, true, russians, bridge, battle, "");
         assertEquals(0, roll2.getHits());
         
         
         //infantry attacks and hits at 0 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
-        DiceRoll roll3 = DiceRoll.rollDice( infantry, false, russians, bridge, m_data, battle, "");
+        DiceRoll roll3 = DiceRoll.rollDice(infantry, false, russians, bridge, battle, "");
         assertEquals(1, roll3.getHits());
         
         //infantry attack does not hit at 1 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
-        DiceRoll roll4 = DiceRoll.rollDice( infantry, false, russians, bridge, m_data, battle, "");
+        DiceRoll roll4 = DiceRoll.rollDice(infantry, false, russians, bridge, battle, "");
         assertEquals(0, roll4.getHits());
     }        
     
@@ -140,7 +140,7 @@ public class DiceRollTest extends TestCase
         
         //artillery supported infantry and art attack at 1 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {1,1}));
-        DiceRoll roll = DiceRoll.rollDice( units, false, russians, bridge, m_data, battle, "");
+        DiceRoll roll = DiceRoll.rollDice(units, false, russians, bridge, battle, "");
         assertEquals(2, roll.getHits());
     }
     
@@ -171,7 +171,7 @@ public class DiceRollTest extends TestCase
         
         //artillery supported infantry and art attack at 1 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {1,1,1}));
-        DiceRoll roll = DiceRoll.rollDice( units, false, russians, bridge, m_data, battle, "");
+        DiceRoll roll = DiceRoll.rollDice(units, false, russians, bridge, battle, "");
         assertEquals(3, roll.getHits());
     }
     
@@ -193,7 +193,7 @@ public class DiceRollTest extends TestCase
         //3 infantry on defense should produce exactly one hit, without rolling the dice
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
         
-        DiceRoll roll = DiceRoll.rollDice( units, true, russians, bridge, m_data, battle, "");
+        DiceRoll roll = DiceRoll.rollDice(units, true, russians, bridge, battle, "");
         assertEquals(1, roll.getHits());
     }
 
@@ -247,7 +247,7 @@ public class DiceRollTest extends TestCase
         battle.setIsAmphibious(true);
         
         
-        DiceRoll roll=  DiceRoll.rollDice(attackers, false, americans,bridge,m_data, battle, "");
+        DiceRoll roll = DiceRoll.rollDice(attackers, false, americans, bridge, battle, "");
         assertEquals(1, roll.getHits());        
     }
     
@@ -271,7 +271,7 @@ public class DiceRollTest extends TestCase
         battle.setIsAmphibious(true);
         
         
-        DiceRoll roll=  DiceRoll.rollDice(attackers, false, americans,bridge,m_data, battle, "");
+        DiceRoll roll = DiceRoll.rollDice(attackers, false, americans, bridge, battle, "");
         assertEquals(1, roll.getHits());        
     }
 
@@ -293,7 +293,7 @@ public class DiceRollTest extends TestCase
         battle.setIsAmphibious(true);
                 
         
-        DiceRoll roll=  DiceRoll.rollDice(attackers, false, americans,bridge,m_data, battle, "");
+        DiceRoll roll = DiceRoll.rollDice(attackers, false, americans, bridge, battle, "");
         assertEquals(0, roll.getHits());        
     }
 
@@ -443,7 +443,7 @@ public class DiceRollTest extends TestCase
         
         testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {2,3} ));
         
-        DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, m_data, new MockBattle(m_data.getMap().getTerritory("Germany")), "");
+        DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, new MockBattle(m_data.getMap().getTerritory("Germany")), "");
         
         assertEquals(Die.DieType.HIT, dice.getRolls(4).get(0).getType() );
         assertEquals(Die.DieType.HIT, dice.getRolls(4).get(1).getType() );
@@ -462,7 +462,7 @@ public class DiceRollTest extends TestCase
         
         testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {0,1} ));
         
-        DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, m_data, new MockBattle(m_data.getMap().getTerritory("Germany")), "");
+        DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, new MockBattle(m_data.getMap().getTerritory("Germany")), "");
         
         assertEquals(1, dice.getRolls(1).size());
         assertEquals(Die.DieType.HIT, dice.getRolls(1).get(0).getType() );
@@ -480,7 +480,7 @@ public class DiceRollTest extends TestCase
         
         testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {0,1} ));
         
-        DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, m_data, new MockBattle(m_data.getMap().getTerritory("Germany")), "");
+        DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, new MockBattle(m_data.getMap().getTerritory("Germany")), "");
         
         assertEquals(1, dice.getRolls(1).size());
         assertEquals(Die.DieType.HIT, dice.getRolls(1).get(0).getType() );
@@ -501,7 +501,7 @@ public class DiceRollTest extends TestCase
         
         testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {2,3} ));
         
-        DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, m_data, new MockBattle(m_data.getMap().getTerritory("Germany")), "");
+        DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, new MockBattle(m_data.getMap().getTerritory("Germany")), "");
         
         assertEquals(Die.DieType.HIT, dice.getRolls(4).get(0).getType() );
         assertEquals(Die.DieType.IGNORED, dice.getRolls(4).get(1).getType() );
@@ -522,7 +522,7 @@ public class DiceRollTest extends TestCase
         
         testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {3,2} ));
         
-        DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, m_data, new MockBattle(m_data.getMap().getTerritory("Germany")), "");
+        DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, new MockBattle(m_data.getMap().getTerritory("Germany")), "");
         
         assertEquals(Die.DieType.HIT, dice.getRolls(4).get(0).getType() );
         assertEquals(Die.DieType.IGNORED, dice.getRolls(4).get(1).getType() );
@@ -542,7 +542,7 @@ public class DiceRollTest extends TestCase
         
         testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {0,1} ));
         
-        DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, m_data, new MockBattle(m_data.getMap().getTerritory("Germany")), "");
+        DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, new MockBattle(m_data.getMap().getTerritory("Germany")), "");
         
         assertEquals(2, dice.getRolls(1).size());
         assertEquals(1, dice.getHits());

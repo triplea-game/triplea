@@ -33,13 +33,14 @@ public class InitializationDelegate extends BaseDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge, GameData gameData)
+    public void start(IDelegateBridge bridge)
     {   
-        super.start(bridge, gameData);
+        super.start(bridge);
         
         PlayerID attacker = null;
         PlayerID defender = null;
-        for (PlayerID player : m_data.getPlayerList().getPlayers())
+        GameData data = getData();
+        for (PlayerID player : data.getPlayerList().getPlayers())
         {
             PlayerAttachment pa = (PlayerAttachment) player.getAttachment("playerAttachment");
             
@@ -58,7 +59,7 @@ public class InitializationDelegate extends BaseDelegate
             throw new RuntimeException("Invalid game setup - no defender is specified. Reconfigure the game xml file so that one player has a playerAttachment with needsKing set to true.");
 
         
-        for (Territory t : gameData.getMap().getTerritories())
+        for (Territory t : data.getMap().getTerritories())
         {
             if (! t.getUnits().isEmpty())
             {

@@ -126,5 +126,5 @@ public interface IDelegateBridge
     
     public void enterDelegateExecution();
     
-
+    public GameData getData();
 }

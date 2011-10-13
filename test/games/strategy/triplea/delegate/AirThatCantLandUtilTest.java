@@ -165,13 +165,13 @@ public class AirThatCantLandUtilTest extends TestCase
         //now move to attack
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");        
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
         moveDelegate.move(sz_45.getUnits().getUnits(), m_data.getMap().getRoute(sz_45, sz_44));        
         moveDelegate.end();
                 
         //fight the battle
         BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
-        battle.start(bridge, m_data);
+        battle.start(bridge);
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {0,0,0}));
         bridge.setRemote(getDummyPlayer());
         battle.fightBattle(sz_44, false);        
@@ -220,13 +220,13 @@ public class AirThatCantLandUtilTest extends TestCase
         //now move to attack
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");        
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
         moveDelegate.move(sz_45.getUnits().getUnits(), m_data.getMap().getRoute(sz_45, sz_44));        
         moveDelegate.end();
                 
         //fight the battle
         BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
-        battle.start(bridge, m_data);
+        battle.start(bridge);
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {0,0,0}));
         bridge.setRemote(getDummyPlayer());
         battle.fightBattle(sz_44, false);        
@@ -276,13 +276,13 @@ public class AirThatCantLandUtilTest extends TestCase
         //now move to attack
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");        
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
         moveDelegate.move(sz_11.getUnits().getUnits(), m_data.getMap().getRoute(sz_11, sz_9));        
         moveDelegate.end();
                 
         //fight the battle
         BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
-        battle.start(bridge, m_data);
+        battle.start(bridge);
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {0,}));
         bridge.setRemote(getDummyPlayer());
         battle.fightBattle(sz_9, false);        
@@ -333,14 +333,14 @@ public class AirThatCantLandUtilTest extends TestCase
         //now move to attack
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");        
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
         moveDelegate.move(sz_11.getUnits().getUnits(), m_data.getMap().getRoute(sz_11, sz_9));   
         moveDelegate.move(sz_9.getUnits().getUnits(infantryType, 1), m_data.getMap().getRoute(sz_9, eastCanada));      
         moveDelegate.end();
                 
         //fight the battle
         BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
-        battle.start(bridge, m_data);
+        battle.start(bridge);
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {0,0,0}));
         bridge.setRemote(getDummyPlayer());
         battle.fightBattle(sz_9, false);        

@@ -81,7 +81,7 @@ public class MoveDelegateTest extends DelegateTest
     m_bridge.setStepName("BritishCombatMove");
     m_delegate = new MoveDelegate();
     m_delegate.initialize("MoveDelegate", "MoveDelegate");
-    m_delegate.start(m_bridge, m_data);
+        m_delegate.start(m_bridge);
   }
 
   private Collection<Unit> getUnits(IntegerMap<UnitType> units, Territory from)
@@ -684,7 +684,7 @@ public class MoveDelegateTest extends DelegateTest
       	  	  
       m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { 1 }));
       
-      DiceRoll roll = DiceRoll.rollDice(attackList, false, russians, m_bridge, m_data, new MockBattle(balticSeaZone), "");
+        DiceRoll roll = DiceRoll.rollDice(attackList, false, russians, m_bridge, new MockBattle(balticSeaZone), "");
       assertEquals(2, roll.getHits());
       
       m_bridge.setStepName("RussianNonCombatMove");
@@ -708,7 +708,7 @@ public class MoveDelegateTest extends DelegateTest
 	  m_bridge = super.getDelegateBridge(japanese);
 	  m_bridge.setStepName("JapaneseCombatMove");
 	  m_bridge.setPlayerID(japanese);
-	  m_delegate.start(m_bridge, m_data);
+        m_delegate.start(m_bridge);
 	  
       //Set up the test
       removeFrom(manchuria, manchuria.getUnits().getUnits());
@@ -1266,7 +1266,7 @@ public class MoveDelegateTest extends DelegateTest
     m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { 1,2 }));
     
     //Execute the battle and verify no hits
-    DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, m_bridge, m_data, new MockBattle(balticSeaZone), "");
+        DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, m_bridge, new MockBattle(balticSeaZone), "");
     assertEquals(0, roll.getHits());    
     
     //Get total number of units in Finland before the retreat 
@@ -1342,7 +1342,7 @@ public class MoveDelegateTest extends DelegateTest
     m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0,2 }));
     
     //Execute the battle and verify no hits
-    DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, m_bridge, m_data, new MockBattle(balticSeaZone), "");
+        DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, m_bridge, new MockBattle(balticSeaZone), "");
     assertEquals(1, roll.getHits());    
     
     //Get total number of units in Finland before the retreat 
@@ -1415,7 +1415,7 @@ public class MoveDelegateTest extends DelegateTest
     m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { 1,2 }));
     
     //Execute the battle and verify no hits
-    DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, m_bridge, m_data, new MockBattle(balticSeaZone), "");
+        DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, m_bridge, new MockBattle(balticSeaZone), "");
     assertEquals(0, roll.getHits());    
     
     //Get total number of units in Finland before the retreat 
@@ -1488,7 +1488,7 @@ public class MoveDelegateTest extends DelegateTest
     m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0,2 }));
     
     //Execute the battle and verify no hits
-    DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, m_bridge, m_data, new MockBattle(balticSeaZone), "");
+        DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, m_bridge, new MockBattle(balticSeaZone), "");
     assertEquals(1, roll.getHits());    
     
     //Get total number of units in Finland before the retreat 
@@ -1521,7 +1521,7 @@ public class MoveDelegateTest extends DelegateTest
   public void testNonCombatAttack()
   {
     m_bridge.setStepName("BritishNonCombatMove");
-    m_delegate.start(m_bridge, m_data);
+        m_delegate.start(m_bridge);
 
     Route route = new Route();
     route.setStart(equatorialAfrica);
@@ -1539,7 +1539,7 @@ public class MoveDelegateTest extends DelegateTest
   public void testNonCombatAttackNeutral()
   {
     m_bridge.setStepName("BritishNonCombatMove");
-    m_delegate.start(m_bridge, m_data);
+        m_delegate.start(m_bridge);
 
     Route route = new Route();
     route.setStart(equatorialAfrica);
@@ -1570,7 +1570,7 @@ public class MoveDelegateTest extends DelegateTest
 
     //go to non combat
     m_bridge.setStepName("BritishNonCombatMove");
-    m_delegate.start(m_bridge, m_data);
+        m_delegate.start(m_bridge);
 
     //move more into libya
     route = new Route();
@@ -1591,7 +1591,7 @@ public class MoveDelegateTest extends DelegateTest
   {
     m_bridge.setStepName("JapaneseCombatMove");
     m_bridge.setPlayerID(japanese);
-    m_delegate.start(m_bridge, m_data);
+        m_delegate.start(m_bridge);
 
     Route route = new Route();
     route.setStart(congo);

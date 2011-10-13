@@ -49,22 +49,19 @@ import java.util.Map;
  */
 public class NoPUPurchaseDelegate extends PurchaseDelegate
 {
-    private GameData m_data;
-
     private boolean isPacific;
     private boolean isWW2V3;
 
     @Override
-	public void start(IDelegateBridge aBridge, GameData gameData)
+    public void start(IDelegateBridge aBridge)
     {
-        super.start(aBridge, gameData);
-        m_data = gameData;
+        super.start(aBridge);
         
         isPacific = isPacificTheater();
         isWW2V3 = isWW2V3();
 
         PlayerID player = aBridge.getPlayerID();
-        Collection<Territory> territories = gameData.getMap().getTerritoriesOwnedBy(player);
+        Collection<Territory> territories = getData().getMap().getTerritoriesOwnedBy(player);
         
         Collection<Unit> units = getProductionUnits(territories, player);
 
@@ -130,12 +127,12 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
     private int getBurmaRoad(PlayerID player)
     {
         int burmaRoadCount = 0; // only for pacific - should equal 4 for extra inf
-        Iterator iter = m_data.getMap().getTerritories().iterator();
+        Iterator<Territory> iter = getData().getMap().getTerritories().iterator();
         while (iter.hasNext())
         {
-            Territory current = (Territory) iter.next();
+            Territory current = iter.next();
             String terrName = current.getName();
-            if((terrName.equals("Burma") || terrName.equals("India") || terrName.equals("Yunnan") || terrName.equals("Szechwan")) && m_data.getRelationshipTracker().isAllied(current.getOwner(), player))
+            if ((terrName.equals("Burma") || terrName.equals("India") || terrName.equals("Yunnan") || terrName.equals("Szechwan")) && getData().getRelationshipTracker().isAllied(current.getOwner(), player))
                 ++burmaRoadCount;
         }
 
@@ -146,22 +143,22 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
 
     private boolean isPacificTheater()
     {
-    	return games.strategy.triplea.Properties.getPacificTheater(m_data);
+        return games.strategy.triplea.Properties.getPacificTheater(getData());
     }
 
     private boolean isWW2V3()
     {
-    	return games.strategy.triplea.Properties.getWW2V3(m_data);
+        return games.strategy.triplea.Properties.getWW2V3(getData());
     }
 
     private boolean isProductionPerValuedTerritoryRestricted()
     {
-    	return games.strategy.triplea.Properties.getProductionPerValuedTerritoryRestricted(m_data);
+        return games.strategy.triplea.Properties.getProductionPerValuedTerritoryRestricted(getData());
     }
 
     private boolean isProductionPerXTerritoriesRestricted()
     {
-    	return games.strategy.triplea.Properties.getProductionPerXTerritoriesRestricted(m_data);
+        return games.strategy.triplea.Properties.getProductionPerXTerritoriesRestricted(getData());
     }
 
 }

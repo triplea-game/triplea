@@ -34,7 +34,6 @@ public abstract class BaseDelegate implements IDelegate
     protected String m_displayName;
     protected PlayerID m_player;
     protected IDelegateBridge m_bridge;
-    protected GameData m_data;
     
     /** 
      * Creates a new instance of the Delegate 
@@ -52,10 +51,9 @@ public abstract class BaseDelegate implements IDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge, GameData gameData)
+    public void start(IDelegateBridge bridge)
     {   
         m_bridge = bridge;
-        m_data = gameData;
         m_player = bridge.getPlayerID();
     }
     
@@ -108,6 +106,6 @@ public abstract class BaseDelegate implements IDelegate
     
     protected GameData getData()
     {
-        return m_data;
+        return m_bridge.getData();
     }
 }

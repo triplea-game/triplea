@@ -68,13 +68,12 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge aBridge, GameData gameData)
+    public void start(IDelegateBridge aBridge)
     {
-        m_bridge = new TripleADelegateBridge(aBridge, gameData);
-        m_data = gameData;
-        m_player = aBridge.getPlayerID();
-    	if(games.strategy.triplea.Properties.getTriggers(m_data)){
-    		TriggerAttachment.triggerAvailableTechChange(m_player, m_bridge, m_data, null, null);
+        m_bridge = new TripleADelegateBridge(aBridge);
+        super.start(m_bridge);
+        if (games.strategy.triplea.Properties.getTriggers(getData())) {
+            TriggerAttachment.triggerAvailableTechChange(m_player, m_bridge, null, null);
     	}
     }
 
@@ -85,22 +84,22 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 
     private boolean isWW2V2()
     {
-        return games.strategy.triplea.Properties.getWW2V2(m_data);
+        return games.strategy.triplea.Properties.getWW2V2(getData());
     }
 
     private boolean isWW2V3TechModel()
     {
-        return games.strategy.triplea.Properties.getWW2V3TechModel(m_data);
+        return games.strategy.triplea.Properties.getWW2V3TechModel(getData());
     }
 
     private boolean isSelectableTechRoll()
     {
-        return games.strategy.triplea.Properties.getSelectableTechRoll(m_data);
+        return games.strategy.triplea.Properties.getSelectableTechRoll(getData());
     }
 
     private boolean isLL_TECH_ONLY()
     {
-        return games.strategy.triplea.Properties.getLL_TECH_ONLY(m_data);
+        return games.strategy.triplea.Properties.getLL_TECH_ONLY(getData());
     }
  
     public TechResults rollTech(int techRolls, TechnologyFrontier techToRollFor, int newTokens)
@@ -120,11 +119,12 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
         if(isWW2V3TechModel())
             m_currTokens = m_player.getResources().getQuantity(Constants.TECH_TOKENS);
         
+        GameData data = getData();
         if (getAvailableTechs().isEmpty())
         {
             if(isWW2V3TechModel())
             {
-                Resource techTokens = m_data.getResourceList().getResource(Constants.TECH_TOKENS);
+                Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
                 String transcriptText = m_player.getName() + " No more available tech advances.";
 
                 m_bridge.getHistoryWriter().startEvent(transcriptText);
@@ -141,31 +141,32 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
         int[] random;
         int techHits = 0;
         int remainder = 0;
-        if (EditDelegate.getEditMode(m_data))
+        int diceSides = data.getDiceSides();
+        if (EditDelegate.getEditMode(data))
         {
             ITripleaPlayer tripleaPlayer = (ITripleaPlayer) m_bridge.getRemote();
-            random = tripleaPlayer.selectFixedDice(techRolls, m_data.getDiceSides(), true, annotation, m_data.getDiceSides());
+            random = tripleaPlayer.selectFixedDice(techRolls, diceSides, true, annotation, diceSides);
             techHits = getTechHits(random);
         }
         else if (isLL_TECH_ONLY())
         {
-        	techHits = techRolls / m_data.getDiceSides();
-        	remainder = techRolls % m_data.getDiceSides();
+                techHits = techRolls / diceSides;
+                remainder = techRolls % diceSides;
         	if (remainder > 0)
         	{
-        		random = m_bridge.getRandom(m_data.getDiceSides(), 1, annotation);
+                    random = m_bridge.getRandom(diceSides, 1, annotation);
         		if (random[0] + 1 <= remainder)
             		techHits++;
         	}
         	else
         	{
-        		random = m_bridge.getRandom(m_data.getDiceSides(), 1, annotation);
-        		remainder = m_data.getDiceSides();
+                    random = m_bridge.getRandom(diceSides, 1, annotation);
+                    remainder = diceSides;
         	}
         }
         else
         {
-        	random = m_bridge.getRandom(m_data.getDiceSides(), techRolls, annotation);
+                random = m_bridge.getRandom(diceSides, techRolls, annotation);
         	techHits = getTechHits(random);
         }
 
@@ -183,7 +184,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
         {
             m_techCategory = techToRollFor;
             //remove all the tokens            
-            Resource techTokens = m_data.getResourceList().getResource(Constants.TECH_TOKENS);
+            Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
             String transcriptText = m_player.getName() + " removing all Technology Tokens after successful research.";
 
             m_bridge.getHistoryWriter().startEvent(transcriptText);
@@ -197,7 +198,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
                         new DiceRoll(random, techHits, remainder, false));
         else
         	m_bridge.getHistoryWriter().setRenderingData(
-                new DiceRoll(random, techHits, m_data.getDiceSides() - 1, true));
+new DiceRoll(random, techHits, diceSides - 1, true));
 
         Collection<TechAdvance> advances;
         if (selectableTech)
@@ -246,22 +247,23 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
     
     private List<TechAdvance> getAvailableTechs()
     {
-        m_data.acquireReadLock();
+        GameData data = getData();
+        data.acquireReadLock();
         try
         {
-            Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(m_player,m_data);
-            Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data,m_player);
+            Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(m_player, data);
+            Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(data, m_player);
             return Util.difference(allAdvances, currentAdvances);
         }
         finally 
         {
-            m_data.releaseReadLock();
+            data.releaseReadLock();
         }
     }
 
     boolean checkEnoughMoney(int rolls)
     {
-        Resource PUs = m_data.getResourceList().getResource(Constants.PUS);
+        Resource PUs = getData().getResourceList().getResource(Constants.PUS);
         int cost = rolls * getTechCost();
         int has = m_bridge.getPlayerID().getResources().getQuantity(PUs);
         return has >= cost;
@@ -270,7 +272,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 
     private void chargeForTechRolls(int rolls)
     {
-        Resource PUs = m_data.getResourceList().getResource(Constants.PUS);
+        Resource PUs = getData().getResourceList().getResource(Constants.PUS);
         //TODO techCost
         int cost = rolls * getTechCost();
 
@@ -284,7 +286,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
         
         if(isWW2V3TechModel())
         {
-            Resource tokens = m_data.getResourceList().getResource(Constants.TECH_TOKENS);
+            Resource tokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
             Change newTokens = ChangeFactory.changeResourcesChange(m_bridge
                 .getPlayerID(), tokens, rolls);
             m_bridge.addChange(newTokens);
@@ -296,7 +298,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
         int count = 0;
         for (int i = 0; i < random.length; i++)
         {
-            if (random[i] == m_data.getDiceSides() - 1)
+            if (random[i] == getData().getDiceSides() - 1)
                 count++;
         }
         return count;
@@ -325,10 +327,10 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 
         String annotation = m_player.getName() + " rolling to see what tech advances are aquired";
         int[] random;
-        if (EditDelegate.getEditMode(m_data))
+        if (EditDelegate.getEditMode(getData()))
         {
             ITripleaPlayer tripleaPlayer = (ITripleaPlayer) m_bridge.getRemote();
-            random = tripleaPlayer.selectFixedDice(hits, 0, true, annotation, m_data.getDiceSides());
+            random = tripleaPlayer.selectFixedDice(hits, 0, true, annotation, getData().getDiceSides());
 
         }
         else {
@@ -364,10 +366,9 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
     private List<TechAdvance> getAvailableAdvances()
     {
         //too many
-        Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data,m_bridge
+        Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData(), m_bridge
                 .getPlayerID());
-        Collection<TechAdvance> playersAdvances = TechTracker.getTechAdvances(m_bridge
-                .getPlayerID(),m_data);
+        Collection<TechAdvance> playersAdvances = TechTracker.getTechAdvances(m_bridge.getPlayerID(), getData());
 
         List<TechAdvance> available = Util.difference(allAdvances, playersAdvances);
         return available;
@@ -376,8 +377,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
     private List<TechAdvance> getAvailableAdvancesForCategory(TechnologyFrontier techCategory)
     {
         //Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data, techCategory);
-        Collection<TechAdvance> playersAdvances = TechTracker.getTechAdvances(m_bridge
-                .getPlayerID(),m_data);
+        Collection<TechAdvance> playersAdvances = TechTracker.getTechAdvances(m_bridge.getPlayerID(), getData());
 
         List<TechAdvance> available = Util.difference(techCategory.getTechs(), playersAdvances);
         return available;

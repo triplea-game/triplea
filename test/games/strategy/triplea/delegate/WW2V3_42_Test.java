@@ -55,7 +55,7 @@ public class WW2V3_42_Test extends TestCase {
             MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
             ITestDelegateBridge bridge = getDelegateBridge(germans);
             bridge.setStepName("CombatMove");
-            moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
 
             
             Route sz13To12 = new Route();
@@ -84,7 +84,7 @@ public class WW2V3_42_Test extends TestCase {
             MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
             ITestDelegateBridge bridge = getDelegateBridge( germans);
             bridge.setStepName("CombatMove");
-            moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
             
             bridge.setRemote(new DummyTripleAPlayer() {
 
@@ -132,7 +132,7 @@ public class WW2V3_42_Test extends TestCase {
             
             ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
             bridge.setStepName("CombatMove");
-            moveDelegate(m_data).start(bridge, m_data);
+        moveDelegate(m_data).start(bridge);
             
             //attack with a german sub
             move(sz7.getUnits().getUnits(), new Route(sz7,sz6,sz5));
@@ -140,7 +140,7 @@ public class WW2V3_42_Test extends TestCase {
             moveDelegate(m_data).end();
             
             //adding of lingering units was moved from end of combat-move phase, to start of battle phase
-            battleDelegate(m_data).start(bridge, m_data);
+        battleDelegate(m_data).start(bridge);
             
             //all units in sz5 should be involved in the battle
             
@@ -163,7 +163,7 @@ public class WW2V3_42_Test extends TestCase {
             
             ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
             bridge.setStepName("CombatMove");
-            moveDelegate(m_data).start(bridge, m_data);
+        moveDelegate(m_data).start(bridge);
             
             //attack with a german sub
             move(sz7.getUnits().getUnits(), new Route(sz7,sz6,sz5));
@@ -171,7 +171,7 @@ public class WW2V3_42_Test extends TestCase {
             moveDelegate(m_data).end();
             
             //adding of lingering units was moved from end of combat-move phase, to start of battle phase
-            battleDelegate(m_data).start(bridge, m_data);
+        battleDelegate(m_data).start(bridge);
             
             //all units in sz5 should be involved in the battle
             //except the italian carrier
@@ -191,7 +191,7 @@ public class WW2V3_42_Test extends TestCase {
             
             ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
             bridge.setStepName("CombatMove");
-            moveDelegate(m_data).start(bridge, m_data);
+        moveDelegate(m_data).start(bridge);
             
             //attack with a german sub
             move(sz7.getUnits().getUnits(), new Route(sz7,sz6,sz5));
@@ -203,7 +203,7 @@ public class WW2V3_42_Test extends TestCase {
             moveDelegate(m_data).end();
             
             //adding of lingering units was moved from end of combat-move phase, to start of battle phase
-            battleDelegate(m_data).start(bridge, m_data);
+        battleDelegate(m_data).start(bridge);
             
             //all units in sz5 should be involved in the battle
             

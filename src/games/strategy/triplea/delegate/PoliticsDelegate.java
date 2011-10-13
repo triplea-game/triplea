@@ -46,10 +46,11 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
     /**
      * Called before the delegate will run.
      */
-	public void start(IDelegateBridge aBridge, GameData gameData) {
-		super.start(aBridge, gameData);
-        if(games.strategy.triplea.Properties.getTriggers(m_data)) {
-        	TriggerAttachment.triggerRelationshipChange(m_player,m_bridge,m_data, null, null); 
+    public void start(IDelegateBridge aBridge)
+    {
+        super.start(aBridge);
+        if (games.strategy.triplea.Properties.getTriggers(getData())) {
+            TriggerAttachment.triggerRelationshipChange(m_player, m_bridge, null, null);
         }		 
 	}
     

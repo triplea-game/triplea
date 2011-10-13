@@ -61,7 +61,7 @@ public class LHTRTest extends TestCase
         ITestDelegateBridge bridge = getDelegateBridge(germans);
                 
         bridge.setStepName("GermansNonCombatMove");
-        delegate.start(bridge, m_data);
+        delegate.start(bridge);
         
         Territory baltic = m_data.getMap().getTerritory("5 Sea Zone");
         Territory easternEurope = m_data.getMap().getTerritory("Eastern Europe");
@@ -98,7 +98,7 @@ public class LHTRTest extends TestCase
         ITestDelegateBridge bridge = getDelegateBridge(germans);
                 
         bridge.setStepName("GermansNonCombatMove");
-        delegate.start(bridge, m_data);
+        delegate.start(bridge);
         
         Territory baltic = m_data.getMap().getTerritory("5 Sea Zone");
         Territory easternEurope = m_data.getMap().getTerritory("Eastern Europe");
@@ -130,7 +130,7 @@ public class LHTRTest extends TestCase
         ITestDelegateBridge bridge = getDelegateBridge(germans);
                 
         bridge.setStepName("GermansNonCombatMove");
-        delegate.start(bridge, m_data);
+        delegate.start(bridge);
 
         //if we try to move aa, then the game will ask us if we want to move
         //fail if we are called

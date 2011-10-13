@@ -19,7 +19,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.history.Event;
 import games.strategy.engine.history.EventChild;
@@ -51,8 +50,7 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
      */
     public void start(IDelegateBridge bridge, GameData gameData)
     {   
-        m_bridge = new TripleADelegateBridge(bridge, gameData);
-        m_data = gameData;
+        m_bridge = new TripleADelegateBridge(bridge);
         m_player = bridge.getPlayerID();
     }
 	
@@ -79,7 +77,7 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
         String result = checkPlayerID();
         if (null != result)
             return result;
-        if (!getEditMode(m_data))
+        if (!getEditMode(getData()))
             return "Edit mode is not enabled";
         return null;
     }
@@ -97,13 +95,13 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
             return "Edit Mode can only be toggled during players turn";
 
         logEvent("Turning " + (editMode ? "on" : "off") + " Edit Mode", null);
-        m_bridge.addChange(ChangeFactory.setProperty(Constants.EDIT_MODE, new Boolean(editMode), m_data));
+        m_bridge.addChange(ChangeFactory.setProperty(Constants.EDIT_MODE, Boolean.valueOf(editMode), getData()));
         return null;
     }
 
     public boolean getEditMode()
     {
-        return EditDelegate.getEditMode(m_data);
+        return EditDelegate.getEditMode(getData());
     }
 
     public String removeUnits(Territory territory, Collection<Unit> units)
@@ -112,7 +110,7 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
         if (null != (result = checkEditMode()))
             return result;
 
-        if (null != (result = EditValidator.validateRemoveUnits(m_data, territory, units)))
+        if (null != (result = EditValidator.validateRemoveUnits(getData(), territory, units)))
             return result;
 
         logEvent("Removing units owned by "+m_bridge.getPlayerID().getName()+" from "+territory.getName()+": "+MyFormatter.unitsToTextNoOwner(units), units);
@@ -126,7 +124,7 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
         if (null != (result = checkEditMode()))
             return result;
 
-        if (null != (result = EditValidator.validateAddUnits(m_data, territory, units)))
+        if (null != (result = EditValidator.validateAddUnits(getData(), territory, units)))
             return result;
 
         /* No longer needed, as territory unitProduction is now set by default to equal the territory value. Therefore any time it is different from the default, the map maker set it, so we shouldn't screw with it.
@@ -163,13 +161,15 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
         if (null != (result = checkEditMode()))
             return result;
 
+        GameData data = getData();
+
         // validate this edit
-        if (null != (result = EditValidator.validateChangeTerritoryOwner(m_data, territory, player)))
+        if (null != (result = EditValidator.validateChangeTerritoryOwner(data, territory, player)))
             return result;
 
         logEvent("Changing ownership of "+territory.getName()+" from "+territory.getOwner().getName()+" to "+player.getName(), territory);
 
-        if (m_data.getRelationshipTracker().isAllied(territory.getOwner(), player))
+        if (data.getRelationshipTracker().isAllied(territory.getOwner(), player))
         {
             // change ownership of friendly factories
             Collection<Unit> units = territory.getUnits().getMatches(Matches.UnitIsFactory);
@@ -180,7 +180,7 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
         {
             CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>();
             enemyNonCom.add(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
-            enemyNonCom.add(Matches.enemyUnit(player, m_data));
+            enemyNonCom.add(Matches.enemyUnit(player, data));
             Collection<Unit> units = territory.getUnits().getMatches(enemyNonCom);
             // mark no movement for enemy units
             m_bridge.addChange(ChangeFactory.markNoMovementChange(units));
@@ -201,7 +201,7 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
         if (null != (result = checkEditMode()))
             return result;
 
-        Resource PUs = m_data.getResourceList().getResource(Constants.PUS);
+        Resource PUs = getData().getResourceList().getResource(Constants.PUS);
         int oldTotal = player.getResources().getQuantity(PUs);
 
         if (oldTotal == newTotal)
@@ -221,7 +221,7 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
         if (null != (result = checkEditMode()))
             return result;
 
-        Resource techTokens = m_data.getResourceList().getResource(Constants.TECH_TOKENS);
+        Resource techTokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
         int oldTotal = player.getResources().getQuantity(techTokens);
 
         if (oldTotal == newTotal)
@@ -255,10 +255,11 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
         // find last event node
 
         boolean foundChild = false;
-        m_data.acquireReadLock();
+        GameData game_data = getData();
+        game_data.acquireReadLock();
         try
         {
-            HistoryNode curNode = m_data.getHistory().getLastNode();
+            HistoryNode curNode = game_data.getHistory().getLastNode();
             while (! (curNode instanceof Step) && ! (curNode instanceof Event))
             {
                 if (curNode instanceof EventChild)
@@ -271,15 +272,15 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
         }
         finally
         {
-            m_data.releaseReadLock();
+            game_data.releaseReadLock();
         }
 
         if (foundChild)
-            m_bridge.getHistoryWriter().addChildToEvent(message, data);
+            m_bridge.getHistoryWriter().addChildToEvent(message, game_data);
         else
         {
             m_bridge.getHistoryWriter().startEvent(message);
-            m_bridge.getHistoryWriter().setRenderingData(data);
+            m_bridge.getHistoryWriter().setRenderingData(game_data);
         }
 
     }

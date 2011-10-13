@@ -179,4 +179,14 @@ public class TestDelegateBridge implements ITestDelegateBridge
     }
 
     public void stopGameSequence() {}
+    
+    /*
+     * (non-Javadoc)
+     * @see games.strategy.engine.delegate.IDelegateBridge#getData()
+     */
+    @Override
+    public GameData getData()
+    {
+        return m_data;
+    }
 }

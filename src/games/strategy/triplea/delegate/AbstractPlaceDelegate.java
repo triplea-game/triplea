@@ -127,7 +127,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         if (moveIndex < m_placements.size() && moveIndex >= 0)
         {
             UndoablePlacement undoPlace = m_placements.get(moveIndex);
-            undoPlace.undo(m_data, m_bridge);
+            undoPlace.undo(getData(), m_bridge);
             m_placements.remove(moveIndex);
             updateUndoablePlacementIndexes();
         }
@@ -211,17 +211,17 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 
     private boolean canProduceFightersOnCarriers()
     {
-        return games.strategy.triplea.Properties.getProduce_Fighters_On_Carriers(m_data);
+        return games.strategy.triplea.Properties.getProduce_Fighters_On_Carriers(getData());
     }
 
     private boolean canProduceNewFightersOnOldCarriers()
     {
-        return games.strategy.triplea.Properties.getProduce_New_Fighters_On_Old_Carriers(m_data);
+        return games.strategy.triplea.Properties.getProduce_New_Fighters_On_Old_Carriers(getData());
     }
 
     private boolean canMoveExistingFightersToNewCarriers()
     {
-        return games.strategy.triplea.Properties.getMove_Existing_Fighters_To_New_Carriers(m_data);
+        return games.strategy.triplea.Properties.getMove_Existing_Fighters_To_New_Carriers(getData());
     }
 
     /**
@@ -304,7 +304,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
     	IntegerMap<String> unitMapHeld = new IntegerMap<String>();
         IntegerMap<String> unitMapMaxType = new IntegerMap<String>();
         IntegerMap<String> unitMapTypePerTurn = new IntegerMap<String>();
-        int maxFactory = games.strategy.triplea.Properties.getFactoriesPerCountry(m_data);
+        int maxFactory = games.strategy.triplea.Properties.getFactoriesPerCountry(getData());
         Iterator<Unit> unitHeldIter = Match.getMatches(units, Matches.UnitIsFactoryOrConstruction).iterator();
         TerritoryAttachment ta = TerritoryAttachment.get(to);
         while(unitHeldIter.hasNext())
@@ -342,9 +342,9 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         	}
         }
 
-        boolean moreWithoutFactory = games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(m_data);
-        boolean moreWithFactory = games.strategy.triplea.Properties.getMoreConstructionsWithFactory(m_data);
-        boolean unlimitedConstructions = games.strategy.triplea.Properties.getUnlimitedConstructions(m_data);
+        boolean moreWithoutFactory = games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(getData());
+        boolean moreWithFactory = games.strategy.triplea.Properties.getMoreConstructionsWithFactory(getData());
+        boolean unlimitedConstructions = games.strategy.triplea.Properties.getUnlimitedConstructions(getData());
         boolean wasFactoryThereAtStart = wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
 
         // build an integer map of each construction unit in the territory
@@ -476,7 +476,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         if (!constructionMap.isPositive())
         	return "Too many constructions in " + to.getName();
 
-        List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, m_data));
+        List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, getData()));
         if(!capitalsListOwned.contains(to) && isPlacementInCapitalRestricted(player))
                 return "Cannot place these units outside of the capital";
 
@@ -556,7 +556,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
             placeableUnits.addAll(Match.getMatches(units, airThatCanLandOnCarrier));
         }
 
-        if ((!isWW2V2() && !isUnitPlacementInEnemySeas()) && to.getUnits().someMatch(Matches.enemyUnit(player, m_data)))
+        if ((!isWW2V2() && !isUnitPlacementInEnemySeas()) && to.getUnits().someMatch(Matches.enemyUnit(player, getData())))
             return null;
 
         // remove any units that require other units to be consumed on creation (veqryn)
@@ -800,7 +800,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         }
 
         // getHowMuchCanUnitProduce accounts for IncreasedFactoryProduction, but does not account for maxConstructions
-        production = TripleAUnit.getProductionPotentialOfTerritory(unitsAtStartOfStepInTerritory(producer), producer, player, m_data, true);
+        production = TripleAUnit.getProductionPotentialOfTerritory(unitsAtStartOfStepInTerritory(producer), producer, player, getData(), true);
 
         // increase the production by the number of constructions allowed
         if (maxConstructions > 0)
@@ -872,7 +872,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
             return "Factories cant produce until 1 turn after they are created";
         }
 
-        if (to.isWater() && (!isWW2V2() && !isUnitPlacementInEnemySeas()) && to.getUnits().someMatch(Matches.enemyUnit(player, m_data)))
+        if (to.isWater() && (!isWW2V2() && !isUnitPlacementInEnemySeas()) && to.getUnits().someMatch(Matches.enemyUnit(player, getData())))
             return "Cannot place sea units with enemy naval units";
 
         return null;
@@ -907,43 +907,43 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 
     protected boolean isWW2V2()
     {
-        return games.strategy.triplea.Properties.getWW2V2(m_data);
+        return games.strategy.triplea.Properties.getWW2V2(getData());
     }
 
     private boolean isWW2V3()
     {
-        return games.strategy.triplea.Properties.getWW2V3(m_data);
+        return games.strategy.triplea.Properties.getWW2V3(getData());
     }
 
     private boolean isMultipleAAPerTerritory()
     {
-        return games.strategy.triplea.Properties.getMultipleAAPerTerritory(m_data);
+        return games.strategy.triplea.Properties.getMultipleAAPerTerritory(getData());
     }
 
     protected boolean isUnitPlacementInEnemySeas()
     {
-        return games.strategy.triplea.Properties.getUnitPlacementInEnemySeas(m_data);
+        return games.strategy.triplea.Properties.getUnitPlacementInEnemySeas(getData());
     }
 
     private boolean wasConquered(Territory t)
     {
-        BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
+        BattleTracker tracker = DelegateFinder.battleDelegate(getData()).getBattleTracker();
         return tracker.wasConquered(t);
     }
 
     private boolean isPlaceInAnyTerritory()
     {
-        return games.strategy.triplea.Properties.getPlaceInAnyTerritory(m_data);
+        return games.strategy.triplea.Properties.getPlaceInAnyTerritory(getData());
     }
 
     private boolean isUnitPlacementPerTerritoryRestricted()
     {
-        return games.strategy.triplea.Properties.getUnitPlacementPerTerritoryRestricted(m_data);
+        return games.strategy.triplea.Properties.getUnitPlacementPerTerritoryRestricted(getData());
     }
 
     private boolean isUnitPlacementRestrictions()
     {
-        return games.strategy.triplea.Properties.getUnitPlacementRestrictions(m_data);
+        return games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData());
     }
 
     /**
@@ -981,7 +981,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
     private boolean isOriginalOwner(Territory t, PlayerID id)
     {
 
-        OriginalOwnerTracker tracker = DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker();
+        OriginalOwnerTracker tracker = DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker();
         return tracker.getOriginalOwner(t).equals(id);
     }
 
@@ -1016,7 +1016,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         	return producers;
         }
 
-        Iterator<Territory> iter = m_data.getMap().getNeighbors(to).iterator();
+        Iterator<Territory> iter = getData().getMap().getNeighbors(to).iterator();
         while (iter.hasNext())
         {
             Territory current = iter.next();
@@ -1047,14 +1047,15 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
             throw new IllegalStateException("No factory in territory:" + territory);
 
         Iterator<Unit> iter = factoryUnits.iterator();
+        GameData data = getData();
         while (iter.hasNext())
         {
         	Unit factory2 = iter.next();
-        	if(m_player.equals(DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(factory2)))
-        		return DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(factory2);
+            if (m_player.equals(DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().getOriginalOwner(factory2)))
+                return DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().getOriginalOwner(factory2);
         }
         Unit factory = factoryUnits.iterator().next();
-        return DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(factory);
+        return DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().getOriginalOwner(factory);
     }
 
     private void performPlace(Collection<Unit> units, Territory at, PlayerID player)
@@ -1070,7 +1071,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 
         //TODO: veqryn, again, do we need to initialize infrastructure or not?
         Collection<Unit> factoryAndAA = Match.getMatches(units, Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
-        change.add(DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndAA, m_player));
+        change.add(DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndAA, m_player));
 
         Change remove = ChangeFactory.removeUnits(player, units);
         Change place = ChangeFactory.addUnits(at, units);
@@ -1133,7 +1134,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         if (capacity <= 0)
             return;
 
-        Collection<Territory> neighbors = m_data.getMap().getNeighbors(territory, 1);
+        Collection<Territory> neighbors = getData().getMap().getNeighbors(territory, 1);
         Iterator<Territory> iter = neighbors.iterator();
         CompositeMatch<Unit> ownedFighters = new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player));
 
@@ -1188,7 +1189,8 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         PlayerID player = m_bridge.getPlayerID();
         //clear all units not placed
         Collection<Unit> units = player.getUnits().getUnits();
-        if (!Properties.getUnplacedUnitsLive(m_data) && !units.isEmpty())
+        GameData data = getData();
+        if (!Properties.getUnplacedUnitsLive(data) && !units.isEmpty())
         {
             m_bridge.getHistoryWriter().startEvent(MyFormatter.unitsToTextNoOwner(units) + " were produced but were not placed");
             m_bridge.getHistoryWriter().setRenderingData(units);
@@ -1202,7 +1204,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         m_placements.clear();
 
         //only for lhtr rules
-        new AirThatCantLandUtil(m_data, m_bridge).removeAirThatCantLand(m_player, false);
+        new AirThatCantLandUtil(data, m_bridge).removeAirThatCantLand(m_player, false);
     }
 
     /**
@@ -1211,7 +1213,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
      */
     public Collection<Territory> getTerritoriesWhereAirCantLand()
     {
-        return new AirThatCantLandUtil(m_data, m_bridge).getTerritoriesWhereAirCantLand(m_player);
+        return new AirThatCantLandUtil(getData(), m_bridge).getTerritoriesWhereAirCantLand(m_player);
     }
 
     private boolean isPlayerAllowedToPlacementAnyTerritoryOwnedLand(PlayerID player)
@@ -1292,12 +1294,6 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         PlaceState state = (PlaceState) aState;
         m_produced = state.m_produced;
         m_placements = state.m_placements;
-    }
-
-    protected GameData getData()
-    {
-
-        return m_data;
     }
 
     private Collection<Territory> getListedTerritories(String[] list)

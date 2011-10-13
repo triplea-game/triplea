@@ -66,10 +66,9 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge aBridge, GameData gameData)
+    public void start(IDelegateBridge aBridge)
     {
-        m_bridge = new TripleADelegateBridge(aBridge, gameData);
-        m_data = gameData;
+        m_bridge = new TripleADelegateBridge(aBridge);
         //we may start multiple times due to loading after saving
         //only initialize once
         if(m_needToInitialize)
@@ -200,7 +199,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
         
         Map<Territory, Collection<Battle>> adjBombardment = getPossibleBombardingTerritories();
         Iterator<Territory> territories = adjBombardment.keySet().iterator();
-        boolean shoreBombardPerGroundUnitRestricted = isShoreBombardPerGroundUnitRestricted(m_data);
+        boolean shoreBombardPerGroundUnitRestricted = isShoreBombardPerGroundUnitRestricted(getData());
       
         while (territories.hasNext())
         {
@@ -305,7 +304,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
     private Battle selectBombardingBattle(Unit u, Territory uTerritory,
             Collection<Battle> battles)
     {    	
-    	Boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(m_data);
+        Boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(getData());
         // If only one battle to select from just return that battle
     	//boolean hasNotMoved = TripleAUnit.get(u).getAlreadyMoved() == 0;
         //if ((battles.size() == 1) && !hasNotMoved)
@@ -359,26 +358,26 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
         
         //Set up any continued battles from previous actions
         //This can be the basis for multi-round games like D-Day
-        addContinuedBattles(m_data, player);
+        addContinuedBattles(getData(), player);
         
         //we want to match all sea zones with our units and enemy units
         CompositeMatch<Territory> territoryWithOwnAndEnemy = new CompositeMatchAnd<Territory>();
         territoryWithOwnAndEnemy.add(Matches.territoryHasUnitsOwnedBy(player));
-        territoryWithOwnAndEnemy.add(Matches.territoryHasEnemyUnits(player, m_data));
+        territoryWithOwnAndEnemy.add(Matches.territoryHasEnemyUnits(player, getData()));
 
-        boolean ignoreTransports = isIgnoreTransportInMovement(m_data);
-        boolean ignoreSubs = isIgnoreSubInMovement(m_data);
+        boolean ignoreTransports = isIgnoreTransportInMovement(getData());
+        boolean ignoreSubs = isIgnoreSubInMovement(getData());
         
-        Iterator<Territory> territories = Match.getMatches(m_data.getMap().getTerritories(), territoryWithOwnAndEnemy).iterator();
+        Iterator<Territory> territories = Match.getMatches(getData().getMap().getTerritories(), territoryWithOwnAndEnemy).iterator();
         
         Match<Unit> ownedUnit = Matches.unitIsOwnedBy(player);
-        Match<Unit> enemyUnit =  Matches.enemyUnit(player, m_data);
+        Match<Unit> enemyUnit = Matches.enemyUnit(player, getData());
     	CompositeMatchAnd<Unit> seaTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea);
     	CompositeMatchOr<Unit> seaTranportsAndSubs = new CompositeMatchOr<Unit>(seaTransports, Matches.UnitIsSub);
     	
         while (territories.hasNext())
         {
-            Territory territory = (Territory) territories.next();
+            Territory territory = territories.next();
 
             List<Unit> attackingUnits = territory.getUnits().getMatches(ownedUnit);
             List<Unit> enemyUnits = territory.getUnits().getMatches(enemyUnit);
@@ -396,7 +395,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
             {
             	Route route = new Route();
 				route.setStart(territory);
-				getBattleTracker().addBattle(route, attackingUnits, false, player, m_data, m_bridge, null);
+                getBattleTracker().addBattle(route, attackingUnits, false, player, getData(), m_bridge, null);
 				battle = m_battleTracker.getPendingBattle(territory, false);
 			}
             		

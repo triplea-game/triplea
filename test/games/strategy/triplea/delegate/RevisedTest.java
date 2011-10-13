@@ -85,7 +85,7 @@ public class RevisedTest extends TestCase
        
        ITestDelegateBridge bridge = getDelegateBridge(british);
        bridge.setStepName("NonCombatMove");
-       moveDelegate(m_data).start(bridge, m_data);
+        moveDelegate(m_data).start(bridge);
 
        String error = moveDelegate(m_data).move(sz1.getUnits().getUnits(), new Route(sz1,sz11,sz9));
         assertTrue(error != null);
@@ -138,7 +138,7 @@ public class RevisedTest extends TestCase
         
         ITestDelegateBridge bridge = getDelegateBridge(british);
         bridge.setStepName("NonCombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
         
         //the transport can enter sz 8
         //since the sub is submerged
@@ -162,7 +162,7 @@ public class RevisedTest extends TestCase
 
         //we need to initialize the original owner
         InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
-        initDel.start(bridge, m_data);
+        initDel.start(bridge);
         initDel.end();
 
         
@@ -182,7 +182,7 @@ public class RevisedTest extends TestCase
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
         Territory novo = m_data.getMap().getTerritory("Novosibirsk");
         moveDelegate.move(novo.getUnits().getUnits(), m_data.getMap().getRoute(novo, sinkiang));
         
@@ -190,7 +190,7 @@ public class RevisedTest extends TestCase
         moveDelegate.end();
         
         BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
-        battle.start(bridge, m_data);
+        battle.start(bridge);
         
         //fight the battle
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {0,0,0}));
@@ -204,7 +204,7 @@ public class RevisedTest extends TestCase
         assertTrue(battle.getBattleTracker().wasConquered(sinkiang));
         
         bridge.setStepName("NonCombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
         
         Territory russia = m_data.getMap().getTerritory("Russia");
         
@@ -236,7 +236,7 @@ public class RevisedTest extends TestCase
         ITestDelegateBridge bridge = getDelegateBridge(germans);
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
 
         //set up battle
         Territory germany = m_data.getMap().getTerritory("Germany");
@@ -264,7 +264,7 @@ public class RevisedTest extends TestCase
         moveDelegate.end();
         
         BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
-        battle.start(bridge, m_data);
+        battle.start(bridge);
         
         BattleTracker tracker = MoveDelegate.getBattleTracker(m_data);
         
@@ -285,7 +285,7 @@ public class RevisedTest extends TestCase
         
         ITestDelegateBridge bridge = getDelegateBridge(british);
         bridge.setStepName("CombatMove");
-        moveDelegate(m_data).start(bridge, m_data);
+        moveDelegate(m_data).start(bridge);
         
         
         //create 2 us infantry
@@ -308,7 +308,7 @@ public class RevisedTest extends TestCase
     {
         ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
         bridge.setStepName("placeBid");
-        bidPlaceDelegate(m_data).start(bridge, m_data);
+        bidPlaceDelegate(m_data).start(bridge);
         
         //create 20 british infantry
         addTo(british(m_data), infantry(m_data).create(20, british(m_data)));
@@ -328,7 +328,7 @@ public class RevisedTest extends TestCase
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
         bridge.setRemote(new DummyTripleAPlayer(){
 
             @Override
@@ -358,7 +358,7 @@ public class RevisedTest extends TestCase
         
         //start the battle phase, this should not add a new battle
         moveDelegate.end();        
-        battleDelegate(m_data).start(bridge, m_data);
+        battleDelegate(m_data).start(bridge);
         
         //there should be a bombing battle
         assertTrue(tracker.hasPendingBattle(germany, true));
@@ -374,7 +374,7 @@ public class RevisedTest extends TestCase
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         ITestDelegateBridge bridge = getDelegateBridge(british);
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
 
         bridge.setRemote(new DummyTripleAPlayer()
         {
@@ -407,7 +407,7 @@ public class RevisedTest extends TestCase
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         ITestDelegateBridge bridge = getDelegateBridge(british);
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
 
         bridge.setRemote(new DummyTripleAPlayer()
         {
@@ -446,7 +446,7 @@ public class RevisedTest extends TestCase
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         ITestDelegateBridge bridge = getDelegateBridge(british);
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
 
         bridge.setRemote(new DummyTripleAPlayer()
         {
@@ -497,7 +497,7 @@ public class RevisedTest extends TestCase
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         ITestDelegateBridge bridge = getDelegateBridge(germans);
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
 
         
         Route sz14To13 = new Route();
@@ -526,7 +526,7 @@ public class RevisedTest extends TestCase
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         ITestDelegateBridge bridge = getDelegateBridge(germans);
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
 
         
         Route eeToSz5 = new Route();
@@ -576,7 +576,7 @@ public class RevisedTest extends TestCase
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         ITestDelegateBridge bridge = getDelegateBridge(germans);
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
 
         
         Route eeToSz5 = new Route();
@@ -640,7 +640,7 @@ public class RevisedTest extends TestCase
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         ITestDelegateBridge bridge = getDelegateBridge(germans);
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
 
         
         Route eeToSz5 = new Route();
@@ -695,7 +695,7 @@ public class RevisedTest extends TestCase
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         ITestDelegateBridge bridge = getDelegateBridge(japanese);
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
 
         
         Route eeToSz5 = new Route();
@@ -734,7 +734,7 @@ public class RevisedTest extends TestCase
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         ITestDelegateBridge bridge = getDelegateBridge(germans);
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
 
         
         Route eeToSz5 = new Route();
@@ -776,13 +776,13 @@ public class RevisedTest extends TestCase
         //end the round
         moveDelegate.end();
         bridge.setStepName("NonCombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
         moveDelegate.end();
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
         
         //a new round, the move should work
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
         error = moveDelegate.move(infantry.subList(1, 2), sz5ToEE);
         assertNull(error);
     }
@@ -801,7 +801,7 @@ public class RevisedTest extends TestCase
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         ITestDelegateBridge bridge = getDelegateBridge(germans);
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
 
         
         Route eeToSz5 = new Route();
@@ -836,7 +836,7 @@ public class RevisedTest extends TestCase
         while(!m_data.getSequence().getStep().getName().equals("germanNonCombatMove")) {
             m_data.getSequence().next();
         }
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
         
         //try to unload the other infantry somewhere else, an error occurs
         error = moveDelegate.move(infantry.subList(1, 2), sz5ToNorway);
@@ -856,7 +856,7 @@ public class RevisedTest extends TestCase
     	MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         ITestDelegateBridge bridge = getDelegateBridge(germans);
         bridge.setStepName("NonCombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
 
         String error = moveDelegate(m_data).move(sz8.getUnits().getUnits(), new Route(sz8,sz1));
         assertError(error);
@@ -875,7 +875,7 @@ public class RevisedTest extends TestCase
     	MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         ITestDelegateBridge bridge = getDelegateBridge(germans);
         bridge.setStepName("NonCombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
 
         String error = moveDelegate(m_data).move(sz8.getUnits().getUnits(), new Route(sz8,sz2));
         assertError(error);
@@ -894,7 +894,7 @@ public class RevisedTest extends TestCase
     	MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         ITestDelegateBridge bridge = getDelegateBridge(british);
         bridge.setStepName("NonCombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
 
         String error = moveDelegate(m_data).move(sz8.getUnits().getUnits(), new Route(sz1,sz8));
         assertError(error);
@@ -918,7 +918,7 @@ public class RevisedTest extends TestCase
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
         ITestDelegateBridge bridge = getDelegateBridge(japanese);
         bridge.setStepName("CombatMove");
-        moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
 
 
         //move a fighter into the sea zone, this will cause a battle
@@ -989,7 +989,7 @@ public class RevisedTest extends TestCase
     	ITestDelegateBridge delegateBridge = getDelegateBridge(british(m_data));
     	MoveDelegate moveDelegate = moveDelegate(m_data);
     	delegateBridge.setStepName("CombatMove");
-    	moveDelegate.start(delegateBridge, m_data);
+        moveDelegate.start(delegateBridge);
 
     	/*
     	 * add a VALID BRITISH attack
@@ -1020,7 +1020,7 @@ public class RevisedTest extends TestCase
     	//Set up battle  
     	delegateBridge = getDelegateBridge(japanese(m_data));
     	delegateBridge.setStepName("CombatMove");
-    	moveDelegate.start(delegateBridge, m_data);
+        moveDelegate.start(delegateBridge);
     	
     	//Move to battle
     	validResults = moveDelegate.move(japaneseUnits, new Route(kwang, fic));
@@ -1048,7 +1048,7 @@ public class RevisedTest extends TestCase
     	//Set up battle  
     	delegateBridge = getDelegateBridge(americans(m_data));
     	delegateBridge.setStepName("CombatMove");
-    	moveDelegate.start(delegateBridge, m_data);
+        moveDelegate.start(delegateBridge);
     	
     	//Move to battle
     	validResults = moveDelegate.move(americanUnits, new Route(china, fic));
@@ -1229,7 +1229,7 @@ public class RevisedTest extends TestCase
        
         ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
         bridge.setStepName("CombatMove");
-        moveDelegate(m_data).start(bridge, m_data);
+        moveDelegate(m_data).start(bridge);
         
         move(from.getUnits().getUnits(), new Route(from,attacked));
        
@@ -1272,7 +1272,7 @@ public class RevisedTest extends TestCase
         
         ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
         bridge.setStepName("CombatMove");
-        moveDelegate(m_data).start(bridge, m_data);
+        moveDelegate(m_data).start(bridge);
         
         move(from.getUnits().getUnits(), new Route(from,attacked));
        
@@ -1313,7 +1313,7 @@ public class RevisedTest extends TestCase
         
         ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
         bridge.setStepName("CombatMove");
-        moveDelegate(m_data).start(bridge, m_data);
+        moveDelegate(m_data).start(bridge);
         
         move(from.getUnits().getUnits(), new Route(from,attacked));
        
@@ -1378,7 +1378,7 @@ public class RevisedTest extends TestCase
         
         ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
         bridge.setStepName("CombatMove");
-        moveDelegate(m_data).start(bridge, m_data);
+        moveDelegate(m_data).start(bridge);
         
         move(from.getUnits().getUnits(), new Route(from,attacked));
        
@@ -1454,7 +1454,7 @@ public class RevisedTest extends TestCase
         
         ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
         bridge.setStepName("CombatMove");
-        moveDelegate(m_data).start(bridge, m_data);
+        moveDelegate(m_data).start(bridge);
         
         move(from.getUnits().getUnits(), new Route(from,attacked));
        
@@ -1535,7 +1535,7 @@ public class RevisedTest extends TestCase
         
         ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
         bridge.setStepName("CombatMove");
-        moveDelegate(m_data).start(bridge, m_data);
+        moveDelegate(m_data).start(bridge);
         
         move(from.getUnits().getUnits(), new Route(from,attacked));
        
@@ -1602,7 +1602,7 @@ public class RevisedTest extends TestCase
         
         ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
         bridge.setStepName("CombatMove");
-        moveDelegate(m_data).start(bridge, m_data);
+        moveDelegate(m_data).start(bridge);
         
         move(from.getUnits().getUnits(), new Route(from,attacked));
        
@@ -1685,7 +1685,7 @@ public class RevisedTest extends TestCase
         
         ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
         bridge.setStepName("CombatMove");
-        moveDelegate(m_data).start(bridge, m_data);
+        moveDelegate(m_data).start(bridge);
         
         move(from.getUnits().getUnits(), new Route(from,attacked));
        
@@ -1751,7 +1751,7 @@ public class RevisedTest extends TestCase
     public void testUnplacedDie() 
     {
         PlaceDelegate del = placeDelegate(m_data);
-        del.start(getDelegateBridge(british(m_data)), m_data);
+        del.start(getDelegateBridge(british(m_data)));
         
         addTo(british(m_data), 
               transports(m_data).create(1,british(m_data)));
@@ -1772,7 +1772,7 @@ public class RevisedTest extends TestCase
         {
             
         });
-        move.start(bridge,m_data);
+        move.start(bridge);
         
         //remove the russians units in caucasus so we can blitz
         Territory cauc = territory("Caucasus", m_data);
@@ -1795,7 +1795,7 @@ public class RevisedTest extends TestCase
         ITestDelegateBridge delegateBridge = getDelegateBridge(germans);
         delegateBridge.setStepName("germanTech");
         TechnologyDelegate techDelegate = techDelegate(m_data);
-        techDelegate.start(delegateBridge, m_data);
+        techDelegate.start(delegateBridge);
     	TechAttachment ta = TechAttachment.get(germans);
     	PlayerAttachment pa = PlayerAttachment.get(germans);
     	TechnologyFrontier rockets = new TechnologyFrontier("",m_data);
@@ -1856,7 +1856,7 @@ public class RevisedTest extends TestCase
     	ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
         bridge.setStepName("CombatMove");
         bridge.setRemote(getDummyPlayer());
-        moveDelegate(m_data).start(bridge, m_data);
+        moveDelegate(m_data).start(bridge);
          
         //load two transports, 1 tank each
         load(germany.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(germany, sz5));
@@ -1899,7 +1899,7 @@ public class RevisedTest extends TestCase
         bridge.setStepName("CombatMove");
     	MoveDelegate moveDelegate = moveDelegate(m_data);
     	
-		moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
     	String error = moveDelegate.move(sz15.getUnits().getUnits(), new Route(sz15, sz34));
     	assertValid(error);
     	
@@ -1918,7 +1918,7 @@ public class RevisedTest extends TestCase
         bridge.setStepName("CombatMove");
     	MoveDelegate moveDelegate = moveDelegate(m_data);
     	
-		moveDelegate.start(bridge, m_data);
+        moveDelegate.start(bridge);
     	String error = moveDelegate.move(sz14.getUnits().getUnits(), new Route(sz14, sz15, sz34));
     	assertError(error);
     	
