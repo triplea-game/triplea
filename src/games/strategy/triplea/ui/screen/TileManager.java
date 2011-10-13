@@ -140,7 +140,7 @@ public class TileManager
 		
 		        }
 	
-		        Iterator territories = data.getMap().getTerritories().iterator();
+		        Iterator<Territory> territories = data.getMap().getTerritories().iterator();
 		        while (territories.hasNext())
 		        {
 		            Territory territory = (Territory) territories.next();
@@ -180,7 +180,7 @@ public class TileManager
 
     }
     
-    public void updateTerritories(Collection territories, GameData data, MapData mapData)
+    public void updateTerritories(Collection<Territory> territories, GameData data, MapData mapData)
     {
         data.acquireReadLock();
         try
@@ -192,11 +192,11 @@ public class TileManager
 		        if(territories == null)
 		            return;
 		        
-		        Iterator iter = territories.iterator();
+		        Iterator<Territory> iter = territories.iterator();
 		        
 		        while (iter.hasNext())
 		        {
-		            Territory territory = (Territory) iter.next();
+		            Territory territory = iter.next();
 		            updateTerritory(territory, data, mapData);
 		            
 		        }
@@ -241,10 +241,10 @@ public class TileManager
         if(drawables == null || drawables.isEmpty())
             return;
         
-        Iterator tiles = m_territoryTiles.get(territory.getName()).iterator();
+        Iterator<Tile> tiles = m_territoryTiles.get(territory.getName()).iterator();
         while (tiles.hasNext())
         {
-            Tile tile = (Tile) tiles.next();
+            Tile tile = tiles.next();
             tile.removeDrawables(drawables);
         }
         
@@ -337,7 +337,7 @@ public class TileManager
     private void drawUnits(Territory territory, GameData data, MapData mapData, Set<Tile> drawnOn, Set<IDrawable> drawing)
     {
 
-        Iterator placementPoints = mapData.getPlacementPoints(territory).iterator();
+        Iterator<Point> placementPoints = mapData.getPlacementPoints(territory).iterator();
         if (placementPoints == null || !placementPoints.hasNext())
         {
             throw new IllegalStateException("No where to place units:" + territory.getName());
@@ -345,18 +345,18 @@ public class TileManager
 
         Point lastPlace = null;
 
-        Iterator unitCategoryIter = UnitSeperator.categorize(territory.getUnits().getUnits()).iterator();
+        Iterator<UnitCategory> unitCategoryIter = UnitSeperator.categorize(territory.getUnits().getUnits()).iterator();
         
         while (unitCategoryIter.hasNext())
         {
             
-            UnitCategory category = (UnitCategory) unitCategoryIter.next();
+            UnitCategory category = unitCategoryIter.next();
 
             
             boolean overflow;
             if (placementPoints.hasNext())
             {
-                lastPlace = new Point( (Point) placementPoints.next());
+                lastPlace = new Point(placementPoints.next());
                 overflow = false;
             } else
             {
@@ -586,14 +586,14 @@ public class TileManager
             told.draw(bounds, data, graphics, mapData, null, null);
         }
 
-          Iterator iter = mapData.getPolygons(selected).iterator();
+          Iterator<Polygon> iter = mapData.getPolygons(selected).iterator();
           
           graphics.setStroke(new BasicStroke(10));
           graphics.setColor(Color.RED);
           
           while (iter.hasNext())
             {
-                Polygon poly = (Polygon) iter.next();
+                Polygon poly = iter.next();
                 poly = new Polygon(poly.xpoints, poly.ypoints, poly.npoints);
                 poly.translate(-bounds.x, -bounds.y);
                 graphics.drawPolygon(poly);

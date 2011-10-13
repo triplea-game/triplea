@@ -21,7 +21,6 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
-import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.ChangePerformer;
@@ -32,7 +31,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
@@ -40,7 +38,6 @@ import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -1063,7 +1060,7 @@ public class MoveDelegateTest extends DelegateTest
     route.setStart(congoSeaZone);
     route.add(westAfricaSea);
     route.add(northAtlantic);
-    Collection<Unit> units = new ArrayList(); 
+    Collection<Unit> units = new ArrayList<Unit>(); 
     units.addAll(Match.getMatches(m_data.getMap().getTerritory(congoSeaZone.toString()).getUnits().getUnits(), Matches.UnitIsCarrier));
 
     results = m_delegate.move( units, route);
@@ -1074,7 +1071,7 @@ public class MoveDelegateTest extends DelegateTest
     route.setStart(redSea);
     route.add(eastMediteranean);
     route.add(blackSea);
-    units = new ArrayList(); 
+    units = new ArrayList<Unit>(); 
     units.addAll(Match.getMatches(m_data.getMap().getTerritory(redSea.toString()).getUnits().getUnits(), Matches.UnitIsCarrier));
 
     results = m_delegate.move( units, route);

@@ -108,11 +108,11 @@ public class ReliefImageBreaker
             System.exit(0);
         }
 
-        Iterator unitIter = m_mapData.getTerritories().iterator();
+        Iterator<String> unitIter = m_mapData.getTerritories().iterator();
 
         while (unitIter.hasNext())
         {
-            String territoryName = (String) unitIter.next();
+            String territoryName = unitIter.next();
             boolean seaZone = territoryName.endsWith("Sea Zone") || territoryName.startsWith("Sea Zone");
 
             if (!seaZone && m_seaZoneOnly)

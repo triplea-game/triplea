@@ -164,14 +164,14 @@ public class NonFightingBattle implements Battle
         }
     }
 
-    public Collection<Unit> getDependentUnits(Collection units)
+    public Collection<Unit> getDependentUnits(Collection<Unit> units)
     {
         Collection<Unit> rVal = new ArrayList<Unit>();
         
-        Iterator iter = units.iterator();
+        Iterator<Unit> iter = units.iterator();
         while(iter.hasNext())
         {
-            Unit unit = (Unit) iter.next();
+            Unit unit = iter.next();
             Collection<Unit> dependent = m_dependentUnits.get(unit);
             if(dependent != null)
                 rVal.addAll(dependent);

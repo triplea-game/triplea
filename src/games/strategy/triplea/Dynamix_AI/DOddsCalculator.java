@@ -32,7 +32,6 @@ import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.net.GUID;
-import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.baseAI.AIUtils;
 import games.strategy.triplea.baseAI.AbstractAI;
 import games.strategy.triplea.delegate.BattleCalculator;
@@ -318,7 +317,7 @@ class DummyPlayer extends AbstractAI
     protected void tech(ITechDelegate techDelegate, GameData data, PlayerID player)
     {}
 
-    public boolean confirmMoveInFaceOfAA(Collection aaFiringTerritories)
+    public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
     {
         throw new UnsupportedOperationException();
     }

@@ -22,13 +22,11 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MovePerformer;
 import games.strategy.triplea.delegate.TerritoryEffectCalculator;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
@@ -97,6 +95,7 @@ import javax.swing.table.TableCellRenderer;
  * Displays a running battle
  */
 
+@SuppressWarnings("serial")
 public class BattleDisplay extends JPanel
 {
     private static final String DICE_KEY = "D";
@@ -129,7 +128,7 @@ public class BattleDisplay extends JPanel
     private final JLabel LABEL_NONE_ATTACKER = new JLabel("None");
     private final JLabel LABEL_NONE_DEFENDER = new JLabel("None");
     
-    private MovePerformer m_tempMovePerformer;
+    //private MovePerformer m_tempMovePerformer;
     
     private UIContext m_uiContext;
 
@@ -253,10 +252,10 @@ public class BattleDisplay extends JPanel
         	dependentUnitsReturned.addAll(dependentCollection);
         }
         
-        Iterator killedIter = UnitSeperator.categorize(aKilledUnits, dependentsMap, false, false).iterator();
+        Iterator<UnitCategory> killedIter = UnitSeperator.categorize(aKilledUnits, dependentsMap, false, false).iterator();
         while (killedIter.hasNext())
         {
-            UnitCategory category = (UnitCategory) killedIter.next();
+            UnitCategory category = killedIter.next();
             JPanel panel = new JPanel();
             JLabel unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, false, false));
             panel.add(unit);
@@ -689,7 +688,7 @@ public class BattleDisplay extends JPanel
                         chosenUnits.addAll(chooser.getSelected(false)); 
                         
                         //Determine which ones to remove from the potential list
-                        List<Unit> unitsToRemove = new ArrayList(); 
+                        List<Unit> unitsToRemove = new ArrayList<Unit>(); 
                         for(Unit u:m_ScrambledUnits.keySet())
                     	{
                     		if(!chosenUnits.contains(u))
@@ -1099,7 +1098,7 @@ public class BattleDisplay extends JPanel
 
     }
 
-    public void listBattle(List steps)
+    public void listBattle(List<String> steps)
     {
 
         m_steps.listBattle(steps);
@@ -1134,6 +1133,7 @@ public class BattleDisplay extends JPanel
     }
 }
 
+@SuppressWarnings("serial")
 class BattleTable extends JTable
 {
 
@@ -1151,6 +1151,7 @@ class BattleTable extends JTable
     }
 }
 
+@SuppressWarnings("serial")
 class BattleModel extends DefaultTableModel
 {
     private UIContext m_uiContext;
@@ -1214,14 +1215,14 @@ class BattleModel extends DefaultTableModel
     {
     	//TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
     	//Soft code the # of columns
-        List[] columns = new List[m_data.getDiceSides() + 1];
+        List<TableData>[] columns = new List[m_data.getDiceSides() + 1];
         for (int i = 0; i < columns.length; i++)
         {
-            columns[i] = new ArrayList();
+            columns[i] = new ArrayList<TableData>();
         }
 
         //Determine if artillery support is available and how much
-        int artillerySupportAvailable = getArtillerySupportAvailable(m_units, m_attack);
+        //int artillerySupportAvailable = getArtillerySupportAvailable(m_units, m_attack);
         List<Unit> units = new ArrayList<Unit>(m_units);
     	DiceRoll.sortByStrength(units, !m_attack);
         Set<List<UnitSupportAttachment>> supportRules = new HashSet<List<UnitSupportAttachment>>();
@@ -1229,12 +1230,12 @@ class BattleModel extends DefaultTableModel
         DiceRoll.getSupport(units,supportRules,supportLeft,m_data,!m_attack);
         
         //Collection unitCategories = UnitSeperator.categorize(m_units);
-        Collection unitCategories = UnitSeperator.categorize(units, null, false, false, false);
-        Iterator categoriesIter = unitCategories.iterator();
+        Collection<UnitCategory> unitCategories = UnitSeperator.categorize(units, null, false, false, false);
+        Iterator<UnitCategory> categoriesIter = unitCategories.iterator();
 
         while (categoriesIter.hasNext())
         {
-            UnitCategory category = (UnitCategory) categoriesIter.next();
+            UnitCategory category = categoriesIter.next();
 
             int strength;
             UnitAttachment attachment = UnitAttachment.get(category.getType());
@@ -1315,7 +1316,7 @@ class BattleModel extends DefaultTableModel
      * @param player
      * @return
      */
-    private static int getArtillerySupportAvailable(Collection<Unit> units, boolean attack)
+    /*private static int getArtillerySupportAvailable(Collection<Unit> units, boolean attack)
     {
     	//TODO refactor with DiceRoll.getArtillerySupportAvailable
     	int artillerySupportAvailable = 0;
@@ -1349,7 +1350,7 @@ class BattleModel extends DefaultTableModel
         if(ta == null)
         	return false;
         return ta.hasImprovedArtillerySupport();     
-    }
+    }*/
 }
 
 class Renderer implements TableCellRenderer
@@ -1401,6 +1402,7 @@ class TableData
 
 
 
+@SuppressWarnings("serial")
 class CasualtyNotificationPanel extends JPanel
 {
 
@@ -1437,7 +1439,7 @@ class CasualtyNotificationPanel extends JPanel
             m_killed.add(new JLabel("Killed"));
         }
         
-        Iterator killedIter = UnitSeperator.categorize(killed, dependents, false, false).iterator();
+        Iterator<UnitCategory> killedIter = UnitSeperator.categorize(killed, dependents, false, false).iterator();
         categorizeUnits(killedIter, false, false);
 
         damaged.removeAll(killed);
@@ -1447,7 +1449,7 @@ class CasualtyNotificationPanel extends JPanel
         }
         //TODO Kev determine if we need to identify if the unit is hit/disabled
         boolean disabled = false;
-        Iterator damagedIter = UnitSeperator.categorize(damaged, dependents, false, false).iterator();
+        Iterator<UnitCategory> damagedIter = UnitSeperator.categorize(damaged, dependents, false, false).iterator();
         categorizeUnits(damagedIter, true, disabled);
 
         invalidate();
@@ -1463,27 +1465,27 @@ class CasualtyNotificationPanel extends JPanel
             m_killed.add(new JLabel("Killed"));
         }
         
-        Iterator killedIter = UnitSeperator.categorize(killed, dependents, false, false).iterator();
+        Iterator<UnitCategory> killedIter = UnitSeperator.categorize(killed, dependents, false, false).iterator();
         categorizeUnits(killedIter, false, false);
 
         invalidate();
         validate();
     }
 
-    private void categorizeUnits(Iterator categoryIter, boolean damaged, boolean disabled)
+    private void categorizeUnits(Iterator<UnitCategory> categoryIter, boolean damaged, boolean disabled)
     {
 
         while (categoryIter.hasNext())
         {
-            UnitCategory category = (UnitCategory) categoryIter.next();
+            UnitCategory category = categoryIter.next();
             JPanel panel = new JPanel();
             //TODO Kev determine if we need to identify if the unit is hit/disabled
             JLabel unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, category.getDamaged(), category.getDisabled()));
             panel.add(unit);
-            Iterator iter = category.getDependents().iterator();
+            Iterator<UnitOwner> iter = category.getDependents().iterator();
             while (iter.hasNext())
             {
-                UnitOwner owner = (UnitOwner) iter.next();
+                UnitOwner owner = iter.next();
               //Don't use damaged icons for dependent units (bug 2984310)?
                 unit.add(new JLabel(m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, false, false)));
                 /*//we don't want to use the damaged icon for units that have just been damaged

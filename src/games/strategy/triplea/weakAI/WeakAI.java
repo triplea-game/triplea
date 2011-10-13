@@ -695,7 +695,6 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     }
 
 
-    @SuppressWarnings("unchecked")
     private void movePlanesHomeNonCom(List<Collection<Unit>> moveUnits, List<Route> moveRoutes, final PlayerID player)
     {
         //the preferred way to get the delegate
@@ -1518,12 +1517,12 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
      */
-    public Territory selectTerritoryForAirToLand(Collection candidates)
+    public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
     {
        return (Territory) candidates.iterator().next();
     }
 
-    public boolean confirmMoveInFaceOfAA(Collection aaFiringTerritories)
+    public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
     {
         return true;
     }

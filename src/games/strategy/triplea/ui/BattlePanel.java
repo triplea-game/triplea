@@ -41,7 +41,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +74,7 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
  * @author Sean Bridges
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class BattlePanel extends ActionPanel
 {
 
@@ -294,7 +294,7 @@ public class BattlePanel extends ActionPanel
         return m_battleFrame;
     }
     
-    public void listBattle(final GUID battleID, final List steps)
+    public void listBattle(final GUID battleID, final List<String> steps)
     {
         if (!SwingUtilities.isEventDispatchThread())
         {
@@ -588,7 +588,7 @@ public class BattlePanel extends ActionPanel
         });
     }
 
-    public void notifyRetreat(final Collection retreating)
+    public void notifyRetreat(final Collection<Unit> retreating)
     {
 
         SwingUtilities.invokeLater(new Runnable()

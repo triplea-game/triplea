@@ -58,10 +58,10 @@ public class RocketsFireHelper
         return games.strategy.triplea.Properties.getAllRocketsAttack(data);
     }
 	
-    private boolean isRocketsCanFlyOverImpassables(GameData data)
+    /*private boolean isRocketsCanFlyOverImpassables(GameData data)
     {
         return games.strategy.triplea.Properties.getRocketsCanFlyOverImpassables(data);
-    }
+    }*/
 
     /**
      * @return
@@ -170,7 +170,7 @@ public class RocketsFireHelper
 
         BattleTracker tracker = MoveDelegate.getBattleTracker(data);
         
-        Iterator iter = data.getMap().iterator();
+        Iterator<Territory> iter = data.getMap().iterator();
         while (iter.hasNext())
         {
             Territory current = (Territory) iter.next();
@@ -189,17 +189,17 @@ public class RocketsFireHelper
     private Set<Territory> getTargetsWithinRange(Territory territory, GameData data, PlayerID player)
     {
 
-        Collection possible = data.getMap().getNeighbors(territory, 3);
+        Collection<Territory> possible = data.getMap().getNeighbors(territory, 3);
 
         Set<Territory> hasFactory = new HashSet<Territory>();
         
-        boolean rocketsOverImpassables = isRocketsCanFlyOverImpassables(data);
+        //boolean rocketsOverImpassables = isRocketsCanFlyOverImpassables(data);
         Match<Territory> impassable = Matches.TerritoryIsNotImpassable;
 
-        Iterator iter = possible.iterator();
+        Iterator<Territory> iter = possible.iterator();
         while (iter.hasNext())
         {
-            Territory current = (Territory) iter.next();
+            Territory current = iter.next();
             
             Route route = data.getMap().getRoute(territory, current, impassable);
             if(route != null && route.getLength() <= 3)
@@ -323,7 +323,7 @@ public class RocketsFireHelper
         {
         	// we are doing damage to 'target', not to the territory
         	Unit target = targets.iterator().next();
-            UnitAttachment ua = UnitAttachment.get(target.getType());
+            //UnitAttachment ua = UnitAttachment.get(target.getType());
             TripleAUnit taUnit = (TripleAUnit) target;
             
             int damageLimit = taUnit.getHowMuchMoreDamageCanThisUnitTake(target, attackedTerritory);

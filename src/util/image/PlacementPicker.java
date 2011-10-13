@@ -27,12 +27,13 @@ import java.util.List;
 import javax.swing.*;
 
 
+@SuppressWarnings("serial")
 public class PlacementPicker extends JFrame
 {
     private Point  m_currentSquare;
     private Image  m_image;
     private JLabel m_location = new JLabel();
-    private Map    m_polygons = new HashMap();
+    private Map<String,List<Polygon>>    m_polygons = new HashMap<String,List<Polygon>>();
 
     private Map<String, List<Point>>    m_placements;
     private List<Point>   m_currentPlacements;
@@ -384,13 +385,13 @@ public class PlacementPicker extends JFrame
         //try to find a land territory.
         //sea zones often surround a land territory
 	
-        Iterator keyIter = m_polygons.keySet().iterator();
+        Iterator<String> keyIter = m_polygons.keySet().iterator();
 	
         while (keyIter.hasNext())
         {
             String name = (String)keyIter.next();
-            Collection polygons = (Collection) m_polygons.get(name);
-            Iterator polyIter = polygons.iterator();
+            Collection<Polygon> polygons = m_polygons.get(name);
+            Iterator<Polygon> polyIter = polygons.iterator();
 	    
             while (polyIter.hasNext())
             {

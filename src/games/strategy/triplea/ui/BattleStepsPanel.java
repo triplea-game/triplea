@@ -82,7 +82,7 @@ class BattleStepsPanel extends JPanel implements Active
      *   
      * @param steps
      */
-    public void listBattle(List steps)
+    public void listBattle(List<String> steps)
     {
         if (!SwingUtilities.isEventDispatchThread())
             throw new IllegalStateException("Not in dispatch thread");
@@ -91,7 +91,7 @@ class BattleStepsPanel extends JPanel implements Active
         {
             m_listModel.removeAllElements();
 
-            Iterator iter = steps.iterator();
+            Iterator<String> iter = steps.iterator();
             while (iter.hasNext())
             {
                 m_listModel.addElement(iter.next());

@@ -21,6 +21,8 @@
 package games.strategy.triplea.delegate;
 
 import java.util.Collection;
+
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.AutoSave;
 
 /**
@@ -33,7 +35,8 @@ import games.strategy.engine.delegate.AutoSave;
 @AutoSave(afterStepEnd=true)
 public class NoPUEndTurnDelegate extends EndTurnDelegate
 {
-    protected int getProduction(Collection territories)
+	@Override
+	protected int getProduction(Collection<Territory> territories)
     {
         return 0;
     } 

@@ -42,7 +42,6 @@ import junit.framework.TestSuite;
  * @author  Sean Bridges
  * @version 1.0
  */
-@SuppressWarnings("unchecked")
 public class PlaceDelegateTest extends DelegateTest
 {
 		
@@ -63,7 +62,7 @@ public class PlaceDelegateTest extends DelegateTest
 		return suite;
 	}
 	
-	private Collection getInfantry(int count, PlayerID player)
+	private Collection<Unit> getInfantry(int count, PlayerID player)
 	{
 	    return m_data.getUnitTypeList().getUnitType(Constants.INFANTRY_TYPE).create(count, player);
 	}
@@ -81,10 +80,10 @@ public class PlaceDelegateTest extends DelegateTest
         m_delegate.start(m_bridge);
 	}
 
-	private Collection getUnits(IntegerMap<UnitType> units, PlayerID from)
+	private Collection<Unit> getUnits(IntegerMap<UnitType> units, PlayerID from)
 	{
 		Iterator<UnitType> iter = units.keySet().iterator();
-		Collection rVal = new ArrayList(units.totalValues());
+		Collection<Unit> rVal = new ArrayList<Unit>(units.totalValues());
 		while(iter.hasNext())
 		{
 			UnitType type = iter.next();

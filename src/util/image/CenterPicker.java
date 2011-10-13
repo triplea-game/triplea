@@ -22,17 +22,19 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 import java.util.Map.Entry;
 import javax.swing.*;
 
 
+@SuppressWarnings("serial")
 public class CenterPicker extends JFrame
 {
 
     private Image  m_image;                     // The map image will be stored here    
     private Map<String, Point>    m_centers  = new HashMap<String, Point>();  // hash map for center points
-    private Map    m_polygons = new HashMap();  // hash map for polygon points
+    private Map<String, List<Polygon>>    m_polygons = new HashMap<String, List<Polygon>>();  // hash map for polygon points
     private JLabel m_location = new JLabel();
 
 
@@ -368,16 +370,16 @@ public class CenterPicker extends JFrame
         //try to find a land territory.
         //sea zones often surround a land territory
 	
-        Iterator keyIter = m_polygons.keySet().iterator();
+        Iterator<String> keyIter = m_polygons.keySet().iterator();
         while (keyIter.hasNext())
         {
-            String name = (String)keyIter.next();
-            Collection polygons = (Collection) m_polygons.get(name);
-            Iterator polyIter = polygons.iterator();
+            String name = keyIter.next();
+            Collection<Polygon> polygons = m_polygons.get(name);
+            Iterator<Polygon> polyIter = polygons.iterator();
 	    
             while (polyIter.hasNext())
             {
-                Polygon poly = (Polygon)polyIter.next();
+                Polygon poly = polyIter.next();
 		
                 if(poly.contains(p))
                 {

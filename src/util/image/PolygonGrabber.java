@@ -18,6 +18,7 @@ package util.image;
 import java.io.*;
 import java.util.*;
 import java.util.List;
+import java.util.Map.Entry;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -38,6 +39,7 @@ import games.strategy.util.*;
  *   Outputs - a list of polygons for each country
  */
 
+@SuppressWarnings("serial")
 public class PolygonGrabber extends JFrame
 {
     private static boolean s_islandMode;
@@ -47,7 +49,7 @@ public class PolygonGrabber extends JFrame
     private Image m_image;                    // holds the map image
     private BufferedImage m_bufferedImage;
     private Map<String, List<Polygon>> m_polygons  = new HashMap<String, List<Polygon>>();  // maps String -> List of polygons
-    private Map m_centers;                    // holds the centers for the polygons
+    private Map<String, Point> m_centers;                    // holds the centers for the polygons
     private JLabel location = new JLabel();
     
     
@@ -302,20 +304,20 @@ public class PolygonGrabber extends JFrame
                 //super.paint(g);
                 g.drawImage(m_image, 0,0, this);
 		
-                Iterator iter = m_polygons.entrySet().iterator();
+                Iterator<Entry<String, List<Polygon>>> iter = m_polygons.entrySet().iterator();
 		
 		g.setColor(Color.red);
 		
                 while (iter.hasNext())
                 {
-		    Collection polygons = (Collection) ((Map.Entry) iter.next()).getValue();
-                    Iterator iter2 = polygons.iterator();
+		    Collection<Polygon> polygons = iter.next().getValue();
+                    Iterator<Polygon> iter2 = polygons.iterator();
                     
 		    if(s_islandMode)
 		    {
 		    	while (iter2.hasNext())
                     	{
-                        	Polygon item = (Polygon)iter2.next();
+                        	Polygon item = iter2.next();
 			
 				g.drawPolygon(item.xpoints, item.ypoints, item.npoints);
                     
@@ -524,7 +526,7 @@ public class PolygonGrabber extends JFrame
     private void doneCurrentGroup() throws HeadlessException
     {
         JTextField text = new JTextField();
-        Iterator centersiter = m_centers.entrySet().iterator();
+        Iterator<Entry<String, Point>> centersiter = m_centers.entrySet().iterator();
 
         guessCountryName(text, centersiter);
         int option = JOptionPane.showConfirmDialog(this, text);
@@ -566,12 +568,12 @@ public class PolygonGrabber extends JFrame
        @param javax.swing.JTextField text         text dialog
        @param java.util.Iterator     centersiter  center iterator
     */
-    private void guessCountryName(JTextField text, Iterator centersiter)
+    private void guessCountryName(JTextField text, Iterator<Entry<String, Point>> centersiter)
     {
         while (centersiter.hasNext())
 	{
-            Map.Entry item = (Map.Entry)centersiter.next();
-            Point p = new Point((Point) item.getValue());
+        	Entry<String, Point> item = centersiter.next();
+            Point p = new Point(item.getValue());
 
             Iterator<Polygon> currentIter = m_current.iterator();
             

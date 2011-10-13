@@ -57,6 +57,7 @@ import javax.swing.JTextArea;
  * @author  Sean Bridges
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class UnitChooser extends JPanel
 {
   
@@ -259,13 +260,13 @@ public class UnitChooser extends JPanel
 
   private void createEntries(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, Collection<Unit> defaultSelections)
   {
-    Collection categories = UnitSeperator.categorize(units, dependent, categorizeMovement, categorizeTransportCost);
-    Collection defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
+    Collection<UnitCategory> categories = UnitSeperator.categorize(units, dependent, categorizeMovement, categorizeTransportCost);
+    Collection<UnitCategory> defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
     IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
-    Iterator iter = categories.iterator();
+    Iterator<UnitCategory> iter = categories.iterator();
     while(iter.hasNext())
     {
-      UnitCategory category = (UnitCategory) iter.next();
+      UnitCategory category = iter.next();
       addCategory(category, defaultValues.getInt(category));
     }
   }
@@ -273,22 +274,22 @@ public class UnitChooser extends JPanel
 
   private void createEntries(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, boolean categorizeTerritories, Collection<Unit> defaultSelections)
   {
-    Collection categories = UnitSeperator.categorize(dependent, units, categorizeMovement, categorizeTransportCost, categorizeTerritories);
-    Collection defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
+    Collection<UnitCategory> categories = UnitSeperator.categorize(dependent, units, categorizeMovement, categorizeTransportCost, categorizeTerritories);
+    Collection<UnitCategory> defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
     IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
-    Iterator iter = categories.iterator();
+    Iterator<UnitCategory> iter = categories.iterator();
     while(iter.hasNext())
     {
-      UnitCategory category = (UnitCategory) iter.next();
+      UnitCategory category = iter.next();
       addCategory(category, defaultValues.getInt(category));
     }
   }
-  private IntegerMap<UnitCategory> createDefaultSelectionsMap(Collection categories)
+  private IntegerMap<UnitCategory> createDefaultSelectionsMap(Collection<UnitCategory> categories)
   {
     IntegerMap<UnitCategory> defaultValues = new IntegerMap<UnitCategory>();
-    Iterator iter = categories.iterator();
+    Iterator<UnitCategory> iter = categories.iterator();
     while (iter.hasNext()) {
-      UnitCategory category = (UnitCategory) iter.next();
+      UnitCategory category = iter.next();
       int defaultValue = category.getUnits().size();
       defaultValues.put(category, defaultValue);
     }
@@ -649,7 +650,8 @@ class ChooserEntry
       return m_hasSecondHit;
   }
 
-  class UnitChooserEntryIcon extends JComponent
+  @SuppressWarnings("serial")
+class UnitChooserEntryIcon extends JComponent
   {
       private boolean m_forceDamaged;
       private final UIContext m_uiContext;
@@ -666,11 +668,11 @@ class ChooserEntry
     {
       super.paint(g);
       g.drawImage( m_uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data, m_forceDamaged || m_category.getDamaged(), m_category.getDisabled()), 0,0,this);
-      Iterator iter = m_category.getDependents().iterator();
+      Iterator<UnitOwner> iter = m_category.getDependents().iterator();
       int index = 1;
       while(iter.hasNext())
       {
-        UnitOwner holder = (UnitOwner) iter.next();
+        UnitOwner holder = iter.next();
         int x = m_uiContext.getUnitImageFactory().getUnitImageWidth() * index;
         Image unitImg = m_uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), m_data, false, false);
         g.drawImage(unitImg, x, 0, this);

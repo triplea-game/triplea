@@ -35,7 +35,6 @@ import junit.framework.TestSuite;
  * @author  Sean Bridges
  * @version 1.0
  */
-@SuppressWarnings("unchecked")
 public class MoveValidatorTest extends DelegateTest
 {
 		
@@ -89,7 +88,7 @@ public class MoveValidatorTest extends DelegateTest
 	public void testNotEnoughMovement()
 	{
 		
-		Collection units = bomber.create(3, british);
+		Collection<Unit> units = bomber.create(3, british);
 		Object[] objs = units.toArray();
 		assertTrue(MoveValidator.hasEnoughMovement(units, 6));
 		assertTrue(!MoveValidator.hasEnoughMovement(units, 7));
@@ -140,7 +139,7 @@ public class MoveValidatorTest extends DelegateTest
 	
 	public void testHasUnitsThatCantGoOnWater()
 	{
-		Collection units = new ArrayList();
+		Collection<Unit> units = new ArrayList<Unit>();
 		units.addAll( infantry.create(1,british));
 		units.addAll( armour.create(1,british));
 		units.addAll( transport.create(1,british));
@@ -152,20 +151,20 @@ public class MoveValidatorTest extends DelegateTest
 		
 	public void testCarrierCapacity()
 	{
-		Collection units = carrier.create(5,british);
+		Collection<Unit> units = carrier.create(5,british);
 		assertEquals(10, MoveValidator.carrierCapacity(units));
 	}
 	
 	public void testCarrierCost()
 	{
-		Collection units = fighter.create(5,british);
+		Collection<Unit> units = fighter.create(5,british);
 		assertEquals(5, MoveValidator.carrierCost(units));
 	}
 	
 	public void testGetLeastMovement()
 	{
 		
-		Collection collection = bomber.create(1, british);
+		Collection<Unit> collection = bomber.create(1, british);
 		
 		assertEquals( MoveValidator.getLeastMovement(collection), 6);
 		
@@ -182,13 +181,13 @@ public class MoveValidatorTest extends DelegateTest
 		
 	public void testCanLand()
 	{
-		Collection units = fighter.create(4, british);
+		Collection<Unit> units = fighter.create(4, british);
 		//2 carriers in red sea
 		assertTrue(MoveValidator.canLand(units, redSea, british, m_data));
 		//britian owns egypt
 		assertTrue(MoveValidator.canLand(units, egypt, british, m_data));
 		//only 2 carriers
-		Collection tooMany = fighter.create(6, british);
+		Collection<Unit> tooMany = fighter.create(6, british);
 		assertTrue(!MoveValidator.canLand(tooMany, redSea, british, m_data));
 		
 		//nowhere to land
@@ -201,7 +200,7 @@ public class MoveValidatorTest extends DelegateTest
 	{
 		try
 		{
-			Collection units = infantry.create(1, british);
+			Collection<Unit> units = infantry.create(1, british);
 			MoveValidator.canLand(units, redSea, british, m_data);
 		} catch(IllegalArgumentException e)
 		{
@@ -213,13 +212,13 @@ public class MoveValidatorTest extends DelegateTest
 
 	public void testCanLandBomber()
 	{		
-		Collection units = bomber.create(1, british);
+		Collection<Unit> units = bomber.create(1, british);
 		assertTrue(!MoveValidator.canLand(units, redSea, british, m_data));
 	}
 
 	public void testHasSomeLand()
 	{
-		Collection units = transport.create(3,british);
+		Collection<Unit> units = transport.create(3,british);
 		assertTrue(! MoveValidator.hasSomeLand(units));
 		
 		units.addAll( infantry.create(2,british));

@@ -152,21 +152,21 @@ public class MyFormatter
     }
 
     /**
-     * Equivalent to territoriesToText(teritories, ",");
+     * Equivalent to territoriesToText(territories, ",");
      */
-    public static String territoriesToText(Collection teritories)
+    public static String territoriesToText(Collection<Territory> territories)
     {
-        return territoriesToText(teritories, ",");
+        return territoriesToText(territories, ",");
     }
 
-    public static String territoriesToText(Collection teritories,
+    public static String territoriesToText(Collection<Territory> territories,
             String seperator)
     {
-        Iterator iter = teritories.iterator();
+        Iterator<Territory> iter = territories.iterator();
         StringBuilder buffer = new StringBuilder();
         while (iter.hasNext())
         {
-            buffer.append(((Territory) iter.next()).getName());
+            buffer.append(( iter.next()).getName());
             if (iter.hasNext())
                 buffer.append(" ").append(seperator).append(" ");
 

@@ -31,6 +31,7 @@ import javax.swing.*;
  *
  */
 
+@SuppressWarnings("serial")
 public class SimpleUnitPanel extends JPanel
 {
   private final UIContext m_uiContext;  
@@ -107,14 +108,14 @@ public class SimpleUnitPanel extends JPanel
    *
    * @param categories a collection of UnitCategories
    */
-  public void setUnitsFromCategories(Collection categories, GameData data)
+  public void setUnitsFromCategories(Collection<UnitCategory> categories, GameData data)
   {
     removeAll();
 
-    Iterator iter = categories.iterator();
+    Iterator<UnitCategory> iter = categories.iterator();
     while (iter.hasNext())
     {
-      UnitCategory category = (UnitCategory) iter.next();
+      UnitCategory category = iter.next();
       //TODO Kev determine if we need to identify if the unit is hit/disabled
       addUnits(category.getOwner(), data, category.getUnits().size(), category.getType(), category.getDamaged(), category.getDisabled());
     }

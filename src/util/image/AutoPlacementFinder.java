@@ -69,7 +69,7 @@ public class AutoPlacementFinder
     */
     static void calculate()
     {
-        Map<String, Collection> m_placements = new HashMap<String, Collection>();      //create hash map of placements
+        Map<String, Collection<Point>> m_placements = new HashMap<String, Collection<Point>>();      //create hash map of placements
 	String mapDir = getMapDirectory();  //ask user where the map is
 	if(percent == 0)
     {
@@ -137,19 +137,19 @@ public class AutoPlacementFinder
 	    System.exit(0);
 	}
 	
-	Iterator terrIter = s_mapData.getTerritories().iterator();
+	Iterator<String> terrIter = s_mapData.getTerritories().iterator();
 	
 	System.out.println("Calculating, this may take a while...");
 	
         while (terrIter.hasNext())
         {
-            String name = (String)terrIter.next();
+            String name = terrIter.next();
             List<Point> points;
 	    
             if(s_mapData.hasContainedTerritory(name))
             {
                 Set<Polygon> containedPolygons = new HashSet<Polygon>();
-                Iterator containedIter = s_mapData.getContainedTerritory(name).iterator();
+                Iterator<String> containedIter = s_mapData.getContainedTerritory(name).iterator();
 		
                 while (containedIter.hasNext())
 		{

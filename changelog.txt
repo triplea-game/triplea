@@ -1,4 +1,6 @@
 Changes for 1.4
+* Some general code cleanup, especially with iterators and rawtypes. (veqryn)
+
 * Removed needless gamedata passing, and added methods to get game data out of bridge. (frigoref)
 
 * Updated export stats to display far more information, about actual techs gained, and number of each unit type for each player, etc. (veqryn)

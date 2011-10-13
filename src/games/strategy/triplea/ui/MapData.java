@@ -436,7 +436,7 @@ public class MapData
      * 
      * @return possiblly null
      */
-    public List getContainedTerritory(String territoryName)
+    public List<String> getContainedTerritory(String territoryName)
     {
         return m_contains.get(territoryName);
     }
@@ -461,12 +461,12 @@ public class MapData
                 iter.remove();
         }
 
-        Iterator territories = data.getMap().getTerritories().iterator();
+        Iterator<Territory> territories = data.getMap().getTerritories().iterator();
 
         Set<String> keySet = aMap.keySet();
         while (territories.hasNext())
         {
-            Territory terr = (Territory) territories.next();
+            Territory terr = territories.next();
             if (!keySet.contains(terr.getName()))
             {
                 errors.append("No data of type " + dataTypeForErrorMessage + " for territory:" + terr.getName() + "\n");
@@ -570,11 +570,11 @@ public class MapData
         while (keyIter.hasNext())
         {
             String name = keyIter.next();
-            Collection polygons = m_polys.get(name);
-            Iterator polyIter = polygons.iterator();
+            Collection<Polygon> polygons = m_polys.get(name);
+            Iterator<Polygon> polyIter = polygons.iterator();
             while (polyIter.hasNext())
             {
-                Polygon poly = (Polygon) polyIter.next();
+                Polygon poly = polyIter.next();
                 if (poly.contains(x, y))
                 {
                     if (name.endsWith("Sea Zone") || name.startsWith("Sea Zone"))
@@ -612,7 +612,7 @@ public class MapData
 
     public Rectangle getBoundingRect(String name)
     {
-        List polys = getPolygons(name);
+        List<Polygon> polys = getPolygons(name);
         if (polys == null)
             throw new IllegalStateException("No polygons found for:" + name + " All territories:" + m_polys.keySet());
 
@@ -645,7 +645,7 @@ public class MapData
         {
             String terr = terrIter.next();
 
-            List polygons = getPolygons(terr);
+            List<Polygon> polygons = getPolygons(terr);
             for (int i = 0; i < polygons.size(); i++)
             {
                 Polygon item = (Polygon) polygons.get(i);
