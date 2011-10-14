@@ -5,17 +5,17 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * TripleA.java
- *
- *
+ * 
+ * 
  * Created on November 2, 2001, 8:56 PM
  */
 
@@ -61,225 +61,218 @@ import javax.swing.SwingUtilities;
  */
 public class TripleA implements IGameLoader
 {
-    // compatible with 0.9.0.2 saved games
-    private static final long serialVersionUID = -8374315848374732436L;
-    
-    private static final String HUMAN_PLAYER_TYPE = "Human";
-    private static final String WEAK_COMPUTER_PLAYER_TYPE = "E.Z. Fodder (AI)";
-    private static final String STRONG_COMPUTER_PLAYER_TYPE = "Moore N. Able (AI)";
-    private static final String DYNAMIX_COMPUTER_PLAYER_TYPE = "Dynamix (AI)";
-
-    private transient TripleaDisplay m_display;
-    private transient IGame m_game;
-
-    /**
-     * @see IGameLoader.createPlayers(playerNames)
-     */
-    @Override
+	// compatible with 0.9.0.2 saved games
+	private static final long serialVersionUID = -8374315848374732436L;
+	
+	private static final String HUMAN_PLAYER_TYPE = "Human";
+	private static final String WEAK_COMPUTER_PLAYER_TYPE = "E.Z. Fodder (AI)";
+	private static final String STRONG_COMPUTER_PLAYER_TYPE = "Moore N. Able (AI)";
+	private static final String DYNAMIX_COMPUTER_PLAYER_TYPE = "Dynamix (AI)";
+	
+	private transient TripleaDisplay m_display;
+	private transient IGame m_game;
+	
+	/**
+	 * @see IGameLoader.createPlayers(playerNames)
+	 */
+	@Override
 	public Set<IGamePlayer> createPlayers(Map playerNames)
-    {
-        Set<IGamePlayer> players = new HashSet<IGamePlayer>();
-        Iterator iter = playerNames.keySet().iterator();
-        while (iter.hasNext())
-        {
-            String name = (String) iter.next();
-            String type = (String) playerNames.get(name);
-            if (type.equals(WEAK_COMPUTER_PLAYER_TYPE))
-            {
-                players.add(new WeakAI(name));
-            }
-            else if(type.equals(STRONG_COMPUTER_PLAYER_TYPE))
-            {
-                players.add(new StrongAI(name));
-            }
-            else if(type.equals(DYNAMIX_COMPUTER_PLAYER_TYPE))
-            {
-                players.add(new Dynamix_AI(name));
-            }
-            else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
-            {
-                TripleAPlayer player = new TripleAPlayer(name);
-                players.add(player);
-            }
-            else
-            {
-                throw new IllegalStateException("Player type not recognized:" + type);
-            }
-        }
-        return players;
-    }
-
-    @Override
+	{
+		Set<IGamePlayer> players = new HashSet<IGamePlayer>();
+		Iterator iter = playerNames.keySet().iterator();
+		while (iter.hasNext())
+		{
+			String name = (String) iter.next();
+			String type = (String) playerNames.get(name);
+			if (type.equals(WEAK_COMPUTER_PLAYER_TYPE))
+			{
+				players.add(new WeakAI(name));
+			}
+			else if (type.equals(STRONG_COMPUTER_PLAYER_TYPE))
+			{
+				players.add(new StrongAI(name));
+			}
+			else if (type.equals(DYNAMIX_COMPUTER_PLAYER_TYPE))
+			{
+				players.add(new Dynamix_AI(name));
+			}
+			else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
+			{
+				TripleAPlayer player = new TripleAPlayer(name);
+				players.add(player);
+			}
+			else
+			{
+				throw new IllegalStateException("Player type not recognized:" + type);
+			}
+		}
+		return players;
+	}
+	
+	@Override
 	public void shutDown()
-    {
-        if(m_display != null) {
-            m_game.removeDisplay(m_display);
-            m_display.shutDown();
-        }
-        
-    }
-    
-    @Override
+	{
+		if (m_display != null)
+		{
+			m_game.removeDisplay(m_display);
+			m_display.shutDown();
+		}
+		
+	}
+	
+	@Override
 	public void startGame(final IGame game, final Set<IGamePlayer> players) throws Exception
-    {
-        try
-        {
-            
-            /*
-               Retreive the map name from xml file
-               This is the key for triplea to find the maps
-            */
-            m_game = game;
-           // final String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
-
-
-            if(game.getData().getDelegateList().getDelegate("edit") == null) 
-            {                
-                //an evil awful hack
-                //we don't want to change the game xml
-                //and invalidate mods so hack it
-                //and force the addition here
-                EditDelegate delegate = new EditDelegate();
-                delegate.initialize("edit", "edit");
-                m_game.getData().getDelegateList().addDelegate(delegate);
-                if(game instanceof ServerGame) 
-                {
-                  ((ServerGame) game).addDelegateMessenger(delegate);
-                }
-            }
-
-                SwingUtilities.invokeAndWait(new Runnable()
-                {
-                
-                    @Override
+	{
+		try
+		{
+			
+			/*
+			   Retreive the map name from xml file
+			   This is the key for triplea to find the maps
+			*/
+			m_game = game;
+			// final String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
+			
+			if (game.getData().getDelegateList().getDelegate("edit") == null)
+			{
+				// an evil awful hack
+				// we don't want to change the game xml
+				// and invalidate mods so hack it
+				// and force the addition here
+				EditDelegate delegate = new EditDelegate();
+				delegate.initialize("edit", "edit");
+				m_game.getData().getDelegateList().addDelegate(delegate);
+				if (game instanceof ServerGame)
+				{
+					((ServerGame) game).addDelegateMessenger(delegate);
+				}
+			}
+			
+			SwingUtilities.invokeAndWait(new Runnable()
+				{
+					
+					@Override
 					public void run()
-                    {
-                        final TripleAFrame frame;
-                        try
-                        {
-                            frame = new TripleAFrame(game, players);
-                        } catch (IOException e)
-                        {
-                            e.printStackTrace();
-                            System.exit(-1);
-                            return;
-                        }
-                        
-                        m_display = new TripleaDisplay(frame);
-                        game.addDisplay(m_display);
-                        frame.setSize(700, 400);
-                        frame.setVisible(true);
-                        connectPlayers(players, frame);
-                        
-                        SwingUtilities.invokeLater(
-                            new Runnable()
-                            {
-                                @Override
+					{
+						final TripleAFrame frame;
+						try
+						{
+							frame = new TripleAFrame(game, players);
+						} catch (IOException e)
+						{
+							e.printStackTrace();
+							System.exit(-1);
+							return;
+						}
+						
+						m_display = new TripleaDisplay(frame);
+						game.addDisplay(m_display);
+						frame.setSize(700, 400);
+						frame.setVisible(true);
+						connectPlayers(players, frame);
+						
+						SwingUtilities.invokeLater(
+									new Runnable()
+							{
+								@Override
 								public void run()
-                                {
-                                    frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-                                    frame.toFront();
-                                }
-                            }
-                        );
-                        
-                    }
-                
-                });
-            } catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            } catch (InvocationTargetException e)
-            {
-                if(e.getCause() instanceof Exception)
-                    throw (Exception) e.getCause();
-                else
-                {
-                    e.printStackTrace();
-                    throw new IllegalStateException(e.getCause().getMessage());
-                }
-                     
-            }
-            
-
-            
-
-            //load the sounds in a background thread,
-            //avoids the pause where sounds dont load right away
-            Runnable loadSounds = new Runnable()
-            {
-                @Override
+								{
+									frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+									frame.toFront();
+								}
+							}
+									);
+						
+					}
+					
+				});
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		} catch (InvocationTargetException e)
+		{
+			if (e.getCause() instanceof Exception)
+				throw (Exception) e.getCause();
+			else
+			{
+				e.printStackTrace();
+				throw new IllegalStateException(e.getCause().getMessage());
+			}
+			
+		}
+		
+		// load the sounds in a background thread,
+		// avoids the pause where sounds dont load right away
+		Runnable loadSounds = new Runnable()
+			{
+				@Override
 				public void run()
-                {
-                    SoundPath.preLoadSounds();
-                }
-            };
-            new Thread(loadSounds, "Triplea sound loader").start();
-
-    }
-
-    private void connectPlayers(Set<IGamePlayer> players, TripleAFrame frame)
-    {
-        Iterator<IGamePlayer> iter = players.iterator();
-        while (iter.hasNext())
-        {
-            IGamePlayer player = iter.next();
-            if (player instanceof TripleAPlayer)
-                ((TripleAPlayer) player).setFrame(frame);
-        }
-    }
-
-    /**
-     * Return an array of player types that can play on the server. 
-     */
-    @Override
+				{
+					SoundPath.preLoadSounds();
+				}
+			};
+		new Thread(loadSounds, "Triplea sound loader").start();
+		
+	}
+	
+	private void connectPlayers(Set<IGamePlayer> players, TripleAFrame frame)
+	{
+		Iterator<IGamePlayer> iter = players.iterator();
+		while (iter.hasNext())
+		{
+			IGamePlayer player = iter.next();
+			if (player instanceof TripleAPlayer)
+				((TripleAPlayer) player).setFrame(frame);
+		}
+	}
+	
+	/**
+	 * Return an array of player types that can play on the server.
+	 */
+	@Override
 	public String[] getServerPlayerTypes()
-    {
-        
-        return new String[]
-        {
-            HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE, DYNAMIX_COMPUTER_PLAYER_TYPE};
-        }
-
-    @Override
+	{
+		
+		return new String[] {
+					HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE, DYNAMIX_COMPUTER_PLAYER_TYPE };
+	}
+	
+	@Override
 	public IPBEMMessenger[] getPBEMMessengers()
-    {
-        return new IPBEMMessenger[]
-        {
-            new AxisAndAlliesDotOrgPBEMMessenger(),
-            new AllYouCanUploadDotComPBEMMessenger()
-        };
-    }
-
-    /* 
-     * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
-     */
-    @Override
+	{
+		return new IPBEMMessenger[] {
+					new AxisAndAlliesDotOrgPBEMMessenger(),
+					new AllYouCanUploadDotComPBEMMessenger() };
+	}
+	
+	/* 
+	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
+	 */
+	@Override
 	public Class<? extends IChannelSubscribor> getDisplayType()
-    {
-        return ITripleaDisplay.class;
-    }
-
-    
-    @Override
+	{
+		return ITripleaDisplay.class;
+	}
+	
+	@Override
 	public Class<? extends IRemote> getRemotePlayerType()
-    {
-        return ITripleaPlayer.class;
-    }
-
-    @Override
+	{
+		return ITripleaPlayer.class;
+	}
+	
+	@Override
 	public IUnitFactory getUnitFactory()
-    {
-       return new IUnitFactory() {
-
-        @Override
-		public Unit createUnit(UnitType type, PlayerID owner, GameData data)
-        {
-            return new TripleAUnit(type,owner,data);
-        } 
-           
-       };
-    }
-    
-    
+	{
+		return new IUnitFactory()
+		{
+			
+			@Override
+			public Unit createUnit(UnitType type, PlayerID owner, GameData data)
+			{
+				return new TripleAUnit(type, owner, data);
+			}
+			
+		};
+	}
+	
 }

@@ -5,51 +5,52 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * PlaceDelegate.java
- *
+ * 
  * Created on November 2, 2001, 12:29 PM
  */
 
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 
+import java.io.Serializable;
+
 /**
- *
- * Logic for placing units.  <p>
- *
- *
- * @author  Sean Bridges
+ * 
+ * Logic for placing units.
+ * <p>
+ * 
+ * 
+ * @author Sean Bridges
  * @version 1.0
- *
- * Known limitations.
- *
- * Doesnt take into account limits on number of factories that can be produced.
- *
- * The situation where one has two non original factories a,b each with production 2.
- * If sea zone e neighbors a,b and sea zone f neighbors b.  Then producing 2 in e
- * could make it such that you cannot produce in f
- * The reason is that the production in e could be assigned to the
- * factory in b, leaving no capacity to produce in f.
- * If anyone ever accidently runs into this situation then they can
- * undo the production, produce in f first, and then produce in e.
+ * 
+ *          Known limitations.
+ * 
+ *          Doesnt take into account limits on number of factories that can be produced.
+ * 
+ *          The situation where one has two non original factories a,b each with production 2.
+ *          If sea zone e neighbors a,b and sea zone f neighbors b. Then producing 2 in e
+ *          could make it such that you cannot produce in f
+ *          The reason is that the production in e could be assigned to the
+ *          factory in b, leaving no capacity to produce in f.
+ *          If anyone ever accidently runs into this situation then they can
+ *          undo the production, produce in f first, and then produce in e.
  */
 public class PlaceDelegate extends AbstractPlaceDelegate
 {
-
+	
 	/**
-	 *
+	 * 
 	 * @return gets the production of the territory, ignores whether the territory was an original factory
 	 */
 	@Override
@@ -58,16 +59,16 @@ public class PlaceDelegate extends AbstractPlaceDelegate
 		TerritoryAttachment ta = TerritoryAttachment.get(territory);
 		return ta.getProduction();
 	}
-
+	
 	@Override
-	public Serializable saveState() {
-	    return super.saveState();
+	public Serializable saveState()
+	{
+		return super.saveState();
 	}
-
+	
 	@Override
-	public final void loadState(Serializable aState) {
-	    super.loadState(aState);
+	public final void loadState(Serializable aState)
+	{
+		super.loadState(aState);
 	}
 }
-
-

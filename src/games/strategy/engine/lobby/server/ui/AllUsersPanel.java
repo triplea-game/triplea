@@ -5,11 +5,11 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.engine.lobby.server.ui;
@@ -32,105 +32,100 @@ import javax.swing.SwingUtilities;
 
 public class AllUsersPanel extends JPanel
 {
-    
-    private final IMessenger m_messenger;
-    private JList m_nodes;
-    private DefaultListModel m_nodesModel;
-    private LobbyAdminStatPanel m_statPane;
-    private final List<INode> m_orderedNodes;
-
-    public AllUsersPanel(IMessenger messenger)
-    {
-        m_messenger = messenger;
-        
-        m_orderedNodes = new ArrayList<INode>();
-        
-        createComponents();
-        layoutComponents();
-        setupListeners();
-        setWidgetActivation();
-    }
-
-    private void createComponents()
-    {
-        m_nodesModel = new DefaultListModel();
-        m_nodes = new JList(m_nodesModel);
-        m_statPane = new LobbyAdminStatPanel(m_messenger);
-
-    }
-
-    private void layoutComponents()
-    {
-        setLayout(new BorderLayout());
-        add(new JScrollPane(m_nodes), BorderLayout.CENTER);
-        add(m_statPane, BorderLayout.SOUTH);
-
-    }
-
-    private void setupListeners()
-    {
-        ((IServerMessenger)m_messenger).addConnectionChangeListener(new IConnectionChangeListener()
-        {
-        
-            @Override
+	
+	private final IMessenger m_messenger;
+	private JList m_nodes;
+	private DefaultListModel m_nodesModel;
+	private LobbyAdminStatPanel m_statPane;
+	private final List<INode> m_orderedNodes;
+	
+	public AllUsersPanel(IMessenger messenger)
+	{
+		m_messenger = messenger;
+		
+		m_orderedNodes = new ArrayList<INode>();
+		
+		createComponents();
+		layoutComponents();
+		setupListeners();
+		setWidgetActivation();
+	}
+	
+	private void createComponents()
+	{
+		m_nodesModel = new DefaultListModel();
+		m_nodes = new JList(m_nodesModel);
+		m_statPane = new LobbyAdminStatPanel(m_messenger);
+		
+	}
+	
+	private void layoutComponents()
+	{
+		setLayout(new BorderLayout());
+		add(new JScrollPane(m_nodes), BorderLayout.CENTER);
+		add(m_statPane, BorderLayout.SOUTH);
+		
+	}
+	
+	private void setupListeners()
+	{
+		((IServerMessenger) m_messenger).addConnectionChangeListener(new IConnectionChangeListener()
+		{
+			
+			@Override
 			public void connectionRemoved(final INode to)
-            {
-                SwingUtilities.invokeLater(new Runnable()
-                {
-                
-                    @Override
+			{
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					
+					@Override
 					public void run()
-                    {
-                      m_orderedNodes.remove(to);
-                      refreshModel();
-                      
-                    }
-
-                
-                });
-        
-            }
-        
-            @Override
+					{
+						m_orderedNodes.remove(to);
+						refreshModel();
+						
+					}
+					
+				});
+				
+			}
+			
+			@Override
 			public void connectionAdded(final INode to)
-            {
-                SwingUtilities.invokeLater(new Runnable()
-                {
-                
-                    @Override
+			{
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					
+					@Override
 					public void run()
-                    {
-                      m_orderedNodes.add(to);
-                      refreshModel();
-                
-                    }
-                
-                });
-
-        
-            }
-        
-        });
-        
-    }
-    
-    private void refreshModel()
-    {
-        Collections.sort(m_orderedNodes);
-        m_nodesModel.clear();
-        for(INode node : m_orderedNodes) {
-            m_nodesModel.addElement(node);
-        }
-        
-    }
-
-
-    private void setWidgetActivation()
-    {
-
-    }
-    
+					{
+						m_orderedNodes.add(to);
+						refreshModel();
+						
+					}
+					
+				});
+				
+			}
+			
+		});
+		
+	}
+	
+	private void refreshModel()
+	{
+		Collections.sort(m_orderedNodes);
+		m_nodesModel.clear();
+		for (INode node : m_orderedNodes)
+		{
+			m_nodesModel.addElement(node);
+		}
+		
+	}
+	
+	private void setWidgetActivation()
+	{
+		
+	}
+	
 }
-
-
-

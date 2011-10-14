@@ -13,27 +13,26 @@ import games.strategy.engine.GameOverException;
  */
 public class ErrorHandler
 {
-    
-    private static volatile boolean m_isGameOver;
-    
-    public static void setGameOver(boolean aBool)
-    {
-        m_isGameOver = aBool;
-    }
-    
-   
-    public ErrorHandler()
-    {
-        
-    }
-    
-    public void handle(Throwable t)
-    {
-        if(t instanceof GameOverException && m_isGameOver)
-        {
-            //ignore
-            return;
-        }
-        t.printStackTrace();
-    }
+	
+	private static volatile boolean m_isGameOver;
+	
+	public static void setGameOver(boolean aBool)
+	{
+		m_isGameOver = aBool;
+	}
+	
+	public ErrorHandler()
+	{
+		
+	}
+	
+	public void handle(Throwable t)
+	{
+		if (t instanceof GameOverException && m_isGameOver)
+		{
+			// ignore
+			return;
+		}
+		t.printStackTrace();
+	}
 }

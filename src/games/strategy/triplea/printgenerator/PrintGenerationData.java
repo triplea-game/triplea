@@ -1,15 +1,15 @@
 /*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.triplea.printgenerator;
@@ -21,57 +21,66 @@ import java.util.Map;
 
 public class PrintGenerationData
 {
-    private File m_outDir;
-    private Map<Integer, Integer> m_SamePUMap;
-    private GameData m_data;
-    /**
-     * General Constructor
-     */
-    protected PrintGenerationData()
-    {
-    }
-    /**
-     * @return the outDir
-     */
-    protected File getOutDir()
-    {
-        return m_outDir;
-    }
-    /**
-     * @param outDir the outDir to set
-     */
-    protected void setOutDir(File outDir)
-    {
-        m_outDir = outDir;
-    }
-    /**
-     * @return the samePUMap
-     */
-    protected Map<Integer, Integer> getSamePUMap()
-    {
-        return m_SamePUMap;
-    }
-    /**
-     * @param samePUMap the samePUMap to set
-     */
-    protected void setSamePUMap(Map<Integer, Integer> samePUMap)
-    {
-        m_SamePUMap = samePUMap;
-    }
-    /**
-     * @return the data
-     */
-    protected GameData getData()
-    {
-        return m_data;
-    }
-    /**
-     * @param data the data to set
-     */
-    protected void setData(GameData data)
-    {
-        m_data = data;
-    }
-    
-    
+	private File m_outDir;
+	private Map<Integer, Integer> m_SamePUMap;
+	private GameData m_data;
+	
+	/**
+	 * General Constructor
+	 */
+	protected PrintGenerationData()
+	{
+	}
+	
+	/**
+	 * @return the outDir
+	 */
+	protected File getOutDir()
+	{
+		return m_outDir;
+	}
+	
+	/**
+	 * @param outDir
+	 *            the outDir to set
+	 */
+	protected void setOutDir(File outDir)
+	{
+		m_outDir = outDir;
+	}
+	
+	/**
+	 * @return the samePUMap
+	 */
+	protected Map<Integer, Integer> getSamePUMap()
+	{
+		return m_SamePUMap;
+	}
+	
+	/**
+	 * @param samePUMap
+	 *            the samePUMap to set
+	 */
+	protected void setSamePUMap(Map<Integer, Integer> samePUMap)
+	{
+		m_SamePUMap = samePUMap;
+	}
+	
+	/**
+	 * @return the data
+	 */
+	protected GameData getData()
+	{
+		return m_data;
+	}
+	
+	/**
+	 * @param data
+	 *            the data to set
+	 */
+	protected void setData(GameData data)
+	{
+		m_data = data;
+	}
+	
 }

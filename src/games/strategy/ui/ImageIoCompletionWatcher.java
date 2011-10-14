@@ -7,15 +7,15 @@ package games.strategy.ui;
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-import java.awt.image.*;
-import java.awt.*;
+import java.awt.Image;
+import java.awt.image.ImageObserver;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -24,35 +24,35 @@ import java.util.concurrent.CountDownLatch;
 
 public class ImageIoCompletionWatcher implements ImageObserver
 {
-    //we countdown when we are done
-    private final CountDownLatch m_countDownLatch = new CountDownLatch(1);
-
-    public ImageIoCompletionWatcher()
-    {
-    }
-    
-    public void waitForCompletion()
-    {
-        try
-        {
-            m_countDownLatch.await();
-        } catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
+	// we countdown when we are done
+	private final CountDownLatch m_countDownLatch = new CountDownLatch(1);
+	
+	public ImageIoCompletionWatcher()
+	{
+	}
+	
+	public void waitForCompletion()
+	{
+		try
+		{
+			m_countDownLatch.await();
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
 	public boolean imageUpdate(Image image, int flags, int x, int y, int width, int height)
-    {
-        // wait for complete or error/abort
-        if (((flags & ALLBITS) != 0) || ((flags & ABORT) != 0))
-        {
-            m_countDownLatch.countDown();
-            return false;
-        }
-
-        return true;
-
-    }
+	{
+		// wait for complete or error/abort
+		if (((flags & ALLBITS) != 0) || ((flags & ABORT) != 0))
+		{
+			m_countDownLatch.countDown();
+			return false;
+		}
+		
+		return true;
+		
+	}
 }

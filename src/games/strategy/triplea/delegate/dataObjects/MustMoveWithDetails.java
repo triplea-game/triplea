@@ -5,16 +5,16 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * MustMoveWithReply.java
- *
+ * 
  * Created on December 3, 2001, 6:25 PM
  */
 
@@ -26,14 +26,14 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  * @version 1.0
- *
- * A response to a must move query.
- * Returns a mapping of unit -> collection of units.
- * Units that must move are land units in transports,
- * and friendly aircraft that must move with carriers.
+ * 
+ *          A response to a must move query.
+ *          Returns a mapping of unit -> collection of units.
+ *          Units that must move are land units in transports,
+ *          and friendly aircraft that must move with carriers.
  */
 @SuppressWarnings("serial")
 public class MustMoveWithDetails implements java.io.Serializable
@@ -41,20 +41,23 @@ public class MustMoveWithDetails implements java.io.Serializable
 	/**
 	 * Maps Unit -> Collection of units.
 	 */
-	private Map<Unit,Collection<Unit>> m_mapping;
-
-	/** Creates new MustMoveWithReplay
-	 * @param mapping a mapping of unit (that must move) -> collection of units
+	private Map<Unit, Collection<Unit>> m_mapping;
+	
+	/**
+	 * Creates new MustMoveWithReplay
+	 * 
+	 * @param mapping
+	 *            a mapping of unit (that must move) -> collection of units
 	 */
-    public MustMoveWithDetails(Map<Unit,Collection<Unit>> mapping)
+	public MustMoveWithDetails(Map<Unit, Collection<Unit>> mapping)
 	{
 		m_mapping = mapping;
-
-    }
-
-	public Map<Unit,Collection<Unit>> getMustMoveWith()
+		
+	}
+	
+	public Map<Unit, Collection<Unit>> getMustMoveWith()
 	{
 		return m_mapping;
 	}
-
+	
 }

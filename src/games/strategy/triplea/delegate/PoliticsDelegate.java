@@ -16,7 +16,6 @@
  * Created on July 16, 2011
  */
 
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseDelegate;
@@ -24,43 +23,41 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 
-
-
 /**
  * 
  * Responsible allowing players to perform politicalActions and showing political state
  * 
  * @author Edwin van der Wal
  * @version 1.0
- *  
+ * 
  */
 public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 {
 	/** Creates new PoliticsDelegate */
-    public PoliticsDelegate()
-    {
-
-    }
-    
-    /**
-     * Called before the delegate will run.
-     */
-    @Override
-	public void start(IDelegateBridge aBridge)
-    {
-        super.start(aBridge);
-        if (games.strategy.triplea.Properties.getTriggers(getData())) {
-            TriggerAttachment.triggerRelationshipChange(m_player, m_bridge, null, null);
-        }		 
+	public PoliticsDelegate()
+	{
+		
 	}
-    
-  
-    /*
-     * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
-     */
-    @Override
+	
+	/**
+	 * Called before the delegate will run.
+	 */
+	@Override
+	public void start(IDelegateBridge aBridge)
+	{
+		super.start(aBridge);
+		if (games.strategy.triplea.Properties.getTriggers(getData()))
+		{
+			TriggerAttachment.triggerRelationshipChange(m_player, m_bridge, null, null);
+		}
+	}
+	
+	/*
+	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
+	 */
+	@Override
 	public Class<IPoliticsDelegate> getRemoteType()
-    {
-        return IPoliticsDelegate.class;
-    }
+	{
+		return IPoliticsDelegate.class;
+	}
 }

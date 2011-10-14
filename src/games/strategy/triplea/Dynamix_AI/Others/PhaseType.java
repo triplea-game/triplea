@@ -15,16 +15,16 @@
 package games.strategy.triplea.Dynamix_AI.Others;
 
 /**
- *
+ * 
  * @author Stephen
  */
 public enum PhaseType
 {
-    Unknown,
-    Tech,
-    Combat_Move,
-    Purchase,
-    Battle,
-    Non_Combat_Move,
-    Place
+	Unknown,
+	Tech,
+	Combat_Move,
+	Purchase,
+	Battle,
+	Non_Combat_Move,
+	Place
 }

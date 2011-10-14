@@ -5,52 +5,56 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * MapTest.java
- *
+ * 
  * Created on October 12, 2001, 2:23 PM
  */
 
 package games.strategy.engine.data;
 
 import games.strategy.util.Match;
-import junit.framework.*;
-import java.util.*;
+
+import java.util.Set;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  * @version 1.0
  */
-public class MapTest extends TestCase 
+public class MapTest extends TestCase
 {
 	Territory aa;
 	Territory ab;
 	Territory ac;
-	Territory ad; 
-
+	Territory ad;
+	
 	Territory ba;
 	Territory bb;
 	Territory bc;
-	Territory bd; 
-
+	Territory bd;
+	
 	Territory ca;
 	Territory cb;
 	Territory cc;
-	Territory cd; 
+	Territory cd;
 	
 	Territory da;
 	Territory db;
 	Territory dc;
-	Territory dd; 
-
+	Territory dd;
+	
 	Territory nowhere;
 	
 	GameMap map;
@@ -71,9 +75,9 @@ public class MapTest extends TestCase
 	public void setUp()
 	{
 		
-		//map, l is land, w is water
-	    //each territory is connected to
-	    //it's direct neighbors, but not diagonals
+		// map, l is land, w is water
+		// each territory is connected to
+		// it's direct neighbors, but not diagonals
 		// llll
 		// llww
 		// llwl
@@ -120,37 +124,37 @@ public class MapTest extends TestCase
 		map.addTerritory(dc);
 		map.addTerritory(dd);
 		
-		map.addConnection(aa,ab);
-		map.addConnection(ab,ac);
-		map.addConnection(ac,ad);
+		map.addConnection(aa, ab);
+		map.addConnection(ab, ac);
+		map.addConnection(ac, ad);
 		
-		map.addConnection(ba,bb);
-		map.addConnection(bb,bc);
-		map.addConnection(bc,bd);
+		map.addConnection(ba, bb);
+		map.addConnection(bb, bc);
+		map.addConnection(bc, bd);
 		
-		map.addConnection(ca,cb);
-		map.addConnection(cb,cc);
-		map.addConnection(cc,cd);
+		map.addConnection(ca, cb);
+		map.addConnection(cb, cc);
+		map.addConnection(cc, cd);
 		
-		map.addConnection(da,db);
-		map.addConnection(db,dc);
-		map.addConnection(dc,dd);
+		map.addConnection(da, db);
+		map.addConnection(db, dc);
+		map.addConnection(dc, dd);
 		
-		map.addConnection(aa,ba);
-		map.addConnection(ba,ca);
-		map.addConnection(ca,da);
+		map.addConnection(aa, ba);
+		map.addConnection(ba, ca);
+		map.addConnection(ca, da);
 		
-		map.addConnection(ab,bb);
-		map.addConnection(bb,cb);
-		map.addConnection(cb,db);
+		map.addConnection(ab, bb);
+		map.addConnection(bb, cb);
+		map.addConnection(cb, db);
 		
-		map.addConnection(ac,bc);
-		map.addConnection(bc,cc);
-		map.addConnection(cc,dc);
+		map.addConnection(ac, bc);
+		map.addConnection(bc, cc);
+		map.addConnection(cc, dc);
 		
-		map.addConnection(ad,bd);
-		map.addConnection(bd,cd);
-		map.addConnection(cd,dd);
+		map.addConnection(ad, bd);
+		map.addConnection(bd, cd);
+		map.addConnection(cd, dd);
 		
 		nowhere = new Territory("nowhere", false, null);
 	}
@@ -162,42 +166,42 @@ public class MapTest extends TestCase
 	
 	public void testCantFindByName()
 	{
-		assertNull( map.getTerritory("nowhere"));
+		assertNull(map.getTerritory("nowhere"));
 	}
 	
 	public void testCanFindByName()
 	{
-		assertNotNull( map.getTerritory("aa"));
+		assertNotNull(map.getTerritory("aa"));
 	}
-
+	
 	public void testSame()
 	{
-		assertTrue(0 == map.getDistance(aa,aa));
+		assertTrue(0 == map.getDistance(aa, aa));
 	}
 	
 	public void testImpossibleConditionRoute()
 	{
-        Match<Territory> test = new Match<Territory>()
+		Match<Territory> test = new Match<Territory>()
 		{
 			@Override
 			public boolean match(Territory t)
 			{
 				return false;
-			}		
+			}
 		};
-		assertNull(map.getRoute(aa,ba,test));
+		assertNull(map.getRoute(aa, ba, test));
 	}
 	
 	public void testOne()
 	{
-		int distance = map.getDistance(aa,ab);
-		assertTrue("" + distance, 1==distance );
+		int distance = map.getDistance(aa, ab);
+		assertTrue("" + distance, 1 == distance);
 	}
 	
 	public void testTwo()
 	{
-		int distance = map.getDistance(aa,ac);
-		assertTrue("" + distance, 2==distance );
+		int distance = map.getDistance(aa, ac);
+		assertTrue("" + distance, 2 == distance);
 	}
 	
 	public void testOverWater()
@@ -212,70 +216,70 @@ public class MapTest extends TestCase
 	
 	public void testLong()
 	{
-		assertTrue(map.getLandDistance(ad,da) == 6);
+		assertTrue(map.getLandDistance(ad, da) == 6);
 	}
 	
-    public void testLongRoute()
-    {
-        Route route = map.getLandRoute(ad,da);
-        assertEquals(route.getLength(),6);
-    }
-
+	public void testLongRoute()
+	{
+		Route route = map.getLandRoute(ad, da);
+		assertEquals(route.getLength(), 6);
+	}
+	
 	public void testNeighborLandNoSeaConnect()
 	{
-		assertTrue(-1 == map.getWaterDistance(aa,ab));
+		assertTrue(-1 == map.getWaterDistance(aa, ab));
 	}
 	
 	public void testNeighborSeaNoLandConnect()
 	{
-		assertTrue(-1 == map.getLandDistance(bc,bd));
+		assertTrue(-1 == map.getLandDistance(bc, bd));
 	}
 	
 	public void testRouteToSelf()
 	{
-		Route rt = map.getRoute(aa,aa);
+		Route rt = map.getRoute(aa, aa);
 		assertTrue(rt.getLength() == 0);
 	}
 	
 	public void testRouteSizeOne()
 	{
-		Route rt = map.getRoute(aa,ab);
+		Route rt = map.getRoute(aa, ab);
 		assertTrue(rt.getLength() == 1);
 	}
 	
 	public void testImpossibleRoute()
 	{
-		Route rt = map.getRoute(aa,nowhere);
+		Route rt = map.getRoute(aa, nowhere);
 		assertNull(rt);
 	}
 	
 	public void testImpossibleLandRoute()
 	{
-		Route rt = map.getLandRoute(aa,cd);
+		Route rt = map.getLandRoute(aa, cd);
 		assertTrue(rt == null);
 	}
-
+	
 	public void testImpossibleLandDistance()
 	{
-		int distance =  map.getLandDistance(aa,cd);
+		int distance = map.getLandDistance(aa, cd);
 		assertTrue("wrongDistance exp -1, got:" + distance, distance == -1);
 	}
-
+	
 	public void testWaterRout()
 	{
 		Route rt = map.getWaterRoute(bd, dd);
-		assertTrue("bc:" + rt , rt.at(0).equals(bc) );
-		assertTrue("cc", rt.at(1).equals(cc) );
-		assertTrue("dc", rt.at(2).equals(dc) );
-		assertTrue("dd", rt.at(3).equals(dd) );
+		assertTrue("bc:" + rt, rt.at(0).equals(bc));
+		assertTrue("cc", rt.at(1).equals(cc));
+		assertTrue("dc", rt.at(2).equals(dc));
+		assertTrue("dd", rt.at(3).equals(dd));
 	}
 	
 	public void testMultiplePossible()
 	{
-		Route rt = map.getRoute(aa,dd);
+		Route rt = map.getRoute(aa, dd);
 		assertEquals(rt.getStart(), aa);
 		assertEquals(rt.getEnd(), dd);
-		assertEquals(rt.getLength(),6);
+		assertEquals(rt.getLength(), 6);
 	}
 	
 	public void testNeighbors()
@@ -289,16 +293,16 @@ public class MapTest extends TestCase
 	
 	public void testNeighborsWithDistance()
 	{
-		Set neighbors = map.getNeighbors(aa,0 );
+		Set neighbors = map.getNeighbors(aa, 0);
 		assertTrue(neighbors.size() == 0);
 		
-		neighbors = map.getNeighbors(aa,1 );
+		neighbors = map.getNeighbors(aa, 1);
 		assertTrue(neighbors.size() == 2);
 		assertTrue(neighbors.contains(ab));
 		assertTrue(neighbors.contains(ba));
 		
 		neighbors = map.getNeighbors(aa, 2);
-
+		
 		assertTrue(neighbors.size() == 5);
 		assertTrue(neighbors.contains(ab));
 		assertTrue(neighbors.contains(ac));

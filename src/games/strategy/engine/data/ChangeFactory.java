@@ -57,7 +57,8 @@ public class ChangeFactory
 		
 		@Override
 		protected void perform(GameData data)
-		{}
+		{
+		}
 		
 		@Override
 		public Change invert()
@@ -179,7 +180,7 @@ public class ChangeFactory
 	{
 		return new ChangeAttachmentChange(attatchment, newValue, property);
 	}
-
+	
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
@@ -239,33 +240,36 @@ public class ChangeFactory
 	{
 		return new RelationshipChange(player, player2, currentRelation, newRelation);
 	}
-
-    /**
-     * Mark units as having no movement.
-     * @param units referring units
-     * @return change that contains marking of units as having no movement
-     */
-    static public Change markNoMovementChange(Collection<Unit> units)
-    {
-        if(units.isEmpty())
-            return EMPTY_CHANGE;
-    
-        CompositeChange change = new CompositeChange();
-        Iterator<Unit> iter = units.iterator();
-        while (iter.hasNext())
-        {
-            change.add(markNoMovementChange(iter.next()));
-        }
-        return change;
-    }
-
-    private static Change markNoMovementChange(Unit unit)
-    {
-        UnitAttachment ua = UnitAttachment.get(unit.getType());
-        return unitPropertyChange(unit, ua.getMovement(unit.getOwner()), TripleAUnit.ALREADY_MOVED);
-    }
+	
+	/**
+	 * Mark units as having no movement.
+	 * 
+	 * @param units
+	 *            referring units
+	 * @return change that contains marking of units as having no movement
+	 */
+	static public Change markNoMovementChange(Collection<Unit> units)
+	{
+		if (units.isEmpty())
+			return EMPTY_CHANGE;
+		
+		CompositeChange change = new CompositeChange();
+		Iterator<Unit> iter = units.iterator();
+		while (iter.hasNext())
+		{
+			change.add(markNoMovementChange(iter.next()));
+		}
+		return change;
+	}
+	
+	private static Change markNoMovementChange(Unit unit)
+	{
+		UnitAttachment ua = UnitAttachment.get(unit.getType());
+		return unitPropertyChange(unit, ua.getMovement(unit.getOwner()), TripleAUnit.ALREADY_MOVED);
+	}
 	
 }
+
 
 /**
  * Clears the value from an attachment.
@@ -278,7 +282,7 @@ class AttachmentPropertyClear extends Change
 	private final String m_attatchmentName;
 	private Object m_oldValue;
 	private final String m_property;
-
+	
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
@@ -394,6 +398,7 @@ class AttachmentPropertyClearUndo extends Change
 	}
 }
 
+
 /**
  * RelationshipChange this creates a change in relationshipType between two players, for example from Neutral to War.
  * 
@@ -436,8 +441,9 @@ class RelationshipChange extends Change
 	{
 		/*if (m_player1 == null || m_player2 == null || m_OldRelation == null || m_NewRelation == null)
 			throw new IllegalStateException("RelationshipChange may not have null arguments");*/
-		
-		data.getRelationshipTracker().setRelationship(data.getPlayerList().getPlayerID(m_player1), data.getPlayerList().getPlayerID(m_player2), data.getRelationshipTypeList().getRelationshipType(m_NewRelation));
+
+		data.getRelationshipTracker().setRelationship(data.getPlayerList().getPlayerID(m_player1), data.getPlayerList().getPlayerID(m_player2),
+					data.getRelationshipTypeList().getRelationshipType(m_NewRelation));
 	}
 	
 	@Override
@@ -445,7 +451,7 @@ class RelationshipChange extends Change
 	{
 		/*if (m_player1 == null || m_player2 == null || m_OldRelation == null || m_NewRelation == null)
 			throw new IllegalStateException("RelationshipChange may not have null arguments");*/
-		
+
 		return "Add relation change. " + m_player1 + " and " + m_player2 + " change from " + m_OldRelation + " to " + m_NewRelation;
 	}
 	
@@ -489,7 +495,7 @@ class AddUnits extends Change
 	{
 		/*if (m_name == null || m_type == null || m_units == null)
 			throw new IllegalStateException("AddUnits change may not have null arguments: m_name: " + m_name + ", m_type: " + m_type + ", m_units: " + m_units);*/
-		
+
 		UnitHolder holder = data.getUnitHolder(m_name, m_type);
 		holder.getUnits().addAllUnits(m_units);
 	}
@@ -499,7 +505,7 @@ class AddUnits extends Change
 	{
 		/*if (m_name == null || m_type == null || m_units == null)
 			throw new IllegalStateException("AddUnits change may not have null arguments: m_name: " + m_name + ", m_type: " + m_type + ", m_units: " + m_units);*/
-		
+
 		return "Add unit change.  Add to:" + m_name + " units:" + m_units;
 	}
 }
@@ -544,7 +550,7 @@ class RemoveUnits extends Change
 	{
 		/*if (m_name == null || m_type == null || m_units == null)
 			throw new IllegalStateException("RemoveUnits change may not have null arguments: m_name: " + m_name + ", m_type: " + m_type + ", m_units: " + m_units);*/
-		
+
 		UnitHolder holder = data.getUnitHolder(m_name, m_type);
 		if (!holder.getUnits().containsAll(m_units))
 		{
@@ -559,7 +565,7 @@ class RemoveUnits extends Change
 	{
 		/*if (m_name == null || m_type == null || m_units == null)
 			throw new IllegalStateException("RemoveUnits change may not have null arguments: m_name: " + m_name + ", m_type: " + m_type + ", m_units: " + m_units);*/
-		
+
 		return "Remove unit change. Remove from:" + m_name + " units:" + m_units;
 	}
 }
@@ -680,7 +686,7 @@ class PlayerOwnerChange extends Change
 	{
 		/*if (m_location == null || m_old == null || m_new == null)
 			throw new IllegalStateException("PlayerOwnerChange may not have null arguments");*/
-		
+
 		Iterator<GUID> iter = m_new.keySet().iterator();
 		while (iter.hasNext())
 		{
@@ -704,7 +710,7 @@ class PlayerOwnerChange extends Change
 	{
 		/*if (m_location == null || m_old == null || m_new == null)
 			throw new IllegalStateException("PlayerOwnerChange may not have null arguments");*/
-		
+
 		return "Some units change owners in territory " + m_location;
 	}
 }
@@ -746,7 +752,7 @@ class ChangeUnitProduction extends Change
 	{
 		/*if (m_location == null)
 			throw new IllegalStateException("ChangeUnitProduction may not have null arguments");*/
-		
+
 		TerritoryAttachment ta = TerritoryAttachment.get(m_location);
 		
 		ta.setUnitProduction(m_unitProduction);
@@ -758,7 +764,7 @@ class ChangeUnitProduction extends Change
 	{
 		/*if (m_location == null)
 			throw new IllegalStateException("ChangeUnitProduction may not have null arguments");*/
-		
+
 		return "Change unit production.  Quantity:" + m_unitProduction + " Territory:" + m_location;
 	}
 }
@@ -801,7 +807,7 @@ class ChangeResourceChange extends Change
 	{
 		/*if (m_player == null || m_resource == null)
 			throw new IllegalStateException("ChangeResourceChange may not have null arguments");*/
-		
+
 		Resource resource = data.getResourceList().getResource(m_resource);
 		ResourceCollection resources = data.getPlayerList().getPlayerID(m_player).getResources();
 		if (m_quantity > 0)
@@ -815,7 +821,7 @@ class ChangeResourceChange extends Change
 	{
 		/*if (m_player == null || m_resource == null)
 			throw new IllegalStateException("ChangeResourceChange may not have null arguments");*/
-		
+
 		return "Change resource.  Resource:" + m_resource + " quantity:" + m_quantity + " Player:" + m_player;
 	}
 }
@@ -852,7 +858,7 @@ class SetPropertyChange extends Change
 	{
 		/*if (m_property == null || m_value == null || m_oldValue == null)
 			throw new IllegalStateException("SetPropertyChange may not have null arguments");*/
-		
+
 		data.getProperties().set(m_property, m_value);
 	}
 	
@@ -863,7 +869,7 @@ class SetPropertyChange extends Change
 		
 		return m_property + " changed from " + m_oldValue.toString() + " to " + m_value.toString();
 	}*/
-	
+
 }
 
 
@@ -888,7 +894,7 @@ class AddProductionRule extends Change
 	{
 		/*if (m_rule == null || m_frontier == null)
 			throw new IllegalStateException("AddProductionRule may not have null arguments");*/
-		
+
 		m_frontier.addRule(m_rule);
 	}
 	
@@ -930,7 +936,7 @@ class RemoveProductionRule extends Change
 	{
 		/*if (m_rule == null || m_frontier == null)
 			throw new IllegalStateException("RemoveProductionRule may not have null arguments");*/
-		
+
 		m_frontier.removeRule(m_rule);
 	}
 	
@@ -948,7 +954,7 @@ class RemoveProductionRule extends Change
 		
 		return m_rule.getName() + " removed from " + m_frontier.getName();
 	}*/
-	
+
 }
 
 
@@ -975,7 +981,7 @@ class AddAvailableTech extends Change
 	{
 		/*if (m_tech == null || m_frontier == null || m_player == null)
 			throw new IllegalStateException("AddAvailableTech may not have null arguments");*/
-		
+
 		TechnologyFrontier front = m_player.getTechnologyFrontierList().getTechnologyFrontier(m_frontier.getName());
 		front.addAdvance(m_tech);
 	}
@@ -1020,7 +1026,7 @@ class RemoveAvailableTech extends Change
 	{
 		/*if (m_tech == null || m_frontier == null || m_player == null)
 			throw new IllegalStateException("RemoveAvailableTech may not have null arguments");*/
-		
+
 		TechnologyFrontier front = m_player.getTechnologyFrontierList().getTechnologyFrontier(m_frontier.getName());
 		front.removeAdvance(m_tech);
 	}
@@ -1065,7 +1071,7 @@ class AddAttachmentChange extends Change
 	{
 		/*if (m_attachment == null || m_originalAttachmentName == null || m_originalAttachable == null || m_attachable == null || m_name == null)
 			throw new IllegalStateException("AddAttachmentChange may not have null arguments");*/
-		
+
 		m_attachable.addAttachment(m_name, m_attachment);
 		m_attachment.setData(data);
 		m_attachment.setName(m_name);
@@ -1085,7 +1091,7 @@ class AddAttachmentChange extends Change
 		
 		return m_name + " attachment attached to " + m_attachable.toString();
 	}*/
-	
+
 }
 
 
@@ -1113,7 +1119,7 @@ class RemoveAttachmentChange extends Change
 	{
 		/*if (m_attachment == null || m_originalAttachmentName == null || m_originalAttachable == null || m_attachable == null || m_name == null)
 			throw new IllegalStateException("RemoveAttachmentChange may not have null arguments");*/
-		
+
 		Map<String, IAttachment> attachments = m_attachable.getAttachments();
 		attachments.remove(m_attachment);
 		
@@ -1169,7 +1175,7 @@ class ProductionFrontierChange extends Change
 	{
 		/*if (m_startFrontier == null || m_endFrontier == null || m_player == null)
 			throw new IllegalStateException("ProductionFrontierChange may not have null arguments");*/
-		
+
 		PlayerID player = data.getPlayerList().getPlayerID(m_player);
 		ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier(m_endFrontier);
 		player.setProductionFrontier(frontier);
@@ -1188,7 +1194,7 @@ class ProductionFrontierChange extends Change
 		
 		return m_player + " production frontier changed from  " + m_startFrontier + " to " + m_endFrontier;
 	}*/
-	
+
 }
 
 
@@ -1221,7 +1227,7 @@ class GameSequenceChange extends Change
 	{
 		/*if (m_oldSteps == null || m_newSteps == null)
 			throw new IllegalStateException("GameSequenceChange may not have null arguments");*/
-		
+
 		GameSequence steps = data.getSequence();
 		steps.removeAllSteps();
 		
@@ -1244,7 +1250,7 @@ class GameSequenceChange extends Change
 		
 		return m_oldSteps.toString() + " changed to  " + m_newSteps.toString();
 	}*/
-	
+
 }
 
 
@@ -1307,7 +1313,7 @@ class ObjectPropertyChange extends Change
 	{
 		/*if (m_object == null || m_property == null)
 			throw new IllegalStateException("ObjectPropertyChange may not have null arguments");*/
-		
+
 		PropertyUtil.set(m_property, m_newValue, m_object);
 	}
 	
@@ -1316,7 +1322,7 @@ class ObjectPropertyChange extends Change
 	{
 		/*if (m_object == null || m_property == null)
 			throw new IllegalStateException("ObjectPropertyChange may not have null arguments");*/
-		
+
 		return "Property change, unit:" + m_object + " property:" + m_property + " newValue:" + m_newValue + " oldValue:" + m_oldValue;
 	}
 }
@@ -1367,7 +1373,7 @@ class GenericTechChange extends Change
 	{
 		/*if (m_attatchedTo == null || m_attatchmentName == null || m_newValue == null || m_oldValue == null || m_property == null)
 			throw new IllegalStateException("GenericTechChange may not have null arguments");*/
-		
+
 		TechAttachment attachment = (TechAttachment) m_attatchedTo.getAttachment(m_attatchmentName);
 		attachment.setGenericTech(m_property, m_newValue);
 	}
@@ -1383,7 +1389,7 @@ class GenericTechChange extends Change
 	{
 		/*if (m_attatchedTo == null || m_attatchmentName == null || m_newValue == null || m_oldValue == null || m_property == null)
 			throw new IllegalStateException("GenericTechChange may not have null arguments");*/
-		
+
 		return "GenericTechChange attatched to:" + m_attatchedTo + " name:" + m_attatchmentName + " new value:" + m_newValue + " old value:" + m_oldValue;
 	}
 	

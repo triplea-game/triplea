@@ -5,16 +5,16 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * NotificationMessages.java
- *
+ * 
  * Created on August 3, 2011
  */
 
@@ -27,43 +27,48 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.Properties;
 
-public class NotificationMessages {
+public class NotificationMessages
+{
 	// Filename
 	private static final String PROPERTY_FILE = "notifications.properties";
-	
 	
 	private static NotificationMessages s_nm = null;
 	private static long s_timestamp = 0;
 	private Properties m_properties = new Properties();
-
-    protected NotificationMessages()
-    {
-        ResourceLoader loader = ResourceLoader.getMapresourceLoader(UIContext.getMapDir());
-        URL url = loader.getResource(PROPERTY_FILE);
-        if(url == null) {
-        	// no propertyfile found
-        	} else {
-                try {
-					m_properties.load(url.openStream());
-				} catch (IOException e) {
-	                System.out.println("Error reading " + PROPERTY_FILE +" : "+ e);
-				}
-        	}
-     }	
 	
-
-    public static NotificationMessages getInstance()
-    {
-		if(s_nm == null || Calendar.getInstance().getTimeInMillis() > s_timestamp+10000) { // cache properties for 10 seconds
-            s_nm = new NotificationMessages();
+	protected NotificationMessages()
+	{
+		ResourceLoader loader = ResourceLoader.getMapresourceLoader(UIContext.getMapDir());
+		URL url = loader.getResource(PROPERTY_FILE);
+		if (url == null)
+		{
+			// no propertyfile found
+		}
+		else
+		{
+			try
+			{
+				m_properties.load(url.openStream());
+			} catch (IOException e)
+			{
+				System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
+			}
+		}
+	}
+	
+	public static NotificationMessages getInstance()
+	{
+		if (s_nm == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 10000)
+		{ // cache properties for 10 seconds
+			s_nm = new NotificationMessages();
 			s_timestamp = Calendar.getInstance().getTimeInMillis();
 		}
 		return s_nm;
 	}
-
-
-	public String getMessage(String notificationMessageKey) {
-		return m_properties.getProperty(notificationMessageKey,notificationMessageKey);
+	
+	public String getMessage(String notificationMessageKey)
+	{
+		return m_properties.getProperty(notificationMessageKey, notificationMessageKey);
 	}
-
+	
 }

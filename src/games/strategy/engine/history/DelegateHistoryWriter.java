@@ -5,74 +5,72 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.engine.history;
 
-import games.strategy.engine.framework.*;
+import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.IGameModifiedChannel;
 import games.strategy.engine.message.IChannelMessenger;
 
 /**
  * Has a subset of the historyWriters functionality.
-*  Delegates should only have access to these functions.
-*  The rest of the history writers functions should only
-*  be used by the GameData
+ * Delegates should only have access to these functions.
+ * The rest of the history writers functions should only
+ * be used by the GameData
  */
 
 public class DelegateHistoryWriter implements IDelegateHistoryWriter
 {
-    private final IGameModifiedChannel m_channel;
-
-    public DelegateHistoryWriter(IChannelMessenger messenger)
-    {
-        m_channel = (IGameModifiedChannel) messenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL);
-    }
-
-    
-    public DelegateHistoryWriter(IGameModifiedChannel channel)
-    {
-        m_channel = channel;
-    }
-
-    
-    private IGameModifiedChannel getGameModifiedChannel()
-    {
-        return m_channel; 
-    }
-    
-    @Override
+	private final IGameModifiedChannel m_channel;
+	
+	public DelegateHistoryWriter(IChannelMessenger messenger)
+	{
+		m_channel = (IGameModifiedChannel) messenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL);
+	}
+	
+	public DelegateHistoryWriter(IGameModifiedChannel channel)
+	{
+		m_channel = channel;
+	}
+	
+	private IGameModifiedChannel getGameModifiedChannel()
+	{
+		return m_channel;
+	}
+	
+	@Override
 	public void startEvent(String eventName)
-    {
-        getGameModifiedChannel().startHistoryEvent(eventName);
-
-    }
-
-    @Override
+	{
+		getGameModifiedChannel().startHistoryEvent(eventName);
+		
+	}
+	
+	@Override
 	public void addChildToEvent(String child)
-    {
-      addChildToEvent(child, null);
-    }
-
-    @Override
+	{
+		addChildToEvent(child, null);
+	}
+	
+	@Override
 	public void addChildToEvent(String child, Object renderingData)
-    {
-        getGameModifiedChannel().addChildToEvent(child, renderingData);
-
-    }
-
-    /**
-     * Set the redering data for the current event.
-     */
-    @Override
+	{
+		getGameModifiedChannel().addChildToEvent(child, renderingData);
+		
+	}
+	
+	/**
+	 * Set the redering data for the current event.
+	 */
+	@Override
 	public void setRenderingData(Object renderingData)
-    {
-        getGameModifiedChannel().setRenderingData(renderingData);
-    }
-
-
+	{
+		getGameModifiedChannel().setRenderingData(renderingData);
+	}
+	
 }

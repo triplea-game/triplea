@@ -5,67 +5,75 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 
 package games.strategy.engine.data.properties;
 
-import java.util.*;
-import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Vector;
+
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 
 @SuppressWarnings("serial")
 public class ListProperty extends AEditableProperty
 {
-
-  private List<String> m_possibleValues;
-  private String m_value;
-
-  /**
-   *
-   * @param name name of the property
-   * @param defaultValue default string value
-   * @param possibleValues collection of Strings
-   */
-  public ListProperty(String name, String defaultValue, Collection<String> possibleValues)
-  {
-    super(name);
-
-    if(!possibleValues.contains(defaultValue))
-      throw new IllegalStateException("possible values does not contain default");
-
-    m_possibleValues = new ArrayList<String>(possibleValues);
-    m_value = defaultValue;
-  }
-
-  @Override
-public Object getValue()
-  {
-    return m_value;
-  }
-
-  @Override
-public JComponent getEditorComponent()
-  {
-    final JComboBox box =  new JComboBox(new Vector<String>(m_possibleValues));
-    box.setSelectedItem(m_value);
-    box.addActionListener( new ActionListener()
-    {
-      @Override
-	public void actionPerformed(ActionEvent e)
-      {
-        m_value = (String) box.getSelectedItem();
-      }
-    }
-        );
-
-    return box;
-
-  }
-
+	
+	private List<String> m_possibleValues;
+	private String m_value;
+	
+	/**
+	 * 
+	 * @param name
+	 *            name of the property
+	 * @param defaultValue
+	 *            default string value
+	 * @param possibleValues
+	 *            collection of Strings
+	 */
+	public ListProperty(String name, String defaultValue, Collection<String> possibleValues)
+	{
+		super(name);
+		
+		if (!possibleValues.contains(defaultValue))
+			throw new IllegalStateException("possible values does not contain default");
+		
+		m_possibleValues = new ArrayList<String>(possibleValues);
+		m_value = defaultValue;
+	}
+	
+	@Override
+	public Object getValue()
+	{
+		return m_value;
+	}
+	
+	@Override
+	public JComponent getEditorComponent()
+	{
+		final JComboBox box = new JComboBox(new Vector<String>(m_possibleValues));
+		box.setSelectedItem(m_value);
+		box.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+		{
+			m_value = (String) box.getSelectedItem();
+		}
+		}
+					);
+		
+		return box;
+		
+	}
+	
 }

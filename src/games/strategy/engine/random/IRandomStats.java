@@ -5,27 +5,26 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package games.strategy.engine.random;
 
-import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.message.RemoteName;
 
 /**
  * 
- *
- *
+ * 
+ * 
  * @author Sean Bridges
  */
 public interface IRandomStats extends IRemote
 {
-    public static final RemoteName RANDOM_STATS_REMOTE_NAME = new RemoteName("games.strategy.engine.random.RandomStats.RANDOM_STATS_REMOTE_NAME", IRandomStats.class);
-
-    
-    public RandomStatsDetails getRandomStats();
+	public static final RemoteName RANDOM_STATS_REMOTE_NAME = new RemoteName("games.strategy.engine.random.RandomStats.RANDOM_STATS_REMOTE_NAME", IRandomStats.class);
+	
+	public RandomStatsDetails getRandomStats();
 }

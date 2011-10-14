@@ -15,13 +15,13 @@
 package games.strategy.triplea.Dynamix_AI.Others;
 
 /**
- *
+ * 
  * @author Stephen
  */
 public enum NCM_TaskType
 {
-     Land_Reinforce_Block,
-     Land_Reinforce_Stabilize,
-     Land_Reinforce_FrontLine,
-     Empty
+		Land_Reinforce_Block,
+		Land_Reinforce_Stabilize,
+		Land_Reinforce_FrontLine,
+		Empty
 }

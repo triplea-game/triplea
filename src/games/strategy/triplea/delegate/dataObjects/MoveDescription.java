@@ -5,16 +5,16 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * BuyMessage.java
- *
+ * 
  * Created on November 6, 2001, 8:26 PM
  */
 
@@ -27,44 +27,43 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- *
+ * 
  * @author Sean Bridges
  */
 @SuppressWarnings("serial")
 public class MoveDescription extends AbstractMoveDescription
 {
-    private final Route m_route;
-    private Collection<Unit> m_transportsThatCanBeLoaded;
-
-    public MoveDescription(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded)
-    {
-        super(units);
-        m_route = route;
-        m_transportsThatCanBeLoaded = transportsThatCanBeLoaded;
-    }
-
-
-    public MoveDescription(Collection<Unit> units, Route route)
-    {
-        super(units);
-        m_route = route;
-    }
-
-    public Route getRoute()
-    {
-        return m_route;
-    }
-
-    @Override
+	private final Route m_route;
+	private Collection<Unit> m_transportsThatCanBeLoaded;
+	
+	public MoveDescription(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded)
+	{
+		super(units);
+		m_route = route;
+		m_transportsThatCanBeLoaded = transportsThatCanBeLoaded;
+	}
+	
+	public MoveDescription(Collection<Unit> units, Route route)
+	{
+		super(units);
+		m_route = route;
+	}
+	
+	public Route getRoute()
+	{
+		return m_route;
+	}
+	
+	@Override
 	public String toString()
-    {
-        return "Move message route:" + m_route + " units:" + getUnits();
-    }
-
-    public Collection<Unit> getTransportsThatCanBeLoaded()
-    {
-        if(m_transportsThatCanBeLoaded == null)
-            return Collections.emptyList();
-        return m_transportsThatCanBeLoaded;
-    }
+	{
+		return "Move message route:" + m_route + " units:" + getUnits();
+	}
+	
+	public Collection<Unit> getTransportsThatCanBeLoaded()
+	{
+		if (m_transportsThatCanBeLoaded == null)
+			return Collections.emptyList();
+		return m_transportsThatCanBeLoaded;
+	}
 }

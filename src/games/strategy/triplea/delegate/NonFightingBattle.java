@@ -5,257 +5,270 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * NonFightingBattle.java
- *
+ * 
  * Created on November 23, 2001, 11:53 AM
  */
 
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.*;
+import games.strategy.util.CompositeMatch;
+import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.Match;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
- * Battle in which no fighting occurs.  <b>
+ * Battle in which no fighting occurs. <b>
  * Example is a naval invasion into an empty country,
  * but the battle cannot be fought until a naval battle
  * occurs.
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  * @version 1.0
  */
 public class NonFightingBattle implements Battle
 {
-
-    private Territory m_battleSite;
-    private PlayerID m_attacker;
-    private BattleTracker m_battleTracker;
-    private GameData m_data;
-    private boolean m_isOver = false; 
-
-    //dependent units
-    //maps unit -> Collection of units
-    //if unit is lost in a battle we are dependent on
-    //then we lose the corresponding collection of units
-    private Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
-
-    public NonFightingBattle(Territory battleSite, PlayerID attacker, BattleTracker battleTracker, boolean neutral, GameData data)
-    {
-        m_battleTracker = battleTracker;
-        m_attacker = attacker;
-        m_battleSite = battleSite;
-        m_data = data;
-    }
-
-    @Override
+	
+	private Territory m_battleSite;
+	private PlayerID m_attacker;
+	private BattleTracker m_battleTracker;
+	private GameData m_data;
+	private boolean m_isOver = false;
+	
+	// dependent units
+	// maps unit -> Collection of units
+	// if unit is lost in a battle we are dependent on
+	// then we lose the corresponding collection of units
+	private Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
+	
+	public NonFightingBattle(Territory battleSite, PlayerID attacker, BattleTracker battleTracker, boolean neutral, GameData data)
+	{
+		m_battleTracker = battleTracker;
+		m_attacker = attacker;
+		m_battleSite = battleSite;
+		m_data = data;
+	}
+	
+	@Override
 	public void fight(IDelegateBridge bridge)
-    {
-        if(!m_battleTracker.getDependentOn(this).isEmpty())
-            throw new IllegalStateException("Must fight battles that this battle depends on first");
-
-        //if any attacking non air units then win
-        boolean someAttacking = hasAttackingUnits();
-        if( someAttacking)
-        {
-            m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, null, null);
-            m_battleTracker.addToConquered(m_battleSite);
-        }
-        end();
-    }
-
-    private void end()
-    {
-        m_battleTracker.removeBattle(this);
-        m_isOver = true;
-    }
-
-    @Override
+	{
+		if (!m_battleTracker.getDependentOn(this).isEmpty())
+			throw new IllegalStateException("Must fight battles that this battle depends on first");
+		
+		// if any attacking non air units then win
+		boolean someAttacking = hasAttackingUnits();
+		if (someAttacking)
+		{
+			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, null, null);
+			m_battleTracker.addToConquered(m_battleSite);
+		}
+		end();
+	}
+	
+	private void end()
+	{
+		m_battleTracker.removeBattle(this);
+		m_isOver = true;
+	}
+	
+	@Override
 	public boolean isOver()
-    {
-        return m_isOver;
-    }
-
-    private boolean hasAttackingUnits()
-    {
-        CompositeMatch<Unit> attackingLand = new CompositeMatchAnd<Unit>();
-              attackingLand.add(Matches.alliedUnit(m_attacker, m_data));
-              attackingLand.add(Matches.UnitIsLand);
-              boolean someAttacking = m_battleSite.getUnits().someMatch(attackingLand);
-        return someAttacking;
-    }
-
-    @Override
+	{
+		return m_isOver;
+	}
+	
+	private boolean hasAttackingUnits()
+	{
+		CompositeMatch<Unit> attackingLand = new CompositeMatchAnd<Unit>();
+		attackingLand.add(Matches.alliedUnit(m_attacker, m_data));
+		attackingLand.add(Matches.UnitIsLand);
+		boolean someAttacking = m_battleSite.getUnits().someMatch(attackingLand);
+		return someAttacking;
+	}
+	
+	@Override
 	public boolean isBombingRun()
-    {
-        return false;
-    }
-
-    @Override
+	{
+		return false;
+	}
+	
+	@Override
 	public void removeAttack(Route route, Collection<Unit> units)
-    {
-        Iterator<Unit> dependents = m_dependentUnits.keySet().iterator();
-        while(dependents.hasNext())
-        {
-            Unit dependence = dependents.next();
-            Collection<Unit> dependent = m_dependentUnits.get(dependence);
-            dependent.removeAll(units);
-        }
-    }
-
-    @Override
+	{
+		Iterator<Unit> dependents = m_dependentUnits.keySet().iterator();
+		while (dependents.hasNext())
+		{
+			Unit dependence = dependents.next();
+			Collection<Unit> dependent = m_dependentUnits.get(dependence);
+			dependent.removeAll(units);
+		}
+	}
+	
+	@Override
 	public boolean isEmpty()
-    {
-        return !hasAttackingUnits();
-    }
-
-    @Override
+	{
+		return !hasAttackingUnits();
+	}
+	
+	@Override
 	public Change addAttackChange(Route route, Collection<Unit> units)
-    {
-        Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
-        Iterator<Unit> iter = addedTransporting.keySet().iterator();
-        while(iter.hasNext())
-        {
-            Unit unit = iter.next();
-            if(m_dependentUnits.get(unit) != null)
-                m_dependentUnits.get(unit).addAll( addedTransporting.get(unit));
-            else
-                m_dependentUnits.put(unit, addedTransporting.get(unit));
-        }
-        return ChangeFactory.EMPTY_CHANGE;
-    }
-
-    @Override
+	{
+		Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
+		Iterator<Unit> iter = addedTransporting.keySet().iterator();
+		while (iter.hasNext())
+		{
+			Unit unit = iter.next();
+			if (m_dependentUnits.get(unit) != null)
+				m_dependentUnits.get(unit).addAll(addedTransporting.get(unit));
+			else
+				m_dependentUnits.put(unit, addedTransporting.get(unit));
+		}
+		return ChangeFactory.EMPTY_CHANGE;
+	}
+	
+	@Override
 	public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
-    {
-        Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
-        Iterator<Unit> iter = addedTransporting.keySet().iterator();
-        while(iter.hasNext())
-        {
-            Unit unit = iter.next();
-            if(m_dependentUnits.get(unit) != null)
-                m_dependentUnits.get(unit).addAll( addedTransporting.get(unit));
-            else
-                m_dependentUnits.put(unit, addedTransporting.get(unit));
-        }
-        return ChangeFactory.EMPTY_CHANGE;
-    }
-
-    @Override
+	{
+		Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
+		Iterator<Unit> iter = addedTransporting.keySet().iterator();
+		while (iter.hasNext())
+		{
+			Unit unit = iter.next();
+			if (m_dependentUnits.get(unit) != null)
+				m_dependentUnits.get(unit).addAll(addedTransporting.get(unit));
+			else
+				m_dependentUnits.put(unit, addedTransporting.get(unit));
+		}
+		return ChangeFactory.EMPTY_CHANGE;
+	}
+	
+	@Override
 	public Territory getTerritory()
-    {
-        return m_battleSite;
-    }
-
-    @Override
+	{
+		return m_battleSite;
+	}
+	
+	@Override
 	public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units, IDelegateBridge bridge)
-    {
-        Collection<Unit> lost = getDependentUnits(units);
-        lost = Match.getMatches(lost, Matches.unitIsInTerritory(m_battleSite));
-        if(lost.size() != 0)
-        {
-            Change change = ChangeFactory.removeUnits(m_battleSite, lost);
-            bridge.addChange(change);
-
-            String transcriptText = MyFormatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
-            bridge.getHistoryWriter().startEvent(transcriptText);
-        }
-    }
-
-    @Override
+	{
+		Collection<Unit> lost = getDependentUnits(units);
+		lost = Match.getMatches(lost, Matches.unitIsInTerritory(m_battleSite));
+		if (lost.size() != 0)
+		{
+			Change change = ChangeFactory.removeUnits(m_battleSite, lost);
+			bridge.addChange(change);
+			
+			String transcriptText = MyFormatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
+			bridge.getHistoryWriter().startEvent(transcriptText);
+		}
+	}
+	
+	@Override
 	public Collection<Unit> getDependentUnits(Collection<Unit> units)
-    {
-        Collection<Unit> rVal = new ArrayList<Unit>();
-        
-        Iterator<Unit> iter = units.iterator();
-        while(iter.hasNext())
-        {
-            Unit unit = iter.next();
-            Collection<Unit> dependent = m_dependentUnits.get(unit);
-            if(dependent != null)
-                rVal.addAll(dependent);
-        }
-        return rVal;
-    }
-
-    @Override
+	{
+		Collection<Unit> rVal = new ArrayList<Unit>();
+		
+		Iterator<Unit> iter = units.iterator();
+		while (iter.hasNext())
+		{
+			Unit unit = iter.next();
+			Collection<Unit> dependent = m_dependentUnits.get(unit);
+			if (dependent != null)
+				rVal.addAll(dependent);
+		}
+		return rVal;
+	}
+	
+	@Override
 	public int hashCode()
-    {
-      return m_battleSite.hashCode();
-    }
-
-    @Override
+	{
+		return m_battleSite.hashCode();
+	}
+	
+	@Override
 	public boolean equals(Object o)
-    {
-      //2 battles are equal if they are both the same type (boming or not)
-      //and occur on the same territory
-      //equals in the sense that they should never occupy the same Set
-      //if these conditions are met
-      if (o == null || ! (o instanceof Battle))
-        return false;
-
-      Battle other = (Battle) o;
-      return other.getTerritory().equals(this.m_battleSite) &&
-          other.isBombingRun() == this.isBombingRun();
-    }
-
-    /**
-     * Add bombarding unit. Doesn't make sense here so just do
-     * nothing.
-     */
-    @Override
-	public void addBombardingUnit(Unit unit) {
-	// nothing
-    }
-
-    /**
-     * Return whether battle is amphibious.
-     */
-    @Override
-	public boolean isAmphibious() {
-	return false;
-    }
-
-    @Override
+	{
+		// 2 battles are equal if they are both the same type (boming or not)
+		// and occur on the same territory
+		// equals in the sense that they should never occupy the same Set
+		// if these conditions are met
+		if (o == null || !(o instanceof Battle))
+			return false;
+		
+		Battle other = (Battle) o;
+		return other.getTerritory().equals(this.m_battleSite) &&
+					other.isBombingRun() == this.isBombingRun();
+	}
+	
+	/**
+	 * Add bombarding unit. Doesn't make sense here so just do
+	 * nothing.
+	 */
+	@Override
+	public void addBombardingUnit(Unit unit)
+	{
+		// nothing
+	}
+	
+	/**
+	 * Return whether battle is amphibious.
+	 */
+	@Override
+	public boolean isAmphibious()
+	{
+		return false;
+	}
+	
+	@Override
 	public Collection<Unit> getAmphibiousLandAttackers()
-    {
-        return new ArrayList<Unit>();
-    }
-
-    @Override
+	{
+		return new ArrayList<Unit>();
+	}
+	
+	@Override
 	public Collection<Unit> getBombardingUnits()
-    {
-        return new ArrayList<Unit>();
-    }
-    
-    @Override
+	{
+		return new ArrayList<Unit>();
+	}
+	
+	@Override
 	public int getBattleRound()
-    {
-        return 0;
-    }
-
-    @Override
+	{
+		return 0;
+	}
+	
+	@Override
 	public Collection<Unit> getAttackingUnits()
-    {
-        return new ArrayList<Unit>();
-    }
-    
-    @Override
+	{
+		return new ArrayList<Unit>();
+	}
+	
+	@Override
 	public Collection<Unit> getDefendingUnits()
-    {
-    	return new ArrayList<Unit>();
-    }
-
-    
+	{
+		return new ArrayList<Unit>();
+	}
+	
 }

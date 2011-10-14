@@ -102,7 +102,8 @@ public class CasualtyList implements Serializable
 		m_damaged.clear();
 	}
 	
-	public int size() {
+	public int size()
+	{
 		return m_killed.size() + m_damaged.size();
 	}
 	

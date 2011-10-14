@@ -5,7 +5,7 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
@@ -17,7 +17,8 @@ import java.net.SocketAddress;
 import java.util.Map;
 
 /**
- * Code to validate a login attempt.  <p>
+ * Code to validate a login attempt.
+ * <p>
  * 
  * @see games.strategy.net.IConnectionLogin
  * 
@@ -25,23 +26,25 @@ import java.util.Map;
  */
 public interface ILoginValidator
 {
-    
-    /**
-     * 
-     * The challenge properties to send to the client.  The client will be sent the challenge properties,
-     * and will be expected to return a properties object to validate its connection.
-     */
-    public Map<String,String> getChallengeProperties(String userName, SocketAddress remoteAddress);
-    
-    /**
-     * @param propertiesReadFromClient - client properties written by the client after receiving the challange string.
-     * @param remoteAddress - the remote adress 
-     * @param clientName - the user name given by the client
-     * 
-     *
-     * @return - null if the attempt was successful, an error message otherwise
-     */
-    public String verifyConnection(Map<String,String> propertiesSentToClient, Map<String,String> propertiesReadFromClient, String clientName, String clientMac, SocketAddress remoteAddress);
-    
-    
+	
+	/**
+	 * 
+	 * The challenge properties to send to the client. The client will be sent the challenge properties,
+	 * and will be expected to return a properties object to validate its connection.
+	 */
+	public Map<String, String> getChallengeProperties(String userName, SocketAddress remoteAddress);
+	
+	/**
+	 * @param propertiesReadFromClient
+	 *            - client properties written by the client after receiving the challange string.
+	 * @param remoteAddress
+	 *            - the remote adress
+	 * @param clientName
+	 *            - the user name given by the client
+	 * 
+	 * 
+	 * @return - null if the attempt was successful, an error message otherwise
+	 */
+	public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String clientMac, SocketAddress remoteAddress);
+	
 }

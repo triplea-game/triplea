@@ -22,98 +22,97 @@ import java.util.logging.Logger;
 
 public class RemoteInterfaceHelper
 {
-    private static final Logger s_logger = Logger.getLogger(RemoteInterfaceHelper.class.getName());
-    
-
-    public static int getNumber(String methodName, Class<?>[] argTypes, Class<?> remoteInterface)
-    {
-        Method[] methods = remoteInterface.getMethods();
-        Arrays.sort(methods, methodComparator);
-
-         if(s_logger.isLoggable(Level.FINEST)) {
-            s_logger.fine("Sorted methods:" + Arrays.asList(methods));
-        } 
-    
-        for(int i =0; i < methods.length; i++)
-        {
-            if(methods[i].getName().equals(methodName))
-            {
-                Class<?>[] types = methods[i].getParameterTypes();
-                //both null
-                if(types == argTypes)
-                {
-                    return i;
-                }
-                else if(types != null && argTypes != null && types.length == argTypes.length)
-                {
-                    boolean match = true;
-                    for(int j = 0; j < argTypes.length; j++)
-                    {
-                        if(!argTypes[j].equals(types[j]))
-                        {
-                            match= false;
-                            break;
-                        }
-                    }
-                    if(match)
-                        return i;
-                }
-            }
-        }
-        throw new IllegalStateException("Method not found");
-    }
-    
-    public static Tuple<String, Class<?>[]> getMethodInfo(int methodNumber, Class<?> remoteInterface)
-    {
-        Method[] methods = remoteInterface.getMethods();
-        Arrays.sort(methods, methodComparator);
-
-         if(s_logger.isLoggable(Level.FINEST)) {
-            s_logger.fine("Sorted methods:" + Arrays.asList(methods));
-        } 
-        return new Tuple<String, Class<?>[]>(methods[methodNumber].getName(), methods[methodNumber].getParameterTypes());
-    }
-    
-    
-    /**
-     * get methods does not guarantee an order, so sort.
-     */
-    private static Comparator<Method> methodComparator = new Comparator<Method>()
-    {
-
-        @Override
+	private static final Logger s_logger = Logger.getLogger(RemoteInterfaceHelper.class.getName());
+	
+	public static int getNumber(String methodName, Class<?>[] argTypes, Class<?> remoteInterface)
+	{
+		Method[] methods = remoteInterface.getMethods();
+		Arrays.sort(methods, methodComparator);
+		
+		if (s_logger.isLoggable(Level.FINEST))
+		{
+			s_logger.fine("Sorted methods:" + Arrays.asList(methods));
+		}
+		
+		for (int i = 0; i < methods.length; i++)
+		{
+			if (methods[i].getName().equals(methodName))
+			{
+				Class<?>[] types = methods[i].getParameterTypes();
+				// both null
+				if (types == argTypes)
+				{
+					return i;
+				}
+				else if (types != null && argTypes != null && types.length == argTypes.length)
+				{
+					boolean match = true;
+					for (int j = 0; j < argTypes.length; j++)
+					{
+						if (!argTypes[j].equals(types[j]))
+						{
+							match = false;
+							break;
+						}
+					}
+					if (match)
+						return i;
+				}
+			}
+		}
+		throw new IllegalStateException("Method not found");
+	}
+	
+	public static Tuple<String, Class<?>[]> getMethodInfo(int methodNumber, Class<?> remoteInterface)
+	{
+		Method[] methods = remoteInterface.getMethods();
+		Arrays.sort(methods, methodComparator);
+		
+		if (s_logger.isLoggable(Level.FINEST))
+		{
+			s_logger.fine("Sorted methods:" + Arrays.asList(methods));
+		}
+		return new Tuple<String, Class<?>[]>(methods[methodNumber].getName(), methods[methodNumber].getParameterTypes());
+	}
+	
+	/**
+	 * get methods does not guarantee an order, so sort.
+	 */
+	private static Comparator<Method> methodComparator = new Comparator<Method>()
+	{
+		
+		@Override
 		public int compare(Method o1, Method o2)
-        {
-            if(o1 == o2)
-                return 0;
-            
-            if(!o1.getName().equals(o2.getName()))
-                return o1.getName().compareTo(o2.getName());
-            
-            
-            Class<?>[] t1 = o1.getParameterTypes();
-            Class<?>[] t2 = o2.getParameterTypes();
-            
-            //both null
-            if(t1 == t2)
-                return 0;
-            if(t1 == null)
-                return -1;
-            if(t2 == null)
-                return 1;
-            
-            if(t1.length != t2.length)
-                return t1.length - t2.length;
-            for(int i =0; i < t1.length; i++)
-            {
-                if(!t1[i].getName().equals(t2[i].getName()))
-                {
-                    return t1[i].getName().compareTo(t2[i].getName());
-                }
-            }
-            return 0;
-        }
-        
-    };
-    
+		{
+			if (o1 == o2)
+				return 0;
+			
+			if (!o1.getName().equals(o2.getName()))
+				return o1.getName().compareTo(o2.getName());
+			
+			Class<?>[] t1 = o1.getParameterTypes();
+			Class<?>[] t2 = o2.getParameterTypes();
+			
+			// both null
+			if (t1 == t2)
+				return 0;
+			if (t1 == null)
+				return -1;
+			if (t2 == null)
+				return 1;
+			
+			if (t1.length != t2.length)
+				return t1.length - t2.length;
+			for (int i = 0; i < t1.length; i++)
+			{
+				if (!t1[i].getName().equals(t2[i].getName()))
+				{
+					return t1[i].getName().compareTo(t2[i].getName());
+				}
+			}
+			return 0;
+		}
+		
+	};
+	
 }

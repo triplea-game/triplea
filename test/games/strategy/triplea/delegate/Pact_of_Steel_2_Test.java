@@ -27,6 +27,7 @@ import games.strategy.util.Match;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
 import junit.framework.TestCase;
 
 public class Pact_of_Steel_2_Test extends TestCase
@@ -68,9 +69,9 @@ public class Pact_of_Steel_2_Test extends TestCase
 		terrs.add(Ukraine_S_S_R_);
 		terrs.add(Belorussia);
 		
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)),5);
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)),0);
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)),0);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 5);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 0);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 0);
 		assertFalse(russian_easternEurope.isSatisfied(m_data));
 		
 		Norway.setOwner(british);
@@ -79,157 +80,152 @@ public class Pact_of_Steel_2_Test extends TestCase
 		Ukraine_S_S_R_.setOwner(germans);
 		Belorussia.setOwner(germans);
 		
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)),2);
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)),2);
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)),1);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 2);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 2);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 1);
 		assertFalse(russian_easternEurope.isSatisfied(m_data));
 		
 		Ukraine_S_S_R_.setOwner(british);
 		Belorussia.setOwner(british);
 		
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)),0);
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)),2);
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)),3);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 0);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 2);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 3);
 		assertFalse(russian_easternEurope.isSatisfied(m_data));
 		
 		Norway.setOwner(russians);
 		Ukraine_S_S_R_.setOwner(germans);
 		Belorussia.setOwner(germans);
 		
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)),2);
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)),3);
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)),0);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 2);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 3);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 0);
 		assertTrue(russian_easternEurope.isSatisfied(m_data));
 		
 		Ukraine_S_S_R_.setOwner(russians);
 		
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)),1);
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)),4);
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)),0);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 1);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 4);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 0);
 		assertTrue(russian_easternEurope.isSatisfied(m_data));
 		
 		Belorussia.setOwner(russians);
 		
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)),0);
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)),5);
-		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)),0);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 0);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 5);
+		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 0);
 		assertTrue(russian_easternEurope.isSatisfied(m_data));
 	}
 	
 	public void testSupportAttachments()
 	{
-		//TODO
+		// TODO
 	}
 	
 	public void testNationalObjectiveUses()
 	{
-		//TODO
+		// TODO
 	}
 	
 	public void testBlockadeAndBlockadeZones()
 	{
-		//TODO
+		// TODO
 	}
 	
 	public void testTriggers()
 	{
-		//TODO
+		// TODO
 	}
 	
 	public void testConditions()
 	{
-		//TODO
+		// TODO
 	}
 	
 	public void testObjectives()
 	{
-		//TODO
+		// TODO
 	}
 	
 	public void testTechnologyFrontiers()
 	{
-		//TODO frontiers, renaming, generic, and new techs and adding of players to frontiers
+		// TODO frontiers, renaming, generic, and new techs and adding of players to frontiers
 	}
 	
 	public void testIsCombatTransport()
 	{
-		//TODO
+		// TODO
 	}
 	
 	public void testIsConstruction()
 	{
-		//TODO isConstruction, constructionType, constructionsPerTerrPerTypePerTurn, maxConstructionsPerTypePerTerr, "More Constructions with Factory", "More Constructions with Factory", "Unlimited Constructions"
+		// TODO isConstruction, constructionType, constructionsPerTerrPerTypePerTurn, maxConstructionsPerTypePerTerr, "More Constructions with Factory", "More Constructions with Factory", "Unlimited Constructions"
 	}
 	
 	public void testMaxPlacePerTerritory()
 	{
-		//TODO
+		// TODO
 	}
 	
 	public void testCapitalCapturePlayerOptions()
 	{
-		//TODO destroysPUs, retainCapitalNumber, retainCapitalProduceNumber
+		// TODO destroysPUs, retainCapitalNumber, retainCapitalProduceNumber
 	}
 	
 	public void testUnitPlacementRestrictions()
 	{
-		//TODO
+		// TODO
 	}
 	
 	public void testRepairsUnits()
 	{
-		//TODO repairsUnits, "Two HitPoint Units Require Repair Facilities", "Battleships repair at beginning of round"
+		// TODO repairsUnits, "Two HitPoint Units Require Repair Facilities", "Battleships repair at beginning of round"
 	}
 	
 	public void testProductionPerXTerritories()
 	{
-		//TODO
+		// TODO
 	}
 	
 	public void testGiveUnitControl()
 	{
-		//TODO giveUnitControl, changeUnitOwners, canBeGivenByTerritoryTo, "Give Units By Territory"
+		// TODO giveUnitControl, changeUnitOwners, canBeGivenByTerritoryTo, "Give Units By Territory"
 	}
 	
 	public void testDiceSides()
 	{
-		//TODO
+		// TODO
 	}
 	
 	public void testMaxBuiltPerPlayer()
 	{
-		//TODO
+		// TODO
 	}
 	
 	public void testDestroyedWhenCapturedBy()
 	{
-		//TODO "Units Can Be Destroyed Instead Of Captured", destroyedWhenCapturedBy
+		// TODO "Units Can Be Destroyed Instead Of Captured", destroyedWhenCapturedBy
 	}
 	
 	public void testIsInfrastructure()
 	{
-		//TODO
+		// TODO
 	}
 	
 	public void testCanBeDamaged()
 	{
-		//TODO
+		// TODO
 	}
 	
 	public void testIsSuicide()
 	{
-		//TODO isSuicide, "Suicide and Munition Casualties Restricted", "Defending Suicide and Munition Units Do Not Fire"
+		// TODO isSuicide, "Suicide and Munition Casualties Restricted", "Defending Suicide and Munition Units Do Not Fire"
 	}
 	
 	public void test()
 	{
-		//TODO
+		// TODO
 	}
-	
-	
-	
-	
-	
 	
 	/***********************************************************
 	************************************************************
@@ -250,7 +246,7 @@ public class Pact_of_Steel_2_Test extends TestCase
 		}
 		return rVal;
 	}
-
+	
 	/***********************************************************
 	************************************************************
 	************************************************************

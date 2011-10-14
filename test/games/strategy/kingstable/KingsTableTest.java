@@ -5,17 +5,16 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.kingstable;
 
 import games.strategy.kingstable.delegate.PlayDelegateTest;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -26,12 +25,12 @@ import junit.framework.TestSuite;
 public class KingsTableTest
 {
 	
-    public static Test suite()
-    {
-        TestSuite suite = new TestSuite(KingsTableTest.class.getSimpleName());
-        suite.addTestSuite(PlayDelegateTest.class);
-        
-        return suite;
-    }
-
+	public static Test suite()
+	{
+		TestSuite suite = new TestSuite(KingsTableTest.class.getSimpleName());
+		suite.addTestSuite(PlayDelegateTest.class);
+		
+		return suite;
+	}
+	
 }

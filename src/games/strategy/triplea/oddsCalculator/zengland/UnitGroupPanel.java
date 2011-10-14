@@ -5,23 +5,29 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.triplea.oddsCalculator.zengland;
 
-import java.awt.*;
+import java.awt.Button;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Label;
+import java.awt.Panel;
+import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class UnitGroupPanel extends Panel implements ActionListener {
-
+public class UnitGroupPanel extends Panel implements ActionListener
+{
+	
 	private static final long serialVersionUID = 7544343415837468319L;
-
+	
 	private UnitGroup attUnitGroup;
 	private UnitGroup defUnitGroup;
 	
@@ -41,30 +47,35 @@ public class UnitGroupPanel extends Panel implements ActionListener {
 	TextField defOol = null;
 	
 	private Label remAtt;
-
+	
 	private Label remDef;
-		
-	public UnitGroup getAttUnitGroup() {
+	
+	public UnitGroup getAttUnitGroup()
+	{
 		return attUnitGroup;
 	}
-
-	public void setAttUnitGroup(UnitGroup attUnitGroup) {
+	
+	public void setAttUnitGroup(UnitGroup attUnitGroup)
+	{
 		this.attUnitGroup = attUnitGroup;
 	}
-
-	public UnitGroup getDefUnitGroup() {
+	
+	public UnitGroup getDefUnitGroup()
+	{
 		return defUnitGroup;
 	}
-
-	public void setDefUnitGroup(UnitGroup defUnitGroup) {
+	
+	public void setDefUnitGroup(UnitGroup defUnitGroup)
+	{
 		this.defUnitGroup = defUnitGroup;
 	}
-
-	public UnitGroupPanel(OCUnit unit) {
+	
+	public UnitGroupPanel(OCUnit unit)
+	{
 		super();
 		setLayout(new GridLayout(1, 16));
 		setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-
+		
 		setAttUnitGroup(new UnitGroup(unit, 0));
 		setDefUnitGroup(new UnitGroup(unit, 0));
 		att10.setName("att10");
@@ -116,75 +127,87 @@ public class UnitGroupPanel extends Panel implements ActionListener {
 		remDef = new Label("0");
 		add(remDef);
 	}
-
+	
 	@Override
-	public void actionPerformed(ActionEvent e) {
-//		((RollerApplet)this.getParent().getParent().getParent()).resetStats();
-//		((RollerApplet)this.getParent().getParent().getParent()).resetBattle();
+	public void actionPerformed(ActionEvent e)
+	{
+		// ((RollerApplet)this.getParent().getParent().getParent()).resetStats();
+		// ((RollerApplet)this.getParent().getParent().getParent()).resetBattle();
 		Object o = e.getSource();
-		if(o instanceof Button)
+		if (o instanceof Button)
 		{
-			((RollerApplet)this.getParent().getParent().getParent()).processUGPButton(this, (Button)o);
-			((RollerApplet)this.getParent().getParent().getParent()).setReset(true);
-			try {Thread.sleep(100);} catch (InterruptedException ex) {}
+			((RollerApplet) this.getParent().getParent().getParent()).processUGPButton(this, (Button) o);
+			((RollerApplet) this.getParent().getParent().getParent()).setReset(true);
+			try
+			{
+				Thread.sleep(100);
+			} catch (InterruptedException ex)
+			{
+			}
 		}
-//		if(o instanceof Button)
-//		{
-//			Button b = (Button) o;
-//			String bName = b.getName();
-//			int bValue = Integer.valueOf(b.getLabel()).intValue();
-//			
-//			if(bName.startsWith("att"))
-//			{
-//				if(bValue==0)
-//				{
-//					attUnitGroup.setNumUnits(bValue);
-//					setRemAtt(bValue);
-//				}
-//				else
-//				{
-//					attUnitGroup.setNumUnits(attUnitGroup.getNumUnits()+bValue);
-//				}
-//				totalAttackers.setText(String.valueOf(attUnitGroup.getNumUnits()));
-//			}
-//			else if(bName.startsWith("def"))
-//			{
-//				if(bValue==0)
-//				{
-//					defUnitGroup.setNumUnits(bValue);
-//					setRemDef(bValue);
-//				}
-//				else
-//				{
-//					defUnitGroup.setNumUnits(defUnitGroup.getNumUnits()+bValue);
-//				}
-//				totalDefenders.setText(String.valueOf(defUnitGroup.getNumUnits()));
-//			}
-//		}
-
+		// if(o instanceof Button)
+		// {
+		// Button b = (Button) o;
+		// String bName = b.getName();
+		// int bValue = Integer.valueOf(b.getLabel()).intValue();
+		//
+		// if(bName.startsWith("att"))
+		// {
+		// if(bValue==0)
+		// {
+		// attUnitGroup.setNumUnits(bValue);
+		// setRemAtt(bValue);
+		// }
+		// else
+		// {
+		// attUnitGroup.setNumUnits(attUnitGroup.getNumUnits()+bValue);
+		// }
+		// totalAttackers.setText(String.valueOf(attUnitGroup.getNumUnits()));
+		// }
+		// else if(bName.startsWith("def"))
+		// {
+		// if(bValue==0)
+		// {
+		// defUnitGroup.setNumUnits(bValue);
+		// setRemDef(bValue);
+		// }
+		// else
+		// {
+		// defUnitGroup.setNumUnits(defUnitGroup.getNumUnits()+bValue);
+		// }
+		// totalDefenders.setText(String.valueOf(defUnitGroup.getNumUnits()));
+		// }
+		// }
+		
 	}
-
-	public Label getRemAtt() {
+	
+	public Label getRemAtt()
+	{
 		return remAtt;
 	}
-
-	public void setRemAtt(Label remAtt) {
+	
+	public void setRemAtt(Label remAtt)
+	{
 		this.remAtt = remAtt;
 	}
 	
-	public void setRemAtt(int remVal) {
+	public void setRemAtt(int remVal)
+	{
 		remAtt.setText(String.valueOf(remVal));
 	}
-
-	public Label getRemDef() {
+	
+	public Label getRemDef()
+	{
 		return remDef;
 	}
-
-	public void setRemDef(Label remDef) {
+	
+	public void setRemDef(Label remDef)
+	{
 		this.remDef = remDef;
 	}
 	
-	public void setRemDef(int remVal) {
+	public void setRemDef(int remVal)
+	{
 		remDef.setText(String.valueOf(remVal));
 	}
 }

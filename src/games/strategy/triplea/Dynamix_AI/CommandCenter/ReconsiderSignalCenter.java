@@ -16,41 +16,48 @@ package games.strategy.triplea.Dynamix_AI.CommandCenter;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+
 import java.util.HashMap;
 import java.util.HashSet;
 
 /**
- *
+ * 
  * @author Stephen
  */
 public class ReconsiderSignalCenter
 {
-    private static HashMap<PlayerID, ReconsiderSignalCenter> s_RSCInstances = new HashMap<PlayerID, ReconsiderSignalCenter>();
-    public static ReconsiderSignalCenter get(GameData data, PlayerID player)
-    {
-        if(!s_RSCInstances.containsKey(player))
-            s_RSCInstances.put(player, create(data, player));
-        return s_RSCInstances.get(player);
-    }
-    private static ReconsiderSignalCenter create(GameData data, PlayerID player)
-    {
-        return new ReconsiderSignalCenter(data, player);
-    }
-    public static void ClearStaticInstances()
-    {
-        s_RSCInstances.clear();
-    }
-    public static void NotifyStartOfRound()
-    {
-        s_RSCInstances.clear();
-    }
-    private GameData m_data = null;
-    private PlayerID m_player = null;
-    public ReconsiderSignalCenter(GameData data, PlayerID player)
-    {
-        m_data = data;
-        m_player = player;
-    }
-
-    public HashSet<Object> ObjectsToReconsider = new HashSet<Object>();
+	private static HashMap<PlayerID, ReconsiderSignalCenter> s_RSCInstances = new HashMap<PlayerID, ReconsiderSignalCenter>();
+	
+	public static ReconsiderSignalCenter get(GameData data, PlayerID player)
+	{
+		if (!s_RSCInstances.containsKey(player))
+			s_RSCInstances.put(player, create(data, player));
+		return s_RSCInstances.get(player);
+	}
+	
+	private static ReconsiderSignalCenter create(GameData data, PlayerID player)
+	{
+		return new ReconsiderSignalCenter(data, player);
+	}
+	
+	public static void ClearStaticInstances()
+	{
+		s_RSCInstances.clear();
+	}
+	
+	public static void NotifyStartOfRound()
+	{
+		s_RSCInstances.clear();
+	}
+	
+	private GameData m_data = null;
+	private PlayerID m_player = null;
+	
+	public ReconsiderSignalCenter(GameData data, PlayerID player)
+	{
+		m_data = data;
+		m_player = player;
+	}
+	
+	public HashSet<Object> ObjectsToReconsider = new HashSet<Object>();
 }

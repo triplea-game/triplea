@@ -5,39 +5,40 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package games.strategy.engine.framework.startup.mc;
 
-import java.util.Map;
-
 import games.strategy.engine.framework.message.PlayerListing;
-import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.IChannelSubscribor;
+import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
+
+import java.util.Map;
 
 /**
  * 
- *
- *
+ * 
+ * 
  * @author Sean Bridges
  */
 public interface IClientChannel extends IChannelSubscribor
 {
-    public static final RemoteName CHANNEL_NAME = new RemoteName("games.strategy.engine.framework.ui.IClientChannel.CHANNEL", IClientChannel.class);
-    
-    public void playerListingChanged(PlayerListing listing);
-    
-    /**
-     * 
-     * @param gameData
-     * @param players who is playing who
-     */
-    public void doneSelectingPlayers(byte[] gameData, Map<String, INode>  players);
-    
-    public void gameReset();
+	public static final RemoteName CHANNEL_NAME = new RemoteName("games.strategy.engine.framework.ui.IClientChannel.CHANNEL", IClientChannel.class);
+	
+	public void playerListingChanged(PlayerListing listing);
+	
+	/**
+	 * 
+	 * @param gameData
+	 * @param players
+	 *            who is playing who
+	 */
+	public void doneSelectingPlayers(byte[] gameData, Map<String, INode> players);
+	
+	public void gameReset();
 }

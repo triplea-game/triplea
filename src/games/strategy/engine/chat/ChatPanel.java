@@ -18,104 +18,98 @@
 
 package games.strategy.engine.chat;
 
-import games.strategy.engine.message.*;
+import games.strategy.engine.message.IChannelMessenger;
+import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Container;
 
-import javax.swing.*;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 
 /**
- * A Chat window.  
+ * A Chat window.
  * 
- * Mutiple chat panels can be connected to the same Chat.<p>
+ * Mutiple chat panels can be connected to the same Chat.
+ * <p>
  * 
  * We can change the chat we are connected to using the setChat(...) method.
  * 
  * @author Sean Bridges
  */
-public class ChatPanel extends JPanel 
+public class ChatPanel extends JPanel
 {
-   private ChatPlayerPanel m_chatPlayerPanel;
-   private ChatMessagePanel m_chatMessagePanel;
-    
-    
-    /** Creates a new instance of ChatFrame */
-    public ChatPanel(IMessenger messenger, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, String chatName)
-    {
-        init();
-        Chat chat  = new Chat(messenger, chatName, channelMessenger, remoteMessenger  );
-        setChat(chat);
-    }
-    
-
-    
-    public ChatPanel(Chat chat)
-    {
-        init();
-        setChat(chat);
-    }
-    
-    private void init()
-    {
-        createComponents();
-        layoutComponents();
-
-        setSize(300, 200);
-    }
-    
-    
-    
-    public void setChat(Chat chat)
-    {
-        m_chatMessagePanel.setChat(chat);
-        m_chatPlayerPanel.setChat(chat);
-    }
-    
-
-    public Chat getChat()
-    {
-        return m_chatMessagePanel.getChat();
-    }
-
-    private void layoutComponents()
-    {
-
-        Container content = this;
-        content.setLayout(new BorderLayout());
-
-        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        split.setLeftComponent(m_chatMessagePanel);
-        split.setRightComponent(m_chatPlayerPanel);
-        
-        split.setOneTouchExpandable(false);
-        split.setDividerSize(5);
-        split.setResizeWeight(1);
-
-        content.add(split, BorderLayout.CENTER);
-    }
-
-    private void createComponents()
-    {
-
-        m_chatPlayerPanel = new ChatPlayerPanel(null);
-        m_chatMessagePanel = new ChatMessagePanel(null);
-    }
-
-
-
-    public void setPlayerRenderer(DefaultListCellRenderer renderer)
-    {
-        m_chatPlayerPanel.setPlayerRenderer(renderer);
-        
-    }
-    
-    public void setShowChatTime(boolean showTime)
-    {
-        m_chatMessagePanel.setShowTime(showTime);
-    }
-
-
-  
+	private ChatPlayerPanel m_chatPlayerPanel;
+	private ChatMessagePanel m_chatMessagePanel;
+	
+	/** Creates a new instance of ChatFrame */
+	public ChatPanel(IMessenger messenger, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, String chatName)
+	{
+		init();
+		Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger);
+		setChat(chat);
+	}
+	
+	public ChatPanel(Chat chat)
+	{
+		init();
+		setChat(chat);
+	}
+	
+	private void init()
+	{
+		createComponents();
+		layoutComponents();
+		
+		setSize(300, 200);
+	}
+	
+	public void setChat(Chat chat)
+	{
+		m_chatMessagePanel.setChat(chat);
+		m_chatPlayerPanel.setChat(chat);
+	}
+	
+	public Chat getChat()
+	{
+		return m_chatMessagePanel.getChat();
+	}
+	
+	private void layoutComponents()
+	{
+		
+		Container content = this;
+		content.setLayout(new BorderLayout());
+		
+		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		split.setLeftComponent(m_chatMessagePanel);
+		split.setRightComponent(m_chatPlayerPanel);
+		
+		split.setOneTouchExpandable(false);
+		split.setDividerSize(5);
+		split.setResizeWeight(1);
+		
+		content.add(split, BorderLayout.CENTER);
+	}
+	
+	private void createComponents()
+	{
+		
+		m_chatPlayerPanel = new ChatPlayerPanel(null);
+		m_chatMessagePanel = new ChatMessagePanel(null);
+	}
+	
+	public void setPlayerRenderer(DefaultListCellRenderer renderer)
+	{
+		m_chatPlayerPanel.setPlayerRenderer(renderer);
+		
+	}
+	
+	public void setShowChatTime(boolean showTime)
+	{
+		m_chatMessagePanel.setShowTime(showTime);
+	}
+	
 }
-

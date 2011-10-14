@@ -5,22 +5,18 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * TerritoryEffectAttachment.java
- *
  */
 
 package games.strategy.triplea.attatchments;
-
-import java.util.Arrays;
-import java.util.Iterator;
 
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameParseException;
@@ -29,80 +25,95 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
-
+import java.util.Arrays;
+import java.util.Iterator;
 
 /**
- *
- * @author  Edwin van der Wal
+ * 
+ * @author Edwin van der Wal
  * @version 1.0
  */
 
 @SuppressWarnings("serial")
-public class TerritoryEffectAttachment extends DefaultAttachment {
+public class TerritoryEffectAttachment extends DefaultAttachment
+{
 	
 	private IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<UnitType>();
 	private IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<UnitType>();
 	
-	   /**
-     * Convenience method.
-     * @return TerritoryEffectAttachment belonging to the RelationshipType pr
-     */
-    public static TerritoryEffectAttachment get(TerritoryEffect te)
-    {
-        TerritoryEffectAttachment rVal =  (TerritoryEffectAttachment) te.getAttachment(Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
-        if(rVal == null)
-            throw new IllegalStateException("No territoryEffect attachment for:" + te.getName());
-        return rVal;
-    }
-    public static TerritoryEffectAttachment get(TerritoryEffect te, String nameOfAttachment)
-    {
-        TerritoryEffectAttachment rVal =  (TerritoryEffectAttachment) te.getAttachment(nameOfAttachment);
-        if(rVal == null)
-            throw new IllegalStateException("No territoryEffect attachment for:" + te.getName() + " with name:" + nameOfAttachment);
-        return rVal;
-    }
-    
-    /** Creates new TerritoryEffectAttachment
-     * 
-     */
-    public TerritoryEffectAttachment() {	
-    }
-    
-    /**
-     * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
-     * @param combatDefenseEffect
-     * @throws GameParseException
-     */
-    public void setCombatDefenseEffect(String combatDefenseEffect) throws GameParseException {
-    	setCombatEffect(combatDefenseEffect, true);
-    }
+	/**
+	 * Convenience method.
+	 * 
+	 * @return TerritoryEffectAttachment belonging to the RelationshipType pr
+	 */
+	public static TerritoryEffectAttachment get(TerritoryEffect te)
+	{
+		TerritoryEffectAttachment rVal = (TerritoryEffectAttachment) te.getAttachment(Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
+		if (rVal == null)
+			throw new IllegalStateException("No territoryEffect attachment for:" + te.getName());
+		return rVal;
+	}
 	
-	public IntegerMap<UnitType> getCombatDefenseEffect() {
+	public static TerritoryEffectAttachment get(TerritoryEffect te, String nameOfAttachment)
+	{
+		TerritoryEffectAttachment rVal = (TerritoryEffectAttachment) te.getAttachment(nameOfAttachment);
+		if (rVal == null)
+			throw new IllegalStateException("No territoryEffect attachment for:" + te.getName() + " with name:" + nameOfAttachment);
+		return rVal;
+	}
+	
+	/**
+	 * Creates new TerritoryEffectAttachment
+	 * 
+	 */
+	public TerritoryEffectAttachment()
+	{
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param combatDefenseEffect
+	 * @throws GameParseException
+	 */
+	public void setCombatDefenseEffect(String combatDefenseEffect) throws GameParseException
+	{
+		setCombatEffect(combatDefenseEffect, true);
+	}
+	
+	public IntegerMap<UnitType> getCombatDefenseEffect()
+	{
 		return m_combatDefenseEffect;
 	}
 	
-	public void clearCombatDefenseEffect() {
+	public void clearCombatDefenseEffect()
+	{
 		m_combatDefenseEffect.clear();
 	}
-    
+	
 	/**
-	 * Adds to, not sets.  Anything that adds to instead of setting needs a clear function as well.
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
 	 * @param combatOffenseEffect
 	 * @throws GameParseException
 	 */
-    public void setCombatOffenseEffect(String combatOffenseEffect) throws GameParseException {
-    	setCombatEffect(combatOffenseEffect, false);
-    }
+	public void setCombatOffenseEffect(String combatOffenseEffect) throws GameParseException
+	{
+		setCombatEffect(combatOffenseEffect, false);
+	}
 	
-	public IntegerMap<UnitType> getCombatOffenseEffect() {
+	public IntegerMap<UnitType> getCombatOffenseEffect()
+	{
 		return m_combatOffenseEffect;
 	}
 	
-	public void clearCombatOffenseEffect() {
+	public void clearCombatOffenseEffect()
+	{
 		m_combatOffenseEffect.clear();
 	}
 	
-    private void setCombatEffect(String combatEffect, boolean defending) throws GameParseException {
+	private void setCombatEffect(String combatEffect, boolean defending) throws GameParseException
+	{
 		String[] s = combatEffect.split(":");
 		if (s.length < 2)
 			throw new GameParseException("TerritoryEffect Attachments: combatDefenseEffect and combatOffenseEffect must have a count and at least one unitType");
@@ -121,10 +132,14 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 		}
 	}
 	
-	public int getCombatEffect(UnitType aType, boolean defending) {
-		if(defending) {
+	public int getCombatEffect(UnitType aType, boolean defending)
+	{
+		if (defending)
+		{
 			return m_combatDefenseEffect.getInt(aType);
-		} else {
+		}
+		else
+		{
 			return m_combatOffenseEffect.getInt(aType);
 		}
 	}

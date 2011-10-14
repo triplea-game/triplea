@@ -5,16 +5,15 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * ITestDelegateBridge.java
- *
  */
 
 package games.strategy.engine.data;
@@ -28,22 +27,22 @@ import games.strategy.triplea.ui.display.ITripleaDisplay;
  * 
  * @author Tony Clayton
  * 
- * Not for actual use, suitable for testing. Never returns messages, but can get
- * random and implements changes immediately.
+ *         Not for actual use, suitable for testing. Never returns messages, but can get
+ *         random and implements changes immediately.
  */
 public interface ITestDelegateBridge extends IDelegateBridge
 {
-    /**
-     * Changing the player has the effect of commiting the current transaction.
-     * Player is initialized to the player specified in the xml data.
-     */
-    public void setPlayerID(PlayerID aPlayer);
-
-    public void setStepName(String name);
-
-    public void setRandomSource(IRandomSource randomSource);
-    
-    public void setRemote(IRemote remote);
-
-    public void setDisplay(ITripleaDisplay display);
+	/**
+	 * Changing the player has the effect of commiting the current transaction.
+	 * Player is initialized to the player specified in the xml data.
+	 */
+	public void setPlayerID(PlayerID aPlayer);
+	
+	public void setStepName(String name);
+	
+	public void setRandomSource(IRandomSource randomSource);
+	
+	public void setRemote(IRemote remote);
+	
+	public void setDisplay(ITripleaDisplay display);
 }

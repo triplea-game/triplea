@@ -16,7 +16,7 @@ import games.strategy.net.INode;
 
 public interface IStatusListener
 {
-    
-    public void statusChanged(INode node, String newStatus);
-
+	
+	public void statusChanged(INode node, String newStatus);
+	
 }

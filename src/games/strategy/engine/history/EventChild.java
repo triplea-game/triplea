@@ -14,53 +14,52 @@ package games.strategy.engine.history;
 
 public class EventChild extends HistoryNode implements Renderable
 {
-    public final String m_text;
-    public final Object m_renderingData;
-
-    public EventChild(String text, Object renderingData)
-    {
-        super(text, true);
-        m_text = text;
-        m_renderingData = renderingData;
-    }
-
-    @Override
+	public final String m_text;
+	public final Object m_renderingData;
+	
+	public EventChild(String text, Object renderingData)
+	{
+		super(text, true);
+		m_text = text;
+		m_renderingData = renderingData;
+	}
+	
+	@Override
 	public Object getRenderingData()
-    {
-        return m_renderingData;
-    }
-
-    @Override
+	{
+		return m_renderingData;
+	}
+	
+	@Override
 	public String toString()
-    {
-        return m_text;
-    }
-
-    @Override
+	{
+		return m_text;
+	}
+	
+	@Override
 	public SerializationWriter getWriter()
-    {
-       return new EventChildWriter(m_text, m_renderingData);
-    }
-
+	{
+		return new EventChildWriter(m_text, m_renderingData);
+	}
+	
 }
+
 
 class EventChildWriter implements SerializationWriter
 {
-    private final String m_text;
-    private final Object m_renderingData;
-    
-    
-    public EventChildWriter(final String text, final Object renderingData)
-    {
-        m_text = text;
-        m_renderingData = renderingData;
-    }
-
-
-    @Override
+	private final String m_text;
+	private final Object m_renderingData;
+	
+	public EventChildWriter(final String text, final Object renderingData)
+	{
+		m_text = text;
+		m_renderingData = renderingData;
+	}
+	
+	@Override
 	public void write(HistoryWriter writer)
-    {
-        writer.addChildToEvent(new EventChild(m_text, m_renderingData));
-    }
-    
+	{
+		writer.addChildToEvent(new EventChild(m_text, m_renderingData));
+	}
+	
 }

@@ -5,11 +5,11 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package games.strategy.engine.message;
 
@@ -20,8 +20,8 @@ import java.io.ObjectOutput;
 
 /**
  * 
- *
- *
+ * 
+ * 
  * @author Sean Bridges
  */
 /**
@@ -33,62 +33,63 @@ import java.io.ObjectOutput;
  */
 class RemoteMethodCallResults implements Externalizable
 {
-    private Object m_rVal;
-    //throwable implements Serializable
-    private Throwable m_exception;
-    
-    public RemoteMethodCallResults()
-    {
-    	
-    }
-    
-    public RemoteMethodCallResults(final Object rVal)
-    {
-        m_rVal = rVal;
-        m_exception = null;
-    }
-
-    public RemoteMethodCallResults(Throwable exception)
-    {
-        m_rVal = null;
-        m_exception = exception;
-    }
-
-    public Throwable getException()
-    {
-        return m_exception;
-    }
-    public Object getRVal()
-    {
-        return m_rVal;
-    }
-
-	@Override
-	public void writeExternal(ObjectOutput out) throws IOException 
-	{        
-        if(m_rVal != null)
-        {
-            out.write(1);
-            out.writeObject(m_rVal);
-        }
-        else
-        {
-            out.write(0);
-            out.writeObject(m_exception);    
-        }
-	}
-
-	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException 
+	private Object m_rVal;
+	// throwable implements Serializable
+	private Throwable m_exception;
+	
+	public RemoteMethodCallResults()
 	{
-        boolean rVal = in.read() == 1;
-        if(rVal)
-        {
-            m_rVal = in.readObject();
-        }
-        else
-        {
-            m_exception = (Throwable) in.readObject();
-        }
+		
+	}
+	
+	public RemoteMethodCallResults(final Object rVal)
+	{
+		m_rVal = rVal;
+		m_exception = null;
+	}
+	
+	public RemoteMethodCallResults(Throwable exception)
+	{
+		m_rVal = null;
+		m_exception = exception;
+	}
+	
+	public Throwable getException()
+	{
+		return m_exception;
+	}
+	
+	public Object getRVal()
+	{
+		return m_rVal;
+	}
+	
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException
+	{
+		if (m_rVal != null)
+		{
+			out.write(1);
+			out.writeObject(m_rVal);
+		}
+		else
+		{
+			out.write(0);
+			out.writeObject(m_exception);
+		}
+	}
+	
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+	{
+		boolean rVal = in.read() == 1;
+		if (rVal)
+		{
+			m_rVal = in.readObject();
+		}
+		else
+		{
+			m_exception = (Throwable) in.readObject();
+		}
 	}
 }

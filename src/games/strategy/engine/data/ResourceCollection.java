@@ -5,16 +5,16 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * ResourceCollection.java
- *
+ * 
  * Created on October 23, 2001, 8:24 PM
  */
 
@@ -23,74 +23,79 @@ package games.strategy.engine.data;
 import games.strategy.util.IntegerMap;
 
 /**
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  * @version 1.0
  */
 @SuppressWarnings("serial")
 public class ResourceCollection extends GameDataComponent
 {
-
+	
 	private final IntegerMap<Resource> m_resources = new IntegerMap<Resource>();
-
-	/** Creates new ResourceCollection
-	 * @param data game data
+	
+	/**
+	 * Creates new ResourceCollection
+	 * 
+	 * @param data
+	 *            game data
 	 */
-    public ResourceCollection(GameData data)
+	public ResourceCollection(GameData data)
 	{
 		super(data);
-    }
-
+	}
+	
 	public void addResource(Resource resource, int quantity)
 	{
-		if(quantity < 0)
+		if (quantity < 0)
 			throw new IllegalArgumentException("quantity must be positive");
 		change(resource, quantity);
-
+		
 	}
-
+	
 	/**
 	 * You cannot remove more than the collection contains.
-	 * @param resource referring resource
-	 * @param quantity quantity of the resource that should be removed
+	 * 
+	 * @param resource
+	 *            referring resource
+	 * @param quantity
+	 *            quantity of the resource that should be removed
 	 */
 	public void removeResource(Resource resource, int quantity)
 	{
-		if(quantity < 0)
+		if (quantity < 0)
 			throw new IllegalArgumentException("quantity must be positive");
 		int current = getQuantity(resource);
-		if((current - quantity) < 0)
+		if ((current - quantity) < 0)
 			throw new IllegalArgumentException("Cant remove more than player has. current:" + current + " toRemove: " + quantity);
-
+		
 		change(resource, -quantity);
 	}
-
+	
 	private void change(Resource resource, int quantity)
 	{
 		m_resources.add(resource, quantity);
 	}
-
+	
 	public int getQuantity(Resource resource)
 	{
 		return m_resources.getInt(resource);
 	}
-
+	
 	public int getQuantity(String name)
 	{
-        getData().acquireReadLock();
-        try
-        {
-    		Resource resource = getData().getResourceList().getResource(name);
-    		if(resource == null)
-    			throw new IllegalArgumentException("No resource named:" + name);
-    		return getQuantity(resource);
-        }
-        finally
-        {
-            getData().releaseReadLock();
-        }
+		getData().acquireReadLock();
+		try
+		{
+			Resource resource = getData().getResourceList().getResource(name);
+			if (resource == null)
+				throw new IllegalArgumentException("No resource named:" + name);
+			return getQuantity(resource);
+		} finally
+		{
+			getData().releaseReadLock();
+		}
 	}
-
+	
 	public boolean has(IntegerMap<Resource> map)
 	{
 		return m_resources.greaterThanOrEqualTo(map);

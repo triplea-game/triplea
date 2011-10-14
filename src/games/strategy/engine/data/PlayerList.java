@@ -5,78 +5,83 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * PlayerList.java
- *
+ * 
  * Created on October 17, 2001, 9:21 PM
  */
 
 package games.strategy.engine.data;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  * @version 1.0
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class PlayerList extends GameDataComponent implements Iterable<PlayerID>
 {
-
-	//maps String playerName -> PlayerID
-	private final Map<String,PlayerID> m_players = new LinkedHashMap<String,PlayerID>();
-
-	/** Creates new PlayerCollection
-	 * @param data game data
+	
+	// maps String playerName -> PlayerID
+	private final Map<String, PlayerID> m_players = new LinkedHashMap<String, PlayerID>();
+	
+	/**
+	 * Creates new PlayerCollection
+	 * 
+	 * @param data
+	 *            game data
 	 */
-    public PlayerList(GameData data)
+	public PlayerList(GameData data)
 	{
 		super(data);
-
-    }
-
+		
+	}
+	
 	protected void addPlayerID(PlayerID player)
 	{
 		m_players.put(player.getName(), player);
 	}
-
+	
 	public int size()
 	{
 		return m_players.size();
 	}
-
+	
 	public PlayerID getPlayerID(String name)
 	{
-	    if(PlayerID.NULL_PLAYERID.getName().equals(name))
-	        return PlayerID.NULL_PLAYERID;
+		if (PlayerID.NULL_PLAYERID.getName().equals(name))
+			return PlayerID.NULL_PLAYERID;
 		return m_players.get(name);
 	}
-
+	
 	public String[] getNames()
 	{
 		String[] values = new String[size()];
 		m_players.keySet().toArray(values);
 		return values;
 	}
-
+	
 	public Collection<PlayerID> getPlayers()
 	{
 		return m_players.values();
 	}
-
-    @Override
+	
+	@Override
 	public Iterator<PlayerID> iterator()
-    {
-        return getPlayers().iterator();
-    }
+	{
+		return getPlayers().iterator();
+	}
 }
-

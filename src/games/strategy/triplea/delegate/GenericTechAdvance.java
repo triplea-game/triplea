@@ -4,7 +4,8 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attatchments.TechAttachment;
 
-public class GenericTechAdvance extends TechAdvance{
+public class GenericTechAdvance extends TechAdvance
+{
 	
 	private final String m_name;
 	private final TechAdvance m_advance;
@@ -12,40 +13,45 @@ public class GenericTechAdvance extends TechAdvance{
 	 * 
 	 */
 	private static final long serialVersionUID = -5985281030083508185L;
-
-	public GenericTechAdvance(String n, TechAdvance t) {
-		m_name =n;
+	
+	public GenericTechAdvance(String n, TechAdvance t)
+	{
+		m_name = n;
 		m_advance = t;
 	}
+	
 	@Override
 	public String getName()
-    {
-        return m_name;
-    }
-
-    @Override
+	{
+		return m_name;
+	}
+	
+	@Override
 	public String getProperty()
-    {
-        if( m_advance != null)
-        	return m_advance.getProperty();
-        else return m_name;
-    }
-
-    @Override
-    public void perform(PlayerID id, IDelegateBridge bridge)
-    {
-    	if( m_advance != null)
-            m_advance.perform(id, bridge);
-    }
-    
-    public TechAdvance getAdvance() {
-    	return m_advance;
-    }
-    
-    @Override
-	public boolean hasTech(TechAttachment ta){
-    	if(m_advance != null)
-    		return m_advance.hasTech(ta);
-    	return ta.hasGenericTech(m_name);
-    }
+	{
+		if (m_advance != null)
+			return m_advance.getProperty();
+		else
+			return m_name;
+	}
+	
+	@Override
+	public void perform(PlayerID id, IDelegateBridge bridge)
+	{
+		if (m_advance != null)
+			m_advance.perform(id, bridge);
+	}
+	
+	public TechAdvance getAdvance()
+	{
+		return m_advance;
+	}
+	
+	@Override
+	public boolean hasTech(TechAttachment ta)
+	{
+		if (m_advance != null)
+			return m_advance.hasTech(ta);
+		return ta.hasGenericTech(m_name);
+	}
 }

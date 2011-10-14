@@ -5,11 +5,11 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.triplea.delegate;
@@ -28,52 +28,53 @@ import java.util.Map;
 
 /**
  * Contains all the data to describe a placement and to undo it.
- *
+ * 
  * @author Erik von der Osten
  */
 @SuppressWarnings("serial")
 class UndoablePlacement extends AbstractUndoableMove
 {
-    final Territory m_place_territory;
-    final Territory m_producer_territory;
-    PlayerID m_player;
-
-    public UndoablePlacement(PlayerID player, CompositeChange change, Territory producer_territory, Territory place_territory, Collection<Unit> units)
-    {
-        super(change, units);
-        m_place_territory = place_territory;
-        m_producer_territory = producer_territory;
-        m_player = player;
-    }
-
-    @Override
-    protected final void undoSpecific(IDelegateBridge bridge)
-    {
-        GameData data = bridge.getData();
-    	Map<Territory, Collection<Unit>> produced = DelegateFinder.placeDelegate(data).getProduced();
-    	Collection<Unit> units = produced.get(m_producer_territory);
-        units.removeAll(getUnits());
-        if (units.isEmpty())
-        {
-            produced.remove(m_producer_territory);
-        }
-        DelegateFinder.placeDelegate(data).setProduced(new HashMap<Territory, Collection<Unit>>(produced));
-    }
-
-    @Override
+	final Territory m_place_territory;
+	final Territory m_producer_territory;
+	PlayerID m_player;
+	
+	public UndoablePlacement(PlayerID player, CompositeChange change, Territory producer_territory, Territory place_territory, Collection<Unit> units)
+	{
+		super(change, units);
+		m_place_territory = place_territory;
+		m_producer_territory = producer_territory;
+		m_player = player;
+	}
+	
+	@Override
+	protected final void undoSpecific(IDelegateBridge bridge)
+	{
+		GameData data = bridge.getData();
+		Map<Territory, Collection<Unit>> produced = DelegateFinder.placeDelegate(data).getProduced();
+		Collection<Unit> units = produced.get(m_producer_territory);
+		units.removeAll(getUnits());
+		if (units.isEmpty())
+		{
+			produced.remove(m_producer_territory);
+		}
+		DelegateFinder.placeDelegate(data).setProduced(new HashMap<Territory, Collection<Unit>>(produced));
+	}
+	
+	@Override
 	public final String getMoveLabel()
-    {
-        return m_place_territory.getName();
-    }
-
-    @Override
+	{
+		return m_place_territory.getName();
+	}
+	
+	@Override
 	public final Territory getEnd()
-    {
-        return m_place_territory;
-    }
-
-    @Override
-	protected final PlacementDescription getDescriptionObject() {
-        return new PlacementDescription(m_units, m_place_territory);
-    }
+	{
+		return m_place_territory;
+	}
+	
+	@Override
+	protected final PlacementDescription getDescriptionObject()
+	{
+		return new PlacementDescription(m_units, m_place_territory);
+	}
 }

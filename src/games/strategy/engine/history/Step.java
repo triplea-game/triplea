@@ -16,66 +16,67 @@ import games.strategy.engine.data.PlayerID;
 
 public class Step extends IndexedHistoryNode
 {
-    private PlayerID m_player;
-    private String m_stepName;
-    private String m_delegateName;
-
-    /** Creates a new instance of StepChangedMessage */
-
-    /** Creates a new instance of StepChangedMessage */
-    Step(String stepName, String delegateName, PlayerID player, int changeStartIndex, String displayName)
-    {
-        super(displayName, changeStartIndex, true);
-
-        m_stepName = stepName;
-        m_delegateName = delegateName;
-        m_player = player;
-    }
-
-    public PlayerID getPlayerID()
-    {
-        return m_player;
-    }
-
-    @Override
+	private PlayerID m_player;
+	private String m_stepName;
+	private String m_delegateName;
+	
+	/** Creates a new instance of StepChangedMessage */
+	
+	/** Creates a new instance of StepChangedMessage */
+	Step(String stepName, String delegateName, PlayerID player, int changeStartIndex, String displayName)
+	{
+		super(displayName, changeStartIndex, true);
+		
+		m_stepName = stepName;
+		m_delegateName = delegateName;
+		m_player = player;
+	}
+	
+	public PlayerID getPlayerID()
+	{
+		return m_player;
+	}
+	
+	@Override
 	public SerializationWriter getWriter()
-    {
-        return new StepHistorySerializer(m_stepName, m_delegateName, m_player, super.getTitle());
-    }
-    
-    public String getDelegateName()
-    {
-    	return m_delegateName;
-    }
-    
-    public String getStepName()
-    {
-    	return m_stepName;
-    }
-
+	{
+		return new StepHistorySerializer(m_stepName, m_delegateName, m_player, super.getTitle());
+	}
+	
+	public String getDelegateName()
+	{
+		return m_delegateName;
+	}
+	
+	public String getStepName()
+	{
+		return m_stepName;
+	}
+	
 }
+
 
 class StepHistorySerializer implements SerializationWriter
 {
-
-    private String m_stepName;
-    private String m_delegateName;
-    private PlayerID m_playerID;
-    private String m_displayName;
-
-    public StepHistorySerializer(String stepName, String delegateName, PlayerID playerID, String displayName)
-    {
-        m_stepName = stepName;
-        m_delegateName = delegateName;
-        m_playerID = playerID;
-        m_displayName = displayName;
-    }
-
-    @Override
+	
+	private String m_stepName;
+	private String m_delegateName;
+	private PlayerID m_playerID;
+	private String m_displayName;
+	
+	public StepHistorySerializer(String stepName, String delegateName, PlayerID playerID, String displayName)
+	{
+		m_stepName = stepName;
+		m_delegateName = delegateName;
+		m_playerID = playerID;
+		m_displayName = displayName;
+	}
+	
+	@Override
 	public void write(HistoryWriter writer)
-    {
-        writer.startNextStep(m_stepName, m_delegateName, m_playerID, m_displayName);
-
-    }
-
+	{
+		writer.startNextStep(m_stepName, m_delegateName, m_playerID, m_displayName);
+		
+	}
+	
 }

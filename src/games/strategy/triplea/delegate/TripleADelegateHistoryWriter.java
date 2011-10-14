@@ -5,11 +5,11 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.triplea.delegate;
@@ -19,66 +19,65 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 
 /**
  * Has a subset of the historyWriters functionality.
-*  Delegates should only have access to these functions.
-*  The rest of the history writers functions should only
-*  be used by the GameData
-*
-*  
+ * Delegates should only have access to these functions.
+ * The rest of the history writers functions should only
+ * be used by the GameData
+ * 
+ * 
  */
 
 public class TripleADelegateHistoryWriter implements IDelegateHistoryWriter
 {
-    IDelegateHistoryWriter m_delegateHistoryWriter;
-    GameData m_data;
-
-    public TripleADelegateHistoryWriter(IDelegateHistoryWriter delegateHistoryWriter, GameData data)
-    {
-        m_delegateHistoryWriter = delegateHistoryWriter;
-        m_data = data;
-    }
-
-    public String getEventPrefix()
-    {
-        if (EditDelegate.getEditMode(m_data))
-            return "EDIT: ";
-        return "";
-    }
-
-    @Override
+	IDelegateHistoryWriter m_delegateHistoryWriter;
+	GameData m_data;
+	
+	public TripleADelegateHistoryWriter(IDelegateHistoryWriter delegateHistoryWriter, GameData data)
+	{
+		m_delegateHistoryWriter = delegateHistoryWriter;
+		m_data = data;
+	}
+	
+	public String getEventPrefix()
+	{
+		if (EditDelegate.getEditMode(m_data))
+			return "EDIT: ";
+		return "";
+	}
+	
+	@Override
 	public void startEvent(String eventName)
-    {
-        if (eventName.startsWith("COMMENT: "))
-            m_delegateHistoryWriter.startEvent(eventName);
-        else
-            m_delegateHistoryWriter.startEvent(getEventPrefix()+eventName);
-    }
-
-    @Override
+	{
+		if (eventName.startsWith("COMMENT: "))
+			m_delegateHistoryWriter.startEvent(eventName);
+		else
+			m_delegateHistoryWriter.startEvent(getEventPrefix() + eventName);
+	}
+	
+	@Override
 	public void addChildToEvent(String child)
-    {
-        if (child.startsWith("COMMENT: "))
-            m_delegateHistoryWriter.addChildToEvent(child, null);
-        else
-            m_delegateHistoryWriter.addChildToEvent(getEventPrefix()+child, null);
-    }
-
-    @Override
+	{
+		if (child.startsWith("COMMENT: "))
+			m_delegateHistoryWriter.addChildToEvent(child, null);
+		else
+			m_delegateHistoryWriter.addChildToEvent(getEventPrefix() + child, null);
+	}
+	
+	@Override
 	public void addChildToEvent(String child, Object renderingData)
-    {
-        if (child.startsWith("COMMENT: "))
-            m_delegateHistoryWriter.addChildToEvent(child, renderingData);
-        else
-            m_delegateHistoryWriter.addChildToEvent(getEventPrefix()+child, renderingData);
-    }
-
-    /**
-     * Set the rendering data for the current event.
-     */
-    @Override
+	{
+		if (child.startsWith("COMMENT: "))
+			m_delegateHistoryWriter.addChildToEvent(child, renderingData);
+		else
+			m_delegateHistoryWriter.addChildToEvent(getEventPrefix() + child, renderingData);
+	}
+	
+	/**
+	 * Set the rendering data for the current event.
+	 */
+	@Override
 	public void setRenderingData(Object renderingData)
-    {
-        m_delegateHistoryWriter.setRenderingData(renderingData);
-    }
-
-
+	{
+		m_delegateHistoryWriter.setRenderingData(renderingData);
+	}
+	
 }

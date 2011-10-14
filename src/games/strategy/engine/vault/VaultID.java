@@ -5,11 +5,11 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package games.strategy.engine.vault;
 
@@ -22,58 +22,59 @@ import java.io.Serializable;
  */
 public class VaultID implements Serializable
 {
-    private static long s_currentID;
-   
-    private synchronized static long getNextID()
-    {
-        return s_currentID++;
-    }
-    
-    private final INode m_generatedOn;
-    //this is a unique and monotone increasing id
-    //unique in this vm
-    private final long m_uniqueID = getNextID();
-    
-    VaultID(final INode generatedOn)
-    {        
-        m_generatedOn = generatedOn;
-    }
-    
-    /**
-     * @return Returns the generatedOn.
-     */
-    INode getGeneratedOn()
-    {
-        return m_generatedOn;
-    }
-    /**
-     * @return Returns the id.
-     */
-    long getUniqueID()
-    {
-        return m_uniqueID;
-    }
-    
-    @Override
+	private static long s_currentID;
+	
+	private synchronized static long getNextID()
+	{
+		return s_currentID++;
+	}
+	
+	private final INode m_generatedOn;
+	// this is a unique and monotone increasing id
+	// unique in this vm
+	private final long m_uniqueID = getNextID();
+	
+	VaultID(final INode generatedOn)
+	{
+		m_generatedOn = generatedOn;
+	}
+	
+	/**
+	 * @return Returns the generatedOn.
+	 */
+	INode getGeneratedOn()
+	{
+		return m_generatedOn;
+	}
+	
+	/**
+	 * @return Returns the id.
+	 */
+	long getUniqueID()
+	{
+		return m_uniqueID;
+	}
+	
+	@Override
 	public boolean equals(Object o)
-    {
-        if(o == null || !(o instanceof VaultID))
-            return false;
-        VaultID other = (VaultID) o;
-        
-        return other.m_generatedOn.equals(this.m_generatedOn) &&
-               other.m_uniqueID == this.m_uniqueID;
-    }
-    
-    @Override
+	{
+		if (o == null || !(o instanceof VaultID))
+			return false;
+		VaultID other = (VaultID) o;
+		
+		return other.m_generatedOn.equals(this.m_generatedOn) &&
+					other.m_uniqueID == this.m_uniqueID;
+	}
+	
+	@Override
 	public int hashCode()
-    {
-        return ((int) m_uniqueID ) ^ m_generatedOn.getName().hashCode();
-    }
-    
-    @Override
+	{
+		return ((int) m_uniqueID) ^ m_generatedOn.getName().hashCode();
+	}
+	
+	@Override
 	public String toString()
-    {
-        return "VaultID generated on:" + m_generatedOn + " id:" + m_uniqueID;
-    }
+	{
+		return "VaultID generated on:" + m_generatedOn + " id:" + m_uniqueID;
+	}
 }

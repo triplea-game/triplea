@@ -5,16 +5,15 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package games.strategy.triplea.delegate.dataObjects;
 
 import games.strategy.engine.data.TechnologyFrontier;
-
 
 /**
  * Used to describe a tech roll.
@@ -23,40 +22,40 @@ import games.strategy.engine.data.TechnologyFrontier;
  */
 public class TechRoll
 {
-    private final TechnologyFrontier m_tech;
-    private  int m_rolls;
-    private  int m_newTokens;
-
-    public TechRoll(TechnologyFrontier advance, int rolls)
-    {
-        m_rolls = rolls;
-        m_tech = advance;
-    }
-
-    public TechRoll(TechnologyFrontier advance, int rolls, int newTokens)
-    {
-        m_rolls = rolls;
-        m_tech = advance;
-        m_newTokens = newTokens;
-    }
-
-    public int getRolls()
-    {
-        return m_rolls;
-    }
-
-    public TechnologyFrontier getTech()
-    {
-        return m_tech;
-    }
-
-    public int getNewTokens()
-    {
-        return m_newTokens;
-    }
-
-    public void setNewTokens(int tokens)
-    {
-        this.m_newTokens = tokens;
-    }
+	private final TechnologyFrontier m_tech;
+	private int m_rolls;
+	private int m_newTokens;
+	
+	public TechRoll(TechnologyFrontier advance, int rolls)
+	{
+		m_rolls = rolls;
+		m_tech = advance;
+	}
+	
+	public TechRoll(TechnologyFrontier advance, int rolls, int newTokens)
+	{
+		m_rolls = rolls;
+		m_tech = advance;
+		m_newTokens = newTokens;
+	}
+	
+	public int getRolls()
+	{
+		return m_rolls;
+	}
+	
+	public TechnologyFrontier getTech()
+	{
+		return m_tech;
+	}
+	
+	public int getNewTokens()
+	{
+		return m_newTokens;
+	}
+	
+	public void setNewTokens(int tokens)
+	{
+		this.m_newTokens = tokens;
+	}
 }

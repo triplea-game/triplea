@@ -5,16 +5,16 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * MoveValidatorTest.java
- *
+ * 
  * Created on November 8, 2001, 5:00 PM
  */
 
@@ -30,20 +30,21 @@ import java.util.List;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
 /**
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  * @version 1.0
  */
 public class MoveValidatorTest extends DelegateTest
 {
-		
+	
 	/** Creates new PlaceDelegateTest */
-    public MoveValidatorTest(String name) 
+	public MoveValidatorTest(String name)
 	{
 		super(name);
-    }
-
+	}
+	
 	public static Test suite()
 	{
 		TestSuite suite = new TestSuite();
@@ -51,20 +52,19 @@ public class MoveValidatorTest extends DelegateTest
 		
 		return suite;
 	}
-
+	
 	@Override
 	public void setUp() throws Exception
 	{
 		super.setUp();
 	}
 	
-	
-    public void testHasEnoughMovement()
+	public void testHasEnoughMovement()
 	{
 		
 		List<Unit> units = bomber.create(3, british);
-        TripleAUnit.get(units.get(0)).setAlreadyMoved(2);
-        TripleAUnit.get(units.get(1)).setAlreadyMoved(1);
+		TripleAUnit.get(units.get(0)).setAlreadyMoved(2);
+		TripleAUnit.get(units.get(1)).setAlreadyMoved(1);
 		
 		assertTrue(MoveValidator.hasEnoughMovement(units, 2));
 	}
@@ -94,18 +94,18 @@ public class MoveValidatorTest extends DelegateTest
 		assertTrue(MoveValidator.hasEnoughMovement(units, 6));
 		assertTrue(!MoveValidator.hasEnoughMovement(units, 7));
 		
-        ((TripleAUnit) objs[1]).setAlreadyMoved(1);		
+		((TripleAUnit) objs[1]).setAlreadyMoved(1);
 		assertTrue(!MoveValidator.hasEnoughMovement(units, 6));
 		
-        ((TripleAUnit) objs[1]).setAlreadyMoved(2);
+		((TripleAUnit) objs[1]).setAlreadyMoved(2);
 		assertTrue(!MoveValidator.hasEnoughMovement(units, 5));
-	}	
+	}
 	
 	public void testEnemyUnitsInPath()
 	{
-		//japanese unit in congo
+		// japanese unit in congo
 		Route bad = new Route();
-		//the empty case
+		// the empty case
 		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(bad, british, m_data));
 		
 		bad.add(egypt);
@@ -118,10 +118,10 @@ public class MoveValidatorTest extends DelegateTest
 		good.add(egypt);
 		good.add(kenya);
 		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(good, british, m_data));
-
-		//at end so should still be good
+		
+		// at end so should still be good
 		good.add(congo);
-		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(good, british, m_data));	
+		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(good, british, m_data));
 	}
 	
 	public void testHasNeutralBeforEnd()
@@ -130,7 +130,7 @@ public class MoveValidatorTest extends DelegateTest
 		route.add(egypt);
 		assertTrue(!MoveValidator.hasNeutralBeforeEnd(route));
 		
-		//nuetral
+		// nuetral
 		route.add(westAfrica);
 		assertTrue(!MoveValidator.hasNeutralBeforeEnd(route));
 		
@@ -141,24 +141,24 @@ public class MoveValidatorTest extends DelegateTest
 	public void testHasUnitsThatCantGoOnWater()
 	{
 		Collection<Unit> units = new ArrayList<Unit>();
-		units.addAll( infantry.create(1,british));
-		units.addAll( armour.create(1,british));
-		units.addAll( transport.create(1,british));
-		units.addAll( fighter.create(1,british));
-		assertTrue(! MoveValidator.hasUnitsThatCantGoOnWater(units));
+		units.addAll(infantry.create(1, british));
+		units.addAll(armour.create(1, british));
+		units.addAll(transport.create(1, british));
+		units.addAll(fighter.create(1, british));
+		assertTrue(!MoveValidator.hasUnitsThatCantGoOnWater(units));
 		
-		assertTrue( MoveValidator.hasUnitsThatCantGoOnWater( factory.create(1,british)));
+		assertTrue(MoveValidator.hasUnitsThatCantGoOnWater(factory.create(1, british)));
 	}
-		
+	
 	public void testCarrierCapacity()
 	{
-		Collection<Unit> units = carrier.create(5,british);
+		Collection<Unit> units = carrier.create(5, british);
 		assertEquals(10, MoveValidator.carrierCapacity(units));
 	}
 	
 	public void testCarrierCost()
 	{
-		Collection<Unit> units = fighter.create(5,british);
+		Collection<Unit> units = fighter.create(5, british);
 		assertEquals(5, MoveValidator.carrierCost(units));
 	}
 	
@@ -167,34 +167,32 @@ public class MoveValidatorTest extends DelegateTest
 		
 		Collection<Unit> collection = bomber.create(1, british);
 		
-		assertEquals( MoveValidator.getLeastMovement(collection), 6);
-		
+		assertEquals(MoveValidator.getLeastMovement(collection), 6);
 		
 		Object[] objs = collection.toArray();
-        ((TripleAUnit) objs[0]).setAlreadyMoved(1);
+		((TripleAUnit) objs[0]).setAlreadyMoved(1);
 		
+		assertEquals(MoveValidator.getLeastMovement(collection), 5);
 		
-		assertEquals( MoveValidator.getLeastMovement(collection), 5);
-		
-		collection.addAll(factory.create(2,british));
-		assertEquals( MoveValidator.getLeastMovement(collection), 0);			
+		collection.addAll(factory.create(2, british));
+		assertEquals(MoveValidator.getLeastMovement(collection), 0);
 	}
-		
+	
 	public void testCanLand()
 	{
 		Collection<Unit> units = fighter.create(4, british);
-		//2 carriers in red sea
+		// 2 carriers in red sea
 		assertTrue(MoveValidator.canLand(units, redSea, british, m_data));
-		//britian owns egypt
+		// britian owns egypt
 		assertTrue(MoveValidator.canLand(units, egypt, british, m_data));
-		//only 2 carriers
+		// only 2 carriers
 		Collection<Unit> tooMany = fighter.create(6, british);
 		assertTrue(!MoveValidator.canLand(tooMany, redSea, british, m_data));
 		
-		//nowhere to land
+		// nowhere to land
 		assertTrue(!MoveValidator.canLand(units, japanSeaZone, british, m_data));
-		//nuetral
-		assertTrue(!MoveValidator.canLand(units, westAfrica,  british, m_data));
+		// nuetral
+		assertTrue(!MoveValidator.canLand(units, westAfrica, british, m_data));
 	}
 	
 	public void testCanLandInfantry()
@@ -203,27 +201,27 @@ public class MoveValidatorTest extends DelegateTest
 		{
 			Collection<Unit> units = infantry.create(1, british);
 			MoveValidator.canLand(units, redSea, british, m_data);
-		} catch(IllegalArgumentException e)
+		} catch (IllegalArgumentException e)
 		{
 			return;
 		}
 		fail("No exception thrown");
-
+		
 	}
-
+	
 	public void testCanLandBomber()
-	{		
+	{
 		Collection<Unit> units = bomber.create(1, british);
 		assertTrue(!MoveValidator.canLand(units, redSea, british, m_data));
 	}
-
+	
 	public void testHasSomeLand()
 	{
-		Collection<Unit> units = transport.create(3,british);
-		assertTrue(! MoveValidator.hasSomeLand(units));
+		Collection<Unit> units = transport.create(3, british);
+		assertTrue(!MoveValidator.hasSomeLand(units));
 		
-		units.addAll( infantry.create(2,british));
-		assertTrue( MoveValidator.hasSomeLand(units));
+		units.addAll(infantry.create(2, british));
+		assertTrue(MoveValidator.hasSomeLand(units));
 	}
 	
 }

@@ -22,32 +22,32 @@ import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
 /**
- *
+ * 
  * @author Stephen
  */
 public class DynamixAITests extends TestCase
 {
-    private GameData m_data;
-    private Dynamix_AI m_ai;
-
-    @Override
-    protected void setUp() throws Exception
-    {
-        m_data = LoadGameUtil.loadGame("Great Lakes War", "Great Lakes War v1.4.xml");
-        m_ai = new Dynamix_AI("Superior");
-    }
-
-    @Override
-    protected void tearDown() throws Exception
-    {
-        m_data = null;
-    }
-
-    public void testCost()
-    {
-        UnitType infantry = m_data.getUnitTypeList().getUnitType("infantry");
-        PlayerID superior = m_data.getPlayerList().getPlayerID("Superior");
-
-        assertEquals(3, AIUtils.getCost(infantry, superior, m_data));
-    }
+	private GameData m_data;
+	private Dynamix_AI m_ai;
+	
+	@Override
+	protected void setUp() throws Exception
+	{
+		m_data = LoadGameUtil.loadGame("Great Lakes War", "Great Lakes War v1.4.xml");
+		m_ai = new Dynamix_AI("Superior");
+	}
+	
+	@Override
+	protected void tearDown() throws Exception
+	{
+		m_data = null;
+	}
+	
+	public void testCost()
+	{
+		UnitType infantry = m_data.getUnitTypeList().getUnitType("infantry");
+		PlayerID superior = m_data.getPlayerList().getPlayerID("Superior");
+		
+		assertEquals(3, AIUtils.getCost(infantry, superior, m_data));
+	}
 }

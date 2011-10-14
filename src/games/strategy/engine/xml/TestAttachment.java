@@ -5,85 +5,81 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * TestAttatchment.java
- *
+ * 
  * Created on October 22, 2001, 7:32 PM
  */
 
 package games.strategy.engine.xml;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.*;
 
 /**
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  * @version
  */
-public class TestAttachment implements games.strategy.engine.data.IAttachment {
-
+public class TestAttachment implements games.strategy.engine.data.IAttachment
+{
+	
 	private String m_value;
-
-
-
-  /** Creates new TestAttatchment */
-  public TestAttachment()
-  {
-  }
-
-  @Override
-public Attachable getAttatchedTo()
-  {
-    return null;
-  }
-
-  @Override
-public void setAttatchedTo(Attachable unused)
-  {
-
-  }
-
-  @Override
-public String getName()
-  {
-    return null;
-  }
-
-  @Override
-public void setName(String aString)
-  {
-
-  }
-
-
-
-  public void setValue(String value)
+	
+	/** Creates new TestAttatchment */
+	public TestAttachment()
+	{
+	}
+	
+	@Override
+	public Attachable getAttatchedTo()
+	{
+		return null;
+	}
+	
+	@Override
+	public void setAttatchedTo(Attachable unused)
+	{
+		
+	}
+	
+	@Override
+	public String getName()
+	{
+		return null;
+	}
+	
+	@Override
+	public void setName(String aString)
+	{
+		
+	}
+	
+	public void setValue(String value)
 	{
 		m_value = value;
 	}
-
+	
 	public String getValue()
 	{
 		return m_value;
 	}
-
+	
 	@Override
 	public void setData(GameData m_data)
 	{
 	}
-
-
+	
 	@Override
-	public void validate(GameData data) 
+	public void validate(GameData data)
 	{
 	}
-
+	
 }

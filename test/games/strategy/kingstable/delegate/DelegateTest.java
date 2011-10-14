@@ -5,11 +5,11 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.kingstable.delegate;
@@ -40,76 +40,75 @@ public class DelegateTest extends TestCase
 	protected PlayerID white;
 	
 	protected Territory[][] territories;
-		
+	
 	protected UnitType pawn;
 	protected UnitType king;
 	
-	
-	/** 
-	 * Creates new DelegateTest 
+	/**
+	 * Creates new DelegateTest
 	 */
-    public DelegateTest(String name) 
+	public DelegateTest(String name)
 	{
 		super(name);
-		//System.out.println("constructor");
-    }
-
-
-    public static Test suite()
-    {
-    	//System.out.println("suite");
-      TestSuite suite = new TestSuite();
-      suite.addTestSuite(DelegateTest.class);
-
-      return suite;
-    }
-    
+		// System.out.println("constructor");
+	}
+	
+	public static Test suite()
+	{
+		// System.out.println("suite");
+		TestSuite suite = new TestSuite();
+		suite.addTestSuite(DelegateTest.class);
+		
+		return suite;
+	}
+	
 	@Override
 	public void setUp() throws Exception
 	{
-		//get the xml file
+		// get the xml file
 		URL url = this.getClass().getResource("DelegateTest.xml");
 		
-		InputStream input= url.openStream();
+		InputStream input = url.openStream();
 		m_data = (new GameParser()).parse(input);
-        input.close();
+		input.close();
 		
 		black = m_data.getPlayerList().getPlayerID("Black");
 		white = m_data.getPlayerList().getPlayerID("White");
 		
 		territories = new Territory[m_data.getMap().getXDimension()][m_data.getMap().getYDimension()];
 		
-		for (int x=0; x<m_data.getMap().getXDimension(); x++)
-			for (int y=0; y<m_data.getMap().getYDimension(); y++)
-				territories[x][y] = m_data.getMap().getTerritoryFromCoordinates(x,y);
-				
+		for (int x = 0; x < m_data.getMap().getXDimension(); x++)
+			for (int y = 0; y < m_data.getMap().getYDimension(); y++)
+				territories[x][y] = m_data.getMap().getTerritoryFromCoordinates(x, y);
+		
 		pawn = m_data.getUnitTypeList().getUnitType("pawn");
 		king = m_data.getUnitTypeList().getUnitType("king");
 		
-		
-		//System.out.println("setup");
+		// System.out.println("setup");
 	}
+	
 	/*
 	
 	public void testSample()
 	{
 		System.out.println("samelp");
 	}
-*/
+	*/
 
 	public void assertValid(String string)
 	{
-	    assertNull(string);
+		assertNull(string);
 	}
 	
 	public void assertError(String string)
 	{
-	    assertNotNull(string);
+		assertNotNull(string);
 	}
-    
-    public void testTest() {
-    	assertValid(null);
-    	assertError("Can not do this");
-    }
+	
+	public void testTest()
+	{
+		assertValid(null);
+		assertError("Can not do this");
+	}
 	
 }

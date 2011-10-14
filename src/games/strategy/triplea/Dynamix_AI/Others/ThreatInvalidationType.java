@@ -15,12 +15,12 @@
 package games.strategy.triplea.Dynamix_AI.Others;
 
 /**
- *
+ * 
  * @author Stephen
  */
 public enum ThreatInvalidationType
 {
-    None,
-    Global,
-    AroundHotspot
+	None,
+	Global,
+	AroundHotspot
 }

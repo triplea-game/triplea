@@ -21,61 +21,63 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.xml.LoadGameUtil;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import junit.framework.TestCase;
 
 /**
- *
+ * 
  * @author Stephen
  */
 public class DOddsCalculatorTests extends TestCase
 {
-    private GameData m_data;
-
-    @Override
-    protected void setUp() throws Exception
-    {
-        m_data = LoadGameUtil.loadGame("Great Lakes War", "Great Lakes War v1.4.xml");
-    }
-
-    @Override
-    protected void tearDown() throws Exception
-    {
-        m_data = null;
-    }
-
-    public void testBattleCalculator()
-    {
-        PlayerID superior = m_data.getPlayerList().getPlayerID("Superior");
-        PlayerID huron = m_data.getPlayerList().getPlayerID("Huron");
-
-        Territory cIsland = m_data.getMap().getTerritory("C");
-
-        UnitType infantry = m_data.getUnitTypeList().getUnitType("infantry");
-        UnitType artillery = m_data.getUnitTypeList().getUnitType("artillery");
-        UnitType fighter = m_data.getUnitTypeList().getUnitType("fighter");
-
-        List<Unit> attacking = new ArrayList<Unit>();
-        List<Unit> defending = new ArrayList<Unit>();
-        for (int i = 0; i < 50; i++)
-        {
-            attacking.add(infantry.create(superior));
-            attacking.add(artillery.create(superior));
-            attacking.add(fighter.create(superior));
-        }
-        for (int i = 0; i < 100; i++)
-        {
-            defending.add(infantry.create(huron));
-        }
-        
-        DOddsCalculator.SetGameData(m_data);
-        AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 2500, true);
-
-        System.out.print("Time Taken To Calculate: " + results.getTime() + "\r\n");
-
-        assertEquals(1.0D, results.getAttackerWinPercent());
-        assertEquals(0.0D, results.getAverageDefendingUnitsLeft());
-        assertEquals(0.0D, results.getDefenderWinPercent());
-    }
+	private GameData m_data;
+	
+	@Override
+	protected void setUp() throws Exception
+	{
+		m_data = LoadGameUtil.loadGame("Great Lakes War", "Great Lakes War v1.4.xml");
+	}
+	
+	@Override
+	protected void tearDown() throws Exception
+	{
+		m_data = null;
+	}
+	
+	public void testBattleCalculator()
+	{
+		PlayerID superior = m_data.getPlayerList().getPlayerID("Superior");
+		PlayerID huron = m_data.getPlayerList().getPlayerID("Huron");
+		
+		Territory cIsland = m_data.getMap().getTerritory("C");
+		
+		UnitType infantry = m_data.getUnitTypeList().getUnitType("infantry");
+		UnitType artillery = m_data.getUnitTypeList().getUnitType("artillery");
+		UnitType fighter = m_data.getUnitTypeList().getUnitType("fighter");
+		
+		List<Unit> attacking = new ArrayList<Unit>();
+		List<Unit> defending = new ArrayList<Unit>();
+		for (int i = 0; i < 50; i++)
+		{
+			attacking.add(infantry.create(superior));
+			attacking.add(artillery.create(superior));
+			attacking.add(fighter.create(superior));
+		}
+		for (int i = 0; i < 100; i++)
+		{
+			defending.add(infantry.create(huron));
+		}
+		
+		DOddsCalculator.SetGameData(m_data);
+		AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 2500, true);
+		
+		System.out.print("Time Taken To Calculate: " + results.getTime() + "\r\n");
+		
+		assertEquals(1.0D, results.getAttackerWinPercent());
+		assertEquals(0.0D, results.getAverageDefendingUnitsLeft());
+		assertEquals(0.0D, results.getDefenderWinPercent());
+	}
 }

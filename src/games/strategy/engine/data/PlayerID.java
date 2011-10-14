@@ -5,26 +5,26 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * PlayerID.java
- *
+ * 
  * Created on October 13, 2001, 9:34 AM
  */
 
 package games.strategy.engine.data;
 
-import java.io.*;
+import java.io.Serializable;
 
 /**
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  * @version 1.0
  */
 public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serializable
@@ -35,91 +35,90 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	private ProductionFrontier m_productionFrontier;
 	private RepairFrontier m_repairFrontier;
 	private final TechnologyFrontierList m_technologyFrontiers;
-
+	
 	/** Creates new Player */
-    public PlayerID(String name, boolean optional, GameData data)
+	public PlayerID(String name, boolean optional, GameData data)
 	{
 		super(name, data);
 		m_optional = optional;
 		m_unitsHeld = new UnitCollection(this, getData());
 		m_resources = new ResourceCollection(getData());
 		m_technologyFrontiers = new TechnologyFrontierList(getData());
-    }
-
+	}
+	
 	public boolean getOptional()
 	{
 		return m_optional;
 	}
-
+	
 	@Override
 	public UnitCollection getUnits()
 	{
 		return m_unitsHeld;
 	}
-
+	
 	public ResourceCollection getResources()
 	{
 		return m_resources;
 	}
-
+	
 	public TechnologyFrontierList getTechnologyFrontierList()
 	{
 		return m_technologyFrontiers;
 	}
-
+	
 	public void setProductionFrontier(ProductionFrontier frontier)
 	{
 		m_productionFrontier = frontier;
 	}
-
+	
 	public ProductionFrontier getProductionFrontier()
 	{
 		return m_productionFrontier;
 	}
-
+	
 	public void setRepairFrontier(RepairFrontier frontier)
 	{
 		m_repairFrontier = frontier;
 	}
-
+	
 	public RepairFrontier getRepairFrontier()
 	{
 		return m_repairFrontier;
 	}
-
+	
 	@Override
 	public void notifyChanged()
 	{
 	}
-
+	
 	public boolean isNull()
 	{
 		return false;
 	}
-
+	
 	public static final PlayerID NULL_PLAYERID = new PlayerID("Neutral", true, null)
 	{
-        // compatible with 0.9.0.2 saved games
-        private static final long serialVersionUID = -6596127754502509049L;
+		// compatible with 0.9.0.2 saved games
+		private static final long serialVersionUID = -6596127754502509049L;
+		
 		@Override
 		public boolean isNull()
 		{
 			return true;
 		}
 	};
-
+	
 	@Override
 	public String toString()
 	{
 		return "PlayerID named:" + getName();
 	}
-
-    @Override
+	
+	@Override
 	public String getType()
-    {
-        return UnitHolder.PLAYER;
-    }
-
-
+	{
+		return UnitHolder.PLAYER;
+	}
+	
 }
-

@@ -18,51 +18,52 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
-import games.strategy.triplea.Dynamix_AI.CommandCenter.StrategyCenter;
 import games.strategy.triplea.Dynamix_AI.DMatches;
 import games.strategy.triplea.Dynamix_AI.DUtils;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
+import games.strategy.triplea.Dynamix_AI.CommandCenter.StrategyCenter;
+
 import java.util.Collection;
 import java.util.List;
 
 /**
- *
+ * 
  * @author Stephen
  */
 public class NCM_TargetCalculator
 {
-    public static Territory CalculateNCMTargetForTerritory(GameData data, PlayerID player, Territory ter, Collection<Unit> terUnits, List<NCM_Task> tasks)
-    {
-        int speed = DUtils.GetSlowestMovementUnitInList(terUnits);
-
-        float highestScore = Integer.MIN_VALUE;
-        Territory highestScoringTer = null;
-
-        for(Territory enemyTer : data.getMap().getTerritories())
-        {
-            if(enemyTer.isWater())
-                continue;
-            if(!DMatches.territoryIsOwnedByEnemy(data, player).match(enemyTer))
-                continue;
-            if(!DUtils.CanWeGetFromXToY_ByPassableLand(data, ter, enemyTer))
-                continue;
-
-            float score = DUtils.GetValueOfLandTer(enemyTer, data, player);
-            score -= (DUtils.GetJumpsFromXToY_PassableLand(data, ter, enemyTer) * 3) * GlobalCenter.MapTerCountScale;
-
-            if(StrategyCenter.get(data, player).GetCalculatedStrategyAssignments().get(enemyTer.getOwner()) == StrategyType.Enemy_Offensive)
-                score += 10000000;
-
-            if(enemyTer.getOwner().isNull())
-                score -= 1000000; //We hate moving towards neutrals! (For now, anyhow)
-
-            if (score > highestScore)
-            {
-                highestScore = score;
-                highestScoringTer = enemyTer;
-            }
-        }
-
-        return highestScoringTer;
-    }
+	public static Territory CalculateNCMTargetForTerritory(GameData data, PlayerID player, Territory ter, Collection<Unit> terUnits, List<NCM_Task> tasks)
+	{
+		int speed = DUtils.GetSlowestMovementUnitInList(terUnits);
+		
+		float highestScore = Integer.MIN_VALUE;
+		Territory highestScoringTer = null;
+		
+		for (Territory enemyTer : data.getMap().getTerritories())
+		{
+			if (enemyTer.isWater())
+				continue;
+			if (!DMatches.territoryIsOwnedByEnemy(data, player).match(enemyTer))
+				continue;
+			if (!DUtils.CanWeGetFromXToY_ByPassableLand(data, ter, enemyTer))
+				continue;
+			
+			float score = DUtils.GetValueOfLandTer(enemyTer, data, player);
+			score -= (DUtils.GetJumpsFromXToY_PassableLand(data, ter, enemyTer) * 3) * GlobalCenter.MapTerCountScale;
+			
+			if (StrategyCenter.get(data, player).GetCalculatedStrategyAssignments().get(enemyTer.getOwner()) == StrategyType.Enemy_Offensive)
+				score += 10000000;
+			
+			if (enemyTer.getOwner().isNull())
+				score -= 1000000; // We hate moving towards neutrals! (For now, anyhow)
+				
+			if (score > highestScore)
+			{
+				highestScore = score;
+				highestScoringTer = enemyTer;
+			}
+		}
+		
+		return highestScoringTer;
+	}
 }

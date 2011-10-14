@@ -43,425 +43,421 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class MovePerformer implements Serializable
 {
-
-    private transient MoveDelegate m_moveDelegate;
-    private transient IDelegateBridge m_bridge;
-    private transient PlayerID m_player;
-
-    private AAInMoveUtil m_aaInMoveUtil;
-    private ExecutionStack m_executionStack = new ExecutionStack();
-    private UndoableMove m_currentMove;
-
-
-
-    MovePerformer()
-    {
-
-    }
-
-    private BattleTracker getBattleTracker()
-    {
-        return DelegateFinder.battleDelegate(m_bridge.getData()).getBattleTracker();
-    }
-
-    void initialize(MoveDelegate delegate)
-    {
-        m_moveDelegate = delegate;
-        m_bridge = delegate.getBridge();
-        m_player = m_bridge.getPlayerID();
-
-        if(m_aaInMoveUtil != null)
-            m_aaInMoveUtil.initialize(m_bridge);
-    }
-
-    private ITripleaPlayer getRemotePlayer(PlayerID id)
-    {
-        return (ITripleaPlayer) m_bridge.getRemote(id);
-    }
-
-    private ITripleaPlayer getRemotePlayer()
-    {
-        return getRemotePlayer(m_player);
-    }
-
-    void moveUnits(final Collection<Unit> units, final  Route route, final PlayerID id, final Collection<Unit> transportsToLoad, UndoableMove currentMove)
-    {
-
-        m_currentMove = currentMove;
-
-        populateStack(units, route, id, transportsToLoad);
-
-        m_executionStack.execute(m_bridge);
-    }
-
-    public void resume()
-    {
-        m_executionStack.execute(m_bridge);
-    }
-
-    public void setOriginatingTerritory(Collection<Unit> units, Territory t)
-    {
-    	CompositeChange change = new CompositeChange();
-
-    	for(Unit u:units)
-    	{
-    		change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
-    	}
-
-    	m_bridge.addChange(change);
-    }
-    /**
-     * We assume that the move is valid
-     */
-    void populateStack(final Collection<Unit> units, final  Route route, final PlayerID id, final Collection<Unit> transportsToLoad)
-    {
-
-        IExecutable preAAFire = new IExecutable()
-        {
-
-            @Override
+	
+	private transient MoveDelegate m_moveDelegate;
+	private transient IDelegateBridge m_bridge;
+	private transient PlayerID m_player;
+	
+	private AAInMoveUtil m_aaInMoveUtil;
+	private ExecutionStack m_executionStack = new ExecutionStack();
+	private UndoableMove m_currentMove;
+	
+	MovePerformer()
+	{
+		
+	}
+	
+	private BattleTracker getBattleTracker()
+	{
+		return DelegateFinder.battleDelegate(m_bridge.getData()).getBattleTracker();
+	}
+	
+	void initialize(MoveDelegate delegate)
+	{
+		m_moveDelegate = delegate;
+		m_bridge = delegate.getBridge();
+		m_player = m_bridge.getPlayerID();
+		
+		if (m_aaInMoveUtil != null)
+			m_aaInMoveUtil.initialize(m_bridge);
+	}
+	
+	private ITripleaPlayer getRemotePlayer(PlayerID id)
+	{
+		return (ITripleaPlayer) m_bridge.getRemote(id);
+	}
+	
+	private ITripleaPlayer getRemotePlayer()
+	{
+		return getRemotePlayer(m_player);
+	}
+	
+	void moveUnits(final Collection<Unit> units, final Route route, final PlayerID id, final Collection<Unit> transportsToLoad, UndoableMove currentMove)
+	{
+		
+		m_currentMove = currentMove;
+		
+		populateStack(units, route, id, transportsToLoad);
+		
+		m_executionStack.execute(m_bridge);
+	}
+	
+	public void resume()
+	{
+		m_executionStack.execute(m_bridge);
+	}
+	
+	public void setOriginatingTerritory(Collection<Unit> units, Territory t)
+	{
+		CompositeChange change = new CompositeChange();
+		
+		for (Unit u : units)
+		{
+			change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
+		}
+		
+		m_bridge.addChange(change);
+	}
+	
+	/**
+	 * We assume that the move is valid
+	 */
+	void populateStack(final Collection<Unit> units, final Route route, final PlayerID id, final Collection<Unit> transportsToLoad)
+	{
+		
+		IExecutable preAAFire = new IExecutable()
+		{
+			
+			@Override
 			public void execute(ExecutionStack stack, IDelegateBridge bridge)
-            {
-                //if we are moving out of a battle zone, mark it
-                //this can happen for air units moving out of a battle zone
-                Battle nonBombingBattle = MoveDelegate.getBattleTracker(bridge.getData()).getPendingBattle(route.getStart(), false);
-                Battle bombingBattle = getBattleTracker().getPendingBattle(route.getStart(), true);
-                if (nonBombingBattle != null || bombingBattle != null)
-                {
-                    Iterator<Unit> iter = units.iterator();
-                    while (iter.hasNext())
-                    {
-                        Unit unit = iter.next();
-                        Route routeUnitUsedToMove = m_moveDelegate.getRouteUsedToMoveInto(unit, route.getStart());
-                        if (nonBombingBattle != null)
-                        {
-                            nonBombingBattle.removeAttack(routeUnitUsedToMove, Collections.singleton(unit));
-                        }
-                        if (bombingBattle != null)
-                        {
-                            bombingBattle.removeAttack(routeUnitUsedToMove, Collections.singleton(unit));
-                        }
-                    }
-                }
-
-
-            }
-
-        };
-
-        //hack to allow the execuables to share state
-        @SuppressWarnings("unchecked")
-        final Collection<Unit>[] arrivingUnits = new Collection[1];
-
-        IExecutable fireAA = new IExecutable()
-        {
-
-            @Override
+			{
+				// if we are moving out of a battle zone, mark it
+				// this can happen for air units moving out of a battle zone
+				Battle nonBombingBattle = MoveDelegate.getBattleTracker(bridge.getData()).getPendingBattle(route.getStart(), false);
+				Battle bombingBattle = getBattleTracker().getPendingBattle(route.getStart(), true);
+				if (nonBombingBattle != null || bombingBattle != null)
+				{
+					Iterator<Unit> iter = units.iterator();
+					while (iter.hasNext())
+					{
+						Unit unit = iter.next();
+						Route routeUnitUsedToMove = m_moveDelegate.getRouteUsedToMoveInto(unit, route.getStart());
+						if (nonBombingBattle != null)
+						{
+							nonBombingBattle.removeAttack(routeUnitUsedToMove, Collections.singleton(unit));
+						}
+						if (bombingBattle != null)
+						{
+							bombingBattle.removeAttack(routeUnitUsedToMove, Collections.singleton(unit));
+						}
+					}
+				}
+				
+			}
+			
+		};
+		
+		// hack to allow the execuables to share state
+		@SuppressWarnings("unchecked")
+		final Collection<Unit>[] arrivingUnits = new Collection[1];
+		
+		IExecutable fireAA = new IExecutable()
+		{
+			
+			@Override
 			public void execute(ExecutionStack stack, IDelegateBridge bridge)
-            {
-                Collection<Unit> aaCasualties = fireAA(route, units);
-                arrivingUnits[0]  = Util.difference(units, aaCasualties);
-            }
-
-        };
-
-        IExecutable postAAFire = new IExecutable()
-        {
-            @Override
+			{
+				Collection<Unit> aaCasualties = fireAA(route, units);
+				arrivingUnits[0] = Util.difference(units, aaCasualties);
+			}
+			
+		};
+		
+		IExecutable postAAFire = new IExecutable()
+		{
+			@Override
 			public void execute(ExecutionStack stack, IDelegateBridge bridge)
-            {
-                //if any non enemy territories on route
-                //or if any enemy units on route the
-                //battles on (note water could have enemy but its
-                //not owned)
-                GameData data = bridge.getData();
-                CompositeMatch<Territory> mustFightThrough = new CompositeMatchOr<Territory>();
-                mustFightThrough.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data));
-                mustFightThrough.add(Matches.territoryHasNonSubmergedEnemyUnits(id, data));
-
-                Collection<Unit> arrived = Util.intersection(units, arrivingUnits[0]);
-
-                Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, arrived, transportsToLoad);
-
-                markTransportsMovement(arrived, transporting, route);
-
-                if (route.someMatch(mustFightThrough) && arrivingUnits[0].size() != 0)
-                {
-                    boolean bombing = false;
-                    boolean ignoreBattle = false;
-                    //could it be a bombing raid
-                    //TODO kev will need to change this for escorts
-                    boolean allCanBomb = Match.allMatch(arrived, Matches.UnitIsStrategicBomber);
-
-                    Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
-                    Collection<Unit> enemyTargets = Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert());
-
-                    boolean targetedAttack = false;
-                    //if it's all bombers and there's something to bomb
-                    if (allCanBomb && !enemyTargets.isEmpty())
-                    {
-                        bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
-                        //if bombing and there's something to target- ask what to bomb
-                        if(bombing)
-                        {
-                        	//CompositeMatchOr<Unit> unitsToBeBombed = new CompositeMatchOr<Unit>(Matches.UnitIsFactory, Matches.UnitCanBeDamagedButIsNotFactory);
-                        	//determine which unit to bomb
-                        	Unit target;
-                        	if (enemyTargets.size() == 1)
-                        		target = enemyTargets.iterator().next();
-                        	else
-                        		target = getRemotePlayer().whatShouldBomberBomb(route.getEnd(), enemyTargets);
-                        	if(target == null)
-                        	{
-                        		bombing = false;
-                        		targetedAttack = false;
-                        	}
-                        	else
-                        	{
-                        		targetedAttack = true;
-                                getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_bridge, m_currentMove, Collections.singleton(target));
-                        	}
-                        }
-                    }
-                    //Ignore Trn on Trn forces.
-                    if (isIgnoreTransportInMovement(bridge.getData()))
-                    {
-                    	boolean allOwnedTransports = Match.allMatch(arrived, Matches.UnitIsTransportButNotCombatTransport);
-                    	boolean allEnemyTransports = Match.allMatch(enemyUnits, Matches.UnitIsTransportButNotCombatTransport);
-                    	//If everybody is a transport, don't create a battle
-                    	if(allOwnedTransports && allEnemyTransports)
-                    		ignoreBattle=true;
-                    }
-
-                    if(!ignoreBattle && !MoveDelegate.isNonCombat(m_bridge) && !targetedAttack)
-                    {
-                        getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_bridge, m_currentMove);
-                    }
-                }
-
-                //mark movement
-                Change moveChange = markMovementChange(arrived, route);
-
-                CompositeChange change = new CompositeChange(moveChange);
-                //actually move the units
-                Change remove = null;
-                Change add = null;
-
-                if(route.getStart() != null && route.getEnd() != null)
-                {
-                    ChangeFactory.addUnits(route.getEnd(), arrivingUnits[0]);
-                    remove = ChangeFactory.removeUnits(route.getStart(), units);
-                    add = ChangeFactory.addUnits(route.getEnd(), arrived);
-                    change.add(add,remove);
-                }
-
-                m_bridge.addChange(change);
-
-                m_currentMove.addChange(change);
-
-                m_currentMove.setDescription(MyFormatter.unitsToTextNoOwner(arrived) + " moved from " + route.getStart().getName() + " to "
-                        + route.getEnd().getName());
-
-                m_moveDelegate.updateUndoableMoves(m_currentMove);
-            }
-
-        };
-
-        m_executionStack.push(postAAFire);
-        m_executionStack.push(fireAA);
-        m_executionStack.push(preAAFire);
-        m_executionStack.execute(m_bridge);
-
-
-    }
-
-
-    private Change markMovementChange(Collection<Unit> units, Route route)
-    {
-        CompositeChange change = new CompositeChange();
-
-        int moved = route.getLength();
-
-        Territory routeStart = route.getStart();
+			{
+				// if any non enemy territories on route
+				// or if any enemy units on route the
+				// battles on (note water could have enemy but its
+				// not owned)
+				GameData data = bridge.getData();
+				CompositeMatch<Territory> mustFightThrough = new CompositeMatchOr<Territory>();
+				mustFightThrough.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data));
+				mustFightThrough.add(Matches.territoryHasNonSubmergedEnemyUnits(id, data));
+				
+				Collection<Unit> arrived = Util.intersection(units, arrivingUnits[0]);
+				
+				Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, arrived, transportsToLoad);
+				
+				markTransportsMovement(arrived, transporting, route);
+				
+				if (route.someMatch(mustFightThrough) && arrivingUnits[0].size() != 0)
+				{
+					boolean bombing = false;
+					boolean ignoreBattle = false;
+					// could it be a bombing raid
+					// TODO kev will need to change this for escorts
+					boolean allCanBomb = Match.allMatch(arrived, Matches.UnitIsStrategicBomber);
+					
+					Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
+					Collection<Unit> enemyTargets = Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert());
+					
+					boolean targetedAttack = false;
+					// if it's all bombers and there's something to bomb
+					if (allCanBomb && !enemyTargets.isEmpty())
+					{
+						bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
+						// if bombing and there's something to target- ask what to bomb
+						if (bombing)
+						{
+							// CompositeMatchOr<Unit> unitsToBeBombed = new CompositeMatchOr<Unit>(Matches.UnitIsFactory, Matches.UnitCanBeDamagedButIsNotFactory);
+							// determine which unit to bomb
+							Unit target;
+							if (enemyTargets.size() == 1)
+								target = enemyTargets.iterator().next();
+							else
+								target = getRemotePlayer().whatShouldBomberBomb(route.getEnd(), enemyTargets);
+							if (target == null)
+							{
+								bombing = false;
+								targetedAttack = false;
+							}
+							else
+							{
+								targetedAttack = true;
+								getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_bridge, m_currentMove, Collections.singleton(target));
+							}
+						}
+					}
+					// Ignore Trn on Trn forces.
+					if (isIgnoreTransportInMovement(bridge.getData()))
+					{
+						boolean allOwnedTransports = Match.allMatch(arrived, Matches.UnitIsTransportButNotCombatTransport);
+						boolean allEnemyTransports = Match.allMatch(enemyUnits, Matches.UnitIsTransportButNotCombatTransport);
+						// If everybody is a transport, don't create a battle
+						if (allOwnedTransports && allEnemyTransports)
+							ignoreBattle = true;
+					}
+					
+					if (!ignoreBattle && !MoveDelegate.isNonCombat(m_bridge) && !targetedAttack)
+					{
+						getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_bridge, m_currentMove);
+					}
+				}
+				
+				// mark movement
+				Change moveChange = markMovementChange(arrived, route);
+				
+				CompositeChange change = new CompositeChange(moveChange);
+				// actually move the units
+				Change remove = null;
+				Change add = null;
+				
+				if (route.getStart() != null && route.getEnd() != null)
+				{
+					ChangeFactory.addUnits(route.getEnd(), arrivingUnits[0]);
+					remove = ChangeFactory.removeUnits(route.getStart(), units);
+					add = ChangeFactory.addUnits(route.getEnd(), arrived);
+					change.add(add, remove);
+				}
+				
+				m_bridge.addChange(change);
+				
+				m_currentMove.addChange(change);
+				
+				m_currentMove.setDescription(MyFormatter.unitsToTextNoOwner(arrived) + " moved from " + route.getStart().getName() + " to "
+							+ route.getEnd().getName());
+				
+				m_moveDelegate.updateUndoableMoves(m_currentMove);
+			}
+			
+		};
+		
+		m_executionStack.push(postAAFire);
+		m_executionStack.push(fireAA);
+		m_executionStack.push(preAAFire);
+		m_executionStack.execute(m_bridge);
+		
+	}
+	
+	private Change markMovementChange(Collection<Unit> units, Route route)
+	{
+		CompositeChange change = new CompositeChange();
+		
+		int moved = route.getLength();
+		
+		Territory routeStart = route.getStart();
 		TerritoryAttachment taRouteStart = TerritoryAttachment.get(routeStart);
-        Territory routeEnd = route.getEnd();
+		Territory routeEnd = route.getEnd();
 		TerritoryAttachment taRouteEnd = null;
-
-        if(routeEnd != null)
-            taRouteEnd = TerritoryAttachment.get(routeEnd);
-
-        Iterator<Unit> iter = units.iterator();
-        RelationshipTracker relationshipTracker = m_bridge.getData().getRelationshipTracker();
-        while (iter.hasNext())
-        {
-            TripleAUnit unit = (TripleAUnit) iter.next();
-
-            UnitAttachment ua = UnitAttachment.get(unit.getType());
-            if (ua.isAir())
-            {
-                if (taRouteStart != null && taRouteStart.isAirBase() && relationshipTracker.isAllied(route.getStart().getOwner(), unit.getOwner()))
-            		moved --;
-
-                if (taRouteEnd != null && taRouteEnd.isAirBase() && relationshipTracker.isAllied(route.getEnd().getOwner(), unit.getOwner()))
-            		moved --;
-            }
-
-            change.add(ChangeFactory.unitPropertyChange(unit, moved + unit.getAlreadyMoved(), TripleAUnit.ALREADY_MOVED));
-
-            if(MoveDelegate.isNonCombat(m_bridge))
-            {
-            	change.add(ChangeFactory.unitPropertyChange(unit, false, TripleAUnit.WAS_SCRAMBLED));
-            }
-        }
-
-        //if neutrals were taken over mark land units with 0 movement
-        //if entered a non blitzed conquered territory, mark with 0 movement
-        if (!MoveDelegate.isNonCombat(m_bridge) && ( MoveDelegate.getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route)))
-        {
-            Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
-            iter = land.iterator();
-            while (iter.hasNext())
-            {
-                Unit unit = iter.next();
-                change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
-            }
-        }
-        return change;
-    }
-
-    /**
-     * Marks transports and units involved in unloading with no movement left.
-     */
-    private void markTransportsMovement(Collection<Unit> arrived, Map<Unit, Unit> transporting, Route route)
-    {
-        if (transporting == null)
-            return;
-
-        CompositeMatch<Unit> paratroopNAirTransports = new CompositeMatchOr<Unit>();
-        paratroopNAirTransports.add(Matches.UnitIsAirTransport);
-        paratroopNAirTransports.add(Matches.UnitIsAirTransportable);
-        boolean paratroopsLanding = Match.someMatch(arrived, paratroopNAirTransports) && MoveValidator.allLandUnitsAreBeingParatroopered(arrived, route, m_player);
-
-        Map<Unit, Collection<Unit>> dependentAirTransportableUnits = MoveValidator.getDependents(Match.getMatches(arrived, Matches.UnitCanTransport), m_bridge.getData());
-        if(dependentAirTransportableUnits.isEmpty())
-        	dependentAirTransportableUnits = MovePanel.getDependents();
-
-        //If paratroops moved normally (within their normal movement) remove their dependency to the airTransports
-        //So they can all continue to move normally
-        if(!paratroopsLanding && !dependentAirTransportableUnits.isEmpty())
-        {
-        		Collection<Unit> airTransports = Match.getMatches(arrived, Matches.UnitIsAirTransport);
-        		airTransports.addAll(dependentAirTransportableUnits.keySet());
-        			MovePanel.clearDependents(airTransports);
-        }
-
-        //load the transports
-        if (MoveValidator.isLoad(route) || paratroopsLanding)
-        {
-            //mark transports as having transported
-            Iterator<Unit> units = transporting.keySet().iterator();
-            while (units.hasNext())
-            {
-                Unit load = units.next();
-                Unit transport = transporting.get(load);
-                if(!m_moveDelegate.getTransportTracker().transporting(transport).contains(load))
-                {
-                	Change change = m_moveDelegate.getTransportTracker().loadTransportChange((TripleAUnit) transport, load, m_player);
-                	m_currentMove.addChange(change);
-                	m_currentMove.load(transport);
-                	m_bridge.addChange(change);
-                }
-            }
-
-        	if(transporting.isEmpty())
-        	{
-        		for(Unit airTransport:dependentAirTransportableUnits.keySet())
-        		{
-        			for(Unit unit:dependentAirTransportableUnits.get(airTransport))
-        			{
-        				Change change = m_moveDelegate.getTransportTracker().loadTransportChange((TripleAUnit) airTransport, unit, m_player);
-                        m_currentMove.addChange(change);
-                        m_currentMove.load(airTransport);
-                        m_bridge.addChange(change);
-        			}
-        		}
-        	}
-        }
-
-        if (MoveValidator.isUnload(route) || paratroopsLanding)
-        {
-            Collection<Unit> units = new ArrayList<Unit>();
-            units.addAll(transporting.values());
-            units.addAll(transporting.keySet());
-            // if there are multiple units on a single transport, the transport will be in units list multiple times
-
-            if(transporting.isEmpty())
-            {
-            	units.addAll(dependentAirTransportableUnits.keySet());
-            	for(Unit airTransport:dependentAirTransportableUnits.keySet())
-            	{
-            		units.addAll(dependentAirTransportableUnits.get(airTransport));
-            	}
-        	}
-            Iterator<Unit> iter = units.iterator();
-            //any pending battles in the unloading zone?
-            BattleTracker tracker = getBattleTracker();
-            boolean pendingBattles = tracker.getPendingBattle(route.getStart(), false) != null;
-
-            while (iter.hasNext())
-            {
-            	Unit unit = iter.next();
-            	if(paratroopsLanding && Matches.UnitIsAirTransport.match(unit))
-            		continue;
-
-                //unload the transports
-                Change change =  m_moveDelegate.getTransportTracker().unloadTransportChange((TripleAUnit) unit, m_currentMove.getRoute().getEnd(), m_player, pendingBattles);
-                m_currentMove.addChange(change);
-                m_currentMove.unload(unit);
-                m_bridge.addChange(change);
-
-        		//set noMovement
-            	change = ChangeFactory.markNoMovementChange(Collections.singleton(unit));
-            	m_currentMove.addChange(change);
-            	m_bridge.addChange(change);
-            }
-        }
-    }
-
-    private boolean hasConqueredNonBlitzed(Route route)
-    {
-        BattleTracker tracker = getBattleTracker();
-
-        for (int i = 0; i < route.getLength(); i++)
-        {
-            Territory current = route.at(i);
-            if (tracker.wasConquered(current) && !tracker.wasBlitzed(current))
-                return true;
-        }
-        return false;
-    }
-
-    /**
-     * Fire aa guns. Returns units to remove.
-     */
-    private Collection<Unit> fireAA(Route route, Collection<Unit> units)
-    {
-        if(m_aaInMoveUtil == null)
-        {
-            m_aaInMoveUtil = new AAInMoveUtil();
-        }
-
-        m_aaInMoveUtil.initialize(m_bridge);
-        Collection<Unit> rVal = m_aaInMoveUtil.fireAA(route, units, UnitComparator.getDecreasingMovementComparator(), m_currentMove);
-        m_aaInMoveUtil = null;
-        return rVal;
-    }
-
-    /**
-     * @return
-     */
-    private static boolean isIgnoreTransportInMovement(GameData data)
-    {
-    	return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);
-    }
+		
+		if (routeEnd != null)
+			taRouteEnd = TerritoryAttachment.get(routeEnd);
+		
+		Iterator<Unit> iter = units.iterator();
+		RelationshipTracker relationshipTracker = m_bridge.getData().getRelationshipTracker();
+		while (iter.hasNext())
+		{
+			TripleAUnit unit = (TripleAUnit) iter.next();
+			
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			if (ua.isAir())
+			{
+				if (taRouteStart != null && taRouteStart.isAirBase() && relationshipTracker.isAllied(route.getStart().getOwner(), unit.getOwner()))
+					moved--;
+				
+				if (taRouteEnd != null && taRouteEnd.isAirBase() && relationshipTracker.isAllied(route.getEnd().getOwner(), unit.getOwner()))
+					moved--;
+			}
+			
+			change.add(ChangeFactory.unitPropertyChange(unit, moved + unit.getAlreadyMoved(), TripleAUnit.ALREADY_MOVED));
+			
+			if (MoveDelegate.isNonCombat(m_bridge))
+			{
+				change.add(ChangeFactory.unitPropertyChange(unit, false, TripleAUnit.WAS_SCRAMBLED));
+			}
+		}
+		
+		// if neutrals were taken over mark land units with 0 movement
+		// if entered a non blitzed conquered territory, mark with 0 movement
+		if (!MoveDelegate.isNonCombat(m_bridge) && (MoveDelegate.getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route)))
+		{
+			Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
+			iter = land.iterator();
+			while (iter.hasNext())
+			{
+				Unit unit = iter.next();
+				change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
+			}
+		}
+		return change;
+	}
+	
+	/**
+	 * Marks transports and units involved in unloading with no movement left.
+	 */
+	private void markTransportsMovement(Collection<Unit> arrived, Map<Unit, Unit> transporting, Route route)
+	{
+		if (transporting == null)
+			return;
+		
+		CompositeMatch<Unit> paratroopNAirTransports = new CompositeMatchOr<Unit>();
+		paratroopNAirTransports.add(Matches.UnitIsAirTransport);
+		paratroopNAirTransports.add(Matches.UnitIsAirTransportable);
+		boolean paratroopsLanding = Match.someMatch(arrived, paratroopNAirTransports) && MoveValidator.allLandUnitsAreBeingParatroopered(arrived, route, m_player);
+		
+		Map<Unit, Collection<Unit>> dependentAirTransportableUnits = MoveValidator.getDependents(Match.getMatches(arrived, Matches.UnitCanTransport), m_bridge.getData());
+		if (dependentAirTransportableUnits.isEmpty())
+			dependentAirTransportableUnits = MovePanel.getDependents();
+		
+		// If paratroops moved normally (within their normal movement) remove their dependency to the airTransports
+		// So they can all continue to move normally
+		if (!paratroopsLanding && !dependentAirTransportableUnits.isEmpty())
+		{
+			Collection<Unit> airTransports = Match.getMatches(arrived, Matches.UnitIsAirTransport);
+			airTransports.addAll(dependentAirTransportableUnits.keySet());
+			MovePanel.clearDependents(airTransports);
+		}
+		
+		// load the transports
+		if (MoveValidator.isLoad(route) || paratroopsLanding)
+		{
+			// mark transports as having transported
+			Iterator<Unit> units = transporting.keySet().iterator();
+			while (units.hasNext())
+			{
+				Unit load = units.next();
+				Unit transport = transporting.get(load);
+				if (!m_moveDelegate.getTransportTracker().transporting(transport).contains(load))
+				{
+					Change change = m_moveDelegate.getTransportTracker().loadTransportChange((TripleAUnit) transport, load, m_player);
+					m_currentMove.addChange(change);
+					m_currentMove.load(transport);
+					m_bridge.addChange(change);
+				}
+			}
+			
+			if (transporting.isEmpty())
+			{
+				for (Unit airTransport : dependentAirTransportableUnits.keySet())
+				{
+					for (Unit unit : dependentAirTransportableUnits.get(airTransport))
+					{
+						Change change = m_moveDelegate.getTransportTracker().loadTransportChange((TripleAUnit) airTransport, unit, m_player);
+						m_currentMove.addChange(change);
+						m_currentMove.load(airTransport);
+						m_bridge.addChange(change);
+					}
+				}
+			}
+		}
+		
+		if (MoveValidator.isUnload(route) || paratroopsLanding)
+		{
+			Collection<Unit> units = new ArrayList<Unit>();
+			units.addAll(transporting.values());
+			units.addAll(transporting.keySet());
+			// if there are multiple units on a single transport, the transport will be in units list multiple times
+			
+			if (transporting.isEmpty())
+			{
+				units.addAll(dependentAirTransportableUnits.keySet());
+				for (Unit airTransport : dependentAirTransportableUnits.keySet())
+				{
+					units.addAll(dependentAirTransportableUnits.get(airTransport));
+				}
+			}
+			Iterator<Unit> iter = units.iterator();
+			// any pending battles in the unloading zone?
+			BattleTracker tracker = getBattleTracker();
+			boolean pendingBattles = tracker.getPendingBattle(route.getStart(), false) != null;
+			
+			while (iter.hasNext())
+			{
+				Unit unit = iter.next();
+				if (paratroopsLanding && Matches.UnitIsAirTransport.match(unit))
+					continue;
+				
+				// unload the transports
+				Change change = m_moveDelegate.getTransportTracker().unloadTransportChange((TripleAUnit) unit, m_currentMove.getRoute().getEnd(), m_player, pendingBattles);
+				m_currentMove.addChange(change);
+				m_currentMove.unload(unit);
+				m_bridge.addChange(change);
+				
+				// set noMovement
+				change = ChangeFactory.markNoMovementChange(Collections.singleton(unit));
+				m_currentMove.addChange(change);
+				m_bridge.addChange(change);
+			}
+		}
+	}
+	
+	private boolean hasConqueredNonBlitzed(Route route)
+	{
+		BattleTracker tracker = getBattleTracker();
+		
+		for (int i = 0; i < route.getLength(); i++)
+		{
+			Territory current = route.at(i);
+			if (tracker.wasConquered(current) && !tracker.wasBlitzed(current))
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Fire aa guns. Returns units to remove.
+	 */
+	private Collection<Unit> fireAA(Route route, Collection<Unit> units)
+	{
+		if (m_aaInMoveUtil == null)
+		{
+			m_aaInMoveUtil = new AAInMoveUtil();
+		}
+		
+		m_aaInMoveUtil.initialize(m_bridge);
+		Collection<Unit> rVal = m_aaInMoveUtil.fireAA(route, units, UnitComparator.getDecreasingMovementComparator(), m_currentMove);
+		m_aaInMoveUtil = null;
+		return rVal;
+	}
+	
+	/**
+	 * @return
+	 */
+	private static boolean isIgnoreTransportInMovement(GameData data)
+	{
+		return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);
+	}
 }

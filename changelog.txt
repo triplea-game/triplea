@@ -1,4 +1,6 @@
 Changes for 1.4
+* Source code formatting on entire engine. (veqryn)
+
 * Using cleanup to add @Override to anything that overrides something. (veqryn)
 
 * Correcting problems with frig last patch to do with extended methods no longer overwriting super's methods. (veqryn)

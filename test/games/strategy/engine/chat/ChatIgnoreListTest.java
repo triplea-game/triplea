@@ -5,29 +5,28 @@ import java.util.prefs.Preferences;
 
 import junit.framework.TestCase;
 
-public class ChatIgnoreListTest extends TestCase {
-
+public class ChatIgnoreListTest extends TestCase
+{
 	
 	@Override
 	public void setUp() throws BackingStoreException
 	{
-		//clear this
+		// clear this
 		clearStore();
 	}
-
+	
 	@Override
 	public void tearDown() throws BackingStoreException
 	{
 		clearStore();
 	}
 	
-	private void clearStore() throws BackingStoreException {
+	private void clearStore() throws BackingStoreException
+	{
 		Preferences prefs = ChatIgnoreList.getPrefNode();
 		prefs.clear();
 		prefs.flush();
 	}
-	
-	 
 	
 	public void testLoadStore()
 	{
@@ -37,7 +36,6 @@ public class ChatIgnoreListTest extends TestCase {
 		
 		list.add("test");
 		assertTrue(list.shouldIgnore("test"));
-		
 		
 		list = new ChatIgnoreList();
 		assertTrue(list.shouldIgnore("test"));

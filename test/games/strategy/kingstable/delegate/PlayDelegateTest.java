@@ -5,22 +5,21 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.kingstable.delegate;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.kingstable.ui.display.DummyDisplay;
-
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * Test suite for the King's Table play delegate.
@@ -30,20 +29,19 @@ import games.strategy.kingstable.ui.display.DummyDisplay;
  */
 public class PlayDelegateTest extends DelegateTest
 {
-
+	
 	PlayDelegate m_delegate;
 	TestDelegateBridge m_bridgeWhite;
 	TestDelegateBridge m_bridgeBlack;
 	
-
-	/** 
-	 * Creates new PlayDelegateTest 
+	/**
+	 * Creates new PlayDelegateTest
 	 */
 	public PlayDelegateTest(String name)
 	{
 		super(name);
 	}
-
+	
 	/**
 	 * Create a test suite for the King's Table play delegate.
 	 * 
@@ -53,10 +51,9 @@ public class PlayDelegateTest extends DelegateTest
 	{
 		TestSuite suite = new TestSuite();
 		suite.addTestSuite(PlayDelegateTest.class);
-
+		
 		return suite;
 	}
-
 	
 	/**
 	 * This method will be called before each test method in this class is run.
@@ -73,7 +70,7 @@ public class PlayDelegateTest extends DelegateTest
 		m_bridgeWhite = new TestDelegateBridge(m_data, white, new DummyDisplay());
 		m_bridgeWhite.setStepName("WhiteTurn");
 		
-		//setupTurn(white);
+		// setupTurn(white);
 		setupTurn(black);
 	}
 	
@@ -82,19 +79,19 @@ public class PlayDelegateTest extends DelegateTest
 		m_delegate = new PlayDelegate();
 		m_delegate.initialize("PlayDelegate", "PlayDelegate");
 		
-		if (player==black)
-            m_delegate.start(m_bridgeBlack);
-		else if (player==white)
-                m_delegate.start(m_bridgeWhite);
+		if (player == black)
+			m_delegate.start(m_bridgeBlack);
+		else if (player == white)
+			m_delegate.start(m_bridgeWhite);
 	}
-
+	
 	/**
 	 * A normal, completely legal play.
 	 */
 	public void testNormalPlay()
 	{
-		Territory start = m_data.getMap().getTerritoryFromCoordinates(4,0);
-		Territory end = m_data.getMap().getTerritoryFromCoordinates(4,3);
+		Territory start = m_data.getMap().getTerritoryFromCoordinates(4, 0);
+		Territory end = m_data.getMap().getTerritoryFromCoordinates(4, 3);
 		
 		String results = m_delegate.play(start, end);
 		assertValid(results);
@@ -105,34 +102,32 @@ public class PlayDelegateTest extends DelegateTest
 	 */
 	public void testMoveFromEmptySquare()
 	{
-		Territory start = m_data.getMap().getTerritoryFromCoordinates(2,2);
-		Territory end = m_data.getMap().getTerritoryFromCoordinates(2,3);
-		
-		String results = m_delegate.play(start, end);
-		assertError(results);
-	}
-  
-
-	/**
-	 * A play can't end in a non-empty square.
-	 */
-	public void testMoveToOccupiedSquare()
-	{
-		Territory start = m_data.getMap().getTerritoryFromCoordinates(4,0);
-		Territory end = m_data.getMap().getTerritoryFromCoordinates(5,0);
+		Territory start = m_data.getMap().getTerritoryFromCoordinates(2, 2);
+		Territory end = m_data.getMap().getTerritoryFromCoordinates(2, 3);
 		
 		String results = m_delegate.play(start, end);
 		assertError(results);
 	}
 	
+	/**
+	 * A play can't end in a non-empty square.
+	 */
+	public void testMoveToOccupiedSquare()
+	{
+		Territory start = m_data.getMap().getTerritoryFromCoordinates(4, 0);
+		Territory end = m_data.getMap().getTerritoryFromCoordinates(5, 0);
+		
+		String results = m_delegate.play(start, end);
+		assertError(results);
+	}
 	
 	/**
 	 * A play can't move through an occupied square.
 	 */
 	public void testMoveThroughOccupiedSquare()
 	{
-		Territory start = m_data.getMap().getTerritoryFromCoordinates(5,0);
-		Territory end = m_data.getMap().getTerritoryFromCoordinates(5,2);
+		Territory start = m_data.getMap().getTerritoryFromCoordinates(5, 0);
+		Territory end = m_data.getMap().getTerritoryFromCoordinates(5, 2);
 		
 		String results = m_delegate.play(start, end);
 		assertError(results);
@@ -232,9 +227,5 @@ public class PlayDelegateTest extends DelegateTest
 	
 	
 	*/
-	
-	
-	
-	
-	
+
 }

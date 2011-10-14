@@ -5,16 +5,18 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.engine.framework;
 
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.SerializationTest;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,47 +27,54 @@ import java.net.URL;
 import junit.framework.TestCase;
 
 /**
- * <p>Title: </p>
- * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2002</p>
- * <p>Company: </p>
+ * <p>
+ * Title:
+ * </p>
+ * <p>
+ * Description:
+ * </p>
+ * <p>
+ * Copyright: Copyright (c) 2002
+ * </p>
+ * <p>
+ * Company:
+ * </p>
+ * 
  * @author unascribed
  * @version 1.0
  */
 
 public class GameDataManagerTest extends TestCase
 {
-
-  
-
-  public GameDataManagerTest(String name)
-  {
-    super(name);
-  }
-
-  @Override
-public void setUp() throws Exception
-  {
-    //get the xml file
-    URL url = SerializationTest.class.getResource("Test.xml");
-
-    //get the source  data
-    InputStream input= url.openStream();
-
-     (new GameParser()).parse(input);
-
-  }
-
- public void testLoadStoreKeepsGamUUID() throws IOException
- {
-     GameData data = new GameData();
-     GameDataManager m = new GameDataManager();
-     ByteArrayOutputStream sink = new ByteArrayOutputStream();
-     m.saveGame(sink, data);
-     
-     GameData loaded = m.loadGame(new ByteArrayInputStream(sink.toByteArray())); 
-     assertEquals(loaded.getProperties().get(GameData.GAME_UUID), data.getProperties().get(GameData.GAME_UUID));
-     
- }
-
+	
+	public GameDataManagerTest(String name)
+	{
+		super(name);
+	}
+	
+	@Override
+	public void setUp() throws Exception
+	{
+		// get the xml file
+		URL url = SerializationTest.class.getResource("Test.xml");
+		
+		// get the source data
+		InputStream input = url.openStream();
+		
+		(new GameParser()).parse(input);
+		
+	}
+	
+	public void testLoadStoreKeepsGamUUID() throws IOException
+	{
+		GameData data = new GameData();
+		GameDataManager m = new GameDataManager();
+		ByteArrayOutputStream sink = new ByteArrayOutputStream();
+		m.saveGame(sink, data);
+		
+		GameData loaded = m.loadGame(new ByteArrayInputStream(sink.toByteArray()));
+		assertEquals(loaded.getProperties().get(GameData.GAME_UUID), data.getProperties().get(GameData.GAME_UUID));
+		
+	}
+	
 }

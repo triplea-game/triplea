@@ -5,16 +5,16 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * TestDelegateBridge.java
- *
+ * 
  * Created on November 10, 2001, 7:39 PM
  */
 
@@ -40,171 +40,176 @@ import java.util.Properties;
  * @author Sean Bridges
  * @version 1.0
  * 
- * Not for actual use, suitable for testing. Never returns messages, but can get
- * random and implements changes immediately.
+ *          Not for actual use, suitable for testing. Never returns messages, but can get
+ *          random and implements changes immediately.
  */
 public class TestDelegateBridge implements ITestDelegateBridge
 {
-    private GameData m_data;
-    private PlayerID m_id;
-    private String m_stepName = "no name specified";
-
-    private IChannelSubscribor m_dummyDisplay;
-    private IRandomSource m_randomSource;
-
-    private IDelegateHistoryWriter m_historyWriter;
-    private IRemote m_remote;
-    
-    /** Creates new TestDelegateBridge */
-    public TestDelegateBridge(GameData data, PlayerID id, IDisplay dummyDisplay)
-    {
-        m_data = data;
-        m_id = id;
-        m_dummyDisplay = dummyDisplay;
-        
-        History history = new History(m_data);
-        HistoryWriter historyWriter = new HistoryWriter(history);
-        historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
-        
-        ChannelMessenger channelMessenger = new ChannelMessenger( new UnifiedMessenger( new DummyMessenger()));
-        
-        m_historyWriter = new DelegateHistoryWriter(channelMessenger);
-        
-    }
-    
-    @Override
-	public void setDisplay(ITripleaDisplay display) {
-    	m_dummyDisplay = display;
-    }
-
-    /**
-     * Delegates should not use random data that comes from any other source.
-     */
-    @Override
+	private GameData m_data;
+	private PlayerID m_id;
+	private String m_stepName = "no name specified";
+	
+	private IChannelSubscribor m_dummyDisplay;
+	private IRandomSource m_randomSource;
+	
+	private IDelegateHistoryWriter m_historyWriter;
+	private IRemote m_remote;
+	
+	/** Creates new TestDelegateBridge */
+	public TestDelegateBridge(GameData data, PlayerID id, IDisplay dummyDisplay)
+	{
+		m_data = data;
+		m_id = id;
+		m_dummyDisplay = dummyDisplay;
+		
+		History history = new History(m_data);
+		HistoryWriter historyWriter = new HistoryWriter(history);
+		historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
+		
+		ChannelMessenger channelMessenger = new ChannelMessenger(new UnifiedMessenger(new DummyMessenger()));
+		
+		m_historyWriter = new DelegateHistoryWriter(channelMessenger);
+		
+	}
+	
+	@Override
+	public void setDisplay(ITripleaDisplay display)
+	{
+		m_dummyDisplay = display;
+	}
+	
+	/**
+	 * Delegates should not use random data that comes from any other source.
+	 */
+	@Override
 	public int getRandom(int max, String annotation)
-    {
-        return m_randomSource.getRandom(max, annotation);
-    }
-
-    @Override
+	{
+		return m_randomSource.getRandom(max, annotation);
+	}
+	
+	@Override
 	public int[] getRandom(int max, int count, String annotation)
-    {
-        return m_randomSource.getRandom(max, count, annotation);
-    }
-
-    /**
-     * Changing the player has the effect of commiting the current transaction.
-     * Player is initialized to the player specified in the xml data.
-     */
-    @Override
+	{
+		return m_randomSource.getRandom(max, count, annotation);
+	}
+	
+	/**
+	 * Changing the player has the effect of commiting the current transaction.
+	 * Player is initialized to the player specified in the xml data.
+	 */
+	@Override
 	public void setPlayerID(PlayerID aPlayer)
-    {
-        m_id = aPlayer;
-
-    }
-
-    public boolean inTransaction()
-    {
-        return false;
-    }
-
-    @Override
+	{
+		m_id = aPlayer;
+		
+	}
+	
+	public boolean inTransaction()
+	{
+		return false;
+	}
+	
+	@Override
 	public PlayerID getPlayerID()
-    {
-        return m_id;
-    }
-
-    @Override
+	{
+		return m_id;
+	}
+	
+	@Override
 	public void addChange(Change aChange)
-    {
-        aChange.perform(m_data);
-    }
-
-    @Override
+	{
+		aChange.perform(m_data);
+	}
+	
+	@Override
 	public void setStepName(String name)
-    {
-        m_stepName = name;
-    }
-
-    /**
-     * Returns the current step name
-     */
-    @Override
+	{
+		m_stepName = name;
+	}
+	
+	/**
+	 * Returns the current step name
+	 */
+	@Override
 	public String getStepName()
-    {
-        return m_stepName;
-    }
-
-    @Override
+	{
+		return m_stepName;
+	}
+	
+	@Override
 	public IDelegateHistoryWriter getHistoryWriter()
-    {
-        return m_historyWriter;
-    }
-
-    /*
-     * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
-     */
-    @Override
+	{
+		return m_historyWriter;
+	}
+	
+	/*
+	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
+	 */
+	@Override
 	public IRemote getRemote()
-    {
-
-        return m_remote;
-    }
-
-    /*
-     * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
-     */
-    @Override
+	{
+		
+		return m_remote;
+	}
+	
+	/*
+	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
+	 */
+	@Override
 	public IRemote getRemote(PlayerID id)
-    {
-        return m_remote;
-    }
-
-    /* (non-Javadoc)
-     * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
-     */
-    @Override
+	{
+		return m_remote;
+	}
+	
+	/* (non-Javadoc)
+	 * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
+	 */
+	@Override
 	public IChannelSubscribor getDisplayChannelBroadcaster()
-    {
-    	return m_dummyDisplay;
-    }
-    
-    @Override
+	{
+		return m_dummyDisplay;
+	}
+	
+	@Override
 	public Properties getStepProperties()
-    {
-        return new Properties();
-    }
-
-    @Override
-	public void leaveDelegateExecution() {}
-    
-    @Override
-	public void enterDelegateExecution() {}
-    
-
-    @Override
+	{
+		return new Properties();
+	}
+	
+	@Override
+	public void leaveDelegateExecution()
+	{
+	}
+	
+	@Override
+	public void enterDelegateExecution()
+	{
+	}
+	
+	@Override
 	public void setRandomSource(IRandomSource randomSource)
-    {
-        m_randomSource = randomSource;
-    }
-
-    
-    @Override
+	{
+		m_randomSource = randomSource;
+	}
+	
+	@Override
 	public void setRemote(IRemote remote)
-    {
-        m_remote = remote;
-    }
-
-    @Override
-	public void stopGameSequence() {}
-    
-    /*
-     * (non-Javadoc)
-     * @see games.strategy.engine.delegate.IDelegateBridge#getData()
-     */
-    @Override
-    public GameData getData()
-    {
-        return m_data;
-    }
+	{
+		m_remote = remote;
+	}
+	
+	@Override
+	public void stopGameSequence()
+	{
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see games.strategy.engine.delegate.IDelegateBridge#getData()
+	 */
+	@Override
+	public GameData getData()
+	{
+		return m_data;
+	}
 }

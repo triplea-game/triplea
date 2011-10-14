@@ -5,11 +5,11 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.engine.delegate;
@@ -38,165 +38,162 @@ import java.util.Properties;
  */
 public class DefaultDelegateBridge implements IDelegateBridge
 {
-
-    private final GameData m_data;
-    private final IGame m_game;
-    private final IDelegateHistoryWriter m_historyWriter;
-    private final RandomStats m_randomStats;
-    private final DelegateExecutionManager m_delegateExecutionManager;
-
-    private IRandomSource m_randomSource;
-
-    /** Creates new DefaultDelegateBridge */
-    public DefaultDelegateBridge(GameData data, IGame game,
-            IDelegateHistoryWriter historyWriter, RandomStats randomStats,
-            DelegateExecutionManager delegateExecutionManager)
-    {
-        m_data = data;
-        m_game = game;
-        m_historyWriter = historyWriter;
-        m_randomStats = randomStats;
-        m_delegateExecutionManager = delegateExecutionManager;
-    }
-    
-    @Override
+	
+	private final GameData m_data;
+	private final IGame m_game;
+	private final IDelegateHistoryWriter m_historyWriter;
+	private final RandomStats m_randomStats;
+	private final DelegateExecutionManager m_delegateExecutionManager;
+	
+	private IRandomSource m_randomSource;
+	
+	/** Creates new DefaultDelegateBridge */
+	public DefaultDelegateBridge(GameData data, IGame game,
+				IDelegateHistoryWriter historyWriter, RandomStats randomStats,
+				DelegateExecutionManager delegateExecutionManager)
+	{
+		m_data = data;
+		m_game = game;
+		m_historyWriter = historyWriter;
+		m_randomStats = randomStats;
+		m_delegateExecutionManager = delegateExecutionManager;
+	}
+	
+	@Override
 	public GameData getData()
-    {
-        return m_data;
-    }
-
-    @Override
+	{
+		return m_data;
+	}
+	
+	@Override
 	public PlayerID getPlayerID()
-    {
-        return m_data.getSequence().getStep().getPlayerID();
-    }
-
-    public void setRandomSource(IRandomSource randomSource)
-    {
-        m_randomSource = randomSource;
-    }
-
-    /**
-     * All delegates should use random data that comes from both players so that
-     * neither player cheats.
-     */
-    @Override
+	{
+		return m_data.getSequence().getStep().getPlayerID();
+	}
+	
+	public void setRandomSource(IRandomSource randomSource)
+	{
+		m_randomSource = randomSource;
+	}
+	
+	/**
+	 * All delegates should use random data that comes from both players so that
+	 * neither player cheats.
+	 */
+	@Override
 	public int getRandom(int max, String annotation)
-    {
-        int random = m_randomSource.getRandom(max, annotation);
-        m_randomStats.addRandom(random);
-        return random;
-    }
-
-    /**
-     * Delegates should not use random data that comes from any other source.
-     */
-    @Override
+	{
+		int random = m_randomSource.getRandom(max, annotation);
+		m_randomStats.addRandom(random);
+		return random;
+	}
+	
+	/**
+	 * Delegates should not use random data that comes from any other source.
+	 */
+	@Override
 	public int[] getRandom(int max, int count, String annotation)
-    {
-        int[] rVal = m_randomSource.getRandom(max, count, annotation);
-        m_randomStats.addRandom(rVal);
-        return rVal;
-    }
-
-    @Override
+	{
+		int[] rVal = m_randomSource.getRandom(max, count, annotation);
+		m_randomStats.addRandom(rVal);
+		return rVal;
+	}
+	
+	@Override
 	public void addChange(Change aChange)
-    {
-        if(aChange instanceof CompositeChange) {
-            CompositeChange c = (CompositeChange) aChange;
-            if(c.getChanges().size() == 1) {
-                addChange(c.getChanges().get(0));
-                return;
-            }
-        }
-        if(!aChange.isEmpty())
-            m_game.addChange(aChange);
-    }
-
-
-    /**
-     * Returns the current step name
-     */
-    @Override
+	{
+		if (aChange instanceof CompositeChange)
+		{
+			CompositeChange c = (CompositeChange) aChange;
+			if (c.getChanges().size() == 1)
+			{
+				addChange(c.getChanges().get(0));
+				return;
+			}
+		}
+		if (!aChange.isEmpty())
+			m_game.addChange(aChange);
+	}
+	
+	/**
+	 * Returns the current step name
+	 */
+	@Override
 	public String getStepName()
-    {
-        return m_data.getSequence().getStep().getName();
-    }
-
-
-
-    @Override
+	{
+		return m_data.getSequence().getStep().getName();
+	}
+	
+	@Override
 	public IDelegateHistoryWriter getHistoryWriter()
-    {
-        return m_historyWriter;
-    }
-
-    
-    private Object getOutbound(Object o)
-    {
-        Class<?>[] interfaces = o.getClass().getInterfaces();
-        return m_delegateExecutionManager.createOutboundImplementation(o, interfaces);
-    }
-    
-    /*
-     * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
-     */
-    @Override
+	{
+		return m_historyWriter;
+	}
+	
+	private Object getOutbound(Object o)
+	{
+		Class<?>[] interfaces = o.getClass().getInterfaces();
+		return m_delegateExecutionManager.createOutboundImplementation(o, interfaces);
+	}
+	
+	/*
+	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
+	 */
+	@Override
 	public IRemote getRemote()
-    {
-        return  getRemote(getPlayerID());
-    }
-
-    /*
-     * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
-     */
-    @Override
+	{
+		return getRemote(getPlayerID());
+	}
+	
+	/*
+	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
+	 */
+	@Override
 	public IRemote getRemote(PlayerID id)
-    {
-        try
-        {
-            Object implementor = m_game.getRemoteMessenger().getRemote(
-                    ServerGame.getRemoteName(id, id.getData()));
-            return (IRemote) getOutbound(implementor);
-        }
-        catch(MessengerException me)
-        {
-            throw new GameOverException("Game Over");
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
-     */
-    @Override
+	{
+		try
+		{
+			Object implementor = m_game.getRemoteMessenger().getRemote(
+						ServerGame.getRemoteName(id, id.getData()));
+			return (IRemote) getOutbound(implementor);
+		} catch (MessengerException me)
+		{
+			throw new GameOverException("Game Over");
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
+	 */
+	@Override
 	public IChannelSubscribor getDisplayChannelBroadcaster()
-    {
-        Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(ServerGame.getDisplayChannel(m_game.getData()));
-        return (IChannelSubscribor) getOutbound(implementor);
-    }
-    
-    @Override
+	{
+		Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(ServerGame.getDisplayChannel(m_game.getData()));
+		return (IChannelSubscribor) getOutbound(implementor);
+	}
+	
+	@Override
 	public Properties getStepProperties()
-    {
-        return m_data.getSequence().getStep().getProperties();
-    }
-    
-    @Override
+	{
+		return m_data.getSequence().getStep().getProperties();
+	}
+	
+	@Override
 	public void leaveDelegateExecution()
-    {
-        m_delegateExecutionManager.leaveDelegateExecution();
-    }
-    
-    @Override
+	{
+		m_delegateExecutionManager.leaveDelegateExecution();
+	}
+	
+	@Override
 	public void enterDelegateExecution()
-    {
-        m_delegateExecutionManager.enterDelegateExecution();
-    }
-
-    @Override
+	{
+		m_delegateExecutionManager.enterDelegateExecution();
+	}
+	
+	@Override
 	public void stopGameSequence()
-    {
-        ((ServerGame) m_game).stopGameSequence();
-        
-    }
+	{
+		((ServerGame) m_game).stopGameSequence();
+		
+	}
 }

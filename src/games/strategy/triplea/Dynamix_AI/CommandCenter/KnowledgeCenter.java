@@ -16,38 +16,45 @@ package games.strategy.triplea.Dynamix_AI.CommandCenter;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+
 import java.util.HashMap;
 
 /**
- *
+ * 
  * @author Stephen
  */
 public class KnowledgeCenter
 {
-    private static HashMap<PlayerID, KnowledgeCenter> s_KCInstances = new HashMap<PlayerID, KnowledgeCenter>();
-    public static KnowledgeCenter get(GameData data, PlayerID player)
-    {
-        if(!s_KCInstances.containsKey(player))
-            s_KCInstances.put(player, create(data, player));
-        return s_KCInstances.get(player);
-    }
-    private static KnowledgeCenter create(GameData data, PlayerID player)
-    {
-        return new KnowledgeCenter(data, player);
-    }
-    public static void ClearStaticInstances()
-    {
-        s_KCInstances.clear();
-    }
-    public static void NotifyStartOfRound()
-    {
-        s_KCInstances.clear();
-    }
-    private GameData m_data = null;
-    private PlayerID m_player = null;
-    public KnowledgeCenter(GameData data, PlayerID player)
-    {
-        m_data = data;
-        m_player = player;
-    }
+	private static HashMap<PlayerID, KnowledgeCenter> s_KCInstances = new HashMap<PlayerID, KnowledgeCenter>();
+	
+	public static KnowledgeCenter get(GameData data, PlayerID player)
+	{
+		if (!s_KCInstances.containsKey(player))
+			s_KCInstances.put(player, create(data, player));
+		return s_KCInstances.get(player);
+	}
+	
+	private static KnowledgeCenter create(GameData data, PlayerID player)
+	{
+		return new KnowledgeCenter(data, player);
+	}
+	
+	public static void ClearStaticInstances()
+	{
+		s_KCInstances.clear();
+	}
+	
+	public static void NotifyStartOfRound()
+	{
+		s_KCInstances.clear();
+	}
+	
+	private GameData m_data = null;
+	private PlayerID m_player = null;
+	
+	public KnowledgeCenter(GameData data, PlayerID player)
+	{
+		m_data = data;
+		m_player = player;
+	}
 }

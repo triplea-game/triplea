@@ -5,11 +5,11 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.engine.framework.startup.launcher;
@@ -19,154 +19,149 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.message.*;
-import games.strategy.engine.random.*;
-import games.strategy.net.*;
+import games.strategy.engine.message.DummyMessenger;
+import games.strategy.engine.random.IRandomSource;
+import games.strategy.engine.random.ScriptedRandomSource;
+import games.strategy.net.INode;
+import games.strategy.net.IServerMessenger;
+import games.strategy.net.Messengers;
 
 import java.awt.Component;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 public class LocalLauncher implements ILauncher
 {
-    private static final Logger s_logger = Logger.getLogger(ILauncher.class.getName());
-    
-    private final GameData m_gameData;
-    private IRandomSource m_randomSource;
-    private final Map<String,String> m_playerTypes;
-    private final GameSelectorModel m_gameSelectorModel;
-    private WaitWindow m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
-    
-    public LocalLauncher(GameSelectorModel gameSelectorModel, IRandomSource randomSource, Map<String,String> playerTypes)
-    {
-        m_gameSelectorModel = gameSelectorModel;
-        m_gameData = gameSelectorModel.getGameData();
-        m_randomSource = randomSource;
-        m_playerTypes = playerTypes;
-    }
-    
-    
-    @Override
+	private static final Logger s_logger = Logger.getLogger(ILauncher.class.getName());
+	
+	private final GameData m_gameData;
+	private IRandomSource m_randomSource;
+	private final Map<String, String> m_playerTypes;
+	private final GameSelectorModel m_gameSelectorModel;
+	private WaitWindow m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
+	
+	public LocalLauncher(GameSelectorModel gameSelectorModel, IRandomSource randomSource, Map<String, String> playerTypes)
+	{
+		m_gameSelectorModel = gameSelectorModel;
+		m_gameData = gameSelectorModel.getGameData();
+		m_randomSource = randomSource;
+		m_playerTypes = playerTypes;
+	}
+	
+	@Override
 	public void launch(final Component parent)
-    {
-        if(!SwingUtilities.isEventDispatchThread())
-            throw new IllegalStateException("Wrong thread");
-        
-        Runnable r = new Runnable()
-        {
-        
-            @Override
+	{
+		if (!SwingUtilities.isEventDispatchThread())
+			throw new IllegalStateException("Wrong thread");
+		
+		Runnable r = new Runnable()
+		{
+			
+			@Override
 			public void run()
-            {
-                launchInNewThread(parent);
-            }
-        
-        };
-        Thread t = new Thread(r);
-        
-        
-        
-        t.start();
-        
-        m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(parent));
-        m_gameLoadingWindow.setVisible(true);
-        m_gameLoadingWindow.showWait();
-        
-        JOptionPane.getFrameForComponent(parent).setVisible(false);
-    }
- 
-    
-    private void launchInNewThread(final Component parent)
-    {
-        Runnable runner = new Runnable()
-        {
-            @Override
+			{
+				launchInNewThread(parent);
+			}
+			
+		};
+		Thread t = new Thread(r);
+		
+		t.start();
+		
+		m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(parent));
+		m_gameLoadingWindow.setVisible(true);
+		m_gameLoadingWindow.showWait();
+		
+		JOptionPane.getFrameForComponent(parent).setVisible(false);
+	}
+	
+	private void launchInNewThread(final Component parent)
+	{
+		Runnable runner = new Runnable()
+		{
+			@Override
 			public void run()
-            {
-                
-                Exception exceptionLoadingGame = null;
-                ServerGame game = null;
-                try
-                {
-                    IServerMessenger messenger = new DummyMessenger();
-                   
-                    Messengers messengers = new Messengers(messenger);
-                    
-                   
-                   Set<IGamePlayer> gamePlayers = m_gameData.getGameLoader().createPlayers(m_playerTypes);
-                   game = new ServerGame(m_gameData, gamePlayers, new HashMap<String,INode>(), messengers);
-                    
-    
-                   game.setRandomSource(m_randomSource);
-                    
-                    //for debugging, we can use a scripted random source
-                    if(ScriptedRandomSource.useScriptedRandom())
-                    {
-                        game.setRandomSource(new ScriptedRandomSource());
-                    }
-    
-                    m_gameData.getGameLoader().startGame(game, gamePlayers);
-                }
-                catch(Exception ex)
-                {
-                    ex.printStackTrace();
-                    exceptionLoadingGame = ex;
-                }
-                finally
-                {
-                    m_gameLoadingWindow.doneWait();
-                }
-                
-                try
-                {
-                
-                    if(exceptionLoadingGame == null)
-                    {
-                        s_logger.fine("Game starting");
-                        game.startGame();
-                        s_logger.fine("Game over");
-                    }
-                }
-                finally
-                {
-    
-                    
-                    m_gameSelectorModel.loadDefaultGame(parent);
-                    
-                    SwingUtilities.invokeLater(new Runnable()
-                    {
-                    
-                        @Override
-						public void run()
-                        {
-                            JOptionPane.getFrameForComponent(parent).setVisible(true);
-                        }
-                    
-                    });
-                }
-                
-            }
-        };
-        
-        
-        Thread thread = new Thread(runner, "Triplea start local thread");
-        thread.start();
-        
-        if(SwingUtilities.isEventDispatchThread())
-            throw new IllegalStateException("Wrong thread");
-        try
-        {
-            thread.join();
-        } catch (InterruptedException e)
-        {
-        }
-        s_logger.fine("Thread done!");
-        
-        
-        
-
-    }
-
+			{
+				
+				Exception exceptionLoadingGame = null;
+				ServerGame game = null;
+				try
+				{
+					IServerMessenger messenger = new DummyMessenger();
+					
+					Messengers messengers = new Messengers(messenger);
+					
+					Set<IGamePlayer> gamePlayers = m_gameData.getGameLoader().createPlayers(m_playerTypes);
+					game = new ServerGame(m_gameData, gamePlayers, new HashMap<String, INode>(), messengers);
+					
+					game.setRandomSource(m_randomSource);
+					
+					// for debugging, we can use a scripted random source
+					if (ScriptedRandomSource.useScriptedRandom())
+					{
+						game.setRandomSource(new ScriptedRandomSource());
+					}
+					
+					m_gameData.getGameLoader().startGame(game, gamePlayers);
+				}
+					catch (Exception ex)
+				{
+					ex.printStackTrace();
+					exceptionLoadingGame = ex;
+				}
+					finally
+					{
+						m_gameLoadingWindow.doneWait();
+					}
+					
+					try
+					{
+						
+						if (exceptionLoadingGame == null)
+					{
+						s_logger.fine("Game starting");
+						game.startGame();
+						s_logger.fine("Game over");
+					}
+				}
+					finally
+					{
+						
+						m_gameSelectorModel.loadDefaultGame(parent);
+						
+						SwingUtilities.invokeLater(new Runnable()
+						{
+							
+							@Override
+							public void run()
+						{
+							JOptionPane.getFrameForComponent(parent).setVisible(true);
+						}
+							
+						});
+					}
+					
+				}
+		};
+		
+		Thread thread = new Thread(runner, "Triplea start local thread");
+		thread.start();
+		
+		if (SwingUtilities.isEventDispatchThread())
+			throw new IllegalStateException("Wrong thread");
+		try
+		{
+			thread.join();
+		} catch (InterruptedException e)
+		{
+		}
+		s_logger.fine("Thread done!");
+		
+	}
+	
 }

@@ -5,53 +5,55 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * NamedAttatchable.java
- *
+ * 
  * Created on October 22, 2001, 6:49 PM
  */
 
 package games.strategy.engine.data;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  * @version 1.0
  */
-public class NamedAttachable extends DefaultNamed implements Attachable 
+public class NamedAttachable extends DefaultNamed implements Attachable
 {
-
+	
 	private Map<String, IAttachment> m_attatchments = new HashMap<String, IAttachment>();
 	
 	/** Creates new NamedAttatchable */
-    public NamedAttachable(String name, GameData data) 
+	public NamedAttachable(String name, GameData data)
 	{
 		super(name, data);
-    }
-
+	}
+	
 	@Override
-	public IAttachment getAttachment(String key) 
+	public IAttachment getAttachment(String key)
 	{
 		return m_attatchments.get(key);
 	}
-
-    @Override
-	public Map<String, IAttachment> getAttachments() 
-    {
-        return Collections.unmodifiableMap(m_attatchments);
-    }
-    
+	
 	@Override
-	public void addAttachment(String key, IAttachment value) 
+	public Map<String, IAttachment> getAttachments()
+	{
+		return Collections.unmodifiableMap(m_attatchments);
+	}
+	
+	@Override
+	public void addAttachment(String key, IAttachment value)
 	{
 		m_attatchments.put(key, value);
 	}

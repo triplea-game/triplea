@@ -20,13 +20,13 @@ import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 
 /**
- *
+ * 
  * @author Stephen
  */
 public class Tech
 {
-    public static void tech(Dynamix_AI ai, ITechDelegate techDelegate, GameData data, PlayerID player)
-    {
-        return;
-    }
+	public static void tech(Dynamix_AI ai, ITechDelegate techDelegate, GameData data, PlayerID player)
+	{
+		return;
+	}
 }

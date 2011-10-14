@@ -5,32 +5,42 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * ServerPlayerSelecter.java
- *
+ * 
  * Created on December 14, 2001, 9:06 AM
  */
 
 package games.strategy.engine.framework;
 
 import java.awt.FlowLayout;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
-import javax.swing.*;
-
-
+import javax.swing.AbstractAction;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  */
 public class ServerPlayerSelector extends JFrame
 {
@@ -40,7 +50,7 @@ public class ServerPlayerSelector extends JFrame
 	private JTextField m_nameField;
 	
 	/** Creates a new instance of PlayerSelecter */
-    public ServerPlayerSelector(String[] players) 
+	public ServerPlayerSelector(String[] players)
 	{
 		super("Choose players");
 		
@@ -57,18 +67,18 @@ public class ServerPlayerSelector extends JFrame
 		getContentPane().add(new JLabel("Choose player location."));
 		
 		m_playerChoices = new ArrayList<PlayerChoice>();
-		for(int i = 0; i < players.length; i++)
+		for (int i = 0; i < players.length; i++)
 		{
 			PlayerChoice current = new PlayerChoice(players[i]);
 			m_playerChoices.add(current);
 			getContentPane().add(current);
 		}
-	
+		
 		this.addWindowListener(m_doneOnClose);
 		getContentPane().add(new JButton(m_done));
 		this.pack();
 		
-    }
+	}
 	
 	/**
 	 * Returns a collection of player names that are to be remote.
@@ -79,16 +89,16 @@ public class ServerPlayerSelector extends JFrame
 	{
 		try
 		{
-			synchronized(m_lock)
+			synchronized (m_lock)
 			{
 				this.setVisible(true);
 				m_lock.wait();
 			}
-			if(m_remote == null)
+			if (m_remote == null)
 				return getRemotePlayers();
 			else
 				return m_remote;
-		} catch(InterruptedException ie)
+		} catch (InterruptedException ie)
 		{
 			ie.printStackTrace();
 			return getRemotePlayers();
@@ -107,20 +117,20 @@ public class ServerPlayerSelector extends JFrame
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			if(!isVisible())
+			if (!isVisible())
 				return;
 			
 			m_remote = new ArrayList<String>();
 			Iterator<PlayerChoice> iter = m_playerChoices.iterator();
-			while(iter.hasNext())
+			while (iter.hasNext())
 			{
 				PlayerChoice choice = iter.next();
-				if(choice.isRemote())
+				if (choice.isRemote())
 				{
 					m_remote.add(choice.getPlayerName());
 				}
 			}
-			synchronized(m_lock)
+			synchronized (m_lock)
 			{
 				m_lock.notifyAll();
 			}
@@ -132,18 +142,19 @@ public class ServerPlayerSelector extends JFrame
 	private WindowListener m_doneOnClose = new WindowAdapter()
 	{
 		@Override
-		public void windowClosing(WindowEvent e) 
+		public void windowClosing(WindowEvent e)
 		{
 			m_done.actionPerformed(null);
 		}
-	};	
+	};
 }
+
 
 class PlayerChoice extends JPanel
 {
 	private static final String REMOTE = "Remote";
 	private static final String LOCAL = "Local";
-	private static final String[] s_choices = {LOCAL, REMOTE};
+	private static final String[] s_choices = { LOCAL, REMOTE };
 	
 	private String m_name;
 	private JComboBox m_choice;

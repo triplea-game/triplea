@@ -18,45 +18,52 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Dynamix_AI.Group.PurchaseGroup;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- *
+ * 
  * @author Stephen
  */
 public class FactoryCenter
 {
-    private static HashMap<PlayerID, FactoryCenter> s_FCInstances = new HashMap<PlayerID, FactoryCenter>();
-    public static FactoryCenter get(GameData data, PlayerID player)
-    {
-        if(!s_FCInstances.containsKey(player))
-            s_FCInstances.put(player, create(data, player));
-        return s_FCInstances.get(player);
-    }
-    private static FactoryCenter create(GameData data, PlayerID player)
-    {
-        return new FactoryCenter(data, player);
-    }
-    public static void ClearStaticInstances()
-    {
-        s_FCInstances.clear();
-    }
-    public static void NotifyStartOfRound()
-    {
-        s_FCInstances.clear();
-    }
-
-    private GameData m_data = null;
-    private PlayerID m_player = null;
-    public FactoryCenter(GameData data, PlayerID player)
-    {
-        m_data = data;
-        m_player = player;
-    }
-    public List<Territory> ChosenFactoryTerritories = new ArrayList<Territory>();
-    public List<Territory> ChosenAAPlaceTerritories = new ArrayList<Territory>();
-    public HashMap<Territory, PurchaseGroup> TurnTerritoryPurchaseGroups = new HashMap<Territory, PurchaseGroup>();
-    public List<PurchaseGroup> FactoryPurchaseGroups = new ArrayList<PurchaseGroup>();
+	private static HashMap<PlayerID, FactoryCenter> s_FCInstances = new HashMap<PlayerID, FactoryCenter>();
+	
+	public static FactoryCenter get(GameData data, PlayerID player)
+	{
+		if (!s_FCInstances.containsKey(player))
+			s_FCInstances.put(player, create(data, player));
+		return s_FCInstances.get(player);
+	}
+	
+	private static FactoryCenter create(GameData data, PlayerID player)
+	{
+		return new FactoryCenter(data, player);
+	}
+	
+	public static void ClearStaticInstances()
+	{
+		s_FCInstances.clear();
+	}
+	
+	public static void NotifyStartOfRound()
+	{
+		s_FCInstances.clear();
+	}
+	
+	private GameData m_data = null;
+	private PlayerID m_player = null;
+	
+	public FactoryCenter(GameData data, PlayerID player)
+	{
+		m_data = data;
+		m_player = player;
+	}
+	
+	public List<Territory> ChosenFactoryTerritories = new ArrayList<Territory>();
+	public List<Territory> ChosenAAPlaceTerritories = new ArrayList<Territory>();
+	public HashMap<Territory, PurchaseGroup> TurnTerritoryPurchaseGroups = new HashMap<Territory, PurchaseGroup>();
+	public List<PurchaseGroup> FactoryPurchaseGroups = new ArrayList<PurchaseGroup>();
 }

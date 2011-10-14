@@ -7,54 +7,53 @@ import javax.swing.SwingUtilities;
 
 public class BackgroundTaskRunner
 {
-    
-    public static void runInBackground(Component parent, String waitMessage, final Runnable r)
-    {
-        if(!SwingUtilities.isEventDispatchThread())
-            throw new IllegalStateException("Wrong thread");
-        
-        final WaitDialog window = new WaitDialog(parent, waitMessage);
-
-        final AtomicBoolean doneWait = new AtomicBoolean(false);
-        
-        
-        Thread t = new Thread(new Runnable()
-        {
-        
-            @Override
+	
+	public static void runInBackground(Component parent, String waitMessage, final Runnable r)
+	{
+		if (!SwingUtilities.isEventDispatchThread())
+			throw new IllegalStateException("Wrong thread");
+		
+		final WaitDialog window = new WaitDialog(parent, waitMessage);
+		
+		final AtomicBoolean doneWait = new AtomicBoolean(false);
+		
+		Thread t = new Thread(new Runnable()
+		{
+			
+			@Override
 			public void run()
-            {
-                try
-                {
-                    r.run();
-                }
-                finally
-                {
-                    SwingUtilities.invokeLater(new Runnable()
-                    {
-                    
-                        @Override
-						public void run()
-                        {
-                            doneWait.set(true);
-                            window.setVisible(false);
-                            window.dispose();
-                        }
-                    
-                    });
-                    
-                }
-            }
-        
-        });
-        t.start();
-        
-        if(!doneWait.get())
-        {
-            window.pack();
-            window.setLocationRelativeTo(parent);
-            window.setVisible(true);
-        }
-    }
-    
+			{
+				try
+				{
+					r.run();
+				}
+					finally
+					{
+						SwingUtilities.invokeLater(new Runnable()
+						{
+							
+							@Override
+							public void run()
+						{
+							doneWait.set(true);
+							window.setVisible(false);
+							window.dispose();
+						}
+							
+						});
+						
+					}
+				}
+			
+		});
+		t.start();
+		
+		if (!doneWait.get())
+		{
+			window.pack();
+			window.setLocationRelativeTo(parent);
+			window.setVisible(true);
+		}
+	}
+	
 }

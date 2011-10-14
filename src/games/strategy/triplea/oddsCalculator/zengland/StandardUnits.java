@@ -5,23 +5,24 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.triplea.oddsCalculator.zengland;
 
-public class StandardUnits {
-
+public class StandardUnits
+{
+	
 	public static int AACost = 5;
 	public static int AAAttack = 0;
 	public static int AADefend = 1;
 	public static int AAMove = 1;
 	public static String AAName = "AAGun";
-
+	
 	public static int FtrCost = 12;
 	public static int FtrAttack = 3;
 	public static int FtrDefend = 4;

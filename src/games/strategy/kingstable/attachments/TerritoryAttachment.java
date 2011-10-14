@@ -5,11 +5,11 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.kingstable.attachments;
@@ -24,31 +24,31 @@ import games.strategy.engine.data.DefaultAttachment;
  */
 public class TerritoryAttachment extends DefaultAttachment
 {
-    private boolean m_isKingsSquare = false;
-    private boolean m_isKingsExit = false;
-    
-    /** Creates new TerritoryAttatchment */
-    public TerritoryAttachment()
-    {
-    }
-    
-    public void setKingsSquare(String value)
-    {
-        m_isKingsSquare = getBool(value);
-    }
-
-    public boolean isKingsSquare()
-    {
-        return m_isKingsSquare;
-    }
-
-    public void setKingsExit(String value)
-    {
-        m_isKingsExit = getBool(value);
-    }
-    
-    public boolean isKingsExit()
-    {
-        return m_isKingsExit;
-    }
+	private boolean m_isKingsSquare = false;
+	private boolean m_isKingsExit = false;
+	
+	/** Creates new TerritoryAttatchment */
+	public TerritoryAttachment()
+	{
+	}
+	
+	public void setKingsSquare(String value)
+	{
+		m_isKingsSquare = getBool(value);
+	}
+	
+	public boolean isKingsSquare()
+	{
+		return m_isKingsSquare;
+	}
+	
+	public void setKingsExit(String value)
+	{
+		m_isKingsExit = getBool(value);
+	}
+	
+	public boolean isKingsExit()
+	{
+		return m_isKingsExit;
+	}
 }

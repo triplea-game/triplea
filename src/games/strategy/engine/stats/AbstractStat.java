@@ -5,49 +5,50 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package games.strategy.engine.stats;
 
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 
-import java.text.*;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Iterator;
 
 /**
  * Returns an intelligent formatter, and returns value for alliances
  * by summing our value for all players in the alliance.
- *
- *
+ * 
+ * 
  * @author Sean Bridges
  */
 public abstract class AbstractStat implements IStat
 {
-
-    protected static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##0.##");
-
-    @Override
+	
+	protected static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##0.##");
+	
+	@Override
 	public double getValue(String alliance, GameData data)
-    {
-        Iterator iter = data.getAllianceTracker().getPlayersInAlliance(alliance).iterator();
-        double rVal = 0;
-        while (iter.hasNext())
-        {
-            PlayerID player = (PlayerID) iter.next();
-            rVal += getValue(player, data);
-        }
-        return rVal;
-    }
-
-    @Override
+	{
+		Iterator iter = data.getAllianceTracker().getPlayersInAlliance(alliance).iterator();
+		double rVal = 0;
+		while (iter.hasNext())
+		{
+			PlayerID player = (PlayerID) iter.next();
+			rVal += getValue(player, data);
+		}
+		return rVal;
+	}
+	
+	@Override
 	public NumberFormat getFormatter()
-    {
-        return DECIMAL_FORMAT;            
-    }
-
+	{
+		return DECIMAL_FORMAT;
+	}
+	
 }

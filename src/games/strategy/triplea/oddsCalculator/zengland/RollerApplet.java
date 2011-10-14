@@ -5,26 +5,42 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.triplea.oddsCalculator.zengland;
+
 import java.applet.Applet;
+import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.Checkbox;
+import java.awt.Choice;
+import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.ItemSelectable;
+import java.awt.Label;
+import java.awt.Panel;
+import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.math.BigDecimal;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-import java.awt.*;
 
 import javax.swing.BoxLayout;
-import java.awt.event.*;
 
-public class RollerApplet extends Applet implements Runnable, ItemListener, KeyListener, ActionListener {
-
+public class RollerApplet extends Applet implements Runnable, ItemListener, KeyListener, ActionListener
+{
+	
 	/**
 	 * 
 	 */
@@ -45,7 +61,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 	private Thread battleThread = null;
 	private OCBattle b = null;
 	private int battles = 0;
-	private float controlPercent =0.00f;
+	private float controlPercent = 0.00f;
 	private int controleds = 0;
 	private float airWinPercent = 0.00f;
 	private int airWins = 0;
@@ -79,43 +95,48 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 	private Vector<UnitGroupPanel> ugpsToProc = new Vector<UnitGroupPanel>();
 	private Vector<ItemSelectable> selectables = new Vector<ItemSelectable>();
 	private boolean clearButton;
-
+	
 	@Override
-	public void init() {
-		setSize(850,550);
-		
+	public void init()
+	{
+		setSize(850, 550);
 		
 		setBackground(Color.WHITE);
-		setLayout(new BorderLayout(10,10));
-
+		setLayout(new BorderLayout(10, 10));
+		
 		unitsPanel = createUnitsPanel(currentGameType);
 		add(unitsPanel, BorderLayout.WEST);
 		
 		optionsPanel = createOptionsPanel();
 		add(optionsPanel, BorderLayout.EAST);
-
+		
 	}
 	
 	@Override
-	public void run() {
+	public void run()
+	{
 		Thread myThread = Thread.currentThread();
-		while(battleThread == myThread) {
+		while (battleThread == myThread)
+		{
 			// do thread work
-			if(!reset)
+			if (!reset)
 			{
 				resetBattle();
-				if(b.getNumberOfUnits(b.getAttackers())!=0 && b.getNumberOfUnits(b.getDefenders())!=0)
+				if (b.getNumberOfUnits(b.getAttackers()) != 0 && b.getNumberOfUnits(b.getDefenders()) != 0)
 				{
 					b.rollBattle();
 					updateBattleStats();
 				}
 				else
 				{
-					try {
-					Thread.sleep(100);
-					} catch (InterruptedException ie) {}
+					try
+					{
+						Thread.sleep(100);
+					} catch (InterruptedException ie)
+					{
+					}
 				}
-				if(clearButton||buttonsToProc.size()>0||ugpsToProc.size()>0||selectables.size()>0)
+				if (clearButton || buttonsToProc.size() > 0 || ugpsToProc.size() > 0 || selectables.size() > 0)
 				{
 					setReset(true);
 				}
@@ -128,17 +149,18 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 				setReset(false);
 			}
 		}
-
+		
 	}
 	
-	private void processActions() {
-		//buttonsToProc
-		//ugpsToProc
+	private void processActions()
+	{
+		// buttonsToProc
+		// ugpsToProc
 		int bSize = buttonsToProc.size();
 		int ugpsSize = ugpsToProc.size();
-		if(bSize!=0&&ugpsSize!=0)
+		if (bSize != 0 && ugpsSize != 0)
 		{
-			for(int i=bSize-1;i>=0;i--)
+			for (int i = bSize - 1; i >= 0; i--)
 			{
 				Button b = buttonsToProc.elementAt(i);
 				UnitGroupPanel ugp = ugpsToProc.elementAt(i);
@@ -146,29 +168,29 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 				String bName = b.getName();
 				int bValue = Integer.valueOf(b.getLabel()).intValue();
 				
-				if(bName.startsWith("att"))
+				if (bName.startsWith("att"))
 				{
-					if(bValue==0)
+					if (bValue == 0)
 					{
 						ugp.getAttUnitGroup().setNumUnits(bValue);
 						ugp.setRemAtt(bValue);
 					}
 					else
 					{
-						ugp.getAttUnitGroup().setNumUnits(ugp.getAttUnitGroup().getNumUnits()+bValue);
+						ugp.getAttUnitGroup().setNumUnits(ugp.getAttUnitGroup().getNumUnits() + bValue);
 					}
 					ugp.totalAttackers.setText(String.valueOf(ugp.getAttUnitGroup().getNumUnits()));
 				}
-				else if(bName.startsWith("def"))
+				else if (bName.startsWith("def"))
 				{
-					if(bValue==0)
+					if (bValue == 0)
 					{
 						ugp.getDefUnitGroup().setNumUnits(bValue);
 						ugp.setRemDef(bValue);
 					}
 					else
 					{
-						ugp.getDefUnitGroup().setNumUnits(ugp.getDefUnitGroup().getNumUnits()+bValue);
+						ugp.getDefUnitGroup().setNumUnits(ugp.getDefUnitGroup().getNumUnits() + bValue);
 					}
 					ugp.totalDefenders.setText(String.valueOf(ugp.getDefUnitGroup().getNumUnits()));
 				}
@@ -177,20 +199,20 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 			}
 		}
 		
-		//selectables
+		// selectables
 		int selSize = selectables.size();
-		for(int i=selSize-1;i>=0;i--)
+		for (int i = selSize - 1; i >= 0; i--)
 		{
 			ItemSelectable item = selectables.elementAt(i);
 			
-			if(item instanceof Choice)
+			if (item instanceof Choice)
 			{
-				Choice c = (Choice)item;
+				Choice c = (Choice) item;
 				String cName = c.getName();
 				String sel = c.getSelectedItem();
-				if(cName.equals("gameChoice"))
+				if (cName.equals("gameChoice"))
 				{
-					if(!sel.equals(currentGameType))
+					if (!sel.equals(currentGameType))
 					{
 						currentGameType = sel;
 						remove(unitsPanel);
@@ -201,30 +223,30 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 						resetBattle();
 					}
 				}
-				else if(cName.equals("battleType"))
+				else if (cName.equals("battleType"))
 				{
 					resetStats();
 				}
-	
+				
 			}
-			else if(item instanceof Checkbox)
+			else if (item instanceof Checkbox)
 			{
-				Checkbox c = (Checkbox)item;
+				Checkbox c = (Checkbox) item;
 				String sel = c.getLabel();
 				boolean selected = c.getState();
-				if(sel.equals(sSubsLabel))
+				if (sel.equals(sSubsLabel))
 				{
 					setSuperSubs(selected);
 				}
-				else if(sel.equals(hBLabel))
+				else if (sel.equals(hBLabel))
 				{
 					setHeavyBombers(selected);
 				}
-				else if(sel.equals(cBLabel))
+				else if (sel.equals(cBLabel))
 				{
 					setCombinedBombardment(selected);
 				}
-				else if(sel.equals(jetPLabel))
+				else if (sel.equals(jetPLabel))
 				{
 					setJetPower(selected);
 				}
@@ -232,11 +254,11 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 			}
 			selectables.removeElementAt(i);
 		}
-		//clearButton
-		if(clearButton)
+		// clearButton
+		if (clearButton)
 		{
 			int size = unitGroupPanels.size();
-			for(int i=0;i<size;i++)
+			for (int i = 0; i < size; i++)
 			{
 				Panel p = unitGroupPanels.elementAt(i);
 				UnitGroupPanel ugp = (UnitGroupPanel) p.getComponent(0);
@@ -252,35 +274,36 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		}
 		
 	}
-
-	private void updateBattleStats() {
+	
+	private void updateBattleStats()
+	{
 		battles++;
-		if(b.getResultStatus() == OCBattle.CLEARED)
+		if (b.getResultStatus() == OCBattle.CLEARED)
 		{
 			cleareds++;
 		}
-		else if(b.getResultStatus() == OCBattle.TAKEN)
+		else if (b.getResultStatus() == OCBattle.TAKEN)
 		{
 			controleds++;
 		}
-		else if(b.getResultStatus() == OCBattle.DEFENDED)
+		else if (b.getResultStatus() == OCBattle.DEFENDED)
 		{
 			losses++;
 		}
-		else if(b.getResultStatus() == OCBattle.INDECISIVE)
+		else if (b.getResultStatus() == OCBattle.INDECISIVE)
 		{
 			indecisives++;
 		}
-		else if(b.getResultStatus() == OCBattle.CLEAREDAIR)
+		else if (b.getResultStatus() == OCBattle.CLEAREDAIR)
 		{
 			airWins++;
 		}
 		
-		controlPercent = ((float)controleds/(float)battles)*100;
-		airWinPercent = ((float)airWins/(float)battles)*100;
-		clearedPercent = ((float)cleareds/(float)battles)*100;
-		indecisivePercent = ((float)indecisives/(float)battles)*100;
-		lossPercent = ((float)losses/(float)battles)*100;
+		controlPercent = ((float) controleds / (float) battles) * 100;
+		airWinPercent = ((float) airWins / (float) battles) * 100;
+		clearedPercent = ((float) cleareds / (float) battles) * 100;
+		indecisivePercent = ((float) indecisives / (float) battles) * 100;
+		lossPercent = ((float) losses / (float) battles) * 100;
 		
 		controlPercentLabel.setText(formattedPercent(controlPercent));
 		airWinPercentLabel.setText(formattedPercent(airWinPercent));
@@ -289,91 +312,93 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		lossPercentLabel.setText(formattedPercent(lossPercent));
 		battlesLabel.setText(String.valueOf(battles));
 		
-		
 		Vector atts = b.getAttackers();
 		int attSize = atts.size();
-		for(int i=0;i<attSize;i++)
+		for (int i = 0; i < attSize; i++)
 		{
-			UnitGroup curG = (UnitGroup)atts.elementAt(i);
+			UnitGroup curG = (UnitGroup) atts.elementAt(i);
 			String name = curG.getUnit().getName();
 			Integer totAtt = totRemAtt.get(name);
 			totRemAtt.remove(name);
 			int newTot = 0;
-			newTot = totAtt.intValue()+curG.getNumUnits();
+			newTot = totAtt.intValue() + curG.getNumUnits();
 			totRemAtt.put(name, new Integer(newTot));
 		}
-
+		
 		int size = unitGroupPanels.size();
-		for(int j=0;j<size;j++)
+		for (int j = 0; j < size; j++)
 		{
 			Panel p = unitGroupPanels.elementAt(j);
 			UnitGroupPanel ugp = (UnitGroupPanel) p.getComponent(0);
 			int avgTot = 0;
-			if(battles>0)
-				avgTot = Math.round((float)totRemAtt.get(ugp.getAttUnitGroup().getUnit().getName()).intValue()/(float)battles);
-			if(lossPercent<50)
+			if (battles > 0)
+				avgTot = Math.round((float) totRemAtt.get(ugp.getAttUnitGroup().getUnit().getName()).intValue() / (float) battles);
+			if (lossPercent < 50)
 				ugp.setRemAtt(avgTot);
 			else
 				ugp.setRemAtt(0);
 		}
 		
-		
 		Vector defs = b.getDefenders();
 		int defSize = defs.size();
-		for(int i=0;i<defSize;i++)
+		for (int i = 0; i < defSize; i++)
 		{
-			UnitGroup curG = (UnitGroup)defs.elementAt(i);
+			UnitGroup curG = (UnitGroup) defs.elementAt(i);
 			String name = curG.getUnit().getName();
 			Integer totDef = totRemDef.get(name);
 			totRemDef.remove(name);
 			int newTot = 0;
-			newTot = totDef.intValue()+curG.getNumUnits();
+			newTot = totDef.intValue() + curG.getNumUnits();
 			totRemDef.put(name, new Integer(newTot));
 		}
 		
 		int defPSize = unitGroupPanels.size();
-		for(int j=0;j<defPSize;j++)
+		for (int j = 0; j < defPSize; j++)
 		{
 			Panel p = unitGroupPanels.elementAt(j);
 			UnitGroupPanel ugp = (UnitGroupPanel) p.getComponent(0);
 			int avgTot = 0;
-			if(battles>0)
-				avgTot = Math.round((float)totRemDef.get(ugp.getDefUnitGroup().getUnit().getName()).intValue()/(float)battles);
-			if(lossPercent>50)
+			if (battles > 0)
+				avgTot = Math.round((float) totRemDef.get(ugp.getDefUnitGroup().getUnit().getName()).intValue() / (float) battles);
+			if (lossPercent > 50)
 				ugp.setRemDef(avgTot);
 			else
 				ugp.setRemDef(0);
 		}
 		
-		
 	}
-
+	
 	@Override
-	public void start() {
-		if(battleThread == null) {
+	public void start()
+	{
+		if (battleThread == null)
+		{
 			battleThread = new Thread(this, "Battle");
 			battleThread.start();
 		}
 	}
 	
 	@Override
-	public void stop() {
+	public void stop()
+	{
 		reset = true;
 	}
 	
-	public Panel createUnitGroupPanel(OCUnit u) {
+	public Panel createUnitGroupPanel(OCUnit u)
+	{
 		Panel p = new Panel();
 		p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
 		p.add(new UnitGroupPanel(u));
 		return p;
 	}
 	
-	public Panel createUnitsPanel(String gameType) {
+	public Panel createUnitsPanel(String gameType)
+	{
 		Panel unitsPanel = new Panel();
 		unitsPanel.setLayout(new BoxLayout(unitsPanel, BoxLayout.Y_AXIS));
 		Panel topPanel = new Panel();
-		topPanel.setLayout(new GridLayout(1,4));
-		//topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+		topPanel.setLayout(new GridLayout(1, 4));
+		// topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 		topPanel.add(new Label("Attackers"));
 		Button clearButton = new Button("Clear");
 		clearButton.setName("Clear");
@@ -386,7 +411,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		unitGroupPanels = new Vector<Panel>();
 		totRemAtt = new Hashtable<String, Integer>();
 		totRemDef = new Hashtable<String, Integer>();
-		if(gameType.equals(RollerApplet.WW2V1))
+		if (gameType.equals(RollerApplet.WW2V1))
 		{
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newInf()));
 			totRemAtt.put(StandardUnits.InfName, new Integer(0));
@@ -413,7 +438,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 			totRemAtt.put(StandardUnits.BBName, new Integer(0));
 			totRemDef.put(StandardUnits.BBName, new Integer(0));
 		}
-		else if(gameType.equals(RollerApplet.WW2V2))
+		else if (gameType.equals(RollerApplet.WW2V2))
 		{
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newInf()));
 			totRemAtt.put(StandardUnits.InfName, new Integer(0));
@@ -447,7 +472,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 			totRemDef.put(StandardUnits.DesName, new Integer(0));
 		}
 		int size = unitGroupPanels.size();
-		for(int i=0;i<size;i++)
+		for (int i = 0; i < size; i++)
 		{
 			unitsPanel.add(unitGroupPanels.elementAt(i));
 		}
@@ -455,14 +480,15 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		return unitsPanel;
 	}
 	
-	public Panel createOptionsPanel() {
+	public Panel createOptionsPanel()
+	{
 		Panel optionsPanel = new Panel();
 		optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
-		//optionsPanel.setLayout(new GridLayout(4,1));
+		// optionsPanel.setLayout(new GridLayout(4,1));
 		
 		Panel gamePanel = new Panel();
-		gamePanel.setLayout(new GridLayout(2,1));
-		//gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
+		gamePanel.setLayout(new GridLayout(2, 1));
+		// gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
 		Label gameLabel = new Label("Game type");
 		gamePanel.add(gameLabel);
 		
@@ -472,9 +498,9 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		gameChoice.addItemListener(this);
 		gameChoice.setName("gameChoice");
 		gamePanel.add(gameChoice);
-
+		
 		Panel techPanel = new Panel();
-		techPanel.setLayout(new GridLayout(6,1));
+		techPanel.setLayout(new GridLayout(6, 1));
 		techPanel.add(new Label("Techs"));
 		Checkbox sSubs = new Checkbox(sSubsLabel);
 		sSubs.addItemListener(this);
@@ -490,8 +516,8 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		techPanel.add(jetP);
 		
 		Panel battleInfoPanel = new Panel();
-		battleInfoPanel.setLayout(new GridLayout(7,1));
-				//new BoxLayout(battleInfoPanel, BoxLayout.Y_AXIS));
+		battleInfoPanel.setLayout(new GridLayout(7, 1));
+		// new BoxLayout(battleInfoPanel, BoxLayout.Y_AXIS));
 		battleInfoPanel.add(new Label("Battle options"));
 		battleType = new Choice();
 		battleType.add(RollerApplet.landBattle);
@@ -507,7 +533,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		battleInfoPanel.add(hasAA);
 		oolCheckbox = new Checkbox("Use Custom OOL");
 		oolCheckbox.addItemListener(this);
-		battleInfoPanel.add(oolCheckbox);	
+		battleInfoPanel.add(oolCheckbox);
 		rollRounds = new Checkbox("Roll rounds");
 		rollRounds.addItemListener(this);
 		battleInfoPanel.add(rollRounds);
@@ -516,7 +542,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		battleInfoPanel.add(rounds);
 		
 		Panel resultsPanel = new Panel();
-		resultsPanel.setLayout(new GridLayout(6,2));
+		resultsPanel.setLayout(new GridLayout(6, 2));
 		Label controlLabel = new Label("Control");
 		resultsPanel.add(controlLabel);
 		controlPercentLabel = new Label(formattedPercent(controlPercent));
@@ -542,111 +568,121 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		battlesLabel = new Label(String.valueOf(battles));
 		resultsPanel.add(battlesLabel);
 		
-		
 		optionsPanel.add(gamePanel);
 		optionsPanel.add(techPanel);
 		optionsPanel.add(battleInfoPanel);
 		optionsPanel.add(resultsPanel);
-
+		
 		return optionsPanel;
 	}
-
+	
 	@Override
-	public void itemStateChanged(ItemEvent e) {
+	public void itemStateChanged(ItemEvent e)
+	{
 		ItemSelectable item = e.getItemSelectable();
 		selectables.add(item);
 		setReset(true);
-		try {Thread.sleep(100);} catch (InterruptedException ex) {}
-
+		try
+		{
+			Thread.sleep(100);
+		} catch (InterruptedException ex)
+		{
+		}
+		
 	}
 	
-	private void setJetPower(boolean state) {
+	private void setJetPower(boolean state)
+	{
 		int size = unitGroupPanels.size();
 		int change = 1;
-		if(state)
+		if (state)
 			change = 1;
 		else
 			change = -1;
-		for(int i=0;i<size;i++)
+		for (int i = 0; i < size; i++)
 		{
 			Panel p = unitGroupPanels.elementAt(i);
-			UnitGroupPanel ugp = (UnitGroupPanel)p.getComponent(0);
+			UnitGroupPanel ugp = (UnitGroupPanel) p.getComponent(0);
 			UnitGroup ug = ugp.getAttUnitGroup();
 			OCUnit cur = ug.getUnit();
-			if(cur.getName().equals(StandardUnits.FtrName))
+			if (cur.getName().equals(StandardUnits.FtrName))
 			{
-				cur.setDefendValue(cur.getDefendValue()+change);
+				cur.setDefendValue(cur.getDefendValue() + change);
 			}
 		}
 		
 	}
-
-	private void setCombinedBombardment(boolean state) {
+	
+	private void setCombinedBombardment(boolean state)
+	{
 		int size = unitGroupPanels.size();
-		for(int i=0;i<size;i++)
+		for (int i = 0; i < size; i++)
 		{
 			Panel p = unitGroupPanels.elementAt(i);
-			UnitGroupPanel ugp = (UnitGroupPanel)p.getComponent(0);
+			UnitGroupPanel ugp = (UnitGroupPanel) p.getComponent(0);
 			UnitGroup ug = ugp.getAttUnitGroup();
 			OCUnit cur = ug.getUnit();
-			if(cur.getName().equals(StandardUnits.DesName))
+			if (cur.getName().equals(StandardUnits.DesName))
 			{
 				cur.setSupportShot(state);
 			}
 		}
 	}
-
-	private void setHeavyBombers(boolean state) {
+	
+	private void setHeavyBombers(boolean state)
+	{
 		int size = unitGroupPanels.size();
-		for(int i=0;i<size;i++)
+		for (int i = 0; i < size; i++)
 		{
 			Panel p = unitGroupPanels.elementAt(i);
-			UnitGroupPanel ugp = (UnitGroupPanel)p.getComponent(0);
+			UnitGroupPanel ugp = (UnitGroupPanel) p.getComponent(0);
 			UnitGroup ug = ugp.getAttUnitGroup();
 			OCUnit cur = ug.getUnit();
-			if(cur.getName().equals(StandardUnits.BmbName))
+			if (cur.getName().equals(StandardUnits.BmbName))
 			{
-				if(state)
+				if (state)
 				{
-					if(currentGameType.equals(WW2V2))
+					if (currentGameType.equals(WW2V2))
 						cur.setMaxRolls(2);
 					else
 						cur.setMaxHits(3);
 				}
 				else
 				{
-					if(currentGameType.equals(WW2V2))
+					if (currentGameType.equals(WW2V2))
 						cur.setMaxRolls(1);
 					else
-						cur.setMaxHits(1);					
+						cur.setMaxHits(1);
 				}
 			}
 		}
 		
 	}
-
-	private void setSuperSubs(boolean state) {
+	
+	private void setSuperSubs(boolean state)
+	{
 		int size = unitGroupPanels.size();
 		int change = 1;
-		if(state)
+		if (state)
 			change = 1;
 		else
 			change = -1;
-		for(int i=0;i<size;i++)
+		for (int i = 0; i < size; i++)
 		{
 			Panel p = unitGroupPanels.elementAt(i);
-			UnitGroupPanel ugp = (UnitGroupPanel)p.getComponent(0);
+			UnitGroupPanel ugp = (UnitGroupPanel) p.getComponent(0);
 			UnitGroup ug = ugp.getAttUnitGroup();
 			OCUnit cur = ug.getUnit();
-			if(cur.getName().equals(StandardUnits.SubName))
+			if (cur.getName().equals(StandardUnits.SubName))
 			{
-				cur.setAttackValue(cur.getAttackValue()+change);
+				cur.setAttackValue(cur.getAttackValue() + change);
 			}
 		}
 		
 	}
-
-	public void resetStats() {
+	
+	public void resetStats()
+	{
 		reset = true;
 		battles = 0;
 		controleds = 0;
@@ -668,7 +704,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		battlesLabel.setText(String.valueOf(battles));
 		
 		Enumeration<String> atts = totRemAtt.keys();
-		while(atts.hasMoreElements())
+		while (atts.hasMoreElements())
 		{
 			String name = atts.nextElement();
 			totRemAtt.remove(name);
@@ -676,7 +712,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		}
 		
 		Enumeration<String> defs = totRemDef.keys();
-		while(defs.hasMoreElements())
+		while (defs.hasMoreElements())
 		{
 			String name = defs.nextElement();
 			totRemDef.remove(name);
@@ -685,7 +721,8 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		
 	}
 	
-	public void resetBattle() {
+	public void resetBattle()
+	{
 		reset = true;
 		Vector<UnitGroup> attackers = null;
 		Vector<UnitGroup> defenders = null;
@@ -693,122 +730,136 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		defenders = processDefUnitGroups();
 		int roundCount = 0;
 		String roundsText = rounds.getText();
-		try {
+		try
+		{
 			roundCount = Integer.parseInt(roundsText);
 		} catch (NumberFormatException nfe)
 		{
 			roundCount = 0;
 		}
-		if(!rollRounds.getState())
+		if (!rollRounds.getState())
 			roundCount = 0;
 		boolean landB = true;
-		if(battleType.getSelectedItem().equals(RollerApplet.landBattle))
+		if (battleType.getSelectedItem().equals(RollerApplet.landBattle))
 			landB = true;
 		else
 			landB = false;
 		boolean rollAASep = false;
-		if(currentGameType.equals(RollerApplet.WW2V2))
+		if (currentGameType.equals(RollerApplet.WW2V2))
 			rollAASep = true;
 		resetOOL();
 		b = new OCBattle(attackers, defenders, roundCount, conL.getState(), hasAA.getState(), landB, rollAASep, false, ool);
 		reset = false;
 	}
 	
-	private void resetOOL() {
+	private void resetOOL()
+	{
 		ool = null;
 	}
-
-	private Vector<UnitGroup> processDefUnitGroups() {
+	
+	private Vector<UnitGroup> processDefUnitGroups()
+	{
 		Vector<UnitGroup> defenders = new Vector<UnitGroup>();
 		int size = unitGroupPanels.size();
-		for(int i=0;i<size;i++)
+		for (int i = 0; i < size; i++)
 		{
 			Panel p = unitGroupPanels.elementAt(i);
-			UnitGroupPanel ugp = (UnitGroupPanel)p.getComponent(0);
+			UnitGroupPanel ugp = (UnitGroupPanel) p.getComponent(0);
 			UnitGroup ug = ugp.getDefUnitGroup();
 			defenders.addElement((UnitGroup) ug.clone());
 		}
 		return defenders;
 	}
-
-	private Vector<UnitGroup> processAttUnitGroups() {
+	
+	private Vector<UnitGroup> processAttUnitGroups()
+	{
 		Vector<UnitGroup> attackers = new Vector<UnitGroup>();
 		int size = unitGroupPanels.size();
-		for(int i=0;i<size;i++)
+		for (int i = 0; i < size; i++)
 		{
 			Panel p = unitGroupPanels.elementAt(i);
-			UnitGroupPanel ugp = (UnitGroupPanel)p.getComponent(0);
+			UnitGroupPanel ugp = (UnitGroupPanel) p.getComponent(0);
 			UnitGroup ug = ugp.getAttUnitGroup();
 			attackers.addElement((UnitGroup) ug.clone());
 		}
 		return attackers;
 	}
-
-	public String formattedPercent(float per) {
+	
+	public String formattedPercent(float per)
+	{
 		BigDecimal bd = new BigDecimal(per);
 		String res = bd.toString();
 		int endSpace = 0;
-		if(res.indexOf(".")+3>=res.length()||res.indexOf(".") == -1)
+		if (res.indexOf(".") + 3 >= res.length() || res.indexOf(".") == -1)
 		{
 			endSpace = res.length();
 		}
 		else
-			endSpace = res.indexOf(".")+3;
+			endSpace = res.indexOf(".") + 3;
 		res = res.substring(0, endSpace);
-		if(res.indexOf(".")==-1)
+		if (res.indexOf(".") == -1)
 			res += ".00";
-		res+="%";
+		res += "%";
 		return res;
 	}
-
+	
 	@Override
-	public void keyPressed(KeyEvent e) {
+	public void keyPressed(KeyEvent e)
+	{
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
-	public void keyReleased(KeyEvent e) {
+	public void keyReleased(KeyEvent e)
+	{
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
-	public void keyTyped(KeyEvent e) {
+	public void keyTyped(KeyEvent e)
+	{
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e)
+	{
 		Object o = e.getSource();
-		if(o instanceof Button)
+		if (o instanceof Button)
 		{
-			if(((Button)o).getName().equals("Clear"))
+			if (((Button) o).getName().equals("Clear"))
 			{
 				clearButton = true;
 				setReset(true);
-				try {Thread.sleep(100);} catch (InterruptedException ex) {}
+				try
+				{
+					Thread.sleep(100);
+				} catch (InterruptedException ex)
+				{
+				}
 			}
 		}
 		
 	}
-
-	public boolean isReset() {
+	
+	public boolean isReset()
+	{
 		return reset;
 	}
-
-	public void setReset(boolean reset) {
+	
+	public void setReset(boolean reset)
+	{
 		this.reset = reset;
 	}
-
-	public void processUGPButton(UnitGroupPanel panel, Button button) {
+	
+	public void processUGPButton(UnitGroupPanel panel, Button button)
+	{
 		buttonsToProc.add(button);
 		ugpsToProc.add(panel);
 		
 	}
-
 	
-
-
 }

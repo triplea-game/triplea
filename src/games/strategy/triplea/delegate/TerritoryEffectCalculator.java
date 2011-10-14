@@ -18,44 +18,47 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TerritoryEffectAttachment;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Placeholder for all calculations to do with TerritoryEffects
+ * 
  * @author Edwin van der Wal
  * @version 1.0
  */
-public class TerritoryEffectCalculator {
+public class TerritoryEffectCalculator
+{
 	
-    public static Collection<TerritoryEffect> getEffects(Territory location) {
-    	TerritoryAttachment ta = TerritoryAttachment.get(location);
-    	if(ta != null)
-    		return TerritoryAttachment.get(location).getTerritoryEffect();
-    	else
-    		return new ArrayList<TerritoryEffect>();
-    }
-    
-	public static int getTerritoryCombatBonus(UnitType type, Territory location, boolean defending) {
+	public static Collection<TerritoryEffect> getEffects(Territory location)
+	{
+		TerritoryAttachment ta = TerritoryAttachment.get(location);
+		if (ta != null)
+			return TerritoryAttachment.get(location).getTerritoryEffect();
+		else
+			return new ArrayList<TerritoryEffect>();
+	}
+	
+	public static int getTerritoryCombatBonus(UnitType type, Territory location, boolean defending)
+	{
 		if (location == null || type == null)
 			return 0;
 		int combatBonus = 0;
 		Iterator<TerritoryEffect> effectsIter = getEffects(location).iterator();
-		while(effectsIter.hasNext()) {
+		while (effectsIter.hasNext())
+		{
 			combatBonus += TerritoryEffectAttachment.get(effectsIter.next()).getCombatEffect(type, defending);
 			
 		}
 		
 		return combatBonus;
 	}
-	
 	
 }

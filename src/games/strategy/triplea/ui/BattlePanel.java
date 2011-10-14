@@ -5,16 +5,16 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * BattlePanel.java
- *
+ * 
  * Created on December 4, 2001, 7:00 PM
  */
 
@@ -26,11 +26,17 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.net.GUID;
+import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
+import games.strategy.ui.Util;
+import games.strategy.ui.Util.Task;
+import games.strategy.util.EventThreadJOptionPane;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -60,13 +66,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import games.strategy.triplea.TripleAPlayer;
-import games.strategy.ui.Util;
-import games.strategy.ui.Util.Task;
-import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.gamePlayer.IPlayerBridge;
-
 /**
  * 
  * UI for fighting battles.
@@ -77,698 +76,708 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 @SuppressWarnings("serial")
 public class BattlePanel extends ActionPanel
 {
-
-    private JLabel m_actionLabel = new JLabel();
-    private FightBattleDetails m_fightBattleMessage;
-
-    private volatile BattleDisplay m_battleDisplay;
-    //if we are showing a battle, then this will be set to the currently
-    //displayed battle.  This will only be set after the display 
-    //is shown on the screen
-    private volatile GUID m_currentBattleDisplayed;
-    
-    //there is a bug in linux jdk1.5.0_6 where frames are not
-    //being garbage collected
-    //reuse one frame
-    private final JFrame m_battleFrame;
-
-    /** Creates new BattlePanel */
-    public BattlePanel(GameData data, MapPanel map)
-    {
-        super(data, map);
-        m_battleFrame = new JFrame();
-        m_battleFrame.setIconImage(GameRunner.getGameIcon(m_battleFrame ));
-        getMap().getUIContext().addShutdownWindow(m_battleFrame);
-        
-        m_battleFrame.addWindowListener(new WindowListener()
-        {
-        
-            @Override
+	
+	private JLabel m_actionLabel = new JLabel();
+	private FightBattleDetails m_fightBattleMessage;
+	
+	private volatile BattleDisplay m_battleDisplay;
+	// if we are showing a battle, then this will be set to the currently
+	// displayed battle. This will only be set after the display
+	// is shown on the screen
+	private volatile GUID m_currentBattleDisplayed;
+	
+	// there is a bug in linux jdk1.5.0_6 where frames are not
+	// being garbage collected
+	// reuse one frame
+	private final JFrame m_battleFrame;
+	
+	/** Creates new BattlePanel */
+	public BattlePanel(GameData data, MapPanel map)
+	{
+		super(data, map);
+		m_battleFrame = new JFrame();
+		m_battleFrame.setIconImage(GameRunner.getGameIcon(m_battleFrame));
+		getMap().getUIContext().addShutdownWindow(m_battleFrame);
+		
+		m_battleFrame.addWindowListener(new WindowListener()
+		{
+			
+			@Override
 			public void windowActivated(WindowEvent e)
-            {
-                SwingUtilities.invokeLater(new Runnable()
-                {
-                    @Override
+			{
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					@Override
 					public void run()
-                    {
-                        if(m_battleDisplay != null)
-                            m_battleDisplay.takeFocus();
-                    }
-                
-                });
-                
-                
-            }
-
-            @Override
+					{
+						if (m_battleDisplay != null)
+							m_battleDisplay.takeFocus();
+					}
+					
+				});
+				
+			}
+			
+			@Override
 			public void windowClosed(WindowEvent e)
-            {}
-
-            @Override
+			{
+			}
+			
+			@Override
 			public void windowClosing(WindowEvent e)
-            {}
-
-            @Override
+			{
+			}
+			
+			@Override
 			public void windowDeactivated(WindowEvent e)
-            {}
-
-            @Override
+			{
+			}
+			
+			@Override
 			public void windowDeiconified(WindowEvent e)
-            {}
-
-            @Override
+			{
+			}
+			
+			@Override
 			public void windowIconified(WindowEvent e)
-            {}
-
-            @Override
+			{
+			}
+			
+			@Override
 			public void windowOpened(WindowEvent e)
-            {}
-        
-        });
-
-    }
-
-    public void display(final PlayerID id,final Collection<Territory> battles, final Collection<Territory> bombing)
-    {
-        super.display(id);
-        
-        SwingUtilities.invokeLater(new Runnable()
-        {
-        
-            @Override
+			{
+			}
+			
+		});
+		
+	}
+	
+	public void display(final PlayerID id, final Collection<Territory> battles, final Collection<Territory> bombing)
+	{
+		super.display(id);
+		
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			
+			@Override
 			public void run()
-            {
-                removeAll();
-                m_actionLabel.setText(id.getName() + " battle");
-                
-                setLayout(new BorderLayout());
-                JPanel panel = new JPanel();
-                panel.setLayout(new GridLayout(0, 1));
-                panel.add(m_actionLabel);
-                Iterator<Territory> iter = battles.iterator();
-                while (iter.hasNext())
-                {
-                    addBattleActions(panel, iter, false);
-                }
-
-                iter = bombing.iterator();
-                while (iter.hasNext())
-                {
-                    addBattleActions(panel, iter, true);
-                }
-                add(panel, BorderLayout.NORTH);
-                SwingUtilities.invokeLater(REFRESH);
-
-        
-            }
-
-            private void addBattleActions(JPanel panel, Iterator<Territory> iter, boolean bomb)
-            {
-                Territory next = iter.next();
-                JPanel innerPanel = new JPanel();
-                innerPanel.setLayout(new BorderLayout());
-                innerPanel.add(new JButton(new FightBattleAction(next, bomb)), BorderLayout.CENTER);
-                innerPanel.add(new JButton(new CenterBattleAction(next)), BorderLayout.EAST);
-                panel.add(innerPanel);
-            }
-        
-        });
-    }
-
-    public void notifyRetreat(final String messageShort, final String messageLong, final String step, final PlayerID retreatingPlayer)
-    {
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            @Override
+			{
+				removeAll();
+				m_actionLabel.setText(id.getName() + " battle");
+				
+				setLayout(new BorderLayout());
+				JPanel panel = new JPanel();
+				panel.setLayout(new GridLayout(0, 1));
+				panel.add(m_actionLabel);
+				Iterator<Territory> iter = battles.iterator();
+				while (iter.hasNext())
+				{
+					addBattleActions(panel, iter, false);
+				}
+				
+				iter = bombing.iterator();
+				while (iter.hasNext())
+				{
+					addBattleActions(panel, iter, true);
+				}
+				add(panel, BorderLayout.NORTH);
+				SwingUtilities.invokeLater(REFRESH);
+				
+			}
+			
+			private void addBattleActions(JPanel panel, Iterator<Territory> iter, boolean bomb)
+			{
+				Territory next = iter.next();
+				JPanel innerPanel = new JPanel();
+				innerPanel.setLayout(new BorderLayout());
+				innerPanel.add(new JButton(new FightBattleAction(next, bomb)), BorderLayout.CENTER);
+				innerPanel.add(new JButton(new CenterBattleAction(next)), BorderLayout.EAST);
+				panel.add(innerPanel);
+			}
+			
+		});
+	}
+	
+	public void notifyRetreat(final String messageShort, final String messageLong, final String step, final PlayerID retreatingPlayer)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
 			public void run()
-            {
-                if (m_battleDisplay != null)
-                    m_battleDisplay.battleInfo(messageShort, messageLong, step);
-            }
-        }
+			{
+				if (m_battleDisplay != null)
+					m_battleDisplay.battleInfo(messageShort, messageLong, step);
+			}
+		}
 
-        );
-
-    }
-
-    public void notifyScramble(final String messageShort, final String messageLong, final String step, final PlayerID retreatingPlayer)
-    {
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            @Override
+		);
+		
+	}
+	
+	public void notifyScramble(final String messageShort, final String messageLong, final String step, final PlayerID retreatingPlayer)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
 			public void run()
-            {
-                if (m_battleDisplay != null)
-                    m_battleDisplay.battleInfo(messageShort, messageLong, step);
-            }
-        }
+			{
+				if (m_battleDisplay != null)
+					m_battleDisplay.battleInfo(messageShort, messageLong, step);
+			}
+		}
 
-        );
-
-    }
-
-    public void showDice(final String messageShort, final DiceRoll dice, final String step)
-    {
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            @Override
+		);
+		
+	}
+	
+	public void showDice(final String messageShort, final DiceRoll dice, final String step)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
 			public void run()
-            {
-                if (m_battleDisplay != null)
-                    m_battleDisplay.battleInfo(messageShort, dice, step);
-            }
-
-        });
-    }
-
-    public void battleEndMessage(final GUID battleId, final String message)
-    {
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            @Override
+			{
+				if (m_battleDisplay != null)
+					m_battleDisplay.battleInfo(messageShort, dice, step);
+			}
+			
+		});
+	}
+	
+	public void battleEndMessage(final GUID battleId, final String message)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
 			public void run()
-            {
-                if(m_battleDisplay != null)
-                    m_battleDisplay.endBattle(message, m_battleFrame);
-            }
-        });
-
-    }
-
-    /**
+			{
+				if (m_battleDisplay != null)
+					m_battleDisplay.endBattle(message, m_battleFrame);
+			}
+		});
+		
+	}
+	
+	/**
      *  
      */
-    private void cleanUpBattleWindow()
-    {
-        if (m_battleDisplay != null)
-        {
-            m_currentBattleDisplayed = null;
-            m_battleDisplay.cleanUp();
-            m_battleFrame.getContentPane().removeAll();
-            m_battleDisplay = null;
-            games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);
-
-        }
-    }
-
-    private boolean ensureBattleIsDisplayed(GUID battleID) 
-    {
-        if(SwingUtilities.isEventDispatchThread())
-            throw new IllegalStateException("Wrong threads");
-        
-        GUID displayed = m_currentBattleDisplayed;
-        int count = 0;
-        while (displayed == null || !battleID.equals(displayed))
-        {
-            try
-            {
-                count++;
-                Thread.sleep(count);
-            } catch (InterruptedException e)
-            {
-                return false;
-            }
-            
-            //something is wrong, we shouldnt have to wait this long
-            if(count > 200)
-            {
-                Console.getConsole().dumpStacks();
-                new IllegalStateException("battle not displayed, looking for:" +  battleID + " showing:" + m_currentBattleDisplayed).printStackTrace();
-                return false;
-            }
-            displayed = m_currentBattleDisplayed;
-        }
-        
-        return true;
-    }
-
-    protected JFrame getBattleFrame()
-    {
-        return m_battleFrame;
-    }
-    
-    public void listBattle(final GUID battleID, final List<String> steps)
-    {
-        if (!SwingUtilities.isEventDispatchThread())
-        {
-            Runnable r = new Runnable()
-            {
-                @Override
-				public void run()
-                {
-                    //recursive call
-                    listBattle(battleID, steps);
-                }
-            };
-            try
-            {
-                SwingUtilities.invokeLater(r);
-            } catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            return;
-        }
-
-        removeAll();
-
-        
-        if(m_battleDisplay != null)
-        {
-            getMap().centerOn(m_battleDisplay.getBattleLocation());
-            m_battleDisplay.listBattle(steps);
-        }
-    }
-
-    public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits,
-            final Collection<Unit> defendingUnits, final Map<Unit, Collection<Unit>> unit_dependents, final PlayerID attacker, final PlayerID defender)
-    {
-        try
-        {
-            SwingUtilities.invokeAndWait(new Runnable()
-            {
-                @Override
-				public void run()
-                {
-
-                    if (m_battleDisplay != null)
-                    {
-                        cleanUpBattleWindow();
-                        m_currentBattleDisplayed = null;
-                    }
-
-		    if (! getMap().getUIContext().getShowMapOnly())
+	private void cleanUpBattleWindow()
+	{
+		if (m_battleDisplay != null)
+		{
+			m_currentBattleDisplayed = null;
+			m_battleDisplay.cleanUp();
+			m_battleFrame.getContentPane().removeAll();
+			m_battleDisplay = null;
+			games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);
+			
+		}
+	}
+	
+	private boolean ensureBattleIsDisplayed(GUID battleID)
+	{
+		if (SwingUtilities.isEventDispatchThread())
+			throw new IllegalStateException("Wrong threads");
+		
+		GUID displayed = m_currentBattleDisplayed;
+		int count = 0;
+		while (displayed == null || !battleID.equals(displayed))
+		{
+			try
 			{
-			    
-			    m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, battleID, BattlePanel.this.getMap());
-			    
-			    m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
-			    
-			    m_battleFrame.getContentPane().removeAll();
-			    m_battleFrame.getContentPane().add(m_battleDisplay);
-			    m_battleFrame.setSize(750, 540);
-			    m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
-			    
-			    
-			    games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);		
-                      boolean foundHumanInBattle = false;
-                      Iterator<IGamePlayer> iter = getMap().getUIContext().getPlayerList().iterator();
-                      while (iter.hasNext())
-                      {
-                          IGamePlayer gamePlayer = iter.next();
-                          if ((gamePlayer.getID().equals(attacker) && gamePlayer instanceof TripleAPlayer) || (gamePlayer.getID().equals(defender) && gamePlayer instanceof TripleAPlayer))
-                          {
-                              foundHumanInBattle = true;
-                              break;
-                          }
-                      }    
-        		      if(getMap().getUIContext().getShowBattlesBetweenAIs() || foundHumanInBattle)
-			    {	      
-                          m_battleFrame.setVisible(true);
-                          m_battleFrame.validate();
-                          m_battleFrame.invalidate();
-                          m_battleFrame.repaint();
-			    }
-                else
-                {
-                    m_battleFrame.setVisible(false);
-                }
-			    m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-			    
-			    m_currentBattleDisplayed = battleID;
-			    
-			    SwingUtilities.invokeLater(new Runnable()
+				count++;
+				Thread.sleep(count);
+			} catch (InterruptedException e)
+			{
+				return false;
+			}
+			
+			// something is wrong, we shouldnt have to wait this long
+			if (count > 200)
+			{
+				Console.getConsole().dumpStacks();
+				new IllegalStateException("battle not displayed, looking for:" + battleID + " showing:" + m_currentBattleDisplayed).printStackTrace();
+				return false;
+			}
+			displayed = m_currentBattleDisplayed;
+		}
+		
+		return true;
+	}
+	
+	protected JFrame getBattleFrame()
+	{
+		return m_battleFrame;
+	}
+	
+	public void listBattle(final GUID battleID, final List<String> steps)
+	{
+		if (!SwingUtilities.isEventDispatchThread())
+		{
+			Runnable r = new Runnable()
+			{
+				@Override
+				public void run()
 				{
-				    @Override
+					// recursive call
+					listBattle(battleID, steps);
+				}
+			};
+			try
+			{
+				SwingUtilities.invokeLater(r);
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			return;
+		}
+		
+		removeAll();
+		
+		if (m_battleDisplay != null)
+		{
+			getMap().centerOn(m_battleDisplay.getBattleLocation());
+			m_battleDisplay.listBattle(steps);
+		}
+	}
+	
+	public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits,
+				final Collection<Unit> defendingUnits, final Map<Unit, Collection<Unit>> unit_dependents, final PlayerID attacker, final PlayerID defender)
+	{
+		try
+		{
+			SwingUtilities.invokeAndWait(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					
+					if (m_battleDisplay != null)
+					{
+						cleanUpBattleWindow();
+						m_currentBattleDisplayed = null;
+					}
+					
+					if (!getMap().getUIContext().getShowMapOnly())
+			{
+				
+				m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, battleID, BattlePanel.this.getMap());
+				
+				m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
+				
+				m_battleFrame.getContentPane().removeAll();
+				m_battleFrame.getContentPane().add(m_battleDisplay);
+				m_battleFrame.setSize(750, 540);
+				m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
+				
+				games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);
+				boolean foundHumanInBattle = false;
+				Iterator<IGamePlayer> iter = getMap().getUIContext().getPlayerList().iterator();
+				while (iter.hasNext())
+						{
+							IGamePlayer gamePlayer = iter.next();
+							if ((gamePlayer.getID().equals(attacker) && gamePlayer instanceof TripleAPlayer) || (gamePlayer.getID().equals(defender) && gamePlayer instanceof TripleAPlayer))
+							{
+								foundHumanInBattle = true;
+								break;
+							}
+						}
+						if (getMap().getUIContext().getShowBattlesBetweenAIs() || foundHumanInBattle)
+				{
+					m_battleFrame.setVisible(true);
+					m_battleFrame.validate();
+					m_battleFrame.invalidate();
+					m_battleFrame.repaint();
+				}
+				else
+				{
+					m_battleFrame.setVisible(false);
+				}
+				m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+				
+				m_currentBattleDisplayed = battleID;
+				
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					@Override
 					public void run()
-				    {
-					m_battleFrame.toFront();
-				    }
-				    
+					{
+						m_battleFrame.toFront();
+					}
+					
 				});
 			}
-                }
-            });
-        } catch (InterruptedException e)
-        {
-            
-            e.printStackTrace();
-        } catch (InvocationTargetException e)
-        {
-         
-            e.printStackTrace();
-        }
-
-    }
-
-    public FightBattleDetails waitForBattleSelection()
-    {
-        waitForRelease();
-
-        if (m_fightBattleMessage != null)
-            getMap().centerOn(m_fightBattleMessage.getWhere());
-
-        return m_fightBattleMessage;
-    }
-
-    /**
-     * Ask user which territory to bombard with a given unit.
-     */
-    public Territory getBombardment(final Unit unit,final  Territory unitTerritory,final  Collection<Territory>  territories, final boolean noneAvailable)
-    {       
-        BombardComponent comp = Util.runInSwingEventThread(new Util.Task<BombardComponent>() {        
-            @Override
-			public BombardComponent run() {
-                return new BombardComponent(unit, unitTerritory, territories, noneAvailable);
-            }
-        }); 
-
-        int option = JOptionPane.NO_OPTION;
-        while (option != JOptionPane.OK_OPTION)
-        {
-            option = EventThreadJOptionPane.showConfirmDialog(this, comp, "Bombardment Territory Selection", JOptionPane.OK_OPTION);
-        }
-        return comp.getSelection();
-    }
-
-    public boolean getAttackSubs(final Territory terr) 
-    {       
-        return EventThreadJOptionPane.showConfirmDialog(null, "Attack submarines in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;        
-    }
-
-    public boolean getAttackTransports(final Territory terr) 
-    {       
-        return EventThreadJOptionPane.showConfirmDialog(null, "Attack transports in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;        
-    }
-
-    public boolean getAttackUnits(final Territory terr) 
-    {       
-        return EventThreadJOptionPane.showConfirmDialog(null, "Attack units in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;        
-    }
-
-    public boolean getShoreBombard(final Territory terr) 
-    {       
-        return EventThreadJOptionPane.showConfirmDialog(null, "Conduct naval bombard in " + terr.toString() + "?", "Bombard", JOptionPane.YES_NO_OPTION) == 0;        
-    }
-    
-    public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player, final Collection<Unit> killed,
-            final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents)
-    {
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            @Override
-			public void run()
-            {
-                if(m_battleDisplay != null)
-                    m_battleDisplay.casualtyNotification(step, dice, player, killed, damaged, dependents);
-            }
-        });
-    }
-    
-    public void deadUnitNotification(final PlayerID player, final Collection<Unit> killed, final Map<Unit, Collection<Unit>> dependents)
-    {
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            @Override
-			public void run()
-            {
-                if(m_battleDisplay != null)
-                    m_battleDisplay.deadUnitNotification(player, killed, dependents);
-            }
-        });
-    }
-    
-    public void scrambleNotification(final String step, final PlayerID player, final Collection<Unit> scrambled,
-            final Map<Unit, Collection<Unit>> dependents)
-    {
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            @Override
-			public void run()
-            {
-                if(m_battleDisplay != null)
-                    m_battleDisplay.scrambleNotification(step, player, scrambled, dependents);
-            }
-        });
-    }
-
-    public void confirmCasualties(final GUID battleId, final String message)
-    {
-        //something is wrong
-        if(!ensureBattleIsDisplayed(battleId)) {
-            return;
-        }
-        m_battleDisplay.waitForConfirmation(message);
-    }
-
-    public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message,
-            final DiceRoll dice, final PlayerID hit, final CasualtyList defaultCasualties, GUID battleID)
-    {
-        //if the battle display is null, then this is an aa fire during move
-        if (battleID == null)
-            return getCasualtiesAA(selectFrom, dependents, count, message, dice, hit, defaultCasualties);
-        else
-        {
-            //something is wong
-            if(!ensureBattleIsDisplayed(battleID))
-                return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
-            
-            return m_battleDisplay.getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties);
-        }
-
-    }
-
-    private CasualtyDetails getCasualtiesAA(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, 
-    		final int count, final String message, final DiceRoll dice,
-            final PlayerID hit, final CasualtyList defaultCasualties)
-    {
-    	Task<CasualtyDetails> task = new Task<CasualtyDetails>() {
-
+		}
+			});
+		} catch (InterruptedException e)
+		{
+			
+			e.printStackTrace();
+		} catch (InvocationTargetException e)
+		{
+			
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public FightBattleDetails waitForBattleSelection()
+	{
+		waitForRelease();
+		
+		if (m_fightBattleMessage != null)
+			getMap().centerOn(m_fightBattleMessage.getWhere());
+		
+		return m_fightBattleMessage;
+	}
+	
+	/**
+	 * Ask user which territory to bombard with a given unit.
+	 */
+	public Territory getBombardment(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories, final boolean noneAvailable)
+	{
+		BombardComponent comp = Util.runInSwingEventThread(new Util.Task<BombardComponent>()
+		{
 			@Override
-			public CasualtyDetails run() {
+			public BombardComponent run()
+			{
+				return new BombardComponent(unit, unitTerritory, territories, noneAvailable);
+			}
+		});
+		
+		int option = JOptionPane.NO_OPTION;
+		while (option != JOptionPane.OK_OPTION)
+		{
+			option = EventThreadJOptionPane.showConfirmDialog(this, comp, "Bombardment Territory Selection", JOptionPane.OK_OPTION);
+		}
+		return comp.getSelection();
+	}
+	
+	public boolean getAttackSubs(final Territory terr)
+	{
+		return EventThreadJOptionPane.showConfirmDialog(null, "Attack submarines in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;
+	}
+	
+	public boolean getAttackTransports(final Territory terr)
+	{
+		return EventThreadJOptionPane.showConfirmDialog(null, "Attack transports in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;
+	}
+	
+	public boolean getAttackUnits(final Territory terr)
+	{
+		return EventThreadJOptionPane.showConfirmDialog(null, "Attack units in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;
+	}
+	
+	public boolean getShoreBombard(final Territory terr)
+	{
+		return EventThreadJOptionPane.showConfirmDialog(null, "Conduct naval bombard in " + terr.toString() + "?", "Bombard", JOptionPane.YES_NO_OPTION) == 0;
+	}
+	
+	public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player, final Collection<Unit> killed,
+				final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				if (m_battleDisplay != null)
+					m_battleDisplay.casualtyNotification(step, dice, player, killed, damaged, dependents);
+			}
+		});
+	}
+	
+	public void deadUnitNotification(final PlayerID player, final Collection<Unit> killed, final Map<Unit, Collection<Unit>> dependents)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				if (m_battleDisplay != null)
+					m_battleDisplay.deadUnitNotification(player, killed, dependents);
+			}
+		});
+	}
+	
+	public void scrambleNotification(final String step, final PlayerID player, final Collection<Unit> scrambled,
+				final Map<Unit, Collection<Unit>> dependents)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				if (m_battleDisplay != null)
+					m_battleDisplay.scrambleNotification(step, player, scrambled, dependents);
+			}
+		});
+	}
+	
+	public void confirmCasualties(final GUID battleId, final String message)
+	{
+		// something is wrong
+		if (!ensureBattleIsDisplayed(battleId))
+		{
+			return;
+		}
+		m_battleDisplay.waitForConfirmation(message);
+	}
+	
+	public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message,
+				final DiceRoll dice, final PlayerID hit, final CasualtyList defaultCasualties, GUID battleID)
+	{
+		// if the battle display is null, then this is an aa fire during move
+		if (battleID == null)
+			return getCasualtiesAA(selectFrom, dependents, count, message, dice, hit, defaultCasualties);
+		else
+		{
+			// something is wong
+			if (!ensureBattleIsDisplayed(battleID))
+				return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
+			
+			return m_battleDisplay.getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties);
+		}
+		
+	}
+	
+	private CasualtyDetails getCasualtiesAA(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents,
+				final int count, final String message, final DiceRoll dice,
+				final PlayerID hit, final CasualtyList defaultCasualties)
+	{
+		Task<CasualtyDetails> task = new Task<CasualtyDetails>()
+		{
+			
+			@Override
+			public CasualtyDetails run()
+			{
 				boolean isEditMode = (dice == null);
 				UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, getData(), false, getMap().getUIContext());
-		        chooser.setTitle(message);
-		        if (isEditMode)
-		            chooser.setMax(selectFrom.size());
-		        else
-		            chooser.setMax(count);
-
-		        DicePanel dicePanel = new DicePanel(getMap().getUIContext(), getData());
-		        if (!isEditMode)
-		            dicePanel.setDiceRoll(dice);
-
-		        JPanel panel = new JPanel();
-		        panel.setLayout(new BorderLayout());
-		        panel.add(chooser, BorderLayout.CENTER);
-		        dicePanel.setMaximumSize(new Dimension(450, 600));
-
-		        dicePanel.setPreferredSize(new Dimension(300, (int) dicePanel.getPreferredSize().getHeight()));
-		        panel.add(dicePanel, BorderLayout.SOUTH);
-
-		        String[] options =
-		        { "OK" };
-		        EventThreadJOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE,
-		                null, options, null);
-		        List<Unit> killed = chooser.getSelected(false);
-		        CasualtyDetails response = new CasualtyDetails(killed, chooser.getSelectedFirstHit(), false);
-		        return response;
+				chooser.setTitle(message);
+				if (isEditMode)
+					chooser.setMax(selectFrom.size());
+				else
+					chooser.setMax(count);
+				
+				DicePanel dicePanel = new DicePanel(getMap().getUIContext(), getData());
+				if (!isEditMode)
+					dicePanel.setDiceRoll(dice);
+				
+				JPanel panel = new JPanel();
+				panel.setLayout(new BorderLayout());
+				panel.add(chooser, BorderLayout.CENTER);
+				dicePanel.setMaximumSize(new Dimension(450, 600));
+				
+				dicePanel.setPreferredSize(new Dimension(300, (int) dicePanel.getPreferredSize().getHeight()));
+				panel.add(dicePanel, BorderLayout.SOUTH);
+				
+				String[] options =
+				{ "OK" };
+				EventThreadJOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE,
+							null, options, null);
+				List<Unit> killed = chooser.getSelected(false);
+				CasualtyDetails response = new CasualtyDetails(killed, chooser.getSelectedFirstHit(), false);
+				return response;
 			}
-    		
-    	};
-    	return Util.runInSwingEventThread(task);
-    	
-        
-    }
-
-    public Territory getRetreat(GUID battleID, String message, Collection<Territory> possible, boolean submerge)
-    {
-        //something is really wrong
-        if(!ensureBattleIsDisplayed(battleID))
-            return null;
-        return m_battleDisplay.getRetreat(message, possible, submerge);
-    }
-
-    public Collection<Unit> getScramble(IPlayerBridge bridge, GUID battleID, String message, Collection<Territory> possible)
-    {
-        //something is really wrong
-        if(!ensureBattleIsDisplayed(battleID))
-            return null;
-        return m_battleDisplay.getScramble(bridge, message, possible);
-    }
-
-    public void gotoStep(GUID battleID, final String step)
-    {
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            @Override
-			public void run()
-            {
-                if (m_battleDisplay != null)
-                    m_battleDisplay.setStep(step);
-            }
-        });
-    }
-
-    public void notifyRetreat(final Collection<Unit> retreating)
-    {
-
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            @Override
-			public void run()
-            {
-                if(m_battleDisplay != null)
-                    m_battleDisplay.notifyRetreat(retreating);
-            }
-        });
-    }
-
-    public void bombingResults(final GUID battleID, final int[] dice, final int cost)
-    {
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            @Override
-			public void run()
-            {
-                if(m_battleDisplay != null)
-                    m_battleDisplay.bombingResults(dice, cost);
-            }
-        });
-
-    }
-
-    Territory m_oldCenteredTerritory = null;
-    Timer m_CenterBattleActionTimer = null;
-
-    class CenterBattleAction extends AbstractAction
-    {
-        Territory m_territory;
-
-        CenterBattleAction(Territory battleSite)
-    	{
-			super("Center");
-    		m_territory = battleSite;
-    	}
-        
-		@Override
-		public void actionPerformed(ActionEvent e) 
+			
+		};
+		return Util.runInSwingEventThread(task);
+		
+	}
+	
+	public Territory getRetreat(GUID battleID, String message, Collection<Territory> possible, boolean submerge)
+	{
+		// something is really wrong
+		if (!ensureBattleIsDisplayed(battleID))
+			return null;
+		return m_battleDisplay.getRetreat(message, possible, submerge);
+	}
+	
+	public Collection<Unit> getScramble(IPlayerBridge bridge, GUID battleID, String message, Collection<Territory> possible)
+	{
+		// something is really wrong
+		if (!ensureBattleIsDisplayed(battleID))
+			return null;
+		return m_battleDisplay.getScramble(bridge, message, possible);
+	}
+	
+	public void gotoStep(GUID battleID, final String step)
+	{
+		SwingUtilities.invokeLater(new Runnable()
 		{
-            if (m_CenterBattleActionTimer != null)
-                m_CenterBattleActionTimer.cancel();
-            
+			@Override
+			public void run()
+			{
+				if (m_battleDisplay != null)
+					m_battleDisplay.setStep(step);
+			}
+		});
+	}
+	
+	public void notifyRetreat(final Collection<Unit> retreating)
+	{
+		
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				if (m_battleDisplay != null)
+					m_battleDisplay.notifyRetreat(retreating);
+			}
+		});
+	}
+	
+	public void bombingResults(final GUID battleID, final int[] dice, final int cost)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				if (m_battleDisplay != null)
+					m_battleDisplay.bombingResults(dice, cost);
+			}
+		});
+		
+	}
+	
+	Territory m_oldCenteredTerritory = null;
+	Timer m_CenterBattleActionTimer = null;
+	
+	
+	class CenterBattleAction extends AbstractAction
+	{
+		Territory m_territory;
+		
+		CenterBattleAction(Territory battleSite)
+		{
+			super("Center");
+			m_territory = battleSite;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			if (m_CenterBattleActionTimer != null)
+				m_CenterBattleActionTimer.cancel();
+			
 			if (m_oldCenteredTerritory != null)
 				getMap().clearTerritoryOverlay(m_oldCenteredTerritory);
-            
-            getMap().centerOn(m_territory);
-
-            m_CenterBattleActionTimer = new Timer();
-            m_CenterBattleActionTimer.scheduleAtFixedRate(new MyTimerTask(m_territory, m_CenterBattleActionTimer), 150, 150);
+			
+			getMap().centerOn(m_territory);
+			
+			m_CenterBattleActionTimer = new Timer();
+			m_CenterBattleActionTimer.scheduleAtFixedRate(new MyTimerTask(m_territory, m_CenterBattleActionTimer), 150, 150);
 			m_oldCenteredTerritory = m_territory;
 		}
-    	
-        class MyTimerTask extends TimerTask
-        {
-            Territory m_territory;
-            Timer m_stopTimer;
-            int m_count = 0;
-            
-            MyTimerTask(Territory battleSite, Timer stopTimer)
-            {
-                m_territory = battleSite;     
-                m_stopTimer = stopTimer;
-            }
-            
-            @Override
-            public void run()
-            {
-                if (m_count == 5)
-                    m_stopTimer.cancel();
-                if ((m_count % 3) == 0)
-                {
-                    getMap().setTerritoryOverlayForBorder(m_territory, Color.white);
-                    getMap().paintImmediately(getMap().getBounds());
-                    //TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation needed here?
-                    //TODO: setTerritoryOverlayForBorder is causing invalid ordered lock acquire atempt, why?
-                }
-                else
-                {
-                    getMap().clearTerritoryOverlay(m_territory);
-                    getMap().paintImmediately(getMap().getBounds());
-                    //TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation needed here?
-                    //TODO: setTerritoryOverlayForBorder is causing invalid ordered lock acquire atempt, why?
-                }
-                m_count ++;
-            }
-            
-        }
-    }
-    class FightBattleAction extends AbstractAction
-    {
-        Territory m_territory;
-        boolean m_bomb;
+		
+		
+		class MyTimerTask extends TimerTask
+		{
+			Territory m_territory;
+			Timer m_stopTimer;
+			int m_count = 0;
+			
+			MyTimerTask(Territory battleSite, Timer stopTimer)
+			{
+				m_territory = battleSite;
+				m_stopTimer = stopTimer;
+			}
+			
+			@Override
+			public void run()
+			{
+				if (m_count == 5)
+					m_stopTimer.cancel();
+				if ((m_count % 3) == 0)
+				{
+					getMap().setTerritoryOverlayForBorder(m_territory, Color.white);
+					getMap().paintImmediately(getMap().getBounds());
+					// TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation needed here?
+					// TODO: setTerritoryOverlayForBorder is causing invalid ordered lock acquire atempt, why?
+				}
+				else
+				{
+					getMap().clearTerritoryOverlay(m_territory);
+					getMap().paintImmediately(getMap().getBounds());
+					// TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation needed here?
+					// TODO: setTerritoryOverlayForBorder is causing invalid ordered lock acquire atempt, why?
+				}
+				m_count++;
+			}
+			
+		}
+	}
+	
 
-        FightBattleAction(Territory battleSite, boolean bomb)
-        {
-            super((bomb ? "Bombing raid in " : "Battle in ") + battleSite.getName() + "...");
-            m_territory = battleSite;
-            m_bomb = bomb;
-        }
-
-        @Override
+	class FightBattleAction extends AbstractAction
+	{
+		Territory m_territory;
+		boolean m_bomb;
+		
+		FightBattleAction(Territory battleSite, boolean bomb)
+		{
+			super((bomb ? "Bombing raid in " : "Battle in ") + battleSite.getName() + "...");
+			m_territory = battleSite;
+			m_bomb = bomb;
+		}
+		
+		@Override
 		public void actionPerformed(ActionEvent actionEvent)
-        {
+		{
 			if (m_oldCenteredTerritory != null)
 				getMap().clearTerritoryOverlay(m_oldCenteredTerritory);
-            m_fightBattleMessage = new FightBattleDetails(m_bomb, m_territory);
-            release();
-        }
-    }
-
-    @Override
+			m_fightBattleMessage = new FightBattleDetails(m_bomb, m_territory);
+			release();
+		}
+	}
+	
+	@Override
 	public String toString()
-    {
-        return "BattlePanel";
-    }
-
-    private class BombardComponent extends JPanel
-    {
-
-        private JList m_list;
-
-        BombardComponent(Unit unit, Territory unitTerritory, Collection<Territory> territories, boolean noneAvailable)
-        {
-
-            this.setLayout(new BorderLayout());
-
-            String unitName = unit.getUnitType().getName() + " in " + unitTerritory;
-            JLabel label = new JLabel("Which territory should " + unitName + " bombard?");
-            this.add(label, BorderLayout.NORTH);
-
-            Vector<Object>  listElements = new Vector<Object> (territories);
-            if (noneAvailable)
-            {
-                listElements.add(0, "None");
-            }
-
-            m_list = new JList(listElements);
-            m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            if (listElements.size() >= 1)
-                m_list.setSelectedIndex(0);
-            JScrollPane scroll = new JScrollPane(m_list);
-            this.add(scroll, BorderLayout.CENTER);
-        }
-
-        public Territory getSelection()
-        {
-            Object selected = m_list.getSelectedValue();
-            if (selected instanceof Territory)
-            {
-                return (Territory) selected;
-            }
-
-            return null; // User selected "None" option
-        }
-    }
+	{
+		return "BattlePanel";
+	}
+	
+	
+	private class BombardComponent extends JPanel
+	{
+		
+		private JList m_list;
+		
+		BombardComponent(Unit unit, Territory unitTerritory, Collection<Territory> territories, boolean noneAvailable)
+		{
+			
+			this.setLayout(new BorderLayout());
+			
+			String unitName = unit.getUnitType().getName() + " in " + unitTerritory;
+			JLabel label = new JLabel("Which territory should " + unitName + " bombard?");
+			this.add(label, BorderLayout.NORTH);
+			
+			Vector<Object> listElements = new Vector<Object>(territories);
+			if (noneAvailable)
+			{
+				listElements.add(0, "None");
+			}
+			
+			m_list = new JList(listElements);
+			m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			if (listElements.size() >= 1)
+				m_list.setSelectedIndex(0);
+			JScrollPane scroll = new JScrollPane(m_list);
+			this.add(scroll, BorderLayout.CENTER);
+		}
+		
+		public Territory getSelection()
+		{
+			Object selected = m_list.getSelectedValue();
+			if (selected instanceof Territory)
+			{
+				return (Territory) selected;
+			}
+			
+			return null; // User selected "None" option
+		}
+	}
 }
-

@@ -5,18 +5,14 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.puzzle.slidingtiles.delegate;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 import games.puzzle.slidingtiles.attachments.Tile;
 import games.puzzle.slidingtiles.ui.display.INPuzzleDisplay;
@@ -30,6 +26,10 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 /**
  * Responsible for initializing an N-Puzzle game.
  * 
@@ -38,95 +38,98 @@ import games.strategy.engine.message.IRemote;
  */
 public class InitializationDelegate extends BaseDelegate
 {
-    /**
-     * Called before the delegate will run.
-     */
-    @Override
+	/**
+	 * Called before the delegate will run.
+	 */
+	@Override
 	public void start(IDelegateBridge bridge)
-    {   
-        super.start(bridge);
-
-        GameMap map = getData().getMap();
-        
-        int width = map.getXDimension();
-        int height = map.getYDimension();
-        
-        Territory[][] board = new Territory[width][height];
-        
-        INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
-        display.setStatus("Shuffling tiles...");
-        
-        m_bridge.getHistoryWriter().startEvent("Initializing board");
-        
-        CompositeChange initializingBoard = new CompositeChange();
-        
-        for (int x=0; x<width; x++) {
-            for(int y=0; y<height; y++) {
-                board[x][y] = map.getTerritoryFromCoordinates(x, y);
-                Tile tile = new Tile(x + y*width);
-                //System.out.println("board["+x+"]["+y+"]=="+(x + y*width));
-                Change change = ChangeFactory.addAttachmentChange(tile, board[x][y], "tile");
-                initializingBoard.add(change);
-            }
-        }
-
-        m_bridge.addChange(initializingBoard);
-
-        //INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
-        display.initializeBoard();
-        display.performPlay();  
-        
-        
-        m_bridge.getHistoryWriter().startEvent("Randomizing board");
-        //CompositeChange randomizingBoard = new CompositeChange();
-        
-        
-        Territory blank = board[0][0];
-        Territory dontChooseNextTime = null;
-        Territory swap = null;
-        
-       //System.out.println("Random stuff!");
-        GameProperties properties = getData().getProperties();
-        int numberOfShuffles = Integer.valueOf((String) properties.get("Difficulty Level"));
-        //int numberOfShuffles = 0;
-        // Randomly shuffle the tiles on the board,
-        //   but don't move a tile back to where it just was.
-        Random random = new Random();
-        for (int i=0; i<numberOfShuffles; i++)
-        {   
-            while (swap==null || swap.equals(dontChooseNextTime)) 
-            {   
-                List<Territory> neighbors = new ArrayList<Territory>(map.getNeighbors(blank));
-                swap = neighbors.get(random.nextInt(neighbors.size()));
-            }
-            
-            try{ Thread.sleep(75);} 
-            catch (InterruptedException e){}
-            
-            PlayDelegate.swap(m_bridge, swap, blank);
-            //randomizingBoard.add(change);
-            
-            dontChooseNextTime = blank;
-            blank = swap;
-            swap = null;
-            
-        }
-        
-        display.setStatus(" ");
-        
-        //m_bridge.addChange(randomizingBoard);
-        //display.performPlay();  
-    }
-    
-    
-    /**
-     * If this class implements an interface which inherits from IRemote, returns the class of that interface.
-     * Otherwise, returns null.
-     */
-    @Override
+	{
+		super.start(bridge);
+		
+		GameMap map = getData().getMap();
+		
+		int width = map.getXDimension();
+		int height = map.getYDimension();
+		
+		Territory[][] board = new Territory[width][height];
+		
+		INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
+		display.setStatus("Shuffling tiles...");
+		
+		m_bridge.getHistoryWriter().startEvent("Initializing board");
+		
+		CompositeChange initializingBoard = new CompositeChange();
+		
+		for (int x = 0; x < width; x++)
+		{
+			for (int y = 0; y < height; y++)
+			{
+				board[x][y] = map.getTerritoryFromCoordinates(x, y);
+				Tile tile = new Tile(x + y * width);
+				// System.out.println("board["+x+"]["+y+"]=="+(x + y*width));
+				Change change = ChangeFactory.addAttachmentChange(tile, board[x][y], "tile");
+				initializingBoard.add(change);
+			}
+		}
+		
+		m_bridge.addChange(initializingBoard);
+		
+		// INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
+		display.initializeBoard();
+		display.performPlay();
+		
+		m_bridge.getHistoryWriter().startEvent("Randomizing board");
+		// CompositeChange randomizingBoard = new CompositeChange();
+		
+		Territory blank = board[0][0];
+		Territory dontChooseNextTime = null;
+		Territory swap = null;
+		
+		// System.out.println("Random stuff!");
+		GameProperties properties = getData().getProperties();
+		int numberOfShuffles = Integer.valueOf((String) properties.get("Difficulty Level"));
+		// int numberOfShuffles = 0;
+		// Randomly shuffle the tiles on the board,
+		// but don't move a tile back to where it just was.
+		Random random = new Random();
+		for (int i = 0; i < numberOfShuffles; i++)
+		{
+			while (swap == null || swap.equals(dontChooseNextTime))
+			{
+				List<Territory> neighbors = new ArrayList<Territory>(map.getNeighbors(blank));
+				swap = neighbors.get(random.nextInt(neighbors.size()));
+			}
+			
+			try
+			{
+				Thread.sleep(75);
+			} catch (InterruptedException e)
+			{
+			}
+			
+			PlayDelegate.swap(m_bridge, swap, blank);
+			// randomizingBoard.add(change);
+			
+			dontChooseNextTime = blank;
+			blank = swap;
+			swap = null;
+			
+		}
+		
+		display.setStatus(" ");
+		
+		// m_bridge.addChange(randomizingBoard);
+		// display.performPlay();
+	}
+	
+	/**
+	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
+	 * Otherwise, returns null.
+	 */
+	@Override
 	public Class<? extends IRemote> getRemoteType()
-    {
-        // This class does not implement the IRemote interface, so return null.
-        return null;
-    }
+	{
+		// This class does not implement the IRemote interface, so return null.
+		return null;
+	}
 }

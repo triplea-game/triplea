@@ -5,383 +5,410 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.triplea.ui.history;
 
-import games.strategy.engine.data.*;
-import games.strategy.engine.history.*;
-
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.history.HistoryNode;
+import games.strategy.engine.history.Step;
 import games.strategy.triplea.ui.UIContext;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Enumeration;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.tree.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 /**
  * Shows the history as a tree.
  */
 public class HistoryPanel extends JPanel
 {
-    private final GameData m_data;
-
-    private final JTree m_tree;
-
-    private final HistoryDetailsPanel m_details;
-
-    private HistoryNode m_currentPopupNode;
-
-    private JPopupMenu m_popup;
-
-    public HistoryPanel(GameData data, HistoryDetailsPanel details, JPopupMenu popup, UIContext uiContext)
-    {
-        m_data = data;
-        m_details = details;
-
-        setLayout(new BorderLayout());
-
-        if(!m_data.areChangesOnlyInSwingEventThread()) {
-            throw new IllegalStateException();
-        }
-        
-        m_tree = new JTree(m_data.getHistory());
-        m_popup = popup;
-        m_tree.add(m_popup);
-        m_popup.addPopupMenuListener(new PopupMenuListener() {
-
-            @Override
+	private final GameData m_data;
+	
+	private final JTree m_tree;
+	
+	private final HistoryDetailsPanel m_details;
+	
+	private HistoryNode m_currentPopupNode;
+	
+	private JPopupMenu m_popup;
+	
+	public HistoryPanel(GameData data, HistoryDetailsPanel details, JPopupMenu popup, UIContext uiContext)
+	{
+		m_data = data;
+		m_details = details;
+		
+		setLayout(new BorderLayout());
+		
+		if (!m_data.areChangesOnlyInSwingEventThread())
+		{
+			throw new IllegalStateException();
+		}
+		
+		m_tree = new JTree(m_data.getHistory());
+		m_popup = popup;
+		m_tree.add(m_popup);
+		m_popup.addPopupMenuListener(new PopupMenuListener()
+		{
+			
+			@Override
 			public void popupMenuCanceled(PopupMenuEvent pme)
-            {
-                m_currentPopupNode = null;
-            }
-
-            @Override
+			{
+				m_currentPopupNode = null;
+			}
+			
+			@Override
 			public void popupMenuWillBecomeInvisible(PopupMenuEvent pme)
-            {
-            }
-
-            @Override
+			{
+			}
+			
+			@Override
 			public void popupMenuWillBecomeVisible(PopupMenuEvent pme)
-            {
-            }
-
-        });
-        HistoryTreeCellRenderer renderer = new HistoryTreeCellRenderer(uiContext);
-        renderer.setLeafIcon(null);
-        renderer.setClosedIcon(null);
-        renderer.setOpenIcon(null);
-        renderer.setBackgroundNonSelectionColor(getBackground());
-        m_tree.setCellRenderer(renderer);
-        m_tree.setBackground(getBackground());
-
-        JScrollPane scroll = new JScrollPane(m_tree);
-        scroll.setBorder(null);
-        scroll.setViewportBorder(null);
-        add(scroll, BorderLayout.CENTER);
-        m_tree.setEditable(false);
-
-        HistoryNode node = m_data.getHistory().getLastNode();
-        m_data.getHistory().gotoNode(node);
-        m_tree.expandPath(new TreePath(node.getPath()));
-        m_tree.setSelectionPath(new TreePath(node.getPath()));
-        m_currentPopupNode = null;
-        JButton previousButton = new JButton("<-Back");
-        previousButton.addActionListener(new ActionListener()
-        {
-
-            @Override
+			{
+			}
+			
+		});
+		HistoryTreeCellRenderer renderer = new HistoryTreeCellRenderer(uiContext);
+		renderer.setLeafIcon(null);
+		renderer.setClosedIcon(null);
+		renderer.setOpenIcon(null);
+		renderer.setBackgroundNonSelectionColor(getBackground());
+		m_tree.setCellRenderer(renderer);
+		m_tree.setBackground(getBackground());
+		
+		JScrollPane scroll = new JScrollPane(m_tree);
+		scroll.setBorder(null);
+		scroll.setViewportBorder(null);
+		add(scroll, BorderLayout.CENTER);
+		m_tree.setEditable(false);
+		
+		HistoryNode node = m_data.getHistory().getLastNode();
+		m_data.getHistory().gotoNode(node);
+		m_tree.expandPath(new TreePath(node.getPath()));
+		m_tree.setSelectionPath(new TreePath(node.getPath()));
+		m_currentPopupNode = null;
+		JButton previousButton = new JButton("<-Back");
+		previousButton.addActionListener(new ActionListener()
+		{
+			
+			@Override
 			public void actionPerformed(ActionEvent e)
-            {
-                previous();
-            }
-
-        });
-
-        JButton nextButton = new JButton("Next->");
-        nextButton.addActionListener(new ActionListener()
-        {
-
-            @Override
+			{
+				previous();
+			}
+			
+		});
+		
+		JButton nextButton = new JButton("Next->");
+		nextButton.addActionListener(new ActionListener()
+		{
+			
+			@Override
 			public void actionPerformed(ActionEvent e)
-            {
-                next();
-            }
-
-        });
-
-        JPanel buttons = new JPanel();
-        buttons.setLayout(new GridBagLayout());
-
-        buttons.add(previousButton, new GridBagConstraints(0,0, 1,1 ,1,1,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0));
-        buttons.add(nextButton, new GridBagConstraints(1,0, 1,1 ,1,1,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0));
-
-        add(buttons, BorderLayout.SOUTH);
-
-        m_tree.getModel().addTreeModelListener(new TreeModelListener()
-        {
-            @Override
+			{
+				next();
+			}
+			
+		});
+		
+		JPanel buttons = new JPanel();
+		buttons.setLayout(new GridBagLayout());
+		
+		buttons.add(previousButton, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+		buttons.add(nextButton, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+		
+		add(buttons, BorderLayout.SOUTH);
+		
+		m_tree.getModel().addTreeModelListener(new TreeModelListener()
+		{
+			@Override
 			public void treeNodesChanged(TreeModelEvent e)
-            {
-                goToEnd();
-            }
-
-            @Override
+			{
+				goToEnd();
+			}
+			
+			@Override
 			public void treeNodesInserted(TreeModelEvent e)
-            {
-                goToEnd();
-            }
-
-            @Override
+			{
+				goToEnd();
+			}
+			
+			@Override
 			public void treeNodesRemoved(TreeModelEvent e)
-            {
-            }
-
-            @Override
+			{
+			}
+			
+			@Override
 			public void treeStructureChanged(TreeModelEvent e)
-            {
-                goToEnd();
-            }
-
-        });
-        m_tree.addMouseListener(new MouseListener() {
-
-            @Override
+			{
+				goToEnd();
+			}
+			
+		});
+		m_tree.addMouseListener(new MouseListener()
+		{
+			
+			@Override
 			public void mouseClicked(MouseEvent me)
-            {
-                if(SwingUtilities.isRightMouseButton(me))
-                {
-                    m_currentPopupNode = (HistoryNode)m_tree.getClosestPathForLocation(me.getX(), me.getY()).getLastPathComponent();
-                    m_popup.show(me.getComponent(), me.getX(), me.getY());
-                }
-            }
-
-            @Override
+			{
+				if (SwingUtilities.isRightMouseButton(me))
+				{
+					m_currentPopupNode = (HistoryNode) m_tree.getClosestPathForLocation(me.getX(), me.getY()).getLastPathComponent();
+					m_popup.show(me.getComponent(), me.getX(), me.getY());
+				}
+			}
+			
+			@Override
 			public void mouseEntered(MouseEvent me)
-            {
-            }
-
-            @Override
+			{
+			}
+			
+			@Override
 			public void mouseExited(MouseEvent me)
-            {
-            }
-
-            @Override
+			{
+			}
+			
+			@Override
 			public void mousePressed(MouseEvent me)
-            {
-            }
-
-            @Override
+			{
+			}
+			
+			@Override
 			public void mouseReleased(MouseEvent me)
-            {
-            }
-
-        });
-        m_tree.addTreeSelectionListener(new TreeSelectionListener()
-        {
-
-            @Override
+			{
+			}
+			
+		});
+		m_tree.addTreeSelectionListener(new TreeSelectionListener()
+		{
+			
+			@Override
 			public void valueChanged(TreeSelectionEvent e)
-            {
-                treeSelectionChanged(e);
-            }
-        });
-    }
-
-    private void previous()
-    {
-        if (m_tree.getSelectionCount() == 0)
-        {
-            m_tree.setSelectionInterval(0, 0);
-            return;
-        }
-
-        TreePath path = m_tree.getSelectionPath();
-
-        TreeNode selected = (TreeNode) path.getLastPathComponent();
-
-        Enumeration nodeEnum = ((DefaultMutableTreeNode) m_tree.getModel().getRoot()).depthFirstEnumeration();
-
-        TreeNode previous = null;
-
-        while (nodeEnum.hasMoreElements())
-        {
-            TreeNode current = (TreeNode) nodeEnum.nextElement();
-            if (current == selected)
-            {
-                break;
-            }
-            else if (current.getParent() instanceof Step)
-            {
-                previous = current;
-            }    
-
-            
-        }
-
-        if (previous != null)
-        {
-            navigateTo(previous);
-        }
-    }
-
-    private void navigateTo(TreeNode target)
-    {
-        TreeNode[] nodes = ((DefaultMutableTreeNode) target).getPath();
-        TreePath newPath = new TreePath(nodes);
-        m_tree.expandPath(newPath);
-        m_tree.setSelectionPath(newPath);
-        
-        int row = m_tree.getRowForPath(newPath);
-        if(row == -1)
-            return;
-        
-        Rectangle bounds = m_tree.getRowBounds(row);
-        if(bounds == null)
-            return;
-        //scroll to the far left
-        bounds.x = 0;
-        bounds.width = 10;
-        m_tree.scrollRectToVisible(bounds);
-    }
-
-    private void next()
-    {
-        if (m_tree.getSelectionCount() == 0)
-        {
-            m_tree.setSelectionInterval(0, 0);
-            return;
-        }
-
-        TreePath path = m_tree.getSelectionPath();
-
-        TreeNode selected = (TreeNode) path.getLastPathComponent();
-
-        Enumeration nodeEnum = ((DefaultMutableTreeNode) m_tree.getModel().getRoot()).preorderEnumeration();
-
-        TreeNode next = null;
-        boolean foundSelected = false;
-        while (nodeEnum.hasMoreElements())
-        {
-            TreeNode current = (TreeNode) nodeEnum.nextElement();
-            if (current == selected)
-            {
-                foundSelected = true;
-            }
-            else if(foundSelected)
-            {
-                if(current.getParent() instanceof Step)
-                {
-                    next = current;
-                    break;
-                }
-                    
-            }
-        }
-
-        if (next != null)
-        {
-            navigateTo(next);
-        }
-
-    }
-
-    private void treeSelectionChanged(TreeSelectionEvent e)
-    {
-        if(!SwingUtilities.isEventDispatchThread())
-            throw new IllegalStateException("Wrong thread");
-        
-        // move the game to the state of the selected node
-        HistoryNode node = (HistoryNode) e.getPath().getLastPathComponent();
-        gotoNode(node);
-    }
-
-    private void gotoNode(HistoryNode node)
-    {
-        if(!SwingUtilities.isEventDispatchThread()) {
-            throw new IllegalStateException("Not EDT");
-        }
-        
-        m_details.render(node);
-        m_data.getHistory().gotoNode(node);
-    }
-
-    public HistoryNode getCurrentNode()
-    {
-        TreePath path = m_tree.getSelectionPath();
-        HistoryNode curNode = (HistoryNode)path.getLastPathComponent();
-        return curNode;
-    }
-
-    public HistoryNode getCurrentPopupNode()
-    {
-        return m_currentPopupNode;
-    }
-
-    public void clearCurrentPopupNode()
-    {
-        m_currentPopupNode = null;
-    }
-
-    public void goToEnd()
-    {
-        Runnable r = new Runnable()
-        {
-            @Override
+			{
+				treeSelectionChanged(e);
+			}
+		});
+	}
+	
+	private void previous()
+	{
+		if (m_tree.getSelectionCount() == 0)
+		{
+			m_tree.setSelectionInterval(0, 0);
+			return;
+		}
+		
+		TreePath path = m_tree.getSelectionPath();
+		
+		TreeNode selected = (TreeNode) path.getLastPathComponent();
+		
+		Enumeration nodeEnum = ((DefaultMutableTreeNode) m_tree.getModel().getRoot()).depthFirstEnumeration();
+		
+		TreeNode previous = null;
+		
+		while (nodeEnum.hasMoreElements())
+		{
+			TreeNode current = (TreeNode) nodeEnum.nextElement();
+			if (current == selected)
+			{
+				break;
+			}
+			else if (current.getParent() instanceof Step)
+			{
+				previous = current;
+			}
+			
+		}
+		
+		if (previous != null)
+		{
+			navigateTo(previous);
+		}
+	}
+	
+	private void navigateTo(TreeNode target)
+	{
+		TreeNode[] nodes = ((DefaultMutableTreeNode) target).getPath();
+		TreePath newPath = new TreePath(nodes);
+		m_tree.expandPath(newPath);
+		m_tree.setSelectionPath(newPath);
+		
+		int row = m_tree.getRowForPath(newPath);
+		if (row == -1)
+			return;
+		
+		Rectangle bounds = m_tree.getRowBounds(row);
+		if (bounds == null)
+			return;
+		// scroll to the far left
+		bounds.x = 0;
+		bounds.width = 10;
+		m_tree.scrollRectToVisible(bounds);
+	}
+	
+	private void next()
+	{
+		if (m_tree.getSelectionCount() == 0)
+		{
+			m_tree.setSelectionInterval(0, 0);
+			return;
+		}
+		
+		TreePath path = m_tree.getSelectionPath();
+		
+		TreeNode selected = (TreeNode) path.getLastPathComponent();
+		
+		Enumeration nodeEnum = ((DefaultMutableTreeNode) m_tree.getModel().getRoot()).preorderEnumeration();
+		
+		TreeNode next = null;
+		boolean foundSelected = false;
+		while (nodeEnum.hasMoreElements())
+		{
+			TreeNode current = (TreeNode) nodeEnum.nextElement();
+			if (current == selected)
+			{
+				foundSelected = true;
+			}
+			else if (foundSelected)
+			{
+				if (current.getParent() instanceof Step)
+				{
+					next = current;
+					break;
+				}
+				
+			}
+		}
+		
+		if (next != null)
+		{
+			navigateTo(next);
+		}
+		
+	}
+	
+	private void treeSelectionChanged(TreeSelectionEvent e)
+	{
+		if (!SwingUtilities.isEventDispatchThread())
+			throw new IllegalStateException("Wrong thread");
+		
+		// move the game to the state of the selected node
+		HistoryNode node = (HistoryNode) e.getPath().getLastPathComponent();
+		gotoNode(node);
+	}
+	
+	private void gotoNode(HistoryNode node)
+	{
+		if (!SwingUtilities.isEventDispatchThread())
+		{
+			throw new IllegalStateException("Not EDT");
+		}
+		
+		m_details.render(node);
+		m_data.getHistory().gotoNode(node);
+	}
+	
+	public HistoryNode getCurrentNode()
+	{
+		TreePath path = m_tree.getSelectionPath();
+		HistoryNode curNode = (HistoryNode) path.getLastPathComponent();
+		return curNode;
+	}
+	
+	public HistoryNode getCurrentPopupNode()
+	{
+		return m_currentPopupNode;
+	}
+	
+	public void clearCurrentPopupNode()
+	{
+		m_currentPopupNode = null;
+	}
+	
+	public void goToEnd()
+	{
+		Runnable r = new Runnable()
+		{
+			@Override
 			public void run()
-            {
-                HistoryNode last = m_data.getHistory().getLastNode();
-                gotoNode(last);
-
-                TreePath path = new TreePath(last.getPath());
-                m_tree.expandPath(path);
-                m_tree.setSelectionPath(path);
-            }
-
-        };
-        if (SwingUtilities.isEventDispatchThread())
-            r.run();
-        else
-            SwingUtilities.invokeLater(r);
-
-    }
-
+			{
+				HistoryNode last = m_data.getHistory().getLastNode();
+				gotoNode(last);
+				
+				TreePath path = new TreePath(last.getPath());
+				m_tree.expandPath(path);
+				m_tree.setSelectionPath(path);
+			}
+			
+		};
+		if (SwingUtilities.isEventDispatchThread())
+			r.run();
+		else
+			SwingUtilities.invokeLater(r);
+		
+	}
+	
 }
+
 
 class HistoryTreeCellRenderer extends DefaultTreeCellRenderer
 {
-    private ImageIcon icon = new ImageIcon();
-
-    private final UIContext m_uiContext;
-
-    public HistoryTreeCellRenderer(UIContext context)
-    {
-        m_uiContext = context;
-    }
-
-    @Override
+	private ImageIcon icon = new ImageIcon();
+	
+	private final UIContext m_uiContext;
+	
+	public HistoryTreeCellRenderer(UIContext context)
+	{
+		m_uiContext = context;
+	}
+	
+	@Override
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean haveFocus)
-    {
-
-        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
-        if (value instanceof Step)
-        {
-            PlayerID player = ((Step) value).getPlayerID();
-            if (player != null)
-            {
-                icon.setImage(m_uiContext.getFlagImageFactory().getSmallFlag(player));
-                setIcon(icon);
-            }
-        }
-        return this;
-    }
-
+	{
+		
+		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
+		if (value instanceof Step)
+		{
+			PlayerID player = ((Step) value).getPlayerID();
+			if (player != null)
+			{
+				icon.setImage(m_uiContext.getFlagImageFactory().getSmallFlag(player));
+				setIcon(icon);
+			}
+		}
+		return this;
+	}
+	
 }

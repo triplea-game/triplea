@@ -5,65 +5,63 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package games.strategy.engine.data.properties;
-
 
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.IntTextFieldChangeListener;
 
 import javax.swing.JComponent;
 
-
 public class NumberProperty extends AEditableProperty
 {
-  // compatible with 0.9.0.2 saved games
-  private static final long serialVersionUID = 6826763550643504789L;
-
-  private int m_max;
-  private int m_min;
-  private int m_value;
-
-  public NumberProperty(String name, int max, int min, int def)
-  {
-    super(name);
-
-    if(max < min)
-      throw new IllegalThreadStateException("Max must be greater than min");
-    if(def > max || def < min)
-        throw new IllegalThreadStateException("Default value out of range");
-
-    m_max = max;
-    m_min = min;
-    m_value = def;
-  }
-
-  @Override
-public Object getValue()
-  {
-        return Integer.toString(m_value);
-  }
-
-  @Override
-public JComponent getEditorComponent()
-  {
-    IntTextField field = new  IntTextField(m_min, m_max);
-    field.setValue(m_value);
-    field.addChangeListener(new IntTextFieldChangeListener()
-    {
-      @Override
-	public void changedValue(IntTextField aField)
-      {
-        m_value = aField.getValue();
-      }
-    }
-    );
-    return field;
-  }
-
+	// compatible with 0.9.0.2 saved games
+	private static final long serialVersionUID = 6826763550643504789L;
+	
+	private int m_max;
+	private int m_min;
+	private int m_value;
+	
+	public NumberProperty(String name, int max, int min, int def)
+	{
+		super(name);
+		
+		if (max < min)
+			throw new IllegalThreadStateException("Max must be greater than min");
+		if (def > max || def < min)
+			throw new IllegalThreadStateException("Default value out of range");
+		
+		m_max = max;
+		m_min = min;
+		m_value = def;
+	}
+	
+	@Override
+	public Object getValue()
+	{
+		return Integer.toString(m_value);
+	}
+	
+	@Override
+	public JComponent getEditorComponent()
+	{
+		IntTextField field = new IntTextField(m_min, m_max);
+		field.setValue(m_value);
+		field.addChangeListener(new IntTextFieldChangeListener()
+		{
+			@Override
+			public void changedValue(IntTextField aField)
+		{
+			m_value = aField.getValue();
+		}
+		}
+					);
+		return field;
+	}
+	
 }

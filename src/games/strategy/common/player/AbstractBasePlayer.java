@@ -5,11 +5,11 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.common.player;
@@ -25,64 +25,62 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
  */
 public abstract class AbstractBasePlayer implements IGamePlayer
 {
-    protected final String m_name;
-    protected PlayerID m_id;
-    protected IPlayerBridge m_bridge;
-
+	protected final String m_name;
+	protected PlayerID m_id;
+	protected IPlayerBridge m_bridge;
+	
 	protected boolean m_scrambledUnitsReturned = false;
-    
-    /** 
-     * @param name - the name of the player.
-     */
-    public AbstractBasePlayer(String name)
-    {
-        m_name = name;
-    }
-    
-    
-    @Override
+	
+	/**
+	 * @param name
+	 *            - the name of the player.
+	 */
+	public AbstractBasePlayer(String name)
+	{
+		m_name = name;
+	}
+	
+	@Override
 	public void initialize(IPlayerBridge bridge, PlayerID id)
-    {
-        m_bridge = bridge;
-        m_id = id;
-    }
-    
-    /**
-     * Get the GameData for the game.
-     */
-    protected final GameData getGameData()
-    {
-        return m_bridge.getGameData();
-    }
-    
-    /**
-     * Get the IPlayerBridge for this game player.
-     */
-    protected final IPlayerBridge getPlayerBridge()
-    {
-        return m_bridge;
-    }
-    
-    
-    @Override
+	{
+		m_bridge = bridge;
+		m_id = id;
+	}
+	
+	/**
+	 * Get the GameData for the game.
+	 */
+	protected final GameData getGameData()
+	{
+		return m_bridge.getGameData();
+	}
+	
+	/**
+	 * Get the IPlayerBridge for this game player.
+	 */
+	protected final IPlayerBridge getPlayerBridge()
+	{
+		return m_bridge;
+	}
+	
+	@Override
 	public final String getName()
-    {
-        return m_name;
-    }
-
-    @Override
+	{
+		return m_name;
+	}
+	
+	@Override
 	public final PlayerID getID()
-    {
-        return m_id;
-    }
-
-    
-    /**
-     * The given phase has started.  We parse the phase name and call the apropiate method.
-     */
-    @Override
+	{
+		return m_id;
+	}
+	
+	/**
+	 * The given phase has started. We parse the phase name and call the apropiate method.
+	 */
+	@Override
 	public abstract void start(String stepName);
-    
-    //public abstract Class<?> getRemotePlayerType();
-    
+	
+	// public abstract Class<?> getRemotePlayerType();
+	
 }

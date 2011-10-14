@@ -1,112 +1,113 @@
 package games.strategy.engine.framework.ui.background;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.util.Timer;
+import java.util.TimerTask;
 
-import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.JWindow;
+import javax.swing.SwingUtilities;
+import javax.swing.border.LineBorder;
 
 public class WaitWindow extends JWindow
 {
-
-    private final Object m_mutex = new Object();
-    private Timer m_timer = new Timer();
-
-
-    public WaitWindow(String waitMessage)
-    {
-        // super("Game Loading, Please wait");
-        // setIconImage(GameRunner.getGameIcon(this));
-        setSize(200, 80);
-
-        WaitPanel mainPanel = new WaitPanel(waitMessage);
-
-        setLocationRelativeTo(null);
-        // setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
-        mainPanel.setBorder(new LineBorder(Color.BLACK));
-
-        setLayout(new BorderLayout());
-        add(mainPanel, BorderLayout.CENTER);
-    }
-
-    public void showWait()
-    {
-        TimerTask task = new TimerTask()
-        {
-
-            @Override
-            public void run()
-            {
-                SwingUtilities.invokeLater(new Runnable()
-                {
-                    @Override
+	
+	private final Object m_mutex = new Object();
+	private Timer m_timer = new Timer();
+	
+	public WaitWindow(String waitMessage)
+	{
+		// super("Game Loading, Please wait");
+		// setIconImage(GameRunner.getGameIcon(this));
+		setSize(200, 80);
+		
+		WaitPanel mainPanel = new WaitPanel(waitMessage);
+		
+		setLocationRelativeTo(null);
+		// setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		
+		mainPanel.setBorder(new LineBorder(Color.BLACK));
+		
+		setLayout(new BorderLayout());
+		add(mainPanel, BorderLayout.CENTER);
+	}
+	
+	public void showWait()
+	{
+		TimerTask task = new TimerTask()
+		{
+			
+			@Override
+			public void run()
+			{
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					@Override
 					public void run()
-                    {
-                        toFront();
-                    }
-                }
+					{
+						toFront();
+					}
+				}
 
-                );
-
-            }
-
-        };
-
-        synchronized(m_mutex)
-        {
-            if(m_timer != null)
-                m_timer.schedule(task, 15, 15);
-        }
-
-    }
-
-    public void doneWait()
-    {
-        synchronized(m_mutex)
-        {
-            if(m_timer != null)
-            {
-                m_timer.cancel();
-                m_timer = null;
-            }
-        }
-
-        SwingUtilities.invokeLater(new Runnable()
-        {
-
-            @Override
+				);
+				
+			}
+			
+		};
+		
+		synchronized (m_mutex)
+		{
+			if (m_timer != null)
+				m_timer.schedule(task, 15, 15);
+		}
+		
+	}
+	
+	public void doneWait()
+	{
+		synchronized (m_mutex)
+		{
+			if (m_timer != null)
+			{
+				m_timer.cancel();
+				m_timer = null;
+			}
+		}
+		
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			
+			@Override
 			public void run()
-            {
-
-                setVisible(false);
-                removeAll();
-                dispose();
-
-            }
-        });
-
-    }
-
-    public static void main(String[] args)
-    {
-
-        SwingUtilities.invokeLater(new Runnable()
-        {
-
-            @Override
+			{
+				
+				setVisible(false);
+				removeAll();
+				dispose();
+				
+			}
+		});
+		
+	}
+	
+	public static void main(String[] args)
+	{
+		
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			
+			@Override
 			public void run()
-            {
-                final WaitWindow window = new WaitWindow("Loading game, please wait.");
-                window.setVisible(true);
-
-                window.showWait();
-
-            }
-
-        });
-
-    }
-
+			{
+				final WaitWindow window = new WaitWindow("Loading game, please wait.");
+				window.setVisible(true);
+				
+				window.showWait();
+				
+			}
+			
+		});
+		
+	}
+	
 }

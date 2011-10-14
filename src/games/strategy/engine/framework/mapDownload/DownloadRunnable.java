@@ -5,55 +5,53 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class DownloadRunnable implements Runnable {
-
+public class DownloadRunnable implements Runnable
+{
 	
 	private final String urlString;
 	private volatile byte[] contents;
 	private volatile String error;
-
-	public DownloadRunnable(String urlString) {
+	
+	public DownloadRunnable(String urlString)
+	{
 		super();
 		this.urlString = urlString;
 	}
-
-
-
-	public byte[] getContents() {
+	
+	public byte[] getContents()
+	{
 		return contents;
 	}
-
-
-
-	public void setContents(byte[] contents) {
+	
+	public void setContents(byte[] contents)
+	{
 		this.contents = contents;
 	}
-
-
-
-	public String getError() {
+	
+	public String getError()
+	{
 		return error;
 	}
-
-
-
-	public void setError(String error) {
+	
+	public void setError(String error)
+	{
 		this.error = error;
 	}
-
-
-
+	
 	@Override
-	public void run() {
+	public void run()
+	{
 		
 		URL url;
-		try {
+		try
+		{
 			url = new URL(urlString.trim());
 			
-		} catch (MalformedURLException e1) {
-			error = "invalid url";							
+		} catch (MalformedURLException e1)
+		{
+			error = "invalid url";
 			return;
-		}		
+		}
 		InputStream stream;
 		try
 		{
@@ -63,13 +61,14 @@ public class DownloadRunnable implements Runnable {
 				ByteArrayOutputStream sink = new ByteArrayOutputStream();
 				InstallMapDialog.copy(sink, stream);
 				contents = sink.toByteArray();
-			} finally {
+			} finally
+			{
 				stream.close();
 			}
-		} catch(Exception e) {
+		} catch (Exception e)
+		{
 			error = e.getMessage();
 		}
 	}
-	
 	
 }

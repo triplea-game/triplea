@@ -14,84 +14,79 @@ import javax.swing.SwingUtilities;
 
 public class MemoryLabel extends JLabel
 {
-
-    public MemoryLabel()
-    {
-        update();
-        
-        addMouseListener( new MouseAdapter()
-        {
-        
-            @Override
+	
+	public MemoryLabel()
+	{
+		update();
+		
+		addMouseListener(new MouseAdapter()
+		{
+			
+			@Override
 			public void mouseReleased(MouseEvent e)
-            {
-                if(e.isPopupTrigger())
-                    gc(e);
-
-            }
-        
-            @Override
+			{
+				if (e.isPopupTrigger())
+					gc(e);
+				
+			}
+			
+			@Override
 			public void mousePressed(MouseEvent e)
-            {
-                if(e.isPopupTrigger())
-                    gc(e);
-
-            }
-        
-        });
-        
-        
-        Thread t = new Thread(new Updater(this), "Memory Label Updater");
-        t.start();
-    }
-    
-    protected void gc(MouseEvent e)
-    {
-        JPopupMenu menu = new JPopupMenu();
-        menu.add(new AbstractAction("Garbage Collect")
-        {
-        
-            @Override
+			{
+				if (e.isPopupTrigger())
+					gc(e);
+				
+			}
+			
+		});
+		
+		Thread t = new Thread(new Updater(this), "Memory Label Updater");
+		t.start();
+	}
+	
+	protected void gc(MouseEvent e)
+	{
+		JPopupMenu menu = new JPopupMenu();
+		menu.add(new AbstractAction("Garbage Collect")
+		{
+			
+			@Override
 			public void actionPerformed(ActionEvent arg0)
-            {
-                System.gc();
-                System.runFinalization();
-                System.gc();
-                System.runFinalization();
-                System.gc();
-            }
-        });
-        
-        menu.show(this, e.getX(), e.getY());
-    }
-
-    public void update()
-    {
-        long free = Runtime.getRuntime().freeMemory();
-        long total = Runtime.getRuntime().totalMemory();
-        long used = total - free;
-        
-        DecimalFormat format = new DecimalFormat("###.##");
-        
-        setText(  format.format(used / 1000000.0) + "/" + format.format(total / 1000000.0) + " MB");
-    }
-    
-    
-    
-    
-    public static void main(String[] args)
-    {
-        JFrame f = new JFrame();
-        f.add(new MemoryLabel());
-        f.pack();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setVisible(true);
-        
-    }
-    
-    
-    
+			{
+				System.gc();
+				System.runFinalization();
+				System.gc();
+				System.runFinalization();
+				System.gc();
+			}
+		});
+		
+		menu.show(this, e.getX(), e.getY());
+	}
+	
+	public void update()
+	{
+		long free = Runtime.getRuntime().freeMemory();
+		long total = Runtime.getRuntime().totalMemory();
+		long used = total - free;
+		
+		DecimalFormat format = new DecimalFormat("###.##");
+		
+		setText(format.format(used / 1000000.0) + "/" + format.format(total / 1000000.0) + " MB");
+	}
+	
+	public static void main(String[] args)
+	{
+		JFrame f = new JFrame();
+		f.add(new MemoryLabel());
+		f.pack();
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setVisible(true);
+		
+	}
+	
 }
+
 
 /**
  * 
@@ -101,50 +96,51 @@ public class MemoryLabel extends JLabel
  */
 class Updater implements Runnable
 {
-    private final WeakReference<MemoryLabel> m_label;
-    
-    Updater(MemoryLabel label)
-    {
-        m_label = new WeakReference<MemoryLabel>(label);
-    }
-    
-    @Override
+	private final WeakReference<MemoryLabel> m_label;
+	
+	Updater(MemoryLabel label)
+	{
+		m_label = new WeakReference<MemoryLabel>(label);
+	}
+	
+	@Override
 	public void run()
-    {
-        while(m_label.get() != null)
-        {
-            sleep();            
-            update();
-        }
-        
-    }
-
-    private void update()
-    {
-        SwingUtilities.invokeLater( new Runnable()
-        {
-        
-            @Override
+	{
+		while (m_label.get() != null)
+		{
+			sleep();
+			update();
+		}
+		
+	}
+	
+	private void update()
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			
+			@Override
 			public void run()
-            {
-                MemoryLabel label = m_label.get();
-                if(!label.isVisible())
-                    return;
-                
-                if(label != null)
-                    label.update();
-            }
-        
-        });
-    }
-
-    private void sleep()
-    {
-        try
-        {
-            Thread.sleep(2000);
-        } catch (InterruptedException e)
-        {}
-    }
-    
+			{
+				MemoryLabel label = m_label.get();
+				if (!label.isVisible())
+					return;
+				
+				if (label != null)
+					label.update();
+			}
+			
+		});
+	}
+	
+	private void sleep()
+	{
+		try
+		{
+			Thread.sleep(2000);
+		} catch (InterruptedException e)
+		{
+		}
+	}
+	
 }

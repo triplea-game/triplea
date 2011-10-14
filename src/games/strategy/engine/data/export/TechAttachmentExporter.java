@@ -5,17 +5,16 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 
 /*
  * TechAttachmentExporter.java
- *
+ * 
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
 
@@ -25,20 +24,23 @@ import games.strategy.engine.data.IAttachment;
 
 import java.lang.reflect.Field;
 
-public class TechAttachmentExporter extends DefaultAttachmentExporter {
+public class TechAttachmentExporter extends DefaultAttachmentExporter
+{
 	
 	@Override
-	protected String printOption(Field field, IAttachment attachment) throws AttachmentExportException {
+	protected String printOption(Field field, IAttachment attachment) throws AttachmentExportException
+	{
 		String fieldName = field.getName();
-		if(fieldName.equals("m_GenericTech")) 
+		if (fieldName.equals("m_GenericTech"))
 			return ""; // GenericTech not set by XML
-			//return mGenericTechHandler(field,attachment);
-		return super.printOption(field, attachment);		
+		// return mGenericTechHandler(field,attachment);
+		return super.printOption(field, attachment);
 	}
 	
 	@Override
-	protected String printBooleanOption(Field field, String option, IAttachment attachment) throws AttachmentExportException {
-		return printBooleanOption(field,option,attachment,true);
+	protected String printBooleanOption(Field field, String option, IAttachment attachment) throws AttachmentExportException
+	{
+		return printBooleanOption(field, option, attachment, true);
 	}
-
+	
 }

@@ -18,29 +18,24 @@ import junit.framework.TestCase;
 
 public class StatusTest extends TestCase
 {
-
-    
-    public void testStatus() throws Exception
-    {
-        DummyMessenger messenger = new DummyMessenger();
-        Messengers messengers = new Messengers(messenger);
-        
-        StatusManager manager = new StatusManager(messengers);
-        
-        assertNull(manager.getStatus(messenger.getLocalNode()));
-        
-        manager.setStatus("test");
-        
-        
-        Thread.sleep(200);
-        
-        assertEquals("test", manager.getStatus(messenger.getLocalNode()));
-        
-        
-        
-        assertEquals("test", new StatusManager(messengers).getStatus(messenger.getLocalNode()));
-        
-    }
-    
+	
+	public void testStatus() throws Exception
+	{
+		DummyMessenger messenger = new DummyMessenger();
+		Messengers messengers = new Messengers(messenger);
+		
+		StatusManager manager = new StatusManager(messengers);
+		
+		assertNull(manager.getStatus(messenger.getLocalNode()));
+		
+		manager.setStatus("test");
+		
+		Thread.sleep(200);
+		
+		assertEquals("test", manager.getStatus(messenger.getLocalNode()));
+		
+		assertEquals("test", new StatusManager(messengers).getStatus(messenger.getLocalNode()));
+		
+	}
+	
 }
- 

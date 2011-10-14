@@ -15,13 +15,13 @@
 package games.strategy.triplea.Dynamix_AI.Others;
 
 /**
- *
+ * 
  * @author Stephen
  */
 public enum BattleCalculationType
 {
-    BattleCalculator,
-    QuickBattleCalculator,
-    BasicScoreEval,
-    BasicStrengthEval
+	BattleCalculator,
+	QuickBattleCalculator,
+	BasicScoreEval,
+	BasicStrengthEval
 }

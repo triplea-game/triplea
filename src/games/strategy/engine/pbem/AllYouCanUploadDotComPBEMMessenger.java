@@ -5,25 +5,32 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * AllYouCanUploadDotComPBEMMessenger.java
- *
- *
+ * 
+ * 
  * Created on November 21, 2006, 8:56 PM
  */
 
 package games.strategy.engine.pbem;
 
 import games.strategy.net.MultiPartFormOutputStream;
-import java.io.*;
-import java.net.*;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,166 +39,163 @@ import java.util.regex.Pattern;
  * @version 1.0
  */
 public class AllYouCanUploadDotComPBEMMessenger
-    implements IPBEMScreenshotMessenger
+			implements IPBEMScreenshotMessenger
 {
-    private transient String m_screenshotRef = null;
-
-    public AllYouCanUploadDotComPBEMMessenger()
-    {
-    }
-
-    @Override
-	public String getName()
-    {
-        return "www.AllYouCanUpload.com";
-    }
-
-    @Override
-	public boolean getNeedsUsername()
-    {
-        return false;
-    }
-
-    @Override
-	public boolean getNeedsPassword()
-    {
-        return false;
-    }
-
-    @Override
-	public boolean getCanViewPosted()
-    {
-        return false;
-    }
-
-    @Override
-	public void viewPosted()
-    {
-    }
-
-    @Override
-	public void setGameId(String gameId)
-    {
-    }
-
-    @Override
-	public String getGameId()
-    {
-        return null;
-    }
-
-    @Override
-	public void setUsername(String username)
-    {
-    }
-
-    @Override
-	public String getUsername()
-    {
-        return null;
-    }
-
-    @Override
-	public void setPassword(String password)
-    {
-    }
-
-    @Override
-	public String getPassword()
-    {
-        return null;
-    }
-
-    @Override
-	public boolean postScreenshot(String fileName, InputStream fileIn)
-        throws IOException
-    {
-        URL url = null;
-        URLConnection urlConn = null;
-        MultiPartFormOutputStream out = null;
-
-        m_screenshotRef = null;
-
-        // set up connection
-        try
-        {
-            url = new URL("http://allyoucanupload.webshots.com/uploadcomplete");
-        }
-        catch(MalformedURLException e)
-        {
-            e.printStackTrace();
-            return false;
-        }
-        try
-        {
-            String boundary = MultiPartFormOutputStream.createBoundary();
-            urlConn = MultiPartFormOutputStream.createConnection(url);
-            urlConn.setRequestProperty("Accept", "*/*");
-            urlConn.setRequestProperty("Content-Type", MultiPartFormOutputStream.getContentType(boundary));
-            urlConn.setRequestProperty("Connection", "Keep-Alive");
-            urlConn.setRequestProperty("Cache-Control", "no-cache");
-            ((HttpURLConnection)urlConn).setInstanceFollowRedirects(true);
-            out = new MultiPartFormOutputStream(urlConn.getOutputStream(), boundary);
-            out.writeField("imagesCount", "1");
-            out.writeField("images[0].submittedPhotoSize", "100%");
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            return false;
-        }
-        // this one throws an exception
-        out.writeFile("images[0].fileName", "image/png", fileName, fileIn);
-
-        // send request to server
-        out.close();
-
-        int code = ((HttpURLConnection)urlConn).getResponseCode();
-        if(code != 200)
+	private transient String m_screenshotRef = null;
+	
+	public AllYouCanUploadDotComPBEMMessenger()
 	{
-            // http error
-            String msg = ((HttpURLConnection)urlConn).getResponseMessage();
-            m_screenshotRef = String.valueOf(code)+": "+msg;
-            return false;
 	}
-        // read response from server
-        try
-        {
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-            String line = "";
-            // server will always serve images in .jpg format
-            Pattern p = Pattern.compile(".*?<input type=\"text\" .*?value=\"(http://.*?jpg)\">.*");
-            while ((line = in.readLine()) != null)
-            {
-                Matcher m = p.matcher(line);
-                if(m.matches())
-                    m_screenshotRef = m.group(1);
-            }
-            in.close();
-        }
-        catch(IOException ioe)
-        {
-            ioe.printStackTrace();
-            return false;
-        }
-        if(m_screenshotRef == null)
-        {
-            m_screenshotRef = "Error: screenshot URL could not be found after posting.";
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
+	
+	@Override
+	public String getName()
+	{
+		return "www.AllYouCanUpload.com";
+	}
+	
+	@Override
+	public boolean getNeedsUsername()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean getNeedsPassword()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean getCanViewPosted()
+	{
+		return false;
+	}
+	
+	@Override
+	public void viewPosted()
+	{
+	}
+	
+	@Override
+	public void setGameId(String gameId)
+	{
+	}
+	
+	@Override
+	public String getGameId()
+	{
+		return null;
+	}
+	
+	@Override
+	public void setUsername(String username)
+	{
+	}
+	
+	@Override
+	public String getUsername()
+	{
+		return null;
+	}
+	
+	@Override
+	public void setPassword(String password)
+	{
+	}
+	
+	@Override
+	public String getPassword()
+	{
+		return null;
+	}
+	
+	@Override
+	public boolean postScreenshot(String fileName, InputStream fileIn)
+				throws IOException
+	{
+		URL url = null;
+		URLConnection urlConn = null;
+		MultiPartFormOutputStream out = null;
+		
+		m_screenshotRef = null;
+		
+		// set up connection
+		try
+		{
+			url = new URL("http://allyoucanupload.webshots.com/uploadcomplete");
+		} catch (MalformedURLException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		try
+		{
+			String boundary = MultiPartFormOutputStream.createBoundary();
+			urlConn = MultiPartFormOutputStream.createConnection(url);
+			urlConn.setRequestProperty("Accept", "*/*");
+			urlConn.setRequestProperty("Content-Type", MultiPartFormOutputStream.getContentType(boundary));
+			urlConn.setRequestProperty("Connection", "Keep-Alive");
+			urlConn.setRequestProperty("Cache-Control", "no-cache");
+			((HttpURLConnection) urlConn).setInstanceFollowRedirects(true);
+			out = new MultiPartFormOutputStream(urlConn.getOutputStream(), boundary);
+			out.writeField("imagesCount", "1");
+			out.writeField("images[0].submittedPhotoSize", "100%");
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		// this one throws an exception
+		out.writeFile("images[0].fileName", "image/png", fileName, fileIn);
+		
+		// send request to server
+		out.close();
+		
+		int code = ((HttpURLConnection) urlConn).getResponseCode();
+		if (code != 200)
+		{
+			// http error
+			String msg = ((HttpURLConnection) urlConn).getResponseMessage();
+			m_screenshotRef = String.valueOf(code) + ": " + msg;
+			return false;
+		}
+		// read response from server
+		try
+		{
+			BufferedReader in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+			String line = "";
+			// server will always serve images in .jpg format
+			Pattern p = Pattern.compile(".*?<input type=\"text\" .*?value=\"(http://.*?jpg)\">.*");
+			while ((line = in.readLine()) != null)
+			{
+				Matcher m = p.matcher(line);
+				if (m.matches())
+					m_screenshotRef = m.group(1);
+			}
+			in.close();
+		} catch (IOException ioe)
+		{
+			ioe.printStackTrace();
+			return false;
+		}
+		if (m_screenshotRef == null)
+		{
+			m_screenshotRef = "Error: screenshot URL could not be found after posting.";
+			return false;
+		}
+		
+		return true;
+	}
+	
+	@Override
 	public String getScreenshotRef()
-    {
-        return m_screenshotRef;
-    }
-
-    @Override
+	{
+		return m_screenshotRef;
+	}
+	
+	@Override
 	public String toString()
-    {
-        return getName();
-    }
+	{
+		return getName();
+	}
 }

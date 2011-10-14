@@ -5,27 +5,30 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * TripleAPlayer.java
- *
+ * 
  * Created on November 2, 2001, 8:45 PM
  */
 
 package games.strategy.triplea;
 
 import games.strategy.common.player.AbstractHumanPlayer;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.attatchments.PlayerAttachment;
@@ -44,10 +47,10 @@ import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.dataObjects.TechRoll;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
+import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.BattleDisplay;
@@ -60,10 +63,6 @@ import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.delegate.IDelegate;
-import games.strategy.engine.delegate.IDelegateBridge;
-
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,6 +70,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
@@ -82,91 +82,96 @@ import javax.swing.SwingUtilities;
  */
 public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements IGamePlayer, ITripleaPlayer
 {
-    /** Creates new TripleAPlayer */
-    public TripleAPlayer(String name)
-    {
-        super(name);
-    }
-
-    @Override
+	/** Creates new TripleAPlayer */
+	public TripleAPlayer(String name)
+	{
+		super(name);
+	}
+	
+	@Override
 	public void reportError(String error)
-    {
-        m_ui.notifyError(error);
-    }
-    
-    @Override
+	{
+		m_ui.notifyError(error);
+	}
+	
+	@Override
 	public void reportMessage(String message)
-    {
-        m_ui.notifyMessage(message);
-    }
- 
-    @Override
+	{
+		m_ui.notifyMessage(message);
+	}
+	
+	@Override
 	public void start(String name)
-    {
-        boolean badStep = false;
-
-        try 
-        {
-            m_ui.setEditDelegate((IEditDelegate)m_bridge.getRemote("edit"));
-        }
-        catch (Exception e)
-        {
-        }
-        
-        SwingUtilities.invokeLater( new Runnable() {
-        
-            @Override
-			public void run() {
-                m_ui.getEditModeButtonModel().addActionListener(m_editModeAction);
-                m_ui.getEditModeButtonModel().setEnabled(true);        
-            }
-        });
-        
-        triggerBeforeTriggerAttachments();
-        if (name.endsWith("Bid"))
-            purchase(true);
-        else if (name.endsWith("Tech"))
-            tech();
-        else if (name.endsWith("TechActivation"))
-            {} // the delegate handles everything
-        else if (name.endsWith("Purchase"))
-            purchase(false);
-        else if (name.endsWith("Move"))
-            move(name.endsWith("NonCombatMove"));
-        else if (name.endsWith("Battle"))
-            battle();
-        else if (name.endsWith("Place"))
-            place(name.endsWith("BidPlace"));
-        else if (name.endsWith("Politics"))
-        	politics();
-        else if (name.endsWith("EndTurn"))
-            endTurn();
-        else
-            badStep = true;
-
-        
-        SwingUtilities.invokeLater( new Runnable() {
-            
-            @Override
-			public void run() {
-                m_ui.getEditModeButtonModel().setEnabled(false);
-                m_ui.getEditModeButtonModel().removeActionListener(m_editModeAction);
-                m_ui.setEditDelegate(null);
-            }}
-        );
-        
-        
-        if (badStep)
-            throw new IllegalArgumentException("Unrecognized step name:" + name);
-        triggerAfterTriggerAttachments();
-
-    }
-
-	private void triggerBeforeTriggerAttachments() {
+	{
+		boolean badStep = false;
+		
+		try
+		{
+			m_ui.setEditDelegate((IEditDelegate) m_bridge.getRemote("edit"));
+		} catch (Exception e)
+		{
+		}
+		
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				m_ui.getEditModeButtonModel().addActionListener(m_editModeAction);
+				m_ui.getEditModeButtonModel().setEnabled(true);
+			}
+		});
+		
+		triggerBeforeTriggerAttachments();
+		if (name.endsWith("Bid"))
+			purchase(true);
+		else if (name.endsWith("Tech"))
+			tech();
+		else if (name.endsWith("TechActivation"))
+		{
+		} // the delegate handles everything
+		else if (name.endsWith("Purchase"))
+			purchase(false);
+		else if (name.endsWith("Move"))
+			move(name.endsWith("NonCombatMove"));
+		else if (name.endsWith("Battle"))
+			battle();
+		else if (name.endsWith("Place"))
+			place(name.endsWith("BidPlace"));
+		else if (name.endsWith("Politics"))
+			politics();
+		else if (name.endsWith("EndTurn"))
+			endTurn();
+		else
+			badStep = true;
+		
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				m_ui.getEditModeButtonModel().setEnabled(false);
+				m_ui.getEditModeButtonModel().removeActionListener(m_editModeAction);
+				m_ui.setEditDelegate(null);
+			}
+		}
+					);
+		
+		if (badStep)
+			throw new IllegalArgumentException("Unrecognized step name:" + name);
+		triggerAfterTriggerAttachments();
+		
+	}
+	
+	private void triggerBeforeTriggerAttachments()
+	{
 		triggerWhenTriggerAttachments(TriggerAttachment.BEFORE);
 	}
-    
-	private void triggerAfterTriggerAttachments() {
+	
+	private void triggerAfterTriggerAttachments()
+	{
 		triggerWhenTriggerAttachments(TriggerAttachment.AFTER);
 	}
 	
@@ -178,685 +183,673 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			{
 				String stepName = getGameData().getSequence().getStep().getName();
 				IDelegateBridge aBridge = getGameData().getSequence().getStep().getDelegate().getBridge();
-				//TODO: add all possible triggers here (in addition to their default locations)
-                TriggerAttachment.triggerPlayerPropertyChange(aPlayer, aBridge, beforeOrAfter, stepName);
-                TriggerAttachment.triggerRelationshipTypePropertyChange(aPlayer, aBridge, beforeOrAfter, stepName);
-                TriggerAttachment.triggerTerritoryPropertyChange(aPlayer, aBridge, beforeOrAfter, stepName);
-                TriggerAttachment.triggerUnitPropertyChange(aPlayer, aBridge, beforeOrAfter, stepName);
-                TriggerAttachment.triggerTerritoryEffectPropertyChange(aPlayer, aBridge, beforeOrAfter, stepName);
-	
+				// TODO: add all possible triggers here (in addition to their default locations)
+				TriggerAttachment.triggerPlayerPropertyChange(aPlayer, aBridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerRelationshipTypePropertyChange(aPlayer, aBridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerTerritoryPropertyChange(aPlayer, aBridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerUnitPropertyChange(aPlayer, aBridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerTerritoryEffectPropertyChange(aPlayer, aBridge, beforeOrAfter, stepName);
+				
 				TriggerAttachment.triggerRelationshipChange(aPlayer, aBridge, beforeOrAfter, stepName);
-                TriggerAttachment.triggerAvailableTechChange(aPlayer, aBridge, beforeOrAfter, stepName);
-                TriggerAttachment.triggerTechChange(aPlayer, aBridge, beforeOrAfter, stepName);
-                TriggerAttachment.triggerProductionFrontierEditChange(aPlayer, aBridge, beforeOrAfter, stepName);
-                TriggerAttachment.triggerProductionChange(aPlayer, aBridge, beforeOrAfter, stepName);
-                TriggerAttachment.triggerPurchase(aPlayer, aBridge, beforeOrAfter, stepName);
-                TriggerAttachment.triggerSupportChange(aPlayer, aBridge, beforeOrAfter, stepName);
-                TriggerAttachment.triggerUnitPlacement(aPlayer, aBridge, beforeOrAfter, stepName);
-                TriggerAttachment.triggerResourceChange(aPlayer, aBridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerAvailableTechChange(aPlayer, aBridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerTechChange(aPlayer, aBridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerProductionFrontierEditChange(aPlayer, aBridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerProductionChange(aPlayer, aBridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerPurchase(aPlayer, aBridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerSupportChange(aPlayer, aBridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerUnitPlacement(aPlayer, aBridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerResourceChange(aPlayer, aBridge, beforeOrAfter, stepName);
 				
 				// now do notifications:
-                Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(aPlayer, aBridge, beforeOrAfter, stepName).iterator();
+				Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(aPlayer, aBridge, beforeOrAfter, stepName).iterator();
 				while (notificationMessages.hasNext())
 				{
 					String notificationMessageKey = notificationMessages.next();
-                    String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
+					String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
 					message = "<html>" + message + "</html>";
 					m_ui.notification(message);
 				}
 				
 				// now do victory messages:
-				Tuple<String,Collection<PlayerID>> winnersMessage = TriggerAttachment.triggerVictory(aPlayer, aBridge, beforeOrAfter, stepName);
-		    	if (winnersMessage != null && winnersMessage.getFirst() != null)
-		    	{ 
+				Tuple<String, Collection<PlayerID>> winnersMessage = TriggerAttachment.triggerVictory(aPlayer, aBridge, beforeOrAfter, stepName);
+				if (winnersMessage != null && winnersMessage.getFirst() != null)
+				{
 					String victoryMessage = winnersMessage.getFirst();
-		    		victoryMessage = NotificationMessages.getInstance().getMessage(victoryMessage);
-		    		victoryMessage = "<html>" + victoryMessage + "</html>";
-		    		IDelegate delegateEndRound = getGameData().getDelegateList().getDelegate("endRound");
-		    		((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage, winnersMessage.getSecond(), aBridge);
-		    	}
+					victoryMessage = NotificationMessages.getInstance().getMessage(victoryMessage);
+					victoryMessage = "<html>" + victoryMessage + "</html>";
+					IDelegate delegateEndRound = getGameData().getDelegateList().getDelegate("endRound");
+					((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage, winnersMessage.getSecond(), aBridge);
+				}
 			}
 		}
 	}
 	
 	private void triggerDefaultNotificationTriggerAttachments()
 	{
-        Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(m_id, getGameData().getSequence().getStep().getDelegate().getBridge(), null, null).iterator();
+		Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(m_id, getGameData().getSequence().getStep().getDelegate().getBridge(), null, null).iterator();
 		while (notificationMessages.hasNext())
 		{
 			String notificationMessageKey = notificationMessages.next();
-            String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
+			String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
 			message = "<html>" + message + "</html>";
 			m_ui.notification(message);
 		}
 	}
-
-
+	
 	private AbstractAction m_editModeAction = new AbstractAction()
-    {
-        @Override
+	{
+		@Override
 		public void actionPerformed(ActionEvent ae)
-        {
-            boolean editMode = ((ButtonModel)ae.getSource()).isSelected();
-            try 
-            {
-                // Set edit mode
-                // All GameDataChangeListeners will be notified upon success
-                IEditDelegate editDelegate = (IEditDelegate) m_bridge.getRemote("edit");
-                editDelegate.setEditMode(editMode);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-                // toggle back to previous state since setEditMode failed
-                m_ui.getEditModeButtonModel().setSelected(!m_ui.getEditModeButtonModel().isSelected());
-            }
-        }
-    };
-    
-	private void politics() {
+		{
+			boolean editMode = ((ButtonModel) ae.getSource()).isSelected();
+			try
+			{
+				// Set edit mode
+				// All GameDataChangeListeners will be notified upon success
+				IEditDelegate editDelegate = (IEditDelegate) m_bridge.getRemote("edit");
+				editDelegate.setEditMode(editMode);
+			}
+				catch (Exception e)
+			{
+				e.printStackTrace();
+				// toggle back to previous state since setEditMode failed
+				m_ui.getEditModeButtonModel().setSelected(!m_ui.getEditModeButtonModel().isSelected());
+			}
+		}
+	};
+	
+	private void politics()
+	{
 	}
 	
-    private void tech()
-    {
-        //can we tech?
-        m_bridge.getGameData().acquireReadLock();
-        try
-        {
-            if (m_id.getResources().getQuantity(Constants.PUS) == 0 || !isTechDevelopment(m_bridge.getGameData()))
-                return;
-        }
-        finally 
-        {
-            m_bridge.getGameData().releaseReadLock();
-        }
-
-        TechRoll techRoll = m_ui.getTechRolls(m_id);
-        if (techRoll != null)
-        {
-            ITechDelegate techDelegate = (ITechDelegate) m_bridge.getRemote();
-            TechResults techResults = techDelegate.rollTech(
-                    techRoll.getRolls(), techRoll.getTech(), techRoll.getNewTokens());
-
-            if (techResults.isError())
-            {
-                m_ui.notifyError(techResults.getErrorString());
-                tech();
-            } else
-                m_ui.notifyTechResults(techResults);
-        }
-    }
-
-    private void move(boolean nonCombat)
-    {
-    	if (!nonCombat && games.strategy.triplea.Properties.getTriggers(getGameData()))
-    		triggerDefaultNotificationTriggerAttachments();
-    	
-    	if (!m_scrambledUnitsReturned && nonCombat && getScramble_Rules_In_Effect())
-    	{
-    		m_scrambledUnitsReturned = true;
-    		CompositeMatchAnd<Unit> unitWasScrambled = new CompositeMatchAnd<Unit>();
-    		unitWasScrambled.add(Matches.UnitWasScrambled);
-
-    		Collection<Unit> scrambledUnits = new ArrayList<Unit>();
-
-        	//territories
-    		for(Territory t : m_bridge.getGameData().getMap().getTerritories())
-    		{
-    			scrambledUnits.addAll(t.getUnits().getMatches(unitWasScrambled));
-    		}
-
-        	//units were scrambled, move them
-    		if(!scrambledUnits.isEmpty())
-    			returnScrambledUnits(scrambledUnits);
-    	}
-    	
-        if (!hasUnitsThatCanMove(nonCombat))
-            return;
-
-        MoveDescription moveDescription = m_ui.getMove(m_id, m_bridge, nonCombat);
-        if (moveDescription == null)
-        {
-            if (nonCombat)
-            {
-                if(!canAirLand(true, m_id))
-                    move(nonCombat);
-            }
-            else
-            {       	
-            	if(canUnitsFight())
-            		move(nonCombat);
-            }
-            return;
-        }
-
-        IMoveDelegate moveDel = (IMoveDelegate) m_bridge.getRemote();
-        String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute(), moveDescription.getTransportsThatCanBeLoaded());
-        
-        if (error != null )
-            m_ui.notifyError(error);
-        move(nonCombat);	
-    }
-    
-    private void returnScrambledUnits(Collection<Unit> scrambledUnits)
-    {	
-    	// find only players with units in the collection
-    	Collection <PlayerID> players = new ArrayList<PlayerID>();
-    	for(Unit unit : scrambledUnits)
-    	{
-    		if(!players.contains(unit.getOwner()))
-    			players.add(unit.getOwner());
-    	}
-
-    	for(PlayerID player : players)
-    	{
-    		MoveDescription moveDescription = m_ui.getMove(player, m_bridge, true);
-    		 if (moveDescription == null)
-    	        {
-    			 if(!canAirLand(true, player))
-    				 move(true);
-    			 return;
-    	        }
-
-    		 IMoveDelegate moveDel = (IMoveDelegate) m_bridge.getRemote();
-    		 String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute());
-
-    		 if (error != null )
-    			 m_ui.notifyError(error);
-
-    		 //get just the player's units
-    		 Collection <Unit> playerUnits = new ArrayList<Unit>();
-    		 playerUnits.addAll(Match.getMatches(scrambledUnits, Matches.unitIsOwnedBy(player)));
-
-    		 //if they haven't all been moved- do it again
-    		 if(Match.someMatch(playerUnits, Matches.UnitWasScrambled))
-    		 {
-    			 returnScrambledUnits(scrambledUnits);
-    		 }
-    	}
-    	
-    	return;
-    }
-    
-    private boolean canAirLand(boolean movePhase, PlayerID player)
-    {
-        
-        Collection<Territory> airCantLand;
-        if(movePhase)
-            airCantLand = ((IMoveDelegate) m_bridge.getRemote()).getTerritoriesWhereAirCantLand(player);
-        else
-            airCantLand = ((IAbstractPlaceDelegate) m_bridge.getRemote()).getTerritoriesWhereAirCantLand();
-        
-        if (airCantLand.isEmpty())
-            return true;
-        else
-        {
-            StringBuilder buf = new StringBuilder(
-                    "Air in following territories cant land:");
-            Iterator<Territory> iter = airCantLand.iterator();
-            while (iter.hasNext())
-            {
-                buf.append(((Territory) iter.next()).getName());
-                buf.append(" ");
-            }
-            if (!m_ui.getOKToLetAirDie(m_id, buf.toString(), movePhase))
-                return false;
-            return true;
-        }
-    }
-    
-    private boolean canUnitsFight()
-    {        
-        Collection<Territory> unitsCantFight;
-        
-        unitsCantFight = ((IMoveDelegate) m_bridge.getRemote()).getTerritoriesWhereUnitsCantFight();
-        
-        
-        if (unitsCantFight.isEmpty())
-            return false;
-        else
-        {
-            StringBuilder buf = new StringBuilder(
-                    "Units in the following territories will die:");
-            Iterator<Territory> iter = unitsCantFight.iterator();
-            while (iter.hasNext())
-            {
-                buf.append(((Territory) iter.next()).getName());
-                buf.append(" ");
-            }
-            if (m_ui.getOKToLetUnitsDie(m_id, buf.toString(), true))
-                return false;
-            return true;
-        }
-    }
-    private boolean hasUnitsThatCanMove(boolean nonCom)
-    {
-        CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>();
-        moveableUnitOwnedByMe.add(Matches.unitIsOwnedBy(m_id));
-        moveableUnitOwnedByMe.add(Matches.UnitIsNotStatic(m_id));
-        //if not non combat, can not move aa units
-        if(!nonCom)
-            moveableUnitOwnedByMe.add(new InverseMatch<Unit>(Matches.UnitIsAAorIsAAmovement));
-
-        m_bridge.getGameData().acquireReadLock();
-        try
-        {
-            Iterator<Territory> territoryIter = m_bridge.getGameData().getMap()
-                    .getTerritories().iterator();
-            while (territoryIter.hasNext())
-            {
-                Territory item = (Territory) territoryIter.next();
-                if (item.getUnits().someMatch(moveableUnitOwnedByMe))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        finally 
-        {
-            m_bridge.getGameData().releaseReadLock();
-        }
-
-    }
-
-    private void purchase(boolean bid)
-    {
-        if (bid)
-        {
-            if(!BidPurchaseDelegate.doesPlayerHaveBid(m_bridge.getGameData(), m_id))
-                return;
-        }
-        
-        // NoPUPurchaseDelegate will run first, before this section. After running, the engine will wait for the player by coming here. Exit if we are a No PU delegate purchase
-        if (this.m_bridge.getStepName().endsWith("NoPUPurchase"))
-        	return;
-        
-        //we have no production frontier
-        else if(m_id.getProductionFrontier() == null || m_id.getProductionFrontier().getRules().isEmpty())
-        {
-            return;
-        }         
-        else
-        {
-            //if my capital is captured, I can't produce, but I may have PUs if I captured someone else's capital
-        	List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(m_id, m_bridge.getGameData()));
-        	List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(m_id, m_bridge.getGameData()));
-        	PlayerAttachment pa = PlayerAttachment.get(m_id);
-        	if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
-        		return;
-            
-            int minPUsNeededToBuild = Integer.MAX_VALUE;
-            m_bridge.getGameData().acquireReadLock();
-            try
-            {
-                Iterator<ProductionRule> prodRules = m_id.getProductionFrontier().getRules().iterator();
-                while(prodRules.hasNext())
-                {
-                    ProductionRule rule = (ProductionRule) prodRules.next();
-                    minPUsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.PUS)), minPUsNeededToBuild);
-                }
-                     
-                if(m_id.getRepairFrontier() != null)
-                {
-                    Iterator<RepairRule> repairRules = m_id.getRepairFrontier().getRules().iterator();
-                    while(repairRules.hasNext())
-                    {
-                        RepairRule rule = (RepairRule) repairRules.next();
-                        minPUsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.PUS)), minPUsNeededToBuild);
-                    }
-                }
-                
-                //can we buy anything
-                if (m_id.getResources().getQuantity(Constants.PUS) < minPUsNeededToBuild)
-                    return;
-            }
-            finally
-            {
-                m_bridge.getGameData().releaseReadLock();
-            }
-        }
-
-      //Check if any factories need to be repaired
-        String error = null;
+	private void tech()
+	{
+		// can we tech?
+		m_bridge.getGameData().acquireReadLock();
+		try
+		{
+			if (m_id.getResources().getQuantity(Constants.PUS) == 0 || !isTechDevelopment(m_bridge.getGameData()))
+				return;
+		} finally
+		{
+			m_bridge.getGameData().releaseReadLock();
+		}
+		
+		TechRoll techRoll = m_ui.getTechRolls(m_id);
+		if (techRoll != null)
+		{
+			ITechDelegate techDelegate = (ITechDelegate) m_bridge.getRemote();
+			TechResults techResults = techDelegate.rollTech(
+						techRoll.getRolls(), techRoll.getTech(), techRoll.getNewTokens());
+			
+			if (techResults.isError())
+			{
+				m_ui.notifyError(techResults.getErrorString());
+				tech();
+			}
+			else
+				m_ui.notifyTechResults(techResults);
+		}
+	}
+	
+	private void move(boolean nonCombat)
+	{
+		if (!nonCombat && games.strategy.triplea.Properties.getTriggers(getGameData()))
+			triggerDefaultNotificationTriggerAttachments();
+		
+		if (!m_scrambledUnitsReturned && nonCombat && getScramble_Rules_In_Effect())
+		{
+			m_scrambledUnitsReturned = true;
+			CompositeMatchAnd<Unit> unitWasScrambled = new CompositeMatchAnd<Unit>();
+			unitWasScrambled.add(Matches.UnitWasScrambled);
+			
+			Collection<Unit> scrambledUnits = new ArrayList<Unit>();
+			
+			// territories
+			for (Territory t : m_bridge.getGameData().getMap().getTerritories())
+			{
+				scrambledUnits.addAll(t.getUnits().getMatches(unitWasScrambled));
+			}
+			
+			// units were scrambled, move them
+			if (!scrambledUnits.isEmpty())
+				returnScrambledUnits(scrambledUnits);
+		}
+		
+		if (!hasUnitsThatCanMove(nonCombat))
+			return;
+		
+		MoveDescription moveDescription = m_ui.getMove(m_id, m_bridge, nonCombat);
+		if (moveDescription == null)
+		{
+			if (nonCombat)
+			{
+				if (!canAirLand(true, m_id))
+					move(nonCombat);
+			}
+			else
+			{
+				if (canUnitsFight())
+					move(nonCombat);
+			}
+			return;
+		}
+		
+		IMoveDelegate moveDel = (IMoveDelegate) m_bridge.getRemote();
+		String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute(), moveDescription.getTransportsThatCanBeLoaded());
+		
+		if (error != null)
+			m_ui.notifyError(error);
+		move(nonCombat);
+	}
+	
+	private void returnScrambledUnits(Collection<Unit> scrambledUnits)
+	{
+		// find only players with units in the collection
+		Collection<PlayerID> players = new ArrayList<PlayerID>();
+		for (Unit unit : scrambledUnits)
+		{
+			if (!players.contains(unit.getOwner()))
+				players.add(unit.getOwner());
+		}
+		
+		for (PlayerID player : players)
+		{
+			MoveDescription moveDescription = m_ui.getMove(player, m_bridge, true);
+			if (moveDescription == null)
+			{
+				if (!canAirLand(true, player))
+					move(true);
+				return;
+			}
+			
+			IMoveDelegate moveDel = (IMoveDelegate) m_bridge.getRemote();
+			String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute());
+			
+			if (error != null)
+				m_ui.notifyError(error);
+			
+			// get just the player's units
+			Collection<Unit> playerUnits = new ArrayList<Unit>();
+			playerUnits.addAll(Match.getMatches(scrambledUnits, Matches.unitIsOwnedBy(player)));
+			
+			// if they haven't all been moved- do it again
+			if (Match.someMatch(playerUnits, Matches.UnitWasScrambled))
+			{
+				returnScrambledUnits(scrambledUnits);
+			}
+		}
+		
+		return;
+	}
+	
+	private boolean canAirLand(boolean movePhase, PlayerID player)
+	{
+		
+		Collection<Territory> airCantLand;
+		if (movePhase)
+			airCantLand = ((IMoveDelegate) m_bridge.getRemote()).getTerritoriesWhereAirCantLand(player);
+		else
+			airCantLand = ((IAbstractPlaceDelegate) m_bridge.getRemote()).getTerritoriesWhereAirCantLand();
+		
+		if (airCantLand.isEmpty())
+			return true;
+		else
+		{
+			StringBuilder buf = new StringBuilder(
+						"Air in following territories cant land:");
+			Iterator<Territory> iter = airCantLand.iterator();
+			while (iter.hasNext())
+			{
+				buf.append(((Territory) iter.next()).getName());
+				buf.append(" ");
+			}
+			if (!m_ui.getOKToLetAirDie(m_id, buf.toString(), movePhase))
+				return false;
+			return true;
+		}
+	}
+	
+	private boolean canUnitsFight()
+	{
+		Collection<Territory> unitsCantFight;
+		
+		unitsCantFight = ((IMoveDelegate) m_bridge.getRemote()).getTerritoriesWhereUnitsCantFight();
+		
+		if (unitsCantFight.isEmpty())
+			return false;
+		else
+		{
+			StringBuilder buf = new StringBuilder(
+						"Units in the following territories will die:");
+			Iterator<Territory> iter = unitsCantFight.iterator();
+			while (iter.hasNext())
+			{
+				buf.append(((Territory) iter.next()).getName());
+				buf.append(" ");
+			}
+			if (m_ui.getOKToLetUnitsDie(m_id, buf.toString(), true))
+				return false;
+			return true;
+		}
+	}
+	
+	private boolean hasUnitsThatCanMove(boolean nonCom)
+	{
+		CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>();
+		moveableUnitOwnedByMe.add(Matches.unitIsOwnedBy(m_id));
+		moveableUnitOwnedByMe.add(Matches.UnitIsNotStatic(m_id));
+		// if not non combat, can not move aa units
+		if (!nonCom)
+			moveableUnitOwnedByMe.add(new InverseMatch<Unit>(Matches.UnitIsAAorIsAAmovement));
+		
+		m_bridge.getGameData().acquireReadLock();
+		try
+		{
+			Iterator<Territory> territoryIter = m_bridge.getGameData().getMap()
+						.getTerritories().iterator();
+			while (territoryIter.hasNext())
+			{
+				Territory item = (Territory) territoryIter.next();
+				if (item.getUnits().someMatch(moveableUnitOwnedByMe))
+				{
+					return true;
+				}
+			}
+			return false;
+		} finally
+		{
+			m_bridge.getGameData().releaseReadLock();
+		}
+		
+	}
+	
+	private void purchase(boolean bid)
+	{
+		if (bid)
+		{
+			if (!BidPurchaseDelegate.doesPlayerHaveBid(m_bridge.getGameData(), m_id))
+				return;
+		}
+		
+		// NoPUPurchaseDelegate will run first, before this section. After running, the engine will wait for the player by coming here. Exit if we are a No PU delegate purchase
+		if (this.m_bridge.getStepName().endsWith("NoPUPurchase"))
+			return;
+		
+		// we have no production frontier
+		else if (m_id.getProductionFrontier() == null || m_id.getProductionFrontier().getRules().isEmpty())
+		{
+			return;
+		}
+		else
+		{
+			// if my capital is captured, I can't produce, but I may have PUs if I captured someone else's capital
+			List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(m_id, m_bridge.getGameData()));
+			List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(m_id, m_bridge.getGameData()));
+			PlayerAttachment pa = PlayerAttachment.get(m_id);
+			if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
+				return;
+			
+			int minPUsNeededToBuild = Integer.MAX_VALUE;
+			m_bridge.getGameData().acquireReadLock();
+			try
+			{
+				Iterator<ProductionRule> prodRules = m_id.getProductionFrontier().getRules().iterator();
+				while (prodRules.hasNext())
+				{
+					ProductionRule rule = (ProductionRule) prodRules.next();
+					minPUsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.PUS)), minPUsNeededToBuild);
+				}
+				
+				if (m_id.getRepairFrontier() != null)
+				{
+					Iterator<RepairRule> repairRules = m_id.getRepairFrontier().getRules().iterator();
+					while (repairRules.hasNext())
+					{
+						RepairRule rule = (RepairRule) repairRules.next();
+						minPUsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.PUS)), minPUsNeededToBuild);
+					}
+				}
+				
+				// can we buy anything
+				if (m_id.getResources().getQuantity(Constants.PUS) < minPUsNeededToBuild)
+					return;
+			} finally
+			{
+				m_bridge.getGameData().releaseReadLock();
+			}
+		}
+		
+		// Check if any factories need to be repaired
+		String error = null;
 		IPurchaseDelegate purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
 		
-        if(isSBRAffectsUnitProduction(m_bridge.getGameData()))
-        {
-        	GameData data = m_bridge.getGameData();
-        	Collection<Territory> bombedTerrs = new ArrayList<Territory>();
-        	for(Territory t : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(data, m_id))) 
-        	{
-        		TerritoryAttachment ta = TerritoryAttachment.get(t);
-        		//changed this to > from !=
-        		if(ta.getProduction() > ta.getUnitProduction())
-        		{
-        			bombedTerrs.add(t);
-        		}
-        	}
-        	
-        	Collection<Unit> damagedUnits = new ArrayList<Unit>();
-        	Match<Unit> myFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitIsFactoryOrCanBeDamaged);
-        	
-        	for (Territory t : bombedTerrs)
-        	{
-        		damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myFactories));
-        	}
-        	
-        	if(bombedTerrs.size() > 0 && damagedUnits.size() > 0)
-        	{
-        	    HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
-        		if (repair != null)
-        		{
-        			purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
-        			error = purchaseDel.purchaseRepair(repair);
-        			if (error != null)
-        			{
-        				m_ui.notifyError(error);
-        				//dont give up, keep going
-        				purchase(bid);
+		if (isSBRAffectsUnitProduction(m_bridge.getGameData()))
+		{
+			GameData data = m_bridge.getGameData();
+			Collection<Territory> bombedTerrs = new ArrayList<Territory>();
+			for (Territory t : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(data, m_id)))
+			{
+				TerritoryAttachment ta = TerritoryAttachment.get(t);
+				// changed this to > from !=
+				if (ta.getProduction() > ta.getUnitProduction())
+				{
+					bombedTerrs.add(t);
+				}
+			}
+			
+			Collection<Unit> damagedUnits = new ArrayList<Unit>();
+			Match<Unit> myFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitIsFactoryOrCanBeDamaged);
+			
+			for (Territory t : bombedTerrs)
+			{
+				damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myFactories));
+			}
+			
+			if (bombedTerrs.size() > 0 && damagedUnits.size() > 0)
+			{
+				HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
+				if (repair != null)
+				{
+					purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
+					error = purchaseDel.purchaseRepair(repair);
+					if (error != null)
+					{
+						m_ui.notifyError(error);
+						// dont give up, keep going
+						purchase(bid);
+						
+					}
+				}
+			}
+		}
+		else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(m_bridge.getGameData()))
+		{
+			GameData data = m_bridge.getGameData();
+			Match<Unit> myDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitHasSomeUnitDamage());
+			Collection<Unit> damagedUnits = new ArrayList<Unit>();
+			for (Territory t : data.getMap().getTerritories())
+			{
+				damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myDamaged));
+			}
+			
+			if (damagedUnits.size() > 0)
+			{
+				HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
+				if (repair != null)
+				{
+					purchaseDel = (IPurchaseDelegate) m_bridge.getRemote(); // TODO: veq fix
+					error = purchaseDel.purchaseRepair(repair);
+					if (error != null)
+					{
+						m_ui.notifyError(error);
+						// dont give up, keep going
+						purchase(bid);
+					}
+				}
+			}
+		}
+		
+		IntegerMap<ProductionRule> prod = m_ui.getProduction(m_id, bid);
+		if (prod == null)
+			return;
+		purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
+		error = purchaseDel.purchase(prod);
+		
+		if (error != null)
+		{
+			m_ui.notifyError(error);
+			// dont give up, keep going
+			purchase(bid);
+			
+		}
+		return;
+	}
+	
+	private void battle()
+	{
+		while (true)
+		{
+			IBattleDelegate battleDel = (IBattleDelegate) m_bridge.getRemote();
+			BattleListing battles = battleDel.getBattles();
+			
+			if (battles.isEmpty())
+			{
+				return;
+			}
+			
+			FightBattleDetails details = m_ui.getBattle(m_id, battles
+						.getBattles(), battles.getStrategicRaids());
+			
+			if (m_bridge.isGameOver())
+				return;
+			
+			String error = battleDel.fightBattle(details.getWhere(), details.isBombingRaid());
+			
+			if (error != null)
+				m_ui.notifyError(error);
+		}
+	}
+	
+	private void place(boolean bid)
+	{
+		IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge.getRemote();
+		// nothing to place
+		// nothing placed
+		if (m_id.getUnits().size() == 0 && placeDel.getPlacementsMade() == 0)
+			return;
+		
+		while (true)
+		{
+			PlaceData data = m_ui.waitForPlace(m_id, bid, m_bridge);
+			if (data == null)
+			{
+				// this only happens in lhtr rules
+				if (canAirLand(false, m_id))
+					return;
+				else
+					continue;
+			}
+			
+			String error = placeDel.placeUnits(data.getUnits(), data.getAt());
+			if (error != null)
+				m_ui.notifyError(error);
+		}
+	}
+	
+	private void endTurn()
+	{
+		m_ui.waitForEndTurn(m_id, m_bridge);
+	}
+	
+	/* 
+	 * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties(java.lang.String, java.util.Collection, java.util.Map, int, java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.List)
+	 */
 
-        			}
-        		}
-        	}
-    	}
-        else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(m_bridge.getGameData()))
-        {
-        	GameData data = m_bridge.getGameData();
-        	Match<Unit> myDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitHasSomeUnitDamage());
-        	Collection<Unit> damagedUnits = new ArrayList<Unit>();
-        	for (Territory t : data.getMap().getTerritories())
-        	{
-        		damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myDamaged));
-        	}
-        	
-        	if(damagedUnits.size() > 0)
-        	{
-        	    HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
-        		if (repair != null)
-        		{
-        			purchaseDel = (IPurchaseDelegate) m_bridge.getRemote(); //TODO: veq fix
-        			error = purchaseDel.purchaseRepair(repair);
-        			if (error != null)
-        			{
-        				m_ui.notifyError(error);
-        				//dont give up, keep going
-        				purchase(bid);
-        			}
-        		}
-        	}
-        }
-        
-        IntegerMap<ProductionRule> prod = m_ui.getProduction(m_id, bid);
-        if (prod == null)
-            return;
-        purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
-        error = purchaseDel.purchase(prod);
-        
-        if (error != null)
-        {
-            m_ui.notifyError(error);
-            //dont give up, keep going
-            purchase(bid);
-
-        }
-        return;
-    }
-
-    private void battle()
-    {
-        while (true)
-        {
-            IBattleDelegate battleDel = (IBattleDelegate) m_bridge.getRemote();
-            BattleListing battles = battleDel.getBattles();
-           
-                
-                if (battles.isEmpty())
-                {
-                    return;
-                }
-                
-                FightBattleDetails details = m_ui.getBattle(m_id, battles
-                        .getBattles(), battles.getStrategicRaids());
-                
-                if(m_bridge.isGameOver())
-                    return;
-                
-                String error = battleDel.fightBattle(details.getWhere(), details.isBombingRaid());
-
-                if(error != null)
-                        m_ui.notifyError(error);
-        }
-    }
-
-    private void place(boolean bid)
-    {
-        IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge.getRemote();
-        //nothing to place
-        //nothing placed
-        if (m_id.getUnits().size() == 0 && placeDel.getPlacementsMade() == 0)
-            return;
-        
-        while(true)
-        {
-            PlaceData data = m_ui.waitForPlace(m_id ,bid, m_bridge);
-            if(data == null)
-            {
-                //this only happens in lhtr rules
-                if(canAirLand(false, m_id))
-                    return;
-                else
-                    continue;
-            }
-            
-            String error = placeDel.placeUnits(data.getUnits(), data.getAt());
-            if(error != null)
-                m_ui.notifyError(error);
-        }
-    }
-
-    private void endTurn()
-    {
-        m_ui.waitForEndTurn(m_id, m_bridge);
-    }
-    
-
-    /* 
-     * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties(java.lang.String, java.util.Collection, java.util.Map, int, java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.List)
-     */
-
-    @Override
-	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID)
-    {
-        return m_ui.getBattlePanel().getCasualties(selectFrom, dependents, count, message, dice,hit, defaultCasualties, battleID);
-    }
-
-    /* 
-     * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, int, boolean, java.lang.String)
-     */
-    @Override
+	@Override
+	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit,
+				CasualtyList defaultCasualties, GUID battleID)
+	{
+		return m_ui.getBattlePanel().getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties, battleID);
+	}
+	
+	/* 
+	 * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, int, boolean, java.lang.String)
+	 */
+	@Override
 	public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title, int diceSides)
-    {
-        return m_ui.selectFixedDice(numDice, hitAt, hitOnlyIfEquals, title, diceSides);
-    }
-
-    /* 
-     * @see games.strategy.triplea.player.ITripleaPlayer#selectBombardingTerritory(games.strategy.engine.data.Unit, games.strategy.engine.data.Territory, java.util.Collection, boolean)
-     */
-    @Override
-	public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection<Territory>  territories, boolean noneAvailable)
-    {
-        return m_ui.getBattlePanel().getBombardment(unit, unitTerritory,  territories, noneAvailable);
-    }
-
-    /* 
-     * Ask if the player wants to attack subs
-     */
-    @Override
+	{
+		return m_ui.selectFixedDice(numDice, hitAt, hitOnlyIfEquals, title, diceSides);
+	}
+	
+	/* 
+	 * @see games.strategy.triplea.player.ITripleaPlayer#selectBombardingTerritory(games.strategy.engine.data.Unit, games.strategy.engine.data.Territory, java.util.Collection, boolean)
+	 */
+	@Override
+	public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection<Territory> territories, boolean noneAvailable)
+	{
+		return m_ui.getBattlePanel().getBombardment(unit, unitTerritory, territories, noneAvailable);
+	}
+	
+	/* 
+	 * Ask if the player wants to attack subs
+	 */
+	@Override
 	public boolean selectAttackSubs(Territory unitTerritory)
-    {
-        return m_ui.getBattlePanel().getAttackSubs(unitTerritory);
-    }
-
-    /* 
-     * Ask if the player wants to attack transports
-     */
-    @Override
+	{
+		return m_ui.getBattlePanel().getAttackSubs(unitTerritory);
+	}
+	
+	/* 
+	 * Ask if the player wants to attack transports
+	 */
+	@Override
 	public boolean selectAttackTransports(Territory unitTerritory)
-    {
-        return m_ui.getBattlePanel().getAttackTransports(unitTerritory);
-    }
-
-    /* 
-     * Ask if the player wants to attack units
-     */
-    @Override
+	{
+		return m_ui.getBattlePanel().getAttackTransports(unitTerritory);
+	}
+	
+	/* 
+	 * Ask if the player wants to attack units
+	 */
+	@Override
 	public boolean selectAttackUnits(Territory unitTerritory)
-    {
-        return m_ui.getBattlePanel().getAttackUnits(unitTerritory);
-    }
-    
-    /* 
-     * Ask if the player wants to shore bombard
-     */
-    @Override
+	{
+		return m_ui.getBattlePanel().getAttackUnits(unitTerritory);
+	}
+	
+	/* 
+	 * Ask if the player wants to shore bombard
+	 */
+	@Override
 	public boolean selectShoreBombard(Territory unitTerritory)
-    {
-        return m_ui.getBattlePanel().getShoreBombard(unitTerritory);
-    }
-    
-    /* 
-     * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
-     */
-    @Override
+	{
+		return m_ui.getBattlePanel().getShoreBombard(unitTerritory);
+	}
+	
+	/* 
+	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
+	 */
+	@Override
 	public boolean shouldBomberBomb(Territory territory)
-    {
-        return m_ui.getStrategicBombingRaid(territory);
-       
-    } 
-    
-    /* 
-     * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
-     */
-    @Override
+	{
+		return m_ui.getStrategicBombingRaid(territory);
+		
+	}
+	
+	/* 
+	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
+	 */
+	@Override
 	public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units)
-    {
-        return m_ui.getStrategicBombingRaidTarget(territory, units);
-       
-    } 
-    
-    @Override
+	{
+		return m_ui.getStrategicBombingRaidTarget(territory, units);
+		
+	}
+	
+	@Override
 	public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from)
-    {
-        return m_ui.getRocketAttack(candidates, from);
-     }
-
-    /* (non-Javadoc)
-     * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection, games.strategy.engine.data.Territory)
-     */
-    @Override
+	{
+		return m_ui.getRocketAttack(candidates, from);
+	}
+	
+	/* (non-Javadoc)
+	 * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection, games.strategy.engine.data.Territory)
+	 */
+	@Override
 	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from)
-    {
-        return m_ui.moveFightersToCarrier(fightersThatCanBeMoved, from);
-    }
-
-    /*
-     * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
-     */
-    @Override
+	{
+		return m_ui.moveFightersToCarrier(fightersThatCanBeMoved, from);
+	}
+	
+	/*
+	 * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
+	 */
+	@Override
 	public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
-    {
-        return m_ui.selectTerritoryForAirToLand(candidates);
-    }
-
-
-    /* (non-Javadoc)
-     * @see games.strategy.triplea.player.ITripleaPlayer#confirmMoveInFaceOfAA(java.util.Collection)
-     */
-    @Override
+	{
+		return m_ui.selectTerritoryForAirToLand(candidates);
+	}
+	
+	/* (non-Javadoc)
+	 * @see games.strategy.triplea.player.ITripleaPlayer#confirmMoveInFaceOfAA(java.util.Collection)
+	 */
+	@Override
 	public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
-    {
-        String question = "AA guns will fire in " + MyFormatter.territoriesToText(aaFiringTerritories, "and") + ", do you still want to move?";
-        return m_ui.getOK(question);
-        
-    }
-
-    @Override
+	{
+		String question = "AA guns will fire in " + MyFormatter.territoriesToText(aaFiringTerritories, "and") + ", do you still want to move?";
+		return m_ui.getOK(question);
+		
+	}
+	
+	@Override
 	public boolean confirmMoveKamikaze()
-    {
-        String question = "Not all air units in destination territory can land, do you still want to move?";
-        return m_ui.getOK(question);
-    }
-
-    @Override
+	{
+		String question = "Not all air units in destination territory can land, do you still want to move?";
+		return m_ui.getOK(question);
+	}
+	
+	@Override
 	public boolean confirmMoveHariKari()
-    {
-        String question = "All units in destination territory will automatically die, do you still want to move?";
-        return m_ui.getOK(question);
-    }
-
-    /* (non-Javadoc)
-     * @see games.strategy.triplea.player.ITripleaPlayer#retreatQuery(games.strategy.net.GUID, boolean, java.util.Collection, java.lang.String, java.lang.String)
-     */
-    @Override
+	{
+		String question = "All units in destination territory will automatically die, do you still want to move?";
+		return m_ui.getOK(question);
+	}
+	
+	/* (non-Javadoc)
+	 * @see games.strategy.triplea.player.ITripleaPlayer#retreatQuery(games.strategy.net.GUID, boolean, java.util.Collection, java.lang.String, java.lang.String)
+	 */
+	@Override
 	public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message)
-    {
-        return m_ui.getBattlePanel().getRetreat(battleID, message, possibleTerritories,submerge);
-    }
-
-    /* (non-Javadoc)
-     * @see games.strategy.triplea.player.ITripleaPlayer#scrambleQuery(games.strategy.net.GUID, java.util.Collection, java.lang.String, java.lang.String)
-     */
-    @Override
+	{
+		return m_ui.getBattlePanel().getRetreat(battleID, message, possibleTerritories, submerge);
+	}
+	
+	/* (non-Javadoc)
+	 * @see games.strategy.triplea.player.ITripleaPlayer#scrambleQuery(games.strategy.net.GUID, java.util.Collection, java.lang.String, java.lang.String)
+	 */
+	@Override
 	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
-    {
-        return m_ui.getBattlePanel().getScramble(m_bridge, battleID, message, possibleTerritories);
-    }
-    
-    @Override
+	{
+		return m_ui.getBattlePanel().getScramble(m_bridge, battleID, message, possibleTerritories);
+	}
+	
+	@Override
 	public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer)
-    {
-        //no need, we have already confirmed since we are firing player
-        if(m_ui.playing(hitPlayer))
-            return;
-        //we dont want to confirm enemy casualties
-        if(!BattleDisplay.getShowEnemyCasualtyNotification())
-            return;
-        
-        m_ui.getBattlePanel().confirmCasualties(battleId, message);
-    }
-
-    @Override
+	{
+		// no need, we have already confirmed since we are firing player
+		if (m_ui.playing(hitPlayer))
+			return;
+		// we dont want to confirm enemy casualties
+		if (!BattleDisplay.getShowEnemyCasualtyNotification())
+			return;
+		
+		m_ui.getBattlePanel().confirmCasualties(battleId, message);
+	}
+	
+	@Override
 	public void confirmOwnCasualties(GUID battleId, String message)
-    {
-        m_ui.getBattlePanel().confirmCasualties(battleId, message);
-    }   
-
-    public final boolean isSBRAffectsUnitProduction(GameData data)
-    {
-        return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data);
-    }
-
-    public final boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(GameData data)
-    {
-        return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
-    }
-
-    private static boolean isTechDevelopment(GameData data)
-    {
-        return games.strategy.triplea.Properties.getTechDevelopment(data);
-    }
-
-    private boolean getScramble_Rules_In_Effect()
-    {
-    	return games.strategy.triplea.Properties.getScramble_Rules_In_Effect(m_bridge.getGameData());
-    }
+	{
+		m_ui.getBattlePanel().confirmCasualties(battleId, message);
+	}
+	
+	public final boolean isSBRAffectsUnitProduction(GameData data)
+	{
+		return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data);
+	}
+	
+	public final boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(GameData data)
+	{
+		return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
+	}
+	
+	private static boolean isTechDevelopment(GameData data)
+	{
+		return games.strategy.triplea.Properties.getTechDevelopment(data);
+	}
+	
+	private boolean getScramble_Rules_In_Effect()
+	{
+		return games.strategy.triplea.Properties.getScramble_Rules_In_Effect(m_bridge.getGameData());
+	}
 }
-
-
-
-
-
-
-
-

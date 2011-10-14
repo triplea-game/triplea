@@ -5,37 +5,44 @@
  * (at your option) any later version.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
  * DelegateTest.java
- *
+ * 
  * Created on November 9, 2001, 3:29 PM
  */
 
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.ITestDelegateBridge;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
+
 import java.io.InputStream;
 import java.net.URL;
 
 import junit.framework.TestCase;
 
 /**
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  * @version 1.0
  */
 public class DelegateTest extends TestCase
 {
-
+	
 	protected GameData m_data;
 	
 	protected PlayerID british;
@@ -70,9 +77,9 @@ public class DelegateTest extends TestCase
 	protected Territory mozambiqueSeaZone;
 	protected Territory eastMediteranean;
 	protected Territory congoSeaZone;
-    protected Territory northAtlantic;
-    protected Territory redAtlantic;
-    protected Territory westAfricaSea;
+	protected Territory northAtlantic;
+	protected Territory redAtlantic;
+	protected Territory westAfricaSea;
 	protected Territory indianOcean;
 	protected Territory westAfricaSeaZone;
 	protected Territory southAfrica;
@@ -99,38 +106,34 @@ public class DelegateTest extends TestCase
 	protected UnitType fighter;
 	protected UnitType bomber;
 	protected UnitType carrier;
-
-	
 	
 	protected Resource PUs;
 	
-	
 	/** Creates new PlaceDelegateTest */
-    public DelegateTest(String name) 
+	public DelegateTest(String name)
 	{
 		super(name);
-    }
-
-
+	}
+	
 	@Override
 	public void setUp() throws Exception
 	{
 		
-		//get the xml file
+		// get the xml file
 		URL url = this.getClass().getResource("DelegateTest.xml");
 		
-		InputStream input= url.openStream();
+		InputStream input = url.openStream();
 		m_data = (new GameParser()).parse(input);
-        input.close();
+		input.close();
 		
 		british = m_data.getPlayerList().getPlayerID("British");
 		british.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
 		japanese = m_data.getPlayerList().getPlayerID("Japanese");
-		japanese.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());	
+		japanese.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
 		russians = m_data.getPlayerList().getPlayerID("Russians");
-		russians.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());	
+		russians.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
 		germans = m_data.getPlayerList().getPlayerID("Germans");
-		germans.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());	
+		germans.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
 		
 		northSea = m_data.getMap().getTerritory("North Sea Zone");
 		blackSea = m_data.getMap().getTerritory("Black Sea Zone");
@@ -143,12 +146,12 @@ public class DelegateTest extends TestCase
 		germany = m_data.getMap().getTerritory("Germany");
 		syria = m_data.getMap().getTerritory("Syria Jordan");
 		manchuria = m_data.getMap().getTerritory("Manchuria");
-		egypt= m_data.getMap().getTerritory("Anglo Sudan Egypt");
-		congo= m_data.getMap().getTerritory("Congo");
+		egypt = m_data.getMap().getTerritory("Anglo Sudan Egypt");
+		congo = m_data.getMap().getTerritory("Congo");
 		congoSeaZone = m_data.getMap().getTerritory("Congo Sea Zone");
 		northAtlantic = m_data.getMap().getTerritory("North Atlantic Sea Zone");
 		westAfricaSea = m_data.getMap().getTerritory("West Africa Sea Zone");
-		kenya= m_data.getMap().getTerritory("Kenya-Rhodesia");
+		kenya = m_data.getMap().getTerritory("Kenya-Rhodesia");
 		eastAfrica = m_data.getMap().getTerritory("Italian East Africa");
 		libya = m_data.getMap().getTerritory("Libya");
 		algeria = m_data.getMap().getTerritory("Algeria");
@@ -159,9 +162,9 @@ public class DelegateTest extends TestCase
 		angolaSeaZone = m_data.getMap().getTerritory("Angola Sea Zone");
 		eastCompass = m_data.getMap().getTerritory("East Compass Sea Zone");
 		westCompass = m_data.getMap().getTerritory("West Compass Sea Zone");
-		mozambiqueSeaZone  = m_data.getMap().getTerritory("Mozambique Sea Zone");
-		eastMediteranean  = m_data.getMap().getTerritory("East Mediteranean Sea Zone");
-		indianOcean  = m_data.getMap().getTerritory("Indian Ocean Sea Zone");
+		mozambiqueSeaZone = m_data.getMap().getTerritory("Mozambique Sea Zone");
+		eastMediteranean = m_data.getMap().getTerritory("East Mediteranean Sea Zone");
+		indianOcean = m_data.getMap().getTerritory("Indian Ocean Sea Zone");
 		westAfricaSeaZone = m_data.getMap().getTerritory("West Africa Sea Zone");
 		southAfrica = m_data.getMap().getTerritory("South Africa");
 		saudiArabia = m_data.getMap().getTerritory("Saudi Arabia");
@@ -171,7 +174,7 @@ public class DelegateTest extends TestCase
 		southAfricaSeaZone = m_data.getMap().getTerritory("South Africa Sea Zone");
 		southBrazilSeaZone = m_data.getMap().getTerritory("South Brazil Sea Zone");
 		russia = m_data.getMap().getTerritory("Russia");
-		spain= m_data.getMap().getTerritory("Spain");
+		spain = m_data.getMap().getTerritory("Spain");
 		gibraltar = m_data.getMap().getTerritory("Gibraltar");
 		balticSeaZone = m_data.getMap().getTerritory("Baltic Sea Zone");
 		karelia = m_data.getMap().getTerritory("Karelia S.S.R.");
@@ -190,26 +193,26 @@ public class DelegateTest extends TestCase
 		
 		PUs = m_data.getResourceList().getResource("PUs");
 	}
-
-
+	
 	public void assertValid(String string)
 	{
-	    assertNull(string,string);
+		assertNull(string, string);
 	}
 	
 	public void assertError(String string)
 	{
-	    assertNotNull(string,string);
+		assertNotNull(string, string);
 	}
 	
-    protected ITestDelegateBridge getDelegateBridge(PlayerID player)
-    {
-        return GameDataTestUtil.getDelegateBridge(player);
-    }
-    
-    public void testTest() {
-    	assertValid(null);
-    	assertError("Can not do this");
-    }
-    
+	protected ITestDelegateBridge getDelegateBridge(PlayerID player)
+	{
+		return GameDataTestUtil.getDelegateBridge(player);
+	}
+	
+	public void testTest()
+	{
+		assertValid(null);
+		assertError("Can not do this");
+	}
+	
 }
