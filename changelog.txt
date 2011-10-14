@@ -1,4 +1,6 @@
 Changes for 1.4
+* Fixed bug where memory for online and hosted games was set artificially low at 128, instead of being set to the max memory set by triplea run scripts and exe. (veqryn)
+
 * Removing one memory leak from battle calc, it was recording the units is created to game data, inflating the savegame size. (veqryn & frigoref)
 
 * Source code formatting on entire engine. (veqryn)

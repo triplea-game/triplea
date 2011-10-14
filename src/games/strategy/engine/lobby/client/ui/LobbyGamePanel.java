@@ -48,6 +48,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 
+@SuppressWarnings("serial")
 public class LobbyGamePanel extends JPanel
 {
 	private JButton m_hostGame;
@@ -301,7 +302,10 @@ public class LobbyGamePanel extends JPanel
 		
 		commands.add("-classpath");
 		commands.add(System.getProperty("java.class.path"));
-		commands.add("-Xmx128m");
+		// for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value, so we are going to add 64m to that to compensate
+		long maxMemory = (Runtime.getRuntime().maxMemory() + 67108864);
+		commands.add("-Xmx" + maxMemory);
+		//commands.add("-Xmx512m"); //TODO: this may need updating
 		
 		// preserve noddraw to fix 1742775
 		String[] preservedSystemProperties = { "sun.java2d.noddraw" };
