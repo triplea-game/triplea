@@ -50,7 +50,8 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge)
+    @Override
+	public void start(IDelegateBridge bridge)
     {
         super.start(bridge);
 
@@ -67,7 +68,8 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
      * @param start <code>Territory</code> where the move should start
      * @param end <code>Territory</code> where the move should end
      */
-    public String play(Territory start, Territory end)
+    @Override
+	public String play(Territory start, Territory end)
     {   
         String error = isValidPlay(start,end);
         if (error != null)
@@ -356,7 +358,8 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
      * If this class implements an interface which inherits from IRemote, returns the class of that interface.
      * Otherwise, returns null.
      */
-    public Class<? extends IRemote> getRemoteType()
+    @Override
+	public Class<? extends IRemote> getRemoteType()
     {
         // This class implements IPlayDelegate, which inherits from IRemote.
         return IPlayDelegate.class;

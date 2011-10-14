@@ -16,7 +16,6 @@ package games.strategy.triplea.ui;
 
 
 import games.strategy.engine.data.GameData;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Die.DieType;
 
 import java.awt.Dimension;
@@ -137,7 +136,8 @@ public class DiceChooser extends JPanel
       DieType dieType = hit ? DieType.HIT : DieType.MISS;
       JButton button = new JButton(new AbstractAction(null, m_uiContext.getDiceImageFactory().getDieIcon(roll, dieType))
           {
-              public void actionPerformed(ActionEvent event)
+              @Override
+			public void actionPerformed(ActionEvent event)
                 {
                     addDie(dieNum);
                 }
@@ -150,7 +150,8 @@ public class DiceChooser extends JPanel
     diceButtonPanel.add(Box.createHorizontalStrut(4));
     m_undoButton = new JButton(new AbstractAction("Undo")
       {
-          public void actionPerformed(ActionEvent event)
+          @Override
+		public void actionPerformed(ActionEvent event)
             {
                 removeLastDie();
             }

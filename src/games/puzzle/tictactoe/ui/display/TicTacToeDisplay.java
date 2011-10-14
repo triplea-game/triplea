@@ -46,7 +46,8 @@ public class TicTacToeDisplay implements ITicTacToeDisplay
     /** 
      * @see games.strategy.engine.display.IDisplay#initialize(games.strategy.engine.display.IDisplayBridge)
      */
-    public void initialize(IDisplayBridge bridge)
+    @Override
+	public void initialize(IDisplayBridge bridge)
     {
        m_displayBridge = bridge;
        m_displayBridge.toString();
@@ -58,7 +59,8 @@ public class TicTacToeDisplay implements ITicTacToeDisplay
      * 
      * @see games.strategy.engine.display.IDisplay#shutdown()
      */
-    public void shutDown()
+    @Override
+	public void shutDown()
     {
         m_ui.stopGame();
     }
@@ -67,7 +69,8 @@ public class TicTacToeDisplay implements ITicTacToeDisplay
      * Graphically notify the user of the current game status.
      * @param error the status message to display
      */ 
-    public void setStatus(String status) 
+    @Override
+	public void setStatus(String status) 
     {
         if(!m_ui.isGameOver())
             m_ui.setStatus(status);
@@ -76,7 +79,8 @@ public class TicTacToeDisplay implements ITicTacToeDisplay
     /**
      * Set the game over status for this display to <code>true</code>.
      */
-    public void setGameOver()
+    @Override
+	public void setGameOver()
     {
         m_ui.setGameOver();
     }
@@ -89,7 +93,8 @@ public class TicTacToeDisplay implements ITicTacToeDisplay
      * @param end <code>Territory</code> where the play ended
      * @param captured <code>Collection</code> of <code>Territory</code>s whose pieces were captured during the play
      */
-    public void performPlay(Territory at)
+    @Override
+	public void performPlay(Territory at)
     {   
     	m_ui.performPlay(at);
     }

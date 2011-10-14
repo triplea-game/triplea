@@ -38,7 +38,8 @@ public class ChatTest extends TestCase
  
     
     
-    public void setUp() throws IOException
+    @Override
+	public void setUp() throws IOException
     {
         SERVER_PORT = TestUtil.getUniquePort();
         m_server = new ServerMessenger("Server", SERVER_PORT);
@@ -68,7 +69,8 @@ public class ChatTest extends TestCase
 
     }
     
-    public void tearDown()
+    @Override
+	public void tearDown()
     {
         try
         {
@@ -158,7 +160,8 @@ public class ChatTest extends TestCase
         Runnable client2Send = new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 for(int i =0; i <messageCount; i++)
                 {
@@ -173,7 +176,8 @@ public class ChatTest extends TestCase
         Runnable serverSend = new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 for(int i =0; i <messageCount; i++)
                 {
@@ -286,7 +290,8 @@ class TestChatListener implements IChatListener
     public List<String> m_from = new ArrayList<String>();
     
     
-    public void updatePlayerList(Collection<INode> players)
+    @Override
+	public void updatePlayerList(Collection<INode> players)
     {
         synchronized(this)
         {
@@ -295,7 +300,8 @@ class TestChatListener implements IChatListener
         
     }
 
-    public void addMessage(String message, String from, boolean thirdperson)
+    @Override
+	public void addMessage(String message, String from, boolean thirdperson)
     {    
         synchronized(this)
         {
@@ -305,7 +311,8 @@ class TestChatListener implements IChatListener
         }
     }
 
-    public void addStatusMessage(String message)
+    @Override
+	public void addStatusMessage(String message)
     {}
     
 }

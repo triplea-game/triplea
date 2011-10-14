@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 

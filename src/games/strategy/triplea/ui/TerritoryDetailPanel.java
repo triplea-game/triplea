@@ -15,7 +15,6 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
-import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.util.*;
 import games.strategy.ui.OverlayIcon;
@@ -49,7 +48,8 @@ public class TerritoryDetailPanel extends JPanel
             new DefaultMapSelectionListener()
         {
 
-            public void mouseEntered(Territory territory)
+            @Override
+			public void mouseEntered(Territory territory)
             {
                 territoryChanged(territory);
             }
@@ -61,7 +61,8 @@ public class TerritoryDetailPanel extends JPanel
         final Action showBattleCalc = new AbstractAction(show_battle_calc)
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 OddsCalculatorDialog.show(m_frame, m_currentTerritory);
             }
@@ -71,7 +72,8 @@ public class TerritoryDetailPanel extends JPanel
         m_showOdds.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 showBattleCalc.actionPerformed(e);
             }

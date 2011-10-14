@@ -101,9 +101,9 @@ public class RocketsFireHelper
 
     }
 
-    public void fireRockets(IDelegateBridge bridge, GameData data, PlayerID player)
+    public void fireRockets(IDelegateBridge bridge, PlayerID player)
     {
-
+        GameData data = bridge.getData();
         Set<Territory> rocketTerritories = getTerritoriesWithRockets(data, player);
         if (rocketTerritories.isEmpty())
         {
@@ -112,14 +112,15 @@ public class RocketsFireHelper
         }
 //TODO this is weird!  Check the parens
         if ((isWW2V2(data) || isAllRocketsAttack(data)) || isOneRocketAttackPerFactory(data))
-            fireWW2V2(data, player, rocketTerritories, bridge);
+            fireWW2V2(bridge, player, rocketTerritories);
         else
-            fireWW2V1(data, player, rocketTerritories, bridge);
+            fireWW2V1(bridge, player, rocketTerritories);
 
     }
 
-    private void fireWW2V2(GameData data, PlayerID player, Set<Territory> rocketTerritories, IDelegateBridge bridge)
+    private void fireWW2V2(IDelegateBridge bridge, PlayerID player, Set<Territory> rocketTerritories)
     {
+        GameData data = bridge.getData();
         Set<Territory> attackedTerritories = new HashSet<Territory>();
         Iterator<Territory> iter = rocketTerritories.iterator();
         while (iter.hasNext())
@@ -133,13 +134,14 @@ public class RocketsFireHelper
             if (target != null)
             {
                 attackedTerritories.add(target);
-                fireRocket(player, target, bridge, data, territory);
+                fireRocket(player, target, bridge, territory);
             }
         }
     }
 
-    private void fireWW2V1(GameData data, PlayerID player, Set<Territory> rocketTerritories, IDelegateBridge bridge)
+    private void fireWW2V1(IDelegateBridge bridge, PlayerID player, Set<Territory> rocketTerritories)
     {
+        GameData data = bridge.getData();
         Set<Territory> targets = new HashSet<Territory>();
         Iterator<Territory> iter = rocketTerritories.iterator();
         while (iter.hasNext())
@@ -156,7 +158,7 @@ public class RocketsFireHelper
 
         Territory attacked = getTarget(targets, player, bridge, null);
         if (attacked != null)
-            fireRocket(player, attacked, bridge, data, null);
+            fireRocket(player, attacked, bridge, null);
     }
 
     Set<Territory> getTerritoriesWithRockets(GameData data, PlayerID player)
@@ -173,7 +175,7 @@ public class RocketsFireHelper
         Iterator<Territory> iter = data.getMap().iterator();
         while (iter.hasNext())
         {
-            Territory current = (Territory) iter.next();
+            Territory current = iter.next();
             if (current.isWater())
                 continue;
             if(tracker.wasConquered(current)) 
@@ -219,9 +221,9 @@ public class RocketsFireHelper
         return ((ITripleaPlayer) bridge.getRemote()).whereShouldRocketsAttack(targets, from);
     }
 
-    private void fireRocket(PlayerID player, Territory attackedTerritory, IDelegateBridge bridge, GameData data, Territory attackFrom)
+    private void fireRocket(PlayerID player, Territory attackedTerritory, IDelegateBridge bridge, Territory attackFrom)
     {
-
+        GameData data = bridge.getData();
         PlayerID attacked = attackedTerritory.getOwner();
         Resource PUs = data.getResourceList().getResource(Constants.PUS);
         //int cost = bridge.getRandom(Constants.MAX_DICE);

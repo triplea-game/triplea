@@ -551,7 +551,8 @@ class ImageRef
     {
         Runnable r = new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 while(true)
                 {
@@ -663,7 +664,8 @@ class BlendComposite implements java.awt.Composite {
 
 
 
-    public CompositeContext createContext(ColorModel srcColorModel,
+    @Override
+	public CompositeContext createContext(ColorModel srcColorModel,
                                           ColorModel dstColorModel,
                                           RenderingHints hints) {
         return new BlendingContext(this);
@@ -678,10 +680,12 @@ class BlendComposite implements java.awt.Composite {
             this.blender = Blender.getBlenderFor(composite);
         }
 
-        public void dispose() {
+        @Override
+		public void dispose() {
         }
 
-        public void compose(Raster src, Raster dstIn, WritableRaster dstOut) {
+        @Override
+		public void compose(Raster src, Raster dstIn, WritableRaster dstOut) {
             if (src.getSampleModel().getDataType() != DataBuffer.TYPE_INT ||
                 dstIn.getSampleModel().getDataType() != DataBuffer.TYPE_INT ||
                 dstOut.getSampleModel().getDataType() != DataBuffer.TYPE_INT) {

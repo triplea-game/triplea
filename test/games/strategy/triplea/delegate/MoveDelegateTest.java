@@ -68,7 +68,8 @@ public class MoveDelegateTest extends DelegateTest
     return suite;
   }
 
-  public void setUp() throws Exception
+  @Override
+public void setUp() throws Exception
   {
     super.setUp();
     

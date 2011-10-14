@@ -26,24 +26,28 @@ public abstract class AEditableProperty implements IEditableProperty, java.io.Se
     m_name = name;
   }
 
-  public String getName()
+  @Override
+public String getName()
   {
     return m_name;
   }
 
-  public JComponent getViewComponent()
+  @Override
+public JComponent getViewComponent()
   {
     JComponent rVal = getEditorComponent();
     rVal.setEnabled(false);
     return rVal;
   }
 
-  public int hashCode()
+  @Override
+public int hashCode()
   {
     return m_name.hashCode();
   }
 
-  public boolean equals(Object other)
+  @Override
+public boolean equals(Object other)
   {
     if(other instanceof AEditableProperty)
     {
@@ -52,7 +56,8 @@ public abstract class AEditableProperty implements IEditableProperty, java.io.Se
     return false;
   }
 
-  public int compareTo(Object other)
+  @Override
+public int compareTo(Object other)
   {
     if(other instanceof AEditableProperty)
     {

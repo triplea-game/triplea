@@ -17,6 +17,7 @@ import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -44,7 +45,6 @@ public class MovePerformer implements Serializable
 {
 
     private transient MoveDelegate m_moveDelegate;
-    private transient GameData m_data;
     private transient IDelegateBridge m_bridge;
     private transient PlayerID m_player;
 
@@ -61,18 +61,17 @@ public class MovePerformer implements Serializable
 
     private BattleTracker getBattleTracker()
     {
-        return DelegateFinder.battleDelegate(m_data).getBattleTracker();
+        return DelegateFinder.battleDelegate(m_bridge.getData()).getBattleTracker();
     }
 
-    void initialize(MoveDelegate delegate, GameData data, IDelegateBridge bridge)
+    void initialize(MoveDelegate delegate)
     {
         m_moveDelegate = delegate;
-        m_data = data;
-        m_bridge = bridge;
-        m_player = bridge.getPlayerID();
+        m_bridge = delegate.getBridge();
+        m_player = m_bridge.getPlayerID();
 
         if(m_aaInMoveUtil != null)
-            m_aaInMoveUtil.initialize(bridge);
+            m_aaInMoveUtil.initialize(m_bridge);
     }
 
     private ITripleaPlayer getRemotePlayer(PlayerID id)
@@ -120,7 +119,8 @@ public class MovePerformer implements Serializable
         IExecutable preAAFire = new IExecutable()
         {
 
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 //if we are moving out of a battle zone, mark it
                 //this can happen for air units moving out of a battle zone
@@ -156,7 +156,8 @@ public class MovePerformer implements Serializable
         IExecutable fireAA = new IExecutable()
         {
 
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 Collection<Unit> aaCasualties = fireAA(route, units);
                 arrivingUnits[0]  = Util.difference(units, aaCasualties);
@@ -166,15 +167,17 @@ public class MovePerformer implements Serializable
 
         IExecutable postAAFire = new IExecutable()
         {
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 //if any non enemy territories on route
                 //or if any enemy units on route the
                 //battles on (note water could have enemy but its
                 //not owned)
+                GameData data = bridge.getData();
                 CompositeMatch<Territory> mustFightThrough = new CompositeMatchOr<Territory>();
-                mustFightThrough.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, m_data));
-                mustFightThrough.add(Matches.territoryHasNonSubmergedEnemyUnits(id, m_data));
+                mustFightThrough.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data));
+                mustFightThrough.add(Matches.territoryHasNonSubmergedEnemyUnits(id, data));
 
                 Collection<Unit> arrived = Util.intersection(units, arrivingUnits[0]);
 
@@ -190,7 +193,7 @@ public class MovePerformer implements Serializable
                     //TODO kev will need to change this for escorts
                     boolean allCanBomb = Match.allMatch(arrived, Matches.UnitIsStrategicBomber);
 
-                    Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, m_data));
+                    Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
                     Collection<Unit> enemyTargets = Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert());
 
                     boolean targetedAttack = false;
@@ -216,7 +219,7 @@ public class MovePerformer implements Serializable
                         	else
                         	{
                         		targetedAttack = true;
-                        		getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_data, m_bridge, m_currentMove, Collections.singleton(target));
+                                getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_bridge, m_currentMove, Collections.singleton(target));
                         	}
                         }
                     }
@@ -232,7 +235,7 @@ public class MovePerformer implements Serializable
 
                     if(!ignoreBattle && !MoveDelegate.isNonCombat(m_bridge) && !targetedAttack)
                     {
-                    	getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_data, m_bridge, m_currentMove);
+                        getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_bridge, m_currentMove);
                     }
                 }
 
@@ -288,6 +291,7 @@ public class MovePerformer implements Serializable
             taRouteEnd = TerritoryAttachment.get(routeEnd);
 
         Iterator<Unit> iter = units.iterator();
+        RelationshipTracker relationshipTracker = m_bridge.getData().getRelationshipTracker();
         while (iter.hasNext())
         {
             TripleAUnit unit = (TripleAUnit) iter.next();
@@ -295,10 +299,10 @@ public class MovePerformer implements Serializable
             UnitAttachment ua = UnitAttachment.get(unit.getType());
             if (ua.isAir())
             {
-            	if(taRouteStart != null && taRouteStart.isAirBase() && m_data.getRelationshipTracker().isAllied(route.getStart().getOwner(), unit.getOwner()))
+                if (taRouteStart != null && taRouteStart.isAirBase() && relationshipTracker.isAllied(route.getStart().getOwner(), unit.getOwner()))
             		moved --;
 
-            	if(taRouteEnd != null && taRouteEnd.isAirBase() && m_data.getRelationshipTracker().isAllied(route.getEnd().getOwner(), unit.getOwner()))
+                if (taRouteEnd != null && taRouteEnd.isAirBase() && relationshipTracker.isAllied(route.getEnd().getOwner(), unit.getOwner()))
             		moved --;
             }
 
@@ -338,7 +342,7 @@ public class MovePerformer implements Serializable
         paratroopNAirTransports.add(Matches.UnitIsAirTransportable);
         boolean paratroopsLanding = Match.someMatch(arrived, paratroopNAirTransports) && MoveValidator.allLandUnitsAreBeingParatroopered(arrived, route, m_player);
 
-        Map<Unit, Collection<Unit>> dependentAirTransportableUnits = MoveValidator.getDependents(Match.getMatches(arrived, Matches.UnitCanTransport), m_data);
+        Map<Unit, Collection<Unit>> dependentAirTransportableUnits = MoveValidator.getDependents(Match.getMatches(arrived, Matches.UnitCanTransport), m_bridge.getData());
         if(dependentAirTransportableUnits.isEmpty())
         	dependentAirTransportableUnits = MovePanel.getDependents();
 

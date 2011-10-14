@@ -33,7 +33,8 @@ public class SystemOutHandler extends StreamHandler
         setFormatter(new TALogFormatter());
     }
     
-    public void publish(LogRecord record)
+    @Override
+	public void publish(LogRecord record)
     {
         super.publish(record);
         flush();

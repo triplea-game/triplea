@@ -26,12 +26,14 @@ public class MessengerLoginTest extends TestCase
     {
         ILoginValidator validator = new ILoginValidator()
         {        
-            public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String mac, SocketAddress remoteAddress)
+            @Override
+			public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String mac, SocketAddress remoteAddress)
             {
                 return null;
             }
         
-            public Map<String,String> getChallengeProperties(String userName, SocketAddress remoteAddress)
+            @Override
+			public Map<String,String> getChallengeProperties(String userName, SocketAddress remoteAddress)
             {
                 return new HashMap<String,String>();
             }        
@@ -40,12 +42,14 @@ public class MessengerLoginTest extends TestCase
         IConnectionLogin login = new IConnectionLogin()
         {
         
-            public void notifyFailedLogin(String message)
+            @Override
+			public void notifyFailedLogin(String message)
             {
                  fail();
             }
         
-            public Map<String, String> getProperties(Map<String,String> challengProperties)
+            @Override
+			public Map<String, String> getProperties(Map<String,String> challengProperties)
             {
                 return new HashMap<String,String>();
             }
@@ -79,12 +83,14 @@ public class MessengerLoginTest extends TestCase
     {
         ILoginValidator validator = new ILoginValidator()
         {        
-            public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String mac, SocketAddress remoteAddress)
+            @Override
+			public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String mac, SocketAddress remoteAddress)
             {
                 return "error";
             }
         
-            public Map<String,String> getChallengeProperties(String userName, SocketAddress remoteAddress)
+            @Override
+			public Map<String,String> getChallengeProperties(String userName, SocketAddress remoteAddress)
             {
                 return new HashMap<String,String>();
             }
@@ -93,12 +99,14 @@ public class MessengerLoginTest extends TestCase
         IConnectionLogin login = new IConnectionLogin()
         {
         
-            public void notifyFailedLogin(String message)
+            @Override
+			public void notifyFailedLogin(String message)
             {
                  
             }
         
-            public Map<String, String> getProperties(Map<String,String> challengProperties)
+            @Override
+			public Map<String, String> getProperties(Map<String,String> challengProperties)
             {
                 return new HashMap<String,String>();
             }
@@ -153,12 +161,14 @@ public class MessengerLoginTest extends TestCase
         IConnectionLogin login = new IConnectionLogin()
         {
         
-            public void notifyFailedLogin(String message)
+            @Override
+			public void notifyFailedLogin(String message)
             {
                  fail();
             }
         
-            public Map<String, String> getProperties(Map<String,String> challengProperties)
+            @Override
+			public Map<String, String> getProperties(Map<String,String> challengProperties)
             {
                 String salt = challengProperties.get(ClientLoginValidator.SALT_PROPERTY);
                 

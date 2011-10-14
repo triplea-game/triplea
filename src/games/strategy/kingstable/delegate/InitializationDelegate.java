@@ -33,7 +33,8 @@ public class InitializationDelegate extends BaseDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge)
+    @Override
+	public void start(IDelegateBridge bridge)
     {   
         super.start(bridge);
         
@@ -85,7 +86,8 @@ public class InitializationDelegate extends BaseDelegate
      * If this class implements an interface which inherits from IRemote, returns the class of that interface.
      * Otherwise, returns null.
      */
-    public Class<? extends IRemote> getRemoteType()
+    @Override
+	public Class<? extends IRemote> getRemoteType()
     {
         // This class does not implement the IRemote interface, so return null.
         return null;

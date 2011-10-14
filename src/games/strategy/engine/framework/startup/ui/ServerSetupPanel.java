@@ -268,12 +268,14 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         return true;
     }
 
-    public void playerListChanged()
+    @Override
+	public void playerListChanged()
     {
         SwingUtilities.invokeLater(new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 internalPlayerListChanged();
             }
@@ -282,12 +284,14 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         
     }
 
-    public void playersTakenChanged()
+    @Override
+	public void playersTakenChanged()
     {
         SwingUtilities.invokeLater(new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 internalPlayersTakenChanged();
             }
@@ -365,7 +369,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         m_type.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
         
@@ -417,7 +422,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       
       private ActionListener m_actionListener = new ActionListener()
       {
-        public void actionPerformed(ActionEvent e)
+        @Override
+		public void actionPerformed(ActionEvent e)
         {
             if( m_localCheckBox.isSelected())
                 m_model.takePlayer( m_nameLabel.getText());
@@ -446,7 +452,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
 
     
-    public List<Action> getUserActions()
+    @Override
+	public List<Action> getUserActions()
     {
         List<Action> rVal = new ArrayList<Action>();
         rVal.add(new BootPlayerAction(this, m_model.getMessenger()));

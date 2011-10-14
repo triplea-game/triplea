@@ -58,16 +58,19 @@ public class HistoryPanel extends JPanel
         m_tree.add(m_popup);
         m_popup.addPopupMenuListener(new PopupMenuListener() {
 
-            public void popupMenuCanceled(PopupMenuEvent pme)
+            @Override
+			public void popupMenuCanceled(PopupMenuEvent pme)
             {
                 m_currentPopupNode = null;
             }
 
-            public void popupMenuWillBecomeInvisible(PopupMenuEvent pme)
+            @Override
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent pme)
             {
             }
 
-            public void popupMenuWillBecomeVisible(PopupMenuEvent pme)
+            @Override
+			public void popupMenuWillBecomeVisible(PopupMenuEvent pme)
             {
             }
 
@@ -95,7 +98,8 @@ public class HistoryPanel extends JPanel
         previousButton.addActionListener(new ActionListener()
         {
 
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 previous();
             }
@@ -106,7 +110,8 @@ public class HistoryPanel extends JPanel
         nextButton.addActionListener(new ActionListener()
         {
 
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 next();
             }
@@ -123,21 +128,25 @@ public class HistoryPanel extends JPanel
 
         m_tree.getModel().addTreeModelListener(new TreeModelListener()
         {
-            public void treeNodesChanged(TreeModelEvent e)
+            @Override
+			public void treeNodesChanged(TreeModelEvent e)
             {
                 goToEnd();
             }
 
-            public void treeNodesInserted(TreeModelEvent e)
+            @Override
+			public void treeNodesInserted(TreeModelEvent e)
             {
                 goToEnd();
             }
 
-            public void treeNodesRemoved(TreeModelEvent e)
+            @Override
+			public void treeNodesRemoved(TreeModelEvent e)
             {
             }
 
-            public void treeStructureChanged(TreeModelEvent e)
+            @Override
+			public void treeStructureChanged(TreeModelEvent e)
             {
                 goToEnd();
             }
@@ -145,7 +154,8 @@ public class HistoryPanel extends JPanel
         });
         m_tree.addMouseListener(new MouseListener() {
 
-            public void mouseClicked(MouseEvent me)
+            @Override
+			public void mouseClicked(MouseEvent me)
             {
                 if(SwingUtilities.isRightMouseButton(me))
                 {
@@ -154,19 +164,23 @@ public class HistoryPanel extends JPanel
                 }
             }
 
-            public void mouseEntered(MouseEvent me)
+            @Override
+			public void mouseEntered(MouseEvent me)
             {
             }
 
-            public void mouseExited(MouseEvent me)
+            @Override
+			public void mouseExited(MouseEvent me)
             {
             }
 
-            public void mousePressed(MouseEvent me)
+            @Override
+			public void mousePressed(MouseEvent me)
             {
             }
 
-            public void mouseReleased(MouseEvent me)
+            @Override
+			public void mouseReleased(MouseEvent me)
             {
             }
 
@@ -174,7 +188,8 @@ public class HistoryPanel extends JPanel
         m_tree.addTreeSelectionListener(new TreeSelectionListener()
         {
 
-            public void valueChanged(TreeSelectionEvent e)
+            @Override
+			public void valueChanged(TreeSelectionEvent e)
             {
                 treeSelectionChanged(e);
             }
@@ -320,7 +335,8 @@ public class HistoryPanel extends JPanel
     {
         Runnable r = new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 HistoryNode last = m_data.getHistory().getLastNode();
                 gotoNode(last);
@@ -351,7 +367,8 @@ class HistoryTreeCellRenderer extends DefaultTreeCellRenderer
         m_uiContext = context;
     }
 
-    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean haveFocus)
+    @Override
+	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean haveFocus)
     {
 
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);

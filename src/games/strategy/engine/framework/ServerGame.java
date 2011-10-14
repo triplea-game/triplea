@@ -36,10 +36,7 @@ import games.strategy.engine.random.*;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.*;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
-import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
-import games.strategy.triplea.oddsCalculator.ta.OddsCalculator;
 import games.strategy.triplea.ui.ErrorHandler;
-import games.strategy.triplea.ui.UIContext;
 import games.strategy.util.ListenerList;
 
 import java.io.*;
@@ -96,7 +93,8 @@ public class ServerGame implements IGame
     private IServerRemote m_serverRemote = new IServerRemote()
     {
     
-        public byte[] getSavedGame()
+        @Override
+		public byte[] getSavedGame()
         {
             ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);
             try
@@ -248,7 +246,8 @@ public class ServerGame implements IGame
         return new RemoteName("games.strategy.engine.framework.ServerGame.PLAYER_RANDOM_REMOTE" + id.getName(), IRemoteRandom.class);
     }
     
-    public GameData getData()
+    @Override
+	public GameData getData()
     {
         return m_data;
     }
@@ -450,7 +449,8 @@ public class ServerGame implements IGame
     }
 
     
-    public void saveGame(File f)
+    @Override
+	public void saveGame(File f)
     {
         FileOutputStream fout = null;
         try
@@ -676,12 +676,14 @@ public class ServerGame implements IGame
     }
 
 
-    public void addGameStepListener(GameStepListener listener)
+    @Override
+	public void addGameStepListener(GameStepListener listener)
     {
         m_gameStepListeners.add(listener);
     }
 
-    public void removeGameStepListener(GameStepListener listener)
+    @Override
+	public void removeGameStepListener(GameStepListener listener)
     {
         m_gameStepListeners.remove(listener);
     }
@@ -703,17 +705,20 @@ public class ServerGame implements IGame
         }        
     }
 
-    public IMessenger getMessenger()
+    @Override
+	public IMessenger getMessenger()
     {
         return m_messenger;
     }
 
     
-    public IChannelMessenger getChannelMessenger()
+    @Override
+	public IChannelMessenger getChannelMessenger()
     {
         return m_channelMessenger;
     }
-    public IRemoteMessenger getRemoteMessenger()
+    @Override
+	public IRemoteMessenger getRemoteMessenger()
     {
         return m_remoteMessenger;
     }
@@ -723,20 +728,23 @@ public class ServerGame implements IGame
         return (IGameModifiedChannel) m_channelMessenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL); 
     }
     
-    public void addChange(Change aChange)
+    @Override
+	public void addChange(Change aChange)
     {
         getGameModifiedBroadcaster().gameDataChanged(aChange);
         //let our channel subscribor do the change, 
         //that way all changes will happen in the same thread
     }
 
-    public boolean canSave()
+    @Override
+	public boolean canSave()
     {
         return true;
     }
 
    
-    public IRandomSource getRandomSource()
+    @Override
+	public IRandomSource getRandomSource()
     {
       return m_randomSource;
     }
@@ -750,7 +758,8 @@ public class ServerGame implements IGame
     /* 
      * @see games.strategy.engine.framework.IGame#getVault()
      */
-    public Vault getVault()
+    @Override
+	public Vault getVault()
     {
         return m_vault;
     }
@@ -758,7 +767,8 @@ public class ServerGame implements IGame
     private IGameModifiedChannel m_gameModifiedChannel = new IGameModifiedChannel()
     {
 
-        public void gameDataChanged(Change aChange)
+        @Override
+		public void gameDataChanged(Change aChange)
         {
             assertCorrectCaller();
             m_changePerformer.perform(aChange);
@@ -772,28 +782,32 @@ public class ServerGame implements IGame
             }
         }
 
-        public void startHistoryEvent(String event)
+        @Override
+		public void startHistoryEvent(String event)
         {
             assertCorrectCaller();
             m_data.getHistory().getHistoryWriter().startEvent(event);
             
         }
 
-        public void addChildToEvent(String text, Object renderingData)
+        @Override
+		public void addChildToEvent(String text, Object renderingData)
         {
             assertCorrectCaller();
             m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
             
         }
 
-        public void setRenderingData(Object renderingData)
+        @Override
+		public void setRenderingData(Object renderingData)
         {
             assertCorrectCaller();
             m_data.getHistory().getHistoryWriter().setRenderingData(renderingData);
             
         }
 
-        public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName, boolean loadedFromSavedGame)
+        @Override
+		public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName, boolean loadedFromSavedGame)
         {
             assertCorrectCaller();
             if(loadedFromSavedGame)
@@ -804,7 +818,8 @@ public class ServerGame implements IGame
         }
 
         //nothing to do, we call this
-        public void shutDown()
+        @Override
+		public void shutDown()
         {}
         
     };
@@ -812,7 +827,8 @@ public class ServerGame implements IGame
     /* 
      * @see games.strategy.engine.framework.IGame#addDisplay(games.strategy.engine.display.IDisplay)
      */
-    public void addDisplay(IDisplay display)
+    @Override
+	public void addDisplay(IDisplay display)
     {
        display.initialize(new DefaultDisplayBridge(m_data));
        m_channelMessenger.registerChannelSubscriber(display, ServerGame.getDisplayChannel(getData()));
@@ -823,17 +839,20 @@ public class ServerGame implements IGame
     /* 
      * @see games.strategy.engine.framework.IGame#removeDisplay(games.strategy.engine.display.IDisplay)
      */
-    public void removeDisplay(IDisplay display)
+    @Override
+	public void removeDisplay(IDisplay display)
     {
         m_channelMessenger.unregisterChannelSubscriber(display, ServerGame.getDisplayChannel(getData()));
     }
 
-    public boolean isGameOver()
+    @Override
+	public boolean isGameOver()
     {
         return m_isGameOver;
     }
 
-    public PlayerManager getPlayerManager()
+    @Override
+	public PlayerManager getPlayerManager()
     {
         return m_players;
     }

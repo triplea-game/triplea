@@ -52,6 +52,7 @@ public class ResourceLoader
 
        
         Collection<File> existing = Match.getMatches(candidates, new Match<File>() {
+			@Override
 			public boolean match(File f) {
 				return f.exists();
 			}        	

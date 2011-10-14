@@ -1,16 +1,12 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Route;
-import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.AbstractUndoableMove;
-import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,7 +48,8 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
         SwingUtilities.invokeLater(new Runnable()
         {
             
-            public void run()
+            @Override
+			public void run()
             {
                 initLayout();
             }
@@ -112,7 +109,8 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
         SwingUtilities.invokeLater(new Runnable()
         {
             
-            public void run()
+            @Override
+			public void run()
             {
                 validate();
             }
@@ -183,7 +181,8 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
             m_moveIndex = index;
         }
         
-        public void actionPerformed(ActionEvent e)
+        @Override
+		public void actionPerformed(ActionEvent e)
         {
             // Record position of scroll bar as percentage.
             scrollBarPreviousValue = scroll.getVerticalScrollBar().getValue();
@@ -200,7 +199,8 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
             m_move = move;
         }
         
-        public void actionPerformed(ActionEvent e)
+        @Override
+		public void actionPerformed(ActionEvent e)
         {
             m_movePanel.cancelMove();
             if (!m_movePanel.getMap().isShowing(m_move.getEnd()))

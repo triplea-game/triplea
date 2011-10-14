@@ -14,9 +14,7 @@
 
 package games.strategy.triplea.util;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import games.strategy.engine.data.PlayerID;
@@ -32,117 +30,139 @@ import games.strategy.util.Match;
 
 public class DummyTripleAPlayer implements ITripleaPlayer {
 
-    public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer) {
+    @Override
+	public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer) {
         
         
     }
 
-    public boolean confirmMoveHariKari() {
+    @Override
+	public boolean confirmMoveHariKari() {
         
         return false;
     }
 
-    public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories) {
+    @Override
+	public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories) {
         
         return false;
     }
 
-    public boolean confirmMoveKamikaze() {
+    @Override
+	public boolean confirmMoveKamikaze() {
         
         return false;
     }
 
-    public void confirmOwnCasualties(GUID battleId, String message) {
+    @Override
+	public void confirmOwnCasualties(GUID battleId, String message) {
         
         
     }
 
-    public PlayerID getID() {
+    @Override
+	public PlayerID getID() {
         
         return null;
     }
 
-    public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(
+    @Override
+	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(
         Collection<Unit> fightersThatCanBeMoved, Territory from) {
         
         return null;
     }
 
-    public void reportError(String error) {
+    @Override
+	public void reportError(String error) {
         
         
     }
 
-    public void reportMessage(String message) {
+    @Override
+	public void reportMessage(String message) {
         
         
     }
 
-    public Territory retreatQuery(GUID battleID, boolean submerge,
+    @Override
+	public Territory retreatQuery(GUID battleID, boolean submerge,
         Collection<Territory> possibleTerritories, String message) {
         
         return null;
     }
 
-    public Collection<Unit> scrambleQuery(GUID battleID,
+    @Override
+	public Collection<Unit> scrambleQuery(GUID battleID,
         Collection<Territory> possibleTerritories, String message) {
         
         return null;
     }
 
-    public boolean selectAttackSubs(Territory unitTerritory) {
+    @Override
+	public boolean selectAttackSubs(Territory unitTerritory) {
         
         return false;
     }
 
-    public boolean selectAttackTransports(Territory unitTerritory) {
+    @Override
+	public boolean selectAttackTransports(Territory unitTerritory) {
         
         return false;
     }
 
-    public boolean selectAttackUnits(Territory unitTerritory) {
+    @Override
+	public boolean selectAttackUnits(Territory unitTerritory) {
         
         return false;
     }
 
-    public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory,
+    @Override
+	public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory,
         Collection<Territory> territories, boolean noneAvailable) {
         
         return null;
     }
 
-    public CasualtyDetails selectCasualties(Collection<Unit> selectFrom,
+    @Override
+	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom,
         Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice,
         PlayerID hit, CasualtyList defaultCasualties, GUID battleID) {
         
         return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
     }
 
-    public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title, int diceSides) {
+    @Override
+	public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title, int diceSides) {
         
         return null;
     }
 
-    public boolean selectShoreBombard(Territory unitTerritory) {
+    @Override
+	public boolean selectShoreBombard(Territory unitTerritory) {
         
         return false;
     }
 
-    public Territory selectTerritoryForAirToLand(Collection<Territory> candidates) {
+    @Override
+	public Territory selectTerritoryForAirToLand(Collection<Territory> candidates) {
         
         return null;
     }
 
-    public boolean shouldBomberBomb(Territory territory) {
+    @Override
+	public boolean shouldBomberBomb(Territory territory) {
         return false;
     }
 
 
+	@Override
 	public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units) {
 		return (Unit) Match.getNMatches(units, 1, Matches.UnitIsFactory);
 	}
 
-    public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from) {
+    @Override
+	public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from) {
         
         return null;
     }

@@ -63,7 +63,8 @@ public class BetterAI extends AbstractAI {
         
     }
 	
-    public void initialize(IPlayerBridge bridge, PlayerID id)
+    @Override
+	public void initialize(IPlayerBridge bridge, PlayerID id)
     {
     	super.initialize(bridge, id);
     	
@@ -209,7 +210,8 @@ public class BetterAI extends AbstractAI {
             //throw new RuntimeException("stop");
         }
         
-        public int hashCode() 
+        @Override
+		public int hashCode() 
         {
             int code = 0;
             int digit = 1;
@@ -234,7 +236,8 @@ public class BetterAI extends AbstractAI {
                 return false;
         }
         
-        public String toString() 
+        @Override
+		public String toString() 
         {
             String s = "";
             
@@ -249,12 +252,14 @@ public class BetterAI extends AbstractAI {
             return s;
         }
         
-        public State getSuccessor(Move move)
+        @Override
+		public State getSuccessor(Move move)
         {
             return new State(move, this);            
         }
         
-        public Move getMove() 
+        @Override
+		public Move getMove() 
         {
             return m_move;
         }
@@ -300,6 +305,7 @@ public class BetterAI extends AbstractAI {
 		}
 		
         
+		@Override
 		public Collection<GameState<Move>> successors()
         {
             Collection<GameState<Move>> successors = new ArrayList<GameState<Move>>();
@@ -321,6 +327,7 @@ public class BetterAI extends AbstractAI {
             return successors;
         }
         
+		@Override
 		public float getUtility()
 		{
 		    float utility = 0.0f;
@@ -350,6 +357,7 @@ public class BetterAI extends AbstractAI {
 			return utility;
 		}
 		
+		@Override
 		public boolean gameIsOver()
 		{
 		    //if (m_data[0][0]==0 && m_data[1][0]==1) return true;
@@ -370,6 +378,7 @@ public class BetterAI extends AbstractAI {
 		}
 		
 		
+		@Override
 		public boolean cutoffTest()
 		{
             if (gameIsOver())
@@ -394,6 +403,7 @@ public class BetterAI extends AbstractAI {
 		public Pair<Integer,Integer> getStart() { return m_start; }
 		public Pair<Integer,Integer> getEnd() { return m_end; }
 		
+		@Override
 		public String toString()
 		{
 		    return m_start + " -> " + m_end;
@@ -414,6 +424,7 @@ public class BetterAI extends AbstractAI {
 		First getFirst() { return m_first; }
 		Second getSecond() { return m_second; }
 		
+		@Override
 		public String toString()
 		{
 		    return "(" + m_first + "," + m_second + ")";

@@ -324,17 +324,20 @@ class AttachmentPropertyClear extends Change
 		return m_attatchmentName;
 	}
 	
+	@Override
 	public void perform(GameData data)
 	{
 		IAttachment attachment = m_attatchedTo.getAttachment(m_attatchmentName);
 		PropertyUtil.clear(m_property, attachment);
 	}
 	
+	@Override
 	public Change invert()
 	{
 		return new AttachmentPropertyClearUndo(m_attatchedTo, m_attatchmentName, m_oldValue, m_property);
 	}
 	
+	@Override
 	public String toString()
 	{
 		return "AttachmentPropertyClear attatched to:" + m_attatchedTo + " name:" + m_attatchmentName + ", cleared old value:" + m_oldValue;
@@ -371,17 +374,20 @@ class AttachmentPropertyClearUndo extends Change
 		return m_attatchmentName;
 	}
 	
+	@Override
 	public void perform(GameData data)
 	{
 		IAttachment attachment = m_attatchedTo.getAttachment(m_attatchmentName);
 		PropertyUtil.set(m_property, m_newValue, attachment, false);
 	}
 	
+	@Override
 	public Change invert()
 	{
 		return new AttachmentPropertyClear(m_attatchedTo, m_attatchmentName, m_newValue, m_property);
 	}
 	
+	@Override
 	public String toString()
 	{
 		return "AttachmentPropertyClearUndo attatched to:" + m_attatchedTo + " name:" + m_attatchmentName + " new value:" + m_newValue;
@@ -419,11 +425,13 @@ class RelationshipChange extends Change
 		m_NewRelation = newRelation;
 	}
 	
+	@Override
 	public Change invert()
 	{
 		return new RelationshipChange(m_player1, m_player2, m_NewRelation, m_OldRelation);
 	}
 	
+	@Override
 	protected void perform(GameData data)
 	{
 		/*if (m_player1 == null || m_player2 == null || m_OldRelation == null || m_NewRelation == null)
@@ -432,6 +440,7 @@ class RelationshipChange extends Change
 		data.getRelationshipTracker().setRelationship(data.getPlayerList().getPlayerID(m_player1), data.getPlayerList().getPlayerID(m_player2), data.getRelationshipTypeList().getRelationshipType(m_NewRelation));
 	}
 	
+	@Override
 	public String toString()
 	{
 		/*if (m_player1 == null || m_player2 == null || m_OldRelation == null || m_NewRelation == null)
@@ -469,11 +478,13 @@ class AddUnits extends Change
 		m_name = name;
 	}
 	
+	@Override
 	public Change invert()
 	{
 		return new RemoveUnits(m_name, m_type, m_units);
 	}
 	
+	@Override
 	protected void perform(GameData data)
 	{
 		/*if (m_name == null || m_type == null || m_units == null)
@@ -483,6 +494,7 @@ class AddUnits extends Change
 		holder.getUnits().addAllUnits(m_units);
 	}
 	
+	@Override
 	public String toString()
 	{
 		/*if (m_name == null || m_type == null || m_units == null)
@@ -521,11 +533,13 @@ class RemoveUnits extends Change
 		m_name = name;
 	}
 	
+	@Override
 	public Change invert()
 	{
 		return new AddUnits(m_name, m_type, m_units);
 	}
 	
+	@Override
 	protected void perform(GameData data)
 	{
 		/*if (m_name == null || m_type == null || m_units == null)
@@ -540,6 +554,7 @@ class RemoveUnits extends Change
 		holder.getUnits().removeAllUnits(m_units);
 	}
 	
+	@Override
 	public String toString()
 	{
 		/*if (m_name == null || m_type == null || m_units == null)
@@ -595,17 +610,20 @@ class OwnerChange extends Change
 		return data.getPlayerList().getPlayerID(name);
 	}
 	
+	@Override
 	public Change invert()
 	{
 		return new OwnerChange(m_territory, m_old, m_new);
 	}
 	
+	@Override
 	protected void perform(GameData data)
 	{
 		// both names could be null
 		data.getMap().getTerritory(m_territory).setOwner(getPlayerID(m_new, data));
 	}
 	
+	@Override
 	public String toString()
 	{
 		return m_new + " takes " + m_territory + " from " + m_old;
@@ -651,11 +669,13 @@ class PlayerOwnerChange extends Change
 		m_location = location;
 	}
 	
+	@Override
 	public Change invert()
 	{
 		return new PlayerOwnerChange(m_old, m_new, m_location);
 	}
 	
+	@Override
 	protected void perform(GameData data)
 	{
 		/*if (m_location == null || m_old == null || m_new == null)
@@ -679,6 +699,7 @@ class PlayerOwnerChange extends Change
 		data.getMap().getTerritory(m_location).notifyChanged();
 	}
 	
+	@Override
 	public String toString()
 	{
 		/*if (m_location == null || m_old == null || m_new == null)
@@ -714,11 +735,13 @@ class ChangeUnitProduction extends Change
 		m_old = TerritoryAttachment.get(terr).getUnitProduction();
 	}
 	
+	@Override
 	public Change invert()
 	{
 		return new ChangeUnitProduction(m_location, m_old, m_unitProduction);
 	}
 	
+	@Override
 	protected void perform(GameData data)
 	{
 		/*if (m_location == null)
@@ -730,6 +753,7 @@ class ChangeUnitProduction extends Change
 		m_location.notifyChanged();
 	}
 	
+	@Override
 	public String toString()
 	{
 		/*if (m_location == null)
@@ -765,12 +789,14 @@ class ChangeResourceChange extends Change
 		m_quantity = quantity;
 	}
 	
+	@Override
 	public Change invert()
 	{
 		
 		return new ChangeResourceChange(m_player, m_resource, -m_quantity);
 	}
 	
+	@Override
 	protected void perform(GameData data)
 	{
 		/*if (m_player == null || m_resource == null)
@@ -784,6 +810,7 @@ class ChangeResourceChange extends Change
 			resources.removeResource(resource, -m_quantity);
 	}
 	
+	@Override
 	public String toString()
 	{
 		/*if (m_player == null || m_resource == null)
@@ -814,11 +841,13 @@ class SetPropertyChange extends Change
 		m_oldValue = oldValue;
 	}
 	
+	@Override
 	public Change invert()
 	{
 		return new SetPropertyChange(m_property, m_oldValue, m_value);
 	}
 	
+	@Override
 	protected void perform(GameData data)
 	{
 		/*if (m_property == null || m_value == null || m_oldValue == null)
@@ -854,6 +883,7 @@ class AddProductionRule extends Change
 		m_frontier = frontier;
 	}
 	
+	@Override
 	public void perform(GameData data)
 	{
 		/*if (m_rule == null || m_frontier == null)
@@ -862,6 +892,7 @@ class AddProductionRule extends Change
 		m_frontier.addRule(m_rule);
 	}
 	
+	@Override
 	public Change invert()
 	{
 		return new RemoveProductionRule(m_rule, m_frontier);
@@ -894,6 +925,7 @@ class RemoveProductionRule extends Change
 		m_frontier = frontier;
 	}
 	
+	@Override
 	public void perform(GameData data)
 	{
 		/*if (m_rule == null || m_frontier == null)
@@ -902,6 +934,7 @@ class RemoveProductionRule extends Change
 		m_frontier.removeRule(m_rule);
 	}
 	
+	@Override
 	public Change invert()
 	{
 		
@@ -937,6 +970,7 @@ class AddAvailableTech extends Change
 		m_player = player;
 	}
 	
+	@Override
 	public void perform(GameData data)
 	{
 		/*if (m_tech == null || m_frontier == null || m_player == null)
@@ -946,6 +980,7 @@ class AddAvailableTech extends Change
 		front.addAdvance(m_tech);
 	}
 	
+	@Override
 	public Change invert()
 	{
 		return new RemoveAvailableTech(m_frontier, m_tech, m_player);
@@ -980,6 +1015,7 @@ class RemoveAvailableTech extends Change
 		m_player = player;
 	}
 	
+	@Override
 	public void perform(GameData data)
 	{
 		/*if (m_tech == null || m_frontier == null || m_player == null)
@@ -989,6 +1025,7 @@ class RemoveAvailableTech extends Change
 		front.removeAdvance(m_tech);
 	}
 	
+	@Override
 	public Change invert()
 	{
 		return new AddAvailableTech(m_frontier, m_tech, m_player);
@@ -1127,6 +1164,7 @@ class ProductionFrontierChange extends Change
 		m_player = player;
 	}
 	
+	@Override
 	protected void perform(GameData data)
 	{
 		/*if (m_startFrontier == null || m_endFrontier == null || m_player == null)
@@ -1137,6 +1175,7 @@ class ProductionFrontierChange extends Change
 		player.setProductionFrontier(frontier);
 	}
 	
+	@Override
 	public Change invert()
 	{
 		return new ProductionFrontierChange(m_endFrontier, m_startFrontier, m_player);
@@ -1177,6 +1216,7 @@ class GameSequenceChange extends Change
 		m_newSteps = newSteps;
 	}
 	
+	@Override
 	protected void perform(GameData data)
 	{
 		/*if (m_oldSteps == null || m_newSteps == null)
@@ -1191,6 +1231,7 @@ class GameSequenceChange extends Change
 		}
 	}
 	
+	@Override
 	public Change invert()
 	{
 		return new GameSequenceChange(m_newSteps, m_oldSteps);
@@ -1270,6 +1311,7 @@ class ObjectPropertyChange extends Change
 		PropertyUtil.set(m_property, m_newValue, m_object);
 	}
 	
+	@Override
 	public String toString()
 	{
 		/*if (m_object == null || m_property == null)
@@ -1320,6 +1362,7 @@ class GenericTechChange extends Change
 		m_property = property;
 	}
 	
+	@Override
 	public void perform(GameData data)
 	{
 		/*if (m_attatchedTo == null || m_attatchmentName == null || m_newValue == null || m_oldValue == null || m_property == null)
@@ -1329,11 +1372,13 @@ class GenericTechChange extends Change
 		attachment.setGenericTech(m_property, m_newValue);
 	}
 	
+	@Override
 	public Change invert()
 	{
 		return new GenericTechChange(m_attatchedTo, m_attatchmentName, m_oldValue, m_newValue, m_property);
 	}
 	
+	@Override
 	public String toString()
 	{
 		/*if (m_attatchedTo == null || m_attatchmentName == null || m_newValue == null || m_oldValue == null || m_property == null)

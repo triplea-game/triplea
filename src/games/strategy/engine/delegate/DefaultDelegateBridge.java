@@ -59,12 +59,14 @@ public class DefaultDelegateBridge implements IDelegateBridge
         m_delegateExecutionManager = delegateExecutionManager;
     }
     
-    public GameData getData()
+    @Override
+	public GameData getData()
     {
         return m_data;
     }
 
-    public PlayerID getPlayerID()
+    @Override
+	public PlayerID getPlayerID()
     {
         return m_data.getSequence().getStep().getPlayerID();
     }
@@ -78,7 +80,8 @@ public class DefaultDelegateBridge implements IDelegateBridge
      * All delegates should use random data that comes from both players so that
      * neither player cheats.
      */
-    public int getRandom(int max, String annotation)
+    @Override
+	public int getRandom(int max, String annotation)
     {
         int random = m_randomSource.getRandom(max, annotation);
         m_randomStats.addRandom(random);
@@ -88,14 +91,16 @@ public class DefaultDelegateBridge implements IDelegateBridge
     /**
      * Delegates should not use random data that comes from any other source.
      */
-    public int[] getRandom(int max, int count, String annotation)
+    @Override
+	public int[] getRandom(int max, int count, String annotation)
     {
         int[] rVal = m_randomSource.getRandom(max, count, annotation);
         m_randomStats.addRandom(rVal);
         return rVal;
     }
 
-    public void addChange(Change aChange)
+    @Override
+	public void addChange(Change aChange)
     {
         if(aChange instanceof CompositeChange) {
             CompositeChange c = (CompositeChange) aChange;
@@ -112,14 +117,16 @@ public class DefaultDelegateBridge implements IDelegateBridge
     /**
      * Returns the current step name
      */
-    public String getStepName()
+    @Override
+	public String getStepName()
     {
         return m_data.getSequence().getStep().getName();
     }
 
 
 
-    public IDelegateHistoryWriter getHistoryWriter()
+    @Override
+	public IDelegateHistoryWriter getHistoryWriter()
     {
         return m_historyWriter;
     }
@@ -134,7 +141,8 @@ public class DefaultDelegateBridge implements IDelegateBridge
     /*
      * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
      */
-    public IRemote getRemote()
+    @Override
+	public IRemote getRemote()
     {
         return  getRemote(getPlayerID());
     }
@@ -142,7 +150,8 @@ public class DefaultDelegateBridge implements IDelegateBridge
     /*
      * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
      */
-    public IRemote getRemote(PlayerID id)
+    @Override
+	public IRemote getRemote(PlayerID id)
     {
         try
         {
@@ -159,28 +168,33 @@ public class DefaultDelegateBridge implements IDelegateBridge
     /* (non-Javadoc)
      * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
      */
-    public IChannelSubscribor getDisplayChannelBroadcaster()
+    @Override
+	public IChannelSubscribor getDisplayChannelBroadcaster()
     {
         Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(ServerGame.getDisplayChannel(m_game.getData()));
         return (IChannelSubscribor) getOutbound(implementor);
     }
     
-    public Properties getStepProperties()
+    @Override
+	public Properties getStepProperties()
     {
         return m_data.getSequence().getStep().getProperties();
     }
     
-    public void leaveDelegateExecution()
+    @Override
+	public void leaveDelegateExecution()
     {
         m_delegateExecutionManager.leaveDelegateExecution();
     }
     
-    public void enterDelegateExecution()
+    @Override
+	public void enterDelegateExecution()
     {
         m_delegateExecutionManager.enterDelegateExecution();
     }
 
-    public void stopGameSequence()
+    @Override
+	public void stopGameSequence()
     {
         ((ServerGame) m_game).stopGameSequence();
         

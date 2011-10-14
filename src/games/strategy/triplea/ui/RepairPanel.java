@@ -23,21 +23,13 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.ui.ProductionRepairPanel.Rule;
-
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-
 import javax.swing.*;
 
 /**
@@ -69,7 +61,8 @@ public class RepairPanel extends ActionPanel
     m_buyButton.addActionListener(PURCHASE_ACTION);
   }
 
-  public void display(final PlayerID id)
+  @Override
+public void display(final PlayerID id)
   {
     super.display(id);
     
@@ -78,7 +71,8 @@ public class RepairPanel extends ActionPanel
     SwingUtilities.invokeLater(new Runnable()
     {
     
-        public void run()
+        @Override
+		public void run()
         {
             removeAll();
             actionLabel.setText(id.getName() + " repair");
@@ -107,7 +101,8 @@ public class RepairPanel extends ActionPanel
       SwingUtilities.invokeLater(new Runnable()
     {
     
-        public void run()
+        @Override
+		public void run()
         {
             actionLabel.setText(getCurrentPlayer().getName() + " production " + (m_bid ? " for bid" : ""));
         }
@@ -125,7 +120,8 @@ public class RepairPanel extends ActionPanel
     SwingUtilities.invokeLater(
     		  new Runnable()
     		 {
-    		  public void run()
+    		  @Override
+			public void run()
     		 {
     		  PURCHASE_ACTION.actionPerformed(null);
     		 }
@@ -139,7 +135,8 @@ public class RepairPanel extends ActionPanel
 
   private final AbstractAction PURCHASE_ACTION = new AbstractAction("Buy")
   {
-    public void actionPerformed(ActionEvent e)
+    @Override
+	public void actionPerformed(ActionEvent e)
     {
         PlayerID player = getCurrentPlayer();
         GameData data = getData();
@@ -180,7 +177,8 @@ public class RepairPanel extends ActionPanel
   private Action DoneAction = new AbstractAction("Done")
   {
     
-    public void actionPerformed(ActionEvent event)
+    @Override
+	public void actionPerformed(ActionEvent event)
     {
         boolean hasPurchased = getTotalValues(m_repair) != 0;
         if(!hasPurchased)
@@ -247,7 +245,8 @@ public class RepairPanel extends ActionPanel
       return ta.hasIncreasedFactoryProduction();
   }
   
-  public String toString()
+  @Override
+public String toString()
   {
     return "RepairPanel";
   }

@@ -15,16 +15,8 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Route;
 import games.strategy.triplea.delegate.AbstractUndoableMove;
 import games.strategy.triplea.delegate.UndoableMove;
-import games.strategy.triplea.util.*;
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.*;
-
-import javax.swing.*;
 
 public class UndoableMovesPanel extends AbstractUndoableMovesPanel
 {
@@ -33,7 +25,8 @@ public class UndoableMovesPanel extends AbstractUndoableMovesPanel
         super(data,movePanel);
     }
     
-    protected final void specificViewAction(AbstractUndoableMove move)
+    @Override
+	protected final void specificViewAction(AbstractUndoableMove move)
     {
         m_movePanel.getMap().setRoute(((UndoableMove)move).getRoute());
     }

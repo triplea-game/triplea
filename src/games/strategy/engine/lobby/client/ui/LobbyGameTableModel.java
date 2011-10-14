@@ -45,19 +45,22 @@ public class LobbyGameTableModel extends AbstractTableModel
         m_channelMessenger.registerChannelSubscriber(new ILobbyGameBroadcaster()
         {
         
-            public void gameUpdated(GUID gameId, GameDescription description)
+            @Override
+			public void gameUpdated(GUID gameId, GameDescription description)
             {
                 assertSentFromServer();
                 updateGame(gameId, description);
             }
         
-            public void gameAdded(GUID gameId, GameDescription description)
+            @Override
+			public void gameAdded(GUID gameId, GameDescription description)
             {
                 assertSentFromServer();
                 addGame(gameId, description);
             }
 
-            public void gameRemoved(GUID gameId)
+            @Override
+			public void gameRemoved(GUID gameId)
             {
                 assertSentFromServer();
                 removeGame(gameId);
@@ -95,7 +98,8 @@ public class LobbyGameTableModel extends AbstractTableModel
         SwingUtilities.invokeLater(
                 new Runnable()
                 {
-                    public void run()
+                    @Override
+					public void run()
                     {
                         int index = m_gameIDs.indexOf(gameId);
                         
@@ -117,7 +121,8 @@ public class LobbyGameTableModel extends AbstractTableModel
         SwingUtilities.invokeLater(
         new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 m_gameIDs.add(gameId);
                 m_games.add(description);
@@ -143,7 +148,8 @@ public class LobbyGameTableModel extends AbstractTableModel
         SwingUtilities.invokeLater(
             new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {
                     int index = m_gameIDs.indexOf(gameId);
                     
@@ -158,7 +164,8 @@ public class LobbyGameTableModel extends AbstractTableModel
     }
 
     
-    public String getColumnName(int column) 
+    @Override
+	public String getColumnName(int column) 
     {
         return Column.values()[column].toString();
     }
@@ -168,19 +175,22 @@ public class LobbyGameTableModel extends AbstractTableModel
         return column.ordinal();
     }
 
-    public int getColumnCount()
+    @Override
+	public int getColumnCount()
     {
         //-1 so we don't display the guid
         return Column.values().length -1;
     }
 
 
-    public int getRowCount()
+    @Override
+	public int getRowCount()
     {
         return m_gameIDs.size();
     }
     
-    public Object getValueAt(int rowIndex, int columnIndex)
+    @Override
+	public Object getValueAt(int rowIndex, int columnIndex)
     {
         Column column = Column.values()[columnIndex];
         GameDescription description = m_games.get(rowIndex);

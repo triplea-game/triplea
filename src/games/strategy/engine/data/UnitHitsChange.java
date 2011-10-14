@@ -47,7 +47,8 @@ public class UnitHitsChange extends Change
         }
     }
 
-    protected void perform(GameData data)
+    @Override
+	protected void perform(GameData data)
     {
         Iterator<Unit> iter = m_hits.keySet().iterator();
         while (iter.hasNext())
@@ -68,7 +69,8 @@ public class UnitHitsChange extends Change
         }
     }
 
-    public Change invert()
+    @Override
+	public Change invert()
     {
         return new UnitHitsChange(m_undoHits, m_hits);
     }

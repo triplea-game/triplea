@@ -65,7 +65,8 @@ public class Die
         return new Die(roll, rolledAt, type);
     }
     
-    public boolean equals(Object o)
+    @Override
+	public boolean equals(Object o)
     {
         if(!(o instanceof Die))
             return false;
@@ -75,12 +76,14 @@ public class Die
                other.m_rolledAt == this.m_rolledAt;
     }
     
-    public int hashCode()
+    @Override
+	public int hashCode()
     {
         return m_value + 37 * m_rolledAt;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return "Die roll:" + m_value + " rolled at:" + m_rolledAt + " type:" + m_type;
     }

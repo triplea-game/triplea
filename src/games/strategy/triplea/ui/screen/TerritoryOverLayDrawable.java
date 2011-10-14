@@ -32,7 +32,8 @@ public class TerritoryOverLayDrawable implements IDrawable
     }
  
     
-    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+    @Override
+	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
         Territory territory = data.getMap().getTerritory(m_territoryName);
        
@@ -62,7 +63,8 @@ public class TerritoryOverLayDrawable implements IDrawable
         
     }
 
-    public int getLevel()
+    @Override
+	public int getLevel()
     {
         return TERRITORY_OVERLAY_LEVEL;
     }

@@ -75,7 +75,8 @@ public class TripleA implements IGameLoader
     /**
      * @see IGameLoader.createPlayers(playerNames)
      */
-    public Set<IGamePlayer> createPlayers(Map playerNames)
+    @Override
+	public Set<IGamePlayer> createPlayers(Map playerNames)
     {
         Set<IGamePlayer> players = new HashSet<IGamePlayer>();
         Iterator iter = playerNames.keySet().iterator();
@@ -108,7 +109,8 @@ public class TripleA implements IGameLoader
         return players;
     }
 
-    public void shutDown()
+    @Override
+	public void shutDown()
     {
         if(m_display != null) {
             m_game.removeDisplay(m_display);
@@ -117,7 +119,8 @@ public class TripleA implements IGameLoader
         
     }
     
-    public void startGame(final IGame game, final Set<IGamePlayer> players) throws Exception
+    @Override
+	public void startGame(final IGame game, final Set<IGamePlayer> players) throws Exception
     {
         try
         {
@@ -148,7 +151,8 @@ public class TripleA implements IGameLoader
                 SwingUtilities.invokeAndWait(new Runnable()
                 {
                 
-                    public void run()
+                    @Override
+					public void run()
                     {
                         final TripleAFrame frame;
                         try
@@ -170,7 +174,8 @@ public class TripleA implements IGameLoader
                         SwingUtilities.invokeLater(
                             new Runnable()
                             {
-                                public void run()
+                                @Override
+								public void run()
                                 {
                                     frame.setExtendedState(Frame.MAXIMIZED_BOTH);
                                     frame.toFront();
@@ -203,7 +208,8 @@ public class TripleA implements IGameLoader
             //avoids the pause where sounds dont load right away
             Runnable loadSounds = new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {
                     SoundPath.preLoadSounds();
                 }
@@ -226,7 +232,8 @@ public class TripleA implements IGameLoader
     /**
      * Return an array of player types that can play on the server. 
      */
-    public String[] getServerPlayerTypes()
+    @Override
+	public String[] getServerPlayerTypes()
     {
         
         return new String[]
@@ -234,7 +241,8 @@ public class TripleA implements IGameLoader
             HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE, DYNAMIX_COMPUTER_PLAYER_TYPE};
         }
 
-    public IPBEMMessenger[] getPBEMMessengers()
+    @Override
+	public IPBEMMessenger[] getPBEMMessengers()
     {
         return new IPBEMMessenger[]
         {
@@ -246,22 +254,26 @@ public class TripleA implements IGameLoader
     /* 
      * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
      */
-    public Class<? extends IChannelSubscribor> getDisplayType()
+    @Override
+	public Class<? extends IChannelSubscribor> getDisplayType()
     {
         return ITripleaDisplay.class;
     }
 
     
-    public Class<? extends IRemote> getRemotePlayerType()
+    @Override
+	public Class<? extends IRemote> getRemotePlayerType()
     {
         return ITripleaPlayer.class;
     }
 
-    public IUnitFactory getUnitFactory()
+    @Override
+	public IUnitFactory getUnitFactory()
     {
        return new IUnitFactory() {
 
-        public Unit createUnit(UnitType type, PlayerID owner, GameData data)
+        @Override
+		public Unit createUnit(UnitType type, PlayerID owner, GameData data)
         {
             return new TripleAUnit(type,owner,data);
         } 

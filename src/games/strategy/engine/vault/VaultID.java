@@ -54,7 +54,8 @@ public class VaultID implements Serializable
         return m_uniqueID;
     }
     
-    public boolean equals(Object o)
+    @Override
+	public boolean equals(Object o)
     {
         if(o == null || !(o instanceof VaultID))
             return false;
@@ -64,12 +65,14 @@ public class VaultID implements Serializable
                other.m_uniqueID == this.m_uniqueID;
     }
     
-    public int hashCode()
+    @Override
+	public int hashCode()
     {
         return ((int) m_uniqueID ) ^ m_generatedOn.getName().hashCode();
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return "VaultID generated on:" + m_generatedOn + " id:" + m_uniqueID;
     }

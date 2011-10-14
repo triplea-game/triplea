@@ -289,7 +289,8 @@ public class Database
             Runtime.getRuntime().addShutdownHook(new Thread(new Runnable()
                     {
 
-                        public void run()
+                        @Override
+						public void run()
                         {
                             shutDownDB();
                         }}));
@@ -300,7 +301,8 @@ public class Database
         //we want to backup the database on occassion
         Thread backupThread = new Thread(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 while(true)
                 {

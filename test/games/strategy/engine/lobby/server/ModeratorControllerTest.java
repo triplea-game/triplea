@@ -40,7 +40,8 @@ public class ModeratorControllerTest extends TestCase
     private ConnectionChangeListener m_listener;
     private INode m_adminNode;
     
-    public void setUp() throws UnknownHostException 
+    @Override
+	public void setUp() throws UnknownHostException 
     {
         m_messenger = new DummyMessenger();
         m_controller = new ModeratorController(m_messenger);
@@ -114,10 +115,12 @@ public class ModeratorControllerTest extends TestCase
 class ConnectionChangeListener implements IConnectionChangeListener
 {
     final List<INode> m_removed = new ArrayList<INode>();
-    public void connectionAdded(INode to)
+    @Override
+	public void connectionAdded(INode to)
     {}
 
-    public void connectionRemoved(INode to)
+    @Override
+	public void connectionRemoved(INode to)
     {
         m_removed.add(to);
     }

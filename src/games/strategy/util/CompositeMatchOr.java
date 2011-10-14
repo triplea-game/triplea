@@ -54,6 +54,7 @@ public class CompositeMatchOr<T> extends CompositeMatch<T>
     }
 
 
+	@Override
 	public boolean match(T o) 
 	{
 		List<Match<T>> matches = super.getMatches();

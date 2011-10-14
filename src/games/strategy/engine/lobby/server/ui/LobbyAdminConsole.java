@@ -113,7 +113,8 @@ public class LobbyAdminConsole extends JFrame
         m_debugPlayer.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 debugPlayer();        
             }        
@@ -121,7 +122,8 @@ public class LobbyAdminConsole extends JFrame
         
         m_exit.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 int option = JOptionPane.showConfirmDialog(LobbyAdminConsole.this, "Are you Sure?", "Are you Sure", JOptionPane.YES_NO_OPTION);
                 if(option != JOptionPane.YES_OPTION)
@@ -135,7 +137,8 @@ public class LobbyAdminConsole extends JFrame
         m_backupNow.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 Database.backup();        
             }
@@ -185,7 +188,8 @@ public class LobbyAdminConsole extends JFrame
                 //kill the swing thread
                 Runnable r = new Runnable() 
                 {
-                    public void run() 
+                    @Override
+					public void run() 
                     {
                         s_logger.info("Getting debug info for:" + node);
                         

@@ -24,7 +24,8 @@ import games.strategy.engine.data.*;
 public class UnitTypeComparator implements Comparator<UnitType>
 {
 
-    public int compare(UnitType o1, UnitType o2)
+    @Override
+	public int compare(UnitType o1, UnitType o2)
     {
         UnitType u1 = o1;
         UnitType u2 = o2;

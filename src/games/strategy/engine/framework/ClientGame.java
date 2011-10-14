@@ -29,8 +29,6 @@ import games.strategy.engine.message.*;
 import games.strategy.engine.random.*;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.*;
-import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
-import games.strategy.triplea.oddsCalculator.ta.OddsCalculator;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.util.ListenerList;
 
@@ -103,31 +101,36 @@ public class ClientGame implements IGame
   private IGameModifiedChannel m_gameModificationChannelListener = new IGameModifiedChannel()
   {
 
-    public void gameDataChanged(Change aChange)
+    @Override
+	public void gameDataChanged(Change aChange)
     {
         m_changePerformer.perform(aChange);
         m_data.getHistory().getHistoryWriter().addChange(aChange);
     }
 
-    public void startHistoryEvent(String event)
+    @Override
+	public void startHistoryEvent(String event)
     {
         m_data.getHistory().getHistoryWriter().startEvent(event);
         
     }
 
-    public void addChildToEvent(String text, Object renderingData)
+    @Override
+	public void addChildToEvent(String text, Object renderingData)
     {
         m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
         
     }
 
-    public void setRenderingData(Object renderingData)
+    @Override
+	public void setRenderingData(Object renderingData)
     {
         m_data.getHistory().getHistoryWriter().setRenderingData(renderingData);
         
     }
 
-    public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName, boolean loadedFromSavedGame)
+    @Override
+	public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName, boolean loadedFromSavedGame)
     {
         
         //we want to skip the first iteration, since that simply advances us to step 0
@@ -161,7 +164,8 @@ public class ClientGame implements IGame
             m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
     }
 
-    public void shutDown()
+    @Override
+	public void shutDown()
     {
         ClientGame.this.shutDown();
     }
@@ -204,31 +208,37 @@ public class ClientGame implements IGame
       
   }
  
-  public GameData getData()
+  @Override
+public GameData getData()
   {
     return m_data;
   }
 
-  public IMessenger getMessenger()
+  @Override
+public IMessenger getMessenger()
   {
     return m_messenger;
   }
 
-  public IChannelMessenger getChannelMessenger()
+  @Override
+public IChannelMessenger getChannelMessenger()
   {
       return m_channelMessenger;
   }
-  public IRemoteMessenger getRemoteMessenger()
+  @Override
+public IRemoteMessenger getRemoteMessenger()
   {
       return m_remoteMessenger;
   }
   
-  public void addGameStepListener(GameStepListener listener)
+  @Override
+public void addGameStepListener(GameStepListener listener)
   {
     m_gameStepListeners.add(listener);
   }
 
-  public void removeGameStepListener(GameStepListener listener)
+  @Override
+public void removeGameStepListener(GameStepListener listener)
   {
     m_gameStepListeners.remove(listener);
   }
@@ -236,7 +246,8 @@ public class ClientGame implements IGame
   private boolean m_firstRun = true;
 
 
-  public void addChange(Change aChange)
+  @Override
+public void addChange(Change aChange)
   {
     throw new UnsupportedOperationException();
   }
@@ -247,7 +258,8 @@ public class ClientGame implements IGame
 
   private IGameStepAdvancer m_gameStepAdvancer = new IGameStepAdvancer()
   {
-      public void startPlayerStep(String stepName, PlayerID player)
+      @Override
+	public void startPlayerStep(String stepName, PlayerID player)
     {
       
          
@@ -298,12 +310,14 @@ public class ClientGame implements IGame
    * It would be easy to get the server to save the game, and send the
    * data to the client, I just havent bothered.
    */
-  public boolean canSave()
+  @Override
+public boolean canSave()
   {
     return false;
   }
 
-  public IRandomSource getRandomSource()
+  @Override
+public IRandomSource getRandomSource()
   {
     return null;
   }
@@ -311,6 +325,7 @@ public class ClientGame implements IGame
 	/* 
 	 * @see games.strategy.engine.framework.IGame#getVault()
 	 */
+	@Override
 	public Vault getVault()
 	{
 	    return m_vault;
@@ -319,7 +334,8 @@ public class ClientGame implements IGame
     /* 
      * @see games.strategy.engine.framework.IGame#addDisplay(games.strategy.engine.display.IDisplay)
      */
-    public void addDisplay(IDisplay display)
+    @Override
+	public void addDisplay(IDisplay display)
     {
         display.initialize(new DefaultDisplayBridge(m_data));
         m_channelMessenger.registerChannelSubscriber(display, ServerGame.getDisplayChannel(getData()));
@@ -329,23 +345,27 @@ public class ClientGame implements IGame
     /* 
      * @see games.strategy.engine.framework.IGame#removeDisplay(games.strategy.engine.display.IDisplay)
      */
-    public void removeDisplay(IDisplay display)
+    @Override
+	public void removeDisplay(IDisplay display)
     {
         m_channelMessenger.unregisterChannelSubscriber(display, ServerGame.getDisplayChannel(getData()));
     }
 
-    public boolean isGameOver()
+    @Override
+	public boolean isGameOver()
     {
         return m_isGameOver;
     }
 
-    public PlayerManager getPlayerManager()
+    @Override
+	public PlayerManager getPlayerManager()
     {
         return m_playerManager;
     }
 	
     
-    public void saveGame(File f)
+    @Override
+	public void saveGame(File f)
     {
         IServerRemote server =  (IServerRemote) m_remoteMessenger.getRemote(ServerGame.SERVER_REMOTE);
         byte[] bytes = server.getSavedGame();

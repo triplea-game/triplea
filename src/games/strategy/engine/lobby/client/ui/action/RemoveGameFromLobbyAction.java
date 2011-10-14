@@ -18,7 +18,8 @@ public class RemoveGameFromLobbyAction extends AbstractAction
         m_lobbyWatcher = watcher;
     }
 
-    public void actionPerformed(ActionEvent e)
+    @Override
+	public void actionPerformed(ActionEvent e)
     {
         m_lobbyWatcher.shutDown();
         setEnabled(false);

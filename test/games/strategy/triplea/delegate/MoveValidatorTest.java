@@ -52,6 +52,7 @@ public class MoveValidatorTest extends DelegateTest
 		return suite;
 	}
 
+	@Override
 	public void setUp() throws Exception
 	{
 		super.setUp();

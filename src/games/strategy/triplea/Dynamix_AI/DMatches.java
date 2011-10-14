@@ -34,9 +34,7 @@ import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Some notes on the matches in this class:
@@ -54,7 +52,8 @@ public class DMatches
     {
         return new Match<UnitGroup>()
         {
-            public boolean match(UnitGroup ug)
+            @Override
+			public boolean match(UnitGroup ug)
             {
                 Route ncmRoute = ug.GetNCMRoute(target);
                 if(ncmRoute == null)
@@ -67,7 +66,8 @@ public class DMatches
     {
         return new Match<UnitGroup>()
         {
-            public boolean match(UnitGroup ug)
+            @Override
+			public boolean match(UnitGroup ug)
             {
                 Route ncmRoute = ug.GetNCMRoute(target);
                 if(ncmRoute == null)
@@ -80,7 +80,8 @@ public class DMatches
     {
         return new Match<UnitGroup>()
         {
-            public boolean match(UnitGroup ug)
+            @Override
+			public boolean match(UnitGroup ug)
             {
                 return Match.someMatch(ug.GetUnits(), Matches.UnitHasEnoughMovement(minMovement));
             }
@@ -90,7 +91,8 @@ public class DMatches
     {
         return new Match<UnitGroup>()
         {
-            public boolean match(UnitGroup ug)
+            @Override
+			public boolean match(UnitGroup ug)
             {
                 return Match.allMatch(ug.GetUnits(), Matches.UnitHasEnoughMovement(minMovement));
             }
@@ -100,7 +102,8 @@ public class DMatches
     {
         return new Match<UnitGroup>()
         {
-            public boolean match(UnitGroup ug)
+            @Override
+			public boolean match(UnitGroup ug)
             {
                 return Match.allMatch(ug.GetUnits(), match);
             }
@@ -108,7 +111,8 @@ public class DMatches
     }
         public static final Match<UnitGroup> UnitGroupIsSeaOrAir = new Match<UnitGroup>()
     {
-        public boolean match(UnitGroup unitGroup)
+        @Override
+		public boolean match(UnitGroup unitGroup)
         {
             UnitAttachment ua = UnitAttachment.get(unitGroup.GetFirstUnit().getType());
             return ua.isSea() || ua.isAir();
@@ -116,7 +120,8 @@ public class DMatches
     };
     public static final Match<UnitGroup> UnitGroupIsLand = new Match<UnitGroup>()
     {
-        public boolean match(UnitGroup unitGroup)
+        @Override
+		public boolean match(UnitGroup unitGroup)
         {
             UnitAttachment ua = UnitAttachment.get(unitGroup.GetFirstUnit().getType());
             return !ua.isSea();
@@ -138,7 +143,8 @@ public class DMatches
     {
     	return new Match<Unit>()
     	{
-    		public boolean match(Unit u2)
+    		@Override
+			public boolean match(Unit u2)
     		{
     	            return u1 == u2;
     		}
@@ -257,7 +263,8 @@ public class DMatches
     {
     	return new Match<Territory>()
     	{
-            public boolean match(Territory ter)
+            @Override
+			public boolean match(Territory ter)
             {
                 if (DUtils.GetVulnerabilityOfArmy(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), runCount) >= minVulnerability)
                     return true;
@@ -270,7 +277,8 @@ public class DMatches
     {
     	return new Match<Territory>()
     	{
-            public boolean match(Territory ter)
+            @Override
+			public boolean match(Territory ter)
             {
                 if (DUtils.GetSurvivalChanceOfArmy(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), runCount) >= minSurvivalChance)
                     return true;
@@ -323,7 +331,8 @@ public class DMatches
     {
         return new Match<Territory>()
         {
-            public boolean match(Territory t)
+            @Override
+			public boolean match(Territory t)
             {
                 //Note that first block was added so that water is not considered 'enemy' territory (technically 'neutral', but is really ownerless)
                 if(!(t.isWater() && t.getOwner().isNull()) && data.getRelationshipTracker().isAtWar(player, t.getOwner()))
@@ -336,7 +345,8 @@ public class DMatches
     {
         return new Match<Territory>()
         {
-            public boolean match(Territory t)
+            @Override
+			public boolean match(Territory t)
             {
                 if(!t.getOwner().isNull() && data.getRelationshipTracker().isAtWar(player, t.getOwner()))
                     return true;
@@ -348,7 +358,8 @@ public class DMatches
     {
         return new Match<Territory>()
         {
-            public boolean match(Territory t)
+            @Override
+			public boolean match(Territory t)
             {
                 return t.getOwner().getName().equals(player.getName());
             }
@@ -359,7 +370,8 @@ public class DMatches
     {
         return new Match<Territory>()
         {
-            public boolean match(Territory ter)
+            @Override
+			public boolean match(Territory ter)
     		{
     			GameData data = player.getData();
     			if (Matches.TerritoryIsImpassable.match(ter))
@@ -381,7 +393,8 @@ public class DMatches
     {
         return new Match<Territory>()
         {
-            public boolean match(Territory ter)
+            @Override
+			public boolean match(Territory ter)
     		{
                 if(!ter.isWater())
                     return false;
@@ -407,7 +420,8 @@ public class DMatches
     {
         return new Match<Territory>()
         {
-            public boolean match(Territory ter)
+            @Override
+			public boolean match(Territory ter)
             {
                 return !ter.isWater() && player.equals(ter.getOwner());
             }
@@ -417,7 +431,8 @@ public class DMatches
     {
         return new Match<Territory>()
         {
-            public boolean match(Territory t)
+            @Override
+			public boolean match(Territory t)
             {
                 return data.getRelationshipTracker().isAllied(player, t.getOwner());
             }
@@ -427,7 +442,8 @@ public class DMatches
     {
         return new Match<Territory>()
         {
-            public boolean match(Territory ter)
+            @Override
+			public boolean match(Territory ter)
             {
                 return DMatch.match(StatusCenter.get(data, player).GetStatusOfTerritory(ter));
             }
@@ -437,7 +453,8 @@ public class DMatches
     {
         return new Match<Territory>()
         {
-            public boolean match(Territory t)
+            @Override
+			public boolean match(Territory t)
             {
                 return t.getUnits().someMatch(DUtils.CompMatchAnd(DMatches.unitIsNNEnemyOf(data, player), Matches.UnitIsLand));
             }
@@ -447,7 +464,8 @@ public class DMatches
     {
         return new Match<Territory>()
         {
-            public boolean match(Territory t)
+            @Override
+			public boolean match(Territory t)
             {
                 PlayerID lastPlayer = null;
                 for(Unit unit : t.getUnits())
@@ -566,7 +584,8 @@ public class DMatches
     {
         return new Match<Territory>()
         {
-            public boolean match(Territory t)
+            @Override
+			public boolean match(Territory t)
             {
                 return DUtils.GetNUnitsMatchingXThatCanReach(data, t, terMatch, unitMatch, 1).size() >= 1;
             }
@@ -576,7 +595,8 @@ public class DMatches
     {
         return new Match<Territory>()
         {
-            public boolean match(Territory t)
+            @Override
+			public boolean match(Territory t)
             {
                 return DUtils.GetNNNEnemyUnitsThatCanReach(data, t, player, terMatch, 1).size() >= 1;
             }
@@ -586,7 +606,8 @@ public class DMatches
     {
         return new Match<Territory>()
         {
-            public boolean match(Territory ter)
+            @Override
+			public boolean match(Territory ter)
             {
                 if(ter.isWater())
                     return false;
@@ -615,70 +636,80 @@ public class DMatches
     ///////////////////////////////////////////////Territory Status Matches///////////////////////////////////////////////
     public static final Match<TerritoryStatus> TS_WasAttacked = new Match<TerritoryStatus>()
     {
-        public boolean match(TerritoryStatus ts)
+        @Override
+		public boolean match(TerritoryStatus ts)
         {
             return ts.WasAttacked();
         }
     };
     public static final Match<TerritoryStatus> TS_WasAttacked_LandGrab = new Match<TerritoryStatus>()
     {
-        public boolean match(TerritoryStatus ts)
+        @Override
+		public boolean match(TerritoryStatus ts)
         {
             return ts.WasAttacked_LandGrab;
         }
     };
     public static final Match<TerritoryStatus> TS_WasAttacked_Stabalize = new Match<TerritoryStatus>()
     {
-        public boolean match(TerritoryStatus ts)
+        @Override
+		public boolean match(TerritoryStatus ts)
         {
             return ts.WasAttacked_Stabalize;
         }
     };
     public static final Match<TerritoryStatus> TS_WasAttacked_Offensive = new Match<TerritoryStatus>()
     {
-        public boolean match(TerritoryStatus ts)
+        @Override
+		public boolean match(TerritoryStatus ts)
         {
             return ts.WasAttacked_Offensive;
         }
     };
     public static final Match<TerritoryStatus> TS_WasAttacked_Trade = new Match<TerritoryStatus>()
     {
-        public boolean match(TerritoryStatus ts)
+        @Override
+		public boolean match(TerritoryStatus ts)
         {
             return ts.WasAttacked_Trade;
         }
     };
     public static final Match<TerritoryStatus> TS_WasReinforced = new Match<TerritoryStatus>()
     {
-        public boolean match(TerritoryStatus ts)
+        @Override
+		public boolean match(TerritoryStatus ts)
         {
             return ts.WasReinforced();
         }
     };
     public static final Match<TerritoryStatus> TS_WasReinforced_Block = new Match<TerritoryStatus>()
     {
-        public boolean match(TerritoryStatus ts)
+        @Override
+		public boolean match(TerritoryStatus ts)
         {
             return ts.WasReinforced_Block;
         }
     };
     public static final Match<TerritoryStatus> TS_WasReinforced_Stabalize = new Match<TerritoryStatus>()
     {
-        public boolean match(TerritoryStatus ts)
+        @Override
+		public boolean match(TerritoryStatus ts)
         {
             return ts.WasReinforced_Stabalize;
         }
     };
     public static final Match<TerritoryStatus> TS_WasReinforced_Frontline = new Match<TerritoryStatus>()
     {
-        public boolean match(TerritoryStatus ts)
+        @Override
+		public boolean match(TerritoryStatus ts)
         {
             return ts.WasReinforced_Frontline;
         }
     };
     public static final Match<TerritoryStatus> TS_WasRetreatedFrom = new Match<TerritoryStatus>()
     {
-        public boolean match(TerritoryStatus ts)
+        @Override
+		public boolean match(TerritoryStatus ts)
         {
             return ts.WasRetreatedFrom;
         }

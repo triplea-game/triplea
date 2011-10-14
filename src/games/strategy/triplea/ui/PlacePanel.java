@@ -22,7 +22,6 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
@@ -57,7 +56,8 @@ public class PlacePanel extends AbstractMovePanel
         m_unitsToPlace = new SimpleUnitPanel(map.getUIContext());
     }
     
-    public void display(final PlayerID id)
+    @Override
+	public void display(final PlayerID id)
     {
         super.display(id, " place");
     }
@@ -67,7 +67,8 @@ public class PlacePanel extends AbstractMovePanel
         SwingUtilities.invokeLater(new Runnable()
         {
             
-            public void run()
+            @Override
+			public void run()
             {
                 actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : ""));
             }
@@ -105,7 +106,8 @@ public class PlacePanel extends AbstractMovePanel
     
     private final MapSelectionListener PLACE_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
     {
-        public void territorySelected(Territory territory, MouseDetails e)
+        @Override
+		public void territorySelected(Territory territory, MouseDetails e)
         {
             if (!getActive() || (e.getButton() != MouseEvent.BUTTON1))
                 return;
@@ -185,7 +187,8 @@ public class PlacePanel extends AbstractMovePanel
         m_unitsToPlace.setUnitsFromCategories(unitCategories, getData());
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return "PlacePanel";
     }
@@ -241,7 +244,8 @@ public class PlacePanel extends AbstractMovePanel
         return false;
     }
     
-    final protected void addAdditionalButtons()
+    @Override
+	final protected void addAdditionalButtons()
     {
         add(leftBox(new JLabel("Units left to place:")));
         add(m_unitsToPlace);

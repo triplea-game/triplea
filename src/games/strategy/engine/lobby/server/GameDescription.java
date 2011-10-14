@@ -32,21 +32,24 @@ public class GameDescription implements Externalizable, Cloneable
     {
         LAUNCHING
         {
-            public String toString()
+            @Override
+			public String toString()
             {
                 return "Launching";
             }
         },
         IN_PROGRESS
         {
-            public String toString()
+            @Override
+			public String toString()
             {
                 return "In Progress";
             }
         },
         WAITING_FOR_PLAYERS
         {
-            public String toString()
+            @Override
+			public String toString()
             {
                 return "Waiting For Players";
             }
@@ -83,7 +86,8 @@ public class GameDescription implements Externalizable, Cloneable
         m_comment = comment;
     }
 
-    public Object clone()
+    @Override
+	public Object clone()
     {
         try
         {
@@ -203,7 +207,8 @@ public class GameDescription implements Externalizable, Cloneable
         m_comment = comment;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+    @Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
       
         m_hostedBy = new Node();
@@ -220,7 +225,8 @@ public class GameDescription implements Externalizable, Cloneable
         m_gameName = in.readUTF();
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException
+    @Override
+	public void writeExternal(ObjectOutput out) throws IOException
     {
         ((Node)m_hostedBy).writeExternal(out);
         out.writeInt(m_port);
@@ -235,7 +241,8 @@ public class GameDescription implements Externalizable, Cloneable
         
     }
     
-    public String toString() {
+    @Override
+	public String toString() {
         return "Game Hosted By:" + m_hostName + " gameName:"  + m_gameName + " at:" +  m_hostedBy.getAddress() + ":" + m_port + " playerCount:" + m_playerCount;
     }
 

@@ -104,11 +104,13 @@ class TestUnit
     {
         return m_name;
     }
-    public String toString()
+    @Override
+	public String toString()
     {
         return m_name;
     }
-    public boolean equals(Object o)
+    @Override
+	public boolean equals(Object o)
     {
         return m_unit.equals(o);
     }
@@ -134,7 +136,8 @@ public class UnitAutoChooserTest extends TestCase
         return suite;
     }
 
-    public void setUp() throws Exception
+    @Override
+	public void setUp() throws Exception
     
     {   m_data = LoadGameUtil.loadGame("revised", "revised.xml");
         british = m_data.getPlayerList().getPlayerID(Constants.BRITISH);
@@ -145,7 +148,8 @@ public class UnitAutoChooserTest extends TestCase
         battleship = m_data.getUnitTypeList().getUnitType(Constants.BATTLESHIP_TYPE);
     }
 
-    protected void tearDown() throws Exception
+    @Override
+	protected void tearDown() throws Exception
     {
         m_data = null;
     }

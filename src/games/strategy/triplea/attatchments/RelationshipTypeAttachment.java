@@ -31,7 +31,6 @@ package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.Constants;
 

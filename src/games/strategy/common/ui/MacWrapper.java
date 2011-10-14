@@ -38,7 +38,8 @@ public class MacWrapper
     {
         application.addApplicationListener(
                 new ApplicationAdapter() {
-                    public void handleQuit(ApplicationEvent event) 
+                    @Override
+					public void handleQuit(ApplicationEvent event) 
                     {   
                         if(s_shutdownFrame != null)
                             s_shutdownFrame.shutdown();

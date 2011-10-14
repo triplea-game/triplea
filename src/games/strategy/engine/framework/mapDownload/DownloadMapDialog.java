@@ -89,6 +89,7 @@ public class DownloadMapDialog extends JDialog {
 	private void setupListeners() {
 		m_cancelButton.addActionListener(new AbstractAction() {
 			
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);				
 			}
@@ -96,6 +97,7 @@ public class DownloadMapDialog extends JDialog {
 
 		m_listGamesButton.addActionListener(new AbstractAction() {
 			
+			@Override
 			public void actionPerformed(ActionEvent event) {
 				final String selectedUrl = (String) m_urlComboBox.getSelectedItem();
 				if(selectedUrl == null || selectedUrl.trim().length() == 0) {
@@ -133,6 +135,7 @@ public class DownloadMapDialog extends JDialog {
 
 		m_findMapsButton.addActionListener(new AbstractAction() {
 			
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				try
 				{					

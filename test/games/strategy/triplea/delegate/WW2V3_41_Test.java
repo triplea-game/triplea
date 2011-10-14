@@ -54,7 +54,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -437,7 +436,7 @@ public class WW2V3_41_Test extends TestCase {
             //Set up tech
             PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
             ITestDelegateBridge delegateBridge = getDelegateBridge(germans(m_data));
-            TechTracker.addAdvance(germans, m_data, delegateBridge, TechAdvance.MECHANIZED_INFANTRY);
+            TechTracker.addAdvance(germans, delegateBridge, TechAdvance.MECHANIZED_INFANTRY);
 
             //Set up the move delegate
             MoveDelegate moveDelegate = moveDelegate(m_data);
@@ -491,7 +490,7 @@ public class WW2V3_41_Test extends TestCase {
             //Set up tech
             PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
             ITestDelegateBridge delegateBridge = getDelegateBridge( germans(m_data));
-            TechTracker.addAdvance(germans, m_data, delegateBridge, TechAdvance.JET_POWER);
+            TechTracker.addAdvance(germans, delegateBridge, TechAdvance.JET_POWER);
             
             //Set up the territories
             Territory poland = territory("Poland", m_data);
@@ -1228,7 +1227,8 @@ public class WW2V3_41_Test extends TestCase {
             //The game will ask us if we want to move bomb, say yes.
             InvocationHandler handler = new InvocationHandler()
             {
-                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+                @Override
+				public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
                 {
                     return true;
                 }
@@ -1838,7 +1838,7 @@ public class WW2V3_41_Test extends TestCase {
         	 */
         	//Set up INCREASED_FACTORY_PRODUCTION
         	ITestDelegateBridge delegateBridge = getDelegateBridge(germans(m_data));
-        	TechTracker.addAdvance(germans, m_data, delegateBridge, TechAdvance.INCREASED_FACTORY_PRODUCTION);
+        	TechTracker.addAdvance(germans, delegateBridge, TechAdvance.INCREASED_FACTORY_PRODUCTION);
         	
         	//damage a factory
         	startHits = new IntegerMap<Unit>();

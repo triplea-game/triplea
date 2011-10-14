@@ -21,7 +21,8 @@ public class BackgroundTaskRunner
         Thread t = new Thread(new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 try
                 {
@@ -32,7 +33,8 @@ public class BackgroundTaskRunner
                     SwingUtilities.invokeLater(new Runnable()
                     {
                     
-                        public void run()
+                        @Override
+						public void run()
                         {
                             doneWait.set(true);
                             window.setVisible(false);

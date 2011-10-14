@@ -135,7 +135,8 @@ public class SimpleUnitPanel extends JPanel
   {
       UnitTypeComparator utc = new UnitTypeComparator();
 
-      public int compare(ProductionRule o1, ProductionRule o2)
+      @Override
+	public int compare(ProductionRule o1, ProductionRule o2)
       {
           UnitType u1 = (UnitType)  o1.getResults().keySet().iterator().next();
           UnitType u2 = (UnitType)  o2.getResults().keySet().iterator().next();
@@ -147,7 +148,8 @@ public class SimpleUnitPanel extends JPanel
   {
       UnitTypeComparator utc = new UnitTypeComparator();
 
-      public int compare(RepairRule o1, RepairRule o2)
+      @Override
+	public int compare(RepairRule o1, RepairRule o2)
       {
           UnitType u1 = (UnitType)  o1.getResults().keySet().iterator().next();
           UnitType u2 = (UnitType)  o2.getResults().keySet().iterator().next();

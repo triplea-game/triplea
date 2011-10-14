@@ -326,7 +326,8 @@ public class UIContext
        
        SwingUtilities.invokeLater(new Runnable() {
     
-        public void run() {
+        @Override
+		public void run() {
             //there is a bug in java (1.50._06  for linux at least)
             //where frames are not garbage collected.
             //

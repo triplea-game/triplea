@@ -52,7 +52,8 @@ public class PlainRandomSource implements IRandomSource
   //private static Random s_random;
     private static MersenneTwister s_random;
 
-  public synchronized int[] getRandom(int max, int count, String annotation)
+  @Override
+public synchronized int[] getRandom(int max, int count, String annotation)
   {
   	if(count <= 0) 
   	{
@@ -69,7 +70,8 @@ public class PlainRandomSource implements IRandomSource
   }
 
 
-  public synchronized int getRandom(int max, String annotation)
+  @Override
+public synchronized int getRandom(int max, String annotation)
   {
     if (s_random == null)
       s_random = new MersenneTwister(getSeed());

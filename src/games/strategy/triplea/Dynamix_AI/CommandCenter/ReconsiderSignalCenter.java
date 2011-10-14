@@ -16,15 +16,8 @@ package games.strategy.triplea.Dynamix_AI.CommandCenter;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Dynamix_AI.DUtils;
-import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.logging.Level;
 
 /**
  *

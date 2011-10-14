@@ -42,7 +42,8 @@ public class ImageIoCompletionWatcher implements ImageObserver
         }
     }
 
-    public boolean imageUpdate(Image image, int flags, int x, int y, int width, int height)
+    @Override
+	public boolean imageUpdate(Image image, int flags, int x, int y, int width, int height)
     {
         // wait for complete or error/abort
         if (((flags & ALLBITS) != 0) || ((flags & ABORT) != 0))

@@ -20,7 +20,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
-import games.strategy.triplea.oddsCalculator.ta.OddsCalculator;
 import games.strategy.triplea.xml.LoadGameUtil;
 import java.util.ArrayList;
 import java.util.List;

@@ -118,7 +118,8 @@ public class UnitCategory implements Comparable
 
 
 
-    public boolean equals(Object o)
+    @Override
+	public boolean equals(Object o)
     {
         if (o == null)
             return false;
@@ -178,12 +179,14 @@ public class UnitCategory implements Comparable
         return equalsIgnoreDependents;
     }
 
-    public int hashCode()
+    @Override
+	public int hashCode()
     {
         return m_type.hashCode() | m_owner.hashCode();
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         StringBuilder sb = new StringBuilder();
         sb.append("Entry type:").append(m_type.getName())
@@ -239,7 +242,8 @@ public class UnitCategory implements Comparable
     }
 
 
-    public int compareTo(Object o)
+    @Override
+	public int compareTo(Object o)
     {
         if (o == null)
             return -1;

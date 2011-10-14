@@ -36,7 +36,8 @@ public class UnitOwner
     m_owner = owner;
   }
 
-  public boolean equals(Object o)
+  @Override
+public boolean equals(Object o)
   {
 
     if(o == null)
@@ -49,13 +50,15 @@ public class UnitOwner
         other.m_owner.equals(this.m_owner);
   }
 
-  public int hashCode()
+  @Override
+public int hashCode()
   {
     return m_type.hashCode() ^ m_owner.hashCode();
   }
 
 
-  public String toString()
+  @Override
+public String toString()
   {
     return "Unit owner:" + m_owner.getName() + " type:" + m_type.getName();
   }

@@ -80,7 +80,8 @@ public class GameStep extends GameDataComponent
     return getData().getDelegateList().getDelegate(m_delegate);
   }
 
-  public boolean equals(Object o)
+  @Override
+public boolean equals(Object o)
   {
     if(o == null || ! (o instanceof GameStep))
       return false;
@@ -119,7 +120,8 @@ public class GameStep extends GameDataComponent
     return m_maxRunCount;
   }
 
-  public int hashCode()
+  @Override
+public int hashCode()
   {
     if(m_hashCode == -1)
     {

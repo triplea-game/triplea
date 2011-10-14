@@ -14,11 +14,6 @@
 
 package games.strategy.triplea.Dynamix_AI.Others;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
-import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
-import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
-
 /**
  *
  * @author Stephen

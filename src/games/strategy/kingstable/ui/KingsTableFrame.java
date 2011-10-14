@@ -111,7 +111,8 @@ public class KingsTableFrame extends MainGameFrame
         // If a user tries to close this frame, treat it as if they have asked to leave the game
         this.addWindowListener(new WindowAdapter()
         {
-            public void windowClosing(WindowEvent e)
+            @Override
+			public void windowClosing(WindowEvent e)
             {
                 leaveGame();
             }
@@ -168,7 +169,8 @@ public class KingsTableFrame extends MainGameFrame
      * Get the <code>IGame</code> for the current game.
      * @return the <code>IGame</code> for the current game
      */
-    public IGame getGame()
+    @Override
+	public IGame getGame()
     {
         return m_game;
     }
@@ -177,7 +179,8 @@ public class KingsTableFrame extends MainGameFrame
     /**
      * Process a user request to leave the game.
      */
-    public void leaveGame() 
+    @Override
+	public void leaveGame() 
     {
     	// Make sure the user really wants to leave the game.
         int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit" , JOptionPane.YES_NO_OPTION);
@@ -249,7 +252,8 @@ public class KingsTableFrame extends MainGameFrame
     /**
      * Process a user request to exit the program.
      */
-    public void shutdown()
+    @Override
+	public void shutdown()
     {   
         if (!m_gameOver)
         {
@@ -287,7 +291,8 @@ public class KingsTableFrame extends MainGameFrame
      * Graphically notify the user of an error.
      * @param error the error message to display
      */
-    public void notifyError(String error)
+    @Override
+	public void notifyError(String error)
     {
         m_error.setText(error);
     }

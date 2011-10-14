@@ -41,7 +41,8 @@ public class LobbyLoginValidator implements ILoginValidator
     {
     }
     
-    public Map<String, String> getChallengeProperties(String userName, SocketAddress remoteAddress)
+    @Override
+	public Map<String, String> getChallengeProperties(String userName, SocketAddress remoteAddress)
     {
         //we need to give the user the salt key for the username
         String password = new DBUserController().getPassword(userName);
@@ -52,7 +53,8 @@ public class LobbyLoginValidator implements ILoginValidator
         return rVal;
     }
     
-    public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String clientMac, SocketAddress remoteAddress)
+    @Override
+	public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String clientMac, SocketAddress remoteAddress)
     {
         String error = verifyConnectionInternal(propertiesSentToClient, propertiesReadFromClient, clientName, clientMac, remoteAddress);
         

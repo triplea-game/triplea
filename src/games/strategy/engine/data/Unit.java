@@ -23,8 +23,6 @@ package games.strategy.engine.data;
 import games.strategy.net.GUID;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
 
 
 /**
@@ -121,7 +119,8 @@ public class Unit extends GameDataComponent implements Serializable
     m_owner = player;
   }
 
-  public boolean equals(Object o)
+  @Override
+public boolean equals(Object o)
   {
     if(! (o instanceof Unit))
       return false;
@@ -130,12 +129,14 @@ public class Unit extends GameDataComponent implements Serializable
     return this.m_uid.equals(other.m_uid);
   }
 
-  public int hashCode()
+  @Override
+public int hashCode()
   {
     return m_uid.hashCode();
   }
 
-  public String toString()
+  @Override
+public String toString()
   {
     return m_type.getName() + " owned by " + m_owner.getName();
   }

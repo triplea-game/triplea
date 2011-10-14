@@ -203,44 +203,52 @@ public abstract class AbstractAI implements ITripleaPlayer
      * 
      *******************************************/
     
-    public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection<Territory> territories, boolean noneAvailable)
+    @Override
+	public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection<Territory> territories, boolean noneAvailable)
     {       
         //return the first one
         return (Territory) territories.iterator().next();
     }
     
-    public boolean selectAttackSubs(Territory unitTerritory)
+    @Override
+	public boolean selectAttackSubs(Territory unitTerritory)
     {
         return true;
     }
 
-    public boolean selectAttackTransports(Territory unitTerritory)
+    @Override
+	public boolean selectAttackTransports(Territory unitTerritory)
     {
         return true;
     }
 
-    public boolean selectAttackUnits(Territory unitTerritory)
+    @Override
+	public boolean selectAttackUnits(Territory unitTerritory)
     {
         return true;
     }
 
-    public boolean selectShoreBombard(Territory unitTerritory)
+    @Override
+	public boolean selectShoreBombard(Territory unitTerritory)
     {
     	return true;
     }
     
-    public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from)
+    @Override
+	public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from)
     {   
         //just use the first one
         return candidates.iterator().next();
     }
     
-    public boolean confirmMoveKamikaze()
+    @Override
+	public boolean confirmMoveKamikaze()
     {
         return false;
     }
 
-    public boolean confirmMoveHariKari()
+    @Override
+	public boolean confirmMoveHariKari()
     {
         return false;
     }
@@ -255,20 +263,24 @@ public abstract class AbstractAI implements ITripleaPlayer
     public void battleInfoMessage(String shortMessage, DiceRoll dice)
     {}
 
-    public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer)
+    @Override
+	public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer)
     {}
 
     public void retreatNotificationMessage(Collection<Unit> units)
     {}
 
-    public void reportError(String error)
+    @Override
+	public void reportError(String error)
     {}
 
-    public void reportMessage(String message)
+    @Override
+	public void reportMessage(String message)
     {}
 
 
-    public void confirmOwnCasualties(GUID battleId, String message)
+    @Override
+	public void confirmOwnCasualties(GUID battleId, String message)
     {
         pause();
     }
@@ -325,7 +337,8 @@ public abstract class AbstractAI implements ITripleaPlayer
         return m_name;
     }
 
-    public final PlayerID getID()
+    @Override
+	public final PlayerID getID()
     {
         return m_id;
     }

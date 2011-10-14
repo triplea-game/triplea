@@ -63,7 +63,8 @@ public class TicTacToe implements IGameLoader
     /**
      * @see IGameLoader.createPlayers(playerNames)
      */
-    public Set<IGamePlayer> createPlayers(Map playerNames)
+    @Override
+	public Set<IGamePlayer> createPlayers(Map playerNames)
     {
         Set<IGamePlayer> players = new HashSet<IGamePlayer>();
         Iterator iter = playerNames.keySet().iterator();
@@ -102,7 +103,8 @@ public class TicTacToe implements IGameLoader
     /**
      * Return an array of player types that can play on the server. 
      */
-    public String[] getServerPlayerTypes()
+    @Override
+	public String[] getServerPlayerTypes()
     {
         return new String[]
         {HUMAN_PLAYER_TYPE, ALPHABETA_COMPUTER_PLAYER_TYPE, MINIMAX_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE};
@@ -110,7 +112,8 @@ public class TicTacToe implements IGameLoader
     }
 
     
-    public void shutDown()
+    @Override
+	public void shutDown()
     {
         if(m_display != null) {
             m_game.removeDisplay(m_display);
@@ -118,7 +121,8 @@ public class TicTacToe implements IGameLoader
         }        
     }
     
-    public void startGame(final IGame game, final Set<IGamePlayer> players) throws Exception
+    @Override
+	public void startGame(final IGame game, final Set<IGamePlayer> players) throws Exception
     {
         try
         {
@@ -126,7 +130,8 @@ public class TicTacToe implements IGameLoader
 
             SwingUtilities.invokeAndWait(new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {
                     final TicTacToeFrame frame = new TicTacToeFrame(game, players);
 
@@ -138,7 +143,8 @@ public class TicTacToe implements IGameLoader
                     SwingUtilities.invokeLater(
                             new Runnable()
                             {
-                                public void run()
+                                @Override
+								public void run()
                                 {
                                     //frame.setExtendedState(Frame.MAXIMIZED_BOTH);
                                     frame.toFront();
@@ -177,7 +183,8 @@ public class TicTacToe implements IGameLoader
         }
     }
     
-    public IPBEMMessenger[] getPBEMMessengers()
+    @Override
+	public IPBEMMessenger[] getPBEMMessengers()
     {
         return new IPBEMMessenger[]
         {
@@ -188,17 +195,20 @@ public class TicTacToe implements IGameLoader
     /** 
      * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
      */
-    public Class<? extends IChannelSubscribor> getDisplayType()
+    @Override
+	public Class<? extends IChannelSubscribor> getDisplayType()
     {
         return ITicTacToeDisplay.class;
     }
     
-    public Class<? extends IRemote> getRemotePlayerType()
+    @Override
+	public Class<? extends IRemote> getRemotePlayerType()
     {
         return ITicTacToePlayer.class;
     }
     
-    public IUnitFactory getUnitFactory()
+    @Override
+	public IUnitFactory getUnitFactory()
     {
         return new DefaultUnitFactory();
     }

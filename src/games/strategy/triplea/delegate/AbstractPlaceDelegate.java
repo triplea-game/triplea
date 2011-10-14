@@ -101,7 +101,8 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
     }
 
   
-    public int getPlacementsMade()
+    @Override
+	public int getPlacementsMade()
     {
         return m_placements.size();
     }
@@ -117,12 +118,14 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
     }
 
     // returns List<AbstractUndoableMove>
-    public List<UndoablePlacement> getMovesMade()
+    @Override
+	public List<UndoablePlacement> getMovesMade()
     {
         return m_placements;
     }
 
-    public String undoMove(int moveIndex)
+    @Override
+	public String undoMove(int moveIndex)
     {
         if (moveIndex < m_placements.size() && moveIndex >= 0)
         {
@@ -142,7 +145,8 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         }
     }
 
-    public String placeUnits(Collection<Unit> units, Territory at)
+    @Override
+	public String placeUnits(Collection<Unit> units, Territory at)
     {
         if (units == null || units.isEmpty())
         {
@@ -157,7 +161,8 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         return null;
     }
 
-    public PlaceableUnits getPlaceableUnits(Collection<Unit> units, Territory to)
+    @Override
+	public PlaceableUnits getPlaceableUnits(Collection<Unit> units, Territory to)
     {
         String error = canProduce(to, units, m_player);
         if (error != null)
@@ -420,7 +425,8 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
     {
         return new Match<Unit>()
         {
-            public boolean match(Unit unitWhichRequiresUnits)
+            @Override
+			public boolean match(Unit unitWhichRequiresUnits)
             {
             	if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits))
             		return true;
@@ -1183,7 +1189,8 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
     /**
      * Called before the delegate will stop running.
      */
-    public void end()
+    @Override
+	public void end()
     {
 
         PlayerID player = m_bridge.getPlayerID();
@@ -1204,16 +1211,17 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
         m_placements.clear();
 
         //only for lhtr rules
-        new AirThatCantLandUtil(data, m_bridge).removeAirThatCantLand(m_player, false);
+        new AirThatCantLandUtil(m_bridge).removeAirThatCantLand(m_player, false);
     }
 
     /**
      * Get what air units must move before the end of the players turn
      * @return a list of Territories with air units that must move
      */
-    public Collection<Territory> getTerritoriesWhereAirCantLand()
+    @Override
+	public Collection<Territory> getTerritoriesWhereAirCantLand()
     {
-        return new AirThatCantLandUtil(getData(), m_bridge).getTerritoriesWhereAirCantLand(m_player);
+        return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(m_player);
     }
 
     private boolean isPlayerAllowedToPlacementAnyTerritoryOwnedLand(PlayerID player)
@@ -1268,7 +1276,8 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
-    public Class<? extends IRemote> getRemoteType()
+    @Override
+	public Class<? extends IRemote> getRemoteType()
     {
         return IAbstractPlaceDelegate.class;
     }
@@ -1277,7 +1286,8 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
     /**
      * Returns the state of the Delegate.
      */
-    public Serializable saveState()
+    @Override
+	public Serializable saveState()
     {
 
         PlaceState state = new PlaceState();
@@ -1288,7 +1298,8 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
     /**
      * Loads the delegates state
      */
-    public void loadState(Serializable aState)
+    @Override
+	public void loadState(Serializable aState)
     {
 
         PlaceState state = (PlaceState) aState;

@@ -49,7 +49,7 @@ public class AirThatCantLandUtilTest extends TestCase
         PlayerID player = m_americans;
         //everything can land
         ITestDelegateBridge bridge = getDelegateBridge(player);
-        AirThatCantLandUtil util = new AirThatCantLandUtil(m_data, bridge);
+        AirThatCantLandUtil util = new AirThatCantLandUtil(bridge);
         assertTrue(util.getTerritoriesWhereAirCantLand(player).isEmpty());
     }
     
@@ -62,7 +62,7 @@ public class AirThatCantLandUtilTest extends TestCase
         
         new ChangePerformer(m_data).perform(addAir);
         
-        AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(m_data, bridge);
+        AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
         Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
         assertEquals(1,cantLand.size());
         assertEquals(balkans, cantLand.iterator().next());
@@ -83,7 +83,7 @@ public class AirThatCantLandUtilTest extends TestCase
         
         new ChangePerformer(m_data).perform(addAir);
         
-        AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(m_data, bridge);
+        AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
         Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
         assertEquals(1,cantLand.size());
         assertEquals(sz_55, cantLand.iterator().next());
@@ -103,7 +103,7 @@ public class AirThatCantLandUtilTest extends TestCase
         
         new ChangePerformer(m_data).perform(addAir);
         
-        AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(m_data, bridge);
+        AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
                 
         airThatCantLandUtil.removeAirThatCantLand(player, true);
         assertEquals(2,sz_55.getUnits().getMatches(Matches.UnitIsAir).size());
@@ -122,7 +122,7 @@ public class AirThatCantLandUtilTest extends TestCase
         
         new ChangePerformer(m_data).perform(addAir);
         
-        AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(m_data, bridge);
+        AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
         Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
         assertEquals(1,cantLand.size());
         assertEquals(sz_52, cantLand.iterator().next());
@@ -141,7 +141,7 @@ public class AirThatCantLandUtilTest extends TestCase
 
         //we need to initialize the original owner
         InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
-        initDel.start(bridge, m_data);
+        initDel.start(bridge);
         initDel.end();
         
         //Get necessary sea zones and unit types for this test
@@ -194,7 +194,7 @@ public class AirThatCantLandUtilTest extends TestCase
 
         //we need to initialize the original owner
         InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
-        initDel.start(bridge, m_data);
+        initDel.start(bridge);
         initDel.end();
         
         //Get necessary sea zones and unit types for this test
@@ -252,7 +252,7 @@ public class AirThatCantLandUtilTest extends TestCase
 
         //we need to initialize the original owner
         InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
-        initDel.start(bridge, m_data);
+        initDel.start(bridge);
         initDel.end();
         
         //Get necessary sea zones and unit types for this test
@@ -305,7 +305,7 @@ public class AirThatCantLandUtilTest extends TestCase
 
         //we need to initialize the original owner
         InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
-        initDel.start(bridge, m_data);
+        initDel.start(bridge);
         initDel.end();
         
         //Get necessary sea zones and unit types for this test
@@ -358,7 +358,8 @@ public class AirThatCantLandUtilTest extends TestCase
     {
         InvocationHandler handler = new InvocationHandler()
         {
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+            @Override
+			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
             {
                 return null;
             }

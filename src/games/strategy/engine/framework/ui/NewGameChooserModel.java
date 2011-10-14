@@ -7,8 +7,6 @@ import games.strategy.util.ClassLoaderUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -35,7 +33,8 @@ public class NewGameChooserModel extends DefaultListModel
         populate();
     }
 
-    public NewGameChooserEntry get(int i)
+    @Override
+	public NewGameChooserEntry get(int i)
     {
         return (NewGameChooserEntry) super.get(i);
     }
@@ -93,7 +92,8 @@ public class NewGameChooserModel extends DefaultListModel
         Collections.sort(entries, new Comparator<NewGameChooserEntry>()
         {
         
-            public int compare(NewGameChooserEntry o1, NewGameChooserEntry o2)
+            @Override
+			public int compare(NewGameChooserEntry o1, NewGameChooserEntry o2)
             {
                 return o1.getGameData().getGameName().toLowerCase().compareTo(o2.getGameData().getGameName().toLowerCase());
             }

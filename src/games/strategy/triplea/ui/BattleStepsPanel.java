@@ -59,7 +59,8 @@ class BattleStepsPanel extends JPanel implements Active
         m_list.setSelectionModel(m_listSelectionModel);
     }
 
-    public void deactivate()
+    @Override
+	public void deactivate()
     {
         wakeAll();
     }
@@ -174,7 +175,8 @@ class BattleStepsPanel extends JPanel implements Active
     {
         Thread t = new Thread("Walk single step started at:" + new Date())
         {
-            public void run()
+            @Override
+			public void run()
             {
                 synchronized(m_mutex)
                 {
@@ -195,7 +197,8 @@ class BattleStepsPanel extends JPanel implements Active
                     SwingUtilities.invokeLater(new Runnable()
                     {
                     
-                        public void run()
+                        @Override
+						public void run()
                         {
                             walkStep();
                         }
@@ -268,7 +271,8 @@ class BattleStepsPanel extends JPanel implements Active
 class MyListSelectionModel extends DefaultListSelectionModel
 {
 
-    public void setSelectionInterval(int index0, int index1)
+    @Override
+	public void setSelectionInterval(int index0, int index1)
     {
 
     }

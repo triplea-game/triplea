@@ -32,7 +32,8 @@ public class HeartBeat implements IHeartBeat
         m_serverNode = serverNode;
     }
 
-    public String getDebugInfo()
+    @Override
+	public String getDebugInfo()
     {
         if(MessageContext.getSender().equals(m_serverNode))
             return Console.getDebugReport();

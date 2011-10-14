@@ -47,7 +47,8 @@ public class TALogFormatter extends Formatter
     /* 
      * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
      */
-    public String format(LogRecord record)
+    @Override
+	public String format(LogRecord record)
     {
        String shortName;
        

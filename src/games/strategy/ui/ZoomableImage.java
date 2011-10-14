@@ -97,6 +97,7 @@ class ZoomableImage extends JComponent
 		m_current = m_original.getScaledInstance(width, height, Image.SCALE_FAST);	
 	}
 	
+	@Override
 	public void paint(Graphics g)
 	{
 		//draw the image

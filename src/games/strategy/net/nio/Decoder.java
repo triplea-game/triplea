@@ -75,7 +75,8 @@ public class Decoder
         m_thread = new Thread(new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 loop();
             }

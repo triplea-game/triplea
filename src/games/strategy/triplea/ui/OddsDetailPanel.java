@@ -54,7 +54,8 @@ public class OddsDetailPanel extends JPanel
             new DefaultMapSelectionListener()
         {
 
-            public void mouseEntered(Territory territory)
+            @Override
+			public void mouseEntered(Territory territory)
             {
                 m_currentTerritory = territory;
                 updateOdds();
@@ -65,18 +66,21 @@ public class OddsDetailPanel extends JPanel
         
         m_territoryListener = new TerritoryListener(){
                 
-                            public void ownerChanged(Territory territory)
+                            @Override
+							public void ownerChanged(Territory territory)
                             {
                                 
                             }
                 
-                            public void unitsChanged(Territory territory)
+                            @Override
+							public void unitsChanged(Territory territory)
                             {
                                 if(m_currentTerritory != null && m_currentTerritory.equals(territory))
                                 {
                                     SwingUtilities.invokeLater(new Runnable() {
                 
-                                        public void run()
+                                        @Override
+										public void run()
                                         {
                                             updateOdds();
                                             

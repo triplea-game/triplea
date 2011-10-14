@@ -20,7 +20,8 @@ public class ChatFloodControlTest extends TestCase
 {
     private ChatFloodControl fc = new ChatFloodControl();
 
-    public void setUp() 
+    @Override
+	public void setUp() 
     {
         
     }

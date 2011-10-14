@@ -48,10 +48,11 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge, GameData gameData)
-    {   
+	@Override
+    public void start(IDelegateBridge bridge)
+    {
         m_bridge = new TripleADelegateBridge(bridge);
-        m_player = bridge.getPlayerID();
+        super.start(m_bridge);
     }
 	
     public static boolean getEditMode(GameData data)
@@ -88,7 +89,8 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
     }
 
    
-    public String setEditMode(boolean editMode)
+    @Override
+	public String setEditMode(boolean editMode)
     {
         ITripleaPlayer remotePlayer = (ITripleaPlayer)m_bridge.getRemote();
         if (!m_bridge.getPlayerID().equals(remotePlayer.getID()))
@@ -99,12 +101,14 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
         return null;
     }
 
-    public boolean getEditMode()
+    @Override
+	public boolean getEditMode()
     {
         return EditDelegate.getEditMode(getData());
     }
 
-    public String removeUnits(Territory territory, Collection<Unit> units)
+    @Override
+	public String removeUnits(Territory territory, Collection<Unit> units)
     {
         String result = null;
         if (null != (result = checkEditMode()))
@@ -118,7 +122,8 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
         return null;
     }
 
-    public String addUnits(Territory territory, Collection<Unit> units)
+    @Override
+	public String addUnits(Territory territory, Collection<Unit> units)
     {
         String result = null;
         if (null != (result = checkEditMode()))
@@ -155,7 +160,8 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 //        throw new UnsupportedOperationException("Not implemented");
     }
 
-    public String changeTerritoryOwner(Territory territory, PlayerID player)
+    @Override
+	public String changeTerritoryOwner(Territory territory, PlayerID player)
     {
         String result = null;
         if (null != (result = checkEditMode()))
@@ -195,7 +201,8 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
         return null;
     }
 
-    public String changePUs(PlayerID player, int newTotal)
+    @Override
+	public String changePUs(PlayerID player, int newTotal)
     {
         String result = null;
         if (null != (result = checkEditMode()))
@@ -215,7 +222,8 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
         return null;
     }
 
-    public String changeTechTokens(PlayerID player, int newTotal)
+    @Override
+	public String changeTechTokens(PlayerID player, int newTotal)
     {
         String result = null;
         if (null != (result = checkEditMode()))
@@ -235,7 +243,8 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
         return null;
     }
 
-    public String addComment(String message)
+    @Override
+	public String addComment(String message)
     {
 
         String result = null;
@@ -288,7 +297,8 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
-    public Class<? extends IRemote> getRemoteType()
+    @Override
+	public Class<? extends IRemote> getRemoteType()
     {
         return IEditDelegate.class;
     }

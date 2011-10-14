@@ -50,7 +50,8 @@ public class GivePUsDelegate extends BaseDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
-    public void start(IDelegateBridge aBridge)
+    @Override
+	public void start(IDelegateBridge aBridge)
 	{
         super.start(aBridge);
 		
@@ -88,6 +89,7 @@ public class GivePUsDelegate extends BaseDelegate
 	/**
 	 * Returns the state of the Delegate.
 	 */
+	@Override
 	public Serializable saveState()
 	{
 		return Boolean.valueOf(m_gameOver);
@@ -96,6 +98,7 @@ public class GivePUsDelegate extends BaseDelegate
 	/**
 	 * Loads the delegates state
 	 */
+	@Override
 	public void loadState(Serializable state)
 	{
 		m_gameOver = ((Boolean) state).booleanValue();
@@ -105,7 +108,8 @@ public class GivePUsDelegate extends BaseDelegate
     /* 
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
-    public Class<? extends IRemote> getRemoteType()
+    @Override
+	public Class<? extends IRemote> getRemoteType()
     {
         return null;
     }

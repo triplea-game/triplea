@@ -37,7 +37,8 @@ public class Step extends IndexedHistoryNode
         return m_player;
     }
 
-    public SerializationWriter getWriter()
+    @Override
+	public SerializationWriter getWriter()
     {
         return new StepHistorySerializer(m_stepName, m_delegateName, m_player, super.getTitle());
     }
@@ -70,7 +71,8 @@ class StepHistorySerializer implements SerializationWriter
         m_displayName = displayName;
     }
 
-    public void write(HistoryWriter writer)
+    @Override
+	public void write(HistoryWriter writer)
     {
         writer.startNextStep(m_stepName, m_delegateName, m_playerID, m_displayName);
 

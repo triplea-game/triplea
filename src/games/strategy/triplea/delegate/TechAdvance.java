@@ -225,10 +225,11 @@ public abstract class TechAdvance implements java.io.Serializable
 
     public abstract String getName();
     public abstract String getProperty();
-    public abstract void perform(PlayerID id, IDelegateBridge bridge, GameData data);
+    public abstract void perform(PlayerID id, IDelegateBridge bridge);
     public abstract boolean hasTech(TechAttachment ta);
     
-    public boolean equals(Object o)
+    @Override
+	public boolean equals(Object o)
     {
         if (!(o instanceof TechAdvance))
             return false;
@@ -241,7 +242,8 @@ public abstract class TechAdvance implements java.io.Serializable
         return getName().equals(ta.getName());
     }
 
-    public int hashCode()
+    @Override
+	public int hashCode()
     {
         if (getName() == null)
             return super.hashCode();
@@ -249,7 +251,8 @@ public abstract class TechAdvance implements java.io.Serializable
         return getName().hashCode();
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         return getName();
     }
@@ -259,20 +262,24 @@ public abstract class TechAdvance implements java.io.Serializable
 
 class SuperSubsAdvance extends TechAdvance
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Super subs";
     }
 
-    public String getProperty()
+    @Override
+	public String getProperty()
     {
         return "superSub";
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    @Override
+    public void perform(PlayerID id, IDelegateBridge bridge)
     {
     }
-    public boolean hasTech(TechAttachment ta){
+    @Override
+	public boolean hasTech(TechAttachment ta){
     	return ta.hasSuperSub();
     }
 }
@@ -281,37 +288,44 @@ class SuperSubsAdvance extends TechAdvance
 
 class HeavyBomberAdvance extends TechAdvance
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Heavy Bomber";
     }
 
-    public String getProperty()
+    @Override
+	public String getProperty()
     {
         return "heavyBomber";
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    @Override
+    public void perform(PlayerID id, IDelegateBridge bridge)
     {
     }
-    public boolean hasTech(TechAttachment ta){
+    @Override
+	public boolean hasTech(TechAttachment ta){
     	return ta.hasHeavyBomber();
     }
 }
 
 class IndustrialTechnologyAdvance extends TechAdvance
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Industrial Technology";
     }
 
-    public String getProperty()
+    @Override
+	public String getProperty()
     {
         return "industrialTechnology";
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    @Override
+    public void perform(PlayerID id, IDelegateBridge bridge)
     {
         ProductionFrontier current = id.getProductionFrontier();
         //they already have it
@@ -320,7 +334,7 @@ class IndustrialTechnologyAdvance extends TechAdvance
         
         String industrialTechName = current.getName() + "IndustrialTechnology";
         
-        ProductionFrontier advancedTech = data.getProductionFrontierList().getProductionFrontier(industrialTechName);
+        ProductionFrontier advancedTech = bridge.getData().getProductionFrontierList().getProductionFrontier(industrialTechName);
         
         //it doesnt exist, dont crash
         if(advancedTech == null)
@@ -332,7 +346,8 @@ class IndustrialTechnologyAdvance extends TechAdvance
         Change prodChange = ChangeFactory.changeProductionFrontier(id, advancedTech);
         bridge.addChange(prodChange);
     }
-    public boolean hasTech(TechAttachment ta){
+    @Override
+	public boolean hasTech(TechAttachment ta){
     	return ta.hasIndustrialTechnology();
     }
 }
@@ -341,20 +356,24 @@ class IndustrialTechnologyAdvance extends TechAdvance
 
 class JetPowerAdvance extends TechAdvance
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Jet Power";
     }
 
-    public String getProperty()
+    @Override
+	public String getProperty()
     {
         return "jetPower";
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    @Override
+    public void perform(PlayerID id, IDelegateBridge bridge)
     {
     }
-    public boolean hasTech(TechAttachment ta){
+    @Override
+	public boolean hasTech(TechAttachment ta){
     	return ta.hasJetPower();
     }
 }
@@ -363,40 +382,48 @@ class JetPowerAdvance extends TechAdvance
 
 class RocketsAdvance extends TechAdvance
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Rockets Advance";
     }
 
-    public String getProperty()
+    @Override
+	public String getProperty()
     {
         return "rocket";
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    @Override
+    public void perform(PlayerID id, IDelegateBridge bridge)
     {
     }
-    public boolean hasTech(TechAttachment ta){
+    @Override
+	public boolean hasTech(TechAttachment ta){
     	return ta.hasRocket();
     }
 }
 
 class DestroyerBombardTechAdvance extends TechAdvance
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Destroyer Bombard";
     }
 
-    public String getProperty()
+    @Override
+	public String getProperty()
     {
         return "destroyerBombard";
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    @Override
+    public void perform(PlayerID id, IDelegateBridge bridge)
     {
     }
-    public boolean hasTech(TechAttachment ta){
+    @Override
+	public boolean hasTech(TechAttachment ta){
     	return ta.hasDestroyerBombard();
     }
 }
@@ -405,20 +432,24 @@ class DestroyerBombardTechAdvance extends TechAdvance
 
 class LongRangeAircraftAdvance extends TechAdvance
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Long Range Aircraft";
     }
 
-    public String getProperty()
+    @Override
+	public String getProperty()
     {
         return "longRangeAir";
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    @Override
+	public void perform(PlayerID id, IDelegateBridge bridge)
     {
     }
-    public boolean hasTech(TechAttachment ta){
+    @Override
+	public boolean hasTech(TechAttachment ta){
     	return ta.hasLongRangeAir();
     }
 }
@@ -431,20 +462,24 @@ class LongRangeAircraftAdvance extends TechAdvance
  */
 class ImprovedArtillerySupportAdvance extends TechAdvance
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Improved Artillery Support";
     }
 
-    public String getProperty()
+    @Override
+	public String getProperty()
     {
         return "improvedArtillerySupport";
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    @Override
+    public void perform(PlayerID id, IDelegateBridge bridge)
     {
     }
-    public boolean hasTech(TechAttachment ta){
+    @Override
+	public boolean hasTech(TechAttachment ta){
     	return ta.hasImprovedArtillerySupport();
     }
 }
@@ -454,20 +489,24 @@ class ImprovedArtillerySupportAdvance extends TechAdvance
  */
 class ParatroopersAdvance extends TechAdvance
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Paratroopers";
     }
 
-    public String getProperty()
+    @Override
+	public String getProperty()
     {
         return "paratroopers";
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    @Override
+    public void perform(PlayerID id, IDelegateBridge bridge)
     {
     }
-    public boolean hasTech(TechAttachment ta){
+    @Override
+	public boolean hasTech(TechAttachment ta){
     	return ta.hasParatroopers();
     }
 }
@@ -477,20 +516,24 @@ class ParatroopersAdvance extends TechAdvance
  */
 class IncreasedFactoryProductionAdvance extends TechAdvance
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Increased Factory Production";
     }
 
-    public String getProperty()
+    @Override
+	public String getProperty()
     {
         return "increasedFactoryProduction";
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    @Override
+    public void perform(PlayerID id, IDelegateBridge bridge)
     {
     }
-    public boolean hasTech(TechAttachment ta){
+    @Override
+	public boolean hasTech(TechAttachment ta){
     	return ta.hasIncreasedFactoryProduction();
     }
 }
@@ -500,20 +543,24 @@ class IncreasedFactoryProductionAdvance extends TechAdvance
  */
 class WarBondsAdvance extends TechAdvance
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "War Bonds";
     }
 
-    public String getProperty()
+    @Override
+	public String getProperty()
     {
         return "warBonds";
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    @Override
+    public void perform(PlayerID id, IDelegateBridge bridge)
     {
     }
-    public boolean hasTech(TechAttachment ta){
+    @Override
+	public boolean hasTech(TechAttachment ta){
     	return ta.hasWarBonds();
     }
 }
@@ -523,20 +570,24 @@ class WarBondsAdvance extends TechAdvance
  */
 class MechanizedInfantryAdvance extends TechAdvance
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Mechanized Infantry";
     }
 
-    public String getProperty()
+    @Override
+	public String getProperty()
     {
         return "mechanizedInfantry";
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    @Override
+    public void perform(PlayerID id, IDelegateBridge bridge)
     {
     }
-    public boolean hasTech(TechAttachment ta){
+    @Override
+	public boolean hasTech(TechAttachment ta){
     	return ta.hasMechanizedInfantry();
     }
 }
@@ -546,38 +597,46 @@ class MechanizedInfantryAdvance extends TechAdvance
  */
 class AARadarAdvance extends TechAdvance
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "AA Radar";
     }
 
-    public String getProperty()
+    @Override
+	public String getProperty()
     {
         return "aARadar";
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    @Override
+    public void perform(PlayerID id, IDelegateBridge bridge)
     {
     }
-    public boolean hasTech(TechAttachment ta){
+    @Override
+	public boolean hasTech(TechAttachment ta){
     	return ta.hasAARadar();
     }
 }
 
 class ImprovedShipyardsAdvance extends TechAdvance
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Shipyards";
     }
 
-    public String getProperty()
+    @Override
+	public String getProperty()
     {
         return "shipyards";
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    @Override
+    public void perform(PlayerID id, IDelegateBridge bridge)
     {
+        GameData data = bridge.getData();
         if (!games.strategy.triplea.Properties.getUse_Shipyards(data))
         	return;
     	
@@ -600,7 +659,8 @@ class ImprovedShipyardsAdvance extends TechAdvance
         Change prodChange = ChangeFactory.changeProductionFrontier(id, advancedTech);
         bridge.addChange(prodChange);
     }
-    public boolean hasTech(TechAttachment ta){
+    @Override
+	public boolean hasTech(TechAttachment ta){
     	return ta.hasShipyards();
     }
 }
@@ -622,12 +682,12 @@ class LandProductionAdvances extends TechAdvance
         return "landProduction";
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    public void perform(PlayerID id, IDelegateBridge bridge)
     {
     }
 }
-
 */
+
 /*
  * Land & Production Tech Category
  */
@@ -644,11 +704,12 @@ class AirNavalAdvances extends TechAdvance
         return "airNavalAdvances";
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    public void perform(PlayerID id, IDelegateBridge bridge)
     {
     }
 }
 */
+
 /**
  * End of AA 50 rules
  */

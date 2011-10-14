@@ -106,7 +106,8 @@ public class MainFrame extends JFrame
             try {
                 SwingUtilities.invokeAndWait(new Runnable() {
                 
-                    public void run() {
+                    @Override
+					public void run() {
                         clientLeftGame();            
                     }
                 });
@@ -147,7 +148,8 @@ public class MainFrame extends JFrame
     {
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
                 if(fileName.length() > 0)

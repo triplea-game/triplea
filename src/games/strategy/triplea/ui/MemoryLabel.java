@@ -22,14 +22,16 @@ public class MemoryLabel extends JLabel
         addMouseListener( new MouseAdapter()
         {
         
-            public void mouseReleased(MouseEvent e)
+            @Override
+			public void mouseReleased(MouseEvent e)
             {
                 if(e.isPopupTrigger())
                     gc(e);
 
             }
         
-            public void mousePressed(MouseEvent e)
+            @Override
+			public void mousePressed(MouseEvent e)
             {
                 if(e.isPopupTrigger())
                     gc(e);
@@ -49,7 +51,8 @@ public class MemoryLabel extends JLabel
         menu.add(new AbstractAction("Garbage Collect")
         {
         
-            public void actionPerformed(ActionEvent arg0)
+            @Override
+			public void actionPerformed(ActionEvent arg0)
             {
                 System.gc();
                 System.runFinalization();
@@ -105,7 +108,8 @@ class Updater implements Runnable
         m_label = new WeakReference<MemoryLabel>(label);
     }
     
-    public void run()
+    @Override
+	public void run()
     {
         while(m_label.get() != null)
         {
@@ -120,7 +124,8 @@ class Updater implements Runnable
         SwingUtilities.invokeLater( new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 MemoryLabel label = m_label.get();
                 if(!label.isVisible())

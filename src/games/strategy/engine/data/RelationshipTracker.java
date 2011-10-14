@@ -58,6 +58,7 @@ public class RelationshipTracker extends RelationshipInterpreter{
 	 * @param p2 Player2 in the relationship
 	 * @return the current RelationshipType between those two players
 	 */
+	@Override
 	public RelationshipType getRelationshipType(PlayerID p1, PlayerID p2) {
 		return m_relationships.get(new RelatedPlayers(p1,p2));
 	}
@@ -158,6 +159,7 @@ public class RelationshipTracker extends RelationshipInterpreter{
 			return m_p1.getData().getRelationshipTracker().getRelationshipTypeAttachment(m_p1, m_p2);
 		}
 		
+		@Override
 		public String toString()
 		{
 			return m_p1.getName() + "-" + m_p2.getName();

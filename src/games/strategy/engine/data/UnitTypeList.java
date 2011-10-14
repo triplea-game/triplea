@@ -58,6 +58,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
 		return m_unitTypes.size();
 	}
 
+	@Override
 	public Iterator<UnitType> iterator()
 	{
 		return m_unitTypes.values().iterator();

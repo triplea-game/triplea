@@ -24,14 +24,17 @@ public class ClientSetupPanel extends SetupPanel
     
     private IRemoteModelListener m_listener = new IRemoteModelListener()
     {
-        public void playersTakenChanged()
+        @Override
+		public void playersTakenChanged()
         {}
     
-        public void playerListChanged()
+        @Override
+		public void playerListChanged()
         {
             SwingUtilities.invokeLater(new Runnable()
             {            
-                public void run()
+                @Override
+				public void run()
                 {
                     internalPlayersChanged();
                 }
@@ -273,7 +276,8 @@ public class ClientSetupPanel extends SetupPanel
 
       private Action m_takeAction = new AbstractAction("Play")
       {
-        public void actionPerformed(ActionEvent e)
+        @Override
+		public void actionPerformed(ActionEvent e)
         {
             m_model.takePlayer(m_playerNameLabel.getText());
         }
@@ -281,7 +285,8 @@ public class ClientSetupPanel extends SetupPanel
 
       private Action m_dontTakeAction = new AbstractAction("Dont Play")
       {
-        public void actionPerformed(ActionEvent e)
+        @Override
+		public void actionPerformed(ActionEvent e)
         {
             m_model.releasePlayer(m_playerNameLabel.getText());
         }

@@ -1663,7 +1663,8 @@ public class MoveValidator
         friendlyGround.add(Matches.isTerritoryAllied(player, data));
         friendlyGround.add(new Match<Territory>() 
                 {
-                    public boolean match(Territory o)
+                    @Override
+					public boolean match(Territory o)
                     {
                         return !MoveDelegate.getBattleTracker(data).wasConquered((Territory) o);
                     }
@@ -1671,7 +1672,8 @@ public class MoveValidator
         );
         friendlyGround.add(new Match<Territory>() 
                 {
-                    public boolean match(Territory o)
+                    @Override
+					public boolean match(Territory o)
                     {
                         return !MoveDelegate.getBattleTracker(data).hasPendingBattle((Territory) o, false);
                     }
@@ -2026,6 +2028,7 @@ public class MoveValidator
     				Matches.UnitIsAirTransportable,
     				new Match<Unit>() {
 						
+						@Override
 						public boolean match(Unit u) {
 							return TripleAUnit.get(u).getMovementLeft() < route.getLength() || route.crossesWater() || route.getEnd().isWater();
 						}

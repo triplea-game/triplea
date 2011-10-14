@@ -43,5 +43,6 @@ abstract public class AbstractMoveDescription implements java.io.Serializable
         return m_units;
     }
 
-    abstract public String toString();
+    @Override
+	abstract public String toString();
 }

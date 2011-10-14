@@ -29,8 +29,6 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
@@ -45,11 +43,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -107,8 +103,9 @@ public class DiceRoll implements Externalizable
         return attackThenDiceSides;
     }
 
-    public static DiceRoll rollAA(Collection<Unit> attackingUnits, IDelegateBridge bridge, Territory location, GameData data, Match<Unit> typeOfAA)
+    public static DiceRoll rollAA(Collection<Unit> attackingUnits, IDelegateBridge bridge, Territory location, Match<Unit> typeOfAA)
     {
+        GameData data = bridge.getData();
         int hits = 0;
         
         List<Die> sortedDice = new ArrayList<Die>();
@@ -194,14 +191,13 @@ public class DiceRoll implements Externalizable
      */
     public static DiceRoll rollDice(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, Battle battle, String annotation)
     {
-        GameData data = bridge.getData();
         // Decide whether to use low luck rules or normal rules.
-        if (games.strategy.triplea.Properties.getLow_Luck(data))
+        if (games.strategy.triplea.Properties.getLow_Luck(bridge.getData()))
         {
-            return rollDiceLowLuck(units, defending, player, bridge, data, battle, annotation);
+            return rollDiceLowLuck(units, defending, player, bridge, battle, annotation);
         } else
         {
-            return rollDiceNormal(units, defending, player, bridge, data, battle, annotation);
+            return rollDiceNormal(units, defending, player, bridge, battle, annotation);
         }
     }
     
@@ -237,8 +233,9 @@ public class DiceRoll implements Externalizable
      * Roll dice for units using low luck rules. Low luck rules based on rules
      * in DAAK.
      */
-    private static DiceRoll rollDiceLowLuck(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
+    private static DiceRoll rollDiceLowLuck(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, Battle battle, String annotation)
     {
+        GameData data = bridge.getData();
     	boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
     	//int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
         Set<List<UnitSupportAttachment>> supportRules = new HashSet<List<UnitSupportAttachment>>();
@@ -452,7 +449,8 @@ public class DiceRoll implements Externalizable
     	
     	Comparator<Unit> comp = new Comparator<Unit>()
         {
-            public int compare(Unit u1, Unit u2)
+            @Override
+			public int compare(Unit u1, Unit u2)
             {
             	Integer v1, v2;
             	if( defending ) {
@@ -474,7 +472,8 @@ public class DiceRoll implements Externalizable
     	
     	Comparator<UnitSupportAttachment> comp = new Comparator<UnitSupportAttachment>()
         {
-            public int compare(UnitSupportAttachment u1, UnitSupportAttachment u2)
+            @Override
+			public int compare(UnitSupportAttachment u1, UnitSupportAttachment u2)
             {
             	Integer v1 = new Integer(Math.abs(u1.getBonus()));
             	Integer v2 = new Integer(Math.abs(u2.getBonus()));
@@ -489,8 +488,9 @@ public class DiceRoll implements Externalizable
     /**
      * Roll dice for units per normal rules.
      */
-    private static DiceRoll rollDiceNormal(List<Unit> unitsList, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
+    private static DiceRoll rollDiceNormal(List<Unit> unitsList, boolean defending, PlayerID player, IDelegateBridge bridge, Battle battle, String annotation)
     {
+        GameData data = bridge.getData();
         List<Unit> units = new ArrayList<Unit>(unitsList);
     	sortByStrength(units, defending);
     	boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
@@ -896,7 +896,8 @@ public class DiceRoll implements Externalizable
     	return m_rolls.get(index);
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException
+    @Override
+	public void writeExternal(ObjectOutput out) throws IOException
     {
         int[] dice = new int[m_rolls.size()];
         for(int i =0; i < m_rolls.size(); i++)
@@ -908,7 +909,8 @@ public class DiceRoll implements Externalizable
         
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+    @Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         int[] dice = (int[]) in.readObject();
         m_rolls = new ArrayList<Die>(dice.length);
@@ -921,7 +923,8 @@ public class DiceRoll implements Externalizable
         
     }
     
-    public String toString() {
+    @Override
+	public String toString() {
     	return "DiceRoll dice:" + m_rolls + " hits:" + m_hits;
     }
 

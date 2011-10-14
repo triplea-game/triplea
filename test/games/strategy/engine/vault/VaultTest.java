@@ -35,7 +35,8 @@ public class VaultTest extends TestCase
     private Vault m_clientVault;
     private Vault m_serverVault;
 
-    public void setUp() throws IOException
+    @Override
+	public void setUp() throws IOException
     {
         SERVER_PORT = TestUtil.getUniquePort();
         m_server = new ServerMessenger("Server", SERVER_PORT);
@@ -51,7 +52,8 @@ public class VaultTest extends TestCase
 
         Thread.yield();
     }
-    public void tearDown()
+    @Override
+	public void tearDown()
     {
         try
         {

@@ -23,8 +23,6 @@ package games.strategy.engine.data.export;
 
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attatchments.UnitSupportAttachment;
-
 import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.Set;

@@ -51,7 +51,8 @@ public class GameObjectInputStream extends ObjectInputStream
     return m_dataSource.getData();
   }
 
-  protected Object resolveObject(Object obj) throws IOException
+  @Override
+protected Object resolveObject(Object obj) throws IOException
   {
     //when loading units, we want to maintain == relationships for many
     //of the game data objects.

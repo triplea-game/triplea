@@ -72,7 +72,8 @@ public class ImageScrollerSmallView extends JComponent
         model.addObserver(new Observer()
         {
         
-            public void update(Observable o, Object arg)
+            @Override
+			public void update(Observable o, Object arg)
             {
               repaint();          
             }
@@ -118,7 +119,8 @@ public class ImageScrollerSmallView extends JComponent
     }
 
 
-    public void paintComponent(Graphics g)
+    @Override
+	public void paintComponent(Graphics g)
     {
         g.drawImage(m_image, 0, 0, this);
         g.setColor(Color.white);
@@ -171,7 +173,8 @@ public class ImageScrollerSmallView extends JComponent
 
     private final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter()
     {
-        public void mouseDragged(MouseEvent e)
+        @Override
+		public void mouseDragged(MouseEvent e)
         {
 
             long now = System.currentTimeMillis();
@@ -201,7 +204,8 @@ public class ImageScrollerSmallView extends JComponent
 
     private final MouseAdapter MOUSE_LISTENER = new MouseAdapter()
     {
-        public void mouseClicked(MouseEvent e)
+        @Override
+		public void mouseClicked(MouseEvent e)
         {
             //try to center around the click
             int x = (int) (e.getX() / getRatioX()) - (m_model.getBoxWidth() / 2);

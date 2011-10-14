@@ -81,7 +81,8 @@ public class LobbyFrame extends JFrame
         chatPlayers.addActionFactory(new IPlayerActionFactory()
         {
         
-            public List<Action> mouseOnPlayer(INode clickedOn)
+            @Override
+			public List<Action> mouseOnPlayer(INode clickedOn)
             {
                 return createAdminActions(clickedOn);
             }
@@ -116,7 +117,8 @@ public class LobbyFrame extends JFrame
         m_client.getMessenger().addErrorListener(new IMessengerErrorListener()
         {
         
-            public void messengerInvalid(IMessenger messenger, Exception reason)
+            @Override
+			public void messengerInvalid(IMessenger messenger, Exception reason)
             {
                 connectionToServerLost();
         
@@ -126,7 +128,8 @@ public class LobbyFrame extends JFrame
         
         addWindowListener(new WindowAdapter()
         {
-            public void windowClosing(WindowEvent e)
+            @Override
+			public void windowClosing(WindowEvent e)
             {
                 shutdown();
             }
@@ -160,7 +163,8 @@ public class LobbyFrame extends JFrame
         List<Action> rVal = new ArrayList<Action>();
         rVal.add(new AbstractAction("Boot " + clickedOn.getName())
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 if(!confirm("Boot " + clickedOn.getName()))
                 {
@@ -173,7 +177,8 @@ public class LobbyFrame extends JFrame
 
         rVal.add(new AbstractAction("Ban Player")
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 List<String> banTypes = new ArrayList<String>();
                 banTypes.add("IP Address");
@@ -265,7 +270,8 @@ public class LobbyFrame extends JFrame
 
         rVal.add(new AbstractAction("Mute Player")
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 List<String> muteTypes = new ArrayList<String>();
                 muteTypes.add("IP Address");
@@ -355,7 +361,8 @@ public class LobbyFrame extends JFrame
         
         rVal.add(new AbstractAction("Quick Mute")
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 JLabel label = new JLabel("How many minutes should this player be muted?");
                 JSpinner spinner = new JSpinner(new SpinnerNumberModel(10, 0, 60 * 24 * 7, 1));
@@ -387,7 +394,8 @@ public class LobbyFrame extends JFrame
 
         rVal.add(new AbstractAction("Show player information")
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 String text = controller.getInformationOn(clickedOn);
                 JTextPane textPane = new JTextPane();
@@ -399,7 +407,8 @@ public class LobbyFrame extends JFrame
 
         rVal.add(new AbstractAction("Reset password")
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 String newPassword = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(LobbyFrame.this), "Enter new password");
                 if(newPassword == null || newPassword.length() < 2)

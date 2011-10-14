@@ -45,42 +45,48 @@ public class DummyMessenger implements IServerMessenger
     /**
      * Send a message to the given node. Returns immediately.
      */
-    public void send(Serializable msg, INode to)
+    @Override
+	public void send(Serializable msg, INode to)
     {
     }
 
     /**
      * Send a message to all nodes.
      */
-    public void broadcast(Serializable msg)
+    @Override
+	public void broadcast(Serializable msg)
     {
     }
 
     /**
      * Listen for messages of a certain type.
      */
-    public void addMessageListener(IMessageListener listener)
+    @Override
+	public void addMessageListener(IMessageListener listener)
     {
     }
 
     /**
      * Stop listening to messages.
      */
-    public void removeMessageListener(IMessageListener listener)
+    @Override
+	public void removeMessageListener(IMessageListener listener)
     {
     }
 
     /**
      * Listen for messages of a certain type.
      */
-    public void addErrorListener(IMessengerErrorListener listener)
+    @Override
+	public void addErrorListener(IMessengerErrorListener listener)
     {
     }
 
     /**
      * Stop listening to messages.
      */
-    public void removeErrorListener(IMessengerErrorListener listener)
+    @Override
+	public void removeErrorListener(IMessengerErrorListener listener)
     {
     }
 
@@ -89,7 +95,8 @@ public class DummyMessenger implements IServerMessenger
     /**
      * Get the local node
      */
-    public INode getLocalNode()
+    @Override
+	public INode getLocalNode()
     {
         return m_node;
     }
@@ -97,7 +104,8 @@ public class DummyMessenger implements IServerMessenger
     /**
      * Get a list of nodes.
      */
-    public Set<INode> getNodes()
+    @Override
+	public Set<INode> getNodes()
     {
         return new HashSet<INode>();
     }
@@ -105,7 +113,8 @@ public class DummyMessenger implements IServerMessenger
     /**
      * test the connection.
      */
-    public boolean isConnected()
+    @Override
+	public boolean isConnected()
     {
         return true;
     }
@@ -113,14 +122,16 @@ public class DummyMessenger implements IServerMessenger
     /**
      * Shut the connection down.
      */
-    public void shutDown()
+    @Override
+	public void shutDown()
     {
     }
 
     /**
      * Add a listener for change in connection status.
      */
-    public void addConnectionChangeListener(IConnectionChangeListener listener)
+    @Override
+	public void addConnectionChangeListener(IConnectionChangeListener listener)
     {
         m_connectionChangeListeners.add(listener);
     }
@@ -128,7 +139,8 @@ public class DummyMessenger implements IServerMessenger
     /**
      * Remove a listener for change in connection status.
      */
-    public void removeConnectionChangeListener(IConnectionChangeListener listener)
+    @Override
+	public void removeConnectionChangeListener(IConnectionChangeListener listener)
     {
         m_connectionChangeListeners.remove(listener);
     }
@@ -142,7 +154,8 @@ public class DummyMessenger implements IServerMessenger
     {
     }
 
-    public void setAcceptNewConnections(boolean accept)
+    @Override
+	public void setAcceptNewConnections(boolean accept)
     {
     }
 
@@ -152,38 +165,45 @@ public class DummyMessenger implements IServerMessenger
 
     }
 
-    public boolean isServer()
+    @Override
+	public boolean isServer()
     {
         return true;
     }
 
-    public boolean isAcceptNewConnections()
+    @Override
+	public boolean isAcceptNewConnections()
     {
         return false;
     }
 
-    public void removeConnection(INode node)
+    @Override
+	public void removeConnection(INode node)
     {
         for(IConnectionChangeListener listener : m_connectionChangeListeners) {
             listener.connectionRemoved(node);
         }
     }
 
-    public INode getServerNode()
+    @Override
+	public INode getServerNode()
     {
         return m_node;
     }
 
-    public void setLoginValidator(ILoginValidator loginValidator)
+    @Override
+	public void setLoginValidator(ILoginValidator loginValidator)
     {
     }
     
-    public ILoginValidator getLoginValidator()
+    @Override
+	public ILoginValidator getLoginValidator()
     {
         return null;
     }
 
-    public InetSocketAddress getRemoteServerSocketAddress()
+    @Override
+	public InetSocketAddress getRemoteServerSocketAddress()
     {
         return m_node.getSocketAddress();
     }

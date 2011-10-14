@@ -64,7 +64,8 @@ public class EndRoundDelegate extends BaseDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
-    public void start(IDelegateBridge aBridge)
+    @Override
+	public void start(IDelegateBridge aBridge)
 	{
         super.start(aBridge);
 		
@@ -92,19 +93,19 @@ public class EndRoundDelegate extends BaseDelegate
         if(isTotalVictory()) //Check for Win by Victory Cities
 		{
         	victoryMessage = " achieve TOTAL VICTORY with ";
-            checkVictoryCities(aBridge, data, victoryMessage, " Total Victory VCs");
+            checkVictoryCities(aBridge, victoryMessage, " Total Victory VCs");
 		}
 
         if(isHonorableSurrender())
 		{
 			victoryMessage = " achieve an HONORABLE VICTORY with ";
-            checkVictoryCities(aBridge, data, victoryMessage, " Honorable Victory VCs");
+            checkVictoryCities(aBridge, victoryMessage, " Honorable Victory VCs");
 		}
 
         if (isProjectionOfPower())
 		{
 			victoryMessage = " achieve victory through a PROJECTION OF POWER with ";
-            checkVictoryCities(aBridge, data, victoryMessage, " Projection of Power VCs");
+            checkVictoryCities(aBridge, victoryMessage, " Projection of Power VCs");
 		}
 
         if (isEconomicVictory()) //Check for regular economic victory
@@ -203,8 +204,9 @@ public class EndRoundDelegate extends BaseDelegate
 	}
 
 
-	private void checkVictoryCities(IDelegateBridge aBridge, GameData data, String victoryMessage, String victoryType) 
+    private void checkVictoryCities(IDelegateBridge aBridge, String victoryMessage, String victoryType)
 	{
+        GameData data = aBridge.getData();
 		Iterator<String> allianceIter = data.getAllianceTracker().getAlliances().iterator();
 		String allianceName = null;
 		while (allianceIter.hasNext())
@@ -353,6 +355,7 @@ public class EndRoundDelegate extends BaseDelegate
 	/**
 	 * Returns the state of the Delegate.
 	 */
+	@Override
 	public Serializable saveState()
 	{
 		return Boolean.valueOf(m_gameOver);
@@ -361,6 +364,7 @@ public class EndRoundDelegate extends BaseDelegate
 	/**
 	 * Loads the delegates state
 	 */
+	@Override
 	public void loadState(Serializable state)
 	{
 		m_gameOver = ((Boolean) state).booleanValue();
@@ -370,7 +374,8 @@ public class EndRoundDelegate extends BaseDelegate
     /* 
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
-    public Class<? extends IRemote> getRemoteType()
+    @Override
+	public Class<? extends IRemote> getRemoteType()
     {
         return null;
     }

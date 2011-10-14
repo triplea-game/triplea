@@ -9,7 +9,6 @@ import java.util.logging.LogManager;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -56,7 +55,8 @@ public class GameRunner2
         SwingUtilities.invokeLater(new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 MainFrame frame = new MainFrame();        
                 frame.start();
@@ -168,6 +168,7 @@ public class GameRunner2
         {
         	SwingUtilities.invokeAndWait(new Runnable() {
 				
+				@Override
 				public void run() {
 					try
 					{

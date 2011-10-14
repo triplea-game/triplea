@@ -135,7 +135,8 @@ public class PlacementPicker extends JFrame
         imagePanel.addMouseMotionListener(
             new MouseMotionAdapter()
             {
-                public void mouseMoved(MouseEvent e)
+                @Override
+				public void mouseMoved(MouseEvent e)
                 {
                      m_location.setText("x:"+ e.getX() + " y:" + e.getY());
                      m_currentSquare = new Point(e.getPoint());
@@ -153,7 +154,8 @@ public class PlacementPicker extends JFrame
         imagePanel.addMouseListener(
             new MouseAdapter()
             {
-                public void mouseClicked(MouseEvent e)
+                @Override
+				public void mouseClicked(MouseEvent e)
                 {
                     mouseEvent(e.getPoint(), e.isControlDown(), SwingUtilities.isRightMouseButton(e));
                 }
@@ -177,7 +179,8 @@ public class PlacementPicker extends JFrame
 	//set up the actions
 	
 	Action openAction = new AbstractAction("Load Placements") {
-            public void actionPerformed(ActionEvent event) {
+            @Override
+			public void actionPerformed(ActionEvent event) {
                 loadPlacements();
             }
         };
@@ -185,7 +188,8 @@ public class PlacementPicker extends JFrame
 
 
         Action saveAction = new AbstractAction("Save Placements") {
-            public void actionPerformed(ActionEvent event) {
+            @Override
+			public void actionPerformed(ActionEvent event) {
                 savePlacements();
             }
         };
@@ -193,7 +197,8 @@ public class PlacementPicker extends JFrame
 
 
         Action exitAction = new AbstractAction("Exit") {
-            public void actionPerformed(ActionEvent event) {
+            @Override
+			public void actionPerformed(ActionEvent event) {
                 System.exit(0);
             }
         };
@@ -264,7 +269,8 @@ public class PlacementPicker extends JFrame
     {
         JPanel imagePanel = new JPanel()
         {
-            public void paint(Graphics g)
+            @Override
+			public void paint(Graphics g)
             {
                 //super.paint(g);
                 g.drawImage(m_image, 0, 0, this);

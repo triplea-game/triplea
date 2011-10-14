@@ -110,7 +110,8 @@ public class TicTacToeFrame extends MainGameFrame
         // If a user tries to close this frame, treat it as if they have asked to leave the game
         this.addWindowListener(new WindowAdapter()
         {
-            public void windowClosing(WindowEvent e)
+            @Override
+			public void windowClosing(WindowEvent e)
             {
                 leaveGame();
             }
@@ -182,7 +183,8 @@ public class TicTacToeFrame extends MainGameFrame
      * Get the <code>IGame</code> for the current game.
      * @return the <code>IGame</code> for the current game
      */
-    public IGame getGame()
+    @Override
+	public IGame getGame()
     {
         return m_game;
     }
@@ -191,7 +193,8 @@ public class TicTacToeFrame extends MainGameFrame
     /**
      * Process a user request to leave the game.
      */
-    public void leaveGame() 
+    @Override
+	public void leaveGame() 
     {
         if (!m_gameOver)
         {
@@ -266,7 +269,8 @@ public class TicTacToeFrame extends MainGameFrame
     /**
      * Process a user request to exit the program.
      */
-    public void shutdown()
+    @Override
+	public void shutdown()
     {   
         if (!m_gameOver)
         {
@@ -301,7 +305,8 @@ public class TicTacToeFrame extends MainGameFrame
      * Graphically notify the user of an error.
      * @param error the error message to display
      */
-    public void notifyError(String error)
+    @Override
+	public void notifyError(String error)
     {
         m_error.setText(error);
     }

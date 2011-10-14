@@ -57,6 +57,7 @@ public class MessengerTest extends TestCase
 		super(name);
     }
 
+	@Override
 	public void setUp() throws IOException
 	{
         SERVER_PORT = TestUtil.getUniquePort();
@@ -94,7 +95,8 @@ public class MessengerTest extends TestCase
 
 	}
     
-    public void tearDown()
+    @Override
+	public void tearDown()
     {
         try
         {
@@ -317,12 +319,14 @@ public class MessengerTest extends TestCase
         m_server.addConnectionChangeListener(new IConnectionChangeListener()
         {
         
-            public void connectionRemoved(INode to)
+            @Override
+			public void connectionRemoved(INode to)
             {
                 m_serverCount.decrementAndGet();
             }
         
-            public void connectionAdded(INode to)
+            @Override
+			public void connectionAdded(INode to)
             {
                 fail();
         
@@ -382,7 +386,8 @@ public class MessengerTest extends TestCase
         m_client1.addErrorListener(new IMessengerErrorListener()
         {
         
-            public void messengerInvalid(IMessenger messenger, Exception reason)
+            @Override
+			public void messengerInvalid(IMessenger messenger, Exception reason)
             {
                 closed.set(true);
             }
@@ -463,6 +468,7 @@ class MessageListener implements IMessageListener
 	}
 
 
+	@Override
 	public void messageReceived(Serializable msg, INode from)
 	{
 		synchronized(lock)
@@ -539,6 +545,7 @@ class MultipleMessageSender implements Runnable
 		m_messenger = messenger;
 	}
 
+	@Override
 	public void run()
 	{
 		Thread.yield();

@@ -51,7 +51,8 @@ public class LoginPanel extends JPanel
         SwingUtilities.invokeLater(
         new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 if (!m_anonymous.isSelected())
                 {
@@ -118,7 +119,8 @@ public class LoginPanel extends JPanel
         m_logon.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 logonPressed();
             }
@@ -126,7 +128,8 @@ public class LoginPanel extends JPanel
         
         m_createAccount.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 m_returnValue = ReturnValue.CREATE_ACCOUNT;
                 m_dialog.setVisible(false);
@@ -137,7 +140,8 @@ public class LoginPanel extends JPanel
         m_cancel.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 m_dialog.setVisible(false);
             }
@@ -147,7 +151,8 @@ public class LoginPanel extends JPanel
         m_anonymous.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 setWidgetActivation();
             }
@@ -159,7 +164,8 @@ public class LoginPanel extends JPanel
         Action enterAction = new AbstractAction()
         {
         
-            public void actionPerformed(ActionEvent arg0)
+            @Override
+			public void actionPerformed(ActionEvent arg0)
             {                
                 logonPressed();
             }

@@ -1278,7 +1278,8 @@ public class UnitAttachment extends DefaultAttachment
   }
   
   
-  public void validate(GameData data) throws GameParseException
+  @Override
+public void validate(GameData data) throws GameParseException
   {
     if(m_isAir)
     {
@@ -1521,7 +1522,8 @@ public class UnitAttachment extends DefaultAttachment
   }
   
 
-  public String toString()
+  @Override
+public String toString()
   {
 	// should cover all values stored in UnitAttachment
 	// the stats exporter relies on this toString having two spaces after each entry, so do not change this please, except to add new abilities onto the end

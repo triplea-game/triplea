@@ -65,6 +65,7 @@ public class RepairRule extends DefaultNamed implements Serializable
 		return m_results;
 	}
 	
+	@Override
 	public String toString()
 	{
 		return "RepairRule:" + getName();

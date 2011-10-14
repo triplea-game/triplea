@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 public class AllianceTrackerTest extends TestCase {
 	private GameData m_data;
 
+	@Override
 	public void setUp() throws Exception
 	{
 		//get the xml file
@@ -65,6 +66,7 @@ public class AllianceTrackerTest extends TestCase {
 
 
 
+	@Override
 	public void tearDown() throws Exception
 	{
 		m_data=null;

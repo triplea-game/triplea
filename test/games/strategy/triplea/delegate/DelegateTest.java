@@ -21,11 +21,8 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
-import games.strategy.triplea.ui.display.DummyDisplay;
-
 import java.io.InputStream;
 import java.net.URL;
 
@@ -115,6 +112,7 @@ public class DelegateTest extends TestCase
     }
 
 
+	@Override
 	public void setUp() throws Exception
 	{
 		

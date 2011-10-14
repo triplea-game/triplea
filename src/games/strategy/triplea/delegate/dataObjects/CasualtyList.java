@@ -106,6 +106,7 @@ public class CasualtyList implements Serializable
 		return m_killed.size() + m_damaged.size();
 	}
 	
+	@Override
 	public String toString()
 	{
 		return "Selected Casualties: damaged:" + m_damaged + " killed:" + m_killed;

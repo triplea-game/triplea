@@ -55,7 +55,8 @@ public class UnitsList implements java.io.Serializable, Iterable<Unit>
         refresh();
     }
 
-    public Iterator<Unit> iterator()
+    @Override
+	public Iterator<Unit> iterator()
     {
         return getUnits().iterator();
     }

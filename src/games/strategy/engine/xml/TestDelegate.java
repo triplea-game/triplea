@@ -23,8 +23,6 @@ package games.strategy.engine.xml;
 import java.io.Serializable;
 
 import games.strategy.common.delegate.BaseDelegate;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
 
 /**
@@ -41,22 +39,28 @@ public final class TestDelegate extends BaseDelegate
 
 	public boolean supportsTransactions() {return false;}
 	public void initialize(String name) { m_name = name;}
+	@Override
 	public void initialize(String name, String displayName) { m_name = name;}
 	public void startTransaction() {}
 	public void rollback() {}
 	public void commit() {}
 	public boolean inTransaction() {return false;}
+	@Override
 	public String getName() {return m_name;}
 	public void cancelTransaction() {}
 	
+	@Override
 	public void end() {	}
+	@Override
 	public String getDisplayName() {return "displayName";}
+	@Override
 	public Class<IRemote> getRemoteType() {return IRemote.class;}
 
     /**
      * Returns the state of the Delegate.
      */
-    public Serializable saveState()
+    @Override
+	public Serializable saveState()
     {
         return null;
     }
@@ -64,7 +68,8 @@ public final class TestDelegate extends BaseDelegate
     /**
      * Loads the delegates state
      */
-    public void loadState(Serializable state)
+    @Override
+	public void loadState(Serializable state)
     {}
 
     

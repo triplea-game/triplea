@@ -180,7 +180,8 @@ public class OddsCalculatorPanel extends JPanel
         m_defenderCombo.addActionListener(new ActionListener()
         {
             
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 if(m_data.getRelationshipTracker().isAllied(getDefender(), getAttacker()))
                 {
@@ -195,7 +196,8 @@ public class OddsCalculatorPanel extends JPanel
         m_attackerCombo.addActionListener(new ActionListener()
         {
             
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
             	m_data.acquireReadLock();
             	try
@@ -218,7 +220,8 @@ public class OddsCalculatorPanel extends JPanel
         m_landBattle.addActionListener(new ActionListener()
         {
             
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 updateDefender(null);
                 updateAttacker(null);
@@ -231,7 +234,8 @@ public class OddsCalculatorPanel extends JPanel
         m_calculateButton.addActionListener(new ActionListener()
         {
             
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 updateStats();
                 
@@ -242,7 +246,8 @@ public class OddsCalculatorPanel extends JPanel
         m_closeButton.addActionListener(new ActionListener()
         {
             
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 m_parent.setVisible(false);
                 
@@ -253,7 +258,8 @@ public class OddsCalculatorPanel extends JPanel
         m_clearButton.addActionListener(new ActionListener()
         {
             
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 m_defendingUnitsPanel.clear();
                 m_attackingUnitsPanel.clear();
@@ -265,7 +271,8 @@ public class OddsCalculatorPanel extends JPanel
         m_SwapSidesButton.addActionListener(new ActionListener()
         {
             
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 List<Unit> getdefenders = new ArrayList<Unit>();
                 List<Unit> getattackers = new ArrayList<Unit>();
@@ -292,7 +299,8 @@ public class OddsCalculatorPanel extends JPanel
         
         final WaitDialog dialog = new WaitDialog(this, "Calculating Odds",
                 new AbstractAction() {
-                    public void actionPerformed(ActionEvent e) {
+                    @Override
+					public void actionPerformed(ActionEvent e) {
                         calculator.cancel();
                     }
             }
@@ -302,7 +310,8 @@ public class OddsCalculatorPanel extends JPanel
 
         Thread calcThread = new Thread(new Runnable() 
         {
-            public void run()
+            @Override
+			public void run()
             {
                 try
                 {
@@ -340,7 +349,8 @@ public class OddsCalculatorPanel extends JPanel
                 {
                     SwingUtilities.invokeLater(new Runnable()
                     {
-                        public void run()
+                        @Override
+						public void run()
                         {
                             dialog.setVisible(false);
                             dialog.dispose();
@@ -627,7 +637,8 @@ class PlayerUnitsPanel extends JPanel
         Collections.sort(categories, new Comparator<UnitCategory>()
         {
             
-            public int compare(UnitCategory o1, UnitCategory o2)
+            @Override
+			public int compare(UnitCategory o1, UnitCategory o2)
             {
                 UnitAttachment u1 = UnitAttachment.get(o1.getType());
                 UnitAttachment u2 = UnitAttachment.get(o2.getType());

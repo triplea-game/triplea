@@ -56,7 +56,8 @@ public class BetterAI extends AbstractAI {
 
     }
 	
-    public void initialize(IPlayerBridge bridge, PlayerID id)
+    @Override
+	public void initialize(IPlayerBridge bridge, PlayerID id)
     {
     	super.initialize(bridge, id);
     	
@@ -76,6 +77,7 @@ public class BetterAI extends AbstractAI {
     }
     
     
+	@Override
 	protected void play() 
     {
 	    State initial_state = getInitialState();
@@ -140,17 +142,20 @@ public class BetterAI extends AbstractAI {
             
 		}
         
-        public State getSuccessor(Play move)
+        @Override
+		public State getSuccessor(Play move)
         {
             return new State(move, this);            
         }
         
-        public Play getMove()
+        @Override
+		public Play getMove()
         {
             return m_move;
         }
         
-        public Collection<GameState<Play>> successors()
+        @Override
+		public Collection<GameState<Play>> successors()
         {
             Collection<GameState<Play>> successors = new ArrayList<GameState<Play>>();
 
@@ -174,6 +179,7 @@ public class BetterAI extends AbstractAI {
 			return squareOwner.get((m_xDimension*x + y));
 		}
 	
+		@Override
 		public float getUtility()
 		{
             for (int y=0; y<m_yDimension; y++)
@@ -289,6 +295,7 @@ public class BetterAI extends AbstractAI {
             return 0;
 		}
 		
+		@Override
 		public boolean gameIsOver()
 		{
             if (getUtility()!=0)
@@ -306,12 +313,14 @@ public class BetterAI extends AbstractAI {
             
 		}
         
-        public boolean cutoffTest()
+        @Override
+		public boolean cutoffTest()
         {
             return gameIsOver();
         }
         
-        public String toString() 
+        @Override
+		public String toString() 
         {
             String string = "";
             for (int y=0; y<m_yDimension; y++)
@@ -348,7 +357,8 @@ public class BetterAI extends AbstractAI {
 		public int getX() { return m_x; }
         public int getY() { return m_y; }
         
-        public String toString() { return "(" + m_x + "," + m_y + ")";}
+        @Override
+		public String toString() { return "(" + m_x + "," + m_y + ")";}
 		
 	}
 }

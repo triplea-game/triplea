@@ -35,15 +35,16 @@ public abstract class BaseDelegate implements IDelegate
     protected PlayerID m_player;
     protected IDelegateBridge m_bridge;
     
-    /** 
-     * Creates a new instance of the Delegate 
+    /**
+     * Creates a new instance of the Delegate
      */
     public BaseDelegate()
-    {   
+    {
     }
     
-    public void initialize(String name, String displayName)
-    {   
+    @Override
+	public void initialize(String name, String displayName)
+    {
         m_name = name;
         m_displayName = displayName;
     }
@@ -51,19 +52,22 @@ public abstract class BaseDelegate implements IDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge)
-    {   
+    @Override
+	public void start(IDelegateBridge bridge)
+    {
         m_bridge = bridge;
         m_player = bridge.getPlayerID();
     }
     
 
-    public String getName()
+    @Override
+	public String getName()
     {
         return m_name;
     }
 
-    public String getDisplayName()
+    @Override
+	public String getDisplayName()
     {
         return m_displayName;
     }
@@ -71,7 +75,8 @@ public abstract class BaseDelegate implements IDelegate
     /**
      * Called before the delegate will stop running.
      */
-    public void end()
+    @Override
+	public void end()
     {
         // No need to do anything special when this delegate stops
     }
@@ -79,7 +84,8 @@ public abstract class BaseDelegate implements IDelegate
     /**
      * Returns the state of the Delegate.
      */
-    public Serializable saveState()
+    @Override
+	public Serializable saveState()
     {
         // This delegate does not maintain internal state
         return null;
@@ -88,7 +94,8 @@ public abstract class BaseDelegate implements IDelegate
     /**
      * Loads the delegates state
      */
-    public void loadState(Serializable state)
+    @Override
+	public void loadState(Serializable state)
     {
         // This delegate does not maintain internal state
     }
@@ -98,8 +105,10 @@ public abstract class BaseDelegate implements IDelegate
      * If this class implements an interface which inherits from IRemote, returns the class of that interface.
      * Otherwise, returns null.
      */
-    public abstract Class<? extends IRemote> getRemoteType();
+    @Override
+	public abstract Class<? extends IRemote> getRemoteType();
     
+	@Override
 	public IDelegateBridge getBridge() {
         return m_bridge;
 	}

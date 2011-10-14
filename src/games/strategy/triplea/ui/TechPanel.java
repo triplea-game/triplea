@@ -53,13 +53,15 @@ public class TechPanel extends ActionPanel
         super(data, map);
     }
 
-    public void display(final PlayerID id)
+    @Override
+	public void display(final PlayerID id)
     {
         super.display(id);
         SwingUtilities.invokeLater(new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 removeAll();
                 m_actionLabel.setText(id.getName() + " Tech Roll");
@@ -92,7 +94,8 @@ public class TechPanel extends ActionPanel
 
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         return "TechPanel";
     }
@@ -146,7 +149,8 @@ public class TechPanel extends ActionPanel
 
     private Action GetTechRollsAction = new AbstractAction("Roll Tech...")
     {
-        public void actionPerformed(ActionEvent event)
+        @Override
+		public void actionPerformed(ActionEvent event)
         {
             TechAdvance advance = null;
            
@@ -193,7 +197,8 @@ public class TechPanel extends ActionPanel
     
     private Action DontBother = new AbstractAction("Done")
     {
-        public void actionPerformed(ActionEvent event)
+        @Override
+		public void actionPerformed(ActionEvent event)
         {
             m_techRoll = null;
             release();
@@ -203,7 +208,8 @@ public class TechPanel extends ActionPanel
     
     private Action GetTechTokenAction = new AbstractAction("Buy Tech Tokens...")
     {
-        public void actionPerformed(ActionEvent event)
+        @Override
+		public void actionPerformed(ActionEvent event)
         {            
             m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
             //Notify user if there are no more techs to acheive
@@ -249,7 +255,8 @@ public class TechPanel extends ActionPanel
 
     private Action JustRollTech = new AbstractAction("Done/Roll Current Tokens")
     {
-        public void actionPerformed(ActionEvent event)
+        @Override
+		public void actionPerformed(ActionEvent event)
         {
             m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
             //If this player has tokens, roll them.
@@ -314,7 +321,8 @@ class TechRollPanel extends JPanel
 
     private ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
     {
-        public void changedValue(ScrollableTextField stf)
+        @Override
+		public void changedValue(ScrollableTextField stf)
         {
         	setLabel(m_PUs - (TechTracker.getTechCost(m_player) * m_textField.getValue()));
         }
@@ -367,7 +375,8 @@ class TechTokenPanel extends JPanel
     
     private ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
     {
-        public void changedValue(ScrollableTextField stf)
+        @Override
+		public void changedValue(ScrollableTextField stf)
         {
         	setLabel(m_PUs - (TechTracker.getTechCost(m_player) * m_textField.getValue()));
         }

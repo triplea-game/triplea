@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.networkMaintenance;
 
-import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.net.*;
 
 import java.awt.Component;
@@ -22,7 +21,8 @@ public class MutePlayerAction extends AbstractAction
         m_messenger = messenger;
     }
 
-    public void actionPerformed(ActionEvent e)
+    @Override
+	public void actionPerformed(ActionEvent e)
     {
         DefaultComboBoxModel model = new DefaultComboBoxModel();
         JComboBox combo = new JComboBox(model);

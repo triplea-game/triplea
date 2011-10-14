@@ -23,10 +23,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -125,7 +121,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         
         allowObservers.addActionListener(new AbstractAction()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 messeneger.setAcceptNewConnections(allowObservers.isSelected());
             }
@@ -203,7 +200,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         {
             AbstractAction optionsAction = new AbstractAction("Show Who is Who...")
             {
-                public void actionPerformed(ActionEvent e)
+                @Override
+				public void actionPerformed(ActionEvent e)
                 {
                     PlayersPanel.showPlayers(getGame(),m_frame);
                 }
@@ -240,7 +238,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     {
         parentMenu.add(new AbstractAction("Show Console...")
                 {
-                    public void actionPerformed(ActionEvent e)
+                    @Override
+					public void actionPerformed(ActionEvent e)
                     {
                        Console.getConsole().setVisible(true);   
                     }
@@ -276,7 +275,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     		
     		parentMenu.add(new AbstractAction("About...")
     		{
-    			public void actionPerformed(ActionEvent e)
+    			@Override
+				public void actionPerformed(ActionEvent e)
     			{
     				JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
     			}
@@ -287,7 +287,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     	{	
     		Application.getApplication().addApplicationListener(new ApplicationAdapter()
     		{
-    			public void handleAbout(ApplicationEvent event)
+    			@Override
+				public void handleAbout(ApplicationEvent event)
     			{
     				event.setHandled(true); // otherwise the default About menu will still show appear
 
@@ -312,13 +313,15 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 
             parentMenu.add(new AbstractAction("Game Notes...")
             {
-                public void actionPerformed(ActionEvent e)
+                @Override
+				public void actionPerformed(ActionEvent e)
                 {
 
                     SwingUtilities.invokeLater(new Runnable()
                     {
                     
-                        public void run()
+                        @Override
+						public void run()
                         {
                             JEditorPane editorPane = new JEditorPane();
                             editorPane.setEditable(false);
@@ -333,7 +336,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
                             
                             final JButton button = new JButton(new AbstractAction("OK")
                             {
-                                public void actionPerformed(ActionEvent e)
+                                @Override
+								public void actionPerformed(ActionEvent e)
                                 {
                                     dialog.setVisible(false);
                                 }
@@ -407,7 +411,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     {
         JMenuItem menuFileSave = new JMenuItem(new AbstractAction("Save...")
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             { 
                 // For some strange reason, 
                 //    the only way to get a Mac OS X native-style file dialog
@@ -419,7 +424,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
                     SaveGameFileChooser.ensureDefaultDirExists();
                     fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
                     fileDialog.setFilenameFilter(new FilenameFilter(){
-                       public boolean accept(File dir, String name)
+                       @Override
+					public boolean accept(File dir, String name)
                        {    // the extension should be .tsvg, but find svg extensions as well
                            return name.endsWith(".tsvg") || name.endsWith(".svg");
                        }
@@ -527,7 +533,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     
         JMenuItem leaveGameMenuExit = new JMenuItem(new AbstractAction("Leave Game")
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 m_frame.leaveGame();
             }
@@ -553,7 +560,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         {   // On non-Mac operating systems, we need to manually create an Exit menu item
                 JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
                 {
-                    public void actionPerformed(ActionEvent e)
+                    @Override
+					public void actionPerformed(ActionEvent e)
                     {
                         m_frame.shutdown();
                     }

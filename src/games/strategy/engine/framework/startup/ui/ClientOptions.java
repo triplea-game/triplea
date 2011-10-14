@@ -57,7 +57,8 @@ public class ClientOptions extends JDialog
   }
 
 
-  public String getName()
+  @Override
+public String getName()
   {
   	//fixes crash by truncating names to 20 characters
   	String s=m_nameField.getText().trim();
@@ -147,7 +148,8 @@ public class ClientOptions extends JDialog
   private Action m_okAction = new AbstractAction("Connect")
   {
 
-    public void actionPerformed(ActionEvent e)
+    @Override
+	public void actionPerformed(ActionEvent e)
     {
       setVisible(false);
       m_okPressed = true;
@@ -156,7 +158,8 @@ public class ClientOptions extends JDialog
 
   private Action m_cancelAction = new AbstractAction("Cancel")
   {
-    public void actionPerformed(ActionEvent e)
+    @Override
+	public void actionPerformed(ActionEvent e)
     {
       setVisible(false);
     }

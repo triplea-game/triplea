@@ -55,6 +55,7 @@ public class GameObjectOutputStream extends ObjectOutputStream
 		enableReplaceObject(true);
     }
 
+	@Override
 	protected Object replaceObject(Object obj) throws IOException
 	{
 		if(obj instanceof Named)

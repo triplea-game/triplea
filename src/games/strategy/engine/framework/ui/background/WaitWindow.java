@@ -41,7 +41,8 @@ public class WaitWindow extends JWindow
             {
                 SwingUtilities.invokeLater(new Runnable()
                 {
-                    public void run()
+                    @Override
+					public void run()
                     {
                         toFront();
                     }
@@ -75,7 +76,8 @@ public class WaitWindow extends JWindow
         SwingUtilities.invokeLater(new Runnable()
         {
 
-            public void run()
+            @Override
+			public void run()
             {
 
                 setVisible(false);
@@ -93,7 +95,8 @@ public class WaitWindow extends JWindow
         SwingUtilities.invokeLater(new Runnable()
         {
 
-            public void run()
+            @Override
+			public void run()
             {
                 final WaitWindow window = new WaitWindow("Loading game, please wait.");
                 window.setVisible(true);

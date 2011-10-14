@@ -1,4 +1,10 @@
 Changes for 1.4
+* Using cleanup to add @Override to anything that overrides something. (veqryn)
+
+* Correcting problems with frig last patch to do with extended methods no longer overwriting super's methods. (veqryn)
+
+* Removing more needless gamedata passing. (frigoref)
+
 * Some general code cleanup, especially with iterators and rawtypes. (veqryn)
 
 * Removed needless gamedata passing, and added methods to get game data out of bridge. (frigoref)

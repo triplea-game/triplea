@@ -61,6 +61,7 @@ public class GUID implements Externalizable
         }
 	}
 	
+	@Override
 	public boolean equals(Object o)
 	{
 		if(o == null)
@@ -77,23 +78,27 @@ public class GUID implements Externalizable
                (other.m_prefix == this.m_prefix || other.m_prefix.equals(this.m_prefix));
 	}
 	
+	@Override
 	public int hashCode()
 	{
 		return  m_id ^  m_prefix.hashCode();
 	}
 	
+	@Override
 	public String toString()
 	{
 		return "GUID:" + m_prefix + ":" + m_id;
 	}
 	
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+    @Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         m_id = in.readInt();
         m_prefix = (VMID) in.readObject() ;
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException
+    @Override
+	public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeInt(m_id);
         out.writeObject(m_prefix);

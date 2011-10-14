@@ -24,7 +24,6 @@ import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.properties.GameProperties;
@@ -42,7 +41,8 @@ public class InitializationDelegate extends BaseDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge)
+    @Override
+	public void start(IDelegateBridge bridge)
     {   
         super.start(bridge);
 
@@ -123,7 +123,8 @@ public class InitializationDelegate extends BaseDelegate
      * If this class implements an interface which inherits from IRemote, returns the class of that interface.
      * Otherwise, returns null.
      */
-    public Class<? extends IRemote> getRemoteType()
+    @Override
+	public Class<? extends IRemote> getRemoteType()
     {
         // This class does not implement the IRemote interface, so return null.
         return null;

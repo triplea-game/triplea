@@ -17,10 +17,6 @@ import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.xml.LoadGameUtil;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
-
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -316,14 +312,14 @@ public class DiceRollTest extends TestCase
         //aa hits at 0 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
         
-        DiceRoll hit = DiceRoll.rollAA(bomber(m_data).create(1, british(m_data)), bridge, westRussia, m_data, Matches.UnitIsAAforAnything);
+        DiceRoll hit = DiceRoll.rollAA(bomber(m_data).create(1, british(m_data)), bridge, westRussia, Matches.UnitIsAAforAnything);
         assertEquals(hit.getHits(), 1);
         
 
         //aa missses at 1 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
         
-        DiceRoll miss = DiceRoll.rollAA(bombers, bridge, westRussia, m_data, Matches.UnitIsAAforAnything);
+        DiceRoll miss = DiceRoll.rollAA(bombers, bridge, westRussia, Matches.UnitIsAAforAnything);
         assertEquals(miss.getHits(), 0);
     }
 
@@ -352,21 +348,21 @@ public class DiceRollTest extends TestCase
         //aa hits at 0 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
         
-        DiceRoll hit = DiceRoll.rollAA(fighterList, bridge, westRussia, m_data, Matches.UnitIsAAforAnything);
+        DiceRoll hit = DiceRoll.rollAA(fighterList, bridge, westRussia, Matches.UnitIsAAforAnything);
         assertEquals(hit.getHits(), 1);
         
 
         //aa missses at 1 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
         
-        DiceRoll miss = DiceRoll.rollAA(fighterList, bridge, westRussia, m_data, Matches.UnitIsAAforAnything);
+        DiceRoll miss = DiceRoll.rollAA(fighterList, bridge, westRussia, Matches.UnitIsAAforAnything);
         assertEquals(miss.getHits(), 0);
         
         //6 bombers, 1 should hit, and nothing should be rolled
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
 
         fighterList = fighterType.create(6, russians);
-        DiceRoll hitNoRoll = DiceRoll.rollAA(fighterList, bridge, westRussia, m_data, Matches.UnitIsAAforAnything);
+        DiceRoll hitNoRoll = DiceRoll.rollAA(fighterList, bridge, westRussia, Matches.UnitIsAAforAnything);
         assertEquals(hitNoRoll.getHits(),1 );
     }
     
@@ -393,7 +389,7 @@ public class DiceRollTest extends TestCase
         //aa hits at 0 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
         
-        DiceRoll hit = DiceRoll.rollAA(fighterList, bridge, westRussia, m_data, Matches.UnitIsAAforAnything);
+        DiceRoll hit = DiceRoll.rollAA(fighterList, bridge, westRussia, Matches.UnitIsAAforAnything);
         assertEquals(hit.getHits(), 1);
     }
     
@@ -414,20 +410,20 @@ public class DiceRollTest extends TestCase
         //aa radar hits at 1 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
         
-        DiceRoll hit = DiceRoll.rollAA(fighterList, bridge, westRussia, m_data, Matches.UnitIsAAforAnything);
+        DiceRoll hit = DiceRoll.rollAA(fighterList, bridge, westRussia, Matches.UnitIsAAforAnything);
         assertEquals(hit.getHits(), 1);
         
         //aa missses at 2 (0 based)
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {2}));
         
-        DiceRoll miss = DiceRoll.rollAA(fighterList, bridge, westRussia, m_data, Matches.UnitIsAAforAnything);
+        DiceRoll miss = DiceRoll.rollAA(fighterList, bridge, westRussia, Matches.UnitIsAAforAnything);
         assertEquals(miss.getHits(), 0);
         
         //6 bombers, 2 should hit, and nothing should be rolled
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
         
         fighterList = fighterType.create(6, russians);
-        DiceRoll hitNoRoll = DiceRoll.rollAA(fighterList, bridge, westRussia, m_data, Matches.UnitIsAAforAnything);
+        DiceRoll hitNoRoll = DiceRoll.rollAA(fighterList, bridge, westRussia, Matches.UnitIsAAforAnything);
         assertEquals(hitNoRoll.getHits(), 2);
     }
     
@@ -437,7 +433,7 @@ public class DiceRollTest extends TestCase
         PlayerID british = m_data.getPlayerList().getPlayerID("British");
         
         ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
-        TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+        TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
         
         List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
         
@@ -456,7 +452,7 @@ public class DiceRollTest extends TestCase
         PlayerID british = m_data.getPlayerList().getPlayerID("British");
         
         ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
-        TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+        TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
         
         List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
         
@@ -495,7 +491,7 @@ public class DiceRollTest extends TestCase
         PlayerID british = m_data.getPlayerList().getPlayerID("British");
         
         ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
-        TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+        TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
         
         List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
         
@@ -516,7 +512,7 @@ public class DiceRollTest extends TestCase
         PlayerID british = m_data.getPlayerList().getPlayerID("British");
         
         ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
-        TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+        TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
         
         List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
         
@@ -536,7 +532,7 @@ public class DiceRollTest extends TestCase
         PlayerID british = m_data.getPlayerList().getPlayerID("British");
         
         ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
-        TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+        TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
         
         List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
         
@@ -566,7 +562,7 @@ public class DiceRollTest extends TestCase
         //hb, for revised 2 on attack, 1 on defence
 
         ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
-        TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+        TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
         m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.FALSE);
 
         assertEquals(2, BattleCalculator.getRolls(bombers, location, british, false) );

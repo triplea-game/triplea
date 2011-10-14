@@ -57,7 +57,8 @@ public class BetterAI extends AbstractAI {
 
     }
 	
-    public void initialize(IPlayerBridge bridge, PlayerID id)
+    @Override
+	public void initialize(IPlayerBridge bridge, PlayerID id)
     {
     	super.initialize(bridge, id);
     	
@@ -191,12 +192,14 @@ public class BetterAI extends AbstractAI {
             }   
         }
         
-        public State getSuccessor(Move move)
+        @Override
+		public State getSuccessor(Move move)
         {
             return new State(move, this);            
         }
         
-        public Move getMove() 
+        @Override
+		public Move getMove() 
         {
             return m_move;
         }
@@ -416,7 +419,8 @@ public class BetterAI extends AbstractAI {
                 return false;
         }
         
-        public Collection<GameState<Move>> successors()
+        @Override
+		public Collection<GameState<Move>> successors()
         {
             PlayerID successorPlayer = m_otherPlayer;
             
@@ -522,6 +526,7 @@ public class BetterAI extends AbstractAI {
         }
         */
         
+		@Override
 		public float getUtility()
 		{
 			// if the king has been captured...
@@ -576,6 +581,7 @@ public class BetterAI extends AbstractAI {
 			
 		}
 		
+		@Override
 		public boolean gameIsOver()
 		{
 			if ((m_kingX==-1 || m_kingY==-1) ||
@@ -587,6 +593,7 @@ public class BetterAI extends AbstractAI {
 		}
 		
 		
+		@Override
 		public boolean cutoffTest()
 		{
             if (gameIsOver())

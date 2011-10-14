@@ -72,7 +72,8 @@ public class ServerQuarantineConversation extends QuarantineConversation
         return m_remoteMac;
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public ACTION message(Object o)
     {
         try

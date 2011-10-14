@@ -178,7 +178,8 @@ public class NewGameChooser extends JDialog {
 		//scroll to the top of the notes screen
 		SwingUtilities.invokeLater(new Runnable()
         {        
-            public void run()
+            @Override
+			public void run()
             {         
                 m_notesPanel.scrollRectToVisible(new Rectangle(0,0,0,0));
             }
@@ -211,7 +212,8 @@ public class NewGameChooser extends JDialog {
 	     m_okButton.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 selectAndReturn();
             }
@@ -221,7 +223,8 @@ public class NewGameChooser extends JDialog {
 	    m_cancelButton.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 cancelAndReturn();        
             }            
@@ -230,7 +233,8 @@ public class NewGameChooser extends JDialog {
 	    m_gameList.addListSelectionListener(new ListSelectionListener()
         {
         
-            public void valueChanged(ListSelectionEvent e)
+            @Override
+			public void valueChanged(ListSelectionEvent e)
             {
                 updateInfoPanel();        
             }

@@ -179,7 +179,8 @@ class WeakLockRef extends WeakReference<Lock>
         hashCode = referent.hashCode();
     }
 
-    public boolean equals(Object o)
+    @Override
+	public boolean equals(Object o)
     {
         if(o == this)
             return true;
@@ -191,7 +192,8 @@ class WeakLockRef extends WeakReference<Lock>
         return false;
     }
 
-    public int hashCode()
+    @Override
+	public int hashCode()
     {
         return hashCode;
     }

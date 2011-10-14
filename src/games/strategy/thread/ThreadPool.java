@@ -154,7 +154,8 @@ public class ThreadPool
         
        Runnable dummy = new Runnable() 
        {	
-		 public void run() {}
+		 @Override
+		public void run() {}
 	   }; 
 	   
 	   //we need to wake up the threads so that they will notice that m_run is false
@@ -168,7 +169,8 @@ public class ThreadPool
     private class ThreadTracker implements Runnable
     {
     	
-        public void run()
+        @Override
+		public void run()
         {    
             while (m_isRunning)
             {

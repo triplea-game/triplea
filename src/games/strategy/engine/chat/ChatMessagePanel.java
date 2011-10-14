@@ -110,7 +110,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener
             try {
                 SwingUtilities.invokeAndWait(new Runnable() {
                 
-                    public void run() {
+                    @Override
+					public void run() {
                         setChat(chat);            
                     }
                 });
@@ -244,11 +245,13 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 
     
     /** thread safe */
-    public void addMessage(final String message, final String from, final boolean thirdperson)
+    @Override
+	public void addMessage(final String message, final String from, final boolean thirdperson)
     {
         Runnable runner = new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 if (from.equals(m_chat.getServerNode().getName()))
                 {
@@ -274,7 +277,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener
                 addChatMessage(message, from, thirdperson);
              
                 SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
+                        @Override
+						public void run() {
                             BoundedRangeModel scrollModel = m_scrollPane.getVerticalScrollBar().getModel();
                             scrollModel.setValue(scrollModel.getMaximum());            
                         }
@@ -329,12 +333,14 @@ public class ChatMessagePanel extends JPanel implements IChatListener
         }
     }
     
-    public void addStatusMessage(final String message)
+    @Override
+	public void addStatusMessage(final String message)
     {
         SwingUtilities.invokeLater(new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 try
                 {
@@ -411,7 +417,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener
  
     private Action m_setStatusAction = new AbstractAction("Status...")
     {
-        public void actionPerformed(ActionEvent e)
+        @Override
+		public void actionPerformed(ActionEvent e)
         {
             String status = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(ChatMessagePanel.this), "Enter Status Text (leave blank for no status)", "");
             if(status != null)
@@ -426,7 +433,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 
     private Action m_sendAction = new AbstractAction("Send")
     {
-        public void actionPerformed(ActionEvent e)
+        @Override
+		public void actionPerformed(ActionEvent e)
         {
             if (m_nextMessage.getText().trim().length() == 0)
                 return;
@@ -446,7 +454,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener
     private Action m_DownAction = new AbstractAction()
     {
 
-        public void actionPerformed(ActionEvent e)
+        @Override
+		public void actionPerformed(ActionEvent e)
         {
             if(m_chat == null)
                 return;
@@ -459,7 +468,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener
     private Action m_UpAction = new AbstractAction()
     {
 
-        public void actionPerformed(ActionEvent e)
+        @Override
+		public void actionPerformed(ActionEvent e)
         {
             if(m_chat == null)
                 return;
@@ -469,7 +479,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener
         }
     };
     
-    public void updatePlayerList(Collection<INode> players)
+    @Override
+	public void updatePlayerList(Collection<INode> players)
     {}
 }
 

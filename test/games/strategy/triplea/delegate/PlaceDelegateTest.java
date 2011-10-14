@@ -69,6 +69,7 @@ public class PlaceDelegateTest extends DelegateTest
 
 
 	
+	@Override
 	public void setUp() throws Exception
 	{
 		super.setUp();

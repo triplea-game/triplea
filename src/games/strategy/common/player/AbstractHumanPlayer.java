@@ -33,7 +33,8 @@ public abstract class AbstractHumanPlayer<CustomGameFrame extends MainGameFrame>
         super(name);
     }
 
-    public abstract void start(String stepName);
+    @Override
+	public abstract void start(String stepName);
     
     public final void setFrame(CustomGameFrame frame)
     {   

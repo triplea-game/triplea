@@ -133,7 +133,8 @@ public class Console extends JFrame
 	
 	private Action m_copyAction = new AbstractAction("Copy to clipboard")
 	{
-	  public void actionPerformed(ActionEvent e)
+	  @Override
+	public void actionPerformed(ActionEvent e)
 	  {
 	      String text = m_text.getText();
 	      StringSelection select = new StringSelection(text);
@@ -143,6 +144,7 @@ public class Console extends JFrame
 	
 	private AbstractAction m_threadDiagnoseAction = new AbstractAction("Enumerate Threads")
 	{
+		@Override
 		public void actionPerformed(ActionEvent e)
 		{
 		    System.out.println(getThreadDumps());
@@ -153,6 +155,7 @@ public class Console extends JFrame
 
 	private AbstractAction m_memoryAction = new AbstractAction("Memory")
 	{
+		@Override
 		public void actionPerformed(ActionEvent e)
 		{
             System.gc();
@@ -240,7 +243,8 @@ public class Console extends JFrame
 	private AbstractAction m_propertiesAction = new AbstractAction("Properties")
 	{
 		
-        public void actionPerformed(ActionEvent e)
+        @Override
+		public void actionPerformed(ActionEvent e)
 		{
 			String s = getProperties();
 			append(s);
@@ -321,6 +325,7 @@ class ThreadReader implements Runnable
 		m_displayConsoleOnWrite = displayConsoleOnWrite;
 	}
 	
+	@Override
 	public void run()
 	{
 		while(true)
@@ -359,6 +364,7 @@ class SynchedByteArrayOutputStream extends ByteArrayOutputStream
 		}
 	}
 	
+	@Override
 	public void write(byte[] b, int off, int len) 
 	{
 		synchronized(lock)

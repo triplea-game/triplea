@@ -274,10 +274,12 @@ public class SettingsWindow extends javax.swing.JDialog
         setTitle("Dynamix AI Settings");
         setMinimumSize(new java.awt.Dimension(775, 400));
         addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
+            @Override
+			public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
-            public void windowOpened(java.awt.event.WindowEvent evt) {
+            @Override
+			public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
             }
         });
@@ -292,7 +294,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_restoreDefaultsButton.setName("v_restoreDefaultsButton"); // NOI18N
         v_restoreDefaultsButton.setPreferredSize(new java.awt.Dimension(118, 23));
         v_restoreDefaultsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
                 v_restoreDefaultsButtonActionPerformed(evt);
             }
         });
@@ -308,7 +311,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_settingsDetailsButton.setName("v_settingsDetailsButton"); // NOI18N
         v_settingsDetailsButton.setPreferredSize(new java.awt.Dimension(115, 23));
         v_settingsDetailsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
                 v_settingsDetailsButtonActionPerformed(evt);
             }
         });
@@ -328,7 +332,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_cancelButton.setText("Cancel");
         v_cancelButton.setName("v_cancelButton"); // NOI18N
         v_cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
                 v_cancelButtonActionPerformed(evt);
             }
         });
@@ -341,7 +346,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_okButton.setText("OK");
         v_okButton.setName("v_okButton"); // NOI18N
         v_okButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
                 v_okButtonActionPerformed(evt);
             }
         });
@@ -449,7 +455,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_actionLengthGoalRB.setToolTipText("This causes the AI to pause just enough for the calculating and displaying of each action to equal the time alloted.");
         v_actionLengthGoalRB.setName("v_actionLengthGoalRB"); // NOI18N
         v_actionLengthGoalRB.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_actionLengthGoalRBStateChanged(evt);
             }
         });
@@ -680,7 +687,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_allowCalcingDecrease.setText("When an action is taking longer than the time specified, reduce the calc'ing run count to:");
         v_allowCalcingDecrease.setName("v_allowCalcingDecrease"); // NOI18N
         v_allowCalcingDecrease.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_allowCalcingDecreaseStateChanged(evt);
             }
         });
@@ -769,7 +777,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_resourceCollectionMultiplier.setToolTipText("This cheat multiplies the number of resources collected at the end of the round by the percentage supplied.");
         v_resourceCollectionMultiplier.setName("v_resourceCollectionMultiplier"); // NOI18N
         v_resourceCollectionMultiplier.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_resourceCollectionMultiplierStateChanged(evt);
             }
         });
@@ -795,7 +804,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_unitPlacementMultiplier.setToolTipText("This cheat multiplies the number of units placed down on each factory by the percentage supplied.");
         v_unitPlacementMultiplier.setName("v_unitPlacementMultiplier"); // NOI18N
         v_unitPlacementMultiplier.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_unitPlacementMultiplierStateChanged(evt);
             }
         });
@@ -836,7 +846,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_resourceCollectionIncreaser.setToolTipText("This cheat increases the number of resources collected at the end of the round by the amount supplied.");
         v_resourceCollectionIncreaser.setName("v_resourceCollectionIncreaser"); // NOI18N
         v_resourceCollectionIncreaser.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_resourceCollectionIncreaserStateChanged(evt);
             }
         });
@@ -1392,7 +1403,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_tr_enableAttackStabalize.setToolTipText("Stabalization attacks on our capital(to retake it), and if the game's a FFA, the territories around our capital.");
         v_tr_enableAttackStabalize.setName("v_tr_enableAttackStabalize"); // NOI18N
         v_tr_enableAttackStabalize.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_tr_enableAttackStabalizev_tr_enableAttackStabalizeStateChanged(evt);
             }
         });
@@ -1662,7 +1674,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_tr_enableAttackOffensive.setToolTipText("Regular attacks on enemy territories.");
         v_tr_enableAttackOffensive.setName("v_tr_enableAttackOffensive"); // NOI18N
         v_tr_enableAttackOffensive.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_tr_enableAttackOffensivev_tr_enableAttackOffensiveStateChanged(evt);
             }
         });
@@ -1717,7 +1730,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_tr_enableReinforceStabalize.setToolTipText("Stabalization reinforcements on our capital, and sometimes the territories around our capital.");
         v_tr_enableReinforceStabalize.setName("v_tr_enableReinforceStabalize"); // NOI18N
         v_tr_enableReinforceStabalize.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_tr_enableReinforceStabalizev_tr_enableReinforceStabalizeStateChanged(evt);
             }
         });
@@ -1734,7 +1748,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_tr_enableAttackTrade.setToolTipText("Special attacks on territories, for TUV swing against non-neutral enemy, PU gain, or the pushing back or stalling of enemy forces.");
         v_tr_enableAttackTrade.setName("v_tr_enableAttackTrade"); // NOI18N
         v_tr_enableAttackTrade.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_tr_enableAttackTradev_tr_enableAttackTradeStateChanged(evt);
             }
         });
@@ -1773,7 +1788,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_tr_enableReinforceBlock.setToolTipText("Reinforcements on empty ters to block the enemy from blitzing our territory, and gaining PUs. Only one unit is used for this block.");
         v_tr_enableReinforceBlock.setName("v_tr_enableReinforceBlock"); // NOI18N
         v_tr_enableReinforceBlock.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_tr_enableReinforceBlockv_tr_enableReinforceBlockStateChanged(evt);
             }
         });
@@ -1810,7 +1826,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_tr_enableAttackLandGrab.setToolTipText("Blitz or walk-in attacks on empty territories owned by enemies.");
         v_tr_enableAttackLandGrab.setName("v_tr_enableAttackLandGrab"); // NOI18N
         v_tr_enableAttackLandGrab.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_tr_enableAttackLandGrabv_tr_enableAttackLandGrabStateChanged(evt);
             }
         });
@@ -1827,7 +1844,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_tr_enableReinforceFrontline.setToolTipText("Regular reinforcements on the front line.");
         v_tr_enableReinforceFrontline.setName("v_tr_enableReinforceFrontline"); // NOI18N
         v_tr_enableReinforceFrontline.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_tr_enableReinforceFrontlinev_tr_enableReinforceFrontlineStateChanged(evt);
             }
         });
@@ -1889,7 +1907,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_cr_enableCallForLandGrab.setToolTipText("Calls for a unit to come grab a territory for production gain.");
         v_cr_enableCallForLandGrab.setName("v_cr_enableCallForLandGrab"); // NOI18N
         v_cr_enableCallForLandGrab.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_cr_enableCallForLandGrabStateChanged(evt);
             }
         });
@@ -1906,7 +1925,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_cr_enableCallForDefensiveFront.setToolTipText("Calls for units to come to a defensive front, usually just to hold the enemy at bay.");
         v_cr_enableCallForDefensiveFront.setName("v_cr_enableCallForDefensiveFront"); // NOI18N
         v_cr_enableCallForDefensiveFront.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_cr_enableCallForDefensiveFrontStateChanged(evt);
             }
         });
@@ -1923,7 +1943,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_cr_enableCallForCapitalDefense.setToolTipText("Calls for units to come to the capital, or at least nearby, to ensure it's protection.");
         v_cr_enableCallForCapitalDefense.setName("v_cr_enableCallForCapitalDefense"); // NOI18N
         v_cr_enableCallForCapitalDefense.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_cr_enableCallForCapitalDefenseStateChanged(evt);
             }
         });
@@ -1985,7 +2006,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_enableAILogging.setText("Enable AI Logging");
         v_enableAILogging.setName("v_enableAILogging"); // NOI18N
         v_enableAILogging.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_enableAILoggingStateChanged(evt);
             }
         });
@@ -2027,7 +2049,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_limitLogHistoryCB.setText("Limit Log History To:");
         v_limitLogHistoryCB.setName("v_limitLogHistoryCB"); // NOI18N
         v_limitLogHistoryCB.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_limitLogHistoryCBStateChanged(evt);
             }
         });
@@ -2049,7 +2072,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_pauseAIs.setToolTipText("Can be used if you want to examine the logs without the AIs running. (Only affects Dynamix AI's)");
         v_pauseAIs.setName("v_pauseAIs"); // NOI18N
         v_pauseAIs.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_pauseAIsStateChanged(evt);
             }
         });
@@ -2119,7 +2143,8 @@ public class SettingsWindow extends javax.swing.JDialog
         v_aa_hotspotInvalidation.setToolTipText("When a task is successful and strongly held, X% of it's threats(user-set, below) become invalidated for all ters within the radius specified, for the rest of the phase. (So if one ter resists a stack of air, X% of that air stack will be ignored by all ters within the user-set radius)");
         v_aa_hotspotInvalidation.setName("v_aa_hotspotInvalidation"); // NOI18N
         v_aa_hotspotInvalidation.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            @Override
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 v_aa_hotspotInvalidationStateChanged(evt);
             }
         });
@@ -2798,7 +2823,8 @@ public class SettingsWindow extends javax.swing.JDialog
         dialog.add(pane, BorderLayout.CENTER);
         JButton button = new JButton(new AbstractAction()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 dialog.dispose();
             }
@@ -2955,7 +2981,8 @@ public class SettingsWindow extends javax.swing.JDialog
         {
             SwingUtilities.invokeAndWait(new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {
                     JPanel newPanel = new JPanel();
                     JScrollPane newScrollPane = new JScrollPane();
@@ -3000,7 +3027,8 @@ public class SettingsWindow extends javax.swing.JDialog
             {
                 Runnable runner = new Runnable()
                 {
-                    public void run()
+                    @Override
+					public void run()
                     {
                         for (int i = 0; i < v_logHolderTabbedPane.getTabCount(); i++)
                         {

@@ -8,9 +8,7 @@ import games.strategy.util.Version;
 import java.net.InetSocketAddress;
 
 import java.net.SocketAddress;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -55,7 +53,8 @@ public class ClientLoginValidator implements ILoginValidator
         m_password = password;
     }
 
-    public Map<String,String> getChallengeProperties(String userName, SocketAddress remoteAddress)
+    @Override
+	public Map<String,String> getChallengeProperties(String userName, SocketAddress remoteAddress)
     {
         Map<String,String> challengeProperties = new HashMap<String,String>();        
         challengeProperties.put("Sever Version", EngineVersion.VERSION.toString());
@@ -78,7 +77,8 @@ public class ClientLoginValidator implements ILoginValidator
         return challengeProperties;
     }
 
-    public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String hashedMac, SocketAddress remoteAddress)
+    @Override
+	public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String hashedMac, SocketAddress remoteAddress)
     {
         String versionString = propertiesReadFromClient.get(ClientLogin.ENGINE_VERSION_PROPERTY);
         if(versionString == null || versionString.length() > 20 || versionString.trim().length() == 0)

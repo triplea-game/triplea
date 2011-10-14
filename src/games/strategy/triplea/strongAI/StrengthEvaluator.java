@@ -2,38 +2,15 @@ package games.strategy.triplea.strongAI;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.ProductionRule;
-import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.Properties;
-import games.strategy.triplea.attatchments.CanalAttachment;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.baseAI.AbstractAI;
-import games.strategy.triplea.delegate.BattleCalculator;
-import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveValidator;
-import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
-import games.strategy.util.InverseMatch;
-import games.strategy.util.Match;
-import games.strategy.util.IntegerMap;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.logging.Logger;
 
 
 public class StrengthEvaluator 

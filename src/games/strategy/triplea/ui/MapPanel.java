@@ -153,11 +153,13 @@ public class MapPanel extends ImageScrollerLargeView
         this.addScrollListener(new ScrollListener()
         {
 
-            public void scrolled(int x, int y)
+            @Override
+			public void scrolled(int x, int y)
             {
                 SwingUtilities.invokeLater(new Runnable(){
                 
-                    public void run()
+                    @Override
+					public void run()
                     {
                         repaint();
                     }
@@ -172,7 +174,8 @@ public class MapPanel extends ImageScrollerLargeView
         m_uiContext.addActive(new Active()
         {
         
-            public void deactivate()
+            @Override
+			public void deactivate()
             {
                 //super.deactivate
                 MapPanel.this.deactivate();
@@ -245,7 +248,8 @@ public class MapPanel extends ImageScrollerLargeView
         SwingUtilities.invokeLater(new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 repaint();
             }
@@ -282,7 +286,8 @@ public class MapPanel extends ImageScrollerLargeView
             SwingUtilities.invokeLater(new Runnable()
             {
             
-                public void run()
+                @Override
+				public void run()
                 {
                     repaint();
                 }
@@ -301,7 +306,8 @@ public class MapPanel extends ImageScrollerLargeView
         SwingUtilities.invokeLater(new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 repaint();
             }
@@ -423,7 +429,8 @@ public class MapPanel extends ImageScrollerLargeView
        
        SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 repaint();
             }
@@ -440,7 +447,8 @@ public class MapPanel extends ImageScrollerLargeView
         /**
          * Invoked when the mouse exits a component.
          */
-        public void mouseExited(MouseEvent e)
+        @Override
+		public void mouseExited(MouseEvent e)
         {
             if(unitsChanged(null))
             {
@@ -498,7 +506,8 @@ public class MapPanel extends ImageScrollerLargeView
     private final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter()
     {
 
-        public void mouseMoved(MouseEvent e)
+        @Override
+		public void mouseMoved(MouseEvent e)
         {
             MouseDetails md = convert(e);
 
@@ -562,7 +571,8 @@ public class MapPanel extends ImageScrollerLargeView
         SwingUtilities.invokeLater(new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 m_smallView.repaint();
                 repaint();        
@@ -593,13 +603,15 @@ public class MapPanel extends ImageScrollerLargeView
     private final TerritoryListener TERRITORY_LISTENER = new TerritoryListener()
     {
 
-        public void unitsChanged(Territory territory)
+        @Override
+		public void unitsChanged(Territory territory)
         {
             updateCountries(Collections.singleton(territory));
             SwingUtilities.invokeLater(new Runnable()
             {
             
-                public void run()
+                @Override
+				public void run()
                 {
                     repaint();
                 }
@@ -608,14 +620,16 @@ public class MapPanel extends ImageScrollerLargeView
             
         }
 
-        public void ownerChanged(Territory territory)
+        @Override
+		public void ownerChanged(Territory territory)
         {
             m_smallMapImageManager.updateTerritoryOwner(territory, m_data, m_uiContext.getMapData());
             updateCountries(Collections.singleton(territory));
             SwingUtilities.invokeLater(new Runnable()
             {
             
-                public void run()
+                @Override
+				public void run()
                 {
                     repaint();
                 }
@@ -628,7 +642,8 @@ public class MapPanel extends ImageScrollerLargeView
     private final GameDataChangeListener TECH_UPDATE_LISTENER = new GameDataChangeListener()
     {
 
-        public void gameDataChanged(Change aChange)
+        @Override
+		public void gameDataChanged(Change aChange)
         {
 
             //find the players with tech changes
@@ -642,7 +657,8 @@ public class MapPanel extends ImageScrollerLargeView
             SwingUtilities.invokeLater(new Runnable()
             {
             
-                public void run()
+                @Override
+				public void run()
                 {
                     repaint();
                 }
@@ -682,7 +698,8 @@ public class MapPanel extends ImageScrollerLargeView
     };
 
     // this one is useful for screenshots
-    public void print(Graphics g)
+    @Override
+	public void print(Graphics g)
     {
         Graphics2D g2d = (Graphics2D) g;
         super.print(g2d);
@@ -714,7 +731,8 @@ public class MapPanel extends ImageScrollerLargeView
         }
     }
         
-    public void paint(Graphics g)
+    @Override
+	public void paint(Graphics g)
     {
         Graphics2D g2d = (Graphics2D) g;
         super.paint(g2d);
@@ -975,7 +993,8 @@ public class MapPanel extends ImageScrollerLargeView
             m_mouseShadowImage = null;
             SwingUtilities.invokeLater(new Runnable()
                     {
-                        public void run()
+                        @Override
+						public void run()
                         {
                             repaint();
                         }
@@ -1019,7 +1038,8 @@ public class MapPanel extends ImageScrollerLargeView
         m_mouseShadowImage = img;
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 repaint();
             }
@@ -1109,7 +1129,8 @@ class RouteDescription
         m_cursorImage = cursorImage;
     }
 
-    public boolean equals(Object o)
+    @Override
+	public boolean equals(Object o)
     {
         if (o == null)
             return false;
@@ -1189,7 +1210,8 @@ class BackgroundDrawer implements Runnable
         m_mapPanelRef.clear();
     }
     
-    public void run()
+    @Override
+	public void run()
     {
         
         while(m_mapPanelRef.get() != null)
@@ -1232,7 +1254,8 @@ class BackgroundDrawer implements Runnable
             
             SwingUtilities.invokeLater(new Runnable()
             {
-               public void run()
+               @Override
+			public void run()
                { 
                    mapPanel.repaint();
                }

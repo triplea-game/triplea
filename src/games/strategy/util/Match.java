@@ -183,6 +183,7 @@ public abstract class Match<T>
 
 class NeverMatch extends Match
 {
+	@Override
 	public boolean match(Object o)
 	{
 		return false;
@@ -191,6 +192,7 @@ class NeverMatch extends Match
 
 class AlwaysMatch extends Match
 {
+	@Override
 	public boolean match(Object o)
 	{
 		return true;

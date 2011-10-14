@@ -48,7 +48,8 @@ public class RandomStats implements IRandomStats
         m_randomStats.add(Integer.valueOf(random + 1), 1 );
     }
 
-    public synchronized RandomStatsDetails getRandomStats()
+    @Override
+	public synchronized RandomStatsDetails getRandomStats()
     {
         return new RandomStatsDetails(m_randomStats);
     }

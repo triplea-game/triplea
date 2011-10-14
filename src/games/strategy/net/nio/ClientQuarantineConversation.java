@@ -125,7 +125,8 @@ public class ClientQuarantineConversation extends QuarantineConversation
         }
     }
     
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public ACTION message(Object o)
     {
         try

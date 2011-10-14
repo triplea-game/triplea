@@ -47,7 +47,8 @@ public class InitializationDelegate extends BaseDelegate
     {
     }
 
-    public void initialize(String name, String displayName)
+    @Override
+	public void initialize(String name, String displayName)
     {
         m_name = name;
         m_displayName = displayName;
@@ -56,25 +57,26 @@ public class InitializationDelegate extends BaseDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge aBridge, GameData gameData)
+    @Override
+    public void start(IDelegateBridge aBridge)
     {
         super.start(aBridge);
-        init(gameData, aBridge);
+        init(aBridge);
     }
 
-    protected void init(GameData data, IDelegateBridge aBridge)
+    protected void init(IDelegateBridge aBridge)
     {
-        initDestroyerArtillery(data, aBridge);
+        initDestroyerArtillery(aBridge);
         
-        initShipyards(data, aBridge);
+        initShipyards(aBridge);
         
-        initTwoHitBattleship(data, aBridge);
+        initTwoHitBattleship(aBridge);
 
-        initOriginalOwner(data, aBridge);
+        initOriginalOwner(aBridge);
         
-        initTech(data, aBridge);
+        initTech(aBridge);
         
-        initSkipUnusedBids(data);
+        initSkipUnusedBids(aBridge.getData());
     }
 
     private void initSkipUnusedBids(GameData data)
@@ -97,8 +99,9 @@ public class InitializationDelegate extends BaseDelegate
         
     }
 
-    private void initTech(GameData data, IDelegateBridge bridge)
+    private void initTech(IDelegateBridge bridge)
     {
+        GameData data = bridge.getData();
         Iterator<PlayerID> players = data.getPlayerList().getPlayers().iterator();
         while(players.hasNext())
         {
@@ -111,7 +114,7 @@ public class InitializationDelegate extends BaseDelegate
 	            {
 	                
 	                TechAdvance advance = (TechAdvance) advances.next();
-	                advance.perform(player,bridge, data );
+                    advance.perform(player, bridge);
 	            }
 	           
             }
@@ -122,8 +125,9 @@ public class InitializationDelegate extends BaseDelegate
      * @param data
      * @param aBridge
      */
-    private void initDestroyerArtillery(GameData data, IDelegateBridge aBridge)
+    private void initDestroyerArtillery(IDelegateBridge aBridge)
     {
+        GameData data = aBridge.getData();
     	boolean addArtilleryAndDestroyers = games.strategy.triplea.Properties.getUse_Destroyers_And_Artillery(data);
 
         if (!isWW2V2(data) && addArtilleryAndDestroyers)
@@ -154,8 +158,9 @@ public class InitializationDelegate extends BaseDelegate
          * @param data
          * @param aBridge
          */
-    private void initShipyards(GameData data, IDelegateBridge aBridge)
+    private void initShipyards(IDelegateBridge aBridge)
     {
+        GameData data = aBridge.getData();
     	boolean useShipyards = games.strategy.triplea.Properties.getUse_Shipyards(data);
 
         if (useShipyards)
@@ -216,8 +221,9 @@ public class InitializationDelegate extends BaseDelegate
      * @param data
      * @param aBridge
      */
-    private void initTwoHitBattleship(GameData data, IDelegateBridge aBridge)
+    private void initTwoHitBattleship(IDelegateBridge aBridge)
     {
+        GameData data = aBridge.getData();
         boolean userEnabled = games.strategy.triplea.Properties.getTwoHitBattleships(data);
         
         UnitType battleShipUnit = data.getUnitTypeList().getUnitType(Constants.BATTLESHIP_TYPE);
@@ -237,8 +243,9 @@ public class InitializationDelegate extends BaseDelegate
     /**
      * @param data
      */
-    private void initOriginalOwner(GameData data, IDelegateBridge aBridge)
+    private void initOriginalOwner(IDelegateBridge aBridge)
     {
+        GameData data = aBridge.getData();
         OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
         
 
@@ -269,7 +276,8 @@ public class InitializationDelegate extends BaseDelegate
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
-    public Class<? extends IRemote> getRemoteType()
+    @Override
+	public Class<? extends IRemote> getRemoteType()
     {
         return null;
     }

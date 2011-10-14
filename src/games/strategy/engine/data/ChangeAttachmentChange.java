@@ -97,19 +97,22 @@ public class ChangeAttachmentChange extends Change
   }
 
 
-  public void perform(GameData data)
+  @Override
+public void perform(GameData data)
   {
       IAttachment attachment = m_attatchedTo.getAttachment(m_attatchmentName);
       PropertyUtil.set(m_property, m_newValue, attachment, m_clearFirst);
   }
   
 
-  public Change invert()
+  @Override
+public Change invert()
   {
     return new ChangeAttachmentChange(m_attatchedTo, m_attatchmentName, m_oldValue, m_newValue, m_property, m_clearFirst);
   }
 
-  public String toString()
+  @Override
+public String toString()
   {
       return "ChangAttatchmentChange attatched to:" + m_attatchedTo + " name:" + m_attatchmentName + " new value:" + m_newValue + " old value:" + m_oldValue;
   }

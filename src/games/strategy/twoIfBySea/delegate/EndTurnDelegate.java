@@ -25,6 +25,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     {
     }
 
+	@Override
 	protected void doNationalObjectivesAndOtherEndTurnEffects(IDelegateBridge bridge)
 	{
         GameData data = getData();

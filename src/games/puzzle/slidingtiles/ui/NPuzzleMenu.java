@@ -40,7 +40,8 @@ public class NPuzzleMenu extends BasicGameMenuBar<NPuzzleFrame>
     }
     
     
-    protected void addGameSpecificHelpMenus(JMenu helpMenu)
+    @Override
+	protected void addGameSpecificHelpMenus(JMenu helpMenu)
     {
         addHowToPlayHelpMenu(helpMenu);
     }
@@ -53,7 +54,8 @@ public class NPuzzleMenu extends BasicGameMenuBar<NPuzzleFrame>
     {
         parentMenu.add(new AbstractAction("How to play...")
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 //html formatted string
                 String hints = 

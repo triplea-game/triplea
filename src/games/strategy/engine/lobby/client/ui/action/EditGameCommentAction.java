@@ -20,7 +20,8 @@ public class EditGameCommentAction extends AbstractAction
         m_lobbyWatcher = watcher;
     }
 
-    public void actionPerformed(ActionEvent e)
+    @Override
+	public void actionPerformed(ActionEvent e)
     {
         if(!m_lobbyWatcher.isActive())
         {

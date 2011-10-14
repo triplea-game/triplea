@@ -63,7 +63,8 @@ public class RemoteRandom implements IRemoteRandom
     /* 
      * @see games.strategy.engine.random.IRemoteRandom#generate(int, int, java.lang.String)
      */
-    public int[] generate(int max, int count, String annotation, VaultID remoteVaultID)
+    @Override
+	public int[] generate(int max, int count, String annotation, VaultID remoteVaultID)
     {
         if(m_waitingForUnlock)
             throw new IllegalStateException("Being asked to generate random numbers, but we havent finished last generation");
@@ -93,7 +94,8 @@ public class RemoteRandom implements IRemoteRandom
     /* 
      * @see games.strategy.engine.random.IRemoteRandom#unlock()
      */
-    public void verifyNumbers()
+    @Override
+	public void verifyNumbers()
     {
         Vault vault = m_game.getVault();
        

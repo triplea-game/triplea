@@ -24,7 +24,8 @@ public class NullImageObserver implements ImageObserver
   {
   }
 
-  public boolean imageUpdate(Image image, int flags, int int2, int int3,
+  @Override
+public boolean imageUpdate(Image image, int flags, int int2, int int3,
                              int int4, int int5)
   {
     return !((flags & ALLBITS) != 0) || ( (flags & ABORT) != 0);

@@ -74,6 +74,7 @@ public class SaveGameFileChooser extends JFileChooser
 
 	FileFilter m_gameDataFileFilter = new FileFilter()
 	{
+		@Override
 		public  boolean accept(File f)
 		{
 			if (f.isDirectory())
@@ -84,6 +85,7 @@ public class SaveGameFileChooser extends JFileChooser
 			return f.getName().endsWith(".tsvg") || f.getName().endsWith(".svg") || f.getName().endsWith("tsvg.gz");
 		}
 
+		@Override
 		public String getDescription()
 		{
 		    return "Saved Games, *.tsvg";

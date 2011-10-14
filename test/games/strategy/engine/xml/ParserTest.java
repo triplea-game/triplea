@@ -51,6 +51,7 @@ public class ParserTest extends TestCase
 		return suite;
 	}
 
+	@Override
 	public void setUp() throws Exception
 	{
 		//get the xml file

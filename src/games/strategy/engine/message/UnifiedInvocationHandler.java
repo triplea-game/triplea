@@ -45,7 +45,8 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler
     }
     
     
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+    @Override
+	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
     {
         if(super.shouldHandle(method, args))
             return super.handle(method, args);

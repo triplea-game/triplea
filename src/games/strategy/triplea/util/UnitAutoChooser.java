@@ -365,7 +365,8 @@ class UnitAutoChooser
     {
         Match<Collection<Unit>> unitCategoryCountMatch = new Match<Collection<Unit>>()
         {
-            public boolean match(Collection<Unit> units)
+            @Override
+			public boolean match(Collection<Unit> units)
             {
                 IntegerMap<UnitCategory> currentMap = new IntegerMap<UnitCategory>(units.size()+1, 1);
                 for (Unit unit : units)

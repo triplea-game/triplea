@@ -40,58 +40,70 @@ public class AllYouCanUploadDotComPBEMMessenger
     {
     }
 
-    public String getName()
+    @Override
+	public String getName()
     {
         return "www.AllYouCanUpload.com";
     }
 
-    public boolean getNeedsUsername()
+    @Override
+	public boolean getNeedsUsername()
     {
         return false;
     }
 
-    public boolean getNeedsPassword()
+    @Override
+	public boolean getNeedsPassword()
     {
         return false;
     }
 
-    public boolean getCanViewPosted()
+    @Override
+	public boolean getCanViewPosted()
     {
         return false;
     }
 
-    public void viewPosted()
+    @Override
+	public void viewPosted()
     {
     }
 
-    public void setGameId(String gameId)
+    @Override
+	public void setGameId(String gameId)
     {
     }
 
-    public String getGameId()
-    {
-        return null;
-    }
-
-    public void setUsername(String username)
-    {
-    }
-
-    public String getUsername()
+    @Override
+	public String getGameId()
     {
         return null;
     }
 
-    public void setPassword(String password)
+    @Override
+	public void setUsername(String username)
     {
     }
 
-    public String getPassword()
+    @Override
+	public String getUsername()
     {
         return null;
     }
 
-    public boolean postScreenshot(String fileName, InputStream fileIn)
+    @Override
+	public void setPassword(String password)
+    {
+    }
+
+    @Override
+	public String getPassword()
+    {
+        return null;
+    }
+
+    @Override
+	public boolean postScreenshot(String fileName, InputStream fileIn)
         throws IOException
     {
         URL url = null;
@@ -171,12 +183,14 @@ public class AllYouCanUploadDotComPBEMMessenger
         return true;
     }
 
-    public String getScreenshotRef()
+    @Override
+	public String getScreenshotRef()
     {
         return m_screenshotRef;
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         return getName();
     }

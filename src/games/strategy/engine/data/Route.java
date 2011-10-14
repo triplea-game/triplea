@@ -127,7 +127,8 @@ public class Route implements java.io.Serializable, Iterable<Territory>
         return joined;
     }
 
-    public boolean equals(Object o)
+    @Override
+	public boolean equals(Object o)
     {
         if (o == null)
             return false;
@@ -139,7 +140,8 @@ public class Route implements java.io.Serializable, Iterable<Territory>
         return other.getTerritories().equals(this.getTerritories());
     }
 
-    public int hashCode()
+    @Override
+	public int hashCode()
     {
         return toString().hashCode();
     }
@@ -263,7 +265,8 @@ public class Route implements java.io.Serializable, Iterable<Territory>
         return Match.getMatches(m_route, aMatch);
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         StringBuilder buf = new StringBuilder("Route:").append(m_start);
         for (int i = 0; i < getLength(); i++)
@@ -317,7 +320,8 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 
     }
 
-    public Iterator<Territory> iterator() {
+    @Override
+	public Iterator<Territory> iterator() {
         return Collections.unmodifiableList(getTerritories()).iterator();
     }
 

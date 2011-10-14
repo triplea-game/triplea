@@ -54,7 +54,8 @@ public class EventThreadJOptionPane {
         final AtomicInteger rVal = new AtomicInteger();
         SwingUtilities.invokeLater(new Runnable() {
         
-            public void run() {
+            @Override
+			public void run() {
                 rVal.set(
                  JOptionPane.showOptionDialog(parentComponent, message,title, optionType, messageType,
                     icon, options,initialValue)
@@ -100,7 +101,8 @@ public class EventThreadJOptionPane {
         
         final CountDownLatch latch = new CountDownLatch(1);        
         SwingUtilities.invokeLater(new Runnable() {        
-            public void run() {
+            @Override
+			public void run() {
                 JOptionPane.showMessageDialog(parentComponent, useJLabel?new JLabel((String)message):message, title, messageType);
                 latch.countDown();        
             }
@@ -133,7 +135,8 @@ public class EventThreadJOptionPane {
         final AtomicInteger rVal = new AtomicInteger();
         SwingUtilities.invokeLater(new Runnable() {
         
-            public void run() {
+            @Override
+			public void run() {
                 rVal.set(
                     JOptionPane.showConfirmDialog(parentComponent, message, title, optionType)
                     );
@@ -162,7 +165,8 @@ public class EventThreadJOptionPane {
         
         final CountDownLatch latch = new CountDownLatch(1);        
         SwingUtilities.invokeLater(new Runnable() {        
-            public void run() {
+            @Override
+			public void run() {
                 JOptionPane.showMessageDialog(parentComponent, message);
                 latch.countDown();        
             }
@@ -195,7 +199,8 @@ public class EventThreadJOptionPane {
         
         final CountDownLatch latch = new CountDownLatch(1);        
         SwingUtilities.invokeLater(new Runnable() {        
-            public void run() {
+            @Override
+			public void run() {
                 JOptionPane.showMessageDialog(parentComponent, message);
                 latch.countDown();        
             }

@@ -92,7 +92,8 @@ public class Util
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
             
-                public void run() {
+                @Override
+				public void run() {
                     results.set(task.run());
                 }
             });

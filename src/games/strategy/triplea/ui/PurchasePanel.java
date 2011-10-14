@@ -31,11 +31,9 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.ui.ProductionPanel.Rule;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -87,7 +85,8 @@ public class PurchasePanel extends ActionPanel
     m_purchasedPreviousRoundsLabel = new JLabel("Unplaced from previous rounds");
   }
   
-  public void display(final PlayerID id)
+  @Override
+public void display(final PlayerID id)
   {
     super.display(id);
     m_purchase = new IntegerMap<ProductionRule>();
@@ -95,7 +94,8 @@ public class PurchasePanel extends ActionPanel
     SwingUtilities.invokeLater(new Runnable()
     {
     
-        public void run()
+        @Override
+		public void run()
         {
             removeAll();
             actionLabel.setText(id.getName() + " production");
@@ -143,7 +143,8 @@ public class PurchasePanel extends ActionPanel
       SwingUtilities.invokeLater(new Runnable()
     {
     
-        public void run()
+        @Override
+		public void run()
         {
             actionLabel.setText(getCurrentPlayer().getName() + " production " + (m_bid ? " for bid" : ""));
         }
@@ -161,7 +162,8 @@ public class PurchasePanel extends ActionPanel
     SwingUtilities.invokeLater(
     		  new Runnable()
     		 {
-    		  public void run()
+    		  @Override
+			public void run()
     		 {
     		  PURCHASE_ACTION.actionPerformed(null);
     		 }
@@ -175,7 +177,8 @@ public class PurchasePanel extends ActionPanel
 
   private final AbstractAction PURCHASE_ACTION = new AbstractAction("Buy")
   {
-    public void actionPerformed(ActionEvent e)
+    @Override
+	public void actionPerformed(ActionEvent e)
     {
         PlayerID player = getCurrentPlayer();
         GameData data = getData();
@@ -214,7 +217,8 @@ public class PurchasePanel extends ActionPanel
   private Action DoneAction = new AbstractAction("Done")
   {
     
-    public void actionPerformed(ActionEvent event)
+    @Override
+	public void actionPerformed(ActionEvent event)
     {
      
         boolean hasPurchased = m_purchase.totalValues() != 0;
@@ -290,7 +294,8 @@ public class PurchasePanel extends ActionPanel
       return ra.getUnlimitedProduction();
   }
   
-  public String toString()
+  @Override
+public String toString()
   {
     return "PurchasePanel";
   }

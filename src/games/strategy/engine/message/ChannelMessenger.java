@@ -40,7 +40,8 @@ public class ChannelMessenger implements IChannelMessenger
     /* 
      * @see games.strategy.net.IChannelMessenger#getChannelBroadcastor(java.lang.String)
      */
-    public IChannelSubscribor getChannelBroadcastor(RemoteName channelName)
+    @Override
+	public IChannelSubscribor getChannelBroadcastor(RemoteName channelName)
     {
         InvocationHandler ih = new UnifiedInvocationHandler(m_unifiedMessenger,channelName.getName(), true, channelName.getClazz());
         
@@ -55,7 +56,8 @@ public class ChannelMessenger implements IChannelMessenger
     /* 
      * @see games.strategy.net.IChannelMessenger#registerChannelSubscriber(java.lang.Object, java.lang.String)
      */
-    public void registerChannelSubscriber(Object implementor, RemoteName channelName)
+    @Override
+	public void registerChannelSubscriber(Object implementor, RemoteName channelName)
     {
         if(!IChannelSubscribor.class.isAssignableFrom(channelName.getClazz()))
             throw new IllegalStateException(channelName.getClazz() + " is not a channel subscribor");
@@ -67,7 +69,8 @@ public class ChannelMessenger implements IChannelMessenger
     /* 
      * @see games.strategy.net.IChannelMessenger#unregisterChannelSubscriber(java.lang.Object, java.lang.String)
      */
-    public void unregisterChannelSubscriber(Object implementor, RemoteName channelName)
+    @Override
+	public void unregisterChannelSubscriber(Object implementor, RemoteName channelName)
     {
         m_unifiedMessenger.removeImplementor(channelName.getName(), implementor);
     }    
@@ -78,13 +81,15 @@ public class ChannelMessenger implements IChannelMessenger
     /* (non-Javadoc)
      * @see games.strategy.net.IChannelMessenger#getLocalNode()
      */
-    public INode getLocalNode()
+    @Override
+	public INode getLocalNode()
     {
         return m_unifiedMessenger.getLocalNode();
     }
 
     
-    public boolean isServer()
+    @Override
+	public boolean isServer()
     {
         return m_unifiedMessenger.isServer();
     }

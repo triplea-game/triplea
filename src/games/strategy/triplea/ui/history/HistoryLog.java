@@ -66,7 +66,8 @@ public class HistoryLog extends JFrame
         return m_printWriter;
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         return m_stringWriter.toString();
     }

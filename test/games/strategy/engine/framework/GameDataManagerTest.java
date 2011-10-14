@@ -43,7 +43,8 @@ public class GameDataManagerTest extends TestCase
     super(name);
   }
 
-  public void setUp() throws Exception
+  @Override
+public void setUp() throws Exception
   {
     //get the xml file
     URL url = SerializationTest.class.getResource("Test.xml");

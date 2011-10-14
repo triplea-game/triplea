@@ -22,7 +22,6 @@ package games.strategy.engine.delegate;
 
 import java.io.Serializable;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.message.IRemote;
 
 

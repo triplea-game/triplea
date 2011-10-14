@@ -53,16 +53,19 @@ public class ColorProperty extends AEditableProperty
     m_color = new Color(def);
   }
 
-  public Object getValue()
+  @Override
+public Object getValue()
   {
     return m_color;
   }
 
-  public JComponent getEditorComponent()
+  @Override
+public JComponent getEditorComponent()
   {
       @SuppressWarnings("serial")
     final JLabel label = new JLabel(" ") {
-          public void paintComponent(Graphics g)
+          @Override
+		public void paintComponent(Graphics g)
           {
               Graphics2D g2 = (Graphics2D)g;
               g2.setColor(m_color);
@@ -71,23 +74,29 @@ public class ColorProperty extends AEditableProperty
       };
 
       label.addMouseListener(new MouseListener() {
-          public void mouseClicked(MouseEvent e) {
+          @Override
+		public void mouseClicked(MouseEvent e) {
               System.out.println(m_color);
               m_color = JColorChooser.showDialog(label, "Choose color", m_color);
 
               // Ask Swing to repaint this label when it's convenient
               SwingUtilities.invokeLater(new Runnable()
               {
-                  public void run()
+                  @Override
+				public void run()
                   {
                       label.repaint();
                   }
               });
           }
-          public void mouseEntered(MouseEvent e) {}
-          public void mouseExited(MouseEvent e) {}
-          public void mousePressed(MouseEvent e) {}
-          public void mouseReleased(MouseEvent e) {}
+          @Override
+		public void mouseEntered(MouseEvent e) {}
+          @Override
+		public void mouseExited(MouseEvent e) {}
+          @Override
+		public void mousePressed(MouseEvent e) {}
+          @Override
+		public void mouseReleased(MouseEvent e) {}
       });
 
       return label;

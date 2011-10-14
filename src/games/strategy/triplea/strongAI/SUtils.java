@@ -11,12 +11,8 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
-// import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.CanalAttachment;
-import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.baseAI.AbstractAI;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
@@ -183,6 +179,7 @@ public class SUtils
 	{
 		return new Match<Territory>()
 		{
+			@Override
 			public boolean match(Territory t)
 			{
 				if (Matches.TerritoryIsLand.match(t) && Matches.TerritoryIsImpassable.match(t))
@@ -2163,6 +2160,7 @@ public class SUtils
 	{
 		Match<Territory> condition = new Match<Territory>()
 		{
+			@Override
 			public boolean match(Territory t)
 			{
 				return t.getUnits().getMatches(unitCondition).size() > maxUnits;
@@ -2271,6 +2269,7 @@ public class SUtils
 		final Match<Unit> ownedCarrier = new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player));
 		Match<Territory> condition = new Match<Territory>()
 		{
+			@Override
 			public boolean match(Territory t)
 			{
 				return t.getUnits().someMatch(ownedCarrier);
@@ -2297,6 +2296,7 @@ public class SUtils
 	{
 		Match<Territory> condition = new Match<Territory>()
 		{
+			@Override
 			public boolean match(Territory t)
 			{
 				return Matches.isTerritoryAllied(owner, data).match(t) && !t.isWater();
@@ -4292,6 +4292,7 @@ public class SUtils
 		Collections.sort(reorder, new Comparator<Object>()
 		{
 			
+			@Override
 			public int compare(Object o1, Object o2)
 			{
 				// get int returns 0 if no value
@@ -4327,6 +4328,7 @@ public class SUtils
 		Collections.sort(reorder, new Comparator<Object>()
 		{
 			
+			@Override
 			public int compare(Object o1, Object o2)
 			{
 				double v1 = safeGet(map, o1);

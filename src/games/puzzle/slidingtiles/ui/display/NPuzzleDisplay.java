@@ -45,7 +45,8 @@ public class NPuzzleDisplay implements INPuzzleDisplay
     /** 
      * @see games.strategy.engine.display.IDisplay#initialize(games.strategy.engine.display.IDisplayBridge)
      */
-    public void initialize(IDisplayBridge bridge)
+    @Override
+	public void initialize(IDisplayBridge bridge)
     {
        m_displayBridge = bridge;
        m_displayBridge.toString();
@@ -57,7 +58,8 @@ public class NPuzzleDisplay implements INPuzzleDisplay
      * 
      * @see games.strategy.engine.display.IDisplay#shutdown()
      */
-    public void shutDown()
+    @Override
+	public void shutDown()
     {
         m_ui.stopGame();
     }
@@ -66,7 +68,8 @@ public class NPuzzleDisplay implements INPuzzleDisplay
      * Graphically notify the user of the current game status.
      * @param error the status message to display
      */ 
-    public void setStatus(String status) 
+    @Override
+	public void setStatus(String status) 
     {
         m_ui.setStatus(status);
     }
@@ -74,7 +77,8 @@ public class NPuzzleDisplay implements INPuzzleDisplay
     /**
      * Set the game over status for this display to <code>true</code>.
      */
-    public void setGameOver()
+    @Override
+	public void setGameOver()
     {
         m_ui.setGameOver();
     }
@@ -83,12 +87,14 @@ public class NPuzzleDisplay implements INPuzzleDisplay
     /**
      * Ask the user interface for this display to update.
      */
-    public void performPlay()
+    @Override
+	public void performPlay()
     {   
     	m_ui.performPlay();
     }
 
-    public void initializeBoard()
+    @Override
+	public void initializeBoard()
     {
         m_ui.initializeTiles();
     }

@@ -46,8 +46,6 @@ import java.util.*;
  */
 public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 {
-
-  
     private int m_techCost;
     private HashMap<PlayerID, Collection<TechAdvance>> m_techs;
     private TechnologyFrontier m_techCategory;
@@ -58,7 +56,8 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
     {
     }
 
-    public void initialize(String name, String displayName)
+    @Override
+	public void initialize(String name, String displayName)
     {
         super.initialize(name, displayName);
         m_techs = new HashMap<PlayerID, Collection<TechAdvance>>();
@@ -68,10 +67,11 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge aBridge)
+    @Override
+	public void start(IDelegateBridge aBridge)
     {
-        m_bridge = new TripleADelegateBridge(aBridge);
-        super.start(m_bridge);
+    	m_bridge = new TripleADelegateBridge(aBridge);
+    	super.start(m_bridge);
         if (games.strategy.triplea.Properties.getTriggers(getData())) {
             TriggerAttachment.triggerAvailableTechChange(m_player, m_bridge, null, null);
     	}
@@ -102,7 +102,8 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
         return games.strategy.triplea.Properties.getLL_TECH_ONLY(getData());
     }
  
-    public TechResults rollTech(int techRolls, TechnologyFrontier techToRollFor, int newTokens)
+    @Override
+	public TechResults rollTech(int techRolls, TechnologyFrontier techToRollFor, int newTokens)
     {
         int rollCount = techRolls;
         
@@ -113,7 +114,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
         if (!canPay)
             return new TechResults("Not enough money to pay for that many tech rolls.");
 
-        chargeForTechRolls(rollCount);        
+        chargeForTechRolls(rollCount);
         int m_currTokens = 0;
         
         if(isWW2V3TechModel())
@@ -183,14 +184,14 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
         if(techHits > 0 && isWW2V3TechModel())
         {
             m_techCategory = techToRollFor;
-            //remove all the tokens            
+            //remove all the tokens
             Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
             String transcriptText = m_player.getName() + " removing all Technology Tokens after successful research.";
 
             m_bridge.getHistoryWriter().startEvent(transcriptText);
 
             Change removeTokens = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), techTokens, -m_currTokens);
-            m_bridge.addChange(removeTokens);            
+            m_bridge.addChange(removeTokens);
         }
 
         if (isLL_TECH_ONLY())
@@ -255,7 +256,7 @@ new DiceRoll(random, techHits, diceSides - 1, true));
             Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(data, m_player);
             return Util.difference(allAdvances, currentAdvances);
         }
-        finally 
+        finally
         {
             data.releaseReadLock();
         }
@@ -311,7 +312,7 @@ new DiceRoll(random, techHits, diceSides - 1, true));
         {
             available = getAvailableAdvancesForCategory(m_techCategory);
             hits=1;
-        } 
+        }
         else
         {
             available = getAvailableAdvances();
@@ -387,14 +388,15 @@ new DiceRoll(random, techHits, diceSides - 1, true));
     public int getTechCost()
     {
     	m_techCost = TechTracker.getTechCost(m_player);
-        return m_techCost >0 ? m_techCost : Constants.TECH_ROLL_COST;        
+        return m_techCost >0 ? m_techCost : Constants.TECH_ROLL_COST;
     }
     
     
     /**
      * Returns the state of the Delegate.
      */
-    public Serializable saveState()
+    @Override
+	public Serializable saveState()
     {
         return m_techs;
     }
@@ -402,7 +404,8 @@ new DiceRoll(random, techHits, diceSides - 1, true));
     /**
      * Loads the delegates state
      */
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public void loadState(Serializable state)
     {
         m_techs = (HashMap<PlayerID, Collection<TechAdvance>>) state;
@@ -411,7 +414,8 @@ new DiceRoll(random, techHits, diceSides - 1, true));
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
-    public Class<ITechDelegate> getRemoteType()
+    @Override
+	public Class<ITechDelegate> getRemoteType()
     {
         return ITechDelegate.class;
     }

@@ -330,7 +330,8 @@ public class UnitChooser extends JPanel
        (
        new ActionListener()
        {
-         public void actionPerformed(ActionEvent e)
+         @Override
+		public void actionPerformed(ActionEvent e)
          {
            selectNone();
          }
@@ -342,7 +343,8 @@ public class UnitChooser extends JPanel
       (
       new ActionListener()
       {
-        public void actionPerformed(ActionEvent e)
+        @Override
+		public void actionPerformed(ActionEvent e)
         {
           autoSelect();
         }
@@ -482,7 +484,8 @@ public class UnitChooser extends JPanel
 
   private ScrollableTextFieldListener m_textFieldListener = new ScrollableTextFieldListener()
   {
-    public void changedValue(ScrollableTextField field)
+    @Override
+	public void changedValue(ScrollableTextField field)
     {
         if (m_match != null)
             checkMatches();
@@ -570,7 +573,8 @@ class ChooserEntry
           m_hitText.addChangeListener(
               new ScrollableTextFieldListener()
           {
-              public void changedValue(ScrollableTextField field)
+              @Override
+			public void changedValue(ScrollableTextField field)
               {
                   m_secondHitLabel.setText("x" + field.getValue());
                   updateLeftToSelect();
@@ -664,7 +668,8 @@ class UnitChooserEntryIcon extends JComponent
 
 
 
-    public void paint(Graphics g)
+    @Override
+	public void paint(Graphics g)
     {
       super.paint(g);
       g.drawImage( m_uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data, m_forceDamaged || m_category.getDamaged(), m_category.getDisabled()), 0,0,this);
@@ -682,28 +687,33 @@ class UnitChooserEntryIcon extends JComponent
       }
     }
 
-    public int getWidth()
+    @Override
+	public int getWidth()
     {
       //we draw a unit symbol for each dependent
       return m_uiContext.getUnitImageFactory().getUnitImageWidth() * (1 + m_category.getDependents().size());
     }
 
-    public int getHeight()
+    @Override
+	public int getHeight()
     {
       return m_uiContext.getUnitImageFactory().getUnitImageHeight();
     }
 
-    public Dimension getMaximumSize()
+    @Override
+	public Dimension getMaximumSize()
     {
       return getDimension();
     }
 
-    public Dimension getMinimumSize()
+    @Override
+	public Dimension getMinimumSize()
     {
       return getDimension();
     }
 
-    public Dimension getPreferredSize()
+    @Override
+	public Dimension getPreferredSize()
     {
       return getDimension();
     }

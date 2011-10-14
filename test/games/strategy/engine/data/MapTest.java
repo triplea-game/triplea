@@ -67,6 +67,7 @@ public class MapTest extends TestCase
 		super(name);
 	}
 	
+	@Override
 	public void setUp()
 	{
 		
@@ -178,6 +179,7 @@ public class MapTest extends TestCase
 	{
         Match<Territory> test = new Match<Territory>()
 		{
+			@Override
 			public boolean match(Territory t)
 			{
 				return false;

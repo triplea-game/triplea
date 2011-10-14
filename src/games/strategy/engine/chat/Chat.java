@@ -261,7 +261,8 @@ public class Chat
         
 
         
-        public void chatOccured(String message)
+        @Override
+		public void chatOccured(String message)
         {
             INode from = MessageContext.getSender();
             if(isIgnored(from))
@@ -284,7 +285,8 @@ public class Chat
             }
         }
         
-        public void meMessageOccured(String message)
+        @Override
+		public void meMessageOccured(String message)
         {
             INode from = MessageContext.getSender();
             if(isIgnored(from))
@@ -301,7 +303,8 @@ public class Chat
             }
         }
 
-        public void speakerAdded(final INode node, final long version)
+        @Override
+		public void speakerAdded(final INode node, final long version)
         {
             assertMessageFromServer();
             
@@ -311,7 +314,8 @@ public class Chat
                 {
                     m_queuedInitMessages.add(new Runnable()
                     {                    
-                        public void run()
+                        @Override
+						public void run()
                         {
                             speakerAdded(node, version);
                         }                    
@@ -332,7 +336,8 @@ public class Chat
             }            
         }
         
-        public void speakerRemoved(final INode node, final long version)
+        @Override
+		public void speakerRemoved(final INode node, final long version)
         {
             assertMessageFromServer();
             
@@ -342,7 +347,8 @@ public class Chat
                 {
                     m_queuedInitMessages.add(new Runnable()
                     {
-                        public void run()
+                        @Override
+						public void run()
                         {
                             speakerRemoved(node, version);
                         }
@@ -367,7 +373,8 @@ public class Chat
             }
         }
         
-        public void slapOccured(String to)
+        @Override
+		public void slapOccured(String to)
         {
             INode from = MessageContext.getSender();
             if(isIgnored(from))

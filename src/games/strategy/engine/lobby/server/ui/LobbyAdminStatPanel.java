@@ -67,12 +67,14 @@ public class LobbyAdminStatPanel extends JPanel
         ((IServerMessenger) m_messenger).addConnectionChangeListener(new IConnectionChangeListener()
         {
         
-            public void connectionRemoved(INode to)
+            @Override
+			public void connectionRemoved(INode to)
             {
                 SwingUtilities.invokeLater(new Runnable()
                 {
                 
-                    public void run()
+                    @Override
+					public void run()
                     {
                         m_currentLogins--;
                         m_currentLoginsLabel.setText("Current Players: " + m_currentLogins);
@@ -82,12 +84,14 @@ public class LobbyAdminStatPanel extends JPanel
         
             }
         
-            public void connectionAdded(INode to)
+            @Override
+			public void connectionAdded(INode to)
             {
                 SwingUtilities.invokeLater(new Runnable()
                 {
                 
-                    public void run()
+                    @Override
+					public void run()
                     {
                         m_currentLogins++;
                         m_currentLoginsLabel.setText("Current Players: " + m_currentLogins);

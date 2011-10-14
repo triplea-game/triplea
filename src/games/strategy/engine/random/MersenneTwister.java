@@ -192,7 +192,8 @@ public class MersenneTwister extends java.util.Random implements Serializable
      * only uses the first 32 bits for its seed).   
      */
 
-    synchronized public void setSeed(final long seed)
+    @Override
+	synchronized public void setSeed(final long seed)
         {
         // it's always good style to call super
         super.setSeed(seed);
@@ -262,7 +263,8 @@ public class MersenneTwister extends java.util.Random implements Serializable
     /**
      * Returns an integer with <i>bits</i> bits filled with a random number.
      */
-    synchronized protected int next(final int bits)
+    @Override
+	synchronized protected int next(final int bits)
         {
         int y;
         
@@ -316,7 +318,8 @@ public class MersenneTwister extends java.util.Random implements Serializable
 
     /** This method is missing from jdk 1.0.x and below.  JDK 1.1
         includes this for us, but what the heck.*/
-    public boolean nextBoolean() {return next(1) != 0;}
+    @Override
+	public boolean nextBoolean() {return next(1) != 0;}
 
     /** This generates a coin flip with a probability <tt>probability</tt>
         of returning true, else returning false. <tt>probability</tt> must
@@ -349,7 +352,8 @@ public class MersenneTwister extends java.util.Random implements Serializable
     /** This method is missing from JDK 1.1 and below.  JDK 1.2
         includes this for us, but what the heck. */
 
-    public int nextInt(final int n) 
+    @Override
+	public int nextInt(final int n) 
         {
         if (n<=0)
             throw new IllegalArgumentException("n must be >= 0");
@@ -389,7 +393,8 @@ public class MersenneTwister extends java.util.Random implements Serializable
 
     /** A bug fix for versions of JDK 1.1 and below.  JDK 1.2 fixes
         this for us, but what the heck. */
-    public double nextDouble()
+    @Override
+	public double nextDouble()
         {
         return (((long)next(26) << 27) + next(27))
             / (double)(1L << 53);
@@ -398,7 +403,8 @@ public class MersenneTwister extends java.util.Random implements Serializable
     /** A bug fix for versions of JDK 1.1 and below.  JDK 1.2 fixes
         this for us, but what the heck. */
 
-    public float nextFloat()
+    @Override
+	public float nextFloat()
         {
         return next(24) / ((float)(1 << 24));
         }
@@ -407,7 +413,8 @@ public class MersenneTwister extends java.util.Random implements Serializable
         use all four bytes in an integer as independent byte values!
         Totally wrong. I've submitted a bug report. */
 
-    public void nextBytes(final byte[] bytes)    
+    @Override
+	public void nextBytes(final byte[] bytes)    
         {
         for (int x=0;x<bytes.length;x++) bytes[x] = (byte)next(8);
         }
@@ -441,7 +448,8 @@ public class MersenneTwister extends java.util.Random implements Serializable
         http://developer.java.sun.com/developer/bugParade/bugs/4254501.html</a>
     */
 
-    synchronized public double nextGaussian() 
+    @Override
+	synchronized public double nextGaussian() 
         {
         if (__haveNextNextGaussian) 
             {

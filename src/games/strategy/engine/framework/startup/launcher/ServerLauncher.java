@@ -25,8 +25,6 @@ import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.*;
 import games.strategy.engine.random.CryptoRandomSource;
 import games.strategy.net.*;
-import games.strategy.triplea.Constants;
-
 import java.awt.Component;
 import java.io.*;
 import java.text.*;
@@ -86,7 +84,8 @@ public class ServerLauncher implements ILauncher
         m_inGameLobbyWatcher = watcher;
     }
     
-    public void launch(final Component parent)
+    @Override
+	public void launch(final Component parent)
     {
         if(!SwingUtilities.isEventDispatchThread())
             throw new IllegalStateException("Wrong thread");
@@ -94,7 +93,8 @@ public class ServerLauncher implements ILauncher
         Runnable r = new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 try
                 {
@@ -192,7 +192,8 @@ public class ServerLauncher implements ILauncher
         
         Thread t = new Thread("Triplea, start server game")
         {
-            public void run()
+            @Override
+			public void run()
             {
                 try
                 {
@@ -212,7 +213,8 @@ public class ServerLauncher implements ILauncher
                         m_serverGame.stopGame();
                         SwingUtilities.invokeLater(new Runnable()
                         {
-                            public void run()
+                            @Override
+							public void run()
                             {
                                 JOptionPane.showMessageDialog(m_ui, "Error during startup, game aborted.");
                             }
@@ -243,7 +245,8 @@ public class ServerLauncher implements ILauncher
                 SwingUtilities.invokeLater(new Runnable()
                         {
                         
-                            public void run()
+                            @Override
+							public void run()
                             {
                                 JOptionPane.getFrameForComponent(parent).setVisible(true);
                             }
@@ -268,7 +271,8 @@ public class ServerLauncher implements ILauncher
         //here in the background so that the user doesnt notice
         Thread t = new Thread("Warming up crypto random source")
         {
-            public void run()
+            @Override
+			public void run()
             {
                 try
                 {
@@ -354,7 +358,8 @@ public class ServerLauncher implements ILauncher
         SwingUtilities.invokeLater(new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 String message = "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
                 JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_ui), message);
@@ -377,7 +382,8 @@ class ServerReady implements IServerReady
         m_latch = new CountDownLatch(waitCount);
     }
     
-    public void clientReady()
+    @Override
+	public void clientReady()
     {
         m_latch.countDown();
     }

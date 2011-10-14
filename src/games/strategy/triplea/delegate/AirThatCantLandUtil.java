@@ -15,11 +15,11 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatch;
@@ -35,13 +35,11 @@ import java.util.Iterator;
  */
 public class AirThatCantLandUtil
 {
-    private final GameData m_data;
     private final IDelegateBridge m_bridge;
     
     
-    public AirThatCantLandUtil(final GameData data, final IDelegateBridge bridge)
+    public AirThatCantLandUtil(final IDelegateBridge bridge)
     {
-        m_data = data;
         m_bridge = bridge;
     }
 
@@ -57,16 +55,17 @@ public class AirThatCantLandUtil
     
     public Collection<Territory> getTerritoriesWhereAirCantLand(PlayerID player)
     {
+        GameData data = m_bridge.getData();
         Collection<Territory> cantLand = new ArrayList<Territory>();
-        Iterator territories = m_data.getMap().getTerritories().iterator();
+        Iterator<Territory> territories = data.getMap().getTerritories().iterator();
         while (territories.hasNext())
         {
-            Territory current = (Territory) territories.next();
+            Territory current = territories.next();
             CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<Unit>();
             ownedAir.add(Matches.UnitIsAir);
             ownedAir.add(Matches.unitIsOwnedBy(player));
             Collection<Unit> air = current.getUnits().getMatches(ownedAir);
-            if (air.size() != 0 && !MoveValidator.canLand(air, current, player, m_data))
+            if (air.size() != 0 && !MoveValidator.canLand(air, current, player, data))
             {
                 cantLand.add(current);
             }
@@ -76,16 +75,18 @@ public class AirThatCantLandUtil
 
     public void removeAirThatCantLand(PlayerID player, boolean spareAirInSeaZonesBesideFactories)
     {
+        GameData data = m_bridge.getData();
+        GameMap map = data.getMap();
         Iterator<Territory> territories = getTerritoriesWhereAirCantLand(player).iterator();
         while (territories.hasNext())
         {
             Territory current = territories.next();
             CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<Unit>();
             ownedAir.add(Matches.UnitIsAir);
-            ownedAir.add(Matches.alliedUnit(player, m_data));
+            ownedAir.add(Matches.alliedUnit(player, data));
             Collection<Unit> air = current.getUnits().getMatches(ownedAir);
 
-            boolean hasNeighboringFriendlyFactory =  m_data.getMap().getNeighbors(current, Matches.territoryHasAlliedIsFactoryOrCanProduceUnits(m_data, player)).size() > 0;
+            boolean hasNeighboringFriendlyFactory = map.getNeighbors(current, Matches.territoryHasAlliedIsFactoryOrCanProduceUnits(data, player)).size() > 0;
             boolean skip = spareAirInSeaZonesBesideFactories && current.isWater() && hasNeighboringFriendlyFactory;
 
             if(!skip)
@@ -105,13 +106,13 @@ public class AirThatCantLandUtil
         //on water we may just no have enough carriers
         {
             //find the carrier capacity
-            Collection<Unit> carriers = territory.getUnits().getMatches(Matches.alliedUnit(player, m_data));
+            Collection<Unit> carriers = territory.getUnits().getMatches(Matches.alliedUnit(player, m_bridge.getData()));
             int capacity = MoveValidator.carrierCapacity(carriers);
 
             Iterator<Unit> iter = airUnits.iterator();
             while (iter.hasNext())
             {
-                Unit unit = (Unit) iter.next();
+                Unit unit = iter.next();
                 UnitAttachment ua = UnitAttachment.get(unit.getType());
                 int cost = ua.getCarrierCost();
                 if (cost == -1 || cost > capacity)

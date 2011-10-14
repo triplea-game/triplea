@@ -59,7 +59,8 @@ public class NonFightingBattle implements Battle
         m_data = data;
     }
 
-    public void fight(IDelegateBridge bridge)
+    @Override
+	public void fight(IDelegateBridge bridge)
     {
         if(!m_battleTracker.getDependentOn(this).isEmpty())
             throw new IllegalStateException("Must fight battles that this battle depends on first");
@@ -68,7 +69,7 @@ public class NonFightingBattle implements Battle
         boolean someAttacking = hasAttackingUnits();
         if( someAttacking)
         {
-            m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, m_data, null, null);
+            m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, null, null);
             m_battleTracker.addToConquered(m_battleSite);
         }
         end();
@@ -80,7 +81,8 @@ public class NonFightingBattle implements Battle
         m_isOver = true;
     }
 
-    public boolean isOver()
+    @Override
+	public boolean isOver()
     {
         return m_isOver;
     }
@@ -94,12 +96,14 @@ public class NonFightingBattle implements Battle
         return someAttacking;
     }
 
-    public boolean isBombingRun()
+    @Override
+	public boolean isBombingRun()
     {
         return false;
     }
 
-    public void removeAttack(Route route, Collection<Unit> units)
+    @Override
+	public void removeAttack(Route route, Collection<Unit> units)
     {
         Iterator<Unit> dependents = m_dependentUnits.keySet().iterator();
         while(dependents.hasNext())
@@ -110,12 +114,14 @@ public class NonFightingBattle implements Battle
         }
     }
 
-    public boolean isEmpty()
+    @Override
+	public boolean isEmpty()
     {
         return !hasAttackingUnits();
     }
 
-    public Change addAttackChange(Route route, Collection<Unit> units)
+    @Override
+	public Change addAttackChange(Route route, Collection<Unit> units)
     {
         Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
         Iterator<Unit> iter = addedTransporting.keySet().iterator();
@@ -130,7 +136,8 @@ public class NonFightingBattle implements Battle
         return ChangeFactory.EMPTY_CHANGE;
     }
 
-    public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
+    @Override
+	public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
     {
         Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
         Iterator<Unit> iter = addedTransporting.keySet().iterator();
@@ -145,12 +152,14 @@ public class NonFightingBattle implements Battle
         return ChangeFactory.EMPTY_CHANGE;
     }
 
-    public Territory getTerritory()
+    @Override
+	public Territory getTerritory()
     {
         return m_battleSite;
     }
 
-    public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units, IDelegateBridge bridge)
+    @Override
+	public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units, IDelegateBridge bridge)
     {
         Collection<Unit> lost = getDependentUnits(units);
         lost = Match.getMatches(lost, Matches.unitIsInTerritory(m_battleSite));
@@ -164,7 +173,8 @@ public class NonFightingBattle implements Battle
         }
     }
 
-    public Collection<Unit> getDependentUnits(Collection<Unit> units)
+    @Override
+	public Collection<Unit> getDependentUnits(Collection<Unit> units)
     {
         Collection<Unit> rVal = new ArrayList<Unit>();
         
@@ -179,12 +189,14 @@ public class NonFightingBattle implements Battle
         return rVal;
     }
 
-    public int hashCode()
+    @Override
+	public int hashCode()
     {
       return m_battleSite.hashCode();
     }
 
-    public boolean equals(Object o)
+    @Override
+	public boolean equals(Object o)
     {
       //2 battles are equal if they are both the same type (boming or not)
       //and occur on the same territory
@@ -202,38 +214,45 @@ public class NonFightingBattle implements Battle
      * Add bombarding unit. Doesn't make sense here so just do
      * nothing.
      */
-    public void addBombardingUnit(Unit unit) {
+    @Override
+	public void addBombardingUnit(Unit unit) {
 	// nothing
     }
 
     /**
      * Return whether battle is amphibious.
      */
-    public boolean isAmphibious() {
+    @Override
+	public boolean isAmphibious() {
 	return false;
     }
 
-    public Collection<Unit> getAmphibiousLandAttackers()
+    @Override
+	public Collection<Unit> getAmphibiousLandAttackers()
     {
         return new ArrayList<Unit>();
     }
 
-    public Collection<Unit> getBombardingUnits()
+    @Override
+	public Collection<Unit> getBombardingUnits()
     {
         return new ArrayList<Unit>();
     }
     
-    public int getBattleRound()
+    @Override
+	public int getBattleRound()
     {
         return 0;
     }
 
-    public Collection<Unit> getAttackingUnits()
+    @Override
+	public Collection<Unit> getAttackingUnits()
     {
         return new ArrayList<Unit>();
     }
     
-    public Collection<Unit> getDefendingUnits()
+    @Override
+	public Collection<Unit> getDefendingUnits()
     {
     	return new ArrayList<Unit>();
     }

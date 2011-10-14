@@ -24,8 +24,6 @@ package games.strategy.engine.data.export;
 import games.strategy.engine.data.IAttachment;
 
 import java.lang.reflect.Field;
-import java.util.Iterator;
-import java.util.Map;
 
 public class TechAttachmentExporter extends DefaultAttachmentExporter {
 	

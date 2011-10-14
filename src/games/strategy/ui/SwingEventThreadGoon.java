@@ -40,7 +40,8 @@ public class SwingEventThreadGoon
             /**
              * We are updating a portion of the screen, check to see if we are in the right thread.
              */
-            public void addDirtyRegion(JComponent c, int x, int y, int w, int h)
+            @Override
+			public void addDirtyRegion(JComponent c, int x, int y, int w, int h)
             {
                 //if a component is not displayable, then we can modify
                 //if outside the swing event thread. 

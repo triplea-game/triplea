@@ -25,7 +25,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attatchments.TechAttachment;
 
 
-import java.lang.reflect.Method;
 import java.util.*;
 
 
@@ -156,7 +155,7 @@ public class TechTracker implements java.io.Serializable
 	    return Integer.parseInt(ta.getTechCost());
   }
   
-  public static synchronized void addAdvance(PlayerID player, GameData data, IDelegateBridge bridge, TechAdvance advance)
+  public static synchronized void addAdvance(PlayerID player, IDelegateBridge bridge, TechAdvance advance)
   {
 	  Change attatchmentChange;
 	  if(advance instanceof GenericTechAdvance) {
@@ -169,7 +168,7 @@ public class TechTracker implements java.io.Serializable
 	  else
 		  attatchmentChange = ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "true", advance.getProperty());
 	  bridge.addChange(attatchmentChange);
-	  advance.perform(player, bridge, data);
+      advance.perform(player, bridge);
   }
 
   private static String capitalizeFirstLetter(String aString)

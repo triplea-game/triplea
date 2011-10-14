@@ -46,8 +46,10 @@ class UndoablePlacement extends AbstractUndoableMove
         m_player = player;
     }
 
-    protected final void undoSpecific(GameData data, IDelegateBridge bridge)
+    @Override
+    protected final void undoSpecific(IDelegateBridge bridge)
     {
+        GameData data = bridge.getData();
     	Map<Territory, Collection<Unit>> produced = DelegateFinder.placeDelegate(data).getProduced();
     	Collection<Unit> units = produced.get(m_producer_territory);
         units.removeAll(getUnits());
@@ -58,17 +60,20 @@ class UndoablePlacement extends AbstractUndoableMove
         DelegateFinder.placeDelegate(data).setProduced(new HashMap<Territory, Collection<Unit>>(produced));
     }
 
-    public final String getMoveLabel()
+    @Override
+	public final String getMoveLabel()
     {
         return m_place_territory.getName();
     }
 
-    public final Territory getEnd()
+    @Override
+	public final Territory getEnd()
     {
         return m_place_territory;
     }
 
-    protected final PlacementDescription getDescriptionObject() {
+    @Override
+	protected final PlacementDescription getDescriptionObject() {
         return new PlacementDescription(m_units, m_place_territory);
     }
 }

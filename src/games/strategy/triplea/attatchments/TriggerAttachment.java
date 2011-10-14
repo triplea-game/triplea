@@ -959,7 +959,7 @@ public class TriggerAttachment extends DefaultAttachment{
         aBridge.addChange(change);
         // handle adding to enemy territories
         if( Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data).match(terr))
-        	getBattleTracker(data).addBattle(new CRoute(terr), units, false, player, data, aBridge, null);
+            getBattleTracker(data).addBattle(new CRoute(terr), units, false, player, aBridge, null);
 	}
 	
 	private void use (IDelegateBridge aBridge) {
@@ -973,7 +973,7 @@ public class TriggerAttachment extends DefaultAttachment{
         GameData data = aBridge.getData();
 		for (Territory terr : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player1))) {
 			if (Matches.territoryHasEnemyUnits(player1, data).match(terr))
-				DelegateFinder.battleDelegate(data).getBattleTracker().addBattle(new CRoute(terr), terr.getUnits().getMatches(Matches.unitIsOwnedBy(player1)), false, player1, data, aBridge, null);
+                DelegateFinder.battleDelegate(data).getBattleTracker().addBattle(new CRoute(terr), terr.getUnits().getMatches(Matches.unitIsOwnedBy(player1)), false, player1, aBridge, null);
 		}
 	}
 	
@@ -1137,7 +1137,7 @@ public class TriggerAttachment extends DefaultAttachment{
 								|| !TechAdvance.getTechAdvances(data, aPlayer).contains(ta))
 							continue;
 						aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " activates " + ta);
-						TechTracker.addAdvance(aPlayer, data, aBridge, ta);
+                        TechTracker.addAdvance(aPlayer, aBridge, ta);
 					}
 				}
 			}
@@ -1613,6 +1613,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	 */
 	private static Match<TriggerAttachment> whenOrDefaultMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				if (beforeOrAfter == null && stepName == null && t.getWhen() == null)
 					return true;
@@ -1637,6 +1638,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	private static Match<TriggerAttachment> prodMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getFrontier() != null;
 			}
@@ -1645,6 +1647,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	private static Match<TriggerAttachment> prodFrontierEditMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getProductionRule() != null && t.getProductionRule().size() > 0;
 			}
@@ -1653,6 +1656,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	private static Match<TriggerAttachment> techMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getTech().isEmpty();
 			}
@@ -1661,6 +1665,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	private static Match<TriggerAttachment> techAMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getAvailableTech() != null;
 			}
@@ -1669,6 +1674,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	private static Match<TriggerAttachment> placeMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getPlacement() != null;
 			}
@@ -1677,6 +1683,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	private static Match<TriggerAttachment> purchaseMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getPurchase() != null;
 			}
@@ -1685,6 +1692,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	private static Match<TriggerAttachment> resourceMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getResource() != null && t.getResourceCount() != 0;
 			}
@@ -1693,6 +1701,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	private static Match<TriggerAttachment> supportMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getSupport() != null;
 			}
@@ -1701,6 +1710,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	private static Match<TriggerAttachment> unitPropertyMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getUnitType().isEmpty() && t.getUnitProperty() != null;
 			}
@@ -1709,6 +1719,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	private static Match<TriggerAttachment> territoryPropertyMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getTerritories().isEmpty() && t.getTerritoryProperty() != null;
 			}
@@ -1717,6 +1728,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	private static Match<TriggerAttachment> playerPropertyMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getPlayerProperty() != null;
 			}
@@ -1725,6 +1737,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	private static Match<TriggerAttachment> relationshipTypePropertyMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getRelationshipTypes().isEmpty() && t.getRelationshipTypeProperty() != null;
 			}
@@ -1733,6 +1746,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	private static Match<TriggerAttachment> territoryEffectPropertyMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getTerritoryEffects().isEmpty() && t.getTerritoryEffectProperty() != null;
 			}
@@ -1741,6 +1755,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	private static Match<TriggerAttachment> relationshipChangeMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getRelationshipChange().isEmpty();
 			}
@@ -1749,6 +1764,7 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	private static Match<TriggerAttachment> notificationMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getNotification() != null;
 			}
@@ -1757,12 +1773,14 @@ public class TriggerAttachment extends DefaultAttachment{
 	
 	private static Match<TriggerAttachment> victoryMatch(final String beforeOrAfter, final String stepName) {
 		return new Match<TriggerAttachment>() {
+			@Override
 			public boolean match(TriggerAttachment t) {
 				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getVictory() != null && t.getVictory().length() > 0;
 			}
 		};
 	}
 	
+	@Override
 	public void validate(GameData data) throws GameParseException
 	{
 		if( m_trigger==null)
@@ -1777,14 +1795,17 @@ public class TriggerAttachment extends DefaultAttachment{
 		public CRoute(Territory terr) {
 			super(terr);
 		}
+		@Override
 		public Territory getEnd()
 	    {
 	        return getStart();
 	    }
+		@Override
 		public int getLength()
 	    {
 	        return 1;
 	    }
+		@Override
 		public Territory at(int i)
 	    {
 	        return getStart();

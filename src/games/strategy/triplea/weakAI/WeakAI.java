@@ -55,7 +55,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     }
     
 
-    protected void tech(ITechDelegate techDelegate, GameData data, PlayerID player)
+    @Override
+	protected void tech(ITechDelegate techDelegate, GameData data, PlayerID player)
     {}
 
     private Route getAmphibRoute(final PlayerID player)
@@ -108,7 +109,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         return invasionRoute == null;
     }
     
-    protected void move(boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerID player)
+    @Override
+	protected void move(boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerID player)
     {
         if(nonCombat)
         {
@@ -514,7 +516,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                         Matches.unitIsOwnedBy(player), 
                         new Match<Unit>()
                         {
-                            public boolean match(Unit o)
+                            @Override
+							public boolean match(Unit o)
                             {
                                 return !unitsAlreadyMoved.contains(o);
                             }
@@ -759,7 +762,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         {        
             private Map<Territory, Integer> randomInts = new HashMap<Territory, Integer>();
             
-            public int compare(Territory o1, Territory o2)
+            @Override
+			public int compare(Territory o1, Territory o2)
             {
                 
                 TerritoryAttachment ta1 = TerritoryAttachment.get(o1);
@@ -861,7 +865,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                         Matches.UnitIsStrategicBomber.invert(), 
                         new Match<Unit>()
                         {
-                            public boolean match(Unit o)
+                            @Override
+							public boolean match(Unit o)
                             {
                                 return !unitsAlreadyMoved.contains(o);
                             }
@@ -974,7 +979,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         return sum;
     }
 
-    protected void purchase(boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
+    @Override
+	protected void purchase(boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
     {
         if (purchaseForBid)
         {
@@ -1350,7 +1356,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
  
 
-    protected void place(boolean bid, IAbstractPlaceDelegate placeDelegate, GameData data, PlayerID player)
+    @Override
+	protected void place(boolean bid, IAbstractPlaceDelegate placeDelegate, GameData data, PlayerID player)
     {
         if (player.getUnits().size() == 0)
             return;
@@ -1454,7 +1461,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
      *      Added new collection autoKilled to handle killing units prior to casualty selection
      */
 
-    public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID)
+    @Override
+	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID)
     {
         List<Unit> rDamaged = new ArrayList<Unit>();
         List<Unit> rKilled = new ArrayList<Unit>();
@@ -1480,7 +1488,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
      */
-    public boolean shouldBomberBomb(Territory territory)
+    @Override
+	public boolean shouldBomberBomb(Territory territory)
     {
         return true;
             
@@ -1488,7 +1497,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
      */
-    public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units) 
+    @Override
+	public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units) 
     {
     	if (units == null || units.isEmpty())
     		return null;
@@ -1503,7 +1513,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection, games.strategy.engine.data.Territory)
      */
-    public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from)
+    @Override
+	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from)
     {
         List<Unit> rVal = new ArrayList<Unit>();
         for(Unit fighter : fightersThatCanBeMoved)
@@ -1517,22 +1528,26 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
      */
-    public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
+    @Override
+	public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
     {
        return (Territory) candidates.iterator().next();
     }
 
-    public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
+    @Override
+	public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
     {
         return true;
     }
 
-    public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message)
+    @Override
+	public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message)
     {
         return null;
     }
 
-    public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
+    @Override
+	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
     {
         return null;
     }
@@ -1540,7 +1555,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
      */
-    public int[] selectFixedDice(int numRolls, int hitAt, boolean hitOnlyIfEquals, String message, int diceSides)
+    @Override
+	public int[] selectFixedDice(int numRolls, int hitAt, boolean hitOnlyIfEquals, String message, int diceSides)
     {
         int[] dice = new int[numRolls];
         for (int i=0; i<numRolls; i++)
@@ -1553,7 +1569,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     // some additional matches
     public static final Match<Unit> HasntMoved = new Match<Unit>()
     {
-    	public boolean match(Unit o)
+    	@Override
+		public boolean match(Unit o)
         {
             return TripleAUnit.get(o).getAlreadyMoved() == 0;
         }
@@ -1561,7 +1578,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     
     public static final Match<Unit> Transporting = new Match<Unit>()
     {
-    	public boolean match(Unit o)
+    	@Override
+		public boolean match(Unit o)
         {
             return (TripleAUnit.get(o).getTransporting().size() > 0);
         }
@@ -1571,7 +1589,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     {
     	return new Match<Territory>()
         {
-    		public boolean match(Territory o)
+    		@Override
+			public boolean match(Territory o)
     		{
     			Set<CanalAttachment> canalAttachments = CanalAttachment.get(o);
     			if(canalAttachments.isEmpty())

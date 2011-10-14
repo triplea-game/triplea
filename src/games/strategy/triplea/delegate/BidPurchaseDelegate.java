@@ -22,7 +22,6 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 {
     private int m_bid;
     private int m_spent;
-    private IDelegateBridge m_bridge;
     
     private boolean m_hasBid = false;
 
@@ -42,25 +41,23 @@ public class BidPurchaseDelegate extends PurchaseDelegate
   /**
    * subclasses can over ride this method to use different restrictions as to what a player can buy
    */
-  protected boolean canAfford(IntegerMap<Resource> costs, PlayerID player)
+  @Override
+protected boolean canAfford(IntegerMap<Resource> costs, PlayerID player)
   {
       Resource PUs = getData().getResourceList().getResource(Constants.PUS);
       return costs.getInt(PUs) <= m_bid;
   }
 
-  public void start(IDelegateBridge bridge, GameData data)
+  @Override
+  public void start(IDelegateBridge bridge)
   {
-        super.start(bridge);
+	  super.start(bridge);
       
       if(m_hasBid)
           return;
-      
-      m_bridge = bridge;  
-      m_bid = getBidAmount(data, bridge.getPlayerID());
+       
+      m_bid = getBidAmount(bridge.getData(), bridge.getPlayerID());
       m_spent = 0;
-      
-      
-      
   }
 
   @Override
@@ -73,7 +70,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate
   /**
     * Called before the delegate will stop running.
     */
-   public void end()
+   @Override
+public void end()
    {
        super.end();
        int unspent =  m_bid - m_spent;
@@ -90,7 +88,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate
     /**
      * Returns the state of the Delegate.
      */
-    public Serializable saveState()
+    @Override
+	public Serializable saveState()
     {
         BidPurchaseState s = new BidPurchaseState();
         s.superState = super.saveState();
@@ -104,8 +103,9 @@ public class BidPurchaseDelegate extends PurchaseDelegate
     /**
      * Loads the delegates state
      */
-    public void loadState(Serializable state)
-    { 
+    @Override
+	public void loadState(Serializable state)
+    {
         BidPurchaseState s  = (BidPurchaseState)  state;
         m_bid = s.m_bid;
         m_spent = s.m_spent;

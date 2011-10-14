@@ -48,7 +48,8 @@ public class KingsTableDisplay implements IKingsTableDisplay
     /** 
      * @see games.strategy.engine.display.IDisplay#initialize(games.strategy.engine.display.IDisplayBridge)
      */
-    public void initialize(IDisplayBridge bridge)
+    @Override
+	public void initialize(IDisplayBridge bridge)
     {
        m_displayBridge = bridge;
        m_displayBridge.toString();
@@ -60,7 +61,8 @@ public class KingsTableDisplay implements IKingsTableDisplay
      * 
      * @see games.strategy.engine.display.IDisplay#shutdown()
      */
-    public void shutDown()
+    @Override
+	public void shutDown()
     {
         m_ui.stopGame();
     }
@@ -69,7 +71,8 @@ public class KingsTableDisplay implements IKingsTableDisplay
      * Graphically notify the user of the current game status.
      * @param error the status message to display
      */ 
-    public void setStatus(String status) 
+    @Override
+	public void setStatus(String status) 
     {
         m_ui.setStatus(status);
     }
@@ -77,7 +80,8 @@ public class KingsTableDisplay implements IKingsTableDisplay
     /**
      * Set the game over status for this display to <code>true</code>.
      */
-    public void setGameOver()//(CountDownLatch waiting)
+    @Override
+	public void setGameOver()//(CountDownLatch waiting)
     {
         m_ui.setGameOver();//waiting);
     }
@@ -90,7 +94,8 @@ public class KingsTableDisplay implements IKingsTableDisplay
      * @param end <code>Territory</code> where the play ended
      * @param captured <code>Collection</code> of <code>Territory</code>s whose pieces were captured during the play
      */
-    public void performPlay(Territory start, Territory end, Collection<Territory> captured)
+    @Override
+	public void performPlay(Territory start, Territory end, Collection<Territory> captured)
     {   
     	m_ui.performPlay(start,end,captured);
     }

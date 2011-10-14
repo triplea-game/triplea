@@ -73,14 +73,11 @@ import java.util.TreeSet;
  */
 public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 {
- 
-
-
-
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge aBridge)
+    @Override
+	public void start(IDelegateBridge aBridge)
     {
         super.start(aBridge);
         GameData data = getData();
@@ -90,8 +87,6 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
             TriggerAttachment.triggerPurchase(m_player, m_bridge, null, null);
         }
     }
-
-
 
     /**
      * subclasses can over ride this method to use different restrictions as to what a player can buy
@@ -104,7 +99,8 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
     /**
      * Returns an error code, or null if all is good.
      */
-    public String purchase(IntegerMap<ProductionRule> productionRules)
+    @Override
+	public String purchase(IntegerMap<ProductionRule> productionRules)
     {	  
         IntegerMap<Resource> costs = getCosts(productionRules);
         IntegerMap<NamedAttachable> results = getResults(productionRules);
@@ -190,7 +186,8 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
     /**
      * Returns an error code, or null if all is good.
      */
-    public String purchaseRepair(Map<Unit, IntegerMap<RepairRule>> repairRules)
+    @Override
+	public String purchaseRepair(Map<Unit, IntegerMap<RepairRule>> repairRules)
     {	  
         IntegerMap<Resource> costs = getRepairCosts(repairRules);
 
@@ -322,7 +319,8 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
     {
         UnitTypeComparator utc = new UnitTypeComparator();
 
-        public int compare(RepairRule o1, RepairRule o2)
+        @Override
+		public int compare(RepairRule o1, RepairRule o2)
         {
             UnitType u1 = (UnitType)  o1.getResults().keySet().iterator().next();
             UnitType u2 = (UnitType)  o2.getResults().keySet().iterator().next();
@@ -437,7 +435,8 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
     /* 
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
-    public Class<? extends IRemote> getRemoteType()
+    @Override
+	public Class<? extends IRemote> getRemoteType()
     {
         return IPurchaseDelegate.class;
     }

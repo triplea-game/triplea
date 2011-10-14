@@ -73,6 +73,7 @@ public class ProductionRule extends DefaultNamed implements Serializable
 		return m_results;
 	}
 	
+	@Override
 	public String toString()
 	{
 		return "ProductionRule:" + getName();

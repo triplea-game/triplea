@@ -136,7 +136,8 @@ public class BattleDisplay extends JPanel
     
     private Action m_nullAction = new AbstractAction(" "){
     
-        public void actionPerformed(ActionEvent e)
+        @Override
+		public void actionPerformed(ActionEvent e)
         {}
     
     };
@@ -331,11 +332,13 @@ public class BattleDisplay extends JPanel
 
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 m_actionButton.setAction(new AbstractAction(message)
                 {
-                    public void actionPerformed(ActionEvent e)
+                    @Override
+					public void actionPerformed(ActionEvent e)
                     {
                         continueLatch.countDown();
                     }
@@ -362,7 +365,8 @@ public class BattleDisplay extends JPanel
 
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 m_actionButton.setAction(m_nullAction);
             }
@@ -375,7 +379,8 @@ public class BattleDisplay extends JPanel
         m_steps.walkToLastStep();
         final Action close = new AbstractAction(message + " : (Press Space to close)")
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 enclosingFrame.setVisible(false);
             }
@@ -383,7 +388,8 @@ public class BattleDisplay extends JPanel
 
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 m_actionButton.setAction(close);
             }
@@ -425,7 +431,8 @@ public class BattleDisplay extends JPanel
         
         final Action action = new AbstractAction("Submerge Subs?")
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 String ok = "Submerge";
                 String cancel = "Remain";
@@ -462,7 +469,8 @@ public class BattleDisplay extends JPanel
         
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 m_actionButton.setAction(action);
             }
@@ -470,7 +478,8 @@ public class BattleDisplay extends JPanel
         
         SwingUtilities.invokeLater(new Runnable()
         {
-        	public void run()
+        	@Override
+			public void run()
         	{
         		action.actionPerformed(null);
         	}
@@ -492,7 +501,8 @@ public class BattleDisplay extends JPanel
         
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 m_actionButton.setAction(m_nullAction);
         
@@ -516,7 +526,8 @@ public class BattleDisplay extends JPanel
         
         final Action action = new AbstractAction("Retreat?")
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 String ok = "Retreat";
                 String cancel = "Remain";
@@ -560,7 +571,8 @@ public class BattleDisplay extends JPanel
         
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 m_actionButton.setAction(action);
             }
@@ -568,7 +580,8 @@ public class BattleDisplay extends JPanel
         
         SwingUtilities.invokeLater(new Runnable()
         {
-        	public void run()
+        	@Override
+			public void run()
         	{
         		action.actionPerformed(null);
         	}
@@ -584,7 +597,8 @@ public class BattleDisplay extends JPanel
         
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 m_actionButton.setAction(m_nullAction);
             }
@@ -606,7 +620,8 @@ public class BattleDisplay extends JPanel
 
         SwingUtilities.invokeLater(new Runnable()
         {
-        	public void run()
+        	@Override
+			public void run()
         	{
                 String ok = "Scramble";
                 String cancel = "Cancel";
@@ -754,7 +769,8 @@ public class BattleDisplay extends JPanel
             
             m_list.addListSelectionListener(new ListSelectionListener()
             {
-                public void valueChanged(ListSelectionEvent e)
+                @Override
+				public void valueChanged(ListSelectionEvent e)
                 {
                     updateImage();
                 }
@@ -820,7 +836,8 @@ public class BattleDisplay extends JPanel
             
             m_list.addListSelectionListener(new ListSelectionListener()
             {            
-                public void valueChanged(ListSelectionEvent e)
+                @Override
+				public void valueChanged(ListSelectionEvent e)
                 {
                     updateImage();
                 }            
@@ -868,7 +885,8 @@ public class BattleDisplay extends JPanel
       
         SwingUtilities.invokeLater(new Runnable()
         {
-        	public void run()
+        	@Override
+			public void run()
             {
                 final boolean isEditMode = (dice == null);
 
@@ -883,7 +901,8 @@ public class BattleDisplay extends JPanel
                 final String btnText = hit.getName() + ", press space to select " + countStr + (plural ? " casualties" : " casualty");
                 m_actionButton.setAction(new AbstractAction(btnText)
                 {
-                    public void actionPerformed(ActionEvent e)
+                    @Override
+					public void actionPerformed(ActionEvent e)
                     {
 
                         String messageText = message + " " + btnText + ".";
@@ -1040,7 +1059,8 @@ public class BattleDisplay extends JPanel
         Action continueAction = new AbstractAction()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 Action a = m_actionButton.getAction();
                 if(a != null)
@@ -1303,7 +1323,8 @@ class BattleModel extends DefaultTableModel
         }
     }
 
-    public boolean isCellEditable(int row, int column)
+    @Override
+	public boolean isCellEditable(int row, int column)
     {
 
         return false;
@@ -1358,7 +1379,8 @@ class Renderer implements TableCellRenderer
 
     JLabel m_stamp = new JLabel();
 
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+    @Override
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
     {
 
         ((TableData) value).updateStamp(m_stamp);

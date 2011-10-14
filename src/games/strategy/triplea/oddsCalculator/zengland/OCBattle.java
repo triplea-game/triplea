@@ -868,6 +868,7 @@ public class OCBattle {
 
 	public static void main(String args[]) {}
 
+	@Override
 	public String toString() {
 		String results = "";
 		results += resultStatusString + " ";

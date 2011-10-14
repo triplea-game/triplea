@@ -22,8 +22,6 @@ package games.strategy.engine.data;
 
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.ui.TooltipProperties;
-import games.strategy.triplea.ui.UIContext;
-
 import java.util.*;
 import java.io.*;
 
@@ -77,6 +75,7 @@ public class UnitType extends NamedAttachable implements Serializable
 
     
     
+	@Override
 	public boolean equals(Object o)
 	{
 		if(o == null)
@@ -86,6 +85,7 @@ public class UnitType extends NamedAttachable implements Serializable
 		return ((UnitType) o).getName().equals(this.getName());
 	}
 
+	@Override
 	public int hashCode()
 	{
 		return getName().hashCode();

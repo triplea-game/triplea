@@ -18,7 +18,6 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.Dynamix_AI.DMatches;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.*;
@@ -265,6 +264,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		return m_natObjective;
 	}
 	
+	@Override
 	protected void tech(ITechDelegate techDelegate, GameData data, PlayerID player)
 	{
 		long last, now;
@@ -419,6 +419,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		return factMap;
 	}
 	
+	@Override
 	protected void move(boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerID player)
 	{
 		if (nonCombat)
@@ -893,6 +894,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		last = now;
 	}
 	
+	@Override
 	protected void battle(IBattleDelegate battleDelegate, GameData data, PlayerID player)
 	{
 		// generally all AI's will follow the same logic.
@@ -3176,6 +3178,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		boolean tFirst = transportsMayDieFirst();
 		Match<Unit> notAlreadyMoved = new CompositeMatchAnd<Unit>(new Match<Unit>()
 		{
+			@Override
 			public boolean match(Unit o)
 			{
 				return !alreadyMoved.contains(o);
@@ -3521,6 +3524,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		
 		Match<Unit> notAlreadyMoved = new CompositeMatchAnd<Unit>(new Match<Unit>()
 		{
+			@Override
 			public boolean match(Unit o)
 			{
 				return !alreadyMoved.contains(o);
@@ -3744,6 +3748,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		HashMap<Territory, Collection<Unit>> shipsMovedMap = getShipsMovedMap();
 		Match<Unit> notAlreadyMoved = new CompositeMatchAnd<Unit>(new Match<Unit>()
 		{
+			@Override
 			public boolean match(Unit o)
 			{
 				return !alreadyMoved.contains(o);
@@ -4536,6 +4541,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		
 		Match<Unit> notAlreadyMoved = new CompositeMatchAnd<Unit>(new Match<Unit>()
 		{
+			@Override
 			public boolean match(Unit o)
 			{
 				return !unitsAlreadyMoved.contains(o);
@@ -6448,6 +6454,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		
 		CompositeMatch<Unit> attackable = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotStatic(player), Matches.UnitIsNotFactory, new Match<Unit>()
 		{
+			@Override
 			public boolean match(Unit o)
 			{
 				return !unitsAlreadyMoved.contains(o);
@@ -7221,7 +7228,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	{
         Match<Territory> territoryIsOwnedByXOrAllyAndIsPort = new Match<Territory>()
         {
-            public boolean match(Territory ter)
+            @Override
+			public boolean match(Territory ter)
             {
                 if(!data.getRelationshipTracker().isAllied(player, ter.getOwner()))
                     return false;
@@ -7505,6 +7513,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		return sum;
 	}
 	
+	@Override
 	protected void purchase(boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
 	{
 		long last, now;
@@ -9326,6 +9335,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		purchaseDelegate.purchase(purchase);
 	}
 	
+	@Override
 	protected void place(boolean bid, IAbstractPlaceDelegate placeDelegate, GameData data, PlayerID player)
 	{
 		// if we have purchased a factory, it will be a priority for placing units
@@ -9882,6 +9892,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	 *      games.strategy.engine.data.PlayerID, java.util.List)
 	 */
 
+	@Override
 	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID)
 	{
 		if (defaultCasualties.size() != count)
@@ -10051,6 +10062,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
 	 */
+	@Override
 	public boolean shouldBomberBomb(Territory territory)
 	{
 		// only if not needed in a battle
@@ -10068,7 +10080,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		return !thisIsAnAttack;
 	}
 
-    public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units) 
+    @Override
+	public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units) 
     {
     	if (units == null || units.isEmpty())
     		return null;
@@ -10080,11 +10093,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     		return Match.getMatches(units, Matches.UnitCanProduceUnits).iterator().next();
     }
 	
+	@Override
 	public boolean selectAttackSubs(Territory unitTerritory)
 	{
 		return true;
 	}
 	
+	@Override
 	public boolean selectAttackUnits(Territory unitTerritory)
 	{
 		return true;
@@ -10094,6 +10109,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	 * (non-Javadoc)
 	 * @see games.strategy.triplea.baseAI.AbstractAI#selectAttackTransports(games.strategy.engine.data.Territory)
 	 */
+	@Override
 	public boolean selectAttackTransports(Territory territory)
 	{
 		return true;
@@ -10102,6 +10118,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection, games.strategy.engine.data.Territory)
 	 */
+	@Override
 	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from)
 	{
 		List<Unit> rVal = new ArrayList<Unit>();
@@ -10113,12 +10130,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
 	 */
+	@Override
 	public Territory selectTerritoryForAirToLand(Collection candidates)
 	{
 		// need to land in territory with infantry, especially if bomber
 		return (Territory) candidates.iterator().next();
 	}
 	
+	@Override
 	public boolean confirmMoveInFaceOfAA(Collection aaFiringTerritories)
 	{
 		return false;
@@ -10136,6 +10155,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	 * @param noneAvailable
 	 * @return the Territory to bombard in, null if the unit should not bombard
 	 */
+	@Override
 	public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection<Territory> territories, boolean noneAvailable)
 	{
 		if (noneAvailable || territories.size() == 0)
@@ -10148,6 +10168,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		return null;
 	}
 	
+	@Override
 	public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message)
 	{
 		// retreat anytime only air units are remaining
@@ -10290,6 +10311,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		return null;
 	}
 	
+	@Override
 	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
 	{
 		return null;
@@ -10298,6 +10320,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
 	 */
+	@Override
 	public int[] selectFixedDice(int numRolls, int hitAt, boolean hitOnlyIfEquals, String message, int diceSides)
 	{
 		int[] dice = new int[numRolls];
@@ -10311,6 +10334,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	// some additional matches
 	public static final Match<Unit> HasntMoved = new Match<Unit>()
 	{
+		@Override
 		public boolean match(Unit o)
 		{
 			return TripleAUnit.get(o).getAlreadyMoved() == 0;
@@ -10319,6 +10343,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	
 	public static final Match<Unit> Transporting = new Match<Unit>()
 	{
+		@Override
 		public boolean match(Unit o)
 		{
 			return (TripleAUnit.get(o).getTransporting().size() > 0);

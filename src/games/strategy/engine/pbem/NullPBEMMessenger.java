@@ -25,54 +25,65 @@ public class NullPBEMMessenger implements IPBEMMessenger
     {
     }
 
-    public String getName()
+    @Override
+	public String getName()
     {
         return "disabled";
     }
 
-    public boolean getNeedsUsername()
+    @Override
+	public boolean getNeedsUsername()
     {
         return false;
     }
 
-    public boolean getNeedsPassword()
+    @Override
+	public boolean getNeedsPassword()
     {
         return false;
     }
 
-    public boolean getCanViewPosted()
+    @Override
+	public boolean getCanViewPosted()
     {
         return false;
     }
 
-    public void setGameId(String s)
+    @Override
+	public void setGameId(String s)
     {
     }
 
-    public void setUsername(String s)
+    @Override
+	public void setUsername(String s)
     {
     }
 
-    public void setPassword(String s)
+    @Override
+	public void setPassword(String s)
     {
     }
 
-    public String getGameId()
-    {
-        return null;
-    }
-
-    public String getUsername()
-    {
-        return null;
-    }
-
-    public String getPassword()
+    @Override
+	public String getGameId()
     {
         return null;
     }
 
-    public void viewPosted()
+    @Override
+	public String getUsername()
+    {
+        return null;
+    }
+
+    @Override
+	public String getPassword()
+    {
+        return null;
+    }
+
+    @Override
+	public void viewPosted()
     {
     }
 
@@ -84,7 +95,8 @@ public class NullPBEMMessenger implements IPBEMMessenger
     {
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         return getName();
     }

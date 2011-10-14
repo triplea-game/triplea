@@ -34,7 +34,8 @@ public class BooleanProperty extends AEditableProperty
   }
 
 
-  public Object getValue()
+  @Override
+public Object getValue()
   {
     return mValue ? Boolean.TRUE : Boolean.FALSE;
   }
@@ -48,13 +49,15 @@ public class BooleanProperty extends AEditableProperty
    *
    * @return component used to edit this property
    */
-  public JComponent getEditorComponent()
+  @Override
+public JComponent getEditorComponent()
   {
     final JCheckBox box = new JCheckBox("");
     box.setSelected(mValue);
     box.addActionListener(new ActionListener()
     {
-                          public void actionPerformed(ActionEvent e)
+                          @Override
+						public void actionPerformed(ActionEvent e)
                           {
                             mValue = box.isSelected();
                           }

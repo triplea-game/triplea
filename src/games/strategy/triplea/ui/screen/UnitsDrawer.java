@@ -53,7 +53,8 @@ public class UnitsDrawer implements IDrawable
         return m_playerName;
     }
     
-    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+    @Override
+	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
         if(m_overflow)
         {
@@ -225,12 +226,14 @@ public class UnitsDrawer implements IDrawable
         return new Tuple<Territory,List<Unit>>(t,rVal);
     }
     
-    public int getLevel()
+    @Override
+	public int getLevel()
     {
         return UNITS_LEVEL;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return "UnitsDrawer for " + m_count + " " + MyFormatter.pluralize(m_unitType) + " in  " + m_territoryName; 
     }

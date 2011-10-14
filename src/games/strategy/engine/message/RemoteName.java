@@ -34,7 +34,8 @@ public class RemoteName
         return m_name;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return m_name + ":" + m_class.getSimpleName();
     }

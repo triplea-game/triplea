@@ -117,7 +117,8 @@ public class BoardPanel extends JComponent implements MouseListener
         // Ask Swing to repaint this panel when it's convenient
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 repaint();
             }
@@ -128,7 +129,8 @@ public class BoardPanel extends JComponent implements MouseListener
     /**
      * Draw the current map and pieces.
      */
-    protected void paintComponent(Graphics g) 
+    @Override
+	protected void paintComponent(Graphics g) 
     {   
         g.setColor(Color.white);
         
@@ -178,14 +180,18 @@ public class BoardPanel extends JComponent implements MouseListener
     }
     
 
-    public void mouseClicked(MouseEvent e) { }
-    public void mouseEntered(MouseEvent e) { }
-    public void mouseExited(MouseEvent e) { }
+    @Override
+	public void mouseClicked(MouseEvent e) { }
+    @Override
+	public void mouseEntered(MouseEvent e) { }
+    @Override
+	public void mouseExited(MouseEvent e) { }
   
     /**
      * Process the mouse button being pressed.
      */
-    public void mousePressed(MouseEvent e) 
+    @Override
+	public void mousePressed(MouseEvent e) 
     { 
         // After this method has been called, 
         //    the Territory corresponding to the cursor location when the mouse was pressed 
@@ -196,7 +202,8 @@ public class BoardPanel extends JComponent implements MouseListener
     /**
      * Process the mouse button being released.
      */
-    public void mouseReleased(MouseEvent e) 
+    @Override
+	public void mouseReleased(MouseEvent e) 
     { 
         // After this method has been called, 
         //    the Territory corresponding to the cursor location when the mouse was released 

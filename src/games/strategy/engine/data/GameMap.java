@@ -466,7 +466,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
         return Collections.unmodifiableCollection(m_territories);
     }
 
-    public Iterator<Territory> iterator()
+    @Override
+	public Iterator<Territory> iterator()
     {
         return m_territories.iterator();
     }

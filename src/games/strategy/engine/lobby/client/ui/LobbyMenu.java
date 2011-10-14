@@ -20,9 +20,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.swing.*;
 
 public class LobbyMenu extends JMenuBar
@@ -93,11 +90,13 @@ public class LobbyMenu extends JMenuBar
 
         revive.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 Runnable runner = new Runnable()
                 {
-                    public void run()
+                    @Override
+					public void run()
                     {
                         IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers().getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
                         final StringBuilder builder = new StringBuilder();
@@ -114,7 +113,8 @@ public class LobbyMenu extends JMenuBar
 
                         Runnable componentCreation = new Runnable()
                         {
-                            public void run()
+                            @Override
+							public void run()
                             {
                                 final JDialog dialog = new JDialog(m_frame, "Players Information");
                                 JTextArea label = new JTextArea(builder.toString());
@@ -134,7 +134,8 @@ public class LobbyMenu extends JMenuBar
                                 dialog.add(pane, BorderLayout.CENTER);
                                 JButton button = new JButton(new AbstractAction()
                                 {
-                                    public void actionPerformed(ActionEvent e)
+                                    @Override
+									public void actionPerformed(ActionEvent e)
                                     {
                                         dialog.dispose();
                                     }
@@ -168,7 +169,8 @@ public class LobbyMenu extends JMenuBar
 
         item.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 String name = JOptionPane.showInputDialog(null, "Enter the username that you want to ban from the lobby.\r\n\r\nNote that this ban is effective on any username, registered or anonymous, online or offline.", "");
                 if(name == null || name.length() < 1)
@@ -205,7 +207,8 @@ public class LobbyMenu extends JMenuBar
 
         item.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 String ip = JOptionPane.showInputDialog(null, "Enter the IP Address that you want to ban from the lobby.\r\n\r\nIP Addresses should be entered in this format: 192.168.1.0", "");
                 if(ip == null || ip.length() < 1)
@@ -236,7 +239,8 @@ public class LobbyMenu extends JMenuBar
 
         item.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 String mac = JOptionPane.showInputDialog(null, "Enter the hashed Mac Address that you want to ban from the lobby.\r\n\r\nHashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3", "");
                 if(mac == null || mac.length() < 1)
@@ -273,7 +277,8 @@ public class LobbyMenu extends JMenuBar
 
         item.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 String name = JOptionPane.showInputDialog(null, "Enter the username that you want to unban from the lobby.", "");
                 if(name == null || name.length() < 1)
@@ -307,7 +312,8 @@ public class LobbyMenu extends JMenuBar
 
         item.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 String ip = JOptionPane.showInputDialog(null, "Enter the IP Address that you want to unban from the lobby.\r\n\r\nIP Addresses should be entered in this format: 192.168.1.0", "");
                 if(ip == null || ip.length() < 1)
@@ -335,7 +341,8 @@ public class LobbyMenu extends JMenuBar
 
         item.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 String mac = JOptionPane.showInputDialog(null, "Enter the hashed Mac Address that you want to unban from the lobby.\r\n\r\nHashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3", "");
                 if(mac == null || mac.length() < 1)
@@ -442,7 +449,8 @@ public class LobbyMenu extends JMenuBar
 
     	hostingLink.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
             	try {
             		BareBonesBrowserLaunch.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
@@ -455,7 +463,8 @@ public class LobbyMenu extends JMenuBar
     	
     	mapLink.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
             	try {
             		BareBonesBrowserLaunch.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4074312.html");
@@ -468,7 +477,8 @@ public class LobbyMenu extends JMenuBar
     	
     	bugReport.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
             	try {
             		BareBonesBrowserLaunch.openURL("https://sourceforge.net/tracker/?group_id=44492");
@@ -481,7 +491,8 @@ public class LobbyMenu extends JMenuBar
     	
     	lobbyRules.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
             	try {
             		BareBonesBrowserLaunch.openURL("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1");
@@ -494,7 +505,8 @@ public class LobbyMenu extends JMenuBar
     	
     	warClub.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
             	try {
             		BareBonesBrowserLaunch.openURL("http://www.tripleawarclub.org/");
@@ -507,7 +519,8 @@ public class LobbyMenu extends JMenuBar
     	
     	devForum.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
             	try {
             		BareBonesBrowserLaunch.openURL("http://triplea.sourceforge.net/mywiki/Forum");
@@ -532,7 +545,8 @@ public class LobbyMenu extends JMenuBar
         
         chatTimeBox.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 m_frame.setShowChatTime(chatTimeBox.isSelected());
                 
@@ -552,7 +566,8 @@ public class LobbyMenu extends JMenuBar
 
         soundCheckBox.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 ClipPlayer.getInstance().setBeSilent(!soundCheckBox.isSelected());
             }
@@ -568,7 +583,8 @@ public class LobbyMenu extends JMenuBar
        
        update.addActionListener(new ActionListener()
        {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {           
                 updateAccountDetails();
             }
@@ -619,7 +635,8 @@ public class LobbyMenu extends JMenuBar
         {   // On non-Mac operating systems, we need to manually create an Exit menu item
                 JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
                 {
-                    public void actionPerformed(ActionEvent e)
+                    @Override
+					public void actionPerformed(ActionEvent e)
                     {
                         m_frame.shutdown();
                     }

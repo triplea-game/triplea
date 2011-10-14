@@ -23,8 +23,6 @@ package games.strategy.triplea.ui;
 import java.util.concurrent.CountDownLatch;
 
 import games.strategy.engine.data.*;
-import games.strategy.triplea.Constants;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -185,7 +183,8 @@ public abstract class ActionPanel extends JPanel
      */
     protected final Runnable REFRESH = new Runnable()
     {
-        public void run()
+        @Override
+		public void run()
         {
             revalidate();
             repaint();

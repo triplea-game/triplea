@@ -80,6 +80,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 	private Vector<ItemSelectable> selectables = new Vector<ItemSelectable>();
 	private boolean clearButton;
 
+	@Override
 	public void init() {
 		setSize(850,550);
 		
@@ -95,6 +96,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 
 	}
 	
+	@Override
 	public void run() {
 		Thread myThread = Thread.currentThread();
 		while(battleThread == myThread) {
@@ -346,6 +348,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		
 	}
 
+	@Override
 	public void start() {
 		if(battleThread == null) {
 			battleThread = new Thread(this, "Battle");
@@ -353,6 +356,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		}
 	}
 	
+	@Override
 	public void stop() {
 		reset = true;
 	}
@@ -547,6 +551,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		return optionsPanel;
 	}
 
+	@Override
 	public void itemStateChanged(ItemEvent e) {
 		ItemSelectable item = e.getItemSelectable();
 		selectables.add(item);
@@ -756,21 +761,25 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		return res;
 	}
 
+	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
 		if(o instanceof Button)

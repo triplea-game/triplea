@@ -123,7 +123,8 @@ public class NIOSocket implements IErrorReporter
     }
 
 
-    public void error(SocketChannel channel, Exception e)
+    @Override
+	public void error(SocketChannel channel, Exception e)
     {
         close(channel);
         m_listener.socketError(channel, e);

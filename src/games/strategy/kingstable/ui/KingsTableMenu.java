@@ -40,12 +40,14 @@ public class KingsTableMenu extends BasicGameMenuBar<KingsTableFrame>
     }
     
     
-    protected void createGameSpecificMenus (JMenuBar menuBar) 
+    @Override
+	protected void createGameSpecificMenus (JMenuBar menuBar) 
     {
         createGameMenu(menuBar);
     }
     
-    protected void addGameSpecificHelpMenus(JMenu helpMenu)
+    @Override
+	protected void addGameSpecificHelpMenus(JMenu helpMenu)
     {
         addHowToPlayHelpMenu(helpMenu);
     }
@@ -62,7 +64,8 @@ public class KingsTableMenu extends BasicGameMenuBar<KingsTableFrame>
             
             AbstractAction optionsAction = new AbstractAction("View Game Options...")
             {
-                public void actionPerformed(ActionEvent e)
+                @Override
+				public void actionPerformed(ActionEvent e)
                 {
                     PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties(), false);
                     JOptionPane.showMessageDialog(m_frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
@@ -82,7 +85,8 @@ public class KingsTableMenu extends BasicGameMenuBar<KingsTableFrame>
     {
         parentMenu.add(new AbstractAction("How to play...")
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 //html formatted string
                 String hints = 

@@ -88,14 +88,16 @@ public class PBEMDiceRoller implements IRandomSource
     /**
      * getRandom
      */
-    public int[] getRandom(final int max, final int count, final String annotation)
+    @Override
+	public int[] getRandom(final int max, final int count, final String annotation)
     {
         if(!SwingUtilities.isEventDispatchThread()) {
             final AtomicReference<int[]> result = new AtomicReference<int[]>();
             try {
                 SwingUtilities.invokeAndWait(new Runnable() {
                 
-                    public void run() {
+                    @Override
+					public void run() {
                         result.set(getRandom(max, count, annotation));            
                     }
                 });
@@ -145,7 +147,8 @@ public class PBEMDiceRoller implements IRandomSource
      *            String
      * @return int
      */
-    public int getRandom(int max, String annotation)
+    @Override
+	public int getRandom(int max, String annotation)
     {
         return getRandom(max, 1, annotation)[0];
     }
@@ -200,7 +203,8 @@ class HttpDiceRollerDialog extends JDialog
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         m_exitButton.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 System.exit(-1);
             }
@@ -210,7 +214,8 @@ class HttpDiceRollerDialog extends JDialog
 
         m_reRollButton.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 rollInternal();
             }
@@ -218,7 +223,8 @@ class HttpDiceRollerDialog extends JDialog
 
         m_okButton.addActionListener(new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 closeAndReturn();
             }
@@ -260,7 +266,8 @@ class HttpDiceRollerDialog extends JDialog
         SwingUtilities.invokeLater(new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 m_exitButton.setEnabled(true);
                 m_reRollButton.setEnabled(true);                
@@ -290,7 +297,8 @@ class HttpDiceRollerDialog extends JDialog
 
                 SwingUtilities.invokeLater(new Runnable()
                 {
-                    public void run()
+                    @Override
+					public void run()
                     {
                         roll();
                     }
@@ -323,7 +331,8 @@ class HttpDiceRollerDialog extends JDialog
 
         Thread t = new Thread("Triplea, roll in seperate thread")
         {
-            public void run()
+            @Override
+			public void run()
             {
                 rollInSeperateThread();
             }
@@ -345,7 +354,8 @@ class HttpDiceRollerDialog extends JDialog
         SwingUtilities.invokeLater(new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 setVisible(false);
                 m_owner.toFront();

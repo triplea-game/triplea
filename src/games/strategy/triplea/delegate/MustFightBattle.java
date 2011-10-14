@@ -276,12 +276,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	queryScrambleUnits(SCRAMBLE_UNITS, bridge, neighborsWithActiveAirbases);
     }
     
-    public boolean isOver()
+    @Override
+	public boolean isOver()
     {
         return m_over;
     }
     
-    public void removeAttack(Route route, Collection<Unit> units)
+    @Override
+	public void removeAttack(Route route, Collection<Unit> units)
     {
         m_attackingUnits.removeAll(units);
         
@@ -333,12 +335,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
     }
 
-    public boolean isEmpty()
+    @Override
+	public boolean isEmpty()
     {
         return m_attackingUnits.isEmpty() && m_attackingWaitingToDie.isEmpty();
     }
 
-    public Change addAttackChange(Route route, Collection<Unit> units)
+    @Override
+	public Change addAttackChange(Route route, Collection<Unit> units)
     {
     	CompositeChange change = new CompositeChange();
      
@@ -456,7 +460,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return change;
     }
 
-    public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
+    @Override
+	public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
     {
     	CompositeChange change = new CompositeChange();
      
@@ -640,22 +645,26 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return defender;
     }
 
-    public boolean isBombingRun()
+    @Override
+	public boolean isBombingRun()
     {
         return false;
     }
     
-    public Territory getTerritory()
+    @Override
+	public Territory getTerritory()
     {
         return m_battleSite;
     }
 
-    public int hashCode()
+    @Override
+	public int hashCode()
     {
         return m_battleSite.hashCode();
     }
 
-    public boolean equals(Object o)
+    @Override
+	public boolean equals(Object o)
     {
 
         //2 battles are equal if they are both the same type (boming or not)
@@ -677,7 +686,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	m_attackingUnits.retainAll(m_battleSite.getUnits().getUnits());
     }
 
-    public void fight(IDelegateBridge bridge)
+    @Override
+	public void fight(IDelegateBridge bridge)
     {
     	// remove units that may already be dead due to a previous event (like they died from a strategic bombing raid, rocket attack, or during scrambling, etc)
     	removeUnitsThatNoLongerExist();
@@ -1102,7 +1112,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         IExecutable fireAAGuns = new IExecutable()
         {
 
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 fireAAGuns(bridge);
             }
@@ -1112,7 +1123,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         IExecutable fireNavalBombardment = new IExecutable()
         {
 
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 fireNavalBombardment(bridge);
             }
@@ -1122,7 +1134,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         IExecutable fireSuicideUnitsAttack = new IExecutable()
         {
 
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 fireSuicideUnitsAttack(bridge);
             }
@@ -1132,7 +1145,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         IExecutable fireSuicideUnitsDefend = new IExecutable()
         {
 
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 fireSuicideUnitsDefend(bridge);
             }
@@ -1142,7 +1156,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         IExecutable removeNonCombatants = new IExecutable()
         {
 
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 removeNonCombatants();
             }
@@ -1152,7 +1167,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         IExecutable landParatroops = new IExecutable()
         {
 
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
             	landParatroops(bridge);
             }
@@ -1160,7 +1176,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         IExecutable scrambleUnits = new IExecutable()
         {        	            
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
             	if(getScramble_Rules_In_Effect())
             		determineScrambledUnits(bridge);                
@@ -1169,7 +1186,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         IExecutable notifyScrambleUnits = new IExecutable()
         {        	            
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
             	if(getScramble_Rules_In_Effect())
             		MustFightBattle.getDisplay(bridge).scrambleNotification(m_battleID, SCRAMBLE_UNITS_FOR_DEFENSE, findDefender(m_battleSite), new ArrayList<Unit>(m_scrambled), m_dependentUnits);                
@@ -1241,7 +1259,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             // compatible with 0.9.0.2 saved games
             private static final long serialVersionUID = 8611067962952500496L;
 
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                clearWaitingToDie(bridge);
             }            
@@ -1252,7 +1271,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             // not compatible with 0.9.0.2 saved games.  this is new for 1.2.6.0
             private static final long serialVersionUID = 6387198382888361848L;
 
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
             	checkSuicideUnits(bridge);
             }            
@@ -1262,7 +1282,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         steps.add(new IExecutable(){
             // compatible with 0.9.0.2 saved games
             private static final long serialVersionUID = 5259103822937067667L;
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
 
                 //changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns, and infrastructure.
@@ -1326,7 +1347,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         steps.add(new IExecutable() { 
             // compatible with 0.9.0.2 saved games
             private static final long serialVersionUID = 6775880082912594489L;
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {                
                 if(!m_over && canAttackerRetreatSubs && !isSubRetreatBeforeBattle())
                     attackerRetreatSubs(bridge);
@@ -1337,7 +1359,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         steps.add(new IExecutable(){
             // compatible with 0.9.0.2 saved games
             private static final long serialVersionUID = -1544916305666912480L;
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 if(!m_over &&  canDefenderRetreatSubs && !isSubRetreatBeforeBattle())
                     defenderRetreatSubs(bridge);
@@ -1347,7 +1370,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         steps.add(new IExecutable(){
             // compatible with 0.9.0.2 saved games
             private static final long serialVersionUID = -1150863964807721395L;
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 if (canAttackerRetreatPlanes() && !canAttackerRetreatPartialAmphib() && !m_over)
                     attackerRetreatPlanes(bridge);                
@@ -1357,7 +1381,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         steps.add(new IExecutable(){
             // compatible with 0.9.0.2 saved games
             private static final long serialVersionUID = -1150863964807721395L;
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 if (canAttackerRetreatPartialAmphib() && !m_over)
                     attackerRetreatNonAmphibUnits(bridge);                
@@ -1367,7 +1392,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         steps.add(new IExecutable(){
             // compatible with 0.9.0.2 saved games
             private static final long serialVersionUID = 669349383898975048L;            
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 attackerRetreat(bridge);                
             }
@@ -1378,7 +1404,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             // compatible with 0.9.0.2 saved games
             private static final long serialVersionUID = 3118458517320468680L;            
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 pushFightLoopOnStack(bridge);
             }
@@ -1388,7 +1415,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         steps.add(new IExecutable() {
             // compatible with 0.9.0.2 saved games
             private static final long serialVersionUID = -3993599528368570254L;            
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 if (!m_over)
                 {
@@ -1418,7 +1446,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             steps.add(new IExecutable(){
                 // compatible with 0.9.0.2 saved games
                 private static final long serialVersionUID = 7056448091800764539L;
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     if(!m_over)
                         defenderRetreatSubs(bridge);
@@ -1427,7 +1456,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             steps.add(new IExecutable(){
                 // compatible with 0.9.0.2 saved games
                 private static final long serialVersionUID = 6775880082912594489L;
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     if(!m_over)
                         attackerRetreatSubs(bridge);
@@ -1440,7 +1470,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         steps.add(new IExecutable(){
     		private static final long serialVersionUID = 99988L;
             
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
              {
     			 checkSuicideUnits(bridge);
              }
@@ -1453,7 +1484,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         	steps.add(new IExecutable(){
         		private static final long serialVersionUID = 99989L;
                 
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                  {
         			 checkUndefendedTransports(bridge, m_defender);
         			 checkUndefendedTransports(bridge, m_attacker);
@@ -1464,7 +1496,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (isAirAttackSubRestricted())
         	steps.add(new IExecutable(){
         		private static final long serialVersionUID = 99990L;                
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                  {
         		     submergeSubsVsOnlyAir(bridge);     			
                  }
@@ -1479,7 +1512,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             steps.add(new DefendSubs(){
                 // compatible with 0.9.0.2 saved games
                 private static final long serialVersionUID = 99992L;
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     defendSubs(bridge, returnFireAgainstDefendingSubs);
                 }                
@@ -1488,7 +1522,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         steps.add(new AttackSubs(){
             private static final long serialVersionUID = 99991L;
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 attackSubs(bridge, returnFireAgainstAttackingSubs);
             }                
@@ -1498,7 +1533,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             steps.add(new DefendSubs(){
                 // compatible with 0.9.0.2 saved games
                 private static final long serialVersionUID = 99992L;
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     defendSubs(bridge, returnFireAgainstDefendingSubs);
                 }                
@@ -1510,7 +1546,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             steps.add(new IExecutable(){
                 // compatible with 0.9.0.2 saved games
                 private static final long serialVersionUID = 99993L;
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {                		
                     attackAirOnNonSubs(bridge);
                 }
@@ -1525,7 +1562,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         steps.add(new IExecutable(){
             // compatible with 0.9.0.2 saved games
             private static final long serialVersionUID = 99994L;
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 attackNonSubs(bridge);
             }
@@ -1538,7 +1576,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             steps.add(new IExecutable(){
                 // compatible with 0.9.0.2 saved games
                 private static final long serialVersionUID = 1560702114917865123L;
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     defendAirOnNonSubs(bridge);
                 }
@@ -1549,7 +1588,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         steps.add(new IExecutable(){
             // compatible with 0.9.0.2 saved games
             private static final long serialVersionUID = 1560702114917865290L;
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 defendNonSubs(bridge);
             }
@@ -1660,7 +1700,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             possible = Match.getMatches(possible, new Match<Territory>()
             {
-                public boolean match(Territory t)
+                @Override
+				public boolean match(Territory t)
                 {
                     Collection<Unit> units = m_attackingFromMap.get(t);
                     return !Match.allMatch(units, Matches.UnitIsAir);
@@ -1823,7 +1864,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //make sure we can move through the any canals
         Match<Territory> canalMatch = new Match<Territory>()
         {
-            public boolean match(Territory t)
+            @Override
+			public boolean match(Territory t)
             {
 
                 Route r = new Route();
@@ -2808,7 +2850,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
     /**
      * Add bombarding unit.
      */
-    public void addBombardingUnit(Unit unit)
+    @Override
+	public void addBombardingUnit(Unit unit)
     {
         m_bombardingUnits.add(unit);
     }
@@ -2816,7 +2859,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
     /**
      * Return bombarding units.
      */
-    public Collection<Unit> getBombardingUnits()
+    @Override
+	public Collection<Unit> getBombardingUnits()
     {
         return m_bombardingUnits;
     }
@@ -2833,7 +2877,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         private Collection<Unit> m_casualties;
         private List<Unit> m_hitUnits = new ArrayList<Unit>();
      
-        public void execute(ExecutionStack stack, final IDelegateBridge bridge)
+        @Override
+		public void execute(ExecutionStack stack, final IDelegateBridge bridge)
         {
             if (!canFireAA())
                 return;
@@ -2841,7 +2886,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             IExecutable rollDice = new IExecutable()
             {
             
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     rollDice(bridge);
                 }
@@ -2852,7 +2898,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             IExecutable selectCasualties = new IExecutable()
             {
             
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     selectCasualties(bridge);
                 }
@@ -2861,7 +2908,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             IExecutable notifyCasualties = new IExecutable()
             {
 
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     notifyCasualtiesAA(bridge);                    
                     removeCasualties(m_casualties, ReturnFire.NONE, false, bridge, true);                    
@@ -2876,7 +2924,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         private void rollDice(IDelegateBridge bridge)
         {            
-            m_dice = DiceRoll.rollAA(m_attackingUnits,bridge,m_battleSite, m_data, Matches.UnitIsAAforCombat);
+            m_dice = DiceRoll.rollAA(m_attackingUnits, bridge, m_battleSite, Matches.UnitIsAAforCombat);
             
         }
 
@@ -2888,7 +2936,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
            
             Collection<Unit> attackable = Match.getMatches(m_attackingUnits, Matches.UnitIsAir);
             
-            m_casualties = BattleCalculator.getAACasualties(attackable, m_dice, bridge, m_defender, m_attacker, m_data, m_battleID, m_battleSite, Matches.UnitIsAAforCombat);
+            m_casualties = BattleCalculator.getAACasualties(attackable, m_dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite, Matches.UnitIsAAforCombat);
         }
 
 
@@ -2902,7 +2950,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             getRemote(m_attacker, bridge).confirmOwnCasualties(m_battleID, "Press space to continue");
             Runnable r = new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {   
                     try
                     {
@@ -3020,7 +3069,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
     }
     
-    public Collection<Unit> getDependentUnits(Collection<Unit> units)
+    @Override
+	public Collection<Unit> getDependentUnits(Collection<Unit> units)
     {
 
     	Iterator<Unit> iter = units.iterator();
@@ -3152,7 +3202,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         checkDefendingPlanesCanLand(bridge, m_defender);
 
-        BattleTracker.captureOrDestroyUnits(m_battleSite, m_defender, m_defender, bridge, m_data, null, m_defendingUnits);
+        BattleTracker.captureOrDestroyUnits(m_battleSite, m_defender, m_defender, bridge, null, m_defendingUnits);
     }
 
     private void nobodyWins(IDelegateBridge bridge)
@@ -3415,8 +3465,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (Match.someMatch(m_attackingUnits, Matches.UnitIsNotAir))
         {
             m_tracker.addToConquered(m_battleSite);
-            m_tracker.takeOver(m_battleSite, m_attacker, bridge, m_data,
-                    null, m_attackingUnits);
+            m_tracker.takeOver(m_battleSite, m_attacker, bridge, null, m_attackingUnits);
         }
         
         //Clear the transported_by for successfully offloaded units
@@ -3507,7 +3556,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return m_defendingUnits;
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
 
         return "Battle in:" + m_battleSite + " attacked by:" + m_attackingUnits
@@ -3523,7 +3573,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         Comparator<Unit> comparator = new Comparator<Unit>()
         {
-          public int compare(Unit u1, Unit u2)
+          @Override
+		public int compare(Unit u1, Unit u2)
           {            
               int amphibComp = 0;
 
@@ -3556,12 +3607,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return 0; 
     }
 
-    public Collection<Unit> getAttackingUnits()
+    @Override
+	public Collection<Unit> getAttackingUnits()
     {
         return m_attackingUnits;
     }
     
-    public Collection<Unit> getDefendingUnits()
+    @Override
+	public Collection<Unit> getDefendingUnits()
     {
     	return m_defendingUnits;
     }
@@ -3576,12 +3629,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return m_attackingFromMap;
     }
 
-    public Collection<Unit> getAmphibiousLandAttackers()
+    @Override
+	public Collection<Unit> getAmphibiousLandAttackers()
     {
         return m_amphibiousLandAttackers;
     }
 
-    public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units,
+    @Override
+	public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units,
             IDelegateBridge bridge)
     {
 
@@ -3615,12 +3670,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
     /**
      * Return whether battle is amphibious.
      */
-    public boolean isAmphibious()
+    @Override
+	public boolean isAmphibious()
     {
         return m_amphibious;
     }
     
-    public int getBattleRound()
+    @Override
+	public int getBattleRound()
     {
         return m_round;
     }
@@ -3699,13 +3756,12 @@ class Fire implements IExecutable
     private void selectCasualties(IDelegateBridge bridge)
     {
     	int hitCount = m_dice.getHits();
-        GameData data = bridge.getData();
 
     	MustFightBattle.getDisplay(bridge).notifyDice(m_battle.getBattleID(), m_dice, m_stepName);
 
     	int countTransports = Match.countMatches(m_attackableUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.UnitIsSea));
 
-        if (countTransports > 0 && isTransportCasualtiesRestricted(data))
+        if (countTransports > 0 && isTransportCasualtiesRestricted(bridge.getData()))
     	{
     		CasualtyDetails message;
     		Collection<Unit> nonTransports = Match.getMatches(m_attackableUnits, new CompositeMatchOr<Unit>(Matches.UnitIsNotTransportButCouldBeCombatTransport, Matches.UnitIsNotSea));
@@ -3748,7 +3804,7 @@ class Fire implements IExecutable
     				extraHits = transportsOnly.size();
 
     			message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
- transportsOnly, bridge, m_text, data, m_dice, !m_defending, m_battleID, m_isHeadless, extraHits);
+ transportsOnly, bridge, m_text, m_dice, !m_defending, m_battleID, m_isHeadless, extraHits);
 
     			m_killed.addAll(message.getKilled());
     			m_confirmOwnCasualties = true;
@@ -3764,7 +3820,7 @@ class Fire implements IExecutable
     		else
     		{
     			message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
- nonTransports, bridge, m_text, data, m_dice, !m_defending, m_battleID, m_isHeadless, m_dice.getHits());
+ nonTransports, bridge, m_text, m_dice, !m_defending, m_battleID, m_isHeadless, m_dice.getHits());
 
     			m_killed = message.getKilled();
     			m_damaged = message.getDamaged();
@@ -3786,7 +3842,7 @@ class Fire implements IExecutable
     		{
     			CasualtyDetails message;
     			message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
- m_attackableUnits, bridge, m_text, data, m_dice, !m_defending, m_battleID, m_isHeadless, m_dice.getHits());
+ m_attackableUnits, bridge, m_text, m_dice, !m_defending, m_battleID, m_isHeadless, m_dice.getHits());
 
     			m_killed = message.getKilled();
     			m_damaged = message.getDamaged();
@@ -3806,7 +3862,8 @@ class Fire implements IExecutable
 
         Runnable r = new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 try
                 {
@@ -3846,7 +3903,8 @@ class Fire implements IExecutable
     /**
      * We must execute in atomic steps, push these steps onto the stack, and let them execute
      */
-    public void execute(ExecutionStack stack, IDelegateBridge bridge)
+    @Override
+	public void execute(ExecutionStack stack, IDelegateBridge bridge)
     {
         //add to the stack so we will execute,
         //we want to roll dice, select casualties, then notify in that order, so 
@@ -3854,7 +3912,8 @@ class Fire implements IExecutable
         
         IExecutable rollDice = new IExecutable()
         {        	
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 rollDice(bridge);
             }
@@ -3863,7 +3922,8 @@ class Fire implements IExecutable
         IExecutable selectCasualties = new IExecutable()
         {
         
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 selectCasualties(bridge);
             }
@@ -3874,7 +3934,8 @@ class Fire implements IExecutable
             // compatible with 0.9.0.2 saved games
             private static final long serialVersionUID = -9173385989239225660L;
 
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 notifyCasualties(bridge);
                 

@@ -109,7 +109,8 @@ class TestErrorReporter extends ErrorReporter
 {
     private boolean m_errorOccured = false;
 
-    public void reportError(Lock from, Lock to)
+    @Override
+	public void reportError(Lock from, Lock to)
     {
         m_errorOccured = true;
     }

@@ -103,11 +103,13 @@ public class BattlePanel extends ActionPanel
         m_battleFrame.addWindowListener(new WindowListener()
         {
         
-            public void windowActivated(WindowEvent e)
+            @Override
+			public void windowActivated(WindowEvent e)
             {
                 SwingUtilities.invokeLater(new Runnable()
                 {
-                    public void run()
+                    @Override
+					public void run()
                     {
                         if(m_battleDisplay != null)
                             m_battleDisplay.takeFocus();
@@ -118,22 +120,28 @@ public class BattlePanel extends ActionPanel
                 
             }
 
-            public void windowClosed(WindowEvent e)
+            @Override
+			public void windowClosed(WindowEvent e)
             {}
 
-            public void windowClosing(WindowEvent e)
+            @Override
+			public void windowClosing(WindowEvent e)
             {}
 
-            public void windowDeactivated(WindowEvent e)
+            @Override
+			public void windowDeactivated(WindowEvent e)
             {}
 
-            public void windowDeiconified(WindowEvent e)
+            @Override
+			public void windowDeiconified(WindowEvent e)
             {}
 
-            public void windowIconified(WindowEvent e)
+            @Override
+			public void windowIconified(WindowEvent e)
             {}
 
-            public void windowOpened(WindowEvent e)
+            @Override
+			public void windowOpened(WindowEvent e)
             {}
         
         });
@@ -147,7 +155,8 @@ public class BattlePanel extends ActionPanel
         SwingUtilities.invokeLater(new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 removeAll();
                 m_actionLabel.setText(id.getName() + " battle");
@@ -190,7 +199,8 @@ public class BattlePanel extends ActionPanel
     {
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 if (m_battleDisplay != null)
                     m_battleDisplay.battleInfo(messageShort, messageLong, step);
@@ -205,7 +215,8 @@ public class BattlePanel extends ActionPanel
     {
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 if (m_battleDisplay != null)
                     m_battleDisplay.battleInfo(messageShort, messageLong, step);
@@ -220,7 +231,8 @@ public class BattlePanel extends ActionPanel
     {
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 if (m_battleDisplay != null)
                     m_battleDisplay.battleInfo(messageShort, dice, step);
@@ -233,7 +245,8 @@ public class BattlePanel extends ActionPanel
     {
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 if(m_battleDisplay != null)
                     m_battleDisplay.endBattle(message, m_battleFrame);
@@ -300,7 +313,8 @@ public class BattlePanel extends ActionPanel
         {
             Runnable r = new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {
                     //recursive call
                     listBattle(battleID, steps);
@@ -333,7 +347,8 @@ public class BattlePanel extends ActionPanel
         {
             SwingUtilities.invokeAndWait(new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {
 
                     if (m_battleDisplay != null)
@@ -384,7 +399,8 @@ public class BattlePanel extends ActionPanel
 			    
 			    SwingUtilities.invokeLater(new Runnable()
 				{
-				    public void run()
+				    @Override
+					public void run()
 				    {
 					m_battleFrame.toFront();
 				    }
@@ -421,7 +437,8 @@ public class BattlePanel extends ActionPanel
     public Territory getBombardment(final Unit unit,final  Territory unitTerritory,final  Collection<Territory>  territories, final boolean noneAvailable)
     {       
         BombardComponent comp = Util.runInSwingEventThread(new Util.Task<BombardComponent>() {        
-            public BombardComponent run() {
+            @Override
+			public BombardComponent run() {
                 return new BombardComponent(unit, unitTerritory, territories, noneAvailable);
             }
         }); 
@@ -459,7 +476,8 @@ public class BattlePanel extends ActionPanel
     {
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 if(m_battleDisplay != null)
                     m_battleDisplay.casualtyNotification(step, dice, player, killed, damaged, dependents);
@@ -471,7 +489,8 @@ public class BattlePanel extends ActionPanel
     {
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 if(m_battleDisplay != null)
                     m_battleDisplay.deadUnitNotification(player, killed, dependents);
@@ -484,7 +503,8 @@ public class BattlePanel extends ActionPanel
     {
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 if(m_battleDisplay != null)
                     m_battleDisplay.scrambleNotification(step, player, scrambled, dependents);
@@ -524,6 +544,7 @@ public class BattlePanel extends ActionPanel
     {
     	Task<CasualtyDetails> task = new Task<CasualtyDetails>() {
 
+			@Override
 			public CasualtyDetails run() {
 				boolean isEditMode = (dice == null);
 				UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, getData(), false, getMap().getUIContext());
@@ -580,7 +601,8 @@ public class BattlePanel extends ActionPanel
     {
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 if (m_battleDisplay != null)
                     m_battleDisplay.setStep(step);
@@ -593,7 +615,8 @@ public class BattlePanel extends ActionPanel
 
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 if(m_battleDisplay != null)
                     m_battleDisplay.notifyRetreat(retreating);
@@ -605,7 +628,8 @@ public class BattlePanel extends ActionPanel
     {
         SwingUtilities.invokeLater(new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 if(m_battleDisplay != null)
                     m_battleDisplay.bombingResults(dice, cost);
@@ -627,6 +651,7 @@ public class BattlePanel extends ActionPanel
     		m_territory = battleSite;
     	}
         
+		@Override
 		public void actionPerformed(ActionEvent e) 
 		{
             if (m_CenterBattleActionTimer != null)
@@ -690,7 +715,8 @@ public class BattlePanel extends ActionPanel
             m_bomb = bomb;
         }
 
-        public void actionPerformed(ActionEvent actionEvent)
+        @Override
+		public void actionPerformed(ActionEvent actionEvent)
         {
 			if (m_oldCenteredTerritory != null)
 				getMap().clearTerritoryOverlay(m_oldCenteredTerritory);
@@ -699,7 +725,8 @@ public class BattlePanel extends ActionPanel
         }
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         return "BattlePanel";
     }

@@ -152,7 +152,8 @@ public class PolygonGrabber extends JFrame
         imagePanel.addMouseMotionListener(
             new MouseMotionAdapter()
             {
-                 public void mouseMoved(MouseEvent e)
+                 @Override
+				public void mouseMoved(MouseEvent e)
                  {
                      location.setText("x:"+ e.getX() + " y:" + e.getY());
                  }
@@ -168,7 +169,8 @@ public class PolygonGrabber extends JFrame
         imagePanel.addMouseListener(
             new MouseAdapter()
             {
-                public void mouseClicked(MouseEvent e)
+                @Override
+				public void mouseClicked(MouseEvent e)
                 {
                     mouseEvent(e.getPoint(), e.isControlDown(), SwingUtilities.isRightMouseButton(e));
                 }
@@ -191,21 +193,24 @@ public class PolygonGrabber extends JFrame
 	//set up the actions
 	
 	Action openAction = new AbstractAction("Load Polygons") {
-            public void actionPerformed(ActionEvent event) {
+            @Override
+			public void actionPerformed(ActionEvent event) {
                 loadPolygons();
             }
         };
         openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Polygon Points FIle");
 
         Action saveAction = new AbstractAction("Save Polygons") {
-            public void actionPerformed(ActionEvent event) {
+            @Override
+			public void actionPerformed(ActionEvent event) {
                 savePolygons();
             }
         };
         saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Polygon Points To File");
 
         Action exitAction = new AbstractAction("Exit") {
-            public void actionPerformed(ActionEvent event) {
+            @Override
+			public void actionPerformed(ActionEvent event) {
                 System.exit(0);
             }
         };
@@ -224,7 +229,8 @@ public class PolygonGrabber extends JFrame
 	s_islandMode = false;
 	modeItem = new JCheckBoxMenuItem("Island Mode",false);
         modeItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
+            @Override
+			public void actionPerformed(ActionEvent event) {
                 s_islandMode = modeItem.getState();
 		repaint();
             }
@@ -299,7 +305,8 @@ public class PolygonGrabber extends JFrame
     {
         JPanel imagePanel = new JPanel()
         {
-            public void paint(Graphics g)
+            @Override
+			public void paint(Graphics g)
             {
                 //super.paint(g);
                 g.drawImage(m_image, 0,0, this);

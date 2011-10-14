@@ -66,7 +66,8 @@ public class ImageScrollerLargeView extends JComponent
     private ActionListener m_timerAction = new ActionListener()
     {
 
-        public final void actionPerformed(ActionEvent e)
+        @Override
+		public final void actionPerformed(ActionEvent e)
         {
             if (JOptionPane.getFrameForComponent(ImageScrollerLargeView.this).getFocusOwner() == null)
             {
@@ -118,7 +119,8 @@ public class ImageScrollerLargeView extends JComponent
         m_model.addObserver(new Observer()
         {
         
-            public void update(Observable o, Object arg)
+            @Override
+			public void update(Observable o, Object arg)
             {
                repaint();
                notifyScollListeners();        
@@ -219,12 +221,14 @@ public class ImageScrollerLargeView extends JComponent
 
     private MouseAdapter MOUSE_LISTENER = new MouseAdapter()
     {
-        public void mouseEntered(MouseEvent e)
+        @Override
+		public void mouseEntered(MouseEvent e)
         {
             m_timer.start();
         }
 
-        public void mouseExited(MouseEvent e)
+        @Override
+		public void mouseExited(MouseEvent e)
         {
             m_inside = false;
             m_timer.stop();
@@ -250,7 +254,8 @@ public class ImageScrollerLargeView extends JComponent
 
     private ComponentListener COMPONENT_LISTENER = new ComponentAdapter()
     {
-        public void componentResized(ComponentEvent e)
+        @Override
+		public void componentResized(ComponentEvent e)
         {
             refreshBoxSize();
         }
@@ -287,7 +292,8 @@ public class ImageScrollerLargeView extends JComponent
     private MouseWheelListener MOUSE_WHEEL_LISTENER = new MouseWheelListener()
     {
 
-        public void mouseWheelMoved(MouseWheelEvent e)
+        @Override
+		public void mouseWheelMoved(MouseWheelEvent e)
         {
         	if (!e.isAltDown())
         	{
@@ -337,7 +343,8 @@ public class ImageScrollerLargeView extends JComponent
      */
     private MouseMotionListener MOUSE_DRAG_LISTENER = new MouseMotionAdapter()
     {
-        public void mouseDragged(MouseEvent e)
+        @Override
+		public void mouseDragged(MouseEvent e)
         {
 
             //the right button must be the one down
@@ -376,7 +383,8 @@ public class ImageScrollerLargeView extends JComponent
 
     private final MouseAdapter MOUSE_LISTENER_DRAG_SCROLLING = new MouseAdapter()
     {
-        public void mousePressed(MouseEvent e)
+        @Override
+		public void mousePressed(MouseEvent e)
         {
             //try to center around the click
             m_drag_scrolling_lastx = e.getX();
@@ -386,7 +394,8 @@ public class ImageScrollerLargeView extends JComponent
 
     private MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter()
     {
-        public void mouseMoved(MouseEvent e)
+        @Override
+		public void mouseMoved(MouseEvent e)
         {
             m_inside = true;
 
@@ -424,7 +433,8 @@ public class ImageScrollerLargeView extends JComponent
 
     private class Scroller implements Runnable
     {
-        public void run()
+        @Override
+		public void run()
         {
             scroll();
         }

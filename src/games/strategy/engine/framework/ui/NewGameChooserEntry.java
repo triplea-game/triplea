@@ -36,7 +36,8 @@ public class NewGameChooserEntry
         }
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return m_data.getGameName(); 
     }

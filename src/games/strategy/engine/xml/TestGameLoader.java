@@ -25,6 +25,7 @@ public class TestGameLoader implements IGameLoader
 	 * Return an array of player types that can play on the server.
 	 * This array must not contain any entries that could play on the client.
 	 */
+	@Override
 	public String[] getServerPlayerTypes()
 	{
 		return null;
@@ -42,12 +43,14 @@ public class TestGameLoader implements IGameLoader
 	/**
 	 * The game is about to start.
 	 */
+	@Override
 	public void startGame(IGame game, Set<IGamePlayer> players)
 	{}
 	
 	/**
 	 * Get PBEM messengers for Turn Summary notification
 	 */
+	@Override
 	public IPBEMMessenger[] getPBEMMessengers()
 	{
 		return new IPBEMMessenger[0];
@@ -56,6 +59,7 @@ public class TestGameLoader implements IGameLoader
 	 * Create the players.  Given a map of playerName -> type,
 	 * where type is one of the Strings returned by a get*PlayerType() method.
 	 */
+	@Override
 	public Set<IGamePlayer> createPlayers(Map players)
 	{
 		return null;
@@ -64,7 +68,8 @@ public class TestGameLoader implements IGameLoader
     /* 
      * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
      */
-    public Class<? extends IChannelSubscribor> getDisplayType()
+    @Override
+	public Class<? extends IChannelSubscribor> getDisplayType()
     {
         return IChannelSubscribor.class;
     }
@@ -72,15 +77,18 @@ public class TestGameLoader implements IGameLoader
     /* (non-Javadoc)
      * @see games.strategy.engine.framework.IGameLoader#getRemotePlayerType()
      */
-    public Class<? extends IRemote> getRemotePlayerType()
+    @Override
+	public Class<? extends IRemote> getRemotePlayerType()
     {
        return IRemote.class;
     }
 
-    public void shutDown()
+    @Override
+	public void shutDown()
     {}
     
-    public IUnitFactory getUnitFactory()
+    @Override
+	public IUnitFactory getUnitFactory()
     {
         return new DefaultUnitFactory();
     }

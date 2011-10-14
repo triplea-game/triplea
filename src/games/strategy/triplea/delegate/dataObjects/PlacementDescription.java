@@ -45,7 +45,8 @@ public class PlacementDescription extends AbstractMoveDescription
         return m_territory;
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         return "Placement message territory:" + m_territory + " units:" + getUnits();
     }

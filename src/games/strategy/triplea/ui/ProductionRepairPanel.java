@@ -114,7 +114,8 @@ public class ProductionRepairPanel extends JPanel
 
         Action closeAction = new AbstractAction("")
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 m_dialog.setVisible(false);
             }
@@ -251,7 +252,8 @@ public class ProductionRepairPanel extends JPanel
         
     Action m_done_action = new AbstractAction("Done")
     {
-        public void actionPerformed(ActionEvent e)
+        @Override
+		public void actionPerformed(ActionEvent e)
         {
             m_dialog.setVisible(false);
         }
@@ -412,7 +414,8 @@ public class ProductionRepairPanel extends JPanel
 
     private ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
     {
-        public void changedValue(ScrollableTextField stf)
+        @Override
+		public void changedValue(ScrollableTextField stf)
         {
             calculateLimits();
         }

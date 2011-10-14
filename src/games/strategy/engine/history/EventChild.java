@@ -24,17 +24,20 @@ public class EventChild extends HistoryNode implements Renderable
         m_renderingData = renderingData;
     }
 
-    public Object getRenderingData()
+    @Override
+	public Object getRenderingData()
     {
         return m_renderingData;
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         return m_text;
     }
 
-    public SerializationWriter getWriter()
+    @Override
+	public SerializationWriter getWriter()
     {
        return new EventChildWriter(m_text, m_renderingData);
     }
@@ -54,7 +57,8 @@ class EventChildWriter implements SerializationWriter
     }
 
 
-    public void write(HistoryWriter writer)
+    @Override
+	public void write(HistoryWriter writer)
     {
         writer.addChildToEvent(new EventChild(m_text, m_renderingData));
     }

@@ -38,16 +38,19 @@ public class NamedAttachable extends DefaultNamed implements Attachable
 		super(name, data);
     }
 
+	@Override
 	public IAttachment getAttachment(String key) 
 	{
 		return m_attatchments.get(key);
 	}
 
-    public Map<String, IAttachment> getAttachments() 
+    @Override
+	public Map<String, IAttachment> getAttachments() 
     {
         return Collections.unmodifiableMap(m_attatchments);
     }
     
+	@Override
 	public void addAttachment(String key, IAttachment value) 
 	{
 		m_attatchments.put(key, value);

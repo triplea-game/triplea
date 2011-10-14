@@ -22,7 +22,6 @@ import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedCalculationCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ReconsiderSignalCenter;
-import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
 import games.strategy.triplea.Dynamix_AI.DMatches;
 import games.strategy.triplea.Dynamix_AI.DSettings;
@@ -32,9 +31,7 @@ import games.strategy.triplea.Dynamix_AI.Group.MovePackage;
 import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
 import games.strategy.triplea.Dynamix_AI.Others.CM_Task;
 import games.strategy.triplea.Dynamix_AI.Others.CM_TaskType;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
@@ -43,7 +40,6 @@ import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import javax.swing.SwingUtilities;
@@ -61,7 +57,8 @@ public class DoCombatMove
             final String message = ai.getName() + " is skipping it's cm phase, as instructed.";
             DUtils.Log(Level.FINE, message);
             Runnable runner = new Runnable()
-            {public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
+            {@Override
+			public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
             try{SwingUtilities.invokeAndWait(runner);}
             catch (InterruptedException ex){}
             catch (InvocationTargetException ex){}

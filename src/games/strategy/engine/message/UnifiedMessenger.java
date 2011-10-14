@@ -80,7 +80,8 @@ public class UnifiedMessenger
     private final IMessengerErrorListener m_messengerErrorListener = new IMessengerErrorListener()
     {
     
-        public void messengerInvalid(IMessenger messenger, Exception reason)
+        @Override
+		public void messengerInvalid(IMessenger messenger, Exception reason)
         {
             UnifiedMessenger.this.messengerInvalid();
         }
@@ -378,7 +379,8 @@ public class UnifiedMessenger
 
     private IMessageListener m_messageListener = new IMessageListener()
     {
-        public void  messageReceived(Serializable msg, final INode from)
+        @Override
+		public void  messageReceived(Serializable msg, final INode from)
         {
             UnifiedMessenger.this.messageReceived(msg, from);
         }
@@ -433,7 +435,8 @@ public class UnifiedMessenger
             final EndPoint localFinal = local;
             Runnable task = new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {
                     List<RemoteMethodCallResults> results = localFinal.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
                     
@@ -761,7 +764,8 @@ class EndPoint
         return true;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return "Name:" +  m_name + " singleThreaded:" + m_singleThreaded + " implementors:" + m_implementors;
     }
@@ -799,7 +803,8 @@ class EndPointDestroyed implements Serializable
       this.name = name;
   }
 
-  public String toString()
+  @Override
+public String toString()
   {
       return "EndPointDestroyed:" + name;
   }
@@ -816,7 +821,8 @@ class HasEndPointImplementor implements Serializable
       this.endPointName = endPointName;
   }
 
-  public String toString()
+  @Override
+public String toString()
   {
       return this.getClass().getName() + ":" + endPointName;
   }
@@ -852,7 +858,8 @@ abstract class Invoke implements Externalizable
 
   }
 
-  public String toString()
+  @Override
+public String toString()
   {
       return "invoke on:" + call.getRemoteName() + " method name:" + call.getMethodName() + " method call id:" + methodCallID;
   }
@@ -870,7 +877,8 @@ abstract class Invoke implements Externalizable
       this.call = call;
   }
 
-  public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+  @Override
+public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
   {
       needReturnValues = in.read() == 1;
       if(needReturnValues)
@@ -879,7 +887,8 @@ abstract class Invoke implements Externalizable
       call.readExternal(in);
   }
 
-  public void writeExternal(ObjectOutput out) throws IOException
+  @Override
+public void writeExternal(ObjectOutput out) throws IOException
   {
       out.write(needReturnValues ? 1 : 0);
       if(needReturnValues)
@@ -918,18 +927,21 @@ abstract class InvocationResults implements Externalizable
       this.methodCallID = methodCallID;
   }
 
-  public String toString()
+  @Override
+public String toString()
   {
       return "Invocation results for method id:" + methodCallID + " results:" + results;
   }
 
-    public void writeExternal(ObjectOutput out) throws IOException 
+    @Override
+	public void writeExternal(ObjectOutput out) throws IOException 
     {
         results.writeExternal(out);
         methodCallID.writeExternal(out);
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException 
     {
         results = new RemoteMethodCallResults();

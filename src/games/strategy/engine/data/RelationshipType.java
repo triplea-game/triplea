@@ -45,6 +45,7 @@ public class RelationshipType extends NamedAttachable implements Serializable {
 		return RelationshipTypeAttachment.get(this);
 	}
 	
+	@Override
 	public String toString()
 	{
 		return this.getName();

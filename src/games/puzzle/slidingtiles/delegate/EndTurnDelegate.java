@@ -17,7 +17,6 @@ package games.puzzle.slidingtiles.delegate;
 import java.util.concurrent.CountDownLatch;
 
 import games.strategy.common.delegate.BaseDelegate;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -38,7 +37,8 @@ public class EndTurnDelegate extends BaseDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge)
+    @Override
+	public void start(IDelegateBridge bridge)
     {   
         super.start(bridge);
         
@@ -100,7 +100,8 @@ public class EndTurnDelegate extends BaseDelegate
     /**
      * Called before the delegate will stop running.
      */
-    public void end()
+    @Override
+	public void end()
     {
         if (m_waiting==null)
             return;
@@ -128,7 +129,8 @@ public class EndTurnDelegate extends BaseDelegate
      * If this class implements an interface which inherits from IRemote, returns the class of that interface.
      * Otherwise, returns null.
      */
-    public Class<? extends IRemote> getRemoteType()
+    @Override
+	public Class<? extends IRemote> getRemoteType()
     {
         // This class does not implement the IRemote interface, so return null.
         return null;

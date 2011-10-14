@@ -41,12 +41,14 @@ public class DefaultNamed extends GameDataComponent implements Named, Serializab
     m_name = name;
   }
 
-  public String getName()
+  @Override
+public String getName()
   {
     return m_name;
   }
 
-  public boolean equals(Object o)
+  @Override
+public boolean equals(Object o)
   {
     if (o == null || ! (o instanceof Named))
       return false;
@@ -56,12 +58,14 @@ public class DefaultNamed extends GameDataComponent implements Named, Serializab
     return this.m_name.equals(other.getName());
   }
 
-  public int hashCode()
+  @Override
+public int hashCode()
   {
     return m_name.hashCode();
   }
 
-  public String toString()
+  @Override
+public String toString()
   {
     return this.getClass().getName() + " called " + m_name;
   }

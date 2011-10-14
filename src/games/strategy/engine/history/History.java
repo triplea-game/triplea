@@ -248,7 +248,8 @@ class RootHistoryNode extends HistoryNode
         super(title, allowsChildren);
     }
 
-    public SerializationWriter getWriter()
+    @Override
+	public SerializationWriter getWriter()
     {
         throw new IllegalStateException("Not implemented");
     }
@@ -270,7 +271,8 @@ class ChangeSerializationWriter implements SerializationWriter
         aChange = change;
     }
     
-    public void write(HistoryWriter writer)
+    @Override
+	public void write(HistoryWriter writer)
     {
         writer.addChange(aChange);
     }

@@ -18,7 +18,6 @@ import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -41,7 +40,8 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge)
+    @Override
+	public void start(IDelegateBridge bridge)
     {
         super.start(bridge);
         map = getData().getMap();
@@ -52,7 +52,8 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
      *  
      * @param play <code>Territory</code> where the play should occur
      */
-    public String play(Territory from, Territory to)
+    @Override
+	public String play(Territory from, Territory to)
     {   
         if (from.equals(to))
         {
@@ -79,7 +80,8 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
         return null;
     }
 
-    public void signalStatus(String status)
+    @Override
+	public void signalStatus(String status)
     {
         INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
         display.setStatus(status);
@@ -166,7 +168,8 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
      * If this class implements an interface which inherits from IRemote, returns the class of that interface.
      * Otherwise, returns null.
      */
-    public Class<? extends IRemote> getRemoteType()
+    @Override
+	public Class<? extends IRemote> getRemoteType()
     {
         // This class implements IPlayDelegate, which inherits from IRemote.
         return IPlayDelegate.class;

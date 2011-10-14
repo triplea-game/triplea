@@ -119,11 +119,12 @@ public class UndoableMove extends AbstractUndoableMove
     }
 
     @Override
-    protected void undoSpecific(GameData data, IDelegateBridge bridge)
+    protected void undoSpecific(IDelegateBridge bridge)
     {
+        GameData data = bridge.getData();
         BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
 
-        battleTracker.undoBattle(m_route, m_units, bridge.getPlayerID(), data, bridge);
+        battleTracker.undoBattle(m_route, m_units, bridge.getPlayerID(), bridge);
 
         // clean up dependencies
         Iterator<UndoableMove> iter1 = m_iDependOn.iterator();
@@ -214,22 +215,26 @@ public class UndoableMove extends AbstractUndoableMove
         return m_loaded.contains(transport);
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         return "UndoableMove index;" + m_index + " description:" + m_description;
     }
 
-    public final String getMoveLabel()
+    @Override
+	public final String getMoveLabel()
     {
         return m_route.getStart() + " -> " + m_route.getEnd();
     }
 
-    public final Territory getEnd()
+    @Override
+	public final Territory getEnd()
     {
         return m_route.getEnd();
     }
 
-    protected final MoveDescription getDescriptionObject() {
+    @Override
+	protected final MoveDescription getDescriptionObject() {
         return new MoveDescription(m_units, m_route);
     }
 }

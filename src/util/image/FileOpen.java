@@ -57,6 +57,7 @@ public class FileOpen
 		 */
 		chooser.setFileFilter(new javax.swing.filechooser.FileFilter()
 		{
+			@Override
 			public boolean accept(File f)
 			{
 				if(f.isDirectory()) 
@@ -72,6 +73,7 @@ public class FileOpen
 				return false;
 			}
 
+			@Override
 			public String getDescription()
 			{
 				StringBuffer buf = new StringBuffer();

@@ -74,7 +74,8 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
 
 
 
-    public void messageReceived(Serializable msg, INode from)
+    @Override
+	public void messageReceived(Serializable msg, INode from)
     {
         if(msg instanceof HasEndPointImplementor)
         {
@@ -269,13 +270,15 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
 
 
 
-    public void connectionAdded(INode to)
+    @Override
+	public void connectionAdded(INode to)
     {}
 
 
 
 
-    public void connectionRemoved(INode to)
+    @Override
+	public void connectionRemoved(INode to)
     {
         //we lost a connection to a node
         //any pending results should return

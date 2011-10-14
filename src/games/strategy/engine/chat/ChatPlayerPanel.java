@@ -88,7 +88,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
         
         m_statusListener = new IStatusListener()
         {
-            public void statusChanged(INode node, String newStatus)
+            @Override
+			public void statusChanged(INode node, String newStatus)
             {
                 repaint();
             }
@@ -139,7 +140,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
         	
         	
         	
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
+            @Override
+			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
             {
                 
                 if(m_setCellRenderer == null) {
@@ -174,17 +176,20 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
         m_players.addMouseListener(new MouseAdapter()
         {
 
-            public void mouseClicked(MouseEvent e)
+            @Override
+			public void mouseClicked(MouseEvent e)
             {
                 mouseOnPlayersList(e);
             }
 
-            public void mousePressed(MouseEvent e)
+            @Override
+			public void mousePressed(MouseEvent e)
             {
                 mouseOnPlayersList(e);
             }
 
-            public void mouseReleased(MouseEvent e)
+            @Override
+			public void mouseReleased(MouseEvent e)
             {
                 mouseOnPlayersList(e);
             }
@@ -194,7 +199,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
         
         m_actionFactories.add(new IPlayerActionFactory()
         {
-            public List<Action> mouseOnPlayer(final INode clickedOn)
+            @Override
+			public List<Action> mouseOnPlayer(final INode clickedOn)
             {
                 //you can't slap or ignore yourself
                 if(clickedOn.equals(m_chat.getLocalNode()))
@@ -204,7 +210,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
                 final boolean isIgnored = m_chat.isIgnored(clickedOn);
                 Action ignore = new AbstractAction(isIgnored ?  "Stop Ignoring" : "Ignore")
                 {
-                    public void actionPerformed(ActionEvent event)
+                    @Override
+					public void actionPerformed(ActionEvent event)
                 	{
                 	    m_chat.setIgnored(clickedOn, !isIgnored);
                 	    repaint();
@@ -214,7 +221,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
                 
                 Action slap = new AbstractAction("Slap " + clickedOn.getName())
                 {
-                    public void actionPerformed(ActionEvent event)
+                    @Override
+					public void actionPerformed(ActionEvent event)
                     {
                        m_chat.sendSlap(clickedOn.getName());
                     }
@@ -278,12 +286,14 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
     /**
      * @param players - a collection of Strings representing player names.
      */
-    public synchronized void updatePlayerList(final Collection<INode> players)
+    @Override
+	public synchronized void updatePlayerList(final Collection<INode> players)
     {
 
         Runnable runner = new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 m_listModel.clear();
 
@@ -304,7 +314,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
             SwingUtilities.invokeLater(runner);
     }
 
-    public void addMessage(String message, String from, boolean thirdperson)
+    @Override
+	public void addMessage(String message, String from, boolean thirdperson)
     {
        
         
@@ -336,7 +347,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
         return node.getName() + " (" + sb + ")";
     }
 
-    public void addStatusMessage(String message)
+    @Override
+	public void addStatusMessage(String message)
     {
     }
 

@@ -129,6 +129,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 		}
 	}
 	
+	@Override
 	public String toString()
 	{
 		return this.getName();

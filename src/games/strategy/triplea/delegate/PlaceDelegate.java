@@ -52,16 +52,19 @@ public class PlaceDelegate extends AbstractPlaceDelegate
 	 *
 	 * @return gets the production of the territory, ignores whether the territory was an original factory
 	 */
+	@Override
 	protected int getProduction(Territory territory)
 	{
 		TerritoryAttachment ta = TerritoryAttachment.get(territory);
 		return ta.getProduction();
 	}
 
+	@Override
 	public Serializable saveState() {
 	    return super.saveState();
 	}
 
+	@Override
 	public final void loadState(Serializable aState) {
 	    super.loadState(aState);
 	}

@@ -78,7 +78,8 @@ public class BattleCalculator
     {
         Comparator<Unit> comparator = new Comparator<Unit>()
         {
-          public int compare(Unit u1, Unit u2)
+          @Override
+		public int compare(Unit u1, Unit u2)
           {            
               if(u1.getUnitType().equals(u2.getUnitType()))
                   return UnitComparator.getDecreasingMovementComparator().compare(u1, u2);
@@ -107,13 +108,12 @@ public class BattleCalculator
     /**
      * Choose plane casualties according to specified rules 
      */
-    public static  Collection<Unit> getAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge, PlayerID defender, PlayerID attacker, GameData data, GUID battleID, Territory terr, Match<Unit> typeOfAA)
+    public static Collection<Unit> getAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge, PlayerID defender, PlayerID attacker, GUID battleID, Territory terr, Match<Unit> typeOfAA)
     {
-    	
+        GameData data = bridge.getData();
     	if(Properties.getLow_Luck(data) || Properties.getLL_AA_ONLY(data)) {
     		if(isChooseAA(data)) {
-    			return chooseAACasualties(planes, dice, bridge, attacker, data,
-						battleID, terr);
+                return chooseAACasualties(planes, dice, bridge, attacker, battleID, terr);
     		}
     		return getLowLuckAACasualties(planes, dice, terr, bridge, typeOfAA);
     	} else {
@@ -127,8 +127,7 @@ public class BattleCalculator
         	// allow player to select casualties from entire set 
         	if(!rollAAIndividually && isChooseAA(data))
         	{    	
-        		return chooseAACasualties(planes, dice, bridge, attacker, data,
-						battleID, terr);
+                return chooseAACasualties(planes, dice, bridge, attacker, battleID, terr);
         	}
         	    
         	return(IndividuallyFiredAACasualties(planes, dice, terr, bridge, typeOfAA));
@@ -136,11 +135,11 @@ public class BattleCalculator
     }
 
 	private static Collection<Unit> chooseAACasualties(Collection<Unit> planes,
-			DiceRoll dice, IDelegateBridge bridge, PlayerID attacker,
-			GameData data, GUID battleID, Territory terr) {
+			DiceRoll dice, IDelegateBridge bridge, PlayerID attacker, GUID battleID, Territory terr)
+    {
 		String text = "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
 
-		CasualtyDetails casualtyMsg =  selectCasualties(attacker, planes, bridge, text, data, dice, false, battleID);
+        CasualtyDetails casualtyMsg = selectCasualties(attacker, planes, bridge, text, dice, false, battleID);
 		return  casualtyMsg.getKilled();
 	}
     	
@@ -280,10 +279,10 @@ public class BattleCalculator
         return casualties;
     }
 
-    public static CasualtyDetails selectCasualties(PlayerID player, Collection<Unit> targets, IDelegateBridge bridge, String text, GameData data,
+    public static CasualtyDetails selectCasualties(PlayerID player, Collection<Unit> targets, IDelegateBridge bridge, String text,
             DiceRoll dice, boolean defending, GUID battleID)
     {
-        return selectCasualties(null, player, targets, bridge, text, data, dice, defending, battleID, false, dice.getHits());
+        return selectCasualties(null, player, targets, bridge, text, dice, defending, battleID, false, dice.getHits());
     }
 
     /**
@@ -291,8 +290,9 @@ public class BattleCalculator
      * @param battleID may be null if we are not in a battle (eg, if this is an aa fire due to moving
      */
     public static CasualtyDetails selectCasualties(String step, PlayerID player, Collection<Unit> targets, IDelegateBridge bridge, String text,
-            GameData data, DiceRoll dice, boolean defending, GUID battleID, boolean headLess, int extraHits)
+            DiceRoll dice, boolean defending, GUID battleID, boolean headLess, int extraHits)
     {
+        GameData data = bridge.getData();
     	boolean isEditMode = EditDelegate.getEditMode(data);
         //if (isEditMode || dice.getHits() == 0)
     	if (dice.getHits() == 0)
@@ -365,13 +365,13 @@ public class BattleCalculator
         if (!isEditMode && !(numhits + damaged.size() == hitsRemaining))
         {
             tripleaPlayer.reportError("Wrong number of casualties selected");
-            return selectCasualties(player, targets, bridge, text, data, dice, defending, battleID);
+            return selectCasualties(player, targets, bridge, text, dice, defending, battleID);
         }
         //check we have enough of each type
         if (!targets.containsAll(killed) || !targets.containsAll(damaged))
         {
             tripleaPlayer.reportError("Cannot remove enough units of those types");
-            return selectCasualties(player, targets, bridge, text, data, dice, defending, battleID);
+            return selectCasualties(player, targets, bridge, text, dice, defending, battleID);
         }
         return casualtySelection;
     }
@@ -1144,7 +1144,8 @@ class UnitBattleComparator implements Comparator<Unit>
         m_bonus = bonus;
     }
 
-    public int compare(Unit u1, Unit u2)
+    @Override
+	public int compare(Unit u1, Unit u2)
     {
         if(u1.equals(u2))
             return 0;

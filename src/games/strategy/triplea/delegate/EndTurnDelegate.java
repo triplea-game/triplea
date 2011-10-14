@@ -60,7 +60,8 @@ import java.util.Set;
 public class EndTurnDelegate extends AbstractEndTurnDelegate
 {
 
-    protected void doNationalObjectivesAndOtherEndTurnEffects(IDelegateBridge bridge)
+    @Override
+	protected void doNationalObjectivesAndOtherEndTurnEffects(IDelegateBridge bridge)
     {
         // do national objectives
 		if (isNationalObjectives())

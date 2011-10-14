@@ -21,52 +21,61 @@ public class MockBattle implements Battle
         m_location = location;
     }
 
-    public Change addAttackChange(Route route, Collection<Unit> units)
+    @Override
+	public Change addAttackChange(Route route, Collection<Unit> units)
     {
         return ChangeFactory.EMPTY_CHANGE;
     }
 
-    public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
+    @Override
+	public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
     {
         return ChangeFactory.EMPTY_CHANGE;
     }
     
-    public boolean isBombingRun()
+    @Override
+	public boolean isBombingRun()
     {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public Territory getTerritory()
+    @Override
+	public Territory getTerritory()
     {
         return m_location;
     }
 
-    public void fight(IDelegateBridge bridge)
+    @Override
+	public void fight(IDelegateBridge bridge)
     {
         // TODO Auto-generated method stub
 
     }
 
-    public boolean isOver()
+    @Override
+	public boolean isOver()
     {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units, IDelegateBridge bridge)
+    @Override
+	public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units, IDelegateBridge bridge)
     {
         // TODO Auto-generated method stub
 
     }
 
-    public void addBombardingUnit(Unit u)
+    @Override
+	public void addBombardingUnit(Unit u)
     {
         // TODO Auto-generated method stub
 
     }
 
-    public boolean isAmphibious()
+    @Override
+	public boolean isAmphibious()
     {
         return m_isAmphibious;
     }
@@ -76,25 +85,29 @@ public class MockBattle implements Battle
         m_isAmphibious = aBool;
     }
     
-    public void removeAttack(Route route, Collection<Unit> units)
+    @Override
+	public void removeAttack(Route route, Collection<Unit> units)
     {
         // TODO Auto-generated method stub
 
     }
 
-    public boolean isEmpty()
+    @Override
+	public boolean isEmpty()
     {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public Collection<Unit> getDependentUnits(Collection<Unit> units)
+    @Override
+	public Collection<Unit> getDependentUnits(Collection<Unit> units)
     {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public Collection<Unit> getAmphibiousLandAttackers()
+    @Override
+	public Collection<Unit> getAmphibiousLandAttackers()
     {
         return m_amphibiousLandAttackers;
     }
@@ -104,7 +117,8 @@ public class MockBattle implements Battle
         m_amphibiousLandAttackers = new ArrayList<Unit>(units);
     }
 
-    public Collection<Unit> getBombardingUnits()
+    @Override
+	public Collection<Unit> getBombardingUnits()
     {
         return m_bombardingUnits;
     }
@@ -115,18 +129,21 @@ public class MockBattle implements Battle
     }
     
 
-    public int getBattleRound()
+    @Override
+	public int getBattleRound()
     {
         // TODO Auto-generated method stub
         return 0;
     }
 
-    public Collection<Unit> getAttackingUnits()
+    @Override
+	public Collection<Unit> getAttackingUnits()
     {
         return new ArrayList<Unit>();
     }
     
-    public Collection<Unit> getDefendingUnits()
+    @Override
+	public Collection<Unit> getDefendingUnits()
     {
     	return new ArrayList<Unit>();
     }

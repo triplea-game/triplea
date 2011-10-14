@@ -46,7 +46,8 @@ public class TechActivationDelegate extends BaseDelegate
      * Called before the delegate will run. In this class, this does all the
      * work.
      */
-    public void start(IDelegateBridge aBridge)
+    @Override
+	public void start(IDelegateBridge aBridge)
     {
         super.start(aBridge);
         GameData data = getData();
@@ -61,9 +62,9 @@ public class TechActivationDelegate extends BaseDelegate
             Iterator<TechAdvance> techsIter = advances.iterator();
             while (techsIter.hasNext())
             {
-                TechAdvance advance = (TechAdvance) techsIter.next();
+                TechAdvance advance = techsIter.next();
                 //advance.perform(m_bridge.getPlayerID(), m_bridge, m_data);
-                TechTracker.addAdvance(m_player, data, m_bridge, advance);
+                TechTracker.addAdvance(m_player, m_bridge, advance);
             }
         }
         //empty
@@ -84,7 +85,7 @@ public class TechActivationDelegate extends BaseDelegate
 
         while (iter.hasNext())
         {
-            TechAdvance advance = (TechAdvance) iter.next();
+            TechAdvance advance = iter.next();
             text.append(advance.getName());
             count--;
             if (count > 1)
@@ -99,7 +100,8 @@ public class TechActivationDelegate extends BaseDelegate
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
-    public Class<? extends IRemote> getRemoteType()
+    @Override
+	public Class<? extends IRemote> getRemoteType()
     {
         return null;
     }

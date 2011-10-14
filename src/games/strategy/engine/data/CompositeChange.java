@@ -60,6 +60,7 @@ public class CompositeChange extends Change
 		
 	}
 
+	@Override
 	public Change invert()
 	{
 		List<Change> newChanges = new ArrayList<Change>();
@@ -73,6 +74,7 @@ public class CompositeChange extends Change
 		return new CompositeChange(newChanges);
 	}
 
+	@Override
 	protected void perform(GameData data)
 	{
 		for(int i = 0; i < m_changes.size(); i++)
@@ -102,7 +104,8 @@ public class CompositeChange extends Change
       return new ArrayList<Change>(m_changes);
     }
     
-    public String toString() {
+    @Override
+	public String toString() {
         return "CompositeChange <" + m_changes.toString() + ">";
     }
 }

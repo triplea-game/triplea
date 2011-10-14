@@ -251,7 +251,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         }
     }
 
-    protected void place(boolean bid, IAbstractPlaceDelegate placeDelegate, GameData data, PlayerID player)
+    @Override
+	protected void place(boolean bid, IAbstractPlaceDelegate placeDelegate, GameData data, PlayerID player)
     {
         NotifyGameRound(data);
         NotifyPlayer(player);
@@ -263,7 +264,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
     }
 
     int m_moveLastType = -1;
-    protected void move(boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerID player)
+    @Override
+	protected void move(boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerID player)
     {
         UnitGroup.movesCount = 0; //Dynamix is able to undo it's moves, via UnitGroup, but we need to reset move count each phase for it to work
 
@@ -300,7 +302,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
             m_moveLastType = 0;
     }
 
-    protected void tech(ITechDelegate techDelegate, GameData data, PlayerID player)
+    @Override
+	protected void tech(ITechDelegate techDelegate, GameData data, PlayerID player)
     {
         NotifyGameRound(data);
         NotifyPlayer(player);
@@ -308,7 +311,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         Tech.tech(this, techDelegate, data, player);
     }
 
-    protected void purchase(boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaser, GameData data, PlayerID player)
+    @Override
+	protected void purchase(boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaser, GameData data, PlayerID player)
     {
         NotifyGameRound(data);
         NotifyPlayer(player);
@@ -363,12 +367,14 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
     }
 
     Territory m_battleTer = null;
-    public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
+    @Override
+	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
     {
         return null;
     }
 
-    public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message)
+    @Override
+	public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message)
     {
         DUtils.Log(Level.FINE, "Retreat query starting. Battle Ter: {0} Possible retreat locations: {1}", getBattleTerritory(), possibleTerritories);
         final GameData data = getPlayerBridge().getGameData();
@@ -427,18 +433,21 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         return null;
     }
 
-    public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
+    @Override
+	public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
     {
         //Hmmm... Atm, true and false are both bad. With true, the AI may destroy aircraft unnecesarily, with false, the AI may attack a ter thinking it has air support, which never comes.
         return true;
     }
 
-    public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
+    @Override
+	public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
     {
        return (Territory) candidates.iterator().next();
     }
 
-    public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from)
+    @Override
+	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from)
     {
         List<Unit> result = new ArrayList<Unit>();
         for(Unit fighter : fightersThatCanBeMoved)
@@ -448,7 +457,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         return result;
     }
 
-    public boolean shouldBomberBomb(Territory territory)
+    @Override
+	public boolean shouldBomberBomb(Territory territory)
     {
         List<Unit> nonBomberAttackingUnits = Match.getMatches(territory.getUnits().getUnits(), new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getWhoAmI()), Matches.UnitIsNotStrategicBomber));
     	if(nonBomberAttackingUnits.isEmpty())
@@ -457,7 +467,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
             return false;
     }
 
-    public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units) 
+    @Override
+	public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units) 
     {
     	// wisc, the ai is only asked this question after it is asked if it should bomb at all or not. so this only is asked if the ai says yes to bombing. therefore, we should never return null, as there is a chance we are both attacking and bombing.
     	if (units == null || units.isEmpty())
@@ -470,7 +481,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
     		return Match.getMatches(units, Matches.UnitCanProduceUnits).iterator().next();
     }
 
-    public int[] selectFixedDice(int numRolls, int hitAt, boolean hitOnlyIfEquals, String message, int diceSides)
+    @Override
+	public int[] selectFixedDice(int numRolls, int hitAt, boolean hitOnlyIfEquals, String message, int diceSides)
     {
         int[] dice = new int[numRolls];
         for (int i = 0; i < numRolls; i++)
@@ -480,7 +492,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         return dice;
     }
 
-    public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID)
+    @Override
+	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID)
     {
         DUtils.Log(Level.FINE, "Select casualties method called. Message: {0}", message);
         return SelectCasualties.selectCasualties(this, getGameData(), selectFrom, dependents, count, message, dice, hit, defaultCasualties, battleID);

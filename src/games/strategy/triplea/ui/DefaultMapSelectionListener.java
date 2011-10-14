@@ -30,10 +30,13 @@ import games.strategy.engine.data.Territory;
 public class DefaultMapSelectionListener implements MapSelectionListener 
 {
 
+	@Override
 	public void territorySelected(Territory territory, MouseDetails me) {}
 	
+	@Override
 	public void mouseEntered(Territory territory) {}
 	
+	@Override
 	public void mouseMoved(Territory territory, MouseDetails me) {}
 	
 }

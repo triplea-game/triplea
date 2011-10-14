@@ -54,7 +54,8 @@ public class GameSelectorPanel extends JPanel implements Observer
         {
             SwingUtilities.invokeLater(new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {
                     updateGameData();
                 }
@@ -159,7 +160,8 @@ public class GameSelectorPanel extends JPanel implements Observer
         m_loadNewGame.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 selectGameFile(false);
             }        
@@ -168,7 +170,8 @@ public class GameSelectorPanel extends JPanel implements Observer
         m_loadSavedGame.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 selectGameFile(true);
             }
@@ -178,7 +181,8 @@ public class GameSelectorPanel extends JPanel implements Observer
         m_gameOptions.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 selectGameOptions();
             }
@@ -201,7 +205,8 @@ public class GameSelectorPanel extends JPanel implements Observer
         {
             SwingUtilities.invokeLater(new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {
                     setWidgetActivation();
                 }
@@ -220,7 +225,8 @@ public class GameSelectorPanel extends JPanel implements Observer
             m_gameOptions.setEnabled(false);
     }
 
-    public void update(Observable o, Object arg)
+    @Override
+	public void update(Observable o, Object arg)
     {
         updateGameData();
         setWidgetActivation();
@@ -241,7 +247,8 @@ public class GameSelectorPanel extends JPanel implements Observer
                 SaveGameFileChooser.ensureDefaultDirExists();
                 fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
                 fileDialog.setFilenameFilter(new FilenameFilter(){
-                   public boolean accept(File dir, String name)
+                   @Override
+				public boolean accept(File dir, String name)
                    {   
                        // the extension should be .tsvg, but find svg extensions as well
                        //also, macs download the file as tsvg.gz, so accept that as well

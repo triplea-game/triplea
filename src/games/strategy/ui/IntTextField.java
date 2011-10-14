@@ -189,6 +189,7 @@ public class IntTextField extends JTextField
 	 */
 	private class IntegerDocument extends PlainDocument 
 	{
+		@Override
 		public void insertString(int offs, String str, AttributeSet a) throws BadLocationException
 		{
 			String currentText = this.getText(0, getLength());
@@ -216,6 +217,7 @@ public class IntTextField extends JTextField
 			}
 		}
 		
+		@Override
 		public void remove(int offs, int len) throws BadLocationException
 		{
 			super.remove(offs, len);
@@ -252,6 +254,7 @@ public class IntTextField extends JTextField
 	
 	private class LostFocus extends FocusAdapter
 	{
+		@Override
 		public void focusLost(FocusEvent e)
 		{
 			//make sure the value is valid

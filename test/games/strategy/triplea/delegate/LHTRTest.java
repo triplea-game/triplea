@@ -8,17 +8,14 @@ import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.triplea.xml.LoadGameUtil;
 
 import java.lang.reflect.InvocationHandler;
@@ -136,7 +133,8 @@ public class LHTRTest extends TestCase
         //fail if we are called
         InvocationHandler handler = new InvocationHandler()
         {
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+            @Override
+			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
             {
                 fail("method called:" + method);
                 //never reached
@@ -173,7 +171,7 @@ public class LHTRTest extends TestCase
         
         ITestDelegateBridge bridge = getDelegateBridge(japanese);
         
-        TechTracker.addAdvance(japanese, m_data, bridge, TechAdvance.SUPER_SUBS);
+        TechTracker.addAdvance(japanese, bridge, TechAdvance.SUPER_SUBS);
         
         
         //after tech advance, this is now 3
@@ -202,7 +200,7 @@ public class LHTRTest extends TestCase
         battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
 
         ITestDelegateBridge bridge = getDelegateBridge(british);
-        TechTracker.addAdvance(british, m_data, bridge, TechAdvance.HEAVY_BOMBER);
+        TechTracker.addAdvance(british, bridge, TechAdvance.HEAVY_BOMBER);
         
         //aa guns rolls 3, misses, bomber rolls 2 dice at 3 and 4
         bridge.setRandomSource(new ScriptedRandomSource( new int[] {2,2,3} ));
@@ -212,7 +210,8 @@ public class LHTRTest extends TestCase
         //fail if we are called
         InvocationHandler handler = new InvocationHandler()
         {
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+            @Override
+			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
             {
                 return null;
             }
@@ -256,7 +255,7 @@ public class LHTRTest extends TestCase
         battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
 
         ITestDelegateBridge bridge = getDelegateBridge(british);
-        TechTracker.addAdvance(british, m_data, bridge, TechAdvance.HEAVY_BOMBER);
+        TechTracker.addAdvance(british, bridge, TechAdvance.HEAVY_BOMBER);
         
         //aa guns rolls 3,3 both miss, bomber 1 rolls 2 dice at 3,4 and bomber 2 rolls dice at 1,2
         bridge.setRandomSource(new ScriptedRandomSource( new int[] {3,3,2,3,0,1} ));
@@ -266,7 +265,8 @@ public class LHTRTest extends TestCase
         //fail if we are called
         InvocationHandler handler = new InvocationHandler()
         {
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+            @Override
+			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
             {
                 return null;
             }
@@ -304,12 +304,14 @@ public class LHTRTest extends TestCase
 class ThrowingRandomSource implements IRandomSource
 {
 
-    public int getRandom(int max, String annotation)
+    @Override
+	public int getRandom(int max, String annotation)
     {
         throw new IllegalStateException("not allowed");
     }
 
-    public int[] getRandom(int max, int count, String annotation)
+    @Override
+	public int[] getRandom(int max, int count, String annotation)
     {
         throw new IllegalStateException("not allowed");
     }

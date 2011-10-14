@@ -22,10 +22,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.ProductionRule;
-import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -38,7 +35,6 @@ import games.strategy.util.IntegerMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  *
@@ -50,7 +46,6 @@ import java.util.Map;
 public class NoPUPurchaseDelegate extends PurchaseDelegate
 {
     private boolean isPacific;
-    private boolean isWW2V3;
 
     @Override
     public void start(IDelegateBridge aBridge)
@@ -58,7 +53,6 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
         super.start(aBridge);
         
         isPacific = isPacificTheater();
-        isWW2V3 = isWW2V3();
 
         PlayerID player = aBridge.getPlayerID();
         Collection<Territory> territories = getData().getMap().getTerritoriesOwnedBy(player);
@@ -144,11 +138,6 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
     private boolean isPacificTheater()
     {
         return games.strategy.triplea.Properties.getPacificTheater(getData());
-    }
-
-    private boolean isWW2V3()
-    {
-        return games.strategy.triplea.Properties.getWW2V3(getData());
     }
 
     private boolean isProductionPerValuedTerritoryRestricted()

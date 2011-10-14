@@ -114,6 +114,7 @@ public class UnitGroup implements Cloneable {
 		return hits;
 	}
 	
+	@Override
 	public String toString() {
 		String unitGroup = "";
 		unitGroup += this.getUnit().toString();
@@ -146,6 +147,7 @@ public class UnitGroup implements Cloneable {
 		this.totalHp = totalHp;
 	}
 	
+	@Override
 	public Object clone() {
 		Object c = null;
 		c = new UnitGroup(this.getUnit(), this.getNumUnits());

@@ -22,7 +22,8 @@ public class VerifiedRandomNumbers
         m_annotation = annotation;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return "Rolled :" +  MyFormatter.asDice(m_values) + " for " + m_annotation;
     }

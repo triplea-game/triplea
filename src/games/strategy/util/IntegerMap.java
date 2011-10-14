@@ -212,7 +212,8 @@ public  class IntegerMap<T> implements Cloneable, Serializable
      * match exactly. If a has entries that b doesn't have or vice versa,
      * then a and b are not equal.
      */
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public boolean equals(Object o)
     {
         if (o == null || !(o instanceof IntegerMap))
@@ -253,7 +254,8 @@ public  class IntegerMap<T> implements Cloneable, Serializable
         return copy;
     }
 
-    public Object clone()
+    @Override
+	public Object clone()
     {
         return copy();
     }
@@ -348,7 +350,8 @@ public  class IntegerMap<T> implements Cloneable, Serializable
         }
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         StringBuilder buf = new StringBuilder();
         buf.append("IntegerMap:\n");

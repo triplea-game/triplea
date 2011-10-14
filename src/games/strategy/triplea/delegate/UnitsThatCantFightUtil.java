@@ -16,12 +16,9 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.InverseMatch;
-import games.strategy.util.Match;
-
 import java.util.ArrayList;
 import java.util.Collection;
 

@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -66,9 +65,10 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge aBridge)
+    @Override
+	public void start(IDelegateBridge aBridge)
     {
-        m_bridge = new TripleADelegateBridge(aBridge);
+    	super.start(new TripleADelegateBridge(aBridge));
         //we may start multiple times due to loading after saving
         //only initialize once
         if(m_needToInitialize)
@@ -80,7 +80,8 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
     }
 
  
-    public String fightBattle(Territory territory, boolean bombing)
+    @Override
+	public String fightBattle(Territory territory, boolean bombing)
     {
         
         Battle battle = m_battleTracker.getPendingBattle(territory, bombing);
@@ -118,17 +119,18 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
        return battle.isBombingRun() ? "Bombing Run" : "Battle";
     }
 
-    public BattleListing getBattles()
+    @Override
+	public BattleListing getBattles()
     {
         Collection<Territory> battles = m_battleTracker.getPendingBattleSites(false);
         Collection<Territory> bombing = m_battleTracker.getPendingBattleSites(true);
         return new BattleListing(battles, bombing);
     }
 
-    private void addContinuedBattles(GameData data, PlayerID id)
+    private void addContinuedBattles(PlayerID id)
     {
-    	Collection<Territory> terrs = data.getMap().getTerritories();
-    	CompositeMatch<Territory> enemyAndOwnedUnits = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyUnits(id, data));
+        Collection<Territory> terrs = m_bridge.getData().getMap().getTerritories();
+        CompositeMatch<Territory> enemyAndOwnedUnits = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyUnits(id, m_bridge.getData()));
     	enemyAndOwnedUnits.add(Matches.territoryHasUnitsOwnedBy(id));
     	
     	
@@ -149,7 +151,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
     			{
     				Route route = new Route();
     				route.setStart(terr);
-    				getBattleTracker().addBattle(route, ownedUnits, false, id, data, m_bridge, null);    				
+                    getBattleTracker().addBattle(route, ownedUnits, false, id, m_bridge, null);
     			}
     		}    		        
     	}    	
@@ -166,7 +168,8 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
     /**
      * Called before the delegate will stop running.
      */
-    public void end()
+    @Override
+	public void end()
     {
         m_needToInitialize = true;
     }
@@ -358,7 +361,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
         
         //Set up any continued battles from previous actions
         //This can be the basis for multi-round games like D-Day
-        addContinuedBattles(getData(), player);
+        addContinuedBattles(player);
         
         //we want to match all sea zones with our units and enemy units
         CompositeMatch<Territory> territoryWithOwnAndEnemy = new CompositeMatchAnd<Territory>();
@@ -395,7 +398,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
             {
             	Route route = new Route();
 				route.setStart(territory);
-                getBattleTracker().addBattle(route, attackingUnits, false, player, getData(), m_bridge, null);
+                getBattleTracker().addBattle(route, attackingUnits, false, player, m_bridge, null);
 				battle = m_battleTracker.getPendingBattle(territory, false);
 			}
             		
@@ -477,7 +480,8 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
     /**
      * Returns the state of the Delegate.
      */
-    public Serializable saveState()
+    @Override
+	public Serializable saveState()
     {
         BattleState state = new BattleState();
         state.m_battleTracker = m_battleTracker;
@@ -490,7 +494,8 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
     /**
      * Loads the delegates state
      */
-    public void loadState(Serializable aState)
+    @Override
+	public void loadState(Serializable aState)
     {
         BattleState state = (BattleState) aState;
         m_battleTracker = state.m_battleTracker;
@@ -520,12 +525,14 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
      * 
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
-    public Class<? extends IRemote> getRemoteType()
+    @Override
+	public Class<? extends IRemote> getRemoteType()
     {
         return IBattleDelegate.class;
     }
 
-    public Territory getCurentBattle() {
+    @Override
+	public Territory getCurentBattle() {
         Battle b = m_currentBattle;
         if(b != null) {
             return b.getTerritory();

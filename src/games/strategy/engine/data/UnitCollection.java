@@ -308,6 +308,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 		return values;
 	}
 
+	@Override
 	public String toString()
 	{
 		StringBuilder buf = new StringBuilder();
@@ -323,7 +324,8 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 		return buf.toString();
 	}
 
-    public Iterator<Unit> iterator()
+    @Override
+	public Iterator<Unit> iterator()
     {
        return Collections.unmodifiableList(m_units).iterator();
     }

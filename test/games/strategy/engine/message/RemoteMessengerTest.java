@@ -34,7 +34,8 @@ public class RemoteMessengerTest extends TestCase
     /*
      * @see TestCase#setUp()
      */
-    protected void setUp() throws Exception
+    @Override
+	protected void setUp() throws Exception
     {
         //simple set up for non networked testing
         m_messenger = new DummyMessenger();
@@ -46,7 +47,8 @@ public class RemoteMessengerTest extends TestCase
     /*
      * @see TestCase#tearDown()
      */
-    protected void tearDown() throws Exception
+    @Override
+	protected void tearDown() throws Exception
     {
         m_messenger = null;
         m_remoteMessenger = null;
@@ -317,7 +319,8 @@ public class RemoteMessengerTest extends TestCase
             
             IFoo foo = new IFoo()
             {
-                public void foo() 
+                @Override
+				public void foo() 
                 {
                     synchronized(lock)
                     {
@@ -343,7 +346,8 @@ public class RemoteMessengerTest extends TestCase
             
             Runnable r = new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {
                     try
                     {
@@ -417,18 +421,21 @@ class TestRemote implements ITestRemote
     
     private INode m_senderNode;
     
-    public int increment(int testVal)
+    @Override
+	public int increment(int testVal)
     {
         m_senderNode = MessageContext.getSender();
         return testVal + 1;
     }
     
-    public void testVoid()
+    @Override
+	public void testVoid()
     {
         m_senderNode = MessageContext.getSender();
     }
     
-    public void throwException() throws Exception
+    @Override
+	public void throwException() throws Exception
     {
         throw new Exception(EXCEPTION_STRING);
     }

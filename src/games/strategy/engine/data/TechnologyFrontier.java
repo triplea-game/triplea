@@ -64,7 +64,8 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 		return m_cachedTechs;
 	}
 
-    public Iterator<TechAdvance> iterator()
+    @Override
+	public Iterator<TechAdvance> iterator()
     {
         return getTechs().iterator();
     }
@@ -77,12 +78,14 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
     public boolean isEmpty() {
     	return m_techs.isEmpty();
     }
-    public String toString()
+    @Override
+	public String toString()
     {
       return m_name;
     }
 
-    public boolean equals(Object o)
+    @Override
+	public boolean equals(Object o)
     {
       if (o == null || ! (o instanceof TechnologyFrontier))
         return false;

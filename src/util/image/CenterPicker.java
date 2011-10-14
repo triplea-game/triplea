@@ -134,7 +134,8 @@ public class CenterPicker extends JFrame
         imagePanel.addMouseMotionListener(
             new MouseMotionAdapter()
             {
-                 public void mouseMoved(MouseEvent e)
+                 @Override
+				public void mouseMoved(MouseEvent e)
                  {
                      m_location.setText("x:"+ e.getX() + " y:" + e.getY());
                  }
@@ -150,7 +151,8 @@ public class CenterPicker extends JFrame
         imagePanel.addMouseListener(
             new MouseAdapter()
             {
-                public void mouseClicked(MouseEvent e)
+                @Override
+				public void mouseClicked(MouseEvent e)
                 {
                     mouseEvent(e.getPoint(), e.isControlDown(), SwingUtilities.isRightMouseButton(e));
                 }
@@ -173,7 +175,8 @@ public class CenterPicker extends JFrame
 	//set up the actions
 	
 	Action openAction = new AbstractAction("Load Centers") {
-            public void actionPerformed(ActionEvent event) {
+            @Override
+			public void actionPerformed(ActionEvent event) {
                 loadCenters();
             }
         };
@@ -181,7 +184,8 @@ public class CenterPicker extends JFrame
 
 
         Action saveAction = new AbstractAction("Save Centers") {
-            public void actionPerformed(ActionEvent event) {
+            @Override
+			public void actionPerformed(ActionEvent event) {
                 saveCenters();
             }
         };
@@ -189,7 +193,8 @@ public class CenterPicker extends JFrame
 
 
         Action exitAction = new AbstractAction("Exit") {
-            public void actionPerformed(ActionEvent event) {
+            @Override
+			public void actionPerformed(ActionEvent event) {
                 System.exit(0);
             }
         };
@@ -260,7 +265,8 @@ public class CenterPicker extends JFrame
     {
         JPanel imagePanel = new JPanel()
         {
-            public void paint(Graphics g)
+            @Override
+			public void paint(Graphics g)
             {
                 //super.paint(g);
                 g.drawImage(m_image, 0, 0, this);

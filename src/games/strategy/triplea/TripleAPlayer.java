@@ -88,17 +88,20 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         super(name);
     }
 
-    public void reportError(String error)
+    @Override
+	public void reportError(String error)
     {
         m_ui.notifyError(error);
     }
     
-    public void reportMessage(String message)
+    @Override
+	public void reportMessage(String message)
     {
         m_ui.notifyMessage(message);
     }
  
-    public void start(String name)
+    @Override
+	public void start(String name)
     {
         boolean badStep = false;
 
@@ -112,7 +115,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         
         SwingUtilities.invokeLater( new Runnable() {
         
-            public void run() {
+            @Override
+			public void run() {
                 m_ui.getEditModeButtonModel().addActionListener(m_editModeAction);
                 m_ui.getEditModeButtonModel().setEnabled(true);        
             }
@@ -143,7 +147,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         
         SwingUtilities.invokeLater( new Runnable() {
             
-            public void run() {
+            @Override
+			public void run() {
                 m_ui.getEditModeButtonModel().setEnabled(false);
                 m_ui.getEditModeButtonModel().removeActionListener(m_editModeAction);
                 m_ui.setEditDelegate(null);
@@ -229,7 +234,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 
 	private AbstractAction m_editModeAction = new AbstractAction()
     {
-        public void actionPerformed(ActionEvent ae)
+        @Override
+		public void actionPerformed(ActionEvent ae)
         {
             boolean editMode = ((ButtonModel)ae.getSource()).isSelected();
             try 
@@ -659,7 +665,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
      * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties(java.lang.String, java.util.Collection, java.util.Map, int, java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.List)
      */
 
-    public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID)
+    @Override
+	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID)
     {
         return m_ui.getBattlePanel().getCasualties(selectFrom, dependents, count, message, dice,hit, defaultCasualties, battleID);
     }
@@ -667,7 +674,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, int, boolean, java.lang.String)
      */
-    public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title, int diceSides)
+    @Override
+	public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title, int diceSides)
     {
         return m_ui.selectFixedDice(numDice, hitAt, hitOnlyIfEquals, title, diceSides);
     }
@@ -675,7 +683,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#selectBombardingTerritory(games.strategy.engine.data.Unit, games.strategy.engine.data.Territory, java.util.Collection, boolean)
      */
-    public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection<Territory>  territories, boolean noneAvailable)
+    @Override
+	public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection<Territory>  territories, boolean noneAvailable)
     {
         return m_ui.getBattlePanel().getBombardment(unit, unitTerritory,  territories, noneAvailable);
     }
@@ -683,7 +692,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     /* 
      * Ask if the player wants to attack subs
      */
-    public boolean selectAttackSubs(Territory unitTerritory)
+    @Override
+	public boolean selectAttackSubs(Territory unitTerritory)
     {
         return m_ui.getBattlePanel().getAttackSubs(unitTerritory);
     }
@@ -691,7 +701,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     /* 
      * Ask if the player wants to attack transports
      */
-    public boolean selectAttackTransports(Territory unitTerritory)
+    @Override
+	public boolean selectAttackTransports(Territory unitTerritory)
     {
         return m_ui.getBattlePanel().getAttackTransports(unitTerritory);
     }
@@ -699,7 +710,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     /* 
      * Ask if the player wants to attack units
      */
-    public boolean selectAttackUnits(Territory unitTerritory)
+    @Override
+	public boolean selectAttackUnits(Territory unitTerritory)
     {
         return m_ui.getBattlePanel().getAttackUnits(unitTerritory);
     }
@@ -707,7 +719,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     /* 
      * Ask if the player wants to shore bombard
      */
-    public boolean selectShoreBombard(Territory unitTerritory)
+    @Override
+	public boolean selectShoreBombard(Territory unitTerritory)
     {
         return m_ui.getBattlePanel().getShoreBombard(unitTerritory);
     }
@@ -715,7 +728,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
      */
-    public boolean shouldBomberBomb(Territory territory)
+    @Override
+	public boolean shouldBomberBomb(Territory territory)
     {
         return m_ui.getStrategicBombingRaid(territory);
        
@@ -724,13 +738,15 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
      */
-    public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units)
+    @Override
+	public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units)
     {
         return m_ui.getStrategicBombingRaidTarget(territory, units);
        
     } 
     
-    public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from)
+    @Override
+	public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from)
     {
         return m_ui.getRocketAttack(candidates, from);
      }
@@ -738,7 +754,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection, games.strategy.engine.data.Territory)
      */
-    public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from)
+    @Override
+	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from)
     {
         return m_ui.moveFightersToCarrier(fightersThatCanBeMoved, from);
     }
@@ -746,7 +763,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     /*
      * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
      */
-    public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
+    @Override
+	public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
     {
         return m_ui.selectTerritoryForAirToLand(candidates);
     }
@@ -755,20 +773,23 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#confirmMoveInFaceOfAA(java.util.Collection)
      */
-    public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
+    @Override
+	public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
     {
         String question = "AA guns will fire in " + MyFormatter.territoriesToText(aaFiringTerritories, "and") + ", do you still want to move?";
         return m_ui.getOK(question);
         
     }
 
-    public boolean confirmMoveKamikaze()
+    @Override
+	public boolean confirmMoveKamikaze()
     {
         String question = "Not all air units in destination territory can land, do you still want to move?";
         return m_ui.getOK(question);
     }
 
-    public boolean confirmMoveHariKari()
+    @Override
+	public boolean confirmMoveHariKari()
     {
         String question = "All units in destination territory will automatically die, do you still want to move?";
         return m_ui.getOK(question);
@@ -777,7 +798,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#retreatQuery(games.strategy.net.GUID, boolean, java.util.Collection, java.lang.String, java.lang.String)
      */
-    public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message)
+    @Override
+	public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message)
     {
         return m_ui.getBattlePanel().getRetreat(battleID, message, possibleTerritories,submerge);
     }
@@ -785,12 +807,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#scrambleQuery(games.strategy.net.GUID, java.util.Collection, java.lang.String, java.lang.String)
      */
-    public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
+    @Override
+	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
     {
         return m_ui.getBattlePanel().getScramble(m_bridge, battleID, message, possibleTerritories);
     }
     
-    public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer)
+    @Override
+	public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer)
     {
         //no need, we have already confirmed since we are firing player
         if(m_ui.playing(hitPlayer))
@@ -802,7 +826,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         m_ui.getBattlePanel().confirmCasualties(battleId, message);
     }
 
-    public void confirmOwnCasualties(GUID battleId, String message)
+    @Override
+	public void confirmOwnCasualties(GUID battleId, String message)
     {
         m_ui.getBattlePanel().confirmCasualties(battleId, message);
     }   

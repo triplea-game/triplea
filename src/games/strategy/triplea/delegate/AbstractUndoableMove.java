@@ -43,10 +43,10 @@ abstract public class AbstractUndoableMove implements Serializable
     	delegateBridge.getHistoryWriter().setRenderingData(getDescriptionObject());
     	
         delegateBridge.addChange(m_change.invert());
-        undoSpecific(data, delegateBridge);
+        undoSpecific(delegateBridge);
     }
 
-    abstract protected void undoSpecific(GameData data, IDelegateBridge bridge);
+    abstract protected void undoSpecific(IDelegateBridge bridge);
 
     public final CompositeChange getChange()
     {

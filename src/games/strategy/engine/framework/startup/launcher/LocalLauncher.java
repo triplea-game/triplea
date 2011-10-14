@@ -48,7 +48,8 @@ public class LocalLauncher implements ILauncher
     }
     
     
-    public void launch(final Component parent)
+    @Override
+	public void launch(final Component parent)
     {
         if(!SwingUtilities.isEventDispatchThread())
             throw new IllegalStateException("Wrong thread");
@@ -56,7 +57,8 @@ public class LocalLauncher implements ILauncher
         Runnable r = new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 launchInNewThread(parent);
             }
@@ -80,7 +82,8 @@ public class LocalLauncher implements ILauncher
     {
         Runnable runner = new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 
                 Exception exceptionLoadingGame = null;
@@ -135,7 +138,8 @@ public class LocalLauncher implements ILauncher
                     SwingUtilities.invokeLater(new Runnable()
                     {
                     
-                        public void run()
+                        @Override
+						public void run()
                         {
                             JOptionPane.getFrameForComponent(parent).setVisible(true);
                         }

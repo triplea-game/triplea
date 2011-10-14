@@ -39,8 +39,6 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -108,22 +106,26 @@ public class StrategicBombingRaidBattle implements Battle
         return (ITripleaDisplay) bridge.getDisplayChannelBroadcaster();
     }
 
-    public boolean isOver()
+    @Override
+	public boolean isOver()
     {
         return m_isOver;
     }
 
-    public boolean isEmpty()
+    @Override
+	public boolean isEmpty()
     {
         return m_units.isEmpty();
     }
 
-    public void removeAttack(Route route, Collection<Unit> units)
+    @Override
+	public void removeAttack(Route route, Collection<Unit> units)
     {
         m_units.removeAll(units);
     }
 
-    public Change addAttackChange(Route route, Collection<Unit> units)
+    @Override
+	public Change addAttackChange(Route route, Collection<Unit> units)
     {
 
         if (!Match.allMatch(units, Matches.UnitIsStrategicBomber))
@@ -133,7 +135,8 @@ public class StrategicBombingRaidBattle implements Battle
         return ChangeFactory.EMPTY_CHANGE;
     }
 
-    public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
+    @Override
+	public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
     {
         m_units.addAll(units);
         return ChangeFactory.EMPTY_CHANGE;
@@ -141,7 +144,8 @@ public class StrategicBombingRaidBattle implements Battle
 
     
     
-    public void fight(IDelegateBridge bridge)
+    @Override
+	public void fight(IDelegateBridge bridge)
     {
         //we were interrupted
         if(m_stack.isExecuting())
@@ -177,7 +181,8 @@ public class StrategicBombingRaidBattle implements Battle
         steps.add(new IExecutable()
         {
         
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 getDisplay(bridge).gotoBattleStep(m_battleID, RAID);
                 
@@ -238,7 +243,8 @@ public class StrategicBombingRaidBattle implements Battle
         steps.add(new IExecutable()
         {
         
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             { 
                 if(isSBRAffectsUnitProduction())
                     getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidCost + " production.");
@@ -269,7 +275,8 @@ public class StrategicBombingRaidBattle implements Battle
         getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
     }
 
-    public List<Unit> getDefendingUnits()
+    @Override
+	public List<Unit> getDefendingUnits()
     {
     	Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAA, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert());
     	if(m_targets.isEmpty())
@@ -282,7 +289,8 @@ public class StrategicBombingRaidBattle implements Battle
     	}	
     }
 
-    public List<Unit> getAttackingUnits()
+    @Override
+	public List<Unit> getAttackingUnits()
     {
         return m_units;
     }
@@ -292,22 +300,25 @@ public class StrategicBombingRaidBattle implements Battle
         DiceRoll m_dice;
         Collection<Unit> m_casualties;
         
-        public void execute(ExecutionStack stack, IDelegateBridge bridge)
+        @Override
+		public void execute(ExecutionStack stack, IDelegateBridge bridge)
         {
             boolean isEditMode = EditDelegate.getEditMode(bridge.getData());
 
             IExecutable roll = new IExecutable()
             {
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
-                	m_dice = DiceRoll.rollAA(m_units, bridge, m_battleSite, m_data, Matches.UnitIsAAforBombing);
+                    m_dice = DiceRoll.rollAA(m_units, bridge, m_battleSite, Matches.UnitIsAAforBombing);
                 }
             };
 
             IExecutable calculateCasualties = new IExecutable()
             {
             
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     m_casualties = calculateCasualties(bridge, m_dice);
             
@@ -318,7 +329,8 @@ public class StrategicBombingRaidBattle implements Battle
             IExecutable notifyCasualties = new IExecutable()
             {
             
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     notifyAAHits(bridge, m_dice, m_casualties);
             
@@ -330,7 +342,8 @@ public class StrategicBombingRaidBattle implements Battle
             IExecutable removeHits = new IExecutable()
             {
 
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     removeAAHits(bridge, m_dice, m_casualties);
                 }
@@ -407,12 +420,12 @@ public class StrategicBombingRaidBattle implements Battle
         {
             String text = "AA guns fire";
             CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker, 
-                    m_units, bridge, text, m_data, /*dice*/ null,/*defending*/ false, m_battleID, /*headless*/ false, 0);
+                    m_units, bridge, text, /* dice */null,/* defending */false, m_battleID, /* headless */false, 0);
             return casualtySelection.getKilled();
         }
         else
         {
-        	casualties = BattleCalculator.getAACasualties(m_units, dice, bridge, m_defender, m_attacker, m_data, m_battleID, m_battleSite, Matches.UnitIsAAforBombing);
+            casualties = BattleCalculator.getAACasualties(m_units, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite, Matches.UnitIsAAforBombing);
         }
     	
         if (casualties.size() != dice.getHits())
@@ -427,7 +440,8 @@ public class StrategicBombingRaidBattle implements Battle
         
         Runnable r = new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 ITripleaPlayer defender = (ITripleaPlayer) bridge.getRemote(m_defender);
                 defender.confirmEnemyCasualties(m_battleID, "Press space to continue", m_attacker);        
@@ -468,12 +482,14 @@ public class StrategicBombingRaidBattle implements Battle
     {
         private int[] m_dice;
         
-        public void execute(ExecutionStack stack, IDelegateBridge bridge)
+        @Override
+		public void execute(ExecutionStack stack, IDelegateBridge bridge)
         {
             IExecutable rollDice = new IExecutable()
             {
             
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     rollDice(bridge);
                 }
@@ -482,7 +498,8 @@ public class StrategicBombingRaidBattle implements Battle
             
             IExecutable findCost = new IExecutable()
             {
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     findCost(bridge);
                 }
@@ -704,25 +721,29 @@ public class StrategicBombingRaidBattle implements Battle
         }   
     }
 
-    public boolean isBombingRun()
+    @Override
+	public boolean isBombingRun()
     {
 
         return true;
     }
 
-    public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units, IDelegateBridge bridge)
+    @Override
+	public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units, IDelegateBridge bridge)
     {
         //should never happen
         throw new IllegalStateException("say what, why you telling me that");
     }
 
-    public int hashCode()
+    @Override
+	public int hashCode()
     {
 
         return m_battleSite.hashCode();
     }
 
-    public boolean equals(Object o)
+    @Override
+	public boolean equals(Object o)
     {
 
         //2 battles are equal if they are both the same type (boming or not)
@@ -736,14 +757,16 @@ public class StrategicBombingRaidBattle implements Battle
         return other.getTerritory().equals(this.m_battleSite) && other.isBombingRun() == this.isBombingRun();
     }
 
-    public Territory getTerritory()
+    @Override
+	public Territory getTerritory()
     {
 
         return m_battleSite;
     }
 
     
-    public Collection<Unit> getDependentUnits(Collection<Unit> units)
+    @Override
+	public Collection<Unit> getDependentUnits(Collection<Unit> units)
     {
         return Collections.emptyList();
     }
@@ -751,7 +774,8 @@ public class StrategicBombingRaidBattle implements Battle
     /**
      * Add bombarding unit. Doesn't make sense here so just do nothing.
      */
-    public void addBombardingUnit(Unit unit)
+    @Override
+	public void addBombardingUnit(Unit unit)
     {
         // nothing
     }
@@ -759,22 +783,26 @@ public class StrategicBombingRaidBattle implements Battle
     /**
      * Return whether battle is amphibious.
      */
-    public boolean isAmphibious()
+    @Override
+	public boolean isAmphibious()
     {
         return false;
     }
 
-    public Collection<Unit> getAmphibiousLandAttackers()
+    @Override
+	public Collection<Unit> getAmphibiousLandAttackers()
     {
         return new ArrayList<Unit>();
     }
 
-    public Collection<Unit> getBombardingUnits()
+    @Override
+	public Collection<Unit> getBombardingUnits()
     {
         return new ArrayList<Unit>();
     }
     
-    public int getBattleRound()
+    @Override
+	public int getBattleRound()
     {
         return 0;
     }

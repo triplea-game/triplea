@@ -14,52 +14,19 @@
 
 package games.strategy.triplea.delegate;
 
-import static games.strategy.triplea.delegate.BattleStepStrings.*;
-import static games.strategy.triplea.delegate.GameDataTestUtil.*;
-import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.RepairRule;
-import games.strategy.engine.data.Route;
-import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.random.ScriptedRandomSource;
-import games.strategy.net.GUID;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.RulesAttachment;
-import games.strategy.triplea.attatchments.TechAttachment;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import games.strategy.triplea.delegate.dataObjects.CasualtyList;
-import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
-import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
-import games.strategy.triplea.delegate.dataObjects.TechResults;
-import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.display.DummyDisplay;
-import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import junit.framework.TestCase;
 
 public class Pact_of_Steel_2_Test extends TestCase

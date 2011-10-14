@@ -39,6 +39,7 @@ public class InverseMatch<T> extends Match<T>
 		
     }
 
+	@Override
 	public boolean match(T o) 
 	{
 		return !m_match.match(o);

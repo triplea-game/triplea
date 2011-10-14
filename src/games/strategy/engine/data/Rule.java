@@ -75,27 +75,32 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
   /**
    * Get the units in this territory
    */
-  public UnitCollection getUnits()
+  @Override
+public UnitCollection getUnits()
   {
     return m_units;
   }
 
-  public void notifyChanged()
+  @Override
+public void notifyChanged()
   {
     
   }
 
-  public String toString()
+  @Override
+public String toString()
   {
     return getName();
   }
 
-  public int compareTo(Rule r)
+  @Override
+public int compareTo(Rule r)
   {
     return getName().compareTo(r.getName());
   }
 
-  public String getType()
+  @Override
+public String getType()
   {
     return UnitHolder.TERRITORY;
   }

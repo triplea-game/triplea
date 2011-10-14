@@ -292,7 +292,8 @@ public class TechAttachment extends DefaultAttachment
       return m_shipyards;
   }
   
-  public void setData(GameData data)
+  @Override
+public void setData(GameData data)
   {
       super.setData(data);
       for(TechAdvance ta :data.getTechnologyFrontier()){

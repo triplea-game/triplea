@@ -35,7 +35,8 @@ public class UnitComparator
         return new Comparator<Unit>()
         {
 
-            public int compare(Unit u1, Unit u2)
+            @Override
+			public int compare(Unit u1, Unit u2)
             {
                 int left1 = TripleAUnit.get(u1).getMovementLeft();
                 int left2 = TripleAUnit.get(u2).getMovementLeft();
@@ -54,7 +55,8 @@ public class UnitComparator
         return new Comparator<Unit>()
         {
 
-            public int compare(Unit u1, Unit u2)
+            @Override
+			public int compare(Unit u1, Unit u2)
             {
                 int left1 = TripleAUnit.get(u1).getMovementLeft();
                 int left2 = TripleAUnit.get(u2).getMovementLeft();
@@ -90,7 +92,8 @@ public class UnitComparator
         
         return new Comparator<Unit>()
         {
-            public int compare(Unit t1, Unit t2)
+            @Override
+			public int compare(Unit t1, Unit t2)
             {
                 int cost1 = capacityMap.getInt(t1);
                 int cost2 = capacityMap.getInt(t2);
@@ -115,7 +118,8 @@ public class UnitComparator
 
         return new Comparator<Unit>()
         {
-            public int compare(Unit u1, Unit u2)
+            @Override
+			public int compare(Unit u1, Unit u2)
             {
                 TripleAUnit t1 = TripleAUnit.get(u1);
                 TripleAUnit t2 = TripleAUnit.get(u2);
@@ -169,7 +173,8 @@ public class UnitComparator
 
         return new Comparator<Unit>()
         {
-            public int compare(Unit t1, Unit t2)
+            @Override
+			public int compare(Unit t1, Unit t2)
             {
                 // check if transport is incapable due to game state
                 boolean isIncapable1 = incapableTransportMatch.match(t1);
@@ -219,7 +224,8 @@ public class UnitComparator
 
         return new Comparator<Unit>()
         {
-            public int compare(Unit u1, Unit u2)
+            @Override
+			public int compare(Unit u1, Unit u2)
             {
                 // ensure units have enough movement
                 int left1 = TripleAUnit.get(u1).getMovementLeft();
@@ -289,7 +295,8 @@ public class UnitComparator
 
         return new Comparator<Unit>()
         {
-            public int compare(Unit u1, Unit u2)
+            @Override
+			public int compare(Unit u1, Unit u2)
             {
                 Unit t1 = TripleAUnit.get(u1).getTransportedBy();
                 Unit t2 = TripleAUnit.get(u2).getTransportedBy();
@@ -318,7 +325,8 @@ public class UnitComparator
         return new Comparator<Unit>()
         {
 
-            public int compare(Unit u1, Unit u2)
+            @Override
+			public int compare(Unit u1, Unit u2)
             {
                 UnitAttachment ua1 = UnitAttachment.get(u1.getType());
                 UnitAttachment ua2 = UnitAttachment.get(u2.getType());

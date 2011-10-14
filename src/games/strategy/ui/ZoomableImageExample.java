@@ -62,6 +62,7 @@ public class ZoomableImageExample extends JFrame
 	
 	final KeyListener KEY_LISTENER = new KeyAdapter()
 	{
+		@Override
 		public void keyPressed(KeyEvent e) 
 		{
 			char key = e.getKeyChar();
@@ -75,6 +76,7 @@ public class ZoomableImageExample extends JFrame
 	
 	private final Action ZOOM_COMMAND = new AbstractAction("save")
 	{
+		@Override
 		public void actionPerformed(ActionEvent e)
 		{
 			String input = JOptionPane.showInputDialog("Get Zoom Factor");
@@ -87,6 +89,7 @@ public class ZoomableImageExample extends JFrame
 	
 	public static final WindowListener EXIT_ON_CLOSE_WINDOW_LISTENER = new WindowAdapter()
 	{
+		@Override
 		public void windowClosing(WindowEvent e) 
 		{
 			System.exit(0);

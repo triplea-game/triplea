@@ -91,14 +91,16 @@ public class LocalSetupPanel extends SetupPanel implements Observer
         
     }
 
-    public void update(Observable o, Object arg)
+    @Override
+	public void update(Observable o, Object arg)
     {
         if(!SwingUtilities.isEventDispatchThread())
         {
             SwingUtilities.invokeLater(new Runnable()
             {
             
-                public void run()
+                @Override
+				public void run()
                 {
                     layoutComponents();
                 }

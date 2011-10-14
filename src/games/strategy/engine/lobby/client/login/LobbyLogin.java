@@ -9,10 +9,6 @@ import games.strategy.util.MD5Crypt;
 
 import java.awt.Window;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -85,7 +81,8 @@ public class LobbyLogin
                 
                 private final AtomicReference<String> m_internalError = new AtomicReference<String>();
 
-                public void notifyFailedLogin(String message)
+                @Override
+				public void notifyFailedLogin(String message)
                 {
                     if(m_internalError.get() != null)
                         message = m_internalError.get();
@@ -93,7 +90,8 @@ public class LobbyLogin
 
                 }
 
-                public Map<String, String> getProperties(Map<String, String> challengProperties)
+                @Override
+				public Map<String, String> getProperties(Map<String, String> challengProperties)
                 {
                     Map<String, String> props = new HashMap<String, String>();
                     if(panel.isAnonymous())
@@ -161,13 +159,15 @@ public class LobbyLogin
             ClientMessenger messenger = new ClientMessenger(m_serverProperties.getHost(), m_serverProperties.getPort(), createAccount.getUserName(), mac, new IConnectionLogin()
             {
 
-                public void notifyFailedLogin(String message)
+                @Override
+				public void notifyFailedLogin(String message)
                 {
                     JOptionPane.showMessageDialog(m_parent, message, "Login Failed", JOptionPane.ERROR_MESSAGE);
 
                 }
 
-                public Map<String, String> getProperties(Map<String, String> challengProperties)
+                @Override
+				public Map<String, String> getProperties(Map<String, String> challengProperties)
                 {
                     Map<String, String> props = new HashMap<String, String>();
                     props.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());

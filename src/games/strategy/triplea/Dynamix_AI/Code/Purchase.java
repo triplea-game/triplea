@@ -68,7 +68,8 @@ public class Purchase
             final String message = ai.getName() + " is skipping it's purchase phase, as instructed.";
             DUtils.Log(Level.FINE, message);
             Runnable runner = new Runnable()
-            {public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
+            {@Override
+			public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
             try{SwingUtilities.invokeAndWait(runner);}
             catch (InterruptedException ex){}
             catch (InvocationTargetException ex){}
@@ -90,7 +91,8 @@ public class Purchase
                 final String message = ai.getName() + " use an RCM cheat, and increase their PUs from " + player.getResources().getQuantity(GlobalCenter.GetPUResource()) + " to " + newPUs;
                 DUtils.Log(Level.FINE, message);
                 Runnable runner = new Runnable()
-                {public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
+                {@Override
+				public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
                 try{SwingUtilities.invokeAndWait(runner);}
                 catch (InterruptedException ex){}
                 catch (InvocationTargetException ex){}

@@ -82,6 +82,7 @@ public class InstallMapDialog extends JDialog {
 		final ListCellRenderer oldRenderer = m_gamesList.getCellRenderer(); 
 		m_gamesList.setCellRenderer(new ListCellRenderer() {
 			
+			@Override
 			public Component getListCellRendererComponent(JList list, Object value,
 					int index, boolean isSelected, boolean cellHasFocus) {
 				if(value.toString().trim().length() == 0)
@@ -148,6 +149,7 @@ public class InstallMapDialog extends JDialog {
 	private void setupListeners() {
 		m_cancelButton.addActionListener(new AbstractAction() {
 			
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);				
 			}
@@ -155,6 +157,7 @@ public class InstallMapDialog extends JDialog {
 		
 		m_installButton.addActionListener(new AbstractAction() {
 			
+			@Override
 			public void actionPerformed(ActionEvent event) {
 				install(getSelected());
 			}
@@ -163,6 +166,7 @@ public class InstallMapDialog extends JDialog {
 		
 		m_gamesList.addListSelectionListener(new ListSelectionListener() {
 			
+			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				setWidgetActivation();				
 			}
@@ -336,7 +340,8 @@ public class InstallMapDialog extends JDialog {
 			//scroll to the top of the notes screen
 			SwingUtilities.invokeLater(new Runnable()
 	        {        
-	            public void run()
+	            @Override
+				public void run()
 	            {         
 	            	m_descriptionPane.scrollRectToVisible(new Rectangle(0,0,0,0));
 	            }

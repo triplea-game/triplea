@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.ProductionPanel.Rule;
@@ -10,7 +9,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 

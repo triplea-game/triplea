@@ -77,7 +77,8 @@ public class MapPanel extends JComponent implements MouseListener
         m_gameData.addDataChangeListener(new GameDataChangeListener()
         {
         
-            public void gameDataChanged(Change change)
+            @Override
+			public void gameDataChanged(Change change)
             {
                 updateAllImages();
         
@@ -147,7 +148,8 @@ public class MapPanel extends JComponent implements MouseListener
     /**
      * Draw the current map and pieces.
      */
-    protected void paintComponent(Graphics g) 
+    @Override
+	protected void paintComponent(Graphics g) 
     {   
         g.setColor(Color.white);
         g.fillRect(0, 0, getWidth(), getHeight());
@@ -173,14 +175,18 @@ public class MapPanel extends JComponent implements MouseListener
     }
     
 
-    public void mouseClicked(MouseEvent e) { }
-    public void mouseEntered(MouseEvent e) { }
-    public void mouseExited(MouseEvent e) { }
+    @Override
+	public void mouseClicked(MouseEvent e) { }
+    @Override
+	public void mouseEntered(MouseEvent e) { }
+    @Override
+	public void mouseExited(MouseEvent e) { }
   
     /**
      * Process the mouse button being pressed.
      */
-    public void mousePressed(MouseEvent e) 
+    @Override
+	public void mousePressed(MouseEvent e) 
     { 
     	// After this method has been called, 
         //    the Territory corresponding to the cursor location when the mouse was pressed 
@@ -196,7 +202,8 @@ public class MapPanel extends JComponent implements MouseListener
     /**
      * Process the mouse button being released.
      */
-    public void mouseReleased(MouseEvent e) 
+    @Override
+	public void mouseReleased(MouseEvent e) 
     {}
     
     

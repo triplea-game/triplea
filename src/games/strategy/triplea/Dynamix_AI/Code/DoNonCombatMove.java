@@ -86,7 +86,8 @@ public class DoNonCombatMove
             final String message = ai.getName() + " is skipping it's ncm phase, as instructed.";
             DUtils.Log(Level.FINE, message);
             Runnable runner = new Runnable()
-            {public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
+            {@Override
+			public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
             try{SwingUtilities.invokeAndWait(runner);}
             catch (InterruptedException ex){}
             catch (InvocationTargetException ex){}

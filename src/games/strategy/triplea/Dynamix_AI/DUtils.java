@@ -27,7 +27,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedCalculationCenter;
-import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedCalculationCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.FactoryCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StrategyCenter;
@@ -711,7 +710,8 @@ public class DUtils
     {
         return DSorting.SortListByX(list, new Comparator<Territory>()
         {
-            public int compare(Territory ter1, Territory ter2)
+            @Override
+			public int compare(Territory ter1, Territory ter2)
             {
                 int val1 = DUtils.GetTersThatMatchXThatUnitsOnTerCanAttack(data, ter1, DMatches.territoryIsOwnedByNNEnemy(data, player), player).size();
                 int val2 = DUtils.GetTersThatMatchXThatUnitsOnTerCanAttack(data, ter2, DMatches.territoryIsOwnedByNNEnemy(data, player), player).size();
@@ -1892,7 +1892,8 @@ public class DUtils
         {
             this.base = base;
         }
-        public int compare(Object a, Object b)
+        @Override
+		public int compare(Object a, Object b)
         {
             if ((Double) base.get(a) < (Double) base.get(b))
                 return 1;
@@ -1909,7 +1910,8 @@ public class DUtils
         {
             this.base = base;
         }
-        public int compare(Object a, Object b)
+        @Override
+		public int compare(Object a, Object b)
         {
             if ((Double) base.get(a) > (Double) base.get(b))
                 return 1;

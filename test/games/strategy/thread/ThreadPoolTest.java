@@ -97,7 +97,8 @@ public class ThreadPoolTest extends TestCase
     {
       Runnable r = new Runnable() {
 
-        public void run()
+        @Override
+		public void run()
         {
           threadTestBlock();
         }
@@ -158,7 +159,8 @@ class Task implements Runnable
     return done;
   }
 
-  public void run()
+  @Override
+public void run()
   {
 	try 
 	{
@@ -173,7 +175,8 @@ class Task implements Runnable
 
 class BlockedTask extends Task
 {
-  public void run()
+  @Override
+public void run()
   {
     synchronized(this)
     {

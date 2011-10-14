@@ -44,7 +44,8 @@ public class SpokeInvoke extends Invoke
       return m_invoker;
   }
   
-  public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+  @Override
+public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
   {
       super.readExternal(in);
       m_invoker = new Node();
@@ -52,7 +53,8 @@ public class SpokeInvoke extends Invoke
       
   }
 
-  public void writeExternal(ObjectOutput out) throws IOException
+  @Override
+public void writeExternal(ObjectOutput out) throws IOException
   {
       super.writeExternal(out);
       ((Node)m_invoker).writeExternal(out);

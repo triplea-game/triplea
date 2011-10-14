@@ -62,7 +62,8 @@ public class WrappedInvocationHandler implements InvocationHandler
     }
 
 
-    public Object invoke(Object arg0, Method arg1, Object[] arg2) throws Throwable
+    @Override
+	public Object invoke(Object arg0, Method arg1, Object[] arg2) throws Throwable
     {
         if(shouldHandle(arg1, arg2))
             return handle(arg1, arg2);

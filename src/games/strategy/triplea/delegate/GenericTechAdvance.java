@@ -1,9 +1,7 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
 
 public class GenericTechAdvance extends TechAdvance{
@@ -19,29 +17,33 @@ public class GenericTechAdvance extends TechAdvance{
 		m_name =n;
 		m_advance = t;
 	}
+	@Override
 	public String getName()
     {
         return m_name;
     }
 
-    public String getProperty()
+    @Override
+	public String getProperty()
     {
         if( m_advance != null)
         	return m_advance.getProperty();
         else return m_name;
     }
 
-    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    @Override
+    public void perform(PlayerID id, IDelegateBridge bridge)
     {
     	if( m_advance != null)
-    		m_advance.perform(id, bridge, data);
+            m_advance.perform(id, bridge);
     }
     
     public TechAdvance getAdvance() {
     	return m_advance;
     }
     
-    public boolean hasTech(TechAttachment ta){
+    @Override
+	public boolean hasTech(TechAttachment ta){
     	if(m_advance != null)
     		return m_advance.hasTech(ta);
     	return ta.hasGenericTech(m_name);

@@ -84,27 +84,32 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Seria
   /**
    * Get the units in this territory
    */
-  public UnitCollection getUnits()
+  @Override
+public UnitCollection getUnits()
   {
     return m_units;
   }
 
-  public void notifyChanged()
+  @Override
+public void notifyChanged()
   {
     getData().notifyTerritoryUnitsChanged(this);
   }
 
-  public String toString()
+  @Override
+public String toString()
   {
     return getName();
   }
 
-  public int compareTo(Territory o)
+  @Override
+public int compareTo(Territory o)
   {
     return getName().compareTo(o.getName());
   }
 
-  public String getType()
+  @Override
+public String getType()
   {
     return UnitHolder.TERRITORY;
   }

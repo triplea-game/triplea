@@ -44,6 +44,7 @@ public class ChannelMessengerTest extends TestCase
         super(name);
     }
     
+	@Override
 	public void setUp() throws IOException
 	{
      
@@ -59,6 +60,7 @@ public class ChannelMessengerTest extends TestCase
 		m_clientMessenger = new ChannelMessenger(new UnifiedMessenger(m_client1));
 	}
 	
+	@Override
 	public void tearDown()
 	{
 		try
@@ -241,22 +243,26 @@ class ChannelSubscribor implements IChannelTest
         return m_callCount;
     }
     
-    public void testNoParams()
+    @Override
+	public void testNoParams()
     {
         incrementCount();   
     }
     
-    public void testPrimitives(int a, short b, long c, byte d, boolean e,  float f)
+    @Override
+	public void testPrimitives(int a, short b, long c, byte d, boolean e,  float f)
     {
         incrementCount();   
     }
     
-    public void testString(String a)
+    @Override
+	public void testString(String a)
     {
         incrementCount(); 
     }
     
-    public void testArray(int[] ints, short[] shorts, byte[] bytes, boolean[] bools, float[] floats, Object[] objects)
+    @Override
+	public void testArray(int[] ints, short[] shorts, byte[] bytes, boolean[] bools, float[] floats, Object[] objects)
     {
         incrementCount();
     }

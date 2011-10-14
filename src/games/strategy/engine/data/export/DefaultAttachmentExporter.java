@@ -42,6 +42,7 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
 	/* (non-Javadoc)
 	 * @see games.strategy.engine.data.export.IAttachmentExporter#getAttachmentOptions(games.strategy.engine.data.IAttachment)
 	 */
+	@Override
 	public String getAttachmentOptions(IAttachment attachment) {		
 		StringBuffer xmlfile = new StringBuffer();	
 		Iterator<Field> fields = Arrays.asList(attachment.getClass().getDeclaredFields()).iterator();

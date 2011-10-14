@@ -107,7 +107,8 @@ class AAInMoveUtil implements Serializable
             
             executables.add(new IExecutable()
             {
-                public void execute(ExecutionStack stack, IDelegateBridge bridge)
+                @Override
+				public void execute(ExecutionStack stack, IDelegateBridge bridge)
                 {
                     fireAA(location, targets, currentMove);
                 }
@@ -201,9 +202,10 @@ class AAInMoveUtil implements Serializable
         IExecutable rollDice = new IExecutable()
         {
         
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
-                dice[0] = DiceRoll.rollAA(units, m_bridge, territory, getData(), Matches.UnitIsAAforCombat);
+                dice[0] = DiceRoll.rollAA(units, m_bridge, territory, Matches.UnitIsAAforCombat);
             }
         };
         
@@ -211,7 +213,8 @@ class AAInMoveUtil implements Serializable
         IExecutable selectCasualties = new IExecutable()
         {
         
-            public void execute(ExecutionStack stack, IDelegateBridge bridge)
+            @Override
+			public void execute(ExecutionStack stack, IDelegateBridge bridge)
             {
                 int hitCount = dice[0].getHits();
                 
@@ -238,7 +241,7 @@ class AAInMoveUtil implements Serializable
     {
         Collection<Unit> casualties = null;
         
-        casualties = BattleCalculator.getAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, getData(), battleID, territory, Matches.UnitIsAAforCombat);
+        casualties = BattleCalculator.getAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, battleID, territory, Matches.UnitIsAAforCombat);
        
         getRemotePlayer().reportMessage(casualties.size() + " AA hits in " + territory.getName());
         

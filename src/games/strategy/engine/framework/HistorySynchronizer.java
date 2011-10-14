@@ -66,11 +66,13 @@ public class HistorySynchronizer
     private IGameModifiedChannel m_gameModifiedChannelListener = new IGameModifiedChannel()
     {
 
-        public void gameDataChanged(final Change aChange)
+        @Override
+		public void gameDataChanged(final Change aChange)
         {
             SwingUtilities.invokeLater(new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {
 
                     Change localizedChange = (Change) translateIntoMyData(aChange);
@@ -79,11 +81,13 @@ public class HistorySynchronizer
             });
         }
 
-        public void startHistoryEvent(final String event)
+        @Override
+		public void startHistoryEvent(final String event)
         {
             SwingUtilities.invokeLater(new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {
 
                     m_data.getHistory().getHistoryWriter().startEvent(event);
@@ -92,11 +96,13 @@ public class HistorySynchronizer
 
         }
 
-        public void addChildToEvent(final String text, final Object renderingData)
+        @Override
+		public void addChildToEvent(final String text, final Object renderingData)
         {
             SwingUtilities.invokeLater(new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {
 
                     Object translatedRenderingData = translateIntoMyData(renderingData);
@@ -105,11 +111,13 @@ public class HistorySynchronizer
             });
         }
 
-        public void setRenderingData(final Object renderingData)
+        @Override
+		public void setRenderingData(final Object renderingData)
         {
             SwingUtilities.invokeLater(new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {
 
                     Object translatedRenderingData = translateIntoMyData(renderingData);
@@ -119,7 +127,8 @@ public class HistorySynchronizer
 
         }
 
-        public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, boolean loadedFromSavedGame)
+        @Override
+		public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, boolean loadedFromSavedGame)
         {
             
             //we dont need to advance the game step in this case
@@ -128,7 +137,8 @@ public class HistorySynchronizer
             
             SwingUtilities.invokeLater(new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {
                     if (m_currentRound != round)
                     {
@@ -141,7 +151,8 @@ public class HistorySynchronizer
 
         }
 
-        public void shutDown()
+        @Override
+		public void shutDown()
         {}
 
     };

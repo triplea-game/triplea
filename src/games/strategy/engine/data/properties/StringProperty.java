@@ -33,12 +33,14 @@ public class StringProperty extends AEditableProperty
     m_value = defaultValue;
   }
 
-  public JComponent getEditorComponent()
+  @Override
+public JComponent getEditorComponent()
   {
     final JTextField text =  new JTextField(m_value);
     text.addActionListener( new ActionListener()
     {
-      public void actionPerformed(ActionEvent e)
+      @Override
+	public void actionPerformed(ActionEvent e)
       {
         m_value = text.getText();
       }
@@ -48,7 +50,8 @@ public class StringProperty extends AEditableProperty
     return text;
   }
 
-  public Object getValue()
+  @Override
+public Object getValue()
   {
     return m_value;
   }

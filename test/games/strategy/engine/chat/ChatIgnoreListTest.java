@@ -8,12 +8,14 @@ import junit.framework.TestCase;
 public class ChatIgnoreListTest extends TestCase {
 
 	
+	@Override
 	public void setUp() throws BackingStoreException
 	{
 		//clear this
 		clearStore();
 	}
 
+	@Override
 	public void tearDown() throws BackingStoreException
 	{
 		clearStore();

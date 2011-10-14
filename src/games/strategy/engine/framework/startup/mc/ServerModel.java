@@ -70,7 +70,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     private Observer m_gameSelectorObserver = new Observer()
     {
     
-        public void update(Observable o, Object arg)
+        @Override
+		public void update(Observable o, Object arg)
         {
             gameDataChanged();
         }
@@ -251,22 +252,26 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     private IServerStartupRemote m_serverStartupRemote = new IServerStartupRemote()
     {
 
-      public PlayerListing getPlayerListing()
+      @Override
+	public PlayerListing getPlayerListing()
       {
           return getPlayerListingInternal();
       }
 
-      public void takePlayer(INode who, String playerName)
+      @Override
+	public void takePlayer(INode who, String playerName)
       {
           takePlayerInternal(who, true, playerName);
       }
 
-      public void releasePlayer(INode who, String playerName)
+      @Override
+	public void releasePlayer(INode who, String playerName)
       {
           takePlayerInternal(who, false, playerName);
       }
 
-      public boolean isGameStarted(INode newNode)
+      @Override
+	public boolean isGameStarted(INode newNode)
       {
           if(m_serverLauncher != null)
           {
@@ -354,19 +359,22 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
     
 
-    public void messengerInvalid(IMessenger messenger, Exception reason)
+    @Override
+	public void messengerInvalid(IMessenger messenger, Exception reason)
     {
         JOptionPane.showMessageDialog(m_ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE );
         m_typePanelModel.showSelectType();
     }
     
     
-    public void connectionAdded(INode to)
+    @Override
+	public void connectionAdded(INode to)
     {}
 
 
 
-    public void connectionRemoved(INode node)
+    @Override
+	public void connectionRemoved(INode node)
     {
         //will be handled elsewhere
         if(m_serverLauncher != null)

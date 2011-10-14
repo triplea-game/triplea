@@ -87,7 +87,8 @@ public class MyFormatter
         List<UnitType> sortedList = new ArrayList<UnitType>(map.keySet());
         Comparator<UnitType> comp = new Comparator<UnitType>()
         {
-            public int compare(UnitType u1, UnitType u2)
+            @Override
+			public int compare(UnitType u1, UnitType u2)
             {
 
                 return u1.getName().compareTo(u2.getName());
@@ -281,13 +282,15 @@ class UnitOwner
         this.owner = id;
     }
 
-    public boolean equals(Object o)
+    @Override
+	public boolean equals(Object o)
     {
         UnitOwner other = (UnitOwner) o;
         return other.type.equals(this.type) && other.owner.equals(this.owner);
     }
 
-    public int hashCode()
+    @Override
+	public int hashCode()
     {
         return type.hashCode() ^ owner.hashCode();
     }

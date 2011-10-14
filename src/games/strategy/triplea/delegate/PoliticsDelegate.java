@@ -20,7 +20,6 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseDelegate;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
@@ -46,7 +45,8 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge aBridge)
+    @Override
+	public void start(IDelegateBridge aBridge)
     {
         super.start(aBridge);
         if (games.strategy.triplea.Properties.getTriggers(getData())) {
@@ -58,7 +58,8 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
-    public Class<IPoliticsDelegate> getRemoteType()
+    @Override
+	public Class<IPoliticsDelegate> getRemoteType()
     {
         return IPoliticsDelegate.class;
     }

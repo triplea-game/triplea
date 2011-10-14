@@ -111,7 +111,8 @@ public class StatPanel extends JPanel
         m_statsImage = null;
         m_statsTable = new JTable(m_dataModel) {
 
-            public void print(Graphics g)
+            @Override
+			public void print(Graphics g)
             {
                 if(m_statsImage != null)
                     g.drawImage(m_statsImage, 0, 0, null, null);
@@ -353,7 +354,8 @@ public class StatPanel extends JPanel
 
 
 
-        public void gameDataChanged(Change aChange)
+        @Override
+		public void gameDataChanged(Change aChange)
         {
             synchronized(this)
             {
@@ -362,7 +364,8 @@ public class StatPanel extends JPanel
             
             SwingUtilities.invokeLater(new Runnable()
             {
-                public void run()
+                @Override
+				public void run()
                 {
                     repaint();
                 }
@@ -375,7 +378,8 @@ public class StatPanel extends JPanel
          * Recalcs the underlying data in a lazy manner Limitation: This is not
          * a threadsafe implementation
          */
-        public synchronized Object getValueAt(int row, int col)
+        @Override
+		public synchronized Object getValueAt(int row, int col)
         {
             if (m_isDirty)
             {
@@ -387,7 +391,8 @@ public class StatPanel extends JPanel
         }
 
         // Trivial implementations of required methods
-        public String getColumnName(int col)
+        @Override
+		public String getColumnName(int col)
         {
             if(col == 0)
                 return "Player";
@@ -395,12 +400,14 @@ public class StatPanel extends JPanel
              	m_stats[col -1].getName();
         }
 
-        public int getColumnCount()
+        @Override
+		public int getColumnCount()
         {
             return m_stats.length + 1;
         }
 
-        public synchronized int getRowCount()
+        @Override
+		public synchronized int getRowCount()
         {
             if(!m_isDirty)
                 return m_collectedData.length;
@@ -587,7 +594,8 @@ public class StatPanel extends JPanel
             }
         }
 
-        public String getColumnName(int col)
+        @Override
+		public String getColumnName(int col)
         {
             if (col == 0)
                 return "Technology";
@@ -598,7 +606,8 @@ public class StatPanel extends JPanel
          * Recalcs the underlying data in a lazy manner Limitation: This is not
          * a threadsafe implementation
          */
-        public Object getValueAt(int row, int col)
+        @Override
+		public Object getValueAt(int row, int col)
         {
             if (isDirty)
             {
@@ -610,24 +619,28 @@ public class StatPanel extends JPanel
         }
 
         // Trivial implementations of required methods
-        public int getColumnCount()
+        @Override
+		public int getColumnCount()
         {
             return colList.length + 1;
         }
 
-        public int getRowCount()
+        @Override
+		public int getRowCount()
         {
             return data.length;
         }
 
-        public void gameDataChanged(Change aChange)
+        @Override
+		public void gameDataChanged(Change aChange)
         {
             isDirty = true;
             
             SwingUtilities.invokeLater(new Runnable()
             {
             
-                public void run()
+                @Override
+				public void run()
                 {
                     repaint();
                 }
@@ -650,12 +663,14 @@ public class StatPanel extends JPanel
 class ProductionStat extends AbstractStat
 {
 
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Production";
     }
 
-    public double getValue(PlayerID player, GameData data)
+    @Override
+	public double getValue(PlayerID player, GameData data)
     {
         int rVal = 0; 
         Iterator<Territory> iter = data.getMap().getTerritories().iterator();
@@ -717,12 +732,14 @@ class ProductionStat extends AbstractStat
 class PUStat extends AbstractStat
 {
 
-    public String getName()
+    @Override
+	public String getName()
     {
         return "PUs";
     }
 
-    public double getValue(PlayerID player, GameData data)
+    @Override
+	public double getValue(PlayerID player, GameData data)
     {
         return player.getResources().getQuantity(Constants.PUS);
     }
@@ -732,12 +749,14 @@ class PUStat extends AbstractStat
 class UnitsStat extends AbstractStat
 {
 
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Units";
     }
 
-    public double getValue(PlayerID player, GameData data)
+    @Override
+	public double getValue(PlayerID player, GameData data)
     {
         int rVal = 0; 
         Match<Unit> ownedBy = Matches.unitIsOwnedBy(player);
@@ -755,12 +774,14 @@ class UnitsStat extends AbstractStat
 class TUVStat extends AbstractStat
 {
 
-    public String getName()
+    @Override
+	public String getName()
     {
         return "TUV";
     }
 
-    public double getValue(PlayerID player, GameData data)
+    @Override
+	public double getValue(PlayerID player, GameData data)
     {
         IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(player, data);
         
@@ -780,12 +801,14 @@ class TUVStat extends AbstractStat
 
 class VictoryCityStat extends AbstractStat
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "VC";
     }
 
-    public double getValue(PlayerID player, GameData data)
+    @Override
+	public double getValue(PlayerID player, GameData data)
     {
         int rVal = 0; 
         Iterator<Territory> iter = data.getMap().getTerritories().iterator();
@@ -808,12 +831,14 @@ class VictoryCityStat extends AbstractStat
 
 class VPStat extends AbstractStat
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "VPs";
     }
 
-    public double getValue(PlayerID player, GameData data)
+    @Override
+	public double getValue(PlayerID player, GameData data)
     {
         PlayerAttachment pa = PlayerAttachment.get(player);
         if(pa != null)
@@ -824,12 +849,14 @@ class VPStat extends AbstractStat
 
 class TechCountStat extends AbstractStat
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Techs";
     }
 
-    public double getValue(PlayerID player, GameData data)
+    @Override
+	public double getValue(PlayerID player, GameData data)
     {
         int count = 0;
         TechAttachment ta = TechAttachment.get(player);
@@ -882,12 +909,14 @@ class TechCountStat extends AbstractStat
 
 class TechTokenStat extends AbstractStat
 {
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Resource: " + "Tech Tokens";
     }
 
-    public double getValue(PlayerID player, GameData data)
+    @Override
+	public double getValue(PlayerID player, GameData data)
     {
         return player.getResources().getQuantity(Constants.TECH_TOKENS);
     }
@@ -901,12 +930,14 @@ class GenericResourceStat extends AbstractStat
 		m_name = name;
 	}
 	
-    public String getName()
+    @Override
+	public String getName()
     {
         return "Resource: " + m_name;
     }
 
-    public double getValue(PlayerID player, GameData data)
+    @Override
+	public double getValue(PlayerID player, GameData data)
     {
         return player.getResources().getQuantity(m_name);
     }
@@ -920,12 +951,14 @@ class GenericTechNameStat extends AbstractStat
 		m_ta = ta;
 	}
 	
-    public String getName()
+    @Override
+	public String getName()
     {
         return "TechAdvance: " + m_ta.getName();
     }
 
-    public double getValue(PlayerID player, GameData data)
+    @Override
+	public double getValue(PlayerID player, GameData data)
     {
     	if (m_ta.hasTech(TechAttachment.get(player)))
     		return 1;
@@ -941,12 +974,14 @@ class GenericUnitNameStat extends AbstractStat
 		m_ut = ut;
 	}
 	
-    public String getName()
+    @Override
+	public String getName()
     {
         return "UnitType: " + m_ut.getName();
     }
 
-    public double getValue(PlayerID player, GameData data)
+    @Override
+	public double getValue(PlayerID player, GameData data)
     {
         int rVal = 0; 
         Match<Unit> ownedBy = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(m_ut));
@@ -974,7 +1009,8 @@ class PlayerOrderComparator implements Comparator<PlayerID>
 	/**
 	 * sort based on first step that isn't a bid related step.
 	 */
-    public int compare(PlayerID p1, PlayerID p2)
+    @Override
+	public int compare(PlayerID p1, PlayerID p2)
     {
         Iterator<GameStep> iter = m_data.getSequence().iterator();
         

@@ -74,7 +74,8 @@ public class NIOReader
         Thread t = new Thread(new Runnable()
         {
         
-            public void run()
+            @Override
+			public void run()
             {
                 loop();
             }

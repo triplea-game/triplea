@@ -113,16 +113,19 @@ public class Version implements Serializable, Comparable
 		
 	}
 
+	@Override
 	public boolean equals(Object o)
 	{
 		return compareTo(o) == 0;
 	}
 
+	@Override
 	public int hashCode()
 	{
 		return this.toString().hashCode();
 	}
 	
+	@Override
 	public int compareTo(Object o)
 	{
 		if(o == null)
@@ -150,6 +153,7 @@ public class Version implements Serializable, Comparable
 			return 0;
 	}
 	
+	@Override
 	public String toString()
 	{
 		return m_major + "." + m_minor + ((m_point != 0 || m_micro != 0) ? "." + m_point : "") + (m_micro != 0 ? "." + m_micro : "");

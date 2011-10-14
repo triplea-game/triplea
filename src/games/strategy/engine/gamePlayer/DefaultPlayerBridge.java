@@ -55,12 +55,14 @@ public class DefaultPlayerBridge implements IPlayerBridge
     /**
      * Get the name of the current step being executed.
      */
-    public String getStepName()
+    @Override
+	public String getStepName()
     {
         return m_currentStep;
     }
     
-    public boolean isGameOver()
+    @Override
+	public boolean isGameOver()
     {
         return m_game.isGameOver();
     }
@@ -68,14 +70,16 @@ public class DefaultPlayerBridge implements IPlayerBridge
     /**
      * Return the game data
      */
-    public GameData getGameData()
+    @Override
+	public GameData getGameData()
     {
         return m_game.getData();
     }
     
     private GameStepListener m_gameStepListener = new GameStepListener()
     {
-        public void gameStepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
+        @Override
+		public void gameStepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
         {
             if(stepName == null)
                 throw new IllegalArgumentException("Null step");
@@ -91,7 +95,8 @@ public class DefaultPlayerBridge implements IPlayerBridge
     /* 
      * @see games.strategy.engine.gamePlayer.PlayerBridge#getRemote()
      */
-    public IRemote getRemote()
+    @Override
+	public IRemote getRemote()
     {
         if(m_game.isGameOver())
             throw new GameOverException("Game Over");
@@ -114,7 +119,8 @@ public class DefaultPlayerBridge implements IPlayerBridge
         }
     }
 
-    public IRemote getRemote(String name)
+    @Override
+	public IRemote getRemote(String name)
     {
         if(m_game.isGameOver())
             throw new GameOverException("Game Over");
@@ -140,7 +146,8 @@ public class DefaultPlayerBridge implements IPlayerBridge
         }
     }
     
-    public Properties getStepProperties()
+    @Override
+	public Properties getStepProperties()
     {
         return m_game.getData().getSequence().getStep().getProperties();
     }
@@ -168,7 +175,8 @@ class GameOverInvocationHandler implements InvocationHandler
     }
 
     
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+    @Override
+	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
     {
         try
         {

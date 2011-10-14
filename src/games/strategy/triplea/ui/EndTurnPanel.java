@@ -73,14 +73,16 @@ public class EndTurnPanel extends ActionPanel
         m_actionLabel = new JLabel();
         m_viewAction = new AbstractAction("View Turn Summary") {
 
-            public void actionPerformed(ActionEvent event)
+            @Override
+			public void actionPerformed(ActionEvent event)
             {
                 m_historyLog.setVisible(true);
             }
         };
         m_postAction = new AbstractAction("Post Turn Summary") {
 
-            public void actionPerformed(ActionEvent event)
+            @Override
+			public void actionPerformed(ActionEvent event)
             {
                 
                 String message = "";
@@ -102,7 +104,8 @@ public class EndTurnPanel extends ActionPanel
                     m_postButton.setEnabled(false);
                     Runnable t = new Runnable() {
 
-                        public void run()
+                        @Override
+						public void run()
                         {
                             boolean postOk = true;
                             ProgressWindow progressWindow = new ProgressWindow(m_frame, "Posting Turn Summary...");
@@ -221,28 +224,32 @@ public class EndTurnPanel extends ActionPanel
         };
         m_includeTerritoryAction = new AbstractAction("Include territory summary") {
 
-            public void actionPerformed(ActionEvent event)
+            @Override
+			public void actionPerformed(ActionEvent event)
             {
                 updateHistoryLog();
             }
         };
         m_includeProductionAction = new AbstractAction("Include production summary") {
 
-            public void actionPerformed(ActionEvent event)
+            @Override
+			public void actionPerformed(ActionEvent event)
             {
                 updateHistoryLog();
             }
         };
         m_showDetailsAction = new AbstractAction("Show dice/battle details") {
 
-            public void actionPerformed(ActionEvent event)
+            @Override
+			public void actionPerformed(ActionEvent event)
             {
                 updateHistoryLog();
             }
         };
         m_doneAction = new AbstractAction("Done") {
 
-            public void actionPerformed(ActionEvent event)
+            @Override
+			public void actionPerformed(ActionEvent event)
             {
                 release();
             }
@@ -252,12 +259,14 @@ public class EndTurnPanel extends ActionPanel
         m_showDetailsCheckbox = new JCheckBox(m_showDetailsAction);
     }
 
-    public void display(final PlayerID id)
+    @Override
+	public void display(final PlayerID id)
     {
         super.display(id);
         SwingUtilities.invokeLater(new Runnable() {
 
-            public void run()
+            @Override
+			public void run()
             {
                 m_actionLabel.setText(id.getName() + " Turn Summary");
                 // defer componenet layout until waitForEndTurn()
@@ -266,7 +275,8 @@ public class EndTurnPanel extends ActionPanel
         });
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         return "EndTurnPanel";
     }
@@ -299,7 +309,8 @@ public class EndTurnPanel extends ActionPanel
         final boolean hasPosted = delegate.getHasPostedTurnSummary();
         SwingUtilities.invokeLater(new Runnable() {
 
-            public void run()
+            @Override
+			public void run()
             {
                 // only show widgets if there are PBEM messengers
                 removeAll();

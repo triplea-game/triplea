@@ -82,7 +82,8 @@ public class PlayerListing implements Serializable
     return m_gameVersion;
   }
 
-  public String toString()
+  @Override
+public String toString()
   {
     return "PlayerListingMessage:" + m_playerListing;
   }

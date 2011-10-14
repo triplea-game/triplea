@@ -73,7 +73,8 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID>
 		return m_players.values();
 	}
 
-    public Iterator<PlayerID> iterator()
+    @Override
+	public Iterator<PlayerID> iterator()
     {
         return getPlayers().iterator();
     }

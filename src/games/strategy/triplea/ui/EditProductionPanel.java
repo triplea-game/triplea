@@ -53,7 +53,8 @@ public class EditProductionPanel extends ProductionPanel
         // no limits, so do nothing here
     }
 
-    protected void calculateLimits()
+    @Override
+	protected void calculateLimits()
     {
         Iterator<Rule> iter = getRules().iterator();
         while (iter.hasNext())

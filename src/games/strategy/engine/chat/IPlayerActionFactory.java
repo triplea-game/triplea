@@ -28,7 +28,8 @@ public interface IPlayerActionFactory
     public static final IPlayerActionFactory NULL_FACTORY = new IPlayerActionFactory()
     {
     
-        public List<Action> mouseOnPlayer(INode clickedOn)
+        @Override
+		public List<Action> mouseOnPlayer(INode clickedOn)
         {
             return Collections.emptyList();
         }

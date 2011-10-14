@@ -60,7 +60,8 @@ public class Place
             final String message = ai.getName() + " is skipping it's placement phase and destroying its " + player.getResources().getQuantity(GlobalCenter.GetPUResource()) + " PU's, as instructed.";
             DUtils.Log(Level.FINE, message);
             Runnable runner = new Runnable()
-            {public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
+            {@Override
+			public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
             try{SwingUtilities.invokeAndWait(runner);}
             catch (InterruptedException ex){}
             catch (InvocationTargetException ex){}
@@ -111,7 +112,8 @@ public class Place
                 DUtils.Log(Level.FINE, message);
                 Runnable runner = new Runnable()
                 {
-                    public void run()
+                    @Override
+					public void run()
                     {
                         CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);
                         CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().setRenderingData(fHackedUnits); //Let the user see the hacked units in the sidebar
@@ -204,7 +206,8 @@ public class Place
                     final Dynamix_AI fAI = ai;
                     Runnable runner = new Runnable()
                     {
-                        public void run()
+                        @Override
+						public void run()
                         {
                             CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(fAI.getName() + " use a UPM cheat, and place " + fHackedUnits.size() + " units on " + fPlaceLoc.getName());
                             CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().setRenderingData(fHackedUnits); //Let the user see the hacked units in the sidebar
@@ -234,7 +237,8 @@ public class Place
                 final String message = ai.getName() + " use an RCI cheat, and increase their PUs from " + player.getResources().getQuantity(GlobalCenter.GetPUResource()) + " to " + newPUs;
                 DUtils.Log(Level.FINE, message);
                 Runnable runner = new Runnable()
-                {public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
+                {@Override
+				public void run(){CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);}};
                 try{SwingUtilities.invokeAndWait(runner);}
                 catch (InterruptedException ex){}
                 catch (InvocationTargetException ex){}

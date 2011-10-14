@@ -34,7 +34,6 @@ import games.strategy.util.MD5Crypt;
 import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ModeratorController implements IModeratorController
@@ -57,7 +56,8 @@ public class ModeratorController implements IModeratorController
     {
         m_messenger = messenger;
     }
-    public void banUsername(INode node, Date banExpires)
+    @Override
+	public void banUsername(INode node, Date banExpires)
     {
         assertUserIsAdmin();
         if(isPlayerAdmin(node))
@@ -72,7 +72,8 @@ public class ModeratorController implements IModeratorController
                 , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)
                 , banExpires.toString()));
     }
-    public void banIp(INode node, Date banExpires)
+    @Override
+	public void banIp(INode node, Date banExpires)
     {
         assertUserIsAdmin();
         if(isPlayerAdmin(node))
@@ -87,7 +88,8 @@ public class ModeratorController implements IModeratorController
                 , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)
                 , banExpires.toString()));
     }
-    public void banMac(INode node, Date banExpires)
+    @Override
+	public void banMac(INode node, Date banExpires)
     {
         assertUserIsAdmin();
         if(isPlayerAdmin(node))
@@ -102,7 +104,8 @@ public class ModeratorController implements IModeratorController
                 , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)
                 , banExpires.toString()));
     }
-    public void muteUsername(INode node, Date muteExpires)
+    @Override
+	public void muteUsername(INode node, Date muteExpires)
     {
         assertUserIsAdmin();
         if(isPlayerAdmin(node))
@@ -118,7 +121,8 @@ public class ModeratorController implements IModeratorController
                 , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)
                 , muteExpires.toString()));
     }
-    public void muteIp(INode node, Date muteExpires)
+    @Override
+	public void muteIp(INode node, Date muteExpires)
     {
         assertUserIsAdmin();
         if(isPlayerAdmin(node))
@@ -134,7 +138,8 @@ public class ModeratorController implements IModeratorController
                 , modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)
                 , muteExpires.toString()));
     }
-    public void muteMac(INode node, Date muteExpires)
+    @Override
+	public void muteMac(INode node, Date muteExpires)
     {
         assertUserIsAdmin();
         if(isPlayerAdmin(node))
@@ -155,7 +160,8 @@ public class ModeratorController implements IModeratorController
         return ServerMessenger.getInstance().GetPlayerMac(node.getName());
     }
 
-    public void boot(INode node)
+    @Override
+	public void boot(INode node)
     {
         assertUserIsAdmin();
         if(!MessageContext.getSender().getName().equals("Admin") && isPlayerAdmin(node)) //Let the master lobby administrator boot admins
@@ -182,7 +188,8 @@ public class ModeratorController implements IModeratorController
         }            
     }
     
-    public boolean isAdmin() 
+    @Override
+	public boolean isAdmin() 
     {
         INode node = MessageContext.getSender();
         return isPlayerAdmin(node);
@@ -204,7 +211,8 @@ public class ModeratorController implements IModeratorController
         return name;
     }
     
-    public String getInformationOn(INode node)
+    @Override
+	public String getInformationOn(INode node)
     {
         assertUserIsAdmin();
         
@@ -246,7 +254,8 @@ public class ModeratorController implements IModeratorController
         return builder.toString();
     }
 
-    public String setPassword(INode node, String hashedPassword)
+    @Override
+	public String setPassword(INode node, String hashedPassword)
     {
         assertUserIsAdmin();
         DBUserController controller = new DBUserController();

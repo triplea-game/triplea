@@ -10,8 +10,6 @@ import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.net.BareBonesBrowserLaunch;
-import games.strategy.ui.Util;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -29,17 +27,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
-import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
-import com.apple.eawt.Application;
-import com.apple.eawt.ApplicationAdapter;
-import com.apple.eawt.ApplicationEvent;
 
 public class MetaSetupPanel extends SetupPanel
 {
@@ -106,7 +98,8 @@ public class MetaSetupPanel extends SetupPanel
         m_startLocal.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 m_model.showLocal();
             }
@@ -116,7 +109,8 @@ public class MetaSetupPanel extends SetupPanel
         m_startPBEM.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 m_model.showPBEM();
             }
@@ -126,7 +120,8 @@ public class MetaSetupPanel extends SetupPanel
         m_hostGame.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 m_model.showServer(MetaSetupPanel.this);
             }
@@ -136,7 +131,8 @@ public class MetaSetupPanel extends SetupPanel
         m_connectToHostedGame.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 m_model.showClient(MetaSetupPanel.this);
             }
@@ -145,7 +141,8 @@ public class MetaSetupPanel extends SetupPanel
         m_connectToLobby.addActionListener(new ActionListener()
         {
         
-            public void actionPerformed(ActionEvent e)
+            @Override
+			public void actionPerformed(ActionEvent e)
             {
                 connectToLobby();
         
@@ -154,18 +151,21 @@ public class MetaSetupPanel extends SetupPanel
         });
         
         m_downloadMaps.addActionListener(new ActionListener() {			
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				downloadMaps();				
 			}
 		});
         
         m_ruleBook.addActionListener(new ActionListener() {			
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				ruleBook();				
 			}
 		});
         
         m_about.addActionListener(new ActionListener() {			
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				about();				
 			}
@@ -342,7 +342,8 @@ public class MetaSetupPanel extends SetupPanel
         
         Runnable r = new Runnable()
         {
-            public void run()
+            @Override
+			public void run()
             {
                 for(int i =0; i < 5; i++)
                 {
@@ -372,7 +373,8 @@ public class MetaSetupPanel extends SetupPanel
             {
                 Thread t1 = new Thread(new Runnable()
                 {
-                    public void run()
+                    @Override
+					public void run()
                     {
                         ref.set(new LobbyServerProperties(serverPropsURL));
                         latch.countDown();

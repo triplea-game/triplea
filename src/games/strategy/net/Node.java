@@ -79,7 +79,8 @@ public class Node implements INode, Externalizable
     m_port = port;
   }
 
-  public String getName()
+  @Override
+public String getName()
   {
     return m_name;
   }
@@ -88,7 +89,8 @@ public class Node implements INode, Externalizable
    * Node equality is done based on network adress/port.
    * The name is not part of the node identity. 
    */
-  public boolean equals(Object obj)
+  @Override
+public boolean equals(Object obj)
   {
     if(obj == this)
         return true;
@@ -104,27 +106,32 @@ public class Node implements INode, Externalizable
 
   }
 
-  public int hashCode()
+  @Override
+public int hashCode()
   {
     return  (37 * m_port) +  m_address.hashCode();
   }
 
-  public String toString()
+  @Override
+public String toString()
   {
     return m_name + " port:" + m_port + " ip:" + m_address.getHostAddress();
   }
 
-  public int getPort()
+  @Override
+public int getPort()
   {
     return m_port;
   }
 
-  public InetAddress getAddress()
+  @Override
+public InetAddress getAddress()
   {
     return m_address;
   }
 
-  public void readExternal(ObjectInput in) throws IOException,
+  @Override
+public void readExternal(ObjectInput in) throws IOException,
       ClassNotFoundException
   {
     m_name = (String) in.readUTF();
@@ -140,7 +147,8 @@ public class Node implements INode, Externalizable
     m_address = InetAddress.getByAddress(bytes);
   }
 
-  public void writeExternal(ObjectOutput out) throws IOException
+  @Override
+public void writeExternal(ObjectOutput out) throws IOException
   {
     out.writeUTF(m_name);
     out.writeInt(m_port);
@@ -148,7 +156,8 @@ public class Node implements INode, Externalizable
     out.write(m_address.getAddress());
   }
 
-  public int compareTo(INode o)
+  @Override
+public int compareTo(INode o)
   {
       if(o == null)
           return -1;
@@ -172,7 +181,8 @@ public class Node implements INode, Externalizable
   }
 
 
-    public InetSocketAddress getSocketAddress()
+    @Override
+	public InetSocketAddress getSocketAddress()
     {
         return new InetSocketAddress(m_address, m_port);
     }

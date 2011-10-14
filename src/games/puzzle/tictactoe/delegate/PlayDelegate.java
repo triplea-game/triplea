@@ -21,7 +21,6 @@ import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -41,7 +40,8 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(IDelegateBridge bridge)
+    @Override
+	public void start(IDelegateBridge bridge)
     {
         super.start(bridge);
         
@@ -55,7 +55,8 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
      *  
      * @param play <code>Territory</code> where the play should occur
      */
-    public String play(Territory play)
+    @Override
+	public String play(Territory play)
     {   
         String error = isValidPlay(play);
         if (error != null)
@@ -113,7 +114,8 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
      * If this class implements an interface which inherits from IRemote, returns the class of that interface.
      * Otherwise, returns null.
      */
-    public Class<? extends IRemote> getRemoteType()
+    @Override
+	public Class<? extends IRemote> getRemoteType()
     {
         // This class implements IPlayDelegate, which inherits from IRemote.
         return IPlayDelegate.class;

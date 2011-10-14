@@ -68,6 +68,7 @@ public class MessageHeader
 		return m_message;
 	}
 	
+	@Override
 	public String toString()
 	{
 		return "Message header. msg:" + m_message + " to:" + m_for + " from:" + m_from;
