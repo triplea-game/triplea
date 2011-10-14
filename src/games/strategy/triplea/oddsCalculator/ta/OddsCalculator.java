@@ -69,14 +69,15 @@ public class OddsCalculator
 		m_defender = m_data.getPlayerList().getPlayerID(defender.getName());
 		m_location = m_data.getMap().getTerritory(location.getName());
 		
-		m_attackingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(attacking, data);
-		m_defendingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(defending, data);
-		m_bombardingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(bombarding, data);
+		m_attackingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(attacking, m_data);
+		m_defendingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(defending, m_data);
+		m_bombardingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(bombarding, m_data);
 		
-		new ChangePerformer(m_data).perform(ChangeFactory.removeUnits(m_location, m_location.getUnits().getUnits()));
-		new ChangePerformer(m_data).perform(ChangeFactory.addUnits(m_location, m_attackingUnits));
-		new ChangePerformer(m_data).perform(ChangeFactory.addUnits(m_location, m_defendingUnits));
-		
+        ChangePerformer changePerformer = new ChangePerformer(m_data);
+        changePerformer.perform(ChangeFactory.removeUnits(m_location, m_location.getUnits().getUnits()));
+        changePerformer.perform(ChangeFactory.addUnits(m_location, m_attackingUnits));
+        changePerformer.perform(ChangeFactory.addUnits(m_location, m_defendingUnits));
+        
 		return calculate(runCount);
 		
 	}
@@ -353,7 +354,7 @@ class DummyPlayer extends AbstractAI
 		    //if it appears twice it then it both damaged and killed
 		    if(unit.getHits() == 0 && twoHit && !rDamaged.contains(unit))
 		        rDamaged.add(unit);
-		    else 
+		    else
 		        rKilled.add(unit);
 		}*/
 

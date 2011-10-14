@@ -1,4 +1,6 @@
 Changes for 1.4
+* Removing one memory leak from battle calc, it was recording the units is created to game data, inflating the savegame size. (veqryn & frigoref)
+
 * Source code formatting on entire engine. (veqryn)
 
 * Using cleanup to add @Override to anything that overrides something. (veqryn)
