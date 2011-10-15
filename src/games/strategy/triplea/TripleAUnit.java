@@ -433,9 +433,9 @@ public class TripleAUnit extends Unit
 		return Math.max(0, currentDamage - maxOperationalDamage);
 	}
 	
-	public static int getProductionPotentialOfTerritory(Collection<Unit> unitsAtStartOfStepInTerritory, Territory producer, PlayerID player, GameData data, boolean accountForDamage)
+	public static int getProductionPotentialOfTerritory(Collection<Unit> unitsAtStartOfStepInTerritory, Territory producer, PlayerID player, GameData data, boolean accountForDamage, boolean mathMaxZero)
 	{
-		return getHowMuchCanUnitProduce(getBiggestProducer(unitsAtStartOfStepInTerritory, producer, player, data, accountForDamage), producer, player, data, accountForDamage);
+		return getHowMuchCanUnitProduce(getBiggestProducer(unitsAtStartOfStepInTerritory, producer, player, data, accountForDamage), producer, player, data, accountForDamage, mathMaxZero);
 	}
 	
 	public static Unit getBiggestProducer(Collection<Unit> units, Territory producer, PlayerID player, GameData data, boolean accountForDamage)
@@ -448,7 +448,7 @@ public class TripleAUnit extends Unit
 		int highestCapacity = Integer.MIN_VALUE;
 		for (Unit u : factories)
 		{
-			int capacity = getHowMuchCanUnitProduce(u, producer, player, data, accountForDamage);
+			int capacity = getHowMuchCanUnitProduce(u, producer, player, data, accountForDamage, false);
 			productionPotential.put(u, capacity);
 			if (capacity > highestCapacity)
 			{
@@ -459,7 +459,7 @@ public class TripleAUnit extends Unit
 		return highestUnit;
 	}
 	
-	public static int getHowMuchCanUnitProduce(Unit u, Territory producer, PlayerID player, GameData data, boolean accountForDamage)
+	public static int getHowMuchCanUnitProduce(Unit u, Territory producer, PlayerID player, GameData data, boolean accountForDamage, boolean mathMaxZero)
 	{
 		if (u == null)
 			return 0;
@@ -526,6 +526,9 @@ public class TripleAUnit extends Unit
 		if (isIncreasedFactoryProduction && territoryProduction > 2)
 			productionCapacity += 2;
 		
-		return Math.max(0, productionCapacity);
+		if (mathMaxZero)
+			return Math.max(0, productionCapacity);
+		else
+			return productionCapacity;
 	}
 }

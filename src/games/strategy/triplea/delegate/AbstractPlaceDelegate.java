@@ -813,7 +813,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		}
 		
 		// getHowMuchCanUnitProduce accounts for IncreasedFactoryProduction, but does not account for maxConstructions
-		production = TripleAUnit.getProductionPotentialOfTerritory(unitsAtStartOfStepInTerritory(producer), producer, player, getData(), true);
+		production = TripleAUnit.getProductionPotentialOfTerritory(unitsAtStartOfStepInTerritory(producer), producer, player, getData(), true, true);
 		
 		// increase the production by the number of constructions allowed
 		if (maxConstructions > 0)

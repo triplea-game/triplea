@@ -283,8 +283,8 @@ public class Purchase
 						{
 							if (unitToFix == null || !unitToFix.getType().equals((UnitType) rrule.getResults().keySet().iterator().next()))
 								continue;
-							int repairAmount = TripleAUnit.getHowMuchCanUnitProduce(unitToFix, fixTerr, player, data, false)
-										- TripleAUnit.getHowMuchCanUnitProduce(unitToFix, fixTerr, player, data, true);
+							int repairAmount = TripleAUnit.getHowMuchCanUnitProduce(unitToFix, fixTerr, player, data, false, false)
+										- TripleAUnit.getHowMuchCanUnitProduce(unitToFix, fixTerr, player, data, true, false);
 							repairAmount = Math.min(repairAmount, origPUs / 4); // Never spend more than one-fourth of all the player's money on a factory repair
 							repairAmount = Math.min(repairAmount, maxPUsWeWantToSpendOnRepairs - totalRepairCosts); // Don't let the total repair costs equal more than the 'total max spend' amount that was set earlier to half of total PUs
 							repairAmount = Math.min(repairAmount, PUsToSpend); // Don't spend more PUs than we have!

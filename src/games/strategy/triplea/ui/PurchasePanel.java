@@ -239,7 +239,7 @@ public class PurchasePanel extends ActionPanel
 			{
 				for (Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getData(), getCurrentPlayer())))
 				{
-					totalProd += TripleAUnit.getProductionPotentialOfTerritory(t.getUnits().getUnits(), t, getCurrentPlayer(), getData(), true);
+					totalProd += TripleAUnit.getProductionPotentialOfTerritory(t.getUnits().getUnits(), t, getCurrentPlayer(), getData(), true, true);
 				}
 			} finally
 			{

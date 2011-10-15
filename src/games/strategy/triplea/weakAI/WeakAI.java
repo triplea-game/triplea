@@ -491,7 +491,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		             Iterator<CanalAttachment> iter = canalAttachments.iterator();
 		             while(iter.hasNext() )
 		             {
-		                 CanalAttachment canalAttachment = iter.next();                     
+		                 CanalAttachment canalAttachment = iter.next();
 		                 if(!Match.allMatch( canalAttachment.getLandTerritories(), Matches.isTerritoryAllied(player, data)))
 		                     return false;
 		             }
@@ -1203,16 +1203,16 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				unitsThatAreDisabledNeedingRepair.addAll(Match.getMatches(fixTerr.getUnits().getUnits(), ourDisabled));
 				
 				TripleAUnit taUnit = (TripleAUnit) possibleFactoryNeedingRepair;
-				maxProduction += TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, false);
+				maxProduction += TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, false, true);
 				diff = taUnit.getUnitDamage();
 				totalDamage += diff;
 				if (fixTerr == capitol)
 				{
 					capDamage += diff;
-					capProduction = Math.max(0, TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true));
+					capProduction = TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true, true);
 					capUnit = possibleFactoryNeedingRepair;
 				}
-				currentProduction += Math.max(0, TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true));
+				currentProduction += TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true, true);
 			}
 			rfactories.remove(capitol);
 			unitsThatCanProduceNeedingRepair.remove(capUnit);
@@ -1228,7 +1228,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						continue;
 					TripleAUnit taUnit = (TripleAUnit) capUnit;
 					diff = taUnit.getUnitDamage();
-					int unitProductionAllowNegative = TripleAUnit.getHowMuchCanUnitProduce(capUnit, capUnit.getTerritoryUnitIsIn(), player, data, false) - diff;
+					int unitProductionAllowNegative = TripleAUnit.getHowMuchCanUnitProduce(capUnit, capUnit.getTerritoryUnitIsIn(), player, data, false, true) - diff;
 					if (!rfactories.isEmpty())
 						diff = Math.min(diff, (maxUnits / 2 - unitProductionAllowNegative) + 1);
 					else
@@ -1267,7 +1267,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						
 						TripleAUnit taUnit = (TripleAUnit) fixUnit;
 						diff = taUnit.getUnitDamage();
-						int unitProductionAllowNegative = TripleAUnit.getHowMuchCanUnitProduce(fixUnit, fixUnit.getTerritoryUnitIsIn(), player, data, false) - diff;
+						int unitProductionAllowNegative = TripleAUnit.getHowMuchCanUnitProduce(fixUnit, fixUnit.getTerritoryUnitIsIn(), player, data, false, true) - diff;
 						
 						if (i == 0)
 						{
@@ -1485,7 +1485,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		    //if it appears twice it then it both damaged and killed
 		    if(unit.getHits() == 0 && twoHit && !rDamaged.contains(unit))
 		        rDamaged.add(unit);
-		    else 
+		    else
 		        rKilled.add(unit);
 		}*/
 
@@ -1494,7 +1494,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
 	 */
 	@Override
@@ -1504,7 +1504,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
 	 */
 	@Override
@@ -1520,7 +1520,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			return Match.getMatches(units, Matches.UnitCanProduceUnits).iterator().next();
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection, games.strategy.engine.data.Territory)
 	 */
 	@Override
@@ -1535,7 +1535,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		return rVal;
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
 	 */
 	@Override

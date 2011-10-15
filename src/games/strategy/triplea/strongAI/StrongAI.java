@@ -8294,16 +8294,16 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				unitsThatAreDisabledNeedingRepair.addAll(Match.getMatches(fixTerr.getUnits().getUnits(), ourDisabled));
 				
 				TripleAUnit taUnit = (TripleAUnit) possibleFactoryNeedingRepair;
-				maxProduction += TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, false);
+				maxProduction += TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, false, true);
 				diff = taUnit.getUnitDamage();
 				totalDamage += diff;
 				if (fixTerr == capitol)
 				{
 					capDamage += diff;
-					capProduction = Math.max(0, TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true));
+					capProduction = TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true, true);
 					capUnit = possibleFactoryNeedingRepair;
 				}
-				currentProduction += Math.max(0, TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true));
+				currentProduction += TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true, true);
 			}
 			rfactories.remove(capitol);
 			unitsThatCanProduceNeedingRepair.remove(capUnit);
@@ -8319,7 +8319,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						continue;
 					TripleAUnit taUnit = (TripleAUnit) capUnit;
 					diff = taUnit.getUnitDamage();
-					int unitProductionAllowNegative = TripleAUnit.getHowMuchCanUnitProduce(capUnit, capUnit.getTerritoryUnitIsIn(), player, data, false) - diff;
+					int unitProductionAllowNegative = TripleAUnit.getHowMuchCanUnitProduce(capUnit, capUnit.getTerritoryUnitIsIn(), player, data, false, true) - diff;
 					if (!rfactories.isEmpty())
 						diff = Math.min(diff, (maxUnits / 2 - unitProductionAllowNegative) + 1);
 					else
@@ -8358,7 +8358,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						
 						TripleAUnit taUnit = (TripleAUnit) fixUnit;
 						diff = taUnit.getUnitDamage();
-						int unitProductionAllowNegative = TripleAUnit.getHowMuchCanUnitProduce(fixUnit, fixUnit.getTerritoryUnitIsIn(), player, data, false) - diff;
+						int unitProductionAllowNegative = TripleAUnit.getHowMuchCanUnitProduce(fixUnit, fixUnit.getTerritoryUnitIsIn(), player, data, false, true) - diff;
 						
 						if (i == 0)
 						{
