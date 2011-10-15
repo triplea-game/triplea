@@ -2602,7 +2602,7 @@ public class Matches
 			@Override
 			public boolean match(Unit u)
 			{
-				if (u.equals(null))
+				if (u == null)
 					return false;
 				if (list.isEmpty())
 					return true;

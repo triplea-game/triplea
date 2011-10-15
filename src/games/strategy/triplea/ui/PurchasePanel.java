@@ -29,7 +29,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.RulesAttachment;
-import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -278,13 +277,13 @@ public class PurchasePanel extends ActionPanel
 	}
 	};
 	
-	private boolean isIncreasedFactoryProduction(PlayerID player)
+	/*private boolean isIncreasedFactoryProduction(PlayerID player)
 	{
 		TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		if (ta == null)
 			return false;
 		return ta.hasIncreasedFactoryProduction();
-	}
+	}*/
 	
 	private boolean isUnlimitedProduction(PlayerID player)
 	{

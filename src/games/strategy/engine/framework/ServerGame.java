@@ -382,10 +382,10 @@ public class ServerGame implements IGame
 				m_remoteMessenger.unregisterRemote(getRemoteName(gp.getID(), m_data));
 			}
 			
-			Iterator delegateIter = m_data.getDelegateList().iterator();
+			Iterator<IDelegate> delegateIter = m_data.getDelegateList().iterator();
 			while (delegateIter.hasNext())
 			{
-				IDelegate delegate = (IDelegate) delegateIter.next();
+				IDelegate delegate = delegateIter.next();
 				
 				Class<? extends IRemote> remoteType = delegate.getRemoteType();
 				// if its null then it shouldnt be added as an IRemote
@@ -762,7 +762,7 @@ public class ServerGame implements IGame
 		m_delegateRandomSource = null;
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.engine.framework.IGame#getVault()
 	 */
 	@Override
@@ -833,7 +833,7 @@ public class ServerGame implements IGame
 		
 	};
 	
-	/* 
+	/*
 	 * @see games.strategy.engine.framework.IGame#addDisplay(games.strategy.engine.display.IDisplay)
 	 */
 	@Override
@@ -844,7 +844,7 @@ public class ServerGame implements IGame
 		
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.engine.framework.IGame#removeDisplay(games.strategy.engine.display.IDisplay)
 	 */
 	@Override

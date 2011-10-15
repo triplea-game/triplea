@@ -526,6 +526,6 @@ public class TripleAUnit extends Unit
 		if (isIncreasedFactoryProduction && territoryProduction > 2)
 			productionCapacity += 2;
 		
-		return productionCapacity;
+		return Math.max(0, productionCapacity);
 	}
 }

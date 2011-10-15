@@ -133,7 +133,7 @@ class BattleStepsPanel extends JPanel implements Active
 				return true;
 			
 			// we cant find it, something is wrong
-			if (m_targetStep != LAST_STEP && m_listModel.lastIndexOf(m_targetStep) == -1)
+			if (!m_targetStep.equals(LAST_STEP) && m_listModel.lastIndexOf(m_targetStep) == -1)
 			{
 				new IllegalStateException("Step not found:" + m_targetStep + " in:" + m_listModel).printStackTrace();
 				clearTargetStep();
@@ -141,7 +141,7 @@ class BattleStepsPanel extends JPanel implements Active
 			}
 			
 			// at end, we are done
-			if (m_targetStep == LAST_STEP && m_list.getSelectedIndex() == m_listModel.getSize() - 1)
+			if (m_targetStep.equals(LAST_STEP) && m_list.getSelectedIndex() == m_listModel.getSize() - 1)
 			{
 				return true;
 			}

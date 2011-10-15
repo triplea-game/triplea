@@ -7635,7 +7635,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					continue;
 				if (Matches.UnitTypeIsSea.match(x) && !seaProductionRules.isEmpty())
 					continue;
-				if (!Matches.UnitTypeIsAAOrFactory.match(x) && !landProductionRules.isEmpty())
+				if (!Matches.UnitTypeIsAAOrFactory.match(x) && !landProductionRules.isEmpty() && !Matches.UnitTypeIsAir.match(x) && !Matches.UnitTypeIsSea.match(x))
 					continue;
 			}
 			// Remove from consideration any unit which has maxBuiltPerPlayer
@@ -7750,7 +7750,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 			else if (Math.random() < 0.35)
 			{
-				if (Math.random() > 0.55 && carrierRule != null)
+				if (Math.random() > 0.55 && carrierRule != null && fighterRule != null)
 				{// force a carrier purchase if enough available $$ for it and at least 1 fighter
 					int cost = carrierRule.getCosts().getInt(pus);
 					int fighterCost = fighterRule.getCosts().getInt(pus);
@@ -8945,7 +8945,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 							}
 						}
 					}
-					if (carrierBought && leftToSpend > 0 && unitCount < totProd)
+					if (carrierBought && leftToSpend > 0 && unitCount < totProd && fighterRule != null)
 					{
 						boolean fighterBought = false;
 						//UnitType results = (UnitType) fighterRule.getResults().keySet().iterator().next();
@@ -9005,7 +9005,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 							leftToSpend -= cost;
 							PUSea -= cost;
 							numToBuy++;
-							if (Matches.UnitTypeIsCarrier.match(results)) // attempt to add a fighter to every carrier purchased
+							if (Matches.UnitTypeIsCarrier.match(results) && fighterRule != null) // attempt to add a fighter to every carrier purchased
 							{
 								boolean fighterBought = false;
 								if (!fighterBought)
