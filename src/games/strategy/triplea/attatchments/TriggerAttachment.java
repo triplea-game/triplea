@@ -1553,6 +1553,7 @@ public class TriggerAttachment extends DefaultAttachment
 		GameData data = aBridge.getData();
 		Set<TriggerAttachment> trigs = getTriggers(player, data, territoryPropertyMatch(beforeOrAfter, stepName));
 		CompositeChange change = new CompositeChange();
+		HashSet<Territory> territoriesNeedingReDraw = new HashSet<Territory>();
 		for (TriggerAttachment t : trigs)
 		{
 			if (isMet(t, data))
@@ -1562,6 +1563,7 @@ public class TriggerAttachment extends DefaultAttachment
 				{
 					for (Territory aTerritory : t.getTerritories())
 					{
+						territoriesNeedingReDraw.add(aTerritory);
 						String newValue = property.getSecond();
 						boolean clearFirst = false;
 						// test if we are clearing the variable first, and if so, remove the leading "-clear-"
@@ -1605,7 +1607,13 @@ public class TriggerAttachment extends DefaultAttachment
 			}
 		}
 		if (!change.isEmpty())
+		{
 			aBridge.addChange(change);
+			for (Territory aTerritory : territoriesNeedingReDraw)
+			{
+				aTerritory.notifyAttachmentChanged();
+			}
+		}
 	}
 	
 	public static void triggerPlayerPropertyChange(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)

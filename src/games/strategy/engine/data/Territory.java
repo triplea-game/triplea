@@ -90,10 +90,21 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Seria
 		return m_units;
 	}
 	
+	/**
+	 * refers to unit holder being changed
+	 */
 	@Override
 	public void notifyChanged()
 	{
 		getData().notifyTerritoryUnitsChanged(this);
+	}
+	
+	/**
+	 * refers to attachment changing, and therefore needing a redraw on the map in case something like the production number is now different
+	 */
+	public void notifyAttachmentChanged()
+	{
+		getData().notifyTerritoryAttachmentChanged(this);
 	}
 	
 	@Override

@@ -317,6 +317,16 @@ public class GameData implements java.io.Serializable
 		}
 	}
 	
+	void notifyTerritoryAttachmentChanged(Territory t)
+	{
+		Iterator<TerritoryListener> iter = m_territoryListeners.iterator();
+		while (iter.hasNext())
+		{
+			TerritoryListener listener = iter.next();
+			listener.unitsChanged(t);
+		}
+	}
+	
 	void notifyTerritoryOwnerChanged(Territory t)
 	{
 		Iterator<TerritoryListener> iter = m_territoryListeners.iterator();

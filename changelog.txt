@@ -1,4 +1,6 @@
 Changes for 1.4
+* Allowing the map to be redrawn if territory attachments are changed mid-game. (veqryn)
+
 * Fixed null pointer error in Moore AI, and also an incorrect validation of warning the user when they have produced more than they can place. (veqryn)
 
 * Fixing some bugs based on FindBugs, and general code cleanup. (veqryn & edwin van der wal)

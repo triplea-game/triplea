@@ -34,4 +34,6 @@ public interface TerritoryListener
 	public void unitsChanged(Territory territory);
 	
 	public void ownerChanged(Territory territory);
+	
+	public void attachmentChanged(Territory territory);
 }

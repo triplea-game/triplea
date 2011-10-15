@@ -79,6 +79,12 @@ public class OddsDetailPanel extends JPanel
 							}
 			
 			@Override
+			public void attachmentChanged(Territory territory)
+							{
+								
+							}
+			
+			@Override
 			public void unitsChanged(Territory territory)
 							{
 								if (m_currentTerritory != null && m_currentTerritory.equals(territory))

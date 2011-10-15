@@ -618,6 +618,20 @@ public class MapPanel extends ImageScrollerLargeView
 				
 			});
 		}
+		
+		@Override
+		public void attachmentChanged(Territory territory)
+		{
+			updateCountries(Collections.singleton(territory));
+			SwingUtilities.invokeLater(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					repaint();
+				}
+			});
+		}
 	};
 	
 	private final GameDataChangeListener TECH_UPDATE_LISTENER = new GameDataChangeListener()
