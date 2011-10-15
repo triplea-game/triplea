@@ -93,9 +93,8 @@ class PUChart
 		{
 			for (int j = i + 1; j < m_numPlayers; j++)
 			{
-				Integer firstPlayerMoney = m_moneyArray[i];
-				Integer secondPlayerMoney = m_moneyArray[j];
-				if (firstPlayerMoney == secondPlayerMoney)
+                // i = firstPlayerMoney ; j = secondPlayerMoney
+                if (m_moneyArray[i].equals(m_moneyArray[j]))
 				{
 					// s_avoidMap.put(s_playerArray[i], s_playerArray[j]);
 					m_avoidMap.put(i, j);

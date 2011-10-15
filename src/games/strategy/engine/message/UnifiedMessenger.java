@@ -229,7 +229,6 @@ public class UnifiedMessenger
 		
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void addImplementor(RemoteName endPointDescriptor, Object implementor, boolean singleThreaded)
 	{
 		if (!endPointDescriptor.getClazz().isAssignableFrom(implementor.getClass()))
@@ -566,7 +565,6 @@ class EndPoint
 	 * 
 	 * @return is this the first implementor
 	 */
-	@SuppressWarnings("unchecked")
 	public boolean addImplementor(Object implementor)
 	{
 		
@@ -904,7 +902,6 @@ abstract class InvocationResults implements Externalizable
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		results = new RemoteMethodCallResults();

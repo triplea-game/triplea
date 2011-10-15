@@ -287,6 +287,8 @@ class UnitOwner
 	@Override
 	public boolean equals(Object o)
 	{
+        if (o == null)
+            return false;
 		UnitOwner other = (UnitOwner) o;
 		return other.type.equals(this.type) && other.owner.equals(this.owner);
 	}

@@ -149,7 +149,6 @@ public class OCBattle
 		setAmphib(isAmphib);
 	}
 	
-	@SuppressWarnings("null")
 	public OCBattle(Territory territory, GameData m_data)
 	{
 		Vector<UnitGroup> terrAttackers = new Vector<UnitGroup>(0);
@@ -169,13 +168,13 @@ public class OCBattle
 		
 		terrRollAntiAirSep = isWW2V2(m_data);
 		
-		Set units = UnitSeperator.categorize(territory.getUnits().getUnits());
-		Iterator iter = units.iterator();
+		Set<UnitCategory> units = UnitSeperator.categorize(territory.getUnits().getUnits());
+		Iterator<UnitCategory> iter = units.iterator();
 		PlayerID currentPlayer = null;
 		while (iter.hasNext())
 		{
 			
-			UnitCategory item = (UnitCategory) iter.next();
+			UnitCategory item = iter.next();
 			if (item.getOwner() != currentPlayer)
 			{
 				currentPlayer = item.getOwner();

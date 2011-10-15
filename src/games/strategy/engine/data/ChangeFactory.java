@@ -1212,7 +1212,8 @@ class GameSequenceChange extends Change
 			oldSteps.add(step);
 		}
 		
-		m_oldSteps = (GameStep[]) oldSteps.toArray();
+        //m_oldSteps = (GameStep[]) oldSteps.toArray();
+        m_oldSteps = oldSteps.toArray(new GameStep[oldSteps.size()]);
 		m_newSteps = newSteps;
 	}
 	

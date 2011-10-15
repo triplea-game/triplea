@@ -76,14 +76,14 @@ public class TripleA implements IGameLoader
 	 * @see IGameLoader.createPlayers(playerNames)
 	 */
 	@Override
-	public Set<IGamePlayer> createPlayers(Map playerNames)
+	public Set<IGamePlayer> createPlayers(Map<String, String> playerNames)
 	{
 		Set<IGamePlayer> players = new HashSet<IGamePlayer>();
-		Iterator iter = playerNames.keySet().iterator();
+		Iterator<String> iter = playerNames.keySet().iterator();
 		while (iter.hasNext())
 		{
-			String name = (String) iter.next();
-			String type = (String) playerNames.get(name);
+			String name = iter.next();
+			String type = playerNames.get(name);
 			if (type.equals(WEAK_COMPUTER_PLAYER_TYPE))
 			{
 				players.add(new WeakAI(name));
@@ -245,7 +245,7 @@ public class TripleA implements IGameLoader
 					new AllYouCanUploadDotComPBEMMessenger() };
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
 	 */
 	@Override

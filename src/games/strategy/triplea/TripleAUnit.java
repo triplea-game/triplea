@@ -146,7 +146,6 @@ public class TripleAUnit extends Unit
 	/**
 	 * private since this should only be called by UnitPropertyChange
 	 */
-	@SuppressWarnings("unused")
 	public void setUnloaded(List<Unit> unloaded)
 	{
 		if (unloaded == null || unloaded.isEmpty())
@@ -374,7 +373,6 @@ public class TripleAUnit extends Unit
 			return -1;
 		
 		UnitAttachment ua = UnitAttachment.get(u.getType());
-		TripleAUnit taUnit = (TripleAUnit) u;
 		TerritoryAttachment ta = TerritoryAttachment.get(t);
 		int territoryProduction = 0;
 		int territoryUnitProduction = 0;

@@ -52,6 +52,7 @@ import javax.swing.WindowConstants;
  * 
  * @author Sean Bridges
  */
+@SuppressWarnings("serial")
 public class Console extends JFrame
 {
 	
@@ -261,7 +262,7 @@ public class Console extends JFrame
 		}
 	};
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static String getProperties()
 	{
 		StringBuilder buf = new StringBuilder("SYSTEM PROPERTIES\n");

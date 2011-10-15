@@ -408,7 +408,7 @@ public class RocketsFireHelper
 			}
 			else
 			{
-				new IllegalStateException("No aa guns?" + attackFrom.getUnits().getUnits());
+                throw new IllegalStateException("No rockets?" + attackFrom.getUnits().getUnits());
 			}
 		}
 		

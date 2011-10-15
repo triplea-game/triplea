@@ -51,7 +51,7 @@ public interface IGameLoader extends java.io.Serializable
 	 * 
 	 * @return a Set of GamePlayers
 	 */
-	public Set<IGamePlayer> createPlayers(Map players);
+	public Set<IGamePlayer> createPlayers(Map<String, String> players);
 	
 	/**
 	 * The game is about to start.

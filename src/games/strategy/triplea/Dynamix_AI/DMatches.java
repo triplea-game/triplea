@@ -188,7 +188,7 @@ public class DMatches
 		};
 	}
 	
-	public static Match<Unit> UnitIsMoveableType = new Match<Unit>()
+    public static final Match<Unit> UnitIsMoveableType = new Match<Unit>()
 	{
 		@Override
 		public boolean match(Unit unit)
@@ -206,7 +206,7 @@ public class DMatches
 			return ua.getMovement(unit.getOwner()) > 0 && !ua.isAA();
 		}
 	};
-	public static Match<Unit> UnitCanAttack = new Match<Unit>()
+    public static final Match<Unit> UnitCanAttack = new Match<Unit>()
 	{
 		@Override
 		public boolean match(Unit unit)
@@ -219,7 +219,7 @@ public class DMatches
 			return true;
 		}
 	};
-	public static Match<Unit> UnitCanDefend = new Match<Unit>()
+    public static final Match<Unit> UnitCanDefend = new Match<Unit>()
 	{
 		@Override
 		public boolean match(Unit unit)
@@ -369,7 +369,7 @@ public class DMatches
 		};
 	}
 	
-	public static Match<Territory> TerritoryIsLandAndPassable = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
+    public static final Match<Territory> TerritoryIsLandAndPassable = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
 	
 	public static Match<Territory> territoryIsLandAndPassableTo(final PlayerID player)
 	{
@@ -491,7 +491,7 @@ public class DMatches
 		};
 	}
 	
-	public static Match<Territory> territoryIsCapital = new Match<Territory>()
+    public static final Match<Territory> territoryIsCapital = new Match<Territory>()
 	{
 		@Override
 		public boolean match(Territory ter)

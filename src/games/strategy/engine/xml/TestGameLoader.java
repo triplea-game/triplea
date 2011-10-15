@@ -65,12 +65,12 @@ public class TestGameLoader implements IGameLoader
 	 * where type is one of the Strings returned by a get*PlayerType() method.
 	 */
 	@Override
-	public Set<IGamePlayer> createPlayers(Map players)
+	public Set<IGamePlayer> createPlayers(Map<String, String> players)
 	{
 		return null;
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
 	 */
 	@Override

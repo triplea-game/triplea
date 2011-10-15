@@ -61,15 +61,14 @@ public class NPuzzle implements IGameLoader
 	 * @see IGameLoader.createPlayers(playerNames)
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
-	public Set<IGamePlayer> createPlayers(Map playerNames)
+	public Set<IGamePlayer> createPlayers(Map<String, String> playerNames)
 	{
 		Set<IGamePlayer> players = new HashSet<IGamePlayer>();
-		Iterator iter = playerNames.keySet().iterator();
+		Iterator<String> iter = playerNames.keySet().iterator();
 		while (iter.hasNext())
 		{
-			String name = (String) iter.next();
-			String type = (String) playerNames.get(name);
+			String name = iter.next();
+			String type = playerNames.get(name);
 			if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
 			{
 				NPuzzlePlayer player = new NPuzzlePlayer(name);

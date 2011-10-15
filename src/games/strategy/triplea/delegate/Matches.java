@@ -1835,7 +1835,7 @@ public class Matches
 	/**
 	 * Match units that have at least 1 movement left
 	 */
-	public static Match<Unit> unitHasMovementLeft = new Match<Unit>()
+    public final static Match<Unit> unitHasMovementLeft = new Match<Unit>()
 	{
 		@Override
 		public boolean match(Unit o)
@@ -2960,7 +2960,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsAAOrIsFactoryOrIsInfrastructure = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory, UnitIsInfrastructure);
 	
-	public static Match<Territory> territoryIsBlockadeZone = new Match<Territory>()
+    public static final Match<Territory> territoryIsBlockadeZone = new Match<Territory>()
 		{
 			@Override
 			public boolean match(Territory t)

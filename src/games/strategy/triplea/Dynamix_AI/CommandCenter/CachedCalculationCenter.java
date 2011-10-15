@@ -30,12 +30,12 @@ import java.util.List;
  */
 public class CachedCalculationCenter
 {
-	public static HashMap<Territory, List<Territory>> CachedMapTersFromPoints = new HashMap<Territory, List<Territory>>();
-	public static HashMap<List<Territory>, Route> CachedRoutes = new HashMap<List<Territory>, Route>();
-	public static HashMap<List<Territory>, Route> CachedAirPassableRoutes = new HashMap<List<Territory>, Route>();
-	public static HashMap<List<Territory>, Route> CachedLandRoutes = new HashMap<List<Territory>, Route>();
-	public static HashMap<List<Territory>, Route> CachedPassableLandRoutes = new HashMap<List<Territory>, Route>();
-	public static HashMap<List<Territory>, Route> CachedSeaRoutes = new HashMap<List<Territory>, Route>();
+    public static HashMap<Territory, List<Territory>> CachedMapTersFromPoints = new HashMap<Territory, List<Territory>>();
+    public static HashMap<List<Territory>, Route> CachedRoutes = new HashMap<List<Territory>, Route>();
+    public static HashMap<List<Territory>, Route> CachedAirPassableRoutes = new HashMap<List<Territory>, Route>();
+    public static HashMap<List<Territory>, Route> CachedLandRoutes = new HashMap<List<Territory>, Route>();
+    public static HashMap<List<Territory>, Route> CachedPassableLandRoutes = new HashMap<List<Territory>, Route>();
+    public static HashMap<List<Territory>, Route> CachedSeaRoutes = new HashMap<List<Territory>, Route>();
 	
 	/**
 	 * The same as data.getMap().getRoute(ter1, ter2), except that this method caches the resulting List<Territory> for quick retrieval later on.

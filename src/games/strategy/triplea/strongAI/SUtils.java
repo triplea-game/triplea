@@ -2657,9 +2657,9 @@ public class SUtils
 			}
 			if (twoCheckStrength > (puValue * 3.0F + tStrength))
 				badIdea = true;
-			/* TODO: (veqryn) this portion of the code counts naval vessels and any other enemy units 
-					 within 3 spaces of the territory that will have a factory.  It only compares it to the 
-					 ai's units on the territory, and does not take into account any of the ai's units in other 
+			/* TODO: (veqryn) this portion of the code counts naval vessels and any other enemy units
+					 within 3 spaces of the territory that will have a factory.  It only compares it to the
+					 ai's units on the territory, and does not take into account any of the ai's units in other
 					 territories nearby.  This needs to only care about LAND and AIR units and not care about SEA units.
 					 And it needs to take into account friendly land and air within 2 spaces of the territory.
 			*/
@@ -2703,6 +2703,7 @@ public class SUtils
 	 * Removes the inner circle neighbors
 	 * neutral - whether to include neutral countries
 	 */
+	@SuppressWarnings("unchecked")
 	public static List<Territory> getExactNeighbors(Territory territory, int distance, PlayerID player, boolean neutral)
 	{
 		// old functionality retained, i.e. no route condition is imposed.
@@ -2811,7 +2812,8 @@ public class SUtils
 		if (landTerr == null)
 			return seaPlaceAt;
 		Set<Territory> seaNeighbors = data.getMap().getNeighbors(landTerr, ourSeaTerr);
-		float eStrength = 0.0F, minStrength = 1000.0F, maxStrength = -1000.0F;
+		//float eStrength = 0.0F;
+		float minStrength = 1000.0F, maxStrength = -1000.0F;
 		for (Territory t : seaNeighbors) // give preference to territory with units
 		{
 			float enemyStrength = getStrengthOfPotentialAttackers(t, data, player, tFirst, true, null);
@@ -3105,8 +3107,8 @@ public class SUtils
 				}
 			}
 		}
-		boolean transportsForAttack = false;
-		Territory firstLocation = null;
+		//boolean transportsForAttack = false;
+		//Territory firstLocation = null;
 		float unitStrength = 0.0F;
 		for (Territory waterCheck : waterNeighbors)
 		{
@@ -3114,7 +3116,7 @@ public class SUtils
 			float shipStrength = 0.0F;
 			if (Matches.territoryHasOwnedTransportingUnits(player).match(waterCheck))
 			{
-				int xminDist = 0;
+				//int xminDist = 0;
 				List<Unit> tUnits = new ArrayList<Unit>();
 				List<Unit> tranUnits = waterCheck.getUnits().getMatches(transportingUnitWithLoad);
 				tranUnits.removeAll(unitsAlreadyMoved);
@@ -3147,7 +3149,7 @@ public class SUtils
 				if (tUnits.size() > 0)
 				{
 					unitsAlreadyMoved.addAll(tUnits); // no actual move needed...just stay here
-					transportsForAttack = true;
+					//transportsForAttack = true;
 				}
 			}
 			for (Territory otherSource : testCapNeighbors)
@@ -3210,7 +3212,7 @@ public class SUtils
 				}
 				if (allUnits.size() > 0)
 				{
-					transportsForAttack = true;
+					//transportsForAttack = true;
 					moveUnits.add(allUnits);
 					moveRoutes.add(sRoute);
 					unitsAlreadyMoved.addAll(allUnits);
@@ -4017,7 +4019,7 @@ public class SUtils
 	{
 		Iterator<Collection<Unit>> xMoveIter = xMoveUnits.iterator();
 		int routeNo = 0;
-		float removeStrength = 0.0F;
+		//float removeStrength = 0.0F;
 		HashMap<Territory, List<Integer>> badRouteMap = new HashMap<Territory, List<Integer>>();
 		HashMap<Territory, Float> strengthDiffMap = new HashMap<Territory, Float>();
 		List<Integer> emptyList = new ArrayList<Integer>();
@@ -4297,7 +4299,7 @@ public class SUtils
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static void reorder(List<?> reorder, final IntegerMap map, final boolean greaterThan)
+	public static void reorder(List<?> reorder, @SuppressWarnings("rawtypes") final IntegerMap map, final boolean greaterThan)
 	{
 		if (!map.keySet().containsAll(reorder))
 		{
@@ -4391,7 +4393,7 @@ public class SUtils
 				IntegerMap<ProductionRule> bestMaxUnits, IntegerMap<ProductionRule> bestMobileAttack,
 				List<ProductionRule> rules, int totPU, int maxUnits, GameData data, PlayerID player, int fighters)
 	{
-		Resource key = data.getResourceList().getResource(Constants.PUS);
+		//Resource key = data.getResourceList().getResource(Constants.PUS);
 		IntegerMap<String> parameters = new IntegerMap<String>();
 		parameters.put("attack", 0);
 		parameters.put("defense", 0);
@@ -4418,8 +4420,8 @@ public class SUtils
 		HashMap<ProductionRule, Boolean> supportableInfMap = new HashMap<ProductionRule, Boolean>();
 		Iterator<ProductionRule> prodIter = rules.iterator();
 		HashMap<ProductionRule, Boolean> transportMap = new HashMap<ProductionRule, Boolean>();
-		int minCost = 10000;
-		ProductionRule minCostRule = null;
+		//int minCost = 10000;
+		//ProductionRule minCostRule = null;
 		while (prodIter.hasNext())
 		{
 			ProductionRule rule = prodIter.next();
@@ -5045,7 +5047,7 @@ public class SUtils
 		CompositeMatch<Territory> noEnemyOrWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryAllied(player, data));
 		CompositeMatch<Territory> enemyAndNoWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player),
 					Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
-		TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
+		//TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		List<PlayerID> ePlayers = getEnemyPlayers(data, player);
 		PlayerID ePlayer = ePlayers.get(0);
 		List<Territory> enemyCapitals = SUtils.getEnemyCapitals(data, player);
@@ -5181,8 +5183,8 @@ public class SUtils
 		}
 		if (nonCombat)
 		{
-			CompositeMatch alliedLandTerr = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
-			Set<Territory> terrList = landRankMap.keySet();
+			CompositeMatch<Territory> alliedLandTerr = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
+			//Set<Territory> terrList = landRankMap.keySet();
 			for (Territory terr1 : alliedFactories)
 			{
 				float landRank = landRankMap.get(terr1);

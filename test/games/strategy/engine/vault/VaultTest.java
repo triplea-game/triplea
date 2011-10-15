@@ -99,7 +99,7 @@ public class VaultTest extends TestCase
 		
 		UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
 		ChannelMessenger channelMessenger = new ChannelMessenger(unifiedMessenger);
-		RemoteMessenger remoteMessenger = new RemoteMessenger(unifiedMessenger);
+		//RemoteMessenger remoteMessenger = new RemoteMessenger(unifiedMessenger);
 		
 		Vault vault = new Vault(channelMessenger);
 		

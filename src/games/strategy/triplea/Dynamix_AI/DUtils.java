@@ -1904,7 +1904,7 @@ public class DUtils
 		{
 			if (ua.isAir())
 				return Integer.MIN_VALUE;
-			if (movementLeft == 0 && ter != task.GetTarget())
+                if (movementLeft == 0 && !ter.equals(task.GetTarget()))
 				return Integer.MIN_VALUE;
 			
 			int turnsToGetThere = (int) Math.ceil((double) dist / (double) movementSpeed);
@@ -1919,7 +1919,7 @@ public class DUtils
 		{
 			if (ua.isAir())
 				return Integer.MIN_VALUE;
-			if (movementLeft == 0 && ter != task.GetTarget())
+                    if (movementLeft == 0 && !ter.equals(task.GetTarget()))
 				return Integer.MIN_VALUE;
 			
 			int turnsToGetThere = (int) Math.ceil((double) dist / (double) movementSpeed);

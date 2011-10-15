@@ -726,6 +726,8 @@ public class GameDataExporter
 		@Override
 		public boolean equals(Object o)
 		{
+            if (o == null)
+                return false;
 			Connection con = (Connection) o;
 			return (_t1 == con._t1 && _t2 == con._t2);
 		}

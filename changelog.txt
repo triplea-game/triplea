@@ -1,4 +1,6 @@
 Changes for 1.4
+* Fixing some bugs based on FindBugs, and general code cleanup. (veqryn & edwin van der wal)
+
 * Fixed bug where memory for online and hosted games was set artificially low at 128, instead of being set to the max memory set by triplea run scripts and exe. (veqryn)
 
 * Removing one memory leak from battle calc, it was recording the units is created to game data, inflating the savegame size. (veqryn & frigoref)
@@ -114,7 +116,7 @@ Changes for 1.4
 
 * Engine code cleanup. (frigoref)
 
-* Some small fixes for unit tests, and some small abstractions. (frigoref and veqryn)
+* Some small fixes for unit tests, and some small abstractions. (frigoref & veqryn)
 
 * Changed combat filters to allow infrastructure with support or combat abilities to take part in combat. (veqryn)
 

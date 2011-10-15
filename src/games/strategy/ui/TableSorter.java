@@ -243,7 +243,6 @@ public class TableSorter extends AbstractTableModel
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected Comparator<Object> getComparator(int column)
 	{
 		Class columnType = tableModel.getColumnClass(column);

@@ -65,7 +65,7 @@ public class ClassLoaderUtil
 {
 	
 	/** records whether initialization has been completed */
-	private static boolean isInitialized = false;
+	//private static boolean isInitialized = false;
 	
 	/** names of classes and fields of interest for closing the loader's jar files */
 	private static final String URLCLASSLOADER_UCP_FIELD_NAME = "ucp";
@@ -82,6 +82,8 @@ public class ClassLoaderUtil
 	private static Field loadersField;
 	private static Field urlsField;
 	private static Field lmapField;
+	
+	@SuppressWarnings("rawtypes")
 	private static Class jarLoaderInnerClass;
 	
 	private static Field jarFileField;
@@ -133,6 +135,7 @@ public class ClassLoaderUtil
 	 * @throws NoSuchFieldException
 	 *             in case of any error retriving information about the field
 	 */
+	@SuppressWarnings("rawtypes")
 	private static Field getField(Class cls, String fieldName) throws NoSuchFieldException
 	{
 		try
@@ -157,6 +160,7 @@ public class ClassLoaderUtil
 	 * @param innerClassName
 	 *            the fully-qualified name of the inner class of interest
 	 */
+	@SuppressWarnings("rawtypes")
 	private static Class getInnerClass(Class cls, String innerClassName)
 	{
 		Class result = null;
@@ -227,6 +231,7 @@ public class ClassLoaderUtil
 	 *         release the loader; empty indicates a successful release; non-empty
 	 *         indicates at least one error attempting to close an open jar.
 	 */
+	@SuppressWarnings("rawtypes")
 	private static IOException[] releaseLoader(URLClassLoader classLoader, Vector<String> jarsClosed)
 	{
 		
@@ -253,8 +258,8 @@ public class ClassLoaderUtil
 			 *The urls variable in the URLClassPath object holds URLs that have not yet
 			 *been used to resolve a resource or load a class and, therefore, do
 			 *not yet have a loader associated with them.  Clear the stack so any
-			 *future requests that might incorrectly reach the loader cannot be 
-			 *resolved and cannot open a jar file after we think we've closed 
+			 *future requests that might incorrectly reach the loader cannot be
+			 *resolved and cannot open a jar file after we think we've closed
 			 *them all.
 			 */
 			synchronized (urls)
@@ -276,22 +281,22 @@ public class ClassLoaderUtil
 			 *the URLClassPath's class path.  Leave that unchanged.  This might
 			 *help someone trying to debug why a released class loader is still used.
 			 *Because the stack and lmap are now clear, code that incorrectly uses a
-			 *the released class loader will trigger an exception if the 
+			 *the released class loader will trigger an exception if the
 			 *class or resource would have been resolved by the class
-			 *loader (and no other) if it had not been released.  
+			 *loader (and no other) if it had not been released.
 			 *
 			 *The list of URLs might provide some hints to the person as to where
 			 *in the code the class loader was set up, which might in turn suggest
 			 *where in the code the class loader needs to stop being used.
-			 *The URLClassPath does not use the path variable to open new jar 
+			 *The URLClassPath does not use the path variable to open new jar
 			 *files - it uses the urls Stack for that - so leaving the path variable
 			 *will not by itself allow the class loader to continue handling requests.
 			 */
 
 			/*
-			 *For each loader, close the jar file associated with that loader.  
+			 *For each loader, close the jar file associated with that loader.
 			 *
-			 *The URLClassPath's use of loaders is sync-ed on the entire URLClassPath 
+			 *The URLClassPath's use of loaders is sync-ed on the entire URLClassPath
 			 *object.
 			 */
 			synchronized (ucp)
@@ -323,7 +328,7 @@ public class ClassLoaderUtil
 								} catch (IOException ioe)
 								{
 									/*
-									 *Wrap the IOException to identify which jar 
+									 *Wrap the IOException to identify which jar
 									 *could not be closed and add it to the list
 									 *of IOExceptions to be returned to the caller.
 									 */
