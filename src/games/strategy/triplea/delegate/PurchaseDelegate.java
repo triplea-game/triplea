@@ -44,8 +44,6 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitTypeComparator;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
@@ -56,7 +54,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -103,7 +100,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	@Override
 	public String purchase(IntegerMap<ProductionRule> productionRules)
 	{
-		IntegerMap<Resource> costs = getCosts(productionRules);
+		IntegerMap<Resource> costs = getCosts(productionRules, m_player);
 		IntegerMap<NamedAttachable> results = getResults(productionRules);
 		
 		if (!(canAfford(costs, m_player)))
@@ -190,7 +187,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	@Override
 	public String purchaseRepair(Map<Unit, IntegerMap<RepairRule>> repairRules)
 	{
-		IntegerMap<Resource> costs = getRepairCosts(repairRules);
+		IntegerMap<Resource> costs = getRepairCosts(repairRules, m_player);
 		
 		IntegerMap<NamedAttachable> results = getRepairResults(repairRules);
 		
@@ -355,7 +352,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 		m_bridge.getHistoryWriter().setRenderingData(totalUnits);
 	}
 	
-	private IntegerMap<Resource> getCosts(IntegerMap<ProductionRule> productionRules)
+	private IntegerMap<Resource> getCosts(IntegerMap<ProductionRule> productionRules, PlayerID player)
 	{
 		IntegerMap<Resource> costs = new IntegerMap<Resource>();
 		
@@ -368,7 +365,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 		return costs;
 	}
 	
-	private IntegerMap<Resource> getRepairCosts(Map<Unit, IntegerMap<RepairRule>> repairRules)
+	private IntegerMap<Resource> getRepairCosts(Map<Unit, IntegerMap<RepairRule>> repairRules, PlayerID player)
 	{
 		Collection<Unit> units = repairRules.keySet();
 		Iterator<Unit> iter = units.iterator();
@@ -386,6 +383,14 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 				costs.addMultiple(rule.getCosts(), repairRules.get(u).getInt(rule));
 			}
 		}
+
+        if(isIncreasedFactoryProduction(player))
+        {
+        	//UnitCategory unitCategory =  categorized.iterator().next();
+            //if(unitCategory.getType().getName().endsWith("_hit"))
+        	//cost = (int) (Math.round(quantity/2));
+        	costs.multiplyAllValuesBy((float) 0.5, 3);
+        }
 		
 		return costs;
 	}
@@ -432,7 +437,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 		return costs;
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
 	@Override
@@ -451,17 +456,6 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 			Resource resource = costsIter.next();
 			float quantity = costs.getInt(resource);
 			int cost = (int) quantity;
-			
-			if (isIncreasedFactoryProduction(player))
-			{
-				Set<UnitCategory> categorized = UnitSeperator.categorize(totalUnits);
-				if (categorized.size() == 1)
-				{
-					// UnitCategory unitCategory = categorized.iterator().next();
-					// if(unitCategory.getType().getName().endsWith("_hit"))
-					cost = (int) (Math.round(quantity / 2));
-				}
-			}
 			
 			Change change = ChangeFactory.changeResourcesChange(m_player, resource, -cost);
 			changes.add(change);

@@ -1,4 +1,6 @@
 Changes for 1.4
+* Fixed bug in Increased Factory Production tech, where it discounted any units bought by half, so long as you bought only 1 type of unit this turn. (veqryn)
+
 * Allowing the map to be redrawn if territory attachments are changed mid-game. (veqryn)
 
 * Fixed null pointer error in Moore AI, and also an incorrect validation of warning the user when they have produced more than they can place. (veqryn)
