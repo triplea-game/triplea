@@ -576,7 +576,7 @@ public class BattleCalculator
 		Iterator<Unit> sortedIter = sortedUnitsList.iterator();
 		while (sortedIter.hasNext())
 		{
-			Unit current = (Unit) sortedIter.next();
+			Unit current = sortedIter.next();
 			int unitPower = getUnitPowerForSorting(current, defending, player, data);
 			unitPower = Math.max(0, Math.min(unitPower, maxPower)); // getUnitPowerForSorting will return numbers over max_dice IF that units Power * DiceRolls goes over max_dice
 			
@@ -890,7 +890,7 @@ public class BattleCalculator
 		Iterator<Unit> unitsIter = units.iterator();
 		while (unitsIter.hasNext())
 		{
-			Unit u = (Unit) unitsIter.next();
+			Unit u = unitsIter.next();
 			int unitValue = costs.getInt(u.getType());
 			tuv += unitValue;
 		}

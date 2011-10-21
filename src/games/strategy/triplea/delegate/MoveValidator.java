@@ -184,14 +184,14 @@ public class MoveValidator
 			Iterator<Territory> startNeighborIter = unit.getData().getMap().getNeighbors(route.getStart(), 1).iterator();
 			while (startNeighborIter.hasNext())
 			{
-				Territory terrNext = (Territory) startNeighborIter.next();
+				Territory terrNext = startNeighborIter.next();
 				TerritoryAttachment taNeighbor = TerritoryAttachment.get(terrNext);
 				if (taNeighbor != null && taNeighbor.isNavalBase() && unit.getData().getRelationshipTracker().isAllied(terrNext.getOwner(), player))
 				{
 					Iterator<Territory> endNeighborIter = unit.getData().getMap().getNeighbors(route.getEnd(), 1).iterator();
 					while (endNeighborIter.hasNext())
 					{
-						Territory terrEnd = (Territory) endNeighborIter.next();
+						Territory terrEnd = endNeighborIter.next();
 						TerritoryAttachment taEndNeighbor = TerritoryAttachment.get(terrEnd);
 						if (taEndNeighbor != null && taEndNeighbor.isNavalBase() && unit.getData().getRelationshipTracker().isAllied(terrEnd.getOwner(), player))
 						{
@@ -441,7 +441,7 @@ public class MoveValidator
 		Iterator<Unit> iter = units.iterator();
 		while (iter.hasNext())
 		{
-			Unit item = (Unit) iter.next();
+			Unit item = iter.next();
 			cost += UnitAttachment.get(item.getType()).getTransportCost();
 		}
 		return cost;
@@ -513,7 +513,7 @@ public class MoveValidator
 		Iterator<Unit> iter = units.iterator();
 		while (iter.hasNext())
 		{
-			Unit unit = (Unit) iter.next();
+			Unit unit = iter.next();
 			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua.getCarrierCost() != -1)
 				sum += ua.getCarrierCost();
@@ -624,7 +624,7 @@ public class MoveValidator
 		Iterator<Unit> iter = units.iterator();
 		while (iter.hasNext())
 		{
-			Unit unit = (Unit) iter.next();
+			Unit unit = iter.next();
 			int left = TripleAUnit.get(unit).getMovementLeft();
 			max = Math.max(left, max);
 		}
@@ -639,7 +639,7 @@ public class MoveValidator
 		Iterator<Unit> iter = units.iterator();
 		while (iter.hasNext())
 		{
-			Unit unit = (Unit) iter.next();
+			Unit unit = iter.next();
 			int left = TripleAUnit.get(unit).getMovementLeft();
 			least = Math.min(left, least);
 		}
@@ -655,7 +655,7 @@ public class MoveValidator
 		Iterator<Unit> iter = transports.iterator();
 		while (iter.hasNext())
 		{
-			Unit transport = (Unit) iter.next();
+			Unit transport = iter.next();
 			sum += tracker.getAvailableCapacity(transport);
 		}
 		return sum;
@@ -938,8 +938,8 @@ public class MoveValidator
 				Match<Territory> foughtOver = Matches.territoryWasFoughOver(MoveDelegate.getBattleTracker(data));
 				Match<Territory> notEndWasFought = new CompositeMatchAnd<Territory>(territoryIsNotEnd, foughtOver);
 				
-				Boolean wasStartFoughtOver = MoveDelegate.getBattleTracker(data).wasConquered((Territory) route.getStart())
-							|| MoveDelegate.getBattleTracker(data).wasBlitzed((Territory) route.getStart());
+				Boolean wasStartFoughtOver = MoveDelegate.getBattleTracker(data).wasConquered(route.getStart())
+							|| MoveDelegate.getBattleTracker(data).wasBlitzed(route.getStart());
 				
 				for (Unit unit : nonBlitzingUnits)
 				{
@@ -1498,7 +1498,7 @@ public class MoveValidator
 		Iterator<Territory> candidateIter = candidateTerritories.iterator();
 		while (candidateIter.hasNext())
 		{
-			Territory candidateTerr = (Territory) candidateIter.next();
+			Territory candidateTerr = candidateIter.next();
 			Route candidateRoute = data.getMap().getRoute(currRouteEndTerr, candidateTerr, canMoveThrough);
 			
 			if (candidateRoute == null)
@@ -1576,7 +1576,7 @@ public class MoveValidator
 		
 		while (ownedAirIter.hasNext())
 		{
-			Unit unit = (Unit) ownedAirIter.next();
+			Unit unit = ownedAirIter.next();
 			if (movementLeft.getInt(unit) < nearestLand)
 			{
 				airThatMustLandOnCarriers.add(unit);
@@ -1620,7 +1620,7 @@ public class MoveValidator
 		
 		while (iter.hasNext())
 		{
-			Territory territory = (Territory) iter.next();
+			Territory territory = iter.next();
 			
 			// can we land there?
 			if (!friendlyGround.match(territory))
@@ -1670,7 +1670,7 @@ public class MoveValidator
 					@Override
 					public boolean match(Territory o)
 					{
-						return !MoveDelegate.getBattleTracker(data).wasConquered((Territory) o);
+						return !MoveDelegate.getBattleTracker(data).wasConquered(o);
 					}
 				}
 					);
@@ -1679,7 +1679,7 @@ public class MoveValidator
 					@Override
 					public boolean match(Territory o)
 					{
-						return !MoveDelegate.getBattleTracker(data).hasPendingBattle((Territory) o, false);
+						return !MoveDelegate.getBattleTracker(data).hasPendingBattle(o, false);
 					}
 				}
 					);
@@ -1871,7 +1871,7 @@ public class MoveValidator
 			Iterator<Unit> iter = units.iterator();
 			while (iter.hasNext())
 			{
-				Unit unit = (Unit) iter.next();
+				Unit unit = iter.next();
 				UnitAttachment ua = UnitAttachment.get(unit.getType());
 				// make sure transports dont leave their units behind
 				if (ua.getTransportCapacity() != -1)
@@ -2320,7 +2320,7 @@ public class MoveValidator
 		Iterator<Unit> ownedCarrierIter = ownedCarrier.iterator();
 		while (ownedCarrierIter.hasNext())
 		{
-			Unit carrier = (Unit) ownedCarrierIter.next();
+			Unit carrier = ownedCarrierIter.next();
 			Collection<Unit> carrying = getCanCarry(carrier, alliedAir);
 			alliedAir.removeAll(carrying);
 			
@@ -2340,7 +2340,7 @@ public class MoveValidator
 		TripleAUnit tACarrier = (TripleAUnit) carrier;
 		while (iter.hasNext())
 		{
-			Unit plane = (Unit) iter.next();
+			Unit plane = iter.next();
 			TripleAUnit tAPlane = (TripleAUnit) plane;
 			UnitAttachment planeAttatchment = UnitAttachment.get(plane.getUnitType());
 			int cost = planeAttatchment.getCarrierCost();

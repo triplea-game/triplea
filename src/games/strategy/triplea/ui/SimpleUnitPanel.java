@@ -94,7 +94,7 @@ public class SimpleUnitPanel extends JPanel
 		Iterator<Unit> iter = entries.iterator();
 		while (iter.hasNext())
 		{
-			Unit unit = (Unit) iter.next();
+			Unit unit = iter.next();
 			IntegerMap<RepairRule> rules = units.get(unit);
 			
 			TreeSet<RepairRule> repairRules = new TreeSet<RepairRule>(repairRuleComparator);

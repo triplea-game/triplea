@@ -401,7 +401,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			Iterator<Territory> iter = airCantLand.iterator();
 			while (iter.hasNext())
 			{
-				buf.append(((Territory) iter.next()).getName());
+				buf.append((iter.next()).getName());
 				buf.append(" ");
 			}
 			if (!m_ui.getOKToLetAirDie(m_id, buf.toString(), movePhase))
@@ -425,7 +425,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			Iterator<Territory> iter = unitsCantFight.iterator();
 			while (iter.hasNext())
 			{
-				buf.append(((Territory) iter.next()).getName());
+				buf.append((iter.next()).getName());
 				buf.append(" ");
 			}
 			if (m_ui.getOKToLetUnitsDie(m_id, buf.toString(), true))
@@ -450,7 +450,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 						.getTerritories().iterator();
 			while (territoryIter.hasNext())
 			{
-				Territory item = (Territory) territoryIter.next();
+				Territory item = territoryIter.next();
 				if (item.getUnits().someMatch(moveableUnitOwnedByMe))
 				{
 					return true;
@@ -497,7 +497,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 				Iterator<ProductionRule> prodRules = m_id.getProductionFrontier().getRules().iterator();
 				while (prodRules.hasNext())
 				{
-					ProductionRule rule = (ProductionRule) prodRules.next();
+					ProductionRule rule = prodRules.next();
 					minPUsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.PUS)), minPUsNeededToBuild);
 				}
 				
@@ -506,7 +506,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 					Iterator<RepairRule> repairRules = m_id.getRepairFrontier().getRules().iterator();
 					while (repairRules.hasNext())
 					{
-						RepairRule rule = (RepairRule) repairRules.next();
+						RepairRule rule = repairRules.next();
 						minPUsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.PUS)), minPUsNeededToBuild);
 					}
 				}

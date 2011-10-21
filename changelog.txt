@@ -1,4 +1,6 @@
 Changes for 1.4
+* Code cleanup of needless casting. (veqryn)
+
 * Code cleanup of warnings. (veqryn)
 
 * Fixed bug in Increased Factory Production tech, where it discounted any units bought by half, so long as you bought only 1 type of unit this turn. (veqryn)

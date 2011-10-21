@@ -123,7 +123,7 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	 */
 	public int getInt(T key)
 	{
-		Integer val = (Integer) m_values.get(key);
+		Integer val = m_values.get(key);
 		if (val == null)
 			return 0;
 		return val.intValue();
@@ -140,7 +140,7 @@ public class IntegerMap<T> implements Cloneable, Serializable
 			put(key, value);
 		else
 		{
-			Integer oldVal = (Integer) m_values.get(key);
+			Integer oldVal = m_values.get(key);
 			int newVal = oldVal.intValue() + value;
 			put(key, newVal);
 		}
@@ -158,8 +158,8 @@ public class IntegerMap<T> implements Cloneable, Serializable
     	Iterator<T> iter = keySet().iterator();
     	while (iter.hasNext())
     	{
-    		T t = (T) iter.next();
-    		float val = (float) m_values.get(t);
+    		T t = iter.next();
+    		float val = m_values.get(t);
     		switch (RoundType)
     		{
     			case 1:
@@ -199,7 +199,7 @@ public class IntegerMap<T> implements Cloneable, Serializable
 		while (values.hasNext())
 		{
 			Integer obj = values.next();
-			Integer value = (Integer) obj;
+			Integer value = obj;
 			sum += value.intValue();
 		}
 		return sum;

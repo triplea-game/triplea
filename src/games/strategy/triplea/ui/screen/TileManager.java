@@ -158,7 +158,7 @@ public class TileManager
 				Iterator<Territory> territories = data.getMap().getTerritories().iterator();
 				while (territories.hasNext())
 				{
-					Territory territory = (Territory) territories.next();
+					Territory territory = territories.next();
 					clearTerritory(territory);
 					drawTerritory(territory, data, mapData);
 					

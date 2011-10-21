@@ -1620,7 +1620,7 @@ public class MoveDelegateTest extends DelegateTest
 		assertTrue(tracker.wasBlitzed(libya));
 		assertTrue(tracker.wasConquered(libya));
 		
-		Unit aFactory = (Unit) factCollection.iterator().next();
+		Unit aFactory = factCollection.iterator().next();
 		
 		assertEquals(aFactory.getOwner(), british);
 	}

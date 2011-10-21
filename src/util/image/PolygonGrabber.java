@@ -368,7 +368,7 @@ public class PolygonGrabber extends JFrame
 					{
 						while (iter2.hasNext())
 						{
-							Polygon item = (Polygon) iter2.next();
+							Polygon item = iter2.next();
 							g.setColor(Color.yellow);
 							g.fillPolygon(item.xpoints, item.ypoints, item.npoints);
 							g.setColor(Color.black);

@@ -253,7 +253,7 @@ public class StatPanel extends JPanel
 		
 		while (allAlliances.hasNext())
 		{
-			String alliance = (String) allAlliances.next();
+			String alliance = allAlliances.next();
 			if (m_data.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1)
 			{
 				rVal.add(alliance);
@@ -318,7 +318,7 @@ public class StatPanel extends JPanel
 				Iterator<PlayerID> playerIter = players.iterator();
 				while (playerIter.hasNext())
 				{
-					PlayerID player = (PlayerID) playerIter.next();
+					PlayerID player = playerIter.next();
 					
 					m_collectedData[row][0] = player.getName();
 					for (int i = 0; i < m_stats.length; i++)
@@ -491,7 +491,7 @@ public class StatPanel extends JPanel
 			
 			while (iter.hasNext())
 			{
-				TechAdvance tech = (TechAdvance) iter.next();
+				TechAdvance tech = iter.next();
 				rowMap.put((tech).getName(), new Integer(row));
 				data[row][0] = tech.getName();
 				row++;
@@ -540,7 +540,7 @@ public class StatPanel extends JPanel
 				Iterator<PlayerID> playerIter = gameData.getPlayerList().getPlayers().iterator();
 				while (playerIter.hasNext())
 				{
-					PlayerID pid = (PlayerID) playerIter.next();
+					PlayerID pid = playerIter.next();
 					if (colMap.get(pid.getName()) == null)
 						throw new IllegalStateException("Unexpected player in GameData.getPlayerList()" + pid.getName());
 					
@@ -560,7 +560,7 @@ public class StatPanel extends JPanel
 					while (advances.hasNext())
 					{
 						
-						TechAdvance advance = (TechAdvance) advances.next();
+						TechAdvance advance = advances.next();
 						row = rowMap.get(advance.getName()).intValue();
 						// System.err.println("(" + row + ", " + col + ")");
 						data[row][col] = "X";
@@ -570,7 +570,7 @@ public class StatPanel extends JPanel
 					List<TechAdvance> has = TechAdvance.getTechAdvances(m_data, pid);
 					while (advances.hasNext())
 					{
-						TechAdvance advance = (TechAdvance) advances.next();
+						TechAdvance advance = advances.next();
 						// if(!pid.getTechnologyFrontierList().getAdvances().contains(advance)){
 						if (!has.contains(advance))
 						{
@@ -667,7 +667,7 @@ class ProductionStat extends AbstractStat
 		while (iter.hasNext())
 		{
 			boolean isOwnedConvoyOrLand = false;
-			Territory place = (Territory) iter.next();
+			Territory place = iter.next();
 			OriginalOwnerTracker origOwnerTracker = new OriginalOwnerTracker();
 			TerritoryAttachment ta = TerritoryAttachment.get(place);
 			
@@ -754,7 +754,7 @@ class UnitsStat extends AbstractStat
 		Iterator<Territory> iter = data.getMap().getTerritories().iterator();
 		while (iter.hasNext())
 		{
-			Territory place = (Territory) iter.next();
+			Territory place = iter.next();
 			rVal += place.getUnits().countMatches(ownedBy);
 			
 		}
@@ -783,7 +783,7 @@ class TUVStat extends AbstractStat
 		Iterator<Territory> iter = data.getMap().getTerritories().iterator();
 		while (iter.hasNext())
 		{
-			Territory place = (Territory) iter.next();
+			Territory place = iter.next();
 			Collection<Unit> owned = place.getUnits().getMatches(unitIsOwnedBy);
 			rVal += BattleCalculator.getTUV(owned, costs);
 		}
@@ -807,7 +807,7 @@ class VictoryCityStat extends AbstractStat
 		Iterator<Territory> iter = data.getMap().getTerritories().iterator();
 		while (iter.hasNext())
 		{
-			Territory place = (Territory) iter.next();
+			Territory place = iter.next();
 			if (!place.getOwner().equals(player))
 				continue;
 			
@@ -990,7 +990,7 @@ class GenericUnitNameStat extends AbstractStat
 		Iterator<Territory> iter = data.getMap().getTerritories().iterator();
 		while (iter.hasNext())
 		{
-			Territory place = (Territory) iter.next();
+			Territory place = iter.next();
 			rVal += place.getUnits().countMatches(ownedBy);
 		}
 		return rVal;
@@ -1017,7 +1017,7 @@ class PlayerOrderComparator implements Comparator<PlayerID>
 		
 		while (iter.hasNext())
 		{
-			GameStep s = (GameStep) iter.next();
+			GameStep s = iter.next();
 			
 			if (s.getPlayerID() == null)
 				continue;

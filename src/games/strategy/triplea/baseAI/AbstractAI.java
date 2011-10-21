@@ -230,7 +230,7 @@ public abstract class AbstractAI implements ITripleaPlayer
 	public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection<Territory> territories, boolean noneAvailable)
 	{
 		// return the first one
-		return (Territory) territories.iterator().next();
+		return territories.iterator().next();
 	}
 	
 	@Override

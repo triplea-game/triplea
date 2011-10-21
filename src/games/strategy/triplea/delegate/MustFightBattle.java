@@ -2171,7 +2171,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 			Iterator<Unit> unloadedIter = unloaded.iterator();
 			while (unloadedIter.hasNext())
 			{
-				Unit load = (Unit) unloadedIter.next();
+				Unit load = unloadedIter.next();
 				Change loadChange = getTransportTracker().loadTransportChange((TripleAUnit) transport, load, m_attacker);
 				change.add(loadChange);
 			}

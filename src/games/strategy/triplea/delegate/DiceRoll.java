@@ -351,7 +351,7 @@ public class DiceRoll implements Externalizable
 			Iterator<Unit> iter = arty.iterator();
 			while (iter.hasNext())
 			{
-				Unit current = (Unit) iter.next();
+				Unit current = iter.next();
 				UnitAttachment ua = UnitAttachment.get(current.getType());
 				artillerySupportAvailable += ua.getUnitSupportCount(current.getOwner());
 			}
@@ -543,7 +543,7 @@ public class DiceRoll implements Externalizable
 		int diceIndex = 0;
 		while (iter.hasNext())
 		{
-			Unit current = (Unit) iter.next();
+			Unit current = iter.next();
 			UnitAttachment ua = UnitAttachment.get(current.getType());
 			
 			// make a copy for getRolls
@@ -815,7 +815,7 @@ public class DiceRoll implements Externalizable
 		
 		while (territories.hasNext())
 		{
-			Territory terr = (Territory) territories.next();
+			Territory terr = territories.next();
 			Battle battle = bt.getPendingBattle(terr, false);
 			if (battle != null && battle.isAmphibious() && ua.getIsMarine())
 				return true;

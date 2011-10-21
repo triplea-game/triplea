@@ -455,7 +455,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	@Override
 	public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
 	{
-		return (Territory) candidates.iterator().next();
+		return candidates.iterator().next();
 	}
 	
 	@Override

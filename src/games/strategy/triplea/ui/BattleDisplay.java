@@ -272,7 +272,7 @@ public class BattleDisplay extends JPanel
 			Iterator<UnitOwner> iter = category.getDependents().iterator();
 			while (iter.hasNext())
 			{
-				UnitOwner owner = (UnitOwner) iter.next();
+				UnitOwner owner = iter.next();
 				unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, false, false));
 				panel.add(unit);
 				// TODO this size is of the transport collection size, not the transportED collection size.

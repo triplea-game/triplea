@@ -95,7 +95,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		Collection<Battle> allMustPrecede = m_battleTracker.getDependentOn(battle);
 		if (!allMustPrecede.isEmpty())
 		{
-			Battle firstPrecede = (Battle) allMustPrecede.iterator().next();
+			Battle firstPrecede = allMustPrecede.iterator().next();
 			String name = firstPrecede.getTerritory().getName();
 			return "Must complete " + getFightingWord(battle) + " in " + name + " first";
 		}
@@ -223,7 +223,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					}
 					while (bombarding.hasNext())
 					{
-						Unit u = (Unit) bombarding.next();
+						Unit u = bombarding.next();
 						Battle battle = selectBombardingBattle(u, t, battles);
 						if (battle != null)
 						{
@@ -265,7 +265,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		while (battleTerritories.hasNext())
 		{
 			Territory t = battleTerritories.next();
-			Battle battle = (Battle) m_battleTracker.getPendingBattle(t, false);
+			Battle battle = m_battleTracker.getPendingBattle(t, false);
 			
 			// we only care about battles where we must fight
 			// this check is really to avoid implementing getAttackingFrom() in other battle subclasses
@@ -276,7 +276,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			Iterator<Territory> bombardingTerritories = ((MustFightBattle) battle).getAttackingFrom().iterator();
 			while (bombardingTerritories.hasNext())
 			{
-				Territory neighbor = (Territory) bombardingTerritories.next();
+				Territory neighbor = bombardingTerritories.next();
 				// If all units from a territory are air- no bombard
 				if (Match.allMatch(attackingFromMap.get(neighbor), Matches.UnitIsAir))
 				{

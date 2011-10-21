@@ -94,7 +94,7 @@ public class VerifiedRandomNumbersDialog extends JDialog
 		String[][] tableValues = new String[verified.size()][2];
 		for (int i = 0; i < verified.size(); i++)
 		{
-			VerifiedRandomNumbers number = (VerifiedRandomNumbers) verified.get(i);
+			VerifiedRandomNumbers number = verified.get(i);
 			tableValues[i][0] = number.getAnnotation();
 			tableValues[i][1] = MyFormatter.asDice(number.getValues());
 		}

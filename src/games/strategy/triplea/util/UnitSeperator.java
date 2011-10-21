@@ -97,7 +97,7 @@ public class UnitSeperator
 			
 			int unitTransportCost = -1;
 			if (categorizeTransportCost)
-				unitTransportCost = UnitAttachment.get(((Unit) current).getUnitType()).getTransportCost();
+				unitTransportCost = UnitAttachment.get((current).getUnitType()).getTransportCost();
 			
 			Collection<Unit> currentDependents = null;
 			if (dependent != null)

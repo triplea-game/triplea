@@ -507,7 +507,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 				m_turnSummaryMsgrPasswordLabel.setEnabled(msgr.getNeedsPassword());
 				// update maps
 				Object key = m_turnSummaryMsgrs.getSelectedItem();
-				Document d = (Document) usernameMap.get(key);
+				Document d = usernameMap.get(key);
 				if (d == null)
 				{
 					d = new PlainDocument();
@@ -515,7 +515,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 				}
 				usernameMap.put(key, d);
 				m_turnSummaryMsgrLogin.setDocument(d);
-				d = (Document) passwordMap.get(key);
+				d = passwordMap.get(key);
 				if (d == null)
 				{
 					d = new PlainDocument();
@@ -539,12 +539,12 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 				m_screenshotMsgrPassword.setEnabled(msgr.getNeedsPassword());
 				m_screenshotMsgrPasswordLabel.setEnabled(msgr.getNeedsPassword());
 				Object key = m_screenshotMsgrs.getSelectedItem();
-				Document d = (Document) usernameMap.get(key);
+				Document d = usernameMap.get(key);
 				if (d == null)
 					d = new PlainDocument();
 				usernameMap.put(key, d);
 				m_screenshotMsgrLogin.setDocument(d);
-				d = (Document) passwordMap.get(key);
+				d = passwordMap.get(key);
 				if (d == null)
 					d = new PlainDocument();
 				passwordMap.put(key, d);
@@ -566,12 +566,12 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 				m_saveGameMsgrPasswordLabel.setEnabled(msgr.getNeedsPassword());
 				// update maps
 				Object key = m_saveGameMsgrs.getSelectedItem();
-				Document d = (Document) usernameMap.get(key);
+				Document d = usernameMap.get(key);
 				if (d == null)
 					d = new PlainDocument();
 				usernameMap.put(key, d);
 				m_saveGameMsgrLogin.setDocument(d);
-				d = (Document) passwordMap.get(key);
+				d = passwordMap.get(key);
 				if (d == null)
 					d = new PlainDocument();
 				passwordMap.put(key, d);

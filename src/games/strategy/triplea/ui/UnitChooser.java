@@ -460,7 +460,7 @@ public class UnitChooser extends JPanel
 		Iterator<Unit> iter = possible.iterator();
 		for (int i = 0; i < quantity; i++)
 		{
-			Unit current = (Unit) iter.next();
+			Unit current = iter.next();
 			addTo.add(current);
 			if (addDependents)
 			{

@@ -328,8 +328,8 @@ public class MapData
 				if (landTerritory.endsWith("Sea Zone") || landTerritory.startsWith("Sea Zone"))
 					continue;
 				
-				Polygon landPoly = (Polygon) getPolygons(landTerritory).iterator().next();
-				Polygon seaPoly = (Polygon) getPolygons(seaTerritory).iterator().next();
+				Polygon landPoly = getPolygons(landTerritory).iterator().next();
+				Polygon seaPoly = getPolygons(seaTerritory).iterator().next();
 				if (seaPoly.contains(landPoly.getBounds()))
 				{
 					contained.add(landTerritory);
@@ -622,7 +622,7 @@ public class MapData
 		
 		for (int i = 0; i < polys.size(); i++)
 		{
-			Polygon item = (Polygon) polys.get(i);
+			Polygon item = polys.get(i);
 			if (bounds == null)
 				bounds = item.getBounds();
 			else
@@ -650,7 +650,7 @@ public class MapData
 			List<Polygon> polygons = getPolygons(terr);
 			for (int i = 0; i < polygons.size(); i++)
 			{
-				Polygon item = (Polygon) polygons.get(i);
+				Polygon item = polygons.get(i);
 				if (item.intersects(bounds) || item.contains(bounds) || bounds.contains(item.getBounds2D()))
 				{
 					if (rVal == null)

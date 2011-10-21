@@ -1541,7 +1541,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	@Override
 	public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
 	{
-		return (Territory) candidates.iterator().next();
+		return candidates.iterator().next();
 	}
 	
 	@Override

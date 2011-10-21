@@ -407,13 +407,13 @@ public class PlacementPicker extends JFrame
 		
 		while (keyIter.hasNext())
 		{
-			String name = (String) keyIter.next();
+			String name = keyIter.next();
 			Collection<Polygon> polygons = m_polygons.get(name);
 			Iterator<Polygon> polyIter = polygons.iterator();
 			
 			while (polyIter.hasNext())
 			{
-				Polygon poly = (Polygon) polyIter.next();
+				Polygon poly = polyIter.next();
 				
 				if (poly.contains(p))
 				{

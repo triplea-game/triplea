@@ -152,7 +152,7 @@ public class AutoPlacementFinder
 				
 				while (containedIter.hasNext())
 				{
-					String containedName = (String) containedIter.next();
+					String containedName = containedIter.next();
 					containedPolygons.addAll(s_mapData.getPolygons(containedName));
 				}
 				

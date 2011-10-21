@@ -114,7 +114,7 @@ public class InitializationDelegate extends BaseDelegate
 		Iterator<PlayerID> players = data.getPlayerList().getPlayers().iterator();
 		while (players.hasNext())
 		{
-			PlayerID player = (PlayerID) players.next();
+			PlayerID player = players.next();
 			Iterator<TechAdvance> advances = TechTracker.getTechAdvances(player, data).iterator();
 			if (advances.hasNext())
 			{
@@ -122,7 +122,7 @@ public class InitializationDelegate extends BaseDelegate
 				while (advances.hasNext())
 				{
 					
-					TechAdvance advance = (TechAdvance) advances.next();
+					TechAdvance advance = advances.next();
 					advance.perform(player, bridge);
 				}
 				

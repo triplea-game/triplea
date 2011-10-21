@@ -202,7 +202,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		Iterator<Territory> iter = territories.iterator();
 		while (iter.hasNext())
 		{
-			Territory current = (Territory) iter.next();
+			Territory current = iter.next();
 			TerritoryAttachment attatchment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
 			
 			if (attatchment == null)

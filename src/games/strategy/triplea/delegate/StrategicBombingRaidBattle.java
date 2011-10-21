@@ -195,7 +195,7 @@ public class StrategicBombingRaidBattle implements Battle
 					if (m_defender.getName().equals(Constants.JAPANESE))
 					{
 						Change changeVP;
-						PlayerAttachment pa = (PlayerAttachment) PlayerAttachment.get(m_defender);
+						PlayerAttachment pa = PlayerAttachment.get(m_defender);
 						if (pa != null)
 						{
 							changeVP = ChangeFactory.attachmentPropertyChange(pa, (new Integer(-(m_bombingRaidCost / 10) + Integer.parseInt(pa.getVps()))).toString(), "vps");

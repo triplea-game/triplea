@@ -351,7 +351,7 @@ public class UIContext
 			{
 				JFrame frame = ((JFrame) window);
 				
-				JMenuBar menu = (JMenuBar) frame.getJMenuBar();
+				JMenuBar menu = frame.getJMenuBar();
 				if (menu != null)
 				{
 					while (menu.getMenuCount() > 0)

@@ -491,7 +491,7 @@ public class HistoryLog extends JFrame
 		while (iter.hasNext())
 		{
 			boolean isConvoyOrLand = false;
-			Territory place = (Territory) iter.next();
+			Territory place = iter.next();
 			OriginalOwnerTracker origOwnerTracker = new OriginalOwnerTracker();
 			TerritoryAttachment ta = TerritoryAttachment.get(place);
 			
