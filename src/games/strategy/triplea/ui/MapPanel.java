@@ -692,6 +692,12 @@ public class MapPanel extends ImageScrollerLargeView
 		
 	};
 	
+    @Override
+	public void setTopLeft(int x, int y)
+    {
+        super.setTopLeft(x, y);
+    }
+
 	// this one is useful for screenshots
 	@Override
 	public void print(Graphics g)

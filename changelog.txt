@@ -1,4 +1,6 @@
 Changes for 1.4
+* Workaround fix to screenshot export bug. (edwin van der wal)
+
 * Code cleanup of needless casting. (veqryn)
 
 * Code cleanup of warnings. (veqryn)

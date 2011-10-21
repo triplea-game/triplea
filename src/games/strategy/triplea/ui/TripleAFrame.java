@@ -1446,7 +1446,13 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			data.acquireReadLock();
 			try
 			{
-				mapPanel.print(mapGraphics);
+                // workaround to get the whole map
+                // (otherwise the map is cut if current window is not on top of map)
+                int xOffset = mapPanel.getXOffset();
+                int yOffset = mapPanel.getYOffset();
+                mapPanel.setTopLeft(0, 0);
+                mapPanel.print(mapGraphics);
+                mapPanel.setTopLeft(xOffset, yOffset);
 			} finally
 			{
 				data.releaseReadLock();

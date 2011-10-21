@@ -245,7 +245,7 @@ public class RocketsFireHelper
 				target = iplayer.whatShouldBomberBomb(attackedTerritory, enemyTargets);
 			}
 			if (target == null)
-				new IllegalStateException("No Targets in " + attackedTerritory.getName());
+				throw new IllegalStateException("No Targets in " + attackedTerritory.getName());
 			targets.add(target);
 		}
 		
