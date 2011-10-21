@@ -3200,6 +3200,37 @@ public class Matches
 		};
 	}
 	
+	public static final Match<Territory> TerritoryHasWhenCapturedByGoesTo()
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(Territory t)
+			{
+				TerritoryAttachment ta = TerritoryAttachment.get(t);
+				if (ta == null)
+					return false;
+				if (!ta.getWhenCapturedByGoesTo().isEmpty())
+					return true;
+				return false;
+			}
+		};
+	}
+	
+	public static final Match<Unit> UnitWhenCapturedChangesIntoDifferentUnitType()
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(Unit u)
+			{
+				if (UnitAttachment.get(u.getType()).getWhenCapturedChangesInto().isEmpty())
+					return false;
+				return true;
+			}
+		};
+	}
+	
 	/** Creates new Matches */
 	private Matches()
 	{

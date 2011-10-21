@@ -155,6 +155,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	private int m_unitProduction = 0;
 	private boolean m_blockadeZone = false;
 	private Collection<TerritoryEffect> m_territoryEffect = new ArrayList<TerritoryEffect>();
+	private Collection<String> m_whenCapturedByGoesTo = new ArrayList<String>();
 	
 	/** Creates new TerritoryAttatchment */
 	public TerritoryAttachment()
@@ -350,6 +351,36 @@ public class TerritoryAttachment extends DefaultAttachment
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
+	 */
+	public void setWhenCapturedByGoesTo(String value) throws GameParseException
+	{
+		String[] s = value.split(":");
+		if (s.length != 2)
+			throw new GameParseException("whenCapturedByGoesTo must have 2 player names separated by a colon");
+		for (String name : s)
+		{
+			PlayerID player = getData().getPlayerList().getPlayerID(name);
+			if (player == null)
+				throw new IllegalStateException("Territory Attachments: No player named: " + name);
+		}
+		m_whenCapturedByGoesTo.add(value);
+	}
+	
+	public Collection<String> getWhenCapturedByGoesTo()
+	{
+		return m_whenCapturedByGoesTo;
+	}
+	
+	public void clearWhenCapturedByGoesTo()
+	{
+		m_whenCapturedByGoesTo.clear();
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param value
 	 */
 	public void setTerritoryEffect(String value) throws GameParseException
 	{
@@ -360,7 +391,7 @@ public class TerritoryAttachment extends DefaultAttachment
 			if (effect != null)
 				m_territoryEffect.add(effect);
 			else
-				throw new GameParseException("No TerritoryEffect named: " + name);
+				throw new GameParseException("Territory Attachments: No TerritoryEffect named: " + name);
 		}
 	}
 	

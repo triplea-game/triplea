@@ -30,11 +30,13 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
@@ -383,7 +385,6 @@ public class BattleTracker implements java.io.Serializable
 		
 	}
 	
-	@SuppressWarnings({ "unchecked" })
 	protected void takeOver(Territory territory, final PlayerID id, IDelegateBridge bridge, UndoableMove changeTracker, Collection<Unit> arrivingUnits)
 	{
 		GameData data = bridge.getData();
@@ -573,6 +574,24 @@ public class BattleTracker implements java.io.Serializable
 		else
 			newOwner = id;
 		
+		// if we have specially set this territory to have whenCapturedByGoesTo, then we set that here
+		if (Matches.TerritoryHasWhenCapturedByGoesTo().match(territory))
+		{
+			for (String value : ta.getWhenCapturedByGoesTo())
+			{
+				String[] s = value.split(":");
+				PlayerID capturingPlayer = data.getPlayerList().getPlayerID(s[0]);
+				PlayerID goesToPlayer = data.getPlayerList().getPlayerID(s[1]);
+				if (capturingPlayer.equals(goesToPlayer))
+					continue;
+				if (capturingPlayer.equals(id))
+				{
+					newOwner = goesToPlayer;
+					break;
+				}
+			}
+		}
+		
 		Change takeOver = ChangeFactory.changeOwner(territory, newOwner);
 		bridge.getHistoryWriter().addChildToEvent(takeOver.toString());
 		bridge.addChange(takeOver);
@@ -602,12 +621,7 @@ public class BattleTracker implements java.io.Serializable
 			// if it is give it back to the original owner
 			Collection<Territory> originallyOwned = origOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
 			
-			// necessary as Matches.IsTerritory is a Match<Object> and alliedOccupiedTerritories is used as Match<Territory> later
-			@SuppressWarnings("rawtypes")
-			CompositeMatch alliedOccupiedTerritories = new CompositeMatchAnd();
-			alliedOccupiedTerritories.add(Matches.IsTerritory);
-			alliedOccupiedTerritories.add(Matches.isTerritoryAllied(terrOrigOwner, data));
-			List<Territory> friendlyTerritories = Match.getMatches(originallyOwned, alliedOccupiedTerritories);
+			List<Territory> friendlyTerritories = Match.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
 			
 			// give back the factories as well.
 			for (Territory item : friendlyTerritories)
@@ -693,24 +707,48 @@ public class BattleTracker implements java.io.Serializable
 		CompositeMatch<Unit> willBeCaptured = new CompositeMatchOr<Unit>(enemyNonCom, Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
 		
 		Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);
+		
+		// change any units that change unit types on capture
+		Collection<Unit> toReplace = Match.getMatches(nonCom, Matches.UnitWhenCapturedChangesIntoDifferentUnitType());
+		for (Unit u : toReplace)
+		{
+			HashMap<String,UnitType> map = UnitAttachment.get(u.getType()).getWhenCapturedChangesInto();
+			PlayerID currentOwner = u.getOwner();
+			for (String value : map.keySet())
+			{
+				String[] s = value.split(":");
+				if (!(s[0].equals("any") || data.getPlayerList().getPlayerID(s[0]).equals(currentOwner)))
+					continue;
+				// we could use "id" or "newOwner" here... not sure which to use
+				if (!(s[1].equals("any") || data.getPlayerList().getPlayerID(s[1]).equals(id)))
+					continue;
+				UnitType ut = map.get(value);
+				if (ut.equals(u.getType()))
+					continue;
+				CompositeChange changes = new CompositeChange();
+				changes.add(ChangeFactory.removeUnits(territory, Collections.singleton(u)));
+				Collection<Unit> toAdd = ut.create(1, newOwner);
+				changes.add(ChangeFactory.addUnits(territory, toAdd));
+				changes.add(ChangeFactory.markNoMovementChange(toAdd));
+				bridge.getHistoryWriter().addChildToEvent(id.getName() + " converts some units", Collections.singleton(u));
+				bridge.addChange(changes);
+				if (changeTracker != null)
+					changeTracker.addChange(changes);
+				// don't forget to remove this unit from the list
+				nonCom.remove(u);
+				break;
+			}
+		}
+		
+		Change capture = ChangeFactory.changeOwner(nonCom, newOwner, territory);
+		bridge.addChange(capture);
+		if (changeTracker != null)
+			changeTracker.addChange(capture);
+		
 		Change noMovementChange = ChangeFactory.markNoMovementChange(nonCom);
 		bridge.addChange(noMovementChange);
 		if (changeTracker != null)
 			changeTracker.addChange(noMovementChange);
-		
-		// non coms revert to their original owner if once allied
-		// unless their capital is not owned
-		for (Unit currentUnit : nonCom)
-		{
-			// TODO: check if following line is necessary
-			// PlayerID originalOwner = origOwnerTracker.getOriginalOwner(currentUnit);
-			PlayerID terrOwner = newOwner;
-			
-			Change capture = ChangeFactory.changeOwner(currentUnit, terrOwner, territory);
-			bridge.addChange(capture);
-			if (changeTracker != null)
-				changeTracker.addChange(capture);
-		}
 	}
 	
 	private Change addMustFightBattleChange(Route route, Collection<Unit> units, PlayerID id, GameData data)

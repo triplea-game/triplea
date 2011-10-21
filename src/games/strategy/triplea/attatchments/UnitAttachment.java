@@ -40,6 +40,7 @@ import games.strategy.util.Tuple;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -191,6 +192,7 @@ public class UnitAttachment extends DefaultAttachment
 	
 	private Collection<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<PlayerID>();
 	private Collection<Tuple<String, PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<Tuple<String, PlayerID>>();
+	private HashMap<String,UnitType> m_whenCapturedChangesInto = new HashMap<String,UnitType>();
 	private Collection<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<PlayerID>();
 	
 	private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
@@ -289,6 +291,38 @@ public class UnitAttachment extends DefaultAttachment
 	public void clearCanBeCapturedOnEnteringBy()
 	{
 		m_canBeCapturedOnEnteringBy.clear();
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param value
+	 */
+	public void setWhenCapturedChangesInto(String value)
+	{
+		String[] s = value.split(":");
+		if (s.length != 3)
+			throw new IllegalStateException("Unit Attachments: whenCapturedChangesInto must have 3 values, playerFrom:playerTo:unitType");
+		PlayerID pfrom = getData().getPlayerList().getPlayerID(s[0]);
+		if (pfrom == null && !s[0].equals("any"))
+			throw new IllegalStateException("Unit Attachments: whenCapturedChangesInto: No player named: " + s[0]);
+		PlayerID pto = getData().getPlayerList().getPlayerID(s[1]);
+		if (pto == null && !s[1].equals("any"))
+			throw new IllegalStateException("Unit Attachments: whenCapturedChangesInto: No player named: " + s[1]);
+		UnitType ut = getData().getUnitTypeList().getUnitType(s[2]);
+		if (ut == null)
+			throw new IllegalStateException("Unit Attachments: whenCapturedChangesInto: No unit named: " + s[2]);
+		m_whenCapturedChangesInto.put(s[0]+":"+s[1], ut);
+	}
+	
+	public HashMap<String,UnitType> getWhenCapturedChangesInto()
+	{
+		return m_whenCapturedChangesInto;
+	}
+	
+	public void clearWhenCapturedChangesInto()
+	{
+		m_whenCapturedChangesInto.clear();
 	}
 	
 	/**
@@ -1620,7 +1654,8 @@ public class UnitAttachment extends DefaultAttachment
 					"  repairsUnits:" + (m_repairsUnits != null ? Arrays.toString(m_repairsUnits) : "null") +
 					"  canScramble:" + m_canScramble +
 					"  maxScrambleDistance:" + m_maxScrambleDistance +
-					"  airBase:" + m_isAirBase;
+					"  airBase:" + m_isAirBase +
+					"  whenCapturedChangesInto:" + m_whenCapturedChangesInto;
 	}
 	
 	public String toStringShortAndOnlyImportantDifferences(PlayerID player, boolean useHTML, boolean includeAttachedToName)

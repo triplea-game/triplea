@@ -1735,6 +1735,8 @@
 			destroyedWhenCapturedBy				values: is a list of the players who destroy this non-combat unit instead of capturing it.  all non-combat units are normally captured by default. is a colon delimited list of player names.
 															You can prefix them with single instance of "BY:" or "FROM:" in order to determine if it is being captured by, or captured from, that determines if the unit is destroyed.
 															examples: <option name="destroyedWhenCapturedBy" value="BY:Chinese:Japanese"/> and <option name="destroyedWhenCapturedBy" value="FROM:Russians:Chinese"/>
+			whenCapturedChangesInto				values: allows a unit to change into a different unit when captured from a specific player to a specific player.  accepts "any" instead of a player name. allows multiple.
+															examples: <option name="whenCapturedChangesInto" value="any:any:Minor_Factory"/> and <option name="whenCapturedChangesInto" value="Russians:Germans:supplies"/>
 			isAirBase							values: allows units with canScramble to scramble from a territory with this unit
 			givesMovement						values: allows a unit to give movement to other units.  must be an integer, followed by a colon ":", followed by the name of the unit
 			repairsUnits						values: is a colon delimited list of all the units this unit can repair. units to be repaired must be in the same territory as this unit. 
@@ -2080,6 +2082,8 @@
 						 <option name="givesMovement" value="1:bomber"/>
 						 <option name="givesMovement" value="1:air_transport"/>
 						 <!--<option name="isAAforBombingThisUnitOnly" value="true"/>-->
+						 <!--<option name="whenCapturedChangesInto" value="any:Italians:aaGun"/>
+						 <option name="whenCapturedChangesInto" value="Russians:any:aaGun"/>-->
                 </attatchment>
 				
 				<!-- Harbour -->
@@ -2199,6 +2203,7 @@
 			blockadeZone							values: true or false, can this territory be blockaded by neighboring sea zones?
 			kamikazeZone							values: true or false, does nothing right now, but it will put a symbol on the map (the kamikazeZone symbol must be in the flags folder and be named "<owner_name>_fade"
 			territoryEffect							values: adds a territoryEffect to a territory, can have multiple
+			whenCapturedByGoesTo					values: the player that captures the territory, then the player that will get the territory, separated by a colon.  Can have multiple. For example: value="Americans:Russians"
 			
 	-->
 				
@@ -2545,6 +2550,9 @@
 
                 <attatchment name="territoryAttatchment" attatchTo="West Russia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
+						<option name="whenCapturedByGoesTo" value="Americans:Russians"/>
+						<option name="whenCapturedByGoesTo" value="British:Russians"/>
+						<option name="whenCapturedByGoesTo" value="Chinese:Russians"/>
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Peru" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -3287,6 +3295,7 @@
 					createsUnitsList
 					createsResourcesList
 					receivesAbilityWhenWith
+					whenCapturedChangesInto
 					
 				Unit Support Attachments:
 					players
@@ -3295,6 +3304,7 @@
 					changeUnitOwners
 					captureUnitOnEnteringBy
 					territoryEffect
+					whenCapturedByGoesTo
 					
 				Territory Effect Attachments:
 					combatDefenseEffect

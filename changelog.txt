@@ -1,4 +1,8 @@
 Changes for 1.4
+* Created new unit attachment, whenCapturedChangesInto, which allows you to have a unit change into a different unit type when it is captured. (veqryn)
+
+* Created new territory attachment, whenCapturedByGoesTo, which allows you to have a territory be given to another player when captured by a certain player. (veqryn)
+
 * Workaround fix to screenshot export bug. (edwin van der wal)
 
 * Code cleanup of needless casting. (veqryn)
