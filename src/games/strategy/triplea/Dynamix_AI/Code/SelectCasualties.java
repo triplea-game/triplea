@@ -18,7 +18,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.net.GUID;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
@@ -97,7 +96,7 @@ public class SelectCasualties
 				for (Unit unit : selectFrom) // Problem with calcing for the best unit to select as a casualties is that the battle calculator needs to call this very method to calculate the battle, resulting in a never ending loop!
 				{
 					UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-					TripleAUnit ta = TripleAUnit.get(unit);
+					//TripleAUnit ta = TripleAUnit.get(unit);
 					
 					if (destroyed.contains(unit))
 						continue;

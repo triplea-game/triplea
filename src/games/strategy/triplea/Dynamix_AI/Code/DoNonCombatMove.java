@@ -58,6 +58,7 @@ import javax.swing.SwingUtilities;
  * 
  * @author Stephen
  */
+@SuppressWarnings("unchecked")
 public class DoNonCombatMove
 {
 	public static void doPreCombatMove(Dynamix_AI ai, GameData data, IMoveDelegate mover, PlayerID player)
@@ -433,7 +434,9 @@ public class DoNonCombatMove
 	
 	private static boolean considerAndPerformWorthwhileTasks(MovePackage pack, List<NCM_Task> tasks)
 	{
+		@SuppressWarnings("unused")
 		GameData data = pack.Data;
+		@SuppressWarnings("unused")
 		PlayerID player = pack.Player;
 		IMoveDelegate mover = pack.Mover;
 		
@@ -597,7 +600,9 @@ public class DoNonCombatMove
 	
 	private static boolean considerAndPerformWorthwhileCalls(MovePackage pack, List<NCM_Call> calls)
 	{
+		@SuppressWarnings("unused")
 		GameData data = pack.Data;
+		@SuppressWarnings("unused")
 		PlayerID player = pack.Player;
 		IMoveDelegate mover = pack.Mover;
 		

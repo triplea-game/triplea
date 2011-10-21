@@ -14,7 +14,6 @@
 
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;

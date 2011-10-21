@@ -348,6 +348,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 			while (raidBattles.hasNext())
 			{
 				Territory current = raidBattles.next();
+				@SuppressWarnings("unused")
 				String error = battleDelegate.fightBattle(current, true);
 			}
 			
@@ -357,6 +358,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 			{
 				Territory current = nonRaidBattles.next();
 				setBattleInfo(current);
+				@SuppressWarnings("unused")
 				String error = battleDelegate.fightBattle(current, false);
 			}
 			setBattleInfo(null);

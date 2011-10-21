@@ -45,6 +45,7 @@ import java.util.logging.Level;
  * 
  * @author Stephen
  */
+@SuppressWarnings("unchecked")
 public class NCM_Call
 {
 	private Territory m_target = null;

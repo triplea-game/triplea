@@ -54,6 +54,7 @@ import java.util.logging.Level;
  * 
  * @author Stephen
  */
+@SuppressWarnings("unchecked")
 public class CM_Task
 {
 	private Territory m_target = null;
@@ -574,6 +575,7 @@ public class CM_Task
 		return result;
 	}
 	
+	@SuppressWarnings("unused")
 	public boolean IsPlannedAttackWorthwhile(List<CM_Task> allTasks)
 	{
 		PlayerID player = GlobalCenter.CurrentPlayer;

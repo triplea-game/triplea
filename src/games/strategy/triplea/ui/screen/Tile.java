@@ -226,7 +226,7 @@ public class Tile
 		}
 	}
 	
-	public void removeDrawables(Collection c)
+	public void removeDrawables(Collection<IDrawable> c)
 	{
 		LockUtil.acquireLock(m_lock);
 		try

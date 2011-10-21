@@ -512,7 +512,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		  {
 		      dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
 		      for(Unit carrier : dependencies.keySet())
-		      {            	
+		      {
 		      	UnitAttachment ua = UnitAttachment.get(carrier.getUnitType());
 		      	if (ua.getCarrierCapacity() == -1)
 		      		continue;
@@ -527,7 +527,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		      }
 		  }
 		  
-		  //Set the dependent paratroopers so they die if the bomber dies.        
+		  //Set the dependent paratroopers so they die if the bomber dies.
 		  if(isParatroopers(m_attacker))
 		  {
 		      Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
@@ -543,11 +543,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		      	{
 		              Collection<Unit> unitList = new ArrayList<Unit>();
 		              unitList.add(unit);
-		      		Unit bomber = unitsToCapableAirTransports.get(unit);                
+		      		Unit bomber = unitsToCapableAirTransports.get(unit);
 		      		singleCollection.add(unit);
 
 		      		//Set transportedBy for paratrooper
-		      		change.add(ChangeFactory.unitPropertyChange(unit, bomber, TripleAUnit.TRANSPORTED_BY ));            	
+		      		change.add(ChangeFactory.unitPropertyChange(unit, bomber, TripleAUnit.TRANSPORTED_BY ));
 
 		      		//Set the dependents
 		      		if (dependentUnits.get(bomber) != null)
@@ -585,10 +585,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
 	
 	private void addDependentUnits(Map<Unit, Collection<Unit>> dependencies)
 	{
-		Iterator iter = dependencies.keySet().iterator();
+		Iterator<Unit> iter = dependencies.keySet().iterator();
 		while (iter.hasNext())
 		{
-			Unit holder = (Unit) iter.next();
+			Unit holder = iter.next();
 			Collection<Unit> transporting = dependencies.get(holder);
 			if (m_dependentUnits.get(holder) != null)
 				m_dependentUnits.get(holder)
@@ -777,9 +777,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		}
 		
 		// find all attacking units (unsorted)
-		for (Iterator attackersIter = attackers.iterator(); attackersIter.hasNext();)
+		for (Iterator<PlayerID> attackersIter = attackers.iterator(); attackersIter.hasNext();)
 		{
-			PlayerID current = (PlayerID) attackersIter.next();
+			PlayerID current = attackersIter.next();
 			String delim;
 			if (attackersIter.hasNext())
 				delim = "; ";
@@ -825,9 +825,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		}
 		
 		// find all defending units (unsorted)
-		for (Iterator defendersIter = defenders.iterator(); defendersIter.hasNext();)
+		for (Iterator<PlayerID> defendersIter = defenders.iterator(); defendersIter.hasNext();)
 		{
-			PlayerID current = (PlayerID) defendersIter.next();
+			PlayerID current = defendersIter.next();
 			Collection<Unit> defendingUnits;
 			String delim;
 			if (defendersIter.hasNext())
@@ -1747,7 +1747,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 				}
 			});
 		}
-		/*else 
+		/*else
 		{*/
 		// the air unit may have come from a conquered or enemy territory, don't allow retreating
 		Match<Territory> conqueuredOrEnemy = new CompositeMatchOr<Territory>(
@@ -2632,6 +2632,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 					attacked, true, returnFire, bridge, "Subs defend, ");
 	}
 	
+	/*
 	private void attackAny(IDelegateBridge bridge)
 	{
 		if (m_defendingUnits.size() == 0)
@@ -2653,7 +2654,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		fire(m_defender.getName() + SELECT_CASUALTIES, units,
 					m_defendingUnits, false, ReturnFire.ALL, bridge, "Attackers fire,");
 	}
+	*/
 	
+	/*
 	private void defendAny(IDelegateBridge bridge)
 	{
 		
@@ -2677,6 +2680,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		fire(m_attacker.getName() + SELECT_CASUALTIES, units,
 					m_attackingUnits, true, ReturnFire.ALL, bridge, "Defenders fire, ");
 	}
+	*/
 	
 	void removeCasualties(Collection<Unit> killed, ReturnFire returnFire,
 				boolean defender, IDelegateBridge bridge, boolean isAA)
@@ -2931,7 +2935,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 	{
 		private DiceRoll m_dice;
 		private Collection<Unit> m_casualties;
-		private List<Unit> m_hitUnits = new ArrayList<Unit>();
+		//private List<Unit> m_hitUnits = new ArrayList<Unit>();
 		
 		@Override
 		public void execute(ExecutionStack stack, final IDelegateBridge bridge)
@@ -3766,8 +3770,8 @@ class Fire implements IExecutable
 				Collection<Unit> firingUnits, String stepName, String text, MustFightBattle battle,
 				boolean defending, Map<Unit, Collection<Unit>> dependentUnits, ExecutionStack stack, boolean headless)
 	{
-		/* This is to remove any Factories, AAguns, and Infrastructure from possible targets for the firing. 
-		 * If, in the future, Infrastructure or other things could be taken casualty, then this will need to be changed back to: 
+		/* This is to remove any Factories, AAguns, and Infrastructure from possible targets for the firing.
+		 * If, in the future, Infrastructure or other things could be taken casualty, then this will need to be changed back to:
 		 * m_attackableUnits = attackableUnits;
 		 */
 		m_attackableUnits = Match.getMatches(attackableUnits, Matches.UnitIsDestructibleInCombatShort);

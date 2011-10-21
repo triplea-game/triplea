@@ -133,13 +133,13 @@ public class TerritoryDetailPanel extends JPanel
 			m_data.releaseReadLock();
 		}
 		
-		Set units = UnitSeperator.categorize(unitsInTerritory);
-		Iterator iter = units.iterator();
+		Set<UnitCategory> units = UnitSeperator.categorize(unitsInTerritory);
+		Iterator<UnitCategory> iter = units.iterator();
 		PlayerID currentPlayer = null;
 		while (iter.hasNext())
 		{
 			// seperate players with a seperator
-			UnitCategory item = (UnitCategory) iter.next();
+			UnitCategory item = iter.next();
 			if (item.getOwner() != currentPlayer)
 			{
 				currentPlayer = item.getOwner();

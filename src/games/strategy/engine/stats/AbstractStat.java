@@ -35,11 +35,11 @@ public abstract class AbstractStat implements IStat
 	@Override
 	public double getValue(String alliance, GameData data)
 	{
-		Iterator iter = data.getAllianceTracker().getPlayersInAlliance(alliance).iterator();
+		Iterator<PlayerID> iter = data.getAllianceTracker().getPlayersInAlliance(alliance).iterator();
 		double rVal = 0;
 		while (iter.hasNext())
 		{
-			PlayerID player = (PlayerID) iter.next();
+			PlayerID player = iter.next();
 			rVal += getValue(player, data);
 		}
 		return rVal;

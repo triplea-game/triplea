@@ -47,6 +47,7 @@ public class DUtilsTests extends TestCase
 		m_data = null;
 	}
 	
+	@SuppressWarnings("unused")
 	public void testBattleCalculator()
 	{
 		PlayerID superior = m_data.getPlayerList().getPlayerID("Superior");
@@ -76,6 +77,7 @@ public class DUtilsTests extends TestCase
 		if (true) // Return now, as the developer is not currently using this for anything... :)
 			return;
 		
+		@SuppressWarnings("unused")
 		PlayerID superior = m_data.getPlayerList().getPlayerID("Superior");
 		PlayerID huron = m_data.getPlayerList().getPlayerID("Huron");
 		

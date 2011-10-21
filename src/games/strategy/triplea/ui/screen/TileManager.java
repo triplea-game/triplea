@@ -246,7 +246,7 @@ public class TileManager
 	{
 		if (m_territoryTiles.get(territory.getName()) == null)
 			return;
-		Collection drawables = m_territoryDrawables.get(territory.getName());
+		Collection<IDrawable> drawables = m_territoryDrawables.get(territory.getName());
 		if (drawables == null || drawables.isEmpty())
 			return;
 		

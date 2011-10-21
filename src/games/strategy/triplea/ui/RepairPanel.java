@@ -24,8 +24,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
 
@@ -200,7 +198,7 @@ public class RepairPanel extends ActionPanel
 		
 		// give a warning if the player tries to produce too much
 		// does this piece of code even do anything? why is it here?
-		/*if(isWW2V2() || isRestrictedPurchase() || isSBRAffectsUnitProduction() || isDamageFromBombingDoneToUnitsInsteadOfTerritories()) 
+		/*if(isWW2V2() || isRestrictedPurchase() || isSBRAffectsUnitProduction() || isDamageFromBombingDoneToUnitsInsteadOfTerritories())
 		{
 		    int totalProd = 0;
 		    getData().acquireReadLock();
@@ -213,7 +211,7 @@ public class RepairPanel extends ActionPanel
 		    	    if(isIncreasedFactoryProduction(player))
 		    	        addedProd = 2;
 		    	    
-		    		for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getData(), getCurrentPlayer()))) 
+		    		for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getData(), getCurrentPlayer())))
 		            {
 		    		    TerritoryAttachment ta = TerritoryAttachment.get(t);
 		    		    int terrProd = ta.getUnitProduction();
@@ -229,7 +227,7 @@ public class RepairPanel extends ActionPanel
 		    	}
 		    	else
 		    	{
-		            for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getData(), getCurrentPlayer()))) 
+		            for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getData(), getCurrentPlayer())))
 		            {
 		                totalProd += TerritoryAttachment.get(t).getProduction();
 		            }
@@ -245,6 +243,7 @@ public class RepairPanel extends ActionPanel
 	}
 	};
 	
+	/*
 	private boolean isIncreasedFactoryProduction(PlayerID player)
 	{
 		TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
@@ -252,6 +251,7 @@ public class RepairPanel extends ActionPanel
 			return false;
 		return ta.hasIncreasedFactoryProduction();
 	}
+	*/
 	
 	@Override
 	public String toString()

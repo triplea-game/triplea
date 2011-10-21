@@ -49,11 +49,13 @@ public abstract class Match<T>
 	/**
 	 * A match that always returns true.
 	 */
+	@SuppressWarnings("rawtypes")
 	public static final Match ALWAYS_MATCH = new AlwaysMatch();
 	
 	/**
 	 * A match that always returns false.
 	 */
+	@SuppressWarnings("rawtypes")
 	public static final Match NEVER_MATCH = new NeverMatch();
 	
 	/**
@@ -189,6 +191,7 @@ public abstract class Match<T>
 }
 
 
+@SuppressWarnings("rawtypes")
 class NeverMatch extends Match
 {
 	@Override
@@ -199,6 +202,7 @@ class NeverMatch extends Match
 }
 
 
+@SuppressWarnings("rawtypes")
 class AlwaysMatch extends Match
 {
 	@Override

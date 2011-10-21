@@ -75,10 +75,10 @@ public class IntegerMap<T> implements Cloneable, Serializable
 		m_values = new HashMap<T,Integer>(integerMap.m_values);
 		 */
 		m_values = new HashMap<T, Integer>(integerMap.size());
-		Iterator iter = integerMap.keySet().iterator();
+		Iterator<T> iter = integerMap.keySet().iterator();
 		while (iter.hasNext())
 		{
-			T t = (T) iter.next();
+			T t = iter.next();
 			m_values.put(t, integerMap.getInt(t));
 		}
 	}

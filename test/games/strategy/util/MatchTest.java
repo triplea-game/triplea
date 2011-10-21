@@ -120,7 +120,7 @@ public class MatchTest extends TestCase
 	
 	public void testAnd()
 	{
-		CompositeMatch and = new CompositeMatchAnd(m_pos, m_neg);
+		CompositeMatch<Integer> and = new CompositeMatchAnd<Integer>(m_pos, m_neg);
 		assertTrue(!and.match(new Integer(1)));
 		
 		assertTrue(!Match.someMatch(m_ints, and));
@@ -132,7 +132,7 @@ public class MatchTest extends TestCase
 		assertTrue(!Match.allMatch(m_ints, and));
 		assertEquals(0, Match.getMatches(m_ints, and).size());
 		
-		and = new CompositeMatchAnd(m_pos, m_pos);
+		and = new CompositeMatchAnd<Integer>(m_pos, m_pos);
 		assertTrue(and.match(new Integer(1)));
 		
 		assertTrue(Match.someMatch(m_ints, and));
@@ -143,7 +143,7 @@ public class MatchTest extends TestCase
 	
 	public void testOr()
 	{
-		CompositeMatch or = new CompositeMatchOr(m_pos, m_neg);
+		CompositeMatch<Integer> or = new CompositeMatchOr<Integer>(m_pos, m_neg);
 		assertTrue(or.match(new Integer(1)));
 		
 		assertTrue(Match.someMatch(m_ints, or));
@@ -159,7 +159,7 @@ public class MatchTest extends TestCase
 	
 	public void testMap()
 	{
-		HashMap map = new HashMap();
+		HashMap<String,String> map = new HashMap<String,String>();
 		map.put("a", "b");
 		map.put("b", "c");
 		map.put("c", "d");

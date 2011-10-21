@@ -74,7 +74,7 @@ public class MapRouteDrawer
 			
 			graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			
-			List territories = route.getTerritories();
+			List<Territory> territories = route.getTerritories();
 			
 			int numTerritories = territories.size();
 			Point[] points = new Point[numTerritories];
@@ -82,7 +82,7 @@ public class MapRouteDrawer
 			// find all the points for this route
 			for (int i = 0; i < numTerritories; i++)
 			{
-				points[i] = (Point) mapData.getCenter((Territory) territories.get(i));
+				points[i] = (Point) mapData.getCenter(territories.get(i));
 			}
 			
 			if (routeDescription.getStart() != null)

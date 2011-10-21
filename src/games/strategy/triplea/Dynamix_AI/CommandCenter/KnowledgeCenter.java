@@ -49,7 +49,9 @@ public class KnowledgeCenter
 		s_KCInstances.clear();
 	}
 	
+	@SuppressWarnings("unused")
 	private GameData m_data = null;
+	@SuppressWarnings("unused")
 	private PlayerID m_player = null;
 	
 	public KnowledgeCenter(GameData data, PlayerID player)

@@ -139,7 +139,7 @@ public class TechTracker implements java.io.Serializable
 		}
 		
 		/*
-		if(attatchment.hasSuperSub() && attatchment.hasJetPower() && attatchment.hasShipyards() && 
+		if(attatchment.hasSuperSub() && attatchment.hasJetPower() && attatchment.hasShipyards() &&
 		                attatchment.hasAARadar() && attatchment.hasLongRangeAir() && attatchment.hasHeavyBomber())
 		{
 		  rVal.add(TechAdvance.AIR_NAVAL_ADVANCES);
@@ -178,12 +178,14 @@ public class TechTracker implements java.io.Serializable
 		advance.perform(player, bridge);
 	}
 	
+	/*
 	private static String capitalizeFirstLetter(String aString)
 	{
 		char first = aString.charAt(0);
 		first = Character.toUpperCase(first);
 		return first + aString.substring(1);
 	}
+	*/
 	
 	public static boolean hasLongRangeAir(PlayerID player)
 	{

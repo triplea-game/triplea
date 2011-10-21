@@ -69,7 +69,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 		// we want the newest move at the top
 		m_moves = new ArrayList<AbstractUndoableMove>(m_moves);
 		Collections.reverse(m_moves);
-		Iterator iter = m_moves.iterator();
+		Iterator<AbstractUndoableMove> iter = m_moves.iterator();
 		
 		if (iter.hasNext())
 			add(new JLabel("Moves:"), BorderLayout.NORTH);
@@ -79,7 +79,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 		while (iter.hasNext())
 		{
 			
-			AbstractUndoableMove item = (AbstractUndoableMove) iter.next();
+			AbstractUndoableMove item = iter.next();
 			JComponent moveComponent = createComponentForMove(item);
 			scrollIncrement = moveComponent.getPreferredSize().height;
 			

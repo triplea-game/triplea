@@ -30,6 +30,7 @@ import junit.framework.TestCase;
  */
 public class DSortingTests extends TestCase
 {
+	@SuppressWarnings("unused")
 	private GameData m_data;
 	
 	@Override

@@ -1528,7 +1528,7 @@ public class WW2V3_41_Test extends TestCase
 		
 		PlayerID germans = germans(m_data);
 		Territory germany = territory("Germany", m_data);
-		Territory nwe = territory("Northwestern Europe", m_data);
+		//Territory nwe = territory("Northwestern Europe", m_data);
 		Territory poland = territory("Poland", m_data);
 		Territory eastPoland = territory("East Poland", m_data);
 		

@@ -149,10 +149,10 @@ public class PointFileReaderWriter
 	public static void writeOneToManyPolygons(OutputStream sink, Map<String, List<Polygon>> mapping) throws Exception
 	{
 		StringBuilder out = new StringBuilder();
-		Iterator keyIter = mapping.keySet().iterator();
+		Iterator<String> keyIter = mapping.keySet().iterator();
 		while (keyIter.hasNext())
 		{
-			String name = (String) keyIter.next();
+			String name = keyIter.next();
 			out.append(name).append(" ");
 			List<Polygon> points = mapping.get(name);
 			Iterator<Polygon> polygonIter = points.iterator();

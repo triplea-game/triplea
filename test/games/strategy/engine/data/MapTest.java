@@ -284,7 +284,7 @@ public class MapTest extends TestCase
 	
 	public void testNeighbors()
 	{
-		Set neighbors = map.getNeighbors(aa);
+		Set<Territory> neighbors = map.getNeighbors(aa);
 		assertTrue(neighbors.size() == 2);
 		assertTrue(neighbors.contains(ab));
 		assertTrue(neighbors.contains(ba));
@@ -293,7 +293,7 @@ public class MapTest extends TestCase
 	
 	public void testNeighborsWithDistance()
 	{
-		Set neighbors = map.getNeighbors(aa, 0);
+		Set<Territory> neighbors = map.getNeighbors(aa, 0);
 		assertTrue(neighbors.size() == 0);
 		
 		neighbors = map.getNeighbors(aa, 1);

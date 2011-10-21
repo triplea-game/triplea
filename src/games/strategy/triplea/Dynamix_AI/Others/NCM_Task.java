@@ -51,6 +51,7 @@ import java.util.logging.Level;
  * 
  * @author Stephen
  */
+@SuppressWarnings("unchecked")
 public class NCM_Task
 {
 	private Territory m_target = null;
@@ -91,6 +92,7 @@ public class NCM_Task
 		final HashMap<Unit, Territory> unitLocations = new HashMap<Unit, Territory>();
 		final HashMap<Unit, Integer> possibles = new HashMap<Unit, Integer>();
 		
+		@SuppressWarnings("unused")
 		boolean addedAA = false;
 		for (final Territory ter : m_data.getMap().getTerritories())
 		{

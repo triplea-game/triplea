@@ -46,7 +46,7 @@ public class VerifiedRandomNumbersDialog extends JDialog
 	
 	private void init()
 	{
-		List verified = RemoteRandom.getVerifiedRandomNumbers();
+		List<VerifiedRandomNumbers> verified = RemoteRandom.getVerifiedRandomNumbers();
 		String[][] tableValues = getTableValues(verified);
 		
 		DefaultTableModel model = new DefaultTableModel(tableValues, new String[] { "Reason", "Dice Rolls" })
@@ -86,7 +86,7 @@ public class VerifiedRandomNumbersDialog extends JDialog
 	 * @param verified
 	 * @return
 	 */
-	private String[][] getTableValues(List verified)
+	private String[][] getTableValues(List<VerifiedRandomNumbers> verified)
 	{
 		if (verified.isEmpty())
 			return new String[][] { { "", "" } };

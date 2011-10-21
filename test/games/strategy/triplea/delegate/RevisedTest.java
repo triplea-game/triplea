@@ -63,7 +63,6 @@ import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -621,7 +620,7 @@ public class RevisedTest extends TestCase
 		UndoableMove move1 = moveDelegate.getMovesMade().get(0);
 		
 		// the first unload
-		AbstractUndoableMove move2 = moveDelegate.getMovesMade().get(0);
+		//AbstractUndoableMove move2 = moveDelegate.getMovesMade().get(0);
 		
 		// the second unload must be done first
 		assertFalse(move1.getcanUndo());
@@ -951,9 +950,9 @@ public class RevisedTest extends TestCase
 	public void testAAOwnership()
 	{
 		// Set up players
-		PlayerID british = m_data.getPlayerList().getPlayerID("British");
+		//PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
-		PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+		//PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
 		
 		// Set up the territories
 		Territory india = territory("India", m_data);
@@ -963,7 +962,7 @@ public class RevisedTest extends TestCase
 		
 		// Preset units in FIC
 		UnitType infType = m_data.getUnitTypeList().getUnitType("infantry");
-		UnitType aaType = m_data.getUnitTypeList().getUnitType("aaGun");
+		//UnitType aaType = m_data.getUnitTypeList().getUnitType("aaGun");
 		removeFrom(fic, fic.getUnits().getUnits());
 		addTo(fic, aaGun(m_data).create(1, japanese));
 		addTo(fic, infantry(m_data).create(1, japanese));
@@ -1369,7 +1368,7 @@ public class RevisedTest extends TestCase
 		 * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal attack and defense rolls, unless the enemy has a destroyer present.
 		 * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs aren’t removed until the Remove Casualties step (step 6) of combat.
 		 * 
-		 * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever stops a sub from rolling its die (attack or defense) in the Opening Fire step. 
+		 * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever stops a sub from rolling its die (attack or defense) in the Opening Fire step.
 		 * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step 6, allowing them to fire back before going to the scrap heap.
 		 */
 		assertEquals(
@@ -1444,7 +1443,7 @@ public class RevisedTest extends TestCase
 		 * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal attack and defense rolls, unless the enemy has a destroyer present.
 		 * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs aren’t removed until the Remove Casualties step (step 6) of combat.
 		 * 
-		 * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever stops a sub from rolling its die (attack or defense) in the Opening Fire step. 
+		 * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever stops a sub from rolling its die (attack or defense) in the Opening Fire step.
 		 * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step 6, allowing them to fire back before going to the scrap heap.
 		 */
 		assertEquals(
@@ -1588,7 +1587,7 @@ public class RevisedTest extends TestCase
 		 * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal attack and defense rolls, unless the enemy has a destroyer present.
 		 * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs aren’t removed until the Remove Casualties step (step 6) of combat.
 		 * 
-		 * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever stops a sub from rolling its die (attack or defense) in the Opening Fire step. 
+		 * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever stops a sub from rolling its die (attack or defense) in the Opening Fire step.
 		 * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step 6, allowing them to fire back before going to the scrap heap.
 		 */
 		assertEquals(
@@ -1761,7 +1760,7 @@ public class RevisedTest extends TestCase
 		TechnologyDelegate techDelegate = techDelegate(m_data);
 		techDelegate.start(delegateBridge);
 		TechAttachment ta = TechAttachment.get(germans);
-		PlayerAttachment pa = PlayerAttachment.get(germans);
+		//PlayerAttachment pa = PlayerAttachment.get(germans);
 		TechnologyFrontier rockets = new TechnologyFrontier("", m_data);
 		rockets.addAdvance(TechAdvance.ROCKETS);
 		TechnologyFrontier jet = new TechnologyFrontier("", m_data);

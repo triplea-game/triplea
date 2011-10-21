@@ -30,7 +30,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
@@ -258,7 +257,7 @@ public class ProductionRepairPanel extends JPanel
 	protected void setLeft(int left)
 	{
 		int total = getPUs();
-		int spent = total - left;
+		//int spent = total - left;
 		
 		m_left.setText("You have " + left + " " + StringUtil.plural("PU", left) + " left out of " + total + " " + StringUtil.plural("PU", total));
 	}
@@ -331,6 +330,7 @@ public class ProductionRepairPanel extends JPanel
 	}
 	
 	
+	@SuppressWarnings("serial")
 	public class Rule extends JPanel
 	{
 		private ScrollableTextField m_text = new ScrollableTextField(0, Integer.MAX_VALUE);
@@ -364,7 +364,7 @@ public class ProductionRepairPanel extends JPanel
 			if (!type.equals(repairUnit.getType()))
 				throw new IllegalStateException("Rule unit type " + type.getName() + " does not match " + repairUnit.toString() + ".  Please make sure your maps are up to date!");
 			
-			UnitAttachment attach = UnitAttachment.get(type);
+			//UnitAttachment attach = UnitAttachment.get(type);
 			TripleAUnit taUnit = (TripleAUnit) repairUnit;
 			
 			Icon icon;

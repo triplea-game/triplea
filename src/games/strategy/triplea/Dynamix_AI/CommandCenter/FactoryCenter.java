@@ -53,7 +53,9 @@ public class FactoryCenter
 		s_FCInstances.clear();
 	}
 	
+	@SuppressWarnings("unused")
 	private GameData m_data = null;
+	@SuppressWarnings("unused")
 	private PlayerID m_player = null;
 	
 	public FactoryCenter(GameData data, PlayerID player)

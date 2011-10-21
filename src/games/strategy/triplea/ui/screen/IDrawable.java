@@ -563,13 +563,13 @@ class KamikazeZoneDrawable implements IDrawable
 class BlockadeZoneDrawable implements IDrawable
 {
 	private final String m_location;
-	private final UIContext m_uiContext;
+	//private final UIContext m_uiContext;
 	
 	public BlockadeZoneDrawable(final Territory location, UIContext uiContext)
 	{
 		super();
 		m_location = location.getName();
-		m_uiContext = uiContext;
+		//m_uiContext = uiContext;
 	}
 	
 	@Override
@@ -602,12 +602,12 @@ class SeaZoneOutlineDrawable implements IDrawable
 	{
 		
 		Territory territory = data.getMap().getTerritory(m_territoryName);
-		List polys = mapData.getPolygons(territory);
+		List<Polygon> polys = mapData.getPolygons(territory);
 		
-		Iterator iter2 = polys.iterator();
+		Iterator<Polygon> iter2 = polys.iterator();
 		while (iter2.hasNext())
 		{
-			Polygon polygon = (Polygon) iter2.next();
+			Polygon polygon = iter2.next();
 			
 			// if we dont have to draw, dont
 			if (!polygon.intersects(bounds) && !polygon.contains(bounds))

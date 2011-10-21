@@ -668,10 +668,10 @@ public class MapPanel extends ImageScrollerLargeView
 			if (aChange instanceof CompositeChange)
 			{
 				CompositeChange composite = (CompositeChange) aChange;
-				Iterator iter = composite.getChanges().iterator();
+				Iterator<Change> iter = composite.getChanges().iterator();
 				while (iter.hasNext())
 				{
-					Change item = (Change) iter.next();
+					Change item = iter.next();
 					getPlayersWithTechChanges(item, players);
 					
 				}
@@ -848,11 +848,11 @@ public class MapPanel extends ImageScrollerLargeView
 			
 			Rectangle2D extendedBounds = new Rectangle2D.Double(Math.max(m_model.getX() - preDrawMargin, 0), Math.max(m_model.getY() - preDrawMargin, 0), getScaledWidth() + (2 * preDrawMargin),
 						getScaledHeight() + (2 * preDrawMargin));
-			Iterator tiles = m_tileManager.getTiles(extendedBounds).iterator();
+			Iterator<Tile> tiles = m_tileManager.getTiles(extendedBounds).iterator();
 			
 			while (tiles.hasNext())
 			{
-				Tile tile = (Tile) tiles.next();
+				Tile tile = tiles.next();
 				if (tile.isDirty())
 				{
 					undrawnTiles.add(tile);
@@ -868,8 +868,8 @@ public class MapPanel extends ImageScrollerLargeView
 	
 	private void drawTiles(Graphics2D g, List<Tile> images, final GameData data, Rectangle2D.Double bounds, double overlap, List<Tile> undrawn)
 	{
-		List tileList = m_tileManager.getTiles(bounds);
-		Iterator tiles = tileList.iterator();
+		List<Tile> tileList = m_tileManager.getTiles(bounds);
+		Iterator<Tile> tiles = tileList.iterator();
 		
 		if (overlap != 0)
 		{
@@ -879,7 +879,7 @@ public class MapPanel extends ImageScrollerLargeView
 		while (tiles.hasNext())
 		{
 			Image img = null;
-			Tile tile = (Tile) tiles.next();
+			Tile tile = tiles.next();
 			
 			LockUtil.acquireLock(tile.getLock());
 			try
@@ -956,11 +956,11 @@ public class MapPanel extends ImageScrollerLargeView
      */
 	public void initSmallMap()
 	{
-		Iterator territories = m_data.getMap().getTerritories().iterator();
+		Iterator<Territory> territories = m_data.getMap().getTerritories().iterator();
 		
 		while (territories.hasNext())
 		{
-			Territory territory = (Territory) territories.next();
+			Territory territory = territories.next();
 			m_smallMapImageManager.updateTerritoryOwner(territory, m_data, m_uiContext.getMapData());
 			
 		}

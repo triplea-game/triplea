@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 public class DynamixAITests extends TestCase
 {
 	private GameData m_data;
+	@SuppressWarnings("unused")
 	private Dynamix_AI m_ai;
 	
 	@Override

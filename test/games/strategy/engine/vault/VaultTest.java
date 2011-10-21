@@ -15,7 +15,6 @@ package games.strategy.engine.vault;
 
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.DummyMessenger;
-import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;

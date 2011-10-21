@@ -78,6 +78,7 @@ import javax.swing.SwingUtilities;
  * 
  * @author Stephen
  */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class DUtils
 {
 	public static float GetAttackScoreOfUnits(Collection<Unit> units)
@@ -145,11 +146,13 @@ public class DUtils
 		return CachedCalculationCenter.GetMapTersFromPoint(target);
 	}
 	
+	//@SuppressWarnings("unchecked")
 	public static List<Unit> GetUnitsOnMap(GameData data)
 	{
 		return GetUnitsMatchingXInTerritoriesMatchingY(data, Match.ALWAYS_MATCH, Match.ALWAYS_MATCH);
 	}
 	
+	//@SuppressWarnings("unchecked")
 	public static List<Unit> GetUnitsMatchingXOnMap(GameData data, Match<Unit> unitMatch)
 	{
 		return GetUnitsMatchingXInTerritoriesMatchingY(data, unitMatch, Match.ALWAYS_MATCH);
@@ -160,6 +163,7 @@ public class DUtils
 		return GetUnitsMatchingXInTerritories(GetTerritoriesMatching(data, terMatch), unitMatch);
 	}
 	
+	//@SuppressWarnings("unchecked")
 	public static List<Unit> GetUnitsInTerritories(List<Territory> territories)
 	{
 		return GetUnitsMatchingXInTerritories(territories, Match.ALWAYS_MATCH);
@@ -1537,6 +1541,7 @@ public class DUtils
 		
 		while (result.size() < units.size())
 		{
+			//@SuppressWarnings("unchecked")
 			Unit nextToAdd = CalculateUnitThatWillHelpWinAttackOnArmyTheMostPerPU(battleTer, data, player, result, leftToAdd, defendStack, Match.ALWAYS_MATCH,
 						DSettings.LoadSettings().CA_CMNCM_sortsPossibleTaskRecruitsForOptimalAttackDefense);
 			
@@ -1833,7 +1838,9 @@ public class DUtils
 		
 		UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
 		TripleAUnit ta = TripleAUnit.get(unit);
+		@SuppressWarnings("unused")
 		int tuv = DUtils.GetTUVOfUnit(unit, GlobalCenter.GetPUResource());
+		@SuppressWarnings("unused")
 		int movementSpeed = ua.getMovement(unit.getOwner());
 		int movementLeft = ta.getMovementLeft();
 		
@@ -1943,8 +1950,10 @@ public class DUtils
 		
 		UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
 		TripleAUnit ta = TripleAUnit.get(unit);
+		@SuppressWarnings("unused")
 		int tuv = DUtils.GetTUVOfUnit(unit, GlobalCenter.GetPUResource());
 		int movementSpeed = ua.getMovement(unit.getOwner());
+		@SuppressWarnings("unused")
 		int movementLeft = ta.getMovementLeft();
 		
 		// With calls, we'll consider recruiting a unit even if it is currently frozen (we don't need the unit to be able to attack or defend somewhere this round)
@@ -2079,9 +2088,11 @@ public class DUtils
 	 */
 	public static List<Integer> GetTUVChangeOfAttackerAndDefender(List<Unit> initialAttackers, List<Unit> initialDefenders, AggregateResults results)
 	{
+		@SuppressWarnings("unused")
 		PlayerID attacker = null;
 		if (!initialAttackers.isEmpty())
 			attacker = initialAttackers.get(0).getOwner();
+		@SuppressWarnings("unused")
 		PlayerID defender = null;
 		if (!initialDefenders.isEmpty())
 			defender = initialDefenders.get(0).getOwner();

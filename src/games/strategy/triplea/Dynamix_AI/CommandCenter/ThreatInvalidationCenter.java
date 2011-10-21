@@ -58,6 +58,7 @@ public class ThreatInvalidationCenter
 	}
 	
 	private GameData m_data = null;
+	@SuppressWarnings("unused")
 	private PlayerID m_player = null;
 	
 	public ThreatInvalidationCenter(GameData data, PlayerID player)

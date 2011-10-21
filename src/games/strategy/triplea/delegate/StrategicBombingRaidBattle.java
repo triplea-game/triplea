@@ -625,7 +625,7 @@ public class StrategicBombingRaidBattle implements Battle
 			{
 				// determine the max allowed damage
 				Unit current = m_targets.iterator().next();
-				UnitAttachment ua = UnitAttachment.get(current.getType());
+				//UnitAttachment ua = UnitAttachment.get(current.getType());
 				TripleAUnit taUnit = (TripleAUnit) current;
 				
 				damageLimit = taUnit.getHowMuchMoreDamageCanThisUnitTake(current, m_battleSite);

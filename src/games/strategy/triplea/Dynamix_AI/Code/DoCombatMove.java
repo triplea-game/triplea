@@ -50,6 +50,7 @@ import javax.swing.SwingUtilities;
  * 
  * @author Stephen
  */
+@SuppressWarnings("unchecked")
 public class DoCombatMove
 {
 	public static void doCombatMove(Dynamix_AI ai, GameData data, IMoveDelegate mover, PlayerID player)
@@ -556,7 +557,9 @@ public class DoCombatMove
 	
 	private static boolean considerAndPerformWorthwhileTasks(MovePackage pack, List<CM_Task> tasks)
 	{
+		@SuppressWarnings("unused")
 		GameData data = pack.Data;
+		@SuppressWarnings("unused")
 		PlayerID player = pack.Player;
 		IMoveDelegate mover = pack.Mover;
 		

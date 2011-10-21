@@ -54,7 +54,9 @@ public class StatusCenter
 		s_SCInstances.clear();
 	}
 	
+	@SuppressWarnings("unused")
 	private GameData m_data = null;
+	@SuppressWarnings("unused")
 	private PlayerID m_player = null;
 	
 	public StatusCenter(GameData data, PlayerID player)
