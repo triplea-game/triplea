@@ -698,9 +698,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		if (m_stack.isExecuting())
 		{
 			ITripleaDisplay display = getDisplay(bridge);
-			display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker), removeNonCombatants(m_defendingUnits, false, m_defender),
-						m_dependentUnits, m_attacker, m_defender);
-			
+            display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker), removeNonCombatants(m_defendingUnits, false, m_defender), m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender);
+
 			display.listBattleSteps(m_battleID, m_stepStrings);
 			
 			m_stack.execute(bridge);
@@ -738,8 +737,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		m_stepStrings = determineStepStrings(true, bridge);
 		
 		ITripleaDisplay display = getDisplay(bridge);
-		display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker), removeNonCombatants(m_defendingUnits, false, m_defender),
-					m_dependentUnits, m_attacker, m_defender);
+        display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker), removeNonCombatants(m_defendingUnits, false, m_defender), m_killed,
+        			m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender);
 		
 		display.listBattleSteps(m_battleID, m_stepStrings);
 		

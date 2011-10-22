@@ -13,14 +13,17 @@ import java.util.Map;
 
 public class DummyDisplay implements ITripleaDisplay
 {
-	
-	@Override
-	public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits,
-				Map<Unit, Collection<Unit>> dependentUnits, PlayerID attacker, PlayerID defender)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+    /*
+     * (non-Javadoc)
+     * @see games.strategy.triplea.ui.display.ITripleaDisplay#showBattle(games.strategy.net.GUID, games.strategy.engine.data.Territory, java.lang.String, java.util.Collection, java.util.Collection, java.util.Collection, java.util.Map, games.strategy.engine.data.PlayerID,
+     * games.strategy.engine.data.PlayerID)
+     */
+    @Override
+    public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits, final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, PlayerID attacker, PlayerID defender)
+    {
+        // TODO Auto-generated method stub
+        
+    }
 	
 	@Override
 	public void listBattleSteps(GUID battleID, List<String> steps)

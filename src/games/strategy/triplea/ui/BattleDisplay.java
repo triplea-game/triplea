@@ -144,8 +144,7 @@ public class BattleDisplay extends JPanel
 		
 	};
 	
-	public BattleDisplay(GameData data, Territory territory, PlayerID attacker, PlayerID defender, Collection<Unit> attackingUnits,
-				Collection<Unit> defendingUnits, GUID battleID, MapPanel mapPanel)
+    public BattleDisplay(GameData data, Territory territory, final PlayerID attacker, final PlayerID defender, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits, final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, GUID battleID, MapPanel mapPanel)
 	{
 		m_battleID = battleID;
 		m_defender = defender;
@@ -154,13 +153,24 @@ public class BattleDisplay extends JPanel
 		m_mapPanel = mapPanel;
 		
 		m_data = data;
+        
+        m_defenderModel = new BattleModel(m_data, defendingUnits, m_location, false, m_mapPanel.getUIContext());
+        m_defenderModel.refresh();
+        m_attackerModel = new BattleModel(m_data, attackingUnits, m_location, true, m_mapPanel.getUIContext());
+        m_attackerModel.refresh();
+        m_uiContext = mapPanel.getUIContext();
+
 		m_casualties = new CasualtyNotificationPanel(data, m_mapPanel.getUIContext());
-		
-		m_defenderModel = new BattleModel(m_data, defendingUnits, m_location, false, m_mapPanel.getUIContext());
-		m_defenderModel.refresh();
-		m_attackerModel = new BattleModel(m_data, attackingUnits, m_location, true, m_mapPanel.getUIContext());
-		m_attackerModel.refresh();
-		m_uiContext = mapPanel.getUIContext();
+        if (killedUnits != null && attackingWaitingToDie != null && defendingWaitingToDie != null) {
+            Collection<Unit> attackerUnitsKilled = Match.getMatches(killedUnits, Matches.unitIsOwnedBy(attacker));
+            attackerUnitsKilled.addAll(attackingWaitingToDie);
+            if (!attackerUnitsKilled.isEmpty())
+                updateKilledUnits(attackerUnitsKilled, attacker);
+            Collection<Unit> defenderUnitsKilled = Match.getMatches(killedUnits, Matches.unitIsOwnedBy(defender));
+            defenderUnitsKilled.addAll(defendingWaitingToDie);
+            if (!defenderUnitsKilled.isEmpty())
+                updateKilledUnits(defenderUnitsKilled, defender);
+        }
 		
 		initLayout();
 	}
@@ -535,24 +545,24 @@ public class BattleDisplay extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				String ok = "Retreat";
-				String cancel = "Remain";
-				String wait = "Ask Me Later";
+                String yes = "Retreat";
+                String no = "Remain";
+                String cancel = "Ask Me Later";
 				
-				String[] options =
-				{ ok, cancel, wait };
-				int choice = JOptionPane.showOptionDialog(BattleDisplay.this, message, "Retreat?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
-							cancel);
+                String[] options = { yes, no, cancel };
+
+                int choice = JOptionPane.showOptionDialog(BattleDisplay.this, message, "Retreat?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
+ no);
 				
 				// dialog dismissed
 				if (choice == -1)
 					return;
 				// wait
-				if (choice == 2)
+                if (choice == JOptionPane.CANCEL_OPTION)
 					return;
 				
 				// remain
-				if (choice == 1)
+                if (choice == JOptionPane.NO_OPTION)
 				{
 					latch.countDown();
 					return;
@@ -1349,7 +1359,7 @@ class BattleModel extends DefaultTableModel
 		//TODO refactor with DiceRoll.getArtillerySupportAvailable
 		int artillerySupportAvailable = 0;
 	    if (attack)
-	    {            
+	    {
 	        Collection<Unit> arty = Match.getMatches(units, Matches.UnitIsArtillery);
 	        Iterator<Unit> iter = arty.iterator();
 	        PlayerID player = null;
@@ -1377,7 +1387,7 @@ class BattleModel extends DefaultTableModel
 	    TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 	    if(ta == null)
 	    	return false;
-	    return ta.hasImprovedArtillerySupport();     
+	    return ta.hasImprovedArtillerySupport();
 	}*/
 }
 

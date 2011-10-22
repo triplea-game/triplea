@@ -1,4 +1,6 @@
 Changes for 1.4
+* Fix for Casualty Reset Bug 1730391, where casualty screen clears after saving and reloading. (frigoref & veqryn)
+
 * Changed whenCapturedChangesInto to allow the transferring of combat damage and unit damage to the new units. (veqryn)
 
 * Changed whenCapturedChangesInto to allow creating multiple unit types and multiple of a unit. (veqryn)

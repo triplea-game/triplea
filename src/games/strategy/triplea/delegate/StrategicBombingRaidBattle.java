@@ -263,7 +263,7 @@ public class StrategicBombingRaidBattle implements Battle
 	private void showBattle(IDelegateBridge bridge)
 	{
 		String title = "Bombing raid in " + m_battleSite.getName();
-		getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_units, getDefendingUnits(), Collections.<Unit, Collection<Unit>> emptyMap(), m_attacker, m_defender);
+        getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_units, getDefendingUnits(), null, null, null, Collections.<Unit, Collection<Unit>> emptyMap(), m_attacker, m_defender);
 		getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
 	}
 	

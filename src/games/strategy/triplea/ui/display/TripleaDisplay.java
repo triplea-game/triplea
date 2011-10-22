@@ -44,7 +44,7 @@ public class TripleaDisplay implements ITripleaDisplay
 		m_ui = ui;
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.engine.display.IDisplay#initialize(games.strategy.engine.display.IDisplayBridge)
 	 */
 	@Override
@@ -59,10 +59,10 @@ public class TripleaDisplay implements ITripleaDisplay
 	 * @see games.strategy.triplea.ui.display.ITripleaDisplay#showBattle(games.strategy.net.GUID, java.util.List, games.strategy.engine.data.Territory, java.lang.String, java.util.Collection, java.util.Collection)
 	 */
 	@Override
-	public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits, Map<Unit, Collection<Unit>> unit_dependents,
-				PlayerID attacker, PlayerID defender)
+    public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits, Collection<Unit> killedUnits,
+    			final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> unit_dependents, PlayerID attacker, PlayerID defender)
 	{
-		m_ui.getBattlePanel().showBattle(battleID, location, battleTitle, attackingUnits, defendingUnits, unit_dependents, attacker, defender);
+        m_ui.getBattlePanel().showBattle(battleID, location, battleTitle, attackingUnits, defendingUnits, killedUnits, attackingWaitingToDie, defendingWaitingToDie, unit_dependents, attacker, defender);
 		
 	}
 	
@@ -76,7 +76,7 @@ public class TripleaDisplay implements ITripleaDisplay
 		
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
 	 */
 	@Override
@@ -92,7 +92,7 @@ public class TripleaDisplay implements ITripleaDisplay
 		
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
 	 */
 	@Override
@@ -105,7 +105,7 @@ public class TripleaDisplay implements ITripleaDisplay
 		
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
 	 */
 	@Override

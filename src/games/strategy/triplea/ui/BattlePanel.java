@@ -259,7 +259,7 @@ public class BattlePanel extends ActionPanel
 	}
 	
 	/**
-     *  
+     * 
      */
 	private void cleanUpBattleWindow()
 	{
@@ -343,7 +343,8 @@ public class BattlePanel extends ActionPanel
 	}
 	
 	public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits,
-				final Collection<Unit> defendingUnits, final Map<Unit, Collection<Unit>> unit_dependents, final PlayerID attacker, final PlayerID defender)
+ final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final Map<Unit, Collection<Unit>> unit_dependents, final PlayerID attacker,
+            final PlayerID defender)
 	{
 		try
 		{
@@ -362,7 +363,7 @@ public class BattlePanel extends ActionPanel
 					if (!getMap().getUIContext().getShowMapOnly())
 			{
 				
-				m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, battleID, BattlePanel.this.getMap());
+                        m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, killedUnits, attackingWaitingToDie, defendingWaitingToDie, battleID, BattlePanel.this.getMap());
 				
 				m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
 				
