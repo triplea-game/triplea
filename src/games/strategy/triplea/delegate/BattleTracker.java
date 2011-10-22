@@ -41,8 +41,10 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,6 +52,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -574,8 +577,8 @@ public class BattleTracker implements java.io.Serializable
 		else
 			newOwner = id;
 		
-		// if we have specially set this territory to have whenCapturedByGoesTo, then we set that here
-		if (Matches.TerritoryHasWhenCapturedByGoesTo().match(territory))
+		// if we have specially set this territory to have whenCapturedByGoesTo, then we set that here (except we don't set it if we are liberating allied owned territory)
+		if (newOwner.equals(id) && Matches.TerritoryHasWhenCapturedByGoesTo().match(territory))
 		{
 			for (String value : ta.getWhenCapturedByGoesTo())
 			{
@@ -712,7 +715,7 @@ public class BattleTracker implements java.io.Serializable
 		Collection<Unit> toReplace = Match.getMatches(nonCom, Matches.UnitWhenCapturedChangesIntoDifferentUnitType());
 		for (Unit u : toReplace)
 		{
-			HashMap<String,UnitType> map = UnitAttachment.get(u.getType()).getWhenCapturedChangesInto();
+			LinkedHashMap<String,Tuple<String,IntegerMap<UnitType>>> map = UnitAttachment.get(u.getType()).getWhenCapturedChangesInto();
 			PlayerID currentOwner = u.getOwner();
 			for (String value : map.keySet())
 			{
@@ -722,21 +725,38 @@ public class BattleTracker implements java.io.Serializable
 				// we could use "id" or "newOwner" here... not sure which to use
 				if (!(s[1].equals("any") || data.getPlayerList().getPlayerID(s[1]).equals(id)))
 					continue;
-				UnitType ut = map.get(value);
-				if (ut.equals(u.getType()))
-					continue;
 				CompositeChange changes = new CompositeChange();
-				changes.add(ChangeFactory.removeUnits(territory, Collections.singleton(u)));
-				Collection<Unit> toAdd = ut.create(1, newOwner);
-				changes.add(ChangeFactory.addUnits(territory, toAdd));
-				changes.add(ChangeFactory.markNoMovementChange(toAdd));
-				bridge.getHistoryWriter().addChildToEvent(id.getName() + " converts some units", Collections.singleton(u));
-				bridge.addChange(changes);
-				if (changeTracker != null)
-					changeTracker.addChange(changes);
-				// don't forget to remove this unit from the list
-				nonCom.remove(u);
-				break;
+				Collection<Unit> toAdd = new ArrayList<Unit>();
+				Tuple<String,IntegerMap<UnitType>> toCreate = map.get(value);
+				boolean translateAttributes = toCreate.getFirst().equalsIgnoreCase("true");
+				Iterator<UnitType> iter = toCreate.getSecond().keySet().iterator();
+				while (iter.hasNext())
+				{
+					UnitType ut = iter.next();
+					//if (ut.equals(u.getType()))
+						//continue;
+					toAdd.addAll(ut.create(toCreate.getSecond().getInt(ut), newOwner));
+				}
+				if (!toAdd.isEmpty())
+				{
+					if (translateAttributes)
+					{
+						Change translate = TripleAUnit.translateAttributesToOtherUnits(u, toAdd, territory);
+						if (!translate.isEmpty())
+							changes.add(translate);
+					}
+
+					changes.add(ChangeFactory.removeUnits(territory, Collections.singleton(u)));
+					changes.add(ChangeFactory.addUnits(territory, toAdd));
+					changes.add(ChangeFactory.markNoMovementChange(toAdd));
+					bridge.getHistoryWriter().addChildToEvent(id.getName() + " converts " + u.toStringNoOwner() + " into different units", toAdd);
+					bridge.addChange(changes);
+					if (changeTracker != null)
+						changeTracker.addChange(changes);
+					// don't forget to remove this unit from the list
+					nonCom.remove(u);
+					break;
+				}
 			}
 		}
 		

@@ -14,6 +14,9 @@
 
 package games.strategy.triplea;
 
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -530,5 +533,50 @@ public class TripleAUnit extends Unit
 			return Math.max(0, productionCapacity);
 		else
 			return productionCapacity;
+	}
+	
+	/**
+	 * Currently made for translating unit damage from one unit to another unit.  Will adjust damage to be within max damage for the new units.
+	 * 
+	 * @param unitGivingAttributes
+	 * @param unitsThatWillGetAttributes
+	 * @param t
+	 * @return change for unit's properties
+	 */
+	public static Change translateAttributesToOtherUnits(Unit unitGivingAttributes, Collection<Unit> unitsThatWillGetAttributes, Territory t)
+	{
+		CompositeChange changes = new CompositeChange();
+		
+		// must look for m_hits, m_unitDamage,
+		
+		TripleAUnit taUnit = (TripleAUnit) unitGivingAttributes;
+		
+		int combatDamage = taUnit.getHits();
+		IntegerMap<Unit> hits = new IntegerMap<Unit>();
+		if (combatDamage > 0)
+		{
+			for (Unit u : unitsThatWillGetAttributes)
+			{
+				hits.put(u, combatDamage);
+			}
+		}
+		if (hits.size() > 0)
+			changes.add(ChangeFactory.unitsHit(hits));
+		
+		int unitDamage = taUnit.getUnitDamage();
+		if (unitDamage > 0)
+		{
+			for (Unit u : unitsThatWillGetAttributes)
+			{
+				TripleAUnit taNew = (TripleAUnit) u;
+				int maxDamage = taNew.getHowMuchDamageCanThisUnitTakeTotal(u, t);
+				int transferDamage = Math.max(0, Math.min(unitDamage, maxDamage));
+				if (transferDamage <= 0)
+					continue;
+				changes.add(ChangeFactory.unitPropertyChange(u, transferDamage, TripleAUnit.UNIT_DAMAGE));
+			}
+		}
+		
+		return changes;
 	}
 }

@@ -40,9 +40,9 @@ import games.strategy.util.Tuple;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -192,7 +192,7 @@ public class UnitAttachment extends DefaultAttachment
 	
 	private Collection<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<PlayerID>();
 	private Collection<Tuple<String, PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<Tuple<String, PlayerID>>();
-	private HashMap<String,UnitType> m_whenCapturedChangesInto = new HashMap<String,UnitType>();
+	private LinkedHashMap<String,Tuple<String,IntegerMap<UnitType>>> m_whenCapturedChangesInto = new LinkedHashMap<String,Tuple<String,IntegerMap<UnitType>>>();
 	private Collection<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<PlayerID>();
 	
 	private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
@@ -301,21 +301,29 @@ public class UnitAttachment extends DefaultAttachment
 	public void setWhenCapturedChangesInto(String value)
 	{
 		String[] s = value.split(":");
-		if (s.length != 3)
-			throw new IllegalStateException("Unit Attachments: whenCapturedChangesInto must have 3 values, playerFrom:playerTo:unitType");
+		if (s.length < 5 || (s.length-1)%2 != 0)
+			throw new IllegalStateException("Unit Attachments: whenCapturedChangesInto must have 5 or more values, playerFrom:playerTo:keepAttributes:unitType:howMany (you may have additional unitType:howMany:unitType:howMany, etc");
 		PlayerID pfrom = getData().getPlayerList().getPlayerID(s[0]);
 		if (pfrom == null && !s[0].equals("any"))
 			throw new IllegalStateException("Unit Attachments: whenCapturedChangesInto: No player named: " + s[0]);
 		PlayerID pto = getData().getPlayerList().getPlayerID(s[1]);
 		if (pto == null && !s[1].equals("any"))
 			throw new IllegalStateException("Unit Attachments: whenCapturedChangesInto: No player named: " + s[1]);
-		UnitType ut = getData().getUnitTypeList().getUnitType(s[2]);
-		if (ut == null)
-			throw new IllegalStateException("Unit Attachments: whenCapturedChangesInto: No unit named: " + s[2]);
-		m_whenCapturedChangesInto.put(s[0]+":"+s[1], ut);
+		getBool(s[2]);
+		IntegerMap<UnitType> unitsToMake = new IntegerMap<UnitType>();
+		for (int i=3;i<s.length;i++)
+		{
+			UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
+			if (ut == null)
+				throw new IllegalStateException("Unit Attachments: whenCapturedChangesInto: No unit named: " + s[3]);
+			i++;
+			int howMany = getInt(s[i]);
+			unitsToMake.add(ut, howMany);
+		}
+		m_whenCapturedChangesInto.put(s[0]+":"+s[1], new Tuple<String,IntegerMap<UnitType>>(s[2],unitsToMake));
 	}
 	
-	public HashMap<String,UnitType> getWhenCapturedChangesInto()
+	public LinkedHashMap<String,Tuple<String,IntegerMap<UnitType>>> getWhenCapturedChangesInto()
 	{
 		return m_whenCapturedChangesInto;
 	}
