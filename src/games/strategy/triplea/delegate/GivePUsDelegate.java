@@ -61,6 +61,12 @@ public class GivePUsDelegate extends BaseDelegate
 		if (isWW2V2())
 			return;
 	}
+
+	@Override
+	public void end()
+	{
+		super.end();
+	}
 	
 	private boolean isWW2V2()
 	{
@@ -102,7 +108,7 @@ public class GivePUsDelegate extends BaseDelegate
 		m_gameOver = ((Boolean) state).booleanValue();
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
 	@Override

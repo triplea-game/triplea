@@ -80,6 +80,12 @@ public class InitializationDelegate extends BaseDelegate
 			}
 		}
 	}
+
+	@Override
+	public void end()
+	{
+		super.end();
+	}
 	
 	/**
 	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.

@@ -143,6 +143,17 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		}
 	}
 	
+	/**
+	 * Called before the delegate will stop running.
+	 */
+	@Override
+	public void end()
+	{
+		super.end();
+		m_needToInitialize = true;
+		DelegateFinder.battleDelegate(getData()).getBattleTracker().clear();
+	}
+	
 	private int rollWarBonds(IDelegateBridge aBridge)
 	{
 		PlayerID player = aBridge.getPlayerID();
@@ -304,17 +315,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		return m_displayName;
 	}
 	
-	/**
-	 * Called before the delegate will stop running.
-	 */
-	@Override
-	public void end()
-	{
-		m_needToInitialize = true;
-		DelegateFinder.battleDelegate(getData()).getBattleTracker().clear();
-	}
-	
-	/* 
+	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
 	@Override

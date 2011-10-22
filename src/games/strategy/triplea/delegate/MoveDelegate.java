@@ -35,6 +35,7 @@ import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatchAnd;
@@ -175,6 +176,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			TriggerAttachment.triggerRelationshipTypePropertyChange(m_player, aBridge, null, null);
 			TriggerAttachment.triggerTerritoryPropertyChange(m_player, aBridge, null, null);
 			TriggerAttachment.triggerTerritoryEffectPropertyChange(m_player, aBridge, null, null);
+			triggerDefaultNotificationTriggerAttachments(m_player, aBridge);
 		}
 		
 		// repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at beginning of combat move)
@@ -198,6 +200,79 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			m_tempMovePerformer.initialize(this);
 			m_tempMovePerformer.resume();
 			m_tempMovePerformer = null;
+		}
+	}
+	
+	/**
+	 * Called before the delegate will stop running.
+	 */
+	@Override
+	public void end()
+	{
+		super.end();
+		if (m_nonCombat)
+			removeAirThatCantLand();
+		
+		m_movesToUndo.clear();
+		
+		// WW2V2, fires at end of combat move
+		// WW2V1, fires at end of non combat move
+		if ((!m_nonCombat && isWW2V3()) || (m_nonCombat && (!isWW2V2() && !isWW2V3())) || (!m_nonCombat && isWW2V2()))
+		{
+			if (TechTracker.hasRocket(m_bridge.getPlayerID()))
+			{
+				RocketsFireHelper helper = new RocketsFireHelper();
+				helper.fireRockets(m_bridge, m_bridge.getPlayerID());
+			}
+		}
+		CompositeChange change = new CompositeChange();
+		
+		/* This code is already done in BattleDelegate, so why is it duplicated here?
+		if(!m_nonCombat && (isWW2V3() || isWW2V2() || isPreviousUnitsFight()))
+		{
+		    change.add(addLingeringUnitsToBattles());
+		}*/
+
+		// do at the end of the round
+		// if we do it at the start of non combat, then
+		// we may do it in the middle of the round, while loading.
+		if (m_nonCombat)
+		{
+			GameData data = getData();
+			for (Unit u : data.getUnits())
+			{
+				if (TripleAUnit.get(u).getAlreadyMoved() != 0)
+				{
+					change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.ALREADY_MOVED));
+				}
+				if (TripleAUnit.get(u).getSubmerged())
+				{
+					change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.SUBMERGED));
+				}
+			}
+			
+			change.add(m_transportTracker.endOfRoundClearStateChange(data));
+			m_PUsLost.clear();
+		}
+		
+		if (!change.isEmpty())
+		{
+			// if no non-combat occurred, we may have cleanup left from combat
+			// that we need to spawn an event for
+			m_bridge.getHistoryWriter().startEvent("Cleaning up after movement phases");
+			m_bridge.addChange(change);
+		}
+	}
+	
+	private void triggerDefaultNotificationTriggerAttachments(PlayerID player, IDelegateBridge aBridge)
+	{
+		Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(player, getData().getSequence().getStep().getDelegate().getBridge(), null, null).iterator();
+		while (notificationMessages.hasNext())
+		{
+			String notificationMessageKey = notificationMessages.next();
+			String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
+			message = "<html>" + message + "</html>";
+			((ITripleaPlayer)aBridge.getRemote(player)).reportMessage(message);
 		}
 	}
 	
@@ -533,67 +608,6 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		int alreadyMoved = TripleAUnit.get(unit).getAlreadyMoved();
 		int maxMovement = UnitAttachment.get(unit.getType()).getMovement(unit.getOwner());
 		return ChangeFactory.unitPropertyChange(unit, Math.min(alreadyMoved, maxMovement - 1), TripleAUnit.ALREADY_MOVED);
-	}
-	
-	/**
-	 * Called before the delegate will stop running.
-	 */
-	@Override
-	public void end()
-	{
-		
-		if (m_nonCombat)
-			removeAirThatCantLand();
-		
-		m_movesToUndo.clear();
-		
-		// WW2V2, fires at end of combat move
-		// WW2V1, fires at end of non combat move
-		if ((!m_nonCombat && isWW2V3()) || (m_nonCombat && (!isWW2V2() && !isWW2V3())) || (!m_nonCombat && isWW2V2()))
-		{
-			if (TechTracker.hasRocket(m_bridge.getPlayerID()))
-			{
-				RocketsFireHelper helper = new RocketsFireHelper();
-				helper.fireRockets(m_bridge, m_bridge.getPlayerID());
-			}
-		}
-		CompositeChange change = new CompositeChange();
-		
-		/* This code is already done in BattleDelegate, so why is it duplicated here?
-		if(!m_nonCombat && (isWW2V3() || isWW2V2() || isPreviousUnitsFight()))
-		{
-		    change.add(addLingeringUnitsToBattles());
-		}*/
-
-		// do at the end of the round
-		// if we do it at the start of non combat, then
-		// we may do it in the middle of the round, while loading.
-		if (m_nonCombat)
-		{
-			GameData data = getData();
-			for (Unit u : data.getUnits())
-			{
-				if (TripleAUnit.get(u).getAlreadyMoved() != 0)
-				{
-					change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.ALREADY_MOVED));
-				}
-				if (TripleAUnit.get(u).getSubmerged())
-				{
-					change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.SUBMERGED));
-				}
-			}
-			
-			change.add(m_transportTracker.endOfRoundClearStateChange(data));
-			m_PUsLost.clear();
-		}
-		
-		if (!change.isEmpty())
-		{
-			// if no non-combat occurred, we may have cleanup left from combat
-			// that we need to spawn an event for
-			m_bridge.getHistoryWriter().startEvent("Cleaning up after movement phases");
-			m_bridge.addChange(change);
-		}
 	}
 	
 	/* This code is already done in BattleDelegate, so why is it duplicated here?

@@ -79,6 +79,12 @@ public class TechActivationDelegate extends BaseDelegate
 			TriggerAttachment.triggerUnitPropertyChange(m_player, aBridge, null, null);
 		}
 	}
+
+	@Override
+	public void end()
+	{
+		super.end();
+	}
 	
 	// Return string representing all advances in collection
 	private String advancesAsString(Collection<TechAdvance> advances)

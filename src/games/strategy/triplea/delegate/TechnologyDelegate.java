@@ -86,6 +86,12 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 			TriggerAttachment.triggerAvailableTechChange(m_player, m_bridge, null, null);
 		}
 	}
+
+	@Override
+	public void end()
+	{
+		super.end();
+	}
 	
 	public Map<PlayerID, Collection<TechAdvance>> getAdvances()
 	{

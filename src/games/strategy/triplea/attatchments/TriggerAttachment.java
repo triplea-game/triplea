@@ -1810,9 +1810,9 @@ public class TriggerAttachment extends DefaultAttachment
 	public static Set<String> triggerNotifications(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		GameData data = aBridge.getData();
-		try
-		{
-			data.acquireReadLock();
+		//try
+		//{
+			//data.acquireReadLock();
 			Set<TriggerAttachment> trigs = getTriggers(player, data, notificationMatch(beforeOrAfter, stepName));
 			Set<String> notifications = new HashSet<String>();
 			for (TriggerAttachment t : trigs)
@@ -1825,10 +1825,10 @@ public class TriggerAttachment extends DefaultAttachment
 			}
 			return notifications;
 			
-		} finally
-		{
-			data.releaseReadLock();
-		}
+		//} finally
+		//{
+			//data.releaseReadLock();
+		//}
 	}
 	
 	/**

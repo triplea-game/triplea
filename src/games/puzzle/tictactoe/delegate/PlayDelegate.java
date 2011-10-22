@@ -48,6 +48,12 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 		ITicTacToeDisplay display = (ITicTacToeDisplay) bridge.getDisplayChannelBroadcaster();
 		display.setStatus(m_player.getName() + "'s turn");
 	}
+
+	@Override
+	public void end()
+	{
+		super.end();
+	}
 	
 	/**
 	 * Attempt to play.

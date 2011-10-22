@@ -77,6 +77,16 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		}
 	}
 	
+	/**
+	 * Called before the delegate will stop running.
+	 */
+	@Override
+	public void end()
+	{
+		super.end();
+		m_needToInitialize = true;
+	}
+	
 	@Override
 	public String fightBattle(Territory territory, boolean bombing)
 	{
@@ -159,15 +169,6 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	private boolean isShoreBombardPerGroundUnitRestricted(GameData data)
 	{
 		return games.strategy.triplea.Properties.getShoreBombardPerGroundUnitRestricted(data);
-	}
-	
-	/**
-	 * Called before the delegate will stop running.
-	 */
-	@Override
-	public void end()
-	{
-		m_needToInitialize = true;
 	}
 	
 	public BattleTracker getBattleTracker()
@@ -442,7 +443,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 						{
 						 TripleAUnit attacker = (TripleAUnit) attackIter.next();
 						 change.add(ChangeFactory.unitPropertyChange(attacker, attacker.getAlreadyMoved(), TripleAUnit.ALREADY_MOVED));
-						 //change.add(DelegateFinder.moveDelegate(m_data).markNoMovementChange(attackingUnits));    + attacker.getMovementLeft()        				 
+						 //change.add(DelegateFinder.moveDelegate(m_data).markNoMovementChange(attackingUnits));    + attacker.getMovementLeft()
 						}*/
 					}
 					continue;

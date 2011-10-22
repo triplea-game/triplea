@@ -72,6 +72,12 @@ public class InitializationDelegate extends BaseDelegate
 		super.start(aBridge);
 		init(aBridge);
 	}
+
+	@Override
+	public void end()
+	{
+		super.end();
+	}
 	
 	protected void init(IDelegateBridge aBridge)
 	{

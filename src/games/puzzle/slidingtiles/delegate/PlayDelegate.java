@@ -46,6 +46,12 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 		super.start(bridge);
 		map = getData().getMap();
 	}
+
+	@Override
+	public void end()
+	{
+		super.end();
+	}
 	
 	/**
 	 * Attempt to play.

@@ -61,6 +61,12 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
 			// while(true){}
 		}
 	}
+
+	@Override
+	public void end()
+	{
+		super.end();
+	}
 	
 	/*
 	public boolean isGameOver()

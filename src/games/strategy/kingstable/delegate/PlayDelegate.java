@@ -60,6 +60,12 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 		IKingsTableDisplay display = (IKingsTableDisplay) bridge.getDisplayChannelBroadcaster();
 		display.setStatus(m_player.getName() + "'s turn");
 	}
+
+	@Override
+	public void end()
+	{
+		super.end();
+	}
 	
 	/**
 	 * Attempt to move a piece from the start <code>Territory</code> to the end <code>Territory</code>.

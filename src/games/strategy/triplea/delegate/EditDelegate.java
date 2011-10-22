@@ -54,6 +54,12 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 		m_bridge = new TripleADelegateBridge(bridge);
 		super.start(m_bridge);
 	}
+
+	@Override
+	public void end()
+	{
+		super.end();
+	}
 	
 	public static boolean getEditMode(GameData data)
 	{

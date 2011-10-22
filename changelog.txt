@@ -1,4 +1,6 @@
 Changes for 1.4
+* Removing trigger when notifications from TripleAPlayer (because no gamedata changing logic should ever be in TripleAPlayer), and moving them to basedelegate. (edwin van der wal & veqryn)
+
 * Fix for Casualty Reset Bug 1730391, where casualty screen clears after saving and reloading. (frigoref & veqryn)
 
 * Changed whenCapturedChangesInto to allow the transferring of combat damage and unit damage to the new units. (veqryn)

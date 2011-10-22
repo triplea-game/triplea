@@ -85,6 +85,12 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 			TriggerAttachment.triggerPurchase(m_player, m_bridge, null, null);
 		}
 	}
+
+	@Override
+	public void end()
+	{
+		super.end();
+	}
 	
 	/**
 	 * subclasses can over ride this method to use different restrictions as to what a player can buy

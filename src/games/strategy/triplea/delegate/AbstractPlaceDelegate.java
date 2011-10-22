@@ -35,6 +35,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -90,6 +91,40 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	public void initialize(String name)
 	{
 		initialize(name, name);
+	}
+	
+	@Override
+	public void start(IDelegateBridge aBridge)
+	{
+		super.start(aBridge);
+	}
+	
+	/**
+	 * Called before the delegate will stop running.
+	 */
+	@Override
+	public void end()
+	{
+		super.end();
+		PlayerID player = m_bridge.getPlayerID();
+		// clear all units not placed
+		Collection<Unit> units = player.getUnits().getUnits();
+		GameData data = getData();
+		if (!Properties.getUnplacedUnitsLive(data) && !units.isEmpty())
+		{
+			m_bridge.getHistoryWriter().startEvent(MyFormatter.unitsToTextNoOwner(units) + " were produced but were not placed");
+			m_bridge.getHistoryWriter().setRenderingData(units);
+			
+			Change change = ChangeFactory.removeUnits(player, units);
+			m_bridge.addChange(change);
+		}
+		
+		// reset ourselves for next turn
+		m_produced = new HashMap<Territory, Collection<Unit>>();
+		m_placements.clear();
+		
+		// only for lhtr rules
+		new AirThatCantLandUtil(m_bridge).removeAirThatCantLand(m_player, false);
 	}
 	
 	private Collection<Unit> getAlreadyProduced(Territory t)
@@ -1195,34 +1230,6 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			break;
 		}
 		
-	}
-	
-	/**
-	 * Called before the delegate will stop running.
-	 */
-	@Override
-	public void end()
-	{
-		
-		PlayerID player = m_bridge.getPlayerID();
-		// clear all units not placed
-		Collection<Unit> units = player.getUnits().getUnits();
-		GameData data = getData();
-		if (!Properties.getUnplacedUnitsLive(data) && !units.isEmpty())
-		{
-			m_bridge.getHistoryWriter().startEvent(MyFormatter.unitsToTextNoOwner(units) + " were produced but were not placed");
-			m_bridge.getHistoryWriter().setRenderingData(units);
-			
-			Change change = ChangeFactory.removeUnits(player, units);
-			m_bridge.addChange(change);
-		}
-		
-		// reset ourselves for next turn
-		m_produced = new HashMap<Territory, Collection<Unit>>();
-		m_placements.clear();
-		
-		// only for lhtr rules
-		new AirThatCantLandUtil(m_bridge).removeAirThatCantLand(m_player, false);
 	}
 	
 	/**

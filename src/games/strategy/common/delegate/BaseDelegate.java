@@ -19,8 +19,15 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
+import games.strategy.triplea.attatchments.TriggerAttachment;
+import games.strategy.triplea.delegate.EndRoundDelegate;
+import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.ui.NotificationMessages;
+import games.strategy.util.Tuple;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Base class designed to make writing custom delegates simpler.
@@ -57,6 +64,7 @@ public abstract class BaseDelegate implements IDelegate
 	{
 		m_bridge = bridge;
 		m_player = bridge.getPlayerID();
+		triggerWhenTriggerAttachments(TriggerAttachment.BEFORE);
 	}
 	
 	@Override
@@ -77,7 +85,9 @@ public abstract class BaseDelegate implements IDelegate
 	@Override
 	public void end()
 	{
-		// No need to do anything special when this delegate stops
+		// normally nothing to do here
+		// we are firing triggers, for maps that include them
+		triggerWhenTriggerAttachments(TriggerAttachment.AFTER);
 	}
 	
 	/**
@@ -115,5 +125,54 @@ public abstract class BaseDelegate implements IDelegate
 	protected GameData getData()
 	{
 		return m_bridge.getData();
+	}
+	
+	private void triggerWhenTriggerAttachments(String beforeOrAfter)
+	{
+		GameData data = getData();
+		if (games.strategy.triplea.Properties.getTriggers(data))
+		{
+			String stepName = data.getSequence().getStep().getName();
+			for (PlayerID aPlayer : data.getPlayerList())
+			{
+				// TODO: add all possible triggers here (in addition to their default locations)
+				TriggerAttachment.triggerPlayerPropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerRelationshipTypePropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerTerritoryPropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerUnitPropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerTerritoryEffectPropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
+				
+				TriggerAttachment.triggerRelationshipChange(aPlayer, m_bridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerAvailableTechChange(aPlayer, m_bridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerTechChange(aPlayer, m_bridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerProductionFrontierEditChange(aPlayer, m_bridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerProductionChange(aPlayer, m_bridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerPurchase(aPlayer, m_bridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerSupportChange(aPlayer, m_bridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerUnitPlacement(aPlayer, m_bridge, beforeOrAfter, stepName);
+				TriggerAttachment.triggerResourceChange(aPlayer, m_bridge, beforeOrAfter, stepName);
+				
+				// now do notifications:
+				Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(aPlayer, m_bridge, beforeOrAfter, stepName).iterator();
+				while (notificationMessages.hasNext())
+				{
+					String notificationMessageKey = notificationMessages.next();
+					String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
+					message = "<html>" + message + "</html>";
+					((ITripleaPlayer)m_bridge.getRemote(m_player)).reportMessage(message);			;
+				}
+				
+				// now do victory messages:
+				Tuple<String, Collection<PlayerID>> winnersMessage = TriggerAttachment.triggerVictory(aPlayer, m_bridge, beforeOrAfter, stepName);
+				if (winnersMessage != null && winnersMessage.getFirst() != null)
+				{
+					String victoryMessage = winnersMessage.getFirst();
+					victoryMessage = NotificationMessages.getInstance().getMessage(victoryMessage);
+					victoryMessage = "<html>" + victoryMessage + "</html>";
+					IDelegate delegateEndRound = data.getDelegateList().getDelegate("endRound");
+					((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage, winnersMessage.getSecond(), m_bridge);
+				}
+			}
+		}
 	}
 }

@@ -57,6 +57,20 @@ public class EndTurnDelegate extends BaseDelegate
 		
 	}
 	
+	/**
+	 * Called before the delegate will stop running.
+	 */
+	@Override
+	public void end()
+	{
+		super.end();
+		if (m_waiting == null)
+			return;
+		else
+			while (m_waiting.getCount() > 0)
+				m_waiting.countDown();
+	}
+	
 	public boolean gameOver(GameMap map)
 	{
 		int width = map.getXDimension();
@@ -95,19 +109,6 @@ public class EndTurnDelegate extends BaseDelegate
 		
 		return true;
 		
-	}
-	
-	/**
-	 * Called before the delegate will stop running.
-	 */
-	@Override
-	public void end()
-	{
-		if (m_waiting == null)
-			return;
-		else
-			while (m_waiting.getCount() > 0)
-				m_waiting.countDown();
 	}
 	
 	/**

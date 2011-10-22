@@ -17,6 +17,7 @@ package games.strategy.common.player;
 import games.strategy.triplea.ui.UIContext;
 
 /**
+ * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate using a change).
  * 
  * @author Lane Schwartz
  */

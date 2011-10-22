@@ -3348,7 +3348,7 @@
 						<!-- Victory Triggers can be attached to anyone. Only 1 is needed per victory condition -->
                 <attatchment name="triggerAttachmentAxisVictory1_CapitalControl" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentAxisVictory1"/>
-					<option name="when" value="after:chineseEndTurn"/>
+					<!--<option name="when" value="after:chineseEndTurn"/>-->
 					<!-- both "victory" and "notification" will look in the "notifications.properties" in your maps root folder for a string with the value's name, and then it will use whatever is to the right of the = sign.-->
                 	<option name="victory" value="AXIS_VICTORY"/>
 					<!-- "players" when used with "victory" set which players are the winner. this is important for stats generation and for future use -->
@@ -3699,7 +3699,7 @@
 					<option name="trigger" value="conditionAttachmentRussianCapitalLost"/>
 					<option name="when" value="before:russianPurchase"/>
 					<option name="notification" value="RUSSIAN_CAPITAL_LOST"/>
-					<!--<option name="uses" value="1"/> currently causing bugs-->
+					<option name="uses" value="1"/>
 				</attatchment>
 				
                 <!-- when Italy is at War with Russia, Russia will automatically go to war with Japan from any Neutral stance 

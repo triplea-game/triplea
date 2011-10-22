@@ -35,6 +35,8 @@ import java.util.logging.Logger;
  * If an ai finds itself starting in the middle of a move phase, or the middle of a purchase phase, (as would happen if a player saved the game during the middle of an AI's move phase) it is acceptable for the ai to play badly for a turn, but the ai should recover, and play correctly when the next phase of the game starts.
  * <p>
  * 
+ * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate using a change).
+ * <p>
  * 
  * @author sgb
  */

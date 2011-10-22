@@ -54,7 +54,7 @@ public class EndTurnDelegate extends BaseDelegate
 	@Override
 	public void end()
 	{
-		
+		super.end();
 	}
 	
 	/**

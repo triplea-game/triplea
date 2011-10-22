@@ -203,6 +203,12 @@ public class EndRoundDelegate extends BaseDelegate
 			signalGameOver(victoryMessage, winners, aBridge);
 		}
 	}
+
+	@Override
+	public void end()
+	{
+		super.end();
+	}
 	
 	private void checkVictoryCities(IDelegateBridge aBridge, String victoryMessage, String victoryType)
 	{
@@ -375,7 +381,7 @@ public class EndRoundDelegate extends BaseDelegate
 		m_gameOver = ((Boolean) state).booleanValue();
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
 	@Override

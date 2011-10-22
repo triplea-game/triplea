@@ -27,16 +27,12 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.delegate.IDelegate;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -54,14 +50,12 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.BattleDisplay;
-import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.triplea.ui.PlaceData;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
-import games.strategy.util.Tuple;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -76,6 +70,7 @@ import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
 
 /**
+ * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate using a change).
  * 
  * @author Sean Bridges
  * @version 1.0
@@ -123,7 +118,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			}
 		});
 		
-		triggerBeforeTriggerAttachments();
 		if (name.endsWith("Bid"))
 			purchase(true);
 		else if (name.endsWith("Tech"))
@@ -161,80 +155,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		
 		if (badStep)
 			throw new IllegalArgumentException("Unrecognized step name:" + name);
-		triggerAfterTriggerAttachments();
 		
 	}
 	
-	private void triggerBeforeTriggerAttachments()
-	{
-		triggerWhenTriggerAttachments(TriggerAttachment.BEFORE);
-	}
-	
-	private void triggerAfterTriggerAttachments()
-	{
-		triggerWhenTriggerAttachments(TriggerAttachment.AFTER);
-	}
-	
-	private void triggerWhenTriggerAttachments(String beforeOrAfter)
-	{
-		if (games.strategy.triplea.Properties.getTriggers(getGameData()))
-		{
-			for (PlayerID aPlayer : getGameData().getPlayerList())
-			{
-				String stepName = getGameData().getSequence().getStep().getName();
-				IDelegateBridge aBridge = getGameData().getSequence().getStep().getDelegate().getBridge();
-				// TODO: add all possible triggers here (in addition to their default locations)
-				TriggerAttachment.triggerPlayerPropertyChange(aPlayer, aBridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerRelationshipTypePropertyChange(aPlayer, aBridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerTerritoryPropertyChange(aPlayer, aBridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerUnitPropertyChange(aPlayer, aBridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerTerritoryEffectPropertyChange(aPlayer, aBridge, beforeOrAfter, stepName);
-				
-				TriggerAttachment.triggerRelationshipChange(aPlayer, aBridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerAvailableTechChange(aPlayer, aBridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerTechChange(aPlayer, aBridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerProductionFrontierEditChange(aPlayer, aBridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerProductionChange(aPlayer, aBridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerPurchase(aPlayer, aBridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerSupportChange(aPlayer, aBridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerUnitPlacement(aPlayer, aBridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerResourceChange(aPlayer, aBridge, beforeOrAfter, stepName);
-				
-				// now do notifications:
-				Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(aPlayer, aBridge, beforeOrAfter, stepName).iterator();
-				while (notificationMessages.hasNext())
-				{
-					String notificationMessageKey = notificationMessages.next();
-					String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
-					message = "<html>" + message + "</html>";
-					m_ui.notification(message);
-				}
-				
-				// now do victory messages:
-				Tuple<String, Collection<PlayerID>> winnersMessage = TriggerAttachment.triggerVictory(aPlayer, aBridge, beforeOrAfter, stepName);
-				if (winnersMessage != null && winnersMessage.getFirst() != null)
-				{
-					String victoryMessage = winnersMessage.getFirst();
-					victoryMessage = NotificationMessages.getInstance().getMessage(victoryMessage);
-					victoryMessage = "<html>" + victoryMessage + "</html>";
-					IDelegate delegateEndRound = getGameData().getDelegateList().getDelegate("endRound");
-					((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage, winnersMessage.getSecond(), aBridge);
-				}
-			}
-		}
-	}
-	
-	private void triggerDefaultNotificationTriggerAttachments()
-	{
-		Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(m_id, getGameData().getSequence().getStep().getDelegate().getBridge(), null, null).iterator();
-		while (notificationMessages.hasNext())
-		{
-			String notificationMessageKey = notificationMessages.next();
-			String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
-			message = "<html>" + message + "</html>";
-			m_ui.notification(message);
-		}
-	}
 	
 	private AbstractAction m_editModeAction = new AbstractAction()
 	{
@@ -294,9 +217,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void move(boolean nonCombat)
 	{
-		if (!nonCombat && games.strategy.triplea.Properties.getTriggers(getGameData()))
-			triggerDefaultNotificationTriggerAttachments();
-		
 		if (!m_scrambledUnitsReturned && nonCombat && getScramble_Rules_In_Effect())
 		{
 			m_scrambledUnitsReturned = true;
@@ -662,7 +582,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		m_ui.waitForEndTurn(m_id, m_bridge);
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties(java.lang.String, java.util.Collection, java.util.Map, int, java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.List)
 	 */
 
@@ -673,7 +593,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		return m_ui.getBattlePanel().getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties, battleID);
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, int, boolean, java.lang.String)
 	 */
 	@Override
@@ -682,7 +602,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		return m_ui.selectFixedDice(numDice, hitAt, hitOnlyIfEquals, title, diceSides);
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectBombardingTerritory(games.strategy.engine.data.Unit, games.strategy.engine.data.Territory, java.util.Collection, boolean)
 	 */
 	@Override
@@ -691,7 +611,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		return m_ui.getBattlePanel().getBombardment(unit, unitTerritory, territories, noneAvailable);
 	}
 	
-	/* 
+	/*
 	 * Ask if the player wants to attack subs
 	 */
 	@Override
@@ -700,7 +620,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		return m_ui.getBattlePanel().getAttackSubs(unitTerritory);
 	}
 	
-	/* 
+	/*
 	 * Ask if the player wants to attack transports
 	 */
 	@Override
@@ -709,7 +629,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		return m_ui.getBattlePanel().getAttackTransports(unitTerritory);
 	}
 	
-	/* 
+	/*
 	 * Ask if the player wants to attack units
 	 */
 	@Override
@@ -718,7 +638,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		return m_ui.getBattlePanel().getAttackUnits(unitTerritory);
 	}
 	
-	/* 
+	/*
 	 * Ask if the player wants to shore bombard
 	 */
 	@Override
@@ -727,7 +647,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		return m_ui.getBattlePanel().getShoreBombard(unitTerritory);
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
 	 */
 	@Override
@@ -737,7 +657,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		
 	}
 	
-	/* 
+	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
 	 */
 	@Override

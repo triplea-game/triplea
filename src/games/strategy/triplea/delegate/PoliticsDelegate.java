@@ -51,6 +51,12 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			TriggerAttachment.triggerRelationshipChange(m_player, m_bridge, null, null);
 		}
 	}
+
+	@Override
+	public void end()
+	{
+		super.end();
+	}
 	
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
