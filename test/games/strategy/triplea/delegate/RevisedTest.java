@@ -1364,9 +1364,9 @@ public class RevisedTest extends TestCase
 		
 		/* Here are the exact errata clarifications on how REVISED rules subs work:
 		 * 
-		 * Every sub, regardless of whether it’s on the attacking or defending side, fires in the Opening Fire step of combat. That’s the only time a sub ever fires.
+		 * Every sub, regardless of whether it is on the attacking or defending side, fires in the Opening Fire step of combat. That is the only time a sub ever fires.
 		 * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal attack and defense rolls, unless the enemy has a destroyer present.
-		 * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs aren’t removed until the Remove Casualties step (step 6) of combat.
+		 * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs are not removed until the Remove Casualties step (step 6) of combat.
 		 * 
 		 * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever stops a sub from rolling its die (attack or defense) in the Opening Fire step.
 		 * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step 6, allowing them to fire back before going to the scrap heap.
@@ -1439,9 +1439,9 @@ public class RevisedTest extends TestCase
 		
 		/* Here are the exact errata clarifications on how REVISED rules subs work:
 		 * 
-		 * Every sub, regardless of whether it’s on the attacking or defending side, fires in the Opening Fire step of combat. That’s the only time a sub ever fires.
+		 * Every sub, regardless of whether it is on the attacking or defending side, fires in the Opening Fire step of combat. That is the only time a sub ever fires.
 		 * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal attack and defense rolls, unless the enemy has a destroyer present.
-		 * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs aren’t removed until the Remove Casualties step (step 6) of combat.
+		 * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs are not removed until the Remove Casualties step (step 6) of combat.
 		 * 
 		 * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever stops a sub from rolling its die (attack or defense) in the Opening Fire step.
 		 * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step 6, allowing them to fire back before going to the scrap heap.
@@ -1583,9 +1583,9 @@ public class RevisedTest extends TestCase
 		
 		/* Here are the exact errata clarifications on how REVISED rules subs work:
 		 * 
-		 * Every sub, regardless of whether it’s on the attacking or defending side, fires in the Opening Fire step of combat. That’s the only time a sub ever fires.
+		 * Every sub, regardless of whether it is on the attacking or defending side, fires in the Opening Fire step of combat. That is the only time a sub ever fires.
 		 * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal attack and defense rolls, unless the enemy has a destroyer present.
-		 * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs aren’t removed until the Remove Casualties step (step 6) of combat.
+		 * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs are not removed until the Remove Casualties step (step 6) of combat.
 		 * 
 		 * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever stops a sub from rolling its die (attack or defense) in the Opening Fire step.
 		 * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step 6, allowing them to fire back before going to the scrap heap.
