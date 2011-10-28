@@ -210,6 +210,8 @@ public class MyFormatter
 			toText = attachmentGetName.replaceFirst(Constants.RULES_ATTACHMENT_NAME, "Rules ");
 		else if (attachmentGetName.startsWith(Constants.PLAYER_ATTACHMENT_NAME))
 			toText = attachmentGetName.replaceFirst(Constants.PLAYER_ATTACHMENT_NAME, "Player Properties ");
+		else if (attachmentGetName.startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX))
+			toText = attachmentGetName.replaceFirst(Constants.POLITICALACTION_ATTACHMENT_PREFIX, "Political Action ");
 		
 		toText = toText.trim();
 		return toText;

@@ -2838,8 +2838,8 @@
 														It can be used in conjunction with directPresenceTerritories, alliedPresenceTerritories, enemyPresenceTerritories, directExclusionTerritories, alliedExclusionTerritories, enemyExclusionTerritories, enemySurfaceExclusionTerritories
 														If used with an exclusion, then the number of units of that type must be less than or equal the count.  (Use count="0" if you want no units of that type in the territories).
 			techs								values: any list of technologies, : delimited (if count = zero, then must have exactly zero technologies [if count is missing, defaults to zero])
-			relationship						values: a relationship that needs to be present in the game: "player1:player2:relationship" for example: "Japan:China:War" it will accept "anyWar", "anyNeutral" and "anyAllied" as well.
-			relationshipsExistance				values: an integer indicating how many rounds these relationships need to be in effect
+			relationship						values: a relationship that needs to be present in the game: "player1:player2:relationship" (will set #rounds to -1 by default) OR "player1:player2:relationship:numberOfRoundsThisRelationshipMustExistForMinimum"
+														for example: "Japan:China:War" or "Japan:China:War:-1" or "Japan:China:War:3".  It will accept "anyWar", "anyNeutral" and "anyAllied" as well.
 			conditions							values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
 															can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
 															any condition which includes other conditions, is considered a meta-condition, and it must come AFTER any conditions that it includes.
@@ -3198,8 +3198,7 @@
                 </attatchment>
                 
                 <attatchment name="conditionAttachmentRussiansNeutralItaliansFor2Turns" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="relationship" value="Italians:Russians:anyNeutral"/>
-                	<option name="relationshipsExistance" value="1"/>
+                	<option name="relationship" value="Italians:Russians:anyNeutral:2"/>
                 </attatchment>
                 
                 <attatchment name="conditionAttachmentChineseNeutralItalians" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -3916,7 +3915,7 @@
 	<!-- the following options are allowed for "politicalActionAttachmentXXX"
 			relationshipChange					value: the relationshipType that will exist after the action is succesful between the player and the otherPlayer format: "player1:player2:relationship"
 													You can add multiple relationshipchanges per attachment
-			condition							value: this action is only active (thus can be performed) if this condition is true
+			conditions							value: this action is only active (thus can be performed) if this condition is true
 			chance								value: diceroll:dicesides to hit for this action to succeed for example "1:6" for the action to succeed 1 out of 6 times
 			costPU								value: ammount of PU you will be charged to attempt this action
 			text								value: a KEY referring to politicstext.properties to indicate the texts used for regarding this action
@@ -3924,14 +3923,14 @@
 			attemptsPerTurn						value: the number of times this action can be attempted per round (default: 1)
 	-->
 	     		<attatchment name="politicalActionAttachmentItaliansDeclareWarOnRussians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="condition" value="conditionAttachmentRussiansNeutralItaliansFor2Turns"/>
+	     			<option name="conditions" value="conditionAttachmentRussiansNeutralItaliansFor2Turns"/>
 	     			<option name="relationshipChange" value="Italians:Russians:War"/>
 	     			<option name="text" value="ITALY_DECLAREWAR_RUSSIA"/>
 	     			<option name="chance" value="6:6"/>
 	     			<option name="costPU" value="0"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachmentItaliansProposePeaceToRussians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="condition" value="conditionAttachmentRussiansNeutralItalians"/>
+	     			<option name="conditions" value="conditionAttachmentRussiansNeutralItalians"/>
 	     			<option name="relationshipChange" value="Italians:Russians:Allied"/>
 	     			<option name="text" value="ITALY_PROPOSEPEACE_RUSSIA"/>
 	     			<option name="chance" value="6:6"/>
@@ -3940,7 +3939,7 @@
 	     			<option name="attemptsPerTurn" value="2"/> <!--  this will allow you to ask for a treaty twice per round -->
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachmentItaliansDeclareWarOnChinese" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="condition" value="conditionAttachmentChineseNeutralItalians"/>
+	     			<option name="conditions" value="conditionAttachmentChineseNeutralItalians"/>
 	     			<option name="relationshipChange" value="Italians:Chinese:War"/>
 	     			<option name="relationshipChange" value="Italians:Americans:War"/>
 	     			<option name="text" value="ITALY_DECLAREWAR_CHINA"/>
@@ -4391,6 +4390,10 @@
 						<boolean/>
 				</property>
 
+				<property name="Use Politics" value="true" editable="true">
+						<boolean/>
+				</property>
+
 				<property name="National Objectives" value="true" editable="true">
 						<boolean/>
 				</property>
@@ -4568,6 +4571,11 @@
 				<!-- land related -->
 						<!-- if true, units with destroyedWhenCapturedBy will be destroyed instead of captured. only applies to non-combat units, since combat units die in combat -->
 				<property name="Units Can Be Destroyed Instead Of Captured" value ="true" editable="false">
+						<boolean/>
+				</property>
+				
+						<!-- allows units to change into other units using the whenCapturedChangesInto ability -->
+				<property name="Units Can Be Changed On Capture" value ="true" editable="false">
 						<boolean/>
 				</property>
 				

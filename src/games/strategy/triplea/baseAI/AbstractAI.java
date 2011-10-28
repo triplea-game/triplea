@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 public abstract class AbstractAI implements ITripleaPlayer
 {
 	@Override
-	public void reportPoliticalMessage(String message) {		
+	public void reportPoliticalMessage(String message) {
 	}
 
 	@Override

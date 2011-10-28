@@ -529,7 +529,7 @@ public class Properties implements Constants
 	
 	/*
 	* Display units as counters: stacked instead of a number drawn under the unit
-	* the number means the maximum stack size, 0 means default behavior, 
+	* the number means the maximum stack size, 0 means default behavior,
 	* if a stack is above max stack size the number is drawn in the top right corner of the counter
 	*/
 	public static int getCountersDisplay(GameData data)
@@ -918,6 +918,16 @@ public class Properties implements Constants
 	public static boolean getNeutralFlyoverAllowed(GameData data)
 	{
 		return data.getProperties().get(NEUTRAL_FLYOVER_ALLOWED, false);
+	}
+	
+	public static boolean getUnitsCanBeChangedOnCapture(GameData data)
+	{
+		return data.getProperties().get(UNITS_CAN_BE_CHANGED_ON_CAPTURE, false);
+	}
+	
+	public static boolean getUsePolitics(GameData data)
+	{
+		return data.getProperties().get(USE_POLITICS, false);
 	}
 	
 	private Properties()

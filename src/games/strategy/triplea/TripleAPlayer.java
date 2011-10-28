@@ -190,7 +190,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	};
 	
 	private void politics()
-	{	
+	{
 	    PoliticalActionAttachment actionChoice = m_ui.getPoliticalActionChoice(m_id);
 		
 	    if(actionChoice != null) {

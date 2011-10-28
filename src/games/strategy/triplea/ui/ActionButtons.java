@@ -78,7 +78,7 @@ public class ActionButtons extends JPanel
 		m_placePanel = new PlacePanel(data, map, parent);
 		m_techPanel = new TechPanel(data, map);
 		m_endTurnPanel = new EndTurnPanel(data, map);
-		m_politicsPanel = new PoliticsPanel(data, map, parent);	
+		m_politicsPanel = new PoliticsPanel(data, map, parent);
 		m_current = m_techPanel;
 		
 		setLayout(m_layout);

@@ -1,4 +1,8 @@
 Changes for 1.4
+* Created two new game options, "Use Politics" and "Units Can Be Changed On Capture". (veqryn)
+
+* Fixing bugs in last patch on politics. Deleted relationshipExistance and instead made it part of "relationship" setter. (veqryn)
+
 * Added Politics UI. (edwin van der wal)
 
 * Created relationshipExistance property in RulesAttachment, if this is set in combination with a relationship property, the relationshipExists property will indicate the number of complete rounds this relationship needs to have been in existance. (edwin van der wal)

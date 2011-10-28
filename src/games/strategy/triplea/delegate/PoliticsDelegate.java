@@ -57,10 +57,6 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	public void start(IDelegateBridge aBridge)
 	{
 		super.start(aBridge);
-		if (games.strategy.triplea.Properties.getTriggers(getData()))
-		{
-			TriggerAttachment.triggerRelationshipChange(m_player, m_bridge, null, null);
-		}
 	}
 
 	@Override
@@ -68,6 +64,10 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	{
 		super.end();
 		resetAttempts();
+		if (games.strategy.triplea.Properties.getTriggers(getData()))
+		{
+			TriggerAttachment.triggerRelationshipChange(m_player, m_bridge, null, null);
+		}
 	}
 
 	/*
@@ -81,6 +81,11 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 
 	@Override
 	public void attemptAction(PoliticalActionAttachment paa) {
+		if (!games.strategy.triplea.Properties.getUsePolitics(getData()))
+		{
+			notifyPoliticsTurnedOff();
+			return;
+		}
 		if(paa.canPerform()) {
 			if(checkEnoughMoney(paa)) { // See if the player has got enough money to pay for the action
 				chargeForAction(paa);  // Charge for attempting the action
@@ -129,7 +134,11 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 * @param paa
 	 */
 	private void notifyNoValidAction(PoliticalActionAttachment paa) {
-		sendNotification(m_player,"This action isn't available anymore (this shouldn't happen!?!)");		
+		sendNotification(m_player,"This action isn't available anymore (this shouldn't happen!?!)");
+	}
+	
+	private void notifyPoliticsTurnedOff() {
+		sendNotification(m_player,"Politics is turned off in the game options");
 	}
 
 	/**
@@ -143,9 +152,9 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 */
 	private void notifyMoney(PoliticalActionAttachment paa, boolean ennough) {
 		if(ennough) {
-			sendNotification(m_player,"Charging "+paa.getCostPU()+" PU's to perform this action");		
+			sendNotification(m_player,"Charging "+paa.getCostPU()+" PU's to perform this action");
 		} else {
-			sendNotification(m_player,"You don't have ennough money, you need "+paa.getCostPU()+" PU's to perform this action");		
+			sendNotification(m_player,"You don't have ennough money, you need "+paa.getCostPU()+" PU's to perform this action");
 		}
 		
 	}
@@ -158,7 +167,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 */
 	private void chargeForAction(PoliticalActionAttachment paa) {
 		Resource PUs = getData().getResourceList().getResource(Constants.PUS);
-		int cost = paa.getCostPU();		
+		int cost = paa.getCostPU();
 		if(cost>0) {
 			notifyMoney(paa,true);
 			String transcriptText = m_bridge.getPlayerID().getName() + " spend "+ cost + " PU on Political Action: " + paa.getName();
@@ -240,13 +249,16 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			PlayerID player2 = getData().getPlayerList().getPlayerID(s[1]);
 			RelationshipType oldRelation = getData().getRelationshipTracker().getRelationshipType(player1, player2);
 			RelationshipType newRelation = getData().getRelationshipTypeList().getRelationshipType(s[2]);
+			if (oldRelation.equals(newRelation))
+				continue;
+			
 			change.add(ChangeFactory.relationshipChange(player1, player2, oldRelation, newRelation));
 			
 			m_bridge.getHistoryWriter().startEvent(
-					MyFormatter.attachmentNameToText(paa.getName() + ": Changing Relationship for " + player1.getName() + " and " + player2.getName() + " from "+ oldRelation.getName() + " to " + newRelation.getName()));
+					MyFormatter.attachmentNameToText(paa.getName()) + ": Changing Relationship for " + player1.getName() + " and " + player2.getName() + " from "+ oldRelation.getName() + " to " + newRelation.getName());
 			
 			if (Matches.RelationshipIsAtWar.match(newRelation))
-				TriggerAttachment.triggerMustFightBattle(player1, player2, m_bridge);
+				TriggerAttachment.triggerMustFightBattle(player1, player2, m_bridge); // TODO: see if this causes problems to do with savestate, or relations that don't cause battles.  better to leave this in the battle delegate i think.
 		}
 		if (!change.isEmpty())
 			m_bridge.addChange(change);

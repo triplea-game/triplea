@@ -130,8 +130,8 @@ public class PoliticsPanel extends ActionPanel {
 					
 				});
 				politicalChoicePanel.add(button,new GridBagConstraints(1,row,1,1,1.0,1.0,GridBagConstraints.WEST,GridBagConstraints.HORIZONTAL,insets,0,0));
-				politicalChoicePanel.add(new JLabel(PoliticsText.getInstance().getDescription(paa.getText())),new GridBagConstraints(2,row,1,1,5.0,1.0,GridBagConstraints.WEST,GridBagConstraints.BOTH,insets,0,0));							
-				row++;	
+				politicalChoicePanel.add(new JLabel(PoliticsText.getInstance().getDescription(paa.getText())),new GridBagConstraints(2,row,1,1,5.0,1.0,GridBagConstraints.WEST,GridBagConstraints.BOTH,insets,0,0));
+				row++;
 			}
 			
 			politicalChoicePanel.add(new JButton(new AbstractAction("No Actions"){
@@ -146,7 +146,7 @@ public class PoliticsPanel extends ActionPanel {
 			politicalChoiceDialog.add(politicalChoicePanel);
 			Dimension d = politicalChoiceDialog.getPreferredSize();
 			politicalChoiceDialog.setSize(new Dimension(d.width+20,d.height+50));
-			politicalChoiceDialog.setVisible(true);	
+			politicalChoiceDialog.setVisible(true);
 		}
 	};
 	

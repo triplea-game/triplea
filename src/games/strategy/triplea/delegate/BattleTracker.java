@@ -712,53 +712,57 @@ public class BattleTracker implements java.io.Serializable
 		Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);
 		
 		// change any units that change unit types on capture
-		Collection<Unit> toReplace = Match.getMatches(nonCom, Matches.UnitWhenCapturedChangesIntoDifferentUnitType());
-		for (Unit u : toReplace)
+		if (games.strategy.triplea.Properties.getUnitsCanBeChangedOnCapture(data))
 		{
-			LinkedHashMap<String,Tuple<String,IntegerMap<UnitType>>> map = UnitAttachment.get(u.getType()).getWhenCapturedChangesInto();
-			PlayerID currentOwner = u.getOwner();
-			for (String value : map.keySet())
+			Collection<Unit> toReplace = Match.getMatches(nonCom, Matches.UnitWhenCapturedChangesIntoDifferentUnitType());
+			for (Unit u : toReplace)
 			{
-				String[] s = value.split(":");
-				if (!(s[0].equals("any") || data.getPlayerList().getPlayerID(s[0]).equals(currentOwner)))
-					continue;
-				// we could use "id" or "newOwner" here... not sure which to use
-				if (!(s[1].equals("any") || data.getPlayerList().getPlayerID(s[1]).equals(id)))
-					continue;
-				CompositeChange changes = new CompositeChange();
-				Collection<Unit> toAdd = new ArrayList<Unit>();
-				Tuple<String,IntegerMap<UnitType>> toCreate = map.get(value);
-				boolean translateAttributes = toCreate.getFirst().equalsIgnoreCase("true");
-				Iterator<UnitType> iter = toCreate.getSecond().keySet().iterator();
-				while (iter.hasNext())
+				LinkedHashMap<String,Tuple<String,IntegerMap<UnitType>>> map = UnitAttachment.get(u.getType()).getWhenCapturedChangesInto();
+				PlayerID currentOwner = u.getOwner();
+				for (String value : map.keySet())
 				{
-					UnitType ut = iter.next();
-					//if (ut.equals(u.getType()))
-						//continue;
-					toAdd.addAll(ut.create(toCreate.getSecond().getInt(ut), newOwner));
-				}
-				if (!toAdd.isEmpty())
-				{
-					if (translateAttributes)
+					String[] s = value.split(":");
+					if (!(s[0].equals("any") || data.getPlayerList().getPlayerID(s[0]).equals(currentOwner)))
+						continue;
+					// we could use "id" or "newOwner" here... not sure which to use
+					if (!(s[1].equals("any") || data.getPlayerList().getPlayerID(s[1]).equals(id)))
+						continue;
+					CompositeChange changes = new CompositeChange();
+					Collection<Unit> toAdd = new ArrayList<Unit>();
+					Tuple<String,IntegerMap<UnitType>> toCreate = map.get(value);
+					boolean translateAttributes = toCreate.getFirst().equalsIgnoreCase("true");
+					Iterator<UnitType> iter = toCreate.getSecond().keySet().iterator();
+					while (iter.hasNext())
 					{
-						Change translate = TripleAUnit.translateAttributesToOtherUnits(u, toAdd, territory);
-						if (!translate.isEmpty())
-							changes.add(translate);
+						UnitType ut = iter.next();
+						//if (ut.equals(u.getType()))
+							//continue;
+						toAdd.addAll(ut.create(toCreate.getSecond().getInt(ut), newOwner));
 					}
+					if (!toAdd.isEmpty())
+					{
+						if (translateAttributes)
+						{
+							Change translate = TripleAUnit.translateAttributesToOtherUnits(u, toAdd, territory);
+							if (!translate.isEmpty())
+								changes.add(translate);
+						}
 
-					changes.add(ChangeFactory.removeUnits(territory, Collections.singleton(u)));
-					changes.add(ChangeFactory.addUnits(territory, toAdd));
-					changes.add(ChangeFactory.markNoMovementChange(toAdd));
-					bridge.getHistoryWriter().addChildToEvent(id.getName() + " converts " + u.toStringNoOwner() + " into different units", toAdd);
-					bridge.addChange(changes);
-					if (changeTracker != null)
-						changeTracker.addChange(changes);
-					// don't forget to remove this unit from the list
-					nonCom.remove(u);
-					break;
+						changes.add(ChangeFactory.removeUnits(territory, Collections.singleton(u)));
+						changes.add(ChangeFactory.addUnits(territory, toAdd));
+						changes.add(ChangeFactory.markNoMovementChange(toAdd));
+						bridge.getHistoryWriter().addChildToEvent(id.getName() + " converts " + u.toStringNoOwner() + " into different units", toAdd);
+						bridge.addChange(changes);
+						if (changeTracker != null)
+							changeTracker.addChange(changes);
+						// don't forget to remove this unit from the list
+						nonCom.remove(u);
+						break;
+					}
 				}
 			}
 		}
+		
 		
 		Change capture = ChangeFactory.changeOwner(nonCom, newOwner, territory);
 		bridge.addChange(capture);

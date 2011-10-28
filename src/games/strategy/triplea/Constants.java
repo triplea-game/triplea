@@ -214,6 +214,7 @@ public interface Constants
 	public static final String DESTROY_UNITS_ON_ENTERING_TERRITORY = "On Entering Units Destroyed Instead Of Captured";
 	public static final String DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES = "Damage From Bombing Done To Units Instead Of Territories";
 	public static final String NEUTRAL_FLYOVER_ALLOWED = "Neutral Flyover Allowed";
+	public static final String UNITS_CAN_BE_CHANGED_ON_CAPTURE = "Units Can Be Changed On Capture";
 	
 	// relationships stuff (Edwin, with help from Veqryn and Frig)
 	public static final String RELATIONSHIP_TYPE_SELF = "self_relation";
@@ -230,4 +231,5 @@ public interface Constants
 	public static final String RELATIONSHIP_PROPERTY_DEFAULT = "default";
 	public static final String RELATIONSHIP_PROPERTY_TRUE = "true";
 	public static final String RELATIONSHIP_PROPERTY_FALSE = "false";
+	public static final String USE_POLITICS = "Use Politics";
 }

@@ -3237,7 +3237,7 @@ public class Matches
 		@Override
 		public boolean match(PoliticalActionAttachment paa)
 		{
-			return paa.hasUses() && paa.canPerform();
+			return paa.hasAttemptsLeft() && paa.canPerform();
 		}
 	};
 	

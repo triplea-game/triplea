@@ -27,7 +27,9 @@ import games.strategy.util.Match;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -40,9 +42,19 @@ import java.util.Set;
 
 public class PoliticalActionAttachment extends DefaultAttachment {
 	
+	public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
+	
 	public static Collection<PoliticalActionAttachment> getPoliticalActionAttachments(PlayerID player){
 		ArrayList<PoliticalActionAttachment> returnList = new ArrayList<PoliticalActionAttachment>();
-		for(IAttachment att : player.getAttachments().values()) {
+		Map<String, IAttachment> map = player.getAttachments();
+		Iterator<String> iter = map.keySet().iterator();
+		while (iter.hasNext())
+		{
+			IAttachment a = map.get(iter.next());
+			if (a instanceof PoliticalActionAttachment) // we could also or instead check that the attachment is prefixed with CONSTANTS.POLITICALACTION_ATTACHMENT_PREFIX = "politicalActionAttachment"
+				returnList.add((PoliticalActionAttachment) a);
+		}
+		/*for(IAttachment att : player.getAttachments().values()) {
 			try {
 				returnList.add((PoliticalActionAttachment) att);
 			} catch (ClassCastException cce) {
@@ -50,22 +62,25 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 				// other PlayerAttachment like RulesAttachment or
 				// TriggerAttachment
 			}
-		}
+		}*/
 		return returnList;
 	}
+	
+	public static PoliticalActionAttachment get(PlayerID player, String nameOfAttachment)
+	{
+		PoliticalActionAttachment rVal = (PoliticalActionAttachment) player.getAttachment(nameOfAttachment);
+		if (rVal == null)
+			throw new IllegalStateException("PoliticalActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+		return rVal;
+	}
 
-	// the condition that needs to be true for this action to be active, this
-	// can be a metacondition or null for no condition. no condition means
-	// always active.
-	private RulesAttachment m_condition = null;
-	// list of relationship changes to be performed if this action is performed
-	// sucessfully
+	// the condition that needs to be true for this action to be active, this can be a metacondition or null for no condition. no condition means always active.
+	private RulesAttachment m_conditions = null;
+	// list of relationship changes to be performed if this action is performed sucessfully
 	private final List<String> m_relationshipChange = new ArrayList<String>();
-	// a key referring to politicaltexts.properties for all the UI messages
-	// belonging to this action.
+	// a key referring to politicaltexts.properties for all the UI messages belonging to this action.
 	private String m_text = "";
-	// chance (x out of y) that this action is successful when attempted,
-	// default = 1:1 = always succesful
+	// chance (x out of y) that this action is successful when attempted, default = 1:1 = always succesful
 	private String m_chance = "1:1";
 	// cost in PU to attempt this action
 	private int m_costPU = 0;
@@ -73,13 +88,8 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 	private int m_attemptsPerTurn = 1;
 	// how many times are left to perform this action each round?
 	private int m_attemptsLeftThisTurn = 1; // don't export this one
-	// which players should accept this action? this could be the player who is
-	// the target of this action in the case of proposing a treaty
-	// or the players in your 'alliance' in case you want to declare war...
-	// especially for actions that when france declares war on germany and it
-	// automatically causes UK to declare war as well.
-	// it is good to set "actionAccept" to "UK" so UK can accept this action to
-	// go through.
+	// which players should accept this action? this could be the player who is the target of this action in the case of proposing a treaty or the players in your 'alliance' in case you want to declare war...
+	// especially for actions that when france declares war on germany and it automatically causes UK to declare war as well. it is good to set "actionAccept" to "UK" so UK can accept this action to go through.
 	private final Collection<PlayerID> m_actionAccept = new ArrayList<PlayerID>();
 	
 	
@@ -96,35 +106,33 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 	 * @param conditionName The condition that needs to be satisfied for this action to be able to be performed by a player
 	 * @throws GameParseException
 	 */
-	public void setCondition(String conditionName) throws GameParseException {
+	public void setConditions(String conditionName) throws GameParseException {
+		RulesAttachment condition = null;
 		for (PlayerID p : getData().getPlayerList().getPlayers()) {
-			try {
-				m_condition = RulesAttachment.get(p, conditionName);
-			} catch (IllegalStateException ise) {
-				/*
-				 * No condition found with that name for that specific player...
-				 * This is supposed to happen, ignore this exception... Only if
-				 * all players throw this exception we will throw a
-				 * GameParseException further down...
-				 * 
-				 * Veq: Is there a smarter way to check if a RulesAttachment
-				 * exists at all and then get a reference to it? instead of
-				 * iterating through all players getting their RulesAttachments
-				 * and then referencing the one found?
-				 */
-			}
-			if (m_condition != null)
+			condition = (RulesAttachment) p.getAttachment(conditionName);
+			if (condition != null)
 				break;
+			/*try {
+				m_conditions = RulesAttachment.get(p, conditionName);
+			} catch (IllegalStateException ise) {
+			}
+			if (m_conditions != null)
+				break;*/
 		}
-		if (m_condition == null)
+		if (condition == null)
 			throw new GameParseException("PoliticalActionAttachment: Could not find rule. name:" + conditionName);
+		m_conditions = condition;
+	}
+	
+	public RulesAttachment getConditions() {
+		return m_conditions;
 	}
 	
 	/**
 	 * @return true if there is no condition to this action or if the condition is satisfied
 	 */
 	public boolean canPerform() {
-		return m_condition == null || m_condition.isSatisfied(getData());
+		return m_conditions == null || m_conditions.isSatisfied(getData());
 	}
 	
 	/**
@@ -137,15 +145,13 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 	{
 		String[] s = relChange.split(":");
 		if (s.length != 3)
-			throw new GameParseException("PoliticalActions: Invalid relationshipChange declaration: " + relChange + " \n Use: player1:player2:newRelation\n");
+			throw new GameParseException("PoliticalActionAttachment: Invalid relationshipChange declaration: " + relChange + " \n Use: player1:player2:newRelation\n");
 		if (getData().getPlayerList().getPlayerID(s[0]) == null)
-			throw new GameParseException("PoliticalActions: Invalid relationshipChange declaration: " + relChange + " \n player: " + s[0] + " unknown in: " + getName());
-		
+			throw new GameParseException("PoliticalActionAttachment: Invalid relationshipChange declaration: " + relChange + " \n player: " + s[0] + " unknown in: " + getName());
 		if (getData().getPlayerList().getPlayerID(s[1]) == null)
-			throw new GameParseException("PoliticalActions: Invalid relationshipChange declaration: " + relChange + " \n player: " + s[1] + " unknown in: " + getName());
-		
-		if (Matches.isValidRelationshipName(getData()).invert().match(s[2]))
-			throw new GameParseException("PoliticalActions: Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[2] + " unknown in: " + getName());
+			throw new GameParseException("PoliticalActionAttachment: Invalid relationshipChange declaration: " + relChange + " \n player: " + s[1] + " unknown in: " + getName());
+		if (!Matches.isValidRelationshipName(getData()).match(s[2]))
+			throw new GameParseException("PoliticalActionAttachment: Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[2] + " unknown in: " + getName());
 		
 		m_relationshipChange.add(relChange);
 	}
@@ -154,6 +160,13 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 	{
 		return m_relationshipChange;
 	}
+	
+	public void clearRelationshipChange()
+	{
+		m_relationshipChange.clear();
+	}
+	
+	
 	/**
 	 * @param text the Key that is used in politicstext.properties for all the texts
 	 */
@@ -176,10 +189,12 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 	public void setChance(String chance) throws GameParseException {
 		String[] s = chance.split(":");
 		try {
-			getInt(s[0]);
-			getInt(s[1]);
+			int i = getInt(s[0]);
+			int j = getInt(s[1]);
+			if (i > j || i < 1 || j < 1 || i > 120 || j > 120)
+				throw new GameParseException("PoliticalActionAttachment: chance should have a format of \"x:y\" where x is <= y and both x and y are >=1 and <=120");
 		} catch (IllegalArgumentException iae) {
-			throw new GameParseException("PoliticalActions: Invalid chance declaration: " + chance + " format: \"1:10\" for 10% chance");
+			throw new GameParseException("PoliticalActionAttachment: Invalid chance declaration: " + chance + " format: \"1:10\" for 10% chance");
 		}
 		m_chance = chance;
 	}
@@ -220,7 +235,7 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 	 */
 	public void setAttemptsPerTurn(String s) {
 		m_attemptsPerTurn = getInt(s);
-		setAttemptsLeftThisTurn(s);
+		setAttemptsLeftThisTurn(m_attemptsPerTurn);
 	}
 
 	/**
@@ -234,8 +249,8 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 	 * @param attempts
 	 *            left this turn
 	 */
-	public void setAttemptsLeftThisTurn(String attempts) {
-		m_attemptsLeftThisTurn = getInt(attempts);
+	public void setAttemptsLeftThisTurn(int attempts) {
+		m_attemptsLeftThisTurn = attempts;
 	}
 
 	/**
@@ -246,8 +261,7 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 	}
 
 	/**
-	 * Adds to, not sets. Anything that adds to instead of setting needs a clear
-	 * function as well.
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
 	 */
@@ -259,8 +273,6 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 			PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
 			if (tempPlayer != null)
 				m_actionAccept.add(tempPlayer);
-			else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false"))
-				m_actionAccept.clear();
 			else
 				throw new IllegalStateException("PoliticalActionAttachment: No player named: " + name);
 		}
@@ -271,6 +283,10 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 	 */
 	public Collection<PlayerID> getActionAccept() {
 		return m_actionAccept;
+	}
+	
+	public void clearActionAccept() {
+		m_actionAccept.clear();
 	}
 
 	/**
@@ -293,20 +309,22 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 	 * @return gets the valid actions for this player.
 	 */
 	public static Collection<PoliticalActionAttachment> getValidActions(PlayerID player) {
-			return Match.getMatches(getPoliticalActionAttachments(player), Matches.PoliticalActionCanBeAttempted);
+		if (!games.strategy.triplea.Properties.getUsePolitics(player.getData()))
+			return new ArrayList<PoliticalActionAttachment>();
+		return Match.getMatches(getPoliticalActionAttachments(player), Matches.PoliticalActionCanBeAttempted);
 	}
 
 	public void resetAttempts(IDelegateBridge aBridge) {
 		if (m_attemptsLeftThisTurn != m_attemptsPerTurn) {
-			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, new Integer(m_attemptsPerTurn).toString(), "attemptsLeftThisTurn"));
+			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, m_attemptsPerTurn, PoliticalActionAttachment.ATTEMPTS_LEFT_THIS_TURN));
 		}
 	}
 
 	public void useAttempt(IDelegateBridge aBridge) {
-		aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, new Integer(m_attemptsLeftThisTurn - 1).toString(), "attemptsLeftThisTurn"));
+		aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, (m_attemptsLeftThisTurn - 1), PoliticalActionAttachment.ATTEMPTS_LEFT_THIS_TURN));
 	}
 
-	public boolean hasUses() {
+	public boolean hasAttemptsLeft() {
 		return m_attemptsLeftThisTurn > 0;
 	}
 

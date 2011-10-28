@@ -78,7 +78,7 @@ public class RelationshipTracker extends RelationshipInterpreter
 	}
 	
 	public int getRoundRelationshipWasCreated(PlayerID p1, PlayerID p2) {
-		return m_relationships.get(new RelatedPlayers(p1, p2)).getTurnCreated();
+		return m_relationships.get(new RelatedPlayers(p1, p2)).getRoundCreated();
 	}
 
 	/**
@@ -209,15 +209,20 @@ public class RelationshipTracker extends RelationshipInterpreter
 			this.relationshipType = relationshipType;
 		}
 		private final RelationshipType relationshipType;
-		private final int turnCreated = getData().getSequence().getRound();
+		private final int roundCreated = getData().getSequence().getRound();
 
-		public int getTurnCreated() {
-			return turnCreated;
+		public int getRoundCreated() {
+			return roundCreated;
 		}
 
 		public RelationshipType getRelationshipType() {
 			return relationshipType;
 		}
 		
+		@Override
+		public String toString()
+		{
+			return roundCreated + ":" + relationshipType;
+		}
 	}
 }

@@ -164,10 +164,8 @@ public class RulesAttachment extends DefaultAttachment
 	// using map as tuple set, describes ranges from Integer-Integer
 	private Map<Integer, Integer> m_turns = null;
 	private List<TechAdvance> m_techs = null;
-	// list of all relationships that should be in place for this condition to be valid array of "Germany:Italy:Allied", "UK:USA:Allied" etc.
+	// list of all relationships that should be in place for this condition to be valid array of "Germany:Italy:Allied:#ofRoundsExisting", "UK:USA:Allied:2" etc.
 	private final List<String> m_relationship = new ArrayList<String>();
-	// amount of rounds the relationships in m_relationship need to be in effect
-	private int m_relationshipsExistance = -1;
 	
 	/** Creates new RulesAttachment */
 	public RulesAttachment()
@@ -268,8 +266,8 @@ public class RulesAttachment extends DefaultAttachment
 	public void setRelationship(String value) throws GameParseException
 	{
 		String[] s = value.split(":");
-		if (s.length != 3)
-			throw new GameParseException("Rules & Conditions: relationship should have value=\"playername:playername:relationshiptype\"");
+		if (s.length < 3 || s.length > 4)
+			throw new GameParseException("Rules & Conditions: relationship should have value=\"playername1:playername2:relationshiptype:numberOfRoundsExisting\"");
 		if (getData().getPlayerList().getPlayerID(s[0]) == null)
 			throw new GameParseException("Rules & Conditions: playername: " + s[0] + " isn't valid in condition with relationship: " + value + " for RulesAttachment " + getName());
 		if (getData().getPlayerList().getPlayerID(s[1]) == null)
@@ -278,15 +276,9 @@ public class RulesAttachment extends DefaultAttachment
 					s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) ||
 					s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) || Matches.isValidRelationshipName(getData()).match(s[2])))
 			throw new GameParseException("Rules & Conditions: relationship: " + s[2] + " isn't valid in condition with relationship: " + value + " for RulesAttachment " + getName());
-		m_relationship.add(value);
-	}
-	
-	/**
-	 * @param value
-	 *            the amount of rounds the relationships need to be in existence
-	 */
-	public void setRelationshipsExistance(String value) {
-		m_relationshipsExistance = getInt(value);
+		if (s.length == 4 && Integer.parseInt(s[3]) < -1)
+			throw new GameParseException("Rules & Conditions: numberOfRoundsExisting should be a number between -1 and 100000.  -1 should be default value if you don't know what to put");
+		m_relationship.add((s.length == 3) ? (value + ":-1") : value);
 	}
 
 	public List<String> getRelationship()
@@ -1347,9 +1339,10 @@ public class RulesAttachment extends DefaultAttachment
 			String[] relationCheck = aRelationCheck.split(":");
 			PlayerID p1 = getData().getPlayerList().getPlayerID(relationCheck[0]);
 			PlayerID p2 = getData().getPlayerList().getPlayerID(relationCheck[1]);
+			int relationshipsExistance = Integer.parseInt(relationCheck[3]);
 			Relationship currentRelationship = getData().getRelationshipTracker().getRelationship(p1, p2);
 			RelationshipType currentRelationshipType = currentRelationship.getRelationshipType();
-			if (!relationShipExistsLongEnnough(currentRelationship)) {
+			if (!relationShipExistsLongEnnough(currentRelationship, relationshipsExistance)) {
 				return false;
 			}
 			if (!(relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) && Matches.RelationshipIsAllied.match(currentRelationshipType)
@@ -1361,9 +1354,9 @@ public class RulesAttachment extends DefaultAttachment
 		return true;
 	}
 	
-	private boolean relationShipExistsLongEnnough(Relationship r) {
-		int roundcurrentRelationshipWasCreated = r.getTurnCreated();
-		if (getData().getSequence().getRound() - roundcurrentRelationshipWasCreated < this.m_relationshipsExistance)
+	private boolean relationShipExistsLongEnnough(Relationship r, int relationshipsExistance) {
+		int roundCurrentRelationshipWasCreated = r.getRoundCreated();
+		if (getData().getSequence().getRound() - roundCurrentRelationshipWasCreated < relationshipsExistance)
 			return false;
 		return true;
 	}
